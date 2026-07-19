@@ -63,6 +63,7 @@ jobs:
         dockerfile: .config/Dockerfile.preview
         failure-threshold: error
         ignore: DL3008,DL3013
+    timeout-minutes: 15
   build:
     name: Build preview image (${{ matrix.target }})
     runs-on: ubuntu-latest-m
@@ -157,6 +158,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 45
   summary:
     name: Image build summary
     runs-on: ubuntu-latest
@@ -212,3 +214,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

@@ -1,201 +1,107 @@
----
-name: "🚿 Flush Queued Workflow Runs"
-
-# Emergency bulk-cancel for queued/waiting workflow runs.
-# Dispatch manually when queue exceeds acceptable threshold.
-#
-# Created: 2026-03-01 | S117 | queue emergency response
-# Context: 600+ queued runs from workflow_run cascade (fixed in 86e1fb3)
-
+name: "\U0001F6BF Flush Queued Workflow Runs"
 on:
   workflow_dispatch:
     inputs:
       status_filter:
-        description: 'Run status to cancel (queued | waiting | in_progress | all-stale)'
+        description: Run status to cancel (queued | waiting | in_progress | all-stale)
         required: true
-        default: 'queued'
+        default: queued
         type: choice
         options:
-          - queued
-          - waiting
-          - in_progress
-          - all-stale
+        - queued
+        - waiting
+        - in_progress
+        - all-stale
       max_cancellations:
-        description: 'Maximum runs to cancel (safety cap)'
+        description: Maximum runs to cancel (safety cap)
         required: true
         default: '1000'
         type: number
       dry_run:
-        description: 'Dry run — list runs without cancelling'
+        description: "Dry run \u2014 list runs without cancelling"
         required: false
         default: 'false'
         type: choice
-        options: ['false', 'true']
+        options:
+        - 'false'
+        - 'true'
       exclude_workflow:
-        description: 'Workflow name to EXCLUDE from cancellation (optional)'
+        description: Workflow name to EXCLUDE from cancellation (optional)
         required: false
         default: ''
         type: string
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   actions: write
   contents: read
-
 jobs:
   flush:
-    name: "🚿 Cancel ${{ github.event.inputs.status_filter }} runs (max ${{ github.event.inputs.max_cancellations }})"
+    name: "\U0001F6BF Cancel ${{ github.event.inputs.status_filter }} runs (max ${{\
+      \ github.event.inputs.max_cancellations }})"
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: Mask secrets
-        run: |
-          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - name: "🔍 Enumerate and cancel runs"
-        uses: actions/github-script@v8  # v9
-        env:
-          STATUS_FILTER: ${{ github.event.inputs.status_filter }}
-          MAX_CANCEL: ${{ github.event.inputs.max_cancellations }}
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
-          EXCLUDE_WF: ${{ github.event.inputs.exclude_workflow }}
-          THIS_RUN_ID: ${{ github.run_id }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          script: |
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const statusFilter = process.env.STATUS_FILTER;
-            const maxCancel    = parseInt(process.env.MAX_CANCEL, 10);
-            const dryRun       = process.env.DRY_RUN === 'true';
-            const excludeWf    = process.env.EXCLUDE_WF || '';
-            const thisRunId    = parseInt(process.env.THIS_RUN_ID, 10);
+    - name: Mask secrets
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
-            const statuses = statusFilter === 'all-stale'
-              ? ['queued', 'waiting']
-              : [statusFilter];
-
-            let cancelled = 0;
-            let skipped   = 0;
-            let errors    = 0;
-            const summary = {};
-
-            core.info(`🚿 Flush mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
-            core.info(`   Status filter: ${statuses.join(', ')}`);
-            core.info(`   Max cancellations: ${maxCancel}`);
-            core.info(`   Exclude workflow: ${excludeWf || '(none)'}`);
-            core.info(`   This run ID (protected): ${thisRunId}`);
-            core.info('');
-
-            for (const status of statuses) {
-              let page = 1;
-              let hasMore = true;
-
-              while (hasMore && cancelled < maxCancel) {
-                const { data: { workflow_runs: runs } } = await github.rest.actions.listWorkflowRunsForRepo({
-                  owner, repo,
-                  status,
-                  per_page: 100,
-                  page,
-                });
-
-                if (runs.length === 0) {
-                  hasMore = false;
-                  break;
-                }
-
-                for (const run of runs) {
-                  if (cancelled >= maxCancel) break;
-
-                  // Never cancel ourselves
-                  if (run.id === thisRunId) {
-                    skipped++;
-                    continue;
-                  }
-
-                  // Exclude specific workflow if requested
-                  if (excludeWf && run.name && run.name.includes(excludeWf)) {
-                    skipped++;
-                    continue;
-                  }
-
-                  const wfName = run.name || run.workflow_id || '?';
-                  summary[wfName] = (summary[wfName] || 0) + 1;
-
-                  if (dryRun) {
-                    core.info(`[DRY] Would cancel: ${run.id} — ${wfName} (${status})`);
-                    cancelled++;
-                  } else {
-                    try {
-                      await github.rest.actions.cancelWorkflowRun({
-                        owner, repo,
-                        run_id: run.id,
-                      });
-                      cancelled++;
-                      if (cancelled % 50 === 0) {
-                        core.info(`   ...cancelled ${cancelled} runs so far`);
-                      }
-                    } catch (e) {
-                      // Run may have already completed or been cancelled
-                      if (e.status === 409) {
-                        skipped++;
-                      } else {
-                        errors++;
-                        core.warning(`Failed to cancel run ${run.id}: ${e.message}`);
-                      }
-                    }
-                  }
-                }
-
-                page++;
-                // GitHub API returns max 100 per page
-                if (runs.length < 100) hasMore = false;
-              }
-            }
-
-            // Build summary
-            const fs = require('fs');
-            const lines = [
-              `## 🚿 Flush Results`,
-              '',
-              `| Metric | Value |`,
-              `|--------|-------|`,
-              `| Mode | ${dryRun ? '🔍 DRY RUN' : '🚿 LIVE'} |`,
-              `| Status filter | ${statuses.join(', ')} |`,
-              `| Runs ${dryRun ? 'found' : 'cancelled'} | **${cancelled}** |`,
-              `| Runs skipped | ${skipped} |`,
-              `| Errors | ${errors} |`,
-              '',
-              `### By Workflow`,
-              '',
-              `| Workflow | Count |`,
-              `|----------|-------|`,
-            ];
-
-            const sorted = Object.entries(summary).sort((a, b) => b[1] - a[1]);
-            for (const [name, count] of sorted) {
-              lines.push(`| ${name} | ${count} |`);
-            }
-
-            if (sorted.length === 0) {
-              lines.push(`| _(none found)_ | 0 |`);
-            }
-
-            lines.push('');
-            lines.push(`_flush-queued-runs.yml | ${new Date().toISOString()}_`);
-
-            const body = lines.join('\n');
-            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n${body}\n`);
-            core.info('');
-            core.info(body);
-
-            if (errors > 10) {
-              core.setFailed(`Too many errors (${errors}) — check logs`);
-            }
-
-
-
-
+        '
+    - name: "\U0001F50D Enumerate and cancel runs"
+      uses: actions/github-script@v8
+      env:
+        STATUS_FILTER: ${{ github.event.inputs.status_filter }}
+        MAX_CANCEL: ${{ github.event.inputs.max_cancellations }}
+        DRY_RUN: ${{ github.event.inputs.dry_run }}
+        EXCLUDE_WF: ${{ github.event.inputs.exclude_workflow }}
+        THIS_RUN_ID: ${{ github.run_id }}
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          const statusFilter = process.env.STATUS_FILTER;\nconst maxCancel    = parseInt(process.env.MAX_CANCEL,\
+          \ 10);\nconst dryRun       = process.env.DRY_RUN === 'true';\nconst excludeWf\
+          \    = process.env.EXCLUDE_WF || '';\nconst thisRunId    = parseInt(process.env.THIS_RUN_ID,\
+          \ 10);\n\nconst statuses = statusFilter === 'all-stale'\n  ? ['queued',\
+          \ 'waiting']\n  : [statusFilter];\n\nlet cancelled = 0;\nlet skipped   =\
+          \ 0;\nlet errors    = 0;\nconst summary = {};\n\ncore.info(`\U0001F6BF Flush\
+          \ mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);\ncore.info(`   Status filter:\
+          \ ${statuses.join(', ')}`);\ncore.info(`   Max cancellations: ${maxCancel}`);\n\
+          core.info(`   Exclude workflow: ${excludeWf || '(none)'}`);\ncore.info(`\
+          \   This run ID (protected): ${thisRunId}`);\ncore.info('');\n\nfor (const\
+          \ status of statuses) {\n  let page = 1;\n  let hasMore = true;\n\n  while\
+          \ (hasMore && cancelled < maxCancel) {\n    const { data: { workflow_runs:\
+          \ runs } } = await github.rest.actions.listWorkflowRunsForRepo({\n     \
+          \ owner, repo,\n      status,\n      per_page: 100,\n      page,\n    });\n\
+          \n    if (runs.length === 0) {\n      hasMore = false;\n      break;\n \
+          \   }\n\n    for (const run of runs) {\n      if (cancelled >= maxCancel)\
+          \ break;\n\n      // Never cancel ourselves\n      if (run.id === thisRunId)\
+          \ {\n        skipped++;\n        continue;\n      }\n\n      // Exclude\
+          \ specific workflow if requested\n      if (excludeWf && run.name && run.name.includes(excludeWf))\
+          \ {\n        skipped++;\n        continue;\n      }\n\n      const wfName\
+          \ = run.name || run.workflow_id || '?';\n      summary[wfName] = (summary[wfName]\
+          \ || 0) + 1;\n\n      if (dryRun) {\n        core.info(`[DRY] Would cancel:\
+          \ ${run.id} \u2014 ${wfName} (${status})`);\n        cancelled++;\n    \
+          \  } else {\n        try {\n          await github.rest.actions.cancelWorkflowRun({\n\
+          \            owner, repo,\n            run_id: run.id,\n          });\n\
+          \          cancelled++;\n          if (cancelled % 50 === 0) {\n       \
+          \     core.info(`   ...cancelled ${cancelled} runs so far`);\n         \
+          \ }\n        } catch (e) {\n          // Run may have already completed\
+          \ or been cancelled\n          if (e.status === 409) {\n            skipped++;\n\
+          \          } else {\n            errors++;\n            core.warning(`Failed\
+          \ to cancel run ${run.id}: ${e.message}`);\n          }\n        }\n   \
+          \   }\n    }\n\n    page++;\n    // GitHub API returns max 100 per page\n\
+          \    if (runs.length < 100) hasMore = false;\n  }\n}\n\n// Build summary\n\
+          const fs = require('fs');\nconst lines = [\n  `## \U0001F6BF Flush Results`,\n\
+          \  '',\n  `| Metric | Value |`,\n  `|--------|-------|`,\n  `| Mode | ${dryRun\
+          \ ? '\U0001F50D DRY RUN' : '\U0001F6BF LIVE'} |`,\n  `| Status filter |\
+          \ ${statuses.join(', ')} |`,\n  `| Runs ${dryRun ? 'found' : 'cancelled'}\
+          \ | **${cancelled}** |`,\n  `| Runs skipped | ${skipped} |`,\n  `| Errors\
+          \ | ${errors} |`,\n  '',\n  `### By Workflow`,\n  '',\n  `| Workflow | Count\
+          \ |`,\n  `|----------|-------|`,\n];\n\nconst sorted = Object.entries(summary).sort((a,\
+          \ b) => b[1] - a[1]);\nfor (const [name, count] of sorted) {\n  lines.push(`|\
+          \ ${name} | ${count} |`);\n}\n\nif (sorted.length === 0) {\n  lines.push(`|\
+          \ _(none found)_ | 0 |`);\n}\n\nlines.push('');\nlines.push(`_flush-queued-runs.yml\
+          \ | ${new Date().toISOString()}_`);\n\nconst body = lines.join('\\n');\n\
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\\n${body}\\n`);\ncore.info('');\n\
+          core.info(body);\n\nif (errors > 10) {\n  core.setFailed(`Too many errors\
+          \ (${errors}) \u2014 check logs`);\n}\n"

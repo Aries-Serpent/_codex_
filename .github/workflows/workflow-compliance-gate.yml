@@ -1,4 +1,3 @@
----
 name: Workflow Compliance Gate
 on:
   pull_request:
@@ -17,7 +16,7 @@ permissions:
   pull-requests: write
 jobs:
   compliance-check:
-    name: ⚙️ Workflow Compliance Check
+    name: "\u2699\uFE0F Workflow Compliance Check"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -34,27 +33,37 @@ jobs:
       run: pip install PyYAML --quiet
     - name: Run compliance check
       id: check
-      run: |
-        set +e
-        python3 - <<'PYEOF'
-        import sys
-        import yaml
-        import subprocess
-        \
+      run: "set +e\npython3 - <<'PYEOF'\nimport subprocess\nimport sys\n\nimport yaml\n\
+        \nresult = subprocess.run(\n    [\"git\", \"diff\", \"--name-only\", \"origin/${{\
+        \ github.base_ref }}...HEAD\"],\n    capture_output=True,\n    text=True,\n\
+        \    check=False,\n)\nchanged = [\n    line\n    for line in result.stdout.splitlines()\n\
+        \    if line.startswith(\".github/workflows/\") and line.endswith((\".yml\"\
+        , \".yaml\"))\n]\n\nviolations = []\nfor path in changed:\n    try:\n    \
+        \    with open(path, encoding=\"utf-8\") as f:\n            workflow = yaml.safe_load(f)\n\
+        \    except yaml.YAMLError as exc:\n        violations.append(f\"{path}: invalid\
+        \ YAML ({exc})\")\n        continue\n\n    if not workflow:\n        continue\n\
+        \n    if \"concurrency\" not in workflow:\n        violations.append(f\"{path}:\
+        \ missing top-level `concurrency` block\")\n\n    jobs = workflow.get(\"jobs\"\
+        , {}) or {}\n    for job_name, job in jobs.items():\n        if isinstance(job,\
+        \ dict) and \"timeout-minutes\" not in job:\n            violations.append(f\"\
+        {path}: job `{job_name}` missing `timeout-minutes`\")\n\nif violations:\n\
+        \    print(\"Workflow compliance violations found:\")\n    for v in violations:\n\
+        \        print(f\"  - {v}\")\n    with open(\"compliance_violations.txt\"\
+        , \"w\", encoding=\"utf-8\") as f:\n        f.write(\"\\n\".join(violations))\n\
+        \    sys.exit(1)\n\nprint(\"No workflow compliance violations found\")\nPYEOF\n\
+        exit_code=$?\necho \"exit_code=${exit_code}\" >> \"$GITHUB_OUTPUT\"\n"
       continue-on-error: true
     - name: Post PR comment on violations
-      if: 'github.event_name == ''pull_request'' && steps.check.outputs.exit_code
-        != ''0''
-
-        '
+      if: github.event_name == 'pull_request' && steps.check.outputs.exit_code !=
+        '0'
       env:
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: |
-        printf '%s\
-        ' \\
-        \"## ⚙️ Workflow Compliance Violations\" \\
-        \"\
+      run: "{\n  echo \"## Workflow Compliance Violations\"\n  echo \"\"\n  echo '```'\n\
+        \  cat compliance_violations.txt 2>/dev/null || echo \"See workflow run logs\
+        \ for details.\"\n  echo '```'\n} > compliance_comment.md\ngh pr comment \"\
+        ${PR_NUMBER}\" --body-file compliance_comment.md\n"
     - name: Fail on violations
       if: steps.check.outputs.exit_code != '0'
       run: exit 1
+    timeout-minutes: 15

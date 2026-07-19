@@ -1,5 +1,4 @@
----
-name: 🔧 CI Pattern Healer — Automated Failure Detection & Healing
+name: "\U0001F527 CI Pattern Healer \u2014 Automated Failure Detection & Healing"
 on:
   workflow_run:
     workflows:
@@ -28,7 +27,7 @@ on:
         type: boolean
         default: false
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 permissions:
   contents: write
@@ -51,7 +50,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: 'pip'
+        cache: pip
     - name: Install dependencies
       run: 'pip install -q pyyaml ruff
 
@@ -67,9 +66,9 @@ jobs:
         \ -c '.issues | map(.pattern) | unique' .codex/ci-patterns-detected.json)\n\
         \  echo \"patterns=$PATTERNS\" >> \"$GITHUB_OUTPUT\"\n  echo \"needs_healing=$([[\
         \ $TOTAL -gt 0 && $AUTO_FIX -gt 0 ]] && echo true || echo false)\" >> \"$GITHUB_OUTPUT\"\
-        \n  echo \"✅ Detected $TOTAL issues ($AUTO_FIX auto-fixable)\"\nelse\n  echo\
-        \ \"patterns=[]\" >> \"$GITHUB_OUTPUT\"\n  echo \"needs_healing=false\" >>\
-        \ \"$GITHUB_OUTPUT\"\nfi\n"
+        \n  echo \"\u2705 Detected $TOTAL issues ($AUTO_FIX auto-fixable)\"\nelse\n\
+        \  echo \"patterns=[]\" >> \"$GITHUB_OUTPUT\"\n  echo \"needs_healing=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Upload diagnostic report
       if: always()
       uses: actions/upload-artifact@v5
@@ -80,6 +79,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   heal-patterns:
     name: Apply Automated Fixes
     needs: detect-failures
@@ -97,7 +97,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: 'pip'
+        cache: pip
     - name: Install dependencies
       run: 'pip install -q pyyaml ruff
 
@@ -131,6 +131,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   post-heal-validation:
     name: Validate Healed State
     needs:
@@ -156,6 +157,16 @@ jobs:
         name: ci-patterns-fixed-${{ github.run_id }}
       continue-on-error: true
     - name: Generate summary
-      run: "echo \"## 🔧 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json ]; then\n  echo \"### Detection Results\" >> $GITHUB_STEP_SUMMARY\njq -r '.issues[] | \"- Pattern \\(.pattern): \\(.message) \"' \\\n  .codex/ci-patterns-detected.json >> $GITHUB_STEP_SUMMARY || true\nfi\n\nif [ -f .codex/ci-patterns-fixed.json ]; then\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"### Fixes Applied\" >> $GITHUB_STEP_SUMMARY\n  jq -r \".fixes_applied\" .codex/ci-patterns-fixed.json | \\\n  xargs -I {} echo \"- {} fixes applied\" >> $GITHUB_STEP_SUMMARY || true\nfi\n"
+      run: "echo \"## \U0001F527 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json\
+        \ ]; then\n  echo \"### Detection Results\" >> $GITHUB_STEP_SUMMARY\njq -r\
+        \ '.issues[] | \"- Pattern \\(.pattern): \\(.message) \"' \\\n  .codex/ci-patterns-detected.json\
+        \ >> $GITHUB_STEP_SUMMARY || true\nfi\n\nif [ -f .codex/ci-patterns-fixed.json\
+        \ ]; then\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"### Fixes Applied\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  jq -r \".fixes_applied\" .codex/ci-patterns-fixed.json\
+        \ | \\\n  xargs -I {} echo \"- {} fixes applied\" >> $GITHUB_STEP_SUMMARY\
+        \ || true\nfi\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+    timeout-minutes: 30

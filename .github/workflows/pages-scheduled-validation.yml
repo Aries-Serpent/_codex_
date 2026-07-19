@@ -1,4 +1,3 @@
----
 name: Pages Scheduled Validation
 on:
   schedule:
@@ -32,15 +31,15 @@ permissions:
   pull-requests: write
 jobs:
   validate:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Scheduled Documentation Validation
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -110,21 +109,23 @@ jobs:
       run: "echo \"## Cognitive App Validation\" > cognitive_app_report.txt\necho\
         \ \"**Timestamp:** $(date -u)\" >> cognitive_app_report.txt\necho \"\" >>\
         \ cognitive_app_report.txt\n\nERRORS=0\n\n# Check documentation\nif [ -f \"\
-        docs/cognitive_app.md\" ]; then\n  echo \"✅ cognitive_app.md found\" >> cognitive_app_report.txt\n\
-        \n  # Check if it's in navigation\n  if grep -q \"cognitive_app\" mkdocs.yml;\
-        \ then\n    echo \"✅ cognitive_app in mkdocs.yml navigation\" >> cognitive_app_report.txt\n\
-        \  else\n    echo \"❌ cognitive_app missing from mkdocs.yml navigation\" >>\
-        \ cognitive_app_report.txt\n    ERRORS=$((ERRORS + 1))\n  fi\nelse\n  echo\
-        \ \"❌ cognitive_app.md missing\" >> cognitive_app_report.txt\n  ERRORS=$((ERRORS\
-        \ + 1))\nfi\n\n# Check source directory\nif [ -d \"cognitive_app\" ]; then\n\
-        \  echo \"✅ cognitive_app/ directory found\" >> cognitive_app_report.txt\n\
-        \n  # Check key files\n  KEY_FILES=\"package.json index.html src/main.tsx\
-        \ vite.config.ts\"\n  for file in $KEY_FILES; do\n    if [ -f \"cognitive_app/$file\"\
-        \ ]; then\n      echo \"  ✅ $file\" >> cognitive_app_report.txt\n    else\n\
-        \      echo \"  ⚠️  $file missing\" >> cognitive_app_report.txt\n    fi\n\
-        \  done\nelse\n  echo \"❌ cognitive_app/ directory missing\" >> cognitive_app_report.txt\n\
-        \  ERRORS=$((ERRORS + 1))\nfi\n\ncat cognitive_app_report.txt\necho \"error_count=$ERRORS\"\
-        \ >> $GITHUB_OUTPUT\n\nif [ $ERRORS -gt 0 ]; then\n  exit 1\nfi\n"
+        docs/cognitive_app.md\" ]; then\n  echo \"\u2705 cognitive_app.md found\"\
+        \ >> cognitive_app_report.txt\n\n  # Check if it's in navigation\n  if grep\
+        \ -q \"cognitive_app\" mkdocs.yml; then\n    echo \"\u2705 cognitive_app in\
+        \ mkdocs.yml navigation\" >> cognitive_app_report.txt\n  else\n    echo \"\
+        \u274C cognitive_app missing from mkdocs.yml navigation\" >> cognitive_app_report.txt\n\
+        \    ERRORS=$((ERRORS + 1))\n  fi\nelse\n  echo \"\u274C cognitive_app.md\
+        \ missing\" >> cognitive_app_report.txt\n  ERRORS=$((ERRORS + 1))\nfi\n\n\
+        # Check source directory\nif [ -d \"cognitive_app\" ]; then\n  echo \"\u2705\
+        \ cognitive_app/ directory found\" >> cognitive_app_report.txt\n\n  # Check\
+        \ key files\n  KEY_FILES=\"package.json index.html src/main.tsx vite.config.ts\"\
+        \n  for file in $KEY_FILES; do\n    if [ -f \"cognitive_app/$file\" ]; then\n\
+        \      echo \"  \u2705 $file\" >> cognitive_app_report.txt\n    else\n   \
+        \   echo \"  \u26A0\uFE0F  $file missing\" >> cognitive_app_report.txt\n \
+        \   fi\n  done\nelse\n  echo \"\u274C cognitive_app/ directory missing\" >>\
+        \ cognitive_app_report.txt\n  ERRORS=$((ERRORS + 1))\nfi\n\ncat cognitive_app_report.txt\n\
+        echo \"error_count=$ERRORS\" >> $GITHUB_OUTPUT\n\nif [ $ERRORS -gt 0 ]; then\n\
+        \  exit 1\nfi\n"
     - name: Create issue if problems found
       if: "always() &&\n(steps.link_validation.outputs.error_count > 0 ||\n steps.mkdocs_build.outputs.exit_code\
         \ != '0' ||\n steps.cognitive_app.outputs.error_count > 0)\n"
@@ -139,46 +140,46 @@ jobs:
           \ }}') || 0;\nconst cognitiveErrors = parseInt('${{ steps.cognitive_app.outputs.error_count\
           \ }}') || 0;\n\nconst title = `\U0001F50D GitHub Pages Validation Issues\
           \ - ${timestamp}`;\n\nlet body = `## GitHub Pages Validation Report\n\n\
-        **Validation Type:** ${validationType === 'deep' ? '\U0001F52C Deep' : '⚡\
-        \ Quick'}\n**Timestamp:** ${timestamp}\n**Workflow Run:** [View Details](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          **Validation Type:** ${validationType === 'deep' ? '\U0001F52C Deep' : '\u26A1\
+          \ Quick'}\n**Timestamp:** ${timestamp}\n**Workflow Run:** [View Details](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
           \n### Issues Summary\n\n| Category | Status | Details |\n|----------|--------|---------|\n\
-        | **Link Validation** | ${linkErrors > 0 ? '❌ Failed' : linkWarnings > 0\
-        \ ? '⚠️ Warnings' : '✅ Passed'} | ${linkErrors} errors, ${linkWarnings}\
-        \ warnings |\n| **MkDocs Build** | ${mkdocsExit !== '0' ? '❌ Failed' : mkdocsWarnings\
-        \ > 0 ? '⚠️ Warnings' : '✅ Passed'} | ${mkdocsWarnings} warnings |\n| **cognitive_app**\
-        \ | ${cognitiveErrors > 0 ? '❌ Failed' : '✅ Passed'} | ${cognitiveErrors}\
-        \ errors |\n\n### Recommended Actions\n\n**Priority 1 - Critical:**\n`;\n\
-          \nif (linkErrors > 0) {\n  body += `\\n- [ ] Fix ${linkErrors} broken links\
-          \ in documentation\\n`;\n}\nif (mkdocsExit !== '0') {\n  body += `\\n- [\
-          \ ] Fix MkDocs build errors\\n`;\n}\nif (cognitiveErrors > 0) {\n  body\
-          \ += `\\n- [ ] Fix cognitive_app accessibility issues\\n`;\n}\n\nbody +=\
-        \ `\\n**Priority 2 - Improvements:**\\n`;\n\nif (linkWarnings > 0) {\n \
-          \ body += `\\n- [ ] Review ${linkWarnings} link warnings\\n`;\n}\nif (mkdocsWarnings\
-          \ > 0) {\n  body += `\\n- [ ] Review ${mkdocsWarnings} MkDocs warnings\\\
-          n`;\n}\n\nbody += `\\n### GitHub Pages Manager Commands\n\nUse the GitHub\
-        \ Pages Manager agent to address these issues:\n\n\\`\\`\\`bash\n# Fix broken\
-          \ links\n@copilot Use github-pages-manager to find and fix broken links\n\
-          \n# Validate documentation sync\n@copilot Use github-pages-manager to validate\
-          \ documentation sync\n\n# Check cognitive_app\n@copilot Use github-pages-manager\
-          \ to validate cognitive_app accessibility\n\n# Update dashboard\n@copilot\
-          \ Use github-pages-manager to update status dashboard\n\\`\\`\\`\n\n###\
-        \ Artifacts\n\n- [Validation Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
-        - Download: \\`validation_report.txt\\`, \\`build_report.txt\\`, \\`cognitive_app_report.txt\\\
-        `\n\n---\n\n**Auto-generated by:** GitHub Pages Scheduled Validation\n**Next\
-        \ validation:** ${validationType === 'deep' ? 'Next Monday' : 'Tomorrow'}\
-        \ at 00:00 UTC\n`;\n\n// Check if issue already exists\nconst issues = await\
-        \ github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n  repo:\
-        \ context.repo.repo,\n  state: 'open',\n  labels: 'documentation,pages-validation',\n\
-        \  per_page: 10\n});\n\nconst existingIssue = issues.data.find(issue =>\n\
+          | **Link Validation** | ${linkErrors > 0 ? '\u274C Failed' : linkWarnings\
+          \ > 0 ? '\u26A0\uFE0F Warnings' : '\u2705 Passed'} | ${linkErrors} errors,\
+          \ ${linkWarnings} warnings |\n| **MkDocs Build** | ${mkdocsExit !== '0'\
+          \ ? '\u274C Failed' : mkdocsWarnings > 0 ? '\u26A0\uFE0F Warnings' : '\u2705\
+          \ Passed'} | ${mkdocsWarnings} warnings |\n| **cognitive_app** | ${cognitiveErrors\
+          \ > 0 ? '\u274C Failed' : '\u2705 Passed'} | ${cognitiveErrors} errors |\n\
+          \n### Recommended Actions\n\n**Priority 1 - Critical:**\n`;\n\nif (linkErrors\
+          \ > 0) {\n  body += `\\n- [ ] Fix ${linkErrors} broken links in documentation\\\
+          n`;\n}\nif (mkdocsExit !== '0') {\n  body += `\\n- [ ] Fix MkDocs build\
+          \ errors\\n`;\n}\nif (cognitiveErrors > 0) {\n  body += `\\n- [ ] Fix cognitive_app\
+          \ accessibility issues\\n`;\n}\n\nbody += `\\n**Priority 2 - Improvements:**\\\
+          n`;\n\nif (linkWarnings > 0) {\n  body += `\\n- [ ] Review ${linkWarnings}\
+          \ link warnings\\n`;\n}\nif (mkdocsWarnings > 0) {\n  body += `\\n- [ ]\
+          \ Review ${mkdocsWarnings} MkDocs warnings\\n`;\n}\n\nbody += `\\n### GitHub\
+          \ Pages Manager Commands\n\nUse the GitHub Pages Manager agent to address\
+          \ these issues:\n\n\\`\\`\\`bash\n# Fix broken links\n@copilot Use github-pages-manager\
+          \ to find and fix broken links\n\n# Validate documentation sync\n@copilot\
+          \ Use github-pages-manager to validate documentation sync\n\n# Check cognitive_app\n\
+          @copilot Use github-pages-manager to validate cognitive_app accessibility\n\
+          \n# Update dashboard\n@copilot Use github-pages-manager to update status\
+          \ dashboard\n\\`\\`\\`\n\n### Artifacts\n\n- [Validation Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          - Download: \\`validation_report.txt\\`, \\`build_report.txt\\`, \\`cognitive_app_report.txt\\\
+          `\n\n---\n\n**Auto-generated by:** GitHub Pages Scheduled Validation\n**Next\
+          \ validation:** ${validationType === 'deep' ? 'Next Monday' : 'Tomorrow'}\
+          \ at 00:00 UTC\n`;\n\n// Check if issue already exists\nconst issues = await\
+          \ github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  state: 'open',\n  labels: 'documentation,pages-validation',\n\
+          \  per_page: 10\n});\n\nconst existingIssue = issues.data.find(issue =>\n\
           \  issue.title.includes('GitHub Pages Validation Issues')\n);\n\nif (existingIssue)\
           \ {\n  // Update existing issue\n  await github.rest.issues.createComment({\n\
-        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-        \ existingIssue.number,\n    body: `## Update: ${timestamp}\\n\\n${body}\\\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ existingIssue.number,\n    body: `## Update: ${timestamp}\\n\\n${body}\\\
           n\\n---\\n_[\U0001F517 Workflow run](${runUrl})_`\n  });\n\n  console.log(`Updated\
           \ existing issue  #${existingIssue.number}`);\n} else {\n  // Create new\
-        \ issue\n  const newIssue = await github.rest.issues.create({\n    owner:\
-        \ context.repo.owner,\n    repo: context.repo.repo,\n    title: title,\n\
-        \    body: body,\n    labels: ['documentation', 'pages-validation', 'automated']\n\
+          \ issue\n  const newIssue = await github.rest.issues.create({\n    owner:\
+          \ context.repo.owner,\n    repo: context.repo.repo,\n    title: title,\n\
+          \    body: body,\n    labels: ['documentation', 'pages-validation', 'automated']\n\
           \  });\n\n  console.log(`Created new issue  #${newIssue.data.number}`);\n\
           }\n"
     - name: Upload validation artifacts
@@ -201,8 +202,8 @@ jobs:
         \ \"${DASHBOARD}.bak\"\n\n  # Update timestamp (match the actual markdown\
         \ format with bold)\n  sed -i \"s/^> \\*\\*Last Updated\\*\\*:.*$/> **Last\
         \ Updated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)/\" \"$DASHBOARD\"\n\n  echo \"\
-        ✅ Dashboard timestamp updated\"\nelse\n  echo \"⚠️  Dashboard not found at\
-        \ $DASHBOARD\"\nfi\n"
+        \u2705 Dashboard timestamp updated\"\nelse\n  echo \"\u26A0\uFE0F  Dashboard\
+        \ not found at $DASHBOARD\"\nfi\n"
     - name: Commit dashboard updates and create PR
       if: always() && steps.config.outputs.create_pr == 'true'
       env:
@@ -230,9 +231,8 @@ jobs:
         \ steps.config.outputs.timestamp }})\" \\\n      --body-file \"${PR_BODY_FILE}\"\
         \ \\\n      --base \"${{ github.event.repository.default_branch || 'main'\
         \ }}\" \\\n      --head \"${BRANCH}\" \\\n      --label \"automated,documentation\"\
-        \ || \\\n    echo \"⚠️  gh pr create failed — check GH_TOKEN permissions\"\
-        \n\n    echo \"✅ Changes committed and PR created on branch ${BRANCH}\"\n\
-        \  fi\nfi\n"
+        \ || \\\n    echo \"\u26A0\uFE0F  gh pr create failed \u2014 check GH_TOKEN\
+        \ permissions\"\n\n    echo \"\u2705 Changes committed and PR created on branch\
+        \ ${BRANCH}\"\n  fi\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-

@@ -1,279 +1,193 @@
----
-# Cognitive Brain CI Feedback Loop
-# Phase 1, Pre-commit 2 (S108): wires report_completion() to actual CI outcomes.
-# Triggered after any workflow completes; maps the workflow name to pattern IDs
-# via keyword matching, then calls brain.report_completion() for each match.
-#
-# §6 ADMIN_MANUAL_SETUP_GUIDE.md — permissions declared explicitly here so
-# the workflow writes to .codex/ files correctly without requiring UI changes.
-#
-# PDA: ASSESS phase — CI outcome → brain.report_completion() → pattern update.
-# AfterMath: closes the feedback loop identified in cognitive_brain_analysis.md.
-#
-# Pattern P-046: CI outcomes auto-reported to cognitive brain via keyword map.
-# See: docs/coverage/COVERAGE_ROADMAP_40_TO_75.md
-
 name: Cognitive Brain CI Feedback
-
 on:
   workflow_run:
-    workflows: ['*']
-    types: [completed]
-
-# *** GROUNDED: Concurrency control prevents exponential cascade.
-# This workflow fires on every workflow completion. Without concurrency control,
-# its own completion triggers workflow-analytics-unified → which triggers this → ∞ queue.
-# cancel-in-progress: true ensures only the latest run executes; duplicates are dropped.
-
-# §6 ADMIN_MANUAL_SETUP_GUIDE.md: explicit permissions block replaces the
-# need to set "Read and write" manually in GitHub Settings → Actions.
-# This is the least-privilege declaration for this specific workflow.
+    workflows:
+    - '*'
+    types:
+    - completed
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
-  contents: write  # write .codex/ files (store_memory, session logs)
-  pull-requests: write  # post @copilot follow-up comments via mcp_poster
-  issues: write  # post issue comments for escalations
-  actions: read  # read workflow_run metadata
-
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
 jobs:
   report-outcome:
     name: Report CI Outcome to Cognitive Brain
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Pilot phase: internal actor only (Q3-B airtight system).
-    # Expand to ORG_OWNER tier when Phase 5 StructuralPolicyManager ships.
-    #
-    # GROUNDED: Self-exclusion filter breaks the cascade loop.
-    # Skip when the triggering workflow is this one or workflow-analytics-unified
-    # to prevent A→B→A→B infinite re-trigger chains.
-    if: |
-      (github.actor == 'mbaetiong' || github.actor == 'github-actions[bot]') &&
-      github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
-      github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
-      github.event.workflow_run.name != 'Cognitive Action & Decision (Unified)' &&
-      github.event.workflow_run.name != 'Cognitive Analysis & Learning (Unified)' &&
-      github.event.workflow_run.name != 'Workflow Analytics & Health (Unified)'
+    if: '(github.actor == ''mbaetiong'' || github.actor == ''github-actions[bot]'')
+      &&
 
+      github.event.workflow_run.name != ''Cognitive Brain CI Feedback'' &&
+
+      github.event.workflow_run.name != ''Iterative Self-Healing CI'' &&
+
+      github.event.workflow_run.name != ''Cognitive Action & Decision (Unified)''
+      &&
+
+      github.event.workflow_run.name != ''Cognitive Analysis & Learning (Unified)''
+      &&
+
+      github.event.workflow_run.name != ''Workflow Analytics & Health (Unified)''
+
+      '
     steps:
-      - uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install cognitive brain dependencies
+      run: pip install -e ".[dev]" --quiet
+    - name: Report completion to Cognitive Brain
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      run: "python - <<'EOF'\nimport os\nimport sys\n\nsys.path.insert(0, \"src\"\
+        )\nfrom codex.cognitive.agent_brain_api import AgentBrainAPI, ImprovementArea\n\
+        \nbrain = AgentBrainAPI(agent_id=\"copilot-coding-agent\")\nconclusion = os.environ[\"\
+        WORKFLOW_CONCLUSION\"]\nworkflow = os.environ[\"WORKFLOW_NAME\"]\nsha = os.environ[\"\
+        HEAD_SHA\"][:8]\n\n# Keyword \u2192 (pattern_id, ImprovementArea) mapping.\n\
+        # Pattern P-046: extend this map as new patterns are codified.\nPATTERN_KEYWORD_MAP\
+        \ = {\n    \"sharded\":      (\"P-038\", ImprovementArea.CI_SELF_HEALING),\n\
+        \    \"codeql\":       (\"P-039\", ImprovementArea.SECURITY_REMEDIATION),\n\
+        \    \"huggingface\":  (\"P-043\", ImprovementArea.ML_PATTERN_FEEDING),\n\
+        \    \"hf\":           (\"P-043\", ImprovementArea.ML_PATTERN_FEEDING),\n\
+        \    \"training\":     (\"P-043\", ImprovementArea.ML_PATTERN_FEEDING),\n\
+        \    \"coverage\":     (\"P-044\", ImprovementArea.COVERAGE_IMPROVEMENT),\n\
+        \    \"cognitive\":    (\"P-046\", ImprovementArea.AGENT_CHAINING),\n    \"\
+        health\":       (\"P-047\", ImprovementArea.CI_SELF_HEALING),\n    \"monitor\"\
+        :      (\"P-047\", ImprovementArea.CI_SELF_HEALING),\n    \"self.heal\": \
+        \   (\"P-047\", ImprovementArea.CI_SELF_HEALING),\n}\n\nworkflow_lower = workflow.lower()\n\
+        matched = [\n    (pid, area)\n    for keyword, (pid, area) in PATTERN_KEYWORD_MAP.items()\n\
+        \    if keyword in workflow_lower\n]\n\nfor pattern_id, area in matched:\n\
+        \    brain.report_completion(\n        area=area,\n        step_id=f\"{pattern_id}-{sha}\"\
+        ,\n        outcome=\"success\" if conclusion == \"success\" else \"failure\"\
+        ,\n        notes=f\"Auto-reported by cognitive_brain_ci_feedback.yml: {workflow}\"\
+        ,\n    )\n    print(f\"\u2705 Reported {pattern_id} \u2192 {conclusion} for\
+        \ '{workflow}'\")\n\nif not matched:\n    print(f\"\u2139\uFE0F No pattern\
+        \ match for workflow: '{workflow}'\")\nEOF\n"
+    - name: Copilot failure analysis (mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba)
+      id: copilot_analysis
+      if: github.event.workflow_run.conclusion == 'failure'
+      uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba
+      with:
+        copilot-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        github-mcp-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        timeout: '5'
+        output-format: json
+        output-schema: "{\n  \"pattern_id\": \"P-NEW or existing pattern e.g. P-038\"\
+          ,\n  \"category\": \"CI_HEALTH|SECURITY_REMEDIATION|COVERAGE_IMPROVEMENT|ML_PATTERN_FEEDING|AGENT_CHAINING\"\
+          ,\n  \"root_cause\": \"one-sentence root cause\",\n  \"fix_suggestion\"\
+          : \"one-sentence fix\",\n  \"severity\": \"critical|high|medium|low\",\n\
+          \  \"is_known_pattern\": true\n}\n"
+        system-prompt: 'You are an expert CI/CD engineer for the Aries-Serpent/_codex_
+          Python repository.
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          The cognitive brain pattern library lives in .codex/cognitive_brain/*.md.
 
-      - name: Install cognitive brain dependencies
-        run: pip install -e ".[dev]" --quiet
+          Known patterns: P-038 (shard crash), P-039 (CodeQL branches), P-042 (HF_REVISION
+          leak),
 
-      - name: Report completion to Cognitive Brain
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          python - <<'EOF'
-          import os
-          import sys
+          P-043 (HF mock), P-044 (coverage tests), P-046 (CI feedback loop).
 
-          sys.path.insert(0, "src")
-          from codex.cognitive.agent_brain_api import AgentBrainAPI, ImprovementArea
+          Return ONLY valid JSON matching the schema. No markdown fences.
 
-          brain = AgentBrainAPI(agent_id="copilot-coding-agent")
-          conclusion = os.environ["WORKFLOW_CONCLUSION"]
-          workflow = os.environ["WORKFLOW_NAME"]
-          sha = os.environ["HEAD_SHA"][:8]
+          '
+        prompt: 'A GitHub Actions workflow FAILED. Analyze the failure and return
+          a structured JSON response.
 
-          # Keyword → (pattern_id, ImprovementArea) mapping.
-          # Pattern P-046: extend this map as new patterns are codified.
-          PATTERN_KEYWORD_MAP = {
-              "sharded":      ("P-038", ImprovementArea.CI_SELF_HEALING),
-              "codeql":       ("P-039", ImprovementArea.SECURITY_REMEDIATION),
-              "huggingface":  ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
-              "hf":           ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
-              "training":     ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
-              "coverage":     ("P-044", ImprovementArea.COVERAGE_IMPROVEMENT),
-              "cognitive":    ("P-046", ImprovementArea.AGENT_CHAINING),
-              "health":       ("P-047", ImprovementArea.CI_SELF_HEALING),
-              "monitor":      ("P-047", ImprovementArea.CI_SELF_HEALING),
-              "self.heal":    ("P-047", ImprovementArea.CI_SELF_HEALING),
-          }
 
-          workflow_lower = workflow.lower()
-          matched = [
-              (pid, area)
-              for keyword, (pid, area) in PATTERN_KEYWORD_MAP.items()
-              if keyword in workflow_lower
-          ]
+          Workflow: ${{ github.event.workflow_run.name }}
 
-          for pattern_id, area in matched:
-              brain.report_completion(
-                  area=area,
-                  step_id=f"{pattern_id}-{sha}",
-                  outcome="success" if conclusion == "success" else "failure",
-                  notes=f"Auto-reported by cognitive_brain_ci_feedback.yml: {workflow}",
-              )
-              print(f"✅ Reported {pattern_id} → {conclusion} for '{workflow}'")
+          Conclusion: ${{ github.event.workflow_run.conclusion }}
 
-          if not matched:
-              print(f"ℹ️ No pattern match for workflow: '{workflow}'")
-          EOF
+          Branch: ${{ github.event.workflow_run.head_branch }}
 
-      # ── mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba — Intelligent failure analysis ─────────────
-      # On ANY CI failure: ask Copilot to classify it, suggest a fix, and propose
-      # a new pattern ID. Outputs structured JSON for downstream steps.
-      - name: Copilot failure analysis (mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba)
-        id: copilot_analysis
-        if: github.event.workflow_run.conclusion == 'failure'
-        uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba  # v1
-        with:
-          copilot-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          github-mcp-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          timeout: "5"
-          output-format: json
-          output-schema: |
-            {
-              "pattern_id": "P-NEW or existing pattern e.g. P-038",
-              "category": "CI_HEALTH|SECURITY_REMEDIATION|COVERAGE_IMPROVEMENT|ML_PATTERN_FEEDING|AGENT_CHAINING",
-              "root_cause": "one-sentence root cause",
-              "fix_suggestion": "one-sentence fix",
-              "severity": "critical|high|medium|low",
-              "is_known_pattern": true
-            }
-          system-prompt: |
-            You are an expert CI/CD engineer for the Aries-Serpent/_codex_ Python repository.
-            The cognitive brain pattern library lives in .codex/cognitive_brain/*.md.
-            Known patterns: P-038 (shard crash), P-039 (CodeQL branches), P-042 (HF_REVISION leak),
-            P-043 (HF mock), P-044 (coverage tests), P-046 (CI feedback loop).
-            Return ONLY valid JSON matching the schema. No markdown fences.
-          prompt: |
-            A GitHub Actions workflow FAILED. Analyze the failure and return a structured JSON response.
+          SHA: ${{ github.event.workflow_run.head_sha }}
 
-            Workflow: ${{ github.event.workflow_run.name }}
-            Conclusion: ${{ github.event.workflow_run.conclusion }}
-            Branch: ${{ github.event.workflow_run.head_branch }}
-            SHA: ${{ github.event.workflow_run.head_sha }}
-            Run URL: ${{ github.event.workflow_run.html_url }}
+          Run URL: ${{ github.event.workflow_run.html_url }}
 
-            Classify this failure against the known pattern library.
-            If it matches a known pattern, return that pattern_id.
-            If it's novel, propose a new pattern_id (P-047, P-048, etc.).
 
-      - name: Store Copilot pattern analysis to cognitive brain
-        if: >
-          github.event.workflow_run.conclusion == 'failure' &&
-          steps.copilot_analysis.outputs.validation-status == 'valid'
-        env:
-          COPILOT_ANALYSIS: ${{ steps.copilot_analysis.outputs.response }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
-        run: |
-          python - <<'PYEOF'
-          import json, os, sys, time
-          from pathlib import Path
+          Classify this failure against the known pattern library.
 
-          analysis_raw = os.environ.get("COPILOT_ANALYSIS", "{}")
-          try:
-              analysis = json.loads(analysis_raw)
-          except json.JSONDecodeError:
-              print("⚠️ Could not parse Copilot JSON — skipping store.")
-              sys.exit(0)
+          If it matches a known pattern, return that pattern_id.
 
-          sys.path.insert(0, "src")
-          from codex.cognitive.agent_brain_api import AgentBrainAPI
-          brain = AgentBrainAPI(agent_id="copilot-coding-agent")
+          If it''s novel, propose a new pattern_id (P-047, P-048, etc.).
 
-          pattern_id = analysis.get("pattern_id", "P-CANDIDATE")
-          root_cause  = analysis.get("root_cause", "unknown")
-          fix         = analysis.get("fix_suggestion", "")
-          workflow    = os.environ.get("WORKFLOW_NAME", "")
+          '
+    - name: Store Copilot pattern analysis to cognitive brain
+      if: 'github.event.workflow_run.conclusion == ''failure'' && steps.copilot_analysis.outputs.validation-status
+        == ''valid''
 
-          # Persist to .codex/cognitive_brain/ so next session picks it up
-          brain_dir = Path(".codex/cognitive_brain")
-          brain_dir.mkdir(parents=True, exist_ok=True)
-          candidate_file = brain_dir / f"{pattern_id}-candidate.json"
-          candidate_file.write_text(json.dumps({
-              "ts": time.time(),
-              "pattern_id": pattern_id,
-              "workflow": workflow,
-              "root_cause": root_cause,
-              "fix_suggestion": fix,
-              "analysis": analysis,
-              "source": "mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba",
-          }, indent=2))
-          print(f"✅ Stored Copilot analysis → {candidate_file}")
-          print(f"   Pattern: {pattern_id} | Cause: {root_cause}")
-          PYEOF
+        '
+      env:
+        COPILOT_ANALYSIS: ${{ steps.copilot_analysis.outputs.response }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+      run: "python - <<'PYEOF'\nimport json, os, sys, time\nfrom pathlib import Path\n\
+        \nanalysis_raw = os.environ.get(\"COPILOT_ANALYSIS\", \"{}\")\ntry:\n    analysis\
+        \ = json.loads(analysis_raw)\nexcept json.JSONDecodeError:\n    print(\"\u26A0\
+        \uFE0F Could not parse Copilot JSON \u2014 skipping store.\")\n    sys.exit(0)\n\
+        \nsys.path.insert(0, \"src\")\nfrom codex.cognitive.agent_brain_api import\
+        \ AgentBrainAPI\nbrain = AgentBrainAPI(agent_id=\"copilot-coding-agent\")\n\
+        \npattern_id = analysis.get(\"pattern_id\", \"P-CANDIDATE\")\nroot_cause \
+        \ = analysis.get(\"root_cause\", \"unknown\")\nfix         = analysis.get(\"\
+        fix_suggestion\", \"\")\nworkflow    = os.environ.get(\"WORKFLOW_NAME\", \"\
+        \")\n\n# Persist to .codex/cognitive_brain/ so next session picks it up\n\
+        brain_dir = Path(\".codex/cognitive_brain\")\nbrain_dir.mkdir(parents=True,\
+        \ exist_ok=True)\ncandidate_file = brain_dir / f\"{pattern_id}-candidate.json\"\
+        \ncandidate_file.write_text(json.dumps({\n    \"ts\": time.time(),\n    \"\
+        pattern_id\": pattern_id,\n    \"workflow\": workflow,\n    \"root_cause\"\
+        : root_cause,\n    \"fix_suggestion\": fix,\n    \"analysis\": analysis,\n\
+        \    \"source\": \"mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba\"\
+        ,\n}, indent=2))\nprint(f\"\u2705 Stored Copilot analysis \u2192 {candidate_file}\"\
+        )\nprint(f\"   Pattern: {pattern_id} | Cause: {root_cause}\")\nPYEOF\n"
+    - name: Post @copilot follow-up comment (requires CODEX_MASTER_KEY)
+      if: 'github.event.workflow_run.conclusion == ''success'' && (github.actor ==
+        ''mbaetiong'' || github.actor == ''github-actions[bot]'')
 
-      - name: Post @copilot follow-up comment (requires CODEX_MASTER_KEY)
-        # §7 ADMIN_MANUAL_SETUP_GUIDE.md — posts follow-up once secret is set.
-        # No-ops gracefully when CODEX_MASTER_KEY is absent (no token = no post).
-        if: >
-          github.event.workflow_run.conclusion == 'success' &&
-          (github.actor == 'mbaetiong' || github.actor == 'github-actions[bot]')
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
-        run: |
-          if [ -z "${CODEX_MASTER_KEY}" ] && [ -z "${CODEX_BACKUP_KEY}" ]; then
-            echo "ℹ️ CODEX_MASTER_KEY not set — skipping @copilot comment."
-            echo "   See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3 to enable."
-            exit 0
-          fi
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "ℹ️ No PR associated with this workflow run — skipping comment."
-            exit 0
-          fi
-          PROMPT_FILE=".github/copilot-prompts/active/PR-${PR_NUMBER}-followup.md"
-          if [ ! -f "${PROMPT_FILE}" ]; then
-            echo "ℹ️ No follow-up prompt file found at ${PROMPT_FILE} — skipping."
-            exit 0
-          fi
-          python -m codex.github.mcp_poster post-comment \
-            --repo "${{ github.repository }}" \
-            --pr "${PR_NUMBER}" \
-            --body-file "${PROMPT_FILE}"
-
-      - name: Store failure as pattern candidate (PDA AfterMath)
-        if: github.event.workflow_run.conclusion == 'failure'
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
-        run: |
-          python - <<'EOF'
-          import os
-          import sys
-
-          sys.path.insert(0, "src")
-          from codex.cognitive.agent_brain_api import AgentBrainAPI
-
-          brain = AgentBrainAPI(agent_id="copilot-coding-agent")
-          workflow = os.environ["WORKFLOW_NAME"]
-
-          # PDA AfterMath: novel failures become pattern candidates.
-          try:
-              brain._brain.submit_learning(
-                  type("LF", (), {
-                      "pattern_id": "P-CANDIDATE",
-                      "agent_id": "copilot-coding-agent",
-                      "outcome": "failure",
-                      "context": {
-                          "workflow": workflow,
-                          "note": "Review for new pattern",
-                      },
-                  })()
-              )
-          except Exception:
-              pass  # best-effort
-
-          print(f"📝 Stored failure candidate for pattern review: '{workflow}'")
-          EOF
+        '
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      run: "if [ -z \"${CODEX_MASTER_KEY}\" ] && [ -z \"${CODEX_BACKUP_KEY}\" ]; then\n\
+        \  echo \"\u2139\uFE0F CODEX_MASTER_KEY not set \u2014 skipping @copilot comment.\"\
+        \n  echo \"   See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md \xA7 3 to enable.\"\
+        \n  exit 0\nfi\nif [ -z \"${PR_NUMBER}\" ]; then\n  echo \"\u2139\uFE0F No\
+        \ PR associated with this workflow run \u2014 skipping comment.\"\n  exit\
+        \ 0\nfi\nPROMPT_FILE=\".github/copilot-prompts/active/PR-${PR_NUMBER}-followup.md\"\
+        \nif [ ! -f \"${PROMPT_FILE}\" ]; then\n  echo \"\u2139\uFE0F No follow-up\
+        \ prompt file found at ${PROMPT_FILE} \u2014 skipping.\"\n  exit 0\nfi\npython\
+        \ -m codex.github.mcp_poster post-comment \\\n  --repo \"${{ github.repository\
+        \ }}\" \\\n  --pr \"${PR_NUMBER}\" \\\n  --body-file \"${PROMPT_FILE}\"\n"
+    - name: Store failure as pattern candidate (PDA AfterMath)
+      if: github.event.workflow_run.conclusion == 'failure'
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+      run: "python - <<'EOF'\nimport os\nimport sys\n\nsys.path.insert(0, \"src\"\
+        )\nfrom codex.cognitive.agent_brain_api import AgentBrainAPI\n\nbrain = AgentBrainAPI(agent_id=\"\
+        copilot-coding-agent\")\nworkflow = os.environ[\"WORKFLOW_NAME\"]\n\n# PDA\
+        \ AfterMath: novel failures become pattern candidates.\ntry:\n    brain._brain.submit_learning(\n\
+        \        type(\"LF\", (), {\n            \"pattern_id\": \"P-CANDIDATE\",\n\
+        \            \"agent_id\": \"copilot-coding-agent\",\n            \"outcome\"\
+        : \"failure\",\n            \"context\": {\n                \"workflow\":\
+        \ workflow,\n                \"note\": \"Review for new pattern\",\n     \
+        \       },\n        })()\n    )\nexcept Exception:\n    pass  # best-effort\n\
+        \nprint(f\"\U0001F4DD Stored failure candidate for pattern review: '{workflow}'\"\
+        )\nEOF\n"

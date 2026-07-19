@@ -1,4 +1,3 @@
----
 name: Publish Python Package to PyPI
 on:
   release:
@@ -75,7 +74,7 @@ jobs:
         path: dist/
         name: python-package-distributions
     - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1
+      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b
       with:
         repository-url: https://test.pypi.org/legacy/
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -83,6 +82,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   publish-pypi:
     name: Publish to PyPI
     if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch'
@@ -100,12 +100,13 @@ jobs:
         path: dist/
         name: python-package-distributions
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1
+      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b
       with:
         skip-existing: false
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 45
   verify-installation:
     name: Verify Installation (Python 3.12)
     needs:
@@ -139,3 +140,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

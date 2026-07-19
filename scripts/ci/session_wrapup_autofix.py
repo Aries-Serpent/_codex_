@@ -103,9 +103,8 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("agent-auth-delegation.yml",     "Agent token delegation (always required)",                   True),
     ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows (always required)", True),
     # --- Always Active (fire via push/workflow_run) ---
-    ("copilot-agent-checkin.yml",     "Agent check-in / S221 guard (fires on push)",                True),
-    ("copilot-agent-session-done.yml", "Auto-post @copilot review after agent session (fires on workflow_run)", False),
-    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", False),
+    ("unified-copilot-management.yml", "Copilot Management Suite (agent-checkin, session-done, self-healing)", True),
+    ("iterative-self-healing-ci.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", False),
     ("cost-gate.yml",                 "Cost governance gate (called by agent-auth-delegation)",      True),
     # --- Testing & Validation (opt-in — maintainer checks to activate) ---
     ("validate.yml",                  "Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)", False),
@@ -174,8 +173,7 @@ _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
 # pending action_required workflow runs are approved without human interaction.
 # This is controlled by _WEC_AUTONOMOUS_AUTO_CHECK below.
 _WEC_NEVER_CHECK: frozenset[str] = frozenset({
-    "copilot-agent-session-done.yml",
-    "copilot-iterative-self-healing.yml",
+    "iterative-self-healing-ci.yml",
 })
 
 # Workflows that are auto-checked when COPILOT_AGENT_AUTH_ENABLED=true.
@@ -199,7 +197,7 @@ _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
     "agent-auth-delegation.yml",
     "workflow-execution-gate.yml",
     # Always-active (need activation for approval flow; excludes continuation-loop triggers)
-    "copilot-agent-checkin.yml",
+    "unified-copilot-management.yml",
     "cost-gate.yml",
     # Opt-in: validation & testing (required for passing merge gate)
     "validate.yml",
@@ -213,9 +211,8 @@ _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
     # Auto-approve: activated when COPILOT_AGENT_AUTH_ENABLED=true so that all
     # pending workflow runs are cleared without human interaction (full autonomy).
     "auto-approve-workflows",
-    # NOTE: copilot-agent-session-done.yml and copilot-iterative-self-healing.yml
-    # are in _WEC_NEVER_CHECK and must never be activated automatically —
-    # they cause unbounded Copilot continuation loops.
+    # NOTE: iterative-self-healing-ci.yml is in _WEC_NEVER_CHECK and must never
+    # be activated automatically — it causes unbounded Copilot continuation loops.
 })
 
 # ── Module-load invariant (S178 hardening) ────────────────────────────────
@@ -568,7 +565,7 @@ def _build_wec_block(
         return _WEC_ITEMS[start_idx:end_idx + 1]
 
     always_required_items = _get_section_items("pre-merge-validation.yml", "workflow-execution-gate.yml")
-    always_active_items = _get_section_items("copilot-agent-checkin.yml", "cost-gate.yml")
+    always_active_items = _get_section_items("unified-copilot-management.yml", "cost-gate.yml")
     opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
     opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
     opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
@@ -1836,12 +1833,11 @@ def select_merge_required_workflows(
       - workflow-execution-gate.yml     WEC gate — arms all checked workflows
 
     Always-Active at repository level (fire on push — may need approval in Actions tab):
-      - copilot-agent-checkin.yml       Agent check-in / S221 guard
-      - cost-gate.yml                   Cost governance gate
+      - unified-copilot-management.yml    Copilot Management Suite (agent-checkin, session-done, self-healing)
+      - cost-gate.yml                     Cost governance gate
 
     Not auto-checked by this function (_WEC_NEVER_CHECK; skipped at runtime):
-      - copilot-agent-session-done.yml  Auto-post @copilot review
-      - copilot-iterative-self-healing.yml  Iterative self-healing CI loop
+      - iterative-self-healing-ci.yml    Iterative self-healing CI loop (manual activation only)
 
     Opt-In: Selected by this function for merge readiness:
       - validate.yml                    Validation Pipeline (detect-secrets, ruff, pre-commit)
@@ -2381,7 +2377,7 @@ def main(argv: list[str] | None = None) -> int:
         default=False,
         help=(
             "Approve all action_required workflow runs for the PR. "
-            "Called at every session startup and by copilot-agent-checkin."
+            "Called at every session startup and by unified-copilot-management."
         ),
     )
     parser.add_argument(

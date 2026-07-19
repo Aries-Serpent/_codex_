@@ -90,7 +90,13 @@
     "10:src/aries_serpent_core/brain/memory_sync.py": 2,
     "35:.codex/CI_MONITORING_OPERATING_GUIDE_194F6AF0.md": 1,
     "35:.codex/CI_REMEDIATION_194F6AF0.md": 2,
-    "35:.codex/SECURITY_SCAN_194F6AF0.md": 2
+    "35:.codex/SECURITY_SCAN_194F6AF0.md": 2,
+    "20:.github/workflows/fragile-test-guardian.yml": 2,
+    "20:.github/workflows/workflow-expiry-enforcer.yml": 2,
+    "20:.github/workflows/workflow-restore.yml": 2,
+    "21:.github/workflows/audit-logging.yml": 1,
+    "21:.github/workflows/codeql-ga-gate.yml": 1,
+    "21:.github/workflows/compliance-scanner.yml": 1
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -110,6 +116,7 @@
     "24": "BROKEN",
     "35": "OPEN",
     "19": "BROKEN",
-    "21": "OPEN"
+    "21": "OPEN",
+    "20": "OPEN"
   }
 }

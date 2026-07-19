@@ -2,17 +2,22 @@ name: Validation Pipeline
 on:
   pull_request:
     branches:
-      - main
-      - 0D_base_
+    - main
+    - 0D_base_
     types:
-      - opened
-      - synchronize
-      - reopened
+    - opened
+    - synchronize
+    - reopened
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request_review:
     types:
-      - submitted
+    - submitted
   schedule:
-    - cron: 0 3 * * *
+  - cron: 0 3 * * *
   workflow_dispatch:
     inputs:
       mode:
@@ -21,266 +26,251 @@ on:
         default: fast
         type: choice
         options:
-          - fast
-          - full
+        - fast
+        - full
       pytest_opts:
         description: Extra pytest options (e.g. -k 'smoke')
         required: false
         default: ''
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   checks: write
-
 defaults:
   run:
     shell: bash
-
 jobs:
   fast-validation:
     name: Fast Validation
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      github.event_name == 'pull_request' ||
-      github.event_name == 'pull_request_review' ||
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'fast' || inputs.mode == ''))
+    if: 'github.event_name == ''pull_request'' ||
+
+      github.event_name == ''pull_request_review'' ||
+
+      github.event_name == ''schedule'' ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''fast'' || inputs.mode
+      == ''''))
+
+      '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Log token fallback tier selection (fast-validation)
-        run: |
-          set -euo pipefail
-          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-
-          # Determine which token tier is active
-          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
-            TOKEN_TIER="TIER_1_MASTER_KEY"
-          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
-            TOKEN_TIER="TIER_2_BACKUP_KEY"
-          else
-            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
-          fi
-
-          # Emit telemetry event (non-sensitive, just the tier name)
-          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=validate"
-          TELEMETRY_MSG="${TELEMETRY_MSG} | job=fast-validation | event=token-selection"
-          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
-          echo "$TELEMETRY_MSG"
-      - name: Set up Python with shared cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          extras: dev
-      - name: '🛡️ Guard: validate copilot-setup-steps.yml (canonical baseline 12f7a861)'
-        run: bash scripts/ci/validate_setup_steps_yaml.sh
-      - name: Run yamllint on changed workflow YAML
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          set -euo pipefail
-          if [ -z "${BASE_SHA}" ]; then
-            BASE_SHA="$(git merge-base origin/main HEAD)"
-          fi
-          if [ -z "${HEAD_SHA}" ]; then
-            HEAD_SHA="$(git rev-parse HEAD)"
-          fi
-          echo "Validating YAML changes from ${BASE_SHA} to ${HEAD_SHA}"
-          yamllint -c .yamllint --strict -f parsable \
-            $(git diff --name-only --diff-filter=d ${BASE_SHA}...${HEAD_SHA} | grep -E '\.ya?ml$' | grep -v node_modules || true)
-      - name: Run fast validation
-        run: |
-          set -e
-          chmod +x scripts/run_validation.sh
-          python tools/validate.py --mode fast || {
-            echo "⚠️ Validation script failed, but continuing to upload artifacts"
-            exit 1
-          }
-      - name: Emit pre-commit failure details to step summary
-        if: failure()
-        shell: bash
-        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
-      - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: failure()
-        with:
-          path: hook_failures.json
-          retention-days: 30
-          if-no-files-found: warn
-          name: hook-failures-fast-${{ github.run_id }}
-      - name: Upload validation log (fast)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation.log
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-log-fast-${{ github.run_id }}
-      - name: Upload JUnit XML
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation-junit.xml
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-junit-fast-${{ github.run_id }}
-      - name: Upload JSON summary
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation_summary.json
-          retention-days: 30
-          if-no-files-found: warn
-
-          name: validation-summary-fast-${{ github.run_id }}
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Log token fallback tier selection (fast-validation)
+      run: "set -euo pipefail\nTIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')\n\n# Determine\
+        \ which token tier is active\nif [ -n \"${CODEX_MASTER_KEY:-}\" ]; then\n\
+        \  TOKEN_TIER=\"TIER_1_MASTER_KEY\"\nelif [ -n \"${CODEX_BACKUP_KEY:-}\" ];\
+        \ then\n  TOKEN_TIER=\"TIER_2_BACKUP_KEY\"\nelse\n  TOKEN_TIER=\"TIER_3_GITHUB_TOKEN\"\
+        \nfi\n\n# Emit telemetry event (non-sensitive, just the tier name)\nTELEMETRY_MSG=\"\
+        [TELEMETRY] ${TIMESTAMP} | workflow=validate\"\nTELEMETRY_MSG=\"${TELEMETRY_MSG}\
+        \ | job=fast-validation | event=token-selection\"\nTELEMETRY_MSG=\"${TELEMETRY_MSG}\
+        \ | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}\"\necho \"$TELEMETRY_MSG\"\
+        \n"
+    - name: Set up Python with shared cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        extras: dev
+    - name: "\U0001F6E1\uFE0F Guard: validate copilot-setup-steps.yml (canonical baseline\
+        \ 12f7a861)"
+      run: bash scripts/ci/validate_setup_steps_yaml.sh
+    - name: Run yamllint on changed workflow YAML
+      env:
+        BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: "set -euo pipefail\nif [ -z \"${BASE_SHA}\" ]; then\n  BASE_SHA=\"$(git\
+        \ merge-base origin/main HEAD)\"\nfi\nif [ -z \"${HEAD_SHA}\" ]; then\n  HEAD_SHA=\"\
+        $(git rev-parse HEAD)\"\nfi\necho \"Validating YAML changes from ${BASE_SHA}\
+        \ to ${HEAD_SHA}\"\nyamllint -c .yamllint --strict -f parsable \\\n  $(git\
+        \ diff --name-only --diff-filter=d ${BASE_SHA}...${HEAD_SHA} | grep -E '\\\
+        .ya?ml$' | grep -v node_modules || true)\n"
+    - name: Run fast validation
+      run: "set -e\nchmod +x scripts/run_validation.sh\npython tools/validate.py --mode\
+        \ fast || {\n  echo \"\u26A0\uFE0F Validation script failed, but continuing\
+        \ to upload artifacts\"\n  exit 1\n}\n"
+    - name: Emit pre-commit failure details to step summary
+      if: failure()
+      shell: bash
+      run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{
+        github.run_id }}"
+    - name: Upload hook failures JSON (OBJ-001-F)
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: failure()
+      with:
+        path: hook_failures.json
+        retention-days: 30
+        if-no-files-found: warn
+        name: hook-failures-fast-${{ github.run_id }}
+    - name: Upload validation log (fast)
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation.log
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-log-fast-${{ github.run_id }}
+    - name: Upload JUnit XML
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation-junit.xml
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-junit-fast-${{ github.run_id }}
+    - name: Upload JSON summary
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation_summary.json
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-summary-fast-${{ github.run_id }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: fast-validation
-    if: |
-      failure() &&
-      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') &&
+    if: 'failure() &&
+
+      (github.event_name == ''pull_request'' || github.event_name == ''pull_request_review'')
+      &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       contents: write
       pull-requests: write
       issues: write
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
-        with:
-          persist-credentials: false
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 1
-      - name: Log token fallback tier selection (rescue-comment)
-        run: |
-          set -euo pipefail
-          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-
-          # Determine which token tier is active
-          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
-            TOKEN_TIER="TIER_1_MASTER_KEY"
-          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
-            TOKEN_TIER="TIER_2_BACKUP_KEY"
-          else
-            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
-          fi
-
-          # Emit telemetry event (non-sensitive, just the tier name)
-          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=validate"
-          TELEMETRY_MSG="${TELEMETRY_MSG} | job=rescue-comment | event=token-selection"
-          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
-          TELEMETRY_MSG="${TELEMETRY_MSG} | pr_number=${{ github.event.pull_request.number }}"
-          echo "$TELEMETRY_MSG"
-
-          # Store in step summary
-          echo "## 🔑 Token Fallback Tier (rescue-comment)" >> $GITHUB_STEP_SUMMARY
-          echo "Selected tier: \`${TOKEN_TIER}\`" >> $GITHUB_STEP_SUMMARY
-          echo "Timestamp: \`${TIMESTAMP}\`" >> $GITHUB_STEP_SUMMARY
-      - name: Post or update rescue comment
-        run: python scripts/ci/post_rescue_comment.py
-
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        persist-credentials: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 1
+    - name: Log token fallback tier selection (rescue-comment)
+      run: "set -euo pipefail\nTIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')\n\n# Determine\
+        \ which token tier is active\nif [ -n \"${CODEX_MASTER_KEY:-}\" ]; then\n\
+        \  TOKEN_TIER=\"TIER_1_MASTER_KEY\"\nelif [ -n \"${CODEX_BACKUP_KEY:-}\" ];\
+        \ then\n  TOKEN_TIER=\"TIER_2_BACKUP_KEY\"\nelse\n  TOKEN_TIER=\"TIER_3_GITHUB_TOKEN\"\
+        \nfi\n\n# Emit telemetry event (non-sensitive, just the tier name)\nTELEMETRY_MSG=\"\
+        [TELEMETRY] ${TIMESTAMP} | workflow=validate\"\nTELEMETRY_MSG=\"${TELEMETRY_MSG}\
+        \ | job=rescue-comment | event=token-selection\"\nTELEMETRY_MSG=\"${TELEMETRY_MSG}\
+        \ | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}\"\nTELEMETRY_MSG=\"${TELEMETRY_MSG}\
+        \ | pr_number=${{ github.event.pull_request.number }}\"\necho \"$TELEMETRY_MSG\"\
+        \n\n# Store in step summary\necho \"## \U0001F511 Token Fallback Tier (rescue-comment)\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"Selected tier: \\`${TOKEN_TIER}\\`\" >>\
+        \ $GITHUB_STEP_SUMMARY\necho \"Timestamp: \\`${TIMESTAMP}\\`\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Post or update rescue comment
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30
   full-validation:
     name: Full Validation (Daily)
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'full')
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Set up Python with shared cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          extras: dev
-      - name: Run full validation
-        env:
-          PYTEST_OPTS: ${{ inputs.pytest_opts || '' }}
-        run: |
-          set -e
-          chmod +x scripts/run_validation.sh
-          python tools/validate.py --mode full ${PYTEST_OPTS} || {
-            echo "⚠️ Full validation script failed, but continuing to upload artifacts"
-            exit 1
-          }
-      - name: Emit pre-commit failure details to step summary
-        if: failure()
-        shell: bash
-        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
-      - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: failure()
-        with:
-          path: hook_failures.json
-          retention-days: 30
-          if-no-files-found: warn
-          name: hook-failures-full-${{ github.run_id }}
-      - name: Upload validation log (full)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation.log
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-log-full-${{ github.run_id }}
-      - name: Upload JUnit XML
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation-junit.xml
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-junit-full-${{ github.run_id }}
-      - name: Upload coverage report
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: coverage.xml
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-coverage-${{ github.run_id }}
-      - name: Generate coverage map and PR delta comment (P2B)
-        if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml') != ''
-        run: |
-          set -euo pipefail
-          mkdir -p .codex/coverage
-          # Generate head coverage report for delta tracking
-          python -m coverage html --directory .codex/coverage/html || echo "Coverage HTML generation skipped"
-      - name: Upload JSON summary
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        if: always()
-        with:
-          path: validation_summary.json
-          retention-days: 30
-          if-no-files-found: warn
-          name: validation-summary-full-${{ github.run_id }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
-        if: always()
-        with:
-          files: ./coverage.xml
-          flags: full-validation
-          fail_ci_if_error: false
+    if: 'github.event_name == ''schedule'' ||
 
-          name: full-validation-coverage
-          continue-on-error: true
+      (github.event_name == ''workflow_dispatch'' && inputs.mode == ''full'')
+
+      '
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python with shared cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        extras: dev
+    - name: Run full validation
+      env:
+        PYTEST_OPTS: ${{ inputs.pytest_opts || '' }}
+      run: "set -e\nchmod +x scripts/run_validation.sh\npython tools/validate.py --mode\
+        \ full ${PYTEST_OPTS} || {\n  echo \"\u26A0\uFE0F Full validation script failed,\
+        \ but continuing to upload artifacts\"\n  exit 1\n}\n"
+    - name: Emit pre-commit failure details to step summary
+      if: failure()
+      shell: bash
+      run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{
+        github.run_id }}"
+    - name: Upload hook failures JSON (OBJ-001-F)
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: failure()
+      with:
+        path: hook_failures.json
+        retention-days: 30
+        if-no-files-found: warn
+        name: hook-failures-full-${{ github.run_id }}
+    - name: Upload validation log (full)
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation.log
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-log-full-${{ github.run_id }}
+    - name: Upload JUnit XML
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation-junit.xml
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-junit-full-${{ github.run_id }}
+    - name: Upload coverage report
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: coverage.xml
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-coverage-${{ github.run_id }}
+    - name: Generate coverage map and PR delta comment (P2B)
+      if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml')
+        != ''
+      run: 'set -euo pipefail
+
+        mkdir -p .codex/coverage
+
+        # Generate head coverage report for delta tracking
+
+        python -m coverage html --directory .codex/coverage/html || echo "Coverage
+        HTML generation skipped"
+
+        '
+    - name: Upload JSON summary
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      if: always()
+      with:
+        path: validation_summary.json
+        retention-days: 30
+        if-no-files-found: warn
+        name: validation-summary-full-${{ github.run_id }}
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+      if: always()
+      with:
+        files: ./coverage.xml
+        flags: full-validation
+        fail_ci_if_error: false
+        name: full-validation-coverage
+        continue-on-error: true
+    timeout-minutes: 30

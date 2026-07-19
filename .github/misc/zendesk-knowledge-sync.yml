@@ -80,7 +80,7 @@ jobs:
 
       - name: Upload JSON Dataset
         if: steps.check_updates.outputs.has_updates == 'true'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v5
         with:
           name: zendesk-knowledge-dataset-${{ steps.check_updates.outputs.sync_date }}
           path: docs/vendors/zendesk/${{ steps.check_updates.outputs.sync_date }}/zendesk_knowledge_dataset.json

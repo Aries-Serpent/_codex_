@@ -1,4 +1,3 @@
----
 name: Scheduled Dependency Audit & SBOM
 on:
   pull_request:
@@ -45,15 +44,16 @@ jobs:
         - linux/arm64
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
     - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
-      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8  # v6
+      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
       with:
         context: .
@@ -122,7 +122,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
     - name: Determine Dockerfile
       id: dockerfile
       env:
@@ -131,7 +131,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\nelse\n  echo \"file=Dockerfile\" >> $GITHUB_OUTPUT\n\
         fi\n"
     - name: Build image for SBOM
-      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8  # v6
+      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8
       with:
         context: .
         file: ${{ steps.dockerfile.outputs.file }}
@@ -141,7 +141,7 @@ jobs:
         tags: codex-ml:sbom-${{ matrix.variant }}
         cache-from: type=gha
     - name: Install Syft
-      uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610  # v0
+      uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610
     - name: Generate SBOM with Syft
       env:
         MATRIX_VARIANT: ${{ matrix.variant }}
@@ -149,7 +149,7 @@ jobs:
         \ }}.spdx.json \\\n  -o cyclonedx-json=sbom-${{ matrix.variant }}.cyclonedx.json\
         \ \\\n  -o syft-json=sbom-${{ matrix.variant }}.syft.json\n"
     - name: Install Grype
-      uses: anchore/scan-action/download-grype@d3918591baefec470de17dc4a147b4a3bb47d5e7  # v1
+      uses: anchore/scan-action/download-grype@d3918591baefec470de17dc4a147b4a3bb47d5e7
     - name: Scan with Grype
       env:
         MATRIX_VARIANT: ${{ matrix.variant }}
@@ -175,6 +175,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   upgrade-compatibility:
     name: Test Python ${{ matrix.python_version }} Compatibility
     runs-on: ubuntu-latest
@@ -192,9 +193,9 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
     - name: Test build with Python ${{ matrix.python_version }}
-      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8  # v6
+      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8
       with:
         context: .
         file: Dockerfile
@@ -209,12 +210,13 @@ jobs:
       if: always()
       env:
         JOB_STATUS: ${{ job.status }}
-      run: "if [ \"${{ job.status }}\" = \"success\" ]; then\n  echo \"✅ Python ${{\
-        \ matrix.python_version }} is compatible\"\nelse\n  echo \"⚠️ Python ${{ matrix.python_version\
-        \ }} compatibility issues detected\"\nfi\n"
+      run: "if [ \"${{ job.status }}\" = \"success\" ]; then\n  echo \"\u2705 Python\
+        \ ${{ matrix.python_version }} is compatible\"\nelse\n  echo \"\u26A0\uFE0F\
+        \ Python ${{ matrix.python_version }} compatibility issues detected\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   drift-detection:
     name: Detect Dependency Drift
     runs-on: ubuntu-latest
@@ -247,26 +249,28 @@ jobs:
         \ wheel manifests...\"\n\n  # Simple diff check (can be enhanced with jq for\
         \ detailed comparison)\n  if ! diff -q ./previous-baseline/manifest-linux-amd64.json\
         \ ./current-baseline/manifest-linux-amd64.json; then\n    echo \"drift_detected=true\"\
-        \ >> $GITHUB_OUTPUT\n    echo \"⚠️ Dependency drift detected\"\n  else\n \
-        \   echo \"drift_detected=false\" >> $GITHUB_OUTPUT\n    echo \"✅ No dependency\
-        \ drift\"\n  fi\nelse\n  echo \"drift_detected=false\" >> $GITHUB_OUTPUT\n\
-        \  echo \"ℹ️ Baseline comparison skipped (no previous baseline)\"\nfi\n"
+        \ >> $GITHUB_OUTPUT\n    echo \"\u26A0\uFE0F Dependency drift detected\"\n\
+        \  else\n    echo \"drift_detected=false\" >> $GITHUB_OUTPUT\n    echo \"\u2705\
+        \ No dependency drift\"\n  fi\nelse\n  echo \"drift_detected=false\" >> $GITHUB_OUTPUT\n\
+        \  echo \"\u2139\uFE0F Baseline comparison skipped (no previous baseline)\"\
+        \nfi\n"
     - name: Create drift alert issue
       if: steps.compare.outputs.drift_detected == 'true'
       uses: actions/github-script@v8
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
-        \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
-        \  body: `Automated dependency audit detected changes in the wheelhouse\
-        \ baseline.\n\n  **Action Required:**\n  - Review the wheel manifest changes\n\
+          \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
+          \  body: `Automated dependency audit detected changes in the wheelhouse\
+          \ baseline.\n\n  **Action Required:**\n  - Review the wheel manifest changes\n\
           \  - Verify compatibility with current codebase\n  - Update pinned versions\
-        \ if necessary\n\n  **Artifacts:**\n  - Current baseline: [Download from\
+          \ if necessary\n\n  **Artifacts:**\n  - Current baseline: [Download from\
           \ workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId})\n\
-        \n  **Workflow:** ${context.workflow}\n  **Run:** ${context.runId}`,\n \
-        \ labels: ['dependencies', 'security', 'automated']\n});\n"
+          \n  **Workflow:** ${context.workflow}\n  **Run:** ${context.runId}`,\n \
+          \ labels: ['dependencies', 'security', 'automated']\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   dependency-audit:
     name: pip-audit + safety
     runs-on: ubuntu-latest
@@ -302,13 +306,13 @@ jobs:
         \ requirements.txt -r requirements-dev.txt 2>&1 | tee pip_audit_output.txt;\
         \ then\n  echo \"status=success\" >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n\n\
         # Check for CRITICAL vulnerabilities\nif grep -i 'CRITICAL' pip_audit_output.txt;\
-        \ then\n  echo \"::error::pip-audit found CRITICAL CVEs — blocking PR\"\n\
-        \  echo \"has_critical=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"status=failure\"\
+        \ then\n  echo \"::error::pip-audit found CRITICAL CVEs \u2014 blocking PR\"\
+        \n  echo \"has_critical=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"status=failure\"\
         \ >> \"$GITHUB_OUTPUT\"\n  exit 1\nfi\n\n# Check for HIGH vulnerabilities\n\
         if grep -i 'HIGH' pip_audit_output.txt; then\n  echo \"::warning::pip-audit\
-        \ found HIGH CVEs — review required\"\n  echo \"has_high=true\" >> \"$GITHUB_OUTPUT\"\
-        \n  echo \"status=warning\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"has_high=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
+        \ found HIGH CVEs \u2014 review required\"\n  echo \"has_high=true\" >> \"\
+        $GITHUB_OUTPUT\"\n  echo \"status=warning\" >> \"$GITHUB_OUTPUT\"\nelse\n\
+        \  echo \"has_high=false\" >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Run safety check
       continue-on-error: true
       run: "mkdir -p workbench/security\nsafety check -r requirements.txt --json >\
@@ -359,6 +363,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 20
   summary:
     name: Audit Summary
     runs-on: ubuntu-latest

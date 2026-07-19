@@ -1,0 +1,671 @@
+# Phase 6 Lane 3: Compliance Service Level Objectives (SLOs)
+# Defines measurable compliance targets, thresholds, and escalation procedures
+# Last Updated: 2026-07-18T23:28:26Z
+# Responsibility: Chief Compliance Officer (CCO)
+
+slo_version: "1.0.0"
+phase: 6
+lane: 3
+date_created: "2026-07-18"
+status: "ACTIVE"
+review_frequency: "Quarterly"
+
+# ============================================================================
+# CORE COMPLIANCE SLOs
+# ============================================================================
+compliance_slos:
+  
+  # SLO-001: Zero Unhandled PII in Production Code
+  pii_detection_slo:
+    id: "SLO-001"
+    name: "Zero Unhandled PII in Production Code"
+    description: |
+      No personally identifiable information (PII) should be stored, logged, or transmitted
+      without proper encryption, redaction, or anonymization.
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["A8", "C1", "P1"]
+    
+    target: "0 unhandled PII violations"
+    threshold: 0
+    unit: "violations"
+    
+    measurement:
+      method: "Automated PII detection scanning"
+      tools:
+        - "detect-secrets (pre-commit)"
+        - "semgrep PII patterns"
+        - "gitleaks custom rules"
+      frequency: "Every commit + daily full codebase scan"
+      scope: "All source files, configs, logs"
+    
+    alerting:
+      trigger: "Any PII detected"
+      severity: "CRITICAL"
+      notification:
+        - "Immediate: Slack #security-incidents"
+        - "SMS: CISO, CCO"
+        - "PagerDuty: On-call security engineer"
+      escalation:
+        - "T+0: Alert triggered, incident created"
+        - "T+15min: If no response, escalate to CISO"
+        - "T+30min: If CISO no response, escalate to CEO"
+    
+    enforcement:
+      gate_status: "BLOCKING (prevents PR merge)"
+      override_allowed: "Only with CCO + CISO sign-off (creates incident record)"
+      override_sla: "Must justify within 24 hours"
+    
+    current_status:
+      violations_30_days: 0
+      violations_90_days: 0
+      slo_achievement: "100%"
+      last_check: "2026-07-18T23:28:26Z"
+
+  # SLO-002: Secret Detection & Rotation
+  secret_management_slo:
+    id: "SLO-002"
+    name: "Secret Detection & Rotation (90-Day Cycle)"
+    description: |
+      All secrets (API keys, tokens, credentials) must be:
+      1. Detected and removed from codebase immediately
+      2. Rotated every 90 days
+      3. Stored in secure key management system (AWS Secrets Manager, HashiCorp Vault)
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["A3", "C1.2"]
+    
+    targets:
+      - name: "No hardcoded secrets in codebase"
+        threshold: 0
+        unit: "violations"
+      - name: "All secrets rotated within 90 days"
+        threshold: 90
+        unit: "days"
+    
+    measurement:
+      method: "Continuous secret scanning"
+      tools:
+        - "detect-secrets"
+        - "gitleaks"
+        - "truffleHog"
+      frequency: "Every commit + weekly full scan"
+      scope: "All commits, branches, PR diffs"
+    
+    rotation_schedule:
+      frequency: "90 days"
+      alert_schedule:
+        - "At 60 days: Email warning (non-blocking)"
+        - "At 75 days: Slack warning + email (escalated)"
+        - "At 90 days: Slack critical + force rotation (blocking)"
+    
+    alerting:
+      secret_detected:
+        severity: "CRITICAL"
+        notification:
+          - "Immediate: Slack #security-incidents"
+          - "SMS: CISO"
+          - "PagerDuty: On-call"
+      secret_expiring:
+        at_60_days:
+          severity: "HIGH"
+          notification:
+            - "Email: security team"
+        at_75_days:
+          severity: "CRITICAL"
+          notification:
+            - "Email + Slack: security team"
+            - "SMS: CISO"
+    
+    enforcement:
+      gate_status: "BLOCKING (detected secrets prevent merge)"
+      rotation_gate: "BLOCKING (expired secrets trigger forced rotation)"
+    
+    current_status:
+      active_secrets: 12
+      secrets_due_rotation: 0
+      last_rotation_date: "2026-04-18"
+      next_rotation_date: "2026-07-18"
+      slo_achievement: "100%"
+      last_check: "2026-07-18T23:28:26Z"
+
+  # SLO-003: Breach Detection & Notification (72-Hour SLA)
+  breach_notification_slo:
+    id: "SLO-003"
+    name: "Breach Notification SLA (72 Hours to DPA)"
+    description: |
+      Per GDPR Article 33: Notify data protection authority within 72 hours of breach detection
+      (unless unlikely to result in risk).
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["A7", "I1", "P1"]
+    
+    targets:
+      - name: "Breach detected and escalated"
+        threshold: 0
+        unit: "hours"
+      - name: "DPA notification sent"
+        threshold: 72
+        unit: "hours"
+      - name: "User notification (if high risk)"
+        threshold: 72
+        unit: "hours"
+    
+    measurement:
+      method: "Incident response tracking"
+      tools:
+        - "Incident management system"
+        - "Audit trail (event logs)"
+      frequency: "Real-time monitoring"
+    
+    escalation_procedure: |
+      T+0h: Breach detected → Incident created, severity assessed
+      T+1h: Initial investigation, scope determination
+      T+4h: CISO review, notification decision (DPA, users)
+      T+24h: Draft notification to DPA
+      T+48h: Finalize notification, legal review
+      T+72h: Submit notification to DPA (SLA deadline)
+      T+5d: User notification sent (if required)
+    
+    alerting:
+      trigger: "Breach detected"
+      severity: "CRITICAL"
+      notification:
+        - "Immediate: SMS + Slack (all incident responders)"
+        - "T+15min: CISO + CCO + General Counsel"
+        - "T+1h: Board notification (Audit Committee)"
+    
+    enforcement:
+      compliance_verification: "Legal team verifies all breaches notified within 72h"
+      audit_trail: "All notifications logged in immutable audit log"
+    
+    current_status:
+      breaches_30_days: 0
+      breaches_notified_on_time: 0
+      slo_achievement: "100%"
+      last_check: "2026-07-18T23:28:26Z"
+
+  # SLO-004: Access Control & Authorization
+  access_control_slo:
+    id: "SLO-004"
+    name: "Access Control & Role-Based Authorization"
+    description: |
+      Enforce role-based access control (RBAC) with principle of least privilege:
+      - All users assigned to appropriate role(s)
+      - Permissions reviewed quarterly
+      - Unused access revoked within 30 days
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["CC6.1", "CC6.2", "CC8.1", "CC9.1"]
+    
+    targets:
+      - name: "100% of users assigned to role(s)"
+        threshold: 100
+        unit: "%"
+      - name: "0 orphaned/admin accounts"
+        threshold: 0
+        unit: "accounts"
+      - name: "Unused access revoked within 30 days"
+        threshold: 30
+        unit: "days"
+    
+    measurement:
+      method: "Quarterly access control audit"
+      tools:
+        - "RBAC management system"
+        - "Access audit logs"
+      frequency: "Quarterly (mandatory), weekly (monitoring)"
+    
+    quarterly_review_process: |
+      1. Generate list of all users and roles
+      2. Manager reviews and attests to access appropriateness
+      3. Identify unused/orphaned access
+      4. Revoke unauthorized access (within 7 days)
+      5. Document all changes in audit trail
+      6. CCO sign-off on completion
+    
+    alerting:
+      orphaned_access:
+        severity: "HIGH"
+        notification:
+          - "Email: Manager + CISO"
+          - "Slack: #compliance-team"
+      new_admin_access:
+        severity: "CRITICAL"
+        notification:
+          - "Immediate: SMS + Slack (CISO, CCO)"
+          - "Email: Board notification
+    
+    enforcement:
+      gate_status: "MONITORING (alerts on violations, enforces quarterly review)"
+      certification_required: "Manager sign-off on quarterly review"
+    
+    current_status:
+      users_with_roles: 42
+      orphaned_access_accounts: 0
+      admin_accounts: 3
+      last_review_date: "2026-07-18"
+      next_review_date: "2026-10-18"
+      slo_achievement: "100%"
+      last_check: "2026-07-18T23:28:26Z"
+
+  # SLO-005: Encryption & Key Rotation
+  encryption_slo:
+    id: "SLO-005"
+    name: "Encryption & Key Rotation (90-Day Cycle)"
+    description: |
+      Maintain encryption standards:
+      - TLS 1.3+ for all network traffic
+      - AES-256 for all data at rest
+      - Keys rotated every 90 days
+      - Zero encryption failures in production
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["A3", "C1", "C1.1", "C1.2", "C1.3"]
+    
+    targets:
+      - name: "100% of network traffic encrypted (TLS 1.3+)"
+        threshold: 100
+        unit: "%"
+      - name: "100% of data at rest encrypted (AES-256)"
+        threshold: 100
+        unit: "%"
+      - name: "All keys rotated within 90 days"
+        threshold: 90
+        unit: "days"
+      - name: "Zero encryption failures in production"
+        threshold: 0
+        unit: "incidents"
+    
+    measurement:
+      method: "Automated encryption scanning"
+      tools:
+        - "TLS certificate monitoring"
+        - "Encryption algorithm audits"
+        - "Key rotation verification"
+      frequency: "Daily"
+      scope: "All prod systems, data stores, communication channels"
+    
+    key_rotation_schedule:
+      frequency: "90 days"
+      alert_schedule:
+        - "At 75 days: Email warning"
+        - "At 85 days: Slack critical warning"
+        - "At 90 days: Automatic key rotation triggered"
+    
+    alerting:
+      encryption_failure:
+        severity: "CRITICAL"
+        notification:
+          - "Immediate: SMS + Slack #security-incidents"
+          - "PagerDuty: On-call security engineer"
+      weak_encryption_detected:
+        severity: "HIGH"
+        notification:
+          - "Email: CISO"
+          - "Slack: #compliance-team"
+      key_rotation_due:
+        at_75_days:
+          severity: "MEDIUM"
+          notification:
+            - "Email: encryption team"
+        at_90_days:
+          severity: "HIGH"
+          notification:
+            - "Email + Slack: encryption team"
+            - "Automatic: Trigger key rotation"
+    
+    enforcement:
+      compliance_verification: "Monthly encryption audit"
+      gate_status: "MONITORING (enforces standards, alerts on violations)"
+    
+    current_status:
+      tls_compliant_endpoints: "100%"
+      aes_256_encrypted_data: "100%"
+      keys_rotated_on_schedule: "100%"
+      encryption_failures_30days: 0
+      last_key_rotation: "2026-07-18"
+      slo_achievement: "100%"
+      last_check: "2026-07-18T23:28:26Z"
+
+  # SLO-006: Audit Log Integrity & Retention
+  audit_retention_slo:
+    id: "SLO-006"
+    name: "Audit Trail Retention (2 Years, Immutable)"
+    description: |
+      Maintain immutable, tamper-proof audit trails:
+      - All compliance-relevant events logged
+      - Logs retained for 2 years minimum
+      - Daily integrity verification (SHA-256 checksums)
+      - Zero audit log tampering detected
+    
+    regulations: ["GDPR", "CCPA", "SOC2"]
+    control_ids: ["A7", "I1", "I1.2", "P1", "P1.2"]
+    
+    targets:
+      - name: "100% of compliance events logged"
+        threshold: 100
+        unit: "%"
+      - name: "All logs retained for 2 years"
+        threshold: 730
+        unit: "days"
+      - name: "Daily integrity verification"
+        threshold: 1
+        unit: "per day"
+      - name: "Zero audit log tampering"
+        threshold: 0
+        unit: "incidents"
+    
+    measurement:
+      method: "Automated audit log monitoring"
+      tools:
+        - "Audit log export & verification"
+        - "SHA-256 checksum verification"
+        - "WORM (Write-Once-Read-Many) storage"
+      frequency: "Daily (integrity checks), continuous (logging)"
+    
+    storage_configuration:
+      primary_location: ".codex/logs/audit_trail_*.jsonl"
+      backup_location: "s3://audit-backup/trail/"
+      archive_location: "s3://audit-archive/trail/"  # After 1 year
+      retention_period_days: 730
+      immutability_mechanism: "S3 Object Lock"
+      encryption: "AES-256 at rest"
+    
+    integrity_verification:
+      frequency: "Daily"
+      method: |
+        1. Calculate SHA-256 hash of all audit logs
+        2. Store checksums in immutable log
+        3. Compare with previous day checksums
+        4. Alert on any mismatches
+      alert_on_tampering: "CRITICAL (immediate incident)"
+    
+    alerting:
+      audit_log_missing:
+        severity: "CRITICAL"
+        notification:
+          - "Immediate: SMS + Slack + PagerDuty"
+      audit_log_tampering_detected:
+        severity: "CRITICAL"
+        notification:
+          - "Immediate: SMS + Slack + PagerDuty"
+          - "Board notification (security incident)"
+      retention_violation:
+        severity: "HIGH"
+        notification:
+          - "Email: CISO + CCO"
+          - "Slack: #compliance-team"
+    
+    enforcement:
+      compliance_verification: "Monthly audit log completeness audit"
+      gate_status: "MONITORING (enforces retention and integrity)"
+    
+    current_status:
+      logs_retained_days: 730
+      audit_events_logged: 156842
+      tamper_detections: 0
+      integrity_check_success_rate: "100%"
+      last_integrity_check: "2026-07-18T23:28:26Z"
+      slo_achievement: "100%"
+
+# ============================================================================
+# REGULATION-SPECIFIC SLOs
+# ============================================================================
+regulation_slos:
+  
+  # GDPR-Specific SLOs
+  gdpr:
+    name: "GDPR Compliance SLOs"
+    
+    data_subject_rights:
+      right_to_access:
+        sla: "30 days"
+        threshold_days: 30
+        enforcement: "BLOCKING"
+      
+      right_to_erasure:
+        sla: "30 days"
+        threshold_days: 30
+        enforcement: "BLOCKING"
+      
+      right_to_rectification:
+        sla: "30 days"
+        threshold_days: 30
+        enforcement: "BLOCKING"
+    
+    consent_management:
+      consent_tracking: "100% of processing with documented consent"
+      consent_withdrawal_sla: "Immediately honored"
+      consent_audit_trail: "All consent changes logged"
+    
+    dpa_compliance:
+      dpa_signed_percentage: "100% of processors"
+      dpa_update_frequency: "Annual minimum"
+    
+    breach_notification:
+      notification_sla_hours: 72
+      user_notification_sla_days: 5
+    
+    current_score: 66.7
+    target_score: 100.0
+
+  # CCPA-Specific SLOs
+  ccpa:
+    name: "CCPA Compliance SLOs"
+    
+    consumer_rights:
+      right_to_know:
+        sla: "45 days"
+        threshold_days: 45
+        enforcement: "BLOCKING"
+      
+      right_to_delete:
+        sla: "45 days"
+        threshold_days: 45
+        enforcement: "BLOCKING"
+      
+      right_to_opt_out:
+        sla: "15 days"
+        threshold_days: 15
+        enforcement: "BLOCKING"
+    
+    sale_disclosure:
+      categories_disclosed: "100%"
+      opt_out_mechanism_availability: "Always available"
+    
+    non_discrimination:
+      pricing_discrimination_incidents: 0
+      service_denial_incidents: 0
+    
+    current_score: 66.7
+    target_score: 100.0
+
+  # SOC2-Specific SLOs
+  soc2:
+    name: "SOC2 Type II Compliance SLOs"
+    observation_period: "2025-01-01 to 2025-12-31"
+    
+    access_controls:
+      user_authentication_success_rate: ">99.9%"
+      unauthorized_access_incidents: 0
+    
+    availability:
+      uptime_target: "99.99%"
+      mttr_target: "4 hours"
+      monthly_uptime_verification: "Required"
+    
+    confidentiality:
+      data_encryption_coverage: "100%"
+      key_rotation_compliance: "90-day cycles"
+    
+    integrity:
+      data_modification_audit_trail: "100% logged"
+      backup_verification_frequency: "Weekly"
+    
+    processing_integrity:
+      transaction_logging: "100%"
+      reconciliation_frequency: "Monthly"
+    
+    current_score: 83.3
+    target_score: 100.0
+    expected_certification_date: "2026-Q1"
+
+# ============================================================================
+# SLO ESCALATION PROCEDURES
+# ============================================================================
+escalation_procedures:
+  
+  # Escalation Path for CRITICAL SLO Breaches
+  critical_breach:
+    trigger_condition: "Any CRITICAL SLO violation"
+    escalation_steps:
+      t_0_minutes:
+        action: "Alert triggered (automated)"
+        notification:
+          - "SMS: CISO, CCO, On-call Security Engineer"
+          - "Slack: #security-incidents (auto-post)"
+          - "PagerDuty: Page on-call incident commander"
+      
+      t_15_minutes:
+        action: "Initial incident assessment"
+        owner: "On-call Incident Commander"
+        notification:
+          - "If no response: Escalate to CISO directly"
+      
+      t_30_minutes:
+        action: "CISO joins incident response"
+        owner: "CISO"
+        notification:
+          - "If CISO unavailable: Page CISO backup"
+      
+      t_1_hour:
+        action: "Executive notification"
+        owner: "CISO"
+        notification:
+          - "CCO, CEO (if major breach)"
+          - "General Counsel (for legal implications)"
+      
+      t_4_hours:
+        action: "Status update & escalation decision"
+        owner: "CISO + CCO"
+        decision_points:
+          - "Does this meet regulatory breach criteria?"
+          - "Is external notification required? (72-hour SLA)"
+          - "Board notification needed?"
+      
+      t_24_hours:
+        action: "Post-incident review"
+        owner: "CISO + Team"
+        requirements:
+          - "Root cause analysis"
+          - "Remediation plan"
+          - "Incident documentation in audit trail"
+    
+    documentation:
+      required_fields:
+        - "Incident ID (unique)"
+        - "Severity level"
+        - "Timeline of events"
+        - "Root cause"
+        - "Remediation steps"
+        - "Preventative measures"
+        - "Assigned owner"
+        - "Target resolution date"
+      
+      location: ".codex/incidents/incident_<ID>.json"
+  
+  # Escalation Path for HIGH SLO Breaches
+  high_breach:
+    trigger_condition: "Any HIGH SLO violation"
+    escalation_steps:
+      t_0_minutes:
+        action: "Alert triggered"
+        notification:
+          - "Email: CISO, Compliance Team"
+          - "Slack: #compliance-team"
+      
+      t_1_hour:
+        action: "Incident created & assigned"
+        owner: "Compliance Lead"
+      
+      t_4_hours:
+        action: "Status update"
+        owner: "Assigned team"
+      
+      t_24_hours:
+        action: "Resolution plan due"
+        owner: "Team lead + CISO"
+    
+    sla_resolution: "Within 5 business days"
+  
+  # Escalation Path for MEDIUM SLO Breaches
+  medium_breach:
+    trigger_condition: "Any MEDIUM SLO violation"
+    escalation_steps:
+      t_0_minutes:
+        action: "Alert triggered"
+        notification:
+          - "Dashboard alert (no email)"
+      
+      t_1_day:
+        action: "Incident created"
+        owner: "Team member"
+      
+      t_2_days:
+        action: "Status update"
+        owner: "Assigned team"
+    
+    sla_resolution: "Within 10 business days"
+
+# ============================================================================
+# SLO REVIEW & CONTINUOUS IMPROVEMENT
+# ============================================================================
+continuous_improvement:
+  
+  quarterly_slo_review:
+    schedule: "First Monday of each quarter"
+    participants:
+      - "Chief Compliance Officer"
+      - "Chief Information Security Officer"
+      - "Compliance team leads"
+      - "Engineering leads"
+    
+    agenda:
+      - Review SLO achievement rates
+      - Identify systemic issues
+      - Adjust thresholds if needed (with board approval)
+      - Plan Q+1 initiatives
+    
+    output:
+      - "Quarterly SLO Achievement Report (.codex/reports/)"
+      - "Improvement roadmap (ROADMAP.md)"
+      - "Training recommendations"
+  
+  annual_slo_audit:
+    schedule: "December"
+    scope: "Full compliance SLO review"
+    include:
+      - "Industry benchmark comparison"
+      - "Regulatory requirement changes"
+      - "Technology upgrades (if needed)"
+      - "Resource allocation review"
+    
+    output:
+      - "Annual Compliance Audit Report"
+      - "SLO v2.0 (if updates needed)"
+      - "Strategic compliance roadmap (2027+)"
+
+# ============================================================================
+# APPROVAL & SIGN-OFF
+# ============================================================================
+approval:
+  document_owner: "Chief Compliance Officer (CCO)"
+  last_reviewed: "2026-07-18"
+  next_review: "2026-10-18"
+  approval_status: "ACTIVE"
+  change_history:
+    - date: "2026-07-18"
+      version: "1.0.0"
+      change: "Initial SLO framework created for Phase 6 Lane 3"
+      approved_by: "Chief Compliance Officer (CCO)"

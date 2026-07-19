@@ -59,6 +59,7 @@ jobs:
         \ refresh non-zero (non-fatal \u2014 workflow continues)\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 15
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
@@ -156,6 +157,7 @@ jobs:
         -f approval_reason="copilot-auth-enabled"
 
         '
+    timeout-minutes: 30
   cognitive-preflight:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
@@ -946,6 +948,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   activate-delegation:
     name: Activate token delegation
     needs:
@@ -1414,6 +1417,7 @@ jobs:
         }\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   session-release:
     name: "\U0001F513 Release session lock"
     runs-on: ubuntu-latest
@@ -1511,6 +1515,7 @@ jobs:
           }\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 60
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -1548,3 +1553,4 @@ jobs:
       run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

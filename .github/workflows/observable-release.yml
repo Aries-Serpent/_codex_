@@ -1,322 +1,234 @@
----
 name: observable-release
-
 on:
   push:
     tags:
-      - "v*.*.*"
+    - v*.*.*
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g., v0.1.0)"
+        description: Release tag (e.g., v0.1.0)
         required: true
-
 permissions:
   contents: write
   packages: write
-
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 jobs:
   build-and-release:
     name: Build, Test, and Release
     runs-on: ubuntu-latest
-
     env:
-      PYTHON_VERSION: "3.12"
+      PYTHON_VERSION: '3.12'
       SBOM_HMAC_KEY: ${{ secrets.SBOM_HMAC_KEY || 'dev-key' }}
-
     steps:
-      # ─────────────────────────────────────────────────────────────
-      # Phase 1: Setup & Dependency Analysis
-      # ─────────────────────────────────────────────────────────────
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Log Python and environment info
+      run: 'echo "=== Python Version ==="
 
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+        python --version
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+        python -m venv --help | head -5
 
-      - name: Log Python and environment info
-        run: |
-          echo "=== Python Version ==="
-          python --version
-          python -m venv --help | head -5
-          echo ""
-          echo "=== Installed packages ==="
-          pip list | head -10
-          echo ""
-          echo "=== System info ==="
-          uname -a
+        echo ""
 
-      - name: Parse release tag
-        id: release
-        env:
-          TAG: ${{ github.ref_name || github.event.inputs.tag }}
-        run: |
-          VERSION="${TAG#v}"
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "Release: ${TAG} (v${VERSION})"
+        echo "=== Installed packages ==="
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 2: Dependency Analysis & Lock File Validation
-      # ─────────────────────────────────────────────────────────────
+        pip list | head -10
 
-      - name: Analyze dependency changes
-        id: deps
-        run: |
-          echo "=== Dependency Analysis ==="
-          echo "Lock file size:"
-          wc -l uv.lock
-          echo ""
-          echo "Package count:"
-          grep -c '^\[\[package\]\]' uv.lock || echo "N/A"
-          echo ""
-          echo "Key dependencies:"
-          grep -E '^name = "(numpy|torch|fastapi|pydantic)"' uv.lock | head -10
+        echo ""
 
-          # Count package additions/removals compared to main
-          if git show main:uv.lock &>/dev/null; then
-            ADDED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep -c '^+')
-            REMOVED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep -c '^-')
-            echo "packages_added=${ADDED}" >> $GITHUB_OUTPUT
-            echo "packages_removed=${REMOVED}" >> $GITHUB_OUTPUT
-            echo "Dependencies changed: +${ADDED} / -${REMOVED}"
-          else
-            echo "No main branch to compare"
-          fi
+        echo "=== System info ==="
 
-      - name: Validate lock file integrity
-        run: |
-          echo "=== Lock File Validation ==="
-          if python -m pip freeze | grep -q "uv"; then
-            echo "✓ uv is installed"
-          else
-            echo "Installing uv..."
-            pip install uv
-          fi
+        uname -a
 
-          # Check for floating versions (none should exist)
-          FLOATING=$(grep -cE 'version = "[^=].*\*' uv.lock)
-          echo "Floating version specs: ${FLOATING}"
-          if [ "${FLOATING}" -gt 0 ]; then
-            echo "⚠ Warning: Lock file contains floating versions"
-          fi
+        '
+    - name: Parse release tag
+      id: release
+      env:
+        TAG: ${{ github.ref_name || github.event.inputs.tag }}
+      run: 'VERSION="${TAG#v}"
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 3: Build & Artifact Generation
-      # ─────────────────────────────────────────────────────────────
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Install build dependencies
-        run: |
-          pip install build
+        echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
-      - name: Build wheels
-        id: build
-        run: |
-          echo "=== Building wheels ==="
-          START_TIME=$(date +%s)
+        echo "Release: ${TAG} (v${VERSION})"
 
-          python -m build
+        '
+    - name: Analyze dependency changes
+      id: deps
+      run: "echo \"=== Dependency Analysis ===\"\necho \"Lock file size:\"\nwc -l\
+        \ uv.lock\necho \"\"\necho \"Package count:\"\ngrep -c '^\\[\\[package\\]\\\
+        ]' uv.lock || echo \"N/A\"\necho \"\"\necho \"Key dependencies:\"\ngrep -E\
+        \ '^name = \"(numpy|torch|fastapi|pydantic)\"' uv.lock | head -10\n\n# Count\
+        \ package additions/removals compared to main\nif git show main:uv.lock &>/dev/null;\
+        \ then\n  ADDED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort)\
+        \ <(cat uv.lock | grep '^name = ' | sort) | grep -c '^+')\n  REMOVED=$(diff\
+        \ -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep\
+        \ '^name = ' | sort) | grep -c '^-')\n  echo \"packages_added=${ADDED}\" >>\
+        \ $GITHUB_OUTPUT\n  echo \"packages_removed=${REMOVED}\" >> $GITHUB_OUTPUT\n\
+        \  echo \"Dependencies changed: +${ADDED} / -${REMOVED}\"\nelse\n  echo \"\
+        No main branch to compare\"\nfi\n"
+    - name: Validate lock file integrity
+      run: "echo \"=== Lock File Validation ===\"\nif python -m pip freeze | grep\
+        \ -q \"uv\"; then\n  echo \"\u2713 uv is installed\"\nelse\n  echo \"Installing\
+        \ uv...\"\n  pip install uv\nfi\n\n# Check for floating versions (none should\
+        \ exist)\nFLOATING=$(grep -cE 'version = \"[^=].*\\*' uv.lock)\necho \"Floating\
+        \ version specs: ${FLOATING}\"\nif [ \"${FLOATING}\" -gt 0 ]; then\n  echo\
+        \ \"\u26A0 Warning: Lock file contains floating versions\"\nfi\n"
+    - name: Install build dependencies
+      run: 'pip install build
 
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
+        '
+    - name: Build wheels
+      id: build
+      run: 'echo "=== Building wheels ==="
 
-          echo "build_duration=${DURATION}" >> $GITHUB_OUTPUT
-          echo "Build completed in ${DURATION}s"
+        START_TIME=$(date +%s)
 
-          echo ""
-          echo "=== Generated artifacts ==="
-          ls -lh dist/
 
-      - name: Verify wheel contents
-        run: |
-          echo "=== Wheel Verification ==="
-          for wheel in dist/*.whl; do
-            echo "Wheel: $(basename $wheel)"
-            python -m zipfile -l "$wheel" | head -20
-            echo ""
-          done
+        python -m build
 
-      - name: Calculate artifact hashes
-        id: hashes
-        run: |
-          echo "=== Artifact Hashes (SHA256) ==="
-          cd dist
-          sha256sum ./* > SHA256SUMS
-          cat SHA256SUMS
-          cd ..
 
-          # Calculate sizes
-          SIZES=$(ls -lh dist/*.whl | awk '{print $9, $5}' | paste -sd ' ' -)
-          echo "artifact_hashes=$(wc -l < dist/SHA256SUMS)" >> $GITHUB_OUTPUT
+        END_TIME=$(date +%s)
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 4: SBOM Generation & Signing
-      # ─────────────────────────────────────────────────────────────
+        DURATION=$((END_TIME - START_TIME))
 
-      - name: Generate SBOMs
-        id: sbom
-        run: |
-          echo "=== SBOM Generation ==="
-          START_TIME=$(date +%s%N)
 
-          python scripts/build/generate_sbom.py --profiles core runtime full
+        echo "build_duration=${DURATION}" >> $GITHUB_OUTPUT
 
-          END_TIME=$(date +%s%N)
-          DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+        echo "Build completed in ${DURATION}s"
 
-          echo "sbom_duration_ms=${DURATION_MS}" >> $GITHUB_OUTPUT
-          echo "SBOM generation completed in ${DURATION_MS}ms"
 
-          echo ""
-          echo "=== Generated SBOMs ==="
-          ls -lh .codex/sbom/cognitive_brain-0.1.0-*.xml
+        echo ""
 
-      - name: Verify SBOM integrity
-        run: |
-          echo "=== SBOM Verification ==="
-          for profile in core runtime full; do
-            echo "Profile: ${profile}"
-            python scripts/deploy/verify_sbom.py --profile "${profile}"
-            echo ""
-          done
+        echo "=== Generated artifacts ==="
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 5: License Compliance Check
-      # ─────────────────────────────────────────────────────────────
+        ls -lh dist/
 
-      - name: Validate license compliance
-        run: |
-          echo "=== License Compliance ==="
-          echo "Policy: $(cat .codex/LICENSE_COMPLIANCE_POLICY.md | head -5)"
+        '
+    - name: Verify wheel contents
+      run: "echo \"=== Wheel Verification ===\"\nfor wheel in dist/*.whl; do\n  echo\
+        \ \"Wheel: $(basename $wheel)\"\n  python -m zipfile -l \"$wheel\" | head\
+        \ -20\n  echo \"\"\ndone\n"
+    - name: Calculate artifact hashes
+      id: hashes
+      run: 'echo "=== Artifact Hashes (SHA256) ==="
 
-          # Quick check: verify no GPL packages
-          GPL_COUNT=$(python scripts/build/generate_sbom.py --profiles full 2>&1 | grep -ic "gpl")
-          if [ "${GPL_COUNT}" -gt 0 ]; then
-            echo "⚠ Warning: Found GPL packages"
-            exit 1
-          else
-            echo "✓ No GPL/AGPL/SSPL licenses detected"
-          fi
+        cd dist
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 6: Metrics Collection
-      # ─────────────────────────────────────────────────────────────
+        sha256sum ./* > SHA256SUMS
 
-      - name: Collect release metrics
-        id: metrics
-        run: |
-          echo "=== Release Metrics ==="
+        cat SHA256SUMS
 
-          # Count artifacts
-          ARTIFACT_COUNT=$(ls dist/*.whl 2>/dev/null | wc -l)
+        cd ..
 
-          python src/codex/telemetry/metrics.py collect-release \
-            --tag "v${{ steps.release.outputs.version }}" \
-            --artifacts "${ARTIFACT_COUNT}"
 
-          echo "Released artifacts: ${ARTIFACT_COUNT}"
-          echo "artifacts_count=${ARTIFACT_COUNT}" >> $GITHUB_OUTPUT
+        # Calculate sizes
 
-      - name: Generate release notes
-        id: notes
-        run: |
-          echo "=== Release Notes Generation ==="
+        SIZES=$(ls -lh dist/*.whl | awk ''{print $9, $5}'' | paste -sd '' '' -)
 
-          RELEASE_NOTES_FILE="release-notes-${{ steps.release.outputs.tag }}.md"
+        echo "artifact_hashes=$(wc -l < dist/SHA256SUMS)" >> $GITHUB_OUTPUT
 
-          cat > "${RELEASE_NOTES_FILE}" << 'EOF'
-          # Release ${{ steps.release.outputs.tag }}
+        '
+    - name: Generate SBOMs
+      id: sbom
+      run: 'echo "=== SBOM Generation ==="
 
-          **Release Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        START_TIME=$(date +%s%N)
 
-          ## Build Information
-          - **Python Version**: 3.12
-          - **Build Duration**: ${{ steps.build.outputs.build_duration }}s
-          - **Artifacts**: ${{ steps.metrics.outputs.artifacts_count }}
 
-          ## Package Information
-          - **Dependencies Added**: ${{ steps.deps.outputs.packages_added || 0 }}
-          - **Dependencies Removed**: ${{ steps.deps.outputs.packages_removed || 0 }}
+        python scripts/build/generate_sbom.py --profiles core runtime full
 
-          ## Security
-          - ✅ SBOM Generated: 3 profiles (core, runtime, full)
-          - ✅ SBOM Signed: HMAC-SHA256
-          - ✅ License Compliant: 100% (349 packages)
-          - ✅ No GPL/AGPL licenses detected
 
-          ## Artifact Verification
-          - **Build Artifacts**: SHA256SUMS available in dist/
-          - **SBOM Location**: .codex/sbom/
-          - **Signatures**: Each SBOM has corresponding .sig file
+        END_TIME=$(date +%s%N)
 
-          ## Installation
+        DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
 
-          ### Core Profile (Minimal)
-          ```bash
-          pip install -e . --no-deps
-          ```
 
-          ### Runtime Profile
-          ```bash
-          pip install .[runtime]
-          ```
+        echo "sbom_duration_ms=${DURATION_MS}" >> $GITHUB_OUTPUT
 
-          ### Full Profile (Development)
-          ```bash
-          pip install .[full]
-          ```
+        echo "SBOM generation completed in ${DURATION_MS}ms"
 
-          ## Offline Installation
-          Create a wheelhouse from the release assets, then:
-          ```bash
-          pip install --no-index --find-links wheelhouse .
-          ```
 
-          ## Metrics
-          See `.codex/metrics/release-*.json` for detailed build metrics.
+        echo ""
 
-          EOF
+        echo "=== Generated SBOMs ==="
 
-          cat "${RELEASE_NOTES_FILE}"
-          echo "notes_file=${RELEASE_NOTES_FILE}" >> $GITHUB_OUTPUT
+        ls -lh .codex/sbom/cognitive_brain-0.1.0-*.xml
 
-      # ─────────────────────────────────────────────────────────────
-      # Phase 7: Upload to Release
-      # ─────────────────────────────────────────────────────────────
+        '
+    - name: Verify SBOM integrity
+      run: "echo \"=== SBOM Verification ===\"\nfor profile in core runtime full;\
+        \ do\n  echo \"Profile: ${profile}\"\n  python scripts/deploy/verify_sbom.py\
+        \ --profile \"${profile}\"\n  echo \"\"\ndone\n"
+    - name: Validate license compliance
+      run: "echo \"=== License Compliance ===\"\necho \"Policy: $(cat .codex/LICENSE_COMPLIANCE_POLICY.md\
+        \ | head -5)\"\n\n# Quick check: verify no GPL packages\nGPL_COUNT=$(python\
+        \ scripts/build/generate_sbom.py --profiles full 2>&1 | grep -ic \"gpl\")\n\
+        if [ \"${GPL_COUNT}\" -gt 0 ]; then\n  echo \"\u26A0 Warning: Found GPL packages\"\
+        \n  exit 1\nelse\n  echo \"\u2713 No GPL/AGPL/SSPL licenses detected\"\nfi\n"
+    - name: Collect release metrics
+      id: metrics
+      run: "echo \"=== Release Metrics ===\"\n\n# Count artifacts\nARTIFACT_COUNT=$(ls\
+        \ dist/*.whl 2>/dev/null | wc -l)\n\npython src/codex/telemetry/metrics.py\
+        \ collect-release \\\n  --tag \"v${{ steps.release.outputs.version }}\" \\\
+        \n  --artifacts \"${ARTIFACT_COUNT}\"\n\necho \"Released artifacts: ${ARTIFACT_COUNT}\"\
+        \necho \"artifacts_count=${ARTIFACT_COUNT}\" >> $GITHUB_OUTPUT\n"
+    - name: Generate release notes
+      id: notes
+      run: "echo \"=== Release Notes Generation ===\"\n\nRELEASE_NOTES_FILE=\"release-notes-${{\
+        \ steps.release.outputs.tag }}.md\"\n\ncat > \"${RELEASE_NOTES_FILE}\" <<\
+        \ 'EOF'\n# Release ${{ steps.release.outputs.tag }}\n\n**Release Date**: $(date\
+        \ -u +'%Y-%m-%d %H:%M:%S UTC')\n\n## Build Information\n- **Python Version**:\
+        \ 3.12\n- **Build Duration**: ${{ steps.build.outputs.build_duration }}s\n\
+        - **Artifacts**: ${{ steps.metrics.outputs.artifacts_count }}\n\n## Package\
+        \ Information\n- **Dependencies Added**: ${{ steps.deps.outputs.packages_added\
+        \ || 0 }}\n- **Dependencies Removed**: ${{ steps.deps.outputs.packages_removed\
+        \ || 0 }}\n\n## Security\n- \u2705 SBOM Generated: 3 profiles (core, runtime,\
+        \ full)\n- \u2705 SBOM Signed: HMAC-SHA256\n- \u2705 License Compliant: 100%\
+        \ (349 packages)\n- \u2705 No GPL/AGPL licenses detected\n\n## Artifact Verification\n\
+        - **Build Artifacts**: SHA256SUMS available in dist/\n- **SBOM Location**:\
+        \ .codex/sbom/\n- **Signatures**: Each SBOM has corresponding .sig file\n\n\
+        ## Installation\n\n### Core Profile (Minimal)\n```bash\npip install -e . --no-deps\n\
+        ```\n\n### Runtime Profile\n```bash\npip install .[runtime]\n```\n\n### Full\
+        \ Profile (Development)\n```bash\npip install .[full]\n```\n\n## Offline Installation\n\
+        Create a wheelhouse from the release assets, then:\n```bash\npip install --no-index\
+        \ --find-links wheelhouse .\n```\n\n## Metrics\nSee `.codex/metrics/release-*.json`\
+        \ for detailed build metrics.\n\nEOF\n\ncat \"${RELEASE_NOTES_FILE}\"\necho\
+        \ \"notes_file=${RELEASE_NOTES_FILE}\" >> $GITHUB_OUTPUT\n"
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
+      with:
+        tag_name: ${{ steps.release.outputs.tag }}
+        body_path: release-notes-${{ steps.release.outputs.tag }}.md
+        files: 'dist/*.whl
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
-        with:
-          tag_name: ${{ steps.release.outputs.tag }}
-          body_path: release-notes-${{ steps.release.outputs.tag }}.md
-          files: |
-            dist/*.whl
-            .codex/sbom/cognitive_brain-0.1.0-core.xml
-            .codex/sbom/cognitive_brain-0.1.0-runtime.xml
-            .codex/sbom/cognitive_brain-0.1.0-full.xml
-            dist/SHA256SUMS
-      # ─────────────────────────────────────────────────────────────
-      # Phase 8: Summary & Reporting
-      # ─────────────────────────────────────────────────────────────
+          .codex/sbom/cognitive_brain-0.1.0-core.xml
 
-      - name: Post release summary
-        run: |
-          echo "=== RELEASE SUMMARY ==="
-          echo "Tag: v${{ steps.release.outputs.version }}"
-          echo "Artifacts: ${{ steps.metrics.outputs.artifacts_count }}"
-          echo "Build Time: ${{ steps.build.outputs.build_duration }}s"
-          echo "SBOM Generation: ${{ steps.sbom.outputs.sbom_duration_ms }}ms"
-          echo ""
-          echo "✅ Observable release workflow completed successfully"
-          echo "📝 Release notes: release-notes-${{ steps.release.outputs.tag }}.md"
-          echo "📦 Artifacts: dist/"
-          echo "📄 SBOMs: .codex/sbom/"
+          .codex/sbom/cognitive_brain-0.1.0-runtime.xml
+
+          .codex/sbom/cognitive_brain-0.1.0-full.xml
+
+          dist/SHA256SUMS
+
+          '
+    - name: Post release summary
+      run: "echo \"=== RELEASE SUMMARY ===\"\necho \"Tag: v${{ steps.release.outputs.version\
+        \ }}\"\necho \"Artifacts: ${{ steps.metrics.outputs.artifacts_count }}\"\n\
+        echo \"Build Time: ${{ steps.build.outputs.build_duration }}s\"\necho \"SBOM\
+        \ Generation: ${{ steps.sbom.outputs.sbom_duration_ms }}ms\"\necho \"\"\n\
+        echo \"\u2705 Observable release workflow completed successfully\"\necho \"\
+        \U0001F4DD Release notes: release-notes-${{ steps.release.outputs.tag }}.md\"\
+        \necho \"\U0001F4E6 Artifacts: dist/\"\necho \"\U0001F4C4 SBOMs: .codex/sbom/\"\
+        \n"
+    timeout-minutes: 45

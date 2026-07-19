@@ -42,7 +42,7 @@ jobs:
       uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
       with:
         node-version: '22'
-        cache: 'npm'
+        cache: npm
         cache-dependency-path: cognitive_app/package-lock.json
     - name: Cache MkDocs plugins
       uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
@@ -83,25 +83,19 @@ jobs:
         n\\n')\n    f.write('Auto-generated API documentation from Python docstrings.\\\
         n\\n')\n    f.write('## Modules\\n\\n')\n    f.write('- [RAG Pipeline](rag.md)\\\
         n')\n    f.write('- [CLI](cli.md)\\n')\n    f.write('- [API Endpoints](api_endpoints.md)\\\
-        n')\n\nprint('✅ API documentation structure created')\n\"\n"
+        n')\n\nprint('\u2705 API documentation structure created')\n\"\n"
     - name: Generate OpenAPI specification
       continue-on-error: true
       run: "python -c \"\ntry:\n    from codex.api.rag_api import app\n    import\
         \ json\n\n    openapi_spec = app.openapi()\n    with open('docs/openapi.json',\
-        \ 'w') as f:\n        json.dump(openapi_spec, f, indent=2)\n    print('✅ OpenAPI\
-        \ spec generated')\nexcept Exception as e:\n    print(f'⚠️ Could not generate\
-        \ OpenAPI spec: {e}')\n\"\n"
+        \ 'w') as f:\n        json.dump(openapi_spec, f, indent=2)\n    print('\u2705\
+        \ OpenAPI spec generated')\nexcept Exception as e:\n    print(f'\u26A0\uFE0F\
+        \ Could not generate OpenAPI spec: {e}')\n\"\n"
     - name: Validate documentation links
       continue-on-error: true
-      run: 'pip install linkchecker || true
-
-        # Check for broken links in markdown files
-
-        find docs/ -name "*.md" -exec grep -H "\[.*\](.*)" {} \; > links.txt || true
-
-        echo "✅ Link validation complete"
-
-        '
+      run: "pip install linkchecker || true\n# Check for broken links in markdown\
+        \ files\nfind docs/ -name \"*.md\" -exec grep -H \"\\[.*\\](.*)\" {} \\; >\
+        \ links.txt || true\necho \"\u2705 Link validation complete\"\n"
     - name: Generate cost dashboard data
       continue-on-error: true
       env:
@@ -113,7 +107,7 @@ jobs:
         remaining_minutes\":3000,\"pct_used\":0,\"tier_thresholds\":{\"green_max\"\
         :30,\"yellow_max\":90}},\"tier_counts\":{\"GREEN\":0,\"YELLOW\":0,\"RED\"\
         :0},\"trend\":[],\"gated_workflows\":[],\"recent_runs\":[]}' \\\n  > docs/ops/cost-data.json\n\
-        echo \"✅ cost-data.json written\"\n"
+        echo \"\u2705 cost-data.json written\"\n"
     - name: Build MkDocs site
       run: '# Phase 13: Strict mode temporarily disabled to identify warnings
 
@@ -126,23 +120,14 @@ jobs:
         VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
         VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
         VITE_DOCS_FETCH_LIVE: 'true'
-      run: |
-        echo "📦 Building cognitive_app dashboard..."
-        echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
-        echo "   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_LIVE:-enabled}"
-        
-        npm ci
-        npm run build
-        
-        if [ -d dist ]; then
-          mkdir -p ../site/cognitive_app
-          cp -r dist/* ../site/cognitive_app/
-          echo "✅ cognitive_app built and deployed to site/cognitive_app/"
-          ls -la ../site/cognitive_app/ | head -15
-        else
-          echo "❌ ERROR: cognitive_app build did not produce dist/ directory"
-          exit 1
-        fi
+      run: "echo \"\U0001F4E6 Building cognitive_app dashboard...\"\necho \"   API\
+        \ mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}\"\necho\
+        \ \"   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_LIVE:-enabled}\"\n\nnpm\
+        \ ci\nnpm run build\n\nif [ -d dist ]; then\n  mkdir -p ../site/cognitive_app\n\
+        \  cp -r dist/* ../site/cognitive_app/\n  echo \"\u2705 cognitive_app built\
+        \ and deployed to site/cognitive_app/\"\n  ls -la ../site/cognitive_app/ |\
+        \ head -15\nelse\n  echo \"\u274C ERROR: cognitive_app build did not produce\
+        \ dist/ directory\"\n  exit 1\nfi\n"
     - name: Cache health report
       if: always()
       continue-on-error: true
@@ -175,11 +160,11 @@ jobs:
         \ do\n  DEPLOYMENTS=$(gh api repos/${{ github.repository }}/deployments \\\
         \n    --jq '.[] | select(.environment==\"github-pages\") | select(.state==\"\
         in_progress\")' 2>/dev/null | wc -l)\n  \n  if [ \"$DEPLOYMENTS\" -eq 0 ];\
-        \ then\n    echo \"✅ No in-progress deployments found\"\n    exit 0\n  fi\n\
-        \  \n  echo \"⏳ In-progress deployments detected. Waiting... (attempt $i/30)\"\
-        \n  sleep 30\ndone\n\necho \"⚠️ Previous deployments still in progress after\
-        \ 15 minutes\"\necho \"Proceeding with deployment (will retry if needed)\"\
-        \nexit 0\n"
+        \ then\n    echo \"\u2705 No in-progress deployments found\"\n    exit 0\n\
+        \  fi\n  \n  echo \"\u23F3 In-progress deployments detected. Waiting... (attempt\
+        \ $i/30)\"\n  sleep 30\ndone\n\necho \"\u26A0\uFE0F Previous deployments still\
+        \ in progress after 15 minutes\"\necho \"Proceeding with deployment (will\
+        \ retry if needed)\"\nexit 0\n"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy to GitHub Pages
@@ -189,19 +174,19 @@ jobs:
       id: health_check
       continue-on-error: true
       run: "PAGE_URL=\"${{ steps.deployment.outputs.page_url }}\"\nif [ -z \"${PAGE_URL}\"\
-        \ ]; then\n  echo \"⚠️  No page_url output — skipping health check\"\n  exit\
-        \ 0\nfi\necho \"\U0001F50D Checking deployed site: ${PAGE_URL}\"\n# Wait up\
-        \ to 60s for CDN propagation\nfor i in 1 2 3 4 5 6; do\n  HTTP_CODE=$(curl\
+        \ ]; then\n  echo \"\u26A0\uFE0F  No page_url output \u2014 skipping health\
+        \ check\"\n  exit 0\nfi\necho \"\U0001F50D Checking deployed site: ${PAGE_URL}\"\
+        \n# Wait up to 60s for CDN propagation\nfor i in 1 2 3 4 5 6; do\n  HTTP_CODE=$(curl\
         \ -sS -o /dev/null -w \"%{http_code}\" --max-time 15 \"${PAGE_URL}\" 2>/dev/null\
         \ || echo \"000\")\n  echo \"  Attempt ${i}: HTTP ${HTTP_CODE}\"\n  if [ \"\
-        ${HTTP_CODE}\" = \"200\" ]; then\n    echo \"✅ Site is healthy (HTTP 200)\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"health_status=ok\" >> \"$GITHUB_OUTPUT\"\
-        \n    exit 0\n  fi\n  sleep 10\ndone\necho \"❌ Site returned HTTP ${HTTP_CODE}\
-        \ after 60s — possible 404 deployment\"\necho \"health_status=degraded:${HTTP_CODE}\"\
-        \ >> \"$GITHUB_OUTPUT\"\necho \"## ⚠️ Pages Health Check FAILED\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"Site at \\`${PAGE_URL}\\` returned HTTP **${HTTP_CODE}**.\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\necho \"The pages-health-guard.yml workflow will attempt\
-        \ automatic recovery.\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+        ${HTTP_CODE}\" = \"200\" ]; then\n    echo \"\u2705 Site is healthy (HTTP\
+        \ 200)\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"health_status=ok\" >> \"\
+        $GITHUB_OUTPUT\"\n    exit 0\n  fi\n  sleep 10\ndone\necho \"\u274C Site returned\
+        \ HTTP ${HTTP_CODE} after 60s \u2014 possible 404 deployment\"\necho \"health_status=degraded:${HTTP_CODE}\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"## \u26A0\uFE0F Pages Health Check FAILED\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"Site at \\`${PAGE_URL}\\` returned HTTP\
+        \ **${HTTP_CODE}**.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"The pages-health-guard.yml\
+        \ workflow will attempt automatic recovery.\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Summary
       run: 'echo "## Documentation Deployed" >> $GITHUB_STEP_SUMMARY
 

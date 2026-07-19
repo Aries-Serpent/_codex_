@@ -1,48 +1,43 @@
----
 name: App Package Download
-
 on:
   workflow_dispatch:
     inputs:
       app_name:
-        description: 'Application to package'
+        description: Application to package
         required: true
         type: choice
         options:
-          - 'zd_voice_lines'
-          - 'audio_transcriber_ui'
-          - 'all'
-        default: 'zd_voice_lines'
+        - zd_voice_lines
+        - audio_transcriber_ui
+        - all
+        default: zd_voice_lines
       branch:
-        description: 'Branch to package from (must be a predefined safe branch)'
+        description: Branch to package from (must be a predefined safe branch)
         required: true
         type: choice
         options:
-          - 'main'
-          - '0D_base_'
-        default: 'main'
+        - main
+        - 0D_base_
+        default: main
       include_dependencies:
-        description: 'Include requirements.txt for dependencies'
+        description: Include requirements.txt for dependencies
         required: false
         type: boolean
         default: true
       package_format:
-        description: 'Package format'
+        description: Package format
         required: true
         type: choice
         options:
-          - 'zip'
-          - 'tar.gz'
-        default: 'zip'
-
+        - zip
+        - tar.gz
+        default: zip
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   actions: read
-
 jobs:
   package-app:
     name: Package Application
@@ -50,550 +45,276 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-
     steps:
-      - name: Determine target branch
-        id: branch
-        run: |
-          # SECURITY: Only predefined safe branches allowed via GitHub Actions UI
-          # Runtime validation ensures branch is in the allowed list (permanent branches only)
-          # This prevents accidental checkout of untrusted code via ref parameter
-          # NOTE: ALLOWED_BRANCHES must be kept in sync with the branch input options above (lines 20-21)
-          BRANCH="${{ github.event.inputs.branch }}"
-          ALLOWED_BRANCHES="main|0D_base_"
-          if ! echo "$BRANCH" | grep -qE "^($ALLOWED_BRANCHES)$"; then
-            echo "❌ Error: Branch '$BRANCH' is not in the allowed list"
-            exit 1
-          fi
-          printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
-
-      - name: Fetch repository structure via GitHub API (security-hardened, no git operations)
-        id: fetch_repo
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
-          # This eliminates the untrusted code checkout vulnerability in workflow_dispatch contexts
-
-          # Parse repository into owner/repo format using bash parameter expansion
-          REPO_FULL="${{ github.repository }}"
-          OWNER="${REPO_FULL%%/*}"
-          REPO="${REPO_FULL##*/}"
-          BRANCH="${{ steps.branch.outputs.branch }}"
-
-          # Create base directory structure
-          mkdir -p apps/dev
-          mkdir -p src/services/audio/workflow
-          mkdir -p package_staging
-
-          # Helper function to fetch file from repository via GitHub API
-          # SECURITY: file_path parameter must be hardcoded or safely validated (not from untrusted input)
-          fetch_file_from_repo() {
-            local file_path=$1
-            local output_path=$2
-            local ref=$3
-
-            # Validate path does not contain path traversal sequences
-            if [[ "$file_path" =~ \.\. ]]; then
-              echo "WARNING: Invalid file path (contains path traversal), skipping: $file_path" >&2
-              return 1
-            fi
-
-            # Create parent directory if needed
-            mkdir -p "$(dirname "$output_path")"
-
-            # Try to fetch the file from the specified branch
-            if gh api repos/$OWNER/$REPO/contents/$file_path?ref=$ref -q '.content' 2>/dev/null | base64 -d > "$output_path" 2>/dev/null; then
-              return 0
-            else
-              return 1
-            fi
-          }
-
-          # Helper function to list files in a directory via GitHub API
-          list_files_in_dir() {
-            local dir_path=$1
-            local ref=$2
-
-            # Validate path does not contain path traversal sequences
-            if [[ "$dir_path" =~ \.\. ]]; then
-              echo "WARNING: Invalid directory path (contains path traversal), skipping: $dir_path" >&2
-              return 1
-            fi
-
-            # List directory contents; filter for files, not directories
-            gh api repos/$OWNER/$REPO/contents/$dir_path?ref=$ref -q '.[] | select(.type == "file") | .path' 2>/dev/null
-          }
-
-          echo "📥 Fetching repository structure from $BRANCH via GitHub API..."
-
-          # Fetch key application files from apps/dev/
-          for file in zd_voice_lines.py audio_transcriber_ui.py __init__.py; do
-            if fetch_file_from_repo "apps/dev/$file" "apps/dev/$file" "$BRANCH"; then
-              echo "✅ Fetched apps/dev/$file"
-            fi
-          done
-
-          # Fetch requirements file if it exists
-          if fetch_file_from_repo "requirements-audio-transcription.txt" "requirements-audio-transcription.txt" "$BRANCH"; then
-            echo "✅ Fetched requirements-audio-transcription.txt"
-          fi
-
-          # Fetch audio transcription workflow if it exists
-          if fetch_file_from_repo "src/services/audio/workflow/transcription_workflow.py" "src/services/audio/workflow/transcription_workflow.py" "$BRANCH"; then
-            echo "✅ Fetched transcription_workflow.py"
-          fi
-
-          # Fetch audio workflow init file if it exists
-          if fetch_file_from_repo "apps/dev/templates/audio_workflow_init.py" "apps/dev/templates/audio_workflow_init.py" "$BRANCH"; then
-            echo "✅ Fetched audio_workflow_init.py"
-          fi
-
-          # Fetch test file if it exists
-          if fetch_file_from_repo "apps/dev/test_api_client.py" "apps/dev/test_api_client.py" "$BRANCH"; then
-            echo "✅ Fetched test_api_client.py"
-          fi
-
-          echo "✅ Repository structure fetched via GitHub API (no git operations)"
-
-      - name: Verify apps directory exists
-        run: |
-          if [ ! -d "apps" ]; then
-            echo "❌ Error: apps directory not found in branch ${{ steps.branch.outputs.branch }}"
-            exit 1
-          fi
-          echo "✅ apps directory found"
-          ls -la apps/
-
-      - name: Discover available applications
-        id: discover
-        run: |
-          echo "## 📦 Available Applications" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ -d "apps/dev" ]; then
-            echo "### apps/dev/" >> $GITHUB_STEP_SUMMARY
-            ls -1 apps/dev/*.py 2>/dev/null | while read -r file; do
-              basename "$file"
-              echo "- \`$(basename "$file")\`" >> $GITHUB_STEP_SUMMARY
-            done
-          fi
-
-          # Count total apps
-          TOTAL_APPS=$(find apps -name "*.py" -type f | wc -l)
-          echo "total_apps=$TOTAL_APPS" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Total applications found**: $TOTAL_APPS" >> $GITHUB_STEP_SUMMARY
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
-        with:
-          python-version: '3.12.13'
-          cache: 'pip'
-
-      - name: Create package directory
-        run: |
-          mkdir -p package_staging
-          echo "Created staging directory for packaging"
-
-      - name: Package selected application
-        id: package
-        run: |
-          APP_NAME="${{ github.event.inputs.app_name }}"
-          BRANCH="${{ steps.branch.outputs.branch }}"
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-
-          echo "📦 Packaging application: $APP_NAME"
-          echo "📍 From branch: $BRANCH"
-
-            if [ "$APP_NAME" = "all" ]; then
-              # Package all applications
-              PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
-              cp -r apps/* package_staging/
-              if [ -f "requirements-audio-transcription.txt" ]; then
-                cp requirements-audio-transcription.txt package_staging/
-              fi
-              # Include transcription workflow so audio_transcriber_ui is launchable standalone
-              if [ -f "apps/dev/audio_transcriber_ui.py" ] && [ -f "src/services/audio/workflow/transcription_workflow.py" ]; then
-                mkdir -p package_staging/services/audio/workflow
-                cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
-              touch package_staging/services/__init__.py
-              touch package_staging/services/audio/__init__.py
-              if [ -f "apps/dev/templates/audio_workflow_init.py" ]; then
-                cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py
-              fi
-            fi
-            echo "Packaged all applications"
-          elif [ "$APP_NAME" = "zd_voice_lines" ]; then
-            # Package Zendesk Voice Lines app
-            PACKAGE_NAME="zendesk_voice_lines_${BRANCH//\//_}_${TIMESTAMP}"
-
-            if [ ! -d "apps/dev" ]; then
-              echo "❌ Error: apps/dev directory not found"
-              exit 1
-            fi
-
-            # Copy main application and supporting files
-            cp apps/dev/zd_voice_lines.py package_staging/
-
-            # Copy documentation if exists
-            if [ -d "apps/dev/docs" ]; then
-              mkdir -p package_staging/docs
-              cp -r apps/dev/docs/* package_staging/docs/
-            fi
-
-            # Copy additional markdown files
-            for file in apps/dev/*.md; do
-              if [ -f "$file" ]; then
-                cp "$file" package_staging/
-              fi
-            done
-
-            # Copy test file if exists
-            if [ -f "apps/dev/test_api_client.py" ]; then
-              cp apps/dev/test_api_client.py package_staging/
-            fi
-
-            # Copy __init__.py if exists
-            if [ -f "apps/dev/__init__.py" ]; then
-              cp apps/dev/__init__.py package_staging/
-            fi
-
-            echo "Packaged Zendesk Voice Lines application"
-          elif [ "$APP_NAME" = "audio_transcriber_ui" ]; then
-            # Package Audio Transcriber UI app
-            PACKAGE_NAME="audio_transcriber_ui_${BRANCH//\//_}_${TIMESTAMP}"
-
-            if [ ! -f "apps/dev/audio_transcriber_ui.py" ]; then
-              echo "❌ Error: apps/dev/audio_transcriber_ui.py not found"
-              exit 1
-            fi
-
-            cp apps/dev/audio_transcriber_ui.py package_staging/
-
-            if [ -f "requirements-audio-transcription.txt" ]; then
-              cp requirements-audio-transcription.txt package_staging/
-            fi
-
-            # Copy shared audio workflow module needed by the UI
-            mkdir -p package_staging/services/audio/workflow
-            cp src/services/audio/workflow/transcription_workflow.py package_staging/services/audio/workflow/
-
-            # Add package markers for portable execution
-            mkdir -p package_staging/services
-            touch package_staging/services/__init__.py
-            touch package_staging/services/audio/__init__.py
-            cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py
-
-            if [ -d "apps/dev/docs" ]; then
-              mkdir -p package_staging/docs
-              cp -r apps/dev/docs/* package_staging/docs/
-              # Promote the audio-specific guide to package root for quick access
-              if [ -f "apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md" ]; then
-                cp apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md package_staging/USER_GUIDE.md
-              fi
-            fi
-
-            for file in apps/dev/*.md; do
-              if [ -f "$file" ]; then
-                cp "$file" package_staging/
-              fi
-            done
-
-            echo "Packaged Audio Transcriber UI application"
-          else
-            echo "❌ Error: Unknown application name: $APP_NAME"
-            exit 1
-          fi
-
-          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
-
-          # List packaged files
-          echo "## 📋 Packaged Files" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          find package_staging -type f | sed 's|package_staging/||' >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
-      - name: Generate requirements.txt
-        if: ${{ github.event.inputs.include_dependencies == 'true' }}
-        run: |
-          APP_NAME="${{ github.event.inputs.app_name }}"
-          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
-            cat > package_staging/requirements.txt << 'EOF'
-          # Audio Transcriber UI dependencies
-          # Python 3.12+ required
-          numpy>=2.4.6,<3
-
-          # Optional transcription backends (recommended)
-          faster-whisper==1.1.1
-          pyannote.audio==3.3.2
-          ffmpeg-python==0.2.0
-          EOF
-            echo "✅ Generated requirements.txt for Audio Transcriber UI" >> $GITHUB_STEP_SUMMARY
-            exit 0
-          fi
-
-          cat > package_staging/requirements.txt << 'EOF'
-          # Zendesk Voice Lines Application Dependencies
-          # Python 3.12+ required
-
-          # Core dependencies (included in Python standard library)
-          # - tkinter (GUI framework)
-          # - json (JSON parsing)
-          # - csv (CSV export)
-
-          # External dependencies
-          requests>=2.32.4  # HTTP client for Zendesk API
-
-          # Optional dependencies for Excel export
-          pandas>=2.1.0  # Data manipulation and Excel export
-          openpyxl>=3.1.0  # Excel file format support
-
-          # Development dependencies (optional)
-          pytest>=8.2.0  # Testing framework
-          pytest-mock>=3.12.0  # Mock support for tests
-          ruff>=0.1.15  # Linting
-          black>=24.0.0  # Code formatting
-          EOF
-
-          echo "✅ Generated requirements.txt" >> $GITHUB_STEP_SUMMARY
-
-      - name: Generate README for package
-        run: |
-          PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-          BRANCH="${{ steps.branch.outputs.branch }}"
-          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
-          APP_NAME="${{ github.event.inputs.app_name }}"
-          APP_ENTRY="zd_voice_lines.py"
-          APP_DESCRIPTION="Zendesk Voice Lines GUI application"
-          QUICK_TEST_NOTE="python test_api_client.py"
-
-          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
-            APP_ENTRY="audio_transcriber_ui.py"
-            APP_DESCRIPTION="Audio Transcriber desktop UI application"
-            QUICK_TEST_NOTE="python audio_transcriber_ui.py"
-          elif [ "$APP_NAME" = "all" ]; then
-            APP_ENTRY="(multiple apps)"
-            APP_DESCRIPTION="all applications under apps/"
-            QUICK_TEST_NOTE="python <selected_app>.py"
-          fi
-
-          cat > package_staging/PACKAGE_INFO.md << EOF
-          # Codex Application Package
-
-          **Package**: $PACKAGE_NAME
-          **Source Branch**: $BRANCH
-          **Generated**: $TIMESTAMP
-          **Repository**: Aries-Serpent/_codex_
-
-          ## 📦 Contents
-
-          This package contains the ${APP_DESCRIPTION} and supporting documentation.
-
-          ### Main Application
-
-          - \`${APP_ENTRY}\` - Main application entrypoint
-
-          ### Documentation
-
-          - \`README.md\` - Quick start guide
-          - \`USER_GUIDE.md\` - Complete user manual
-          - \`DEVELOPMENT.md\` - Developer documentation
-          - \`APPLICATION_SPEC.md\` - Technical specification
-          - \`QUICK_REFERENCE.md\` - Command reference
-          - \`UI_MOCKUP.md\` - Interface layout diagrams
-          - \`CHANGELOG.md\` - Version history
-
-          ### Testing
-
-            - \`test_api_client.py\` - Component tests (when packaging zd_voice_lines)
-
-          ## 🚀 Quick Start
-
-          ### Prerequisites
-
-            - Python 3.12 or higher
-            - tkinter (usually included with Python)
-            - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription workflows)
-
-          ### Installation
-
-          1. Extract this package to your desired location
-          2. Install dependencies:
-              \`\`\`bash
-              # Pin pytest plugins (PR  #3248)
-              # Pin pytest plugins before package install (PR  #3248 stability fix)
-          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
-
-              pip install -r requirements.txt
-              \`\`\`
-
-            3. Run the application:
-              \`\`\`bash
-              python ${APP_ENTRY}
-              \`\`\`
-
-          ### Quick Test
-
-          Run component tests to verify installation:
-
-            \`\`\`bash
-            ${QUICK_TEST_NOTE}
-            \`\`\`
-
-            Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
-
-          ## 📚 Documentation
-
-            - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
-            - For development information, see \`docs/DEVELOPMENT.md\`
-            - For API reference, see \`APPLICATION_SPEC.md\`
-
-          ## 🔗 Resources
-
-          - **Repository**: https://github.com/Aries-Serpent/_codex_
-          - **Source Branch**: $BRANCH
-          - **Zendesk API Docs**: https://developer.zendesk.com/api-reference/
-
-          ## 📝 License
-
-          MIT License - See repository for full license text
-
-          ---
-
-          **Generated by**: GitHub Actions App Package Download Workflow
-          **Workflow Run**: [#\${{ github.run_number }}](\${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }})
-          EOF
-
-          echo "✅ Generated PACKAGE_INFO.md" >> $GITHUB_STEP_SUMMARY
-
-      - name: Create ZIP package
-        if: ${{ github.event.inputs.package_format == 'zip' }}
-        run: |
-          PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-          cd package_staging
-          zip -r "../${PACKAGE_NAME}.zip" .
-          cd ..
-
-          # Calculate size
-          SIZE=$(du -h "${PACKAGE_NAME}.zip" | cut -f1)
-          echo "package_file=${PACKAGE_NAME}.zip" >> $GITHUB_OUTPUT
-          echo "package_size=$SIZE" >> $GITHUB_OUTPUT
-
-          echo "## 📦 Package Created" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Format**: ZIP" >> $GITHUB_STEP_SUMMARY
-          echo "- **Filename**: \`${PACKAGE_NAME}.zip\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Size**: $SIZE" >> $GITHUB_STEP_SUMMARY
-
-      - name: Create TAR.GZ package
-        if: ${{ github.event.inputs.package_format == 'tar.gz' }}
-        run: |
-          PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-          cd package_staging
-          tar -czf "../${PACKAGE_NAME}.tar.gz" .
-          cd ..
-
-          # Calculate size
-          SIZE=$(du -h "${PACKAGE_NAME}.tar.gz" | cut -f1)
-          echo "package_file=${PACKAGE_NAME}.tar.gz" >> $GITHUB_OUTPUT
-          echo "package_size=$SIZE" >> $GITHUB_OUTPUT
-
-          echo "## 📦 Package Created" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Format**: TAR.GZ" >> $GITHUB_STEP_SUMMARY
-          echo "- **Filename**: \`${PACKAGE_NAME}.tar.gz\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Size**: $SIZE" >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload package as artifact
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        with:
-          path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format }}
-          retention-days: 30
-          compression-level: 0  # Already compressed
-
-          name: ${{ steps.package.outputs.package_name }}
-      - name: Generate download instructions
-        run: |
-          PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📥 Download Instructions" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Method 1: GitHub UI" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "1. Navigate to this workflow run" >> $GITHUB_STEP_SUMMARY
-          echo "2. Scroll to the **Artifacts** section at the bottom" >> $GITHUB_STEP_SUMMARY
-          echo "3. Click on \`$PACKAGE_NAME\` to download" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Method 2: GitHub CLI" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "gh run download ${{ github.run_id }} --name $PACKAGE_NAME" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Method 3: Direct Link" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Visit: [\${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}](\${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact Retention**: 30 days" >> $GITHUB_STEP_SUMMARY
-
-      - name: Generate package manifest
-        run: |
-          PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-          BRANCH="${{ steps.branch.outputs.branch }}"
-
-          cat > package_manifest.json << EOF
-          {
-            "package_name": "$PACKAGE_NAME",
-            "application": "${{ github.event.inputs.app_name }}",
-            "source_branch": "$BRANCH",
-            "repository": "${{ github.repository }}",
-            "workflow_run_id": "${{ github.run_id }}",
-            "workflow_run_number": "${{ github.run_number }}",
-            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "format": "${{ github.event.inputs.package_format }}",
-            "include_dependencies": ${{ github.event.inputs.include_dependencies }},
-            "sha": "${{ github.sha }}",
-            "ref": "${{ github.ref }}",
-            "actor": "${{ github.actor }}"
-          }
-          EOF
-
-          echo "✅ Generated package manifest" >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload package manifest
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
-        with:
-          path: package_manifest.json
-          retention-days: 90
-
-          name: ${{ steps.package.outputs.package_name }}-manifest
-      - name: Final summary
-        env:
-          APP_NAME_INPUT: ${{ github.event.inputs.app_name }}
-        run: |
-          APP_NAME="$APP_NAME_INPUT"
-          APP_ENTRY="zd_voice_lines.py"
-          if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
-            APP_ENTRY="audio_transcriber_ui.py"
-          elif [ "$APP_NAME" = "all" ]; then
-            APP_ENTRY="<selected_app>.py"
-          fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## ✅ Packaging Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Your application package is ready for download!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Next Steps**:" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "1. Download the package using one of the methods above" >> $GITHUB_STEP_SUMMARY
-          echo "2. Extract the package contents" >> $GITHUB_STEP_SUMMARY
-          echo "3. Follow the instructions in \`PACKAGE_INFO.md\`" >> $GITHUB_STEP_SUMMARY
-          echo "4. Install dependencies with \`pip install -r requirements.txt\`" >> $GITHUB_STEP_SUMMARY
-          echo "5. Run the application with \`python ${APP_ENTRY}\`" >> $GITHUB_STEP_SUMMARY
-
+    - name: Determine target branch
+      id: branch
+      run: "# SECURITY: Only predefined safe branches allowed via GitHub Actions UI\n\
+        # Runtime validation ensures branch is in the allowed list (permanent branches\
+        \ only)\n# This prevents accidental checkout of untrusted code via ref parameter\n\
+        # NOTE: ALLOWED_BRANCHES must be kept in sync with the branch input options\
+        \ above (lines 20-21)\nBRANCH=\"${{ github.event.inputs.branch }}\"\nALLOWED_BRANCHES=\"\
+        main|0D_base_\"\nif ! echo \"$BRANCH\" | grep -qE \"^($ALLOWED_BRANCHES)$\"\
+        ; then\n  echo \"\u274C Error: Branch '$BRANCH' is not in the allowed list\"\
+        \n  exit 1\nfi\nprintf 'branch=%s\\n' \"$BRANCH\" >> \"$GITHUB_OUTPUT\"\n"
+    - name: Fetch repository structure via GitHub API (security-hardened, no git operations)
+      id: fetch_repo
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: "# SECURITY: Use GitHub API instead of git checkout to fetch repository\
+        \ structure\n# This eliminates the untrusted code checkout vulnerability in\
+        \ workflow_dispatch contexts\n\n# Parse repository into owner/repo format\
+        \ using bash parameter expansion\nREPO_FULL=\"${{ github.repository }}\"\n\
+        OWNER=\"${REPO_FULL%%/*}\"\nREPO=\"${REPO_FULL##*/}\"\nBRANCH=\"${{ steps.branch.outputs.branch\
+        \ }}\"\n\n# Create base directory structure\nmkdir -p apps/dev\nmkdir -p src/services/audio/workflow\n\
+        mkdir -p package_staging\n\n# Helper function to fetch file from repository\
+        \ via GitHub API\n# SECURITY: file_path parameter must be hardcoded or safely\
+        \ validated (not from untrusted input)\nfetch_file_from_repo() {\n  local\
+        \ file_path=$1\n  local output_path=$2\n  local ref=$3\n\n  # Validate path\
+        \ does not contain path traversal sequences\n  if [[ \"$file_path\" =~ \\\
+        .\\. ]]; then\n    echo \"WARNING: Invalid file path (contains path traversal),\
+        \ skipping: $file_path\" >&2\n    return 1\n  fi\n\n  # Create parent directory\
+        \ if needed\n  mkdir -p \"$(dirname \"$output_path\")\"\n\n  # Try to fetch\
+        \ the file from the specified branch\n  if gh api repos/$OWNER/$REPO/contents/$file_path?ref=$ref\
+        \ -q '.content' 2>/dev/null | base64 -d > \"$output_path\" 2>/dev/null; then\n\
+        \    return 0\n  else\n    return 1\n  fi\n}\n\n# Helper function to list\
+        \ files in a directory via GitHub API\nlist_files_in_dir() {\n  local dir_path=$1\n\
+        \  local ref=$2\n\n  # Validate path does not contain path traversal sequences\n\
+        \  if [[ \"$dir_path\" =~ \\.\\. ]]; then\n    echo \"WARNING: Invalid directory\
+        \ path (contains path traversal), skipping: $dir_path\" >&2\n    return 1\n\
+        \  fi\n\n  # List directory contents; filter for files, not directories\n\
+        \  gh api repos/$OWNER/$REPO/contents/$dir_path?ref=$ref -q '.[] | select(.type\
+        \ == \"file\") | .path' 2>/dev/null\n}\n\necho \"\U0001F4E5 Fetching repository\
+        \ structure from $BRANCH via GitHub API...\"\n\n# Fetch key application files\
+        \ from apps/dev/\nfor file in zd_voice_lines.py audio_transcriber_ui.py __init__.py;\
+        \ do\n  if fetch_file_from_repo \"apps/dev/$file\" \"apps/dev/$file\" \"$BRANCH\"\
+        ; then\n    echo \"\u2705 Fetched apps/dev/$file\"\n  fi\ndone\n\n# Fetch\
+        \ requirements file if it exists\nif fetch_file_from_repo \"requirements-audio-transcription.txt\"\
+        \ \"requirements-audio-transcription.txt\" \"$BRANCH\"; then\n  echo \"\u2705\
+        \ Fetched requirements-audio-transcription.txt\"\nfi\n\n# Fetch audio transcription\
+        \ workflow if it exists\nif fetch_file_from_repo \"src/services/audio/workflow/transcription_workflow.py\"\
+        \ \"src/services/audio/workflow/transcription_workflow.py\" \"$BRANCH\"; then\n\
+        \  echo \"\u2705 Fetched transcription_workflow.py\"\nfi\n\n# Fetch audio\
+        \ workflow init file if it exists\nif fetch_file_from_repo \"apps/dev/templates/audio_workflow_init.py\"\
+        \ \"apps/dev/templates/audio_workflow_init.py\" \"$BRANCH\"; then\n  echo\
+        \ \"\u2705 Fetched audio_workflow_init.py\"\nfi\n\n# Fetch test file if it\
+        \ exists\nif fetch_file_from_repo \"apps/dev/test_api_client.py\" \"apps/dev/test_api_client.py\"\
+        \ \"$BRANCH\"; then\n  echo \"\u2705 Fetched test_api_client.py\"\nfi\n\n\
+        echo \"\u2705 Repository structure fetched via GitHub API (no git operations)\"\
+        \n"
+    - name: Verify apps directory exists
+      run: "if [ ! -d \"apps\" ]; then\n  echo \"\u274C Error: apps directory not\
+        \ found in branch ${{ steps.branch.outputs.branch }}\"\n  exit 1\nfi\necho\
+        \ \"\u2705 apps directory found\"\nls -la apps/\n"
+    - name: Discover available applications
+      id: discover
+      run: "echo \"## \U0001F4E6 Available Applications\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -d \"apps/dev\" ]; then\n  echo\
+        \ \"### apps/dev/\" >> $GITHUB_STEP_SUMMARY\n  ls -1 apps/dev/*.py 2>/dev/null\
+        \ | while read -r file; do\n    basename \"$file\"\n    echo \"- \\`$(basename\
+        \ \"$file\")\\`\" >> $GITHUB_STEP_SUMMARY\n  done\nfi\n\n# Count total apps\n\
+        TOTAL_APPS=$(find apps -name \"*.py\" -type f | wc -l)\necho \"total_apps=$TOTAL_APPS\"\
+        \ >> $GITHUB_OUTPUT\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Total applications\
+        \ found**: $TOTAL_APPS\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Set up Python 3.12
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Create package directory
+      run: 'mkdir -p package_staging
+
+        echo "Created staging directory for packaging"
+
+        '
+    - name: Package selected application
+      id: package
+      run: "APP_NAME=\"${{ github.event.inputs.app_name }}\"\nBRANCH=\"${{ steps.branch.outputs.branch\
+        \ }}\"\nTIMESTAMP=$(date +%Y%m%d_%H%M%S)\n\necho \"\U0001F4E6 Packaging application:\
+        \ $APP_NAME\"\necho \"\U0001F4CD From branch: $BRANCH\"\n\n  if [ \"$APP_NAME\"\
+        \ = \"all\" ]; then\n    # Package all applications\n    PACKAGE_NAME=\"codex_apps_all_${BRANCH//\\\
+        //_}_${TIMESTAMP}\"\n    cp -r apps/* package_staging/\n    if [ -f \"requirements-audio-transcription.txt\"\
+        \ ]; then\n      cp requirements-audio-transcription.txt package_staging/\n\
+        \    fi\n    # Include transcription workflow so audio_transcriber_ui is launchable\
+        \ standalone\n    if [ -f \"apps/dev/audio_transcriber_ui.py\" ] && [ -f \"\
+        src/services/audio/workflow/transcription_workflow.py\" ]; then\n      mkdir\
+        \ -p package_staging/services/audio/workflow\n      cp src/services/audio/workflow/transcription_workflow.py\
+        \ package_staging/services/audio/workflow/\n    touch package_staging/services/__init__.py\n\
+        \    touch package_staging/services/audio/__init__.py\n    if [ -f \"apps/dev/templates/audio_workflow_init.py\"\
+        \ ]; then\n      cp apps/dev/templates/audio_workflow_init.py package_staging/services/audio/workflow/__init__.py\n\
+        \    fi\n  fi\n  echo \"Packaged all applications\"\nelif [ \"$APP_NAME\"\
+        \ = \"zd_voice_lines\" ]; then\n  # Package Zendesk Voice Lines app\n  PACKAGE_NAME=\"\
+        zendesk_voice_lines_${BRANCH//\\//_}_${TIMESTAMP}\"\n\n  if [ ! -d \"apps/dev\"\
+        \ ]; then\n    echo \"\u274C Error: apps/dev directory not found\"\n    exit\
+        \ 1\n  fi\n\n  # Copy main application and supporting files\n  cp apps/dev/zd_voice_lines.py\
+        \ package_staging/\n\n  # Copy documentation if exists\n  if [ -d \"apps/dev/docs\"\
+        \ ]; then\n    mkdir -p package_staging/docs\n    cp -r apps/dev/docs/* package_staging/docs/\n\
+        \  fi\n\n  # Copy additional markdown files\n  for file in apps/dev/*.md;\
+        \ do\n    if [ -f \"$file\" ]; then\n      cp \"$file\" package_staging/\n\
+        \    fi\n  done\n\n  # Copy test file if exists\n  if [ -f \"apps/dev/test_api_client.py\"\
+        \ ]; then\n    cp apps/dev/test_api_client.py package_staging/\n  fi\n\n \
+        \ # Copy __init__.py if exists\n  if [ -f \"apps/dev/__init__.py\" ]; then\n\
+        \    cp apps/dev/__init__.py package_staging/\n  fi\n\n  echo \"Packaged Zendesk\
+        \ Voice Lines application\"\nelif [ \"$APP_NAME\" = \"audio_transcriber_ui\"\
+        \ ]; then\n  # Package Audio Transcriber UI app\n  PACKAGE_NAME=\"audio_transcriber_ui_${BRANCH//\\\
+        //_}_${TIMESTAMP}\"\n\n  if [ ! -f \"apps/dev/audio_transcriber_ui.py\" ];\
+        \ then\n    echo \"\u274C Error: apps/dev/audio_transcriber_ui.py not found\"\
+        \n    exit 1\n  fi\n\n  cp apps/dev/audio_transcriber_ui.py package_staging/\n\
+        \n  if [ -f \"requirements-audio-transcription.txt\" ]; then\n    cp requirements-audio-transcription.txt\
+        \ package_staging/\n  fi\n\n  # Copy shared audio workflow module needed by\
+        \ the UI\n  mkdir -p package_staging/services/audio/workflow\n  cp src/services/audio/workflow/transcription_workflow.py\
+        \ package_staging/services/audio/workflow/\n\n  # Add package markers for\
+        \ portable execution\n  mkdir -p package_staging/services\n  touch package_staging/services/__init__.py\n\
+        \  touch package_staging/services/audio/__init__.py\n  cp apps/dev/templates/audio_workflow_init.py\
+        \ package_staging/services/audio/workflow/__init__.py\n\n  if [ -d \"apps/dev/docs\"\
+        \ ]; then\n    mkdir -p package_staging/docs\n    cp -r apps/dev/docs/* package_staging/docs/\n\
+        \    # Promote the audio-specific guide to package root for quick access\n\
+        \    if [ -f \"apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md\" ]; then\n \
+        \     cp apps/dev/docs/AUDIO_TRANSCRIBER_USER_GUIDE.md package_staging/USER_GUIDE.md\n\
+        \    fi\n  fi\n\n  for file in apps/dev/*.md; do\n    if [ -f \"$file\" ];\
+        \ then\n      cp \"$file\" package_staging/\n    fi\n  done\n\n  echo \"Packaged\
+        \ Audio Transcriber UI application\"\nelse\n  echo \"\u274C Error: Unknown\
+        \ application name: $APP_NAME\"\n  exit 1\nfi\n\necho \"package_name=$PACKAGE_NAME\"\
+        \ >> $GITHUB_OUTPUT\n\n# List packaged files\necho \"## \U0001F4CB Packaged\
+        \ Files\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\nfind package_staging -type f | sed\
+        \ 's|package_staging/||' >> $GITHUB_STEP_SUMMARY\necho \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Generate requirements.txt
+      if: ${{ github.event.inputs.include_dependencies == 'true' }}
+      run: "APP_NAME=\"${{ github.event.inputs.app_name }}\"\nif [ \"$APP_NAME\" =\
+        \ \"audio_transcriber_ui\" ]; then\n  cat > package_staging/requirements.txt\
+        \ << 'EOF'\n# Audio Transcriber UI dependencies\n# Python 3.12+ required\n\
+        numpy>=2.4.6,<3\n\n# Optional transcription backends (recommended)\nfaster-whisper==1.1.1\n\
+        pyannote.audio==3.3.2\nffmpeg-python==0.2.0\nEOF\n  echo \"\u2705 Generated\
+        \ requirements.txt for Audio Transcriber UI\" >> $GITHUB_STEP_SUMMARY\n  exit\
+        \ 0\nfi\n\ncat > package_staging/requirements.txt << 'EOF'\n# Zendesk Voice\
+        \ Lines Application Dependencies\n# Python 3.12+ required\n\n# Core dependencies\
+        \ (included in Python standard library)\n# - tkinter (GUI framework)\n# -\
+        \ json (JSON parsing)\n# - csv (CSV export)\n\n# External dependencies\nrequests>=2.32.4\
+        \  # HTTP client for Zendesk API\n\n# Optional dependencies for Excel export\n\
+        pandas>=2.1.0  # Data manipulation and Excel export\nopenpyxl>=3.1.0  # Excel\
+        \ file format support\n\n# Development dependencies (optional)\npytest>=8.2.0\
+        \  # Testing framework\npytest-mock>=3.12.0  # Mock support for tests\nruff>=0.1.15\
+        \  # Linting\nblack>=24.0.0  # Code formatting\nEOF\n\necho \"\u2705 Generated\
+        \ requirements.txt\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Generate README for package
+      run: "PACKAGE_NAME=\"${{ steps.package.outputs.package_name }}\"\nBRANCH=\"\
+        ${{ steps.branch.outputs.branch }}\"\nTIMESTAMP=$(date +\"%Y-%m-%d %H:%M:%S\
+        \ UTC\")\nAPP_NAME=\"${{ github.event.inputs.app_name }}\"\nAPP_ENTRY=\"zd_voice_lines.py\"\
+        \nAPP_DESCRIPTION=\"Zendesk Voice Lines GUI application\"\nQUICK_TEST_NOTE=\"\
+        python test_api_client.py\"\n\nif [ \"$APP_NAME\" = \"audio_transcriber_ui\"\
+        \ ]; then\n  APP_ENTRY=\"audio_transcriber_ui.py\"\n  APP_DESCRIPTION=\"Audio\
+        \ Transcriber desktop UI application\"\n  QUICK_TEST_NOTE=\"python audio_transcriber_ui.py\"\
+        \nelif [ \"$APP_NAME\" = \"all\" ]; then\n  APP_ENTRY=\"(multiple apps)\"\n\
+        \  APP_DESCRIPTION=\"all applications under apps/\"\n  QUICK_TEST_NOTE=\"\
+        python <selected_app>.py\"\nfi\n\ncat > package_staging/PACKAGE_INFO.md <<\
+        \ EOF\n# Codex Application Package\n\n**Package**: $PACKAGE_NAME\n**Source\
+        \ Branch**: $BRANCH\n**Generated**: $TIMESTAMP\n**Repository**: Aries-Serpent/_codex_\n\
+        \n## \U0001F4E6 Contents\n\nThis package contains the ${APP_DESCRIPTION} and\
+        \ supporting documentation.\n\n### Main Application\n\n- \\`${APP_ENTRY}\\\
+        ` - Main application entrypoint\n\n### Documentation\n\n- \\`README.md\\`\
+        \ - Quick start guide\n- \\`USER_GUIDE.md\\` - Complete user manual\n- \\\
+        `DEVELOPMENT.md\\` - Developer documentation\n- \\`APPLICATION_SPEC.md\\`\
+        \ - Technical specification\n- \\`QUICK_REFERENCE.md\\` - Command reference\n\
+        - \\`UI_MOCKUP.md\\` - Interface layout diagrams\n- \\`CHANGELOG.md\\` - Version\
+        \ history\n\n### Testing\n\n  - \\`test_api_client.py\\` - Component tests\
+        \ (when packaging zd_voice_lines)\n\n## \U0001F680 Quick Start\n\n### Prerequisites\n\
+        \n  - Python 3.12 or higher\n  - tkinter (usually included with Python)\n\
+        \  - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription\
+        \ workflows)\n\n### Installation\n\n1. Extract this package to your desired\
+        \ location\n2. Install dependencies:\n    \\`\\`\\`bash\n    # Pin pytest\
+        \ plugins (PR  #3248)\n    # Pin pytest plugins before package install (PR\
+        \  #3248 stability fix)\npip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0\
+        \ pytest-cov==5.0.0 pytest-asyncio==1.3.0\n\n    pip install -r requirements.txt\n\
+        \    \\`\\`\\`\n\n  3. Run the application:\n    \\`\\`\\`bash\n    python\
+        \ ${APP_ENTRY}\n    \\`\\`\\`\n\n### Quick Test\n\nRun component tests to\
+        \ verify installation:\n\n  \\`\\`\\`bash\n  ${QUICK_TEST_NOTE}\n  \\`\\`\\\
+        `\n\n  Expected output: \\`7 passed, 0 failed\\` (zd_voice_lines package only)\n\
+        \n## \U0001F4DA Documentation\n\n  - For detailed usage instructions, see\
+        \ \\`docs/USER_GUIDE.md\\`\n  - For development information, see \\`docs/DEVELOPMENT.md\\\
+        `\n  - For API reference, see \\`APPLICATION_SPEC.md\\`\n\n## \U0001F517 Resources\n\
+        \n- **Repository**: https://github.com/Aries-Serpent/_codex_\n- **Source Branch**:\
+        \ $BRANCH\n- **Zendesk API Docs**: https://developer.zendesk.com/api-reference/\n\
+        \n## \U0001F4DD License\n\nMIT License - See repository for full license text\n\
+        \n---\n\n**Generated by**: GitHub Actions App Package Download Workflow\n\
+        **Workflow Run**: [#\\${{ github.run_number }}](\\${{ github.server_url }}/\\\
+        ${{ github.repository }}/actions/runs/\\${{ github.run_id }})\nEOF\n\necho\
+        \ \"\u2705 Generated PACKAGE_INFO.md\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Create ZIP package
+      if: ${{ github.event.inputs.package_format == 'zip' }}
+      run: "PACKAGE_NAME=\"${{ steps.package.outputs.package_name }}\"\ncd package_staging\n\
+        zip -r \"../${PACKAGE_NAME}.zip\" .\ncd ..\n\n# Calculate size\nSIZE=$(du\
+        \ -h \"${PACKAGE_NAME}.zip\" | cut -f1)\necho \"package_file=${PACKAGE_NAME}.zip\"\
+        \ >> $GITHUB_OUTPUT\necho \"package_size=$SIZE\" >> $GITHUB_OUTPUT\n\necho\
+        \ \"## \U0001F4E6 Package Created\" >> $GITHUB_STEP_SUMMARY\necho \"\" >>\
+        \ $GITHUB_STEP_SUMMARY\necho \"- **Format**: ZIP\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- **Filename**: \\`${PACKAGE_NAME}.zip\\`\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- **Size**: $SIZE\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Create TAR.GZ package
+      if: ${{ github.event.inputs.package_format == 'tar.gz' }}
+      run: "PACKAGE_NAME=\"${{ steps.package.outputs.package_name }}\"\ncd package_staging\n\
+        tar -czf \"../${PACKAGE_NAME}.tar.gz\" .\ncd ..\n\n# Calculate size\nSIZE=$(du\
+        \ -h \"${PACKAGE_NAME}.tar.gz\" | cut -f1)\necho \"package_file=${PACKAGE_NAME}.tar.gz\"\
+        \ >> $GITHUB_OUTPUT\necho \"package_size=$SIZE\" >> $GITHUB_OUTPUT\n\necho\
+        \ \"## \U0001F4E6 Package Created\" >> $GITHUB_STEP_SUMMARY\necho \"\" >>\
+        \ $GITHUB_STEP_SUMMARY\necho \"- **Format**: TAR.GZ\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- **Filename**: \\`${PACKAGE_NAME}.tar.gz\\`\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- **Size**: $SIZE\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      with:
+        path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format
+          }}
+        retention-days: 30
+        compression-level: 0
+        name: ${{ steps.package.outputs.package_name }}
+    - name: Generate download instructions
+      run: "PACKAGE_NAME=\"${{ steps.package.outputs.package_name }}\"\n\necho \"\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"## \U0001F4E5 Download Instructions\" >>\
+        \ $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"### Method\
+        \ 1: GitHub UI\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"1. Navigate to this workflow run\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        2. Scroll to the **Artifacts** section at the bottom\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"3. Click on \\`$PACKAGE_NAME\\` to download\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"### Method 2: GitHub CLI\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"\\`\\`\\`bash\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"gh run download ${{ github.run_id }} --name $PACKAGE_NAME\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"### Method 3: Direct Link\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"Visit: [\\${{ github.server_url }}/\\${{ github.repository }}/actions/runs/\\\
+        ${{ github.run_id }}](\\${{ github.server_url }}/\\${{ github.repository }}/actions/runs/\\\
+        ${{ github.run_id }})\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"---\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"**Artifact Retention**: 30 days\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Generate package manifest
+      run: "PACKAGE_NAME=\"${{ steps.package.outputs.package_name }}\"\nBRANCH=\"\
+        ${{ steps.branch.outputs.branch }}\"\n\ncat > package_manifest.json << EOF\n\
+        {\n  \"package_name\": \"$PACKAGE_NAME\",\n  \"application\": \"${{ github.event.inputs.app_name\
+        \ }}\",\n  \"source_branch\": \"$BRANCH\",\n  \"repository\": \"${{ github.repository\
+        \ }}\",\n  \"workflow_run_id\": \"${{ github.run_id }}\",\n  \"workflow_run_number\"\
+        : \"${{ github.run_number }}\",\n  \"generated_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\
+        ,\n  \"format\": \"${{ github.event.inputs.package_format }}\",\n  \"include_dependencies\"\
+        : ${{ github.event.inputs.include_dependencies }},\n  \"sha\": \"${{ github.sha\
+        \ }}\",\n  \"ref\": \"${{ github.ref }}\",\n  \"actor\": \"${{ github.actor\
+        \ }}\"\n}\nEOF\n\necho \"\u2705 Generated package manifest\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Upload package manifest
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      with:
+        path: package_manifest.json
+        retention-days: 90
+        name: ${{ steps.package.outputs.package_name }}-manifest
+    - name: Final summary
+      env:
+        APP_NAME_INPUT: ${{ github.event.inputs.app_name }}
+      run: "APP_NAME=\"$APP_NAME_INPUT\"\nAPP_ENTRY=\"zd_voice_lines.py\"\nif [ \"\
+        $APP_NAME\" = \"audio_transcriber_ui\" ]; then\n  APP_ENTRY=\"audio_transcriber_ui.py\"\
+        \nelif [ \"$APP_NAME\" = \"all\" ]; then\n  APP_ENTRY=\"<selected_app>.py\"\
+        \nfi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"## \u2705 Packaging Complete\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"Your\
+        \ application package is ready for download!\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Next Steps**:\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"1. Download the package using one\
+        \ of the methods above\" >> $GITHUB_STEP_SUMMARY\necho \"2. Extract the package\
+        \ contents\" >> $GITHUB_STEP_SUMMARY\necho \"3. Follow the instructions in\
+        \ \\`PACKAGE_INFO.md\\`\" >> $GITHUB_STEP_SUMMARY\necho \"4. Install dependencies\
+        \ with \\`pip install -r requirements.txt\\`\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"5. Run the application with \\`python ${APP_ENTRY}\\`\" >> $GITHUB_STEP_SUMMARY\n"

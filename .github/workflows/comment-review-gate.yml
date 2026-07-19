@@ -1,91 +1,89 @@
----
 name: PR Comment Review Gate
 on:
   pull_request:
     types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
   pull_request_review:
     types:
-      - submitted
+    - submitted
   issue_comment:
     types:
-      - created
-
+    - created
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   issues: write
-
 jobs:
   scan-and-post:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
-    if: |
-      github.event.pull_request.number != 5328 &&
-      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||
-       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null &&
-        github.event.comment.user.login == 'mbaetiong'))
-    name: 🔍 Scan PR comments
+    if: "(github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||\n (github.event_name == 'issue_comment'\
+      \ && github.event.issue.pull_request != null &&\n  github.event.comment.user.login\
+      \ == 'mbaetiong'))\n"
+    name: "\U0001F50D Scan PR comments"
     runs-on: ubuntu-latest
     outputs:
       exit_code: ${{ steps.scan.outputs.exit_code }}
       blocking_count: ${{ steps.scan.outputs.blocking_count }}
       warning_count: ${{ steps.scan.outputs.warning_count }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Determine PR number
+      id: pr_info
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+      run: 'PR_NUMBER="${{ github.event.pull_request.number || github.event.issue.number
+        }}"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: pip
+        echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      - name: Determine PR number
-        id: pr_info
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: |
-          PR_NUMBER="${{ github.event.pull_request.number || github.event.issue.number }}"
-          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
-          echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
+        echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
 
-      - name: Scan comments and post checklist
-        id: scan
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          python3 scripts/ci/check_pr_comments.py \
-            --pr "${{ steps.pr_info.outputs.pr_number }}" \
-            --repo "${{ steps.pr_info.outputs.repo }}" \
-            --post-checklist
-
-      - name: Upload scan report
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          path: /tmp/comment_review_report.json
-          retention-days: 30
-          if-no-files-found: warn
-          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
+        '
+    - name: Scan comments and post checklist
+      id: scan
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+      run: "python3 scripts/ci/check_pr_comments.py \\\n  --pr \"${{ steps.pr_info.outputs.pr_number\
+        \ }}\" \\\n  --repo \"${{ steps.pr_info.outputs.repo }}\" \\\n  --post-checklist\n"
+    - name: Upload scan report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: /tmp/comment_review_report.json
+        retention-days: 30
+        if-no-files-found: warn
+        name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id
+          }}
+    timeout-minutes: 30
   gate:
-    name: 🚦 Comment review gate
+    name: "\U0001F6A6 Comment review gate"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: scan-and-post
     if: github.event_name != 'issue_comment'
     steps:
-      - name: Check blocking comments
-        if: ${{ needs.scan-and-post.outputs.blocking_count != '0' && needs.scan-and-post.outputs.blocking_count != '' }}
-        run: |
-          echo "::error::Blocking comments unaddressed"
-          exit 1
+    - name: Check blocking comments
+      if: ${{ needs.scan-and-post.outputs.blocking_count != '0' && needs.scan-and-post.outputs.blocking_count
+        != '' }}
+      run: 'echo "::error::Blocking comments unaddressed"
+
+        exit 1
+
+        '

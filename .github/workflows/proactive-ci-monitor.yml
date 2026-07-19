@@ -1,5 +1,4 @@
----
-name: 🔍 Proactive CI Monitor
+name: "\U0001F50D Proactive CI Monitor"
 on:
   schedule:
   - cron: 0 */6 * * *
@@ -25,12 +24,12 @@ on:
         default: 24
         required: false
       min_confidence:
-        description: Min pattern confidence to escalate [0.0–1.0]
+        description: "Min pattern confidence to escalate [0.0\u20131.0]"
         type: string
         default: '0.5'
         required: false
       dry_run:
-        description: Dry run — analyse only, do NOT post any comments
+        description: "Dry run \u2014 analyse only, do NOT post any comments"
         type: boolean
         default: false
         required: false
@@ -97,8 +96,8 @@ jobs:
         \ Exception as e:\n    print(f\"Could not parse report: {e}\", file=sys.stderr)\n\
         \    sys.exit(0)\ndry  = os.environ.get('DRY_RUN_FLAG', 'false') == 'true'\n\
         mode = '\U0001F515 DRY RUN' if dry else '\U0001F514 LIVE'\nlines = [\n   \
-        \ f\"## \U0001F50D Proactive CI Monitor — {mode}\\n\",\n    \"| Metric | Count\
-        \ |\",\n    \"|--------|-------|\",\n    f\"| PRs scanned | **{data['scanned_prs']}**\
+        \ f\"## \U0001F50D Proactive CI Monitor \u2014 {mode}\\n\",\n    \"| Metric\
+        \ | Count |\",\n    \"|--------|-------|\",\n    f\"| PRs scanned | **{data['scanned_prs']}**\
         \ |\",\n    f\"| Failed runs found | **{data['failed_runs']}** |\",\n    f\"\
         | Escalated to @copilot | **{data['escalated']}** |\",\n    f\"| Transient\
         \ (auto-skipped) | {data['skipped_transient']} |\",\n    f\"| Below confidence\
@@ -107,14 +106,15 @@ jobs:
         \ [])\nif details:\n    lines += [\n        \"### Failure Details\",\n   \
         \     \"\",\n        \"| PR | SHA | Workflow | Pattern | Confidence | Action\
         \ |\",\n        \"|---|---|---|---|---|---|\",\n    ]\n    icons = {'escalated':'\U0001F6A8\
-        ','dry-run':'\U0001F515','already-addressed':'✅','skipped-transient':'⏭️'}\n\
-        \    for d in details[:30]:\n        icon = icons.get(d['action'], '❓')\n\
-        \        conf = f\"{d.get('confidence',0):.0%}\"\n        lines.append(\n\
-        \            f\"|  #{d['pr']} | `{d['sha']}` | {d['workflow'][:38]} \"\n  \
-        \          f\"| `{d['pattern_id']}` | {conf} | {icon} {d['action']} |\"\n\
-        \        )\n    if len(details) > 30:\n        lines.append(f\"\\n_… and {len(details)-30}\
-        \ more — download the artifact_\")\nwith open(os.environ['GITHUB_STEP_SUMMARY'],\
+        ','dry-run':'\U0001F515','already-addressed':'\u2705','skipped-transient':'\u23ED\
+        \uFE0F'}\n    for d in details[:30]:\n        icon = icons.get(d['action'],\
+        \ '\u2753')\n        conf = f\"{d.get('confidence',0):.0%}\"\n        lines.append(\n\
+        \            f\"|  #{d['pr']} | `{d['sha']}` | {d['workflow'][:38]} \"\n \
+        \           f\"| `{d['pattern_id']}` | {conf} | {icon} {d['action']} |\"\n\
+        \        )\n    if len(details) > 30:\n        lines.append(f\"\\n_\u2026\
+        \ and {len(details)-30} more \u2014 download the artifact_\")\nwith open(os.environ['GITHUB_STEP_SUMMARY'],\
         \ 'a') as f:\n    f.write('\\n'.join(lines) + '\\n')\nPYEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

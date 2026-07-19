@@ -1,4 +1,3 @@
----
 name: Resilient Validation Suite
 'on':
   pull_request:
@@ -69,12 +68,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-group: >-
-          ${{
-            (github.base_ref == 'main' && github.head_ref == '0D_base_')
-            && fromJSON('["quick","documentation","skills","integration","slow"]')
-            || fromJSON('["quick","documentation","skills"]')
-          }}
+        test-group: "${{\n  (github.base_ref == 'main' && github.head_ref == '0D_base_')\n\
+          \  && fromJSON('[\"quick\",\"documentation\",\"skills\",\"integration\"\
+          ,\"slow\"]')\n  || fromJSON('[\"quick\",\"documentation\",\"skills\"]')\n\
+          }}"
     steps:
     - uses: actions/checkout@v5
       with:
@@ -137,7 +134,7 @@ jobs:
         \ --maxfail=5 --tb=short\n    ;;\nesac\n"
     - name: Post coverage to PR
       if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
-      uses: MishaKav/pytest-coverage-comment@fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c  # v1
+      uses: MishaKav/pytest-coverage-comment@fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c
       with:
         pytest-coverage-path: coverage.xml
         title: "\U0001F4CA Coverage Report (quick tests)"

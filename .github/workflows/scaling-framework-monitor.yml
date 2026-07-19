@@ -1,14 +1,4 @@
 name: Scaling Framework Monitor
-on:
-  schedule:
-  - cron: 0 * * * *
-  - cron: 0 9 * * 0
-  - cron: 0 10 * * 1
-  workflow_dispatch: null
-  push:
-    paths:
-    - src/codex/scaling/**
-    - .github/workflows/scaling-framework-monitor.yml
 permissions:
   contents: read
 env:
@@ -105,10 +95,15 @@ jobs:
 
         '
     - name: Multi-region health check
-      run: "echo \"Checking multi-region deployment health...\"\n# Check primary region\n\
-        curl -f https://api.codex-scaling.local/health || exit 1\necho \"\u2713 Primary\
-        \ region healthy\"\n"
-    timeout-minutes: 60
+      run: 'echo "Checking multi-region deployment health..."
+
+        # Check primary region
+
+        curl -f https://api.codex-scaling.local/health || exit 1
+
+        echo "✓ Primary region healthy"
+
+        '
   load_balancer_health:
     runs-on: ubuntu-latest
     name: Load Distribution Check
@@ -137,9 +132,7 @@ jobs:
         \    lb.select_backend(f'req-{i}')\n\n# Verify variance\nreport = lb.verify_load_distribution()\n\
         print('Load Distribution Report:', report)\nassert report['variance_sla_met'],\
         \ f\\\"Load variance {report['load_variance']}% exceeds 5% SLA\\\"\nprint(f\\\
-        \"\u2713 Load variance: {report['load_variance']:.2f}% (SLA: <5%)\\\")\n\"\
-        \n"
-    timeout-minutes: 60
+        \"✓ Load variance: {report['load_variance']:.2f}% (SLA: <5%)\\\")\n\"\n"
   auto_scaling_health:
     runs-on: ubuntu-latest
     name: Auto-Scaling Trigger Check
@@ -160,14 +153,32 @@ jobs:
 
         '
     - name: Verify scaling capability
-      run: "python -c \"\nfrom src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger\n\
-        \ntrigger = ScalingTrigger()\nscaler = AutoScaler(trigger)\n\nreport = scaler.verify_scaling_capability()\n\
-        print('Auto-Scaling Report:', report)\nassert report['cpu_trigger_configured'],\
-        \ 'CPU trigger not configured'\nassert report['memory_trigger_configured'],\
-        \ 'Memory trigger not configured'\nassert report['request_rate_trigger_configured'],\
-        \ 'Request rate trigger not configured'\nprint('\u2713 All scaling triggers\
-        \ configured')\n\"\n"
-    timeout-minutes: 60
+      run: 'python -c "
+
+        from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
+
+
+        trigger = ScalingTrigger()
+
+        scaler = AutoScaler(trigger)
+
+
+        report = scaler.verify_scaling_capability()
+
+        print(''Auto-Scaling Report:'', report)
+
+        assert report[''cpu_trigger_configured''], ''CPU trigger not configured''
+
+        assert report[''memory_trigger_configured''], ''Memory trigger not configured''
+
+        assert report[''request_rate_trigger_configured''], ''Request rate trigger
+        not configured''
+
+        print(''✓ All scaling triggers configured'')
+
+        "
+
+        '
   cost_optimization_health:
     runs-on: ubuntu-latest
     name: Cost Optimization Check
@@ -192,37 +203,25 @@ jobs:
         \ CostAllocationConfig, InstancePricing\n\npricing = InstancePricing(on_demand_hourly=1.0,\
         \ reserved_hourly=0.7, spot_hourly=0.3)\nconfig = CostAllocationConfig(pricing={'t3.medium':\
         \ pricing})\n\nallocator = CostAllocator(config)\nreport = allocator.verify_cost_optimization()\n\
-        \nprint('Cost Optimization Report:', report)\nprint(f\\\"\u2713 RI Utilization:\
-        \ {report['ri_utilization']:.1f}%\\\")\nprint(f\\\"\u2713 Cost Breakdown:\\\
-        \")\nfor category, cost in report['cost_breakdown'].items():\n    print(f\\\
-        \"  - {category}: \\${cost:.2f}\\\")\n\"\n"
-    timeout-minutes: 60
-  sla_compliance:
-    runs-on: ubuntu-latest
-    name: SLA Compliance Check
-    needs:
-    - multi_tenant_health
-    - failover_health
-    - load_balancer_health
-    - auto_scaling_health
-    if: always()
-    steps:
-    - uses: actions/checkout@v5
+        \nprint('Cost Optimization Report:', report)\nprint(f\\\"✓ RI Utilization:\
+        \ {report['ri_utilization']:.1f}%\\\")\nprint(f\\\"✓ Cost Breakdown:\\\")\n\
+        for category, cost in report['cost_breakdown'].items():\n    print(f\\\" \
+        \ - {category}: \\${cost:.2f}\\\")\n\"\n"
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Check multi-region uptime
       run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
         \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
-        \n  # Mock health check\n  echo \"\u2713 $region: Healthy\"\ndone\n"
+        \n  # Mock health check\n  echo \"✓ $region: Healthy\"\ndone\n"
     - name: Verify SLA >99%
       run: "python -c \"\n# In production, this would query actual monitoring\nuptime\
-        \ = 99.95\nsla_target = 99.0\n\nif uptime >= sla_target:\n    print(f'\u2713\
-        \ SLA Compliance: {uptime}% (target: {sla_target}%)')\n    exit(0)\nelse:\n\
-        \    print(f'\u2717 SLA Compliance: {uptime}% (target: {sla_target}%)')\n\
-        \    exit(1)\n\"\n"
-    timeout-minutes: 60
+        \ = 99.95\nsla_target = 99.0\n\nif uptime >= sla_target:\n    print(f'✓ SLA\
+        \ Compliance: {uptime}% (target: {sla_target}%)')\n    exit(0)\nelse:\n  \
+        \  print(f'✗ SLA Compliance: {uptime}% (target: {sla_target}%)')\n    exit(1)\n\
+        \"\n"
   test_coverage:
     runs-on: ubuntu-latest
     name: Test Coverage Report
@@ -252,33 +251,27 @@ jobs:
     - name: Check coverage threshold
       run: "python -c \"\nimport xml.etree.ElementTree as ET\nroot = ET.parse('coverage.xml').getroot()\n\
         coverage_pct = float(root.get('line-rate', 0)) * 100\n\nif coverage_pct >=\
-        \ 85:\n    print(f'\u2713 Code coverage: {coverage_pct:.1f}% (target: \u2265\
-        85%)')\n    exit(0)\nelse:\n    print(f'\u2717 Code coverage: {coverage_pct:.1f}%\
-        \ (target: \u226585%)')\n    exit(1)\n\"\n"
-    timeout-minutes: 60
-  failover_drill:
-    runs-on: ubuntu-latest
-    name: Weekly Failover Drill
-    if: github.event.schedule == '0 9 * * 0' || github.event_name == 'workflow_dispatch'
-    steps:
-    - uses: actions/checkout@v5
+        \ 85:\n    print(f'✓ Code coverage: {coverage_pct:.1f}% (target: ≥85%)')\n\
+        \    exit(0)\nelse:\n    print(f'✗ Code coverage: {coverage_pct:.1f}% (target:\
+        \ ≥85%)')\n    exit(1)\n\"\n"
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Execute failover drill
       run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
         \ HealthStatus\nimport time\n\nprint('=== Failover Drill ===')\n\nmgr = FailoverManager(check_interval=0.1)\n\
         \n# Setup regions\nmgr.add_region(RegionConfig('us-east-1', 'region-1', primary=True))\n\
-        mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))\n\nprint('\u2713\
+        mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))\n\nprint('✓\
         \ Regions configured')\n\n# Mark primary as healthy\nmgr.region_states['region-1']\
         \ = HealthStatus.HEALTHY\nmgr.region_states['region-2'] = HealthStatus.HEALTHY\n\
-        print('\u2713 Primary and secondary healthy')\n\n# Simulate primary failure\n\
-        print('Simulating primary region failure...')\nmgr.region_states['region-1']\
-        \ = HealthStatus.UNHEALTHY\nmgr._make_failover_decision()\n\nif mgr.get_current_primary()\
-        \ == 'region-2':\n    print('\u2713 Failover successful')\nelse:\n    print('\u2717\
-        \ Failover failed')\n    exit(1)\n\n# Verify failover event\nif mgr.failover_events:\n\
-        \    event = mgr.failover_events[-1]\n    print(f'  Failover time: {event.failover_time_ms:.1f}ms')\n\
+        print('✓ Primary and secondary healthy')\n\n# Simulate primary failure\nprint('Simulating\
+        \ primary region failure...')\nmgr.region_states['region-1'] = HealthStatus.UNHEALTHY\n\
+        mgr._make_failover_decision()\n\nif mgr.get_current_primary() == 'region-2':\n\
+        \    print('✓ Failover successful')\nelse:\n    print('✗ Failover failed')\n\
+        \    exit(1)\n\n# Verify failover event\nif mgr.failover_events:\n    event\
+        \ = mgr.failover_events[-1]\n    print(f'  Failover time: {event.failover_time_ms:.1f}ms')\n\
         \"\n"
     - name: Report drill results
       if: always()
@@ -286,17 +279,11 @@ jobs:
       with:
         path: failover-drill-*.json
         name: failover-drill-report
-    timeout-minutes: 60
-  cost_report:
-    runs-on: ubuntu-latest
-    name: Weekly Cost Report
-    if: github.event.schedule == '0 10 * * 1' || github.event_name == 'workflow_dispatch'
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Generate cost report
       run: 'python -c "
 
@@ -337,7 +324,6 @@ jobs:
         "
 
         '
-    timeout-minutes: 60
   summary:
     runs-on: ubuntu-latest
     name: Framework Health Summary
@@ -346,32 +332,51 @@ jobs:
     - failover_health
     - load_balancer_health
     - auto_scaling_health
-    - sla_compliance
     - test_coverage
     if: always()
     steps:
     - name: Generate summary
-      run: "echo \"## Scaling Framework Health Report\"\necho \"\"\necho \"### Gate\
-        \ Criteria Status\"\necho \"- Gate 1 (Isolation): ${{ needs.multi_tenant_health.result\
-        \ }}\"\necho \"- Gate 2 (Failover): ${{ needs.failover_health.result }}\"\n\
-        echo \"- Gate 3 (Load Distribution): ${{ needs.load_balancer_health.result\
-        \ }}\"\necho \"- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result\
-        \ }}\"\necho \"- Gate 6 (SLA Compliance): ${{ needs.sla_compliance.result\
-        \ }}\"\necho \"- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}\"\
-        \necho \"\"\necho \"### Summary\"\necho \"All scaling framework components\
-        \ are operational.\"\necho \"\"\necho \"**Phase 4E Planset 010**: \u2705 ACTIVE\"\
-        \n"
+      run: 'echo "## Scaling Framework Health Report"
+
+        echo ""
+
+        echo "### Gate Criteria Status"
+
+        echo "- Gate 1 (Isolation): ${{ needs.multi_tenant_health.result }}"
+
+        echo "- Gate 2 (Failover): ${{ needs.failover_health.result }}"
+
+        echo "- Gate 3 (Load Distribution): ${{ needs.load_balancer_health.result
+        }}"
+
+        echo "- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result }}"
+
+        echo "- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}"
+
+        echo ""
+
+        echo "### Summary"
+
+        echo "All scaling framework components are operational."
+
+        echo ""
+
+        echo "**Phase 4E Planset 010**: ✅ ACTIVE"
+
+        '
       env:
         HEALTH_RESULT: ${{ needs.multi_tenant_health.result }}
         FAILOVER_RESULT: ${{ needs.failover_health.result }}
         LB_RESULT: ${{ needs.load_balancer_health.result }}
         AS_RESULT: ${{ needs.auto_scaling_health.result }}
-        SLA_RESULT: ${{ needs.sla_compliance.result }}
         COVERAGE_RESULT: ${{ needs.test_coverage.result }}
     - name: Check all tests passed
       if: failure()
-      run: "echo \"\u274C Some tests failed. Review logs above.\"\nexit 1\n"
-    timeout-minutes: 60
+      run: 'echo "❌ Some tests failed. Review logs above."
+
+        exit 1
+
+        '
   notify:
     runs-on: ubuntu-latest
     name: Notify Completion
@@ -381,11 +386,20 @@ jobs:
     steps:
     - name: Report status
       run: "if [ \"${{ needs.summary.result }}\" == \"success\" ]; then\n  echo \"\
-        \u2705 All scaling framework health checks passed\"\n  exit 0\nelse\n  echo\
-        \ \"\u26A0\uFE0F  Some health checks failed\"\n  exit 1\nfi\n"
+        ✅ All scaling framework health checks passed\"\n  exit 0\nelse\n  echo \"\
+        ⚠️  Some health checks failed\"\n  exit 1\nfi\n"
       env:
         SUMMARY_RESULT: ${{ needs.summary.result }}
-    timeout-minutes: 60
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+'on':
+  schedule:
+  - cron: 0 * * * *
+  - cron: 0 9 * * 0
+  - cron: 0 10 * * 1
+  workflow_dispatch: null
+  push:
+    paths:
+    - src/codex/scaling/**
+    - .github/workflows/scaling-framework-monitor.yml

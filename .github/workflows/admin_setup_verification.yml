@@ -1,592 +1,370 @@
----
 name: Admin Setup Verification
-
-# §8 ADMIN_MANUAL_SETUP_GUIDE.md — Automated verification of all admin setup
-# items. Run this after completing manual steps to confirm everything is wired.
-#
-# Checks (in order of ADMIN_MANUAL_SETUP_GUIDE.md):
-#   §2  Repository variables present
-#   §3  Secrets present (existence only — values never logged)
-#   §4  GitHub Discussions accessible
-#   §6  Workflow permissions correctly declared
-#   §7  Follow-up prompt file committed
-#
-# §1 (Copilot App permissions) and §5 (Webhook) require UI — not checkable
-# from within a workflow without elevated token.
-
 on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "PR number to post verification summary to (optional)"
+        description: PR number to post verification summary to (optional)
         required: false
-        default: ""
+        default: ''
   push:
     paths:
-      - ".codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md"
-      - ".github/workflows/admin_setup_verification.yml"
+    - .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md
+    - .github/workflows/admin_setup_verification.yml
   repository_dispatch:
-    types: [run-admin-verification]
-
+    types:
+    - run-admin-verification
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   issues: write
-
 jobs:
   verify-setup:
     name: Verify Admin Setup
     runs-on: ubuntu-latest
-
     steps:
+    - name: Cache Python dependencies (Layer 1)
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
+          }}
+        restore-keys: '${{ runner.os }}-pip-
 
-      - name: Cache Python dependencies (Layer 1)
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          '
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
 
-      - uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
+          '
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: "\xA73a Verify CODEX_MASTER_KEY functional"
+      id: test_master
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+      run: "{\n  echo \"## \xA73a CODEX_MASTER_KEY Verification\"\n  echo \"| Test\
+        \ | Result |\"\n  echo \"|------|--------|\"\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nif [ -z \"${CODEX_MASTER_KEY}\" ]; then\n  echo \"| Key present | \u274C\
+        \ Secret not found in runner env |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
+        MASTER_KEY_FUNCTIONAL=false\" >> \"$GITHUB_ENV\"\n  exit 0\nfi\n\n# Probe\
+        \ 1: read \u2014 GET /repos (any authenticated call)\nREAD_STATUS=$(curl -s\
+        \ -o /tmp/master_read.json -w \"%{http_code}\" \\\n  -H \"Authorization: Bearer\
+        \ ${CODEX_MASTER_KEY}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\
+        \n  \"https://api.github.com/repos/${{ github.repository }}\" 2>/dev/null)\n\
+        \nif [ \"$READ_STATUS\" = \"200\" ]; then\n  REPO_NAME=$(python3 -c \"import\
+        \ json,sys; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))\"\
+        \ 2>/dev/null || echo \"?\")\n  echo \"| Read access (GET /repo) | \u2705\
+        \ HTTP 200 \u2014 \\`${REPO_NAME}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n\
+        \  echo \"| Read access (GET /repo) | \u274C HTTP ${READ_STATUS} \u2014 token\
+        \ invalid or expired |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"MASTER_KEY_FUNCTIONAL=false\"\
+        \ >> \"$GITHUB_ENV\"\n  exit 0\nfi\n\n# Probe 2: write \u2014 POST issue comment\
+        \ (actual write test)\nWRITE_STATUS=$(curl -s -o /tmp/master_write.json -w\
+        \ \"%{http_code}\" \\\n  -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\"\
+        \ \\\n  -H \"Accept: application/vnd.github+json\" \\\n  -H \"X-GitHub-Api-Version:\
+        \ 2022-11-28\" \\\n  -d \"{\\\"body\\\":\\\"\U0001F511 **[CODEX_MASTER_KEY\
+        \ verification probe]** \u2014 S108 admin setup verification. This comment\
+        \ confirms \\`CODEX_MASTER_KEY\\` has \\`issues:write\\` scope and autonomous\
+        \ @copilot commands can post comments. \u2014 copilot-swe-agent[bot]\\\"}\"\
+        \ \\\n  \"https://api.github.com/repos/${{ github.repository }}/issues/${{\
+        \ github.event.inputs.pr_number || '3401' }}/comments\" 2>/dev/null)\n\nif\
+        \ [ \"$WRITE_STATUS\" = \"201\" ]; then\n  COMMENT_URL=$(python3 -c \"import\
+        \ json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))\"\
+        \ 2>/dev/null || echo \"?\")\n  echo \"| Write access (POST comment) | \u2705\
+        \ HTTP 201 \u2014 [View comment](${COMMENT_URL}) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  { echo \"MASTER_KEY_FUNCTIONAL=true\"; echo \"MASTER_COMMENT_URL=${COMMENT_URL}\"\
+        ; } >> \"$GITHUB_ENV\"\nelse\n  WRITE_MSG=$(python3 -c \"import json,sys;\
+        \ d=json.load(open('/tmp/master_write.json')); print(d.get('message','?'))\"\
+        \ 2>/dev/null || echo \"?\")\n  echo \"| Write access (POST comment) | \u274C\
+        \ HTTP ${WRITE_STATUS}: \\`${WRITE_MSG}\\` \u2014 grant \\`issues:write\\\
+        ` (guide \xA71) |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"MASTER_KEY_FUNCTIONAL=false\"\
+        \ >> \"$GITHUB_ENV\"\nfi\n"
+    - name: "\xA73b Verify CODEX_BACKUP_KEY functional"
+      id: test_backup
+      env:
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+      run: "{\n  echo \"\"\n  echo \"## \xA73b CODEX_BACKUP_KEY Verification\"\n \
+        \ echo \"| Test | Result |\"\n  echo \"|------|--------|\"\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nif [ -z \"${CODEX_BACKUP_KEY}\" ]; then\n  echo \"| Key present | \u274C\
+        \ Secret not found in runner env |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
+        BACKUP_KEY_FUNCTIONAL=false\" >> \"$GITHUB_ENV\"\n  exit 0\nfi\n\n# Probe\
+        \ 1: read\nREAD_STATUS=$(curl -s -o /tmp/backup_read.json -w \"%{http_code}\"\
+        \ \\\n  -H \"Authorization: Bearer ${CODEX_BACKUP_KEY}\" \\\n  -H \"Accept:\
+        \ application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${{ github.repository\
+        \ }}\" 2>/dev/null)\n\nif [ \"$READ_STATUS\" = \"200\" ]; then\n  echo \"\
+        | Read access (GET /repo) | \u2705 HTTP 200 |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nelse\n  echo \"| Read access (GET /repo) | \u274C HTTP ${READ_STATUS} \u2014\
+        \ token invalid or expired |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"BACKUP_KEY_FUNCTIONAL=false\"\
+        \ >> \"$GITHUB_ENV\"\n  exit 0\nfi\n\n# Probe 2: write \u2014 POST issue comment\n\
+        WRITE_STATUS=$(curl -s -o /tmp/backup_write.json -w \"%{http_code}\" \\\n\
+        \  -X POST \\\n  -H \"Authorization: Bearer ${CODEX_BACKUP_KEY}\" \\\n  -H\
+        \ \"Accept: application/vnd.github+json\" \\\n  -H \"X-GitHub-Api-Version:\
+        \ 2022-11-28\" \\\n  -d \"{\\\"body\\\":\\\"\U0001F511 **[CODEX_BACKUP_KEY\
+        \ verification probe]** \u2014 S108 admin setup verification. This comment\
+        \ confirms \\`CODEX_BACKUP_KEY\\` has \\`issues:write\\` scope and is operational\
+        \ as fallback. \u2014 copilot-swe-agent[bot]\\\"}\" \\\n  \"https://api.github.com/repos/${{\
+        \ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401'\
+        \ }}/comments\" 2>/dev/null)\n\nif [ \"$WRITE_STATUS\" = \"201\" ]; then\n\
+        \  COMMENT_URL=$(python3 -c \"import json,sys; d=json.load(open('/tmp/backup_write.json'));\
+        \ print(d.get('html_url','?'))\" 2>/dev/null || echo \"?\")\n  echo \"| Write\
+        \ access (POST comment) | \u2705 HTTP 201 \u2014 [View comment](${COMMENT_URL})\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"BACKUP_KEY_FUNCTIONAL=true\" >>\
+        \ \"$GITHUB_ENV\"\nelse\n  WRITE_MSG=$(python3 -c \"import json,sys; d=json.load(open('/tmp/backup_write.json'));\
+        \ print(d.get('message','?'))\" 2>/dev/null || echo \"?\")\n  echo \"| Write\
+        \ access (POST comment) | \u274C HTTP ${WRITE_STATUS}: \\`${WRITE_MSG}\\`\
+        \ \u2014 grant \\`issues:write\\` (guide \xA71) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"BACKUP_KEY_FUNCTIONAL=false\" >> \"$GITHUB_ENV\"\nfi\n"
+    - name: Key status summary
+      run: "{\n  echo \"\"\n  echo \"## \U0001F511 Key Summary\"\n  echo \"| Key |\
+        \ Status | Copilot can post autonomously? |\"\n  echo \"|-----|--------|---------------------------------|\"\
+        \n} >> \"$GITHUB_STEP_SUMMARY\"\n\nif [ \"${MASTER_KEY_FUNCTIONAL}\" = \"\
+        true\" ]; then\n  echo \"| CODEX_MASTER_KEY | \u2705 Fully functional | \u2705\
+        \ YES |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"| CODEX_MASTER_KEY |\
+        \ \u274C Write blocked | \u274C NO \u2014 fix \xA71 |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nfi\n\nif [ \"${BACKUP_KEY_FUNCTIONAL}\" = \"true\" ]; then\n  echo \"| CODEX_BACKUP_KEY\
+        \ | \u2705 Fully functional | \u2705 YES (fallback) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nelse\n  echo \"| CODEX_BACKUP_KEY | \u274C Write blocked | \u274C NO \u2014\
+        \ fix \xA71 |\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n\nif [ \"${MASTER_KEY_FUNCTIONAL}\"\
+        \ = \"true\" ] || [ \"${BACKUP_KEY_FUNCTIONAL}\" = \"true\" ]; then\n  { echo\
+        \ \"\"; echo \"\u2705 **At least one key is functional \u2014 autonomous posting\
+        \ is ACTIVE**\"; } >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  { echo \"\"; echo\
+        \ \"\u274C **No functional write key \u2014 complete \xA71 in ADMIN_MANUAL_SETUP_GUIDE.md**\"\
+        ; } >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
+    - name: Cache coverage reports (Layer 4)
+      uses: actions/cache@v5
+      with:
+        path: coverage/
+        key: ${{ runner.os }}-coverage-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-coverage-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: Set up Python
-        uses: actions/setup-python@v6  # v6
-        with:
-          python-version: "3.12.13"
-          cache: pip
-
-      # ── KEY VERIFICATION ─────────────────────────────────────────────────────
-      # Tests CODEX_MASTER_KEY and CODEX_BACKUP_KEY independently.
-      # Each key is tested with a real GitHub API write call (dry-run label fetch
-      # that requires issues:read — low privilege but proves the token is valid).
-      # A full write probe (POST comment) is also attempted and result reported.
-      - name: "§3a Verify CODEX_MASTER_KEY functional"
-        id: test_master
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          {
-            echo "## §3a CODEX_MASTER_KEY Verification"
-            echo "| Test | Result |"
-            echo "|------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ -z "${CODEX_MASTER_KEY}" ]; then
-            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
-            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          # Probe 1: read — GET /repos (any authenticated call)
-          READ_STATUS=$(curl -s -o /tmp/master_read.json -w "%{http_code}" \
-            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}" 2>/dev/null)
-
-          if [ "$READ_STATUS" = "200" ]; then
-            REPO_NAME=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))" 2>/dev/null || echo "?")
-            echo "| Read access (GET /repo) | ✅ HTTP 200 — \`${REPO_NAME}\` |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
-            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          # Probe 2: write — POST issue comment (actual write test)
-          WRITE_STATUS=$(curl -s -o /tmp/master_write.json -w "%{http_code}" \
-            -X POST \
-            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "{\"body\":\"🔑 **[CODEX_MASTER_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_MASTER_KEY\` has \`issues:write\` scope and autonomous @copilot commands can post comments. — copilot-swe-agent[bot]\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
-
-          if [ "$WRITE_STATUS" = "201" ]; then
-            COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
-            { echo "MASTER_KEY_FUNCTIONAL=true"; echo "MASTER_COMMENT_URL=${COMMENT_URL}"; } >> "$GITHUB_ENV"
-          else
-            WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> "$GITHUB_STEP_SUMMARY"
-            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-          fi
-
-      - name: "§3b Verify CODEX_BACKUP_KEY functional"
-        id: test_backup
-        env:
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-        run: |
-          {
-            echo ""
-            echo "## §3b CODEX_BACKUP_KEY Verification"
-            echo "| Test | Result |"
-            echo "|------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ -z "${CODEX_BACKUP_KEY}" ]; then
-            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          # Probe 1: read
-          READ_STATUS=$(curl -s -o /tmp/backup_read.json -w "%{http_code}" \
-            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}" 2>/dev/null)
-
-          if [ "$READ_STATUS" = "200" ]; then
-            echo "| Read access (GET /repo) | ✅ HTTP 200 |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          # Probe 2: write — POST issue comment
-          WRITE_STATUS=$(curl -s -o /tmp/backup_write.json -w "%{http_code}" \
-            -X POST \
-            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "{\"body\":\"🔑 **[CODEX_BACKUP_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_BACKUP_KEY\` has \`issues:write\` scope and is operational as fallback. — copilot-swe-agent[bot]\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
-
-          if [ "$WRITE_STATUS" = "201" ]; then
-            COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
-            echo "BACKUP_KEY_FUNCTIONAL=true" >> "$GITHUB_ENV"
-          else
-            WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> "$GITHUB_STEP_SUMMARY"
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
-          fi
-
-      - name: "Key status summary"
-        run: |
-          {
-            echo ""
-            echo "## 🔑 Key Summary"
-            echo "| Key | Status | Copilot can post autonomously? |"
-            echo "|-----|--------|---------------------------------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ]; then
-            echo "| CODEX_MASTER_KEY | ✅ Fully functional | ✅ YES |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| CODEX_MASTER_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          if [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
-            echo "| CODEX_BACKUP_KEY | ✅ Fully functional | ✅ YES (fallback) |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| CODEX_BACKUP_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ] || [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
-            { echo ""; echo "✅ **At least one key is functional — autonomous posting is ACTIVE**"; } >> "$GITHUB_STEP_SUMMARY"
-          else
-            { echo ""; echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**"; } >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Cache coverage reports (Layer 4)
-        uses: actions/cache@v5
-        with:
-          path: coverage/
-          key: ${{ runner.os }}-coverage-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-coverage-
-
-      - name: "§1b Delegated agent token coverage"
-        run: |
-          {
-            echo ""
-            echo "## 🤖 Delegated Agent Token Coverage"
-            echo "| Agent | Category | Token actionable? |"
-            echo "|-------|----------|-------------------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          # Determine whether at least one key works
-          if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ] || [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
-            STATUS="✅ YES — inherits via CODEX_MASTER_KEY/BACKUP_KEY"
-            COPILOT_SETUP="✅ YES — via copilot-setup-steps.yml secret injection"
-          else
-            STATUS="❌ NO — fix §1/§3 first"
-            COPILOT_SETUP="❌ NO — fix §1/§3 first"
-          fi
-
-          {
-            echo "| \`copilot-swe-agent[bot]\` | GitHub Copilot coding agent | ${COPILOT_SETUP} |"
-            echo "| \`github-copilot[bot]\` | Copilot custom agents | ${STATUS} |"
-            echo "| \`github-actions[bot]\` | CI/CD AI workflow agents | ${STATUS} |"
-            echo ""
-            echo "> All three agent identities are added to \`COGNITIVE_BRAIN_ALLOWED_ACTORS\` by the §2 update step above."
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      # ── Original §2–§8 checks continue below ─────────────────────────────────
-
-      - name: "§2 Verify repository variables"
-        env:
-          COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED }}
-          COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
-          AUTONOMOUS_ACTIONS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
-          COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
-        run: |
-          {
-            echo "## §2 Repository Variables"
-            echo "| Variable | Status |"
-            echo "|----------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          check_var() {
-            local name=$1
-            local val=$2
-            if [ -n "$val" ]; then
-              echo "| \`$name\` | ✅ Set (\`$val\`) |" >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "| \`$name\` | ❌ Missing — see guide §2 |" >> "$GITHUB_STEP_SUMMARY"
-              echo "MISSING_VAR=true" >> "$GITHUB_ENV"
-            fi
-          }
-
-          check_var "COGNITIVE_BRAIN_INJECTION_ENABLED" "$COGNITIVE_BRAIN_INJECTION_ENABLED"
-          check_var "COGNITIVE_BRAIN_SESSION_NUMBER" "$COGNITIVE_BRAIN_SESSION_NUMBER"
-          check_var "AUTONOMOUS_ACTIONS_ENABLED" "$AUTONOMOUS_ACTIONS_ENABLED"
-          check_var "COGNITIVE_BRAIN_ALLOWED_ACTORS" "$COGNITIVE_BRAIN_ALLOWED_ACTORS"
-
-      - name: "Update cognitive brain repo variables (S109)"
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v8  # v9
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          script: |
-            // Update COGNITIVE_BRAIN_SESSION_NUMBER to 109
-            await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              value: '109',
-            });
-
-            // Ensure all three delegated agent identities are in COGNITIVE_BRAIN_ALLOWED_ACTORS:
-            //   1. copilot-swe-agent[bot]  — GitHub Copilot coding agent
-            //   2. github-copilot[bot]     — GitHub Copilot app / custom agents
-            //   3. github-actions[bot]     — standard CI/AI workflow automation
-            const REQUIRED_AGENTS = [
-              'copilot-swe-agent[bot]',
-              'github-copilot[bot]',
-              'github-actions[bot]',
-            ];
-
-            // Fetch the current value first to avoid overwriting other actors
-            // Default: mbaetiong (human admin) + github-actions[bot] (CI automation)
-            let currentActors = 'mbaetiong,github-actions[bot]';
-            try {
-              const resp = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-              });
-              currentActors = resp.data.value || currentActors;
-            } catch (e) {
-              core.warning(`Could not fetch current COGNITIVE_BRAIN_ALLOWED_ACTORS: ${e.message}. Using default.`);
-            }
-
-            // Use array-based exact matching to avoid partial-name false positives
-            const actorSet = new Set(
-              currentActors.split(',').map(a => a.trim()).filter(a => a.length > 0)
-            );
-            for (const agent of REQUIRED_AGENTS) {
-              actorSet.add(agent);
-            }
-            const updatedActors = Array.from(actorSet).join(',');
-            await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              value: updatedActors
-            });
-            core.info(`✅ Session number updated to 109. COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);
-
-              name: 'COGNITIVE_BRAIN_SESSION_NUMBER',
-                name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS'
-              name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',
-      - name: "§3 Verify secrets (existence check only)"
-        env:
-          HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
-          HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
-        run: |  # pragma: allowlist secret
-          {
-            echo ""
-            echo "## §3 Repository Secrets"
-            echo "| Secret | Status |"
-            echo "|--------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ "$HAS_MASTER_KEY" = "true" ]; then
-            echo "| \`CODEX_MASTER_KEY\` | ✅ Present |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| \`CODEX_MASTER_KEY\` | ❌ Missing — see guide §3 |" >> "$GITHUB_STEP_SUMMARY"
-            echo "MISSING_SECRET=true" >> "$GITHUB_ENV"
-          fi
-
-          if [ "$HAS_BACKUP_KEY" = "true" ]; then
-            echo "| \`CODEX_BACKUP_KEY\` | ✅ Present |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| \`CODEX_BACKUP_KEY\` | ⚠️ Optional backup key missing |" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: "§4 Verify GitHub Discussions accessible"
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          {
-            echo ""
-            echo "## §4 GitHub Discussions"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/discussions" 2>/dev/null || echo "000")
-
-          if [ "$STATUS" = "200" ]; then
-            echo "| Discussions API | ✅ Enabled (HTTP 200) |" >> "$GITHUB_STEP_SUMMARY"
-          elif [ "$STATUS" = "404" ]; then
-            echo "| Discussions API | ❌ Not enabled — see guide §4 (HTTP 404) |" >> "$GITHUB_STEP_SUMMARY"
-            echo "DISCUSSIONS_DISABLED=true" >> "$GITHUB_ENV"
-          else
-            echo "| Discussions API | ⚠️ Unexpected response (HTTP ${STATUS}) |" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: "§6 Verify workflow permission declarations"
-        run: |
-          {
-            echo ""
-            echo "## §6 Workflow Permissions"
-            echo "| Workflow | permissions block | Status |"
-            echo "|----------|------------------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          for wf in \
-            ".github/workflows/cognitive_brain_ci_feedback.yml" \
-            ".github/workflows/resilient_validation.yml"; do
-            if grep -q "^permissions:" "$wf" 2>/dev/null; then
-              echo "| \`$wf\` | ✅ Declared |" >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "| \`$wf\` | ⚠️ No explicit permissions block |" >> "$GITHUB_STEP_SUMMARY"
-            fi
-          done
-
-      - name: "§7 Verify follow-up prompt file committed"
-        run: |
-          {
-            echo ""
-            echo "## §7 Follow-up Prompt File"
-            echo "| File | Status |"
-            echo "|------|--------|"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          PROMPT=".github/copilot-prompts/active/PR-3401-followup.md"
-          if [ -f "$PROMPT" ]; then
-            LINES=$(wc -l < "$PROMPT")
-            echo "| \`$PROMPT\` | ✅ Present (${LINES} lines) |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| \`$PROMPT\` | ❌ Missing |" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: "Summary — what still needs human action"
-        run: |
-          {
-            echo ""
-            echo "## 📋 Human-Only Tasks (cannot be automated)"
-            echo ""
-            echo "| Item | URL | Est. time |"
-            echo "|------|-----|-----------|"
-            echo "| §1 Grant Copilot App \`issues: write\` | [org/settings/installations](https://github.com/organizations/Aries-Serpent/settings/installations) | 2 min |"
-            echo "| §3 Create \`CODEX_MASTER_KEY\` secret (if missing above) | [repo/settings/secrets](https://github.com/${{ github.repository }}/settings/secrets/actions) | 3 min |"
-            echo "| §4 Enable Discussions (if missing above) | [repo/settings](https://github.com/${{ github.repository }}/settings) → Features | 1 min |"
-            echo "| §5 Webhook (optional) | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks) | 5 min |"
-            echo "| §7 Post \`@copilot\` S109 comment | [PR  #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |"
-            echo ""
-            echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: "Post @copilot continue to PR (if key functional)"
-        env:
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER_INPUT: ${{ inputs.pr_number }}
-          GITHUB_REPO: ${{ github.repository }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          GITHUB_OWNER: ${{ github.repository_owner }}
-        run: |
-          # Skip if no key is functional
-          if [ "${MASTER_KEY_FUNCTIONAL}" != "true" ] && [ "${BACKUP_KEY_FUNCTIONAL}" != "true" ]; then
-            echo "No functional key — skipping @copilot continue post"
-            exit 0
-          fi
-
-          # Discover target PR
-          TARGET_PR="$PR_NUMBER_INPUT"
-          if [ -z "$TARGET_PR" ]; then
-            TARGET_PR=$(curl -s \
-              -H "Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${GITHUB_OWNER}:${GITHUB_REF_NAME}&per_page=1" \
-              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d[0]['number'] if isinstance(d,list) and d else '')" \
-              2>/dev/null || true)
-          fi
-
-          if [ -z "$TARGET_PR" ]; then
-            echo "Could not determine target PR for branch '${GITHUB_REF_NAME}' — skipping @copilot continue post"
-            exit 0
-          fi
-
-          export TARGET_PR
-
-          # Build dynamic CI-failure-aware prompt and post — all in one Python block.
-          # No static PR numbers: prompt is dynamically assembled from live CI data.
-          # Idempotency: time-based (2-hour window) to avoid false positives from
-          # reply comments that merely mention "@copilot continue" in their body.
-          python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error, datetime
-
-          token  = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY", "")
-          repo   = os.environ["GITHUB_REPO"]
-          branch = os.environ["GITHUB_REF_NAME"]
-          pr     = os.environ["TARGET_PR"]
-          marker = "@copilot continue"
-
-          headers = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-          }
-
-          def gh_get(path, qs=""):
-              url = f"https://api.github.com/repos/{repo}{path}{qs}"
-              req = urllib.request.Request(url, headers=headers)
-              with urllib.request.urlopen(req) as r:
-                  return json.load(r)
-
-          # --- Idempotency: skip if @copilot continue was posted in last 2h ---
-          try:
-              comments = gh_get(f"/issues/{pr}/comments", "?per_page=100")
-              cutoff   = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
-              for c in (comments if isinstance(comments, list) else []):
-                  if c.get("body", "").lstrip().startswith(marker):
-                      try:
-                          ts = datetime.datetime.strptime(c["created_at"], "%Y-%m-%dT%H:%M:%SZ")
-                          if ts > cutoff:
-                              print(f"info: @copilot continue already posted within 2h on PR  #{pr} — skipping (idempotent)")
-                              sys.exit(0)
-                      except Exception:
-                          pass
-          except Exception as e:
-              print(f"Warning: idempotency check failed ({e}) — proceeding", file=sys.stderr)
-
-          # --- Query recent CI runs on this branch (any status) ---
-          failure_lines = []
-          try:
-              runs_data = gh_get("/actions/runs", f"?branch={branch}&per_page=15")
-              all_runs  = runs_data.get("workflow_runs", []) if isinstance(runs_data, dict) else []
-              failed    = [r for r in all_runs if r.get("conclusion") in ("failure", "timed_out", "cancelled")][:6]
-              for run in failed:
-                  name       = run.get("name", "unknown")
-                  url        = run.get("html_url", "")
-                  run_id     = run.get("id", "")
-                  conclusion = run.get("conclusion", "failure")
-                  failure_lines.append(f"  - **[{name}]({url})** (run `{run_id}`, `{conclusion}`)")
-          except Exception as e:
-              print(f"Warning: could not fetch CI runs ({e})", file=sys.stderr)
-
-          # --- Build dynamic body (no static PR numbers) ---
-          date  = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-          lines = [
-              "@copilot continue",
-              "",
-              f"> **CI Auto-Diagnosis** — {date}",
-              f"> Branch: `{branch}` | PR:  #{pr}",
-              ">",
-          ]
-          if failure_lines:
-              lines += ["> **Recently failed CI runs — address all per codebase policy:**"]
-              lines += [f">{fl}" for fl in failure_lines]
-              lines += [
-                  ">",
-                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
-                  "> **AAIS directive:** fix all failures, ruff clean (0 errors), update accountability report.",
-              ]
-          else:
-              lines += [
-                  "> No recent CI failures detected on this branch.",
-                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
-                  "> **Next:** ruff clean, coverage gap-fill, update accountability report.",
-              ]
-          lines += [
-              ">",
-              "> _Auto-posted by Admin Setup Verification (keys confirmed functional)._",
-          ]
-          body = "\n".join(lines)
-
-          # --- Post ---
-          url  = f"https://api.github.com/repos/{repo}/issues/{pr}/comments"
-          data = json.dumps({"body": body}).encode()
-          req  = urllib.request.Request(url, data=data, method="POST", headers={**headers, "Content-Type": "application/json"})
-          try:
-              with urllib.request.urlopen(req) as resp:
-                  result = json.load(resp)
-                  print(f"Posted @copilot continue to PR  #{pr}: {result.get('html_url','?')}")
-          except urllib.error.HTTPError as e:
-              msg = e.read().decode(errors="replace")
-              print(f"::warning::Failed to post to PR  #{pr} — HTTP {e.code}: {msg}", file=sys.stderr)
-              sys.exit(1)
-          PYEOF
-
-      - name: "Post verification summary to PR (if CODEX_MASTER_KEY set)"
-        if: inputs.pr_number != ''
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER: ${{ inputs.pr_number }}
-        run: |
-          if [ -z "${CODEX_MASTER_KEY}" ] && [ -z "${CODEX_BACKUP_KEY}" ]; then
-            echo "No write token — skipping PR comment."
-            exit 0
-          fi
-          pip install -e ".[dev]" -q 2>/dev/null || true
-          python - <<'EOF'
-          import os, sys
-          sys.path.insert(0, "src")
-          from codex.github.mcp_poster import GitHubMCPPoster
-
-          pr = int(os.environ["PR_NUMBER"])
-          poster = GitHubMCPPoster()
-          body = (
-            "## 🔧 Admin Setup Verification Report\n\n"
-            "Automated check complete. See the **Actions Summary** tab for full details:\n"
-            f"https://github.com/{os.environ.get('GITHUB_REPOSITORY', '')}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}\n\n"
-            "### Remaining human-only steps:\n"
-            "1. §1 Grant Copilot App `issues: write` — [org settings](https://github.com/organizations/Aries-Serpent/settings/installations)\n"
-            "2. §3 Create `CODEX_MASTER_KEY` secret (if not done)\n"
-            "3. §4 Enable GitHub Discussions (if not done)\n"
-            "See `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` for click-by-click instructions."
-          )
-          result = poster.post_pr_comment(os.environ.get("GITHUB_REPOSITORY", ""), pr, body)
-          print(f"✅ Posted: {result.get('html_url')}")
-          EOF
-
+          '
+    - name: "\xA71b Delegated agent token coverage"
+      run: "{\n  echo \"\"\n  echo \"## \U0001F916 Delegated Agent Token Coverage\"\
+        \n  echo \"| Agent | Category | Token actionable? |\"\n  echo \"|-------|----------|-------------------|\"\
+        \n} >> \"$GITHUB_STEP_SUMMARY\"\n\n# Determine whether at least one key works\n\
+        if [ \"${MASTER_KEY_FUNCTIONAL}\" = \"true\" ] || [ \"${BACKUP_KEY_FUNCTIONAL}\"\
+        \ = \"true\" ]; then\n  STATUS=\"\u2705 YES \u2014 inherits via CODEX_MASTER_KEY/BACKUP_KEY\"\
+        \n  COPILOT_SETUP=\"\u2705 YES \u2014 via copilot-setup-steps.yml secret injection\"\
+        \nelse\n  STATUS=\"\u274C NO \u2014 fix \xA71/\xA73 first\"\n  COPILOT_SETUP=\"\
+        \u274C NO \u2014 fix \xA71/\xA73 first\"\nfi\n\n{\n  echo \"| \\`copilot-swe-agent[bot]\\\
+        ` | GitHub Copilot coding agent | ${COPILOT_SETUP} |\"\n  echo \"| \\`github-copilot[bot]\\\
+        ` | Copilot custom agents | ${STATUS} |\"\n  echo \"| \\`github-actions[bot]\\\
+        ` | CI/CD AI workflow agents | ${STATUS} |\"\n  echo \"\"\n  echo \"> All\
+        \ three agent identities are added to \\`COGNITIVE_BRAIN_ALLOWED_ACTORS\\\
+        ` by the \xA72 update step above.\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: "\xA72 Verify repository variables"
+      env:
+        COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED
+          }}
+        COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
+        AUTONOMOUS_ACTIONS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
+        COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
+      run: "{\n  echo \"## \xA72 Repository Variables\"\n  echo \"| Variable | Status\
+        \ |\"\n  echo \"|----------|--------|\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n\n\
+        check_var() {\n  local name=$1\n  local val=$2\n  if [ -n \"$val\" ]; then\n\
+        \    echo \"| \\`$name\\` | \u2705 Set (\\`$val\\`) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  else\n    echo \"| \\`$name\\` | \u274C Missing \u2014 see guide \xA7\
+        2 |\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"MISSING_VAR=true\" >> \"$GITHUB_ENV\"\
+        \n  fi\n}\n\ncheck_var \"COGNITIVE_BRAIN_INJECTION_ENABLED\" \"$COGNITIVE_BRAIN_INJECTION_ENABLED\"\
+        \ncheck_var \"COGNITIVE_BRAIN_SESSION_NUMBER\" \"$COGNITIVE_BRAIN_SESSION_NUMBER\"\
+        \ncheck_var \"AUTONOMOUS_ACTIONS_ENABLED\" \"$AUTONOMOUS_ACTIONS_ENABLED\"\
+        \ncheck_var \"COGNITIVE_BRAIN_ALLOWED_ACTORS\" \"$COGNITIVE_BRAIN_ALLOWED_ACTORS\"\
+        \n"
+    - name: Update cognitive brain repo variables (S109)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        script: "// Update COGNITIVE_BRAIN_SESSION_NUMBER to 109\nawait github.request('PATCH\
+          \ /repos/{owner}/{repo}/actions/variables/{name}', {\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  value: '109',\n});\n\n// Ensure all three\
+          \ delegated agent identities are in COGNITIVE_BRAIN_ALLOWED_ACTORS:\n//\
+          \   1. copilot-swe-agent[bot]  \u2014 GitHub Copilot coding agent\n//  \
+          \ 2. github-copilot[bot]     \u2014 GitHub Copilot app / custom agents\n\
+          //   3. github-actions[bot]     \u2014 standard CI/AI workflow automation\n\
+          const REQUIRED_AGENTS = [\n  'copilot-swe-agent[bot]',\n  'github-copilot[bot]',\n\
+          \  'github-actions[bot]',\n];\n\n// Fetch the current value first to avoid\
+          \ overwriting other actors\n// Default: mbaetiong (human admin) + github-actions[bot]\
+          \ (CI automation)\nlet currentActors = 'mbaetiong,github-actions[bot]';\n\
+          try {\n  const resp = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}',\
+          \ {\n    owner: context.repo.owner,\n    repo: context.repo.repo,\n  });\n\
+          \  currentActors = resp.data.value || currentActors;\n} catch (e) {\n  core.warning(`Could\
+          \ not fetch current COGNITIVE_BRAIN_ALLOWED_ACTORS: ${e.message}. Using\
+          \ default.`);\n}\n\n// Use array-based exact matching to avoid partial-name\
+          \ false positives\nconst actorSet = new Set(\n  currentActors.split(',').map(a\
+          \ => a.trim()).filter(a => a.length > 0)\n);\nfor (const agent of REQUIRED_AGENTS)\
+          \ {\n  actorSet.add(agent);\n}\nconst updatedActors = Array.from(actorSet).join(',');\n\
+          await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}',\
+          \ {\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n  value:\
+          \ updatedActors\n});\ncore.info(`\u2705 Session number updated to 109. COGNITIVE_BRAIN_ALLOWED_ACTORS:\
+          \ ${updatedActors}`);\n\n  name: 'COGNITIVE_BRAIN_SESSION_NUMBER',\n   \
+          \ name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS'\n  name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',\n"
+    - name: "\xA73 Verify secrets (existence check only)"
+      env:
+        HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
+        HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
+      run: "{\n  echo \"\"\n  echo \"## \xA73 Repository Secrets\"\n  echo \"| Secret\
+        \ | Status |\"\n  echo \"|--------|--------|\"\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nif [ \"$HAS_MASTER_KEY\" = \"true\" ]; then\n  echo \"| \\`CODEX_MASTER_KEY\\\
+        ` | \u2705 Present |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"| \\`CODEX_MASTER_KEY\\\
+        ` | \u274C Missing \u2014 see guide \xA73 |\" >> \"$GITHUB_STEP_SUMMARY\"\n\
+        \  echo \"MISSING_SECRET=true\" >> \"$GITHUB_ENV\"\nfi\n\nif [ \"$HAS_BACKUP_KEY\"\
+        \ = \"true\" ]; then\n  echo \"| \\`CODEX_BACKUP_KEY\\` | \u2705 Present |\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"| \\`CODEX_BACKUP_KEY\\` | \u26A0\
+        \uFE0F Optional backup key missing |\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
+    - name: "\xA74 Verify GitHub Discussions accessible"
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "{\n  echo \"\"\n  echo \"## \xA74 GitHub Discussions\"\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nSTATUS=$(curl -s -o /dev/null -w \"%{http_code}\" \\\n  -H \"Authorization:\
+        \ Bearer ${GH_TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\
+        \n  \"https://api.github.com/repos/${{ github.repository }}/discussions\"\
+        \ 2>/dev/null || echo \"000\")\n\nif [ \"$STATUS\" = \"200\" ]; then\n  echo\
+        \ \"| Discussions API | \u2705 Enabled (HTTP 200) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nelif [ \"$STATUS\" = \"404\" ]; then\n  echo \"| Discussions API | \u274C\
+        \ Not enabled \u2014 see guide \xA74 (HTTP 404) |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"DISCUSSIONS_DISABLED=true\" >> \"$GITHUB_ENV\"\nelse\n  echo \"\
+        | Discussions API | \u26A0\uFE0F Unexpected response (HTTP ${STATUS}) |\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
+    - name: "\xA76 Verify workflow permission declarations"
+      run: "{\n  echo \"\"\n  echo \"## \xA76 Workflow Permissions\"\n  echo \"| Workflow\
+        \ | permissions block | Status |\"\n  echo \"|----------|------------------|--------|\"\
+        \n} >> \"$GITHUB_STEP_SUMMARY\"\n\nfor wf in \\\n  \".github/workflows/cognitive_brain_ci_feedback.yml\"\
+        \ \\\n  \".github/workflows/resilient_validation.yml\"; do\n  if grep -q \"\
+        ^permissions:\" \"$wf\" 2>/dev/null; then\n    echo \"| \\`$wf\\` | \u2705\
+        \ Declared |\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"| \\`$wf\\\
+        ` | \u26A0\uFE0F No explicit permissions block |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  fi\ndone\n"
+    - name: "\xA77 Verify follow-up prompt file committed"
+      run: "{\n  echo \"\"\n  echo \"## \xA77 Follow-up Prompt File\"\n  echo \"|\
+        \ File | Status |\"\n  echo \"|------|--------|\"\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n\nPROMPT=\".github/copilot-prompts/active/PR-3401-followup.md\"\nif [ -f\
+        \ \"$PROMPT\" ]; then\n  LINES=$(wc -l < \"$PROMPT\")\n  echo \"| \\`$PROMPT\\\
+        ` | \u2705 Present (${LINES} lines) |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n\
+        \  echo \"| \\`$PROMPT\\` | \u274C Missing |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nfi\n"
+    - name: "Summary \u2014 what still needs human action"
+      run: "{\n  echo \"\"\n  echo \"## \U0001F4CB Human-Only Tasks (cannot be automated)\"\
+        \n  echo \"\"\n  echo \"| Item | URL | Est. time |\"\n  echo \"|------|-----|-----------|\"\
+        \n  echo \"| \xA71 Grant Copilot App \\`issues: write\\` | [org/settings/installations](https://github.com/organizations/Aries-Serpent/settings/installations)\
+        \ | 2 min |\"\n  echo \"| \xA73 Create \\`CODEX_MASTER_KEY\\` secret (if missing\
+        \ above) | [repo/settings/secrets](https://github.com/${{ github.repository\
+        \ }}/settings/secrets/actions) | 3 min |\"\n  echo \"| \xA74 Enable Discussions\
+        \ (if missing above) | [repo/settings](https://github.com/${{ github.repository\
+        \ }}/settings) \u2192 Features | 1 min |\"\n  echo \"| \xA75 Webhook (optional)\
+        \ | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks)\
+        \ | 5 min |\"\n  echo \"| \xA77 Post \\`@copilot\\` S109 comment | [PR  #3401](https://github.com/${{\
+        \ github.repository }}/pull/3401) | 1 min |\"\n  echo \"\"\n  echo \"> Full\
+        \ click-by-click guide: \\`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\\`\"\n\
+        } >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Post @copilot continue to PR (if key functional)
+      env:
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER_INPUT: ${{ inputs.pr_number }}
+        GITHUB_REPO: ${{ github.repository }}
+        GITHUB_REF_NAME: ${{ github.ref_name }}
+        GITHUB_OWNER: ${{ github.repository_owner }}
+      run: "# Skip if no key is functional\nif [ \"${MASTER_KEY_FUNCTIONAL}\" != \"\
+        true\" ] && [ \"${BACKUP_KEY_FUNCTIONAL}\" != \"true\" ]; then\n  echo \"\
+        No functional key \u2014 skipping @copilot continue post\"\n  exit 0\nfi\n\
+        \n# Discover target PR\nTARGET_PR=\"$PR_NUMBER_INPUT\"\nif [ -z \"$TARGET_PR\"\
+        \ ]; then\n  TARGET_PR=$(curl -s \\\n    -H \"Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\
+        \ \\\n    -H \"Accept: application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${GITHUB_OWNER}:${GITHUB_REF_NAME}&per_page=1\"\
+        \ \\\n    | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d[0]['number']\
+        \ if isinstance(d,list) and d else '')\" \\\n    2>/dev/null || true)\nfi\n\
+        \nif [ -z \"$TARGET_PR\" ]; then\n  echo \"Could not determine target PR for\
+        \ branch '${GITHUB_REF_NAME}' \u2014 skipping @copilot continue post\"\n \
+        \ exit 0\nfi\n\nexport TARGET_PR\n\n# Build dynamic CI-failure-aware prompt\
+        \ and post \u2014 all in one Python block.\n# No static PR numbers: prompt\
+        \ is dynamically assembled from live CI data.\n# Idempotency: time-based (2-hour\
+        \ window) to avoid false positives from\n# reply comments that merely mention\
+        \ \"@copilot continue\" in their body.\npython3 - <<'PYEOF'\nimport json,\
+        \ os, sys, urllib.request, urllib.error, datetime\n\ntoken  = os.environ.get(\"\
+        CODEX_MASTER_KEY\") or os.environ.get(\"CODEX_BACKUP_KEY\", \"\")\nrepo  \
+        \ = os.environ[\"GITHUB_REPO\"]\nbranch = os.environ[\"GITHUB_REF_NAME\"]\n\
+        pr     = os.environ[\"TARGET_PR\"]\nmarker = \"@copilot continue\"\n\nheaders\
+        \ = {\n    \"Authorization\": f\"Bearer {token}\",\n    \"Accept\": \"application/vnd.github+json\"\
+        ,\n    \"X-GitHub-Api-Version\": \"2022-11-28\",\n}\n\ndef gh_get(path, qs=\"\
+        \"):\n    url = f\"https://api.github.com/repos/{repo}{path}{qs}\"\n    req\
+        \ = urllib.request.Request(url, headers=headers)\n    with urllib.request.urlopen(req)\
+        \ as r:\n        return json.load(r)\n\n# --- Idempotency: skip if @copilot\
+        \ continue was posted in last 2h ---\ntry:\n    comments = gh_get(f\"/issues/{pr}/comments\"\
+        , \"?per_page=100\")\n    cutoff   = datetime.datetime.utcnow() - datetime.timedelta(hours=2)\n\
+        \    for c in (comments if isinstance(comments, list) else []):\n        if\
+        \ c.get(\"body\", \"\").lstrip().startswith(marker):\n            try:\n \
+        \               ts = datetime.datetime.strptime(c[\"created_at\"], \"%Y-%m-%dT%H:%M:%SZ\"\
+        )\n                if ts > cutoff:\n                    print(f\"info: @copilot\
+        \ continue already posted within 2h on PR  #{pr} \u2014 skipping (idempotent)\"\
+        )\n                    sys.exit(0)\n            except Exception:\n      \
+        \          pass\nexcept Exception as e:\n    print(f\"Warning: idempotency\
+        \ check failed ({e}) \u2014 proceeding\", file=sys.stderr)\n\n# --- Query\
+        \ recent CI runs on this branch (any status) ---\nfailure_lines = []\ntry:\n\
+        \    runs_data = gh_get(\"/actions/runs\", f\"?branch={branch}&per_page=15\"\
+        )\n    all_runs  = runs_data.get(\"workflow_runs\", []) if isinstance(runs_data,\
+        \ dict) else []\n    failed    = [r for r in all_runs if r.get(\"conclusion\"\
+        ) in (\"failure\", \"timed_out\", \"cancelled\")][:6]\n    for run in failed:\n\
+        \        name       = run.get(\"name\", \"unknown\")\n        url        =\
+        \ run.get(\"html_url\", \"\")\n        run_id     = run.get(\"id\", \"\")\n\
+        \        conclusion = run.get(\"conclusion\", \"failure\")\n        failure_lines.append(f\"\
+        \  - **[{name}]({url})** (run `{run_id}`, `{conclusion}`)\")\nexcept Exception\
+        \ as e:\n    print(f\"Warning: could not fetch CI runs ({e})\", file=sys.stderr)\n\
+        \n# --- Build dynamic body (no static PR numbers) ---\ndate  = datetime.datetime.utcnow().strftime(\"\
+        %Y-%m-%d %H:%M UTC\")\nlines = [\n    \"@copilot continue\",\n    \"\",\n\
+        \    f\"> **CI Auto-Diagnosis** \u2014 {date}\",\n    f\"> Branch: `{branch}`\
+        \ | PR:  #{pr}\",\n    \">\",\n]\nif failure_lines:\n    lines += [\"> **Recently\
+        \ failed CI runs \u2014 address all per codebase policy:**\"]\n    lines +=\
+        \ [f\">{fl}\" for fl in failure_lines]\n    lines += [\n        \">\",\n \
+        \       \"> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` \u2014 _Leave codebase\
+        \ better than found it._\",\n        \"> **AAIS directive:** fix all failures,\
+        \ ruff clean (0 errors), update accountability report.\",\n    ]\nelse:\n\
+        \    lines += [\n        \"> No recent CI failures detected on this branch.\"\
+        ,\n        \"> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` \u2014 _Leave codebase\
+        \ better than found it._\",\n        \"> **Next:** ruff clean, coverage gap-fill,\
+        \ update accountability report.\",\n    ]\nlines += [\n    \">\",\n    \"\
+        > _Auto-posted by Admin Setup Verification (keys confirmed functional)._\"\
+        ,\n]\nbody = \"\\n\".join(lines)\n\n# --- Post ---\nurl  = f\"https://api.github.com/repos/{repo}/issues/{pr}/comments\"\
+        \ndata = json.dumps({\"body\": body}).encode()\nreq  = urllib.request.Request(url,\
+        \ data=data, method=\"POST\", headers={**headers, \"Content-Type\": \"application/json\"\
+        })\ntry:\n    with urllib.request.urlopen(req) as resp:\n        result =\
+        \ json.load(resp)\n        print(f\"Posted @copilot continue to PR  #{pr}:\
+        \ {result.get('html_url','?')}\")\nexcept urllib.error.HTTPError as e:\n \
+        \   msg = e.read().decode(errors=\"replace\")\n    print(f\"::warning::Failed\
+        \ to post to PR  #{pr} \u2014 HTTP {e.code}: {msg}\", file=sys.stderr)\n \
+        \   sys.exit(1)\nPYEOF\n"
+    - name: Post verification summary to PR (if CODEX_MASTER_KEY set)
+      if: inputs.pr_number != ''
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+      run: "if [ -z \"${CODEX_MASTER_KEY}\" ] && [ -z \"${CODEX_BACKUP_KEY}\" ]; then\n\
+        \  echo \"No write token \u2014 skipping PR comment.\"\n  exit 0\nfi\npip\
+        \ install -e \".[dev]\" -q 2>/dev/null || true\npython - <<'EOF'\nimport os,\
+        \ sys\nsys.path.insert(0, \"src\")\nfrom codex.github.mcp_poster import GitHubMCPPoster\n\
+        \npr = int(os.environ[\"PR_NUMBER\"])\nposter = GitHubMCPPoster()\nbody =\
+        \ (\n  \"## \U0001F527 Admin Setup Verification Report\\n\\n\"\n  \"Automated\
+        \ check complete. See the **Actions Summary** tab for full details:\\n\"\n\
+        \  f\"https://github.com/{os.environ.get('GITHUB_REPOSITORY', '')}/actions/runs/{os.environ.get('GITHUB_RUN_ID',\
+        \ '')}\\n\\n\"\n  \"### Remaining human-only steps:\\n\"\n  \"1. \xA71 Grant\
+        \ Copilot App `issues: write` \u2014 [org settings](https://github.com/organizations/Aries-Serpent/settings/installations)\\\
+        n\"\n  \"2. \xA73 Create `CODEX_MASTER_KEY` secret (if not done)\\n\"\n  \"\
+        3. \xA74 Enable GitHub Discussions (if not done)\\n\"\n  \"See `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md`\
+        \ for click-by-click instructions.\"\n)\nresult = poster.post_pr_comment(os.environ.get(\"\
+        GITHUB_REPOSITORY\", \"\"), pr, body)\nprint(f\"\u2705 Posted: {result.get('html_url')}\"\
+        )\nEOF\n"
+    timeout-minutes: 30

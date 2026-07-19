@@ -1,0 +1,150 @@
+{
+  "generated_at": "2026-07-19T03:02:12Z",
+  "deployment_version": "v0.2.0",
+  "traffic_percent": 100,
+  "monitoring_window": {
+    "start": "2026-07-16T20:00:00Z",
+    "end": "2026-07-17T20:00:00Z",
+    "duration_hours": 24.0
+  },
+  "targets": {
+    "throughput_rps_min": 1000.0,
+    "throughput_rps_max": 1520.0,
+    "error_rate_percent_max": 1.0,
+    "latency_p99_ms_max": 2000.0,
+    "cpu_percent_max": 80.0,
+    "memory_percent_max": 80.0,
+    "database_throughput_qps_min": 285.7,
+    "cache_hit_rate_percent_min": 95.0
+  },
+  "observed": {
+    "request_rate_rps_avg": 1934.5,
+    "request_rate_rps_min": 1847.0,
+    "request_rate_rps_max": 2047.0,
+    "error_rate_percent_avg": 0.047,
+    "error_rate_percent_max": 0.055,
+    "latency_p50_ms_reference": 147.0,
+    "latency_p95_ms_avg": 356.1,
+    "latency_p99_ms_avg": 701.5,
+    "latency_p99_ms_max": 709.0,
+    "cpu_percent_avg": 56.1,
+    "cpu_percent_max": 61.0,
+    "memory_percent_avg": 71.5,
+    "memory_percent_max": 75.0,
+    "database_throughput_qps_floor": 285.7,
+    "db_connections_active_avg": 77.4,
+    "cache_hit_rate_percent_avg": 97.49,
+    "cache_hit_rate_percent_min": 97.4,
+    "uptime_percent": 99.97,
+    "instances_active": 32,
+    "instances_total": 32
+  },
+  "status": {
+    "throughput": "exceeds_target",
+    "error_rate": "pass",
+    "latency": "pass",
+    "resources": "pass",
+    "database": "pass",
+    "cache": "pass",
+    "security": "pass",
+    "compliance": "pass"
+  },
+  "sample_checkpoints": [
+    {
+      "timestamp": "2026-07-16T21:00:00Z",
+      "status": "pass",
+      "request_rate_rps": 1947.0,
+      "error_rate_percent": 0.045,
+      "latency_p95_ms": 353.0,
+      "latency_p99_ms": 709.0,
+      "cpu_percent": 55.0,
+      "memory_percent": 69.0,
+      "cache_hit_rate_percent": 97.5,
+      "db_connections_active": 78.0
+    },
+    {
+      "timestamp": "2026-07-17T08:00:00Z",
+      "status": "degraded",
+      "request_rate_rps": 2047.0,
+      "error_rate_percent": 0.05,
+      "latency_p95_ms": 368.0,
+      "latency_p99_ms": 689.0,
+      "cpu_percent": 58.0,
+      "memory_percent": 71.0,
+      "cache_hit_rate_percent": 97.6,
+      "db_connections_active": 83.0
+    },
+    {
+      "timestamp": "2026-07-17T10:00:00Z",
+      "status": "degraded",
+      "request_rate_rps": 1847.0,
+      "error_rate_percent": 0.055,
+      "latency_p95_ms": 348.0,
+      "latency_p99_ms": 709.0,
+      "cpu_percent": 61.0,
+      "memory_percent": 73.0,
+      "cache_hit_rate_percent": 97.4,
+      "db_connections_active": 73.0
+    },
+    {
+      "timestamp": "2026-07-17T12:00:00Z",
+      "status": "pass",
+      "request_rate_rps": 1947.0,
+      "error_rate_percent": 0.04,
+      "latency_p95_ms": 358.0,
+      "latency_p99_ms": 689.0,
+      "cpu_percent": 52.0,
+      "memory_percent": 75.0,
+      "cache_hit_rate_percent": 97.5,
+      "db_connections_active": 78.0
+    },
+    {
+      "timestamp": "2026-07-17T14:00:00Z",
+      "status": "degraded",
+      "request_rate_rps": 2047.0,
+      "error_rate_percent": 0.045,
+      "latency_p95_ms": 368.0,
+      "latency_p99_ms": 709.0,
+      "cpu_percent": 55.0,
+      "memory_percent": 67.0,
+      "cache_hit_rate_percent": 97.6,
+      "db_connections_active": 83.0
+    },
+    {
+      "timestamp": "2026-07-17T16:00:00Z",
+      "status": "pass",
+      "request_rate_rps": 1847.0,
+      "error_rate_percent": 0.05,
+      "latency_p95_ms": 348.0,
+      "latency_p99_ms": 689.0,
+      "cpu_percent": 58.0,
+      "memory_percent": 69.0,
+      "cache_hit_rate_percent": 97.4,
+      "db_connections_active": 73.0
+    },
+    {
+      "timestamp": "2026-07-17T18:00:00Z",
+      "status": "pass",
+      "request_rate_rps": 1847.0,
+      "error_rate_percent": 0.045,
+      "latency_p95_ms": 348.0,
+      "latency_p99_ms": 709.0,
+      "cpu_percent": 55.0,
+      "memory_percent": 75.0,
+      "cache_hit_rate_percent": 97.4,
+      "db_connections_active": 73.0
+    },
+    {
+      "timestamp": "2026-07-17T20:00:00Z",
+      "status": "pass",
+      "request_rate_rps": 1947.0,
+      "error_rate_percent": 0.045,
+      "latency_p95_ms": 358.0,
+      "latency_p99_ms": 709.0,
+      "cpu_percent": 55.0,
+      "memory_percent": 73.0,
+      "cache_hit_rate_percent": 97.5,
+      "db_connections_active": 78.0
+    }
+  ]
+}

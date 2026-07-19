@@ -1,4 +1,3 @@
----
 name: Agent Handoff Gate
 on:
   issue_comment:
@@ -16,13 +15,13 @@ jobs:
     name: Validate Agent Handoff Manifest
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: 'github.event.issue.pull_request != null &&
-        contains(github.event.comment.body, ''AGENT_HANDOFF:'')
-        '
+    if: 'github.event.issue.pull_request != null && contains(github.event.comment.body,
+      ''AGENT_HANDOFF:'') '
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -44,104 +43,59 @@ jobs:
         PR_NUMBER: ${{ github.event.issue.number }}
         AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS || '120'
           }}
-      run: |
-        python3 - << 'PYEOF'
-        import json
-        import os
-        import re
-        import sys
-
-        comment = os.environ["COMMENT_BODY"]
-        pr_number = os.environ["PR_NUMBER"]
-
-        # P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.
-        try:
-            _timeout_val = os.environ.get("AGENT_HANDOFF_TIMEOUT_SECONDS", "120")
-            HANDOFF_TIMEOUT = int(float(_timeout_val))
-        except (ValueError, TypeError):
-            print(f"::warning::AGENT_HANDOFF_TIMEOUT_SECONDS={_timeout_val!r} is not a valid number; defaulting to 120s")
-            HANDOFF_TIMEOUT = 120
-
-        # Apply hard deadline to the entire validation block.
-        import signal
-        def _timeout_handler(signum, frame):
-            raise TimeoutError(f"agent-handoff validation exceeded {HANDOFF_TIMEOUT}s (AGENT_HANDOFF_TIMEOUT_SECONDS)")
-        signal.signal(signal.SIGALRM, _timeout_handler)
-        signal.alarm(HANDOFF_TIMEOUT)
-
-        # Extract JSON block after "AGENT_HANDOFF:"
-        match = re.search(r"AGENT_HANDOFF:\s*```(?:json)?\s*(\{.*?\})\s*```", comment, re.DOTALL)
-        if not match:
-            # Try without code fence
-            match = re.search(r"AGENT_HANDOFF:\s*(\{.*?\})", comment, re.DOTALL)
-
-        if not match:
-            print("::warning::agent-handoff-gate: No JSON payload found after AGENT_HANDOFF: — skipping validation")
-            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                f.write("validation_status=skipped\n")
-            sys.exit(0)
-
-        raw_json = match.group(1).strip()
-
-        # Guard against oversized payloads before parsing
-        if len(raw_json) > 10000:
-            print("::warning::agent-handoff-gate: AGENT_HANDOFF payload too large (>10KB) — skipping")
-            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                f.write("validation_status=skipped\n")
-            sys.exit(0)
-
-        try:
-            payload = json.loads(raw_json)
-        except json.JSONDecodeError as e:
-            print(f"::warning::agent-handoff-gate: Invalid JSON in AGENT_HANDOFF payload: {e}")
-            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
-                f.write("validation_status=invalid_json\n")
-                f.write(f"error={str(e)}\n")
-            sys.exit(0)
-
-        # Validate against AgentHandoffManifest v1.1 schema
-        import jsonschema
-        schema_path = ".codex/schemas/AgentHandoffManifest_v1.1.json"
-        with open(schema_path) as sf:
-            schema = json.load(sf)
-
-        errors = []
-        try:
-            jsonschema.validate(payload, schema)
-        except jsonschema.ValidationError as e:
-            errors.append(str(e.message))
-
-        delegating = payload.get("delegating_agent", "unknown")
-        receiving = payload.get("receiving_agent", "unknown")
-        task_id = payload.get("task_id", "unknown")
-        operating_model = payload.get("operating_model", "E")
-        trace_depth = len(payload.get("delegation_trace", []))
-        checklist = payload.get("checklist_items", [])
-        tier1_gates = payload.get("policy_compliance", {}).get("tier1_gates_passed", [])
-        violations = payload.get("policy_compliance", {}).get("violation_count", 0)
-        snapshot_tier = payload.get("context_snapshot", {}).get("current_enforcement_tier", "SOFT")
-
-        output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
-        with open(output_file, "a") as f:
-            f.write(f"delegating_agent={delegating}\n")
-            f.write(f"receiving_agent={receiving}\n")
-            f.write(f"task_id={task_id}\n")
-            f.write(f"operating_model={operating_model}\n")
-            f.write(f"trace_depth={trace_depth}\n")
-            f.write(f"violation_count={violations}\n")
-            f.write(f"enforcement_tier={snapshot_tier}\n")
-            f.write(f"tier1_gates_count={len(tier1_gates)}\n")
-            if errors:
-                f.write("validation_status=invalid\n")
-                f.write(f"schema_errors={json.dumps(errors)}\n")
-                # TIER-1: exit 1 — blocks merge on schema violations
-                print(f"::error::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}: {errors[0]}")
-                sys.exit(1)
-            else:
-                f.write("validation_status=valid\n")
-                print(f"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving} (model={operating_model})")
-        signal.alarm(0)  # cancel deadline — validation completed within timeout
-        PYEOF
+      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport re\nimport sys\n\n\
+        comment = os.environ[\"COMMENT_BODY\"]\npr_number = os.environ[\"PR_NUMBER\"\
+        ]\n\n# P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.\n\
+        try:\n    _timeout_val = os.environ.get(\"AGENT_HANDOFF_TIMEOUT_SECONDS\"\
+        , \"120\")\n    HANDOFF_TIMEOUT = int(float(_timeout_val))\nexcept (ValueError,\
+        \ TypeError):\n    print(f\"::warning::AGENT_HANDOFF_TIMEOUT_SECONDS={_timeout_val!r}\
+        \ is not a valid number; defaulting to 120s\")\n    HANDOFF_TIMEOUT = 120\n\
+        \n# Apply hard deadline to the entire validation block.\nimport signal\ndef\
+        \ _timeout_handler(signum, frame):\n    raise TimeoutError(f\"agent-handoff\
+        \ validation exceeded {HANDOFF_TIMEOUT}s (AGENT_HANDOFF_TIMEOUT_SECONDS)\"\
+        )\nsignal.signal(signal.SIGALRM, _timeout_handler)\nsignal.alarm(HANDOFF_TIMEOUT)\n\
+        \n# Extract JSON block after \"AGENT_HANDOFF:\"\nmatch = re.search(r\"AGENT_HANDOFF:\\\
+        s*```(?:json)?\\s*(\\{.*?\\})\\s*```\", comment, re.DOTALL)\nif not match:\n\
+        \    # Try without code fence\n    match = re.search(r\"AGENT_HANDOFF:\\s*(\\\
+        {.*?\\})\", comment, re.DOTALL)\n\nif not match:\n    print(\"::warning::agent-handoff-gate:\
+        \ No JSON payload found after AGENT_HANDOFF: \u2014 skipping validation\"\
+        )\n    with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\")\
+        \ as f:\n        f.write(\"validation_status=skipped\\n\")\n    sys.exit(0)\n\
+        \nraw_json = match.group(1).strip()\n\n# Guard against oversized payloads\
+        \ before parsing\nif len(raw_json) > 10000:\n    print(\"::warning::agent-handoff-gate:\
+        \ AGENT_HANDOFF payload too large (>10KB) \u2014 skipping\")\n    with open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"validation_status=skipped\\\
+        n\")\n    sys.exit(0)\n\ntry:\n    payload = json.loads(raw_json)\nexcept\
+        \ json.JSONDecodeError as e:\n    print(f\"::warning::agent-handoff-gate:\
+        \ Invalid JSON in AGENT_HANDOFF payload: {e}\")\n    with open(os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"validation_status=invalid_json\\\
+        n\")\n        f.write(f\"error={str(e)}\\n\")\n    sys.exit(0)\n\n# Validate\
+        \ against AgentHandoffManifest v1.1 schema\nimport jsonschema\nschema_path\
+        \ = \".codex/schemas/AgentHandoffManifest_v1.1.json\"\nwith open(schema_path)\
+        \ as sf:\n    schema = json.load(sf)\n\nerrors = []\ntry:\n    jsonschema.validate(payload,\
+        \ schema)\nexcept jsonschema.ValidationError as e:\n    errors.append(str(e.message))\n\
+        \ndelegating = payload.get(\"delegating_agent\", \"unknown\")\nreceiving =\
+        \ payload.get(\"receiving_agent\", \"unknown\")\ntask_id = payload.get(\"\
+        task_id\", \"unknown\")\noperating_model = payload.get(\"operating_model\"\
+        , \"E\")\ntrace_depth = len(payload.get(\"delegation_trace\", []))\nchecklist\
+        \ = payload.get(\"checklist_items\", [])\ntier1_gates = payload.get(\"policy_compliance\"\
+        , {}).get(\"tier1_gates_passed\", [])\nviolations = payload.get(\"policy_compliance\"\
+        , {}).get(\"violation_count\", 0)\nsnapshot_tier = payload.get(\"context_snapshot\"\
+        , {}).get(\"current_enforcement_tier\", \"SOFT\")\n\noutput_file = os.environ.get(\"\
+        GITHUB_OUTPUT\", \"/dev/null\")\nwith open(output_file, \"a\") as f:\n   \
+        \ f.write(f\"delegating_agent={delegating}\\n\")\n    f.write(f\"receiving_agent={receiving}\\\
+        n\")\n    f.write(f\"task_id={task_id}\\n\")\n    f.write(f\"operating_model={operating_model}\\\
+        n\")\n    f.write(f\"trace_depth={trace_depth}\\n\")\n    f.write(f\"violation_count={violations}\\\
+        n\")\n    f.write(f\"enforcement_tier={snapshot_tier}\\n\")\n    f.write(f\"\
+        tier1_gates_count={len(tier1_gates)}\\n\")\n    if errors:\n        f.write(\"\
+        validation_status=invalid\\n\")\n        f.write(f\"schema_errors={json.dumps(errors)}\\\
+        n\")\n        # TIER-1: exit 1 \u2014 blocks merge on schema violations\n\
+        \        print(f\"::error::agent-handoff-gate: Schema validation failed for\
+        \ {delegating}\u2192{receiving}: {errors[0]}\")\n        sys.exit(1)\n   \
+        \ else:\n        f.write(\"validation_status=valid\\n\")\n        print(f\"\
+        \u2705 agent-handoff-gate: Valid handoff {delegating}\u2192{receiving} (model={operating_model})\"\
+        )\nsignal.alarm(0)  # cancel deadline \u2014 validation completed within timeout\n\
+        PYEOF\n"
     - name: Post handoff summary comment
       if: steps.validate.outputs.validation_status != 'skipped'
       uses: actions/github-script@v8
@@ -165,28 +119,28 @@ jobs:
           \ || 'SOFT';\nconst traceDepth = process.env.TRACE_DEPTH || '0';\nconst\
           \ violations = process.env.VIOLATION_COUNT || '0';\nconst tier1Count = process.env.TIER1_GATES_COUNT\
           \ || '0';\nconst schemaErrors = process.env.SCHEMA_ERRORS || '[]';\n\nconst\
-        \ statusIcon = status === 'valid' ? '✅' : status === 'invalid_json' ? '\U0001F534\
-        ' : '⚠️';\nconst statusLabel = status === 'valid' ? 'VALID' : status ===\
-        \ 'invalid_json' ? 'INVALID JSON' : 'SCHEMA VIOLATION';\n\nlet body = `\U0001F500\
-          \ **AGENT_HANDOFF** \\`v1.1\\` | ${statusIcon} **${statusLabel}**\\n\\n`;\n\
-          body += `| Field | Value |\\n|-------|-------|\\n`;\nbody += `| **From**\
-          \ | \\`${delegating}\\` |\\n`;\nbody += `| **To** | \\`${receiving}\\` |\\\
-          n`;\nbody += `| **Task** | \\`${taskId}\\` |\\n`;\nbody += `| **Model**\
+          \ statusIcon = status === 'valid' ? '\u2705' : status === 'invalid_json'\
+          \ ? '\U0001F534' : '\u26A0\uFE0F';\nconst statusLabel = status === 'valid'\
+          \ ? 'VALID' : status === 'invalid_json' ? 'INVALID JSON' : 'SCHEMA VIOLATION';\n\
+          \nlet body = `\U0001F500 **AGENT_HANDOFF** \\`v1.1\\` | ${statusIcon} **${statusLabel}**\\\
+          n\\n`;\nbody += `| Field | Value |\\n|-------|-------|\\n`;\nbody += `|\
+          \ **From** | \\`${delegating}\\` |\\n`;\nbody += `| **To** | \\`${receiving}\\\
+          ` |\\n`;\nbody += `| **Task** | \\`${taskId}\\` |\\n`;\nbody += `| **Model**\
           \ | \\`${model}\\` |\\n`;\nbody += `| **Tier** | \\`${tier}\\` |\\n`;\n\
           body += `| **Delegation depth** | ${traceDepth} hops |\\n`;\nbody += `|\
           \ **Tier-1 gates passed** | ${tier1Count} |\\n`;\nbody += `| **Violations\
           \ this chain** | ${violations} |\\n\\n`;\n\nif (status !== 'valid') {\n\
           \  let errors = [];\n  try { errors = JSON.parse(schemaErrors); } catch\
-        \ {}\n  if (errors.length > 0) {\n    body += `**Schema errors:**\\n`;\n\
+          \ {}\n  if (errors.length > 0) {\n    body += `**Schema errors:**\\n`;\n\
           \    errors.forEach(e => { body += `- ${e}\\n`; });\n    body += `\\n`;\n\
-        \  }\n  // TIER-1: hard block on schema violations\n  body += `> ❌ **Blocked**\
-          \ — schema violation detected. Fix the handoff manifest before proceeding.\\\
-          n\\n`;\n}\n\nbody += `_[agent-handoff-gate.yml](.github/workflows/agent-handoff-gate.yml)\
+          \  }\n  // TIER-1: hard block on schema violations\n  body += `> \u274C\
+          \ **Blocked** \u2014 schema violation detected. Fix the handoff manifest\
+          \ before proceeding.\\n\\n`;\n}\n\nbody += `_[agent-handoff-gate.yml](.github/workflows/agent-handoff-gate.yml)\
           \ | `;\nbody += `[AgentHandoffManifest v1.1](.codex/schemas/AgentHandoffManifest_v1.1.json)\
           \ | `;\nbody += `Tier-1 GROUNDED gate_`;\nbody += `\\n\\n---\\n_[\U0001F517\
-        \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
-        \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-        \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+          \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ body,\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -209,7 +163,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -224,4 +179,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py || true
-
+    timeout-minutes: 30

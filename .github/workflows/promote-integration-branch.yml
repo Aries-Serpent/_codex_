@@ -1,4 +1,3 @@
----
 name: "\U0001F680 Promote Commit SHA to Target Branch"
 on:
   workflow_dispatch:
@@ -91,7 +90,8 @@ jobs:
     - name: Create or update target branch
       id: create_branch
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         SHA: ${{ steps.resolve_sha.outputs.sha }}
       run: "# Pattern C: retry with exponential backoff for PATCH ref updates\n_api_with_retry()\
@@ -131,7 +131,8 @@ jobs:
       if: inputs.create_or_update_pr && steps.check_pr.outputs.existing_pr == ''
       id: create_pr
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         SHA: ${{ steps.resolve_sha.outputs.sha }}
         PR_TITLE: ${{ inputs.pr_title }}
         SESSION_LABEL: ${{ inputs.session_label }}
@@ -204,3 +205,4 @@ jobs:
         `agent-auth-delegation.yml\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

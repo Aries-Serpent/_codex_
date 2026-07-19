@@ -1,76 +1,60 @@
----
 name: restore-pipeline CI
-
 on:
   push:
-    branches: ["feature/cpu-image-restore", "main", "0D_base_"]
+    branches:
+    - feature/cpu-image-restore
+    - main
+    - 0D_base_
     paths:
-      - "src/restore_pipeline/**"
-      - "src/restore_pipeline/tests/**"
-      - "src/restore_pipeline/requirements.txt"
-      - ".github/workflows/restore-pipeline-ci.yml"
+    - src/restore_pipeline/**
+    - src/restore_pipeline/tests/**
+    - src/restore_pipeline/requirements.txt
+    - .github/workflows/restore-pipeline-ci.yml
   pull_request:
     paths:
-      - "src/restore_pipeline/**"
-      - "src/restore_pipeline/tests/**"
-      - "src/restore_pipeline/requirements.txt"
-
+    - src/restore_pipeline/**
+    - src/restore_pipeline/tests/**
+    - src/restore_pipeline/requirements.txt
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   test:
-    name: "restore-pipeline — Python 3.12 (CPU only)"
+    name: "restore-pipeline \u2014 Python 3.12 (CPU only)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
-      - uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: src/restore_pipeline/requirements.txt
+    - name: Install dependencies
+      run: pip install -r src/restore_pipeline/requirements.txt
+    - name: Install package (editable)
+      run: pip install -e . --no-deps 2>/dev/null || pip install src/restore_pipeline/
+        --no-deps 2>/dev/null || true
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$GITHUB_WORKSPACE/src" >> "$GITHUB_ENV"
+    - name: "Verify import \u2014 zero deprecation warnings"
+      run: python -W error -c "import restore_pipeline; print(f'restore_pipeline {restore_pipeline.__version__}
+        imported OK')"
+    - name: Verify no CUDA torch present
+      run: "pip show torch 2>/dev/null | { grep -i cuda && exit 1; } || true\necho\
+        \ \"\u2705 No CUDA torch installed\"\n"
+    - name: Run tests
+      run: "# -W ignore::pytest.PytestConfigWarning suppresses \"Unknown config option:\n\
+        # asyncio_default_fixture_loop_scope\" INTERNALERROR when pytest-asyncio is\n\
+        # not installed in this CPU-only environment (pytest validates ini options\n\
+        # before --override-ini can take effect, so the override alone is not enough).\n\
+        pytest src/restore_pipeline/tests/ -q --tb=short \\\n  -W error \\\n  -W ignore::pytest.PytestConfigWarning\
+        \ \\\n  -p no:asyncio\n"
+    - name: Demo script smoke test
+      run: 'bash examples/run_demo.sh
 
-      - uses: actions/setup-python@v6  # v6
-        with:
-          python-version: "3.12.13"
-          cache: "pip"
-          cache-dependency-path: src/restore_pipeline/requirements.txt
-
-      - name: Install dependencies
-        run: pip install -r src/restore_pipeline/requirements.txt
-
-      - name: Install package (editable)
-        run: pip install -e . --no-deps 2>/dev/null || pip install src/restore_pipeline/ --no-deps 2>/dev/null || true
-
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$GITHUB_WORKSPACE/src" >> "$GITHUB_ENV"
-
-      - name: Verify import — zero deprecation warnings
-        run: python -W error -c "import restore_pipeline; print(f'restore_pipeline {restore_pipeline.__version__} imported OK')"
-
-      - name: Verify no CUDA torch present
-        run: |
-          pip show torch 2>/dev/null | { grep -i cuda && exit 1; } || true
-          echo "✅ No CUDA torch installed"
-
-      - name: Run tests
-        run: |
-          # -W ignore::pytest.PytestConfigWarning suppresses "Unknown config option:
-          # asyncio_default_fixture_loop_scope" INTERNALERROR when pytest-asyncio is
-          # not installed in this CPU-only environment (pytest validates ini options
-          # before --override-ini can take effect, so the override alone is not enough).
-          pytest src/restore_pipeline/tests/ -q --tb=short \
-            -W error \
-            -W ignore::pytest.PytestConfigWarning \
-            -p no:asyncio
-
-      - name: Demo script smoke test
-        run: |
-          bash examples/run_demo.sh
-
-
-
-
+        '

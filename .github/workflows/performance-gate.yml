@@ -1,92 +1,57 @@
----
-# D10 Performance Gate — Latency Baseline Policy Validation
-#
-# Runs on PR and nightly schedule. Validates the committed
-# latency baseline policy in benchmarks/perf/latency_baseline.json.
-
 name: Performance Gate
-
 on:
-  workflow_dispatch:
+  workflow_dispatch: null
   pull_request:
     paths:
-      - "src/**"
-      - "benchmarks/**"
-      - "codex_ml/**"
+    - src/**
+    - benchmarks/**
+    - codex_ml/**
   schedule:
-    - cron: "30 4 * * 1-5"  # Weekdays 04:30 UTC
-
+  - cron: 30 4 * * 1-5
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   performance-gate:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Latency Baseline Policy Check
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12.13"
-          cache: pip
+        pip install pyyaml
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml
-
-      - name: Validate baseline exists
-        run: |
-          if [ ! -f benchmarks/perf/latency_baseline.json ]; then
-            echo "::error::Missing benchmarks/perf/latency_baseline.json"
-            exit 1
-          fi
-
-      - name: Run baseline policy check
-        run: |
-          python -c "
-          import json, sys
-
-          with open('benchmarks/perf/latency_baseline.json') as f:
-              data = json.load(f)
-
-          failed = []
-          for bench in data['benchmarks']:
-              name = bench['name']
-              baseline = bench['baseline']
-              threshold = bench['threshold']
-              if baseline > threshold:
-                  failed.append(f'{name}: baseline {baseline} > threshold {threshold}')
-              print(f'  ✅ {name}: {baseline} {bench[\"unit\"]} (threshold: {threshold})')
-
-          if failed:
-              print()
-              for f in failed:
-                  print(f'  ❌ {f}')
-              sys.exit(1)
-
-          print()
-          print(f'  All {len(data[\"benchmarks\"])} benchmarks within thresholds.')
-          "
-
-      - name: Upload baseline artifact
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          path: benchmarks/perf/latency_baseline.json
-          retention-days: 90
-
-
-          name: perf-baseline
+        '
+    - name: Validate baseline exists
+      run: "if [ ! -f benchmarks/perf/latency_baseline.json ]; then\n  echo \"::error::Missing\
+        \ benchmarks/perf/latency_baseline.json\"\n  exit 1\nfi\n"
+    - name: Run baseline policy check
+      run: "python -c \"\nimport json, sys\n\nwith open('benchmarks/perf/latency_baseline.json')\
+        \ as f:\n    data = json.load(f)\n\nfailed = []\nfor bench in data['benchmarks']:\n\
+        \    name = bench['name']\n    baseline = bench['baseline']\n    threshold\
+        \ = bench['threshold']\n    if baseline > threshold:\n        failed.append(f'{name}:\
+        \ baseline {baseline} > threshold {threshold}')\n    print(f'  \u2705 {name}:\
+        \ {baseline} {bench[\\\"unit\\\"]} (threshold: {threshold})')\n\nif failed:\n\
+        \    print()\n    for f in failed:\n        print(f'  \u274C {f}')\n    sys.exit(1)\n\
+        \nprint()\nprint(f'  All {len(data[\\\"benchmarks\\\"])} benchmarks within\
+        \ thresholds.')\n\"\n"
+    - name: Upload baseline artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: benchmarks/perf/latency_baseline.json
+        retention-days: 90
+        name: perf-baseline
+    timeout-minutes: 45

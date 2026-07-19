@@ -1,30 +1,24 @@
----
 name: CI Telemetry Collection
-
 on:
   schedule:
-    # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
+  - cron: 0 2 * * *
   workflow_dispatch:
     inputs:
       days:
-        description: 'Days to analyze'
+        description: Days to analyze
         required: false
         default: '7'
         type: string
       branch:
-        description: 'Branch to analyze'
+        description: Branch to analyze
         required: false
-        default: 'main'
+        default: main
         type: string
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   collect-telemetry:
     runs-on: ubuntu-latest
@@ -33,172 +27,111 @@ jobs:
       contents: read
       actions: read
       issues: write
-
     steps:
-      - name: Mask secrets
-        run: |
-            echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - name: Checkout code
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-            persist-credentials: false
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
-      - name: Collect telemetry data
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          DAYS="${{ github.event.inputs.days || '7' }}"
-          BRANCH="${{ github.event.inputs.branch || 'main' }}"
+    - name: Mask secrets
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
-          python scripts/ci/collect_telemetry.py \
-            --owner ${{ github.repository_owner }} \
-            --repo ${{ github.event.repository.name }} \
-            --branch "$BRANCH" \
-            --days "$DAYS" \
-            --output telemetry_report_$(date +%Y%m%d).json
-      - name: Analyze patterns
-        run: |
-          REPORT_FILE=$(ls telemetry_report_*.json | head -1)
+        '
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-          if [ -f "$REPORT_FILE" ]; then
-            echo "### CI Telemetry Analysis" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+        pip install requests
 
-            # Extract key metrics
-            TOTAL_RUNS=$(jq '.summary.total_runs' "$REPORT_FILE")
-            FAILED_RUNS=$(jq '.summary.failed_runs' "$REPORT_FILE")
-            FAILURE_RATE=$(jq '.summary.failure_rate' "$REPORT_FILE")
+        '
+    - name: Collect telemetry data
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "DAYS=\"${{ github.event.inputs.days || '7' }}\"\nBRANCH=\"${{ github.event.inputs.branch\
+        \ || 'main' }}\"\n\npython scripts/ci/collect_telemetry.py \\\n  --owner ${{\
+        \ github.repository_owner }} \\\n  --repo ${{ github.event.repository.name\
+        \ }} \\\n  --branch \"$BRANCH\" \\\n  --days \"$DAYS\" \\\n  --output telemetry_report_$(date\
+        \ +%Y%m%d).json\n"
+    - name: Analyze patterns
+      run: "REPORT_FILE=$(ls telemetry_report_*.json | head -1)\n\nif [ -f \"$REPORT_FILE\"\
+        \ ]; then\n  echo \"### CI Telemetry Analysis\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n\n  # Extract key metrics\n  TOTAL_RUNS=$(jq\
+        \ '.summary.total_runs' \"$REPORT_FILE\")\n  FAILED_RUNS=$(jq '.summary.failed_runs'\
+        \ \"$REPORT_FILE\")\n  FAILURE_RATE=$(jq '.summary.failure_rate' \"$REPORT_FILE\"\
+        )\n\n  echo \"**Total Runs:** $TOTAL_RUNS\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"**Failed Runs:** $FAILED_RUNS\" >> $GITHUB_STEP_SUMMARY\n  echo \"**Failure\
+        \ Rate:** $(printf '%.1f%%' $(echo \"$FAILURE_RATE * 100\" | bc))\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n\n  # Pattern distribution\n  echo \"\
+        ### Pattern Distribution\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"| Pattern | Count | Percentage |\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"|---------|-------|------------|\" >> $GITHUB_STEP_SUMMARY\n\n  jq -r\
+        \ '.pattern_distribution | to_entries[] | \"\\(.key)|\\(.value)\"' \"$REPORT_FILE\"\
+        \ | while IFS='|' read -r pattern count; do\n    if [ \"$FAILED_RUNS\" -gt\
+        \ 0 ]; then\n      percentage=$(echo \"scale=1; $count * 100 / $FAILED_RUNS\"\
+        \ | bc)\n    else\n      percentage=\"0.0\"\n    fi\n    echo \"| $pattern\
+        \ | $count | ${percentage}% |\" >> $GITHUB_STEP_SUMMARY\n  done\nfi\n"
+    - name: Upload telemetry report
+      uses: actions/upload-artifact@v5
+      with:
+        path: telemetry_report_*.json
+        retention-days: 90
+        name: telemetry-report-${{ github.run_id }}
+    - name: Check for critical patterns
+      id: critical
+      run: "REPORT_FILE=$(ls telemetry_report_*.json | head -1)\n\nif [ -f \"$REPORT_FILE\"\
+        \ ]; then\n  # Check if failure rate is above threshold (20%)\n  FAILURE_RATE=$(jq\
+        \ '.summary.failure_rate' \"$REPORT_FILE\")\n  THRESHOLD=0.20\n\n  if (( $(echo\
+        \ \"$FAILURE_RATE > $THRESHOLD\" | bc -l) )); then\n    echo \"critical_failure_rate=true\"\
+        \ >> $GITHUB_OUTPUT\n    echo \"::warning::CI failure rate (${FAILURE_RATE})\
+        \ exceeds threshold (${THRESHOLD})\"\n  fi\n\n  # Check for specific high-impact\
+        \ patterns\n  AUTO_FIX_COUNT=$(jq '.pattern_distribution[\"auto-fix\"] //\
+        \ 0' \"$REPORT_FILE\")\n  COVERAGE_COUNT=$(jq '.pattern_distribution[\"coverage-timeout\"\
+        ] // 0' \"$REPORT_FILE\")\n\n  if [ \"$AUTO_FIX_COUNT\" -gt 5 ]; then\n  \
+        \  echo \"high_auto_fix_failures=true\" >> $GITHUB_OUTPUT\n    echo \"::warning::High\
+        \ number of auto-fix failures detected: $AUTO_FIX_COUNT\"\n  fi\n\n  if [\
+        \ \"$COVERAGE_COUNT\" -gt 3 ]; then\n    echo \"high_coverage_timeouts=true\"\
+        \ >> $GITHUB_OUTPUT\n    echo \"::warning::High number of coverage timeouts\
+        \ detected: $COVERAGE_COUNT\"\n  fi\nfi\n"
+    - name: Create issue for critical patterns
+      if: 'steps.critical.outputs.critical_failure_rate == ''true'' ||
 
-            echo "**Total Runs:** $TOTAL_RUNS" >> $GITHUB_STEP_SUMMARY
-            echo "**Failed Runs:** $FAILED_RUNS" >> $GITHUB_STEP_SUMMARY
-            echo "**Failure Rate:** $(printf '%.1f%%' $(echo "$FAILURE_RATE * 100" | bc))" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+        steps.critical.outputs.high_auto_fix_failures == ''true'' ||
 
-            # Pattern distribution
-            echo "### Pattern Distribution" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "| Pattern | Count | Percentage |" >> $GITHUB_STEP_SUMMARY
-            echo "|---------|-------|------------|" >> $GITHUB_STEP_SUMMARY
+        steps.critical.outputs.high_coverage_timeouts == ''true''
 
-            jq -r '.pattern_distribution | to_entries[] | "\(.key)|\(.value)"' "$REPORT_FILE" | while IFS='|' read -r pattern count; do
-              if [ "$FAILED_RUNS" -gt 0 ]; then
-                percentage=$(echo "scale=1; $count * 100 / $FAILED_RUNS" | bc)
-              else
-                percentage="0.0"
-              fi
-              echo "| $pattern | $count | ${percentage}% |" >> $GITHUB_STEP_SUMMARY
-            done
-          fi
-      - name: Upload telemetry report
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: telemetry_report_*.json
-          retention-days: 90
-          name: telemetry-report-${{ github.run_id }}
-      - name: Check for critical patterns
-        id: critical
-        run: |
-          REPORT_FILE=$(ls telemetry_report_*.json | head -1)
-
-          if [ -f "$REPORT_FILE" ]; then
-            # Check if failure rate is above threshold (20%)
-            FAILURE_RATE=$(jq '.summary.failure_rate' "$REPORT_FILE")
-            THRESHOLD=0.20
-
-            if (( $(echo "$FAILURE_RATE > $THRESHOLD" | bc -l) )); then
-              echo "critical_failure_rate=true" >> $GITHUB_OUTPUT
-              echo "::warning::CI failure rate (${FAILURE_RATE}) exceeds threshold (${THRESHOLD})"
-            fi
-
-            # Check for specific high-impact patterns
-            AUTO_FIX_COUNT=$(jq '.pattern_distribution["auto-fix"] // 0' "$REPORT_FILE")
-            COVERAGE_COUNT=$(jq '.pattern_distribution["coverage-timeout"] // 0' "$REPORT_FILE")
-
-            if [ "$AUTO_FIX_COUNT" -gt 5 ]; then
-              echo "high_auto_fix_failures=true" >> $GITHUB_OUTPUT
-              echo "::warning::High number of auto-fix failures detected: $AUTO_FIX_COUNT"
-            fi
-
-            if [ "$COVERAGE_COUNT" -gt 3 ]; then
-              echo "high_coverage_timeouts=true" >> $GITHUB_OUTPUT
-              echo "::warning::High number of coverage timeouts detected: $COVERAGE_COUNT"
-            fi
-          fi
-      - name: Create issue for critical patterns
-        if: |
-          steps.critical.outputs.critical_failure_rate == 'true' ||
-          steps.critical.outputs.high_auto_fix_failures == 'true' ||
-          steps.critical.outputs.high_coverage_timeouts == 'true'
-        uses: actions/github-script@v8  # v9
-        with:
-          script: |
-            const fs = require('fs');
-            const reportFile = fs.readdirSync('.').find(f => f.startsWith('telemetry_report_'));
-            const telemetry = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
-
-            let body = '## 🚨 CI Health Alert\n\n';
-            body += `Telemetry analysis for the past ${{ github.event.inputs.days || '7' }} days has detected concerning patterns.\n\n`;
-
-            body += '### Summary\n\n';
-            body += `- **Total Runs:** ${telemetry.summary.total_runs}\n`;
-            body += `- **Failed Runs:** ${telemetry.summary.failed_runs}\n`;
-            body += `- **Failure Rate:** ${(telemetry.summary.failure_rate * 100).toFixed(1)}%\n\n`;
-
-            body += '### Pattern Distribution\n\n';
-            body += '| Pattern | Count |\n|---------|-------|\n';
-            for (const [pattern, count] of Object.entries(telemetry.pattern_distribution)) {
-              body += `| ${pattern} | ${count} |\n`;
-            }
-
-            body += '\n### Recommended Actions\n\n';
-
-            const criticalFailure = '${{ steps.critical.outputs.critical_failure_rate }}' === 'true';
-            const highAutoFix = '${{ steps.critical.outputs.high_auto_fix_failures }}' === 'true';
-            const highCoverage = '${{ steps.critical.outputs.high_coverage_timeouts }}' === 'true';
-
-            if (criticalFailure) {
-              body += '- ⚠️ **Critical:** Failure rate exceeds 20% - immediate investigation required\n';
-            }
-            if (highAutoFix) {
-              body += '- 🔧 Review auto-fix workflow configuration and permissions\n';
-            }
-            if (highCoverage) {
-              body += '- ⏱️ Investigate coverage timeout issues - consider increasing timeout or splitting tests\n';
-            }
-
-            body += '\n**Report:** Telemetry collected on ' + new Date().toISOString().split('T')[0];
-            body += `\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
-
-            // Check if similar issue exists
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'ci-health'
-            });
-
-            if (issues.length === 0) {
-              // Create new issue
-              await github.rest.issues.create({
-                title: `CI Health Alert: High Failure Rate Detected`,
-                body: body,
-              });
-            } else {
-              // Update existing issue
-              await github.rest.issues.createComment({
-                issue_number: issues[0].number,
-              });
-            }
-
-
-
-
+        '
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst reportFile = fs.readdirSync('.').find(f\
+          \ => f.startsWith('telemetry_report_'));\nconst telemetry = JSON.parse(fs.readFileSync(reportFile,\
+          \ 'utf8'));\n\nlet body = '## \U0001F6A8 CI Health Alert\\n\\n';\nbody +=\
+          \ `Telemetry analysis for the past ${{ github.event.inputs.days || '7' }}\
+          \ days has detected concerning patterns.\\n\\n`;\n\nbody += '### Summary\\\
+          n\\n';\nbody += `- **Total Runs:** ${telemetry.summary.total_runs}\\n`;\n\
+          body += `- **Failed Runs:** ${telemetry.summary.failed_runs}\\n`;\nbody\
+          \ += `- **Failure Rate:** ${(telemetry.summary.failure_rate * 100).toFixed(1)}%\\\
+          n\\n`;\n\nbody += '### Pattern Distribution\\n\\n';\nbody += '| Pattern\
+          \ | Count |\\n|---------|-------|\\n';\nfor (const [pattern, count] of Object.entries(telemetry.pattern_distribution))\
+          \ {\n  body += `| ${pattern} | ${count} |\\n`;\n}\n\nbody += '\\n### Recommended\
+          \ Actions\\n\\n';\n\nconst criticalFailure = '${{ steps.critical.outputs.critical_failure_rate\
+          \ }}' === 'true';\nconst highAutoFix = '${{ steps.critical.outputs.high_auto_fix_failures\
+          \ }}' === 'true';\nconst highCoverage = '${{ steps.critical.outputs.high_coverage_timeouts\
+          \ }}' === 'true';\n\nif (criticalFailure) {\n  body += '- \u26A0\uFE0F **Critical:**\
+          \ Failure rate exceeds 20% - immediate investigation required\\n';\n}\n\
+          if (highAutoFix) {\n  body += '- \U0001F527 Review auto-fix workflow configuration\
+          \ and permissions\\n';\n}\nif (highCoverage) {\n  body += '- \u23F1\uFE0F\
+          \ Investigate coverage timeout issues - consider increasing timeout or splitting\
+          \ tests\\n';\n}\n\nbody += '\\n**Report:** Telemetry collected on ' + new\
+          \ Date().toISOString().split('T')[0];\nbody += `\\n\\n---\\n_[\U0001F517\
+          \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \n// Check if similar issue exists\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  state: 'open',\n\
+          \  labels: 'ci-health'\n});\n\nif (issues.length === 0) {\n  // Create new\
+          \ issue\n  await github.rest.issues.create({\n    title: `CI Health Alert:\
+          \ High Failure Rate Detected`,\n    body: body,\n  });\n} else {\n  // Update\
+          \ existing issue\n  await github.rest.issues.createComment({\n    issue_number:\
+          \ issues[0].number,\n  });\n}\n"

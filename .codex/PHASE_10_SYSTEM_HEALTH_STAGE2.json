@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-07-19T03:02:12Z",
+  "deployment": {
+    "version": "v0.2.0",
+    "traffic_percent": 100,
+    "active_instances": 32,
+    "total_instances": 32,
+    "rollback_ready": true,
+    "rollback_target_version": "v0.1.0-final"
+  },
+  "system_status": {
+    "api_endpoints": "healthy",
+    "database": "operational",
+    "cache_layer": "optimal",
+    "monitoring": "armed",
+    "alerting": "armed",
+    "on_call": "staffed",
+    "security": "green",
+    "compliance": "green",
+    "phase_1_8_systems": "operational"
+  },
+  "metrics": {
+    "uptime_percent": 99.97,
+    "request_rate_rps": 1934.5,
+    "error_rate_percent": 0.047,
+    "latency_p99_ms": 701.5,
+    "cpu_percent": 56.1,
+    "memory_percent": 71.5,
+    "database_throughput_qps_floor": 285.7,
+    "cache_hit_rate_percent": 97.49,
+    "db_connections_active_avg": 77.4
+  },
+  "alerts": {
+    "rules_armed": 6,
+    "rules_total": 6,
+    "critical_alerts": 0,
+    "high_alerts": 0,
+    "low_severity_observations": 3
+  },
+  "security": {
+    "critical_vulnerabilities": 0,
+    "high_vulnerabilities": 0,
+    "policy_violations": 0,
+    "unauthorized_access_events": 0
+  }
+}

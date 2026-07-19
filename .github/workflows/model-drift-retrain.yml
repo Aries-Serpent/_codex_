@@ -1,51 +1,37 @@
----
 name: Model Drift Detection & Auto-Retrain
-
-# SAR-G03: Wire ContinuousLearningPipeline.should_retrain() to a GHA trigger.
-# Closes gap that prevented Level 3.7 → Level 4 (auto-retrain score 45/100 → 75/100+).
-#
-# Triggers:
-#   - schedule: daily at 02:00 UTC (off-peak)
-#   - workflow_dispatch: manual with optional overrides
-#   - repository_dispatch: event type "drift-detected" from monitoring agents
-
 on:
   schedule:
-    - cron: '0 2 * * *'
+  - cron: 0 2 * * *
   workflow_dispatch:
     inputs:
       drift_score:
-        description: 'Override drift score (0.0–1.0). Leave empty to auto-detect.'
+        description: "Override drift score (0.0\u20131.0). Leave empty to auto-detect."
         required: false
         default: ''
       samples_count:
-        description: 'Number of new samples available for retrain'
+        description: Number of new samples available for retrain
         required: false
         default: '0'
       force_retrain:
-        description: 'Force retraining regardless of drift score'
+        description: Force retraining regardless of drift score
         required: false
         default: 'false'
         type: boolean
       dry_run:
-        description: 'Dry run — detect drift but skip actual retraining'
+        description: "Dry run \u2014 detect drift but skip actual retraining"
         required: false
         default: 'true'
         type: boolean
   repository_dispatch:
     types:
-      - drift-detected  # fired by monitoring agents or post-deploy hooks
-
+    - drift-detected
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   issues: write
-
 jobs:
-  # ── Step 1: Detect drift ─────────────────────────────────────────────────────
   detect-drift:
     name: Detect model drift
     runs-on: ubuntu-latest
@@ -54,251 +40,173 @@ jobs:
       should_retrain: ${{ steps.drift.outputs.should_retrain }}
       drift_score: ${{ steps.drift.outputs.drift_score }}
       samples_count: ${{ steps.drift.outputs.samples_count }}
-
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - uses: actions/checkout@v5  # v6.0.3
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
-
     - name: Setup Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Install ML dependencies
-      run: |
-          pip install --quiet -e ".[ml]" || {
-            echo "⚠️  ML extras unavailable — falling back to base install"
-            pip install --quiet -e "."
-          }
-
+      run: "pip install --quiet -e \".[ml]\" || {\n  echo \"\u26A0\uFE0F  ML extras\
+        \ unavailable \u2014 falling back to base install\"\n  pip install --quiet\
+        \ -e \".\"\n}\n"
     - name: Run drift detection
       id: drift
       env:
-        DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score || '' }}
-        SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
+        DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score
+          || '' }}
+        SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count
+          || '0' }}
         FORCE_RETRAIN: ${{ github.event.inputs.force_retrain || 'false' }}
         DRIFT_THRESHOLD: ${{ vars.MODEL_DRIFT_THRESHOLD || '0.15' }}
-      run: |
-        set -euo pipefail
-
-        python - <<'PYEOF'
-        import os, json, sys
-        from pathlib import Path
-
-          # ── Load ContinuousLearningPipeline ──────────────────────────────────
-          try:
-              from codex_ml.training.continuous_learning import ContinuousLearningPipeline
-          except ImportError:
-              print("⚠️  codex_ml not importable — using stub drift detection")
-              # Stub: drift_score from env or 0.0
-              drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
-              samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
-              threshold  = float(os.environ.get("DRIFT_THRESHOLD") or 0.15)
-              should     = (drift_score >= threshold and samples >= 100) or \
-                            os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
-              result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
-          else:
-              drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
-              samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
-              force      = os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
-              registry_path = Path("models/registry.json")
-
-              pipeline = ContinuousLearningPipeline(
-                  model_name="codex-primary",
-                  registry_path=registry_path,
-                  drift_threshold=float(os.environ.get("DRIFT_THRESHOLD", "0.15")),
-                  min_samples_retrain=500,
-              )
-              should = force or pipeline.should_retrain(
-                  drift_score=drift_score,
-                  samples_count=samples,
-              )
-              result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
-
-          # ── Write outputs ─────────────────────────────────────────────────────
-          gh_output = os.environ.get("GITHUB_OUTPUT", "")
-          lines = [
-              f"should_retrain={'true' if result['should_retrain'] else 'false'}",
-              f"drift_score={result['drift_score']}",
-              f"samples_count={result['samples_count']}",
-          ]
-          if gh_output:
-              with open(gh_output, "a") as f:
-                  f.write("\n".join(lines) + "\n")
-          print(json.dumps(result, indent=2))
-          sys.exit(0)
-          PYEOF
-
-    - name: Summary — drift detection result
-      run: |
-          SHOULD="${{ steps.drift.outputs.should_retrain }}"
-          SCORE="${{ steps.drift.outputs.drift_score }}"
-          SAMPLES="${{ steps.drift.outputs.samples_count }}"
-          echo "### 🔍 Drift Detection Result" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Drift Score | \`${SCORE}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Sample Count | \`${SAMPLES}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Should Retrain | \`${SHOULD}\` |" >> "$GITHUB_STEP_SUMMARY"
-
-  # ── Step 2: Retrain if drift exceeded ────────────────────────────────────────
+      run: "set -euo pipefail\n\npython - <<'PYEOF'\nimport os, json, sys\nfrom pathlib\
+        \ import Path\n\n# Load ContinuousLearningPipeline\ntry:\n    from codex_ml.training.continuous_learning\
+        \ import ContinuousLearningPipeline\nexcept ImportError:\n    print(\"codex_ml\
+        \ not importable - using stub drift detection\")\n    # Stub: drift_score\
+        \ from env or 0.0\n    drift_score = float(os.environ.get(\"DRIFT_SCORE_OVERRIDE\"\
+        ) or 0.0)\n    samples = int(os.environ.get(\"SAMPLES_OVERRIDE\") or 0)\n\
+        \    threshold = float(os.environ.get(\"DRIFT_THRESHOLD\") or 0.15)\n    should\
+        \ = (drift_score >= threshold and samples >= 100) or \\\n        os.environ.get(\"\
+        FORCE_RETRAIN\", \"false\").lower() == \"true\"\n    result = {\"drift_score\"\
+        : drift_score, \"samples_count\": samples, \"should_retrain\": should}\nelse:\n\
+        \    drift_score = float(os.environ.get(\"DRIFT_SCORE_OVERRIDE\") or 0.0)\n\
+        \    samples = int(os.environ.get(\"SAMPLES_OVERRIDE\") or 0)\n    force =\
+        \ os.environ.get(\"FORCE_RETRAIN\", \"false\").lower() == \"true\"\n    registry_path\
+        \ = Path(\"models/registry.json\")\n\n    pipeline = ContinuousLearningPipeline(\n\
+        \        model_name=\"codex-primary\",\n        registry_path=registry_path,\n\
+        \        drift_threshold=float(os.environ.get(\"DRIFT_THRESHOLD\", \"0.15\"\
+        )),\n        min_samples_retrain=500,\n    )\n    should = force or pipeline.should_retrain(\n\
+        \        drift_score=drift_score,\n        samples_count=samples,\n    )\n\
+        \    result = {\"drift_score\": drift_score, \"samples_count\": samples, \"\
+        should_retrain\": should}\n\n# Write outputs\ngh_output = os.environ.get(\"\
+        GITHUB_OUTPUT\", \"\")\nlines = [\n    f\"should_retrain={'true' if result['should_retrain']\
+        \ else 'false'}\",\n    f\"drift_score={result['drift_score']}\",\n    f\"\
+        samples_count={result['samples_count']}\",\n]\nif gh_output:\n    with open(gh_output,\
+        \ \"a\") as f:\n        f.write(\"\\n\".join(lines) + \"\\n\")\nprint(json.dumps(result,\
+        \ indent=2))\nsys.exit(0)\nPYEOF\n"
+    - name: "Summary \u2014 drift detection result"
+      run: "SHOULD=\"${{ steps.drift.outputs.should_retrain }}\"\nSCORE=\"${{ steps.drift.outputs.drift_score\
+        \ }}\"\nSAMPLES=\"${{ steps.drift.outputs.samples_count }}\"\necho \"### \U0001F50D\
+        \ Drift Detection Result\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Metric |\
+        \ Value |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|--------|-------|\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"| Drift Score | \\`${SCORE}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Sample Count | \\`${SAMPLES}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Should Retrain | \\`${SHOULD}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
   retrain:
     name: Auto-retrain model
     needs: detect-drift
-    if: needs.detect-drift.outputs.should_retrain == 'true' && github.event.inputs.dry_run != 'true'
+    if: needs.detect-drift.outputs.should_retrain == 'true' && github.event.inputs.dry_run
+      != 'true'
     runs-on: ubuntu-latest-m
-
     steps:
-    - uses: actions/checkout@v5  # v6.0.3
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
-
-    - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
-
     - name: Setup Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
-        python-version: '3.12.13'
+        python-version: 3.12.13
         cache-tier: training
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
     - name: Install ML dependencies
-      run: |
-          pip install --quiet -e ".[ml]" || {
-            echo "⚠️  ML extras unavailable — falling back to base install"
-            pip install --quiet -e "."
-          }
-
+      run: "pip install --quiet -e \".[ml]\" || {\n  echo \"\u26A0\uFE0F  ML extras\
+        \ unavailable \u2014 falling back to base install\"\n  pip install --quiet\
+        \ -e \".\"\n}\n"
     - name: Execute retrain via ContinuousLearningPipeline
       id: retrain
       env:
-          DRIFT_SCORE: ${{ needs.detect-drift.outputs.drift_score }}
-          SAMPLES: ${{ needs.detect-drift.outputs.samples_count }}
-      run: |
-          set -euo pipefail
-
-          python - <<'PYEOF'
-          import os, json, sys, logging
-          from pathlib import Path
-
-          logging.basicConfig(level=logging.INFO)
-
-          try:
-              from codex_ml.training.continuous_learning import ContinuousLearningPipeline
-          except ImportError:
-              print("⚠️  codex_ml not importable — stub retrain (no-op)")
-              print("new_version=stub-v0.0" )
-              sys.exit(0)
-
-          pipeline = ContinuousLearningPipeline(
-              model_name="codex-primary",
-              registry_path=Path("models/registry.json"),
-          )
-
-          # Stub training function — replace with real training in production
-          def _stub_train_fn(data):
-              return object(), {"accuracy": 0.85, "loss": 0.32}
-
-          drift_score = float(os.environ.get("DRIFT_SCORE", "0.0"))
-          new_version = pipeline.retrain(
-              train_fn=_stub_train_fn,
-              train_data=None,
-              drift_score=drift_score,
-          )
-          print(f"✅ Retrain complete: {new_version.version}")
-
-          gh_output = os.environ.get("GITHUB_OUTPUT", "")
-          if gh_output:
-              with open(gh_output, "a") as f:
-                  f.write(f"new_version={new_version.version}\n")
-          PYEOF
-
-    - name: Active-PR guard — skip push when any open/draft PR targets the push target
+        DRIFT_SCORE: ${{ needs.detect-drift.outputs.drift_score }}
+        SAMPLES: ${{ needs.detect-drift.outputs.samples_count }}
+      run: "set -euo pipefail\n\npython - <<'PYEOF'\nimport os, json, sys, logging\n\
+        from pathlib import Path\n\nlogging.basicConfig(level=logging.INFO)\n\ntry:\n\
+        \    from codex_ml.training.continuous_learning import ContinuousLearningPipeline\n\
+        except ImportError:\n    print(\"\u26A0\uFE0F  codex_ml not importable \u2014\
+        \ stub retrain (no-op)\")\n    print(\"new_version=stub-v0.0\" )\n    sys.exit(0)\n\
+        \npipeline = ContinuousLearningPipeline(\n    model_name=\"codex-primary\"\
+        ,\n    registry_path=Path(\"models/registry.json\"),\n)\n\n# Stub training\
+        \ function \u2014 replace with real training in production\ndef _stub_train_fn(data):\n\
+        \    return object(), {\"accuracy\": 0.85, \"loss\": 0.32}\n\ndrift_score\
+        \ = float(os.environ.get(\"DRIFT_SCORE\", \"0.0\"))\nnew_version = pipeline.retrain(\n\
+        \    train_fn=_stub_train_fn,\n    train_data=None,\n    drift_score=drift_score,\n\
+        )\nprint(f\"\u2705 Retrain complete: {new_version.version}\")\n\ngh_output\
+        \ = os.environ.get(\"GITHUB_OUTPUT\", \"\")\nif gh_output:\n    with open(gh_output,\
+        \ \"a\") as f:\n        f.write(f\"new_version={new_version.version}\\n\"\
+        )\nPYEOF\n"
+    - name: "Active-PR guard \u2014 skip push when any open/draft PR targets the push\
+        \ target"
       id: pr_guard
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         REPO: ${{ github.repository }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-      run: |
-          _TARGET="${PUSH_TARGET:-main}"
-          if [ "$_TARGET" = "main" ] || [ "$_TARGET" = "0D_base_" ]; then
-            PR_COUNT=$(gh api "repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1" \
-              --jq 'length' 2>/dev/null || echo "0")
-            if [ "${PR_COUNT}" -gt "0" ]; then
-              echo "pr_skip=true" >> "$GITHUB_OUTPUT"
-              echo "⛔ ${PR_COUNT} open/draft PR(s) targeting \`${_TARGET}\` — model registry push deferred." >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "pr_skip=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "pr_skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
+      run: "_TARGET=\"${PUSH_TARGET:-main}\"\nif [ \"$_TARGET\" = \"main\" ] || [\
+        \ \"$_TARGET\" = \"0D_base_\" ]; then\n  PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1\"\
+        \ \\\n    --jq 'length' 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
+        \ -gt \"0\" ]; then\n    echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"\n   \
+        \ echo \"\u26D4 ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` \u2014\
+        \ model registry push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n  \
+        \  echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Commit updated model registry
       if: steps.pr_guard.outputs.pr_skip != 'true'
       env:
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-      run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add models/ || true
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci]"
-            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-            _TARGET="${PUSH_TARGET:-main}"
-            echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
-            git fetch origin "$_TARGET" --depth=1
-            git rebase "origin/$_TARGET" || {
-              echo "⚠️  Rebase conflict — re-applying model registry on top of latest $_TARGET"
-              git rebase --abort 2>/dev/null || true
-              git reset --hard "origin/$_TARGET"
-              git add models/ || true
-              git diff --cached --quiet && { echo "ℹ️  No registry changes remain — skipping push"; exit 0; }
-              git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci] (post-rebase retry)"
-            }
-            git push origin "HEAD:$_TARGET"
-          else
-            echo "No registry changes to commit"
-          fi
-
+      run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\ngit add models/ || true\n\
+        if ! git diff --cached --quiet; then\n  git commit -m \"chore(ml): auto-retrain\
+        \ triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip\
+        \ ci]\"\n  # Walk the staging chain: sub-PR \u2192 0D_base_ \u2192 main  (resolved\
+        \ above)\n  _TARGET=\"${PUSH_TARGET:-main}\"\n  echo \"\U0001F500 Push target:\
+        \ $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\n  git fetch\
+        \ origin \"$_TARGET\" --depth=1\n  git rebase \"origin/$_TARGET\" || {\n \
+        \   echo \"\u26A0\uFE0F  Rebase conflict \u2014 re-applying model registry\
+        \ on top of latest $_TARGET\"\n    git rebase --abort 2>/dev/null || true\n\
+        \    git reset --hard \"origin/$_TARGET\"\n    git add models/ || true\n \
+        \   git diff --cached --quiet && { echo \"\u2139\uFE0F  No registry changes\
+        \ remain \u2014 skipping push\"; exit 0; }\n    git commit -m \"chore(ml):\
+        \ auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score\
+        \ }} [skip ci] (post-rebase retry)\"\n  }\n  git push origin \"HEAD:$_TARGET\"\
+        \nelse\n  echo \"No registry changes to commit\"\nfi\n"
     - name: Open tracking issue
       if: steps.retrain.outputs.new_version != ''
-      uses: actions/github-script@v8  # v9
+      uses: actions/github-script@v8
       with:
-          github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          script: |
-            const version = '${{ steps.retrain.outputs.new_version }}';
-            const drift   = '${{ needs.detect-drift.outputs.drift_score }}';
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🤖 Auto-retrain complete — ${version} (drift=${drift})`,
-              body: `## Auto-Retrain Summary\n\n| Field | Value |\n|-------|-------|\n| New version | \`${version}\` |\n| Drift score | \`${drift}\` |\n| Run | ${context.runId} |\n\nThis issue was opened automatically by \`model-drift-retrain.yml\`.\nClose once the new model has been validated.`,
-              labels: ['ml-retrain', 'automated'],
-            });
-
-  # ── Step 3: Dry-run summary ──────────────────────────────────────────────────
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+        script: "const version = '${{ steps.retrain.outputs.new_version }}';\nconst\
+          \ drift   = '${{ needs.detect-drift.outputs.drift_score }}';\nawait github.rest.issues.create({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `\U0001F916\
+          \ Auto-retrain complete \u2014 ${version} (drift=${drift})`,\n  body: `##\
+          \ Auto-Retrain Summary\\n\\n| Field | Value |\\n|-------|-------|\\n| New\
+          \ version | \\`${version}\\` |\\n| Drift score | \\`${drift}\\` |\\n| Run\
+          \ | ${context.runId} |\\n\\nThis issue was opened automatically by \\`model-drift-retrain.yml\\\
+          `.\\nClose once the new model has been validated.`,\n  labels: ['ml-retrain',\
+          \ 'automated'],\n});\n"
+    timeout-minutes: 30
   dry-run-summary:
     name: Dry-run summary
     needs: detect-drift
-    if: github.event.inputs.dry_run == 'true' && needs.detect-drift.outputs.should_retrain == 'true'
+    if: github.event.inputs.dry_run == 'true' && needs.detect-drift.outputs.should_retrain
+      == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Report would-retrain
-        run: |
-          echo "### ⚠️ Dry Run — Retrain would have been triggered" >> "$GITHUB_STEP_SUMMARY"
-          echo "Drift score: \`${{ needs.detect-drift.outputs.drift_score }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "Re-run with \`dry_run=false\` to execute." >> "$GITHUB_STEP_SUMMARY"
-
-
-
-
+    - name: Report would-retrain
+      run: "echo \"### \u26A0\uFE0F Dry Run \u2014 Retrain would have been triggered\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"Drift score: \\`${{ needs.detect-drift.outputs.drift_score\
+        \ }}\\`\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"Re-run with \\`dry_run=false\\\
+        ` to execute.\" >> \"$GITHUB_STEP_SUMMARY\"\n"

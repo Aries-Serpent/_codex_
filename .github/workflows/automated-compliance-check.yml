@@ -1,26 +1,21 @@
----
 name: Automated Compliance Check
-
 on:
   pull_request:
     types:
-      - opened
-      - synchronize
-      - reopened
+    - opened
+    - synchronize
+    - reopened
   push:
     branches:
-      - main
-      - develop
-
+    - main
+    - develop
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   compliance-check:
     permissions:

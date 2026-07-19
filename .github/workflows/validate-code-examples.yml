@@ -1,6 +1,5 @@
----
 name: Code Example Validation
-"on":
+'on':
   pull_request:
     paths:
     - docs/**
@@ -22,7 +21,6 @@ permissions:
   checks: write
 jobs:
   validate-python:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate Python Examples
     runs-on: ubuntu-latest
@@ -35,56 +33,27 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Extract Python code blocks
-      run: |
-        python3 <<'EOF'
-        import json
-        import os
-        import re
-        import subprocess
-        from pathlib import Path
-
-        pattern = re.compile(r"```python\n(.*?)\n```", re.DOTALL)
-
-        def get_target_files() -> list[Path]:
-            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
-            base_sha = ""
-            head_sha = os.environ.get("GITHUB_SHA", "")
-            null_sha = "0" * 40
-
-            if event_name == "pull_request":
-                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
-            elif event_name == "push":
-                base_sha = os.environ.get("GITHUB_BEFORE", "")
-
-            if base_sha and head_sha and base_sha != null_sha:
-                changed = subprocess.check_output(
-                    ["git", "diff", "--name-only", base_sha, head_sha],
-                    text=True,
-                ).splitlines()
-                files = [
-                    Path(path)
-                    for path in changed
-                    if path.endswith(".md")
-                ]
-                if files:
-                    return files
-
-            return sorted(Path("docs").rglob("*.md"))
-
-        extracted = []
-        for md_file in get_target_files():
-            with open(md_file) as f:
-                for i, match in enumerate(pattern.finditer(f.read())):
-                    code = match.group(1).strip()
-                    extracted.append((str(md_file), i, code))
-
-        print(f"Extracted {len(extracted)} Python code blocks")
-
-        with open("python_blocks.json", "w") as f:
-            json.dump(extracted, f)
-        EOF
+      run: "python3 <<'EOF'\nimport json\nimport os\nimport re\nimport subprocess\n\
+        from pathlib import Path\n\npattern = re.compile(r\"```python\\n(.*?)\\n```\"\
+        , re.DOTALL)\n\ndef get_target_files() -> list[Path]:\n    event_name = os.environ.get(\"\
+        GITHUB_EVENT_NAME\", \"\")\n    base_sha = \"\"\n    head_sha = os.environ.get(\"\
+        GITHUB_SHA\", \"\")\n    null_sha = \"0\" * 40\n\n    if event_name == \"\
+        pull_request\":\n        base_sha = os.environ.get(\"GITHUB_BASE_SHA\", \"\
+        \")\n    elif event_name == \"push\":\n        base_sha = os.environ.get(\"\
+        GITHUB_BEFORE\", \"\")\n\n    if base_sha and head_sha and base_sha != null_sha:\n\
+        \        changed = subprocess.check_output(\n            [\"git\", \"diff\"\
+        , \"--name-only\", base_sha, head_sha],\n            text=True,\n        ).splitlines()\n\
+        \        files = [\n            Path(path)\n            for path in changed\n\
+        \            if path.endswith(\".md\")\n        ]\n        if files:\n   \
+        \         return files\n\n    return sorted(Path(\"docs\").rglob(\"*.md\"\
+        ))\n\nextracted = []\nfor md_file in get_target_files():\n    with open(md_file)\
+        \ as f:\n        for i, match in enumerate(pattern.finditer(f.read())):\n\
+        \            code = match.group(1).strip()\n            extracted.append((str(md_file),\
+        \ i, code))\n\nprint(f\"Extracted {len(extracted)} Python code blocks\")\n\
+        \nwith open(\"python_blocks.json\", \"w\") as f:\n    json.dump(extracted,\
+        \ f)\nEOF\n"
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
         GITHUB_BEFORE: ${{ github.event.before || '' }}
@@ -93,28 +62,29 @@ jobs:
         \ as f:\n    blocks = json.load(f)\n\nerrors = []\nfor file_path, idx, code\
         \ in blocks:\n    try:\n        compile(code, '<string>', 'exec')\n    except\
         \ SyntaxError as e:\n        errors.append(f\"{file_path}:{idx}: {e}\")\n\n\
-        if errors:\n    print(\"❌ Python syntax errors found:\")\n    for err in errors[:10]:\n\
-        \        print(f\"  {err}\")\n    exit(1)\nelse:\n    print(f\"✅ All {len(blocks)}\
-        \ Python code blocks are syntactically valid\")\nEOF\n"
+        if errors:\n    print(\"\u274C Python syntax errors found:\")\n    for err\
+        \ in errors[:10]:\n        print(f\"  {err}\")\n    exit(1)\nelse:\n    print(f\"\
+        \u2705 All {len(blocks)} Python code blocks are syntactically valid\")\nEOF\n"
     - name: Check for missing imports
       run: "python3 << 'EOF'\nimport json\nimport re\n\nwith open('python_blocks.json')\
         \ as f:\n    blocks = json.load(f)\n\ncommon_modules = {\n    'os': ['os.'],\n\
         \    'sys': ['sys.'],\n    'json': ['json.'],\n    'requests': ['requests.',\
         \ 'get(', 'post('],\n    'pathlib': ['Path('],\n    'typing': ['Dict', 'List',\
         \ 'Optional'],\n}\n\nissues = []\nfor file_path, idx, code in blocks:\n  \
-        \  lines = code.split('\\n')\n\n  # Skip if first line is import\n    if\
-        \ any('import' in line for line in lines[:3]):\n        continue\n\n    for\
-        \ module, patterns in common_modules.items():\n        has_import = any(f'import\
-        \ {module}' in line for line in lines)\n        if not has_import:\n     \
-        \       for pattern in patterns:\n                if pattern in code:\n  \
-        \                  issues.append(f\"{file_path}:{idx}: Missing 'import {module}'\"\
-        )\n                    break\n\nif issues:\n    print(\"⚠️  Missing imports\
-        \ found:\")\n    for issue in issues[:10]:\n        print(f\"  {issue}\")\n\
-        \    print(f\"\\nTotal: {len(issues)} blocks with missing imports\")\nelse:\n\
-        \    print(\"✅ No obvious missing imports detected\")\nEOF\n"
+        \  lines = code.split('\\n')\n\n  # Skip if first line is import\n    if any('import'\
+        \ in line for line in lines[:3]):\n        continue\n\n    for module, patterns\
+        \ in common_modules.items():\n        has_import = any(f'import {module}'\
+        \ in line for line in lines)\n        if not has_import:\n            for\
+        \ pattern in patterns:\n                if pattern in code:\n            \
+        \        issues.append(f\"{file_path}:{idx}: Missing 'import {module}'\")\n\
+        \                    break\n\nif issues:\n    print(\"\u26A0\uFE0F  Missing\
+        \ imports found:\")\n    for issue in issues[:10]:\n        print(f\"  {issue}\"\
+        )\n    print(f\"\\nTotal: {len(issues)} blocks with missing imports\")\nelse:\n\
+        \    print(\"\u2705 No obvious missing imports detected\")\nEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   validate-bash:
     name: Validate Bash Examples
     runs-on: ubuntu-latest
@@ -125,54 +95,25 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Extract Bash code blocks
-      run: |
-        python3 <<'EOF'
-        import json
-        import os
-        import re
-        import subprocess
-        from pathlib import Path
-
-        pattern = re.compile(r"```bash\n(.*?)\n```", re.DOTALL)
-
-        def get_target_files() -> list[Path]:
-            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
-            base_sha = ""
-            head_sha = os.environ.get("GITHUB_SHA", "")
-            null_sha = "0" * 40
-
-            if event_name == "pull_request":
-                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
-            elif event_name == "push":
-                base_sha = os.environ.get("GITHUB_BEFORE", "")
-
-            if base_sha and head_sha and base_sha != null_sha:
-                changed = subprocess.check_output(
-                    ["git", "diff", "--name-only", base_sha, head_sha],
-                    text=True,
-                ).splitlines()
-                files = [
-                    Path(path)
-                    for path in changed
-                    if path.endswith(".md")
-                ]
-                if files:
-                    return files
-
-            return sorted(Path("docs").rglob("*.md"))
-
-        extracted = []
-        for md_file in get_target_files():
-            with open(md_file) as f:
-                for i, match in enumerate(pattern.finditer(f.read())):
-                    code = match.group(1).strip()
-                    extracted.append((str(md_file), i, code))
-
-        print(f"Extracted {len(extracted)} Bash code blocks")
-
-        with open("bash_blocks.json", "w") as f:
-            json.dump(extracted, f)
-        EOF
+      run: "python3 <<'EOF'\nimport json\nimport os\nimport re\nimport subprocess\n\
+        from pathlib import Path\n\npattern = re.compile(r\"```bash\\n(.*?)\\n```\"\
+        , re.DOTALL)\n\ndef get_target_files() -> list[Path]:\n    event_name = os.environ.get(\"\
+        GITHUB_EVENT_NAME\", \"\")\n    base_sha = \"\"\n    head_sha = os.environ.get(\"\
+        GITHUB_SHA\", \"\")\n    null_sha = \"0\" * 40\n\n    if event_name == \"\
+        pull_request\":\n        base_sha = os.environ.get(\"GITHUB_BASE_SHA\", \"\
+        \")\n    elif event_name == \"push\":\n        base_sha = os.environ.get(\"\
+        GITHUB_BEFORE\", \"\")\n\n    if base_sha and head_sha and base_sha != null_sha:\n\
+        \        changed = subprocess.check_output(\n            [\"git\", \"diff\"\
+        , \"--name-only\", base_sha, head_sha],\n            text=True,\n        ).splitlines()\n\
+        \        files = [\n            Path(path)\n            for path in changed\n\
+        \            if path.endswith(\".md\")\n        ]\n        if files:\n   \
+        \         return files\n\n    return sorted(Path(\"docs\").rglob(\"*.md\"\
+        ))\n\nextracted = []\nfor md_file in get_target_files():\n    with open(md_file)\
+        \ as f:\n        for i, match in enumerate(pattern.finditer(f.read())):\n\
+        \            code = match.group(1).strip()\n            extracted.append((str(md_file),\
+        \ i, code))\n\nprint(f\"Extracted {len(extracted)} Bash code blocks\")\n\n\
+        with open(\"bash_blocks.json\", \"w\") as f:\n    json.dump(extracted, f)\n\
+        EOF\n"
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
         GITHUB_BEFORE: ${{ github.event.before || '' }}
@@ -185,10 +126,10 @@ jobs:
         \        temp_file = f.name\n\n    result = subprocess.run(['bash', '-n',\
         \ temp_file], capture_output=True)\n    os.unlink(temp_file)\n\n    if result.returncode\
         \ != 0:\n        errors.append(f\"{file_path}:{idx}\")\n\nif errors:\n   \
-        \ print(f\"⚠️ Bash syntax errors found in {len(errors)} blocks\")\n    for\
-        \ err in errors[:10]:\n        print(f\"  {err}\")\n    print(\"Validation\
-        \ is advisory for Bash examples\")\nelse:\n    print(f\"✅ All {len(blocks)}\
-        \ Bash code blocks are syntactically valid\")\nEOF\n"
+        \ print(f\"\u26A0\uFE0F Bash syntax errors found in {len(errors)} blocks\"\
+        )\n    for err in errors[:10]:\n        print(f\"  {err}\")\n    print(\"\
+        Validation is advisory for Bash examples\")\nelse:\n    print(f\"\u2705 All\
+        \ {len(blocks)} Bash code blocks are syntactically valid\")\nEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -204,75 +145,39 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Extract and validate YAML
       continue-on-error: true
-      run: |
-        pip install pyyaml
-
-        python3 <<'EOF'
-        import os
-        import re
-        import subprocess
-        from pathlib import Path
-
-        import yaml
-
-        pattern = re.compile(r"```ya?ml\n(.*?)\n```", re.DOTALL)
-
-        def get_target_files() -> list[Path]:
-            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
-            base_sha = ""
-            head_sha = os.environ.get("GITHUB_SHA", "")
-            null_sha = "0" * 40
-
-            if event_name == "pull_request":
-                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
-            elif event_name == "push":
-                base_sha = os.environ.get("GITHUB_BEFORE", "")
-
-            if base_sha and head_sha and base_sha != null_sha:
-                changed = subprocess.check_output(
-                    ["git", "diff", "--name-only", base_sha, head_sha],
-                    text=True,
-                ).splitlines()
-                files = [
-                    Path(path)
-                    for path in changed
-                    if path.endswith(".md")
-                ]
-                if files:
-                    return files
-
-            return sorted(Path("docs").rglob("*.md"))
-
-        errors = []
-        total = 0
-
-        for md_file in get_target_files():
-            with open(md_file) as f:
-                for i, match in enumerate(pattern.finditer(f.read())):
-                    total += 1
-                    code = match.group(1).strip()
-                    try:
-                        yaml.safe_load(code)
-                    except yaml.YAMLError as e:
-                        errors.append(f"{md_file}:{i}: {e}")
-
-        if errors:
-            print(f"⚠️ YAML errors found in {len(errors)} blocks:")
-            for err in errors[:10]:
-                print(f"  {err}")
-            print("Validation is advisory for YAML examples")
-        else:
-            print(f"✅ All {total} YAML code blocks are valid")
-        EOF
+      run: "pip install pyyaml\n\npython3 <<'EOF'\nimport os\nimport re\nimport subprocess\n\
+        from pathlib import Path\n\nimport yaml\n\npattern = re.compile(r\"```ya?ml\\\
+        n(.*?)\\n```\", re.DOTALL)\n\ndef get_target_files() -> list[Path]:\n    event_name\
+        \ = os.environ.get(\"GITHUB_EVENT_NAME\", \"\")\n    base_sha = \"\"\n   \
+        \ head_sha = os.environ.get(\"GITHUB_SHA\", \"\")\n    null_sha = \"0\" *\
+        \ 40\n\n    if event_name == \"pull_request\":\n        base_sha = os.environ.get(\"\
+        GITHUB_BASE_SHA\", \"\")\n    elif event_name == \"push\":\n        base_sha\
+        \ = os.environ.get(\"GITHUB_BEFORE\", \"\")\n\n    if base_sha and head_sha\
+        \ and base_sha != null_sha:\n        changed = subprocess.check_output(\n\
+        \            [\"git\", \"diff\", \"--name-only\", base_sha, head_sha],\n \
+        \           text=True,\n        ).splitlines()\n        files = [\n      \
+        \      Path(path)\n            for path in changed\n            if path.endswith(\"\
+        .md\")\n        ]\n        if files:\n            return files\n\n    return\
+        \ sorted(Path(\"docs\").rglob(\"*.md\"))\n\nerrors = []\ntotal = 0\n\nfor\
+        \ md_file in get_target_files():\n    with open(md_file) as f:\n        for\
+        \ i, match in enumerate(pattern.finditer(f.read())):\n            total +=\
+        \ 1\n            code = match.group(1).strip()\n            try:\n       \
+        \         yaml.safe_load(code)\n            except yaml.YAMLError as e:\n\
+        \                errors.append(f\"{md_file}:{i}: {e}\")\n\nif errors:\n  \
+        \  print(f\"\u26A0\uFE0F YAML errors found in {len(errors)} blocks:\")\n \
+        \   for err in errors[:10]:\n        print(f\"  {err}\")\n    print(\"Validation\
+        \ is advisory for YAML examples\")\nelse:\n    print(f\"\u2705 All {total}\
+        \ YAML code blocks are valid\")\nEOF\n"
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
         GITHUB_BEFORE: ${{ github.event.before || '' }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   summary:
     name: Summary
     needs:
@@ -285,9 +190,9 @@ jobs:
     steps:
     - name: Check validation results
       run: "if [[ \"${{ needs.validate-python.result }}\" == \"failure\" ]]; then\n\
-        \  echo \"❌ Python code example validation failed\"\n  exit 1\nelse\n  echo\
-        \ \"✅ Python code example validation passed (Bash/YAML are advisory)\"\nfi\n"
+        \  echo \"\u274C Python code example validation failed\"\n  exit 1\nelse\n\
+        \  echo \"\u2705 Python code example validation passed (Bash/YAML are advisory)\"\
+        \nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

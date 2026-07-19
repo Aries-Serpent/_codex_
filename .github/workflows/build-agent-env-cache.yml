@@ -1,4 +1,3 @@
----
 name: Build Agent Environment Cache
 on:
   push:
@@ -32,7 +31,7 @@ permissions:
   contents: read
 jobs:
   build-agent-env:
-    name: 🔨 Build + cache agent venv
+    name: "\U0001F528 Build + cache agent venv"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -44,11 +43,9 @@ jobs:
       if: inputs.force-rebuild == true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        CACHE_KEY="Linux-agent-venv-${CACHE_VERSION}-py${PYTHON_VERSION}-"
-        echo "Deleting caches matching: $CACHE_KEY"
-        gh cache list --key "$CACHE_KEY" --json id --jq '.[].id' | \
-          xargs -I{} gh cache delete {} || true
+      run: "CACHE_KEY=\"Linux-agent-venv-${CACHE_VERSION}-py${PYTHON_VERSION}-\"\n\
+        echo \"Deleting caches matching: $CACHE_KEY\"\ngh cache list --key \"$CACHE_KEY\"\
+        \ --json id --jq '.[].id' | \\\n  xargs -I{} gh cache delete {} || true\n"
     - name: Setup agent environment (L6 cache build)
       id: setup-agent
       uses: ./.github/actions/setup-agent-env
@@ -77,15 +74,16 @@ jobs:
         , \"built\")\npy_info  = report.get(\"python\", {}).get(\"message\", \"unknown\"\
         )\nmsg      = summary.get(\"message\", \"unknown\")\n\nlines = [\n    \"##\
         \ \U0001F680 Agent Environment Cache Build\",\n    \"\",\n    f\"| Key | Value\
-        \ |\",\n    f\"|-----|-------|\",\n    f\"| **Status** | {'✅ Healthy' if healthy\
-        \ else '⚠️ Degraded'} |\",\n    f\"| **Cache mode** | {mode} |\",\n    f\"\
-        | **Python** | {py_info} |\",\n    f\"| **Result** | {msg} |\",\n    f\"|\
-        \ **Cache key** | `Linux-agent-venv-{os.environ.get('CACHE_VERSION', 'v2')}-py{os.environ.get('PYTHON_VERSION',\
-        \ '3.12')}-<hash>` |\",\n    \"\",\n    \"### What this cache provides\",\n\
-        \    \"- ⚡ ~4 s agent env activation (vs ~75 s cold build)\",\n    \"- \U0001F527\
-        \ ruff, mypy, pytest, black, isort pre-installed\",\n    \"- \U0001F4C4 mkdocs\
-        \ + Material theme ready\",\n    \"- \U0001F510 GitHub App auth (pyjwt) available\"\
-        ,\n    \"- \U0001F9E0 Codex cognitive modules importable\",\n]\nwith open(os.environ[\"\
+        \ |\",\n    f\"|-----|-------|\",\n    f\"| **Status** | {'\u2705 Healthy'\
+        \ if healthy else '\u26A0\uFE0F Degraded'} |\",\n    f\"| **Cache mode** |\
+        \ {mode} |\",\n    f\"| **Python** | {py_info} |\",\n    f\"| **Result** |\
+        \ {msg} |\",\n    f\"| **Cache key** | `Linux-agent-venv-{os.environ.get('CACHE_VERSION',\
+        \ 'v2')}-py{os.environ.get('PYTHON_VERSION', '3.12')}-<hash>` |\",\n    \"\
+        \",\n    \"### What this cache provides\",\n    \"- \u26A1 ~4 s agent env\
+        \ activation (vs ~75 s cold build)\",\n    \"- \U0001F527 ruff, mypy, pytest,\
+        \ black, isort pre-installed\",\n    \"- \U0001F4C4 mkdocs + Material theme\
+        \ ready\",\n    \"- \U0001F510 GitHub App auth (pyjwt) available\",\n    \"\
+        - \U0001F9E0 Codex cognitive modules importable\",\n]\nwith open(os.environ[\"\
         GITHUB_STEP_SUMMARY\"], \"a\") as f:\n    f.write(\"\\n\".join(lines) + \"\
         \\n\")\nPYEOF\n"
       env:
@@ -93,10 +91,11 @@ jobs:
     - name: Fail if critical health check failed
       run: "python - << 'PYEOF'\nimport json, sys\nfrom pathlib import Path\ntry:\n\
         \    r = json.loads(Path(\"/tmp/agent-env-health.json\").read_text())\n  \
-        \  if r.get(\"summary\", {}).get(\"critical\"):\n        print(\"❌ Critical\
-        \ agent env failure — Python binary broken\")\n        sys.exit(1)\nexcept\
-        \ Exception as e:\n    print(f\"Warning: could not read health report: {e}\"\
-        )\nPYEOF\n"
+        \  if r.get(\"summary\", {}).get(\"critical\"):\n        print(\"\u274C Critical\
+        \ agent env failure \u2014 Python binary broken\")\n        sys.exit(1)\n\
+        except Exception as e:\n    print(f\"Warning: could not read health report:\
+        \ {e}\")\nPYEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 45

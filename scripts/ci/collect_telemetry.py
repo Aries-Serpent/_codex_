@@ -356,6 +356,58 @@ class TelemetryCollector:
             "assert failed", "assert_", "assertEqual", "assertTrue",
             "assertRaises", "assertion failed",
         ],
+        
+        # ── P4.5 PHASE 4 LANE 3: TELEMETRY EXPANSION ─────────────────────────
+        # 8 medium-confidence (85-95%) patterns promoted to high-confidence (95%+)
+        # Extended from Phase 3 knowledge graph for unknown-bucket reduction
+        # Target: reduce unknown-failure bucket from 20% → <10%
+        
+        "parameterized-test": [
+            "parametrize", "pytest.mark.parametrize", "indirect", "fixture",
+            "param", "parametrized test", "parameter", "yield fixture",
+        ],
+        
+        "resource-cleanup": [
+            "teardown", "cleanup", "finally", "context manager",
+            "with statement", "resource cleanup", "fixture cleanup",
+            "resource leaked", "not cleaned up",
+        ],
+        
+        "transient-network": [
+            "connection timeout", "network unreliable", "retry logic",
+            "connection reset", "timeout expired", "socket timeout",
+            "unable to connect", "network error", "connection refused",
+        ],
+        
+        "test-order-dependency": [
+            "test isolation", "state pollution", "fixture cache",
+            "test order", "execution order", "previous test",
+            "shared state", "test independence", "randomize",
+        ],
+        
+        "database-deadlock": [
+            "database deadlock", "transaction lock", "concurrent access",
+            "deadlock detected", "lock timeout", "circular wait",
+            "transaction isolation", "serialization failure",
+        ],
+        
+        "coverage-edge-case": [
+            "edge case", "boundary condition", "untested path",
+            "uncovered branch", "coverage gap", "missing test",
+            "boundary value", "corner case", "extreme value",
+        ],
+        
+        "coverage-branch": [
+            "branch coverage", "decision point", "uncovered path",
+            "branch not covered", "conditional uncovered", "decision tree",
+            "path coverage", "unreachable code", "dead code",
+        ],
+        
+        "error-handling-coverage": [
+            "error path", "exception handling", "error coverage",
+            "exception uncovered", "error not tested", "exception path",
+            "error flow", "exception flow", "error case",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):

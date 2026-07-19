@@ -1,4 +1,3 @@
----
 name: Repo Var Sync (Scheduled)
 on:
   schedule:
@@ -28,7 +27,8 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
     - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
         \ main)"
       id: resolve-target
@@ -97,12 +97,12 @@ jobs:
         \ \u2192 {change['new']!r}\")\n\nneeds_write = bool(drift) or force_sync or\
         \ not output_path.exists()\n\nif dry_run:\n    print(\"\\n\U0001F50D DRY RUN\
         \ \u2014 no file written.\")\n    print(\"GITHUB_OUTPUT: drift_count=\" +\
-        \ str(len(drift)))\n  # Write output for summary step even in dry-run\n\
-        \    with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as\
-        \ f:\n        f.write(f\"drift_count={len(drift)}\\n\")\n        f.write(\"\
-        written=false\\n\")\n        f.write(f\"var_count={len(current)}\\n\")\nelif\
-        \ needs_write:\n  # Write updated file with metadata\n    context = dict(current)\n\
-        \    context[\"_meta\"] = {\n        \"generated_at\":   datetime.datetime.now(datetime.timezone.utc).isoformat(),\n\
+        \ str(len(drift)))\n  # Write output for summary step even in dry-run\n  \
+        \  with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n\
+        \        f.write(f\"drift_count={len(drift)}\\n\")\n        f.write(\"written=false\\\
+        n\")\n        f.write(f\"var_count={len(current)}\\n\")\nelif needs_write:\n\
+        \  # Write updated file with metadata\n    context = dict(current)\n    context[\"\
+        _meta\"] = {\n        \"generated_at\":   datetime.datetime.now(datetime.timezone.utc).isoformat(),\n\
         \        \"workflow\":       \"repo-var-sync-schedule\",\n        \"sha\"\
         :            os.environ.get(\"GITHUB_SHA\", \"\")[:8],\n        \"ref\": \
         \           os.environ.get(\"GITHUB_REF\", \"\"),\n        \"actor\":    \
@@ -159,3 +159,4 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

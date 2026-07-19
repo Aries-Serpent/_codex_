@@ -1,85 +1,88 @@
----
 name: Machine Readable Governance
-
 on:
-  pull_request:
+  pull_request: null
   push:
     branches:
-      - main
-      - master
+    - main
+    - master
   schedule:
-    - cron: '0 6 * * *'
-  workflow_dispatch:
-
+  - cron: 0 6 * * *
+  workflow_dispatch: null
 permissions:
   contents: read
-
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
-
 jobs:
   machine-readable-governance:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        python -m pip install -e .[dev]
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .[dev]
+        '
+    - name: Ensure docs-data directories
+      run: 'mkdir -p docs-data/schemas docs-data/generated
 
-      - name: Ensure docs-data directories
-        run: |
-          mkdir -p docs-data/schemas docs-data/generated
-          touch docs-data/documents.jsonl docs-data/sections.jsonl docs-data/blocks.jsonl docs-data/actions.jsonl docs-data/relationships.jsonl docs-data/decisions.jsonl docs-data/requirements.jsonl docs-data/references.jsonl
+        touch docs-data/documents.jsonl docs-data/sections.jsonl docs-data/blocks.jsonl
+        docs-data/actions.jsonl docs-data/relationships.jsonl docs-data/decisions.jsonl
+        docs-data/requirements.jsonl docs-data/references.jsonl
 
-      - name: Inventory
-        run: python -m tools.docs_agent.inventory --json
+        '
+    - name: Inventory
+      run: python -m tools.docs_agent.inventory --json
+    - name: Detect changed candidates
+      run: python -m tools.docs_agent.changed_candidates --json
+    - name: Validate coverage
+      run: python -m tools.docs_agent.coverage --json
+    - name: Validate canonical JSONL
+      run: python -m tools.docs_agent.validate --json
+    - name: Build SQLite and indexes
+      run: python -m tools.docs_agent.build_index --json
+    - name: Verify query health
+      run: 'python -m tools.docs_agent.query health --json
 
-      - name: Detect changed candidates
-        run: python -m tools.docs_agent.changed_candidates --json
+        python -m tools.docs_agent.query search "health check" --json
 
-      - name: Validate coverage
-        run: python -m tools.docs_agent.coverage --json
+        python -m tools.docs_agent.task_brief "health check" --json
 
-      - name: Validate canonical JSONL
-        run: python -m tools.docs_agent.validate --json
+        '
+    - name: Enforce no unmanaged candidate files
+      run: python -m tools.docs_agent.no_unmanaged_candidates --json
+    - name: Upload governance artifacts
+      uses: actions/upload-artifact@v5
+      with:
+        path: 'docs-data/generated/candidate-inventory.json
 
-      - name: Build SQLite and indexes
-        run: python -m tools.docs_agent.build_index --json
+          docs-data/generated/changed-candidates.json
 
-      - name: Verify query health
-        run: |
-          python -m tools.docs_agent.query health --json
-          python -m tools.docs_agent.query search "health check" --json
-          python -m tools.docs_agent.task_brief "health check" --json
+          docs-data/generated/codebase-discovery-report.json
 
-      - name: Enforce no unmanaged candidate files
-        run: python -m tools.docs_agent.no_unmanaged_candidates --json
+          docs-data/generated/machine-readable-coverage-report.json
 
-      - name: Upload governance artifacts
-        uses: actions/upload-artifact@v5
-        with:
-          path: |
-            docs-data/generated/candidate-inventory.json
-            docs-data/generated/changed-candidates.json
-            docs-data/generated/codebase-discovery-report.json
-            docs-data/generated/machine-readable-coverage-report.json
-            docs-data/generated/validation-report.json
-            docs-data/generated/query-health-report.json
-            docs-data/generated/manifest.json
-            docs-data/generated/agent-context.json
-            docs-data/generated/search-index.jsonl
-            docs-data/generated/unmanaged-candidates-report.json
+          docs-data/generated/validation-report.json
 
-          name: machine-readable-governance-artifacts
+          docs-data/generated/query-health-report.json
+
+          docs-data/generated/manifest.json
+
+          docs-data/generated/agent-context.json
+
+          docs-data/generated/search-index.jsonl
+
+          docs-data/generated/unmanaged-candidates-report.json
+
+          '
+        name: machine-readable-governance-artifacts
+    timeout-minutes: 30

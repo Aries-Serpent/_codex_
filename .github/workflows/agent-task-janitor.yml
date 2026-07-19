@@ -1,5 +1,4 @@
----
-name: 🧹 Agent Task Janitor
+name: "\U0001F9F9 Agent Task Janitor"
 on:
   workflow_dispatch:
     inputs:
@@ -161,10 +160,10 @@ jobs:
         : archive_payload.get(\"message\")},\n            \"patch\": {\"status\":\
         \ patch_status, \"message\": patch_payload.get(\"message\")},\n        },\n\
         \    }\n\nprocessed_ids: set[str] = set()\nfor task in candidates:\n    tid\
-        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts\
-        \ when the same task is present in\n  # list results and separately inserted\
-        \ from explicit task_id lookup.\n    if not tid or tid in processed_ids:\n\
-        \        continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
+        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts when\
+        \ the same task is present in\n  # list results and separately inserted from\
+        \ explicit task_id lookup.\n    if not tid or tid in processed_ids:\n    \
+        \    continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
         \    else:\n        action_results.append(\n            {\n              \
         \  \"task_id\": tid,\n                \"method\": \"dry-run\",\n         \
         \       \"ok\": True,\n                \"status\": 0,\n                \"\
@@ -189,35 +188,36 @@ jobs:
         n\")\n    for row in inspected:\n        linked = \", \".join(\n         \
         \   f\"#{item['number']}:{'closed' if item['closed'] else item['detail']}\"\
         \n            for item in row[\"prs\"]\n        ) or \"-\"\n        handle.write(\n\
-        \            f\"| {row['id']} | {row['state']} | {row['updated_at']} | {'✅'\
-        \ if row['is_stale'] else '❌'} | {'✅' if row['eligible'] else '❌'} | {escape_markdown_pipes(linked)}\
-        \ |\\n\"\n        )\n    if not inspected:\n        handle.write(\"| (none)\
-        \ | - | - | - | - | - |\\n\")\n\n    handle.write(\"\\n### Cleanup results\\\
-        n\")\n    handle.write(\"| task_id | method | ok | status | detail |\\n\"\
-        )\n    handle.write(\"|---|---|:---:|---:|---|\\n\")\n    for item in action_results:\n\
-        \        detail = item.get(\"detail\")\n        if isinstance(detail, dict):\n\
-        \            detail = json.dumps(detail)\n        detail = escape_markdown_pipes(detail)\n\
-        \        handle.write(\n            f\"| {item['task_id']} | {item['method']}\
-        \ | {'✅' if item['ok'] else '❌'} | {item['status']} | {detail} |\\n\"\n  \
-        \      )\n    if not action_results:\n        handle.write(\"| (none) | -\
-        \ | - | - | no candidates found |\\n\")\n\n    if recheck is not None:\n \
-        \       handle.write(\"\\n### One-time task recheck\\n\")\n        handle.write(\"\
-        ```json\\n\")\n        handle.write(json.dumps(recheck, indent=2))\n     \
-        \   handle.write(\"\\n```\\n\")\n\n    if task_id and recheck and recheck[\"\
-        status\"] < 300:\n        state = recheck[\"payload\"].get(\"state\")\n  \
-        \      archived_at = recheck[\"payload\"].get(\"archived_at\")\n        if\
-        \ state in {\"completed\", \"cancelled\"} or archived_at:\n            handle.write(\n\
-        \                \"\\n> If this task still appears in the Active UI despite\
-        \ backend completed/cancelled/archived state, open GitHub Support with this\
-        \ task ID and screenshot as a cache/index mismatch.\\n\"\n            )\n\
-        \    if execute_blocked:\n        handle.write(\n            \"\\n> Execute\
-        \ mode was refused because this run is using the limited `GITHUB_TOKEN`. Re-run\
-        \ with `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY` configured.\\n\"\n       \
-        \ )\n\nfailures = [item for item in action_results if not item.get(\"ok\"\
-        )]\nif execute_blocked:\n    raise SystemExit(\n        \"Execute mode requires\
-        \ CODEX_MASTER_KEY or CODEX_BACKUP_KEY; refusing with GITHUB_TOKEN.\"\n  \
-        \  )\nif execute and failures:\n    raise SystemExit(\"One or more cleanup\
-        \ operations failed. Review workflow summary for API details.\")\nPY\n"
+        \            f\"| {row['id']} | {row['state']} | {row['updated_at']} | {'\u2705\
+        ' if row['is_stale'] else '\u274C'} | {'\u2705' if row['eligible'] else '\u274C\
+        '} | {escape_markdown_pipes(linked)} |\\n\"\n        )\n    if not inspected:\n\
+        \        handle.write(\"| (none) | - | - | - | - | - |\\n\")\n\n    handle.write(\"\
+        \\n### Cleanup results\\n\")\n    handle.write(\"| task_id | method | ok |\
+        \ status | detail |\\n\")\n    handle.write(\"|---|---|:---:|---:|---|\\n\"\
+        )\n    for item in action_results:\n        detail = item.get(\"detail\")\n\
+        \        if isinstance(detail, dict):\n            detail = json.dumps(detail)\n\
+        \        detail = escape_markdown_pipes(detail)\n        handle.write(\n \
+        \           f\"| {item['task_id']} | {item['method']} | {'\u2705' if item['ok']\
+        \ else '\u274C'} | {item['status']} | {detail} |\\n\"\n        )\n    if not\
+        \ action_results:\n        handle.write(\"| (none) | - | - | - | no candidates\
+        \ found |\\n\")\n\n    if recheck is not None:\n        handle.write(\"\\\
+        n### One-time task recheck\\n\")\n        handle.write(\"```json\\n\")\n \
+        \       handle.write(json.dumps(recheck, indent=2))\n        handle.write(\"\
+        \\n```\\n\")\n\n    if task_id and recheck and recheck[\"status\"] < 300:\n\
+        \        state = recheck[\"payload\"].get(\"state\")\n        archived_at\
+        \ = recheck[\"payload\"].get(\"archived_at\")\n        if state in {\"completed\"\
+        , \"cancelled\"} or archived_at:\n            handle.write(\n            \
+        \    \"\\n> If this task still appears in the Active UI despite backend completed/cancelled/archived\
+        \ state, open GitHub Support with this task ID and screenshot as a cache/index\
+        \ mismatch.\\n\"\n            )\n    if execute_blocked:\n        handle.write(\n\
+        \            \"\\n> Execute mode was refused because this run is using the\
+        \ limited `GITHUB_TOKEN`. Re-run with `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`\
+        \ configured.\\n\"\n        )\n\nfailures = [item for item in action_results\
+        \ if not item.get(\"ok\")]\nif execute_blocked:\n    raise SystemExit(\n \
+        \       \"Execute mode requires CODEX_MASTER_KEY or CODEX_BACKUP_KEY; refusing\
+        \ with GITHUB_TOKEN.\"\n    )\nif execute and failures:\n    raise SystemExit(\"\
+        One or more cleanup operations failed. Review workflow summary for API details.\"\
+        )\nPY\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

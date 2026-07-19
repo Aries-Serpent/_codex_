@@ -1,491 +1,404 @@
----
 name: Optimized Test Execution (Consolidated)
-
 on:
   pull_request:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     types:
-      - opened
-      - synchronize
-      - reopened
+    - opened
+    - synchronize
+    - reopened
     paths:
-      - src/**
-      - tests/**
-      - pyproject.toml
-      - requirements*.txt
-      - .github/workflows/optimized-test-execution.yml
+    - src/**
+    - tests/**
+    - pyproject.toml
+    - requirements*.txt
+    - .github/workflows/optimized-test-execution.yml
   push:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     paths:
-      - src/codex/auth/**
-      - src/codex/rag/**
-      - src/**/*.py
-      - training/**/*.py
-      - tests/**
-      - pyproject.toml
-      - requirements*.txt
+    - src/codex/auth/**
+    - src/codex/rag/**
+    - src/**/*.py
+    - training/**/*.py
+    - tests/**
+    - pyproject.toml
+    - requirements*.txt
   workflow_dispatch:
     inputs:
       test-type:
-        description: 'Type of tests to run'
+        description: Type of tests to run
         required: false
         type: choice
-        default: 'all'
+        default: all
         options:
-          - all
-          - core
-          - auth
-          - ml
-          - rag
-          - rust
+        - all
+        - core
+        - auth
+        - ml
+        - rag
+        - rust
       test-level:
-        description: 'Test execution level'
+        description: Test execution level
         required: false
         type: choice
-        default: 'full'
+        default: full
         options:
-          - smoke
-          - full
-          - extended
-
+        - smoke
+        - full
+        - extended
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   checks: write
-
 env:
-  PYTEST_XDIST_WORKER_COUNT: "auto"
-  PYTEST_TIMEOUT_DEFAULT: "300"
+  PYTEST_XDIST_WORKER_COUNT: auto
+  PYTEST_TIMEOUT_DEFAULT: '300'
   CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
   CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
-
 jobs:
-  # P19 Shadow Import Detection (runs before all tests)
   check-imports:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: "⚙️ Check P19 Shadow Imports"
+    name: ⚙️ Check P19 Shadow Imports
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-      - name: Check for P19 shadow imports
-        run: |
-          python -c "
-          import sys
-          import importlib.util
-          try:
-              spec = importlib.util.find_spec('codex')
-              if spec and spec.origin:
-                  path = spec.origin
-                  if 'site-packages' in path and 'src' not in str(sys.path):
-                      print('::warning::P19 Shadow Import Detected')
-                      print(f'  codex resolved to: {path}')
-                      print('  Fix: pip install --force-reinstall --no-deps -e .')
-                      sys.exit(1)
-                  elif 'src' in path:
-                      print('✓ Import resolved correctly to src/')
-          except ImportError:
-              print('✓ Package not yet installed (first run)')
-          "
-
-  # CORE TEST SUITE (always runs)
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Check for P19 shadow imports
+      run: "python -c \"\nimport sys\nimport importlib.util\ntry:\n    spec = importlib.util.find_spec('codex')\n\
+        \    if spec and spec.origin:\n        path = spec.origin\n        if 'site-packages'\
+        \ in path and 'src' not in str(sys.path):\n            print('::warning::P19\
+        \ Shadow Import Detected')\n            print(f'  codex resolved to: {path}')\n\
+        \            print('  Fix: pip install --force-reinstall --no-deps -e .')\n\
+        \            sys.exit(1)\n        elif 'src' in path:\n            print('✓\
+        \ Import resolved correctly to src/')\nexcept ImportError:\n    print('✓ Package\
+        \ not yet installed (first run)')\n\"\n"
+    timeout-minutes: 15
   test-fast:
-    name: "🚀 Fast Unit Tests"
+    name: 🚀 Fast Unit Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event_name == 'pull_request' ||
-        github.event_name == 'push' ||
-        github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'core')
+    if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
+      \ == 'push' ||\n  github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'core')\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout==2.4.0
-      - name: Run fast unit tests in parallel
-        run: |
-          python -m pytest tests/ \
-            -m "not slow and not integration" \
-            -n auto \
-            --timeout=60 \
-            --tb=short \
-            -v \
-            --maxfail=5 \
-            --dist=loadscope
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-  # INTEGRATION TEST SUITE
+        pip install pytest-xdist pytest-timeout==2.4.0
+
+        '
+    - name: Run fast unit tests in parallel
+      run: "python -m pytest tests/ \\\n  -m \"not slow and not integration\" \\\n\
+        \  -n auto \\\n  --timeout=60 \\\n  --tb=short \\\n  -v \\\n  --maxfail=5\
+        \ \\\n  --dist=loadscope\n"
+    timeout-minutes: 30
   test-integration:
-    name: "🔗 Integration Tests"
+    name: 🔗 Integration Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event_name == 'pull_request' ||
-        github.event_name == 'push' ||
-        github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'core')
+    if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
+      \ == 'push' ||\n  github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'core')\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout==2.4.0
-      - name: Run integration tests
-        run: |
-          python -m pytest tests/ \
-            -m "integration" \
-            -n 2 \
-            --timeout=120 \
-            --tb=short \
-            -v \
-            --maxfail=3 \
-            --dist=loadscope
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-  # SLOW/PERFORMANCE TEST SUITE
+        pip install pytest-xdist pytest-timeout==2.4.0
+
+        '
+    - name: Run integration tests
+      run: "python -m pytest tests/ \\\n  -m \"integration\" \\\n  -n 2 \\\n  --timeout=120\
+        \ \\\n  --tb=short \\\n  -v \\\n  --maxfail=3 \\\n  --dist=loadscope\n"
+    timeout-minutes: 30
   test-slow:
-    name: "🐢 Slow Tests"
+    name: 🐢 Slow Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event_name == 'pull_request' ||
-        github.event_name == 'push' ||
-        github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'core')
+    if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
+      \ == 'push' ||\n  github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'core')\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout==2.4.0
-      - name: Run slow tests
-        run: |
-          python -m pytest tests/ \
-            -m "slow" \
-            --timeout=300 \
-            --tb=short \
-            -v
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-  # AUTHENTICATION TEST SUITE
+        pip install pytest-xdist pytest-timeout==2.4.0
+
+        '
+    - name: Run slow tests
+      run: "python -m pytest tests/ \\\n  -m \"slow\" \\\n  --timeout=300 \\\n  --tb=short\
+        \ \\\n  -v\n"
+    timeout-minutes: 30
   test-auth:
-    name: "🔐 Authentication Tests"
+    name: 🔐 Authentication Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'auth' ||
-        contains(github.event.pull_request.files.*.path, 'src/codex/auth/') ||
-        contains(github.event.pull_request.files.*.path, 'tests/auth/'))
+    if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'auth' ||\n  contains(github.event.pull_request.files.*.path, 'src/codex/auth/')\
+      \ ||\n  contains(github.event.pull_request.files.*.path, 'tests/auth/'))\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout==2.4.0
-      - name: Run authentication tests
-        run: |
-          python -m pytest tests/auth/ \
-            --timeout=120 \
-            --tb=short \
-            -v \
-            -n auto
-        continue-on-error: true
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-  # ML COMPONENTS TEST SUITE
+        pip install pytest-xdist pytest-timeout==2.4.0
+
+        '
+    - name: Run authentication tests
+      run: "python -m pytest tests/auth/ \\\n  --timeout=120 \\\n  --tb=short \\\n\
+        \  -v \\\n  -n auto\n"
+      continue-on-error: true
+    timeout-minutes: 30
   test-ml:
-    name: "🤖 ML Components Tests"
+    name: 🤖 ML Components Tests
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: check-imports
-    if: |
-      always() &&
-      (github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'ml' ||
-        contains(github.event.pull_request.files.*.path, 'training/') ||
-        contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))
+    if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'ml' ||\n  contains(github.event.pull_request.files.*.path, 'training/')\
+      \ ||\n  contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))\n"
     strategy:
       matrix:
-        python-version: ['3.11', '3.12']
+        python-version:
+        - '3.11'
+        - '3.12'
         test-suite:
-          - training
-          - data
-          - metrics
+        - training
+        - data
+        - metrics
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install -e ".[dev]"
-          pip install pytest-cov pytest-mock pytest-timeout==2.4.0
-      - name: Run ML tests for ${{ matrix.test-suite }}
-        run: |
-          python -m pytest tests/ml_${{ matrix.test-suite }}* \
-            --timeout=600 \
-            --tb=short \
-            -v \
-            --cov=src/codex/ml \
-            -n 2 || true
-        continue-on-error: true
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install --upgrade pip
 
-  # RAG MODULE TEST SUITE
+        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+        pip install -e ".[dev]"
+
+        pip install pytest-cov pytest-mock pytest-timeout==2.4.0
+
+        '
+    - name: Run ML tests for ${{ matrix.test-suite }}
+      run: "python -m pytest tests/ml_${{ matrix.test-suite }}* \\\n  --timeout=600\
+        \ \\\n  --tb=short \\\n  -v \\\n  --cov=src/codex/ml \\\n  -n 2 || true\n"
+      continue-on-error: true
   test-rag:
-    name: "🔍 RAG Module Tests"
+    name: 🔍 RAG Module Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'rag' ||
-        contains(github.event.pull_request.files.*.path, 'src/codex/rag/') ||
-        contains(github.event.pull_request.files.*.path, 'tests/test_rag'))
+    if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'rag' ||\n  contains(github.event.pull_request.files.*.path, 'src/codex/rag/')\
+      \ ||\n  contains(github.event.pull_request.files.*.path, 'tests/test_rag'))\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout==2.4.0
-      - name: Run RAG module tests
-        run: |
-          python -m pytest tests/test_rag_* \
-            --timeout=180 \
-            --tb=short \
-            -v \
-            -n auto || true
-        continue-on-error: true
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-  # RUST SWARM CI
+        pip install pytest-xdist pytest-timeout==2.4.0
+
+        '
+    - name: Run RAG module tests
+      run: "python -m pytest tests/test_rag_* \\\n  --timeout=180 \\\n  --tb=short\
+        \ \\\n  -v \\\n  -n auto || true\n"
+      continue-on-error: true
+    timeout-minutes: 30
   test-rust:
-    name: "🦀 Rust Unit Tests"
+    name: 🦀 Rust Unit Tests
     runs-on: ubuntu-latest
     needs: check-imports
-    if: |
-      always() &&
-      (github.event.inputs.test-type == 'all' ||
-        github.event.inputs.test-type == 'rust' ||
-        contains(github.event.pull_request.files.*.path, 'rust_swarm/') ||
-        contains(github.event.pull_request.files.*.path, '.rs'))
+    if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
+      \ == 'rust' ||\n  contains(github.event.pull_request.files.*.path, 'rust_swarm/')\
+      \ ||\n  contains(github.event.pull_request.files.*.path, '.rs'))\n"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache cargo index
-        uses: actions/cache@v5
-        with:
-          path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache cargo build
-        uses: actions/cache@v5
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-      - name: Run Rust tests
-        run: |
-          cd rust_swarm
-          cargo test --verbose --release
-        continue-on-error: true
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
+    - name: Cache cargo registry
+      uses: actions/cache@v5
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+    - name: Cache cargo index
+      uses: actions/cache@v5
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
+    - name: Cache cargo build
+      uses: actions/cache@v5
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+    - name: Run Rust tests
+      run: 'cd rust_swarm
 
-  # Generate coverage report from all test results
+        cargo test --verbose --release
+
+        '
+      continue-on-error: true
+    timeout-minutes: 30
   test-coverage:
-    name: "📊 Coverage Report"
+    name: 📊 Coverage Report
     runs-on: ubuntu-latest
-    needs: [test-fast, test-integration, test-slow]
+    needs:
+    - test-fast
+    - test-integration
+    - test-slow
     if: always()
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-          cache-dependency-path: pyproject.toml
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: 🔍 P19 Shadow Import Check (Pre-Coverage)
+      run: "python -c \"\nimport sys, importlib.util\nspec = importlib.util.find_spec('codex')\n\
+        if spec and spec.origin:\n    if 'site-packages' in spec.origin and '.egg-link'\
+        \ in spec.origin:\n        print('::warning::P19 Shadow Import Detected -\
+        \ Invalidating cache')\n        import shutil\n        shutil.rmtree(Path.home()\
+        \ / '.cache' / 'pip', ignore_errors=True)\n\"\n"
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]"
 
-      # P19 Shadow Import Safeguard: Invalidate pip cache before coverage job
-      - name: "🔍 P19 Shadow Import Check (Pre-Coverage)"
-        run: |
-          python -c "
-          import sys, importlib.util
-          spec = importlib.util.find_spec('codex')
-          if spec and spec.origin:
-              if 'site-packages' in spec.origin and '.egg-link' in spec.origin:
-                  print('::warning::P19 Shadow Import Detected - Invalidating cache')
-                  import shutil
-                  shutil.rmtree(Path.home() / '.cache' / 'pip', ignore_errors=True)
-          "
+        pip install coverage pytest-xdist pytest-timeout==2.4.0
 
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install coverage pytest-xdist pytest-timeout==2.4.0
+        '
+    - name: Run coverage collection (optimized)
+      run: "# Collect only unit and integration tests (exclude slow tests marked with\
+        \ @pytest.mark.slow)\ncoverage run -m pytest tests/ \\\n  -m \"not slow\"\
+        \ \\\n  --timeout=60 \\\n  -n 4 \\\n  --dist=loadscope \\\n  --tb=short \\\
+        \n  --maxfail=10 || true\n"
+    - name: Generate coverage reports
+      run: 'coverage json -o .coverage.json || echo ''{}'' > .coverage.json
 
-      # Optimized coverage collection with selective test discovery
-      - name: Run coverage collection (optimized)
-        run: |
-          # Collect only unit and integration tests (exclude slow tests marked with @pytest.mark.slow)
-          coverage run -m pytest tests/ \
-            -m "not slow" \
-            --timeout=60 \
-            -n 4 \
-            --dist=loadscope \
-            --tb=short \
-            --maxfail=10 || true
+        coverage html -d htmlcov || mkdir -p htmlcov
 
-      - name: Generate coverage reports
-        run: |
-          coverage json -o .coverage.json || echo '{}' > .coverage.json
-          coverage html -d htmlcov || mkdir -p htmlcov
-          coverage report --skip-covered
+        coverage report --skip-covered
 
-      - name: Upload coverage artifacts
-        uses: actions/upload-artifact@v5
-        with:
-          path: |
-            .coverage.json
-            htmlcov/
-          retention-days: 90
-          if-no-files-found: ignore
+        '
+    - name: Upload coverage artifacts
+      uses: actions/upload-artifact@v5
+      with:
+        path: '.coverage.json
 
-          name: coverage-report-${{ github.run_number }}
-  # Consolidated test summary
+          htmlcov/
+
+          '
+        retention-days: 90
+        if-no-files-found: ignore
+        name: coverage-report-${{ github.run_number }}
+    timeout-minutes: 30
   test-summary:
-    name: "📋 Test Execution Summary"
+    name: 📋 Test Execution Summary
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [check-imports, test-fast, test-integration, test-slow, test-coverage, test-auth, test-ml, test-rag, test-rust]
+    needs:
+    - check-imports
+    - test-fast
+    - test-integration
+    - test-slow
+    - test-coverage
+    - test-auth
+    - test-ml
+    - test-rag
+    - test-rust
     if: always()
     steps:
-      - name: Generate comprehensive test summary
-        run: |
-          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
-          ## 🧪 Consolidated Test Execution Summary
-
-          ### Core Test Results
-          | Test Group | Status | Time |
-          |-----------|--------|------|
-          | P19 Import Check | ${{ needs.check-imports.result }} | 5m |
-          | Fast Unit Tests | ${{ needs.test-fast.result }} | 15m |
-          | Integration Tests | ${{ needs.test-integration.result }} | 20m |
-          | Slow Tests | ${{ needs.test-slow.result }} | 20m |
-          | Coverage Report | ${{ needs.test-coverage.result }} | 20m |
-
-          ### Specialized Test Suites
-          | Test Suite | Status | Time | Conditional |
-          |-----------|--------|------|-------------|
-          | Authentication | ${{ needs.test-auth.result }} | 30m | auth paths |
-          | ML Components | ${{ needs.test-ml.result }} | 45m | ML paths |
-          | RAG Module | ${{ needs.test-rag.result }} | 30m | RAG paths |
-          | Rust Swarm | ${{ needs.test-rust.result }} | 45m | Rust paths |
-
-          ### Consolidation Status
-          **Workflows Consolidated:** 8 → 3 (63% reduction)
-          - ✓ Core + Auth + ML + RAG + Rust tests unified
-          - ✓ P19 shadow import detection enabled
-          - ✓ Conditional job execution by test type
-          - ✓ Parallel execution matrix for ML tests
-          - ✓ Selective execution via workflow_dispatch
-
-          ### Test Matrix Strategy
-          ```yaml
-          Core Tests:
-            - Fast Unit Tests (parallel via xdist)
-            - Integration Tests (2-worker parallel)
-            - Slow Tests (sequential)
-
-          Specialized (conditional):
-            - Auth: Triggered on auth path changes
-            - ML: 2 Python versions × 3 test suites
-            - RAG: Full RAG test suite
-            - Rust: Cargo-based Rust tests
-          ```
-
-          ### Next Steps
-          - Archive 3 disabled workflows (ci-pytest, comprehensive_tests, tests.yml)
-          - Monitor execution times for further optimization
-          - Update CI documentation with new consolidation
-          EOF
-
-          # Fail if core tests failed
-          if [[ "${{ needs.test-fast.result }}" == "failure" ]] || \
-            [[ "${{ needs.test-integration.result }}" == "failure" ]] || \
-            [[ "${{ needs.test-slow.result }}" == "failure" ]]; then
-            echo "::error::Core test suite failed"
-            exit 1
-          fi
+    - name: Generate comprehensive test summary
+      run: "cat >> $GITHUB_STEP_SUMMARY << 'EOF'\n## \U0001F9EA Consolidated Test\
+        \ Execution Summary\n\n### Core Test Results\n| Test Group | Status | Time\
+        \ |\n|-----------|--------|------|\n| P19 Import Check | ${{ needs.check-imports.result\
+        \ }} | 5m |\n| Fast Unit Tests | ${{ needs.test-fast.result }} | 15m |\n|\
+        \ Integration Tests | ${{ needs.test-integration.result }} | 20m |\n| Slow\
+        \ Tests | ${{ needs.test-slow.result }} | 20m |\n| Coverage Report | ${{ needs.test-coverage.result\
+        \ }} | 20m |\n\n### Specialized Test Suites\n| Test Suite | Status | Time\
+        \ | Conditional |\n|-----------|--------|------|-------------|\n| Authentication\
+        \ | ${{ needs.test-auth.result }} | 30m | auth paths |\n| ML Components |\
+        \ ${{ needs.test-ml.result }} | 45m | ML paths |\n| RAG Module | ${{ needs.test-rag.result\
+        \ }} | 30m | RAG paths |\n| Rust Swarm | ${{ needs.test-rust.result }} | 45m\
+        \ | Rust paths |\n\n### Consolidation Status\n**Workflows Consolidated:**\
+        \ 8 → 3 (63% reduction)\n- ✓ Core + Auth + ML + RAG + Rust tests unified\n\
+        - ✓ P19 shadow import detection enabled\n- ✓ Conditional job execution by\
+        \ test type\n- ✓ Parallel execution matrix for ML tests\n- ✓ Selective execution\
+        \ via workflow_dispatch\n\n### Test Matrix Strategy\n```yaml\nCore Tests:\n\
+        \  - Fast Unit Tests (parallel via xdist)\n  - Integration Tests (2-worker\
+        \ parallel)\n  - Slow Tests (sequential)\n\nSpecialized (conditional):\n \
+        \ - Auth: Triggered on auth path changes\n  - ML: 2 Python versions × 3 test\
+        \ suites\n  - RAG: Full RAG test suite\n  - Rust: Cargo-based Rust tests\n\
+        ```\n\n### Next Steps\n- Archive 3 disabled workflows (ci-pytest, comprehensive_tests,\
+        \ tests.yml)\n- Monitor execution times for further optimization\n- Update\
+        \ CI documentation with new consolidation\nEOF\n\n# Fail if core tests failed\n\
+        if [[ \"${{ needs.test-fast.result }}\" == \"failure\" ]] || \\\n  [[ \"${{\
+        \ needs.test-integration.result }}\" == \"failure\" ]] || \\\n  [[ \"${{ needs.test-slow.result\
+        \ }}\" == \"failure\" ]]; then\n  echo \"::error::Core test suite failed\"\
+        \n  exit 1\nfi\n"

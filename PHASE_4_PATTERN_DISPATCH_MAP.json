@@ -1,0 +1,679 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-07-18T22:29:41Z",
+  "description": "Phase 4 Lane 1: Pattern-to-Fix Handler Dispatch Map",
+  "metadata": {
+    "total_patterns": 28,
+    "high_confidence_count": 28,
+    "confidence_threshold": 0.95,
+    "tier_1_patterns": 3,
+    "tier_2_patterns": 5,
+    "tier_3_patterns": 20
+  },
+  "patterns": {
+    "RP-001": {
+      "name": "CodeQL Unused Import Detection",
+      "category": "CodeQL",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 847,
+      "tier": 3,
+      "handler": "handlers.codeql_handlers.remove_unused_imports",
+      "trigger": {
+        "error_pattern": "CodeQL F401.*unused import",
+        "file_types": ["*.py"],
+        "log_signature": "F401: .* is unused"
+      },
+      "fix_strategy": "Remove unused import statement or mark with # noqa: F401",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "ruff check --select F401 {file}",
+        "expected_outcome": "No F401 violations"
+      }
+    },
+    "RP-002": {
+      "name": "CodeQL Cyclic Import Detection",
+      "category": "CodeQL",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 124,
+      "tier": 3,
+      "handler": "handlers.codeql_handlers.resolve_cyclic_imports",
+      "trigger": {
+        "error_pattern": "CodeQL.*circular import detected",
+        "file_types": ["*.py"],
+        "log_signature": "import cycle|cyclic dependency"
+      },
+      "fix_strategy": "Restructure imports - move to function scope or use TYPE_CHECKING guard",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "python -c 'import {module}'",
+        "expected_outcome": "No import cycle"
+      }
+    },
+    "RP-003": {
+      "name": "Workflow Skip-Condition Deployment",
+      "category": "Workflows",
+      "confidence": 0.98,
+      "success_rate": 0.98,
+      "executions": 287,
+      "tier": 2,
+      "handler": "handlers.workflow_handlers.add_paths_ignore_filter",
+      "trigger": {
+        "error_pattern": "CI runs on doc-only changes unnecessarily",
+        "file_types": [".github/workflows/*.yml", ".github/workflows/*.yaml"],
+        "log_signature": "docs-only PR detected"
+      },
+      "fix_strategy": "Add paths-ignore filter: ['**.md', 'docs/**', '.codex/**', 'LICENSE']",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 2,
+      "validation": {
+        "command": "actionlint {workflow_file}",
+        "expected_outcome": "No actionlint warnings"
+      }
+    },
+    "RP-004": {
+      "name": "Actionlint YAML Duplicate Keys Fix",
+      "category": "Workflows",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 128,
+      "tier": 3,
+      "handler": "handlers.workflow_handlers.fix_duplicate_yaml_keys",
+      "trigger": {
+        "error_pattern": "actionlint.*duplicate YAML keys",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Duplicate object key"
+      },
+      "fix_strategy": "Consolidate duplicate env/with blocks into single block",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "yaml.safe_load({file})",
+        "expected_outcome": "Valid YAML with no duplicate keys"
+      }
+    },
+    "RP-005": {
+      "name": "Workflow Expression Quote Normalization",
+      "category": "Workflows",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 94,
+      "tier": 3,
+      "handler": "handlers.workflow_handlers.normalize_expression_quotes",
+      "trigger": {
+        "error_pattern": "actionlint.*double quotes.*GitHub Actions expressions",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Double quoted expr in.*\\${{.*}}"
+      },
+      "fix_strategy": "Replace double quotes with single quotes in expression context",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "actionlint {workflow_file}",
+        "expected_outcome": "No quote normalization warnings"
+      }
+    },
+    "RP-006": {
+      "name": "Timeout-Minutes in Reusable Workflow Calls",
+      "category": "Workflows",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 67,
+      "tier": 3,
+      "handler": "handlers.workflow_handlers.fix_timeout_minutes_placement",
+      "trigger": {
+        "error_pattern": "actionlint.*timeout-minutes.*uses:.*invalid",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "timeout-minutes in reusable workflow call"
+      },
+      "fix_strategy": "Remove timeout-minutes from step, add to job level (if needed)",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "actionlint {workflow_file}",
+        "expected_outcome": "No timeout-minutes placement errors"
+      }
+    },
+    "RP-009": {
+      "name": "Dependency Conflict Resolution Strategy",
+      "category": "Dependencies",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 156,
+      "tier": 3,
+      "handler": "handlers.dependency_handlers.resolve_pip_conflicts",
+      "trigger": {
+        "error_pattern": "pip.*conflict.*cannot satisfy",
+        "file_types": ["requirements*.txt", "pyproject.toml"],
+        "log_signature": "ERROR: pip's dependency resolver does not currently take"
+      },
+      "fix_strategy": "Analyze version constraints, pin compatible versions, update lock file",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pip install -r requirements.txt --dry-run",
+        "expected_outcome": "No dependency conflicts"
+      }
+    },
+    "RP-010": {
+      "name": "Async Mock for Concurrent Operations",
+      "category": "Testing",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 89,
+      "tier": 3,
+      "handler": "handlers.test_handlers.fix_async_mock_calls",
+      "trigger": {
+        "error_pattern": "test.*async.*mock.*not awaited",
+        "file_types": ["tests/**/*.py"],
+        "log_signature": "AttributeError.*object is not awaitable"
+      },
+      "fix_strategy": "Wrap mock with AsyncMock or use @pytest.mark.asyncio",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -v",
+        "expected_outcome": "All async tests pass"
+      }
+    },
+    "RP-011": {
+      "name": "exc_info Traceback Suppression",
+      "category": "Testing",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 142,
+      "tier": 3,
+      "handler": "handlers.test_handlers.fix_exc_info_logging",
+      "trigger": {
+        "error_pattern": "test.*exc_info.*deprecated|exc_info=True",
+        "file_types": ["tests/**/*.py"],
+        "log_signature": "exc_info is deprecated"
+      },
+      "fix_strategy": "Replace exc_info=True with proper exception context handling",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -W error::DeprecationWarning",
+        "expected_outcome": "No deprecation warnings"
+      }
+    },
+    "RP-012": {
+      "name": "Timestamp Ordering in CVEDatabase",
+      "category": "Data Integrity",
+      "confidence": 0.98,
+      "success_rate": 0.98,
+      "executions": 103,
+      "tier": 2,
+      "handler": "handlers.data_handlers.fix_timestamp_ordering",
+      "trigger": {
+        "error_pattern": "CVEDatabase.*timestamp.*out of order",
+        "file_types": ["*.json", "*.db"],
+        "log_signature": "timestamp.*violation|chronological"
+      },
+      "fix_strategy": "Sort CVE entries by timestamp, verify ordering constraint",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 2,
+      "validation": {
+        "command": "python -c 'verify_timestamp_ordering(data)'",
+        "expected_outcome": "All timestamps in ascending order"
+      }
+    },
+    "RP-013": {
+      "name": "Token-Specific Redaction Labels",
+      "category": "Security",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 78,
+      "tier": 3,
+      "handler": "handlers.security_handlers.apply_token_redaction",
+      "trigger": {
+        "error_pattern": "secret.*token.*exposed|redaction.*missing",
+        "file_types": ["*.log", "*.txt"],
+        "log_signature": "Exposed secret|token.*not redacted"
+      },
+      "fix_strategy": "Apply token-specific redaction labels (***TOKEN_N***)",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "secrets-check {file}",
+        "expected_outcome": "No exposed tokens"
+      }
+    },
+    "RP-014": {
+      "name": "Black Formatter Consistency",
+      "category": "Code Quality",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 234,
+      "tier": 3,
+      "handler": "handlers.code_quality_handlers.apply_black_formatting",
+      "trigger": {
+        "error_pattern": "black.*code not formatted|formatting mismatch",
+        "file_types": ["*.py"],
+        "log_signature": "would reformat|1 file.*need.*reformatting"
+      },
+      "fix_strategy": "Run black formatter on affected files",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "black --check {file}",
+        "expected_outcome": "All files formatted correctly"
+      }
+    },
+    "RP-015": {
+      "name": "REQ-4/REQ-5 Compliance Pattern",
+      "category": "Compliance",
+      "confidence": 0.99,
+      "success_rate": 0.99,
+      "executions": 512,
+      "tier": 1,
+      "handler": "handlers.compliance_handlers.verify_req4_req5",
+      "trigger": {
+        "error_pattern": "REQ-4|REQ-5|audit.*trail|documentation.*missing",
+        "file_types": ["*"],
+        "log_signature": "REQ-4 violation|REQ-5 violation"
+      },
+      "fix_strategy": "Ensure audit trail logged, verify documentation complete",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 1,
+      "validation": {
+        "command": "verify_compliance_gates()",
+        "expected_outcome": "All REQ-4/5 gates pass"
+      }
+    },
+    "RP-016": {
+      "name": "Workflow Concurrency Control Deployment",
+      "category": "Workflows",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 198,
+      "tier": 2,
+      "handler": "handlers.workflow_handlers.deploy_concurrency_controls",
+      "trigger": {
+        "error_pattern": "concurrency.*conflict|race.*condition|lock.*timeout",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Concurrency group|workflow.*concurrent"
+      },
+      "fix_strategy": "Add concurrency group with cancel-in-progress=true",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 2,
+      "validation": {
+        "command": "actionlint {workflow_file}",
+        "expected_outcome": "Concurrency controls in place"
+      }
+    },
+    "RP-018": {
+      "name": "P19 Shadow Import Pre-check",
+      "category": "Testing",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 167,
+      "tier": 3,
+      "handler": "handlers.test_handlers.verify_p19_shadow_imports",
+      "trigger": {
+        "error_pattern": "P19.*shadow.*import|import.*conflict",
+        "file_types": ["tests/**/*.py"],
+        "log_signature": "P19.*detected|shadow import"
+      },
+      "fix_strategy": "Verify import isolation, apply sys.path manipulations",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -v --tb=short",
+        "expected_outcome": "No P19 shadow import errors"
+      }
+    },
+    "RP-019": {
+      "name": "Reload Import Pattern",
+      "category": "Testing",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 203,
+      "tier": 3,
+      "handler": "handlers.test_handlers.apply_import_reload",
+      "trigger": {
+        "error_pattern": "import.*stale|reload.*module|cached import",
+        "file_types": ["tests/**/*.py"],
+        "log_signature": "ImportError.*stale|module.*not reloaded"
+      },
+      "fix_strategy": "Apply importlib.reload() pattern for module refresh",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -v",
+        "expected_outcome": "Imports reloaded correctly"
+      }
+    },
+    "RP-022": {
+      "name": "CLI Exit Behavior Normalization",
+      "category": "CLI",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 91,
+      "tier": 3,
+      "handler": "handlers.cli_handlers.normalize_exit_behavior",
+      "trigger": {
+        "error_pattern": "CLI.*exit.*code|sys.exit|process.*exit",
+        "file_types": ["cli/**/*.py"],
+        "log_signature": "Non-zero exit|exit code mismatch"
+      },
+      "fix_strategy": "Normalize sys.exit() calls to standard codes (0, 1)",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "{cli_command}; echo $?",
+        "expected_outcome": "Exit code 0 on success"
+      }
+    },
+    "RP-023": {
+      "name": "Pre-existing Failure Catalog",
+      "category": "CI",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 145,
+      "tier": 3,
+      "handler": "handlers.ci_handlers.catalog_preexisting_failures",
+      "trigger": {
+        "error_pattern": "failure.*known|expected.*failure|xfail",
+        "file_types": ["tests/**/*.py", ".codex/**"],
+        "log_signature": "Expected failure|pre-existing bug"
+      },
+      "fix_strategy": "Mark as @pytest.mark.xfail or document in failure catalog",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -v",
+        "expected_outcome": "Pre-existing failures properly marked"
+      }
+    },
+    "RP-024": {
+      "name": "Cache Folder Structure Validation",
+      "category": "CI",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 113,
+      "tier": 3,
+      "handler": "handlers.ci_handlers.validate_cache_structure",
+      "trigger": {
+        "error_pattern": "cache.*invalid|folder.*missing|path.*not found",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Cache restore.*failed|restore key"
+      },
+      "fix_strategy": "Verify cache paths, fix folder structure compliance",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "ls -la {cache_path}",
+        "expected_outcome": "Cache folder structure valid"
+      }
+    },
+    "RP-026": {
+      "name": "CLI Module Shadow Isolation",
+      "category": "CLI",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 128,
+      "tier": 3,
+      "handler": "handlers.cli_handlers.isolate_shadow_modules",
+      "trigger": {
+        "error_pattern": "shadow.*module|module.*conflict|import.*isolation",
+        "file_types": ["cli/**/*.py"],
+        "log_signature": "Module shadow|isolation violation"
+      },
+      "fix_strategy": "Isolate CLI modules, ensure no cross-contamination",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "python -c 'test_isolation()'",
+        "expected_outcome": "No module shadow violations"
+      }
+    },
+    "RP-027": {
+      "name": "REQ-PDA Hardening Pattern",
+      "category": "Compliance",
+      "confidence": 0.98,
+      "success_rate": 0.98,
+      "executions": 267,
+      "tier": 2,
+      "handler": "handlers.compliance_handlers.harden_pda_loop",
+      "trigger": {
+        "error_pattern": "PDA.*missing|post-deployment.*incomplete",
+        "file_types": [".codex/**"],
+        "log_signature": "PDA loop|post-deployment analysis"
+      },
+      "fix_strategy": "Ensure PDA loop instrumentation, record metrics",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 2,
+      "validation": {
+        "command": "verify_pda_instrumentation()",
+        "expected_outcome": "All PDA gates pass"
+      }
+    },
+    "RP-028": {
+      "name": "Branch Concurrency Key Pattern",
+      "category": "Workflows",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 134,
+      "tier": 3,
+      "handler": "handlers.workflow_handlers.deploy_branch_concurrency",
+      "trigger": {
+        "error_pattern": "branch.*concurrency|key.*mismatch|group.*conflict",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Concurrency group|branch.*key"
+      },
+      "fix_strategy": "Set concurrency group to github.ref (branch-scoped)",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "actionlint {workflow_file}",
+        "expected_outcome": "Branch concurrency properly configured"
+      }
+    },
+    "RP-029": {
+      "name": "Freezegun Stabilization Pattern",
+      "category": "Testing",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 87,
+      "tier": 3,
+      "handler": "handlers.test_handlers.stabilize_freezegun_usage",
+      "trigger": {
+        "error_pattern": "freezegun.*flaky|datetime.*unstable|time.*mock",
+        "file_types": ["tests/**/*.py"],
+        "log_signature": "Freezegun.*failure|datetime.*inconsistent"
+      },
+      "fix_strategy": "Apply explicit freeze times, avoid auto-tick",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "pytest {test_file} -v --count=10",
+        "expected_outcome": "Tests pass consistently (all 10 runs)"
+      }
+    },
+    "RP-030": {
+      "name": "YAML EOF Validation Rule",
+      "category": "YAML Validation",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 176,
+      "tier": 3,
+      "handler": "handlers.yaml_handlers.fix_yaml_eof",
+      "trigger": {
+        "error_pattern": "YAML.*EOF|missing.*newline|eof.*invalid",
+        "file_types": [".github/workflows/*.yml", ".codex/**/*.yaml"],
+        "log_signature": "YAML ends|newline at end"
+      },
+      "fix_strategy": "Ensure YAML files end with exactly one newline",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "yamllint -d '{rules: {new-line-at-end-of-file: enable}}' {file}",
+        "expected_outcome": "YAML EOF validation passes"
+      }
+    },
+    "RP-031": {
+      "name": "CHANGELOG Entry Format Compliance",
+      "category": "Compliance",
+      "confidence": 0.99,
+      "success_rate": 0.99,
+      "executions": 324,
+      "tier": 1,
+      "handler": "handlers.compliance_handlers.fix_changelog_format",
+      "trigger": {
+        "error_pattern": "CHANGELOG.*format|entry.*invalid|section.*missing",
+        "file_types": ["CHANGELOG.md"],
+        "log_signature": "CHANGELOG check_7|format violation"
+      },
+      "fix_strategy": "Ensure CHANGELOG follows section format, fix cross-PR entries",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 1,
+      "validation": {
+        "command": "bash scripts/ci/ci_triage_repro.sh --check 7",
+        "expected_outcome": "CHANGELOG format passes check_7"
+      }
+    },
+    "RP-032": {
+      "name": "Actions Version Pinning",
+      "category": "Security",
+      "confidence": 0.98,
+      "success_rate": 0.98,
+      "executions": 289,
+      "tier": 2,
+      "handler": "handlers.security_handlers.pin_action_versions",
+      "trigger": {
+        "error_pattern": "action.*unpinned|version.*missing|@main|@master",
+        "file_types": [".github/workflows/*.yml"],
+        "log_signature": "Use pinned version|@latest|@main"
+      },
+      "fix_strategy": "Pin all GitHub Actions to specific commit SHA",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 2,
+      "validation": {
+        "command": "grep -r 'uses:.*@' .github/workflows | grep -vE '@[a-f0-9]{40}'",
+        "expected_outcome": "All actions pinned to commit SHA"
+      }
+    },
+    "RP-033": {
+      "name": "Dependabot Ecosystem Consolidation",
+      "category": "Dependencies",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 156,
+      "tier": 3,
+      "handler": "handlers.dependency_handlers.consolidate_dependabot_config",
+      "trigger": {
+        "error_pattern": "dependabot.*duplicate|ecosystem.*conflict",
+        "file_types": [".github/dependabot.yml"],
+        "log_signature": "Duplicate ecosystem|redundant config"
+      },
+      "fix_strategy": "Consolidate duplicate dependabot ecosystems into single entry",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 3,
+      "validation": {
+        "command": "yamllint .github/dependabot.yml",
+        "expected_outcome": "Dependabot config valid"
+      }
+    },
+    "RP-035": {
+      "name": "WEC Auto-Approve Delegation",
+      "category": "Governance",
+      "confidence": 0.99,
+      "success_rate": 0.99,
+      "executions": 478,
+      "tier": 1,
+      "handler": "handlers.governance_handlers.apply_wec_auto_approve",
+      "trigger": {
+        "error_pattern": "WEC.*missing|auto-approve.*not set|governance.*violation",
+        "file_types": ["*"],
+        "log_signature": "wec:auto-approve|WEC label"
+      },
+      "fix_strategy": "Apply WEC auto-approve label when D-tier autonomous approved",
+      "max_attempts": 3,
+      "backoff_seconds": [30, 60, 120],
+      "escalation_threshold": 1,
+      "validation": {
+        "command": "verify_wec_auto_approve_label()",
+        "expected_outcome": "WEC auto-approve label applied"
+      }
+    }
+  },
+  "execution_policies": {
+    "tier_1_blocking": {
+      "patterns": ["RP-015", "RP-031", "RP-035"],
+      "execution_priority": "IMMEDIATE",
+      "max_concurrent": 1,
+      "escalation_threshold": 1,
+      "description": "Critical patterns blocking PR merges (99% confidence)"
+    },
+    "tier_2_high_value": {
+      "patterns": ["RP-003", "RP-012", "RP-016", "RP-027", "RP-032"],
+      "execution_priority": "HIGH",
+      "max_concurrent": 2,
+      "escalation_threshold": 2,
+      "description": "High-impact patterns (97-98% confidence)"
+    },
+    "tier_3_core": {
+      "patterns": ["RP-001", "RP-002", "RP-004", "RP-005", "RP-006", "RP-009", "RP-010", "RP-011", "RP-013", "RP-014", "RP-018", "RP-019", "RP-022", "RP-023", "RP-024", "RP-026", "RP-028", "RP-029", "RP-030", "RP-033"],
+      "execution_priority": "STANDARD",
+      "max_concurrent": 5,
+      "escalation_threshold": 3,
+      "description": "Core patterns (95-97% confidence)"
+    }
+  },
+  "retry_configuration": {
+    "max_attempts": 3,
+    "initial_backoff_seconds": 30,
+    "backoff_multiplier": 2,
+    "backoff_schedule": [30, 60, 120],
+    "timeout_per_handler_seconds": 30,
+    "total_timeout_seconds": 90
+  },
+  "compliance_gates": {
+    "REQ-4": {
+      "description": "Audit trail enforcement",
+      "verification": "All fixes logged in .codex/CI_FAILURE_TRACKING_LOG.md",
+      "status": "enabled"
+    },
+    "REQ-5": {
+      "description": "Documentation requirements",
+      "verification": "PHASE_4_SELF_HEALING_REPORT.md complete",
+      "status": "enabled"
+    },
+    "PDA": {
+      "description": "Post-Deployment Analysis loop",
+      "verification": "Pattern effectiveness tracked, knowledge graph updated",
+      "status": "enabled"
+    }
+  }
+}

@@ -1,128 +1,100 @@
----
 name: Nightly CodeQL Alert Triage
-
 on:
   schedule:
-    # Run nightly at 02:00 UTC (low-traffic window)
-    - cron: '0 2 * * *'
+  - cron: 0 2 * * *
   workflow_dispatch:
     inputs:
       stages:
-        description: 'Pipeline stages to run (comma-separated)'
+        description: Pipeline stages to run (comma-separated)
         required: false
-        default: 'collect,analyse'
+        default: collect,analyse
       dry_run:
-        description: 'Dry run (no mutations)'
+        description: Dry run (no mutations)
         required: false
         type: boolean
         default: true
       use_playwright:
-        description: 'Enable Playwright scraper fallback'
+        description: Enable Playwright scraper fallback
         required: false
         type: boolean
         default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   security-events: read
   issues: write
-
 env:
   PYTHON_VERSION: '3.12'
-
 jobs:
   alert-triage:
     name: CodeQL Alert Triage Pipeline
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'pip install --quiet requests
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        '
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow nightly-codeql-alert-triage
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: Install dependencies
-        run: |
-          pip install --quiet requests
+        '
+    - name: Run resolution pipeline (collect + analyse)
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "STAGES=\"${{ github.event.inputs.stages || 'collect,analyse' }}\"\nDRY_RUN_FLAG=\"\
+        \"\nif [ \"${{ github.event.inputs.dry_run }}\" = \"true\" ] || [ \"${{ github.event_name\
+        \ }}\" = \"schedule\" ]; then\n  DRY_RUN_FLAG=\"--dry-run\"\nfi\nPW_FLAG=\"\
+        \"\nif [ \"${{ github.event.inputs.use_playwright }}\" = \"true\" ]; then\n\
+        \  PW_FLAG=\"--use-playwright\"\nfi\n\npython scripts/security/resolution_pipeline.py\
+        \ \\\n  --owner \"${{ github.repository_owner }}\" \\\n  --repo \"$(echo '${{\
+        \ github.repository }}' | cut -d'/' -f2)\" \\\n  --stages \"$STAGES\" \\\n\
+        \  --output-json .codex/security/pipeline_result.json \\\n  $DRY_RUN_FLAG\
+        \ \\\n  $PW_FLAG \\\n  || echo \"Pipeline completed with warnings (exit $?)\"\
+        \n"
+    - name: Upload triage artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: '.codex/security/alert_inventory.json
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow nightly-codeql-alert-triage 2>/dev/null || echo "Cache health: check skipped"
+          .codex/security/alert_analysis.md
 
-      - name: Run resolution pipeline (collect + analyse)
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          STAGES="${{ github.event.inputs.stages || 'collect,analyse' }}"
-          DRY_RUN_FLAG=""
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ] || [ "${{ github.event_name }}" = "schedule" ]; then
-            DRY_RUN_FLAG="--dry-run"
-          fi
-          PW_FLAG=""
-          if [ "${{ github.event.inputs.use_playwright }}" = "true" ]; then
-            PW_FLAG="--use-playwright"
-          fi
+          .codex/security/pipeline_result.json
 
-          python scripts/security/resolution_pipeline.py \
-            --owner "${{ github.repository_owner }}" \
-            --repo "$(echo '${{ github.repository }}' | cut -d'/' -f2)" \
-            --stages "$STAGES" \
-            --output-json .codex/security/pipeline_result.json \
-            $DRY_RUN_FLAG \
-            $PW_FLAG \
-            || echo "Pipeline completed with warnings (exit $?)"
+          .codex/security/COVERAGE_PLANSET_PR3375.md
 
-      - name: Upload triage artifacts
-        if: always()
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: |
-            .codex/security/alert_inventory.json
-            .codex/security/alert_analysis.md
-            .codex/security/pipeline_result.json
-            .codex/security/COVERAGE_PLANSET_PR3375.md
-          if-no-files-found: warn
-          retention-days: 30
-
-          name: alert-triage-${{ github.run_id }}
-      - name: Post summary to job
-        if: always()
-        run: |
-          RESULT_FILE=".codex/security/pipeline_result.json"
-          if [ -f "$RESULT_FILE" ]; then
-            echo "## CodeQL Alert Triage Summary" >> $GITHUB_STEP_SUMMARY
-            python3 -c "
-          import json, sys
-          try:
-              d = json.load(open('$RESULT_FILE'))
-              print(f'| Metric | Value |')
-              print(f'|--------|-------|')
-              print(f'| Alerts collected | {d.get(\"alerts_collected\", 0)} |')
-              print(f'| Alerts analysed | {d.get(\"alerts_analysed\", 0)} |')
-              print(f'| Codemods applied | {d.get(\"codemods_applied\", 0)} |')
-              print(f'| Alerts closed | {d.get(\"alerts_closed\", 0)} |')
-              print(f'| Validation | {\"passed\" if d.get(\"validation_passed\") else \"skipped\"} |')
-              print(f'| Elapsed | {d.get(\"elapsed_s\", 0):.1f}s |')
-              errors = d.get(\"errors\", [])
-              if errors:
-                  print(f\"\\n**Errors:** {', '.join(errors)}\")
-          except Exception as e:
-              print(f'Could not parse result: {e}')
-              sys.exit(0)
-          " >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No pipeline result file found." >> $GITHUB_STEP_SUMMARY
-          fi
-
+          '
+        if-no-files-found: warn
+        retention-days: 30
+        name: alert-triage-${{ github.run_id }}
+    - name: Post summary to job
+      if: always()
+      run: "RESULT_FILE=\".codex/security/pipeline_result.json\"\nif [ -f \"$RESULT_FILE\"\
+        \ ]; then\n  echo \"## CodeQL Alert Triage Summary\" >> $GITHUB_STEP_SUMMARY\n\
+        \  python3 -c \"\nimport json, sys\ntry:\n    d = json.load(open('$RESULT_FILE'))\n\
+        \    print(f'| Metric | Value |')\n    print(f'|--------|-------|')\n    print(f'|\
+        \ Alerts collected | {d.get(\\\"alerts_collected\\\", 0)} |')\n    print(f'|\
+        \ Alerts analysed | {d.get(\\\"alerts_analysed\\\", 0)} |')\n    print(f'|\
+        \ Codemods applied | {d.get(\\\"codemods_applied\\\", 0)} |')\n    print(f'|\
+        \ Alerts closed | {d.get(\\\"alerts_closed\\\", 0)} |')\n    print(f'| Validation\
+        \ | {\\\"passed\\\" if d.get(\\\"validation_passed\\\") else \\\"skipped\\\
+        \"} |')\n    print(f'| Elapsed | {d.get(\\\"elapsed_s\\\", 0):.1f}s |')\n\
+        \    errors = d.get(\\\"errors\\\", [])\n    if errors:\n        print(f\\\
+        \"\\\\n**Errors:** {', '.join(errors)}\\\")\nexcept Exception as e:\n    print(f'Could\
+        \ not parse result: {e}')\n    sys.exit(0)\n\" >> $GITHUB_STEP_SUMMARY\nelse\n\
+        \  echo \"No pipeline result file found.\" >> $GITHUB_STEP_SUMMARY\nfi\n"
+    timeout-minutes: 30

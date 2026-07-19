@@ -1,66 +1,60 @@
----
 name: rust-ffi
-
 on:
   push:
     branches:
-      - main
+    - main
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     branches:
-      - main
-
+    - main
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
 permissions:
   contents: read
-
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Build with maturin
+      uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8
+      with:
+        command: build
+        args: --release --manifest-path src/codex_core/Cargo.toml --out dist
+        sccache: 'true'
+    - name: Install and test
+      run: 'pip install codex_core --no-index --find-links dist --force-reinstall
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
+        python scripts/test_orchestrator.py
 
-      - name: Build with maturin
-        # Pin the v1 action to an immutable commit for auditability and reproducible CI behavior.
-        uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8  # v1
-        with:
-          command: build
-          args: --release --manifest-path src/codex_core/Cargo.toml --out dist
-          sccache: "true"
-
-      - name: Install and test
-        run: |
-          pip install codex_core --no-index --find-links dist --force-reinstall
-          python scripts/test_orchestrator.py
-
-      - name: Write artifact metadata
-        run: |
-          cat > dist/ARTIFACT_METADATA.json <<EOF
-          {
-            "workflow": "rust-ffi",
-            "os": "${{ runner.os }}",
-            "python_version": "3.12",
-            "sha": "${{ github.sha }}",
-            "ref": "${{ github.ref }}",
-            "created_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-
-      - name: Upload built wheel artifact
-        uses: actions/upload-artifact@v5
-        with:
-          path: dist/*
-          if-no-files-found: error
-
-          name: codex-core-wheel-${{ runner.os }}-py3.12
+        '
+    - name: Write artifact metadata
+      run: "cat > dist/ARTIFACT_METADATA.json <<EOF\n{\n  \"workflow\": \"rust-ffi\"\
+        ,\n  \"os\": \"${{ runner.os }}\",\n  \"python_version\": \"3.12\",\n  \"\
+        sha\": \"${{ github.sha }}\",\n  \"ref\": \"${{ github.ref }}\",\n  \"created_at_utc\"\
+        : \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n}\nEOF\n"
+    - name: Upload built wheel artifact
+      uses: actions/upload-artifact@v5
+      with:
+        path: dist/*
+        if-no-files-found: error
+        name: codex-core-wheel-${{ runner.os }}-py3.12
+    timeout-minutes: 45

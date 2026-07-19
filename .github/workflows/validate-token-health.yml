@@ -1,4 +1,3 @@
----
 name: Validate Token Health
 on:
   workflow_dispatch: null
@@ -10,14 +9,13 @@ permissions:
   checks: write
   issues: write
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 env:
   CODEX_REPO_ID: '1040037790'
   GITHUB_REPOSITORY: Aries-Serpent/_codex_
 jobs:
   validate-token-setup:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate CODEX Token Setup
     runs-on: ubuntu-latest
@@ -28,8 +26,9 @@ jobs:
       checks: write
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -97,7 +96,8 @@ jobs:
       id: script-validation
       continue-on-error: true
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: "echo \"Running comprehensive validation script...\"\npython scripts/ci/validate_token_setup.py\
@@ -168,19 +168,20 @@ jobs:
         '
       uses: actions/github-script@v8
       with:
-        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
-        \ context.repo.repo,\n  title: '\u26A0\uFE0F CODEX_BACKUP_KEY validation\
-        \ failed',\n  body: `The CODEX_BACKUP_KEY token validation failed during\
-        \ scheduled health check.\n\n  **Impact:** Backup authentication may be\
-        \ unavailable if CODEX_MASTER_KEY fails.\n\n  **Action Required:**\n  1.\
-        \ Check the failing workflow run: [link](${{ github.server_url }}/${{ github.repository\
+          \ context.repo.repo,\n  title: '\u26A0\uFE0F CODEX_BACKUP_KEY validation\
+          \ failed',\n  body: `The CODEX_BACKUP_KEY token validation failed during\
+          \ scheduled health check.\n\n  **Impact:** Backup authentication may be\
+          \ unavailable if CODEX_MASTER_KEY fails.\n\n  **Action Required:**\n  1.\
+          \ Check the failing workflow run: [link](${{ github.server_url }}/${{ github.repository\
           \ }}/actions/runs/${{ github.run_id }})\n  2. Review token secrets in Settings\n\
           \  3. Follow Phase 2.1.2 in .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md\
-        \ to refresh the backup key\n\n  **Related Documentation:**\n  - Design:\
-        \ .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md\n  - Emergency Procedures:\
+          \ to refresh the backup key\n\n  **Related Documentation:**\n  - Design:\
+          \ .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md\n  - Emergency Procedures:\
           \ .codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md#emergency-procedures\n  `,\n\
-        \  labels: ['\u274C critical', '\U0001F510 security', '\U0001F916 automation']\n\
+          \  labels: ['\u274C critical', '\U0001F510 security', '\U0001F916 automation']\n\
           })\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

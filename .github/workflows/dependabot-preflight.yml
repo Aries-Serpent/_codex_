@@ -1,5 +1,4 @@
----
-name: 🔍 Dependabot Pre-flight Check
+name: "\U0001F50D Dependabot Pre-flight Check"
 on:
   schedule:
   - cron: 0 23 * * 0
@@ -15,22 +14,22 @@ permissions:
   contents: read
 jobs:
   validate-requirements:
-    name: 🔍 Validate .github requirements files
+    name: "\U0001F50D Validate .github requirements files"
     runs-on: ubuntu-latest
     steps:
-    - name: 📥 Checkout
+    - name: "\U0001F4E5 Checkout"
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
-    - name: 🐍 Set up Python
+    - name: "\U0001F40D Set up Python"
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
-    - name: 📦 Install pip-tools for validation
+    - name: "\U0001F4E6 Install pip-tools for validation"
       run: pip install pip-tools --quiet
-    - name: 🔍 Validate all .github requirements files are pip-parseable
+    - name: "\U0001F50D Validate all .github requirements files are pip-parseable"
       id: validate
       run: "set +e  # collect all failures before exiting\n\nFAILED=0\nCHECKED=0\n\
         FAILURES=\"\"\n\n# Find every requirements*.txt file under .github/\nwhile\
@@ -40,33 +39,34 @@ jobs:
         \ -m pip install \\\n    --dry-run \\\n    --ignore-installed \\\n    --no-deps\
         \ \\\n    --no-index \\\n    -r \"$req_file\" 2>&1) || true\n\n  # A parse\
         \ error will contain \"Invalid requirement\" or\n  # \"Expected package name\"\
-        \ — check for those specifically.\n  # Note: \"--no-index\" always emits \"\
-        Could not find a version …\" for\n  # every package (there is no local index),\
-        \ so that string must NOT\n  # be treated as a failure indicator here.\n \
-        \ if echo \"$ERR\" | grep -qiE \"invalid requirement|expected package name\"\
-        ; then\n    echo \"  ❌ FAILED: $req_file\"\n    echo \"$ERR\" | grep -iE \"\
-        invalid requirement|expected package name\" | head -5\n    FAILED=$((FAILED\
-        \ + 1))\n    FAILURES=\"$FAILURES\\n  - $req_file\"\n  else\n    echo \" \
-        \ ✅ OK: $req_file\"\n  fi\ndone < <(find .github -name \"requirements*.txt\"\
-        \ | sort)\n\necho \"\"\necho \"Summary: checked $CHECKED file(s), $FAILED\
-        \ failed.\"\n\nif [ \"$FAILED\" -gt 0 ]; then\n  echo \"\"\n  echo \"❌ The\
-        \ following requirements files contain invalid pip specifiers:\"\n  echo -e\
-        \ \"$FAILURES\"\n  echo \"\"\n  echo \"Common causes:\"\n  echo \"  • Triple-quoted\
-        \ Python docstrings (\\\"\\\"\\\"...\\\"\\\"\\\") at the top of the file\"\
-        \n  echo \"  • Fix: replace docstrings with  # comment lines\"\n  exit 1\n\
-        fi\n\necho \"✅ All $CHECKED requirements file(s) under .github/ are pip-parseable.\"\
-        \n"
-    - name: 📋 Write job summary
+        \ \u2014 check for those specifically.\n  # Note: \"--no-index\" always emits\
+        \ \"Could not find a version \u2026\" for\n  # every package (there is no\
+        \ local index), so that string must NOT\n  # be treated as a failure indicator\
+        \ here.\n  if echo \"$ERR\" | grep -qiE \"invalid requirement|expected package\
+        \ name\"; then\n    echo \"  \u274C FAILED: $req_file\"\n    echo \"$ERR\"\
+        \ | grep -iE \"invalid requirement|expected package name\" | head -5\n   \
+        \ FAILED=$((FAILED + 1))\n    FAILURES=\"$FAILURES\\n  - $req_file\"\n  else\n\
+        \    echo \"  \u2705 OK: $req_file\"\n  fi\ndone < <(find .github -name \"\
+        requirements*.txt\" | sort)\n\necho \"\"\necho \"Summary: checked $CHECKED\
+        \ file(s), $FAILED failed.\"\n\nif [ \"$FAILED\" -gt 0 ]; then\n  echo \"\"\
+        \n  echo \"\u274C The following requirements files contain invalid pip specifiers:\"\
+        \n  echo -e \"$FAILURES\"\n  echo \"\"\n  echo \"Common causes:\"\n  echo\
+        \ \"  \u2022 Triple-quoted Python docstrings (\\\"\\\"\\\"...\\\"\\\"\\\"\
+        ) at the top of the file\"\n  echo \"  \u2022 Fix: replace docstrings with\
+        \  # comment lines\"\n  exit 1\nfi\n\necho \"\u2705 All $CHECKED requirements\
+        \ file(s) under .github/ are pip-parseable.\"\n"
+    - name: "\U0001F4CB Write job summary"
       if: always()
       run: "{\n  echo \"## \U0001F50D Dependabot Pre-flight Check\"\n  echo \"\"\n\
         \  if [ \"${{ steps.validate.outcome }}\" = \"success\" ]; then\n    echo\
-        \ \"✅ **All \\`.github/\\` requirements files are pip-parseable** — Dependabot\
-        \ should run cleanly.\"\n  else\n    echo \"❌ **One or more \\`.github/\\\
-        ` requirements files failed pip validation.**\"\n    echo \"\"\n    echo \"\
-        Dependabot will fail with \\`dependency_file_not_evaluatable\\` until these\
-        \ files are fixed.\"\n    echo \"\"\n    echo \"**Fix:** replace any \\`\\\
-        \"\\\"\\\"...\\\"\\\"\\\"\\` Python docstrings with \\`#\\` comment lines.\"\
-        \n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+        \ \"\u2705 **All \\`.github/\\` requirements files are pip-parseable** \u2014\
+        \ Dependabot should run cleanly.\"\n  else\n    echo \"\u274C **One or more\
+        \ \\`.github/\\` requirements files failed pip validation.**\"\n    echo \"\
+        \"\n    echo \"Dependabot will fail with \\`dependency_file_not_evaluatable\\\
+        ` until these files are fixed.\"\n    echo \"\"\n    echo \"**Fix:** replace\
+        \ any \\`\\\"\\\"\\\"...\\\"\\\"\\\"\\` Python docstrings with \\`#\\` comment\
+        \ lines.\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15

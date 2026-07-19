@@ -1,0 +1,416 @@
+name: Fragile Test Guardian
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'tests/**/*.py'
+      - '.github/workflows/fragile-test-guardian.yml'
+      - '.codex/scripts/fragile_tests_scan.py'
+  push:
+    branches:
+      - main
+    paths:
+      - 'tests/**/*.py'
+
+concurrency:
+  group: fragile-test-guardian-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.11'
+  CI_CONTEXT: fragile-test-guardian
+
+jobs:
+  detect-fragile-imports:
+    name: Detect Fragile Imports
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      fragile_files: ${{ steps.scan.outputs.fragile_files }}
+      fragile_count: ${{ steps.scan.outputs.fragile_count }}
+      has_violations: ${{ steps.scan.outputs.has_violations }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Run fragile tests scan
+        id: scan
+        run: |
+          set +e  # Don't exit on error, we want to capture results
+          
+          python .codex/scripts/fragile_tests_scan.py > scan_output.txt 2>&1
+          SCAN_EXIT=$?
+          
+          # Parse results
+          FRAGILE_COUNT=$(python3 << 'EOF'
+          import json
+          from pathlib import Path
+          try:
+              data = json.loads(Path('.codex/fragile_tests.json').read_text())
+              print(len(data))
+          except:
+              print(0)
+          EOF
+          )
+          
+          echo "fragile_files=$(cat .codex/fragile_tests.json | base64 -w0)" >> $GITHUB_OUTPUT
+          echo "fragile_count=$FRAGILE_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ $FRAGILE_COUNT -gt 0 ]; then
+              echo "has_violations=true" >> $GITHUB_OUTPUT
+          else
+              echo "has_violations=false" >> $GITHUB_OUTPUT
+          fi
+          
+          cat scan_output.txt
+
+      - name: Upload scan results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: fragile-tests-scan
+          path: .codex/fragile_tests.json
+          retention-days: 30
+
+  detect-unhandled-flaky:
+    name: Detect Unhandled Flaky Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      unhandled_flaky: ${{ steps.detect.outputs.unhandled_count }}
+      has_flaky_violations: ${{ steps.detect.outputs.has_violations }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Detect unhandled flaky tests
+        id: detect
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import re
+          import json
+          from pathlib import Path
+          
+          # Flaky patterns that should be marked with @pytest.mark.flaky
+          FLAKY_PATTERNS = {
+              'async_operations': r'(@pytest\.mark\.asyncio|asyncio\.run|await |async def)',
+              'network_calls': r'(requests\.|http\.|socket\.|urlopen)',
+              'file_io': r'(open\(|Path\(|os\.path\.|os\.mkdir|os\.remove)',
+              'datetime_dependent': r'(datetime\.now|time\.time|timezone|utcnow)',
+              'random_values': r'(random\.|np\.random|torch\.rand)',
+          }
+          
+          FLAKY_MARKER = r'@pytest\.mark\.flaky'
+          
+          violations = []
+          test_files = sorted(Path('tests').rglob('test_*.py'))
+          
+          for test_file in test_files[:100]:  # Sample first 100 files for speed
+              try:
+                  content = test_file.read_text(encoding='utf-8', errors='ignore')
+              except:
+                  continue
+              
+              # Check if file has flaky markers
+              has_flaky_marker = bool(re.search(FLAKY_MARKER, content))
+              
+              # Check for flaky patterns
+              has_flaky_patterns = False
+              for pattern_name, pattern in FLAKY_PATTERNS.items():
+                  if re.search(pattern, content):
+                      has_flaky_patterns = True
+                      
+                      # Only report if no flaky marker AND many instances
+                      if not has_flaky_marker and len(re.findall(pattern, content)) > 2:
+                          violations.append({
+                              'file': str(test_file.relative_to(Path.cwd())),
+                              'pattern': pattern_name,
+                              'instances': len(re.findall(pattern, content))
+                          })
+                          break
+          
+          # Output results
+          print(f"Unhandled flaky tests found: {len(violations)}")
+          
+          output_file = Path('.codex/phase5_unhandled_flaky.json')
+          output_file.parent.mkdir(parents=True, exist_ok=True)
+          output_file.write_text(json.dumps(violations, indent=2))
+          
+          # Set GitHub Output
+          with open(Path.home() / '.github_output', 'a') as f:
+              f.write(f'unhandled_count={len(violations)}\n')
+              f.write(f'has_violations={"true" if len(violations) > 0 else "false"}\n')
+          
+          if len(violations) > 0:
+              print("\n❌ Unhandled flaky tests detected:")
+              for v in violations[:5]:
+                  print(f"  - {v['file']}: {v['pattern']} ({v['instances']} instances)")
+          PYTHON_SCRIPT
+          
+          # Read output file
+          if [ -f .codex/phase5_unhandled_flaky.json ]; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('.codex/phase5_unhandled_flaky.json'))))")
+              echo "unhandled_count=$COUNT" >> $GITHUB_OUTPUT
+              if [ $COUNT -gt 0 ]; then
+                  echo "has_violations=true" >> $GITHUB_OUTPUT
+              else
+                  echo "has_violations=false" >> $GITHUB_OUTPUT
+              fi
+          else
+              echo "unhandled_count=0" >> $GITHUB_OUTPUT
+              echo "has_violations=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload flaky detection results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: unhandled-flaky-tests
+          path: .codex/phase5_unhandled_flaky.json
+          retention-days: 30
+
+  check-docstring-coverage:
+    name: Check Docstring Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      docstring_coverage: ${{ steps.coverage.outputs.coverage_pct }}
+      missing_docstrings: ${{ steps.coverage.outputs.missing_count }}
+      coverage_regressed: ${{ steps.coverage.outputs.regressed }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Analyze docstring coverage
+        id: coverage
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import ast
+          import json
+          from pathlib import Path
+          
+          test_files = list(Path('tests').rglob('test_*.py'))
+          
+          total_tests = 0
+          documented_tests = 0
+          missing_docstrings = []
+          
+          for test_file in test_files[:200]:  # Sample
+              try:
+                  content = test_file.read_text(encoding='utf-8', errors='ignore')
+                  tree = ast.parse(content)
+              except:
+                  continue
+              
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.FunctionDef) and node.name.startswith('test_'):
+                      total_tests += 1
+                      if ast.get_docstring(node):
+                          documented_tests += 1
+                      else:
+                          missing_docstrings.append({
+                              'file': str(test_file.relative_to(Path.cwd())),
+                              'function': node.name
+                          })
+          
+          coverage_pct = int(100 * documented_tests / total_tests) if total_tests > 0 else 0
+          
+          print(f"Docstring Coverage: {coverage_pct}% ({documented_tests}/{total_tests})")
+          print(f"Missing docstrings: {len(missing_docstrings)}")
+          
+          # Save to file
+          output = Path('.codex/phase5_docstring_coverage.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps({
+              'coverage_pct': coverage_pct,
+              'total_tests': total_tests,
+              'documented': documented_tests,
+              'missing_count': len(missing_docstrings),
+              'missing_docstrings': missing_docstrings[:20]
+          }, indent=2))
+          
+          # Check against baseline (Phase 5 target: >90%)
+          regressed = 'true' if coverage_pct < 90 else 'false'
+          
+          with open(Path.home() / '.github_output', 'a') as f:
+              f.write(f'coverage_pct={coverage_pct}\n')
+              f.write(f'missing_count={len(missing_docstrings)}\n')
+              f.write(f'regressed={regressed}\n')
+          PYTHON_SCRIPT
+          
+          # Read results
+          import json
+          result = json.load(open('.codex/phase5_docstring_coverage.json'))
+          echo "coverage_pct=$(python3 -c \"print($result['coverage_pct'])\")" >> $GITHUB_OUTPUT
+          echo "missing_count=$(python3 -c \"print($result['missing_count'])\")" >> $GITHUB_OUTPUT
+          echo "regressed=$(python3 -c \"print('true' if $result['coverage_pct'] < 90 else 'false')\")" >> $GITHUB_OUTPUT
+
+      - name: Upload coverage results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: docstring-coverage
+          path: .codex/phase5_docstring_coverage.json
+          retention-days: 30
+
+  report-violations:
+    name: Report Test Violations
+    runs-on: ubuntu-latest
+    needs: [detect-fragile-imports, detect-unhandled-flaky, check-docstring-coverage]
+    permissions:
+      pull-requests: write
+    if: always() && github.event_name == 'pull_request'
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
+
+      - name: Generate violation report
+        id: report
+        run: |
+          # Compile violation summary
+          VIOLATION_SUMMARY=""
+          
+          # Check fragile imports
+          if [ -f "fragile-tests-scan/.codex/fragile_tests.json" ]; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('fragile-tests-scan/.codex/fragile_tests.json'))))")
+              if [ $COUNT -gt 0 ]; then
+                  VIOLATION_SUMMARY="${VIOLATION_SUMMARY}### ❌ Fragile Imports (${COUNT} files)
+          \`\`\`
+          $(head -20 fragile-tests-scan/.codex/fragile_tests.json)
+          \`\`\`
+          Add \`pytest.importorskip()\` guards for optional packages.
+          
+          "
+              fi
+          fi
+          
+          # Check unhandled flaky
+          if [ -f "unhandled-flaky-tests/.codex/phase5_unhandled_flaky.json" ]; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('unhandled-flaky-tests/.codex/phase5_unhandled_flaky.json'))))" || echo "0")
+              if [ $COUNT -gt 0 ]; then
+                  VIOLATION_SUMMARY="${VIOLATION_SUMMARY}### ⚠️ Unhandled Flaky Tests (${COUNT} detected)
+          Mark with \`@pytest.mark.flaky\` or stabilize with mocks/fixtures.
+          
+          "
+              fi
+          fi
+          
+          # Check docstring coverage
+          if [ -f "docstring-coverage/.codex/phase5_docstring_coverage.json" ]; then
+              COVERAGE=$(python3 -c "import json; print(json.load(open('docstring-coverage/.codex/phase5_docstring_coverage.json'))['coverage_pct'])")
+              MISSING=$(python3 -c "import json; print(json.load(open('docstring-coverage/.codex/phase5_docstring_coverage.json'))['missing_count'])")
+              if [ $COVERAGE -lt 90 ]; then
+                  VIOLATION_SUMMARY="${VIOLATION_SUMMARY}### 📚 Docstring Coverage (${COVERAGE}%, missing ${MISSING})
+          Target: >90%. Add docstrings to all test functions.
+          
+          "
+              fi
+          fi
+          
+          echo "violation_summary<<EOF" >> $GITHUB_ENV
+          echo "$VIOLATION_SUMMARY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Comment on PR
+        if: env.violation_summary != ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const violations = process.env.violation_summary || "No violations detected";
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🧪 Fragile Test Guardian Report
+
+            ${violations}
+
+            **Phase 5 Lane 2 Enforcement** (Advisory in Phase 5, Blocking in Phase 6)
+
+            For details, see:
+            - [Audit Report](.codex/PHASE_5_FLAKY_TEST_AUDIT_REPORT.md)
+            - [Remediation Guide](.codex/PHASE_5_FLAKY_TEST_REMEDIATION.json)`
+            });
+
+      - name: Set status
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fragile = '${{ needs.detect-fragile-imports.outputs.has_violations }}' === 'true';
+            const flaky = '${{ needs.detect-unhandled-flaky.outputs.has_flaky_violations }}' === 'true';
+            const docstring = '${{ needs.check-docstring-coverage.outputs.coverage_regressed }}' === 'true';
+            
+            const state = (fragile || flaky || docstring) ? 'success' : 'success';
+            const description = `Fragile: ${fragile ? '❌' : '✅'} | Flaky: ${flaky ? '❌' : '✅'} | Docstring: ${docstring ? '❌' : '✅'}`;
+            
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',  // Phase 5: advisory only
+              context: 'Fragile Test Guardian',
+              description: description
+            });
+
+  summary:
+    name: Summary
+    runs-on: ubuntu-latest
+    needs: [detect-fragile-imports, detect-unhandled-flaky, check-docstring-coverage]
+    permissions: {}
+    if: always()
+    
+    steps:
+      - name: Print Phase 5 Summary
+        run: |
+          echo "## Phase 5 Lane 2: Flaky Test Guardian Summary"
+          echo ""
+          echo "### Fragile Imports"
+          echo "- Detected: ${{ needs.detect-fragile-imports.outputs.fragile_count }} files"
+          echo "- Status: ${{ needs.detect-fragile-imports.outputs.has_violations }}"
+          echo ""
+          echo "### Unhandled Flaky Tests"
+          echo "- Detected: ${{ needs.detect-unhandled-flaky.outputs.unhandled_flaky }}"
+          echo "- Status: ${{ needs.detect-unhandled-flaky.outputs.has_flaky_violations }}"
+          echo ""
+          echo "### Docstring Coverage"
+          echo "- Coverage: ${{ needs.check-docstring-coverage.outputs.docstring_coverage }}%"
+          echo "- Missing: ${{ needs.check-docstring-coverage.outputs.missing_docstrings }}"
+          echo ""
+          echo "**Status**: Phase 5 Advisory (non-blocking)"
+          echo "**Phase 6**: Violations will block merge"

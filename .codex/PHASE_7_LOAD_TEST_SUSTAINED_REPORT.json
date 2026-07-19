@@ -1,0 +1,17 @@
+{
+  "test_id": "phase7_fast_1784425143",
+  "concurrent_level": 500,
+  "duration_minutes": 3.002537190914154,
+  "error_rate": 0.005959885386819484,
+  "latency_metrics": {
+    "avg_ms": 268.2414753594166,
+    "p50_ms": 267.27497577667236,
+    "p95_ms": 500.5561828613281,
+    "p99_ms": 520.6865668296814
+  },
+  "resource_health": {
+    "connection_pools": "healthy",
+    "http_pooling": "healthy",
+    "no_exhaustion": true
+  }
+}

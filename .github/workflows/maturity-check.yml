@@ -1,4 +1,3 @@
----
 name: Maturity Check
 on:
   workflow_dispatch: null

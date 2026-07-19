@@ -1,180 +1,127 @@
----
 name: Profile Validation
-
 on:
   pull_request:
     paths:
-      - pyproject.toml
-      - uv.lock
-      - scripts/ci/check_profile_drift.py
-      - .github/workflows/profile-validation.yml
+    - pyproject.toml
+    - uv.lock
+    - scripts/ci/check_profile_drift.py
+    - .github/workflows/profile-validation.yml
   push:
     branches:
-      - main
+    - main
     paths:
-      - pyproject.toml
-      - uv.lock
-  workflow_dispatch:
-
+    - pyproject.toml
+    - uv.lock
+  workflow_dispatch: null
 permissions:
   contents: read
   checks: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   profile-drift-check:
     name: Check Profile/Lock Drift
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        python -m pip install tomli
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install tomli
-
-      - name: Run drift detection
-        id: drift-check
-        run: python scripts/ci/check_profile_drift.py
-
-      - name: Report results
-        if: always()
-        run: |
-          echo "## Profile Validation Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ ${{ steps.drift-check.outcome }} == 'success' ]; then
-            echo "✅ **PASSED**: No profile drift detected" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **FAILED**: Profile drift detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Required Fixes:" >> $GITHUB_STEP_SUMMARY
-            echo "1. Run: \`uv lock --upgrade\`" >> $GITHUB_STEP_SUMMARY
-            echo "2. Verify: \`python scripts/ci/check_profile_drift.py\`" >> $GITHUB_STEP_SUMMARY
-            echo "3. Commit both \`pyproject.toml\` and \`uv.lock\` changes" >> $GITHUB_STEP_SUMMARY
-          fi
-
+        '
+    - name: Run drift detection
+      id: drift-check
+      run: python scripts/ci/check_profile_drift.py
+    - name: Report results
+      if: always()
+      run: "echo \"## Profile Validation Results\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        \" >> $GITHUB_STEP_SUMMARY\nif [ ${{ steps.drift-check.outcome }} == 'success'\
+        \ ]; then\n  echo \"\u2705 **PASSED**: No profile drift detected\" >> $GITHUB_STEP_SUMMARY\n\
+        else\n  echo \"\u274C **FAILED**: Profile drift detected\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"### Required Fixes:\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"1. Run: \\`uv lock --upgrade\\`\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"2. Verify: \\`python scripts/ci/check_profile_drift.py\\`\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"3. Commit both \\`pyproject.toml\\` and \\`uv.lock\\` changes\"\
+        \ >> $GITHUB_STEP_SUMMARY\nfi\n"
+    timeout-minutes: 15
   lock-hash-validation:
     name: Verify Lock Hashes
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-
-      - name: Validate SHA256 hashes in uv.lock
-        run: |
-          echo "Checking SHA256 hashes in uv.lock..."
-          HASH_COUNT=$(grep -c 'hash = "sha256:' uv.lock || true)
-          PACKAGE_COUNT=$(grep -c 'name = "' uv.lock | head -1 || echo "unknown")
-
-          echo "## Lock File Hash Validation" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Packages**: $(echo "$PACKAGE_COUNT" | tail -1)" >> $GITHUB_STEP_SUMMARY
-          echo "- **SHA256 hashes**: $HASH_COUNT" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "$HASH_COUNT" -gt 0 ]; then
-            echo "✅ Hashes validated" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ No hashes found - regenerate with: uv lock --upgrade" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Validate SHA256 hashes in uv.lock
+      run: "echo \"Checking SHA256 hashes in uv.lock...\"\nHASH_COUNT=$(grep -c 'hash\
+        \ = \"sha256:' uv.lock || true)\nPACKAGE_COUNT=$(grep -c 'name = \"' uv.lock\
+        \ | head -1 || echo \"unknown\")\n\necho \"## Lock File Hash Validation\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"- **Packages**:\
+        \ $(echo \"$PACKAGE_COUNT\" | tail -1)\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        - **SHA256 hashes**: $HASH_COUNT\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \nif [ \"$HASH_COUNT\" -gt 0 ]; then\n  echo \"\u2705 Hashes validated\" >>\
+        \ $GITHUB_STEP_SUMMARY\nelse\n  echo \"\u26A0\uFE0F No hashes found - regenerate\
+        \ with: uv lock --upgrade\" >> $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
+    timeout-minutes: 30
   offline-install-test:
     name: Test Offline Install (CORE Profile)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Install uv
+      run: pip install uv
+    - name: Install CORE profile
+      run: 'pip install -e ".[core]"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install uv
-        run: pip install uv
-
-      - name: Install CORE profile
-        run: |
-          pip install -e ".[core]"
-
-      - name: Verify CORE profile imports
-        run: |
-          python3 << 'EOF'
-          import sys
-          print(f"Python version: {sys.version}")
-
-          # Test that core profile packages can be imported
-          core_packages = [
-              "hydra",
-              "omegaconf",
-              "pydantic",
-              "typer",
-              "libcst",
-              "parso",
-              "yaml",
-              "marshmallow",
-          ]
-
-          failed = []
-          for pkg in core_packages:
-              try:
-                  __import__(pkg)
-                  print(f"✓ {pkg}")
-              except ImportError as e:
-                  print(f"✗ {pkg}: {e}")
-                  failed.append(pkg)
-
-          if failed:
-              print(f"\nFailed imports: {failed}")
-              sys.exit(1)
-          else:
-              print("\n✅ All CORE profile packages importable")
-          EOF
-
+        '
+    - name: Verify CORE profile imports
+      run: "python3 << 'EOF'\nimport sys\nprint(f\"Python version: {sys.version}\"\
+        )\n\n# Test that core profile packages can be imported\ncore_packages = [\n\
+        \    \"hydra\",\n    \"omegaconf\",\n    \"pydantic\",\n    \"typer\",\n \
+        \   \"libcst\",\n    \"parso\",\n    \"yaml\",\n    \"marshmallow\",\n]\n\n\
+        failed = []\nfor pkg in core_packages:\n    try:\n        __import__(pkg)\n\
+        \        print(f\"\u2713 {pkg}\")\n    except ImportError as e:\n        print(f\"\
+        \u2717 {pkg}: {e}\")\n        failed.append(pkg)\n\nif failed:\n    print(f\"\
+        \\nFailed imports: {failed}\")\n    sys.exit(1)\nelse:\n    print(\"\\n\u2705\
+        \ All CORE profile packages importable\")\nEOF\n"
+    timeout-minutes: 30
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [profile-drift-check, lock-hash-validation, offline-install-test]
+    needs:
+    - profile-drift-check
+    - lock-hash-validation
+    - offline-install-test
     if: always()
-
     steps:
-      - name: Check results
-        run: |
-          echo "## Overall Validation Status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ needs.profile-drift-check.result }}" == "success" ] && \
-              [ "${{ needs.lock-hash-validation.result }}" == "success" ] && \
-              [ "${{ needs.offline-install-test.result }}" == "success" ]; then
-            echo "✅ **ALL CHECKS PASSED**" >> $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "❌ **SOME CHECKS FAILED**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "- Profile Drift: ${{ needs.profile-drift-check.result }}" >> $GITHUB_STEP_SUMMARY
-            echo "- Lock Hashes: ${{ needs.lock-hash-validation.result }}" >> $GITHUB_STEP_SUMMARY
-            echo "- Offline Install: ${{ needs.offline-install-test.result }}" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+    - name: Check results
+      run: "echo \"## Overall Validation Status\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        \" >> $GITHUB_STEP_SUMMARY\n\nif [ \"${{ needs.profile-drift-check.result\
+        \ }}\" == \"success\" ] && \\\n    [ \"${{ needs.lock-hash-validation.result\
+        \ }}\" == \"success\" ] && \\\n    [ \"${{ needs.offline-install-test.result\
+        \ }}\" == \"success\" ]; then\n  echo \"\u2705 **ALL CHECKS PASSED**\" >>\
+        \ $GITHUB_STEP_SUMMARY\n  exit 0\nelse\n  echo \"\u274C **SOME CHECKS FAILED**\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\
+        - Profile Drift: ${{ needs.profile-drift-check.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"- Lock Hashes: ${{ needs.lock-hash-validation.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        \  echo \"- Offline Install: ${{ needs.offline-install-test.result }}\" >>\
+        \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"

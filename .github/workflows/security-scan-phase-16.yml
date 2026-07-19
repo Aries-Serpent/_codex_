@@ -10,9 +10,9 @@ on:
     - develop
   schedule:
   - cron: 0 2 * * *
-  workflow_dispatch: null
+  workflow_dispatch:
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 env:
   PYTHON_VERSION: '3.12'
@@ -195,6 +195,7 @@ jobs:
         path: htmlcov/
         retention-days: 30
         name: coverage-report
+    timeout-minutes: 30
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
@@ -221,6 +222,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: /language:${{ matrix.language }}
+    timeout-minutes: 45
   test-phase-16:
     name: Phase 16 Comprehensive Tests
     runs-on: ubuntu-latest
@@ -295,6 +297,7 @@ jobs:
           '
         retention-days: 30
         name: phase-16-test-results
+    timeout-minutes: 30
   security-gates:
     name: Security Gates & Validation
     runs-on: ubuntu-latest
@@ -310,6 +313,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Check SECURITY.md
       run: "if [ ! -f SECURITY.md ]; then\n  echo \"\u274C SECURITY.md not found\"\
         \n  exit 1\nfi\necho \"\u2713 SECURITY.md exists\"\ngrep -E \"email|report|contact\"\
@@ -337,9 +341,11 @@ jobs:
         \ enabled\"\necho \"\u2713 Secret detection active\"\necho \"\u2713 CodeQL\
         \ analysis ready\"\necho \"\u2713 Coverage analysis integrated\"\necho \"\"\
         \necho \"All security gates passed for Phase 16\"\n"
+    timeout-minutes: 30
   results:
     name: Phase 16 Results Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: always()
     needs:
     - security-scanning
@@ -385,4 +391,3 @@ jobs:
         \u2705 16.4 - Final Polish & 100% Coverage\"\necho \"\"\necho \"Total tests\
         \ created: 1000+\"\necho \"Security coverage: 100%\"\necho \"CodeQL status:\
         \ Validated\"\n"
-    timeout-minutes: 30

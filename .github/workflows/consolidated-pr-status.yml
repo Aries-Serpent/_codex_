@@ -1,4 +1,3 @@
----
 name: Consolidated PR Status
 on:
   workflow_call:
@@ -74,9 +73,9 @@ jobs:
       run: "DETAILS=\"${INPUT_DETAILS}\"\nDURATION_INPUT=\"${INPUT_DURATION_SECONDS}\"\
         \nif (( ${DURATION_INPUT:-0} > 0 )) 2>/dev/null; then\n  DURATION_MIN=$((\
         \ DURATION_INPUT / 60 ))\n  DURATION_SEC=$(( DURATION_INPUT % 60 ))\n  DETAILS=\"\
-        ${DETAILS}\\n\\n_⏱ Duration: ${DURATION_MIN}m ${DURATION_SEC}s_\"\nfi\n# Escape\
-        \ for GitHub Actions output\necho \"details<<EOF\" >> \"$GITHUB_OUTPUT\"\n\
-        printf '%b' \"$DETAILS\" >> \"$GITHUB_OUTPUT\"\necho \"EOF\" >> \"$GITHUB_OUTPUT\"\
+        ${DETAILS}\\n\\n_\u23F1 Duration: ${DURATION_MIN}m ${DURATION_SEC}s_\"\nfi\n\
+        # Escape for GitHub Actions output\necho \"details<<EOF\" >> \"$GITHUB_OUTPUT\"\
+        \nprintf '%b' \"$DETAILS\" >> \"$GITHUB_OUTPUT\"\necho \"EOF\" >> \"$GITHUB_OUTPUT\"\
         \n"
     - name: Post to consolidated dashboard
       uses: ./.github/actions/post-pr-summary
@@ -86,3 +85,4 @@ jobs:
         summary: ${{ inputs.summary }}
         details: ${{ steps.build-details.outputs.details }}
         github-token: ${{ secrets.github-token || github.token }}
+    timeout-minutes: 30

@@ -1,4 +1,3 @@
----
 name: Cognitive Registry Validation Workflow
 on:
   workflow_dispatch:
@@ -35,7 +34,6 @@ concurrency:
   cancel-in-progress: true
 jobs:
   validate_registry_configuration:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate Registry Configuration
     runs-on: ubuntu-latest
@@ -88,6 +86,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   test_registry_connectivity:
     name: Test Registry Connectivity
     runs-on: ubuntu-latest
@@ -126,6 +125,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   approval_gate:
     name: Approval Gate for Credential Injection
     runs-on: ubuntu-latest
@@ -171,6 +171,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   store_repository_variables:
     name: Store Registry Metadata in Repository Variables
     runs-on: ubuntu-latest
@@ -211,6 +212,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   webhook_notification:
     name: Trigger Webhook to Cognitive Brain
     runs-on: ubuntu-latest
@@ -243,6 +245,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   workflow_summary:
     name: Workflow Summary
     runs-on: ubuntu-latest
@@ -309,4 +312,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-
+    timeout-minutes: 30

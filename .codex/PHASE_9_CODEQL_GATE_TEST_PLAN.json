@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-07-19T02:40:25.571030+00:00",
+  "test_type": "CodeQL gate synthetic injection test",
+  "test_file": "tests/security_gates/test_synthetic_sql_injection_for_gate.py",
+  "vulnerability_type": "CWE-89 SQL Injection",
+  "severity": "HIGH",
+  "gate_workflow": {
+    "exists": true,
+    "path": ".github/workflows/codeql-ga-gate.yml",
+    "checks_passed": true
+  },
+  "expected_behavior": "Gate blocks merge, creates issue",
+  "status": "READY_FOR_FUNCTIONAL_TEST"
+}

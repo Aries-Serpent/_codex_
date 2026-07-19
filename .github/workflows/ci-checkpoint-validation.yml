@@ -1,4 +1,3 @@
----
 name: CI Checkpoint Validation
 on:
   pull_request:
@@ -33,29 +32,28 @@ permissions:
   pull-requests: write
 jobs:
   validate-checkpoints:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
     name: "\U0001F4CB CI Checkpoint Validation"
     runs-on: ubuntu-latest
     steps:
+    - name: Cache Python dependencies (Layer 1)
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
+          }}
+        restore-keys: '${{ runner.os }}-pip-
 
-      - name: Cache Python dependencies (Layer 1)
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
-      - name: Initialize with repository variables
-        env:
-          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-          CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
-          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-        run: 'echo "CI checkpoint validation variables initialized:"
+          '
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Initialize with repository variables
+      env:
+        CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
+        CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+      run: 'echo "CI checkpoint validation variables initialized:"
 
         echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 
@@ -64,28 +62,28 @@ jobs:
         echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
 
         '
-      - name: Setup Python (cached)
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-      - name: Install minimal dependencies
-        run: 'pip install pyyaml requests --quiet
+    - name: Setup Python (cached)
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install minimal dependencies
+      run: 'pip install pyyaml requests --quiet
 
         '
-      - name: "CP-1: Pattern library \u2014 verify SELF_HEALING_001 present"
-        id: cp1_pattern_library
-        run: "python3 - <<'PYEOF'\nimport yaml, sys\nwith open('.codex/patterns/ci_failure_patterns.yaml')\
+    - name: "CP-1: Pattern library \u2014 verify SELF_HEALING_001 present"
+      id: cp1_pattern_library
+      run: "python3 - <<'PYEOF'\nimport yaml, sys\nwith open('.codex/patterns/ci_failure_patterns.yaml')\
         \ as f:\n    content = f.read()\nrequired = ['SELF_HEALING_001', 'DOC_METRICS_001',\
         \ 'PREFLIGHT_001']\nmissing = [p for p in required if p not in content]\n\
         if missing:\n    print(f\"\u274C CP-1 FAIL: missing patterns: {missing}\"\
         )\n    sys.exit(1)\n# Count total patterns\ncount = content.count('pattern_id:')\n\
         print(f\"\u2705 CP-1 PASS: {count} patterns in library, required patterns\
         \ present\")\nPYEOF\n"
-      - name: "CP-2: AGENT_REGISTRY \u2014 packaging-validation-agent registered"
-        id: cp2_agent_registry
-        run: "python3 - <<'PYEOF'\nimport sys\nwith open('.github/agents/AGENT_REGISTRY.yaml')\
+    - name: "CP-2: AGENT_REGISTRY \u2014 packaging-validation-agent registered"
+      id: cp2_agent_registry
+      run: "python3 - <<'PYEOF'\nimport sys\nwith open('.github/agents/AGENT_REGISTRY.yaml')\
         \ as f:\n    content = f.read()\nchecks = {\n    'packaging-validation-agent':\
         \ 'id: packaging-validation-agent',\n    'ci-health-alert-agent v1.1.0': \"\
         version: 1.1.0\",\n}\nall_ok = True\nfor label, needle in checks.items():\n\
@@ -93,9 +91,9 @@ jobs:
         )\n    else:\n        print(f\"\u274C CP-2 FAIL: {label} not found (needle:\
         \ {needle!r})\")\n        all_ok = False\nif not all_ok:\n    sys.exit(1)\n\
         PYEOF\n"
-      - name: "CP-3: Requirements \u2014 NLTK >= 3.9.4 in all lock files"
-        id: cp3_nltk_version
-        run: "python3 - <<'PYEOF'\nimport re, sys\nfrom pathlib import Path\n\nLOCK_FILES\
+    - name: "CP-3: Requirements \u2014 NLTK >= 3.9.4 in all lock files"
+      id: cp3_nltk_version
+      run: "python3 - <<'PYEOF'\nimport re, sys\nfrom pathlib import Path\n\nLOCK_FILES\
         \ = [\n    'requirements/lock.txt',\n    'requirements/lock-eval.txt',\n \
         \   'requirements-eval.txt',\n]\nVULNERABLE = re.compile(r'nltk==3\\.9\\.[0-3]\\\
         b', re.I)\nMINIMUM_OK  = re.compile(r'nltk==3\\.9\\.([4-9]|\\d{2})', re.I)\n\
@@ -108,10 +106,10 @@ jobs:
         \ PASS: {path} has {ok_match.group()}\")\n    else:\n        print(f\"\u26A0\
         \uFE0F  CP-3 SKIP: {path} \u2014 nltk not pinned (may be absent from this\
         \ lock)\")\nif not all_ok:\n    sys.exit(1)\nPYEOF\n"
-      - name: 'CP-4: iterative-self-healing-ci.yml uses venv recreation (not system
+    - name: 'CP-4: iterative-self-healing-ci.yml uses venv recreation (not system
         pip fallback)'
-        id: cp4_venv_recreation
-        run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\nwf = Path('.github/workflows/iterative-self-healing-ci.yml').read_text()\n\
+      id: cp4_venv_recreation
+      run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\nwf = Path('.github/workflows/iterative-self-healing-ci.yml').read_text()\n\
         # Correct pattern: recreate venv\nif 'python3 -m venv .venv_ci' not in wf:\n\
         \    print(\"\u274C CP-4 FAIL: iterative-self-healing-ci.yml missing 'python3\
         \ -m venv .venv_ci'\")\n    sys.exit(1)\n# Incorrect pattern: global pip fallback\
@@ -119,9 +117,9 @@ jobs:
         \ CP-4 FAIL: iterative-self-healing-ci.yml still has '|| pip install' system-pip\
         \ fallback\")\n    sys.exit(1)\nprint(\"\u2705 CP-4 PASS: venv recreation\
         \ pattern found, no system-pip fallback\")\nPYEOF\n"
-      - name: "CP-5: AAIS scorer \u2014 honest calibration gates present"
-        id: cp5_aais_scorer
-        run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\nscorer =\
+    - name: "CP-5: AAIS scorer \u2014 honest calibration gates present"
+      id: cp5_aais_scorer
+      run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\nscorer =\
         \ Path('scripts/ci/aais_v4_scorer.py').read_text()\nchecks = {\n    'CODEX_OPEN_CRITICAL_ALERTS\
         \ env var': 'CODEX_OPEN_CRITICAL_ALERTS',\n    'CODEX_CI_FAILURE_RATE env\
         \ var': 'CODEX_CI_FAILURE_RATE',\n    'max(0, int(...)) clamp': 'max(0, int(',\n\
@@ -130,9 +128,9 @@ jobs:
         \u2705 CP-5 PASS: {label}\")\n    else:\n        print(f\"\u274C CP-5 FAIL:\
         \ {label} not found\")\n        all_ok = False\nif not all_ok:\n    sys.exit(1)\n\
         PYEOF\n"
-      - name: Write step summary
-        if: always()
-        run: "{\n  echo \"## \U0001F4CB CI Checkpoint Validation Results\"\n  echo \"\
+    - name: Write step summary
+      if: always()
+      run: "{\n  echo \"## \U0001F4CB CI Checkpoint Validation Results\"\n  echo \"\
         \"\n  echo \"| Checkpoint | Status |\"\n  echo \"|-----------|--------|\"\n\
         \  echo \"| CP-1: Pattern library (SELF_HEALING_001 + 2 more) | ${{ steps.cp1_pattern_library.outcome\
         \ == 'success' && '\u2705 PASS' || '\u274C FAIL' }} |\"\n  echo \"| CP-2:\
@@ -146,13 +144,14 @@ jobs:
         \ == 'success' && '\u2705 PASS' || '\u274C FAIL' }} |\"\n  echo \"\"\n  echo\
         \ \"> Generated by \\`ci-checkpoint-validation.yml\\` (S172 AAIS Compliance\
         \ task D.5)\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
-      - name: Fail if threshold breach and fail_on_threshold_breach=true
-        if: "inputs.fail_on_threshold_breach == 'true' && (\n  steps.cp1_pattern_library.outcome\
+    - name: Fail if threshold breach and fail_on_threshold_breach=true
+      if: "inputs.fail_on_threshold_breach == 'true' && (\n  steps.cp1_pattern_library.outcome\
         \ == 'failure' ||\n  steps.cp2_agent_registry.outcome == 'failure' ||\n  steps.cp3_nltk_version.outcome\
         \ == 'failure' ||\n  steps.cp4_venv_recreation.outcome == 'failure' ||\n \
         \ steps.cp5_aais_scorer.outcome == 'failure'\n)\n"
-        run: "echo \"\u274C One or more checkpoints failed and fail_on_threshold_breach=true\"\
+      run: "echo \"\u274C One or more checkpoints failed and fail_on_threshold_breach=true\"\
         \nexit 1\n"
+    timeout-minutes: 15
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -168,19 +167,22 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: CI Checkpoint Validation
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: CI Checkpoint Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

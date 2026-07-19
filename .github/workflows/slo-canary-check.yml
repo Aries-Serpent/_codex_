@@ -1,4 +1,3 @@
----
 name: SLO Canary Check
 on:
   workflow_dispatch: null
@@ -14,7 +13,6 @@ permissions:
   issues: write
 jobs:
   slo-canary:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Verify SLO alert routing (D8
     runs-on: ubuntu-latest
@@ -61,17 +59,18 @@ jobs:
         from pathlib import Path\n\nreport = {\n    \"generated_at\": datetime.now(timezone.utc).strftime(\"\
         %Y-%m-%dT%H:%M:%SZ\"),\n    \"period\": \"monthly\",\n    \"source\": \"reports/security_audit.md\
         \ + dependabot_summary.md\",\n    \"mttr_critical_days\": 3.0,  # from SECURITY_SLA.md\
-        \ — confirmed ≤3d for all patched CVEs\n    \"mttr_high_days\": 7.2,     \
-        \  # average from aiohttp/GitPython/Mako patches (2026-01-06 to 2026-05-06)\n\
-        \    \"sla_critical_met\": True,\n    \"sla_high_met\": True,\n    \"evidence\"\
-        : [\n        \"reports/security_audit.md — aiohttp 8 CVEs patched 2026-01-06\"\
-        ,\n        \"reports/dependabot_summary.md — GitPython→3.1.50, Mako→1.3.12\
-        \ patched 2026-05-06\",\n        \".github/workflows/nightly-security-mttr.yml\
-        \ — active nightly tracking\",\n    ],\n}\nPath(\"reports/observability\"\
-        ).mkdir(parents=True, exist_ok=True)\nout = Path(f\"reports/observability/mttr_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
+        \ \u2014 confirmed \u22643d for all patched CVEs\n    \"mttr_high_days\":\
+        \ 7.2,       # average from aiohttp/GitPython/Mako patches (2026-01-06 to\
+        \ 2026-05-06)\n    \"sla_critical_met\": True,\n    \"sla_high_met\": True,\n\
+        \    \"evidence\": [\n        \"reports/security_audit.md \u2014 aiohttp 8\
+        \ CVEs patched 2026-01-06\",\n        \"reports/dependabot_summary.md \u2014\
+        \ GitPython\u21923.1.50, Mako\u21921.3.12 patched 2026-05-06\",\n        \"\
+        .github/workflows/nightly-security-mttr.yml \u2014 active nightly tracking\"\
+        ,\n    ],\n}\nPath(\"reports/observability\").mkdir(parents=True, exist_ok=True)\n\
+        out = Path(f\"reports/observability/mttr_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
         )\nout.write_text(json.dumps(report, indent=2))\nprint(json.dumps(report,\
-        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria  #4 met: MTTR report generated\"\
-        )\nPYEOF\n"
+        \ indent=2))\nprint(\"::notice::\u2705 D8 exit criteria  #4 met: MTTR report\
+        \ generated\")\nPYEOF\n"
     - name: Upload MTTR report
       uses: actions/upload-artifact@v5
       with:
@@ -104,19 +103,19 @@ jobs:
         \ (Mean Time to Detect)\",\n    \"methodology\": \"Time between vulnerability\
         \ publication and first Dependabot/CodeQL alert creation\",\n    \"mttd_critical_hours\"\
         : 4.0,\n    \"mttd_high_hours\": 24.0,\n    \"detection_sources\": [\n   \
-        \     \"Dependabot — dependency vulnerability alerts\",\n        \"CodeQL\
-        \ — code scanning alerts\",\n        \"Secret scanning — credential leak alerts\"\
-        ,\n        \"slo-canary-check.yml — weekly canary verification\",\n      \
-        \  \"ci-health-monitor.yml — CI failure detection\",\n    ],\n    \"sla_critical_met\"\
-        : True,\n    \"sla_high_met\": True,\n    \"evidence\": [\n        \"Dependabot\
-        \ alerts auto-created within hours of CVE publication\",\n        \"CodeQL\
-        \ scans on every PR + nightly via code-scanning.yml\",\n        \"Secret scanning\
-        \ enabled with push protection\",\n        \".codex/config/monitoring.yaml\
-        \ — thresholds configured\",\n    ],\n}\nPath(\"reports/observability\").mkdir(parents=True,\
-        \ exist_ok=True)\nout = Path(f\"reports/observability/mttd_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
+        \     \"Dependabot \u2014 dependency vulnerability alerts\",\n        \"CodeQL\
+        \ \u2014 code scanning alerts\",\n        \"Secret scanning \u2014 credential\
+        \ leak alerts\",\n        \"slo-canary-check.yml \u2014 weekly canary verification\"\
+        ,\n        \"ci-health-monitor.yml \u2014 CI failure detection\",\n    ],\n\
+        \    \"sla_critical_met\": True,\n    \"sla_high_met\": True,\n    \"evidence\"\
+        : [\n        \"Dependabot alerts auto-created within hours of CVE publication\"\
+        ,\n        \"CodeQL scans on every PR + nightly via code-scanning.yml\",\n\
+        \        \"Secret scanning enabled with push protection\",\n        \".codex/config/monitoring.yaml\
+        \ \u2014 thresholds configured\",\n    ],\n}\nPath(\"reports/observability\"\
+        ).mkdir(parents=True, exist_ok=True)\nout = Path(f\"reports/observability/mttd_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
         )\nout.write_text(json.dumps(report, indent=2))\nprint(json.dumps(report,\
-        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria  #4b met: MTTD report generated\"\
-        )\nPYEOF\n"
+        \ indent=2))\nprint(\"::notice::\u2705 D8 exit criteria  #4b met: MTTD report\
+        \ generated\")\nPYEOF\n"
     - name: Upload MTTD report
       uses: actions/upload-artifact@v5
       with:

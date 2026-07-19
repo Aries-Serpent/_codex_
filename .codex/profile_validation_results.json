@@ -1,0 +1,102 @@
+{
+  "core_isolation": {
+    "status": "PASS",
+    "total_packages": 14,
+    "forbidden_found": [],
+    "isolation_verified": true
+  },
+  "runtime_completeness": {
+    "status": "PASS",
+    "total_packages": 22,
+    "required_packages": 7,
+    "found_required": 7,
+    "missing_required": [],
+    "completeness_verified": true
+  },
+  "full_completeness": {
+    "status": "FAIL",
+    "total_packages": 82,
+    "categories": {
+      "config": {
+        "status": "FAIL",
+        "found": 2,
+        "total": 3
+      },
+      "ml": {
+        "status": "PASS",
+        "found": 3,
+        "total": 3
+      },
+      "web": {
+        "status": "PASS",
+        "found": 2,
+        "total": 2
+      },
+      "dev": {
+        "status": "PASS",
+        "found": 3,
+        "total": 3
+      }
+    },
+    "completeness_verified": false
+  },
+  "entry_points": {
+    "scripts": {
+      "required": [
+        "codex-cli",
+        "codex-ml"
+      ],
+      "found": [
+        "codex-ml-cli",
+        "codex-cli",
+        "codex-smoke",
+        "codex-ml"
+      ],
+      "missing": [],
+      "status": "PASS"
+    },
+    "entry_point_groups": {
+      "required": [
+        "codex_ml.tokenizers",
+        "codex_ml.models",
+        "codex_ml.metrics"
+      ],
+      "found": [
+        "codex_ml.metrics",
+        "codex_ml.data_loaders",
+        "codex.skills",
+        "codex_ml.plugins",
+        "codex_ml.models",
+        "codex_ml.reward_models",
+        "codex_ml.trainers",
+        "codex_ml.tokenizers",
+        "codex_ml.datasets"
+      ],
+      "missing": [],
+      "status": "PASS"
+    }
+  },
+  "size_estimates": {
+    "core": {
+      "package_count": 14,
+      "estimated_size_mb": 21.0,
+      "target_size_mb": 15,
+      "status": "WARN",
+      "note": "Estimates are rough; actual sizes vary by platform and installation method"
+    },
+    "runtime": {
+      "package_count": 22,
+      "estimated_size_mb": 1140,
+      "target_size_mb": 35,
+      "status": "WARN",
+      "note": "Estimates are rough; actual sizes vary by platform and installation method"
+    },
+    "full": {
+      "package_count": 82,
+      "estimated_size_mb": 1260,
+      "target_size_mb": 100,
+      "status": "WARN",
+      "note": "Estimates are rough; actual sizes vary by platform and installation method"
+    }
+  }
+}

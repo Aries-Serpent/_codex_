@@ -1,0 +1,726 @@
+# Phase 6 Lane 3: Audit Trail & Event Logging Schema
+# Defines immutable audit log structure for compliance reporting
+# Last Updated: 2026-07-18T23:28:26Z
+# Responsibility: Chief Information Security Officer (CISO)
+# Retention: 2 years (immutable, append-only)
+
+audit_log_schema_version: "1.0.0"
+phase: 6
+lane: 3
+date_created: "2026-07-18"
+status: "ACTIVE"
+
+# ============================================================================
+# AUDIT LOG FORMAT & STORAGE
+# ============================================================================
+log_format:
+  type: "JSON Lines (JSONL)"
+  structure: "One JSON object per line (immutable append-only)"
+  encoding: "UTF-8"
+  file_rotation: "daily"
+  retention_period_days: 730  # 2 years per compliance requirements
+  storage_locations:
+    primary: ".codex/logs/audit_trail_*.jsonl"
+    backup: "s3://backup-bucket/audit-trail/"
+    archive: "s3://archive-bucket/audit-trail/"  # After 1 year
+  
+  checksums:
+    algorithm: "SHA-256"
+    verification: "Daily integrity checks"
+    tamper_detection: "FAILED checksums trigger incident response"
+
+# ============================================================================
+# CORE AUDIT LOG FIELDS (REQUIRED)
+# ============================================================================
+core_fields:
+  timestamp:
+    type: "ISO8601"
+    format: "2026-07-18T23:28:26.123Z"
+    requirement: "REQUIRED"
+    description: "UTC timestamp of event"
+    
+  event_id:
+    type: "UUID"
+    format: "550e8400-e29b-41d4-a716-446655440000"
+    requirement: "REQUIRED"
+    description: "Globally unique event identifier"
+    immutable: true
+    
+  event_type:
+    type: "enum"
+    format: |
+      - "access_control.login"
+      - "access_control.logout"
+      - "access_control.permission_grant"
+      - "access_control.permission_revoke"
+      - "data_modification.create"
+      - "data_modification.update"
+      - "data_modification.delete"
+      - "consent.consent_given"
+      - "consent.consent_withdrawn"
+      - "consent.policy_updated"
+      - "encryption.key_rotated"
+      - "encryption.key_compromised"
+      - "secret.secret_rotated"
+      - "secret.secret_detected"
+      - "breach.breach_detected"
+      - "breach.notification_sent"
+      - "audit.audit_log_exported"
+      - "audit.audit_log_verified"
+      - "dependency.package_updated"
+      - "dependency.vulnerability_detected"
+      - "compliance.checkpoint_passed"
+      - "compliance.checkpoint_failed"
+    requirement: "REQUIRED"
+    description: "Classification of audited event"
+    
+  severity:
+    type: "enum"
+    format: |
+      - "CRITICAL" (immediate action required)
+      - "HIGH" (escalate within 1 hour)
+      - "MEDIUM" (escalate within 4 hours)
+      - "LOW" (log for audit)
+    requirement: "REQUIRED"
+    description: "Incident severity level"
+    
+  actor:
+    type: "object"
+    requirement: "REQUIRED"
+    description: "Subject performing the action"
+    fields:
+      user_id:
+        type: "string"
+        description: "Unique user identifier (REQUIRED if human actor)"
+        example: "user-12345"
+      username:
+        type: "string"
+        description: "Human-readable username (OPTIONAL)"
+        example: "alice@codex.ai"
+      service_account:
+        type: "string"
+        description: "Service account ID (REQUIRED if service actor)"
+        example: "sa-github-actions-prod"
+      actor_type:
+        type: "enum"
+        format: |
+          - "human" (human user)
+          - "service" (automated service)
+          - "system" (system-generated)
+        requirement: "REQUIRED"
+      
+  resource:
+    type: "object"
+    requirement: "REQUIRED"
+    description: "Subject of the action"
+    fields:
+      resource_type:
+        type: "enum"
+        format: |
+          - "user"
+          - "role"
+          - "policy"
+          - "file"
+          - "secret"
+          - "encryption_key"
+          - "consent_record"
+          - "audit_log"
+        requirement: "REQUIRED"
+      resource_id:
+        type: "string"
+        description: "Unique identifier for resource"
+        example: "user-67890"
+      resource_name:
+        type: "string"
+        description: "Human-readable resource name"
+        example: "alice's profile data"
+      
+  action:
+    type: "enum"
+    format: |
+      - "CREATE"
+      - "READ"
+      - "UPDATE"
+      - "DELETE"
+      - "GRANT"
+      - "REVOKE"
+      - "ROTATE"
+      - "EXPORT"
+      - "IMPORT"
+      - "NOTIFY"
+      - "APPROVE"
+      - "REJECT"
+    requirement: "REQUIRED"
+    description: "Type of action performed"
+    
+  result:
+    type: "object"
+    requirement: "REQUIRED"
+    description: "Outcome of the action"
+    fields:
+      status:
+        type: "enum"
+        format: |
+          - "SUCCESS"
+          - "FAILURE"
+          - "PARTIAL"
+          - "PENDING"
+        requirement: "REQUIRED"
+      status_code:
+        type: "integer"
+        description: "HTTP-style status code"
+        example: 200  # success
+      error_message:
+        type: "string"
+        description: "Error message if status is FAILURE"
+        requirement: "CONDITIONAL (if status != SUCCESS)"
+        example: "Permission denied: user lacks 'delete_user' role"
+        
+  compliance_impact:
+    type: "object"
+    requirement: "OPTIONAL"
+    description: "Compliance implications of event"
+    fields:
+      regulations_affected:
+        type: "array"
+        format: |
+          - "GDPR"
+          - "CCPA"
+          - "SOC2"
+          - "HIPAA"
+        example: ["GDPR", "CCPA"]
+      control_ids:
+        type: "array"
+        description: "Affected compliance control IDs"
+        example: ["A1", "C1.1", "P1.2"]
+
+# ============================================================================
+# CONTEXT FIELDS (CONDITIONAL)
+# ============================================================================
+context_fields:
+  ip_address:
+    type: "string"
+    requirement: "OPTIONAL"
+    description: "Source IP address"
+    format: "IPv4 or IPv6"
+    example: "203.0.113.45"
+    pii_handling: "STORE_HASHED (SHA-256)"
+    
+  user_agent:
+    type: "string"
+    requirement: "OPTIONAL"
+    description: "HTTP User-Agent header"
+    example: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    
+  session_id:
+    type: "string"
+    requirement: "OPTIONAL"
+    description: "Session identifier for correlation"
+    example: "sess_abc123def456"
+    
+  request_id:
+    type: "string"
+    requirement: "OPTIONAL"
+    description: "Correlation ID for tracing distributed calls"
+    example: "req_xyz789abc123"
+    format: "X-Request-ID header or equivalent"
+    
+  changes:
+    type: "object"
+    requirement: "CONDITIONAL (for data modifications)"
+    description: "Before/after values for data changes"
+    fields:
+      before:
+        type: "object"
+        description: "State before action (REDACT PII)"
+        example: '{"role": "user", "permissions": []}'
+      after:
+        type: "object"
+        description: "State after action (REDACT PII)"
+        example: '{"role": "admin", "permissions": ["delete_user"]}'
+      changed_fields:
+        type: "array"
+        description: "List of modified field names"
+        example: ["role", "permissions"]
+
+# ============================================================================
+# EVENT TYPE SCHEMAS
+# ============================================================================
+event_schemas:
+  
+  # Access Control Events
+  access_control_login:
+    event_type: "access_control.login"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "actor"
+      - "action"
+      - "result"
+    optional_fields:
+      - "ip_address"
+      - "user_agent"
+      - "session_id"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "access_control.login",
+        "severity": "MEDIUM",
+        "actor": {
+          "user_id": "user-12345",
+          "username": "alice@codex.ai",
+          "actor_type": "human"
+        },
+        "resource": {
+          "resource_type": "user",
+          "resource_id": "user-12345"
+        },
+        "action": "READ",
+        "result": {
+          "status": "SUCCESS",
+          "status_code": 200
+        },
+        "ip_address": "sha256:a3f5c2d1e4b8f9c2d1e4b8f9c2d1e4b8",
+        "session_id": "sess_abc123def456"
+      }
+
+  data_modification_create:
+    event_type: "data_modification.create"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "actor"
+      - "resource"
+      - "action"
+      - "result"
+      - "changes"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "data_modification.create",
+        "severity": "HIGH",
+        "actor": {
+          "user_id": "user-12345",
+          "actor_type": "human"
+        },
+        "resource": {
+          "resource_type": "file",
+          "resource_id": "file-67890",
+          "resource_name": "user_consent_record_123.json"
+        },
+        "action": "CREATE",
+        "result": {
+          "status": "SUCCESS",
+          "status_code": 201
+        },
+        "changes": {
+          "after": {
+            "user_id": "user-456",
+            "consent_type": "marketing",
+            "status": "granted"
+          },
+          "changed_fields": ["user_id", "consent_type", "status"]
+        },
+        "compliance_impact": {
+          "regulations_affected": ["GDPR", "CCPA"],
+          "control_ids": ["A2", "C1"]
+        }
+      }
+
+  consent_consent_given:
+    event_type: "consent.consent_given"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "actor"
+      - "resource"
+      - "action"
+      - "result"
+      - "changes"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "consent.consent_given",
+        "severity": "HIGH",
+        "actor": {
+          "user_id": "user-456",
+          "actor_type": "human"
+        },
+        "resource": {
+          "resource_type": "consent_record",
+          "resource_id": "consent-789",
+          "resource_name": "Marketing Email Consent"
+        },
+        "action": "CREATE",
+        "result": {
+          "status": "SUCCESS",
+          "status_code": 201
+        },
+        "changes": {
+          "after": {
+            "consent_type": "marketing_email",
+            "status": "granted",
+            "granted_at": "2026-07-18T23:28:26Z",
+            "version": "1.0"
+          },
+          "changed_fields": ["status", "granted_at"]
+        },
+        "compliance_impact": {
+          "regulations_affected": ["GDPR", "CCPA"],
+          "control_ids": ["A2", "C1"]
+        }
+      }
+
+  encryption_key_rotated:
+    event_type: "encryption.key_rotated"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "actor"
+      - "resource"
+      - "action"
+      - "result"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "encryption.key_rotated",
+        "severity": "MEDIUM",
+        "actor": {
+          "service_account": "sa-key-manager",
+          "actor_type": "service"
+        },
+        "resource": {
+          "resource_type": "encryption_key",
+          "resource_id": "key-prod-aes-256-1",
+          "resource_name": "Production AES-256 Key (Rotation #42)"
+        },
+        "action": "ROTATE",
+        "result": {
+          "status": "SUCCESS",
+          "status_code": 200
+        },
+        "compliance_impact": {
+          "regulations_affected": ["GDPR", "CCPA", "SOC2"],
+          "control_ids": ["A3", "C1.2", "C1.1"]
+        }
+      }
+
+  breach_breach_detected:
+    event_type: "breach.breach_detected"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "actor"
+      - "resource"
+      - "result"
+      - "severity"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "breach.breach_detected",
+        "severity": "CRITICAL",
+        "actor": {
+          "service_account": "sa-security-scanner",
+          "actor_type": "system"
+        },
+        "resource": {
+          "resource_type": "user",
+          "resource_id": "unknown",
+          "resource_name": "Unidentified"
+        },
+        "action": "READ",
+        "result": {
+          "status": "FAILURE",
+          "status_code": 403,
+          "error_message": "Unauthorized access attempt detected from IP 203.0.113.99"
+        },
+        "compliance_impact": {
+          "regulations_affected": ["GDPR", "CCPA", "SOC2"],
+          "control_ids": ["A7", "I1.2", "P1.2"]
+        }
+      }
+
+  dependency_vulnerability_detected:
+    event_type: "dependency.vulnerability_detected"
+    required_fields:
+      - "timestamp"
+      - "event_id"
+      - "resource"
+      - "action"
+      - "result"
+      - "severity"
+    example: |
+      {
+        "timestamp": "2026-07-18T23:28:26.123Z",
+        "event_id": "550e8400-e29b-41d4-a716-446655440000",
+        "event_type": "dependency.vulnerability_detected",
+        "severity": "HIGH",
+        "actor": {
+          "service_account": "sa-security-scanner",
+          "actor_type": "system"
+        },
+        "resource": {
+          "resource_type": "file",
+          "resource_id": "requirements.txt",
+          "resource_name": "PyPI: requests 2.28.0 (CVE-2024-35195)"
+        },
+        "action": "READ",
+        "result": {
+          "status": "SUCCESS",
+          "status_code": 200,
+          "error_message": "Critical vulnerability detected: requests 2.28.0 allows credential leak"
+        },
+        "compliance_impact": {
+          "regulations_affected": ["GDPR", "CCPA", "SOC2"],
+          "control_ids": ["A3", "C1.2"]
+        }
+      }
+
+# ============================================================================
+# AUDIT LOG EXPORT & SEARCHABILITY
+# ============================================================================
+export_formats:
+  
+  json_lines:
+    format: "JSONL (one event per line)"
+    usage: "Streaming, append-only storage"
+    retention: "2 years"
+    encryption: "AES-256 at rest"
+    file_rotation: "Daily"
+    example_file: ".codex/logs/audit_trail_2026-07-18.jsonl"
+    
+  csv:
+    format: "CSV with headers"
+    usage: "Manual review, compliance reports"
+    columns:
+      - "timestamp"
+      - "event_id"
+      - "event_type"
+      - "severity"
+      - "actor_id"
+      - "actor_type"
+      - "resource_type"
+      - "action"
+      - "result_status"
+      - "regulations_affected"
+    example_file: ".codex/reports/audit_trail_export_2026-07.csv"
+    
+  sarif:
+    format: "SARIF (for security events)"
+    usage: "GitHub code scanning, automated analysis"
+    tool: "Unified Security Scanner"
+    example_file: ".codex/reports/audit_trail_security.sarif"
+
+search_capabilities:
+  
+  by_timestamp:
+    format: "Query by date range"
+    example: "SELECT * FROM audit_log WHERE timestamp >= '2026-07-01' AND timestamp < '2026-08-01'"
+    
+  by_event_type:
+    format: "Query by event classification"
+    example: "SELECT * FROM audit_log WHERE event_type = 'breach.breach_detected'"
+    
+  by_actor:
+    format: "Query by user or service"
+    example: "SELECT * FROM audit_log WHERE actor.user_id = 'user-12345'"
+    
+  by_resource:
+    format: "Query by affected resource"
+    example: "SELECT * FROM audit_log WHERE resource.resource_id = 'file-67890'"
+    
+  by_severity:
+    format: "Query by incident severity"
+    example: "SELECT * FROM audit_log WHERE severity IN ('CRITICAL', 'HIGH')"
+    
+  by_regulations:
+    format: "Query by compliance regulations"
+    example: "SELECT * FROM audit_log WHERE 'GDPR' = ANY(compliance_impact.regulations_affected)"
+
+# ============================================================================
+# AUDIT LOG RETENTION & DESTRUCTION POLICY
+# ============================================================================
+retention_policy:
+  
+  active_logs:
+    retention_period_days: 30
+    storage_location: ".codex/logs/audit_trail_*.jsonl"
+    access_level: "RESTRICTED (CISO only)"
+    
+  archive_logs:
+    retention_period_days: 730  # 2 years total
+    storage_location: "s3://archive-bucket/audit-trail/"
+    access_level: "RESTRICTED (CISO + Legal only)"
+    encryption: "AES-256"
+    
+  destruction_procedure:
+    trigger: "After 2-year retention period"
+    method: "Cryptographic destruction (key deletion)"
+    evidence: "Destruction certificate stored in .codex/evidence/"
+    approval_required: "Chief Compliance Officer sign-off"
+    
+  exceptions:
+    litigation_hold: "Preserve indefinitely if subject to legal hold"
+    regulatory_request: "Preserve per regulatory authority request"
+
+# ============================================================================
+# AUDIT LOG INTEGRITY & TAMPER DETECTION
+# ============================================================================
+integrity_controls:
+  
+  checksums:
+    algorithm: "SHA-256"
+    frequency: "Daily"
+    file_location: ".codex/logs/audit_trail_checksums.txt"
+    verification_process: |
+      1. Daily: Calculate SHA-256 hash of all logs
+      2. Store in immutable checksum file
+      3. Alert on mismatch (tamper detected)
+      4. Trigger incident response (P1 severity)
+    
+  immutability:
+    mechanism: "Write-once storage (WORM)"
+    implementation: "S3 Object Lock (AWS) or equivalent"
+    verification: "Weekly audit of S3 permissions"
+    
+  digital_signatures:
+    algorithm: "RSA-4096 (or EdDSA-Ed25519)"
+    signing_frequency: "Daily"
+    verification_process: |
+      1. Daily: Sign audit log with private key
+      2. Publish public key signature in Git repo
+      3. Verify on access (any tampering detected)
+    
+  chain_of_custody:
+    access_logging: "All audit log access logged in separate immutable log"
+    purpose_tracking: "Log all access with business justification"
+    approval_workflow: "Manager approval required for access"
+
+# ============================================================================
+# COMPLIANCE REPORTING & ANALYTICS
+# ============================================================================
+compliance_reporting:
+  
+  daily_report:
+    name: "Daily Compliance Summary"
+    schedule: "06:00 UTC daily"
+    recipients:
+      - "ciso@codex.ai"
+      - "#compliance-team (Slack)"
+    metrics:
+      - "Total events logged"
+      - "Critical/High severity events"
+      - "Access control violations"
+      - "Data modification events"
+      - "Breach notifications sent"
+      - "Key rotations completed"
+    output_format: "JSON, CSV, email"
+    
+  weekly_report:
+    name: "Weekly Compliance Dashboard"
+    schedule: "Monday 09:00 UTC"
+    recipients:
+      - "cco@codex.ai"
+      - "ciso@codex.ai"
+      - "#executive-team (Slack)"
+    metrics:
+      - "Compliance score by regulation (GDPR, CCPA, SOC2)"
+      - "Trend analysis (violations increasing/decreasing)"
+      - "SLO achievement rates"
+      - "Incident response times"
+      - "Audit log health (integrity, completeness)"
+    output_format: "Dashboard URL, email summary"
+    
+  quarterly_report:
+    name: "Quarterly Compliance Audit"
+    schedule: "Q1/Q2/Q3/Q4 (first Monday of quarter)"
+    recipients:
+      - "cco@codex.ai"
+      - "ciso@codex.ai"
+      - "board_audit_committee@codex.ai"
+    metrics:
+      - "Full compliance checklist review (GDPR/CCPA/SOC2)"
+      - "Gap analysis and remediation plans"
+      - "External audit readiness assessment"
+      - "Policy updates and version control"
+      - "Training completion rates"
+    output_format: "PDF report with executive summary, detailed findings"
+    
+  annual_report:
+    name: "Annual Compliance & Audit Report"
+    schedule: "December 31"
+    recipients:
+      - "board_of_directors@codex.ai"
+      - "external_auditors@audit_firm.com"
+    metrics:
+      - "Year-over-year compliance trends"
+      - "Regulation updates and required actions"
+      - "Incidents and lessons learned"
+      - "Audit findings and resolutions"
+      - "Strategic compliance initiatives"
+    output_format: "Comprehensive PDF report (confidential)"
+
+# ============================================================================
+# COMPLIANCE EVENT ALERTING
+# ============================================================================
+alerting:
+  
+  critical_alerts:
+    event_types:
+      - "breach.breach_detected"
+      - "encryption.key_compromised"
+      - "access_control (unauthorized access)"
+    notification_channel:
+      - "SMS (CISO, CCO)"
+      - "Slack: #security-incidents"
+      - "PagerDuty (on-call)"
+    sla_response: "15 minutes"
+    escalation: "Executive on-call if no response in 15 min"
+    
+  high_alerts:
+    event_types:
+      - "dependency.vulnerability_detected"
+      - "secret.secret_detected"
+      - "access_control.permission_grant (sensitive role)"
+    notification_channel:
+      - "Email (CISO, CCO)"
+      - "Slack: #compliance-team"
+    sla_response: "1 hour"
+    
+  medium_alerts:
+    event_types:
+      - "data_modification.create (PII)"
+      - "audit.audit_log_exported"
+      - "compliance.checkpoint_failed"
+    notification_channel:
+      - "Email (compliance team)"
+      - "Slack: #compliance-team"
+    sla_response: "4 hours"
+    
+  low_alerts:
+    event_types:
+      - "access_control.login"
+      - "access_control.logout"
+      - "encryption.key_rotated (scheduled)"
+    notification_channel:
+      - "Compliance dashboard (no email)"
+    sla_response: "Daily review"
+
+# ============================================================================
+# APPROVAL & SIGN-OFF
+# ============================================================================
+approval:
+  document_owner: "Chief Information Security Officer (CISO)"
+  last_reviewed: "2026-07-18"
+  next_review: "2026-10-18"
+  approval_status: "ACTIVE"
+  change_history:
+    - date: "2026-07-18"
+      version: "1.0.0"
+      change: "Initial audit log schema created for Phase 6 Lane 3"
+      approved_by: "Chief Information Security Officer (CISO)"

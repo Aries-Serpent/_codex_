@@ -1,4 +1,3 @@
----
 name: Consistency Checks
 on:
   push:
@@ -19,7 +18,7 @@ on:
     - docs/**
     - '*.md'
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
@@ -27,15 +26,15 @@ permissions:
   pull-requests: write
 jobs:
   markdownlint:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Markdownlint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout code
       uses: actions/checkout@v5
       with:
@@ -51,9 +50,9 @@ jobs:
     - name: Run markdownlint
       id: markdownlint
       run: "echo \"## Markdownlint Report\" >> $GITHUB_STEP_SUMMARY\n\nif markdownlint\
-        \ docs/*.md ./*.md 2>&1 | tee /tmp/md-lint-output.txt; then\n  echo \"✅ All\
-        \ Markdown files pass linting\" >> $GITHUB_STEP_SUMMARY\n  echo \"status=success\"\
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"### ❌ Issues Found\" >> $GITHUB_STEP_SUMMARY\n\
+        \ docs/*.md ./*.md 2>&1 | tee /tmp/md-lint-output.txt; then\n  echo \"\u2705\
+        \ All Markdown files pass linting\" >> $GITHUB_STEP_SUMMARY\n  echo \"status=success\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"### \u274C Issues Found\" >> $GITHUB_STEP_SUMMARY\n\
         \  echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\n  cat /tmp/md-lint-output.txt\
         \ >> $GITHUB_STEP_SUMMARY\n  echo \"\\`\\`\\`\" >> $GITHUB_STEP_SUMMARY\n\
         \  echo \"status=failure\" >> $GITHUB_OUTPUT\n  exit 1\nfi\n"
@@ -63,11 +62,11 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nconst output = fs.readFileSync('/tmp/md-lint-output.txt',\
-        \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## ⚠️\
-          \ Markdown Linting Issues\\n\\n\\`\\`\\`\\n${output}\\`\\`\\`\\n\\nPlease\
-          \ fix the linting errors. You can run \\`markdownlint --fix docs/*.md *.md\\\
-          ` locally to auto-fix many issues.`\n});\n"
+          \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## \u26A0\
+          \uFE0F Markdown Linting Issues\\n\\n\\`\\`\\`\\n${output}\\`\\`\\`\\n\\\
+          nPlease fix the linting errors. You can run \\`markdownlint --fix docs/*.md\
+          \ *.md\\` locally to auto-fix many issues.`\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -84,7 +83,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Run cross-reference checker
       id: crossref
       run: "python3 .github/scripts/check-cross-references.py \\\n  --repo-root=\"\
@@ -109,6 +108,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   heading-hierarchy:
     name: Heading Hierarchy Validation
     runs-on: ubuntu-latest
@@ -121,7 +121,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Validate heading hierarchy
       id: heading
       run: "python3 - << 'EOF'\nimport re\nfrom pathlib import Path\n\ndef validate_heading_hierarchy(file_path):\n\
@@ -129,33 +129,34 @@ jobs:
         \n    issues = []\n    last_level = 0\n\n    with open(file_path, 'r', encoding='utf-8')\
         \ as f:\n        lines = f.readlines()\n\n    for line_num, line in enumerate(lines,\
         \ 1):\n        match = re.match(r'^(#+)\\s+(.+)$', line.strip())\n       \
-        \ if match:\n            level = len(match.group(1))\n\n  # Check\
-        \ if first heading is H1\n            if last_level == 0 and level != 1:\n\
-        \                issues.append((line_num, level, f\"First heading should be\
-        \ H1, got H{level}\"))\n\n  # Check for hierarchy jumps (e.g., H1\
-        \ to H3 without H2)\n            if last_level > 0 and level > last_level\
-        \ + 1:\n                issues.append((line_num, level, f\"Hierarchy jump\
-        \ from H{last_level} to H{level}\"))\n\n            last_level = level\n\n\
-        \    return issues\n\nall_issues = {}\nmd_files = list(Path('docs').rglob('*.md'))\
-        \ + list(Path('.').glob('*.md'))\n\nfor md_file in sorted(set(md_files)):\n\
-        \    if any(skip in str(md_file) for skip in ['node_modules', '.git', '.venv']):\n\
-        \        continue\n\n    issues = validate_heading_hierarchy(md_file)\n  \
-        \  if issues:\n        all_issues[md_file] = issues\n\nif all_issues:\n  \
-        \  print(\"## ⚠️ Heading Hierarchy Issues Found\\n\")\n    for file_path,\
-        \ issues in all_issues.items():\n        print(f\"\\n### {file_path}\")\n\
-        \        for line, level, message in issues:\n            print(f\"  Line\
-        \ {line}: {message}\")\n    exit(1)\nelse:\n    print(\"## ✅ All heading hierarchies\
-        \ are valid!\")\n    exit(0)\nEOF\n"
+        \ if match:\n            level = len(match.group(1))\n\n  # Check if first\
+        \ heading is H1\n            if last_level == 0 and level != 1:\n        \
+        \        issues.append((line_num, level, f\"First heading should be H1, got\
+        \ H{level}\"))\n\n  # Check for hierarchy jumps (e.g., H1 to H3 without H2)\n\
+        \            if last_level > 0 and level > last_level + 1:\n             \
+        \   issues.append((line_num, level, f\"Hierarchy jump from H{last_level} to\
+        \ H{level}\"))\n\n            last_level = level\n\n    return issues\n\n\
+        all_issues = {}\nmd_files = list(Path('docs').rglob('*.md')) + list(Path('.').glob('*.md'))\n\
+        \nfor md_file in sorted(set(md_files)):\n    if any(skip in str(md_file) for\
+        \ skip in ['node_modules', '.git', '.venv']):\n        continue\n\n    issues\
+        \ = validate_heading_hierarchy(md_file)\n    if issues:\n        all_issues[md_file]\
+        \ = issues\n\nif all_issues:\n    print(\"## \u26A0\uFE0F Heading Hierarchy\
+        \ Issues Found\\n\")\n    for file_path, issues in all_issues.items():\n \
+        \       print(f\"\\n### {file_path}\")\n        for line, level, message in\
+        \ issues:\n            print(f\"  Line {line}: {message}\")\n    exit(1)\n\
+        else:\n    print(\"## \u2705 All heading hierarchies are valid!\")\n    exit(0)\n\
+        EOF\n"
       continue-on-error: true
     - name: Report heading results
       if: always()
       run: "echo \"## Heading Hierarchy Validation\" >> $GITHUB_STEP_SUMMARY\nif [\
-        \ ${{ steps.heading.outcome }} = 'success' ]; then\n  echo \"✅ All heading\
-        \ hierarchies are valid\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"⚠️ Some\
-        \ heading hierarchy issues found\" >> $GITHUB_STEP_SUMMARY\nfi\n"
+        \ ${{ steps.heading.outcome }} = 'success' ]; then\n  echo \"\u2705 All heading\
+        \ hierarchies are valid\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"\u26A0\uFE0F\
+        \ Some heading hierarchy issues found\" >> $GITHUB_STEP_SUMMARY\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   consistency-summary:
     name: Consistency Summary
     runs-on: ubuntu-latest
@@ -170,32 +171,15 @@ jobs:
       with:
         persist-credentials: false
     - name: Generate consistency report
-      run: 'cat << ''EOF'' > /tmp/consistency-summary.md
-
-        # 📊 Consistency Checks Summary
-
-        | Check | Status |
-
-        |-------|--------|
-
-        | Markdownlint | ${{ needs.markdownlint.result == ''success'' && ''✅'' ||
-        ''⚠️'' }} |
-
-        | Cross-References | ${{ needs.cross-references.result == ''success'' && ''✅''
-        || ''⚠️'' }} |
-
-        | Heading Hierarchy | ${{ needs.heading-hierarchy.result == ''success'' &&
-        ''✅'' || ''⚠️'' }} |
-
-        **Overall Status**: ${{ (needs.markdownlint.result == ''success'' && needs.cross-references.result
-        == ''success'' && needs.heading-hierarchy.result == ''success'') && ''✅ PASSED''
-        || ''⚠️ REVIEW NEEDED'' }}
-
-        EOF
-
-        cat /tmp/consistency-summary.md >> $GITHUB_STEP_SUMMARY
-
-        '
+      run: "cat << 'EOF' > /tmp/consistency-summary.md\n# \U0001F4CA Consistency Checks\
+        \ Summary\n| Check | Status |\n|-------|--------|\n| Markdownlint | ${{ needs.markdownlint.result\
+        \ == 'success' && '\u2705' || '\u26A0\uFE0F' }} |\n| Cross-References | ${{\
+        \ needs.cross-references.result == 'success' && '\u2705' || '\u26A0\uFE0F\
+        ' }} |\n| Heading Hierarchy | ${{ needs.heading-hierarchy.result == 'success'\
+        \ && '\u2705' || '\u26A0\uFE0F' }} |\n**Overall Status**: ${{ (needs.markdownlint.result\
+        \ == 'success' && needs.cross-references.result == 'success' && needs.heading-hierarchy.result\
+        \ == 'success') && '\u2705 PASSED' || '\u26A0\uFE0F REVIEW NEEDED' }}\nEOF\n\
+        cat /tmp/consistency-summary.md >> $GITHUB_STEP_SUMMARY\n"
     - name: Fail if any check failed
       if: 'needs.markdownlint.result == ''failure'' ||
 
@@ -204,11 +188,7 @@ jobs:
         needs.heading-hierarchy.result == ''failure''
 
         '
-      run: 'echo "❌ Some consistency checks failed"
-
-        exit 1
-
-        '
+      run: "echo \"\u274C Some consistency checks failed\"\nexit 1\n"
     - name: Success
       if: 'needs.markdownlint.result == ''success'' &&
 
@@ -217,10 +197,8 @@ jobs:
         needs.heading-hierarchy.result == ''success''
 
         '
-      run: 'echo "✅ All consistency checks passed!"
-
-        '
+      run: "echo \"\u2705 All consistency checks passed!\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-
+    timeout-minutes: 30

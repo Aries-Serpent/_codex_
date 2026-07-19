@@ -1,4 +1,3 @@
----
 name: "\u26A1 Auto-Approve Pending Workflow Runs"
 on:
   push:
@@ -103,8 +102,9 @@ jobs:
     if: github.event_name == 'push'
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout code
       uses: actions/checkout@v5
       with:
@@ -326,6 +326,7 @@ jobs:
         \ \"\u26D4 Fallback: No matching approval rule found\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   execute-approval:
     name: "\u26A1 Execute Approval Decision"
     needs: evaluate-approval
@@ -351,8 +352,8 @@ jobs:
       run: "set -euo pipefail\n\n# Tier 1: Cognitive Brain App token (not available\
         \ in this job context)\n# (available in approve-original job via step id \"\
         app-token\")\n\n# Tier 2: CODEX_MASTER_KEY (primary PAT)\nif [ -n \"${{ secrets.CODEX_MASTER_KEY\
-        \ || '' }}\" ]; then\n  echo \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" >>\
-        \ $GITHUB_OUTPUT\n  echo \"token_source=CODEX_MASTER_KEY\" >> $GITHUB_OUTPUT\n\
+        \ || '' }}\" ]; then\n  echo \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY\
+        \ }}\" >> $GITHUB_OUTPUT\n  echo \"token_source=CODEX_MASTER_KEY\" >> $GITHUB_OUTPUT\n\
         \  echo \"Resolved: Using CODEX_MASTER_KEY (Tier 2)\"\n  exit 0\nfi\n\n# Tier\
         \ 3: CODEX_BACKUP_KEY (fallback PAT)\nif [ -n \"${{ secrets.CODEX_BACKUP_KEY\
         \ || '' }}\" ]; then\n  echo \"token=${{ secrets.CODEX_BACKUP_KEY }}\" >>\
@@ -380,13 +381,13 @@ jobs:
         \ runs for this PR\nHEAD_SHA=$(gh pr view \"$TARGET_PR\" --repo \"$REPO\"\
         \ --json headRefOid -q '.headRefOid' 2>/dev/null || echo \"\")\nif [ -z \"\
         $HEAD_SHA\" ]; then\n  echo \"::warning::Could not resolve HEAD SHA for PR\
-        \  #$TARGET_PR\"\n  exit 0\nfi\n\n# High-volume detection: If >10 pending runs,\
-        \ use 6-pass approach\nPENDING_COUNT=$(gh run list --repo \"$REPO\" --status\
-        \ action_required --json databaseId 2>/dev/null | grep -c '.' || echo \"0\"\
-        )\n\nif [ \"$PENDING_COUNT\" -ge 10 ]; then\n  echo \"\U0001F4E6 High-volume\
-        \ detected: $PENDING_COUNT pending runs; using 6-pass approach\"\n  for PASS\
-        \ in {1..6}; do\n    echo \"Pass $PASS/6...\"\n    BATCH=$(gh run list --repo\
-        \ \"$REPO\" --status action_required --json databaseId -q '.[].databaseId'\
+        \  #$TARGET_PR\"\n  exit 0\nfi\n\n# High-volume detection: If >10 pending\
+        \ runs, use 6-pass approach\nPENDING_COUNT=$(gh run list --repo \"$REPO\"\
+        \ --status action_required --json databaseId 2>/dev/null | grep -c '.' ||\
+        \ echo \"0\")\n\nif [ \"$PENDING_COUNT\" -ge 10 ]; then\n  echo \"\U0001F4E6\
+        \ High-volume detected: $PENDING_COUNT pending runs; using 6-pass approach\"\
+        \n  for PASS in {1..6}; do\n    echo \"Pass $PASS/6...\"\n    BATCH=$(gh run\
+        \ list --repo \"$REPO\" --status action_required --json databaseId -q '.[].databaseId'\
         \ 2>/dev/null | head -n 5 || echo \"\")\n    for BATCH_RUN in $BATCH; do\n\
         \      gh run approve \"$BATCH_RUN\" 2>/dev/null && echo \"  \u2705 Approved\
         \ run  #$BATCH_RUN\" || true\n      sleep 2  # 2-second delay between approvals\n\
@@ -435,14 +436,15 @@ jobs:
 
         git add .codex/approvals.jsonl || true
 
-        git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR  #$TARGET_PR, rule:
-        $RULE_MATCHED)" || true
+        git commit -m "audit: Log approval via $APPROVAL_SOURCE (PR  #$TARGET_PR,
+        rule: $RULE_MATCHED)" || true
 
         git push || true
 
         '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   cleanup-single-session:
     name: "\U0001F9F9 Cleanup Single-Session Label"
     needs:
@@ -519,6 +521,7 @@ jobs:
         git push || true
 
         '
+    timeout-minutes: 45
   approve-original:
     name: "\u26A1 Approve pending workflow runs"
     runs-on: ubuntu-latest
@@ -661,15 +664,15 @@ jobs:
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\n// ALWAYS-ON: Copilot is mandated to approve on behalf of\
+          \u2500\u2500\n// ALWAYS-ON: Copilot is mandated to approve on behalf of\
           \ the human admin.\n// No opt-in labels or PR body checkboxes are required.\n\
           async function isEnabled(_prNum) {\n  return true;\n}\n\nasync function\
-        \ getHeadSha(prNum) {\n  const { data: pr } = await github.rest.pulls.get({\n\
-        \    owner, repo, pull_number: parseInt(prNum),\n  });\n  return pr.head.sha;\n\
+          \ getHeadSha(prNum) {\n  const { data: pr } = await github.rest.pulls.get({\n\
+          \    owner, repo, pull_number: parseInt(prNum),\n  });\n  return pr.head.sha;\n\
           }\n\nasync function listActionRequiredRuns(headSha) {\n  let allRuns = [],\
           \ page = 1;\n  while (true) {\n    const { data } = await github.rest.actions.listWorkflowRunsForRepo({\n\
-        \      owner, repo, status: 'action_required',\n      head_sha: headSha,\
-        \ per_page: 100, page,\n    });\n    allRuns = allRuns.concat(data.workflow_runs);\n\
+          \      owner, repo, status: 'action_required',\n      head_sha: headSha,\
+          \ per_page: 100, page,\n    });\n    allRuns = allRuns.concat(data.workflow_runs);\n\
           \    if (data.workflow_runs.length < 100) break;\n    page++;\n  }\n  return\
           \ allRuns;\n}\n\nasync function approvePR(prNum, headSha) {\n  core.info(`\\\
           n\u2500\u2500 PR  #${prNum} @ ${headSha.slice(0,12)} \u2500\u2500\u2500\u2500\
@@ -678,12 +681,12 @@ jobs:
           \ runs for this SHA\n  let allRuns = await listActionRequiredRuns(headSha);\n\
           \n  core.info(`   Found ${allRuns.length} run(s) with status=action_required`);\n\
           \  if (allRuns.length === 0) {\n    core.info('   Nothing to approve.');\n\
-        \    return { prNum, headSha, approved: 0, skipped: 0, errors: 0, results:\
+          \    return { prNum, headSha, approved: 0, skipped: 0, errors: 0, results:\
           \ [] };\n  }\n\n  let approved = 0, skipped = 0, errors = 0;\n  const results\
           \ = [];\n\n  const activeCopilotSession = activeAgentHint === 'requested'\
           \ || activeAgentHint === 'in_progress';\n  const maxPasses = (allRuns.length\
           \ >= highVolumeThreshold || activeCopilotSession)\n    ? Math.max(2, configuredMaxPasses)\n\
-        \    : 1;\n  if (maxPasses > 1) {\n    if (activeCopilotSession) {\n   \
+          \    : 1;\n  if (maxPasses > 1) {\n    if (activeCopilotSession) {\n   \
           \   core.info(`   Active Copilot agent session detected (${activeAgentHint}).\
           \ Running up to ${maxPasses} approval passes.`);\n    } else {\n      core.info(`\
           \   High-volume queue detected (>=${highVolumeThreshold}). Running up to\
@@ -691,34 +694,34 @@ jobs:
           \ = new Set();\n  for (let pass = 1; pass <= maxPasses; pass++) {\n    if\
           \ (pass > 1) {\n      await new Promise(resolve => setTimeout(resolve, passDelayMs));\n\
           \      allRuns = await listActionRequiredRuns(headSha);\n      core.info(`\
-        \   Pass ${pass}/${maxPasses}: found ${allRuns.length} remaining action_required\
+          \   Pass ${pass}/${maxPasses}: found ${allRuns.length} remaining action_required\
           \ run(s).`);\n      if (allRuns.length === 0) break;\n    }\n\n    for (const\
           \ run of allRuns) {\n      if (processedRunIds.has(run.id)) continue;\n\
           \      processedRunIds.add(run.id);\n\n      const label = `${run.name ||\
           \ run.workflow_id} (run  #${run.id})`;\n      if (dryRun) {\n        core.info(`[DRY]\
-        \ Would approve: ${label}`);\n        results.push({ label, status: '\U0001F50D\
+          \ Would approve: ${label}`);\n        results.push({ label, status: '\U0001F50D\
           \ dry-run' });\n        approved++;\n        continue;\n      }\n      try\
           \ {\n        await github.rest.actions.approveWorkflowRun({ owner, repo,\
-        \ run_id: run.id });\n        core.info(`\u2705 Approved: ${label}`);\n\
-        \        results.push({ label, status: '\u2705 approved' });\n        approved++;\n\
+          \ run_id: run.id });\n        core.info(`\u2705 Approved: ${label}`);\n\
+          \        results.push({ label, status: '\u2705 approved' });\n        approved++;\n\
           \      } catch (e) {\n        if (e.status === 422 || e.status === 409)\
-        \ {\n          core.info(`\u23ED\uFE0F  Already processed: ${label}`);\n\
-        \          results.push({ label, status: '\u23ED\uFE0F already processed'\
+          \ {\n          core.info(`\u23ED\uFE0F  Already processed: ${label}`);\n\
+          \          results.push({ label, status: '\u23ED\uFE0F already processed'\
           \ });\n          skipped++;\n        } else if (e.message && e.message.includes('not\
-        \ from a fork pull request')) {\n          // Same-repo PRs: approveWorkflowRun\
-        \ may return this message.\n          // Fallback: re-run the workflow run\
+          \ from a fork pull request')) {\n          // Same-repo PRs: approveWorkflowRun\
+          \ may return this message.\n          // Fallback: re-run the workflow run\
           \ via REST using the same token.\n          core.info(`\U0001F504 Same-repo\
-        \ PR \u2014 using REST rerun fallback for: ${label}`);\n          try {\n\
+          \ PR \u2014 using REST rerun fallback for: ${label}`);\n          try {\n\
           \            await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/rerun',\
-        \ {\n              owner,\n              repo,\n              run_id: run.id,\n\
-        \            });\n            core.info(`\u2705 REST rerun requested: ${label}`);\n\
-        \            results.push({ label, status: '\u2705 rerun (same-repo)' });\n\
+          \ {\n              owner,\n              repo,\n              run_id: run.id,\n\
+          \            });\n            core.info(`\u2705 REST rerun requested: ${label}`);\n\
+          \            results.push({ label, status: '\u2705 rerun (same-repo)' });\n\
           \            approved++;\n          } catch (rerunErr) {\n            core.info(`\u23ED\
-        \uFE0F  REST rerun skipped (may already be approved): ${label}`);\n    \
-        \        results.push({ label, status: '\u23ED\uFE0F rerun skipped' });\n\
+          \uFE0F  REST rerun skipped (may already be approved): ${label}`);\n    \
+          \        results.push({ label, status: '\u23ED\uFE0F rerun skipped' });\n\
           \            skipped++;\n          }\n        } else {\n          core.warning(`\u274C\
-        \ Failed to approve ${label}: ${e.message}`);\n          results.push({\
-        \ label, status: `\u274C error: ${e.message}` });\n          errors++;\n\
+          \ Failed to approve ${label}: ${e.message}`);\n          results.push({\
+          \ label, status: `\u274C error: ${e.message}` });\n          errors++;\n\
           \        }\n      }\n    }\n  }\n  return { prNum, headSha, approved, skipped,\
           \ errors, results };\n}\n\n// \u2500\u2500 Build target list \u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
@@ -726,14 +729,14 @@ jobs:
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\nlet targets = [];  // [{prNum,\
           \ headSha}]\nif (mode === 'schedule') {\n  const prNums = process.env.PR_LIST.trim().split(/\\\
-        s+/).filter(Boolean);\n  core.info(`\u23F0 Schedule sweep (always-on): ${prNums.length}\
+          s+/).filter(Boolean);\n  core.info(`\u23F0 Schedule sweep (always-on): ${prNums.length}\
           \ open PR(s) \u2014 ${prNums.join(', ')}`);\n  for (const prNum of prNums)\
           \ {\n    // For schedule, label presence already confirmed \u2014 skip re-check\n\
           \    try {\n      const headSha = await getHeadSha(prNum);\n      targets.push({\
           \ prNum, headSha });\n    } catch (e) {\n      core.warning(`\u26A0\uFE0F\
           \ Could not resolve head SHA for PR  #${prNum} (${e?.message || String(e)})\
           \ \u2014 skipping`);\n    }\n  }\n} else {\n  const prNum  = process.env.PR_NUMBER;\n\
-        \  const headSha = process.env.HEAD_SHA;\n  // Always-on: no opt-in gate\
+          \  const headSha = process.env.HEAD_SHA;\n  // Always-on: no opt-in gate\
           \ \u2014 Copilot approves on behalf of human admin.\n  targets.push({ prNum,\
           \ headSha });\n}\n\n// \u2500\u2500 Approve all targets \u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
@@ -747,13 +750,13 @@ jobs:
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst lines = [\n  `## \u26A1\
-        \ Auto-Approve \u2014 ${targets.length > 1 ? `${targets.length} PRs` : `PR\
+          \ Auto-Approve \u2014 ${targets.length > 1 ? `${targets.length} PRs` : `PR\
           \  #${targets[0].prNum}`}`,\n  '',\n  `| PR | HEAD SHA | Approved | Skipped\
           \ | Errors |`,\n  `|----|---------|---------|---------|--------|`,\n];\n\
           for (const r of allResults) {\n  lines.push(`|  #${r.prNum} | \\`${r.headSha.slice(0,12)}\\\
           ` | **${r.approved}** | ${r.skipped} | ${r.errors} |`);\n}\nlines.push('');\n\
-        lines.push(`_Mode: ${dryRun ? '\U0001F50D DRY RUN' : '\U0001F680 LIVE'}\
-        \ \xB7 Trigger: ${context.eventName} \xB7 ${new Date().toISOString()}_`);\n\
+          lines.push(`_Mode: ${dryRun ? '\U0001F50D DRY RUN' : '\U0001F680 LIVE'}\
+          \ \xB7 Trigger: ${context.eventName} \xB7 ${new Date().toISOString()}_`);\n\
           core.summary.addRaw('\\n' + lines.join('\\n') + '\\n');\nawait core.summary.write();\n\
           \nif (totalErrors > 0) {\n  core.setFailed(`${totalErrors} run(s) failed\
           \ to be approved \u2014 check the logs above`);\n}\n"
@@ -779,8 +782,8 @@ jobs:
         \ ]; do\n  HEAD_SHA=$(gh pr view \"${PR_NUMBER}\" --repo \"${REPO}\" --json\
         \ headRefOid -q '.headRefOid' 2>/dev/null || echo \"\")\n  if [ -z \"${HEAD_SHA}\"\
         \ ]; then\n    echo \"::warning::Could not resolve current PR head SHA for\
-        \  #${PR_NUMBER}; retrying.\"\n    sleep \"${MONITOR_INTERVAL_SEC}\"\n    continue\n\
-        \  fi\n\n  echo \"\U0001F504 Monitor pass at $(date -u +%Y-%m-%dT%H:%M:%SZ)\
+        \  #${PR_NUMBER}; retrying.\"\n    sleep \"${MONITOR_INTERVAL_SEC}\"\n   \
+        \ continue\n  fi\n\n  echo \"\U0001F504 Monitor pass at $(date -u +%Y-%m-%dT%H:%M:%SZ)\
         \ for SHA ${HEAD_SHA:0:12}\"\n  REPO=\"${REPO}\" HEAD_SHA=\"${HEAD_SHA}\"\
         \ PR_NUMBER=\"${PR_NUMBER}\" MAX_WAIT_SEC=15 \\\n    python scripts/ci/approve_pending_runs.py\
         \ || true\n\n  FAILURES=$(gh api \"repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=completed&per_page=100\"\
@@ -796,3 +799,4 @@ jobs:
         \ during active monitor window.\" | tee -a \"$GITHUB_STEP_SUMMARY\"\nelse\n\
         \  echo \"::error::Workflow failures detected during active Copilot session\
         \ monitor window.\"\n  exit 1\nfi\n"
+    timeout-minutes: 30

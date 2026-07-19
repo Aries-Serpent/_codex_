@@ -1,0 +1,226 @@
+{
+  "timestamp": "2026-07-18T19:17:50.060953Z",
+  "phase": "PHASE_2_LANE_1",
+  "objective": "GitHub Actions Version Enforcement across 229+ workflow files",
+  "execution_details": {
+    "script": "scripts/ci/enforce_actions_versions.py",
+    "execution_time": "2026-07-18T19:16:50Z",
+    "execution_mode": "auto-fix",
+    "authority": "@mbaetiong D-tier autonomous, wec:auto-approve enabled"
+  },
+  "summary": {
+    "total_workflows_scanned": 230,
+    "total_action_uses": 1016,
+    "violations_found_initially": 7,
+    "violations_fixed": 7,
+    "remaining_violations": 0,
+    "files_with_violations_fixed": 6,
+    "status": "SUCCESS",
+    "compliance_percentage": 100.0
+  },
+  "approved_versions_policy": {
+    "actions/checkout": "v5",
+    "actions/setup-python": "v6",
+    "actions/setup-node": "v5",
+    "actions/upload-artifact": "v5",
+    "actions/download-artifact": "v5",
+    "actions/cache": "v5",
+    "actions/github-script": "v8",
+    "actions/configure-pages": "v5",
+    "actions/deploy-pages": "v5",
+    "actions/upload-pages-artifact": "v3",
+    "github/codeql-action/init": "v3",
+    "github/codeql-action/autobuild": "v3",
+    "github/codeql-action/analyze": "v3"
+  },
+  "action_usage_breakdown": {
+    "actions/cache": {
+      "expected_version": "v5",
+      "total_uses": 44,
+      "versions_found": {
+        "v5": 44
+      }
+    },
+    "actions/checkout": {
+      "expected_version": "v5",
+      "total_uses": 479,
+      "versions_found": {
+        "v5": 479
+      }
+    },
+    "actions/configure-pages": {
+      "expected_version": "v5",
+      "total_uses": 0,
+      "versions_found": {}
+    },
+    "actions/deploy-pages": {
+      "expected_version": "v5",
+      "total_uses": 0,
+      "versions_found": {}
+    },
+    "actions/download-artifact": {
+      "expected_version": "v5",
+      "total_uses": 27,
+      "versions_found": {
+        "v5": 27
+      }
+    },
+    "actions/github-script": {
+      "expected_version": "v8",
+      "total_uses": 120,
+      "versions_found": {
+        "v8": 120
+      }
+    },
+    "actions/setup-node": {
+      "expected_version": "v5",
+      "total_uses": 6,
+      "versions_found": {
+        "v5": 6
+      }
+    },
+    "actions/setup-python": {
+      "expected_version": "v6",
+      "total_uses": 162,
+      "versions_found": {
+        "v6": 162
+      }
+    },
+    "actions/upload-artifact": {
+      "expected_version": "v5",
+      "total_uses": 149,
+      "versions_found": {
+        "v5": 149
+      }
+    },
+    "actions/upload-pages-artifact": {
+      "expected_version": "v3",
+      "total_uses": 0,
+      "versions_found": {}
+    },
+    "github/codeql-action/analyze": {
+      "expected_version": "v3",
+      "total_uses": 3,
+      "versions_found": {
+        "v3": 3
+      }
+    },
+    "github/codeql-action/autobuild": {
+      "expected_version": "v3",
+      "total_uses": 3,
+      "versions_found": {
+        "v3": 3
+      }
+    },
+    "github/codeql-action/init": {
+      "expected_version": "v3",
+      "total_uses": 3,
+      "versions_found": {
+        "v3": 3
+      }
+    }
+  },
+  "enforcement_results": {
+    "all_workflows_compliant": true,
+    "approved_version_count": 13,
+    "actions_in_use": 10,
+    "compliance_details": {
+      "actions/cache": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v5": 44
+        },
+        "expected": "v5"
+      },
+      "actions/checkout": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v5": 479
+        },
+        "expected": "v5"
+      },
+      "actions/download-artifact": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v5": 27
+        },
+        "expected": "v5"
+      },
+      "actions/github-script": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v8": 120
+        },
+        "expected": "v8"
+      },
+      "actions/setup-node": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v5": 6
+        },
+        "expected": "v5"
+      },
+      "actions/setup-python": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v6": 162
+        },
+        "expected": "v6"
+      },
+      "actions/upload-artifact": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v5": 149
+        },
+        "expected": "v5"
+      },
+      "github/codeql-action/analyze": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v3": 3
+        },
+        "expected": "v3"
+      },
+      "github/codeql-action/autobuild": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v3": 3
+        },
+        "expected": "v3"
+      },
+      "github/codeql-action/init": {
+        "is_compliant": true,
+        "version_distribution": {
+          "v3": 3
+        },
+        "expected": "v3"
+      }
+    }
+  },
+  "fixes_applied": [
+    {
+      "file": ".github/workflows/docker-build-tests.yml.template",
+      "changes": "actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    },
+    {
+      "file": ".github/misc/zendesk-knowledge-sync.yml",
+      "changes": "actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    },
+    {
+      "file": ".github/misc/notebooklm-sync.yml",
+      "changes": "actions/setup-node@v6 \u2192 actions/setup-node@v5, actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    },
+    {
+      "file": ".github/misc/flatten-repo-download.yml",
+      "changes": "actions/setup-node@v6 \u2192 actions/setup-node@v5, actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    },
+    {
+      "file": ".github/misc/genesis-bootstrap.yml",
+      "changes": "actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    },
+    {
+      "file": ".github/misc/phase34-codeql-alert-fetch.yml",
+      "changes": "actions/upload-artifact@v6 \u2192 actions/upload-artifact@v5"
+    }
+  ]
+}

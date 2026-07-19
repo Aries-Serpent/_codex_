@@ -1,4 +1,3 @@
----
 name: "\U0001F500 Create Sub-PR: Session Branch \u2192 0D_base_"
 on:
   workflow_dispatch:
@@ -89,7 +88,8 @@ jobs:
       if: steps.check_existing.outputs.existing_pr == ''
       id: create_pr
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         SESSION_BRANCH: ${{ inputs.session_branch }}
         PR_TITLE: ${{ steps.build_title.outputs.title }}
         SHA: ${{ steps.commit_info.outputs.sha }}
@@ -122,10 +122,11 @@ jobs:
         $'\\n'\nPR_BODY+=\"- [x] \U0001F510 Enable Agent Token Delegation (\\`COPILOT_AGENT_AUTH_ENABLED\\\
         `)\"$'\\n'\nPR_BODY+=\"- [ ] \U0001F4B0 Cost Proposal Approved\"$'\\n'\nPR_BODY+=\"\
         - [ ] \U0001F504 Auto-Post @copilot review After Agent Session\"$'\\n'\n\n\
-        GH_TOKEN=\"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" gh pr create \\\n  --repo \"\
-        ${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\" \\\n  --body \"${PR_BODY}\"\
-        \ \\\n  --head \"${SESSION_BRANCH}\" \\\n  --base \"0D_base_\" \\\n  $(if\
-        \ [ \"${{ inputs.draft }}\" = \"true\" ]; then echo \"--draft\"; fi)\n"
+        GH_TOKEN=\"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" gh\
+        \ pr create \\\n  --repo \"${{ github.repository }}\" \\\n  --title \"${PR_TITLE}\"\
+        \ \\\n  --body \"${PR_BODY}\" \\\n  --head \"${SESSION_BRANCH}\" \\\n  --base\
+        \ \"0D_base_\" \\\n  $(if [ \"${{ inputs.draft }}\" = \"true\" ]; then echo\
+        \ \"--draft\"; fi)\n"
     - name: Summary
       if: always()
       run: "echo \"## \U0001F500 Sub-PR Creation Result\" >> \"$GITHUB_STEP_SUMMARY\"\
@@ -142,3 +143,4 @@ jobs:
         ` \u2192 \\`main\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

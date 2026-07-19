@@ -1,4 +1,3 @@
----
 name: Security Copilot Commands
 on:
   issue_comment:
@@ -10,7 +9,7 @@ permissions:
   issues: read
   pull-requests: read
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 jobs:
   handle-command:
@@ -21,8 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout code
       uses: actions/checkout@v5
       with:
@@ -38,25 +38,12 @@ jobs:
       name: Parse Command
       uses: actions/github-script@v8
       with:
-        script: 'const fs = require(''fs'');
-
-          const path = require(''path'');
-
-          // Safely write comment body to file using environment variable
-
-          const commentBody = process.env.COMMENT_BODY;
-
-          const tempFile = path.join(process.env.RUNNER_TEMP, ''comment_body.txt'');
-
-          fs.writeFileSync(tempFile, commentBody, ''utf8'');
-
-          console.log(`✓ Comment body written to ${tempFile}`);
-
-          // Output temp file path for next steps
-
-          core.setOutput(''comment_file'', tempFile);
-
-          '
+        script: "const fs = require('fs');\nconst path = require('path');\n// Safely\
+          \ write comment body to file using environment variable\nconst commentBody\
+          \ = process.env.COMMENT_BODY;\nconst tempFile = path.join(process.env.RUNNER_TEMP,\
+          \ 'comment_body.txt');\nfs.writeFileSync(tempFile, commentBody, 'utf8');\n\
+          console.log(`\u2713 Comment body written to ${tempFile}`);\n// Output temp\
+          \ file path for next steps\ncore.setOutput('comment_file', tempFile);\n"
     - env:
         RUNNER_TEMP: ${{ runner.temp }}
       id: parse_result
@@ -67,9 +54,10 @@ jobs:
         \ Extract parse result for debugging\npython3 << 'EOF'\nimport json\nimport\
         \ os\n\ncmd_file = os.path.join(os.environ['RUNNER_TEMP'], 'command.json')\n\
         with open(cmd_file, 'r') as f:\n    data = json.load(f)\n    if data.get('valid'):\n\
-        \        print(f\"✓ Command parsed: {data.get('command')}\")\n        print(f\"\
-        \  Query type: {data.get('query_type')}\")\n        print(f\"  Value: {data.get('value')}\"\
-        )\n    else:\n        print(\"✗ No valid command found\")\nEOF\n"
+        \        print(f\"\u2713 Command parsed: {data.get('command')}\")\n      \
+        \  print(f\"  Query type: {data.get('query_type')}\")\n        print(f\" \
+        \ Value: {data.get('value')}\")\n    else:\n        print(\"\u2717 No valid\
+        \ command found\")\nEOF\n"
     - env:
         RUNNER_TEMP: ${{ runner.temp }}
       id: response
@@ -80,10 +68,10 @@ jobs:
         \ \\\n  --query-json \"$COMMAND_JSON\" \\\n  --findings-json .codex/security-findings-comprehensive.json\
         \ \\\n  --cache-dir .codex/security-cache \\\n  --output \"$RESPONSE_MD\"\n\
         \n# Verify response was generated\nif [ -f \"$RESPONSE_MD\" ]; then\n  echo\
-        \ \"✓ Response generated ($(wc -l < \"$RESPONSE_MD\") lines)\"\n  # Set output\
-        \ for debugging\n  RESPONSE=$(cat \"$RESPONSE_MD\")\n  echo \"response_length=${#RESPONSE}\"\
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"✗ Failed to generate response\"\n  exit\
-        \ 1\nfi\n"
+        \ \"\u2713 Response generated ($(wc -l < \"$RESPONSE_MD\") lines)\"\n  # Set\
+        \ output for debugging\n  RESPONSE=$(cat \"$RESPONSE_MD\")\n  echo \"response_length=${#RESPONSE}\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"\u2717 Failed to generate response\"\n\
+        \  exit 1\nfi\n"
     - env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -97,10 +85,10 @@ jobs:
           \ response = fs.readFileSync(responseFile, 'utf8');\n\nif (!response ||\
           \ response.length === 0) {\n  console.log('Response is empty, skipping comment');\n\
           \  return;\n}\n\ntry {\n  await github.rest.issues.createComment({\n   \
-        \ owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-        \ context.issue.number,\n    body: response\n  });\n  console.log('✓ Posted\
-          \ security scan summary comment');\n} catch (error) {\n  console.error('Failed\
-        \ to post comment:', error);\n  throw error;\n}\n"
+          \ owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ context.issue.number,\n    body: response\n  });\n  console.log('\u2713\
+          \ Posted security scan summary comment');\n} catch (error) {\n  console.error('Failed\
+          \ to post comment:', error);\n  throw error;\n}\n"
     - env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -109,8 +97,7 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "await github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-        \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
-          \ '❌ Failed to generate security scan summary. Please check the workflow\
+          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+          \ '\u274C Failed to generate security scan summary. Please check the workflow\
           \ logs.'\n});\n"
     timeout-minutes: 30
-

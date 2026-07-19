@@ -1,4 +1,3 @@
----
 name: Automated Monitoring Setup
 on:
   workflow_dispatch:
@@ -33,7 +32,6 @@ jobs:
   setup-monitoring:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     permissions:
       contents: read
@@ -42,8 +40,9 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -53,7 +52,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Install dependencies
       run: 'pip install pyyaml jinja2
 
@@ -61,82 +60,59 @@ jobs:
     - name: Validate manifests
       run: "echo \"\U0001F4CB Validating Kubernetes manifests...\"\nfor file in manifests/monitoring/**/*.yaml;\
         \ do\n  echo \"  Checking: $file\"\n  python -c \"import yaml; yaml.safe_load(open('$file'))\"\
-        \ndone\necho \"✅ All manifests valid\"\n"
+        \ndone\necho \"\u2705 All manifests valid\"\n"
     - name: Generate monitoring configuration
-      run: 'echo "🔧 Generating monitoring configuration..."
-
-        # Generate ServiceMonitor resources
-
-        python scripts/deployment/generate_servicemonitor.py
-
-        # Generate alert rules
-
-        python scripts/deployment/generate_alert_rules.py
-
-        # Generate dashboards
-
-        python scripts/deployment/create_monitoring_dashboard.py
-
-        echo "✅ Configuration generation complete"
-
-        '
+      run: "echo \"\U0001F527 Generating monitoring configuration...\"\n# Generate\
+        \ ServiceMonitor resources\npython scripts/deployment/generate_servicemonitor.py\n\
+        # Generate alert rules\npython scripts/deployment/generate_alert_rules.py\n\
+        # Generate dashboards\npython scripts/deployment/create_monitoring_dashboard.py\n\
+        echo \"\u2705 Configuration generation complete\"\n"
     - name: Configure kubectl
-      run: 'echo "🔐 Configuring kubectl..."
-
-        mkdir -p ~/.kube
-
-        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
-
-        chmod 600 ~/.kube/config
-
-        # Verify connection
-
-        kubectl cluster-info
-
-        echo "✅ kubectl configured"
-
-        '
+      run: "echo \"\U0001F510 Configuring kubectl...\"\nmkdir -p ~/.kube\necho \"\
+        ${{ secrets.KUBECONFIG }}\" | base64 -d > ~/.kube/config\nchmod 600 ~/.kube/config\n\
+        # Verify connection\nkubectl cluster-info\necho \"\u2705 kubectl configured\"\
+        \n"
     - name: Create monitoring namespace
       run: "echo \"\U0001F4E6 Creating monitoring namespace...\"\nkubectl apply -f\
         \ - <<EOF\napiVersion: v1\nkind: Namespace\nmetadata:\n  name: monitoring\n\
-        \  labels:\n    environment: ${{ inputs.environment }}\nEOF\necho \"✅ Namespace\
-        \ created\"\n"
+        \  labels:\n    environment: ${{ inputs.environment }}\nEOF\necho \"\u2705\
+        \ Namespace created\"\n"
     - name: Deploy Prometheus
       run: "echo \"\U0001F680 Deploying Prometheus...\"\nkubectl apply -f manifests/monitoring/prometheus/deployment.yaml\n\
         \n# Wait for Prometheus to be ready\nkubectl wait --for=condition=ready pod\
         \ \\\n  -l app=prometheus \\\n  -n monitoring \\\n  --timeout=300s\n\necho\
-        \ \"✅ Prometheus deployed and ready\"\n"
+        \ \"\u2705 Prometheus deployed and ready\"\n"
     - name: Deploy Grafana
       run: "echo \"\U0001F680 Deploying Grafana...\"\nkubectl apply -f manifests/monitoring/grafana/deployment.yaml\n\
         \n# Wait for Grafana to be ready\nkubectl wait --for=condition=ready pod \\\
-        \n  -l app=grafana \\\n  -n monitoring \\\n  --timeout=300s\n\necho \"✅ Grafana\
-        \ deployed and ready\"\n"
+        \n  -l app=grafana \\\n  -n monitoring \\\n  --timeout=300s\n\necho \"\u2705\
+        \ Grafana deployed and ready\"\n"
     - name: Deploy AlertManager
       run: "echo \"\U0001F680 Deploying AlertManager...\"\nkubectl apply -f manifests/monitoring/alertmanager/deployment.yaml\n\
         \n# Wait for AlertManager to be ready\nkubectl wait --for=condition=ready\
         \ pod \\\n  -l app=alertmanager \\\n  -n monitoring \\\n  --timeout=300s\n\
-        \necho \"✅ AlertManager deployed and ready\"\n"
+        \necho \"\u2705 AlertManager deployed and ready\"\n"
     - name: Apply ServiceMonitor configuration
       run: "echo \"\U0001F4E1 Applying ServiceMonitor configuration...\"\n\n# Apply\
         \ all ServiceMonitor CRDs\nfor file in manifests/monitoring/prometheus/servicemonitors/*.yaml;\
-        \ do\n  kubectl apply -f \"$file\"\ndone\n\necho \"✅ ServiceMonitor configuration\
+        \ do\n  kubectl apply -f \"$file\"\ndone\n\necho \"\u2705 ServiceMonitor configuration\
         \ applied\"\n"
     - name: Deploy alert rules
       run: "echo \"\U0001F6A8 Deploying alert rules...\"\n\n# Create ConfigMap for\
         \ alert rules\nkubectl create configmap prometheus-alert-rules \\\n  --from-file=manifests/monitoring/prometheus/alert-rules.yaml\
         \ \\\n  -n monitoring \\\n  --dry-run=client \\\n  -o yaml | kubectl apply\
-        \ -f -\n\necho \"✅ Alert rules deployed\"\n"
+        \ -f -\n\necho \"\u2705 Alert rules deployed\"\n"
     - name: Deploy AlertManager configuration
       run: "echo \"\U0001F4EE Deploying AlertManager configuration...\"\n\n# Create\
         \ ConfigMap for AlertManager config\nkubectl create configmap alertmanager-config\
         \ \\\n  --from-file=manifests/monitoring/alertmanager/alertmanager-config.yaml\
         \ \\\n  -n monitoring \\\n  --dry-run=client \\\n  -o yaml | kubectl apply\
-        \ -f -\n\necho \"✅ AlertManager configuration deployed\"\n"
+        \ -f -\n\necho \"\u2705 AlertManager configuration deployed\"\n"
     - name: Create Grafana dashboards
       run: "echo \"\U0001F4CA Creating Grafana dashboards...\"\n\n# Create ConfigMap\
         \ for dashboards\nkubectl create configmap grafana-dashboards \\\n  --from-file=manifests/monitoring/grafana/dashboards/\
         \ \\\n  -n monitoring \\\n  --dry-run=client \\\n  -o yaml | kubectl apply\
-        \ -f -\n\necho \"✅ Grafana dashboards created\"\n"
+        \ -f -\n\necho \"\u2705 Grafana dashboards created\"\n"
     - name: Configure data source
       run: "echo \"\U0001F50C Configuring Grafana data source...\"\n\n# Port-forward\
         \ to Grafana\nkubectl port-forward svc/grafana 3000:3000 -n monitoring &\n\
@@ -146,117 +122,42 @@ jobs:
         \  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"name\": \"Prometheus\"\
         ,\n    \"type\": \"prometheus\",\n    \"url\": \"http://prometheus:9090\"\
         ,\n    \"access\": \"proxy\",\n    \"isDefault\": true\n  }' || true\n\necho\
-        \ \"✅ Data source configured\"\n"
+        \ \"\u2705 Data source configured\"\n"
     - name: Wait for stack readiness
-      run: 'echo "⏳ Waiting for monitoring stack to be ready..."
-
-        # Wait for all deployments
-
-        kubectl rollout status deployment/prometheus -n monitoring --timeout=300s
-        || true
-
-        kubectl rollout status deployment/grafana -n monitoring --timeout=300s ||
-        true
-
-        kubectl rollout status deployment/alertmanager -n monitoring --timeout=300s
-        || true
-
-        echo "✅ Stack readiness check complete"
-
-        '
+      run: "echo \"\u23F3 Waiting for monitoring stack to be ready...\"\n# Wait for\
+        \ all deployments\nkubectl rollout status deployment/prometheus -n monitoring\
+        \ --timeout=300s || true\nkubectl rollout status deployment/grafana -n monitoring\
+        \ --timeout=300s || true\nkubectl rollout status deployment/alertmanager -n\
+        \ monitoring --timeout=300s || true\necho \"\u2705 Stack readiness check complete\"\
+        \n"
     - name: Verify monitoring health
-      run: 'echo "🔍 Verifying monitoring health..."
-
-        # Check component health
-
-        echo "Prometheus health:"
-
-        kubectl exec -n monitoring -it deployment/prometheus -- curl -s http://localhost:9090/-/healthy
-        || true
-
-        printf "\nGrafana health:\n"
-
-        kubectl exec -n monitoring -it deployment/grafana -- curl -s http://localhost:3000/api/health
-        || true
-
-        printf "\nAlertManager health:\n"
-
-        kubectl exec -n monitoring -it deployment/alertmanager -- curl -s http://localhost:9093/-/healthy
-        || true
-
-        '
+      run: "echo \"\U0001F50D Verifying monitoring health...\"\n# Check component\
+        \ health\necho \"Prometheus health:\"\nkubectl exec -n monitoring -it deployment/prometheus\
+        \ -- curl -s http://localhost:9090/-/healthy || true\nprintf \"\\nGrafana\
+        \ health:\\n\"\nkubectl exec -n monitoring -it deployment/grafana -- curl\
+        \ -s http://localhost:3000/api/health || true\nprintf \"\\nAlertManager health:\\\
+        n\"\nkubectl exec -n monitoring -it deployment/alertmanager -- curl -s http://localhost:9093/-/healthy\
+        \ || true\n"
     - name: Generate setup report
-      run: 'echo "📝 Generating setup report..."
-
-        cat > setup-report.md <<EOF
-
-        # Monitoring Stack Setup Report
-
-        **Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-        **Environment:** ${{ inputs.environment }}
-
-        **Monitoring Stack:** ${{ inputs.monitoring_stack }}
-
-        **Cluster:** ${{ inputs.cluster_name }}
-
-        **Status:** ✅ SUCCESS
-
-        ## Deployed Components
-
-        - ✅ Prometheus (Metrics collection & storage)
-
-        - ✅ Grafana (Visualization & dashboards)
-
-        - ✅ AlertManager (Alert routing & notifications)
-
-        ## Configuration
-
-        - ✅ ServiceMonitor resources (5 services)
-
-        - ✅ Alert rules (13 rules, 3 groups)
-
-        - ✅ Recording rules (15 rules, 3 groups)
-
-        - ✅ Grafana dashboards (3 dashboards, 13 panels)
-
-        ## Access Information
-
-        - Prometheus: http://prometheus.local:9090
-
-        - Grafana: http://grafana.local:3000
-
-        - AlertManager: http://alertmanager.local:9093
-
-        ## Next Steps
-
-        1. Configure notification channels (Slack, PagerDuty, email)
-
-        2. Customize alert thresholds
-
-        3. Create custom dashboards for your applications
-
-        4. Configure on-call rotations
-
-        5. Set up backup for persistent volumes
-
-        ## Troubleshooting
-
-        If issues occur, check:
-
-        - Pod logs: \`kubectl logs -n monitoring deployment/[component]\`
-
-        - Pod status: \`kubectl get pods -n monitoring\`
-
-        - Events: \`kubectl describe pod -n monitoring [pod-name]\`
-
-        For more details, see documentation in .codex/MONITORING_MANIFESTS_GUIDE.md
-
-        EOF
-
-        cat setup-report.md
-
-        '
+      run: "echo \"\U0001F4DD Generating setup report...\"\ncat > setup-report.md\
+        \ <<EOF\n# Monitoring Stack Setup Report\n**Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)\n\
+        **Environment:** ${{ inputs.environment }}\n**Monitoring Stack:** ${{ inputs.monitoring_stack\
+        \ }}\n**Cluster:** ${{ inputs.cluster_name }}\n**Status:** \u2705 SUCCESS\n\
+        ## Deployed Components\n- \u2705 Prometheus (Metrics collection & storage)\n\
+        - \u2705 Grafana (Visualization & dashboards)\n- \u2705 AlertManager (Alert\
+        \ routing & notifications)\n## Configuration\n- \u2705 ServiceMonitor resources\
+        \ (5 services)\n- \u2705 Alert rules (13 rules, 3 groups)\n- \u2705 Recording\
+        \ rules (15 rules, 3 groups)\n- \u2705 Grafana dashboards (3 dashboards, 13\
+        \ panels)\n## Access Information\n- Prometheus: http://prometheus.local:9090\n\
+        - Grafana: http://grafana.local:3000\n- AlertManager: http://alertmanager.local:9093\n\
+        ## Next Steps\n1. Configure notification channels (Slack, PagerDuty, email)\n\
+        2. Customize alert thresholds\n3. Create custom dashboards for your applications\n\
+        4. Configure on-call rotations\n5. Set up backup for persistent volumes\n\
+        ## Troubleshooting\nIf issues occur, check:\n- Pod logs: \\`kubectl logs -n\
+        \ monitoring deployment/[component]\\`\n- Pod status: \\`kubectl get pods\
+        \ -n monitoring\\`\n- Events: \\`kubectl describe pod -n monitoring [pod-name]\\\
+        `\nFor more details, see documentation in .codex/MONITORING_MANIFESTS_GUIDE.md\n\
+        EOF\ncat setup-report.md\n"
     - name: Upload setup report
       uses: actions/upload-artifact@v5
       with:
@@ -265,29 +166,13 @@ jobs:
         name: monitoring-setup-report
     - name: Collect deployment logs
       if: always()
-      run: 'echo "📋 Collecting deployment logs..."
-
-        mkdir -p logs
-
-        # Collect pod logs
-
-        kubectl logs -n monitoring deployment/prometheus > logs/prometheus.log 2>&1
-        || true
-
-        kubectl logs -n monitoring deployment/grafana > logs/grafana.log 2>&1 || true
-
-        kubectl logs -n monitoring deployment/alertmanager > logs/alertmanager.log
-        2>&1 || true
-
-        # Collect events
-
-        kubectl get events -n monitoring > logs/events.log 2>&1 || true
-
-        # Collect resource status
-
-        kubectl get all -n monitoring > logs/resources.log 2>&1 || true
-
-        '
+      run: "echo \"\U0001F4CB Collecting deployment logs...\"\nmkdir -p logs\n# Collect\
+        \ pod logs\nkubectl logs -n monitoring deployment/prometheus > logs/prometheus.log\
+        \ 2>&1 || true\nkubectl logs -n monitoring deployment/grafana > logs/grafana.log\
+        \ 2>&1 || true\nkubectl logs -n monitoring deployment/alertmanager > logs/alertmanager.log\
+        \ 2>&1 || true\n# Collect events\nkubectl get events -n monitoring > logs/events.log\
+        \ 2>&1 || true\n# Collect resource status\nkubectl get all -n monitoring >\
+        \ logs/resources.log 2>&1 || true\n"
     - name: Upload deployment logs
       if: always()
       uses: actions/upload-artifact@v5
@@ -299,12 +184,12 @@ jobs:
       if: always()
       uses: actions/github-script@v8
       with:
-        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
         script: "const fs = require('fs');\nconst report = fs.readFileSync('setup-report.md',\
-        \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## \U0001F4CA\
+          \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## \U0001F4CA\
           \ Monitoring Stack Deployment\\n\\n${report}`\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

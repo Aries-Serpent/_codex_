@@ -1,0 +1,2 @@
+{"pattern_id": "RP-036", "timestamp": "2026-07-18T20:30:00Z", "context": {"workflow": "phase-4-lane-1.yml", "priority": "high"}, "status": "queued"}
+{"pattern_id": "RP-037", "timestamp": "2026-07-18T20:31:00Z", "context": {"workflow": "phase-4-lane-2.yml", "priority": "medium"}, "status": "queued"}

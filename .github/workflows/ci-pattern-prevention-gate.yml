@@ -1,4 +1,3 @@
----
 name: CI Pattern Prevention Gate
 on:
   pull_request:
@@ -57,115 +56,115 @@ env:
   PYTHON_VERSION: '3.12'
 jobs:
   validate-api-null-handling:
-    name: '🔍 RP-001: API Null-Handling'
+    name: "\U0001F50D RP-001: API Null-Handling"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: "contains(fromJson('[\"all\", \"rp001-api-null\", \"rp001-rp002\"]'),\n  github.event.inputs.patterns\
       \ || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
+    - name: Cache Python dependencies (Layer 1)
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
+          }}
+        restore-keys: '${{ runner.os }}-pip-
 
-      - name: Cache Python dependencies (Layer 1)
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-      - name: Run RP-001 validation
-        id: rp001
-        run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
+          '
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Run RP-001 validation
+      id: rp001
+      run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
         \ Check for unsafe API field handling\nunsafe_patterns=$(rg '\\.get\\([\"\\\
         047][^\"'\\'']+[\"\\047][,\\)].*\\.replace\\(' \\\n  --glob=\"scripts/ci/**\"\
         \ --glob=\"src/scripts/ci/**\" --type=python 2>/dev/null || true)\n\nif [\
         \ -z \"$unsafe_patterns\" ]; then\n  echo \"status=pass\" >> $GITHUB_OUTPUT\n\
-        \  echo \"message=✅ No unsafe API null-handling patterns detected\" >> $GITHUB_OUTPUT\n\
-        \  echo \"✅ RP-001 PASSED\"\nelse\n  echo \"status=warn\" >> $GITHUB_OUTPUT\n\
-        \  echo \"message=⚠️ Unsafe API null-handling patterns detected (non-blocking\
-        \ for PR)\" >> $GITHUB_OUTPUT\n  echo \"$unsafe_patterns\"\n  echo \"⚠️ RP-001\
-        \ WARNING (non-blocking)\"\nfi\n"
+        \  echo \"message=\u2705 No unsafe API null-handling patterns detected\" >>\
+        \ $GITHUB_OUTPUT\n  echo \"\u2705 RP-001 PASSED\"\nelse\n  echo \"status=warn\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"message=\u26A0\uFE0F Unsafe API null-handling\
+        \ patterns detected (non-blocking for PR)\" >> $GITHUB_OUTPUT\n  echo \"$unsafe_patterns\"\
+        \n  echo \"\u26A0\uFE0F RP-001 WARNING (non-blocking)\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   validate-mypy-baseline:
-    name: '🔎 RP-002: mypy Baseline'
+    name: "\U0001F50E RP-002: mypy Baseline"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: "contains(fromJson('[\"all\", \"rp002-mypy\", \"rp001-rp002\", \"rp002-rp003\"\
       ]'),\n  github.event.inputs.patterns || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-      - name: Install dependencies
-        run: 'pip install --quiet mypy tomli 2>/dev/null || true
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Install dependencies
+      run: 'pip install --quiet mypy tomli 2>/dev/null || true
 
         '
-      - name: Run RP-002 validation
-        id: rp002
-        continue-on-error: true
-        run: "echo \"Starting RP-002 mypy Baseline validation...\"\n\nif [ ! -f \".mypy_baseline\"\
-        \ ]; then\n  echo \"status=skip\" >> $GITHUB_OUTPUT\n  echo \"message=ℹ️ Baseline\
-        \ file not found - skipping\" >> $GITHUB_OUTPUT\n  echo \"ℹ️ RP-002 SKIPPED\
-        \ (no baseline file)\"\n  exit 0\nfi\n\nbaseline=$(cat .mypy_baseline)\necho\
-        \ \"Current baseline: $baseline errors\"\n\n# Run mypy (allow failure)\nmypy_output=$(python\
-        \ -m mypy --config-file=mypy.ini src/ 2>&1 || true)\nerror_count=$(echo \"\
-        $mypy_output\" | grep -c \"error:\" || echo 0)\n\nif [ \"$error_count\" -le\
-        \ \"$baseline\" ]; then\n  echo \"status=pass\" >> $GITHUB_OUTPUT\n  echo\
-        \ \"message=✅ Type errors ($error_count) within baseline ($baseline)\" >>\
-        \ $GITHUB_OUTPUT\n  echo \"✅ RP-002 PASSED ($error_count <= $baseline)\"\n\
-        else\n  echo \"status=warn\" >> $GITHUB_OUTPUT\n  echo \"message=⚠️ Type errors\
-        \ ($error_count) exceed baseline ($baseline)\" >> $GITHUB_OUTPUT\n  echo \"\
-        $mypy_output\" | tail -20\n  echo \"⚠️ RP-002 WARNING (non-blocking for PR)\"\
-        \nfi\n"
-      - name: Show last 10 mypy errors (if any)
-        if: always()
-        continue-on-error: true
-        run: 'python -m mypy --config-file=mypy.ini src/ 2>&1 | tail -10 || true
+    - name: Run RP-002 validation
+      id: rp002
+      continue-on-error: true
+      run: "echo \"Starting RP-002 mypy Baseline validation...\"\n\nif [ ! -f \".mypy_baseline\"\
+        \ ]; then\n  echo \"status=skip\" >> $GITHUB_OUTPUT\n  echo \"message=\u2139\
+        \uFE0F Baseline file not found - skipping\" >> $GITHUB_OUTPUT\n  echo \"\u2139\
+        \uFE0F RP-002 SKIPPED (no baseline file)\"\n  exit 0\nfi\n\nbaseline=$(cat\
+        \ .mypy_baseline)\necho \"Current baseline: $baseline errors\"\n\n# Run mypy\
+        \ (allow failure)\nmypy_output=$(python -m mypy --config-file=mypy.ini src/\
+        \ 2>&1 || true)\nerror_count=$(echo \"$mypy_output\" | grep -c \"error:\"\
+        \ || echo 0)\n\nif [ \"$error_count\" -le \"$baseline\" ]; then\n  echo \"\
+        status=pass\" >> $GITHUB_OUTPUT\n  echo \"message=\u2705 Type errors ($error_count)\
+        \ within baseline ($baseline)\" >> $GITHUB_OUTPUT\n  echo \"\u2705 RP-002\
+        \ PASSED ($error_count <= $baseline)\"\nelse\n  echo \"status=warn\" >> $GITHUB_OUTPUT\n\
+        \  echo \"message=\u26A0\uFE0F Type errors ($error_count) exceed baseline\
+        \ ($baseline)\" >> $GITHUB_OUTPUT\n  echo \"$mypy_output\" | tail -20\n  echo\
+        \ \"\u26A0\uFE0F RP-002 WARNING (non-blocking for PR)\"\nfi\n"
+    - name: Show last 10 mypy errors (if any)
+      if: always()
+      continue-on-error: true
+      run: 'python -m mypy --config-file=mypy.ini src/ 2>&1 | tail -10 || true
 
         '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   validate-documentation-links:
-    name: '🔗 RP-003: Documentation Links'
+    name: "\U0001F517 RP-003: Documentation Links"
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: "contains(fromJson('[\"all\", \"rp003-links\", \"rp002-rp003\"]'),\n  github.event.inputs.patterns\
       \ || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-      - name: Run RP-003 validation
-        id: rp003
-        continue-on-error: true
-        run: "echo \"Starting RP-003 Documentation Link validation...\"\n\nif ! command\
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Run RP-003 validation
+      id: rp003
+      continue-on-error: true
+      run: "echo \"Starting RP-003 Documentation Link validation...\"\n\nif ! command\
         \ -v markdown-link-check &> /dev/null; then\n  echo \"Installing markdown-link-check...\"\
         \n  npm install -g markdown-link-check 2>/dev/null || true\nfi\n\nbroken_count=0\n\
         checked_count=0\n\n# Check markdown files\nfor file in $(find . -name \"*.md\"\
         \ -not -path \"./node_modules/*\" -not -path \"./.git/*\" -not -path \"./venv/*\"\
         \ | head -100); do\n  if markdown-link-check \"$file\" 2>/dev/null | grep\
-        \ -q \"\\[✖\\]\"; then\n    ((broken_count++))\n  fi\n  ((checked_count++))\n\
+        \ -q \"\\[\u2716\\]\"; then\n    ((broken_count++))\n  fi\n  ((checked_count++))\n\
         done\n\necho \"Checked $checked_count files, found $broken_count with broken\
         \ links\"\n\nif [ \"$broken_count\" -eq 0 ]; then\n  echo \"status=pass\"\
-        \ >> $GITHUB_OUTPUT\n  echo \"message=✅ All documentation links valid\" >>\
-        \ $GITHUB_OUTPUT\n  echo \"✅ RP-003 PASSED\"\nelse\n  echo \"status=warn\"\
-        \ >> $GITHUB_OUTPUT\n  echo \"message=⚠️ Found $broken_count files with broken\
-        \ links\" >> $GITHUB_OUTPUT\n  echo \"⚠️ RP-003 WARNING (non-blocking for\
-        \ PR)\"\nfi\n"
+        \ >> $GITHUB_OUTPUT\n  echo \"message=\u2705 All documentation links valid\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"\u2705 RP-003 PASSED\"\nelse\n  echo \"status=warn\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"message=\u26A0\uFE0F Found $broken_count files\
+        \ with broken links\" >> $GITHUB_OUTPUT\n  echo \"\u26A0\uFE0F RP-003 WARNING\
+        \ (non-blocking for PR)\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -174,14 +173,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-      - validate-api-null-handling
-      - validate-mypy-baseline
-      - validate-documentation-links
+    - validate-api-null-handling
+    - validate-mypy-baseline
+    - validate-documentation-links
     if: always()
     steps:
-      - name: Determine overall status
-        id: summary
-        run: "set +e\n\nrp001_result=\"${{ needs.validate-api-null-handling.result }}\"\
+    - name: Determine overall status
+      id: summary
+      run: "set +e\n\nrp001_result=\"${{ needs.validate-api-null-handling.result }}\"\
         \nrp002_result=\"${{ needs.validate-mypy-baseline.result }}\"\nrp003_result=\"\
         ${{ needs.validate-documentation-links.result }}\"\n\necho \"RP-001 Result:\
         \ $rp001_result\"\necho \"RP-002 Result: $rp002_result\"\necho \"RP-003 Result:\
@@ -192,44 +191,32 @@ jobs:
         \  exit_code=1\nelse\n  echo \"overall_status=success\" >> $GITHUB_OUTPUT\n\
         \  exit_code=0\nfi\n\nif [ \"${{ github.event_name }}\" = \"push\" ] && [\
         \ \"${{ github.ref }}\" = \"refs/heads/main\" ]; then\n  # Strict mode on\
-        \ main\n  if [ $exit_code -ne 0 ]; then\n    echo \"❌ CI Prevention Gate FAILED\
-        \ (strict mode on main)\"\n    exit 1\n  fi\nfi\n"
-      - name: Print summary
-        run: 'echo ""
-
-        echo "════════════════════════════════════════════════════════════════"
-
-        echo "  CI Pattern Prevention Gate Summary"
-
-        echo "════════════════════════════════════════════════════════════════"
-
-        echo ""
-
-        echo "RP-001 (API Null-Handling):      ${{ needs.validate-api-null-handling.result
-        }}"
-
-        echo "RP-002 (mypy Baseline):         ${{ needs.validate-mypy-baseline.result
-        }}"
-
-        echo "RP-003 (Documentation Links):   ${{ needs.validate-documentation-links.result
-        }}"
-
-        echo ""
-
-        echo "Overall Status:                 ${{ steps.summary.outputs.overall_status
-        }}"
-
-        echo "Event:                          ${{ github.event_name }}"
-
-        echo "Branch:                         ${{ github.ref_name }}"
-
-        echo ""
-
-        echo "════════════════════════════════════════════════════════════════"
-
-        echo ""
-
-        '
+        \ main\n  if [ $exit_code -ne 0 ]; then\n    echo \"\u274C CI Prevention Gate\
+        \ FAILED (strict mode on main)\"\n    exit 1\n  fi\nfi\n"
+    - name: Print summary
+      run: "echo \"\"\necho \"\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\"\necho \"  CI Pattern Prevention Gate Summary\"\necho\
+        \ \"\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \"\necho \"\"\necho \"RP-001 (API Null-Handling):      ${{ needs.validate-api-null-handling.result\
+        \ }}\"\necho \"RP-002 (mypy Baseline):         ${{ needs.validate-mypy-baseline.result\
+        \ }}\"\necho \"RP-003 (Documentation Links):   ${{ needs.validate-documentation-links.result\
+        \ }}\"\necho \"\"\necho \"Overall Status:                 ${{ steps.summary.outputs.overall_status\
+        \ }}\"\necho \"Event:                          ${{ github.event_name }}\"\n\
+        echo \"Branch:                         ${{ github.ref_name }}\"\necho \"\"\
+        \necho \"\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\
+        \u2550\"\necho \"\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -238,27 +225,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
-      - pattern-validation-summary
-      - validate-api-null-handling
-      - validate-mypy-baseline
-      - validate-documentation-links
+    - pattern-validation-summary
+    - validate-api-null-handling
+    - validate-mypy-baseline
+    - validate-documentation-links
     if: always() && github.event_name == 'pull_request'
     steps:
-      - name: Comment on PR with results
-        uses: actions/github-script@v8
-        with:
-          script: "const rp001 = '${{ needs.validate-api-null-handling.result }}';\n\
+    - name: Comment on PR with results
+      uses: actions/github-script@v8
+      with:
+        script: "const rp001 = '${{ needs.validate-api-null-handling.result }}';\n\
           const rp002 = '${{ needs.validate-mypy-baseline.result }}';\nconst rp003\
           \ = '${{ needs.validate-documentation-links.result }}';\n\nconst icons =\
-          \ {\n  'success': '✅',\n  'failure': '❌',\n  'skipped': 'ℹ️'\n};\n\nconst\
-          \ comment = `## \U0001F6E1️ CI Pattern Prevention Gate Results\n\n| Pattern\
-          \ | Status | Result |\n|---------|--------|--------|\n| **RP-001** (API\
-          \ Null-Handling) | ${icons[rp001] || '?'} | ${rp001} |\n| **RP-002** (mypy\
-          \ Baseline) | ${icons[rp002] || '?'} | ${rp002} |\n| **RP-003** (Documentation\
-          \ Links) | ${icons[rp003] || '?'} | ${rp003} |\n\n### Notes\n- RP patterns\
-          \ are **non-blocking for PRs** (warnings only)\n- All patterns are **strict\
-          \ on push to main**\n- Auto-fix commands available in each pattern's workflow\n\
-          \nSee: [CI Pattern Prevention Guide](.codex/CI_PATTERN_PREVENTION_GUIDE.md)`;\n\
+          \ {\n  'success': '\u2705',\n  'failure': '\u274C',\n  'skipped': '\u2139\
+          \uFE0F'\n};\n\nconst comment = `## \U0001F6E1\uFE0F CI Pattern Prevention\
+          \ Gate Results\n\n| Pattern | Status | Result |\n|---------|--------|--------|\n\
+          | **RP-001** (API Null-Handling) | ${icons[rp001] || '?'} | ${rp001} |\n\
+          | **RP-002** (mypy Baseline) | ${icons[rp002] || '?'} | ${rp002} |\n| **RP-003**\
+          \ (Documentation Links) | ${icons[rp003] || '?'} | ${rp003} |\n\n### Notes\n\
+          - RP patterns are **non-blocking for PRs** (warnings only)\n- All patterns\
+          \ are **strict on push to main**\n- Auto-fix commands available in each\
+          \ pattern's workflow\n\nSee: [CI Pattern Prevention Guide](.codex/CI_PATTERN_PREVENTION_GUIDE.md)`;\n\
           \ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
           });\n"

@@ -1,36 +1,41 @@
----
 name: Tiered Approval Gate
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
   pull_request_review:
-    types: [submitted]
-
+    types:
+    - submitted
 permissions:
   contents: read
   pull-requests: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   check-approval:
     runs-on: ubuntu-latest
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-      - name: Run Tiered Approval Check
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: |
-          PR_NUMBER="${{ github.event.pull_request.number || github.event.number }}"
-          python scripts/ci/tiered_approval_gate.py "$PR_NUMBER"
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Run Tiered Approval Check
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+      run: 'PR_NUMBER="${{ github.event.pull_request.number || github.event.number
+        }}"
+
+        python scripts/ci/tiered_approval_gate.py "$PR_NUMBER"
+
+        '
+    timeout-minutes: 15

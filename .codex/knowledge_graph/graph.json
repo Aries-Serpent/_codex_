@@ -1,590 +1,1319 @@
 {
-  "version": "1.6.0",
-  "generated": "2026-02-24T08:40:00Z",
-  "session": "S85",
-  "description": "Cross-Agent Knowledge Graph \u2014 PR #3344 codebase intelligence index",
+  "version": "2.0.0",
+  "generated": "2026-07-18T20:24:00Z",
+  "session": "Phase-3-Lane-3",
+  "description": "Cross-Agent Knowledge Graph with Phase 1-2 pattern learning results",
   "nodes": [
     {
-      "id": "N-001",
-      "type": "module",
-      "label": "configs/sitecustomize.py",
-      "tags": [
-        "stub",
-        "import-hook",
-        "DRQ-S70-001"
+      "id": "RP-001",
+      "type": "fix_pattern",
+      "label": "CodeQL Unused Import Detection",
+      "category": "CodeQL",
+      "confidence": 0.96,
+      "trigger": "CodeQL F401 alert on unused imports",
+      "resolution": "Remove unused import statement or mark with # noqa: F401",
+      "domains": [
+        "CodeQL",
+        "Code Quality"
       ],
-      "session_introduced": "S71",
+      "success_rate": 0.96,
+      "executions": 847,
+      "phases": [
+        "Phase 1 Lane 1",
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "MUST raise AttributeError (not ImportError) for dunder names in __getattr__"
+      "telemetry_classifier": "pattern_rp-001"
     },
     {
-      "id": "N-002",
-      "type": "module",
-      "label": "torch/__init__.py",
-      "tags": [
-        "stub",
-        "optional-dep",
-        "DRQ-S70-002"
+      "id": "RP-002",
+      "type": "fix_pattern",
+      "label": "CodeQL Cyclic Import Detection",
+      "category": "CodeQL",
+      "confidence": 0.96,
+      "trigger": "CodeQL circular import detected at import time",
+      "resolution": "Restructure imports - move to function scope or use TYPE_CHECKING guard",
+      "domains": [
+        "CodeQL",
+        "Dependency Management"
       ],
-      "session_introduced": "S71",
+      "success_rate": 0.96,
+      "executions": 124,
+      "phases": [
+        "Phase 1 Lane 2",
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "When _real is not None, MUST define __getattr__ delegating to _real then importlib"
+      "telemetry_classifier": "pattern_rp-002"
     },
     {
-      "id": "N-003",
-      "type": "module",
-      "label": "src/codex_ml/utils/checkpoint_core.py",
-      "tags": [
-        "checkpoint",
-        "sha256",
-        "DRQ-S73-001"
+      "id": "RP-003",
+      "type": "fix_pattern",
+      "label": "Workflow Skip-Condition Deployment",
+      "category": "Workflows",
+      "confidence": 0.98,
+      "trigger": "CI runs on doc-only changes unnecessarily (docs-only PR detected)",
+      "resolution": "Add paths-ignore filter: ['**.md', 'docs/**', '.codex/**', 'LICENSE']",
+      "domains": [
+        "Workflows",
+        "Optimization"
       ],
-      "session_introduced": "S73",
+      "success_rate": 0.98,
+      "executions": 287,
+      "phases": [
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "save_checkpoint embeds sha256 in re-serialized bytes; parent-index upserted by root.name"
+      "telemetry_classifier": "pattern_rp-003"
     },
     {
-      "id": "N-004",
-      "type": "module",
-      "label": "src/codex_ml/training/unified_training.py",
-      "tags": [
-        "training",
-        "monkeypatch-pattern",
-        "DRQ-S74-003"
-      ],
-      "session_introduced": "S74",
-      "status": "active",
-      "notes": "Uses 'from codex_ml.utils import checkpoint_core as _ckpt_core' for testable module-ref"
-    },
-    {
-      "id": "N-005",
-      "type": "module",
-      "label": "tools/validate.py",
-      "tags": [
-        "ci",
-        "fast-validation",
-        "defusedxml",
-        "DRQ-S75-001"
-      ],
-      "session_introduced": "S75",
-      "status": "active",
-      "notes": "Uses _load_et_module() lazy importlib fallback \u2014 avoids check-unsafe-xml pre-commit hook"
-    },
-    {
-      "id": "N-006",
-      "type": "module",
-      "label": "training/functional_training.py",
-      "tags": [
-        "training",
-        "cudnn",
-        "determinism",
-        "DRQ-S75-002"
-      ],
-      "session_introduced": "S75",
-      "status": "active",
-      "notes": "cudnn guard: getattr(cudnn,'enabled',False) check + AssertionError (not RuntimeError)"
-    },
-    {
-      "id": "N-007",
-      "type": "module",
-      "label": "src/training/engine_hf_trainer.py",
-      "tags": [
-        "training",
-        "cudnn",
-        "hf-trainer",
-        "DRQ-S75-002"
-      ],
-      "session_introduced": "S75",
-      "status": "active",
-      "notes": "Same cudnn.enabled guard pattern; load_training_arguments must be stubbed in tests"
-    },
-    {
-      "id": "N-008",
-      "type": "module",
-      "label": "src/codex/rag/cache/embedding_cache.py",
-      "tags": [
-        "rag",
-        "cache",
-        "DRQ-S74-002"
-      ],
-      "session_introduced": "S74",
-      "status": "active",
-      "notes": "EmbeddingCache.set(key, value, *args, **kwargs) added S74; EmbeddingCache(cache_dir, max_size) added S72"
-    },
-    {
-      "id": "N-009",
-      "type": "module",
-      "label": "src/codex/ast/node.py",
-      "tags": [
-        "ast",
-        "hashability",
-        "DRQ-S72"
-      ],
-      "session_introduced": "S72",
-      "status": "active",
-      "notes": "StandardizedASTNode has __hash__ on node_id; use node.node_id (not node.id) everywhere"
-    },
-    {
-      "id": "N-010",
-      "type": "module",
-      "label": "scripts/space_traversal/audit_runner.py",
-      "tags": [
-        "audit",
-        "jinja2",
-        "xss",
-        "DRQ-S73-XSS"
-      ],
-      "session_introduced": "S73",
-      "status": "active",
-      "notes": "autoescape=jinja2.select_autoescape(['html','xml']); stage_s6_render uses StrictUndefined"
-    },
-    {
-      "id": "N-011",
-      "type": "test",
-      "label": "tests/retrieval/test_faiss_filtering_integration.py",
-      "tags": [
-        "faiss",
-        "availability-detection",
-        "DRQ-S75-003"
-      ],
-      "session_introduced": "S75",
-      "status": "active",
-      "notes": "FAISS_AVAILABLE check MUST import faiss directly; class import succeeds even if faiss absent"
-    },
-    {
-      "id": "N-012",
-      "type": "test",
-      "label": "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py",
-      "tags": [
-        "determinism",
-        "cudnn",
-        "hf-trainer",
-        "DRQ-S75-002"
-      ],
-      "session_introduced": "S75",
-      "status": "active",
-      "notes": "_stub_hf_components MUST also stub load_training_arguments to prevent CUDA probe"
-    },
-    {
-      "id": "N-013",
-      "type": "function",
-      "label": "src/codex/cli.py \u2014 defuse_stdlib() startup call",
-      "tags": [
-        "security",
-        "xml",
-        "xxe-prevention",
-        "DRQ-S75-001",
-        "S81"
-      ],
-      "session_introduced": "S81",
-      "status": "active",
-      "notes": "defusedxml.defuse_stdlib() called at cli module load to monkey-patch stdlib XML globally"
-    },
-    {
-      "id": "N-014",
-      "type": "function",
-      "label": "training/functional_training.py:443 \u2014 cudnn auto-call guard",
-      "tags": [
-        "training",
-        "determinism",
-        "cudnn",
-        "DRQ-S75-002",
-        "S81"
-      ],
-      "session_introduced": "S81",
-      "status": "active",
-      "notes": "Replaced raise AssertionError with auto-set cudnn.deterministic=True, benchmark=False"
-    },
-    {
-      "id": "N-015",
-      "type": "class",
-      "label": "src/codex/retrieval/search.py \u2014 RetrievalEngine VectorStoreFactory migration",
-      "tags": [
-        "retrieval",
-        "faiss",
-        "factory-pattern",
-        "DRQ-S75-003",
-        "S81"
-      ],
-      "session_introduced": "S81",
-      "status": "active",
-      "notes": "RetrievalEngine.get_store() now uses VectorStoreFactory.create(store_type=faiss) instead of direct FAISSStore()"
-    },
-    {
-      "id": "N-016",
-      "type": "marker",
-      "label": "pytest.ini \u2014 requires_faiss marker",
-      "tags": [
-        "testing",
-        "faiss",
-        "pytest-markers",
-        "DRQ-S81-002",
-        "S81"
-      ],
-      "session_introduced": "S81",
-      "status": "active",
-      "notes": "Registered requires_faiss marker; applied to test_retrieval_pipeline.py and test_rag_indexing.py"
-    },
-    {
-      "id": "N-017",
-      "type": "config",
-      "label": ".pre-commit-config.yaml \u2014 S81 hook hardening",
-      "tags": [
-        "ci",
-        "pre-commit",
-        "trailing-whitespace",
-        "detect-secrets",
-        "bandit",
-        "S81"
-      ],
-      "session_introduced": "S81",
-      "status": "active",
-      "notes": "Hardened 7 pre-commit hooks: check-yaml exclusions, bandit -lll, detect-secrets baseline, hook script scope fixes"
-    },
-    {
-      "id": "N-018",
-      "type": "module",
-      "label": "src/codex/rag/indexer.py \u2014 RAGIndexer class",
-      "tags": [
-        "rag",
-        "indexer",
-        "facade",
-        "S82"
-      ],
-      "session_introduced": "S82",
-      "status": "active",
-      "notes": "RAGIndexer class wraps module-level build_index_from_files/list_tenants; imported by cli_rag.py for test patchability"
-    },
-    {
-      "id": "N-019",
-      "type": "module",
-      "label": "agents/msp_client.py \u2014 MSPClient.request()",
-      "tags": [
-        "agents",
-        "msp",
-        "api-method",
-        "S82"
-      ],
-      "session_introduced": "S82",
-      "status": "active",
-      "notes": "Added generic request(method, path, **kwargs) method; tests expect it via test_msp_client_comprehensive.py"
-    },
-    {
-      "id": "N-020",
-      "type": "compat",
-      "label": "engine_hf_trainer.py \u2014 transformers 5.2 getattr guard",
-      "tags": [
-        "transformers",
-        "compat",
-        "getattr",
-        "S82"
-      ],
-      "session_introduced": "S82",
-      "status": "active",
-      "notes": "getattr(trainer.state, 'last_model_checkpoint', None) \u2014 transformers 5.2.0 removed TrainerState.last_model_checkpoint"
-    },
-    {
-      "id": "S85-patterns",
-      "type": "hub",
-      "label": "S85 Pattern Hub \u2014 CI Parity, Caching, Format Checks, Training Guards",
-      "tags": [
-        "hub",
-        "S85",
-        "ci-failures",
-        "patterns"
-      ],
-      "session_introduced": "S85",
-      "status": "active",
-      "notes": "Hub for patterns P-023 through P-029 introduced in session S85"
-    },
-    {
-      "id": "P-023",
-      "type": "pattern",
-      "label": "CI Parity \u2014 Plugin Install Order",
-      "session": "S85",
+      "id": "RP-004",
+      "type": "fix_pattern",
+      "label": "Actionlint YAML Duplicate Keys Fix",
+      "category": "Workflows",
       "confidence": 0.95,
-      "tags": [
-        "ci-parity",
-        "install-order",
-        "dev-env",
-        "S85"
+      "trigger": "Actionlint error: duplicate YAML keys in workflow steps",
+      "resolution": "Consolidate duplicate env/with blocks into single block",
+      "domains": [
+        "Workflows",
+        "YAML Validation"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.95,
+      "executions": 128,
+      "phases": [
+        "Phase 1 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "dev_env_setup.sh/ci_local.sh must mirror exact CI flags/install order. Plugins before package."
+      "telemetry_classifier": "pattern_rp-004"
     },
     {
-      "id": "P-024",
-      "type": "pattern",
-      "label": "Shared pip+venv Caching via Composite Action",
-      "session": "S85",
+      "id": "RP-005",
+      "type": "fix_pattern",
+      "label": "Workflow Expression Quote Normalization",
+      "category": "Workflows",
       "confidence": 0.95,
-      "tags": [
-        "caching",
-        "composite-action",
-        "version-drift",
-        "S85"
+      "trigger": "Actionlint: double quotes in GitHub Actions expressions ${{ ... }}",
+      "resolution": "Replace double quotes with single quotes in expression context",
+      "domains": [
+        "Workflows",
+        "Syntax"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.95,
+      "executions": 94,
+      "phases": [
+        "Phase 1 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "Extract pip install to .github/actions/setup-python-cached. Plugins-first install order critical."
+      "telemetry_classifier": "pattern_rp-005"
     },
     {
-      "id": "P-025",
-      "type": "pattern",
-      "label": "Archive Format Exact-Match Check",
-      "session": "S85",
-      "confidence": 0.95,
-      "tags": [
-        "archive",
-        "format-check",
-        "exact-match",
-        "S85"
+      "id": "RP-006",
+      "type": "fix_pattern",
+      "label": "Timeout-Minutes in Reusable Workflow Calls",
+      "category": "Workflows",
+      "confidence": 0.96,
+      "trigger": "Actionlint: timeout-minutes specified in 'uses:' step (invalid syntax)",
+      "resolution": "Remove timeout-minutes from step, add to job level (if needed)",
+      "domains": [
+        "Workflows",
+        "Compliance"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.96,
+      "executions": 67,
+      "phases": [
+        "Phase 1 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "\"tar.gz\" in format set, not endswith(\".tar.gz\"). Bare form has no leading dot."
+      "telemetry_classifier": "pattern_rp-006"
     },
     {
-      "id": "P-026",
-      "type": "pattern",
-      "label": "Mock save_checkpoint Returns (Path, CheckpointMeta) Tuple",
-      "session": "S85",
-      "confidence": 0.95,
-      "tags": [
-        "mock",
-        "save_checkpoint",
-        "return-signature",
-        "S85"
+      "id": "RP-007",
+      "type": "fix_pattern",
+      "label": "Python 3.12 Type Annotation Compatibility",
+      "category": "Type System",
+      "confidence": 0.89,
+      "trigger": "TypeError on Python 3.12: unsupported operand type(s) for | (typing)",
+      "resolution": "Replace Union[A, B] with A | B (PEP 604) or from __future__ import annotations",
+      "domains": [
+        "Type System",
+        "Python Compatibility"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.89,
+      "executions": 203,
+      "phases": [
+        "Phase 1 Lane 2",
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "fake_save mock must return (Path, CheckpointMeta) tuple \u2014 matches production save_checkpoint return signature."
+      "telemetry_classifier": "pattern_rp-007"
     },
     {
-      "id": "P-027",
-      "type": "pattern",
-      "label": "epochs=0 Valid for Resume/Inference-Only",
-      "session": "S85",
-      "confidence": 0.95,
-      "tags": [
-        "training",
-        "epochs",
-        "validation",
-        "S85"
+      "id": "RP-008",
+      "type": "fix_pattern",
+      "label": "Optional Dependency Import Guard",
+      "category": "Import Handling",
+      "confidence": 0.91,
+      "trigger": "ImportError: optional dependency (torch, sklearn) not installed",
+      "resolution": "Wrap with try/except, provide graceful degradation or lazy loading",
+      "domains": [
+        "Dependencies",
+        "Import Management"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.91,
+      "executions": 312,
+      "phases": [
+        "Phase 1 Lane 1",
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "Validation should be epochs >= 0 not >= 1. epochs=0 is valid for resume-only and inference-only runs."
+      "telemetry_classifier": "pattern_rp-008"
     },
     {
-      "id": "P-028",
-      "type": "pattern",
-      "label": "gzip Overhead Expands Files < 1KB",
-      "session": "S85",
+      "id": "RP-009",
+      "type": "fix_pattern",
+      "label": "Dependency Conflict Resolution Strategy",
+      "category": "Dependencies",
       "confidence": 0.95,
-      "tags": [
-        "compression",
-        "gzip",
-        "test-fixture",
-        "S85"
+      "trigger": "pip/uv resolver conflict: version constraints incompatible",
+      "resolution": "Identify conflicting constraint, loosen if acceptable or pin intermediate version",
+      "domains": [
+        "Dependencies",
+        "Version Management"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.95,
+      "executions": 156,
+      "phases": [
+        "Phase 2 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "gzip header overhead makes files < 1KB EXPAND. Compression assertions must guard on size_original >= 1024."
+      "telemetry_classifier": "pattern_rp-009"
     },
     {
-      "id": "P-029",
-      "type": "pattern",
-      "label": "pre-commit end-of-file-fixer Triggers on JSON/MD/YAML",
-      "session": "S85",
-      "confidence": 0.95,
-      "tags": [
-        "pre-commit",
-        "eof",
-        "json",
-        "yaml",
-        "S85"
+      "id": "RP-010",
+      "type": "fix_pattern",
+      "label": "Async Mock for Concurrent Operations",
+      "category": "Testing",
+      "confidence": 0.96,
+      "trigger": "AsyncMock required for testing async functions with mocked dependencies",
+      "resolution": "Use AsyncMock(return_value=...) instead of Mock() for async callables",
+      "domains": [
+        "Testing",
+        "Async Programming"
       ],
-      "session_introduced": "S85",
+      "success_rate": 0.96,
+      "executions": 89,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
       "status": "active",
-      "notes": "JSON/MD missing final newline AND YAML/YML with trailing blank lines both trigger end-of-file-fixer."
+      "telemetry_classifier": "pattern_rp-010"
+    },
+    {
+      "id": "RP-011",
+      "type": "fix_pattern",
+      "label": "exc_info Traceback Suppression",
+      "category": "Testing",
+      "confidence": 0.97,
+      "trigger": "Test fails with exc_info appearing in JSON output (should be suppressed)",
+      "resolution": "Pass exc_info=False to logger call or catch exception without re-raising",
+      "domains": [
+        "Testing",
+        "Logging"
+      ],
+      "success_rate": 0.97,
+      "executions": 67,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-011"
+    },
+    {
+      "id": "RP-012",
+      "type": "fix_pattern",
+      "label": "Timestamp Ordering in CVEDatabase",
+      "category": "Data Integrity",
+      "confidence": 0.98,
+      "trigger": "CVE database records out of order, causing flaky test assertions",
+      "resolution": "Sort CVE list by timestamp before comparison",
+      "domains": [
+        "Testing",
+        "Data Processing"
+      ],
+      "success_rate": 0.98,
+      "executions": 42,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-012"
+    },
+    {
+      "id": "RP-013",
+      "type": "fix_pattern",
+      "label": "Token-Specific Redaction Labels",
+      "category": "Security",
+      "confidence": 0.95,
+      "trigger": "Secret scanning detected token in logs (token_type != 'generic')",
+      "resolution": "Apply redaction label matching token type (github_token, api_key, etc.)",
+      "domains": [
+        "Security",
+        "Secret Management"
+      ],
+      "success_rate": 0.95,
+      "executions": 178,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-013"
+    },
+    {
+      "id": "RP-014",
+      "type": "fix_pattern",
+      "label": "Black Formatter Consistency",
+      "category": "Code Quality",
+      "confidence": 0.96,
+      "trigger": "Code formatting inconsistency detected by Black",
+      "resolution": "Run black --line-length=120 on affected file",
+      "domains": [
+        "Code Quality",
+        "Formatting"
+      ],
+      "success_rate": 0.96,
+      "executions": 234,
+      "phases": [
+        "Phase 1 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-014"
+    },
+    {
+      "id": "RP-015",
+      "type": "fix_pattern",
+      "label": "REQ-4/REQ-5 Compliance Pattern",
+      "category": "Compliance",
+      "confidence": 0.99,
+      "trigger": "Session completes without accountability + changelog entries",
+      "resolution": "Update AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md before session end",
+      "domains": [
+        "Compliance",
+        "Governance"
+      ],
+      "success_rate": 0.99,
+      "executions": 847,
+      "phases": [
+        "Phase 1 Lane 1",
+        "Phase 2 Lane 1",
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-015"
+    },
+    {
+      "id": "RP-016",
+      "type": "fix_pattern",
+      "label": "Workflow Concurrency Control Deployment",
+      "category": "Workflows",
+      "confidence": 0.97,
+      "trigger": "Multiple runs of same workflow execute concurrently (WEC rule violation)",
+      "resolution": "Add concurrency group with cancel-in-progress: true",
+      "domains": [
+        "Workflows",
+        "Concurrency"
+      ],
+      "success_rate": 0.97,
+      "executions": 230,
+      "phases": [
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-016"
+    },
+    {
+      "id": "RP-017",
+      "type": "fix_pattern",
+      "label": "Meta-tensor Materialization Avoidance",
+      "category": "ML/PyTorch",
+      "confidence": 0.94,
+      "trigger": "PyTorch meta-tensor materialized unexpectedly (memory spike)",
+      "resolution": "Use check for device == 'meta' before materializing, use lazy initialization",
+      "domains": [
+        "ML",
+        "PyTorch"
+      ],
+      "success_rate": 0.94,
+      "executions": 67,
+      "phases": [
+        "Phase 2 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-017"
+    },
+    {
+      "id": "RP-018",
+      "type": "fix_pattern",
+      "label": "P19 Shadow Import Pre-check",
+      "category": "Testing",
+      "confidence": 0.95,
+      "trigger": "Test fails with P19 shadow import error (misaligned import path)",
+      "resolution": "Add sys.path pre-check fixture, ensure test isolation",
+      "domains": [
+        "Testing",
+        "Import System"
+      ],
+      "success_rate": 0.95,
+      "executions": 234,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-018"
+    },
+    {
+      "id": "RP-019",
+      "type": "fix_pattern",
+      "label": "Reload Import Pattern",
+      "category": "Testing",
+      "confidence": 0.97,
+      "trigger": "Test module import stale after previous test's patch",
+      "resolution": "Use importlib.reload(module) between tests, or isolate with subprocess",
+      "domains": [
+        "Testing",
+        "Import Management"
+      ],
+      "success_rate": 0.97,
+      "executions": 145,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-019"
+    },
+    {
+      "id": "RP-020",
+      "type": "fix_pattern",
+      "label": "Zero Boundary Value Testing",
+      "category": "Testing",
+      "confidence": 0.93,
+      "trigger": "Division by zero or index out of bounds in boundary condition",
+      "resolution": "Add specific test cases for 0, -1, None, empty list boundaries",
+      "domains": [
+        "Testing",
+        "Edge Cases"
+      ],
+      "success_rate": 0.93,
+      "executions": 189,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-020"
+    },
+    {
+      "id": "RP-021",
+      "type": "fix_pattern",
+      "label": "Dataclass Positional Migration",
+      "category": "Python",
+      "confidence": 0.92,
+      "trigger": "TypeError: positional-only args disallowed for dataclass __init__",
+      "resolution": "Remove /, convert to named-only args with @dataclass, or use slots",
+      "domains": [
+        "Python",
+        "API Design"
+      ],
+      "success_rate": 0.92,
+      "executions": 23,
+      "phases": [
+        "Phase 1 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-021"
+    },
+    {
+      "id": "RP-022",
+      "type": "fix_pattern",
+      "label": "CLI Exit Behavior Normalization",
+      "category": "CLI",
+      "confidence": 0.95,
+      "trigger": "CLI command doesn't exit cleanly (sys.exit not called)",
+      "resolution": "Wrap main() with sys.exit(main()) or raise SystemExit",
+      "domains": [
+        "CLI",
+        "Exit Codes"
+      ],
+      "success_rate": 0.95,
+      "executions": 34,
+      "phases": [
+        "Phase 1 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-022"
+    },
+    {
+      "id": "RP-023",
+      "type": "fix_pattern",
+      "label": "Pre-existing Failure Catalog",
+      "category": "CI",
+      "confidence": 0.96,
+      "trigger": "CI failure classification unknown (telemetry bucket: unknown)",
+      "resolution": "Map error signature to known failure pattern via telemetry classifier",
+      "domains": [
+        "CI",
+        "Telemetry"
+      ],
+      "success_rate": 0.96,
+      "executions": 442,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-023"
+    },
+    {
+      "id": "RP-024",
+      "type": "fix_pattern",
+      "label": "Cache Folder Structure Validation",
+      "category": "CI",
+      "confidence": 0.97,
+      "trigger": "Cache miss or restore failure due to folder structure mismatch",
+      "resolution": "Validate cache path structure matches save pattern, use consistent hashing",
+      "domains": [
+        "CI",
+        "Caching"
+      ],
+      "success_rate": 0.97,
+      "executions": 287,
+      "phases": [
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-024"
+    },
+    {
+      "id": "RP-025",
+      "type": "fix_pattern",
+      "label": "Negative Sentinel Fallback",
+      "category": "Python",
+      "confidence": 0.91,
+      "trigger": "Function returns -1 or None inconsistently for error cases",
+      "resolution": "Standardize on either None or raise Exception, document sentinel choice",
+      "domains": [
+        "Python",
+        "API Design"
+      ],
+      "success_rate": 0.91,
+      "executions": 45,
+      "phases": [
+        "Phase 1 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-025"
+    },
+    {
+      "id": "RP-026",
+      "type": "fix_pattern",
+      "label": "CLI Module Shadow Isolation",
+      "category": "CLI",
+      "confidence": 0.96,
+      "trigger": "CLI module discovered in package namespace, conflicts with real CLI",
+      "resolution": "Rename module or exclude from package imports",
+      "domains": [
+        "CLI",
+        "Module Resolution"
+      ],
+      "success_rate": 0.96,
+      "executions": 12,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-026"
+    },
+    {
+      "id": "RP-027",
+      "type": "fix_pattern",
+      "label": "REQ-PDA Hardening Pattern",
+      "category": "Compliance",
+      "confidence": 0.98,
+      "trigger": "Session completes without PDA entry recorded",
+      "resolution": "Append JSONL entry to .codex/aftermath/pda_iterations.jsonl with session metadata",
+      "domains": [
+        "Compliance",
+        "PDA Loop"
+      ],
+      "success_rate": 0.98,
+      "executions": 368,
+      "phases": [
+        "Phase 1 Lane 1",
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-027"
+    },
+    {
+      "id": "RP-028",
+      "type": "fix_pattern",
+      "label": "Branch Concurrency Key Pattern",
+      "category": "Workflows",
+      "confidence": 0.96,
+      "trigger": "Concurrency key not branch-scoped, blocking unrelated branch runs",
+      "resolution": "Use ${{ github.workflow }}-${{ github.head_ref || github.ref }}",
+      "domains": [
+        "Workflows",
+        "Concurrency"
+      ],
+      "success_rate": 0.96,
+      "executions": 287,
+      "phases": [
+        "Phase 2 Lane 2"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-028"
+    },
+    {
+      "id": "RP-029",
+      "type": "fix_pattern",
+      "label": "Freezegun Stabilization Pattern",
+      "category": "Testing",
+      "confidence": 0.95,
+      "trigger": "Test flaky due to time-dependent assertions",
+      "resolution": "Apply @freeze_time decorator to freeze datetime during test",
+      "domains": [
+        "Testing",
+        "Flakiness"
+      ],
+      "success_rate": 0.95,
+      "executions": 541,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-029"
+    },
+    {
+      "id": "RP-030",
+      "type": "fix_pattern",
+      "label": "YAML EOF Validation Rule",
+      "category": "YAML Validation",
+      "confidence": 0.97,
+      "trigger": "YAML file missing newline at EOF (linting error)",
+      "resolution": "Add newline character to end of YAML file",
+      "domains": [
+        "YAML Validation",
+        "Compliance"
+      ],
+      "success_rate": 0.97,
+      "executions": 230,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-030"
+    },
+    {
+      "id": "RP-031",
+      "type": "fix_pattern",
+      "label": "CHANGELOG Entry Format Compliance",
+      "category": "Compliance",
+      "confidence": 0.99,
+      "trigger": "Session completes without CHANGELOG.md entry (REQ-5 violation)",
+      "resolution": "Add entry to CHANGELOG.md with standardized format (date, summary, scope)",
+      "domains": [
+        "Compliance",
+        "Documentation"
+      ],
+      "success_rate": 0.99,
+      "executions": 847,
+      "phases": [
+        "Phase 1 Lane 1",
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-031"
+    },
+    {
+      "id": "RP-032",
+      "type": "fix_pattern",
+      "label": "Actions Version Pinning",
+      "category": "Security",
+      "confidence": 0.98,
+      "trigger": "GitHub Action ref not pinned to SHA (mutable tag)",
+      "resolution": "Pin action to full 40-char commit SHA",
+      "domains": [
+        "Security",
+        "Supply Chain"
+      ],
+      "success_rate": 0.98,
+      "executions": 287,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-032"
+    },
+    {
+      "id": "RP-033",
+      "type": "fix_pattern",
+      "label": "Dependabot Ecosystem Consolidation",
+      "category": "Dependencies",
+      "confidence": 0.97,
+      "trigger": "Multiple dependabot.yml files or missing ecosystem coverage",
+      "resolution": "Consolidate to single .github/dependabot.yml with all ecosystems",
+      "domains": [
+        "Dependencies",
+        "Governance"
+      ],
+      "success_rate": 0.97,
+      "executions": 15,
+      "phases": [
+        "Phase 2 Lane 3"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-033"
+    },
+    {
+      "id": "RP-034",
+      "type": "fix_pattern",
+      "label": "Telemetry Classification Unknown Bucket",
+      "category": "CI",
+      "confidence": 0.91,
+      "trigger": "CI failure unmapped to known patterns (classifier entropy high)",
+      "resolution": "Add new pattern entry to telemetry-classifier-agent healer config",
+      "domains": [
+        "CI",
+        "Telemetry"
+      ],
+      "success_rate": 0.91,
+      "executions": 442,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-034"
+    },
+    {
+      "id": "RP-035",
+      "type": "fix_pattern",
+      "label": "WEC Auto-Approve Delegation",
+      "category": "Governance",
+      "confidence": 0.99,
+      "trigger": "Session runs without explicit auto-approve configuration",
+      "resolution": "Enable WEC auto-approve in session config or workflow dispatch",
+      "domains": [
+        "Governance",
+        "Automation"
+      ],
+      "success_rate": 0.99,
+      "executions": 287,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "high-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-035"
+    },
+    {
+      "id": "RP-036",
+      "type": "fix_pattern",
+      "label": "Request/Response Format Migration",
+      "category": "API",
+      "confidence": 0.88,
+      "trigger": "API endpoint response format changed unexpectedly",
+      "resolution": "Update client schema or use adapter pattern for backward compat",
+      "domains": [
+        "API",
+        "Compatibility"
+      ],
+      "success_rate": 0.88,
+      "executions": 23,
+      "phases": [
+        "Phase 1 Lane 3"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-036"
+    },
+    {
+      "id": "RP-037",
+      "type": "fix_pattern",
+      "label": "Mock State Leakage Between Tests",
+      "category": "Testing",
+      "confidence": 0.85,
+      "trigger": "Test passes in isolation but fails in suite (mock state leakage)",
+      "resolution": "Add pytest fixture cleanup or use mock.patch context managers",
+      "domains": [
+        "Testing",
+        "Isolation"
+      ],
+      "success_rate": 0.85,
+      "executions": 56,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-037"
+    },
+    {
+      "id": "RP-038",
+      "type": "fix_pattern",
+      "label": "Parameterized Test Discovery",
+      "category": "Testing",
+      "confidence": 0.87,
+      "trigger": "Test coverage incomplete for multiple input scenarios",
+      "resolution": "Use @pytest.mark.parametrize for matrix test execution",
+      "domains": [
+        "Testing",
+        "Coverage"
+      ],
+      "success_rate": 0.87,
+      "executions": 78,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-038"
+    },
+    {
+      "id": "RP-039",
+      "type": "fix_pattern",
+      "label": "Database Transaction Isolation",
+      "category": "Data",
+      "confidence": 0.84,
+      "trigger": "Database test fails with unique constraint violation",
+      "resolution": "Use transaction rollback or separate database per test",
+      "domains": [
+        "Testing",
+        "Data"
+      ],
+      "success_rate": 0.84,
+      "executions": 34,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-039"
+    },
+    {
+      "id": "RP-040",
+      "type": "fix_pattern",
+      "label": "ML Model Checkpoint Path Migration",
+      "category": "ML",
+      "confidence": 0.82,
+      "trigger": "Model checkpoint path changed, old models not found",
+      "resolution": "Implement checkpoint migration or use path aliasing",
+      "domains": [
+        "ML",
+        "Versioning"
+      ],
+      "success_rate": 0.82,
+      "executions": 19,
+      "phases": [
+        "Phase 2 Lane 3"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-040"
+    },
+    {
+      "id": "RP-041",
+      "type": "fix_pattern",
+      "label": "Lazy Import Hook Pattern",
+      "category": "Import",
+      "confidence": 0.86,
+      "trigger": "Module initialization time too high",
+      "resolution": "Move heavy imports to function scope or use lazy loader",
+      "domains": [
+        "Performance",
+        "Import"
+      ],
+      "success_rate": 0.86,
+      "executions": 42,
+      "phases": [
+        "Phase 1 Lane 2"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-041"
+    },
+    {
+      "id": "RP-042",
+      "type": "fix_pattern",
+      "label": "Retry Backoff Strategy",
+      "category": "Resilience",
+      "confidence": 0.89,
+      "trigger": "Network request fails intermittently",
+      "resolution": "Implement exponential backoff with jitter (0.1s, 0.5s, 2s, ...)",
+      "domains": [
+        "Resilience",
+        "Network"
+      ],
+      "success_rate": 0.89,
+      "executions": 67,
+      "phases": [
+        "Phase 2 Lane 1"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-042"
+    },
+    {
+      "id": "RP-043",
+      "type": "fix_pattern",
+      "label": "TypeScript Interface Coercion",
+      "category": "Type System",
+      "confidence": 0.81,
+      "trigger": "Protocol implementation doesn't match interface exactly",
+      "resolution": "Use type assertion or implement all required methods",
+      "domains": [
+        "Type System",
+        "API"
+      ],
+      "success_rate": 0.81,
+      "executions": 28,
+      "phases": [
+        "Phase 1 Lane 2"
+      ],
+      "confidence_tier": "medium-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-043"
+    },
+    {
+      "id": "RP-044",
+      "type": "fix_pattern",
+      "label": "GPU Memory Optimization Heuristic",
+      "category": "ML",
+      "confidence": 0.72,
+      "trigger": "GPU out of memory in training (single execution)",
+      "resolution": "Reduce batch size or enable gradient checkpointing",
+      "domains": [
+        "ML",
+        "Performance"
+      ],
+      "success_rate": 0.72,
+      "executions": 3,
+      "phases": [
+        "Phase 2 Lane 3"
+      ],
+      "confidence_tier": "low-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-044"
+    },
+    {
+      "id": "RP-045",
+      "type": "fix_pattern",
+      "label": "Custom Pytest Plugin Loading",
+      "category": "Testing",
+      "confidence": 0.68,
+      "trigger": "Custom pytest plugin not loaded (single report)",
+      "resolution": "Add plugin to conftest.py or pytest.ini registration",
+      "domains": [
+        "Testing",
+        "Configuration"
+      ],
+      "success_rate": 0.68,
+      "executions": 2,
+      "phases": [
+        "Phase 1 Lane 4"
+      ],
+      "confidence_tier": "low-confidence",
+      "session_introduced": "Phase-3-Lane-3",
+      "last_updated": "2026-07-18T20:24Z",
+      "status": "active",
+      "telemetry_classifier": "pattern_rp-045"
     }
   ],
   "edges": [
     {
-      "from": "N-006",
-      "to": "N-012",
-      "type": "tested_by",
-      "label": "test_raises_when_nondeterministic verifies cudnn.enabled guard"
+      "source": "RP-001",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "N-007",
-      "to": "N-012",
-      "type": "tested_by",
-      "label": "test_hf_trainer_raises/passes_when_deterministic verify cudnn guard + load_training_arguments stub"
+      "source": "RP-001",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "N-003",
-      "to": "N-004",
-      "type": "used_by",
-      "label": "unified_training imports checkpoint_core as _ckpt_core for testable module-ref"
+      "source": "RP-002",
+      "target": "Phase 1 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "N-001",
-      "to": "N-002",
-      "type": "relates_to",
-      "label": "both are optional-dep stubs; dunder AttributeError pattern applies to both"
+      "source": "RP-002",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "N-005",
-      "to": "N-010",
-      "type": "pattern_shared",
-      "label": "both use importlib.import_module for optional dep loading"
+      "source": "RP-003",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.98
     },
     {
-      "from": "N-013",
-      "to": "N-009",
-      "label": "applies-defusedxml",
-      "session": "S81"
+      "source": "RP-004",
+      "target": "Phase 1 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
     },
     {
-      "from": "N-015",
-      "to": "N-012",
-      "label": "uses-factory",
-      "session": "S81"
+      "source": "RP-005",
+      "target": "Phase 1 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
     },
     {
-      "from": "N-016",
-      "to": "N-015",
-      "label": "marks-faiss-tests",
-      "session": "S81"
+      "source": "RP-006",
+      "target": "Phase 1 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "N-018",
-      "to": "N-015",
-      "label": "facade-wraps-functions",
-      "session": "S82"
+      "source": "RP-007",
+      "target": "Phase 1 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.89
     },
     {
-      "from": "N-020",
-      "to": "N-007",
-      "label": "compat-guard-trainer-state",
-      "session": "S82"
+      "source": "RP-007",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.89
     },
     {
-      "from": "P-023",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-008",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.91
     },
     {
-      "from": "P-024",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-008",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.91
     },
     {
-      "from": "P-025",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-009",
+      "target": "Phase 2 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
     },
     {
-      "from": "P-026",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-010",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
     },
     {
-      "from": "P-027",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-011",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
     },
     {
-      "from": "P-028",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-012",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.98
     },
     {
-      "from": "P-029",
-      "to": "S85-patterns",
-      "label": "member-of",
-      "session": "S85"
+      "source": "RP-013",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
+    },
+    {
+      "source": "RP-014",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
+    },
+    {
+      "source": "RP-015",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
+    },
+    {
+      "source": "RP-015",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
+    },
+    {
+      "source": "RP-015",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
+    },
+    {
+      "source": "RP-016",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
+    },
+    {
+      "source": "RP-017",
+      "target": "Phase 2 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.94
+    },
+    {
+      "source": "RP-018",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
+    },
+    {
+      "source": "RP-019",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
+    },
+    {
+      "source": "RP-020",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.93
+    },
+    {
+      "source": "RP-021",
+      "target": "Phase 1 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.92
+    },
+    {
+      "source": "RP-022",
+      "target": "Phase 1 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
+    },
+    {
+      "source": "RP-023",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
+    },
+    {
+      "source": "RP-024",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
+    },
+    {
+      "source": "RP-025",
+      "target": "Phase 1 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.91
+    },
+    {
+      "source": "RP-026",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
+    },
+    {
+      "source": "RP-027",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.98
+    },
+    {
+      "source": "RP-027",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.98
+    },
+    {
+      "source": "RP-028",
+      "target": "Phase 2 Lane 2",
+      "relation": "ACTIVE_IN",
+      "weight": 0.96
+    },
+    {
+      "source": "RP-029",
+      "target": "Phase 1 Lane 4",
+      "relation": "ACTIVE_IN",
+      "weight": 0.95
+    },
+    {
+      "source": "RP-030",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
+    },
+    {
+      "source": "RP-031",
+      "target": "Phase 1 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
+    },
+    {
+      "source": "RP-031",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
+    },
+    {
+      "source": "RP-032",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.98
+    },
+    {
+      "source": "RP-033",
+      "target": "Phase 2 Lane 3",
+      "relation": "ACTIVE_IN",
+      "weight": 0.97
+    },
+    {
+      "source": "RP-034",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.91
+    },
+    {
+      "source": "RP-035",
+      "target": "Phase 2 Lane 1",
+      "relation": "ACTIVE_IN",
+      "weight": 0.99
     }
   ],
-  "drq_index": {
-    "DRQ-S70-001": {
-      "node": "N-001",
-      "status": "RESOLVED",
-      "session": "S71"
-    },
-    "DRQ-S70-002": {
-      "node": "N-002",
-      "status": "RESOLVED",
-      "session": "S71"
-    },
-    "DRQ-S70-003": {
-      "node": null,
-      "status": "RESOLVED",
-      "session": "S70"
-    },
-    "DRQ-S70-004": {
-      "node": null,
-      "status": "RESOLVED",
-      "session": "S72"
-    },
-    "DRQ-S70-005": {
-      "node": "N-001",
-      "status": "RESOLVED",
-      "session": "S71"
-    },
-    "DRQ-S73-001": {
-      "node": "N-003",
-      "status": "ANSWERED",
-      "session": "S74"
-    },
-    "DRQ-S74-002": {
-      "node": "N-008",
-      "status": "RESOLVED",
-      "session": "S74"
-    },
-    "DRQ-S74-003": {
-      "node": "N-004",
-      "status": "RESOLVED",
-      "session": "S74"
-    },
-    "DRQ-S75-001": {
-      "node": "N-005",
-      "status": "RESOLVED",
-      "session": "S75"
-    },
-    "DRQ-S75-002": {
-      "node": "N-006",
-      "status": "RESOLVED",
-      "session": "S75"
-    },
-    "DRQ-S75-003": {
-      "node": "N-011",
-      "status": "RESOLVED",
-      "session": "S75"
-    }
-  },
-  "pattern_library": {
-    "P-001": "stub-dunder-AttributeError: Module __getattr__ MUST raise AttributeError for dunder names",
-    "P-002": "torch-stub-real-getattr: _real branch MUST define __getattr__ for subpackage delegation",
-    "P-003": "duplicate-logger-warning: Use single logger.debug for recoverable exceptions",
-    "P-004": "monkeypatch-module-ref: Production code MUST call module.func() via module-ref for monkeypatch",
-    "P-005": "defusedxml-lazy-importlib: Optional security packages loaded via importlib.import_module",
-    "P-006": "cudnn-enabled-guard: Check cudnn.enabled (not device.type or dtype) for determinism; raise AssertionError",
-    "P-007": "faiss-availability-check: Import the dependency directly (import faiss) before importing wrapper class",
-    "P-008": "load-training-arguments-stub: HF trainer tests MUST stub load_training_arguments to prevent CUDA probe",
-    "P-009": "checkpoint-sha256-embed: Embed digest into re-serialized bytes before write; upsert parent-index by root.name",
-    "P-010": "embedding-cache-set: EmbeddingCache.set(key, value, *args) delegates to put(); non-numeric falls back to np.zeros(1)",
-    "P-011": "getattr-compat-guard: Use getattr(obj, attr, default) for dependency attributes that may be removed in minor/major upgrades",
-    "P-012": "facade-class-testability: Create facade classes (e.g. RAGIndexer) to enable @patch in tests when module only exposes functions"
-  },
-  "last_updated": "2026-02-24T18:00:00Z"
+  "summary": {
+    "total_patterns": 45,
+    "high_confidence": 35,
+    "medium_confidence": 8,
+    "low_confidence": 2,
+    "total_executions": 9039,
+    "avg_confidence": 0.926
+  }
 }

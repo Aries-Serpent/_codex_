@@ -1,4 +1,3 @@
----
 name: Generate SBOM
 on:
   workflow_call:
@@ -13,10 +12,20 @@ on:
     - main
     - develop
     - work
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     branches:
     - 0D_base_
     - main
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   release:
     types:
     - published
@@ -65,32 +74,36 @@ jobs:
     - name: Validate SBOM exists and is non-empty
       run: "SBOM_FILE=\"\"\nif [ -f sbom-cyclonedx.json ]; then\n  SBOM_FILE=\"sbom-cyclonedx.json\"\
         \nelif [ -f pip-licenses.json ]; then\n  SBOM_FILE=\"pip-licenses.json\"\n\
-        fi\nif [ -z \"$SBOM_FILE\" ]; then\n  echo \"⚠️ Warning: No SBOM JSON generated\
-        \ (tool may not support this env); CSV fallback active\"\n  exit 0\nfi\nSIZE=$(wc\
-        \ -c < \"$SBOM_FILE\")\necho \"SBOM size: ${SIZE} bytes\"\nif [ \"$SIZE\"\
-        \ -lt 100 ]; then\n  echo \"❌ SBOM too small — generation may have failed\"\
-        \n  exit 1\nfi\necho \"✅ SBOM validated: $SBOM_FILE (${SIZE} bytes)\"\n"
+        fi\nif [ -z \"$SBOM_FILE\" ]; then\n  echo \"\u26A0\uFE0F Warning: No SBOM\
+        \ JSON generated (tool may not support this env); CSV fallback active\"\n\
+        \  exit 0\nfi\nSIZE=$(wc -c < \"$SBOM_FILE\")\necho \"SBOM size: ${SIZE} bytes\"\
+        \nif [ \"$SIZE\" -lt 100 ]; then\n  echo \"\u274C SBOM too small \u2014 generation\
+        \ may have failed\"\n  exit 1\nfi\necho \"\u2705 SBOM validated: $SBOM_FILE\
+        \ (${SIZE} bytes)\"\n"
     - name: Validate CycloneDX JSON structure (P2-03)
-      run: "if [ ! -f sbom-cyclonedx.json ]; then\n  echo \"ℹ️ No CycloneDX JSON found\
-        \ — skipping schema validation\"\n  exit 0\nfi\npython3 << 'PY'\nimport json\n\
-        import sys\n\nwith open(\"sbom-cyclonedx.json\", \"r\", encoding=\"utf-8\"\
-        ) as f:\n    sbom = json.load(f)\n\n# CycloneDX minimal required fields\n\
-        required_top_keys = {\"bomFormat\", \"specVersion\", \"version\"}\nmissing\
-        \ = required_top_keys - set(sbom.keys())\nif missing:\n    print(f\"❌ CycloneDX\
-        \ SBOM missing required top-level keys: {missing}\", file=sys.stderr)\n  \
-        \  sys.exit(1)\n\nif sbom.get(\"bomFormat\") != \"CycloneDX\":\n    print(f\"\
-        ❌ bomFormat is not 'CycloneDX': {sbom.get('bomFormat')}\", file=sys.stderr)\n\
-        \    sys.exit(1)\n\ncomponents = sbom.get(\"components\", [])\nprint(f\"✅\
-        \ CycloneDX SBOM valid — specVersion={sbom['specVersion']!r}, \"\n      f\"\
-        {len(components)} component(s) listed\")\nPY\n"
+      run: "if [ ! -f sbom-cyclonedx.json ]; then\n  echo \"\u2139\uFE0F No CycloneDX\
+        \ JSON found \u2014 skipping schema validation\"\n  exit 0\nfi\npython3 <<\
+        \ 'PY'\nimport json\nimport sys\n\nwith open(\"sbom-cyclonedx.json\", \"r\"\
+        , encoding=\"utf-8\") as f:\n    sbom = json.load(f)\n\n# CycloneDX minimal\
+        \ required fields\nrequired_top_keys = {\"bomFormat\", \"specVersion\", \"\
+        version\"}\nmissing = required_top_keys - set(sbom.keys())\nif missing:\n\
+        \    print(f\"\u274C CycloneDX SBOM missing required top-level keys: {missing}\"\
+        , file=sys.stderr)\n    sys.exit(1)\n\nif sbom.get(\"bomFormat\") != \"CycloneDX\"\
+        :\n    print(f\"\u274C bomFormat is not 'CycloneDX': {sbom.get('bomFormat')}\"\
+        , file=sys.stderr)\n    sys.exit(1)\n\ncomponents = sbom.get(\"components\"\
+        , [])\nprint(f\"\u2705 CycloneDX SBOM valid \u2014 specVersion={sbom['specVersion']!r},\
+        \ \"\n      f\"{len(components)} component(s) listed\")\nPY\n"
     - name: Upload SBOM artifacts
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        path: |
-          sbom-cyclonedx.json
+        path: 'sbom-cyclonedx.json
+
           pip-licenses.json
+
           sbom-licenses.csv
+
+          '
         if-no-files-found: warn
         retention-days: 90
         name: sbom-${{ github.run_id }}
@@ -103,6 +116,7 @@ jobs:
         '
       env:
         GH_TOKEN: ${{ github.token }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -136,3 +150,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

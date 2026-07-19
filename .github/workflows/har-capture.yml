@@ -1,33 +1,14 @@
----
 name: HAR Cache Capture
-# aais-cache: none  # Python referenced in template/doc strings only — no pip install
-
-# Refreshes the Playwright-recorded HAR file used by the Cognitive App in
-# offline / GitHub Pages mode.
-#
-# Triggers:
-#   - Weekly schedule (Monday 03:00 UTC)
-#   - Manual dispatch (force refresh or target a specific URL)
-#   - Push to main touching har-capture.spec.ts or the seed HAR
-#
-# What it does:
-#   1. Starts the cognitive_app Vite dev server + CLI API server
-#   2. Runs the Playwright HAR capture spec (full app walkthrough)
-#   3. Enriches the HAR with GitHub API responses (via App installation token)
-#   4. Commits the updated HAR back to main via LFS
-#
-# Budget: ~8 min/run × 4 runs/month ≈ 32 min/month
-# HAR stored in Git LFS — does NOT bloat the git object store.
-
 on:
   push:
-    branches: [main]
+    branches:
+    - main
     paths:
-      - cognitive_app/e2e/har-capture.spec.ts
-      - cognitive_app/public/har-cache/api-demo.har
-      - scripts/ci/generate_har_dataset.py
+    - cognitive_app/e2e/har-capture.spec.ts
+    - cognitive_app/public/har-cache/api-demo.har
+    - scripts/ci/generate_har_dataset.py
   schedule:
-    - cron: '0 3 * * 1'  # Monday 03:00 UTC
+  - cron: 0 3 * * 1
   workflow_dispatch:
     inputs:
       target-url:
@@ -35,225 +16,154 @@ on:
         required: false
         default: ''
       commit-back:
-        description: 'Commit the updated HAR back to the branch'
+        description: Commit the updated HAR back to the branch
         required: false
         type: boolean
         default: true
-
 env:
   PYTHON_VERSION: '3.12'
   NODE_VERSION: '22'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   capture-har:
-    name: '🎬 Record HAR — Cognitive App walkthrough'
+    name: "\U0001F3AC Record HAR \u2014 Cognitive App walkthrough"
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write  # to commit HAR back
+      contents: write
       actions: read
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
-          lfs: false  # LFS disabled — object may not exist on server
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        lfs: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
+    - name: Setup agent environment (L6)
+      uses: ./.github/actions/setup-agent-env
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        install-editable: 'true'
+        verify: 'false'
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: npm
+        cache-dependency-path: cognitive_app/package-lock.json
+    - name: Install cognitive_app dependencies
+      working-directory: cognitive_app
+      run: npm ci --prefer-offline
+    - name: Install Playwright Chromium
+      working-directory: cognitive_app
+      run: npx playwright install chromium --with-deps
+    - name: Bootstrap HAR from GitHub API
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          secrets.GITHUB_TOKEN }}
+        GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
+        GITHUB_APP_PRIVATE_KEY_PEM: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+        GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
+        CODEX_NET_MODE: online_allowlist
+        CODEX_ALLOWLIST_HOSTS: api.github.com
+      run: "python scripts/ci/generate_har_dataset.py \\\n  --output cognitive_app/public/har-cache/api-demo.har\
+        \ \\\n  --repo Aries-Serpent/_codex_ \\\n  --merge-existing \\\n  || echo\
+        \ \"::warning::HAR bootstrap failed \u2014 Playwright will overwrite with\
+        \ fresh recording\"\n"
+    - name: Start CLI API server (:8765)
+      working-directory: cognitive_app
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
+        GITHUB_APP_PRIVATE_KEY_PEM: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+        GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
+      run: "nohup .venv_agent/bin/python -m uvicorn \\\n  cognitive_app.src.server.cli_api_server:app\
+        \ \\\n  --host 0.0.0.0 --port 8765 \\\n  > /tmp/cli_api.log 2>&1 &\necho \"\
+        CLI_API_PID=$!\" >> \"$GITHUB_ENV\"\n# Wait for server to be ready\nfor i\
+        \ in $(seq 1 15); do\n  curl -sf http://localhost:8765/api/health > /dev/null\
+        \ 2>&1 && break\n  echo \"Waiting for CLI API server\u2026 ($i/15)\"\n  sleep\
+        \ 2\ndone\n"
+    - name: Run Playwright HAR capture
+      working-directory: cognitive_app
+      env:
+        BASE_URL: ${{ inputs.target-url || 'http://localhost:5173' }}
+        VITE_CLI_API_URL: http://localhost:8765
+        VITE_CODEX_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        VITE_GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        VITE_GITHUB_REPO: Aries-Serpent/_codex_
+        CI: 'true'
+      run: "npx playwright test e2e/har-capture.spec.ts \\\n  --project=chromium \\\
+        \n  --reporter=list \\\n  || echo \"::warning::Playwright walkthrough completed\
+        \ with some skipped steps\"\n"
+    - name: Upload Playwright report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: 'cognitive_app/playwright-report/
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+          cognitive_app/playwright-results.json
 
-      # ── Python + agent venv ──────────────────────────────────────────────
-      - name: Setup agent environment (L6)
-        uses: ./.github/actions/setup-agent-env
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-          install-editable: 'true'
-          verify: 'false'
-
-      # ── Node.js + npm cache ──────────────────────────────────────────────
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v5  # v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: cognitive_app/package-lock.json
-
-      - name: Install cognitive_app dependencies
-        working-directory: cognitive_app
-        run: npm ci --prefer-offline
-
-      # ── Install Playwright browsers ──────────────────────────────────────
-      - name: Install Playwright Chromium
-        working-directory: cognitive_app
-        run: npx playwright install chromium --with-deps
-
-      # ── Bootstrap HAR from GitHub API (Python, no browser needed) ────────
-      - name: Bootstrap HAR from GitHub API
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          # Map Codespace-style secrets to plain names for github_app_auth.py
-          GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
-          GITHUB_APP_PRIVATE_KEY_PEM: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-          GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
-          CODEX_NET_MODE: online_allowlist
-          CODEX_ALLOWLIST_HOSTS: api.github.com
-        run: |
-          python scripts/ci/generate_har_dataset.py \
-            --output cognitive_app/public/har-cache/api-demo.har \
-            --repo Aries-Serpent/_codex_ \
-            --merge-existing \
-            || echo "::warning::HAR bootstrap failed — Playwright will overwrite with fresh recording"
-
-      # ── Start CLI API server (background) ────────────────────────────────
-      - name: Start CLI API server (:8765)
-        working-directory: cognitive_app
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
-          GITHUB_APP_PRIVATE_KEY_PEM: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-          GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
-        run: |
-          nohup .venv_agent/bin/python -m uvicorn \
-            cognitive_app.src.server.cli_api_server:app \
-            --host 0.0.0.0 --port 8765 \
-            > /tmp/cli_api.log 2>&1 &
-          echo "CLI_API_PID=$!" >> "$GITHUB_ENV"
-          # Wait for server to be ready
-          for i in $(seq 1 15); do
-            curl -sf http://localhost:8765/api/health > /dev/null 2>&1 && break
-            echo "Waiting for CLI API server… ($i/15)"
-            sleep 2
-          done
-
-      # ── Run Playwright HAR capture ────────────────────────────────────────
-      - name: Run Playwright HAR capture
-        working-directory: cognitive_app
-        env:
-          BASE_URL: ${{ inputs.target-url || 'http://localhost:5173' }}
-          VITE_CLI_API_URL: 'http://localhost:8765'
-          VITE_CODEX_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          VITE_GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          VITE_GITHUB_REPO: 'Aries-Serpent/_codex_'
-          CI: 'true'
-        run: |
-          npx playwright test e2e/har-capture.spec.ts \
-            --project=chromium \
-            --reporter=list \
-            || echo "::warning::Playwright walkthrough completed with some skipped steps"
-
-      # ── Collect Playwright report ─────────────────────────────────────────
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: |
-            cognitive_app/playwright-report/
-            cognitive_app/playwright-results.json
-          retention-days: 30
-
-          name: playwright-har-capture-report-${{ github.run_id }}
-      # ── Validate HAR ──────────────────────────────────────────────────────
-      - name: Validate HAR file
-        run: |
-          python - << 'PYEOF'
-          import json, sys
-          from pathlib import Path
-          har_path = Path("cognitive_app/public/har-cache/api-demo.har")
-          if not har_path.exists():
-              print("❌ HAR file not found!")
-              sys.exit(1)
-          har = json.loads(har_path.read_text())
-          entries = har.get("log", {}).get("entries", [])
-          print(f"✅ HAR valid — {len(entries)} entries recorded")
-          if len(entries) < 3:
-              print("::warning::HAR has fewer than 3 entries — walkthrough may have been incomplete")
-          PYEOF
-
-      # ── Commit HAR back to main ───────────────────────────────────────────
-      - name: Commit updated HAR back to branch
-        if: ${{ inputs.commit-back != false && github.event_name != 'pull_request' }}
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Use CODEX_MASTER_KEY for push (elevated permissions for LFS + main)
-          if [ -n "${CODEX_MASTER_KEY}" ]; then
-            git remote set-url origin \
-              "https://x-access-token:${CODEX_MASTER_KEY}@github.com/${{ github.repository }}.git"
-          fi
-
-          git add cognitive_app/public/har-cache/api-demo.har
-
-          if git diff --cached --quiet; then
-            echo "No HAR changes to commit."
-          else
-            ENTRY_COUNT=$(python3 -c "
-          import json; from pathlib import Path
-          h = json.loads(Path('cognitive_app/public/har-cache/api-demo.har').read_text())
-          print(len(h.get('log',{}).get('entries',[])))
-          " 2>/dev/null || echo "?")
-            git commit -m "chore(har): refresh api-demo.har — ${ENTRY_COUNT} entries [skip ci]
-
-          Recorded by: har-capture.yml (Playwright full walkthrough)
-          Run: ${{ github.run_id }}
-          Trigger: ${{ github.event_name }}"
-
-            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-            if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.ref_name }}" = "main" ]; then
-              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
-              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
-            else
-              TARGET_REF="${{ github.ref_name }}"
-            fi
-            echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
-            git fetch origin "${TARGET_REF}"
-            git rebase "origin/${TARGET_REF}"
-            git push origin HEAD:${TARGET_REF}
-            echo "✅ HAR committed and pushed (LFS)"
-          fi
-
-      # ── Summary ───────────────────────────────────────────────────────────
-      - name: Write job summary
-        if: always()
-        run: |
-          python - << 'PYEOF'
-          import json, os
-          from pathlib import Path
-          har_path = Path("cognitive_app/public/har-cache/api-demo.har")
-          try:
-              har = json.loads(har_path.read_text())
-              entries = har.get("log", {}).get("entries", [])
-              urls = [e["request"]["url"] for e in entries[:10]]
-          except Exception:
-              entries, urls = [], []
-
-          lines = [
-              "## 🎬 HAR Cache Capture",
-              "",
-              f"| Key | Value |",
-              f"|-----|-------|",
-              f"| **Entries recorded** | {len(entries)} |",
-              f"| **Output** | `cognitive_app/public/har-cache/api-demo.har` (Git LFS) |",
-              f"| **Trigger** | `{os.environ.get('GITHUB_EVENT_NAME', 'unknown')}` |",
-              "",
-              "### Sample captured endpoints",
-          ] + [f"- `{u}`" for u in urls]
-
-          summary_path = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
-          with open(summary_path, "a") as f:
-              f.write("\n".join(lines) + "\n")
-          PYEOF
-
+          '
+        retention-days: 30
+        name: playwright-har-capture-report-${{ github.run_id }}
+    - name: Validate HAR file
+      run: "python - << 'PYEOF'\nimport json, sys\nfrom pathlib import Path\nhar_path\
+        \ = Path(\"cognitive_app/public/har-cache/api-demo.har\")\nif not har_path.exists():\n\
+        \    print(\"\u274C HAR file not found!\")\n    sys.exit(1)\nhar = json.loads(har_path.read_text())\n\
+        entries = har.get(\"log\", {}).get(\"entries\", [])\nprint(f\"\u2705 HAR valid\
+        \ \u2014 {len(entries)} entries recorded\")\nif len(entries) < 3:\n    print(\"\
+        ::warning::HAR has fewer than 3 entries \u2014 walkthrough may have been incomplete\"\
+        )\nPYEOF\n"
+    - name: Commit updated HAR back to branch
+      if: ${{ inputs.commit-back != false && github.event_name != 'pull_request' }}
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+      run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
+        github-actions[bot]@users.noreply.github.com\"\n\n# Use CODEX_MASTER_KEY for\
+        \ push (elevated permissions for LFS + main)\nif [ -n \"${CODEX_MASTER_KEY}\"\
+        \ ]; then\n  git remote set-url origin \\\n    \"https://x-access-token:${CODEX_MASTER_KEY}@github.com/${{\
+        \ github.repository }}.git\"\nfi\n\ngit add cognitive_app/public/har-cache/api-demo.har\n\
+        \nif git diff --cached --quiet; then\n  echo \"No HAR changes to commit.\"\
+        \nelse\n  ENTRY_COUNT=$(python3 -c \"\nimport json; from pathlib import Path\n\
+        h = json.loads(Path('cognitive_app/public/har-cache/api-demo.har').read_text())\n\
+        print(len(h.get('log',{}).get('entries',[])))\n\" 2>/dev/null || echo \"?\"\
+        )\n  git commit -m \"chore(har): refresh api-demo.har \u2014 ${ENTRY_COUNT}\
+        \ entries [skip ci]\n\nRecorded by: har-capture.yml (Playwright full walkthrough)\n\
+        Run: ${{ github.run_id }}\nTrigger: ${{ github.event_name }}\"\n\n  # Walk\
+        \ the staging chain: sub-PR \u2192 0D_base_ \u2192 main  (resolved above)\n\
+        \  if [ \"${{ github.event_name }}\" = \"schedule\" ] || [ \"${{ github.ref_name\
+        \ }}\" = \"main\" ]; then\n    TARGET_REF=\"${{ steps.resolve-target.outputs.branch\
+        \ }}\"\n    echo \"\U0001F500 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason\
+        \ }})\"\n  else\n    TARGET_REF=\"${{ github.ref_name }}\"\n  fi\n  echo \"\
+        \U0001F504 Re-basing HAR commit onto tip of ${TARGET_REF} before push\"\n\
+        \  git fetch origin \"${TARGET_REF}\"\n  git rebase \"origin/${TARGET_REF}\"\
+        \n  git push origin HEAD:${TARGET_REF}\n  echo \"\u2705 HAR committed and\
+        \ pushed (LFS)\"\nfi\n"
+    - name: Write job summary
+      if: always()
+      run: "python - << 'PYEOF'\nimport json, os\nfrom pathlib import Path\nhar_path\
+        \ = Path(\"cognitive_app/public/har-cache/api-demo.har\")\ntry:\n    har =\
+        \ json.loads(har_path.read_text())\n    entries = har.get(\"log\", {}).get(\"\
+        entries\", [])\n    urls = [e[\"request\"][\"url\"] for e in entries[:10]]\n\
+        except Exception:\n    entries, urls = [], []\n\nlines = [\n    \"## \U0001F3AC\
+        \ HAR Cache Capture\",\n    \"\",\n    f\"| Key | Value |\",\n    f\"|-----|-------|\"\
+        ,\n    f\"| **Entries recorded** | {len(entries)} |\",\n    f\"| **Output**\
+        \ | `cognitive_app/public/har-cache/api-demo.har` (Git LFS) |\",\n    f\"\
+        | **Trigger** | `{os.environ.get('GITHUB_EVENT_NAME', 'unknown')}` |\",\n\
+        \    \"\",\n    \"### Sample captured endpoints\",\n] + [f\"- `{u}`\" for\
+        \ u in urls]\n\nsummary_path = os.environ.get(\"GITHUB_STEP_SUMMARY\", \"\
+        /dev/null\")\nwith open(summary_path, \"a\") as f:\n    f.write(\"\\n\".join(lines)\
+        \ + \"\\n\")\nPYEOF\n"
+    timeout-minutes: 30

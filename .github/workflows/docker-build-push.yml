@@ -3,9 +3,19 @@ on:
   push:
     branches:
     - main
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     branches:
     - main
+    paths-ignore:
+    - '**.md'
+    - docs/**
+    - .codex/**
+    - LICENSE
   workflow_dispatch:
     inputs:
       approval_duration:
@@ -297,3 +307,4 @@ jobs:
       run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

@@ -1,0 +1,451 @@
+{
+  "test_run": {
+    "timestamp": "2026-07-19T01:25:30.166118",
+    "total_scenarios": 17,
+    "passed": 15,
+    "failed": 2,
+    "success_rate": 88.23529411764706
+  },
+  "metrics": {
+    "avg_mttd_seconds": 10.411764705882353,
+    "avg_mttr_seconds": 58.23529411764706,
+    "avg_recovery_time_seconds": 68.23529411764706,
+    "max_recovery_time_seconds": 130,
+    "min_recovery_time_seconds": 25
+  },
+  "resilience_score": {
+    "circuit_breaker_activations": 8,
+    "fallback_triggers": 7,
+    "incident_responses": 5
+  },
+  "category_breakdown": {
+    "network": {
+      "total": 4,
+      "passed": 3,
+      "failed": 1,
+      "avg_mttd": 5.0,
+      "avg_mttr": 41.25
+    },
+    "dependency": {
+      "total": 4,
+      "passed": 3,
+      "failed": 1,
+      "avg_mttd": 10.0,
+      "avg_mttr": 56.25
+    },
+    "resource": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "avg_mttd": 15.0,
+      "avg_mttr": 80.0
+    },
+    "cascading": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "avg_mttd": 12.0,
+      "avg_mttr": 60.0
+    },
+    "resilience": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "avg_mttd": 12.0,
+      "avg_mttr": 60.0
+    }
+  },
+  "results": [
+    {
+      "scenario_id": "NET-001",
+      "scenario_name": "Network Packet Loss (1%)",
+      "start_time": 1784424228.7478085,
+      "end_time": 1784424231.6988873,
+      "status": "success",
+      "mttd": 5,
+      "mttr": 15,
+      "recovery_time": 25,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "network",
+        "severity": "Sev-4",
+        "target_sla": 120,
+        "impact": "Intermittent API call failures"
+      }
+    },
+    {
+      "scenario_id": "NET-002",
+      "scenario_name": "Network Packet Loss (5%)",
+      "start_time": 1784424231.698959,
+      "end_time": 1784424235.399978,
+      "status": "success",
+      "mttd": 5,
+      "mttr": 30,
+      "recovery_time": 40,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "network",
+        "severity": "Sev-3",
+        "target_sla": 120,
+        "impact": "Degraded service with retries"
+      }
+    },
+    {
+      "scenario_id": "NET-003",
+      "scenario_name": "Network Latency Injection (500ms jitter)",
+      "start_time": 1784424235.400044,
+      "end_time": 1784424240.601137,
+      "status": "success",
+      "mttd": 5,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "network",
+        "severity": "Sev-3",
+        "target_sla": 120,
+        "impact": "Slow API responses, potential timeouts"
+      }
+    },
+    {
+      "scenario_id": "NET-004",
+      "scenario_name": "DNS Resolution Failure",
+      "start_time": 1784424240.601193,
+      "end_time": 1784424245.202221,
+      "status": "partial",
+      "mttd": 5,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": false,
+      "health_checks_passed": 6,
+      "health_checks_failed": 2,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "network",
+        "severity": "Sev-2",
+        "target_sla": 60,
+        "impact": "Cannot reach external services"
+      }
+    },
+    {
+      "scenario_id": "DEP-001",
+      "scenario_name": "Database Connection Timeout",
+      "start_time": 1784424245.202278,
+      "end_time": 1784424250.153339,
+      "status": "success",
+      "mttd": 10,
+      "mttr": 45,
+      "recovery_time": 55,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": true,
+      "incident_response_triggered": true,
+      "error_message": null,
+      "details": {
+        "category": "dependency",
+        "severity": "Sev-1",
+        "target_sla": 120,
+        "impact": "Cannot access database, all queries fail"
+      }
+    },
+    {
+      "scenario_id": "DEP-002",
+      "scenario_name": "RAG Module Unavailability",
+      "start_time": 1784424250.1534238,
+      "end_time": 1784424255.5543616,
+      "status": "success",
+      "mttd": 10,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": true,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "dependency",
+        "severity": "Sev-2",
+        "target_sla": 90,
+        "impact": "RAG unavailable, fallback to simpler search"
+      }
+    },
+    {
+      "scenario_id": "DEP-003",
+      "scenario_name": "GitHub API Timeout",
+      "start_time": 1784424255.5544386,
+      "end_time": 1784424260.6553361,
+      "status": "partial",
+      "mttd": 10,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": false,
+      "health_checks_passed": 6,
+      "health_checks_failed": 2,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": true,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "dependency",
+        "severity": "Sev-2",
+        "target_sla": 60,
+        "impact": "Cannot fetch from GitHub, cached data used"
+      }
+    },
+    {
+      "scenario_id": "DEP-004",
+      "scenario_name": "Cache Layer Failure",
+      "start_time": 1784424260.6554163,
+      "end_time": 1784424265.9564166,
+      "status": "success",
+      "mttd": 10,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": true,
+      "fallback_triggered": true,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "dependency",
+        "severity": "Sev-3",
+        "target_sla": 90,
+        "impact": "No caching, direct queries to backends"
+      }
+    },
+    {
+      "scenario_id": "RES-001",
+      "scenario_name": "CPU Exhaustion (95%)",
+      "start_time": 1784424265.9564762,
+      "end_time": 1784424279.9575415,
+      "status": "success",
+      "mttd": 15,
+      "mttr": 120,
+      "recovery_time": 130,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "resource",
+        "severity": "Sev-2",
+        "target_sla": 600,
+        "impact": "Slow response times, no request drops expected"
+      }
+    },
+    {
+      "scenario_id": "RES-002",
+      "scenario_name": "Memory Exhaustion (90%)",
+      "start_time": 1784424279.9576046,
+      "end_time": 1784424287.3585615,
+      "status": "success",
+      "mttd": 15,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "resource",
+        "severity": "Sev-2",
+        "target_sla": 180,
+        "impact": "GC pressure, potential slowdown"
+      }
+    },
+    {
+      "scenario_id": "RES-003",
+      "scenario_name": "Disk Space Exhaustion (<10%)",
+      "start_time": 1784424287.3586223,
+      "end_time": 1784424293.5596175,
+      "status": "success",
+      "mttd": 15,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": true,
+      "error_message": null,
+      "details": {
+        "category": "resource",
+        "severity": "Sev-1",
+        "target_sla": 120,
+        "impact": "Cannot write logs, core functionality unaffected"
+      }
+    },
+    {
+      "scenario_id": "CASCADE-001",
+      "scenario_name": "Network + Database Failure",
+      "start_time": 1784424293.5596793,
+      "end_time": 1784424299.4606745,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": true,
+      "incident_response_triggered": true,
+      "error_message": null,
+      "details": {
+        "category": "cascading",
+        "severity": "Sev-1",
+        "target_sla": 120,
+        "impact": "Multiple system failures, verify no total outage"
+      }
+    },
+    {
+      "scenario_id": "CASCADE-002",
+      "scenario_name": "Multiple External API Timeouts",
+      "start_time": 1784424299.4607534,
+      "end_time": 1784424305.0617404,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": true,
+      "incident_response_triggered": true,
+      "error_message": null,
+      "details": {
+        "category": "cascading",
+        "severity": "Sev-1",
+        "target_sla": 90,
+        "impact": "Verify bulkhead pattern prevents cascade"
+      }
+    },
+    {
+      "scenario_id": "CASCADE-003",
+      "scenario_name": "Resource + Dependency Failure",
+      "start_time": 1784424305.0618029,
+      "end_time": 1784424312.162784,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": true,
+      "incident_response_triggered": true,
+      "error_message": null,
+      "details": {
+        "category": "cascading",
+        "severity": "Sev-1",
+        "target_sla": 240,
+        "impact": "Verify incident response automation triggers"
+      }
+    },
+    {
+      "scenario_id": "CB-001",
+      "scenario_name": "Circuit Breaker Activation",
+      "start_time": 1784424312.1628413,
+      "end_time": 1784424318.6637888,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "resilience",
+        "severity": "Sev-3",
+        "target_sla": 180,
+        "impact": "Service calls rejected, fallback used"
+      }
+    },
+    {
+      "scenario_id": "CB-002",
+      "scenario_name": "Graceful Degradation",
+      "start_time": 1784424318.663877,
+      "end_time": 1784424324.564857,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "resilience",
+        "severity": "Sev-3",
+        "target_sla": 120,
+        "impact": "Reduced functionality, system operational"
+      }
+    },
+    {
+      "scenario_id": "CB-003",
+      "scenario_name": "Retry Logic Exhaustion",
+      "start_time": 1784424324.5649164,
+      "end_time": 1784424330.1659124,
+      "status": "success",
+      "mttd": 12,
+      "mttr": 60,
+      "recovery_time": 70,
+      "sla_met": true,
+      "health_checks_passed": 8,
+      "health_checks_failed": 4,
+      "circuit_breaker_activated": false,
+      "fallback_triggered": false,
+      "incident_response_triggered": false,
+      "error_message": null,
+      "details": {
+        "category": "resilience",
+        "severity": "Sev-2",
+        "target_sla": 90,
+        "impact": "Service fails after retries, fallback triggered"
+      }
+    }
+  ]
+}

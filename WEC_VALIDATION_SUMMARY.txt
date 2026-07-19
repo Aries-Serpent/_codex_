@@ -1,0 +1,260 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║           WORKFLOW EXECUTION CHECKLIST (WEC) VALIDATION REPORT            ║
+║                        PR #5337 — Lane 1 Audit                            ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+REPORT GENERATED: 2026-07-18T19:37:49Z
+REPOSITORY: Aries-Serpent/_codex_
+PR NUMBER: #5337
+WEC LABEL: wec:auto-approve (ENABLED)
+VALIDATOR: Workflow Compliance Guardian v2.0.0
+
+═══════════════════════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+
+Current State:
+  ✅ wec:auto-approve label applied to PR #5337
+  ❌ 105+ workflows in approval queue (target: 8-9)
+  ⚠️  Only 3 of 9 core workflows fully compliant (34%)
+  ❌ WEC filtering logic NOT operational
+
+Immediate Action:
+  🔴 3 CRITICAL blockers must be fixed (1-2 hours)
+  🟠 4 HIGH priority issues must be resolved (30-60 mins)
+  🟡 2 MEDIUM issues for follow-up (optional)
+
+Readiness: ❌ NOT READY FOR PRODUCTION (2-3 hours to fix)
+
+═══════════════════════════════════════════════════════════════════════════
+
+CRITICAL BLOCKERS (3)
+
+Blocker #1: workflow-execution-gate.yml — No PR Event Trigger
+  ├─ File: .github/workflows/workflow-execution-gate.yml
+  ├─ Current: on: [workflow_dispatch] ONLY
+  ├─ Problem: Gate doesn't fire on PR events
+  ├─ Impact: WEC checklist never validated automatically
+  ├─ Fix: Add `pull_request: [opened, synchronize, reopened]` trigger
+  └─ Time: 5 minutes
+
+Blocker #2: Approval Queue Filtering Missing
+  ├─ Files: scripts/ci/approve_pending_runs.py + wec_enforcer.py
+  ├─ Current: Approves ALL workflows matching criteria
+  ├─ Problem: No WEC-based filtering (105+ queued instead of 8-9)
+  ├─ Fix: Implement whitelist filtering for core workflows only
+  └─ Time: 30-45 minutes
+
+Blocker #3: Archived copilot-agent-checkin.yml
+  ├─ File: .github/workflows/_archived/copilot-agent-checkin.yml.archived
+  ├─ Problem: Listed in WEC but archived (not accessible)
+  ├─ Options: Restore to active OR remove from _WEC_ITEMS list
+  └─ Time: 5 minutes (decision-dependent)
+
+═══════════════════════════════════════════════════════════════════════════
+
+HIGH PRIORITY ISSUES (4)
+
+Issue #1: 3 Hardcoded PR #5328 Exclusions in CORE workflows
+  ├─ Files:
+  │   ├─ .github/workflows/comment-review-gate.yml
+  │   ├─ .github/workflows/deferral-language-gate.yml
+  │   └─ .github/workflows/cost-gate.yml
+  ├─ Pattern: if: github.event.pull_request.number != 5328
+  ├─ Problem: CORE workflows shouldn't have PR-specific skip conditions
+  ├─ Impact: Creates inconsistent behavior across PRs
+  └─ Time: 10 minutes (all 3 files)
+
+Issue #2: Missing copilot-agent-session-done.yml
+  ├─ File: scripts/ci/session_wrapup_autofix.py (line 107)
+  ├─ Problem: Workflow doesn't exist but listed in WEC
+  ├─ Options:
+  │   ├─ Create the missing workflow
+  │   ├─ Remove from _WEC_ITEMS list
+  │   └─ Link to existing similar workflow
+  └─ Time: 5-10 minutes (decision-dependent)
+
+Issue #3: Misnamed copilot-iterative-self-healing.yml
+  ├─ Expected: copilot-iterative-self-healing.yml
+  ├─ Found: iterative-self-healing-ci.yml
+  ├─ Problem: Name mismatch between WEC items and actual files
+  └─ Time: 5 minutes (rename or clarify)
+
+═══════════════════════════════════════════════════════════════════════════
+
+WORKFLOW COMPLIANCE MATRIX
+
+┌─────┬──────────────────────────────────┬────────┬──────────┬────────┐
+│ #   │ Workflow Name                    │ Status │ Trigger  │ Errors │
+├─────┼──────────────────────────────────┼────────┼──────────┼────────┤
+│ 1   │ pre-merge-validation.yml         │ ✅ OK  │ YES      │ 0      │
+│ 2   │ comment-review-gate.yml          │ ⚠️ WRN │ YES      │ 1*     │
+│ 3   │ deferral-language-gate.yml       │ ⚠️ WRN │ YES      │ 1*     │
+│ 4   │ agent-auth-delegation.yml        │ ✅ OK  │ YES      │ 0      │
+│ 5   │ workflow-execution-gate.yml      │ ❌ BAD │ NO**     │ 1      │
+│ 6   │ copilot-agent-checkin.yml        │ ❌ BAD │ N/A      │ 1***   │
+│ 7   │ cost-gate.yml                    │ ⚠️ WRN │ YES      │ 1*     │
+│ 8   │ copilot-agent-session-done.yml   │ ❌ BAD │ N/A      │ 1***   │
+│ 9   │ copilot-iterative-self-healing.y │ ❌ BAD │ N/A      │ 1****  │
+├─────┼──────────────────────────────────┼────────┼──────────┼────────┤
+│     │ TOTAL COMPLIANCE                 │ 34%    │ 56%      │ 8      │
+└─────┴──────────────────────────────────┴────────┴──────────┴────────┘
+
+Legend:
+  * = Hardcoded PR exclusion
+  ** = Manual dispatch only (no PR events)
+  *** = Archived or missing
+  **** = Name mismatch
+
+═══════════════════════════════════════════════════════════════════════════
+
+WORKFLOW QUEUE ANALYSIS
+
+Current State:
+  Total workflows in queue: 105+
+  Target workflows in queue: 8-9
+  Overflow: 13x target size ❌
+
+Root Cause Analysis:
+  1. No WEC-based filtering in approve_pending_runs.py
+     └─ Approves based on labels/rules, not workflow whitelist
+
+  2. 46 workflows with hardcoded PR #5328 exclusions
+     └─ These skip only for that ONE PR, not applicable to #5337
+
+  3. Stub WEC enforcement gate
+     └─ Doesn't parse PR body checklist
+     └─ Doesn't build approval list
+     └─ Doesn't filter queue
+
+  4. Missing queue filtering logic
+     └─ No mechanism to say "only approve these 8-9"
+     └─ Every matching workflow gets approved
+
+Solution Required:
+  ├─ Parse PR body for WEC checklist section
+  ├─ Extract checked workflow items
+  ├─ Build whitelist of 8-9 core workflows
+  ├─ Filter approval queue to whitelist only
+  └─ Skip all other workflows
+
+═══════════════════════════════════════════════════════════════════════════
+
+CORE WORKFLOWS REQUIRING APPROVAL
+
+When WEC enforcement is active, only these workflows should be queued:
+
+1. pre-merge-validation.yml          (Pre-merge checks)
+2. comment-review-gate.yml           (Comment review gate)
+3. deferral-language-gate.yml        (Deferral language guard)
+4. agent-auth-delegation.yml         (Agent token delegation)
+5. workflow-execution-gate.yml       (WEC gate)
+6. copilot-agent-checkin.yml         (Agent check-in)
+7. cost-gate.yml                     (Cost governance gate)
+
+Plus optional:
+8. copilot-agent-session-done.yml    (Auto-post review)
+9. copilot-iterative-self-healing.yml (Iterative CI loop)
+
+═══════════════════════════════════════════════════════════════════════════
+
+IMMEDIATE ACTION ITEMS
+
+Priority 1 (CRITICAL — Fix first):
+  [ ] Add PR trigger to workflow-execution-gate.yml
+  [ ] Implement WEC-based queue filtering
+  [ ] Restore or remove copilot-agent-checkin.yml
+
+Priority 2 (HIGH — Fix before merge):
+  [ ] Remove 3 hardcoded PR exclusions
+  [ ] Fix missing workflows in WEC items
+
+Priority 3 (OPTIONAL — Follow-up PR):
+  [ ] Replace 46 hardcoded PR #5328 exclusions
+  [ ] Consolidate 219 → 50-80 workflows
+  [ ] Create WEC audit dashboard
+
+═══════════════════════════════════════════════════════════════════════════
+
+TIME ESTIMATE TO PRODUCTION
+
+  Critical blockers:           1-2 hours
+  High priority issues:        30-60 minutes
+  Testing & validation:        30 minutes
+  ─────────────────────────────────────
+  TOTAL:                       2-3 hours
+
+═══════════════════════════════════════════════════════════════════════════
+
+DETAILED REPORTS GENERATED
+
+Three comprehensive validation reports have been created in the repository:
+
+1. WEC_VALIDATION_REPORT_PR5337.md
+   ├─ Executive summary with metrics
+   ├─ Core workflow compliance matrix
+   ├─ WEC compliance issues analysis
+   ├─ Workflow queue filtering analysis
+   ├─ Configuration changes needed
+   └─ 5-pass self-review validation checklist
+
+2. WEC_CORE_WORKFLOWS_DETAILED_ANALYSIS.md
+   ├─ Workflow-by-workflow compliance review
+   ├─ Trigger/concurrency/timeout verification
+   ├─ Root cause analysis for queue overflow
+   ├─ Implementation priority levels
+   └─ Detailed pseudo-code solutions
+
+3. WEC_ACTION_PLAN_PR5337.md
+   ├─ Critical blockers with fix steps
+   ├─ High priority issues with solutions
+   ├─ Implementation checklist
+   ├─ Success criteria
+   └─ Risk assessment matrix
+
+═══════════════════════════════════════════════════════════════════════════
+
+SUCCESS CRITERIA FOR MERGE
+
+PR #5337 is ready to merge when:
+
+ ✅ All 9 core WEC workflows exist (none archived/missing)
+ ✅ 3 hardcoded PR exclusions removed
+ ✅ workflow-execution-gate.yml fires on PR events
+ ✅ Approval queue filtering implemented
+ ✅ Test run shows 8-9 workflows queued (not 105+)
+ ✅ WEC checklist parsing works end-to-end
+ ✅ PR successfully merges with wec:auto-approve label
+
+═══════════════════════════════════════════════════════════════════════════
+
+ASSESSMENT CONCLUSION
+
+CURRENT STATE: ❌ NOT READY FOR PRODUCTION
+
+The WEC enforcement system is incomplete with critical blocking issues.
+The approval queue is functioning at only 8% efficiency (8-9 of 105+
+workflows should be queued). Multiple core workflows either have
+architectural issues or are missing entirely.
+
+Estimated remediation: 2-3 hours
+Recommended action: Implement fixes in priority order before PR merge
+
+═══════════════════════════════════════════════════════════════════════════
+
+NEXT STEPS
+
+1. Review all three validation reports
+2. Prioritize critical blockers (1-2 hours to fix)
+3. Implement solutions in order
+4. Test with PR #5337
+5. Verify 8-9 workflows in queue (not 105+)
+6. Proceed with merge when success criteria met
+
+═══════════════════════════════════════════════════════════════════════════
+
+Report Generated: 2026-07-18T19:37:49Z
+Validator: Workflow Compliance Guardian v2.0.0
+Status: ❌ CRITICAL ISSUES DETECTED - ACTION REQUIRED
+
+═══════════════════════════════════════════════════════════════════════════

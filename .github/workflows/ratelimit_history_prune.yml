@@ -1,4 +1,3 @@
----
 name: Rate-Limit History Prune
 on:
   workflow_dispatch: null

@@ -1,0 +1,527 @@
+{
+  "capacity_roadmap": {
+    "version": "1.0",
+    "generated_date": "2026-07-19T02:24:00Z",
+    "status": "Phase 8 Lane D Complete",
+    
+    "executive_summary": {
+      "current_capacity": {
+        "sustainable_concurrent": 500,
+        "peak_rps": 152.7,
+        "breaking_point_concurrent": 1000,
+        "error_rate_at_capacity": 0.004,
+        "phase": "Phase 8 Optimized"
+      },
+      "target_capacity": {
+        "sustainable_concurrent": 2000,
+        "peak_rps": 600,
+        "breaking_point_concurrent": 5000,
+        "error_rate_at_capacity": 0.001,
+        "phase": "Phase 10 Production Ready"
+      },
+      "improvement_path": "Phase 8 → Phase 9 → Phase 10",
+      "total_improvement_factor": 4.0
+    },
+
+    "phase_metrics": {
+      "phase_7": {
+        "name": "Phase 7: Load Testing Baseline",
+        "date": "2026-07-19T00:00:00Z",
+        "sustainable_concurrent": 500,
+        "peak_rps": 96.86,
+        "breaking_point_concurrent": 1000,
+        "avg_latency_ms": 268.2,
+        "p99_latency_ms": 520.7,
+        "error_rate": 0.006,
+        "connection_pool_size": 500,
+        "memory_peak_mb": null,
+        "status": "Baseline Established"
+      },
+      "phase_8_current": {
+        "name": "Phase 8 Lane D: Load Scaling & Optimization",
+        "date": "2026-07-19T02:22:48Z",
+        "sustainable_concurrent": 500,
+        "peak_rps": 152.7,
+        "breaking_point_concurrent": 1000,
+        "avg_latency_ms": 111.8,
+        "p99_latency_ms": 205.2,
+        "error_rate": 0.004,
+        "connection_pool_size": 500,
+        "memory_peak_mb": 2534,
+        "status": "✅ Complete - Target RPS Met",
+        "optimizations_applied": [
+          "Database query indexing (40% reduction)",
+          "Cache tier optimization (30% latency reduction)",
+          "API request batching (25% overhead reduction)",
+          "Connection pooling tuning (20% throughput gain)"
+        ]
+      },
+      "phase_8_planned": {
+        "name": "Phase 8 Lane D Extended: Connection Pool Optimization",
+        "target_date": "2026-07-26T00:00:00Z",
+        "sustainable_concurrent": 750,
+        "peak_rps": 200,
+        "breaking_point_concurrent": 1500,
+        "avg_latency_ms": 95,
+        "p99_latency_ms": 180,
+        "error_rate": 0.003,
+        "connection_pool_size": 750,
+        "memory_peak_mb": 2800,
+        "status": "Planned - Conservative Pool Increase",
+        "optimizations": [
+          "Increase connection pool: 500 → 750",
+          "Implement connection reuse optimization",
+          "Add basic monitoring metrics"
+        ]
+      },
+      "phase_9": {
+        "name": "Phase 9: Tiered Connection Pooling",
+        "target_date": "2026-08-02T00:00:00Z",
+        "sustainable_concurrent": 1500,
+        "peak_rps": 400,
+        "breaking_point_concurrent": 2500,
+        "avg_latency_ms": 80,
+        "p99_latency_ms": 150,
+        "error_rate": 0.002,
+        "connection_pool_size": 2000,
+        "memory_peak_mb": 3200,
+        "status": "Planned - Tier Architecture",
+        "optimizations": [
+          "Implement tiered pool (priority/standard/batch)",
+          "Add adaptive sizing logic",
+          "Implement circuit breaker pattern",
+          "Enhanced metrics dashboard"
+        ]
+      },
+      "phase_10": {
+        "name": "Phase 10: Full Scaling & Production Ready",
+        "target_date": "2026-08-23T00:00:00Z",
+        "sustainable_concurrent": 2000,
+        "peak_rps": 600,
+        "breaking_point_concurrent": 5000,
+        "avg_latency_ms": 75,
+        "p99_latency_ms": 140,
+        "error_rate": 0.001,
+        "connection_pool_size": 2500,
+        "memory_peak_mb": 4000,
+        "status": "Target State",
+        "optimizations": [
+          "Horizontal scaling (3+ instances)",
+          "Database read replicas",
+          "Advanced caching (L3 tier)",
+          "Query optimization & indexing",
+          "Load balancing & health checks"
+        ]
+      }
+    },
+
+    "traffic_ramp_plan": {
+      "description": "Gradual traffic increase from current 500 to 2,000+ concurrent users",
+      "start_date": "2026-08-23T00:00:00Z",
+      "total_duration_hours": 8,
+      "phases": [
+        {
+          "phase_name": "Phase 10 Stage 1: Initial Ramp",
+          "time_offset_minutes": 0,
+          "duration_minutes": 120,
+          "concurrent_users_estimate": 200,
+          "concurrent_users_percent": 0.10,
+          "expected_rps": 60,
+          "success_criteria": [
+            "Error rate < 0.5%",
+            "p99 latency < 200ms",
+            "No alerts triggered"
+          ]
+        },
+        {
+          "phase_name": "Phase 10 Stage 2: Ramp-up",
+          "time_offset_minutes": 120,
+          "duration_minutes": 120,
+          "concurrent_users_estimate": 500,
+          "concurrent_users_percent": 0.25,
+          "expected_rps": 150,
+          "success_criteria": [
+            "Error rate < 0.5%",
+            "p99 latency < 200ms",
+            "CPU utilization < 70%",
+            "Memory usage < 3GB"
+          ]
+        },
+        {
+          "phase_name": "Phase 10 Stage 3: Full Ramp",
+          "time_offset_minutes": 240,
+          "duration_minutes": 480,
+          "concurrent_users_estimate": 2000,
+          "concurrent_users_percent": 1.00,
+          "expected_rps": 600,
+          "success_criteria": [
+            "Error rate < 1%",
+            "p99 latency < 150ms",
+            "CPU utilization < 80%",
+            "Memory usage < 4GB",
+            "Breaking point > 5,000 concurrent"
+          ]
+        }
+      ]
+    },
+
+    "scaling_strategy": {
+      "vertical_scaling": {
+        "description": "Single instance optimization (Phases 8-9)",
+        "target_concurrent": 1500,
+        "mechanisms": [
+          "Increase connection pool size",
+          "Optimize query performance",
+          "Improve cache efficiency",
+          "Tune GC settings"
+        ],
+        "limitations": "Limited by single machine resources (CPU, RAM, disk bandwidth)"
+      },
+      "horizontal_scaling": {
+        "description": "Multi-instance deployment (Phase 10)",
+        "target_concurrent": 2000,
+        "mechanisms": [
+          "Deploy 3+ instances behind load balancer",
+          "Database read replicas for query distribution",
+          "Session storage (Redis) for session sharing",
+          "Distributed caching layer"
+        ],
+        "benefits": [
+          "Scale beyond single machine limits",
+          "High availability & fault tolerance",
+          "Ability to handle 5,000+ concurrent users",
+          "Linear scaling with instance count"
+        ]
+      },
+      "hybrid_approach": {
+        "description": "Combined strategy for optimal efficiency",
+        "phases": [
+          "Phase 8: Single instance + connection pool optimization",
+          "Phase 9: Single instance + tiered pooling + adaptive scaling",
+          "Phase 10: Multiple instances + load balancing + replication"
+        ]
+      }
+    },
+
+    "capacity_milestones": [
+      {
+        "milestone": "Phase 8 Complete",
+        "date": "2026-07-19",
+        "capacity_concurrent": 500,
+        "capacity_rps": 152.7,
+        "achievement": "✅ Throughput target met (≥150 RPS)",
+        "status": "Complete"
+      },
+      {
+        "milestone": "Phase 8 Pool Optimization",
+        "date": "2026-07-26",
+        "capacity_concurrent": 750,
+        "capacity_rps": 200,
+        "achievement": "Conservative pool increase (500 → 750)",
+        "status": "Planned"
+      },
+      {
+        "milestone": "Phase 9 Tiered Pool",
+        "date": "2026-08-02",
+        "capacity_concurrent": 1500,
+        "capacity_rps": 400,
+        "achievement": "Tiered pool architecture enables 3x capacity",
+        "status": "Planned"
+      },
+      {
+        "milestone": "Phase 10 Horizontal Scale",
+        "date": "2026-08-23",
+        "capacity_concurrent": 2000,
+        "capacity_rps": 600,
+        "achievement": "Multi-instance deployment enables 4x capacity",
+        "status": "Target"
+      },
+      {
+        "milestone": "Phase 10 Traffic Ramp (T+0)",
+        "date": "2026-08-23T00:00:00Z",
+        "capacity_concurrent": 200,
+        "capacity_rps": 60,
+        "achievement": "10% of users → 152.7 RPS proven sustainable",
+        "status": "Target"
+      },
+      {
+        "milestone": "Phase 10 Traffic Ramp (T+4h)",
+        "date": "2026-08-23T04:00:00Z",
+        "capacity_concurrent": 500,
+        "capacity_rps": 150,
+        "achievement": "25% of users → 3x more than baseline",
+        "status": "Target"
+      },
+      {
+        "milestone": "Phase 10 Traffic Ramp (T+8h)",
+        "date": "2026-08-23T08:00:00Z",
+        "capacity_concurrent": 2000,
+        "capacity_rps": 600,
+        "achievement": "100% of users → 4x capacity target",
+        "status": "Target"
+      }
+    ],
+
+    "resource_requirements": {
+      "phase_8": {
+        "instances": 1,
+        "instance_type": "c5.2xlarge or equivalent",
+        "cpu_cores": 8,
+        "memory_gb": 16,
+        "estimated_monthly_cost_usd": 2800,
+        "notes": "Single instance optimization phase"
+      },
+      "phase_9": {
+        "instances": 1,
+        "instance_type": "c5.4xlarge or equivalent",
+        "cpu_cores": 16,
+        "memory_gb": 32,
+        "estimated_monthly_cost_usd": 5600,
+        "notes": "Upgraded instance for connection pool expansion"
+      },
+      "phase_10": {
+        "instances": 3,
+        "instance_type": "c5.2xlarge per instance",
+        "cpu_cores": 24,
+        "memory_gb": 48,
+        "database_instance": "db.r6i.2xlarge (read replica capable)",
+        "estimated_monthly_cost_usd": 12000,
+        "notes": "Multi-instance deployment with database scaling"
+      }
+    },
+
+    "performance_targets": {
+      "phase_8": {
+        "throughput_rps": 150,
+        "latency_p99_ms": 205,
+        "error_rate": 0.004,
+        "breaking_point_concurrent": 1000
+      },
+      "phase_9": {
+        "throughput_rps": 400,
+        "latency_p99_ms": 150,
+        "error_rate": 0.002,
+        "breaking_point_concurrent": 2500
+      },
+      "phase_10": {
+        "throughput_rps": 600,
+        "latency_p99_ms": 140,
+        "error_rate": 0.001,
+        "breaking_point_concurrent": 5000
+      }
+    },
+
+    "dependencies_and_blockers": [
+      {
+        "phase": "Phase 8",
+        "item": "Optimizations from Lanes A-C",
+        "status": "✅ Complete",
+        "details": "DB indexes, cache tuning, API batching all applied"
+      },
+      {
+        "phase": "Phase 9",
+        "item": "Application-level tiered pool implementation",
+        "status": "⏳ Pending",
+        "details": "Requires query classification and priority routing",
+        "effort_days": 5
+      },
+      {
+        "phase": "Phase 9",
+        "item": "Adaptive scaling logic",
+        "status": "⏳ Pending",
+        "details": "Requires monitoring integration and scaling policies",
+        "effort_days": 3
+      },
+      {
+        "phase": "Phase 10",
+        "item": "Load balancer configuration",
+        "status": "⏳ Pending",
+        "details": "ALB/NLB setup, health checks, sticky sessions",
+        "effort_days": 2
+      },
+      {
+        "phase": "Phase 10",
+        "item": "Database read replica setup",
+        "status": "⏳ Pending",
+        "details": "Query routing, replication lag monitoring",
+        "effort_days": 3
+      },
+      {
+        "phase": "Phase 10",
+        "item": "Session storage (Redis/Memcached)",
+        "status": "⏳ Pending",
+        "details": "Deploy and integrate distributed session store",
+        "effort_days": 3
+      }
+    ],
+
+    "risk_assessment": [
+      {
+        "risk": "Memory exhaustion during pool expansion",
+        "probability": "Medium",
+        "impact": "High",
+        "mitigation": "Implement memory monitoring, set pool size limits, use PgBouncer proxy"
+      },
+      {
+        "risk": "Database connection slot exhaustion",
+        "probability": "Medium",
+        "impact": "High",
+        "mitigation": "Increase DB max_connections, use connection pooling proxy"
+      },
+      {
+        "risk": "Query performance degradation at 2,000 concurrent",
+        "probability": "Medium",
+        "impact": "High",
+        "mitigation": "Profile and optimize queries, add indexes, implement timeouts"
+      },
+      {
+        "risk": "Failed horizontal scaling rollout",
+        "probability": "Low",
+        "impact": "Critical",
+        "mitigation": "Thorough staging tests, canary deployment, quick rollback plan"
+      },
+      {
+        "risk": "Session consistency across instances",
+        "probability": "Medium",
+        "impact": "Medium",
+        "mitigation": "Implement distributed session store (Redis), sticky sessions"
+      }
+    ],
+
+    "monitoring_and_alerts": {
+      "key_metrics": [
+        {
+          "metric": "Concurrent Connections",
+          "alert_threshold": 1800,
+          "critical_threshold": 1950,
+          "frequency": "1 minute"
+        },
+        {
+          "metric": "Requests Per Second",
+          "alert_threshold": 550,
+          "critical_threshold": 580,
+          "frequency": "1 minute"
+        },
+        {
+          "metric": "Error Rate",
+          "alert_threshold": 0.005,
+          "critical_threshold": 0.010,
+          "frequency": "1 minute"
+        },
+        {
+          "metric": "P99 Latency",
+          "alert_threshold": 200,
+          "critical_threshold": 300,
+          "frequency": "1 minute",
+          "unit": "milliseconds"
+        },
+        {
+          "metric": "Memory Utilization",
+          "alert_threshold": 0.80,
+          "critical_threshold": 0.90,
+          "frequency": "5 minutes"
+        },
+        {
+          "metric": "Connection Pool Utilization",
+          "alert_threshold": 0.80,
+          "critical_threshold": 0.95,
+          "frequency": "1 minute"
+        }
+      ],
+      "dashboards": [
+        {
+          "name": "Capacity Dashboard",
+          "metrics": ["concurrent_connections", "rps", "error_rate", "latency_p99"]
+        },
+        {
+          "name": "Resource Dashboard",
+          "metrics": ["cpu_utilization", "memory_utilization", "disk_io", "network_io"]
+        },
+        {
+          "name": "Pool Dashboard",
+          "metrics": ["pool_utilization", "queue_depth", "wait_time_p95", "connection_timeouts"]
+        }
+      ]
+    },
+
+    "validation_tests": [
+      {
+        "phase": "Phase 8",
+        "test": "Load test at 500 concurrent for 5 minutes",
+        "goal": "Verify RPS ≥ 150, error rate < 1%",
+        "status": "✅ Complete"
+      },
+      {
+        "phase": "Phase 8",
+        "test": "Identify breaking point (ramp to 1,000+ concurrent)",
+        "goal": "Establish baseline for optimization",
+        "status": "✅ Complete - Breaking point at 1,000 concurrent"
+      },
+      {
+        "phase": "Phase 9",
+        "test": "Load test with tiered pool at 1,500 concurrent",
+        "goal": "Verify RPS ≥ 400, error rate < 0.2%",
+        "status": "⏳ Pending"
+      },
+      {
+        "phase": "Phase 10",
+        "test": "Multi-instance load test at 2,000 concurrent",
+        "goal": "Verify RPS ≥ 600, error rate < 0.1%",
+        "status": "⏳ Pending"
+      },
+      {
+        "phase": "Phase 10",
+        "test": "Traffic ramp test (T+0 → T+8h)",
+        "goal": "Verify smooth scaling, no errors during ramp",
+        "status": "⏳ Pending"
+      }
+    ],
+
+    "success_criteria": {
+      "phase_8": {
+        "throughput": "≥150 RPS sustained (✅ 152.7 RPS achieved)",
+        "error_rate": "<1% at capacity (✅ 0.40% achieved)",
+        "latency": "p99 < 250ms (✅ 205.2ms achieved)",
+        "breaking_point": "Identified and documented (✅ 1,000 concurrent)"
+      },
+      "phase_9": {
+        "throughput": "≥400 RPS sustained",
+        "error_rate": "<0.2% at 1,500 concurrent",
+        "latency": "p99 < 150ms",
+        "breaking_point": ">2,500 concurrent"
+      },
+      "phase_10": {
+        "throughput": "≥600 RPS sustained",
+        "error_rate": "<0.1% at 2,000 concurrent",
+        "latency": "p99 < 140ms",
+        "breaking_point": ">5,000 concurrent",
+        "availability": ">99.9% uptime during ramp"
+      }
+    },
+
+    "long_term_scaling_strategy": {
+      "year_1": {
+        "target_concurrent_users": 5000,
+        "target_rps": 1500,
+        "approach": "Multi-instance (5-10 servers) + Database scaling (master + 3 read replicas)"
+      },
+      "year_2": {
+        "target_concurrent_users": 10000,
+        "target_rps": 3000,
+        "approach": "Microservices + Kubernetes orchestration + Geo-distributed deployment"
+      },
+      "year_3": {
+        "target_concurrent_users": 50000,
+        "target_rps": 15000,
+        "approach": "Distributed architecture + CDN + Edge computing + Advanced caching"
+      }
+    },
+
+    "references": {
+      "phase_8_load_scaling_report": ".codex/PHASE_8_LOAD_SCALING_REPORT.md",
+      "phase_8_detailed_results": ".codex/PHASE_8_LOAD_TEST_DETAILED_RESULTS.json",
+      "phase_8_connection_pool_optimization": ".codex/PHASE_8_CONNECTION_POOL_OPTIMIZATION.md",
+      "phase_7_baseline": ".codex/PHASE_7_LOAD_TEST_CAPACITY_REPORT.md"
+    }
+  }
+}
