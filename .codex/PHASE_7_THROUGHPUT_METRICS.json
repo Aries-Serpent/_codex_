@@ -1,0 +1,36 @@
+{
+  "test_id": "phase7_fast_1784425143",
+  "timestamp": "2026-07-19T01:42:13.854627",
+  "capacity_discovery": {
+    "levels_tested": 1,
+    "breaking_point": 1000,
+    "error_rate_at_breaking_point": 0.011578947368421053,
+    "max_sustainable": 500
+  },
+  "throughput_by_level": {
+    "1000": {
+      "requests": 950,
+      "error_rate": 0.011578947368421053,
+      "rps": 95.0,
+      "bandwidth_mbps": 0.095,
+      "latency": {
+        "avg": 282.176614560579,
+        "p95": 525.6527781486511,
+        "p99": 542.2368764877319
+      }
+    }
+  },
+  "sustained_load": {
+    "concurrent": 500,
+    "duration_minutes": 3.002537190914154,
+    "requests": 17450,
+    "error_rate": 0.005959885386819484,
+    "rps": 96.86252487176888,
+    "latency": {
+      "avg": 268.2414753594166,
+      "p50": 267.27497577667236,
+      "p95": 500.5561828613281,
+      "p99": 520.6865668296814
+    }
+  }
+}
