@@ -1,5 +1,24 @@
 ## [Unreleased]
 
+### Lane 2 Phase 2: RAG B2-B5 Validation & Certification (2026-07-19T14:10Z)
+
+#### Decision: ⚠️ **BLOCKED FOR PROMOTION** — functional RAG validation passed, coverage gates did not
+
+**Changes**:
+- Added deterministic offline fallback validation for RAG index build/query workflows and recorded the results in `.codex/lane2_b2_b5_validation.json`
+- Added `tests/rag/test_offline_index_fallback.py` plus targeted RAG fixes in `tests/rag/test_security.py`, `src/rag/resilience.py`, and `src/aries_serpent_core/rag/meta_tensor_guard.py`
+- Updated `.github/agents/AGENT_REGISTRY.yaml` with RAG module certification metadata
+- Generated B2-B5 certification reports under `.codex/`
+
+**Validation**:
+- ✅ 100/100 validation queries succeeded with **100% top-1 topic accuracy** and **0.523ms p99 latency**
+- ✅ Bandit RAG scan passed with **0 JSON findings**
+- ✅ Targeted RAG pytest suite passed
+- ⚠️ Coverage gates failed: `indexer.py` **48.99%**, `retriever.py` **58.90%**, `embeddings.py` **38.75%**, `embedding_cache.py` **46.75%**, `query_cache.py` **59.91%**
+
+**Impact**: RAG functionality is operational and integration-safe, but production promotion remains blocked until the required coverage thresholds are met.
+---
+
 ### PR #5363 Cleanup: Restore Generated Session Artifacts (2026-07-19T11:29Z)
 
 #### Decision: ✅ **PR SCOPE CORRECTED** — removed accidental `.codex/*` runtime artifact churn
