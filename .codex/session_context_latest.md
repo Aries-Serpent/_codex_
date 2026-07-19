@@ -1,10 +1,10 @@
-# Session Context — 2026-07-19T10:22:35Z
+# Session Context — 2026-07-19T10:30:10Z
 **Branch:** `copilot/consolidate-dependabot-prs`  **PR:** #5362  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -22,13 +22,14 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/semgrep-1.170.0` → `mai
 - `🧠 Cognitive Pre-flight Check` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Scaling Framework Monitor** — `failure` on `main` (2026-07-19)
 - **Dependency Security Gate** — `failure` on `main` (2026-07-19)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-19)
 - **Scaling Framework Monitor** — `failure` on `main` (2026-07-19)
 - **Batch CI Failure Triage** — `failure` on `main` (2026-07-19)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-19)
 
 ## 📝 Recent Commits
+- `dd69aa24` Apply remaining changes — copilot-swe-agent[bot] (2026-07-19)
 - `cada4b02` docs(phase-12): Hourly checkpoint 216 - 2026-07-19T09:10:45Z — github-actions[bot] (2026-07-19)
 - `8843df04` docs(phase-12): Hourly checkpoint 215 - 2026-07-19T06:39:21Z — github-actions[bot] (2026-07-19)
 - `c25fc3b9` chore(phase2): Multi-lane workflow optimization—Actions enforcement, cache hiera — Copilot (2026-07-19)
@@ -36,7 +37,6 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/semgrep-1.170.0` → `mai
 - `6480577a` docs(phase-12): Hourly checkpoint 213 - 2026-07-19T00:01:00Z — github-actions[bot] (2026-07-19)
 - `6e3bf0fe` docs(phase-12): Hourly checkpoint 212 - 2026-07-18T22:59:01Z — github-actions[bot] (2026-07-18)
 - `b2cf25e6` docs(phase-12): Hourly checkpoint 211 - 2026-07-18T21:58:50Z — github-actions[bot] (2026-07-18)
-- `53424221` docs(phase-12): Hourly checkpoint 210 - 2026-07-18T21:02:17Z — github-actions[bot] (2026-07-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
