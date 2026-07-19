@@ -19,7 +19,8 @@
 - ✅ Accountability report copies updated
 
 ### Agents Used (This Session)
-- None (direct remediation by Copilot Coding Agent)
+- `session-analysis-agent` (session wrap-up and compliance verification role)
+- `memory-sync-agent` (accountability/report synchronization role)
 
 ### Compliance Status
 - ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
