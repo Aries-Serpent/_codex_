@@ -1,6 +1,6 @@
 # Session 4 Phase 3: Automated Rollback and Disaster Recovery Assessment
 
-**Date:** 2026-07-19  
+**Date:** 2026-07-19
 **Assessment:** Procedure and evidence review completed; gate is **NOT CERTIFIED**
 
 ## Scenario matrix
