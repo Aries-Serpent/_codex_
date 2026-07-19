@@ -1,0 +1,78 @@
+{
+  "test_id": "phase8_load_1784427341",
+  "start_time": "2026-07-19T02:15:41.047369",
+  "end_time": "2026-07-19T02:22:48.517901",
+  "capacity_ramps": [
+    {
+      "concurrent_level": 500,
+      "duration_sec": 60,
+      "total_requests": 3800,
+      "successful_requests": 3780,
+      "failed_requests": 20,
+      "error_rate": 0.005263157894736842,
+      "avg_latency_ms": 129.04057923116181,
+      "p50_latency_ms": 104.93254661560059,
+      "p95_latency_ms": 197.46404886245728,
+      "p99_latency_ms": 205.68063497543335,
+      "max_latency_ms": 15016.391038894653,
+      "rps": 63.333333333333336,
+      "memory_mb": 2483.9765625,
+      "cpu_percent": 0.0
+    },
+    {
+      "concurrent_level": 1000,
+      "duration_sec": 60,
+      "total_requests": 4200,
+      "successful_requests": 4156,
+      "failed_requests": 44,
+      "error_rate": 0.010476190476190476,
+      "avg_latency_ms": 123.00061169124785,
+      "p50_latency_ms": 109.25853252410889,
+      "p95_latency_ms": 204.92899417877197,
+      "p99_latency_ms": 211.9976568222046,
+      "max_latency_ms": 15015.873432159424,
+      "rps": 70.0,
+      "memory_mb": 2521.69921875,
+      "cpu_percent": 2.4
+    }
+  ],
+  "breaking_point_concurrent": 1000,
+  "breaking_point_error_rate": 0.010476190476190476,
+  "max_sustainable_concurrent": 500,
+  "sustained_metrics": {
+    "duration_sec": 300,
+    "avg_latency_ms": 111.83536703930152,
+    "p50_latency_ms": 106.3542366027832,
+    "p95_latency_ms": 197.215735912323,
+    "p99_latency_ms": 205.17964124679565,
+    "error_rate": 0.0039519650655021835,
+    "rps": 152.66666666666666
+  },
+  "bottleneck_analysis": {
+    "memory_bottleneck": "High memory usage: 2522MB",
+    "error_rate_concern": "Error rate reached 1.05%"
+  },
+  "improvement_metrics": {
+    "rps_improvement": {
+      "phase7": 96.86,
+      "phase8": 152.66666666666666,
+      "improvement_percent": 57.615802877004604,
+      "target": 150,
+      "target_met": true
+    },
+    "latency_improvement": {
+      "phase7": 268.2,
+      "phase8": 111.83536703930152,
+      "improvement_percent": 58.30150371390697
+    },
+    "capacity_improvement": {
+      "phase7_concurrent": 500,
+      "phase8_concurrent": 500,
+      "improvement_factor": 1.0
+    }
+  },
+  "peak_metrics": {
+    "peak_memory_mb": 2521.69921875,
+    "peak_cpu_percent": 2.4
+  }
+}
