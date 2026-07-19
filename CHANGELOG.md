@@ -1,5 +1,24 @@
 ## [Unreleased]
 
+### PR #5363 Cleanup: Restore Generated Session Artifacts (2026-07-19T11:29Z)
+
+#### Decision: ✅ **PR SCOPE CORRECTED** — removed accidental `.codex/*` runtime artifact churn
+
+**Changes**:
+- Reverted the six generated `.codex/*` session/context artifacts back to `main` so this PR no longer carries runtime metadata churn
+- Removed committed token-tail/rate-limit snapshots from the PR diff by restoring `.codex/session_access_manifest.json` and related session access files
+- Merged the latest `main` hourly checkpoint commit to clear the branch-behind condition before continuing review follow-up
+- Updated the accountability report copies and this changelog entry so the latest commit truthfully describes the cleanup work
+
+**Validation**:
+- ✅ Generated artifact files now match `origin/main`
+- ✅ Latest commit includes REQ-4/REQ-5 documentation updates
+- ✅ Follow-up REQ-14 metadata compliance recorded in the accountability reports
+- ✅ PR scope reduced to branch sync and compliance documentation only
+
+**Impact**: Removes accidental generated artifacts from PR #5363, reduces secret-scan noise, and brings the branch back to a reviewable state.
+---
+
 ### Security: CodeQL Alert Remediation for PR #5337 (2026-07-19T03:50Z)
 
 #### Decision: ✅ **ALL 5 ALERTS RESOLVED** — CTEP Mode: ON (Zero-CVE Policy)
