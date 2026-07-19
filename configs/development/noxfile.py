@@ -24,7 +24,7 @@ except Exception:  # pragma: no cover - fallback for py310
 import nox
 from nox.command import CommandFailed
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 _CANDIDATE_PYTHONS = ("3.12", "3.11", "3.10")
 _AVAILABLE = [v for v in _CANDIDATE_PYTHONS if shutil.which(f"python{v}")]
 if _AVAILABLE:
