@@ -47,7 +47,7 @@ jobs:
         \ artifact\nwith open(\"forecast-accuracy.json\", \"w\") as f:\n    json.dump(accuracy,\
         \ f, indent=2)\nPY"
     - name: Upload accuracy report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: forecast-accuracy.json
         name: forecast-accuracy
@@ -91,7 +91,7 @@ jobs:
         \ None,\n}\n\nwith open(\"bottleneck-report.json\", \"w\") as f:\n    json.dump(metrics_dict,\
         \ f, indent=2)\nPY"
     - name: Upload bottleneck report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: bottleneck-report.json
         name: bottleneck-report
@@ -138,7 +138,7 @@ jobs:
         : recs,\n}\n\nwith open(\"recommendation-report.json\", \"w\") as f:\n   \
         \ json.dump(metrics_dict, f, indent=2, default=str)\nPY"
     - name: Upload recommendation report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: recommendation-report.json
         name: recommendation-report
@@ -178,7 +178,7 @@ jobs:
         \nwith open(\"dashboard-performance.json\", \"w\") as f:\n    json.dump(metrics_dict,\
         \ f, indent=2)\nPY"
     - name: Upload performance report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: dashboard-performance.json
         name: dashboard-performance
@@ -194,7 +194,7 @@ jobs:
     if: always()
     steps:
     - name: Download all reports
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
     - name: Generate summary
       run: "echo \"# Capacity Planner Weekly Report\" >> \"$GITHUB_STEP_SUMMARY\"\n\
         echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"**Date**: $(date -u +\"%Y-%m-%d\

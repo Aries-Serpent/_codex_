@@ -61,7 +61,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: "\U0001F40D Set up Python"
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -119,7 +119,7 @@ jobs:
         \ issue (label may not exist) \u2014 continuing\"\n"
     - name: "\U0001F4E6 Upload JSON report as artifact"
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: /tmp/branch_cleanup_report.json
         retention-days: 30

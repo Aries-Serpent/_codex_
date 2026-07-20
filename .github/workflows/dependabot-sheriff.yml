@@ -101,14 +101,14 @@ jobs:
         '
     - name: Upload logs
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: .codex/logs/dependabot_sheriff_*.log
         retention-days: 30
         name: dependabot-sheriff-logs
     - name: Upload summary
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: .codex/logs/dependabot_sheriff_summary_*.md
         retention-days: 30

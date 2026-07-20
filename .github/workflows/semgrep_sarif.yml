@@ -268,12 +268,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-semgrep_sarif-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-semgrep_sarif-
-            ${{ runner.os }}-pip-
     timeout-minutes: 30

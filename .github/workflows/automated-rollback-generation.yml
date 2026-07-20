@@ -113,22 +113,11 @@ jobs:
         \ By:** GitHub Actions\n- **Workflow:** ${{ github.workflow }}\nEOF\n\necho\
         \ \"report_created=true\" >> $GITHUB_OUTPUT\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       if: always()
       with:
         path: .pytest_cache/
         key: ${{ runner.os }}-pytest-${{ github.sha }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-automated_rollback_generation-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-automated_rollback_generation-
-            ${{ runner.os }}-pip-
-        restore-keys: '${{ runner.os }}-pytest-
-
-          '
     - name: Commit generated procedures
       id: commit
       if: steps.validate.outputs.validation_passed == 'true'

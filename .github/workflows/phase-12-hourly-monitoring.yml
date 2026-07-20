@@ -33,14 +33,6 @@ jobs:
         PHASE_12_CHECKPOINT_ENABLED: 'true'
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-phase_12_hourly_monitoring-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-phase_12_hourly_monitoring-
-            ${{ runner.os }}-pip-
         CHECKPOINT_HOUR: ${{ github.run_number }}
         RUN_NUMBER: ${{ github.run_number }}
       run: "python scripts/monitoring/phase_12_checkpoint.py \\\n  --hour=\"${{ github.run_number\

@@ -40,13 +40,13 @@ jobs:
         python-version: 3.12.13
         cache-tier: common
     - name: Set up Node.js 22
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version: '22'
         cache: npm
         cache-dependency-path: cognitive_app/package-lock.json
     - name: Cache MkDocs plugins
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: '~/.cache/pip
 
@@ -59,7 +59,7 @@ jobs:
 
           '
     - name: Cache built site
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: site/
         key: ${{ runner.os }}-site-${{ github.sha }}
@@ -125,7 +125,7 @@ jobs:
         echo "📦 Building cognitive_app dashboard..."
         echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
         echo "   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_FETCH_LIVE:-enabled}"
-         
+
         # Phase 1: Pre-build validation
         echo ""
         echo "Phase 1: Pre-build validation..."
@@ -133,50 +133,64 @@ jobs:
           echo "❌ Pre-build validation failed"
           exit 1
         fi
-         
-        # Phase 2: Install dependencies with explicit error handling
+
+        # Phase 2: Clean node_modules for fresh deterministic build
         echo ""
-        echo "Phase 2: Installing dependencies..."
+        echo "Phase 2: Preparing for deterministic build..."
+        echo "   Cleaning node_modules to ensure deterministic rebuild..."
+        rm -rf node_modules
+        rm -rf dist
+
+        # Phase 3: Install dependencies with explicit error handling
+        echo ""
+        echo "Phase 3: Installing dependencies..."
         if ! npm ci --prefer-offline 2>&1 | tee npm-install.log; then
           echo "❌ npm ci failed"
           echo "Recent errors:"
           tail -30 npm-install.log
           exit 1
         fi
-         
-        # Phase 3: Run TypeScript build
+
+        # Phase 4: Run TypeScript build
         echo ""
-        echo "Phase 3: TypeScript compilation..."
+        echo "Phase 4: TypeScript compilation..."
         if ! npm run build 2>&1 | tee npm-build.log; then
           echo "❌ npm build failed"
           echo "Recent errors:"
           tail -50 npm-build.log
           exit 1
         fi
-         
-        # Phase 4: Post-build validation
+
+        # Phase 5: Post-build validation
         echo ""
-        echo "Phase 4: Post-build validation..."
+        echo "Phase 5: Post-build validation..."
         if ! python ../scripts/ci/validate_cognitive_app_build.py --post-build-only; then
           echo "❌ Post-build validation failed"
           exit 3
         fi
-         
-        # Phase 5: Deploy to site directory
+
+        # Phase 6: Deploy to site directory
         echo ""
-        echo "Phase 5: Deploying to site directory..."
+        echo "Phase 6: Deploying to site directory..."
         if [ ! -d dist ]; then
           echo "❌ ERROR: cognitive_app build did not produce dist/ directory"
           exit 1
         fi
-         
+
         mkdir -p ../site/cognitive_app
         cp -r dist/* ../site/cognitive_app/
-         
+
         echo "✅ cognitive_app built and deployed to site/cognitive_app/"
         echo ""
-        echo "Build artifacts:"
-        ls -lah ../site/cognitive_app/ | head -20
+        echo "Build artifacts (manifest.json + first 20 files):"
+        ls -lah ../site/cognitive_app/ | head -25
+        
+        # Save asset manifest for verification
+        if [ -f ../site/cognitive_app/manifest.json ]; then
+          echo ""
+          echo "Asset manifest:"
+          cat ../site/cognitive_app/manifest.json | head -20
+        fi
     - name: Cache health report
       if: always()
       continue-on-error: true
@@ -219,23 +233,63 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
-    - name: Verify deployed site (health check)
+    - name: Verify deployed site (comprehensive health check)
       id: health_check
+      run: |
+        PAGE_URL="${{ steps.deployment.outputs.page_url }}"
+        if [ -z "${PAGE_URL}" ]; then
+         echo "⚠ No page_url output - skipping health check"
+         exit 0
+        fi
+        
+        echo "🔍 Comprehensive site verification: ${PAGE_URL}"
+        echo ""
+        
+        # Phase 1: Root page accessibility
+        echo "Phase 1: Root page accessibility check..."
+        for i in 1 2 3 4 5; do
+         HTTP_CODE=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "${PAGE_URL}" 2>/dev/null || echo "000")
+         echo "  Attempt ${i}: HTTP ${HTTP_CODE}"
+         if [ "${HTTP_CODE}" = "200" ]; then
+           echo "✅ Root page accessible (HTTP 200)"
+           break
+         fi
+         if [ ${i} -lt 5 ]; then
+           sleep 10
+         fi
+        done
+        
+        if [ "${HTTP_CODE}" != "200" ]; then
+         echo "❌ Root page returned HTTP ${HTTP_CODE}"
+         echo "health_status=root_page_failed:${HTTP_CODE}" >> "$GITHUB_OUTPUT"
+         exit 1
+        fi
+        
+        echo ""
+        
+        # Phase 2: Verify cognitive_app deployment
+        echo "Phase 2: Cognitive app deployment verification..."
+        COGNITIVE_APP_URL="${PAGE_URL%/}/cognitive_app/"
+        python scripts/ci/verify_cognitive_app_deployment.py --url "${COGNITIVE_APP_URL}"
+        VERIFY_RESULT=$?
+        
+        if [ ${VERIFY_RESULT} -eq 0 ]; then
+         echo "✅ Cognitive app deployment verified"
+         echo "health_status=ok" >> "$GITHUB_OUTPUT"
+         echo "## ✅ Pages Health Check PASSED" >> "$GITHUB_STEP_SUMMARY"
+         echo "All assets and widgets verified working at \`${PAGE_URL}\`." >> "$GITHUB_STEP_SUMMARY"
+         exit 0
+        else
+         echo "❌ Cognitive app deployment verification failed (exit code: ${VERIFY_RESULT})"
+         echo "health_status=deployment_failed:${VERIFY_RESULT}" >> "$GITHUB_OUTPUT"
+         echo "## ❌ Pages Health Check FAILED" >> "$GITHUB_STEP_SUMMARY"
+         echo "Cognitive app deployment verification failed with exit code ${VERIFY_RESULT}." >> "$GITHUB_STEP_SUMMARY"
+         echo "The pages-health-guard.yml workflow will attempt automatic recovery." >> "$GITHUB_STEP_SUMMARY"
+         exit 1
+        fi
       continue-on-error: true
-      run: "PAGE_URL=\"${{ steps.deployment.outputs.page_url }}\"\nif [ -z \"${PAGE_URL}\"\
-        \ ]; then\n  echo \"\u26A0\uFE0F  No page_url output \u2014 skipping health\
-        \ check\"\n  exit 0\nfi\necho \"\U0001F50D Checking deployed site: ${PAGE_URL}\"\
-        \n# Wait up to 60s for CDN propagation\nfor i in 1 2 3 4 5 6; do\n  HTTP_CODE=$(curl\
-        \ -sS -o /dev/null -w \"%{http_code}\" --max-time 15 \"${PAGE_URL}\" 2>/dev/null\
-        \ || echo \"000\")\n  echo \"  Attempt ${i}: HTTP ${HTTP_CODE}\"\n  if [ \"\
-        ${HTTP_CODE}\" = \"200\" ]; then\n    echo \"\u2705 Site is healthy (HTTP\
-        \ 200)\" >> \"$GITHUB_STEP_SUMMARY\"\n    echo \"health_status=ok\" >> \"\
-        $GITHUB_OUTPUT\"\n    exit 0\n  fi\n  sleep 10\ndone\necho \"\u274C Site returned\
-        \ HTTP ${HTTP_CODE} after 60s \u2014 possible 404 deployment\"\necho \"health_status=degraded:${HTTP_CODE}\"\
-        \ >> \"$GITHUB_OUTPUT\"\necho \"## \u26A0\uFE0F Pages Health Check FAILED\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"Site at \\`${PAGE_URL}\\` returned HTTP\
-        \ **${HTTP_CODE}**.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"The pages-health-guard.yml\
-        \ workflow will attempt automatic recovery.\" >> \"$GITHUB_STEP_SUMMARY\"\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Summary
       run: 'echo "## Documentation Deployed" >> $GITHUB_STEP_SUMMARY
 

@@ -41,9 +41,7 @@ jobs:
       run: pip install pyyaml --quiet
     - name: Regenerate CODEX_MANIFEST.json
       id: refresh
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'python scripts/ci/generate_manifest.py
+      run: 'python scripts/ci/generate_manifest.py
 
         python3 -c ''import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])''
         >> "$GITHUB_OUTPUT"
@@ -52,14 +50,6 @@ jobs:
     - name: "Update compliance files (REQ-4/5 \u2014 PR runs only)"
       env:
         PR_NUMBER: ${{ github.event.pull_request.number || '' }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-codex_manifest_refresh-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-codex_manifest_refresh-
-            ${{ runner.os }}-pip-
         RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id
           }}
         GIT_SHA: ${{ github.sha }}

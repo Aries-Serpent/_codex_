@@ -94,6 +94,7 @@ data/checkpoints/
 .dmypy.json
 dmypy.json
 .ruff_cache/
+.cache/
 
 # Batch 0 cleanup: Hardened venv patterns
 venv_test/
@@ -131,3 +132,6 @@ mlruns/
 .bandit
 .bandit.yaml
 .bandit.yml
+
+# Malformed pip install artifacts
+=*

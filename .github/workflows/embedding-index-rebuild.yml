@@ -1,8 +1,9 @@
 name: Embedding Index Rebuild
-true:
+
+on:
   schedule:
-  - cron: 0 2 * * *
-  workflow_dispatch: null
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -39,9 +40,7 @@ jobs:
         cache: pip
     - name: Check RAG index freshness
       id: freshness
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"python3 - <<\"PYEOF\"\nimport json, os, sys\nfrom datetime import datetime,\
+      run: "python3 - <<\"PYEOF\"\nimport json, os, sys\nfrom datetime import datetime,\
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
         )\nSTALE_WARN_HOURS  = 25  # emit warning if older than 25 h\nSTALE_ERROR_HOURS\
         \ = 72  # emit error if older than 72 h\n\nif not META.exists():\n    print(\"\
@@ -102,14 +101,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-embedding_index_rebuild-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-embedding_index_rebuild-
-            ${{ runner.os }}-pip-
         REPO: ${{ github.repository }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
       run: "_TARGET=\"${PUSH_TARGET:-main}\"\nif [ \"$_TARGET\" = \"main\" ] || [\

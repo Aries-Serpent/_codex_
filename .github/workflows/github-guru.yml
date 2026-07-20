@@ -79,7 +79,7 @@ jobs:
         success\") else 1)\nPYEOF\n"
     - name: Upload session metrics
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: audit_artifacts/baselines/github_guru_session_*.json
         retention-days: 30

@@ -61,9 +61,7 @@ jobs:
     - name: Install ruff
       run: pip install ruff
     - name: Run Ruff linting
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'echo "## Ruff Linting Results" >> $GITHUB_STEP_SUMMARY
+      run: 'echo "## Ruff Linting Results" >> $GITHUB_STEP_SUMMARY
 
         ruff check src/ tests/ --output-format=github >> $GITHUB_STEP_SUMMARY 2>&1
         || true
@@ -91,9 +89,7 @@ jobs:
       run: pip install mypy
     - name: Run mypy type checking
       continue-on-error: true
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'echo "## Type Checking (mypy)" >> $GITHUB_STEP_SUMMARY
+      run: 'echo "## Type Checking (mypy)" >> $GITHUB_STEP_SUMMARY
 
         mypy src/ --ignore-missing-imports --no-error-summary 2>&1 | tee mypy-output.txt
 
@@ -123,9 +119,7 @@ jobs:
     - name: Install bandit
       run: pip install bandit[toml]
     - name: Run Bandit security analysis
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"echo \"## Security Analysis (Bandit)\" >> $GITHUB_STEP_SUMMARY\nbandit\
+      run: "echo \"## Security Analysis (Bandit)\" >> $GITHUB_STEP_SUMMARY\nbandit\
         \ -r src/ -f json -o bandit-report.json || true\nbandit -r src/ -f txt | tee\
         \ bandit-output.txt\n\nCRITICAL_COUNT=$(jq '[.results[] | select(.severity\
         \ == \"HIGH\" and .confidence == \"HIGH\")] | length' bandit-report.json 2>/dev/null\

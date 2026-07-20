@@ -143,7 +143,7 @@ jobs:
         unique-id-for-comment: quick-coverage
     - name: Upload coverage artifact
       if: matrix.test-group == 'quick' && always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'coverage.json
 
@@ -155,7 +155,7 @@ jobs:
         name: coverage-baseline
     - name: Upload results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'test-results/
 
@@ -215,7 +215,7 @@ jobs:
     - name: Install pytest-split
       run: pip install pytest-split>=0.8 --quiet
     - name: Restore test durations cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .test_durations
         key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -242,13 +242,13 @@ jobs:
         \n"
     - name: Save test durations cache
       if: always()
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .test_durations
         key: test-durations-${{ hashFiles('tests/**/*.py') }}
     - name: Upload shard results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.test_durations
 

@@ -102,7 +102,7 @@ jobs:
         '
     - name: Upload coverage artifact (shard ${{ matrix.shard }})
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
@@ -115,7 +115,7 @@ jobs:
         retention-days: 14
     - name: Upload timeout logs
       if: steps.coverage.outputs.coverage_failed == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
@@ -153,7 +153,7 @@ jobs:
 
         '
     - name: Download all coverage artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         pattern: coverage-shard-*
         path: coverage-shards
@@ -173,7 +173,7 @@ jobs:
         \nfi\n"
     - name: Upload combined coverage
       if: steps.merge.outputs.merge_succeeded == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-combined
         path: 'coverage_combined.xml

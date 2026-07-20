@@ -35,9 +35,7 @@ jobs:
         python-version: 3.12.13
         cache: pip
     - name: Install import-linter
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install import-linter --quiet
+      run: 'pip install import-linter --quiet
 
         '
     - name: Run import-linter
@@ -45,12 +43,4 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-import_linter-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-import_linter-
-            ${{ runner.os }}-pip-
     timeout-minutes: 15

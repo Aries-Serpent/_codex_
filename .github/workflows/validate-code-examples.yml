@@ -58,14 +58,6 @@ jobs:
         \ f)\nEOF\n"
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-validate_code_examples-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-validate_code_examples-
-            ${{ runner.os }}-pip-
         GITHUB_BEFORE: ${{ github.event.before || '' }}
     - name: Validate Python syntax
       run: "python3 << 'EOF'\nimport json\nimport tempfile\nimport os\n\nwith open('python_blocks.json')\

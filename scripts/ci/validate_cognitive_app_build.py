@@ -21,6 +21,7 @@ Exit codes:
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -280,6 +281,51 @@ def validate_widget_presence() -> bool:
     return True
 
 
+def save_asset_manifest() -> bool:
+    """Save asset manifest with hashes for post-deployment verification."""
+    log("INFO", "Phase 4: Asset manifest generation")
+    
+    try:
+        assets_dir = DIST_DIR / "assets"
+        if not assets_dir.exists():
+            log("WARNING", "⚠ No assets directory to save manifest")
+            return True
+        
+        manifest = {
+            "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "assets": {}
+        }
+        
+        # Record all assets
+        for asset_file in sorted(assets_dir.glob("*")):
+            if asset_file.is_file():
+                size = asset_file.stat().st_size
+                asset_type = "unknown"
+                if asset_file.suffix == ".js":
+                    asset_type = "javascript"
+                elif asset_file.suffix == ".css":
+                    asset_type = "stylesheet"
+                elif asset_file.suffix in (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"):
+                    asset_type = "image"
+                
+                manifest["assets"][asset_file.name] = {
+                    "type": asset_type,
+                    "size_bytes": size,
+                    "path": str(asset_file.relative_to(REPO_ROOT))
+                }
+        
+        # Save manifest
+        manifest_file = DIST_DIR / "manifest.json"
+        with open(manifest_file, 'w') as f:
+            json.dump(manifest, f, indent=2)
+        
+        log("SUCCESS", f"✓ Asset manifest saved ({len(manifest['assets'])} files)")
+        return True
+    except Exception as e:
+        log("ERROR", f"✗ Failed to save asset manifest: {e}")
+        return False
+
+
 def main() -> int:
     """Main validation flow."""
     import argparse
@@ -326,6 +372,12 @@ def main() -> int:
         if not validate_widget_presence():
             log("ERROR", "Widget presence validation failed")
             return 4
+        print()
+        
+        # Asset manifest generation
+        if not save_asset_manifest():
+            log("ERROR", "Asset manifest generation failed")
+            return 5
         print()
     
     log("SUCCESS", "All validations PASSED - Build is production-ready")

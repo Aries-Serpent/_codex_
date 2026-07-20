@@ -105,7 +105,7 @@ jobs:
         \nfi\n"
     - name: Upload health report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.codex/reports/workflow-health-*.json
 
@@ -161,7 +161,7 @@ jobs:
         \ \\\n    --body-file .codex/reports/findings.md \\\n    --label \"automated,analytics\"\
         \nfi\n"
     - name: Upload analytics reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.codex/reports/workflow-*.json
 
@@ -220,7 +220,7 @@ jobs:
         \ .codex/reports/analytics-report.md\n  echo \"- Success rate: ${success_rate}%\"\
         \ >> .codex/reports/analytics-report.md\nfi\n"
     - name: Upload manual analytics
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.codex/reports/manual-analytics.json
 

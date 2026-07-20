@@ -39,7 +39,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-13-3-enterprise-compliance-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
@@ -67,7 +67,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-13-3-enterprise-compliance-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}

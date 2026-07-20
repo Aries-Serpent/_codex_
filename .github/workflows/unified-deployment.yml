@@ -102,7 +102,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version: '22'
         cache: npm
@@ -116,7 +116,7 @@ jobs:
         GITHUB_ACTIONS: true
       run: npm run build
     - name: Upload cognitive_app build artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: cognitive_app/dist
         retention-days: 14
@@ -150,7 +150,7 @@ jobs:
 
         '
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: dist/
         retention-days: 90
@@ -169,7 +169,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Download build artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: dist/
         name: pre-release-build-${{ inputs.version || github.sha }}

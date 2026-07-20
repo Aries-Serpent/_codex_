@@ -1,6 +1,13 @@
 name: Ensemble Predictor Monitoring
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   accuracy-tracking:
     runs-on: ubuntu-latest
@@ -48,7 +55,7 @@ jobs:
         \ \"w\") as f:\n    json.dump({\n        \"performance\": metrics,\n     \
         \   \"accuracies\": accuracies,\n    }, f, indent=2)\nEOF\n"
     - name: Upload metrics artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: .codex/ensemble_metrics.json
         retention-days: 30
@@ -162,7 +169,7 @@ jobs:
 
         '
     - name: Upload coverage report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: htmlcov/
         retention-days: 30
@@ -180,7 +187,7 @@ jobs:
     if: always()
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: monitoring-artifacts
     - name: Publish job summary

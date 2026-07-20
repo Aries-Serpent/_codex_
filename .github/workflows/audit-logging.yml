@@ -44,7 +44,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-audit-logging-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
@@ -135,7 +135,7 @@ jobs:
         \ event logged\")\nEOF\n"
     - name: Upload audit events
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: audit-events-${{ github.run_id }}
         path: ${{ env.AUDIT_LOG_DIR }}/
@@ -150,7 +150,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install verification dependencies
@@ -186,7 +186,7 @@ jobs:
         ], \"a\") as f:\n    f.write(f\"total_events={total_events}\\n\")\nEOF\n"
     - name: Publish integrity verification report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: audit-integrity-report
         path: ${{ env.AUDIT_LOG_DIR }}/audit_trail_checksums.txt
@@ -201,7 +201,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install export dependencies
@@ -265,7 +265,7 @@ jobs:
         )\nprint(f\"   High: {len(summary['high_events'])}\")\nEOF\n"
     - name: Upload audit export reports
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: audit-export-reports
         path: ${{ env.AUDIT_REPORT_DIR }}/
@@ -282,7 +282,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: 'Check PII SLO (SLO-001: Zero PII)'

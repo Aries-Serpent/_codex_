@@ -116,7 +116,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Total applications\
         \ found**: $TOTAL_APPS\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -260,7 +260,7 @@ jobs:
         echo \"- **Filename**: \\`${PACKAGE_NAME}.tar.gz\\`\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"- **Size**: $SIZE\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Upload package as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format
           }}
@@ -297,7 +297,7 @@ jobs:
         \ }}\",\n  \"ref\": \"${{ github.ref }}\",\n  \"actor\": \"${{ github.actor\
         \ }}\"\n}\nEOF\n\necho \"\u2705 Generated package manifest\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Upload package manifest
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: package_manifest.json
         retention-days: 90

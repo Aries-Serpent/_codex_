@@ -68,7 +68,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -133,7 +133,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -157,7 +157,7 @@ jobs:
         \ \"${MSG_FLAG[@]}\"\n"
     - name: Upload result artifact
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: /tmp/ff_result.json
         retention-days: 30

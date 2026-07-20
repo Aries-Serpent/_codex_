@@ -53,14 +53,6 @@ jobs:
         \ .codex/compliance/report.json \\\n  --timeout 60\n"
       env:
         GH_TOKEN: ${{ github.token }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-unified_governance_check-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-unified_governance_check-
-            ${{ runner.os }}-pip-
     - name: Parse compliance report
       id: parse
       if: always()

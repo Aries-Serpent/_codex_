@@ -76,9 +76,7 @@ jobs:
         python-version: 3.12.13
         cache: pip
     - name: Check for P19 shadow imports
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"python -c \"\nimport sys\nimport importlib.util\ntry:\n    spec = importlib.util.find_spec('codex')\n\
+      run: "python -c \"\nimport sys\nimport importlib.util\ntry:\n    spec = importlib.util.find_spec('codex')\n\
         \    if spec and spec.origin:\n        path = spec.origin\n        if 'site-packages'\
         \ in path and 'src' not in str(sys.path):\n            print('::warning::P19\
         \ Shadow Import Detected')\n            print(f'  codex resolved to: {path}')\n\
@@ -105,9 +103,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -e ".[dev]"
+      run: 'pip install -e ".[dev]"
 
         pip install pytest-xdist pytest-timeout==2.4.0
 
@@ -135,9 +131,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -e ".[dev]"
+      run: 'pip install -e ".[dev]"
 
         pip install pytest-xdist pytest-timeout==2.4.0
 
@@ -164,9 +158,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -e ".[dev]"
+      run: 'pip install -e ".[dev]"
 
         pip install pytest-xdist pytest-timeout==2.4.0
 
@@ -193,9 +185,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -e ".[dev]"
+      run: 'pip install -e ".[dev]"
 
         pip install pytest-xdist pytest-timeout==2.4.0
 
@@ -227,15 +217,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-optimized_test_execution-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-optimized_test_execution-
-            ${{ runner.os }}-pip-
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -272,9 +254,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -e ".[dev]"
+      run: 'pip install -e ".[dev]"
 
         pip install pytest-xdist pytest-timeout==2.4.0
 
@@ -301,17 +281,17 @@ jobs:
         toolchain: stable
         components: rustfmt, clippy
     - name: Cache cargo registry
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cargo/registry
         key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo index
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cargo/git
         key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo build
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
@@ -342,9 +322,7 @@ jobs:
         cache: pip
         cache-dependency-path: pyproject.toml
     - name: 🔍 P19 Shadow Import Check (Pre-Coverage)
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"python -c \"\nimport sys, importlib.util\nspec = importlib.util.find_spec('codex')\n\
+      run: "python -c \"\nimport sys, importlib.util\nspec = importlib.util.find_spec('codex')\n\
         if spec and spec.origin:\n    if 'site-packages' in spec.origin and '.egg-link'\
         \ in spec.origin:\n        print('::warning::P19 Shadow Import Detected -\
         \ Invalidating cache')\n        import shutil\n        shutil.rmtree(Path.home()\
@@ -369,7 +347,7 @@ jobs:
 
         '
     - name: Upload coverage artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.coverage.json
 

@@ -38,7 +38,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-compliance-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
@@ -80,7 +80,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload PII detection artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: pii-detection-report
         path: '/tmp/detect_secrets_report.txt
@@ -196,7 +196,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Check TLS configuration

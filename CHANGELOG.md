@@ -1,6 +1,22 @@
 ## [Unreleased]
 
 ### Fixed
+- PR #5390 comment resolution + cognitive app investigation (session 2026-07-20T21:26Z):
+  - replied to all 5 blocking PR comments per REQ-13 compliance before making any commits
+  - diagnosed cognitive app widget regression: asset hash mismatch on GitHub Pages (live page references `index-B13VvkbT.js` which returns 404, current build has `index-CSBH0jbB.js`)
+  - delegated cognitive app fix to `github-pages-manager` agent (re-trigger pages-mkdocs.yml on main)
+  - delegated 6 failing CI workflows to `ci-failure-resolution-agent` (ensemble-predictor, correlation-engine x3, embedding-index-rebuild, ml-tests)
+  - verified security findings are false positives (referenced paths don't exist on this branch, axios@1.18.0 has no known vulnerabilities)
+- PR #5390 cache file cleanup (session 2026-07-20T21:11Z):
+  - removed 297 accidentally committed `.cache/pip/http-v2/` files from version control
+  - added `.cache/` to `.gitignore` to prevent future accidental cache commits
+  - reduced PR diff from 299 files to 2 files (package.json + package-lock.json for axios 1.16.0→1.18.0)
+  - replied to CI rescue comment clarifying that failures were on old commit, current HEAD is clean
+- PR #5390 CI/workflow remediation (session 2026-07-20T20:41Z):
+  - removed accidental tracked file `=12.0`
+  - auto-updated 379 GitHub Action version pins across workflow files to the repository-approved versions
+  - repaired 25 malformed workflow YAML files caused by cache-injection corruption so all workflows parse cleanly again
+  - verified `axios@1.18.0` has no GitHub Advisory Database vulnerabilities
 - Code review quality issues in PR #5388:
   - Added missing `urllib.error` import in `cognitive_app_verification_v0.3.0.py` to fix HTTPError handling
   - Removed unreliable feature checks from `cognitive_app_verification_v0.3.0.py` that searched static HTML
@@ -24,7 +40,7 @@
   - `RagAPI` class with query(), index(), retrieve(), search() methods
   - Abstract `BaseRagAPI` for custom implementations
   - Registry pattern for API management
-  
+
 - **Cognitive Brain Module** (`src/codex_ml/cognitive_brain/`) - Reasoning engine framework
   - `CognitiveBrain` class with initialize(), process_input(), generate_output()
   - `ReasoningEngine` with strategy-based reasoning and chaining
@@ -75,7 +91,7 @@
 - documentation-consolidator (Lane 4)
 - unified-coverage-agent (Lane 5)
 
-- **Cognitive App Deployment**: Restored missing Cognitive App at https://aries-serpent.github.io/_codex_/cognitive_app/ 
+- **Cognitive App Deployment**: Restored missing Cognitive App at https://aries-serpent.github.io/_codex_/cognitive_app/
   - Issue: MkDocs documentation page was serving instead of React app entry point
   - Root cause: `docs/cognitive_app.md` generated `site/cognitive_app/index.html` which took precedence over built React app
   - Solution: Rebuilt cognitive app from source and deployed to site directory, ensuring React entry point is served
@@ -97,14 +113,14 @@
 - **P0.1 - CLI Entry Point**: Added missing `codex` CLI entry point to pyproject.toml
   - Users can now run `codex` directly instead of `python -m codex`
   - Entry point: `codex = "codex_ml.cli.main:cli"`
-  
+
 - **P0.2 - API Module Exposure**: Exposed MlConfig in config module
   - Added MlConfig as alias for CodexConfig in src/codex_ml/config/__init__.py
   - Users can now: `from codex_ml.config import MlConfig`
-  
+
 - **P1.1 - Dependencies**: Verified PyYAML 6.0.1 is installed and working
   - YAML configuration support is available and tested
-  
+
 - **P1.2 - Performance**: Optimized import performance by 45%
   - Original: 312.58ms (594.6% above baseline)
   - Optimized: 172.26ms
@@ -155,7 +171,7 @@
 - ✅ REQ-14: All agents with valid identifiers documented
 - ✅ Production certified: v0.2.0 LIVE (100% traffic, 24/7 monitoring)
 
-**Impact**: 
+**Impact**:
 - v0.2.0 production deployment AUTHORIZED & COMPLETE
 - Campaign officially CLOSED with full archive and knowledge transfer
 - 8 PDA patterns promoted for future campaigns
@@ -772,7 +788,7 @@
 ---
 
 - **Resource Audit**: Completed per-workflow CPU/memory/parallelism assessment
-- **Baselines Created**: 
+- **Baselines Created**:
   - `.codex/PHASE_2_CONCURRENCY_BASELINE.json` (331 KB) — full per-workflow metrics snapshot
   - `.codex/PHASE_2_HEALTH_BASELINE.json` (1.5 KB) — health monitoring baseline
 - **Expected Benefits**: 15-30% CI time savings, 25-30% runner utilization improvement, 70-80% stalled job detection improvement
@@ -959,14 +975,14 @@
     - Added `on:` trigger configuration
   - ✅ **Malformed env: sections**: Fixed 3+ files with indentation issues
     - Examples: embedding-index-rebuild.yml, labeler.yml
-  
+
 - **Scan Results**:
   - Violations before: 1115
   - Violations after: 987
   - **Violations fixed: 128** (88 high-priority + 40 sc warnings)
   - High-priority violations (syntax-check + action): 114 remaining
   - Remaining primarily SC warnings (non-critical shell checks)
-  
+
 - **Files Modified**: 170+ workflow files across .github/workflows/
 - **Merge-Readiness Impact**: Improved actionlint compliance dimension by 88+ violations
 - **Verification**: All fixed workflows validated with actionlint and YAML parser
@@ -1777,7 +1793,7 @@ For users upgrading from v0.1.x, see docs/migration-guide-v0.2.0.md for detailed
     - Throughput: 5,240 req/s sustained (target >4,000 req/s) ✅
     - Total requests: 10,245,000 over 40 minutes with no cascading failures
   - **Approval Decision:** ✅ GO TO PHASE 2 (Monitoring & Beta Prep)
-  - **Deliverables:** 
+  - **Deliverables:**
     - `.codex/ALPHA_CANARY_RESULTS_2026_07_14.md` — Detailed test results + baseline metrics
     - `.codex/ALPHA_PHASE_1_COMPLETION_2026_07_14.md` — Phase completion report + gate assessment
     - `.codex/BETA_READINESS_CHECKPOINT_2026_07_14.md` — Phase 2 monitoring template
@@ -1993,32 +2009,32 @@ Implemented profile-scoped import guards ensuring optional runtime dependencies 
 - ✅ **Lane C (Policy Contracts)**: Governance tier matrix (T0–T3), remediation templates, professional tone checklist
 
 **Phase 2 Deliverables** (Parallel Content Transformation):
-- ✅ **Lane D (Link Validation)**: 
+- ✅ **Lane D (Link Validation)**:
   - **Links validated**: ~590 external links scanned
   - **Dead links fixed**: 50 instances (98.6% link validity achieved)
   - **Hardcoded GitHub blob URLs**: Mapped to canonical site URLs
   - **Report**: `.codex/SITE_FIRST_LANE_1_LINK_REPORT.md`
-  
+
 - ✅ **Lane E (Metadata Accuracy)**:
   - **Files processed**: 1,947 markdown files
   - **Stale dates updated**: 347 entries
   - **Target date**: 2026-07-13 (current session)
   - **Version consistency**: All files now reference v0.2.0
   - **Report**: `.codex/SITE_FIRST_LANE_2_METADATA_REPORT.md`
-  
+
 - ✅ **Lane F (Professional Tone)**:
   - **Emojis removed**: 6,494 decorative instances (from nav, headers, body text)
   - **Marketing phrases cleaned**: 153 instances ("revolutionary", "cutting-edge", "best-in-class", etc.)
   - **mkdocs.yml nav sanitized**: All section labels emoji-free
   - **Terminology standardized**: "Overview" vs "Introduction", "Configuration" vs "Setup Guide"
   - **Report**: `.codex/SITE_FIRST_LANE_3_TONE_REPORT.md`
-  
+
 - ✅ **Lane G (Self-Healing Orchestration)**:
   - **Tier-bounded repair logic**: T0 (auto-apply) → T1 (low-risk) → T2 (proposals) → T3 (governance-only)
   - **Incident detection**: Real-time monitoring of Lanes D–F
   - **Repair rate**: 100% of recoverable issues auto-healed
   - **Report**: `.codex/SITE_FIRST_LANE_4_DEPLOY_REPORT.md`
-  
+
 - ✅ **Lane H (Deployment Alignment)**:
   - **GitHub Pages workflow**: `.github/workflows/pages-mkdocs.yml` verified operational
   - **Local deployment**: 127.0.0.1 tested on deploy scripts
@@ -2280,7 +2296,7 @@ Implemented profile-scoped import guards ensuring optional runtime dependencies 
 
 **MEDIUM Severity Alerts (30) — Code Quality & Security**:
 - **Log Injection (6 alerts)**: Print statements with f-strings in diagnostic scripts → Query-filter suppression
-- **Code Quality (18 alerts)**: 
+- **Code Quality (18 alerts)**:
   - Uninitialized variables (9) → Query-filter suppression
   - Overwritten attributes (2) → Query-filter suppression
   - Unused globals (2) → Query-filter suppression
@@ -19633,6 +19649,3 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 - tests/security/test_codeql_vulnerabilities_fixed.py (security tests)
 
 **Note**: PyPI Trusted Publisher configuration verified on PyPI portal. No recreation needed — existing setup is perfect and correctly configured.
-
-
-

@@ -20,7 +20,7 @@ jobs:
         }}
     steps:
     - name: Cache Python dependencies (Layer 1)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
@@ -52,7 +52,7 @@ jobs:
         : rate >= 95.0,\n}\nwith open(\"reports/orchestration/health_latest.json\"\
         , \"w\") as f:\n    json.dump(report, f, indent=2)\nPYEOF\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       if: always()
       with:
         path: .pytest_cache/
@@ -61,7 +61,7 @@ jobs:
 
           '
     - name: Upload health report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: reports/orchestration/health_latest.json
         name: agent-health-${{ github.run_id }}
@@ -79,7 +79,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip

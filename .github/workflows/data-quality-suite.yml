@@ -107,7 +107,7 @@ jobs:
         \nfi\n"
     - name: Upload validation results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'reports/validation/*.json
 
@@ -292,7 +292,7 @@ jobs:
         \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'determinism_pass1.log
 
@@ -349,7 +349,7 @@ jobs:
         '
     - name: Upload DVC status artifact
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: workbench/evidence/dvc_status.json
         if-no-files-found: ignore

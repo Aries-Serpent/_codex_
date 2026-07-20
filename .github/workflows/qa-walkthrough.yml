@@ -133,7 +133,7 @@ jobs:
           \ qaIssues + ruffIssues + banditIssues);\n  core.setOutput('summary', summary);\n\
           \  core.setOutput('details', details);\n}\n"
     - name: Upload QA reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         path: 'qa-report.json
