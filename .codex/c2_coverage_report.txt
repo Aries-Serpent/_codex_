@@ -1,0 +1,339 @@
+# TASK C2.2: Tokenization API Coverage Analysis
+Generated: 2026-07-19T13:28:06Z
+Target Coverage: ≥95% line and branch coverage
+
+## Overall Module Coverage Summary
+
+Module: src/codex_ml/tokenization/
+- Total Statements: 1323
+- Covered Statements: 511
+- Uncovered Statements: 812
+- Line Coverage: 38.63%
+- Branch Coverage: 75.60% (418 branches total, 31 partial)
+
+**Status: BELOW TARGET** - Achieved 38.63%, Target ≥95%
+
+## File-by-File Coverage Report
+
+### HIGH RISK (0-25% coverage)
+1. base.py
+   - Statements: 56
+   - Coverage: 0.00%
+   - Missing: All lines (11-179)
+   - Status: UNTESTED - Critical functionality not covered
+   - Impact: Core base classes untested
+
+2. cli.py
+   - Statements: 84
+   - Coverage: 0.00%
+   - Missing: All lines (19-153)
+   - Status: UNTESTED - Command-line interface not tested
+   - Impact: User-facing CLI completely untested
+
+3. pipeline.py
+   - Statements: 133
+   - Coverage: 0.00%
+   - Missing: All lines (18-246)
+   - Status: UNTESTED - Pipeline orchestration untested
+   - Impact: Core pipeline logic not exercised
+
+4. train_tokenizer.py
+   - Statements: 11
+   - Coverage: 0.00%
+   - Missing: All lines (12-39)
+   - Status: UNTESTED - Training entrypoint untested
+   - Impact: Tokenizer training path not covered
+
+5. sp_trainer.py
+   - Statements: 75
+   - Coverage: 19.59%
+   - Missing: Lines 32, 39-41, 56-72, 75, 84-93, 100, 106-111, 115-127, 144-180
+   - Status: CRITICAL - Only 15/75 lines covered
+   - Impact: SentencePiece training mostly untested
+
+6. adapter.py
+   - Statements: 308
+   - Coverage: 21.33%
+   - Missing: 241 lines
+   - Status: CRITICAL - 78.79% of adapter untested
+   - Impact: Tokenizer adaptation layer mostly untested
+
+7. hf_tokenizer.py
+   - Statements: 164
+   - Coverage: 35.00%
+   - Missing: 106 lines
+   - Status: CRITICAL - HuggingFace integration 65% untested
+   - Impact: HF tokenizer loading and usage not fully covered
+
+8. hf_adapter.py
+   - Statements: 51
+   - Coverage: 40.35%
+   - Missing: 28 lines
+   - Status: HIGH RISK - 54.90% untested
+   - Impact: HF adapter pattern matching untested
+
+### MEDIUM RISK (26-74% coverage)
+1. api.py
+   - Statements: 78
+   - Coverage: 53.12%
+   - Missing: Lines 81, 142-170, 192, 201-210
+   - Gaps: 
+     * Line 81: get_tokenizer() alias not tested
+     * Lines 142-170: pad_sequences truncation logic not fully tested
+     * Lines 192-210: Error handling for deprecated access not tested
+   - Impact: Core API functions missing coverage
+   - Branch Coverage: 18/18 (100%)
+
+2. sentencepiece_adapter.py
+   - Statements: 233
+   - Coverage: 59.94%
+   - Missing: 85 lines + 20 partial branches
+   - Gaps:
+     * Lines 62-127: SentencePiece setup untested
+     * Lines 153-159: Padding/truncation configuration untested
+     * Lines 245-272: Special token handling untested
+     * Lines 344-403: Token ID conversion paths untested
+   - Impact: SentencePiece adapter usage patterns untested
+
+### ACCEPTABLE RISK (75-100% coverage)
+1. compat.py
+   - Statements: 22
+   - Coverage: 75.00%
+   - Missing: Lines 17, 37-43, 48
+   - Gaps:
+     * Line 17: Initialization path not tested
+     * Lines 37-43: Error conditions in compatibility layer
+     * Line 48: Edge case in legacy access
+   - Branch Coverage: 2/2 (100%)
+   - Status: GOOD - Most paths tested
+
+2. offline_vocab.py
+   - Statements: 34
+   - Coverage: 75.00%
+   - Missing: Lines 18, 27, 29, 43, 46-48
+   - Gaps:
+     * Offline loading failure modes not tested
+     * Fallback behavior not covered
+   - Branch Coverage: 6/6 (100%)
+   - Status: GOOD - Core functionality covered
+
+## Critical Coverage Gaps
+
+### Gap 1: Tokenizer Loading Pipeline
+Location: api.py:55-75, hf_tokenizer.py:200-230
+- Missing: HuggingFace model loading
+- Missing: SentencePiece file loading
+- Missing: Path resolution and validation
+- Missing: Remote vs. local handling
+- Impact: Core user-facing API untested
+
+### Gap 2: Padding and Truncation
+Location: api.py:110-170
+- Missing: Truncation with truncate=True
+- Missing: Truncation with truncate=False (error case)
+- Missing: Edge cases (empty batch, max_length=0)
+- Missing: Attention mask generation
+- Impact: Data preparation untested
+
+### Gap 3: Error Handling for Optional Dependencies
+Location: api.py:40-52, 84-95
+- Missing: transformers import failure handling
+- Missing: sentencepiece import failure handling
+- Missing: Error message quality validation
+- Impact: User-facing error messages untested
+
+### Gap 4: Adapter Protocol Implementation
+Location: adapter.py (entire file needs testing)
+- Missing: encode() method testing
+- Missing: decode() method testing
+- Missing: batch_encode() method testing
+- Missing: add_special_tokens() testing
+- Missing: Adapter method forwarding
+- Impact: Core adapter protocol untested
+
+### Gap 5: SentencePiece Training
+Location: sp_trainer.py (entire file needs testing)
+- Missing: Tokenizer training workflow
+- Missing: Configuration handling
+- Missing: Model serialization
+- Missing: Vocabulary management
+- Impact: Training functionality not exercised
+
+### Gap 6: CLI Commands
+Location: cli.py (entire file untested)
+- Missing: vocab command
+- Missing: inspect command
+- Missing: CLI argument parsing
+- Missing: Error reporting
+- Impact: User-facing CLI completely untested
+
+## Branch Coverage Analysis
+
+### Fully Covered Branches
+- api.py.__getattr__: 100% (18/18 branches)
+- compat.py: 100% (2/2 branches)
+- offline_vocab.py: 100% (6/6 branches)
+- api.py.pad_sequences: 95% (basic path coverage)
+
+### Partially Covered Branches
+- hf_tokenizer.py: 5 partial branches
+  * Lines 308-310: Conditional file check not fully exercised
+- sentencepiece_adapter.py: 20 partial branches
+  * Line 344-349: Type checking for padding config
+  * Lines 350+: Special token application logic
+
+### Uncovered Branches
+- adapter.py: 114 branches (majority untested)
+  * Most branches in encode/decode methods
+  * Error handling paths not exercised
+
+## Coverage by Functionality
+
+### Core API (api.py) - 53.12% Coverage
+Functions with gaps:
+1. load_tokenizer() - Partial (HF loading untested)
+2. pad_sequences() - Partial (truncation untested)
+3. __getattr__() - Full ✓
+4. Error handlers - Missing
+
+### HuggingFace Integration (hf_tokenizer.py) - 35.00% Coverage
+Functions with gaps:
+1. HFTokenizerAdapter.load() - Missing
+2. HFTokenizerAdapter.encode() - Missing
+3. HFTokenizerAdapter.decode() - Missing
+4. Fallback logic - Missing
+
+### SentencePiece Integration (sentencepiece_adapter.py) - 59.94% Coverage
+Functions with gaps:
+1. SentencePieceAdapter setup - Partial
+2. Encoding/decoding - Partial
+3. Special token handling - Missing
+4. Training - Missing
+
+### Adapter Pattern (adapter.py) - 21.33% Coverage
+All methods need coverage:
+- WhitespaceTokenizer.encode() - Missing
+- WhitespaceTokenizer.decode() - Missing
+- TokenizerAdapter protocol methods - Missing
+
+## Recommendations for Achieving ≥95% Coverage
+
+### Phase 1: Critical (Must do)
+1. Add tests for all methods in adapter.py
+   - Expected lines to add: 50-100 test lines
+   - Expected coverage gain: +50%
+
+2. Complete api.py gap testing
+   - Test HF tokenizer loading
+   - Test error cases for optional dependencies
+   - Expected coverage gain: +40%
+
+3. Complete cli.py testing
+   - Test all CLI commands
+   - Test error handling and formatting
+   - Expected lines to add: 80-120 test lines
+   - Expected coverage gain: +85%
+
+4. Add base.py test fixtures
+   - Create test classes for base interfaces
+   - Expected lines to add: 30-50 test lines
+
+### Phase 2: Important (Should do)
+1. Complete SentencePiece adapter testing
+   - Test loading from file
+   - Test encoding/decoding
+   - Test special tokens
+   - Expected coverage gain: +35%
+
+2. Complete pipeline.py testing
+   - Test orchestration logic
+   - Test error handling
+   - Expected lines to add: 60-100 test lines
+
+3. Add missing branch coverage
+   - Focus on error paths
+   - Test boundary conditions
+   - Expected coverage gain: +15%
+
+### Phase 3: Nice-to-have (Polish)
+1. Add integration tests
+   - Test with actual models
+   - Test with actual data
+   - Expected coverage gain: +5%
+
+2. Add performance tests
+   - Baseline measurements
+   - Regression detection
+
+## Dependencies Blocking Coverage
+
+1. transformers - Required for HF adapter tests
+   - Status: NOT INSTALLED
+   - Impact: -25% coverage potential
+
+2. sentencepiece - Required for SP adapter tests
+   - Status: UNKNOWN
+   - Impact: -30% coverage potential
+
+3. tokenizers - Required for streaming/training tests
+   - Status: INCOMPLETE (missing decoders)
+   - Impact: -15% coverage potential
+
+## Coverage Metrics by Test Type
+
+### Passing Tests (85 tests)
+- Coverage contributed: ~15% (primarily mutation tests)
+- Test types: Unit tests, roundtrip tests, mutation killers
+- Quality: Good (deterministic, fast)
+
+### Failing Tests (45 tests)
+- Coverage blocked by: Missing functions, incorrect signatures
+- Test types: Integration, compatibility, loader tests
+- Impact: ~30% coverage lost due to failures
+
+### Skipped Tests (31 tests)
+- Reason: Missing dependencies, conditional markers
+- Impact: ~20% coverage lost due to skips
+
+## Path Coverage Analysis
+
+### High Priority Paths
+1. load_tokenizer() → HF model loading (0% coverage)
+2. pad_sequences() → truncation (5% coverage)
+3. CLI commands → output (0% coverage)
+4. Error handling → optional dependencies (10% coverage)
+
+### Medium Priority Paths
+1. SentencePiece adapter → initialization (40% coverage)
+2. Tokenizer caching → retrieval (60% coverage)
+3. Special token handling → formatting (50% coverage)
+
+### Low Priority Paths
+1. Legacy API → compatibility warnings (75% coverage)
+2. Offline vocab → fallback (75% coverage)
+
+## Conclusion
+
+Current tokenization API coverage of **38.63%** is significantly below the **95% target**.
+
+Key blockers:
+1. Entire CLI module untested (0%)
+2. Entire base module untested (0%)
+3. Entire pipeline module untested (0%)
+4. Adapter pattern only 21% covered
+5. Optional dependencies not installed
+
+Achieving ≥95% coverage requires:
+- Adding ~500-800 lines of test code
+- Installing optional dependencies (transformers, sentencepiece)
+- Creating comprehensive test fixtures
+- Writing integration tests
+
+**Estimated effort: 40-60 hours of development**
+
+Recommended approach:
+1. Start with high-impact files (adapter.py, cli.py)
+2. Install missing dependencies
+3. Add integration test suite
+4. Focus on error paths and edge cases
+5. Validate with actual model instances

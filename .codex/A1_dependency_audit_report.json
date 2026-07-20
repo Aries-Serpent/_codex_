@@ -1,0 +1,680 @@
+{
+  "total_files": 48,
+  "torch_found": [],
+  "transformers_found": [],
+  "other_deps": {
+    "__future__": [
+      "__init__.py",
+      "agents/cognitive_interface.py",
+      "base.py",
+      "meta_cognitive_reflection.py",
+      "monitoring/agent_dashboard.py",
+      "rhizome_connector.py",
+      "utils/pattern_validators.py"
+    ],
+    "base": [
+      "__init__.py",
+      "quantum/uncertainty.py"
+    ],
+    "cognitive_brain.integrations.compliance_integration": [
+      "active_learning/hook.py",
+      "agents/cognitive_interface.py",
+      "experiments/complex_scenarios.py",
+      "experiments/exp1_validation.py",
+      "experiments/exp1b_revalidation.py",
+      "experiments/exp2_validation.py",
+      "experiments/exp5_validation.py",
+      "integrations/entangled_assessor.py",
+      "integrations/memory_integration.py"
+    ],
+    "cognitive_brain.models.quantum_metrics": [
+      "agents/cognitive_interface.py",
+      "experiments/exp1_validation.py",
+      "experiments/exp1b_revalidation.py",
+      "experiments/exp2_validation.py",
+      "integrations/compliance_integration.py",
+      "integrations/memory_integration.py",
+      "models/__init__.py",
+      "quantum/ab_testing.py",
+      "quantum/coherence_monitor.py"
+    ],
+    "cognitive_brain.quantum.coherence_monitor": [
+      "agents/cognitive_interface.py",
+      "experiments/exp1_validation.py",
+      "experiments/exp1b_revalidation.py",
+      "experiments/exp2_validation.py",
+      "experiments/exp5_validation.py",
+      "integrations/compliance_integration.py",
+      "integrations/memory_integration.py",
+      "quantum/__init__.py",
+      "quantum/entanglement.py",
+      "quantum/superposition.py"
+    ],
+    "cognitive_brain.quantum.config": [
+      "agents/cognitive_interface.py",
+      "experiments/exp1_validation.py",
+      "experiments/exp1b_revalidation.py",
+      "experiments/exp2_validation.py",
+      "experiments/exp3_validation.py",
+      "experiments/exp5_validation.py",
+      "integrations/compliance_integration.py",
+      "integrations/memory_integration.py",
+      "quantum/__init__.py",
+      "quantum/coherence_monitor.py",
+      "quantum/entanglement.py",
+      "quantum/memory.py",
+      "quantum/superposition.py"
+    ],
+    "random": [
+      "experiments/complex_scenarios.py",
+      "experiments/exp1_validation.py",
+      "experiments/exp2_validation.py",
+      "experiments/exp3_validation.py",
+      "quantum/superposition.py"
+    ],
+    "cognitive_brain.quantum.ab_testing": [
+      "experiments/exp1_validation.py",
+      "quantum/__init__.py"
+    ],
+    "sqlite3": [
+      "experiments/exp1_validation.py",
+      "models/quantum_metrics.py"
+    ],
+    "cognitive_brain.experiments.complex_scenarios": [
+      "experiments/exp1b_revalidation.py",
+      "experiments/exp5_validation.py"
+    ],
+    "cognitive_brain.quantum.adaptive_scoring": [
+      "experiments/exp1b_revalidation.py"
+    ],
+    "cognitive_brain.integrations.entangled_assessor": [
+      "experiments/exp2_validation.py"
+    ],
+    "cognitive_brain.quantum.entanglement": [
+      "experiments/exp2_validation.py",
+      "integrations/entangled_assessor.py",
+      "quantum/__init__.py"
+    ],
+    "cognitive_brain.quantum": [
+      "experiments/exp3_validation.py"
+    ],
+    "cognitive_brain.quantum.uncertainty": [
+      "experiments/exp3_validation.py",
+      "quantum/__init__.py"
+    ],
+    "numpy": [
+      "experiments/exp5_validation.py",
+      "experiments/exp6_validation.py",
+      "learning/rl_algorithms.py",
+      "learning/strategy_optimizer.py",
+      "quantum/compression.py",
+      "quantum/memory.py",
+      "quantum/topology_manager.py"
+    ],
+    "cognitive_brain.integrations.memory_integration": [
+      "experiments/exp5_validation.py"
+    ],
+    "argparse": [
+      "experiments/exp5_validation.py",
+      "experiments/exp6_validation.py"
+    ],
+    "cognitive_brain.quantum.ghz_states": [
+      "experiments/exp6_validation.py"
+    ],
+    "cognitive_brain.quantum.multi_agent_coordinator": [
+      "experiments/exp6_validation.py"
+    ],
+    "cognitive_brain.quantum.topology_manager": [
+      "experiments/exp6_validation.py"
+    ],
+    "hmac": [
+      "integrations/compliance_integration.py"
+    ],
+    "cognitive_brain.quantum.superposition": [
+      "integrations/compliance_integration.py",
+      "quantum/__init__.py"
+    ],
+    "cognitive_brain.utils.pattern_validators": [
+      "integrations/compliance_integration.py"
+    ],
+    "cognitive_brain.analytics.fuzzy": [
+      "integrations/compliance_integration.py"
+    ],
+    "cognitive_brain.quantum.memory": [
+      "integrations/memory_integration.py"
+    ],
+    "cognitive_brain.learning.outcome_analyzer": [
+      "learning/__init__.py",
+      "learning/strategy_optimizer.py"
+    ],
+    "cognitive_brain.learning.rl_algorithms": [
+      "learning/__init__.py",
+      "learning/strategy_optimizer.py"
+    ],
+    "cognitive_brain.learning.strategy_optimizer": [
+      "learning/__init__.py"
+    ],
+    "cognitive_brain.models.learning_outcome": [
+      "learning/outcome_analyzer.py",
+      "learning/strategy_optimizer.py"
+    ],
+    "prometheus_client": [
+      "monitoring/agent_dashboard.py"
+    ],
+    "cognitive_brain.active_learning.hook": [
+      "monitoring/agent_dashboard.py"
+    ],
+    "cognitive_brain.quantum.base": [
+      "quantum/__init__.py",
+      "quantum/entanglement.py"
+    ],
+    "math": [
+      "quantum/ab_testing.py",
+      "quantum/entanglement.py",
+      "quantum/ghz_states.py",
+      "quantum/superposition.py",
+      "quantum/uncertainty.py"
+    ],
+    "coherence_monitor": [
+      "quantum/uncertainty.py"
+    ],
+    "config": [
+      "quantum/uncertainty.py"
+    ],
+    "src.cognitive_brain.utils.pattern_validators": [
+      "utils/__init__.py"
+    ]
+  },
+  "file_imports": {
+    "__init__.py": {
+      "other": [
+        "__future__",
+        "base"
+      ]
+    },
+    "active_learning/hook.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "logging",
+        "os",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.integrations.compliance_integration"
+      ]
+    },
+    "agents/cognitive_interface.py": {
+      "other": [
+        "__future__",
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "json",
+        "typing",
+        "uuid"
+      ]
+    },
+    "analytics/bayesian.py": {
+      "stdlib": [
+        "dataclasses",
+        "json",
+        "os",
+        "typing"
+      ]
+    },
+    "analytics/fuzzy.py": {
+      "stdlib": [
+        "dataclasses",
+        "os",
+        "typing"
+      ]
+    },
+    "base.py": {
+      "other": [
+        "__future__"
+      ],
+      "stdlib": [
+        "abc",
+        "dataclasses",
+        "datetime",
+        "typing"
+      ]
+    },
+    "experiments/complex_scenarios.py": {
+      "other": [
+        "cognitive_brain.integrations.compliance_integration",
+        "random"
+      ],
+      "stdlib": [
+        "dataclasses"
+      ]
+    },
+    "experiments/exp1_validation.py": {
+      "stdlib": [
+        "datetime",
+        "json",
+        "os",
+        "tempfile"
+      ],
+      "other": [
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.ab_testing",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "random",
+        "sqlite3"
+      ]
+    },
+    "experiments/exp1b_revalidation.py": {
+      "stdlib": [
+        "dataclasses",
+        "json",
+        "logging",
+        "os",
+        "sys",
+        "time",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.experiments.complex_scenarios",
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.adaptive_scoring",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config"
+      ]
+    },
+    "experiments/exp2_validation.py": {
+      "other": [
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.integrations.entangled_assessor",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "cognitive_brain.quantum.entanglement",
+        "random"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "typing"
+      ]
+    },
+    "experiments/exp3_validation.py": {
+      "other": [
+        "cognitive_brain.quantum",
+        "cognitive_brain.quantum.config",
+        "cognitive_brain.quantum.uncertainty",
+        "random"
+      ],
+      "stdlib": [
+        "dataclasses"
+      ]
+    },
+    "experiments/exp5_validation.py": {
+      "stdlib": [
+        "dataclasses",
+        "logging",
+        "time"
+      ],
+      "other": [
+        "argparse",
+        "cognitive_brain.experiments.complex_scenarios",
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.integrations.memory_integration",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "numpy"
+      ]
+    },
+    "experiments/exp6_validation.py": {
+      "other": [
+        "argparse",
+        "cognitive_brain.quantum.ghz_states",
+        "cognitive_brain.quantum.multi_agent_coordinator",
+        "cognitive_brain.quantum.topology_manager",
+        "numpy"
+      ],
+      "stdlib": [
+        "datetime",
+        "logging",
+        "sys"
+      ]
+    },
+    "integrations/compliance_integration.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "enum",
+        "hashlib",
+        "json",
+        "logging",
+        "os",
+        "time",
+        "typing",
+        "uuid"
+      ],
+      "other": [
+        "cognitive_brain.analytics.fuzzy",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "cognitive_brain.quantum.superposition",
+        "cognitive_brain.utils.pattern_validators",
+        "hmac"
+      ]
+    },
+    "integrations/entangled_assessor.py": {
+      "stdlib": [
+        "dataclasses",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.quantum.entanglement"
+      ]
+    },
+    "integrations/memory_integration.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "logging",
+        "time",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.integrations.compliance_integration",
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "cognitive_brain.quantum.memory"
+      ]
+    },
+    "learning/__init__.py": {
+      "other": [
+        "cognitive_brain.learning.outcome_analyzer",
+        "cognitive_brain.learning.rl_algorithms",
+        "cognitive_brain.learning.strategy_optimizer"
+      ]
+    },
+    "learning/outcome_analyzer.py": {
+      "stdlib": [
+        "collections",
+        "datetime",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.models.learning_outcome"
+      ]
+    },
+    "learning/rl_algorithms.py": {
+      "stdlib": [
+        "abc",
+        "collections",
+        "dataclasses",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "numpy"
+      ]
+    },
+    "learning/strategy_optimizer.py": {
+      "stdlib": [
+        "dataclasses",
+        "enum",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.learning.outcome_analyzer",
+        "cognitive_brain.learning.rl_algorithms",
+        "cognitive_brain.models.learning_outcome",
+        "numpy"
+      ]
+    },
+    "meta_cognitive_reflection.py": {
+      "other": [
+        "__future__"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "enum",
+        "logging",
+        "typing"
+      ]
+    },
+    "models/__init__.py": {
+      "other": [
+        "cognitive_brain.models.quantum_metrics"
+      ]
+    },
+    "models/learning_outcome.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "enum",
+        "typing"
+      ]
+    },
+    "models/quantum_metrics.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "json",
+        "pathlib",
+        "typing"
+      ],
+      "other": [
+        "sqlite3"
+      ]
+    },
+    "monitoring/agent_dashboard.py": {
+      "other": [
+        "__future__",
+        "cognitive_brain.active_learning.hook",
+        "prometheus_client"
+      ],
+      "stdlib": [
+        "collections",
+        "dataclasses",
+        "datetime",
+        "logging",
+        "time",
+        "typing"
+      ]
+    },
+    "quantum/__init__.py": {
+      "other": [
+        "cognitive_brain.quantum.ab_testing",
+        "cognitive_brain.quantum.base",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "cognitive_brain.quantum.entanglement",
+        "cognitive_brain.quantum.superposition",
+        "cognitive_brain.quantum.uncertainty"
+      ]
+    },
+    "quantum/ab_testing.py": {
+      "stdlib": [
+        "dataclasses",
+        "enum",
+        "hashlib",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.models.quantum_metrics",
+        "math"
+      ]
+    },
+    "quantum/adaptive_scoring.py": {
+      "stdlib": [
+        "collections.abc",
+        "dataclasses",
+        "json",
+        "pathlib",
+        "typing"
+      ]
+    },
+    "quantum/base.py": {
+      "stdlib": [
+        "dataclasses",
+        "enum",
+        "typing"
+      ]
+    },
+    "quantum/coherence_monitor.py": {
+      "stdlib": [
+        "collections.abc",
+        "dataclasses",
+        "datetime",
+        "enum",
+        "importlib.util",
+        "logging",
+        "os",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.models.quantum_metrics",
+        "cognitive_brain.quantum.config"
+      ]
+    },
+    "quantum/compression.py": {
+      "stdlib": [
+        "dataclasses",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "numpy"
+      ]
+    },
+    "quantum/config.py": {
+      "stdlib": [
+        "dataclasses",
+        "os",
+        "typing"
+      ]
+    },
+    "quantum/entanglement.py": {
+      "stdlib": [
+        "collections",
+        "dataclasses",
+        "hashlib",
+        "time",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.quantum.base",
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "math"
+      ]
+    },
+    "quantum/ghz_states.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "math"
+      ]
+    },
+    "quantum/memory.py": {
+      "stdlib": [
+        "collections",
+        "dataclasses",
+        "datetime",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "cognitive_brain.quantum.config",
+        "numpy"
+      ]
+    },
+    "quantum/multi_agent_coordinator.py": {
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "enum",
+        "logging",
+        "typing"
+      ]
+    },
+    "quantum/superposition.py": {
+      "other": [
+        "cognitive_brain.quantum.coherence_monitor",
+        "cognitive_brain.quantum.config",
+        "math",
+        "random"
+      ],
+      "stdlib": [
+        "collections.abc",
+        "concurrent.futures",
+        "dataclasses",
+        "functools",
+        "logging",
+        "time",
+        "typing"
+      ]
+    },
+    "quantum/topology_manager.py": {
+      "stdlib": [
+        "enum",
+        "logging",
+        "typing"
+      ],
+      "other": [
+        "numpy"
+      ]
+    },
+    "quantum/uncertainty.py": {
+      "other": [
+        "base",
+        "coherence_monitor",
+        "config",
+        "math"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "typing"
+      ]
+    },
+    "rhizome_connector.py": {
+      "other": [
+        "__future__"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "datetime",
+        "enum",
+        "logging",
+        "typing"
+      ]
+    },
+    "utils/__init__.py": {
+      "other": [
+        "src.cognitive_brain.utils.pattern_validators"
+      ]
+    },
+    "utils/pattern_validators.py": {
+      "other": [
+        "__future__"
+      ],
+      "stdlib": [
+        "dataclasses",
+        "typing"
+      ]
+    }
+  }
+}

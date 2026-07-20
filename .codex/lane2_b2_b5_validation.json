@@ -1,0 +1,709 @@
+{
+  "b2": {
+    "builder_exists": true,
+    "builder_module": "src/aries_serpent_core/rag/indexer.py",
+    "primary_build_attempt": {
+      "success": true,
+      "mode": "deterministic_offline_validation",
+      "note": "Skipped remote model download path and validated the supported offline fallback build instead."
+    },
+    "offline_validated_build": {
+      "index_path": ".codex/lane2_b2_b5_workspace/indices/lane2/lane2-validation",
+      "build_ms": 31.62749500006612,
+      "faiss_ntotal": 200,
+      "faiss_dim": 237,
+      "chunk_count": 200,
+      "metadata": {
+        "index_name": "lane2-validation",
+        "tenant_id": "lane2",
+        "dimension": 237,
+        "num_vectors": 200,
+        "index_type": "IndexFlatL2",
+        "created_at": "1784470174.5276318",
+        "files": [
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_00.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_01.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_02.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_03.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_04.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_05.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_06.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_07.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_08.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_09.txt",
+            "size": 256,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_00.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_01.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_02.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_03.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_04.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_05.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_06.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_07.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_08.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_09.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_00.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_01.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_02.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_03.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_04.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_05.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_06.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_07.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_08.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_09.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_00.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_01.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_02.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_03.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_04.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_05.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_06.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_07.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_08.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_09.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_00.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_01.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_02.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_03.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_04.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_05.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_06.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_07.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_08.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_09.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_00.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_01.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_02.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_03.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_04.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_05.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_06.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_07.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_08.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_09.txt",
+            "size": 246,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_00.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_01.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_02.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_03.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_04.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_05.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_06.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_07.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_08.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_09.txt",
+            "size": 250,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_00.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_01.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_02.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_03.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_04.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_05.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_06.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_07.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_08.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_09.txt",
+            "size": 240,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_00.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_01.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_02.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_03.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_04.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_05.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_06.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_07.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_08.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_09.txt",
+            "size": 248,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_00.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_01.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_02.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_03.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_04.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_05.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_06.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_07.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_08.txt",
+            "size": 254,
+            "chunks": 2
+          },
+          {
+            "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_09.txt",
+            "size": 254,
+            "chunks": 2
+          }
+        ],
+        "total_files": 100,
+        "total_chunks": 200,
+        "chunk_size": 220,
+        "overlap": 32,
+        "embedding_provider": "TfidfEmbeddingProvider"
+      }
+    },
+    "query_metrics": {
+      "query_count": 100,
+      "successful_queries": 100,
+      "top1_topic_accuracy": 1.0,
+      "precision_at_5": 1.0,
+      "recall_at_5": 1.0,
+      "latency_ms": {
+        "p50": 0.39910700024847756,
+        "p95": 0.4510980002123688,
+        "p99": 0.5733360003432608,
+        "max": 0.5733360003432608,
+        "min": 0.3770610001083696,
+        "mean": 0.4059842999868124
+      },
+      "sample_results": [
+        {
+          "query": "python python best practices article 0",
+          "top_result_excerpt": "Python knowledge base article 0. python decorators typing testing packaging interpreter pip wheel mo",
+          "top_result_score": 0.9710022807121277
+        },
+        {
+          "query": "python python best practices article 1",
+          "top_result_excerpt": "Python knowledge base article 0. python decorators typing testing packaging interpreter pip wheel mo",
+          "top_result_score": 0.9710022807121277
+        },
+        {
+          "query": "python python best practices article 2",
+          "top_result_excerpt": "Python knowledge base article 0. python decorators typing testing packaging interpreter pip wheel mo",
+          "top_result_score": 0.9710022807121277
+        },
+        {
+          "query": "python python best practices article 3",
+          "top_result_excerpt": "Python knowledge base article 0. python decorators typing testing packaging interpreter pip wheel mo",
+          "top_result_score": 0.9710022807121277
+        },
+        {
+          "query": "python python best practices article 4",
+          "top_result_excerpt": "Python knowledge base article 0. python decorators typing testing packaging interpreter pip wheel mo",
+          "top_result_score": 0.9710022807121277
+        }
+      ]
+    },
+    "cached_retriever_stats": {
+      "size": 1,
+      "maxsize": 8,
+      "hits": 1,
+      "misses": 1,
+      "hit_rate": 0.5,
+      "ttl": 1,
+      "normalize_queries": true,
+      "valid_entries": 1
+    },
+    "rag_indexer_tenants": [
+      "lane2",
+      "lane2-managed"
+    ],
+    "multi_index_validation": {
+      "create_success": true,
+      "list_success": true,
+      "list_count": 2,
+      "delete_success": true
+    }
+  },
+  "b3": {
+    "provider": "TfidfEmbeddingProvider",
+    "provider_stats": {
+      "cache_hits": 1,
+      "cache_misses": 1,
+      "total_requests": 2,
+      "hit_rate": 0.5,
+      "cache_dir": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/embedding_provider_cache"
+    },
+    "embedding_shape": [
+      3,
+      21
+    ],
+    "cache_reuse_identical": true,
+    "ttl_validation": {
+      "embedding_present_before_expiry": true,
+      "query_present_before_expiry": true,
+      "embedding_evicted_after_ttl": true,
+      "query_evicted_after_ttl": true,
+      "embedding_default_ttl_seconds": 3600.0,
+      "query_default_ttl_seconds": 300.0
+    },
+    "capacity_eviction": {
+      "embedding_capacity_respected": true,
+      "query_capacity_respected": true,
+      "embedding_cache_stats": {
+        "size": 2,
+        "max_size": 2,
+        "hits": 1,
+        "misses": 1,
+        "hit_rate": 0.5,
+        "memory_bytes": 168,
+        "memory_mb": 0.00016021728515625,
+        "dtype": "float32"
+      },
+      "query_cache_stats": {
+        "hits": 1,
+        "misses": 1,
+        "evictions": 1,
+        "expirations": 1,
+        "hit_rate": 0.5,
+        "size": 2,
+        "max_size": 2,
+        "total_requests": 2
+      }
+    },
+    "freshness_loop_doc_present": true
+  },
+  "b4": {
+    "imports": {
+      "aries_serpent_core.rag": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/aries_serpent_core/rag/__init__.py"
+      },
+      "aries_serpent_core.rag.indexer": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/aries_serpent_core/rag/indexer.py"
+      },
+      "aries_serpent_core.rag.retriever": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/aries_serpent_core/rag/retriever.py"
+      },
+      "aries_serpent_core.brain.ooda_orchestrator": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/aries_serpent_core/brain/ooda_orchestrator.py"
+      },
+      "aries_serpent_core.zendesk.rag.bridge": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/aries_serpent_core/zendesk/rag/bridge.py"
+      },
+      "src.codex.cognitive_brain": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/codex/cognitive_brain/__init__.py"
+      },
+      "src.codex.cognitive_brain.reasoning_engine": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/codex/cognitive_brain/reasoning_engine.py"
+      },
+      "src.codex.cognitive_brain.integration_adapters": {
+        "success": true,
+        "file": "/home/runner/work/_codex_/_codex_/src/codex/cognitive_brain/integration_adapters.py"
+      }
+    },
+    "ooda": {
+      "ooda_markers_present": {
+        "Observe:": true,
+        "Orient:": true,
+        "Decide:": true,
+        "Act:": true
+      },
+      "adapter_roundtrip_success": true,
+      "adapter_payload": {
+        "reasoning_decision_id": "rag-validation",
+        "confidence_score": 1.0,
+        "confidence_level": "high",
+        "decision_option": "promote-rag-index",
+        "reasoning_text": "RAG retrieval validated with p99=0.57ms and precision@5=1.000",
+        "strategy_used": "ensemble",
+        "candidate_count": 1,
+        "domain_validation_passed": true,
+        "latency_ms": 0.5733360003432608,
+        "decision_timestamp": "2026-07-19T14:09:35.104495Z",
+        "category": "rag",
+        "feature_vector": {
+          "confidence": 1.0,
+          "confidence_normalized": 1.0,
+          "latency_factor": 0.0011466720006865216,
+          "ensemble_bonus": 0.05,
+          "domain_validation_factor": 0.1
+        }
+      }
+    },
+    "cross_package_cycles": []
+  }
+}

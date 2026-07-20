@@ -8,6 +8,7 @@ Phase 54: HIGH Priority Module Tests
 Coverage Target: src/rag 33% → 50%+
 """
 
+import os
 import tempfile
 
 import pytest
@@ -17,7 +18,7 @@ class TestRAGInputSanitization:
     """Tests for RAG input sanitization."""
 
     def test_query_sanitization_removes_special_chars(self):
-        """Query sanitization removes dangerous characters.""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+        """Query sanitization removes dangerous characters."""  # pragma: allowlist secret
 
         def sanitize_query(query):
             # Remove potential injection patterns

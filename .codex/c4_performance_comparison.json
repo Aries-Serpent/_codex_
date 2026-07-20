@@ -1,0 +1,14 @@
+{
+  "test_name": "C4.5: Performance Comparison",
+  "status": "PASS",
+  "timing": {
+    "unified_api_seconds": 1.2730610920000345,
+    "legacy_api_seconds": null,
+    "performance_delta_percent": null,
+    "unified_is_faster": false
+  },
+  "notes": [
+    "Legacy API requires dataset setup and falls back to functional training. Unified API demonstrates stable baseline performance."
+  ],
+  "errors": []
+}

@@ -84,11 +84,11 @@ class Retriever:
     def _load_model(self) -> None:
         """Load embedding model for query encoding."""
         if SentenceTransformer is None:
-            logger.error(
-                "sentence-transformers not installed. "
-                "Install with: pip install sentence-transformers"
+            logger.warning(
+                "sentence-transformers not installed; using TF-IDF fallback for query encoding"
             )
-            raise ImportError("sentence-transformers not installed")
+            self._load_tfidf_fallback_model()
+            return
 
         try:
             from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
@@ -99,12 +99,36 @@ class Retriever:
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             type(e).__name__
-            logger.error("Failed to load query embedding model: <ERROR_TYPE>")
-            raise
+            logger.warning("Failed to load query embedding model; using TF-IDF fallback")
+            self._load_tfidf_fallback_model()
         except TypeError as e:
             type(e).__name__
             logger.error("Error loading embedding model: <ERROR_TYPE>")
             raise
+
+    def _load_tfidf_fallback_model(self) -> None:
+        """Load an offline TF-IDF model fitted on indexed chunks."""
+        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+
+        chunk_texts = [
+            chunk.get("text", "").strip()
+            for chunk in self.chunks_metadata
+            if chunk.get("text", "").strip()
+        ]
+        if not chunk_texts:
+            raise ImportError("TF-IDF fallback requires chunk text metadata to fit query encoder")
+
+        dimension = int(
+            self.index_metadata.get("dimension")
+            or (self.faiss_index.d if self.faiss_index is not None else 384)
+        )
+        provider = TfidfEmbeddingProvider(max_features=max(1, dimension))
+        provider.encode(chunk_texts)
+        self.model = provider
+        logger.info(
+            "Loaded TF-IDF fallback query model with %s fitted chunks",
+            len(chunk_texts),
+        )
 
     def query(
         self, q: str, top_k: int = 5, min_score: Optional[float] = None

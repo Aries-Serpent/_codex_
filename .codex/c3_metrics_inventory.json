@@ -1,0 +1,224 @@
+{
+  "module": "src.codex_ml.metrics.unified_api",
+  "version": "1.0.0",
+  "metrics": {
+    "compute_bleu": {
+      "signature": "(predictions: 'Sequence[str]', references: 'Sequence[str] | Sequence[Sequence[str]]', max_n: 'int' = 4, smooth: 'float' = 1e-09) -> 'float'",
+      "docstring": "Compute BLEU score (corpus-level).\n\nImplements standard BLEU metric with n-gram precision clipping and brevity penalty.\nThis is the canonical implementation consolidated from 4 duplicate implementations.\n\nArgs:\n    predictions: List of hypothesis strings (len = M)\n    references: Either a list of reference strings (len = M), or\n               a list of lists of references per hypothesis\n    max_n: Maximum n-gram order (default: 4 for BLEU-4)\n    smooth: Smoothing constant for zero-count n-grams (default: 1e-9)\n\nReturns:\n    BLEU score as float in range [0, 1]\n\nExamples:\n    >>> preds = [\"the cat sat on the mat\"]\n    >>> refs = [\"the cat is on the mat\"]\n    >>> score = compute_bleu(preds, refs)\n    >>> 0.0 <= score <= 1.0\n    True",
+      "parameters": {
+        "predictions": {
+          "annotation": "Sequence[str]",
+          "default": null
+        },
+        "references": {
+          "annotation": "Sequence[str] | Sequence[Sequence[str]]",
+          "default": null
+        },
+        "max_n": {
+          "annotation": "int",
+          "default": "4"
+        },
+        "smooth": {
+          "annotation": "float",
+          "default": "1e-09"
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_rouge_l": {
+      "signature": "(predictions: 'Sequence[str]', references: 'Sequence[str]') -> 'float'",
+      "docstring": "Compute ROUGE-L F1 score (corpus-level).\n\nImplements ROUGE-L metric using Longest Common Subsequence (LCS).\nThis is the canonical implementation consolidated from 4 duplicate implementations.\n\nArgs:\n    predictions: List of hypothesis strings (len = M)\n    references: List of reference strings (len = M)\n\nReturns:\n    ROUGE-L F1 score as float in range [0, 1]\n\nExamples:\n    >>> preds = [\"the cat sat on the mat\"]\n    >>> refs = [\"the cat is on the mat\"]\n    >>> score = compute_rouge_l(preds, refs)\n    >>> 0.0 <= score <= 1.0\n    True",
+      "parameters": {
+        "predictions": {
+          "annotation": "Sequence[str]",
+          "default": null
+        },
+        "references": {
+          "annotation": "Sequence[str]",
+          "default": null
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_perplexity": {
+      "signature": "(logits_or_nll: 'Iterable[Any]', targets: 'Iterable[int]', *, from_logits: 'bool' = True, ignore_index: 'int' = -100, epsilon: 'float' = 1e-12) -> 'float'",
+      "docstring": "Compute perplexity from logits or NLL.\n\nThis is the canonical implementation consolidated from 3 duplicate implementations.\n\nArgs:\n    logits_or_nll: Either logits (2D array-like) or NLL values (1D)\n    targets: Target token indices (1D array-like)\n    from_logits: If True, compute softmax\u2192NLL. If False, use input as NLL directly.\n    ignore_index: Index to ignore in loss computation (default: -100, standard HF value)\n    epsilon: Numerical stability constant for log computation\n\nReturns:\n    Perplexity as float (exp(cross_entropy_loss))\n\nExamples:\n    >>> logits = [[1.0, 2.0], [2.0, 3.0]]\n    >>> targets = [0, 1]\n    >>> ppl = compute_perplexity(logits, targets, from_logits=True)\n    >>> ppl > 0.0\n    True",
+      "parameters": {
+        "logits_or_nll": {
+          "annotation": "Iterable[Any]",
+          "default": null
+        },
+        "targets": {
+          "annotation": "Iterable[int]",
+          "default": null
+        },
+        "from_logits": {
+          "annotation": "bool",
+          "default": "True"
+        },
+        "ignore_index": {
+          "annotation": "int",
+          "default": "-100"
+        },
+        "epsilon": {
+          "annotation": "float",
+          "default": "1e-12"
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_token_accuracy": {
+      "signature": "(logits: 'Any', targets: 'Any') -> 'float'",
+      "docstring": "Compute token-level accuracy from logits and targets.\n\nThis is the canonical implementation consolidated from 2 duplicate implementations.\n\nArgs:\n    logits: Logits tensor or array-like (shape: [batch_size, vocab_size])\n    targets: Target token indices (shape: [batch_size])\n\nReturns:\n    Accuracy as float in range [0, 1]\n\nExamples:\n    >>> import numpy as np\n    >>> logits = np.array([[1.0, 2.0], [2.0, 3.0]])\n    >>> targets = np.array([0, 1])\n    >>> acc = compute_token_accuracy(logits, targets)\n    >>> 0.0 <= acc <= 1.0\n    True",
+      "parameters": {
+        "logits": {
+          "annotation": "Any",
+          "default": null
+        },
+        "targets": {
+          "annotation": "Any",
+          "default": null
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_accuracy": {
+      "signature": "(predictions: 'Sequence[int]', targets: 'Sequence[int]') -> 'float'",
+      "docstring": "Compute accuracy for classification.\n\nArgs:\n    predictions: Predicted class indices\n    targets: Ground truth class indices\n\nReturns:\n    Accuracy as float in range [0, 1]",
+      "parameters": {
+        "predictions": {
+          "annotation": "Sequence[int]",
+          "default": null
+        },
+        "targets": {
+          "annotation": "Sequence[int]",
+          "default": null
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_f1": {
+      "signature": "(predictions: 'Sequence[int]', targets: 'Sequence[int]', labels: 'Optional[Sequence[int]]' = None, average: 'str' = 'micro') -> 'float'",
+      "docstring": "Compute F1 score for classification.\n\nArgs:\n    predictions: Predicted class indices\n    targets: Ground truth class indices\n    labels: Classes to include (default: all classes in targets)\n    average: One of \"micro\", \"macro\", \"weighted\"\n\nReturns:\n    F1 score as float in range [0, 1]",
+      "parameters": {
+        "predictions": {
+          "annotation": "Sequence[int]",
+          "default": null
+        },
+        "targets": {
+          "annotation": "Sequence[int]",
+          "default": null
+        },
+        "labels": {
+          "annotation": "Optional[Sequence[int]]",
+          "default": "None"
+        },
+        "average": {
+          "annotation": "str",
+          "default": "micro"
+        }
+      },
+      "return_annotation": "float"
+    },
+    "compute_classification_metrics": {
+      "signature": "(predictions: 'Sequence[int]', targets: 'Sequence[int]') -> 'dict[str, float]'",
+      "docstring": "Compute all classification metrics (accuracy, F1 variants).\n\nArgs:\n    predictions: Predicted class indices\n    targets: Ground truth class indices\n\nReturns:\n    Dictionary with \"accuracy\", \"f1_micro\", \"f1_macro\" keys",
+      "parameters": {
+        "predictions": {
+          "annotation": "Sequence[int]",
+          "default": null
+        },
+        "targets": {
+          "annotation": "Sequence[int]",
+          "default": null
+        }
+      },
+      "return_annotation": "dict[str, float]"
+    },
+    "batch_metrics_from_outputs": {
+      "signature": "(outputs: 'Any', batch: 'Any') -> 'dict[str, float]'",
+      "docstring": "Derive common scalar metrics from model forward pass outputs.\n\nThis is a unified interface for computing metrics from model outputs and batch data.\nSupports:\n- Loss \u2192 perplexity conversion\n- Logits \u2192 token accuracy\n- Text predictions/references \u2192 exact match, BLEU-1, ROUGE-1\n\nArgs:\n    outputs: Model output object (e.g., from HF transformers)\n             Expected attributes: loss, logits, predictions\n    batch: Input batch data\n           Expected keys: labels, references/targets/labels_text\n\nReturns:\n    Dictionary of computed metrics",
+      "parameters": {
+        "outputs": {
+          "annotation": "Any",
+          "default": null
+        },
+        "batch": {
+          "annotation": "Any",
+          "default": null
+        }
+      },
+      "return_annotation": "dict[str, float]"
+    }
+  },
+  "helpers": {
+    "_tokenize": {
+      "signature": "(s: 'str') -> 'list[str]'",
+      "docstring": "Tokenize string into words.",
+      "parameters": {
+        "s": {
+          "annotation": "str",
+          "default": null
+        }
+      },
+      "return_annotation": "list[str]"
+    },
+    "_ngram_counts": {
+      "signature": "(tokens: 'list[str]', n: 'int') -> 'dict[tuple[str, ...], int]'",
+      "docstring": "Compute n-gram counts with clipping.",
+      "parameters": {
+        "tokens": {
+          "annotation": "list[str]",
+          "default": null
+        },
+        "n": {
+          "annotation": "int",
+          "default": null
+        }
+      },
+      "return_annotation": "dict[tuple[str, ...], int]"
+    },
+    "compute_brevity_penalty": {
+      "signature": "(hypotheses: 'Sequence[str]', norm_refs: 'Sequence[Sequence[str]]', tokenize: 'Callable[[str], Iterable[str]]' = <function _tokenize at 0x7f04ec7ebba0>) -> 'float'",
+      "docstring": "Compute BLEU brevity penalty (penalizes short hypotheses).",
+      "parameters": {
+        "hypotheses": {
+          "annotation": "Sequence[str]",
+          "default": null
+        },
+        "norm_refs": {
+          "annotation": "Sequence[Sequence[str]]",
+          "default": null
+        },
+        "tokenize": {
+          "annotation": "Callable[[str], Iterable[str]]",
+          "default": "<function _tokenize at 0x7f04ec7ebba0>"
+        }
+      },
+      "return_annotation": "float"
+    },
+    "_precision_recall_f": {
+      "signature": "(tp: 'int', fp: 'int', fn: 'int', beta: 'float' = 1.0) -> 'float'",
+      "docstring": "Compute precision, recall, and F-beta score.",
+      "parameters": {
+        "tp": {
+          "annotation": "int",
+          "default": null
+        },
+        "fp": {
+          "annotation": "int",
+          "default": null
+        },
+        "fn": {
+          "annotation": "int",
+          "default": null
+        },
+        "beta": {
+          "annotation": "float",
+          "default": "1.0"
+        }
+      },
+      "return_annotation": "float"
+    }
+  }
+}

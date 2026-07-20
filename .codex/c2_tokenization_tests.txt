@@ -1,0 +1,229 @@
+# TASK C2.1: Tokenization API Test Results
+Generated: 2026-07-19T13:28:06Z
+
+## Test Execution Summary
+- Test Directory: tests/tokenization/
+- Total Test Files: 18
+- Tests Executed: 161 (2 import errors excluded)
+- Tests Passed: 85
+- Tests Failed: 45
+- Tests Skipped: 31
+- Tests XFailed: 1
+- Warnings: 2
+- Execution Time: 53.51 seconds
+
+## Test Results Overview
+
+### PASS Summary (85 tests)
+These tests passed successfully:
+- test_adapter.py: PASS
+- test_api_import_warning_once.py: PASS
+- test_cache.py: 8/8 PASS
+- test_cli_inspect_export.py: PASS
+- test_encode_decode_roundtrip.py: PASS
+- test_fast_tokenizer_wrapper.py: PASS
+- test_hf_adapter_canonical.py: PASS
+- test_hf_tokenizer_adapter.py: PASS
+- test_mutation_killers_tier1.py: 10/10 PASS
+- test_padding_truncation_ext.py: 3/3 PASS
+
+## Critical Failures (47 Failed)
+
+### Category 1: Import Errors (2 modules)
+1. test_streaming_ingest.py
+   - Error: ImportError: cannot import name 'decoders' from 'tokenizers'
+   - Root Cause: Missing/invalid tokenizers library installation
+   - Impact: 1 test file blocked
+
+2. test_train_tokenizer_streaming.py
+   - Error: ImportError: cannot import name 'decoders' from 'tokenizers'
+   - Root Cause: Missing/invalid tokenizers library installation
+   - Impact: 1 test file blocked
+
+### Category 2: Missing Exports from Legacy API (10 failures)
+- test_api_comprehensive.py (9 failures)
+  * Missing: _LegacyTokenizerProxy
+  * Missing: Expected legacy_tokenizer and SentencePieceTokenizer in __all__
+  * Issue: Test expects backward-compatible legacy API exports
+
+### Category 3: CLI Function Import Errors (11 failures)
+- test_cli_fallback.py
+  * Missing: _format_context, _fail, _resolve_root, _load_tokenizer
+  * Expected: These internal functions should be available in tokenization.cli
+  * Impact: CLI tests cannot proceed
+  * Failures: 11/24 tests
+
+### Category 4: Loader Function Import Errors (6 failures)
+- test_loader_comprehensive.py (6 failures)
+  * Missing: _ensure_special_tokens, _load_from_file, _load_from_model_name
+  * Expected: These loader helpers should be available in tokenization.loader
+  * Impact: Cannot test loader functionality
+
+### Category 5: API Signature Changes (6 failures)
+- test_loader_comprehensive.py
+  * load_tokenizer() missing cache_dir parameter
+  * Function signature mismatch with test expectations
+
+### Category 6: Type Validation Issues (7 failures)
+- test_loader_comprehensive.py
+  * TypeError: argument should be str or os.PathLike, not 'dict'
+  * Root Cause: API changes requiring dict-to-path conversion
+
+### Category 7: HFTokenizer Dependency Errors (3 failures)
+- test_adapter.py
+- test_load_tokenizer_use_fast.py
+- test_loader_comprehensive.py (1 failure)
+  * ImportError: transformers is not installed
+  * Impact: Cannot test HuggingFace tokenizer integration
+
+### Category 8: Deprecation Warning Not Triggered (1 failure)
+- test_deprecation.py::test_legacy_tokenizer_triggers_warning
+  * Issue: No deprecation warnings emitted when expected
+  * Expected: DeprecationWarning for legacy tokenizer access
+
+### Category 9: Compat Module Attribute Missing (1 failure)
+- test_tokenization_api_and_deprecation.py
+  * Missing: _warned attribute in compat module
+  * Expected: Module should track warning state
+
+## Passing Test Categories
+1. Cache Module (8/8 tests pass)
+   - pad_sequences functionality: PASS
+   - cache behavior: PASS
+   - attention mask handling: PASS
+
+2. Roundtrip Tests (6/6 tests pass)
+   - encode/decode roundtrip: PASS
+   - tokenization consistency: PASS
+
+3. Token Adapter Tests (4/4 tests pass)
+   - Adapter patterns: PASS
+   - Token interface contracts: PASS
+
+4. Mutation Testing (10/10 tests pass)
+   - Killer mutations detected: PASS
+   - Coverage analysis: PASS
+
+## Warnings Encountered
+
+1. PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+   - Source: _pytest/config/__init__.py:1464
+   - Severity: LOW - Configuration issue, not code issue
+
+2. PytestConfigWarning: Unknown config option: asyncio_mode
+   - Source: _pytest/config/__init__.py:1464
+   - Severity: LOW - Configuration issue, not code issue
+
+## Coverage Impact Analysis
+
+Files with coverage <50%:
+- base.py: 0.00% (untested)
+- cli.py: 0.00% (untested)
+- pipeline.py: 0.00% (untested)
+- train_tokenizer.py: 0.00% (untested)
+- adapter.py: 21.33%
+- sp_trainer.py: 19.59%
+
+Files with >50% coverage:
+- compat.py: 75.00%
+- offline_vocab.py: 75.00%
+- sentencepiece_adapter.py: 59.94%
+- api.py: 53.12%
+- hf_adapter.py: 40.35%
+- hf_tokenizer.py: 35.00%
+
+Overall Module Coverage: 34.35%
+
+## Recommendations for Production Readiness
+
+### Priority 1: Critical (Must Fix)
+1. Resolve missing `decoders` import from tokenizers library
+   - Impact: Blocks training tokenizer tests
+   - Action: Install/update tokenizers dependency
+
+2. Add missing legacy API exports to maintain backward compatibility
+   - Missing: _LegacyTokenizerProxy, SentencePieceTokenizer
+   - Action: Restore legacy API compatibility layer or update tests
+
+3. Restore missing CLI helper functions
+   - Missing: _format_context, _fail, _resolve_root, _load_tokenizer
+   - Action: Restore from version control or re-implement
+
+4. Restore missing loader functions
+   - Missing: _ensure_special_tokens, _load_from_file, _load_from_model_name
+   - Action: Restore from version control or re-implement
+
+5. Install transformers dependency for HFTokenizer tests
+   - Action: Add transformers to test dependencies or mock
+
+### Priority 2: Important (Should Fix Before Release)
+1. Update load_tokenizer() signature to support cache_dir parameter
+   - Current: load_tokenizer(name, path, use_fast, allow_remote)
+   - Expected: load_tokenizer(name, path, use_fast, allow_remote, cache_dir)
+
+2. Add _warned attribute to compat module for deprecation tracking
+
+3. Ensure deprecation warnings are properly emitted for legacy access
+
+### Priority 3: Nice-to-Have (Documentation/Improvement)
+1. Increase overall module coverage from 34.35% to ≥70%
+2. Add docstrings for CLI and loader functions
+3. Add integration tests for RAG and training pipeline compatibility
+
+## Performance Metrics
+
+Test Execution Performance:
+- Total Execution Time: 53.51 seconds
+- Average Test Duration: ~331 ms
+- Slowest Test Category: loader_comprehensive (config validation)
+- Fastest Test Category: mutation_killers (deterministic checks)
+
+## Dependencies Status
+
+Required:
+- pytest: 9.1.1 ✓
+- pluggy: 1.6.0 ✓
+- hydra-core: 1.3.2 ✓
+
+Optional (Required for Full Coverage):
+- transformers: NOT INSTALLED ✗
+- tokenizers: INCOMPLETE (missing decoders) ✗
+- sentencepiece: (status unknown)
+
+## Next Steps
+
+1. **Immediate (Before Next Test Run)**
+   - Fix missing dependency imports
+   - Restore missing API exports
+   - Restore missing helper functions
+
+2. **Short Term (Before Production Release)**
+   - Update API signatures for consistency
+   - Achieve ≥70% overall coverage
+   - Fix deprecation warning system
+
+3. **Long Term (Post-Release Monitoring)**
+   - Add compatibility tests with Cognitive Brain
+   - Add compatibility tests with RAG module
+   - Add performance regression tests
+   - Monitor for breaking API changes
+
+## Test Execution Command Used
+```bash
+pytest tests/tokenization/ \
+  --ignore=tests/tokenization/test_streaming_ingest.py \
+  --ignore=tests/tokenization/test_train_tokenizer_streaming.py \
+  --cov=src/codex_ml/tokenization \
+  --cov-report=term-missing \
+  -v
+```
+
+## Conclusion
+
+The tokenization API test suite shows:
+- **85 core tests passing** (52.8% pass rate)
+- **34.35% overall code coverage** (below 70% target)
+- **Multiple backward-compatibility issues** requiring attention
+- **Several missing optional dependencies** blocking full coverage
+
+**Production Readiness: NOT READY** - Critical issues must be resolved before release.

@@ -1,0 +1,139 @@
+{
+  "total_events": 9,
+  "events": [
+    {
+      "timestamp": "2026-07-19T17:46:49.644447",
+      "scenario": "A",
+      "lane_id": 1,
+      "description": "Unhandled exception in Cognitive Brain service: KeyError in embedding manager",
+      "severity": "critical",
+      "affected_systems": [
+        "cognitive_brain_core",
+        "session_manager",
+        "vector_store"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:49.665282",
+      "detection_latency_sec": 0.020835
+    },
+    {
+      "timestamp": "2026-07-19T17:46:50.165723",
+      "scenario": "B",
+      "lane_id": 2,
+      "description": "Data corruption detected in RAG embedding cache: 500 corrupted vectors out of 50000 (checksum mismatch: 43d1aec89ffb01cb)",
+      "severity": "high",
+      "affected_systems": [
+        "rag_module",
+        "embedding_cache",
+        "vector_index"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:50.266039",
+      "detection_latency_sec": 0.100316
+    },
+    {
+      "timestamp": "2026-07-19T17:46:50.766604",
+      "scenario": "C",
+      "lane_id": 3,
+      "description": "Out-of-memory error during ML training: Epoch 50/100, Memory used: 2061.5MB (limit: 2048MB), Batch size: 64",
+      "severity": "high",
+      "affected_systems": [
+        "ml_training_pipeline",
+        "checkpoint_manager",
+        "memory_allocator"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:50.777490",
+      "detection_latency_sec": 0.010886
+    },
+    {
+      "timestamp": "2026-07-19T17:46:51.278004",
+      "scenario": "D",
+      "lane_id": 4,
+      "description": "Compliance score dropped below 95%: 92.3% (threshold: 95.0%), Root cause: 247 stale governance decisions detected",
+      "severity": "high",
+      "affected_systems": [
+        "quantum_compliance_engine",
+        "decision_cache",
+        "audit_log"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:51.287424",
+      "detection_latency_sec": 0.00942
+    },
+    {
+      "timestamp": "2026-07-19T17:46:51.787925",
+      "scenario": "E",
+      "lane_id": 0,
+      "description": "Cascade failure triggered: Central coordination service crashed, affecting all 4 lanes",
+      "severity": "critical",
+      "affected_systems": [
+        "central_coordination",
+        "config_server",
+        "secret_manager"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:51.813223",
+      "detection_latency_sec": 0.025298
+    },
+    {
+      "timestamp": "2026-07-19T17:46:51.863619",
+      "scenario": "E",
+      "lane_id": 1,
+      "description": "Lane 1 affected by cascade failure: Loss of central coordination service",
+      "severity": "critical",
+      "affected_systems": [
+        "lane_1_all_systems"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:51.863638",
+      "detection_latency_sec": 1.9e-05
+    },
+    {
+      "timestamp": "2026-07-19T17:46:51.913992",
+      "scenario": "E",
+      "lane_id": 2,
+      "description": "Lane 2 affected by cascade failure: Loss of central coordination service",
+      "severity": "critical",
+      "affected_systems": [
+        "lane_2_all_systems"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:51.914001",
+      "detection_latency_sec": 9e-06
+    },
+    {
+      "timestamp": "2026-07-19T17:46:51.964346",
+      "scenario": "E",
+      "lane_id": 3,
+      "description": "Lane 3 affected by cascade failure: Loss of central coordination service",
+      "severity": "critical",
+      "affected_systems": [
+        "lane_3_all_systems"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:51.964354",
+      "detection_latency_sec": 8e-06
+    },
+    {
+      "timestamp": "2026-07-19T17:46:52.014683",
+      "scenario": "E",
+      "lane_id": 4,
+      "description": "Lane 4 affected by cascade failure: Loss of central coordination service",
+      "severity": "critical",
+      "affected_systems": [
+        "lane_4_all_systems"
+      ],
+      "is_detected": true,
+      "detection_time": "2026-07-19T17:46:52.014690",
+      "detection_latency_sec": 7e-06
+    }
+  ],
+  "detected_count": 9,
+  "detection_rate": 100.0,
+  "average_detection_latency_sec": 0.01853311111111111,
+  "version": "v0.2.0",
+  "num_lanes": 4,
+  "start_time": "2026-07-19T17:46:49.644359",
+  "end_time": "2026-07-19T17:46:52.014893"
+}

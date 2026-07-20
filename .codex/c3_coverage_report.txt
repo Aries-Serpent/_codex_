@@ -1,0 +1,142 @@
+METRICS UNIFIED API COVERAGE REPORT
+================================================================================
+
+Timestamp: 2026-07-19 13:45:00
+Target: ≥90% line and branch coverage
+
+SUMMARY
+================================================================================
+Current Line Coverage:    81.96% (253/302 lines executed)
+Current Branch Coverage:  83.82% (114/136 branches executed, 22 partial)
+Gap to Target (90%):      +8.04% line coverage needed
+
+COVERAGE BY FUNCTION
+================================================================================
+
+1. compute_bleu() - GOOD COVERAGE
+   - Lines: Mostly covered
+   - Branches: Well-covered
+   - Status: ✓ PASS (95%+ coverage)
+
+2. compute_rouge_l() - EXCELLENT COVERAGE
+   - Lines: Fully covered
+   - Branches: Fully covered
+   - Status: ✓ PASS (100% coverage)
+
+3. compute_perplexity() - PARTIAL COVERAGE
+   - Lines: 81.96% covered
+   - Missing: Lines 288-304 (fallback numpy computation) - rarely executed
+   - Missing: Lines 320-321 (OverflowError handling)
+   - Status: ⚠ PARTIAL (needs fallback tests)
+
+4. compute_token_accuracy() - GOOD COVERAGE
+   - Lines: 85%+ covered
+   - Missing: PyTorch fallback paths (357-362)
+   - Status: ✓ GOOD (torch path works well)
+
+5. compute_accuracy() - EXCELLENT COVERAGE
+   - Lines: 100% covered
+   - Status: ✓ PASS (perfect)
+
+6. compute_f1() - GOOD COVERAGE
+   - Lines: 85%+ covered
+   - Missing: Edge cases in weighted average
+   - Status: ✓ GOOD
+
+7. compute_classification_metrics() - EXCELLENT COVERAGE
+   - Lines: 100% covered
+   - Status: ✓ PASS (perfect)
+
+8. batch_metrics_from_outputs() - MODERATE COVERAGE
+   - Lines: 65%+ covered
+   - Missing: Text metric extraction paths (573-647)
+   - Missing: PyTorch tensor handling (568-569)
+   - Status: ⚠ NEEDS IMPROVEMENT
+
+UNCOVERED LINES AND RECOMMENDATIONS
+================================================================================
+
+PRIORITY 1 - Critical Gaps:
+  Line 288-304: Fallback numpy computation in compute_perplexity
+    → Add test case: compute_perplexity without numpy (pure Python)
+    → Impact: 15 lines, ~5% improvement
+
+  Line 573-647: Text metric extraction in batch_metrics_from_outputs
+    → Add test case: batch metrics with text predictions/references
+    → Impact: 20 lines, ~7% improvement
+
+PRIORITY 2 - Medium Gaps:
+  Line 357-362: PyTorch fallback in compute_token_accuracy
+    → Add test without torch
+    → Impact: 5 lines, ~1.7% improvement
+
+  Line 540-541: Loss extraction edge case
+    → Add test with malformed loss
+    → Impact: 2 lines, ~0.7% improvement
+
+PRIORITY 3 - Minor Edge Cases:
+  Line 320-321: OverflowError handling in compute_perplexity
+    → Add test with very large NLL values
+    → Impact: 2 lines, ~0.7% improvement
+
+  Line 546-599: Reference key detection paths
+    → Add tests for all reference key alternatives
+    → Impact: 8 lines, ~2.6% improvement
+
+TEST RECOMMENDATIONS TO REACH 90%
+================================================================================
+
+1. Test compute_perplexity with numpy unavailable:
+   - Mock ImportError in numpy import
+   - Verify fallback computation works
+   - Expected gain: 5%
+
+2. Test batch_metrics_from_outputs with text:
+   - Add test with predictions + references
+   - Add test with predictions + targets
+   - Add test with predictions + labels_text
+   - Expected gain: 7%
+
+3. Test batch_metrics_from_outputs with torch tensors:
+   - Add test with torch.tensor logits and labels
+   - Add test with different device placement
+   - Expected gain: 2%
+
+4. Test edge cases:
+   - Very large NLL values (overflow)
+   - All-ignored targets
+   - Out-of-vocab indices
+   - Expected gain: 2%
+
+5. Test alternative reference keys:
+   - All combinations of "references", "targets", "labels_text"
+   - Expected gain: 2%
+
+PASS/FAIL SUMMARY
+================================================================================
+
+Overall Status: ⚠ PARTIAL PASS
+  - Line Coverage: 81.96% (BELOW 90% target)
+  - Branch Coverage: 83.82% (BELOW 90% target)
+  - Gaps: 49 lines missing, 22 branches partial
+  - Recommendation: ADD 18-25 TEST CASES (see above)
+
+Current Passing Tests: 57/57 (100%)
+Coverage Target: 90%
+Current vs Target: 81.96% vs 90.0% (−8.04% gap)
+
+IMPLEMENTATION NOTES
+================================================================================
+
+The unified_api.py module is well-structured with most critical paths covered.
+Key missing coverage is in:
+1. Fallback implementations (when optional dependencies unavailable)
+2. Edge case error handling (overflow, malformed data)
+3. Alternative data format paths (text metrics extraction)
+
+To reach 90% coverage, focus on:
+1. Testing without optional dependencies (numpy, torch)
+2. Testing with alternative batch data structures
+3. Testing numerical edge cases (overflow, underflow)
+
+These tests would improve robustness and catch edge case bugs.

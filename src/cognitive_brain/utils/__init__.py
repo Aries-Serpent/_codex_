@@ -1,6 +1,6 @@
 """Cognitive Brain Utilities Package."""
 
-from src.cognitive_brain.utils.pattern_validators import (
+from .pattern_validators import (
     AuditResult,
     check_boundary_medium_high_scores,
     check_medium_medium_medium_pattern,

@@ -439,8 +439,26 @@ def build_index_from_files(
         f"Total chunks: {len(all_chunks)} from {len(files)} files"
     )  # codeql[py/clear-text-logging-sensitive-data]
 
-    # Generate embeddings
-    embeddings = embed_chunks(all_chunks)
+    # Generate embeddings. Prefer sentence-transformers when available, but
+    # fall back to the offline-capable TF-IDF provider so index builds remain
+    # functional in hermetic or partially provisioned environments.
+    embedding_provider = "sentence-transformers"
+    try:
+        embeddings = embed_chunks(all_chunks)
+    except (ImportError, OSError, RuntimeError, ValueError, NotImplementedError):
+        from aries_serpent_core.rag.embeddings import create_embedding_provider
+
+        logger.warning(
+            "Falling back to offline embedding provider for index '%s'",
+            index_name,
+        )
+        provider = create_embedding_provider(
+            provider_type="tfidf",
+            use_cache=False,
+            max_features=384,
+        )
+        embeddings = provider.encode([chunk[2] for chunk in all_chunks])
+        embedding_provider = provider.__class__.__name__
 
     # Persist index
     metadata = {
@@ -449,6 +467,7 @@ def build_index_from_files(
         "total_chunks": len(all_chunks),
         "chunk_size": chunk_size,
         "overlap": overlap,
+        "embedding_provider": embedding_provider,
     }
 
     return persist_index(

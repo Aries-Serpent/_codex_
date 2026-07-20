@@ -1,0 +1,515 @@
+{
+  "index_name": "lane2-validation",
+  "tenant_id": "lane2",
+  "dimension": 237,
+  "num_vectors": 200,
+  "index_type": "IndexFlatL2",
+  "created_at": "1784470174.5276318",
+  "files": [
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_00.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_01.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_02.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_03.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_04.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_05.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_06.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_07.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_08.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/python_09.txt",
+      "size": 256,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_00.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_01.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_02.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_03.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_04.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_05.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_06.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_07.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_08.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/gardening_09.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_00.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_01.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_02.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_03.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_04.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_05.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_06.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_07.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_08.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/astronomy_09.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_00.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_01.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_02.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_03.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_04.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_05.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_06.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_07.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_08.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/finance_09.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_00.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_01.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_02.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_03.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_04.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_05.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_06.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_07.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_08.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/medicine_09.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_00.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_01.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_02.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_03.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_04.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_05.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_06.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_07.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_08.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/networking_09.txt",
+      "size": 246,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_00.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_01.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_02.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_03.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_04.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_05.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_06.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_07.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_08.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/history_09.txt",
+      "size": 250,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_00.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_01.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_02.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_03.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_04.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_05.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_06.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_07.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_08.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/music_09.txt",
+      "size": 240,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_00.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_01.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_02.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_03.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_04.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_05.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_06.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_07.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_08.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/cooking_09.txt",
+      "size": 248,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_00.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_01.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_02.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_03.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_04.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_05.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_06.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_07.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_08.txt",
+      "size": 254,
+      "chunks": 2
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/lane2_b2_b5_workspace/corpus/robotics_09.txt",
+      "size": 254,
+      "chunks": 2
+    }
+  ],
+  "total_files": 100,
+  "total_chunks": 200,
+  "chunk_size": 220,
+  "overlap": 32,
+  "embedding_provider": "TfidfEmbeddingProvider"
+}

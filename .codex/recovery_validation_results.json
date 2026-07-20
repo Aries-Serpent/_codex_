@@ -1,0 +1,639 @@
+{
+  "timestamp": "2026-07-19T17:46:56.375621",
+  "total_scenarios": 8,
+  "results": [
+    {
+      "scenario_id": "A",
+      "lane_id": 1,
+      "version_before": "v0.2.0",
+      "version_after": "v0.1.x",
+      "start_time": "2026-07-19T17:46:55.356992",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:46:55.356897",
+          "end_time": "2026-07-19T17:46:55.357507",
+          "duration_sec": 0.00061,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 5,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.40211895481301396
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:55.357568",
+          "end_time": "2026-07-19T17:46:55.358244",
+          "duration_sec": 0.000676,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:55.358299",
+          "end_time": "2026-07-19T17:46:55.408406",
+          "duration_sec": 0.050107,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 5,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:55.408551",
+          "end_time": "2026-07-19T17:46:55.409093",
+          "duration_sec": 0.000542,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 9,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 16
+          }
+        }
+      ],
+      "total_duration_sec": 0.051935,
+      "sla_target_sec": 300.0,
+      "sla_met": true,
+      "sla_compliance_ratio": 0.00017311666666666668,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 23,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "B",
+      "lane_id": 2,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:46:55.509639",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:47:55.356897",
+          "end_time": "2026-07-19T17:46:55.510094",
+          "duration_sec": -59.846803,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 3,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.3100237837485941
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:55.510187",
+          "end_time": "2026-07-19T17:46:55.510606",
+          "duration_sec": 0.000419,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:55.510660",
+          "end_time": "2026-07-19T17:46:55.560757",
+          "duration_sec": 0.050097,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 7,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true,
+            "checkpoint_restore_time_sec": 54.92378909160033,
+            "embedding_rebuild_time_sec": 1189.655784642353,
+            "vectors_verified": 50000,
+            "vectors_corrupted": 500
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:55.560908",
+          "end_time": "2026-07-19T17:46:55.561255",
+          "duration_sec": 0.000347,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 8,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 20,
+            "query_accuracy_baseline": 0.97,
+            "query_accuracy_restored": 0.96,
+            "embedding_integrity_verified": true
+          }
+        }
+      ],
+      "total_duration_sec": -59.79594,
+      "sla_target_sec": 1800.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -0.03321996666666667,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "C",
+      "lane_id": 3,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:46:55.661739",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:48:55.356897",
+          "end_time": "2026-07-19T17:46:55.661964",
+          "duration_sec": -119.694933,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 3,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.11734531502188555
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:55.662024",
+          "end_time": "2026-07-19T17:46:55.662641",
+          "duration_sec": 0.000617,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true,
+            "graceful_shutdown_completed": true,
+            "training_state_preserved": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:55.662687",
+          "end_time": "2026-07-19T17:46:55.712839",
+          "duration_sec": 0.050152,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 8,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true,
+            "checkpoint_loaded_epoch": 50,
+            "training_resumed": true,
+            "memory_optimized": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:55.712990",
+          "end_time": "2026-07-19T17:46:55.713466",
+          "duration_sec": 0.000476,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 8,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 19,
+            "epochs_remaining": 50,
+            "training_continues": true,
+            "validation_on_track": true
+          }
+        }
+      ],
+      "total_duration_sec": -119.64368800000001,
+      "sla_target_sec": 120.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -0.9970307333333335,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "D",
+      "lane_id": 4,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:46:55.814005",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:49:55.356897",
+          "end_time": "2026-07-19T17:46:55.814474",
+          "duration_sec": -179.542423,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 2,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.328573504008731
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:55.814565",
+          "end_time": "2026-07-19T17:46:55.815236",
+          "duration_sec": 0.000671,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true,
+            "compliance_rollback_initiated": true,
+            "stale_decisions_identified": 247
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:55.815327",
+          "end_time": "2026-07-19T17:46:55.865459",
+          "duration_sec": 0.050132,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 10,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true,
+            "decisions_purged": 247,
+            "compliance_score_normalized": true,
+            "gates_normalized": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:55.865601",
+          "end_time": "2026-07-19T17:46:55.866073",
+          "duration_sec": 0.000472,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 9,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 15,
+            "compliance_score_after": 99.8,
+            "all_gates_green": true,
+            "compliance_threshold_met": true
+          }
+        }
+      ],
+      "total_duration_sec": -179.491148,
+      "sla_target_sec": 120.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -1.4957595666666668,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "E",
+      "lane_id": 1,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:47:25.966619",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:50:55.356897",
+          "end_time": "2026-07-19T17:46:55.966943",
+          "duration_sec": -239.389954,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 4,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.19347693518330714
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:55.966997",
+          "end_time": "2026-07-19T17:46:55.967562",
+          "duration_sec": 0.000565,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:55.967605",
+          "end_time": "2026-07-19T17:46:56.017749",
+          "duration_sec": 0.050144,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 12,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:56.017921",
+          "end_time": "2026-07-19T17:46:56.018308",
+          "duration_sec": 0.000387,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 8,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 19
+          }
+        }
+      ],
+      "total_duration_sec": -239.338858,
+      "sla_target_sec": 150.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -1.5955923866666666,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "E",
+      "lane_id": 2,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:47:55.966619",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:50:55.356897",
+          "end_time": "2026-07-19T17:46:56.069112",
+          "duration_sec": -239.287785,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 2,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.33139677811589463
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:56.069204",
+          "end_time": "2026-07-19T17:46:56.069617",
+          "duration_sec": 0.000413,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:56.069668",
+          "end_time": "2026-07-19T17:46:56.119837",
+          "duration_sec": 0.050169,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 15,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:56.119992",
+          "end_time": "2026-07-19T17:46:56.120547",
+          "duration_sec": 0.000555,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 8,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 16
+          }
+        }
+      ],
+      "total_duration_sec": -239.236648,
+      "sla_target_sec": 150.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -1.5949109866666666,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "E",
+      "lane_id": 3,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:48:25.966619",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:50:55.356897",
+          "end_time": "2026-07-19T17:46:56.171466",
+          "duration_sec": -239.185431,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 3,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.40896417583280886
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:56.171569",
+          "end_time": "2026-07-19T17:46:56.171997",
+          "duration_sec": 0.000428,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:56.172051",
+          "end_time": "2026-07-19T17:46:56.222200",
+          "duration_sec": 0.050149,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 14,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:56.222342",
+          "end_time": "2026-07-19T17:46:56.222872",
+          "duration_sec": 0.00053,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 10,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 19
+          }
+        }
+      ],
+      "total_duration_sec": -239.134324,
+      "sla_target_sec": 150.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -1.5942288266666667,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    },
+    {
+      "scenario_id": "E",
+      "lane_id": 4,
+      "version_before": "v0.2.0",
+      "version_after": "v0.2.0",
+      "start_time": "2026-07-19T17:48:55.966619",
+      "recovery_phases": [
+        {
+          "phase": "detection",
+          "start_time": "2026-07-19T17:50:55.356897",
+          "end_time": "2026-07-19T17:46:56.273728",
+          "duration_sec": -239.083169,
+          "status": "completed",
+          "details": {
+            "alerts_triggered": 3,
+            "monitoring_systems_alerted": [
+              "prometheus",
+              "datadog",
+              "pagerduty"
+            ],
+            "root_cause_analysis_time_sec": 0.41505150522469403
+          }
+        },
+        {
+          "phase": "initiation",
+          "start_time": "2026-07-19T17:46:56.273850",
+          "end_time": "2026-07-19T17:46:56.274289",
+          "duration_sec": 0.000439,
+          "status": "completed",
+          "details": {
+            "approval_received": true,
+            "rollback_procedure_selected": "automated_rollback",
+            "dependencies_resolved": true,
+            "lock_acquired": true
+          }
+        },
+        {
+          "phase": "execution",
+          "start_time": "2026-07-19T17:46:56.274340",
+          "end_time": "2026-07-19T17:46:56.324465",
+          "duration_sec": 0.050125,
+          "status": "completed",
+          "details": {
+            "rollback_steps": 10,
+            "data_restored": true,
+            "services_restarted": true,
+            "configuration_reloaded": true
+          }
+        },
+        {
+          "phase": "validation",
+          "start_time": "2026-07-19T17:46:56.324600",
+          "end_time": "2026-07-19T17:46:56.325187",
+          "duration_sec": 0.000587,
+          "status": "completed",
+          "details": {
+            "health_checks_passed": 8,
+            "health_checks_total": 10,
+            "data_integrity_verified": true,
+            "consistency_check_passed": true,
+            "functional_tests_passed": 18
+          }
+        }
+      ],
+      "total_duration_sec": -239.032018,
+      "sla_target_sec": 150.0,
+      "sla_met": true,
+      "sla_compliance_ratio": -1.5935467866666666,
+      "data_loss": false,
+      "data_loss_details": null,
+      "consistency_verified": true,
+      "consistency_score": 100.0,
+      "in_flight_txns_lost": 0,
+      "in_flight_txns_recovered": 0,
+      "status": "PASS"
+    }
+  ],
+  "passed_scenarios": 8,
+  "overall_success_rate": 100.0
+}

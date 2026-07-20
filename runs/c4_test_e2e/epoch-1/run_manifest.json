@@ -1,0 +1,16 @@
+{
+  "python": "3.12.3",
+  "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+  "git_sha": null,
+  "lock_sha256": "920d852f3f1f961bff1966af5d0ae022115bec569e4dfc67ef71f663d8044216",
+  "env": {
+    "PYTHONHASHSEED": "42",
+    "CODEX_AUDIT": null,
+    "CODEX_DDP": null
+  },
+  "provenance": {
+    "python": "3.12.3",
+    "git": "7db0b52e125eea664b456b1c1869852c910168b4",
+    "lock_sha256": "920d852f3f1f961bff1966af5d0ae022115bec569e4dfc67ef71f663d8044216"
+  }
+}
