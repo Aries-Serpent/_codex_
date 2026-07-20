@@ -505,7 +505,6 @@ else:
         log_event,
         run_cmd,
     )
-    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
     from codex_ml.utils.optional import optional_import
 
     _ = (ArgparseJSONParser, run_cmd)
@@ -621,6 +620,9 @@ else:
                         output_dir = cfg.get("output_dir", "runs/eval")
                         evaluate_datasets(datasets, metrics, output_dir)
                     elif step == "pipeline":
+                        # Lazy import: only load heavy pipeline module if this step is actually used
+                        from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
+                        
                         pipeline_cfg = OmegaConf.select(cfg, "pipeline")
                         pipeline_block = (
                             OmegaConf.to_container(pipeline_cfg, resolve=True)
