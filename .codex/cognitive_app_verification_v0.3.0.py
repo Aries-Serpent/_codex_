@@ -92,7 +92,7 @@ class CognitiveAppVerifier:
             
             if exists and name == "package.json":
                 try:
-                    with open(path) as f:
+                    with open(path, encoding='utf-8') as f:
                         pkg = json.load(f)
                         has_name = "name" in pkg
                         self.log_test("Structure", "package.json is valid JSON", has_name,
@@ -137,7 +137,7 @@ class CognitiveAppVerifier:
             index_path = site_app_path / "index.html"
             
             if index_path.exists():
-                html_content = index_path.read_text()
+                html_content = index_path.read_text(encoding='utf-8')
                 
                 # Features to check based on title and meta tags
                 feature_checks = [
@@ -177,7 +177,7 @@ class CognitiveAppVerifier:
         mkdocs_workflow = workflows_path / "pages-mkdocs.yml"
         
         if mkdocs_workflow.exists():
-            content = mkdocs_workflow.read_text()
+            content = mkdocs_workflow.read_text(encoding='utf-8')
             
             checks = [
                 ("cognitive_app build step", "Build cognitive_app dashboard" in content 

@@ -123,7 +123,7 @@ class DeploymentValidator:
                         f"Path: {index_path}")
             
             if index_path.exists():
-                content = index_path.read_text()
+                content = index_path.read_text(encoding='utf-8')
                 has_root = '<div id="root">' in content
                 self.log_test("Phase 2", "index.html has root div", has_root, "")
                 
@@ -159,7 +159,7 @@ class DeploymentValidator:
             url = "https://pypi.org/pypi/codex-ml/0.3.0/json"
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req, timeout=10) as response:
-                data = json.loads(response.read())
+                data = json.loads(response.read().decode('utf-8'))
                 version = data['info']['version']
                 self.log_test("Phase 3", "Package available on PyPI", version == "0.3.0",
                             f"Version: {version}")
@@ -234,7 +234,7 @@ class DeploymentValidator:
                         f"Path: {path}")
             
             if path.exists():
-                content = path.read_text()
+                content = path.read_text(encoding='utf-8')
                 
                 # Check for cognitive_app build
                 if "cognitive_app" in filename or filename == "pages-mkdocs.yml":
