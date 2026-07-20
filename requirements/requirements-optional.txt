@@ -29,7 +29,7 @@ sentencepiece>=0.1.99
 # Monitoring and tracking
 tensorboard>=2.13.0
 wandb>=0.15.0
-opentelemetry-sdk>=1.24
+opentelemetry-sdk>=1.44.0
 
 # Security: IP-005 dependency updates
 twisted>=26.4.0  # Security: Phase 5 Track 2 - Updated to fix PYSEC-2026-160 (DNS name decompression DoS in twisted <26.4.0)
