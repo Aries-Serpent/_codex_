@@ -1,0 +1,169 @@
+{
+  "timestamp": "2026-07-20T05:13:07Z",
+  "package_version": "0.3.0",
+  "summary": {
+    "total_tests": 18,
+    "passed": 13,
+    "failed": 3,
+    "skipped": 2,
+    "errors": 0,
+    "pass_rate": "72.2%",
+    "total_duration_ms": "145.60ms"
+  },
+  "results": [
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml",
+      "status": "PASS",
+      "duration_ms": 0.003337860107421875,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.config",
+      "status": "PASS",
+      "duration_ms": 0.0026226043701171875,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.cli.main",
+      "status": "PASS",
+      "duration_ms": 141.71910285949707,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.api.rag_api",
+      "status": "FAIL",
+      "duration_ms": 0.07081031799316406,
+      "error_msg": "No module named 'codex_ml.api'",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.metrics",
+      "status": "PASS",
+      "duration_ms": 0.0019073486328125,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.data",
+      "status": "PASS",
+      "duration_ms": 0.0016689300537109375,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Imports",
+      "test_name": "Import codex_ml.utils",
+      "status": "PASS",
+      "duration_ms": 0.001430511474609375,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "CLI",
+      "test_name": "CLI main entry point",
+      "status": "PASS",
+      "duration_ms": 0.0016689300537109375,
+      "error_msg": "",
+      "details": {
+        "has_context": false
+      }
+    },
+    {
+      "category": "CLI",
+      "test_name": "Config creation",
+      "status": "PASS",
+      "duration_ms": 0.04172325134277344,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Config",
+      "test_name": "Config creation and attributes",
+      "status": "FAIL",
+      "duration_ms": 0.010967254638671875,
+      "error_msg": "",
+      "details": {
+        "has_required_attrs": false
+      }
+    },
+    {
+      "category": "API",
+      "test_name": "RAG API module",
+      "status": "FAIL",
+      "duration_ms": 0.05221366882324219,
+      "error_msg": "No module named 'codex_ml.api'",
+      "details": {}
+    },
+    {
+      "category": "API",
+      "test_name": "Metrics API module",
+      "status": "PASS",
+      "duration_ms": 0.0016689300537109375,
+      "error_msg": "",
+      "details": {
+        "exported_items": 50
+      }
+    },
+    {
+      "category": "CognitiveBrain",
+      "test_name": "Module codex_ml.cognitive_brain",
+      "status": "SKIP",
+      "duration_ms": 0.0,
+      "error_msg": "Module not available in this version",
+      "details": {}
+    },
+    {
+      "category": "Memory",
+      "test_name": "Memory system modules",
+      "status": "SKIP",
+      "duration_ms": 0.06771087646484375,
+      "error_msg": "Memory modules not detected in this version",
+      "details": {}
+    },
+    {
+      "category": "DataValidation",
+      "test_name": "Validation module",
+      "status": "PASS",
+      "duration_ms": 3.5936832427978516,
+      "error_msg": "",
+      "details": {
+        "validators": 28
+      }
+    },
+    {
+      "category": "Integration",
+      "test_name": "Config + CLI integration",
+      "status": "PASS",
+      "duration_ms": 0.027179718017578125,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Integration",
+      "test_name": "Module cross-imports",
+      "status": "PASS",
+      "duration_ms": 0.005245208740234375,
+      "error_msg": "",
+      "details": {}
+    },
+    {
+      "category": "Performance",
+      "test_name": "Package import time",
+      "status": "PASS",
+      "duration_ms": 0.0007152557373046875,
+      "error_msg": "",
+      "details": {
+        "import_time_ms": 0.000476837158203125
+      }
+    }
+  ]
+}
