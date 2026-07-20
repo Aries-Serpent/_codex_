@@ -109,19 +109,44 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
 
 
 def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
-    """Join user-controlled path segments under *base_dir* and enforce containment."""
+    """Join user-controlled path segments under *base_dir* and enforce containment.
+    
+    CWE-22 Fix: Validate that segments are relative paths (not starting with /)
+    before joining them. This prevents os.path.join from being bypassed with
+    absolute paths.
+    """
     if any("\x00" in segment for segment in segments):
         raise HTTPException(status_code=400, detail="Invalid path")
+    
+    # CWE-22: Reject absolute paths in segments to prevent traversal
+    if any(segment.startswith("/") or segment.startswith("\\") for segment in segments):
+        raise HTTPException(status_code=400, detail="Path must be relative (cannot start with / or \\)")
+    
+    # CWE-22: Reject directory traversal attempts
+    if any(".." in segment or segment == "." for segment in segments):
+        raise HTTPException(status_code=400, detail="Path traversal not allowed")
 
     try:
-        base_real = os.path.realpath(str(base_dir))
-        candidate_real = os.path.realpath(os.path.join(base_real, *segments))
-        if os.path.commonpath([base_real, candidate_real]) != base_real:
+        # Use pathlib.Path.resolve() with parent check for better security
+        # than os.path.realpath + os.path.commonpath
+        base_resolved = base_dir.resolve()
+        
+        # Build candidate path safely using Path operations instead of os.path.join
+        candidate = base_resolved
+        for segment in segments:
+            candidate = candidate / segment
+        
+        candidate_resolved = candidate.resolve()
+        
+        # Use strict parent check: candidate must be base_resolved or a descendant
+        try:
+            candidate_resolved.relative_to(base_resolved)
+        except ValueError:
             raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-    except ValueError as err:
+    except (OSError, ValueError) as err:
         raise HTTPException(status_code=400, detail="Invalid path") from err
 
-    return Path(candidate_real)
+    return candidate_resolved
 
 
 # NOTE: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response  # noqa: E501
