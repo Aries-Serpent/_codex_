@@ -64,7 +64,7 @@ jobs:
 
       - name: "Setup Node.js"
         if: matrix.ecosystem == 'npm'
-        uses: actions/setup-node@1a4442caab129478691007db3c2c8cc937d1be1d
+        uses: actions/setup-node@b789df37d6b7526a863bf51b65df64f3f56ffe4f
         with:
           node-version: "22"
           cache: "npm"
