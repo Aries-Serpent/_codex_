@@ -39,6 +39,7 @@ jobs:
           cache-dependency-path: cognitive_app/package-lock.json
 
       - name: Validate pre-build environment
+        id: validate-pre-build-environment
         working-directory: cognitive_app
         run: |
           set -o pipefail
@@ -62,6 +63,7 @@ jobs:
           echo "✅ Pre-build validation passed"
 
       - name: Install dependencies
+        id: install-dependencies
         working-directory: cognitive_app
         run: |
           set -o pipefail
@@ -70,6 +72,7 @@ jobs:
           echo "✅ Dependencies installed"
 
       - name: Run TypeScript checks
+        id: run-typescript-checks
         working-directory: cognitive_app
         continue-on-error: true
         run: |
@@ -79,6 +82,7 @@ jobs:
           }
 
       - name: Run linter
+        id: run-linter
         working-directory: cognitive_app
         continue-on-error: true
         run: |
@@ -89,6 +93,7 @@ jobs:
           }
 
       - name: Build cognitive_app
+        id: build-cognitive-app
         working-directory: cognitive_app
         run: |
           set -o pipefail
@@ -102,6 +107,7 @@ jobs:
           echo "✅ Build succeeded"
 
       - name: Validate build output
+        id: validate-build-output
         working-directory: cognitive_app
         run: |
           echo "🔍 Phase 2: Post-build validation"
@@ -235,22 +241,13 @@ jobs:
             echo "| Check | Status |"
             echo "|-------|--------|"
             
-            # Determine status for each step based on job outcome
-            if [ "${{ job.status }}" = "success" ]; then
-              PREENV_STATUS="Pass"
-              DEPS_STATUS="Pass"
-              TS_STATUS="Pass"
-              LINT_STATUS="Pass"
-              BUILD_STATUS="Pass"
-              WIDGET_STATUS="Pass"
-            else
-              PREENV_STATUS="${{ steps.validate-pre-build-environment.outcome }}"
-              DEPS_STATUS="${{ steps.install-dependencies.outcome }}"
-              TS_STATUS="${{ steps.run-typescript-checks.outcome }}"
-              LINT_STATUS="${{ steps.run-linter.outcome }}"
-              BUILD_STATUS="${{ steps.build-cognitive-app.outcome }}"
-              WIDGET_STATUS="${{ steps.validate-build-output.outcome }}"
-            fi
+            # Always use actual step outcomes (not hard-coded "Pass")
+            PREENV_STATUS="${{ steps.validate-pre-build-environment.outcome }}"
+            DEPS_STATUS="${{ steps.install-dependencies.outcome }}"
+            TS_STATUS="${{ steps.run-typescript-checks.outcome }}"
+            LINT_STATUS="${{ steps.run-linter.outcome }}"
+            BUILD_STATUS="${{ steps.build-cognitive-app.outcome }}"
+            WIDGET_STATUS="${{ steps.validate-build-output.outcome }}"
             
             echo "| Pre-build environment | $PREENV_STATUS |"
             echo "| Dependencies | $DEPS_STATUS |"
