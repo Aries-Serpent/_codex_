@@ -14,7 +14,7 @@ python-markdown-math>=0.8
 mkdocs-mermaid2-plugin>=0.6.0
 
 # Code syntax highlighting
-Pygments>=2.15.1
+Pygments>=2.20.0
 
 # Additional features
 mkdocs-macros-plugin>=0.7.0
