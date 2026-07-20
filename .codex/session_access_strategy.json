@@ -1,16 +1,20 @@
 {
-  "generated_at": "2026-07-20T01:05:13.034757+00:00",
+  "generated_at": "2026-07-20T01:19:53.175217+00:00",
   "methods": [
-    "local_fs"
+    "rest",
+    "graphql",
+    "gh_cli"
   ],
-  "rest_available": false,
-  "rest_remaining": 0,
-  "graphql_available": false,
-  "graphql_remaining": 0,
-  "gh_cli_available": false,
+  "rest_available": true,
+  "rest_remaining": 4998,
+  "graphql_available": true,
+  "graphql_remaining": 4999,
+  "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "",
-  "open_prs": [],
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [
+    5367
+  ],
   "branch": "copilot/fix-pypi-upload-error",
-  "recommendation": "All API methods exhausted \u2014 use local CodeQL/FS only. "
+  "recommendation": "Use REST for data fetches. "
 }
