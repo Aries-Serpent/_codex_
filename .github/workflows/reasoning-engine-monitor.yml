@@ -1,5 +1,5 @@
 name: Reasoning Engine Monitor
-on:
+'on':
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch:
