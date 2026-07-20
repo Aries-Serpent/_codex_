@@ -28,7 +28,7 @@ def log(level: str, msg: str) -> None:
 
 
 def verify_page_loads(url: str, max_retries: int = 5) -> tuple[bool, str]:
-    """Verify that a page loads and extract asset references."""
+    """Verify that a page loads and return HTML content for asset extraction."""
     log("INFO", f"Verifying page: {url}")
     
     for attempt in range(1, max_retries + 1):
@@ -50,22 +50,22 @@ def verify_page_loads(url: str, max_retries: int = 5) -> tuple[bool, str]:
             http_code = http_code.strip()
             
             if http_code == "200":
-                log("SUCCESS", f"✓ Page returned HTTP {http_code}")
+                log("SUCCESS", f"Page returned HTTP {http_code}")
                 return True, content
             
-            log("WARNING", f"⚠ Attempt {attempt}/{max_retries}: HTTP {http_code}")
+            log("WARNING", f" Attempt {attempt}/{max_retries}: HTTP {http_code}")
             if attempt < max_retries:
                 time.sleep(10)
         except subprocess.TimeoutExpired:
-            log("WARNING", f"⚠ Timeout on attempt {attempt}/{max_retries}")
+            log("WARNING", f" Timeout on attempt {attempt}/{max_retries}")
             if attempt < max_retries:
                 time.sleep(10)
         except Exception as e:
-            log("WARNING", f"⚠ Error on attempt {attempt}/{max_retries}: {e}")
+            log("WARNING", f" Error on attempt {attempt}/{max_retries}: {e}")
             if attempt < max_retries:
                 time.sleep(10)
     
-    log("ERROR", f"✗ Page failed to load after {max_retries} attempts")
+    log("ERROR", f" Page failed to load after {max_retries} attempts")
     return False, ""
 
 
@@ -119,33 +119,33 @@ def verify_asset_accessible(url: str, asset_type: str = "asset") -> bool:
         http_code = result.stdout.strip()
         
         if http_code == "200":
-            log("SUCCESS", f"✓ {asset_type} accessible: {Path(url).name}")
+            log("SUCCESS", f"Asset accessible: {Path(url).name}")
             return True
         else:
-            log("ERROR", f"✗ {asset_type} returned HTTP {http_code}: {Path(url).name}")
+            log("ERROR", f"Asset returned HTTP {http_code}: {Path(url).name}")
             return False
     except Exception as e:
-        log("ERROR", f"✗ Failed to verify {asset_type}: {e}")
+        log("ERROR", f"Failed to verify asset: {e}")
         return False
 
 
 def verify_react_root(html_content: str) -> bool:
     """Verify React root element is present."""
     if 'id="root"' in html_content:
-        log("SUCCESS", "✓ React root element found")
+        log("SUCCESS", "React root element found")
         return True
     
-    log("ERROR", "✗ React root element (id='root') not found")
+    log("ERROR", "React root element (id='root') not found")
     return False
 
 
 def verify_module_script(html_content: str) -> bool:
     """Verify that module scripts are properly configured."""
     if 'type="module"' in html_content:
-        log("SUCCESS", "✓ Module scripts found")
+        log("SUCCESS", "Module scripts found")
         return True
     
-    log("WARNING", "⚠ No module scripts found (may use other loading method)")
+    log("WARNING", "No module scripts found (may use other loading method)")
     return True
 
 

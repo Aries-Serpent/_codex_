@@ -238,7 +238,7 @@ jobs:
       run: |
         PAGE_URL="${{ steps.deployment.outputs.page_url }}"
         if [ -z "${PAGE_URL}" ]; then
-         echo "⚠️ No page_url output - skipping health check"
+         echo "⚠ No page_url output - skipping health check"
          exit 0
         fi
         
@@ -269,7 +269,8 @@ jobs:
         
         # Phase 2: Verify cognitive_app deployment
         echo "Phase 2: Cognitive app deployment verification..."
-        python scripts/ci/verify_cognitive_app_deployment.py --url "${PAGE_URL}cognitive_app/"
+        COGNITIVE_APP_URL="${PAGE_URL%/}/cognitive_app/"
+        python scripts/ci/verify_cognitive_app_deployment.py --url "${COGNITIVE_APP_URL}"
         VERIFY_RESULT=$?
         
         if [ ${VERIFY_RESULT} -eq 0 ]; then
