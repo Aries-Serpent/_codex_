@@ -66,9 +66,7 @@ jobs:
       id: pr
       env:
         GITHUB_EVENT_NAME: ${{ github.event_name }}
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"if [ \"${{ github.event_name }}\" = \"workflow_dispatch\" ]; then\n  echo\
+      run: "if [ \"${{ github.event_name }}\" = \"workflow_dispatch\" ]; then\n  echo\
         \ \"number=${{ inputs.pr_number }}\" >> \"$GITHUB_OUTPUT\"\n  echo \"dry_run=${{\
         \ inputs.dry_run }}\" >> \"$GITHUB_OUTPUT\"\n  echo \"include_rescue=${{ inputs.include_rescue\
         \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ \"${{ github.event_name }}\" = \"issue_comment\"\
@@ -94,14 +92,6 @@ jobs:
       if: steps.pr.outputs.number != ''
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-cleanup_stale_pr_comments-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-cleanup_stale_pr_comments-
-            ${{ runner.os }}-pip-
         STEPS_PR_OUTPUTS_NUMBER: ${{ steps.pr.outputs.number }}
       run: "ARGS=\"--pr-number ${{ steps.pr.outputs.number }}\"\n\nif [ \"${{ steps.pr.outputs.dry_run\
         \ }}\" = \"true\" ]; then\n  ARGS=\"$ARGS --dry-run\"\nfi\n\nif [ \"${{ steps.pr.outputs.include_rescue\

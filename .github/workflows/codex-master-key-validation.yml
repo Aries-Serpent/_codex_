@@ -22,7 +22,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: pip
@@ -41,7 +41,7 @@ jobs:
         \ Report ===\"\n  python -m json.tool scope_report.json || cat scope_report.json\n\
         else\n  echo \"WARNING: scope_report.json not found\"\nfi\n"
     - name: Upload scope report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         path: scope_report.json

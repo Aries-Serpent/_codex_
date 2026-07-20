@@ -162,9 +162,7 @@ jobs:
       run: pip install pyyaml --quiet
     - name: Check if C2 (manifest staleness) is the failing condition
       id: c2-check
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"python3 - <<'PY'\nimport json, time, os, sys\nif not os.path.exists('CODEX_MANIFEST.json'):\n\
+      run: "python3 - <<'PY'\nimport json, time, os, sys\nif not os.path.exists('CODEX_MANIFEST.json'):\n\
         \    print('MANIFEST_MISSING=true')\n    sys.exit(0)\nm = json.load(open('CODEX_MANIFEST.json'))\n\
         generated_at = m.get('generated_at', '')\nage_h = None\ntry:\n    from datetime\
         \ import datetime, timezone\n    ts = datetime.fromisoformat(generated_at.replace('Z',\
@@ -181,14 +179,6 @@ jobs:
       if: steps.c2-check.outputs.stale == 'true'
       env:
         HEAD_REF: ${{ github.head_ref }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-e_to_d_transition_gate-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-e_to_d_transition_gate-
-            ${{ runner.os }}-pip-
       run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
         github-actions[bot]@users.noreply.github.com\"\n# SCP-RESCUE-5: sync .secrets.baseline\
         \ before staging so the\n# CODEX_MANIFEST hashed_secret is always consistent\

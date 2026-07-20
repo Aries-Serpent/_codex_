@@ -78,7 +78,7 @@ jobs:
           });\n"
     - name: Upload metrics artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'metrics_current.json
 
@@ -107,12 +107,4 @@ jobs:
     timeout-minutes: 20
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-performance_monitoring-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-performance_monitoring-
-            ${{ runner.os }}-pip-
   cancel-in-progress: true

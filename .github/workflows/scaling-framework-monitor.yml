@@ -16,9 +16,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest pytest-cov
+      run: 'pip install pytest pytest-cov
 
         '
     - name: Test multi-tenant isolation
@@ -55,7 +53,7 @@ jobs:
         '
     - name: Generate isolation report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: isolation-report.json
         name: isolation-report
@@ -71,9 +69,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
+      run: 'pip install pytest
 
         '
     - name: Test failover capability
@@ -121,9 +117,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
+      run: 'pip install pytest
 
         '
     - name: Test load distribution
@@ -153,9 +147,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
+      run: 'pip install pytest
 
         '
     - name: Test auto-scaling triggers
@@ -202,9 +194,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
+      run: 'pip install pytest
 
         '
     - name: Test cost optimization
@@ -227,9 +217,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Check multi-region uptime
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}"echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
+      run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
         \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
         \n  # Mock health check\n  echo \"✓ $region: Healthy\"\ndone\n"
     - name: Verify SLA >99%
@@ -250,9 +238,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest pytest-cov
+      run: 'pip install pytest pytest-cov
 
         '
     - name: Run tests with coverage
@@ -279,9 +265,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Execute failover drill
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}"python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
+      run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
         \ HealthStatus\nimport time\n\nprint('=== Failover Drill ===')\n\nmgr = FailoverManager(check_interval=0.1)\n\
         \n# Setup regions\nmgr.add_region(RegionConfig('us-east-1', 'region-1', primary=True))\n\
         mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))\n\nprint('✓\
@@ -296,7 +280,7 @@ jobs:
         \"\n"
     - name: Report drill results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: failover-drill-*.json
         name: failover-drill-report
@@ -306,9 +290,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Generate cost report
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'python -c "
+      run: 'python -c "
 
         from datetime import datetime
 

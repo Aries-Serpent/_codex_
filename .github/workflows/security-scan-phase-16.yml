@@ -45,9 +45,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install security tools
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'python -m pip install --upgrade pip setuptools wheel
+      run: 'python -m pip install --upgrade pip setuptools wheel
 
         pip install bandit[toml] semgrep gitleaks safety pip-audit
 
@@ -129,7 +127,7 @@ jobs:
           });\n"
     - name: Archive Security Reports
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'bandit-report.json
 
@@ -163,9 +161,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'python -m pip install --upgrade pip setuptools wheel
+      run: 'python -m pip install --upgrade pip setuptools wheel
 
         pip install -e .
 
@@ -194,7 +190,7 @@ jobs:
         name: phase-16-security-coverage
     - name: Upload coverage report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: htmlcov/
         retention-days: 30
@@ -244,9 +240,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'python -m pip install --upgrade pip setuptools wheel
+      run: 'python -m pip install --upgrade pip setuptools wheel
 
         pip install -e .
 
@@ -292,7 +286,7 @@ jobs:
         '
     - name: Upload Test Results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'phase-16-3-results.txt
 
@@ -321,9 +315,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Check SECURITY.md
-      run: 
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}"if [ ! -f SECURITY.md ]; then\n  echo \"\u274C SECURITY.md not found\"\
+      run: "if [ ! -f SECURITY.md ]; then\n  echo \"\u274C SECURITY.md not found\"\
         \n  exit 1\nfi\necho \"\u2713 SECURITY.md exists\"\ngrep -E \"email|report|contact\"\
         \ SECURITY.md > /dev/null && \\\n  echo \"\u2713 Security contact documented\"\
         \ || \\\n  echo \"\u26A0\uFE0F Security contact not clearly documented\"\n"
@@ -389,7 +381,7 @@ jobs:
         \ practices\" >> PHASE_16_RESULTS.md\necho \"- \u2705 Dependency security\"\
         \ >> PHASE_16_RESULTS.md\necho \"- \u2705 No CodeQL alerts\" >> PHASE_16_RESULTS.md\n"
     - name: Upload Summary
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: PHASE_16_RESULTS.md
         name: phase-16-complete

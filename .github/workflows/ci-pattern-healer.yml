@@ -52,9 +52,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -q pyyaml ruff
+      run: 'pip install -q pyyaml ruff
 
         '
     - name: Detect failing patterns
@@ -73,19 +71,11 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Upload diagnostic report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: .codex/ci-patterns-detected.json
         retention-days: 30
         name: ci-patterns-detected-${{ github.run_id }}
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-ci_pattern_healer-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-ci_pattern_healer-
-            ${{ runner.os }}-pip-
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -109,9 +99,7 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -q pyyaml ruff
+      run: 'pip install -q pyyaml ruff
 
         '
     - name: Apply automated fixes
@@ -135,7 +123,7 @@ jobs:
         fi\n"
     - name: Upload fix report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: .codex/ci-patterns-fixed.json
         retention-days: 30
@@ -157,13 +145,13 @@ jobs:
       with:
         persist-credentials: false
     - name: Download detection report
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: .codex/
         name: ci-patterns-detected-${{ github.run_id }}
     - name: Download fix report
       if: needs.heal-patterns.result == 'success'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: .codex/
         name: ci-patterns-fixed-${{ github.run_id }}

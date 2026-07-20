@@ -147,7 +147,7 @@ jobs:
         \ \"Audit trail recorded: $AUDIT_LOG\"\n"
     - name: Upload Gate Audit Logs
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: codeql-ga-gate-audit-${{ github.run_id }}
         path: .codex/security/gate_audit/

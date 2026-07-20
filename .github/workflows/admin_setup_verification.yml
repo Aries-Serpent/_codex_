@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Cache Python dependencies (Layer 1)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
@@ -38,7 +38,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       if: always()
       with:
         path: .pytest_cache/
@@ -47,7 +47,7 @@ jobs:
 
           '
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
@@ -144,7 +144,7 @@ jobs:
         \ \"\u274C **No functional write key \u2014 complete \xA71 in ADMIN_MANUAL_SETUP_GUIDE.md**\"\
         ; } >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     - name: Cache coverage reports (Layer 4)
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: coverage/
         key: ${{ runner.os }}-coverage-${{ github.sha }}

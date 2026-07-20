@@ -38,7 +38,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -54,7 +54,7 @@ jobs:
         fi\n\ncat scan_output.txt\n"
     - name: Upload scan results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: fragile-tests-scan
         path: .codex/fragile_tests.json
@@ -74,7 +74,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -117,7 +117,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload flaky detection results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: unhandled-flaky-tests
         path: .codex/phase5_unhandled_flaky.json
@@ -138,7 +138,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -173,7 +173,7 @@ jobs:
         \ $result['coverage_pct'] < 90 else 'false')\\\")\" >> $GITHUB_OUTPUT\n"
     - name: Upload coverage results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: docstring-coverage
         path: .codex/phase5_docstring_coverage.json
@@ -190,7 +190,7 @@ jobs:
     if: always() && github.event_name == 'pull_request'
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
     - name: Generate violation report
       id: report
       run: "# Compile violation summary\nVIOLATION_SUMMARY=\"\"\n\n# Check fragile\
