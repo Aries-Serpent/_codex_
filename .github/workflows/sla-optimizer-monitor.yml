@@ -20,7 +20,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -33,7 +33,7 @@ jobs:
         \ -v \\\n  --tb=short --junit-xml=artifacts/sla-compliance-results.xml"
     - name: Upload compliance report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: sla-compliance-report
         path: artifacts/sla-compliance-results.xml
@@ -47,7 +47,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -81,7 +81,7 @@ jobs:
         \ meets performance criteria: {num_points} points in {elapsed:.2f}s\")\nPY"
     - name: Upload frontier report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: pareto-frontier-report
         path: artifacts/pareto-frontier.json
@@ -95,7 +95,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -133,7 +133,7 @@ jobs:
         \ in JSON\"\n\nprint(\"Billing report meets completeness criteria\")\nPY"
     - name: Upload billing reports
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: monthly-billing-reports
         path: artifacts/billing_*.{csv,json}
@@ -147,7 +147,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -171,7 +171,7 @@ jobs:
         \ audit: {churn:.2f} changes per tenant\")\nPY"
     - name: Upload tier audit
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: tier-transition-audit
         path: artifacts/tier-transition-audit.*
@@ -184,7 +184,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -215,7 +215,7 @@ jobs:
         )\nPY"
     - name: Upload anomaly report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: cost-anomaly-report
         path: artifacts/cost-anomaly-report.json
@@ -233,7 +233,7 @@ jobs:
     if: always()
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         path: artifacts
     - name: Generate summary report
@@ -263,7 +263,7 @@ jobs:
         \  {'PASS' if passed else 'FAIL'} {check}\")\n\nwith open(\"summary.json\"\
         , \"w\") as f:\n    json.dump(summary, f, indent=2)\nPY"
     - name: Upload summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: optimization-summary
         path: summary.json

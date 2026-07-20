@@ -115,7 +115,7 @@ jobs:
         \n"
     - name: Upload audit report artifact
       if: steps.detect.outputs.changed == 'true'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: docs/admin/variable_audit_latest.md
         retention-days: 30

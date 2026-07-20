@@ -35,7 +35,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -108,7 +108,7 @@ jobs:
         \ | head -50\nfi\n"
     - name: Archive validation report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/token_validation_report.json
         retention-days: 30

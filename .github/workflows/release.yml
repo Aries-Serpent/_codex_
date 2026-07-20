@@ -1,5 +1,5 @@
 name: Release
-on:
+true:
   workflow_dispatch:
     inputs:
       tag:
@@ -24,7 +24,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -49,6 +49,7 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   release:
     name: Create GitHub Release
     needs:

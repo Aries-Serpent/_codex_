@@ -36,7 +36,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -64,7 +64,7 @@ jobs:
         \ }}\" \\\n  --repo \"${{ steps.pr_info.outputs.repo }}\" \\\n  --post-checklist\n"
     - name: Upload scan report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: /tmp/comment_review_report.json
         retention-days: 30

@@ -129,7 +129,7 @@ jobs:
         '
     - name: Upload baseline artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/validation/baseline.txt
         retention-days: 14
@@ -196,7 +196,7 @@ jobs:
         echo \"## Status\" >> .codex/reports/reference_validation.md\necho \"\u2705\
         \ Reference validation complete\" >> .codex/reports/reference_validation.md\n"
     - name: Upload reference report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/reports/reference_validation.md
         retention-days: 30
@@ -222,7 +222,7 @@ jobs:
         python-version: 3.12.13
         cache-tier: common
     - name: Download baseline
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       continue-on-error: true
       with:
         path: .codex/validation/
@@ -250,7 +250,7 @@ jobs:
         - root-org-validation-report\nEOF\n\necho \"Final report generated\"\ncat\
         \ .codex/reports/root_org_validation_${{ github.run_number }}.md\n"
     - name: Upload final report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/reports/root_org_validation_${{ github.run_number }}.md
         retention-days: 90

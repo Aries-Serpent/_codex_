@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -46,13 +46,13 @@ jobs:
         \ \"w\") as f:\n    json.dump({\n        \"performance\": metrics,\n     \
         \   \"accuracies\": accuracies,\n    }, f, indent=2)\nEOF\n"
     - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/ensemble_metrics.json
         retention-days: 30
         name: ensemble-metrics
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -87,7 +87,7 @@ jobs:
           \ Drift Detected** in ensemble predictor. Consider running retraining workflow.'\n\
           })\n"
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -111,7 +111,7 @@ jobs:
         \    print(f\"\\n✗ SLA FAILED: p99 latency {p99:.1f}ms > 200ms\")\n    exit(1)\n\
         EOF\n"
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -136,7 +136,7 @@ jobs:
         \ OK: {escalation_rate:.1%} ≤ 5%\")\nelse:\n    print(f\"\\n⚠️ HIGH ESCALATION\
         \ RATE: {escalation_rate:.1%} > 5%\")\n    exit(1)\nEOF\n"
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -152,7 +152,7 @@ jobs:
 
         '
     - name: Upload coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: htmlcov/
         retention-days: 30
@@ -161,6 +161,7 @@ jobs:
       run: 'python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
 
         '
+    timeout-minutes: 30
   publish-results:
     runs-on: ubuntu-latest
     name: Publish Monitoring Results
@@ -169,7 +170,7 @@ jobs:
     if: always()
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         path: monitoring-artifacts
     - name: Publish job summary
@@ -185,9 +186,8 @@ jobs:
 
         - ✅ Accuracy Tracking: PASSED
 
-        - Drift Detection: ${{ ''N/A'' }}
-        # Note: Drift Detection job not yet implemented. Status: N/A
-        PASSED'' || ''⚠️ WARNING'' }}
+        - Drift Detection: ${{ ''N/A'' }} # Note: Drift Detection job not yet implemented.
+        Status: N/A PASSED'' || ''⚠️ WARNING'' }}
 
         - ✅ Latency SLA: PASSED
 
@@ -208,6 +208,7 @@ jobs:
         EOF
 
         '
+    timeout-minutes: 60
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

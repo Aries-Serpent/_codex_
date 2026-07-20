@@ -26,7 +26,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -45,7 +45,7 @@ jobs:
         \ gate step logs.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     - name: Upload promotion readiness artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/promotion-readiness-report.json
         retention-days: 30

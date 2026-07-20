@@ -48,7 +48,7 @@ jobs:
         \ from local run)\"\nelse\n  echo \"\u2705  No SHA drift: trigger and checked-out\
         \ SHA match.\"\nfi\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip

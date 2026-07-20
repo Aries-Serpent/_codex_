@@ -41,7 +41,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Setup Node.js
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: npm
@@ -80,7 +80,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Setup Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -100,7 +100,7 @@ jobs:
         '
     - name: Upload report as artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: /tmp/crossref-report.txt
         retention-days: 30
@@ -118,7 +118,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Setup Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip

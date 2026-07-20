@@ -40,7 +40,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -127,7 +127,7 @@ jobs:
           });\n"
     - name: Archive Security Reports
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'bandit-report.json
 
@@ -156,7 +156,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -190,7 +190,7 @@ jobs:
         name: phase-16-security-coverage
     - name: Upload coverage report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: htmlcov/
         retention-days: 30
@@ -235,7 +235,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -286,7 +286,7 @@ jobs:
         '
     - name: Upload Test Results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'phase-16-3-results.txt
 
@@ -310,7 +310,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -381,7 +381,7 @@ jobs:
         \ practices\" >> PHASE_16_RESULTS.md\necho \"- \u2705 Dependency security\"\
         \ >> PHASE_16_RESULTS.md\necho \"- \u2705 No CodeQL alerts\" >> PHASE_16_RESULTS.md\n"
     - name: Upload Summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: PHASE_16_RESULTS.md
         name: phase-16-complete

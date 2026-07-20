@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7.0.0
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -30,7 +30,7 @@ jobs:
       id: canary
       run: python scripts/observability/slo_canary.py
     - name: Upload canary report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: reports/observability/slo_canary_latest.json
         name: slo-canary-${{ github.run_id }}
@@ -47,7 +47,7 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7.0.0
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -72,7 +72,7 @@ jobs:
         \ indent=2))\nprint(\"::notice::\u2705 D8 exit criteria  #4 met: MTTR report\
         \ generated\")\nPYEOF\n"
     - name: Upload MTTR report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: reports/observability/mttr_*.json
         name: mttr-report-${{ github.run_id }}
@@ -89,7 +89,7 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7.0.0
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -117,7 +117,7 @@ jobs:
         \ indent=2))\nprint(\"::notice::\u2705 D8 exit criteria  #4b met: MTTD report\
         \ generated\")\nPYEOF\n"
     - name: Upload MTTD report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: reports/observability/mttd_*.json
         name: mttd-report-${{ github.run_id }}

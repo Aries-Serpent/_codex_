@@ -158,7 +158,7 @@ jobs:
         .codex/delegation_tasks/${TASK_ID}.json\"\n"
     - if: always()
       name: Cache test results (Layer 3)
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         key: ${{ runner.os }}-pytest-${{ github.sha }}
         path: .pytest_cache/
@@ -199,7 +199,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip

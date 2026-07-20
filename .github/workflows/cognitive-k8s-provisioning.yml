@@ -37,7 +37,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -52,7 +52,7 @@ jobs:
         '
       shell: bash
     - name: Upload Patterns
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: k8s_patterns.json
         retention-days: 30
@@ -69,12 +69,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         name: k8s-patterns
     - name: Validate Configuration
@@ -82,7 +82,7 @@ jobs:
 
         '
     - name: Upload Compliance Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: infrastructure_compliance_report.json
         retention-days: 30
@@ -99,12 +99,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         name: k8s-patterns
     - name: Estimate Costs
@@ -112,7 +112,7 @@ jobs:
 
         '
     - name: Upload Cost Estimate
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: cost_estimate.json
         retention-days: 30
@@ -129,12 +129,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
     - name: Download Patterns
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         name: k8s-patterns
     - name: Generate Terraform Configuration
@@ -142,7 +142,7 @@ jobs:
 
         '
     - name: Upload Terraform Modules
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: infrastructure/terraform/
         retention-days: 30
@@ -159,12 +159,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
     - name: Download Terraform Modules
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         path: infrastructure/terraform/
         name: terraform-modules
@@ -177,7 +177,7 @@ jobs:
 
         '
     - name: Upload Plan Summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: terraform_plan_summary.md
         retention-days: 30
@@ -201,7 +201,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Download All Artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
     - name: Generate Approval Summary
       run: 'echo "# K8s Cluster Provisioning Approval" > approval_summary.md
 
@@ -281,7 +281,7 @@ jobs:
 
         '
     - name: Upload Completion Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: completion_report.md
         retention-days: 30

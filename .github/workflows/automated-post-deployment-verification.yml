@@ -96,7 +96,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -116,7 +116,7 @@ jobs:
         else\n  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"\u26A0\
         \ Health check results not available\"\nfi\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
+      uses: actions/cache@v4
       if: always()
       with:
         path: .pytest_cache/
@@ -125,7 +125,7 @@ jobs:
 
           '
     - name: Upload Health Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: ${{ env.VERIFICATION_DIR }}/health-reports/
         retention-days: 30
@@ -145,7 +145,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -165,7 +165,7 @@ jobs:
         \ }}/smoke_summary.json\necho \"\u2713 Smoke tests completed\"\necho \"smoke_status=passed\"\
         \ >> $GITHUB_OUTPUT\n"
     - name: Upload Smoke Test Results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
@@ -185,7 +185,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -201,7 +201,7 @@ jobs:
         \ ${{ env.VERIFICATION_DIR }}/critical_paths_report.json\necho \"\u2713 Critical\
         \ path tests completed\"\necho \"critical_status=passed\" >> $GITHUB_OUTPUT\n"
     - name: Upload Critical Path Results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
@@ -224,7 +224,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Download Artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         path: ${{ env.VERIFICATION_DIR }}/artifacts
     - name: Generate Summary Report
@@ -253,7 +253,7 @@ jobs:
         \n    ;;\nesac\n\necho \"\u2713 Report generated: $REPORT_FILE\"\necho \"\
         report_file=$REPORT_FILE\" >> $GITHUB_OUTPUT\n"
     - name: Upload Verification Report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30

@@ -30,7 +30,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
         cache: pip
@@ -61,7 +61,7 @@ jobs:
         \ generated.\"\n  echo '```'\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload promotion report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: .codex/promotion_report.json
         retention-days: 30

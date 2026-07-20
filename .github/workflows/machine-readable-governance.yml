@@ -22,7 +22,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Setup Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -61,7 +61,7 @@ jobs:
     - name: Enforce no unmanaged candidate files
       run: python -m tools.docs_agent.no_unmanaged_candidates --json
     - name: Upload governance artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'docs-data/generated/candidate-inventory.json
 
