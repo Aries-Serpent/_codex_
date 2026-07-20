@@ -9,7 +9,6 @@ import sys
 import json
 import urllib.request
 import urllib.error
-import time
 from pathlib import Path
 from typing import Dict, List, Tuple
 
