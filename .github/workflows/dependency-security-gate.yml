@@ -1,313 +1,273 @@
-name: "Dependency Security Gate"
-
-on:
+name: Dependency Security Gate
+true:
   push:
     branches:
-      - main
-      - develop
-      - "release/**"
-      - "feature/**"
-      - "copilot/**"
+    - main
+    - develop
+    - release/**
+    - feature/**
+    - copilot/**
     paths:
-      - "pyproject.toml"
-      - "requirements*.txt"
-      - "package.json"
-      - "package-lock.json"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "cognitive_app/package.json"
-      - "copilot/extension/package.json"
+    - pyproject.toml
+    - requirements*.txt
+    - package.json
+    - package-lock.json
+    - Cargo.toml
+    - Cargo.lock
+    - cognitive_app/package.json
+    - copilot/extension/package.json
   pull_request:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     paths:
-      - "pyproject.toml"
-      - "requirements*.txt"
-      - "package.json"
-      - "package-lock.json"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "cognitive_app/package.json"
-      - "copilot/extension/package.json"
+    - pyproject.toml
+    - requirements*.txt
+    - package.json
+    - package-lock.json
+    - Cargo.toml
+    - Cargo.lock
+    - cognitive_app/package.json
+    - copilot/extension/package.json
   schedule:
-    # Daily CVE scan at 9 AM UTC
-    - cron: "0 9 * * *"
-
+  - cron: 0 9 * * *
 permissions:
   contents: read
   pull-requests: write
   security-events: read
-
 jobs:
   dependency-security-gate:
-    name: "Dependency Security Gate Check"
+    name: Dependency Security Gate Check
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       matrix:
-        ecosystem: ["python", "npm", "rust"]
+        ecosystem:
+        - python
+        - npm
+        - rust
       fail-fast: false
-
     steps:
-      - name: "Checkout code"
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Setup Python
+      if: matrix.ecosystem == 'python'
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Setup Node.js
+      if: matrix.ecosystem == 'npm'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: npm
+    - name: Setup Rust
+      if: matrix.ecosystem == 'rust'
+      uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb
+    - name: Scan Python dependencies with pip-audit
+      if: matrix.ecosystem == 'python'
+      id: python-scan
+      run: "pip install pip-audit\n\necho \"Scanning Python dependencies for CVEs...\"\
+        \npip-audit --desc > /tmp/python_audit.txt 2>&1 || true\n\n# Extract summary\n\
+        SUMMARY=$(head -1 /tmp/python_audit.txt)\necho \"$SUMMARY\"\n\n# Count critical\
+        \ and high severity\nCRITICAL=$(pip-audit 2>&1 | grep -c \"CRITICAL\" || echo\
+        \ \"0\")\nHIGH=$(pip-audit 2>&1 | grep -c \"HIGH\" || echo \"0\")\n\necho\
+        \ \"critical_count=${CRITICAL}\" >> $GITHUB_OUTPUT\necho \"high_count=${HIGH}\"\
+        \ >> $GITHUB_OUTPUT\necho \"python_summary=${SUMMARY}\" >> $GITHUB_OUTPUT\n\
+        \ncat /tmp/python_audit.txt >> $GITHUB_STEP_SUMMARY\n\nif [ \"$CRITICAL\"\
+        \ -gt 0 ] || [ \"$HIGH\" -gt 0 ]; then\n  echo \"::error::Found CVEs: $CRITICAL\
+        \ Critical, $HIGH High\"\n  exit 1\nfi\n"
+    - name: Scan npm dependencies (root)
+      if: matrix.ecosystem == 'npm'
+      id: npm-scan-root
+      run: 'echo "Scanning root npm dependencies..."
 
-      - name: "Setup Python"
-        if: matrix.ecosystem == 'python'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: "3.12"
-          cache: "pip"
+        npm audit --json > /tmp/npm_audit_root.json 2>&1 || true
 
-      - name: "Setup Node.js"
-        if: matrix.ecosystem == 'npm'
-        uses: actions/setup-node@1a4442caab129478691007db3c2c8cc937d1be1d
-        with:
-          node-version: "22"
-          cache: "npm"
 
-      - name: "Setup Rust"
-        if: matrix.ecosystem == 'rust'
-        uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb  # stable (pinned for supply chain security)
+        # Parse audit results
 
-      - name: "Scan Python dependencies with pip-audit"
-        if: matrix.ecosystem == 'python'
-        id: python-scan
-        run: |
-          pip install pip-audit
-          
-          echo "Scanning Python dependencies for CVEs..."
-          pip-audit --desc > /tmp/python_audit.txt 2>&1 || true
-          
-          # Extract summary
-          SUMMARY=$(head -1 /tmp/python_audit.txt)
-          echo "$SUMMARY"
-          
-          # Count critical and high severity
-          CRITICAL=$(pip-audit 2>&1 | grep -c "CRITICAL" || echo "0")
-          HIGH=$(pip-audit 2>&1 | grep -c "HIGH" || echo "0")
-          
-          echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
-          echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
-          echo "python_summary=${SUMMARY}" >> $GITHUB_OUTPUT
-          
-          cat /tmp/python_audit.txt >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-            echo "::error::Found CVEs: $CRITICAL Critical, $HIGH High"
-            exit 1
-          fi
+        CRITICAL=$(jq ''.metadata.vulnerabilities.critical // 0'' /tmp/npm_audit_root.json)
 
-      - name: "Scan npm dependencies (root)"
-        if: matrix.ecosystem == 'npm'
-        id: npm-scan-root
-        run: |
-          echo "Scanning root npm dependencies..."
-          npm audit --json > /tmp/npm_audit_root.json 2>&1 || true
-          
-          # Parse audit results
-          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' /tmp/npm_audit_root.json)
-          HIGH=$(jq '.metadata.vulnerabilities.high // 0' /tmp/npm_audit_root.json)
-          MODERATE=$(jq '.metadata.vulnerabilities.moderate // 0' /tmp/npm_audit_root.json)
-          
-          echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
-          echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
-          echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
-          
-          echo "## npm (root)" >> $GITHUB_STEP_SUMMARY
-          echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+        HIGH=$(jq ''.metadata.vulnerabilities.high // 0'' /tmp/npm_audit_root.json)
 
-      - name: "Scan npm dependencies (cognitive_app)"
-        if: matrix.ecosystem == 'npm'
-        id: npm-scan-cognitive
-        run: |
-          cd cognitive_app
-          echo "Scanning cognitive_app npm dependencies..."
-          npm audit --json > /tmp/npm_audit_cognitive.json 2>&1 || true
-          
-          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' /tmp/npm_audit_cognitive.json)
-          HIGH=$(jq '.metadata.vulnerabilities.high // 0' /tmp/npm_audit_cognitive.json)
-          MODERATE=$(jq '.metadata.vulnerabilities.moderate // 0' /tmp/npm_audit_cognitive.json)
-          
-          echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
-          echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
-          echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
-          
-          echo "## npm (cognitive_app)" >> $GITHUB_STEP_SUMMARY
-          echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+        MODERATE=$(jq ''.metadata.vulnerabilities.moderate // 0'' /tmp/npm_audit_root.json)
 
-      - name: "Scan npm dependencies (copilot/extension)"
-        if: matrix.ecosystem == 'npm'
-        id: npm-scan-extension
-        run: |
-          cd copilot/extension
-          echo "Scanning copilot/extension npm dependencies..."
-          npm audit --json > /tmp/npm_audit_extension.json 2>&1 || true
-          
-          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' /tmp/npm_audit_extension.json)
-          HIGH=$(jq '.metadata.vulnerabilities.high // 0' /tmp/npm_audit_extension.json)
-          MODERATE=$(jq '.metadata.vulnerabilities.moderate // 0' /tmp/npm_audit_extension.json)
-          
-          echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
-          echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
-          echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
-          
-          echo "## npm (copilot/extension)" >> $GITHUB_STEP_SUMMARY
-          echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
 
-      - name: "Scan Rust dependencies (cargo)"
-        if: matrix.ecosystem == 'rust'
-        id: cargo-scan
-        run: |
-          echo "Scanning Rust dependencies with cargo tree..."
-          cargo tree --depth 1 > /tmp/cargo_tree.txt 2>&1 || true
-          
-          echo "## Rust Dependencies" >> $GITHUB_STEP_SUMMARY
-          head -50 /tmp/cargo_tree.txt >> $GITHUB_STEP_SUMMARY
-          
-          echo "Note: Full cargo-audit implementation pending. Using cargo tree for dependency inspection."
-          echo "critical_count=0" >> $GITHUB_OUTPUT
-          echo "high_count=0" >> $GITHUB_OUTPUT
+        echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
 
-      - name: "Enforce security gate"
-        id: gate-check
-        run: |
-          # Aggregate results
-          TOTAL_CRITICAL=0
-          TOTAL_HIGH=0
-          
-          # Python results
-          CRITICAL=${{ steps.python-scan.outputs.critical_count || 0 }}
-          HIGH=${{ steps.python-scan.outputs.high_count || 0 }}
-          TOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))
-          TOTAL_HIGH=$((TOTAL_HIGH + HIGH))
-          
-          # npm root
-          CRITICAL=${{ steps.npm-scan-root.outputs.critical_count || 0 }}
-          HIGH=${{ steps.npm-scan-root.outputs.high_count || 0 }}
-          TOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))
-          TOTAL_HIGH=$((TOTAL_HIGH + HIGH))
-          
-          # npm cognitive_app
-          CRITICAL=${{ steps.npm-scan-cognitive.outputs.critical_count || 0 }}
-          HIGH=${{ steps.npm-scan-cognitive.outputs.high_count || 0 }}
-          TOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))
-          TOTAL_HIGH=$((TOTAL_HIGH + HIGH))
-          
-          # npm extension
-          CRITICAL=${{ steps.npm-scan-extension.outputs.critical_count || 0 }}
-          HIGH=${{ steps.npm-scan-extension.outputs.high_count || 0 }}
-          TOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))
-          TOTAL_HIGH=$((TOTAL_HIGH + HIGH))
-          
-          echo "total_critical=${TOTAL_CRITICAL}" >> $GITHUB_OUTPUT
-          echo "total_high=${TOTAL_HIGH}" >> $GITHUB_OUTPUT
-          
-          echo "## Dependency Security Gate Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- **Total Critical**: $TOTAL_CRITICAL" >> $GITHUB_STEP_SUMMARY
-          echo "- **Total High**: $TOTAL_HIGH" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$TOTAL_CRITICAL" -gt 0 ] || [ "$TOTAL_HIGH" -gt 0 ]; then
-            echo "::error::Security gate FAILED: Found $TOTAL_CRITICAL Critical and $TOTAL_HIGH High severity CVEs"
-            echo "- Gate Status: **BLOCKED**" >> $GITHUB_STEP_SUMMARY
-            echo "- Merge blocked until vulnerabilities are remediated" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          else
-            echo "- Gate Status: **PASSED** ✅" >> $GITHUB_STEP_SUMMARY
-            echo "- No critical/high severity CVEs detected" >> $GITHUB_STEP_SUMMARY
-            exit 0
-          fi
+        echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
 
+        echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
+
+
+        echo "## npm (root)" >> $GITHUB_STEP_SUMMARY
+
+        echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+
+        '
+    - name: Scan npm dependencies (cognitive_app)
+      if: matrix.ecosystem == 'npm'
+      id: npm-scan-cognitive
+      run: 'cd cognitive_app
+
+        echo "Scanning cognitive_app npm dependencies..."
+
+        npm audit --json > /tmp/npm_audit_cognitive.json 2>&1 || true
+
+
+        CRITICAL=$(jq ''.metadata.vulnerabilities.critical // 0'' /tmp/npm_audit_cognitive.json)
+
+        HIGH=$(jq ''.metadata.vulnerabilities.high // 0'' /tmp/npm_audit_cognitive.json)
+
+        MODERATE=$(jq ''.metadata.vulnerabilities.moderate // 0'' /tmp/npm_audit_cognitive.json)
+
+
+        echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
+
+        echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
+
+        echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
+
+
+        echo "## npm (cognitive_app)" >> $GITHUB_STEP_SUMMARY
+
+        echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+
+        '
+    - name: Scan npm dependencies (copilot/extension)
+      if: matrix.ecosystem == 'npm'
+      id: npm-scan-extension
+      run: 'cd copilot/extension
+
+        echo "Scanning copilot/extension npm dependencies..."
+
+        npm audit --json > /tmp/npm_audit_extension.json 2>&1 || true
+
+
+        CRITICAL=$(jq ''.metadata.vulnerabilities.critical // 0'' /tmp/npm_audit_extension.json)
+
+        HIGH=$(jq ''.metadata.vulnerabilities.high // 0'' /tmp/npm_audit_extension.json)
+
+        MODERATE=$(jq ''.metadata.vulnerabilities.moderate // 0'' /tmp/npm_audit_extension.json)
+
+
+        echo "critical_count=${CRITICAL}" >> $GITHUB_OUTPUT
+
+        echo "high_count=${HIGH}" >> $GITHUB_OUTPUT
+
+        echo "moderate_count=${MODERATE}" >> $GITHUB_OUTPUT
+
+
+        echo "## npm (copilot/extension)" >> $GITHUB_STEP_SUMMARY
+
+        echo "Critical: $CRITICAL, High: $HIGH, Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
+
+        '
+    - name: Scan Rust dependencies (cargo)
+      if: matrix.ecosystem == 'rust'
+      id: cargo-scan
+      run: 'echo "Scanning Rust dependencies with cargo tree..."
+
+        cargo tree --depth 1 > /tmp/cargo_tree.txt 2>&1 || true
+
+
+        echo "## Rust Dependencies" >> $GITHUB_STEP_SUMMARY
+
+        head -50 /tmp/cargo_tree.txt >> $GITHUB_STEP_SUMMARY
+
+
+        echo "Note: Full cargo-audit implementation pending. Using cargo tree for
+        dependency inspection."
+
+        echo "critical_count=0" >> $GITHUB_OUTPUT
+
+        echo "high_count=0" >> $GITHUB_OUTPUT
+
+        '
+    - name: Enforce security gate
+      id: gate-check
+      run: "# Aggregate results\nTOTAL_CRITICAL=0\nTOTAL_HIGH=0\n\n# Python results\n\
+        CRITICAL=${{ steps.python-scan.outputs.critical_count || 0 }}\nHIGH=${{ steps.python-scan.outputs.high_count\
+        \ || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH\
+        \ + HIGH))\n\n# npm root\nCRITICAL=${{ steps.npm-scan-root.outputs.critical_count\
+        \ || 0 }}\nHIGH=${{ steps.npm-scan-root.outputs.high_count || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL\
+        \ + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH + HIGH))\n\n# npm cognitive_app\n\
+        CRITICAL=${{ steps.npm-scan-cognitive.outputs.critical_count || 0 }}\nHIGH=${{\
+        \ steps.npm-scan-cognitive.outputs.high_count || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL\
+        \ + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH + HIGH))\n\n# npm extension\nCRITICAL=${{\
+        \ steps.npm-scan-extension.outputs.critical_count || 0 }}\nHIGH=${{ steps.npm-scan-extension.outputs.high_count\
+        \ || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH\
+        \ + HIGH))\n\necho \"total_critical=${TOTAL_CRITICAL}\" >> $GITHUB_OUTPUT\n\
+        echo \"total_high=${TOTAL_HIGH}\" >> $GITHUB_OUTPUT\n\necho \"## Dependency\
+        \ Security Gate Summary\" >> $GITHUB_STEP_SUMMARY\necho \"- **Total Critical**:\
+        \ $TOTAL_CRITICAL\" >> $GITHUB_STEP_SUMMARY\necho \"- **Total High**: $TOTAL_HIGH\"\
+        \ >> $GITHUB_STEP_SUMMARY\n\nif [ \"$TOTAL_CRITICAL\" -gt 0 ] || [ \"$TOTAL_HIGH\"\
+        \ -gt 0 ]; then\n  echo \"::error::Security gate FAILED: Found $TOTAL_CRITICAL\
+        \ Critical and $TOTAL_HIGH High severity CVEs\"\n  echo \"- Gate Status: **BLOCKED**\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"- Merge blocked until vulnerabilities\
+        \ are remediated\" >> $GITHUB_STEP_SUMMARY\n  exit 1\nelse\n  echo \"- Gate\
+        \ Status: **PASSED** ✅\" >> $GITHUB_STEP_SUMMARY\n  echo \"- No critical/high\
+        \ severity CVEs detected\" >> $GITHUB_STEP_SUMMARY\n  exit 0\nfi\n"
   report-health:
-    name: "Generate Dependency Health Report"
+    name: Generate Dependency Health Report
     runs-on: ubuntu-latest
     needs: dependency-security-gate
     if: always()
     permissions:
       pull-requests: write
-
     steps:
-      - name: "Checkout code"
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-      - name: "Check baseline report"
-        id: baseline
-        run: |
-          if [ -f ".codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json" ]; then
-            echo "baseline_exists=true" >> $GITHUB_OUTPUT
-            CRITICAL=$(jq '.compliance.critical_blocking_count' .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)
-            HIGH=$(jq '.compliance.high_blocking_count' .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)
-            echo "baseline_critical=${CRITICAL}" >> $GITHUB_OUTPUT
-            echo "baseline_high=${HIGH}" >> $GITHUB_OUTPUT
-          else
-            echo "baseline_exists=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: "Post health report comment"
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
-        with:
-          script: |
-            const fs = require('fs');
-            
-            let comment = `## 🔐 Dependency Security Health Report\n\n`;
-            
-            if (fs.existsSync('.codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json')) {
-              const baseline = JSON.parse(fs.readFileSync('.codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json', 'utf8'));
-              const summary = baseline.summary;
-              
-              comment += `### CVE Summary\n`;
-              comment += `| Severity | Count |\n`;
-              comment += `|----------|-------|\n`;
-              comment += `| Critical | ${summary.critical} |\n`;
-              comment += `| High | ${summary.high} |\n`;
-              comment += `| Moderate | ${summary.moderate} |\n`;
-              comment += `| Low | ${summary.low} |\n`;
-              comment += `| **Total** | **${summary.total_cves}** |\n\n`;
-              
-              if (summary.critical > 0 || summary.high > 0) {
-                comment += `⚠️ **ALERT**: This PR blocks Phase 7 release due to unresolved critical/high CVEs.\n\n`;
-              }
-              
-              comment += `### Blocking Items\n`;
-              baseline.compliance.blocking_packages.forEach(pkg => {
-                comment += `- ${pkg}\n`;
-              });
-            }
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Check baseline report
+      id: baseline
+      run: "if [ -f \".codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json\" ]; then\n \
+        \ echo \"baseline_exists=true\" >> $GITHUB_OUTPUT\n  CRITICAL=$(jq '.compliance.critical_blocking_count'\
+        \ .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)\n  HIGH=$(jq '.compliance.high_blocking_count'\
+        \ .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)\n  echo \"baseline_critical=${CRITICAL}\"\
+        \ >> $GITHUB_OUTPUT\n  echo \"baseline_high=${HIGH}\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"baseline_exists=false\" >> $GITHUB_OUTPUT\nfi\n"
+    - name: Post health report comment
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\n\nlet comment = `## \U0001F510 Dependency\
+          \ Security Health Report\\n\\n`;\n\nif (fs.existsSync('.codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json'))\
+          \ {\n  const baseline = JSON.parse(fs.readFileSync('.codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json',\
+          \ 'utf8'));\n  const summary = baseline.summary;\n  \n  comment += `###\
+          \ CVE Summary\\n`;\n  comment += `| Severity | Count |\\n`;\n  comment +=\
+          \ `|----------|-------|\\n`;\n  comment += `| Critical | ${summary.critical}\
+          \ |\\n`;\n  comment += `| High | ${summary.high} |\\n`;\n  comment += `|\
+          \ Moderate | ${summary.moderate} |\\n`;\n  comment += `| Low | ${summary.low}\
+          \ |\\n`;\n  comment += `| **Total** | **${summary.total_cves}** |\\n\\n`;\n\
+          \  \n  if (summary.critical > 0 || summary.high > 0) {\n    comment += `⚠️\
+          \ **ALERT**: This PR blocks Phase 7 release due to unresolved critical/high\
+          \ CVEs.\\n\\n`;\n  }\n  \n  comment += `### Blocking Items\\n`;\n  baseline.compliance.blocking_packages.forEach(pkg\
+          \ => {\n    comment += `- ${pkg}\\n`;\n  });\n}\n\ngithub.rest.issues.createComment({\n\
+          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
+          \ repo: context.repo.repo,\n  body: comment\n});\n"
+    timeout-minutes: 30
   sla-monitor:
-    name: "Monitor CVE Remediation SLA"
+    name: Monitor CVE Remediation SLA
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    
     steps:
-      - name: "Checkout code"
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-      - name: "Check SLA compliance"
-        run: |
-          echo "## SLA Compliance Check" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -f ".codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json" ]; then
-            LAST_SCAN=$(jq -r '.tracking.last_scan' .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)
-            echo "- Last scan: $LAST_SCAN" >> $GITHUB_STEP_SUMMARY
-            
-            # Check if 4-hour SLA window is open for critical CVEs
-            HOURS_ELAPSED=$(( ($(date +%s) - $(date -d "$LAST_SCAN" +%s)) / 3600 ))
-            
-            if [ $HOURS_ELAPSED -lt 4 ]; then
-              echo "- ⏳ Critical CVE SLA window: $HOURS_ELAPSED/4 hours elapsed" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "- ⚠️ Critical CVE SLA window EXPIRED" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Check SLA compliance
+      run: "echo \"## SLA Compliance Check\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f \"\
+        .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json\" ]; then\n  LAST_SCAN=$(jq\
+        \ -r '.tracking.last_scan' .codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json)\n\
+        \  echo \"- Last scan: $LAST_SCAN\" >> $GITHUB_STEP_SUMMARY\n  \n  # Check\
+        \ if 4-hour SLA window is open for critical CVEs\n  HOURS_ELAPSED=$(( ($(date\
+        \ +%s) - $(date -d \"$LAST_SCAN\" +%s)) / 3600 ))\n  \n  if [ $HOURS_ELAPSED\
+        \ -lt 4 ]; then\n    echo \"- ⏳ Critical CVE SLA window: $HOURS_ELAPSED/4\
+        \ hours elapsed\" >> $GITHUB_STEP_SUMMARY\n  else\n    echo \"- ⚠️ Critical\
+        \ CVE SLA window EXPIRED\" >> $GITHUB_STEP_SUMMARY\n  fi\nfi\n"
+    timeout-minutes: 30
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

@@ -66,7 +66,7 @@ jobs:
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: Setup Node.js 22
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: npm
@@ -98,7 +98,7 @@ jobs:
         \  echo \"Review mode: Cascade PR analysis\" >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload review results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/reviews/*.json
 
@@ -170,7 +170,7 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload evolution artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.github/copilot-evolution/data/*.json
 

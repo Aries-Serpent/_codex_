@@ -56,7 +56,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 50
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -79,7 +79,7 @@ jobs:
         \ ${STATUS} (score: ${SCORE})\"\n"
     - name: Upload compliance report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/PHASE_12_2_COMPLIANCE_REPORT.md
 

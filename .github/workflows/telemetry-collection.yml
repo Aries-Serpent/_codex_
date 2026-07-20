@@ -75,7 +75,7 @@ jobs:
         \ | bc)\n    else\n      percentage=\"0.0\"\n    fi\n    echo \"| $pattern\
         \ | $count | ${percentage}% |\" >> $GITHUB_STEP_SUMMARY\n  done\nfi\n"
     - name: Upload telemetry report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: telemetry_report_*.json
         retention-days: 90

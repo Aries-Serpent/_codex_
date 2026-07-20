@@ -1,5 +1,5 @@
 name: Rust-Python Hybrid Swarm CI/CD
-on:
+true:
   push:
     branches:
     - main
@@ -30,7 +30,7 @@ concurrency:
 permissions: {}
 jobs:
   cost-gate:
-    name: "\U0001F4B0 Cost Gate"
+    name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Rust Swarm CI
@@ -38,6 +38,7 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
+    timeout-minutes: 30
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest

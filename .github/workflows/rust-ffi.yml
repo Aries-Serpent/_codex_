@@ -29,10 +29,12 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
         cache: pip
     - name: Build with maturin
       uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8
@@ -52,7 +54,7 @@ jobs:
         sha\": \"${{ github.sha }}\",\n  \"ref\": \"${{ github.ref }}\",\n  \"created_at_utc\"\
         : \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n}\nEOF\n"
     - name: Upload built wheel artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: dist/*
         if-no-files-found: error

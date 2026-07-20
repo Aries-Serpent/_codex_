@@ -1,688 +1,436 @@
-name: "Audit Trail Logging - Phase 6 Lane 3"
-on:
+name: Audit Trail Logging - Phase 6 Lane 3
+true:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - closed
   push:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   workflow_run:
-    workflows: ["CI/CD Pipeline"]
-    types: [completed]
+    workflows:
+    - CI/CD Pipeline
+    types:
+    - completed
   schedule:
-    - cron: "0 */6 * * *"  # Every 6 hours
-
+  - cron: 0 */6 * * *
 concurrency:
   group: audit-logging-${{ github.ref }}
   cancel-in-progress: false
-
 env:
-  AUDIT_LOG_DIR: ".codex/logs"
-  AUDIT_REPORT_DIR: ".codex/reports/audit"
-  RETENTION_DAYS: 730  # 2 years
-
+  AUDIT_LOG_DIR: .codex/logs
+  AUDIT_REPORT_DIR: .codex/reports/audit
+  RETENTION_DAYS: 730
 jobs:
-  # =========================================================================
-  # Job 1: Collect Audit Events
-  # =========================================================================
   collect_audit_events:
-    name: "Collect Compliance Audit Events"
+    name: Collect Compliance Audit Events
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
       actions: read
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-audit-logging-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-audit-logging-
+          ${{ runner.os }}-pip-
+    - name: Install audit logging dependencies
+      run: "pip install \\\n  python-dateutil \\\n  pyyaml \\\n  jsonlines\n"
+    - name: Initialize audit log directory
+      run: 'mkdir -p "${{ env.AUDIT_LOG_DIR }}"
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: "3.11"
+        mkdir -p "${{ env.AUDIT_REPORT_DIR }}"
 
-      - name: "Install audit logging dependencies"
-        run: |
-          pip install \
-            python-dateutil \
-            pyyaml \
-            jsonlines
 
-      - name: "Initialize audit log directory"
-        run: |
-          mkdir -p "${{ env.AUDIT_LOG_DIR }}"
-          mkdir -p "${{ env.AUDIT_REPORT_DIR }}"
-          
-          # Create audit log file for today if it doesn't exist
-          log_file="${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date +%Y-%m-%d).jsonl"
-          touch "$log_file"
+        # Create audit log file for today if it doesn''t exist
 
-      - name: "Collect PR merge events"
-        id: collect_pr_events
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-        run: |
-          python3 << 'EOF'
-          import json
-          import sys
-          import os
-          from datetime import datetime, timezone
-          
-          # PR merge event data (safely loaded from environment variable)
-          try:
-              pr = json.loads(os.environ['PR_JSON'])
-          except KeyError:
-              print("Error: PR_JSON environment variable not set", file=sys.stderr)
-              sys.exit(1)
-          except json.JSONDecodeError as e:
-              print(f"Error decoding PR JSON data: {e}", file=sys.stderr)
-              sys.exit(1)
-          
-          event = {
-              "timestamp": datetime.now(timezone.utc).isoformat(),
-              "event_id": "${{ github.run_id }}-${{ github.run_number }}",
-              "event_type": "data_modification.update",  # PR merge = code update
-              "severity": "HIGH",
-              "actor": {
-                  "user_id": pr["merged_by"]["login"],
-                  "username": pr["merged_by"]["login"],
-                  "actor_type": "human"
-              },
-              "resource": {
-                  "resource_type": "pull_request",
-                  "resource_id": pr["number"],
-                  "resource_name": pr["title"]
-              },
-              "action": "UPDATE",
-              "result": {
-                  "status": "SUCCESS",
-                  "status_code": 200
-              },
-              "changes": {
-                  "before": {"state": "open"},
-                  "after": {"state": "merged"},
-                  "changed_fields": ["files", "commits"]
-              },
-              "compliance_impact": {
-                  "regulations_affected": ["GDPR", "CCPA", "SOC2"],
-                  "control_ids": ["A7", "I1.2", "P1.2"]
-              }
-          }
-          
-          # Append to audit log
-          log_file = "${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date +%Y-%m-%d).jsonl"
-          with open(log_file, "a") as f:
-              f.write(json.dumps(event) + "\n")
-          
-          print(f"✅ PR merge event logged: PR #{pr['number']}")
-          EOF
-        env:
-          PR_JSON: ${{ toJson(github.event.pull_request) }}
+        log_file="${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date +%Y-%m-%d).jsonl"
 
-      - name: "Collect dependency update events"
-        id: collect_dependency_events
-        run: |
-          python3 << 'EOF'
-          import json
-          from datetime import datetime, timezone
-          import os
-          
-          # Check if dependencies were modified
-          if not os.path.exists("requirements.txt"):
-              print("No requirements.txt found")
-              exit(0)
-          
-          # Get git diff for requirements files
-          os.system("git diff HEAD~1 requirements*.txt > /tmp/dep_changes.txt 2>/dev/null")
-          
-          if os.path.getsize("/tmp/dep_changes.txt") > 0:
-              event = {
-                  "timestamp": datetime.now(timezone.utc).isoformat(),
-                  "event_id": "${{ github.run_id }}-dep-update",
-                  "event_type": "dependency.package_updated",
-                  "severity": "MEDIUM",
-                  "actor": {
-                      "service_account": "${{ github.actor }}",
-                      "actor_type": "service"
-                  },
-                  "resource": {
-                      "resource_type": "file",
-                      "resource_id": "requirements.txt",
-                      "resource_name": "Python dependencies"
-                  },
-                  "action": "UPDATE",
-                  "result": {
-                      "status": "SUCCESS",
-                      "status_code": 200
-                  },
-                  "compliance_impact": {
-                      "regulations_affected": ["GDPR", "SOC2"],
-                      "control_ids": ["A3"]
-                  }
-              }
-              
-              log_file = "${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date +%Y-%m-%d).jsonl"
-              with open(log_file, "a") as f:
-                  f.write(json.dumps(event) + "\n")
-              
-              print("✅ Dependency update event logged")
-          EOF
+        touch "$log_file"
 
-      - name: "Collect access control events"
-        id: collect_access_events
-        run: |
-          python3 << 'EOF'
-          import json
-          from datetime import datetime, timezone
-          
-          # Log CI/CD pipeline access (GitHub Actions)
-          event = {
-              "timestamp": datetime.now(timezone.utc).isoformat(),
-              "event_id": "${{ github.run_id }}-access",
-              "event_type": "access_control.login",
-              "severity": "LOW",
-              "actor": {
-                  "service_account": "github-actions",
-                  "actor_type": "service"
-              },
-              "resource": {
-                  "resource_type": "repository",
-                  "resource_id": "${{ github.repository }}",
-                  "resource_name": "Code repository access"
-              },
-              "action": "READ",
-              "result": {
-                  "status": "SUCCESS",
-                  "status_code": 200
-              },
-              "compliance_impact": {
-                  "regulations_affected": ["GDPR", "CCPA", "SOC2"],
-                  "control_ids": ["CC6.1", "CC8.1"]
-              }
-          }
-          
-          log_file = "${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date +%Y-%m-%d).jsonl"
-          with open(log_file, "a") as f:
-              f.write(json.dumps(event) + "\n")
-          
-          print("✅ Access control event logged")
-          EOF
-
-      - name: "Upload audit events"
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: audit-events-${{ github.run_id }}
-          path: ${{ env.AUDIT_LOG_DIR }}/
-
-  # =========================================================================
-  # Job 2: Audit Log Integrity Verification
-  # =========================================================================
+        '
+    - name: Collect PR merge events
+      id: collect_pr_events
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' &&
+        github.event.pull_request.merged
+      run: "python3 << 'EOF'\nimport json\nimport sys\nimport os\nfrom datetime import\
+        \ datetime, timezone\n\n# PR merge event data (safely loaded from environment\
+        \ variable)\ntry:\n    pr = json.loads(os.environ['PR_JSON'])\nexcept KeyError:\n\
+        \    print(\"Error: PR_JSON environment variable not set\", file=sys.stderr)\n\
+        \    sys.exit(1)\nexcept json.JSONDecodeError as e:\n    print(f\"Error decoding\
+        \ PR JSON data: {e}\", file=sys.stderr)\n    sys.exit(1)\n\nevent = {\n  \
+        \  \"timestamp\": datetime.now(timezone.utc).isoformat(),\n    \"event_id\"\
+        : \"${{ github.run_id }}-${{ github.run_number }}\",\n    \"event_type\":\
+        \ \"data_modification.update\",  # PR merge = code update\n    \"severity\"\
+        : \"HIGH\",\n    \"actor\": {\n        \"user_id\": pr[\"merged_by\"][\"login\"\
+        ],\n        \"username\": pr[\"merged_by\"][\"login\"],\n        \"actor_type\"\
+        : \"human\"\n    },\n    \"resource\": {\n        \"resource_type\": \"pull_request\"\
+        ,\n        \"resource_id\": pr[\"number\"],\n        \"resource_name\": pr[\"\
+        title\"]\n    },\n    \"action\": \"UPDATE\",\n    \"result\": {\n       \
+        \ \"status\": \"SUCCESS\",\n        \"status_code\": 200\n    },\n    \"changes\"\
+        : {\n        \"before\": {\"state\": \"open\"},\n        \"after\": {\"state\"\
+        : \"merged\"},\n        \"changed_fields\": [\"files\", \"commits\"]\n   \
+        \ },\n    \"compliance_impact\": {\n        \"regulations_affected\": [\"\
+        GDPR\", \"CCPA\", \"SOC2\"],\n        \"control_ids\": [\"A7\", \"I1.2\",\
+        \ \"P1.2\"]\n    }\n}\n\n# Append to audit log\nlog_file = \"${{ env.AUDIT_LOG_DIR\
+        \ }}/audit_trail_$(date +%Y-%m-%d).jsonl\"\nwith open(log_file, \"a\") as\
+        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(f\"✅ PR merge event\
+        \ logged: PR #{pr['number']}\")\nEOF\n"
+      env:
+        PR_JSON: ${{ toJson(github.event.pull_request) }}
+    - name: Collect dependency update events
+      id: collect_dependency_events
+      run: "python3 << 'EOF'\nimport json\nfrom datetime import datetime, timezone\n\
+        import os\n\n# Check if dependencies were modified\nif not os.path.exists(\"\
+        requirements.txt\"):\n    print(\"No requirements.txt found\")\n    exit(0)\n\
+        \n# Get git diff for requirements files\nos.system(\"git diff HEAD~1 requirements*.txt\
+        \ > /tmp/dep_changes.txt 2>/dev/null\")\n\nif os.path.getsize(\"/tmp/dep_changes.txt\"\
+        ) > 0:\n    event = {\n        \"timestamp\": datetime.now(timezone.utc).isoformat(),\n\
+        \        \"event_id\": \"${{ github.run_id }}-dep-update\",\n        \"event_type\"\
+        : \"dependency.package_updated\",\n        \"severity\": \"MEDIUM\",\n   \
+        \     \"actor\": {\n            \"service_account\": \"${{ github.actor }}\"\
+        ,\n            \"actor_type\": \"service\"\n        },\n        \"resource\"\
+        : {\n            \"resource_type\": \"file\",\n            \"resource_id\"\
+        : \"requirements.txt\",\n            \"resource_name\": \"Python dependencies\"\
+        \n        },\n        \"action\": \"UPDATE\",\n        \"result\": {\n   \
+        \         \"status\": \"SUCCESS\",\n            \"status_code\": 200\n   \
+        \     },\n        \"compliance_impact\": {\n            \"regulations_affected\"\
+        : [\"GDPR\", \"SOC2\"],\n            \"control_ids\": [\"A3\"]\n        }\n\
+        \    }\n    \n    log_file = \"${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date\
+        \ +%Y-%m-%d).jsonl\"\n    with open(log_file, \"a\") as f:\n        f.write(json.dumps(event)\
+        \ + \"\\n\")\n    \n    print(\"✅ Dependency update event logged\")\nEOF\n"
+    - name: Collect access control events
+      id: collect_access_events
+      run: "python3 << 'EOF'\nimport json\nfrom datetime import datetime, timezone\n\
+        \n# Log CI/CD pipeline access (GitHub Actions)\nevent = {\n    \"timestamp\"\
+        : datetime.now(timezone.utc).isoformat(),\n    \"event_id\": \"${{ github.run_id\
+        \ }}-access\",\n    \"event_type\": \"access_control.login\",\n    \"severity\"\
+        : \"LOW\",\n    \"actor\": {\n        \"service_account\": \"github-actions\"\
+        ,\n        \"actor_type\": \"service\"\n    },\n    \"resource\": {\n    \
+        \    \"resource_type\": \"repository\",\n        \"resource_id\": \"${{ github.repository\
+        \ }}\",\n        \"resource_name\": \"Code repository access\"\n    },\n \
+        \   \"action\": \"READ\",\n    \"result\": {\n        \"status\": \"SUCCESS\"\
+        ,\n        \"status_code\": 200\n    },\n    \"compliance_impact\": {\n  \
+        \      \"regulations_affected\": [\"GDPR\", \"CCPA\", \"SOC2\"],\n       \
+        \ \"control_ids\": [\"CC6.1\", \"CC8.1\"]\n    }\n}\n\nlog_file = \"${{ env.AUDIT_LOG_DIR\
+        \ }}/audit_trail_$(date +%Y-%m-%d).jsonl\"\nwith open(log_file, \"a\") as\
+        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(\"✅ Access control\
+        \ event logged\")\nEOF\n"
+    - name: Upload audit events
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: audit-events-${{ github.run_id }}
+        path: ${{ env.AUDIT_LOG_DIR }}/
+    timeout-minutes: 30
   verify_audit_integrity:
-    name: "Verify Audit Log Integrity"
+    name: Verify Audit Log Integrity
     runs-on: ubuntu-latest
     needs: collect_audit_events
     permissions:
       contents: read
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install verification dependencies
+      run: 'pip install hashlib pyyaml
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: "3.11"
-
-      - name: "Install verification dependencies"
-        run: |
-          pip install hashlib pyyaml
-
-      - name: "Verify audit log checksums"
-        id: verify_checksums
-        run: |
-          python3 << 'EOF'
-          import os
-          import hashlib
-          import json
-          from datetime import datetime
-          
-          audit_dir = "${{ env.AUDIT_LOG_DIR }}"
-          checksum_file = f"{audit_dir}/audit_trail_checksums.txt"
-          
-          # Calculate checksums for all audit log files
-          checksums = {}
-          for log_file in os.listdir(audit_dir):
-              if log_file.endswith(".jsonl"):
-                  file_path = os.path.join(audit_dir, log_file)
-                  sha256_hash = hashlib.sha256()
-                  
-                  with open(file_path, "rb") as f:
-                      for byte_block in iter(lambda: f.read(4096), b""):
-                          sha256_hash.update(byte_block)
-                  
-                  checksums[log_file] = sha256_hash.hexdigest()
-          
-          # Write current checksums
-          with open(checksum_file, "w") as f:
-              f.write(f"# Audit Log Checksums ({datetime.now().isoformat()})\n")
-              for filename, checksum in checksums.items():
-                  f.write(f"{filename}: {checksum}\n")
-          
-          print(f"✅ Calculated checksums for {len(checksums)} log files")
-          print(f"✅ Checksums saved to {checksum_file}")
-          
-          # Set output
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"checksum_count={len(checksums)}\n")
-              f.write("verification_status=PASS\n")
-          EOF
-
-      - name: "Verify audit log completeness"
-        id: verify_completeness
-        run: |
-          python3 << 'EOF'
-          import os
-          import json
-          
-          audit_dir = "${{ env.AUDIT_LOG_DIR }}"
-          total_events = 0
-          
-          for log_file in os.listdir(audit_dir):
-              if log_file.endswith(".jsonl"):
-                  with open(os.path.join(audit_dir, log_file), "r") as f:
-                      for line in f:
-                          if line.strip():
-                              total_events += 1
-          
-          print(f"✅ Total audit events logged: {total_events}")
-          
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"total_events={total_events}\n")
-          EOF
-
-      - name: "Publish integrity verification report"
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: audit-integrity-report
-          path: ${{ env.AUDIT_LOG_DIR }}/audit_trail_checksums.txt
-
-  # =========================================================================
-  # Job 3: Audit Log Export & Analysis
-  # =========================================================================
+        '
+    - name: Verify audit log checksums
+      id: verify_checksums
+      run: "python3 << 'EOF'\nimport os\nimport hashlib\nimport json\nfrom datetime\
+        \ import datetime\n\naudit_dir = \"${{ env.AUDIT_LOG_DIR }}\"\nchecksum_file\
+        \ = f\"{audit_dir}/audit_trail_checksums.txt\"\n\n# Calculate checksums for\
+        \ all audit log files\nchecksums = {}\nfor log_file in os.listdir(audit_dir):\n\
+        \    if log_file.endswith(\".jsonl\"):\n        file_path = os.path.join(audit_dir,\
+        \ log_file)\n        sha256_hash = hashlib.sha256()\n        \n        with\
+        \ open(file_path, \"rb\") as f:\n            for byte_block in iter(lambda:\
+        \ f.read(4096), b\"\"):\n                sha256_hash.update(byte_block)\n\
+        \        \n        checksums[log_file] = sha256_hash.hexdigest()\n\n# Write\
+        \ current checksums\nwith open(checksum_file, \"w\") as f:\n    f.write(f\"\
+        # Audit Log Checksums ({datetime.now().isoformat()})\\n\")\n    for filename,\
+        \ checksum in checksums.items():\n        f.write(f\"{filename}: {checksum}\\\
+        n\")\n\nprint(f\"✅ Calculated checksums for {len(checksums)} log files\")\n\
+        print(f\"✅ Checksums saved to {checksum_file}\")\n\n# Set output\nwith open(os.environ[\"\
+        GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"checksum_count={len(checksums)}\\\
+        n\")\n    f.write(\"verification_status=PASS\\n\")\nEOF\n"
+    - name: Verify audit log completeness
+      id: verify_completeness
+      run: "python3 << 'EOF'\nimport os\nimport json\n\naudit_dir = \"${{ env.AUDIT_LOG_DIR\
+        \ }}\"\ntotal_events = 0\n\nfor log_file in os.listdir(audit_dir):\n    if\
+        \ log_file.endswith(\".jsonl\"):\n        with open(os.path.join(audit_dir,\
+        \ log_file), \"r\") as f:\n            for line in f:\n                if\
+        \ line.strip():\n                    total_events += 1\n\nprint(f\"✅ Total\
+        \ audit events logged: {total_events}\")\n\nwith open(os.environ[\"GITHUB_OUTPUT\"\
+        ], \"a\") as f:\n    f.write(f\"total_events={total_events}\\n\")\nEOF\n"
+    - name: Publish integrity verification report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: audit-integrity-report
+        path: ${{ env.AUDIT_LOG_DIR }}/audit_trail_checksums.txt
+    timeout-minutes: 30
   export_audit_logs:
-    name: "Export & Analyze Audit Logs"
+    name: Export & Analyze Audit Logs
     runs-on: ubuntu-latest
     needs: verify_audit_integrity
     permissions:
       contents: read
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
-
-      - name: "Set up Python"
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: "3.11"
-
-      - name: "Install export dependencies"
-        run: |
-          pip install \
-            pandas \
-            jsonlines \
-            pyyaml
-
-      - name: "Export audit logs to CSV"
-        id: export_csv
-        run: |
-          python3 << 'EOF'
-          import json
-          import os
-          import csv
-          from datetime import datetime
-          
-          audit_dir = "${{ env.AUDIT_LOG_DIR }}"
-          export_dir = "${{ env.AUDIT_REPORT_DIR }}"
-          
-          csv_file = f"{export_dir}/audit_trail_export_{datetime.now().strftime('%Y-%m')}.csv"
-          
-          # Read all JSONL files
-          all_events = []
-          for log_file in os.listdir(audit_dir):
-              if log_file.endswith(".jsonl"):
-                  with open(os.path.join(audit_dir, log_file), "r") as f:
-                      for line in f:
-                          if line.strip():
-                              all_events.append(json.loads(line))
-          
-          # Export to CSV
-          if all_events:
-              fieldnames = [
-                  "timestamp",
-                  "event_id",
-                  "event_type",
-                  "severity",
-                  "actor_id",
-                  "actor_type",
-                  "resource_type",
-                  "resource_id",
-                  "action",
-                  "result_status",
-                  "regulations_affected"
-              ]
-              
-              with open(csv_file, "w", newline="") as f:
-                  writer = csv.DictWriter(f, fieldnames=fieldnames)
-                  writer.writeheader()
-                  
-                  for event in all_events:
-                      row = {
-                          "timestamp": event.get("timestamp"),
-                          "event_id": event.get("event_id"),
-                          "event_type": event.get("event_type"),
-                          "severity": event.get("severity"),
-                          "actor_id": event.get("actor", {}).get("user_id") or 
-                                     event.get("actor", {}).get("service_account"),
-                          "actor_type": event.get("actor", {}).get("actor_type"),
-                          "resource_type": event.get("resource", {}).get("resource_type"),
-                          "resource_id": event.get("resource", {}).get("resource_id"),
-                          "action": event.get("action"),
-                          "result_status": event.get("result", {}).get("status"),
-                          "regulations_affected": ", ".join(
-                              event.get("compliance_impact", {}).get("regulations_affected", [])
-                          )
-                      }
-                      writer.writerow(row)
-          
-          print(f"✅ Exported {len(all_events)} events to {csv_file}")
-          EOF
-
-      - name: "Generate audit summary report"
-        id: summary_report
-        run: |
-          python3 << 'EOF'
-          import json
-          import os
-          from datetime import datetime
-          from collections import Counter
-          
-          audit_dir = "${{ env.AUDIT_LOG_DIR }}"
-          export_dir = "${{ env.AUDIT_REPORT_DIR }}"
-          
-          # Read all events
-          all_events = []
-          for log_file in os.listdir(audit_dir):
-              if log_file.endswith(".jsonl"):
-                  with open(os.path.join(audit_dir, log_file), "r") as f:
-                      for line in f:
-                          if line.strip():
-                              all_events.append(json.loads(line))
-          
-          # Analyze events
-          event_types = Counter([e.get("event_type") for e in all_events])
-          severities = Counter([e.get("severity") for e in all_events])
-          actors = Counter([e.get("actor", {}).get("actor_type") for e in all_events])
-          
-          # Generate summary
-          summary = {
-              "report_date": datetime.now().isoformat(),
-              "total_events": len(all_events),
-              "event_types": dict(event_types),
-              "severities": dict(severities),
-              "actor_types": dict(actors),
-              "critical_events": [e for e in all_events if e.get("severity") == "CRITICAL"],
-              "high_events": [e for e in all_events if e.get("severity") == "HIGH"],
-              "slo_compliance": {
-                  "pii_violations": 0,
-                  "secret_violations": 0,
-                  "unauthorized_access": len([e for e in all_events 
-                                             if e.get("result", {}).get("status") == "FAILURE"]),
-                  "encryption_failures": 0
-              }
-          }
-          
-          # Write summary
-          summary_file = f"{export_dir}/audit_summary_{datetime.now().strftime('%Y-%m-%d')}.json"
-          with open(summary_file, "w") as f:
-              json.dump(summary, f, indent=2, default=str)
-          
-          print(f"✅ Audit summary report generated: {summary_file}")
-          print(f"   Total Events: {len(all_events)}")
-          print(f"   Critical: {len(summary['critical_events'])}")
-          print(f"   High: {len(summary['high_events'])}")
-          EOF
-
-      - name: "Upload audit export reports"
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: audit-export-reports
-          path: ${{ env.AUDIT_REPORT_DIR }}/
-
-  # =========================================================================
-  # Job 4: Compliance SLO Monitoring
-  # =========================================================================
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install export dependencies
+      run: "pip install \\\n  pandas \\\n  jsonlines \\\n  pyyaml\n"
+    - name: Export audit logs to CSV
+      id: export_csv
+      run: "python3 << 'EOF'\nimport json\nimport os\nimport csv\nfrom datetime import\
+        \ datetime\n\naudit_dir = \"${{ env.AUDIT_LOG_DIR }}\"\nexport_dir = \"${{\
+        \ env.AUDIT_REPORT_DIR }}\"\n\ncsv_file = f\"{export_dir}/audit_trail_export_{datetime.now().strftime('%Y-%m')}.csv\"\
+        \n\n# Read all JSONL files\nall_events = []\nfor log_file in os.listdir(audit_dir):\n\
+        \    if log_file.endswith(\".jsonl\"):\n        with open(os.path.join(audit_dir,\
+        \ log_file), \"r\") as f:\n            for line in f:\n                if\
+        \ line.strip():\n                    all_events.append(json.loads(line))\n\
+        \n# Export to CSV\nif all_events:\n    fieldnames = [\n        \"timestamp\"\
+        ,\n        \"event_id\",\n        \"event_type\",\n        \"severity\",\n\
+        \        \"actor_id\",\n        \"actor_type\",\n        \"resource_type\"\
+        ,\n        \"resource_id\",\n        \"action\",\n        \"result_status\"\
+        ,\n        \"regulations_affected\"\n    ]\n    \n    with open(csv_file,\
+        \ \"w\", newline=\"\") as f:\n        writer = csv.DictWriter(f, fieldnames=fieldnames)\n\
+        \        writer.writeheader()\n        \n        for event in all_events:\n\
+        \            row = {\n                \"timestamp\": event.get(\"timestamp\"\
+        ),\n                \"event_id\": event.get(\"event_id\"),\n             \
+        \   \"event_type\": event.get(\"event_type\"),\n                \"severity\"\
+        : event.get(\"severity\"),\n                \"actor_id\": event.get(\"actor\"\
+        , {}).get(\"user_id\") or \n                           event.get(\"actor\"\
+        , {}).get(\"service_account\"),\n                \"actor_type\": event.get(\"\
+        actor\", {}).get(\"actor_type\"),\n                \"resource_type\": event.get(\"\
+        resource\", {}).get(\"resource_type\"),\n                \"resource_id\":\
+        \ event.get(\"resource\", {}).get(\"resource_id\"),\n                \"action\"\
+        : event.get(\"action\"),\n                \"result_status\": event.get(\"\
+        result\", {}).get(\"status\"),\n                \"regulations_affected\":\
+        \ \", \".join(\n                    event.get(\"compliance_impact\", {}).get(\"\
+        regulations_affected\", [])\n                )\n            }\n          \
+        \  writer.writerow(row)\n\nprint(f\"✅ Exported {len(all_events)} events to\
+        \ {csv_file}\")\nEOF\n"
+    - name: Generate audit summary report
+      id: summary_report
+      run: "python3 << 'EOF'\nimport json\nimport os\nfrom datetime import datetime\n\
+        from collections import Counter\n\naudit_dir = \"${{ env.AUDIT_LOG_DIR }}\"\
+        \nexport_dir = \"${{ env.AUDIT_REPORT_DIR }}\"\n\n# Read all events\nall_events\
+        \ = []\nfor log_file in os.listdir(audit_dir):\n    if log_file.endswith(\"\
+        .jsonl\"):\n        with open(os.path.join(audit_dir, log_file), \"r\") as\
+        \ f:\n            for line in f:\n                if line.strip():\n     \
+        \               all_events.append(json.loads(line))\n\n# Analyze events\n\
+        event_types = Counter([e.get(\"event_type\") for e in all_events])\nseverities\
+        \ = Counter([e.get(\"severity\") for e in all_events])\nactors = Counter([e.get(\"\
+        actor\", {}).get(\"actor_type\") for e in all_events])\n\n# Generate summary\n\
+        summary = {\n    \"report_date\": datetime.now().isoformat(),\n    \"total_events\"\
+        : len(all_events),\n    \"event_types\": dict(event_types),\n    \"severities\"\
+        : dict(severities),\n    \"actor_types\": dict(actors),\n    \"critical_events\"\
+        : [e for e in all_events if e.get(\"severity\") == \"CRITICAL\"],\n    \"\
+        high_events\": [e for e in all_events if e.get(\"severity\") == \"HIGH\"],\n\
+        \    \"slo_compliance\": {\n        \"pii_violations\": 0,\n        \"secret_violations\"\
+        : 0,\n        \"unauthorized_access\": len([e for e in all_events \n     \
+        \                              if e.get(\"result\", {}).get(\"status\") ==\
+        \ \"FAILURE\"]),\n        \"encryption_failures\": 0\n    }\n}\n\n# Write\
+        \ summary\nsummary_file = f\"{export_dir}/audit_summary_{datetime.now().strftime('%Y-%m-%d')}.json\"\
+        \nwith open(summary_file, \"w\") as f:\n    json.dump(summary, f, indent=2,\
+        \ default=str)\n\nprint(f\"✅ Audit summary report generated: {summary_file}\"\
+        )\nprint(f\"   Total Events: {len(all_events)}\")\nprint(f\"   Critical: {len(summary['critical_events'])}\"\
+        )\nprint(f\"   High: {len(summary['high_events'])}\")\nEOF\n"
+    - name: Upload audit export reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: audit-export-reports
+        path: ${{ env.AUDIT_REPORT_DIR }}/
+    timeout-minutes: 30
   monitor_compliance_slos:
-    name: "Monitor Compliance SLOs"
+    name: Monitor Compliance SLOs
     runs-on: ubuntu-latest
     needs: collect_audit_events
     permissions:
       contents: read
       issues: write
       pull-requests: write
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: 'Check PII SLO (SLO-001: Zero PII)'
+      id: check_pii_slo
+      run: "echo \"Checking PII detection SLO...\"\n# Count PII violations in audit\
+        \ log\npii_violations=$(grep -c \"pii\\|PII\" \"${{ env.AUDIT_LOG_DIR }}\"\
+        /*.jsonl 2>/dev/null || echo 0)\n\nif [ \"$pii_violations\" -eq 0 ]; then\n\
+        \    echo \"slo_status=PASS\" >> $GITHUB_OUTPUT\n    echo \"violations=0\"\
+        \ >> $GITHUB_OUTPUT\nelse\n    echo \"slo_status=FAIL\" >> $GITHUB_OUTPUT\n\
+        \    echo \"violations=$pii_violations\" >> $GITHUB_OUTPUT\nfi\n"
+    - name: 'Check Secret Rotation SLO (SLO-002: 90-Day Cycle)'
+      id: check_secret_slo
+      run: 'echo "Checking secret rotation SLO..."
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: "3.11"
+        # This would check if secrets have been rotated within 90 days
 
-      - name: "Check PII SLO (SLO-001: Zero PII)"
-        id: check_pii_slo
-        run: |
-          echo "Checking PII detection SLO..."
-          # Count PII violations in audit log
-          pii_violations=$(grep -c "pii\|PII" "${{ env.AUDIT_LOG_DIR }}"/*.jsonl 2>/dev/null || echo 0)
-          
-          if [ "$pii_violations" -eq 0 ]; then
-              echo "slo_status=PASS" >> $GITHUB_OUTPUT
-              echo "violations=0" >> $GITHUB_OUTPUT
-          else
-              echo "slo_status=FAIL" >> $GITHUB_OUTPUT
-              echo "violations=$pii_violations" >> $GITHUB_OUTPUT
-          fi
+        # In this example, we''ll check if there are any key rotation events
 
-      - name: "Check Secret Rotation SLO (SLO-002: 90-Day Cycle)"
-        id: check_secret_slo
-        run: |
-          echo "Checking secret rotation SLO..."
-          # This would check if secrets have been rotated within 90 days
-          # In this example, we'll check if there are any key rotation events
-          key_rotations=$(grep -c "key_rotated\|secret_rotated" "${{ env.AUDIT_LOG_DIR }}"/*.jsonl 2>/dev/null || echo 0)
-          
-          echo "key_rotations=$key_rotations" >> $GITHUB_OUTPUT
-          echo "slo_status=PASS" >> $GITHUB_OUTPUT
+        key_rotations=$(grep -c "key_rotated\|secret_rotated" "${{ env.AUDIT_LOG_DIR
+        }}"/*.jsonl 2>/dev/null || echo 0)
 
-      - name: "Check Breach Notification SLO (SLO-003: 72-Hour)"
-        id: check_breach_slo
-        run: |
-          echo "Checking breach notification SLO..."
-          # Check if any breaches detected and notified on time
-          breaches=$(grep -c "breach_detected" "${{ env.AUDIT_LOG_DIR }}"/*.jsonl 2>/dev/null || echo 0)
-          
-          if [ "$breaches" -eq 0 ]; then
-              echo "status=NO_BREACHES" >> $GITHUB_OUTPUT
-          else
-              echo "status=BREACHES_DETECTED" >> $GITHUB_OUTPUT
-          fi
 
-      - name: "Generate SLO compliance report"
-        id: slo_report
-        run: |
-          python3 << 'EOF'
-          import json
-          import os
-          
-          slos = {
-              "SLO-001 (PII Detection)": {
-                  "target": "0 violations",
-                  "actual": "${{ steps.check_pii_slo.outputs.violations }}",
-                  "status": "${{ steps.check_pii_slo.outputs.slo_status }}"
-              },
-              "SLO-002 (Secret Rotation)": {
-                  "target": "90-day cycle",
-                  "actual": "${{ steps.check_secret_slo.outputs.key_rotations }} rotations",
-                  "status": "${{ steps.check_secret_slo.outputs.slo_status }}"
-              },
-              "SLO-003 (Breach Notification)": {
-                  "target": "72-hour SLA",
-                  "actual": "No active breaches",
-                  "status": "${{ steps.check_breach_slo.outputs.status }}"
-              }
-          }
-          
-          report_file = "${{ env.AUDIT_REPORT_DIR }}/slo_compliance_report.json"
-          with open(report_file, "w") as f:
-              json.dump(slos, f, indent=2)
-          
-          print("✅ SLO Compliance Report Generated")
-          EOF
+        echo "key_rotations=$key_rotations" >> $GITHUB_OUTPUT
 
-      - name: "Post SLO status to PR (if applicable)"
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const comment = `## 📊 Compliance SLO Status
-            
-            | SLO | Target | Status |
-            |-----|--------|--------|
-            | PII Detection | 0 violations | ${{ steps.check_pii_slo.outputs.slo_status }} |
-            | Secret Rotation | 90-day cycle | ${{ steps.check_secret_slo.outputs.slo_status }} |
-            | Breach Notification | 72-hour SLA | PASS |
-            
-            ✅ All critical SLOs are on track
-            `;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+        echo "slo_status=PASS" >> $GITHUB_OUTPUT
 
-  # =========================================================================
-  # Job 5: Audit Trail Backup & Archive
-  # =========================================================================
+        '
+    - name: 'Check Breach Notification SLO (SLO-003: 72-Hour)'
+      id: check_breach_slo
+      run: "echo \"Checking breach notification SLO...\"\n# Check if any breaches\
+        \ detected and notified on time\nbreaches=$(grep -c \"breach_detected\" \"\
+        ${{ env.AUDIT_LOG_DIR }}\"/*.jsonl 2>/dev/null || echo 0)\n\nif [ \"$breaches\"\
+        \ -eq 0 ]; then\n    echo \"status=NO_BREACHES\" >> $GITHUB_OUTPUT\nelse\n\
+        \    echo \"status=BREACHES_DETECTED\" >> $GITHUB_OUTPUT\nfi\n"
+    - name: Generate SLO compliance report
+      id: slo_report
+      run: "python3 << 'EOF'\nimport json\nimport os\n\nslos = {\n    \"SLO-001 (PII\
+        \ Detection)\": {\n        \"target\": \"0 violations\",\n        \"actual\"\
+        : \"${{ steps.check_pii_slo.outputs.violations }}\",\n        \"status\":\
+        \ \"${{ steps.check_pii_slo.outputs.slo_status }}\"\n    },\n    \"SLO-002\
+        \ (Secret Rotation)\": {\n        \"target\": \"90-day cycle\",\n        \"\
+        actual\": \"${{ steps.check_secret_slo.outputs.key_rotations }} rotations\"\
+        ,\n        \"status\": \"${{ steps.check_secret_slo.outputs.slo_status }}\"\
+        \n    },\n    \"SLO-003 (Breach Notification)\": {\n        \"target\": \"\
+        72-hour SLA\",\n        \"actual\": \"No active breaches\",\n        \"status\"\
+        : \"${{ steps.check_breach_slo.outputs.status }}\"\n    }\n}\n\nreport_file\
+        \ = \"${{ env.AUDIT_REPORT_DIR }}/slo_compliance_report.json\"\nwith open(report_file,\
+        \ \"w\") as f:\n    json.dump(slos, f, indent=2)\n\nprint(\"✅ SLO Compliance\
+        \ Report Generated\")\nEOF\n"
+    - name: Post SLO status to PR (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "const comment = `## \U0001F4CA Compliance SLO Status\n\n| SLO | Target\
+          \ | Status |\n|-----|--------|--------|\n| PII Detection | 0 violations\
+          \ | ${{ steps.check_pii_slo.outputs.slo_status }} |\n| Secret Rotation |\
+          \ 90-day cycle | ${{ steps.check_secret_slo.outputs.slo_status }} |\n| Breach\
+          \ Notification | 72-hour SLA | PASS |\n\n✅ All critical SLOs are on track\n\
+          `;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
+          });\n"
+    timeout-minutes: 30
   backup_audit_logs:
-    name: "Backup & Archive Audit Logs"
+    name: Backup & Archive Audit Logs
     runs-on: ubuntu-latest
     needs: export_audit_logs
     if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
     permissions:
       contents: write
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Create backup of audit logs
+      run: 'echo "Creating backup of audit logs..."
 
-      - name: "Create backup of audit logs"
-        run: |
-          echo "Creating backup of audit logs..."
-          
-          backup_dir=".codex/backup/audit_logs_$(date +%Y-%m-%d)"
-          mkdir -p "$backup_dir"
-          
-          # Copy audit logs to backup
-          cp -r "${{ env.AUDIT_LOG_DIR }}"/*.jsonl "$backup_dir/" || true
-          cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.csv "$backup_dir/" || true
-          cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.json "$backup_dir/" || true
-          
-          # Compress for archive
-          tar -czf "$backup_dir.tar.gz" "$backup_dir"
-          
-          echo "✅ Backup created: $backup_dir.tar.gz"
 
-      - name: "Commit backup to repository"
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          git add -A .codex/backup/ || true
-          git commit -m "chore(audit): Create daily audit log backup ($(date +%Y-%m-%d))" || true
-          
-          # Only push if changes exist
-          if [ -n "$(git status --porcelain)" ]; then
-              git push origin HEAD:${{ github.ref }} || true
-          fi
+        backup_dir=".codex/backup/audit_logs_$(date +%Y-%m-%d)"
 
-  # =========================================================================
-  # Job 6: Generate Compliance Dashboard
-  # =========================================================================
+        mkdir -p "$backup_dir"
+
+
+        # Copy audit logs to backup
+
+        cp -r "${{ env.AUDIT_LOG_DIR }}"/*.jsonl "$backup_dir/" || true
+
+        cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.csv "$backup_dir/" || true
+
+        cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.json "$backup_dir/" || true
+
+
+        # Compress for archive
+
+        tar -czf "$backup_dir.tar.gz" "$backup_dir"
+
+
+        echo "✅ Backup created: $backup_dir.tar.gz"
+
+        '
+    - name: Commit backup to repository
+      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        41898282+github-actions[bot]@users.noreply.github.com\"\n\ngit add -A .codex/backup/\
+        \ || true\ngit commit -m \"chore(audit): Create daily audit log backup ($(date\
+        \ +%Y-%m-%d))\" || true\n\n# Only push if changes exist\nif [ -n \"$(git status\
+        \ --porcelain)\" ]; then\n    git push origin HEAD:${{ github.ref }} || true\n\
+        fi\n"
+    timeout-minutes: 30
   generate_dashboard:
-    name: "Generate Compliance Dashboard"
+    name: Generate Compliance Dashboard
     runs-on: ubuntu-latest
-    needs: [collect_audit_events, monitor_compliance_slos]
+    needs:
+    - collect_audit_events
+    - monitor_compliance_slos
     if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
     permissions:
       contents: write
-    
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Generate compliance metrics
+      run: "python3 << 'EOF'\nimport json\nimport os\nfrom datetime import datetime\n\
+        \n# Compile compliance dashboard\ndashboard = {\n    \"generated_at\": datetime.now().isoformat(),\n\
+        \    \"compliance_scores\": {\n        \"GDPR\": 66.7,\n        \"CCPA\":\
+        \ 66.7,\n        \"SOC2\": 83.3,\n        \"overall\": 69.3\n    },\n    \"\
+        slo_compliance\": {\n        \"pii_detection\": {\"target\": 0, \"actual\"\
+        : 0, \"status\": \"PASS\"},\n        \"secret_rotation\": {\"target\": \"\
+        90-days\", \"status\": \"PASS\"},\n        \"breach_notification\": {\"target\"\
+        : \"72-hours\", \"status\": \"PASS\"},\n        \"access_control\": {\"status\"\
+        : \"PASS\"},\n        \"encryption\": {\"status\": \"PASS\"}\n    },\n   \
+        \ \"recent_events\": {\n        \"total_logged\": 0,\n        \"critical\"\
+        : 0,\n        \"high\": 0\n    },\n    \"next_audit\": \"2026-10-18\",\n \
+        \   \"last_updated\": datetime.now().isoformat()\n}\n\n# Write dashboard JSON\n\
+        dashboard_file = \".codex/compliance_dashboard.json\"\nwith open(dashboard_file,\
+        \ \"w\") as f:\n    json.dump(dashboard, f, indent=2)\n\nprint(f\"✅ Compliance\
+        \ dashboard generated: {dashboard_file}\")\nEOF\n"
+    - name: Commit dashboard update
+      run: 'git config user.name "github-actions[bot]"
 
-      - name: "Generate compliance metrics"
-        run: |
-          python3 << 'EOF'
-          import json
-          import os
-          from datetime import datetime
-          
-          # Compile compliance dashboard
-          dashboard = {
-              "generated_at": datetime.now().isoformat(),
-              "compliance_scores": {
-                  "GDPR": 66.7,
-                  "CCPA": 66.7,
-                  "SOC2": 83.3,
-                  "overall": 69.3
-              },
-              "slo_compliance": {
-                  "pii_detection": {"target": 0, "actual": 0, "status": "PASS"},
-                  "secret_rotation": {"target": "90-days", "status": "PASS"},
-                  "breach_notification": {"target": "72-hours", "status": "PASS"},
-                  "access_control": {"status": "PASS"},
-                  "encryption": {"status": "PASS"}
-              },
-              "recent_events": {
-                  "total_logged": 0,
-                  "critical": 0,
-                  "high": 0
-              },
-              "next_audit": "2026-10-18",
-              "last_updated": datetime.now().isoformat()
-          }
-          
-          # Write dashboard JSON
-          dashboard_file = ".codex/compliance_dashboard.json"
-          with open(dashboard_file, "w") as f:
-              json.dump(dashboard, f, indent=2)
-          
-          print(f"✅ Compliance dashboard generated: {dashboard_file}")
-          EOF
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: "Commit dashboard update"
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          git add .codex/compliance_dashboard.json
-          git commit -m "chore(compliance): Update compliance dashboard ($(date +%Y-%m-%d))" || true
-          git push origin HEAD:${{ github.ref }} || true
+
+        git add .codex/compliance_dashboard.json
+
+        git commit -m "chore(compliance): Update compliance dashboard ($(date +%Y-%m-%d))"
+        || true
+
+        git push origin HEAD:${{ github.ref }} || true
+
+        '
+    timeout-minutes: 30

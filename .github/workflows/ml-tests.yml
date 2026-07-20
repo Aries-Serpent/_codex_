@@ -1,5 +1,5 @@
 name: ML Components Test Suite
-on:
+true:
   push:
     branches:
     - main
@@ -48,7 +48,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -75,6 +75,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
         continue-on-error: true
+    timeout-minutes: 30
   test-integration-slow:
     permissions:
       contents: read
@@ -84,10 +85,12 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'pip install --upgrade pip
@@ -102,10 +105,12 @@ jobs:
     - name: Run integration tests
       run: "pytest tests/integration/ \\\n  -v \\\n  -m \"integration\" \\\n  --timeout=600\
         \ || true\n"
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'pip install --upgrade pip
@@ -122,8 +127,9 @@ jobs:
         \ \\\n  --cov-report=html \\\n  --cov-fail-under=70 \\\n  -m \"not slow and\
         \ not integration\" || true\n"
     - name: Archive coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: htmlcov/
         name: coverage-report
+    timeout-minutes: 30

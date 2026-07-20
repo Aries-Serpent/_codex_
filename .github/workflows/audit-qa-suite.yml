@@ -149,7 +149,7 @@ jobs:
         \  echo \"gap_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload audit results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/audit/*.json
 
@@ -315,7 +315,7 @@ jobs:
         \  --run-url    \"${RUN_URL}\"\n"
     - name: Upload QA results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/qa/*.json
 

@@ -17,10 +17,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip
@@ -50,7 +52,7 @@ jobs:
         \ 0.67,\n        'false_positive_rate': 0.032,\n    }\n}\n\nwith open('correlation-metrics.json',\
         \ 'w') as f:\n    json.dump(metrics, f, indent=2)\n\" 2>&1\n"
     - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: correlation-metrics.json
         retention-days: 90
@@ -113,10 +115,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
@@ -167,7 +171,7 @@ jobs:
     if: always()
     steps:
     - name: Download metrics
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         name: correlation-metrics
     - name: Generate final report
@@ -191,7 +195,7 @@ jobs:
         \ $(date -u +%Y-%m-%dT%H:%M:%SZ)\n**Phase**: Phase 4E, Planset 011/7\n**Authority**:\
         \ D-tier Autonomous\nEOF\n\ncat correlation-report.md\n"
     - name: Upload report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: correlation-report.md
         name: correlation-report

@@ -52,7 +52,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -105,7 +105,7 @@ jobs:
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     - name: Upload validation report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '${{ github.workspace }}/link-validation-report.json
 

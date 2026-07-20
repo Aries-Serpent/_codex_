@@ -870,7 +870,7 @@ jobs:
         \ DB snapshot written to /tmp/pattern_snapshot.json\"\nwc -l /tmp/pattern_snapshot.json\
         \ || true\n"
     - name: Upload pattern DB snapshot artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: /tmp/pattern_snapshot.json
         retention-days: 90

@@ -45,7 +45,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: pip
@@ -74,7 +74,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\n\necho \"Validation confidence: $CONFIDENCE\"\necho \"\
         Valid: $VALID\"\necho \"Issues found: $ISSUES\"\n"
     - name: Upload validation results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'validation_output.json
 
@@ -100,7 +100,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     - name: Test registry connectivity
@@ -117,7 +117,7 @@ jobs:
         echo \"tests_passed=$TESTS_PASSED\" >> $GITHUB_OUTPUT\n\necho \"Connectivity\
         \ status: $STATUS\"\necho \"Tests passed: $TESTS_PASSED\"\n"
     - name: Upload connectivity results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: connectivity_output.json
         retention-days: 30
@@ -226,7 +226,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     - name: Send webhook notification

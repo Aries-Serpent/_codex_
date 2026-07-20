@@ -1,5 +1,5 @@
-name: "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)"
-on:
+name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE)
+true:
   push:
     branches:
     - main
@@ -52,7 +52,7 @@ env:
   BUILDX_CACHE_DIR: /var/tmp/codex-buildx-cache
 jobs:
   cost-gate:
-    name: "\U0001F4B0 Cost Gate"
+    name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Build & Push Docker (GHCR)
@@ -60,9 +60,10 @@ jobs:
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
+    timeout-minutes: 30
   approval-check:
     needs: cost-gate
-    name: "Owner approval \u2014 check-only gate"
+    name: Owner approval — check-only gate
     runs-on:
     - self-hosted
     - linux
@@ -254,7 +255,7 @@ jobs:
         bash scripts/ci/container_smoke.sh "${PULLED_IMAGE}" 8000 18001
 
         '
-    - name: "Summary \u2014 published image tags"
+    - name: Summary — published image tags
       if: always()
       shell: bash
       run: "{\n  echo \"## Docker push results\"\n  echo\n  echo \"- Image (sha):\

@@ -36,7 +36,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -116,7 +116,7 @@ jobs:
         \ echo \"- Dependencies loaded: $DEPS\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     - name: Upload artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: copilot-task-results
         path: 'mcp_manifest.json

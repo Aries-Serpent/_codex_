@@ -188,7 +188,7 @@ jobs:
         \ .codex/contracts/input-lock.json\n\necho \"input_lock_sha256=${SHA}\" >>\
         \ \"$GITHUB_OUTPUT\"\n"
     - name: Upload lane contract artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/contracts/lane-manifest.json
 
@@ -219,7 +219,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -267,7 +267,7 @@ jobs:
         }\nEOF\n"
     - name: Upload detection artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: '.codex/contracts/output-contract-self-healing-detect.json
 
@@ -295,7 +295,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -331,7 +331,7 @@ jobs:
         }\nEOF\n"
     - name: Upload analysis artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'security/self-healing-plan.json
 
@@ -364,7 +364,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -428,7 +428,7 @@ jobs:
         \ }}\"\n}\nEOF\n"
     - name: Upload remediation artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: 'security/self-healing-report.json
 
@@ -460,7 +460,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Download all contract artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v4
       with:
         path: artifacts/
     - name: Validate contract schema and consistency

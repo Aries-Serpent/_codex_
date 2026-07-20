@@ -1,5 +1,5 @@
 name: Embedding Index Rebuild
-on:
+true:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch: null
@@ -10,7 +10,7 @@ permissions:
   contents: write
 jobs:
   cost-gate:
-    name: "\U0001F4B0 Cost Gate"
+    name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Embedding Index Rebuild
@@ -18,6 +18,7 @@ jobs:
       timeout_minutes: 15
       matrix_count: 1
       pushes_to_ghcr: false
+    timeout-minutes: 30
   rebuild:
     name: Rebuild FAISS Embedding Index
     runs-on: ubuntu-latest
@@ -28,23 +29,24 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
-        \ main)"
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache: pip
     - name: Check RAG index freshness
       id: freshness
-      run: "python3 - <<\"PYEOF\"\nimport json, os, sys\nfrom datetime import datetime,\
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"python3 - <<\"PYEOF\"\nimport json, os, sys\nfrom datetime import datetime,\
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
         )\nSTALE_WARN_HOURS  = 25  # emit warning if older than 25 h\nSTALE_ERROR_HOURS\
         \ = 72  # emit error if older than 72 h\n\nif not META.exists():\n    print(\"\
-        ::warning::codex_index_meta.json not found \u2014 full rebuild required\"\
-        )\n    with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n        f.write(\"\
+        ::warning::codex_index_meta.json not found — full rebuild required\")\n  \
+        \  with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n        f.write(\"\
         freshness_status=missing\\n\")\n    sys.exit(0)\n\nmeta = json.loads(META.read_text())\n\
         generated_at_str = meta.get(\"generated_at\", \"\")\ntry:\n    # Handle both\
         \ offset-aware and Z-suffix ISO strings\n    ts = datetime.fromisoformat(generated_at_str.replace(\"\
@@ -53,15 +55,14 @@ jobs:
         ], \"a\") as f:\n        f.write(\"freshness_status=unknown\\n\")\n    sys.exit(0)\n\
         \nnow = datetime.now(timezone.utc)\nage_hours = (now - ts).total_seconds()\
         \ / 3600\n\nstatus = \"fresh\"\nif age_hours > STALE_ERROR_HOURS:\n    print(f\"\
-        ::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) \u2014\
-        \ stale rebuild required\")\n    status = \"stale_error\"\nelif age_hours\
-        \ > STALE_WARN_HOURS:\n    print(f\"::warning::RAG index is {age_hours:.1f}h\
-        \ old (>{STALE_WARN_HOURS}h) \u2014 rebuilding to stay fresh\")\n    status\
-        \ = \"stale_warn\"\nelse:\n    print(f\"\u2705 RAG index freshness OK: {age_hours:.1f}h\
-        \ old (threshold {STALE_WARN_HOURS}h)\")\n\nwith open(os.environ[\"GITHUB_OUTPUT\"\
-        ], \"a\") as f:\n    f.write(f\"freshness_status={status}\\n\")\n    f.write(f\"\
-        age_hours={age_hours:.1f}\\n\")\n    f.write(f\"generated_at={generated_at_str}\\\
-        n\")\nPYEOF"
+        ::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale\
+        \ rebuild required\")\n    status = \"stale_error\"\nelif age_hours > STALE_WARN_HOURS:\n\
+        \    print(f\"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h)\
+        \ — rebuilding to stay fresh\")\n    status = \"stale_warn\"\nelse:\n    print(f\"\
+        ✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)\"\
+        )\n\nwith open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"\
+        freshness_status={status}\\n\")\n    f.write(f\"age_hours={age_hours:.1f}\\\
+        n\")\n    f.write(f\"generated_at={generated_at_str}\\n\")\nPYEOF"
     - name: Install embedding dependencies
       run: '# Upgrade cryptography and pyOpenSSL first to fix compatibility issues
 
@@ -96,30 +97,37 @@ jobs:
         \ chunk count ${CHUNK_COUNT} below threshold (expected >=100)\"\n  exit 1\n\
         else\n  echo \"REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s\"\
         \nfi"
-    - name: "Active-PR guard \u2014 skip push when any open/draft PR targets the push\
-        \ target"
+    - name: Active-PR guard — skip push when any open/draft PR targets the push target
       id: pr_guard
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-embedding_index_rebuild-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-embedding_index_rebuild-
+            ${{ runner.os }}-pip-
         REPO: ${{ github.repository }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
       run: "_TARGET=\"${PUSH_TARGET:-main}\"\nif [ \"$_TARGET\" = \"main\" ] || [\
         \ \"$_TARGET\" = \"0D_base_\" ]; then\n  PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1\"\
         \ \\\n    --jq \"length\" 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
         \ -gt \"0\" ]; then\n    echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"\n   \
-        \ echo \"\u26D4 ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` \u2014\
-        \ embedding index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n \
-        \   echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
+        \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` — embedding\
+        \ index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"\
+        pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
         \ >> \"$GITHUB_OUTPUT\"\nfi"
     - name: Commit updated index metadata
       if: steps.pr_guard.outputs.pr_skip != 'true'
       env:
         GITHUB_TOKEN: ${{ github.token }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-      run: "# Walk the staging chain: sub-PR \u2192 0D_base_ \u2192 main  (resolved\
-        \ above)\n_TARGET=\"${PUSH_TARGET}\"\necho \"\U0001F504 Push target: $_TARGET\
-        \ (reason: ${{ steps.resolve-target.outputs.reason }})\"\ncp .codex/embeddings/codex_index_meta.json\
+      run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
+        _TARGET=\"${PUSH_TARGET}\"\necho \"\U0001F504 Push target: $_TARGET (reason:\
+        \ ${{ steps.resolve-target.outputs.reason }})\"\ncp .codex/embeddings/codex_index_meta.json\
         \ /tmp/_index_meta_sync_\ngit fetch origin \"$_TARGET\" --depth=1\ngit checkout\
         \ -fB _autogen_sync_ origin/\"$_TARGET\"  # S237: force-checkout (files already\
         \ in /tmp)\ncp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json\n\
@@ -139,7 +147,7 @@ jobs:
         \"generated_at\\\"]} |')\n\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"| Pre-build\
         \ age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status\
         \ }}) |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"Index metadata not found\
-        \ \u2014 build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi"
+        \ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 45

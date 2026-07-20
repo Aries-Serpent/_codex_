@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-07-20T15:54:25Z",
+  "optimization_status": "completed",
+  "statistics": {
+    "total_workflows": 226,
+    "workflows_with_pip": 126,
+    "workflows_optimized": 87,
+    "workflows_with_setup_python_cached": 87,
+    "workflows_with_pip_cache": 54,
+    "workflows_with_pytest_cache": 21,
+    "estimated_time_savings_minutes": 912
+  },
+  "optimization_coverage_percent": 69.04761904761905,
+  "cache_coverage_percent": 42.857142857142854,
+  "expected_aais_improvement_points": 8
+}

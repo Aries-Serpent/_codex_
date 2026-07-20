@@ -17,7 +17,7 @@ jobs:
     if: startsWith(github.event.comment.body, '/copilot')
     steps:
     - name: Cache Python dependencies (Layer 1)
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
@@ -27,7 +27,7 @@ jobs:
           '
     - uses: actions/checkout@v5
     - name: Cache pip downloads
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
@@ -229,7 +229,7 @@ jobs:
         \ \\\n  -d @/tmp/tier_body.json \\\n  > /dev/null\necho \"\u2705 Posted tier\
         \ report on PR  #${PR_NUMBER}\"\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       if: always()
       with:
         path: .pytest_cache/
@@ -238,7 +238,7 @@ jobs:
 
           '
     - name: Cache coverage reports (Layer 4)
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: coverage/
         key: ${{ runner.os }}-coverage-${{ github.sha }}

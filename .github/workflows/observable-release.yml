@@ -27,10 +27,12 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v6
+    - name: Set up Python with cache
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache-tier: live
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Log Python and environment info
       run: 'echo "=== Python Version ==="
 
@@ -51,6 +53,14 @@ jobs:
         uname -a
 
         '
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-release-${{ hashFiles('**/uv.lock', '**/requirements*.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-release-
+          ${{ runner.os }}-pip-
     - name: Parse release tag
       id: release
       env:

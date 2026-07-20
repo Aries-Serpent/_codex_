@@ -31,13 +31,15 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache: pip
     - name: Install sigstore SDK (best-effort)
-      run: 'pip install sigstore --quiet || echo "sigstore SDK not available; running
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install sigstore --quiet || echo "sigstore SDK not available; running
         in structured-warning mode"
 
         '
@@ -69,10 +71,18 @@ jobs:
         \ {e['detail']}\")\nEOF\nelse\n  echo \"No report file generated.\"\nfi\n"
     - name: Upload verification report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         path: sigstore-report.json
         if-no-files-found: warn
         retention-days: 30
         name: sigstore-verification-report-${{ github.run_id }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-sigstore_verify-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-sigstore_verify-
+            ${{ runner.os }}-pip-
     timeout-minutes: 30

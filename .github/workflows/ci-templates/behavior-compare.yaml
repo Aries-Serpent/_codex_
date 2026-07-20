@@ -40,7 +40,7 @@ jobs:
         ref: ${{ inputs.patched_ref }}
         path: patched
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12.13
     - name: Install dependencies
@@ -81,7 +81,7 @@ jobs:
         \nprint(f\"result={result['result']}\")\nwith open(\"$GITHUB_OUTPUT\", \"\
         a\") as f:\n    f.write(f\"result={result['result']}\\n\")\nEOF\n"
     - name: Upload artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: behavior-comparison-${{ inputs.snapshot_id }}
         path: artifacts/

@@ -62,7 +62,7 @@ jobs:
         }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -104,7 +104,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         path: hook_failures.json
@@ -112,7 +112,7 @@ jobs:
         if-no-files-found: warn
         name: hook-failures-fast-${{ github.run_id }}
     - name: Upload validation log (fast)
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation.log
@@ -120,7 +120,7 @@ jobs:
         if-no-files-found: warn
         name: validation-log-fast-${{ github.run_id }}
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation-junit.xml
@@ -128,7 +128,7 @@ jobs:
         if-no-files-found: warn
         name: validation-junit-fast-${{ github.run_id }}
     - name: Upload JSON summary
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation_summary.json
@@ -157,7 +157,7 @@ jobs:
         }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -191,7 +191,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -212,7 +212,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         path: hook_failures.json
@@ -220,7 +220,7 @@ jobs:
         if-no-files-found: warn
         name: hook-failures-full-${{ github.run_id }}
     - name: Upload validation log (full)
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation.log
@@ -228,7 +228,7 @@ jobs:
         if-no-files-found: warn
         name: validation-log-full-${{ github.run_id }}
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation-junit.xml
@@ -236,7 +236,7 @@ jobs:
         if-no-files-found: warn
         name: validation-junit-full-${{ github.run_id }}
     - name: Upload coverage report
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: coverage.xml
@@ -257,7 +257,7 @@ jobs:
 
         '
     - name: Upload JSON summary
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         path: validation_summary.json
