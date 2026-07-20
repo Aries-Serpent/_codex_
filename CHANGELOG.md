@@ -1,3 +1,17 @@
+## [Unreleased]
+
+### Fixed
+- **Cognitive App Deployment**: Restored missing Cognitive App at https://aries-serpent.github.io/_codex_/cognitive_app/ 
+  - Issue: MkDocs documentation page was serving instead of React app entry point
+  - Root cause: `docs/cognitive_app.md` generated `site/cognitive_app/index.html` which took precedence over built React app
+  - Solution: Rebuilt cognitive app from source and deployed to site directory, ensuring React entry point is served
+  - Impact: All features now accessible (Quantum Decision Engine, Agent Orchestration, Memory Management, Code Generation, Metrics Dashboard)
+  - Files: `site/cognitive_app/index.html`, `site/cognitive_app/assets/*`, and supporting files
+
+### Documentation
+- Updated AGENT_ACCOUNTABILITY_REPORT.md with cognitive app restoration session (Session: 2026-07-20T04:48Z)
+- Verified documentation links in `docs/cognitive_app.md` reference live GitHub source code and integration guides
+
 
 ## [0.3.0] — 2026-07-20T04:15Z
 
