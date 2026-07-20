@@ -65,7 +65,7 @@ Integration with Training:
 See Also:
     - docs/optional_features_guide.md for Cognitive Brain and Memory Systems
     - docs/INTEGRATION_GUIDE_COMPREHENSIVE.md for integration examples
-    - docs/PERFORMANCE_OPTIMIZATION.md for tuning monitoring overhead
+    - docs/PERFORMANCE_OPTIMIZATION_GUIDE.md for tuning monitoring overhead
 
 Author: Codex Team
 Version: 0.3.0

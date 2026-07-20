@@ -62,18 +62,11 @@ class MemoryConsolidation:
         if not 0.0 <= min_importance <= 1.0:
             raise ValueError("min_importance must be between 0.0 and 1.0")
 
-        # Get consolidatable entries from STM
-        entries_to_consolidate = self.stm.consolidate()
+        # Get consolidatable entries from STM, passing the caller's threshold
+        entries_to_consolidate = self.stm.consolidate(min_importance=min_importance)
 
         if not entries_to_consolidate:
             return None
-
-        # Filter by minimum importance
-        entries_to_consolidate = [
-            (data, imp)
-            for data, imp in entries_to_consolidate
-            if imp >= min_importance
-        ]
 
         if max_consolidations:
             entries_to_consolidate = entries_to_consolidate[:max_consolidations]

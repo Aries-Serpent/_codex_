@@ -11,10 +11,6 @@ Exports:
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 from .base import BaseRagAPI
 from .rag_api import RagAPI
 from .registry import RagAPIRegistry

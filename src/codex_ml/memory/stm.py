@@ -72,14 +72,18 @@ class STMMemory:
         )
         self.entries.append(entry)
 
-        # Remove least important entry if capacity exceeded
+        # Remove least important entry if capacity exceeded.
+        # The newly appended entry (last index) is excluded from eviction
+        # to guarantee the caller's returned index is always valid.
         if len(self.entries) > self.capacity:
-            # Find entry with lowest importance
-            min_idx = 0
+            last_idx = len(self.entries) - 1
+            # Seed the search with any index other than last_idx
+            min_idx = 0 if last_idx != 0 else 1
             for i, e in enumerate(self.entries):
-                if e.importance < self.entries[min_idx].importance:
+                if i != last_idx and e.importance < self.entries[min_idx].importance:
                     min_idx = i
             self.entries.pop(min_idx)
+            # min_idx < last_idx always, so the new entry shifted one position left
 
         return len(self.entries) - 1
 
@@ -112,11 +116,15 @@ class STMMemory:
             raise IndexError(f"Memory index {index} out of range")
         self.entries.pop(index)
 
-    def consolidate(self) -> list[tuple[Any, float]]:
+    def consolidate(self, min_importance: float = 0.5) -> list[tuple[Any, float]]:
         """Prepare entries for consolidation to long-term memory.
 
         Returns a list of entries suitable for consolidation based on
         importance and other criteria.
+
+        Args:
+            min_importance: Minimum importance threshold for consolidation
+                (0.0–1.0, default 0.5).
 
         Returns:
             List of (data, importance) tuples ready for LTM consolidation
@@ -124,7 +132,7 @@ class STMMemory:
         consolidatable = [
             (e.data, e.importance)
             for e in self.entries
-            if e.importance > 0.5 and e.get_age_seconds() > 1.0
+            if e.importance >= min_importance and e.get_age_seconds() > 1.0
         ]
         return consolidatable
 

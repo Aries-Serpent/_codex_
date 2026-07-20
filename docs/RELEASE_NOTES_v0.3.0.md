@@ -23,7 +23,7 @@ v0.3.0 is a **minor release** focused on security hardening, infrastructure impr
 
 ## Major Features & Improvements
 
-### 🔒 Security Enhancements
+### Security Enhancements
 
 #### Fixed Vulnerabilities
 
@@ -46,7 +46,7 @@ This release addresses **6 critical Common Weakness Enumerations (CWE)**:
 - **Action Versions:** Updated to latest security-patched versions (checkout@v5, codeql-action@v3)
 - **Secret Management:** Enhanced secret scanning compliance and vault integration
 
-### 🚀 Infrastructure & Operations
+### Infrastructure & Operations
 
 - **Workflow Compliance:** Achieved 99.5% workflow compliance score
 - **SBOM Updates:** Security Bill of Materials updated with dependency audit
@@ -54,7 +54,7 @@ This release addresses **6 critical Common Weakness Enumerations (CWE)**:
 - **CI/CD Automation:** Enhanced self-healing and auto-fix capabilities
 - **Documentation:** Comprehensive release notes and deployment guides
 
-### 📦 Dependencies
+### Dependencies
 
 The following dependencies have been updated for security and compatibility:
 

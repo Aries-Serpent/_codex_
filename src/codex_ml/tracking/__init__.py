@@ -27,7 +27,7 @@ Installation:
 Configuration:
     Set environment variables:
     
-    MLFLOW_TRACKING_URI: MLflow server URI (default: sqlite:///.codex/mlflow.db)
+    MLFLOW_TRACKING_URI: MLflow server URI (default: file:./artifacts/mlruns)
     CODEX_OFFLINE_MODE: Force offline mode (default: auto-detect)
     CODEX_CHECKPOINT_DIR: Checkpoint directory (default: .codex/checkpoints)
 
