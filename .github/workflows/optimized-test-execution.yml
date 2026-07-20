@@ -71,7 +71,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -97,7 +97,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -125,7 +125,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -152,7 +152,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -179,7 +179,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -217,7 +217,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -248,7 +248,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip
@@ -316,7 +316,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: 3.12.13
         cache: pip

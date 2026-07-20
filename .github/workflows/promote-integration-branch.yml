@@ -57,7 +57,7 @@ jobs:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         cache: pip
         python-version: 3.12.13

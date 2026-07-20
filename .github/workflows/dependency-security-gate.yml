@@ -57,14 +57,14 @@ jobs:
 
       - name: "Setup Python"
         if: matrix.ecosystem == 'python'
-        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
           cache: "pip"
 
       - name: "Setup Node.js"
         if: matrix.ecosystem == 'npm'
-        uses: actions/setup-node@b789df37d6b7526a863bf51b65df64f3f56ffe4f
+        uses: actions/setup-node@1a4442caab129478691007db3c2c8cc937d1be1d
         with:
           node-version: "22"
           cache: "npm"
