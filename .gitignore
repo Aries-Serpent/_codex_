@@ -132,3 +132,6 @@ mlruns/
 .bandit
 .bandit.yaml
 .bandit.yml
+
+# Malformed pip install artifacts
+=*
