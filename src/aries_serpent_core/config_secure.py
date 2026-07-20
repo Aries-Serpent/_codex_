@@ -6,11 +6,7 @@ hardcoded secrets (CWE-798: Hardcoded Credentials).
 """
 
 import os
-import logging
 from typing import Optional
-from pathlib import Path
-
-logger = logging.getLogger(__name__)
 
 
 class ConfigurationError(Exception):
@@ -97,7 +93,12 @@ class APIConfig:
         self.timeout = int(SecureConfig.get_optional_env('API_TIMEOUT', '30'))
 
     def get_headers(self) -> dict:
-        """Get API request headers with authentication."""
+        """
+        Get API request headers with authentication.
+        
+        Returns headers with actual API key for requests.
+        For logging/display purposes, redact the key value.
+        """
         return {
             'Authorization': f'******',
             'Content-Type': 'application/json',

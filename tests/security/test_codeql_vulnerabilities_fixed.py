@@ -14,14 +14,14 @@ import os
 import sqlite3
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 # Import secure implementations
 from src.aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
 from src.aries_serpent_core.cli_secure import SecureHTMLOutput
 from src.codex_ml.utils.serialization_secure import SecureSerializer, UserData, SerializationError
 from src.aries_serpent_core.config_secure import (
-    SecureConfig, ConfigurationError, DatabaseConfig, APIConfig, DotenvLoader
+    SecureConfig, ConfigurationError, DatabaseConfig, APIConfig
 )
 
 
@@ -47,11 +47,9 @@ class TestCWE89SQLInjection:
             
             # SQL injection attempt: "1 OR 1=1--"
             # Vulnerable code would return ALL users
-            # Secure code treats it as literal string and finds nothing
-            result = executor.get_user_by_id("1 OR 1=1--")
-            
-            # Should raise TypeError because string is not int
-            assert result == {}  # No result because type validation fails
+            # Secure code raises TypeError because string is not int
+            with pytest.raises(TypeError, match="user_id must be int"):
+                executor.get_user_by_id("1 OR 1=1--")
         
         finally:
             Path(db_path).unlink(missing_ok=True)

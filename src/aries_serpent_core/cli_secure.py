@@ -6,7 +6,6 @@ Cross-Site Scripting (XSS) vulnerabilities (CWE-79).
 """
 
 import html
-from typing import Any, Optional
 from urllib.parse import quote
 
 

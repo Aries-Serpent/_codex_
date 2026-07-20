@@ -7,7 +7,6 @@ SQL injection vulnerabilities (CWE-89).
 
 import sqlite3
 from typing import Any, Dict, List
-from contextlib import contextmanager
 
 
 class SecureUserQueryExecutor:
