@@ -299,16 +299,13 @@ def main() -> int:
     if args.pre_build_only:
         run_pre_build = True
         run_post_build = False
-        run_widgets = False
     elif args.post_build_only:
         run_pre_build = False
         run_post_build = True
-        run_widgets = True
     else:
         # Default: run all validations
         run_pre_build = True
         run_post_build = True
-        run_widgets = True
     
     # Pre-build validation
     if run_pre_build:
@@ -325,11 +322,10 @@ def main() -> int:
         print()
         
         # Widget presence validation (only post-build)
-        if run_widgets:
-            if not validate_widget_presence():
-                log("ERROR", "Widget presence validation failed")
-                return 4
-            print()
+        if not validate_widget_presence():
+            log("ERROR", "Widget presence validation failed")
+            return 4
+        print()
     
     log("SUCCESS", "All validations PASSED - Build is production-ready")
     return 0

@@ -196,8 +196,6 @@ class RegressionTestSuite:
                 ("mkdocs.yml", ["site_name", "nav", "theme", "plugins"]),
             ]
 
-            all_stable = True
-
             for config_file, required_keys in config_files:
                 config_path = self.base_path / config_file
                 if not config_path.exists():
@@ -246,12 +244,6 @@ class RegressionTestSuite:
     def test_asset_generation(self) -> Tuple[bool, str]:
         """Verify asset generation pipeline is stable."""
         try:
-            # Check for previous build artifacts
-            artifact_dirs = [
-                self.base_path / "cognitive_app" / "dist",
-                self.base_path / "site",
-            ]
-
             # Note: We don't check if these exist, as they may not be from current run
             # Instead, we verify the build tools are configured correctly
 
@@ -274,7 +266,7 @@ class RegressionTestSuite:
             pytest_config = self.base_path / "pytest.ini"
             if pytest_config.exists():
                 with open(pytest_config) as f:
-                    content = f.read()
+                    f.read()
                 return True, "pytest configuration found and stable"
 
             # Fallback: Check for tests directory
