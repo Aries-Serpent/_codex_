@@ -237,6 +237,7 @@ test-core = ["codex-ml[core]"]
 
 [project.scripts]
 # Core entry points (bundled in all profiles)
+codex = "codex_ml.cli.main:cli"
 codex-ml = "codex_ml.cli.main:cli"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-cli = "codex_ml.cli.simple_cli:main"

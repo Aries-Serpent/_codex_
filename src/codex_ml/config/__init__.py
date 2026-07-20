@@ -31,6 +31,7 @@ __all__ = [
     "ShardConfig",
     "DataConfig",
     "CodexConfig",
+    "MlConfig",  # Alias for CodexConfig
     "load_app_config",
     "override_dict",
     # Legacy exports
@@ -908,3 +909,6 @@ __all__ = sorted(
         ]
     )
 )
+
+# Alias for backward compatibility and alternative naming
+MlConfig = CodexConfig
