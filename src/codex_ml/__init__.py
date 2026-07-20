@@ -11,7 +11,7 @@ logger = _logging.getLogger(__name__)
 
 from importlib import import_module
 
-__all__ = ["__version__"]
+__all__ = ["__version__", "api"]
 __version__ = "0.3.0"
 
 # Avoid importing heavy deps at import time (Torch/HF) to keep `pip install` fast
@@ -187,6 +187,10 @@ _EXPORT_MAP = {
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),
     "DatasetManifest": ("codex_ml.utils.repro", "DatasetManifest"),
+    # API module exports
+    "RagAPI": ("codex_ml.api", "RagAPI"),
+    "BaseRagAPI": ("codex_ml.api", "BaseRagAPI"),
+    "RagAPIRegistry": ("codex_ml.api", "RagAPIRegistry"),
 }
 
 

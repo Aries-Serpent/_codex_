@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-07-20T05:13:07Z",
+  "timestamp": "2026-07-20T05:35:52Z",
   "package_version": "0.3.0",
   "summary": {
     "total_tests": 18,
-    "passed": 13,
-    "failed": 3,
-    "skipped": 2,
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
     "errors": 0,
-    "pass_rate": "72.2%",
-    "total_duration_ms": "145.60ms"
+    "pass_rate": "100.0%",
+    "total_duration_ms": "57.35ms"
   },
   "results": [
     {
       "category": "Imports",
       "test_name": "Import codex_ml",
       "status": "PASS",
-      "duration_ms": 0.003337860107421875,
+      "duration_ms": 0.0040531158447265625,
       "error_msg": "",
       "details": {}
     },
@@ -23,7 +23,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.config",
       "status": "PASS",
-      "duration_ms": 0.0026226043701171875,
+      "duration_ms": 0.002384185791015625,
       "error_msg": "",
       "details": {}
     },
@@ -31,23 +31,23 @@
       "category": "Imports",
       "test_name": "Import codex_ml.cli.main",
       "status": "PASS",
-      "duration_ms": 141.71910285949707,
+      "duration_ms": 54.903507232666016,
       "error_msg": "",
       "details": {}
     },
     {
       "category": "Imports",
       "test_name": "Import codex_ml.api.rag_api",
-      "status": "FAIL",
-      "duration_ms": 0.07081031799316406,
-      "error_msg": "No module named 'codex_ml.api'",
+      "status": "PASS",
+      "duration_ms": 0.6537437438964844,
+      "error_msg": "",
       "details": {}
     },
     {
       "category": "Imports",
       "test_name": "Import codex_ml.metrics",
       "status": "PASS",
-      "duration_ms": 0.0019073486328125,
+      "duration_ms": 0.002384185791015625,
       "error_msg": "",
       "details": {}
     },
@@ -55,7 +55,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.data",
       "status": "PASS",
-      "duration_ms": 0.0016689300537109375,
+      "duration_ms": 0.001430511474609375,
       "error_msg": "",
       "details": {}
     },
@@ -63,7 +63,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.utils",
       "status": "PASS",
-      "duration_ms": 0.001430511474609375,
+      "duration_ms": 0.0016689300537109375,
       "error_msg": "",
       "details": {}
     },
@@ -81,33 +81,35 @@
       "category": "CLI",
       "test_name": "Config creation",
       "status": "PASS",
-      "duration_ms": 0.04172325134277344,
+      "duration_ms": 0.03814697265625,
       "error_msg": "",
       "details": {}
     },
     {
       "category": "Config",
       "test_name": "Config creation and attributes",
-      "status": "FAIL",
-      "duration_ms": 0.010967254638671875,
+      "status": "PASS",
+      "duration_ms": 0.011205673217773438,
       "error_msg": "",
       "details": {
-        "has_required_attrs": false
+        "has_required_attrs": true
       }
     },
     {
       "category": "API",
       "test_name": "RAG API module",
-      "status": "FAIL",
-      "duration_ms": 0.05221366882324219,
-      "error_msg": "No module named 'codex_ml.api'",
-      "details": {}
+      "status": "PASS",
+      "duration_ms": 0.0021457672119140625,
+      "error_msg": "",
+      "details": {
+        "exported_items": 14
+      }
     },
     {
       "category": "API",
       "test_name": "Metrics API module",
       "status": "PASS",
-      "duration_ms": 0.0016689300537109375,
+      "duration_ms": 0.001430511474609375,
       "error_msg": "",
       "details": {
         "exported_items": 50
@@ -116,24 +118,30 @@
     {
       "category": "CognitiveBrain",
       "test_name": "Module codex_ml.cognitive_brain",
-      "status": "SKIP",
-      "duration_ms": 0.0,
-      "error_msg": "Module not available in this version",
-      "details": {}
+      "status": "PASS",
+      "duration_ms": 0.6809234619140625,
+      "error_msg": "",
+      "details": {
+        "exports": 17
+      }
     },
     {
       "category": "Memory",
       "test_name": "Memory system modules",
-      "status": "SKIP",
-      "duration_ms": 0.06771087646484375,
-      "error_msg": "Memory modules not detected in this version",
-      "details": {}
+      "status": "PASS",
+      "duration_ms": 0.13113021850585938,
+      "error_msg": "",
+      "details": {
+        "available_modules": [
+          "codex_ml.memory"
+        ]
+      }
     },
     {
       "category": "DataValidation",
       "test_name": "Validation module",
       "status": "PASS",
-      "duration_ms": 3.5936832427978516,
+      "duration_ms": 0.89263916015625,
       "error_msg": "",
       "details": {
         "validators": 28
@@ -143,7 +151,7 @@
       "category": "Integration",
       "test_name": "Config + CLI integration",
       "status": "PASS",
-      "duration_ms": 0.027179718017578125,
+      "duration_ms": 0.016689300537109375,
       "error_msg": "",
       "details": {}
     },
@@ -151,7 +159,7 @@
       "category": "Integration",
       "test_name": "Module cross-imports",
       "status": "PASS",
-      "duration_ms": 0.005245208740234375,
+      "duration_ms": 0.004291534423828125,
       "error_msg": "",
       "details": {}
     },
@@ -162,7 +170,7 @@
       "duration_ms": 0.0007152557373046875,
       "error_msg": "",
       "details": {
-        "import_time_ms": 0.000476837158203125
+        "import_time_ms": 0.0002384185791015625
       }
     }
   ]
