@@ -1,15 +1,13 @@
 {
-  "generated_at": "2026-07-19T23:51:30.466631+00:00",
+  "generated_at": "2026-07-20T01:05:13.034655+00:00",
   "rag_delta": {
     "updated": 0,
     "skipped": 0,
     "errors": []
   },
   "access_strategy": [
-    "rest",
-    "graphql",
-    "gh_cli"
+    "local_fs"
   ],
-  "rest_remaining": 4644,
-  "graphql_remaining": 4981
+  "rest_remaining": 0,
+  "graphql_remaining": 0
 }

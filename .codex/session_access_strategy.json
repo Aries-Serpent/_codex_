@@ -1,20 +1,16 @@
 {
-  "generated_at": "2026-07-19T23:51:30.466821+00:00",
+  "generated_at": "2026-07-20T01:05:13.034757+00:00",
   "methods": [
-    "rest",
-    "graphql",
-    "gh_cli"
+    "local_fs"
   ],
-  "rest_available": true,
-  "rest_remaining": 4644,
-  "graphql_available": true,
-  "graphql_remaining": 4981,
-  "gh_cli_available": true,
+  "rest_available": false,
+  "rest_remaining": 0,
+  "graphql_available": false,
+  "graphql_remaining": 0,
+  "gh_cli_available": false,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5365
-  ],
-  "branch": "copilot/multi-lane-custom-agents-plan-campaign",
-  "recommendation": "Use REST for data fetches. "
+  "best_token_var": "",
+  "open_prs": [],
+  "branch": "copilot/fix-pypi-upload-error",
+  "recommendation": "All API methods exhausted \u2014 use local CodeQL/FS only. "
 }
