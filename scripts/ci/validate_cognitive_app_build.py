@@ -19,7 +19,6 @@ Exit codes:
 """
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -34,9 +33,8 @@ NODE_MODULES_DIR = COGNITIVE_APP_DIR / "node_modules"
 
 def log(level: str, msg: str) -> None:
     """Log with prefix."""
-    icons = {"✅": "✅", "❌": "❌", "⚠️": "⚠️", "🔍": "🔍", "📦": "📦"}
-    prefix = {"INFO": "ℹ️", "SUCCESS": "✅", "ERROR": "❌", "WARNING": "⚠️"}
-    print(f"{prefix.get(level, '•')} {msg}")
+    prefix = {"INFO": "ℹ", "SUCCESS": "OK", "ERROR": "ERROR", "WARNING": "WARNING"}
+    print(f"[{prefix.get(level, '•')}] {msg}")
 
 
 def validate_pre_build() -> bool:
@@ -287,43 +285,53 @@ def main() -> int:
     import argparse
     
     parser = argparse.ArgumentParser(description="Validate Cognitive App Build")
-    parser.add_argument("--pre-build-only", action="store_true", help="Only run pre-build validation")
-    parser.add_argument("--post-build-only", action="store_true", help="Only run post-build validation")
-    parser.add_argument("--all", action="store_true", help="Run all validations (default)")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--pre-build-only", action="store_true", help="Only run pre-build validation")
+    group.add_argument("--post-build-only", action="store_true", help="Only run post-build validation")
     args = parser.parse_args()
     
-    log("INFO", "🚀 Starting Cognitive App Build Validation")
+    log("INFO", "Starting Cognitive App Build Validation")
     log("INFO", f"   Cognitive App: {COGNITIVE_APP_DIR}")
     log("INFO", f"   Dist Output: {DIST_DIR}")
     print()
     
-    # Determine what to run
-    run_pre_build = not args.post_build_only or args.pre_build_only
-    run_post_build = not args.pre_build_only or args.post_build_only
-    run_widgets = not args.pre_build_only or args.post_build_only
+    # Determine what to run (default is all)
+    if args.pre_build_only:
+        run_pre_build = True
+        run_post_build = False
+        run_widgets = False
+    elif args.post_build_only:
+        run_pre_build = False
+        run_post_build = True
+        run_widgets = True
+    else:
+        # Default: run all validations
+        run_pre_build = True
+        run_post_build = True
+        run_widgets = True
     
     # Pre-build validation
     if run_pre_build:
         if not validate_pre_build():
-            log("ERROR", "❌ Pre-build validation failed")
+            log("ERROR", "Pre-build validation failed")
             return 1
         print()
     
     # Post-build validation
     if run_post_build:
         if not validate_post_build():
-            log("ERROR", "❌ Post-build validation failed")
+            log("ERROR", "Post-build validation failed")
             return 3
         print()
         
         # Widget presence validation (only post-build)
         if run_widgets:
             if not validate_widget_presence():
-                log("ERROR", "❌ Widget presence validation failed")
+                log("ERROR", "Widget presence validation failed")
                 return 4
             print()
     
-    log("SUCCESS", "✅ All validations PASSED - Build is production-ready")
+    log("SUCCESS", "All validations PASSED - Build is production-ready")
     return 0
 
 

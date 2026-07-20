@@ -12,7 +12,7 @@ Re-runs previous deployment tests and validates against v0.3.0 baseline to ensur
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 
 class RegressionTestSuite:

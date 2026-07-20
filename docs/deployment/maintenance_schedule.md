@@ -57,7 +57,7 @@ This document defines the maintenance schedule for the Cognitive App deployment 
 
 **Date**: 2026-07-01  
 **Reviewed by**: @reviewer  
-**Status**: ✅ All Checks Passed
+**Status**: All Checks Passed
 
 ### Findings
 - Build time: 2:45 (normal range)
@@ -94,10 +94,10 @@ This document defines the maintenance schedule for the Cognitive App deployment 
 #!/bin/bash
 # Quarterly asset structure validation
 
-echo "📦 Starting quarterly asset validation..."
+echo "Starting quarterly asset validation..."
 
 # 1. Check deployment structure
-echo "1️⃣ Checking deployment structure..."
+echo "1. Checking deployment structure..."
 git ls-tree origin/gh-pages -r --name-only | grep "_codex_/cognitive_app" > /tmp/deployed_files.txt
 
 EXPECTED_FILES=(
@@ -107,25 +107,25 @@ EXPECTED_FILES=(
 
 for file in "${EXPECTED_FILES[@]}"; do
     if grep -q "$file" /tmp/deployed_files.txt; then
-        echo "  ✅ $file exists"
+        echo "  PASS: $file exists"
     else
-        echo "  ❌ $file missing"
+        echo "  FAIL: $file missing"
     fi
 done
 
 # 2. Check file sizes
 echo ""
-echo "2️⃣ Checking file sizes..."
+echo "2. Checking file sizes..."
 git cat-file -s origin/gh-pages:_codex_/cognitive_app/index.html > /tmp/index_size.txt
 INDEX_SIZE=$(cat /tmp/index_size.txt)
 echo "  - index.html size: $INDEX_SIZE bytes"
 
 if [ $INDEX_SIZE -lt 5000 ]; then
-    echo "  ⚠️ index.html seems small, may be corrupted"
+    echo "  WARNING: index.html seems small, may be corrupted"
 elif [ $INDEX_SIZE -gt 50000 ]; then
-    echo "  ⚠️ index.html seems large, may be unminified"
+    echo "  WARNING: index.html seems large, may be unminified"
 else
-    echo "  ✅ index.html size is normal"
+    echo "  PASS: index.html size is normal"
 fi
 
 # 3. Check for required assets

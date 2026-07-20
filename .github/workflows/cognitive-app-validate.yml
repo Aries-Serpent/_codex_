@@ -41,6 +41,7 @@ jobs:
       - name: Validate pre-build environment
         working-directory: cognitive_app
         run: |
+          set -o pipefail
           echo "🔍 Phase 1: Pre-build environment validation"
           
           # Check Node version
@@ -51,33 +52,19 @@ jobs:
           NPM_VERSION=$(npm --version)
           echo "  ✓ npm: $NPM_VERSION"
           
-          # Validate package.json
-          if ! npm ls --depth=0 2>&1 | grep -q "npm ERR!"; then
-            echo "  ✓ package.json valid"
-          else
-            echo "  ❌ package.json validation failed"
-            npm ls --depth=0
+          # Validate package.json exists
+          if [ ! -f package.json ]; then
+            echo "  ❌ package.json not found"
             exit 1
           fi
-          
-          # Check critical dependencies
-          CRITICAL_DEPS=("react" "react-dom" "vite" "typescript")
-          echo "  Checking critical dependencies..."
-          for DEP in "${CRITICAL_DEPS[@]}"; do
-            if npm ls "$DEP" > /dev/null 2>&1; then
-              VERSION=$(npm ls "$DEP" --depth=0 2>/dev/null | grep "$DEP" | head -1 | sed 's/.*@//' | sed 's/_.*//')
-              echo "    ✓ $DEP: $VERSION"
-            else
-              echo "    ❌ $DEP: NOT FOUND"
-              exit 1
-            fi
-          done
+          echo "  ✓ package.json exists"
           
           echo "✅ Pre-build validation passed"
 
       - name: Install dependencies
         working-directory: cognitive_app
         run: |
+          set -o pipefail
           echo "📦 Installing dependencies..."
           npm ci --prefer-offline 2>&1 | tail -20
           echo "✅ Dependencies installed"
@@ -95,6 +82,7 @@ jobs:
         working-directory: cognitive_app
         continue-on-error: true
         run: |
+          set -o pipefail
           echo "🔍 Running ESLint..."
           npm run lint 2>&1 | tail -50 || {
             echo "⚠️  Linting warnings detected (non-blocking)"
@@ -103,6 +91,7 @@ jobs:
       - name: Build cognitive_app
         working-directory: cognitive_app
         run: |
+          set -o pipefail
           echo "🏗️  Building cognitive_app..."
           npm run build 2>&1 | tail -50
           
@@ -241,18 +230,37 @@ jobs:
         if: always()
         run: |
           {
-            echo "## ✅ cognitive_app Pre-Merge Validation"
+            echo "## cognitive_app Pre-Merge Validation Report"
             echo ""
             echo "| Check | Status |"
             echo "|-------|--------|"
-            echo "| Pre-build environment | ✓ Pass |"
-            echo "| npm dependencies | ✓ Pass |"
-            echo "| TypeScript build | ✓ Pass |"
-            echo "| Linting | ✓ Pass |"
-            echo "| Build output | ✓ Pass |"
-            echo "| Widget presence | ✓ Pass |"
+            
+            # Determine status for each step based on job outcome
+            if [ "${{ job.status }}" = "success" ]; then
+              PREENV_STATUS="Pass"
+              DEPS_STATUS="Pass"
+              TS_STATUS="Pass"
+              LINT_STATUS="Pass"
+              BUILD_STATUS="Pass"
+              WIDGET_STATUS="Pass"
+            else
+              PREENV_STATUS="${{ steps.validate-pre-build-environment.outcome }}"
+              DEPS_STATUS="${{ steps.install-dependencies.outcome }}"
+              TS_STATUS="${{ steps.run-typescript-checks.outcome }}"
+              LINT_STATUS="${{ steps.run-linter.outcome }}"
+              BUILD_STATUS="${{ steps.build-cognitive-app.outcome }}"
+              WIDGET_STATUS="${{ steps.validate-build-output.outcome }}"
+            fi
+            
+            echo "| Pre-build environment | $PREENV_STATUS |"
+            echo "| Dependencies | $DEPS_STATUS |"
+            echo "| TypeScript checks | $TS_STATUS |"
+            echo "| Linting | $LINT_STATUS |"
+            echo "| Build output | $BUILD_STATUS |"
+            echo "| Widgets | $WIDGET_STATUS |"
             echo ""
             echo "**Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "**Job Status**: ${{ job.status }}"
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Publish validation results

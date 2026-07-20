@@ -189,7 +189,14 @@ jobs:
         mkdir -p .codex/telemetry
         echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"event\":\"pages_health_check_enhanced\",\"trigger\":\"${{ github.event_name }}\",\"main_http_code\":\"${{ steps.http_check.outputs.final_http_code || 'n/a' }}\",\"pages_healthy\":\"${{ steps.http_check.outputs.site_healthy || 'n/a' }}\",\"cognitive_app_bundle\":\"${{ steps.bundle_check.outputs.bundle_status || 'skipped' }}\",\"react_root\":\"${{ steps.react_check.outputs.root_div_status || 'skipped' }}\",\"rebuild_triggered\":\"${{ steps.trigger_rebuild.outputs.rebuild_triggered || 'false' }}\"}" \
           >> .codex/telemetry/pages_health_log.jsonl 2>/dev/null || true
-        echo "✅ Enhanced telemetry logged"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        echo "Enhanced telemetry logged"
       timeout-minutes: 15
+
+    - name: Upload telemetry artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: pages-health-telemetry-${{ github.run_id }}
+        path: .codex/telemetry/pages_health_log.jsonl
+        retention-days: 30
+        if-no-files-found: ignore

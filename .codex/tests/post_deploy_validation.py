@@ -15,7 +15,7 @@ import time
 import urllib.request
 import urllib.error
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 
 class PostDeployValidator:
@@ -138,7 +138,6 @@ class PostDeployValidator:
                 status2, content2 = self.fetch_url(self.site_url)
                 if status2 == 200 and content2:
                     content = content2
-                    status = status2
                 else:
                     return False, f"Failed to fetch index.html (HTTP {status})"
 

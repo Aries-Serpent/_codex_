@@ -10,11 +10,9 @@ Tests ensure:
 """
 
 import json
-import shutil
 import subprocess
-import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 
 class IntegrationTestSuite:
@@ -185,11 +183,6 @@ class IntegrationTestSuite:
 
             if not site_path.exists():
                 return False, "site/ directory not found"
-
-            # Verify site structure
-            required_dirs = [
-                ".",  # Root
-            ]
 
             # Check for documentation
             if not list(site_path.glob("*.html")):
