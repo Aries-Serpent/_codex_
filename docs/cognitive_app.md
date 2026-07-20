@@ -1,6 +1,6 @@
 # Cognitive Codex Web Application
 
-**Last Updated:** 2026-07-20  
+**Last Updated:** 2026-07-20
 **Version:** v0.3.0
 
 ## Overview

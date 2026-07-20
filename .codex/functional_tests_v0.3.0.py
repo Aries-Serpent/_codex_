@@ -5,16 +5,14 @@ Tests all modules, API, CLI, and cognitive app integration
 """
 
 import sys
-import json
-from pathlib import Path
-from typing import Tuple, List, Dict
+from typing import Dict, List, Tuple
 
 # Module imports for testing (imported here to avoid duplication in test functions)
 try:
-    from codex_ml.config import CodexConfig, MlConfig
-    from codex_ml.memory import STMMemory, LTMMemory
-    from codex_ml.api import RagAPI, BaseRagAPI
+    from codex_ml.api import BaseRagAPI, RagAPI
     from codex_ml.cognitive_brain import CognitiveBrain, ReasoningEngine
+    from codex_ml.config import CodexConfig, MlConfig
+    from codex_ml.memory import LTMMemory, STMMemory
 except ImportError:
     # Modules will be imported individually in test functions if needed
     pass
@@ -80,7 +78,7 @@ class FunctionalTester:
         print("="*80)
         
         try:
-            from codex_ml.memory import STMMemory, LTMMemory
+            from codex_ml.memory import LTMMemory, STMMemory
             
             # Test 1: STMMemory creation
             try:
@@ -117,7 +115,7 @@ class FunctionalTester:
         print("="*80)
         
         try:
-            from codex_ml.api import RagAPI, BaseRagAPI
+            from codex_ml.api import BaseRagAPI, RagAPI
             
             # Test 1: BaseRagAPI availability
             try:
