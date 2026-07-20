@@ -38,7 +38,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: '3.12'
         cache: pip
@@ -173,7 +173,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: '3.12'
     - name: Install dependencies
@@ -197,7 +197,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: '3.12'
     - name: Prepare notification
