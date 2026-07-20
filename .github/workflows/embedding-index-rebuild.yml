@@ -1,8 +1,9 @@
 name: Embedding Index Rebuild
-true:
+
+on:
   schedule:
-  - cron: 0 2 * * *
-  workflow_dispatch: null
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

@@ -1,19 +1,20 @@
 name: ML Components Test Suite
-true:
+
+on:
   push:
     branches:
-    - main
-    - develop
+      - main
+      - develop
     paths:
-    - src/**/*.py
-    - training/**/*.py
-    - tests/**/*.py
-    - requirements.txt
+      - 'src/**/*.py'
+      - 'training/**/*.py'
+      - 'tests/**/*.py'
+      - requirements.txt
   pull_request:
     branches:
-    - main
+      - main
   schedule:
-  - cron: 0 2 * * *
+    - cron: '0 2 * * *'
 permissions:
   contents: read
   checks: write

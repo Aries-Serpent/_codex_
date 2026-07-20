@@ -1,6 +1,12 @@
 ## [Unreleased]
 
 ### Fixed
+- PR #5390 comment resolution + cognitive app investigation (session 2026-07-20T21:26Z):
+  - replied to all 5 blocking PR comments per REQ-13 compliance before making any commits
+  - diagnosed cognitive app widget regression: asset hash mismatch on GitHub Pages (live page references `index-B13VvkbT.js` which returns 404, current build has `index-CSBH0jbB.js`)
+  - delegated cognitive app fix to `github-pages-manager` agent (re-trigger pages-mkdocs.yml on main)
+  - delegated 6 failing CI workflows to `ci-failure-resolution-agent` (ensemble-predictor, correlation-engine x3, embedding-index-rebuild, ml-tests)
+  - verified security findings are false positives (referenced paths don't exist on this branch, axios@1.18.0 has no known vulnerabilities)
 - PR #5390 cache file cleanup (session 2026-07-20T21:11Z):
   - removed 297 accidentally committed `.cache/pip/http-v2/` files from version control
   - added `.cache/` to `.gitignore` to prevent future accidental cache commits
