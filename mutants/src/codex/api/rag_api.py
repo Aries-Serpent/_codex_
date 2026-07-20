@@ -111,28 +111,37 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
 def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
     """Join user-controlled path segments under *base_dir* and enforce containment.
     
-    CWE-22 Fix: Validate that segments are relative paths (not starting with /)
-    before joining them. This prevents os.path.join from being bypassed with
-    absolute paths.
+    CWE-22 Fix: Validate that segments are relative paths and don't contain
+    traversal patterns. This prevents directory traversal attacks.
     """
     if any("\x00" in segment for segment in segments):
         raise HTTPException(status_code=400, detail="Invalid path")
     
-    # CWE-22: Reject absolute paths in segments to prevent traversal
-    if any(segment.startswith("/") or segment.startswith("\\") for segment in segments):
-        raise HTTPException(status_code=400, detail="Path must be relative (cannot start with / or \\)")
-    
-    # CWE-22: Reject directory traversal attempts
-    if any(".." in segment or segment == "." for segment in segments):
-        raise HTTPException(status_code=400, detail="Path traversal not allowed")
-
     try:
-        # Use pathlib.Path.resolve() with parent check for better security
-        # than os.path.realpath + os.path.commonpath
-        base_resolved = base_dir.resolve()
+        # CWE-22: Validate each segment is a safe relative path component
+        for segment in segments:
+            # Reject empty segments
+            if not segment:
+                raise HTTPException(status_code=400, detail="Empty path segment not allowed")
+            
+            # Reject absolute paths (Unix and Windows formats)
+            if segment.startswith("/") or segment.startswith("\\"):
+                raise HTTPException(status_code=400, detail="Path must be relative (cannot start with / or \\)")
+            
+            # Reject Windows drive letters (C:, D:, etc.) and UNC paths
+            if len(segment) >= 2 and segment[1] == ":" or segment.startswith("\\\\"):
+                raise HTTPException(status_code=400, detail="Absolute paths not allowed")
+            
+            # Use pathlib.Path to normalize and check for parent references
+            # This catches .. patterns and other traversal attempts
+            segment_path = Path(segment)
+            if ".." in segment_path.parts:
+                raise HTTPException(status_code=400, detail="Path traversal not allowed")
         
-        # Build candidate path safely using Path operations instead of os.path.join
+        # Build candidate path safely using Path operations
+        base_resolved = base_dir.resolve()
         candidate = base_resolved
+        
         for segment in segments:
             candidate = candidate / segment
         
@@ -143,6 +152,9 @@ def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
             candidate_resolved.relative_to(base_resolved)
         except ValueError:
             raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+            
+    except HTTPException:
+        raise
     except (OSError, ValueError) as err:
         raise HTTPException(status_code=400, detail="Invalid path") from err
 
