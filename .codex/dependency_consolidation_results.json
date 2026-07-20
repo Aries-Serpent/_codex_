@@ -1,0 +1,287 @@
+[
+  {
+    "branch": "origin/dependabot/cargo/anyhow-1.0.104",
+    "original_sha": "5391dd4",
+    "new_sha": "b764eac",
+    "subject": "deps(deps): Bump anyhow from 1.0.100 to 1.0.104",
+    "files": [
+      "Cargo.lock"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/cargo/rayon-1.12.0",
+    "original_sha": "878795d",
+    "new_sha": "262c55e",
+    "subject": "deps(deps): Bump rayon from 1.11.0 to 1.12.0",
+    "files": [
+      "Cargo.lock"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/cargo/serde-1.0.229",
+    "original_sha": "9a79e5d",
+    "new_sha": "357d9ff",
+    "subject": "deps(deps): Bump serde from 1.0.228 to 1.0.229",
+    "files": [
+      "Cargo.lock"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/cargo/tracing-subscriber-0.3.23",
+    "original_sha": "137d045",
+    "new_sha": "561ee28",
+    "subject": "deps(deps): Bump tracing-subscriber from 0.3.22 to 0.3.23",
+    "files": [
+      "Cargo.lock"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-node-7",
+    "original_sha": "ec96f9c",
+    "new_sha": "dbad77c",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "files": [
+      ".github/workflows/consistency-checks.yml",
+      ".github/workflows/copilot-evolution-suite.yml",
+      ".github/workflows/dependency-security-gate.yml",
+      ".github/workflows/har-capture.yml",
+      ".github/workflows/pages-mkdocs.yml",
+      ".github/workflows/unified-deployment.yml"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-python-7.0.0",
+    "original_sha": "2a0c80c",
+    "new_sha": "77a7669",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "files": [
+      ".github/workflows/13-3-enterprise-compliance.yml",
+      ".github/workflows/action-version-check.yml",
+      ".github/workflows/adaptive-agent-delegation.yml",
+      ".github/workflows/admin_setup_verification.yml",
+      ".github/workflows/agent-auth-delegation.yml",
+      ".github/workflows/agent-health-check.yml",
+      ".github/workflows/agentic-diff-guard.yml",
+      ".github/workflows/app-package-download.yml",
+      ".github/workflows/audit-logging.yml",
+      ".github/workflows/automated-monitoring-setup.yml",
+      ".github/workflows/automated-post-deployment-verification.yml",
+      ".github/workflows/automated-release-creation.yml",
+      ".github/workflows/automated-rollback-generation.yml",
+      ".github/workflows/branch-cleanup.yml",
+      ".github/workflows/branch-rebase-gate.yml",
+      ".github/workflows/capacity-planner-monitor.yml",
+      ".github/workflows/ci-failure-issue-creator.yml",
+      ".github/workflows/ci-pattern-healer.yml",
+      ".github/workflows/ci-pattern-prevention-gate.yml",
+      ".github/workflows/ci-rescue.yml",
+      ".github/workflows/cleanup-stale-branches.yml",
+      ".github/workflows/cleanup-stale-pr-comments.yml",
+      ".github/workflows/codex-manifest-refresh.yml",
+      ".github/workflows/codex-master-key-validation.yml",
+      ".github/workflows/cognitive-k8s-provisioning.yml",
+      ".github/workflows/cognitive-registry-validation.yml",
+      ".github/workflows/coherence-snapshot.yml",
+      ".github/workflows/comment-review-gate.yml",
+      ".github/workflows/compliance-scanner.yml",
+      ".github/workflows/consistency-checks.yml",
+      ".github/workflows/consolidated-pr-status.yml",
+      ".github/workflows/copilot-agent-vars-bootstrap.yml",
+      ".github/workflows/copilot-setup-validation.yml",
+      ".github/workflows/correlation-engine-monitor.yml",
+      ".github/workflows/cost-gate.yml",
+      ".github/workflows/coverage-ratchet.yml",
+      ".github/workflows/create-sub-pr-to-0D_base_.yml",
+      ".github/workflows/d-capable-promotion-gate.yml",
+      ".github/workflows/deferral-language-gate.yml",
+      ".github/workflows/dependabot-preflight.yml",
+      ".github/workflows/dependency-security-gate.yml",
+      ".github/workflows/dependency-submission.yml",
+      ".github/workflows/discussion-cleanup.yml",
+      ".github/workflows/e-to-d-transition-gate.yml",
+      ".github/workflows/embedding-index-rebuild.yml",
+      ".github/workflows/ensemble-predictor-monitor.yml",
+      ".github/workflows/enterprise-compliance.yml",
+      ".github/workflows/fast-forward-safe-files.yml",
+      ".github/workflows/fragile-test-guardian.yml",
+      ".github/workflows/import-linter.yml",
+      ".github/workflows/issue-resolution-gate.yml",
+      ".github/workflows/machine-readable-governance.yml",
+      ".github/workflows/machine-readable-maintenance-pr.yml",
+      ".github/workflows/ml-lifecycle-gate.yml",
+      ".github/workflows/ml-tests.yml",
+      ".github/workflows/mutation-testing.yml",
+      ".github/workflows/mypy-baseline.yml",
+      ".github/workflows/observable-release.yml",
+      ".github/workflows/optimized-test-execution.yml",
+      ".github/workflows/parallel-quality-checks.yml",
+      ".github/workflows/performance-gate.yml",
+      ".github/workflows/performance-monitoring.yml",
+      ".github/workflows/phase-12-2-compliance-check.yml",
+      ".github/workflows/phase-12-hourly-monitoring.yml",
+      ".github/workflows/pr-cost-check.yml",
+      ".github/workflows/proactive-ci-monitor.yml",
+      ".github/workflows/profile-validation.yml",
+      ".github/workflows/promote-integration-branch.yml",
+      ".github/workflows/promotion-readiness-gate.yml",
+      ".github/workflows/quality-metrics-collection.yml",
+      ".github/workflows/rag-freshness-scheduler.yml",
+      ".github/workflows/rag-quality-nightly.yml",
+      ".github/workflows/reasoning-engine-monitor.yml",
+      ".github/workflows/reference-integrity.yml",
+      ".github/workflows/release.yml",
+      ".github/workflows/required-actions-enforcer.yml",
+      ".github/workflows/restore-pipeline-ci.yml",
+      ".github/workflows/rust-ffi.yml",
+      ".github/workflows/scaling-framework-monitor.yml",
+      ".github/workflows/scheduled-dependency-audit.yml",
+      ".github/workflows/secrets-baseline-enforcer.yml",
+      ".github/workflows/secrets-false-positive-healer.yml",
+      ".github/workflows/security-copilot-commands.yml",
+      ".github/workflows/security-findings-api.yml",
+      ".github/workflows/security-pr-enhancement.yml",
+      ".github/workflows/security-scan-phase-16.yml",
+      ".github/workflows/security-scanning-suite.yml",
+      ".github/workflows/self-healing.yml",
+      ".github/workflows/semgrep_sarif.yml",
+      ".github/workflows/sigstore-verify.yml",
+      ".github/workflows/sla-optimizer-monitor.yml",
+      ".github/workflows/slo-canary-check.yml",
+      ".github/workflows/smoke-tests-deployment.yml",
+      ".github/workflows/test-pyramid-report.yml",
+      ".github/workflows/test-variables-api.yml",
+      ".github/workflows/tiered-approval-gate.yml",
+      ".github/workflows/trigger-on-approval.yml",
+      ".github/workflows/unified-governance-check.yml",
+      ".github/workflows/validate-api-null-handling.yml",
+      ".github/workflows/validate-code-examples.yml",
+      ".github/workflows/validate-token-health.yml",
+      ".github/workflows/workflow-compliance-gate.yml",
+      ".github/workflows/workflow-execution-gate.yml",
+      ".github/workflows/workflow-link-validation.yml"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/github_actions/softprops/action-gh-release-3.0.2",
+    "original_sha": "f8ee414",
+    "new_sha": "f754316",
+    "subject": "ci(deps): Bump softprops/action-gh-release from 3.0.1 to 3.0.2",
+    "files": [
+      ".github/workflows/observable-release.yml",
+      ".github/workflows/release.yml"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/github/spark-0.46.15",
+    "original_sha": "2efb932",
+    "new_sha": "275481e",
+    "subject": "deps(deps): Bump @github/spark from 0.44.15 to 0.46.15 in /cognitive_app",
+    "files": [
+      "cognitive_app/package-lock.json"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/lucide-react-1.25.0",
+    "original_sha": "2ece4dd",
+    "new_sha": "4b0e6db",
+    "subject": "deps(deps): Bump lucide-react from 0.484.0 to 1.25.0 in /cognitive_app",
+    "files": [
+      "cognitive_app/package-lock.json",
+      "cognitive_app/package.json"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-dialog-1.1.20",
+    "original_sha": "e895287",
+    "new_sha": "13e87fd",
+    "subject": "deps(deps): Bump @radix-ui/react-dialog in /cognitive_app",
+    "files": [
+      "cognitive_app/package-lock.json",
+      "cognitive_app/package.json"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-tooltip-1.2.13",
+    "original_sha": "08c90f2",
+    "new_sha": "6a32c5e",
+    "subject": "deps(deps): Bump @radix-ui/react-tooltip in /cognitive_app",
+    "files": [
+      "cognitive_app/package-lock.json",
+      "cognitive_app/package.json"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/tailwindcss/postcss-4.3.3",
+    "original_sha": "261c92b",
+    "new_sha": "4b5e0d9",
+    "subject": "deps(deps-dev): Bump @tailwindcss/postcss in /cognitive_app",
+    "files": [
+      "cognitive_app/package-lock.json",
+      "cognitive_app/package.json"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/mkdocs-macros-plugin-gte-1.5.0",
+    "original_sha": "bf6071c",
+    "new_sha": "a174b5f",
+    "subject": "deps(deps): Update mkdocs-macros-plugin requirement",
+    "files": [
+      "requirements-docs.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/opentelemetry-sdk-gte-1.44.0",
+    "original_sha": "c451ceb",
+    "new_sha": "e5da1eb",
+    "subject": "deps(deps): Update opentelemetry-sdk requirement from >=1.24 to >=1.44.0",
+    "files": [
+      "requirements/requirements-optional.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/pyarrow-25.0.0",
+    "original_sha": "27880f4",
+    "new_sha": "570579b",
+    "subject": "deps(deps-dev): Bump pyarrow from 16.1.0 to 25.0.0",
+    "files": [
+      "requirements/dev.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/pygments-gte-2.20.0",
+    "original_sha": "6ef17ba",
+    "new_sha": "0df180e",
+    "subject": "deps(deps): Update pygments requirement from >=2.15.1 to >=2.20.0",
+    "files": [
+      "requirements-docs.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/pymdown-extensions-gte-11.0.1",
+    "original_sha": "c9132b3",
+    "new_sha": "cf011e6",
+    "subject": "deps(deps): Update pymdown-extensions requirement",
+    "files": [
+      "requirements-docs.txt",
+      "requirements/agent.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/python-dev-6ffa451956",
+    "original_sha": "1f61a41",
+    "new_sha": "a052af5",
+    "subject": "deps(deps): Bump mypy from 2.2.0 to 2.3.0 in the python-dev group",
+    "files": [
+      "requirements/dev.txt"
+    ]
+  },
+  {
+    "branch": "origin/dependabot/pip/uvicorn-gte-0.51.0-and-lt-1",
+    "original_sha": "3b2af4d",
+    "new_sha": "4d562df",
+    "subject": "deps(deps): Update uvicorn requirement from <1,>=0.50.1 to >=0.51.0,<1",
+    "files": [
+      "requirements/docker.txt"
+    ]
+  }
+]
