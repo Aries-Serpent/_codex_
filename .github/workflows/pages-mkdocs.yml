@@ -8,6 +8,7 @@ on:
     - mkdocs.yml
     - src/codex/api/**
     - src/codex/**/*.py
+    - cognitive_app/**
     - .github/workflows/pages-mkdocs.yml
   workflow_dispatch:
     inputs:
@@ -120,14 +121,62 @@ jobs:
         VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
         VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
         VITE_DOCS_FETCH_LIVE: 'true'
-      run: "echo \"\U0001F4E6 Building cognitive_app dashboard...\"\necho \"   API\
-        \ mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}\"\necho\
-        \ \"   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_LIVE:-enabled}\"\n\nnpm\
-        \ ci\nnpm run build\n\nif [ -d dist ]; then\n  mkdir -p ../site/cognitive_app\n\
-        \  cp -r dist/* ../site/cognitive_app/\n  echo \"\u2705 cognitive_app built\
-        \ and deployed to site/cognitive_app/\"\n  ls -la ../site/cognitive_app/ |\
-        \ head -15\nelse\n  echo \"\u274C ERROR: cognitive_app build did not produce\
-        \ dist/ directory\"\n  exit 1\nfi\n"
+      run: |
+        echo "📦 Building cognitive_app dashboard..."
+        echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
+        echo "   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_FETCH_LIVE:-enabled}"
+         
+        # Phase 1: Pre-build validation
+        echo ""
+        echo "Phase 1: Pre-build validation..."
+        if ! python ../scripts/ci/validate_cognitive_app_build.py --pre-build-only; then
+          echo "❌ Pre-build validation failed"
+          exit 1
+        fi
+         
+        # Phase 2: Install dependencies with explicit error handling
+        echo ""
+        echo "Phase 2: Installing dependencies..."
+        if ! npm ci --prefer-offline 2>&1 | tee npm-install.log; then
+          echo "❌ npm ci failed"
+          echo "Recent errors:"
+          tail -30 npm-install.log
+          exit 1
+        fi
+         
+        # Phase 3: Run TypeScript build
+        echo ""
+        echo "Phase 3: TypeScript compilation..."
+        if ! npm run build 2>&1 | tee npm-build.log; then
+          echo "❌ npm build failed"
+          echo "Recent errors:"
+          tail -50 npm-build.log
+          exit 1
+        fi
+         
+        # Phase 4: Post-build validation
+        echo ""
+        echo "Phase 4: Post-build validation..."
+        if ! python ../scripts/ci/validate_cognitive_app_build.py --post-build-only; then
+          echo "❌ Post-build validation failed"
+          exit 3
+        fi
+         
+        # Phase 5: Deploy to site directory
+        echo ""
+        echo "Phase 5: Deploying to site directory..."
+        if [ ! -d dist ]; then
+          echo "❌ ERROR: cognitive_app build did not produce dist/ directory"
+          exit 1
+        fi
+         
+        mkdir -p ../site/cognitive_app
+        cp -r dist/* ../site/cognitive_app/
+         
+        echo "✅ cognitive_app built and deployed to site/cognitive_app/"
+        echo ""
+        echo "Build artifacts:"
+        ls -lah ../site/cognitive_app/ | head -20
     - name: Cache health report
       if: always()
       continue-on-error: true

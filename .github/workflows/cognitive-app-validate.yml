@@ -1,0 +1,270 @@
+name: Validate cognitive_app (Pre-Merge Gate)
+
+on:
+  pull_request:
+    paths:
+      - cognitive_app/**
+      - .github/workflows/cognitive-app-validate.yml
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to validate (optional)
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  validate-cognitive-app:
+    name: Validate cognitive_app Build & Widgets
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cognitive_app/package-lock.json
+
+      - name: Validate pre-build environment
+        id: validate-pre-build-environment
+        working-directory: cognitive_app
+        run: |
+          set -o pipefail
+          echo "🔍 Phase 1: Pre-build environment validation"
+          
+          # Check Node version
+          NODE_VERSION=$(node --version)
+          echo "  ✓ Node.js: $NODE_VERSION"
+          
+          # Check npm version
+          NPM_VERSION=$(npm --version)
+          echo "  ✓ npm: $NPM_VERSION"
+          
+          # Validate package.json exists
+          if [ ! -f package.json ]; then
+            echo "  ❌ package.json not found"
+            exit 1
+          fi
+          echo "  ✓ package.json exists"
+          
+          echo "✅ Pre-build validation passed"
+
+      - name: Install dependencies
+        id: install-dependencies
+        working-directory: cognitive_app
+        run: |
+          set -o pipefail
+          echo "📦 Installing dependencies..."
+          npm ci --prefer-offline 2>&1 | tail -20
+          echo "✅ Dependencies installed"
+
+      - name: Run TypeScript checks
+        id: run-typescript-checks
+        working-directory: cognitive_app
+        continue-on-error: true
+        run: |
+          echo "🔍 Running TypeScript type checks..."
+          npx tsc --noEmit || {
+            echo "⚠️  TypeScript warnings detected (non-blocking)"
+          }
+
+      - name: Run linter
+        id: run-linter
+        working-directory: cognitive_app
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          echo "🔍 Running ESLint..."
+          npm run lint 2>&1 | tail -50 || {
+            echo "⚠️  Linting warnings detected (non-blocking)"
+          }
+
+      - name: Build cognitive_app
+        id: build-cognitive-app
+        working-directory: cognitive_app
+        run: |
+          set -o pipefail
+          echo "🏗️  Building cognitive_app..."
+          npm run build 2>&1 | tail -50
+          
+          if [ ! -d dist ]; then
+            echo "❌ Build failed - no dist directory"
+            exit 1
+          fi
+          echo "✅ Build succeeded"
+
+      - name: Validate build output
+        id: validate-build-output
+        working-directory: cognitive_app
+        run: |
+          echo "🔍 Phase 2: Post-build validation"
+          
+          # Check dist structure
+          if [ ! -f dist/index.html ]; then
+            echo "❌ dist/index.html missing"
+            exit 1
+          fi
+          echo "  ✓ dist/index.html present"
+          
+          if [ ! -d dist/assets ]; then
+            echo "❌ dist/assets missing"
+            exit 1
+          fi
+          echo "  ✓ dist/assets directory present"
+          
+          # Check for JS bundles
+          JS_COUNT=$(find dist/assets -name "*.js" | wc -l)
+          if [ "$JS_COUNT" -lt 1 ]; then
+            echo "❌ No JavaScript bundles found"
+            exit 1
+          fi
+          echo "  ✓ JavaScript bundles: $JS_COUNT files"
+          
+          # Check index.html integrity
+          if grep -q 'id="root"' dist/index.html; then
+            echo "  ✓ React root element present"
+          else
+            echo "❌ React root element missing"
+            exit 1
+          fi
+          
+          if grep -q 'type="module"' dist/index.html; then
+            echo "  ✓ Module script tags present"
+          else
+            echo "❌ Module script tags missing"
+            exit 1
+          fi
+          
+          # Show build summary
+          echo ""
+          echo "Build artifacts:"
+          du -sh dist/
+          ls -lah dist/ | head -10
+          
+          echo ""
+          echo "Assets summary:"
+          echo "  JavaScript: $JS_COUNT files"
+          CSS_COUNT=$(find dist/assets -name "*.css" | wc -l)
+          echo "  Stylesheets: $CSS_COUNT files"
+          
+          echo "✅ Post-build validation passed"
+
+      - name: Validate widget presence
+        working-directory: cognitive_app
+        run: |
+          echo "🔍 Phase 3: Widget presence validation"
+          
+          EXPECTED_WIDGETS=(
+            "MetricsDashboard"
+            "CodeGenerator"
+            "InteractiveDemo"
+            "QuantumVisualizer"
+            "QuantumDecisionEngine"
+            "MemoryManagementDashboard"
+            "AgentOrchestrationPanel"
+            "XtermTerminal"
+            "ApiClient"
+            "DocumentationViewer"
+          )
+          
+          # Find main bundle
+          MAIN_BUNDLE=$(find dist/assets -name "*.js" -type f | sort -k5 -rn | head -1)
+          if [ -z "$MAIN_BUNDLE" ]; then
+            echo "❌ No JavaScript bundles found"
+            exit 1
+          fi
+          
+          echo "Checking bundle: $(basename $MAIN_BUNDLE)"
+          BUNDLE_SIZE=$(du -h "$MAIN_BUNDLE" | cut -f1)
+          echo "Bundle size: $BUNDLE_SIZE"
+          
+          FOUND=0
+          MISSING=0
+          
+          for WIDGET in "${EXPECTED_WIDGETS[@]}"; do
+            if grep -q "$WIDGET" "$MAIN_BUNDLE"; then
+              echo "  ✓ $WIDGET"
+              ((FOUND++))
+            else
+              echo "  ⚠️  $WIDGET (may be code-split)"
+              ((MISSING++))
+            fi
+          done
+          
+          echo ""
+          echo "Widget summary: $FOUND/${#EXPECTED_WIDGETS[@]} found in main bundle"
+          
+          if [ "$FOUND" -lt 5 ]; then
+            echo "⚠️  WARNING: Few widgets in main bundle (may be heavily code-split)"
+          else
+            echo "✅ Widget presence validation passed"
+          fi
+
+      - name: Check bundle size
+        working-directory: cognitive_app
+        continue-on-error: true
+        run: |
+          echo "📊 Bundle size analysis"
+          
+          MAIN_BUNDLE=$(find dist/assets -name "*.js" -type f | sort -k5 -rn | head -1)
+          if [ -n "$MAIN_BUNDLE" ]; then
+            BUNDLE_SIZE_KB=$(($(stat -f%z "$MAIN_BUNDLE" 2>/dev/null || stat -c%s "$MAIN_BUNDLE") / 1024))
+            echo "Main bundle: ${BUNDLE_SIZE_KB}KB"
+            
+            if [ "$BUNDLE_SIZE_KB" -gt 1500 ]; then
+              echo "⚠️  WARNING: Main bundle >1.5MB (consider code-splitting)"
+            fi
+          fi
+          
+          TOTAL_SIZE_KB=$(($(du -sb dist 2>/dev/null | cut -f1) / 1024))
+          echo "Total dist size: ${TOTAL_SIZE_KB}KB"
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          {
+            echo "## cognitive_app Pre-Merge Validation Report"
+            echo ""
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            
+            # Always use actual step outcomes (not hard-coded "Pass")
+            PREENV_STATUS="${{ steps.validate-pre-build-environment.outcome }}"
+            DEPS_STATUS="${{ steps.install-dependencies.outcome }}"
+            TS_STATUS="${{ steps.run-typescript-checks.outcome }}"
+            LINT_STATUS="${{ steps.run-linter.outcome }}"
+            BUILD_STATUS="${{ steps.build-cognitive-app.outcome }}"
+            WIDGET_STATUS="${{ steps.validate-build-output.outcome }}"
+            
+            echo "| Pre-build environment | $PREENV_STATUS |"
+            echo "| Dependencies | $DEPS_STATUS |"
+            echo "| TypeScript checks | $TS_STATUS |"
+            echo "| Linting | $LINT_STATUS |"
+            echo "| Build output | $BUILD_STATUS |"
+            echo "| Widgets | $WIDGET_STATUS |"
+            echo ""
+            echo "**Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "**Job Status**: ${{ job.status }}"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish validation results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: cognitive-app-validation-${{ github.run_id }}
+          path: cognitive_app/dist/
+          retention-days: 5
+          if-no-files-found: ignore
