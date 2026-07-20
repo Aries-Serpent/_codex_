@@ -11,11 +11,35 @@ logger = _logging.getLogger(__name__)
 
 from importlib import import_module
 
-__all__ = ["__version__"]
-__version__ = "0.2.0"
+__all__ = ["__version__", "api"]
+__version__ = "0.3.0"
 
 # Avoid importing heavy deps at import time (Torch/HF) to keep `pip install` fast
 # and to prevent side-effects when tools only query metadata.
+
+# Cognitive Brain module - core reasoning and context management
+try:  # pragma: no cover - optional module
+    from .cognitive_brain import CognitiveBrain, ContextManager, ReasoningEngine
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
+    CognitiveBrain = None  # type: ignore[assignment,misc]
+    ContextManager = None  # type: ignore[assignment,misc]
+    ReasoningEngine = None  # type: ignore[assignment,misc]
+
+# Memory module - STM/LTM memory systems
+try:  # pragma: no cover - optional module
+    from .memory import (
+        ConsolidationRecord,
+        LTMMemory,
+        MemoryConsolidation,
+        MemoryEntry,
+        STMMemory,
+    )
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
+    ConsolidationRecord = None  # type: ignore[assignment,misc]
+    LTMMemory = None  # type: ignore[assignment,misc]
+    MemoryConsolidation = None  # type: ignore[assignment,misc]
+    MemoryEntry = None  # type: ignore[assignment,misc]
+    STMMemory = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional dependency (OmegaConf)
     from .config import (
@@ -187,6 +211,10 @@ _EXPORT_MAP = {
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),
     "DatasetManifest": ("codex_ml.utils.repro", "DatasetManifest"),
+    # API module exports
+    "RagAPI": ("codex_ml.api", "RagAPI"),
+    "BaseRagAPI": ("codex_ml.api", "BaseRagAPI"),
+    "RagAPIRegistry": ("codex_ml.api", "RagAPIRegistry"),
 }
 
 

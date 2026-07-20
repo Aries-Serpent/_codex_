@@ -31,6 +31,7 @@ __all__ = [
     "ShardConfig",
     "DataConfig",
     "CodexConfig",
+    "MlConfig",  # Alias for CodexConfig
     "load_app_config",
     "override_dict",
     # Legacy exports
@@ -578,6 +579,11 @@ class DataConfig:
 
 @dataclass
 class CodexConfig:
+    # Top-level ML configuration attributes
+    model_name: str = "default"
+    batch_size: int = 32
+    learning_rate: float = 0.001
+    # Nested configuration sections
     tokenization: TokenizationConfig = field(default_factory=TokenizationConfig)
     training: TrainingConfig = field(default_factory=TrainingConfig)
     evaluation: EvaluationConfig = field(default_factory=EvaluationConfig)
@@ -908,3 +914,6 @@ __all__ = sorted(
         ]
     )
 )
+
+# Alias for backward compatibility and alternative naming
+MlConfig = CodexConfig

@@ -207,7 +207,7 @@ jobs:
         \ for detailed build metrics.\n\nEOF\n\ncat \"${RELEASE_NOTES_FILE}\"\necho\
         \ \"notes_file=${RELEASE_NOTES_FILE}\" >> $GITHUB_OUTPUT\n"
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
+      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228
       with:
         tag_name: ${{ steps.release.outputs.tag }}
         body_path: release-notes-${{ steps.release.outputs.tag }}.md

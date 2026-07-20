@@ -1,18 +1,59 @@
-"""
-  Init   Module
+"""Model serving and inference API for Codex ML.
 
-This module provides functionality for   init  .
+This module provides production-grade model serving capabilities including:
 
-Usage:
-    from serving.__init__ import ...
+- Lightweight inference server with FastAPI
+- Model loading and caching
+- Authentication and rate limiting
+- Batch processing and optimization
+- RAG (Retrieval-Augmented Generation) support
+- Health checks and monitoring
+
+Installation:
+    Install the runtime profile to enable serving:
+    pip install codex-ml[runtime]
+
+Quick Start:
+    from codex_ml.serving import ModelServer, ServerConfig
+    
+    config = ServerConfig(
+        host="0.0.0.0",
+        port=8000,
+        workers=4
+    )
+    server = ModelServer(config=config)
+    server.load_model("path/to/model")
+    server.start()
+
+Features:
+    - **Model Loading**: Support for PyTorch, Transformers, ONNX models
+    - **Caching**: Automatic model caching and reuse
+    - **Authentication**: API key and JWT token support
+    - **Rate Limiting**: Request throttling to prevent overload
+    - **Batch Processing**: Efficient batch inference with configurable batch sizes
+    - **Monitoring**: Prometheus metrics and health checks
+    - **Security**: Input validation, CORS, trusted host middleware
 
 Classes:
-    [To be documented]
+    ModelServer: Main inference server
+    ServerConfig: Server configuration
+    ModelConfig: Model configuration
+    AuthManager: Authentication management
+    RateLimiter: Request rate limiting
 
 Functions:
-    [To be documented]
+    create_app: Create FastAPI application
+
+Exceptions:
+    ModelLoadError: Raised when model loading fails
+
+See Also:
+    - docs/optional_features_guide.md for RAG API details
+    - docs/INTEGRATION_GUIDE_COMPREHENSIVE.md for integration examples
+    - docs/PERFORMANCE_TUNING.md for optimization tips
 
 Author: Codex Team
+Version: 0.3.0
 """
 
 import logging

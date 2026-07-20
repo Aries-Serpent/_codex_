@@ -1,0 +1,135 @@
+[
+  {
+    "branch": "origin/dependabot/cargo/anyhow-1.0.104",
+    "sha": "5391dd4",
+    "status": "failed",
+    "subject": "deps(deps): Bump anyhow from 1.0.100 to 1.0.104",
+    "error": "error: could not apply 5391dd45... deps(deps): Bump anyhow from 1.0.100 to 1.0.104\n"
+  },
+  {
+    "branch": "origin/dependabot/cargo/rayon-1.12.0",
+    "sha": "878795d",
+    "status": "failed",
+    "subject": "deps(deps): Bump rayon from 1.11.0 to 1.12.0",
+    "error": "error: could not apply 878795d2... deps(deps): Bump rayon from 1.11.0 to 1.12.0\n"
+  },
+  {
+    "branch": "origin/dependabot/cargo/serde-1.0.229",
+    "sha": "9a79e5d",
+    "status": "failed",
+    "subject": "deps(deps): Bump serde from 1.0.228 to 1.0.229",
+    "error": "error: could not apply 9a79e5da... deps(deps): Bump serde from 1.0.228 to 1.0.229\n"
+  },
+  {
+    "branch": "origin/dependabot/cargo/tracing-subscriber-0.3.23",
+    "sha": "137d045",
+    "status": "failed",
+    "subject": "deps(deps): Bump tracing-subscriber from 0.3.22 to 0.3.23",
+    "error": "error: could not apply 137d045b... deps(deps): Bump tracing-subscriber from 0.3.22 to 0.3.23\n"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-node-7",
+    "sha": "ec96f9c",
+    "status": "failed",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "error": "error: could not apply ec96f9cc... chore(auth): write provenance session token [skip ci]\n"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-python-7.0.0",
+    "sha": "2a0c80c",
+    "status": "failed",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "error": "error: could not apply 2a0c80ca... chore(auth): write provenance session token [skip ci]\n"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/softprops/action-gh-release-3.0.2",
+    "sha": "f8ee414",
+    "status": "failed",
+    "subject": "ci(deps): Bump softprops/action-gh-release from 3.0.1 to 3.0.2",
+    "error": "error: could not apply f8ee4146... ci(deps): Bump softprops/action-gh-release from 3.0.1 to 3.0.2\n"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/github/spark-0.46.15",
+    "sha": "2efb932",
+    "status": "failed",
+    "subject": "deps(deps): Bump @github/spark from 0.44.15 to 0.46.15 in /cognitive_app",
+    "error": "error: could not apply 2efb9326... deps(deps): Bump @github/spark from 0.44.15 to 0.46.15 in /cognitive_app\n"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/lucide-react-1.25.0",
+    "sha": "2ece4dd",
+    "status": "failed",
+    "subject": "deps(deps): Bump lucide-react from 0.484.0 to 1.25.0 in /cognitive_app",
+    "error": "error: could not apply 2ece4dd0... deps(deps): Bump lucide-react from 0.484.0 to 1.25.0 in /cognitive_app\n"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-dialog-1.1.20",
+    "sha": "e895287",
+    "status": "failed",
+    "subject": "deps(deps): Bump @radix-ui/react-dialog in /cognitive_app",
+    "error": "error: could not apply e895287b... deps(deps): Bump @radix-ui/react-dialog in /cognitive_app\n"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-tooltip-1.2.13",
+    "sha": "08c90f2",
+    "status": "failed",
+    "subject": "deps(deps): Bump @radix-ui/react-tooltip in /cognitive_app",
+    "error": "error: could not apply 08c90f24... deps(deps): Bump @radix-ui/react-tooltip in /cognitive_app\n"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/tailwindcss/postcss-4.3.3",
+    "sha": "261c92b",
+    "status": "failed",
+    "subject": "deps(deps-dev): Bump @tailwindcss/postcss in /cognitive_app",
+    "error": "error: could not apply 261c92b8... deps(deps-dev): Bump @tailwindcss/postcss in /cognitive_app\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/mkdocs-macros-plugin-gte-1.5.0",
+    "sha": "bf6071c",
+    "status": "failed",
+    "subject": "deps(deps): Update mkdocs-macros-plugin requirement",
+    "error": "error: could not apply bf6071c1... deps(deps): Update mkdocs-macros-plugin requirement\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/opentelemetry-sdk-gte-1.44.0",
+    "sha": "c451ceb",
+    "status": "failed",
+    "subject": "deps(deps): Update opentelemetry-sdk requirement from >=1.24 to >=1.44.0",
+    "error": "error: could not apply c451cebc... deps(deps): Update opentelemetry-sdk requirement from >=1.24 to >=1.44.0\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/pyarrow-25.0.0",
+    "sha": "27880f4",
+    "status": "failed",
+    "subject": "deps(deps-dev): Bump pyarrow from 16.1.0 to 25.0.0",
+    "error": "error: could not apply 27880f4f... deps(deps-dev): Bump pyarrow from 16.1.0 to 25.0.0\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/pygments-gte-2.20.0",
+    "sha": "6ef17ba",
+    "status": "failed",
+    "subject": "deps(deps): Update pygments requirement from >=2.15.1 to >=2.20.0",
+    "error": "error: could not apply 6ef17ba8... deps(deps): Update pygments requirement from >=2.15.1 to >=2.20.0\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/pymdown-extensions-gte-11.0.1",
+    "sha": "c9132b3",
+    "status": "failed",
+    "subject": "deps(deps): Update pymdown-extensions requirement",
+    "error": "error: could not apply c9132b31... deps(deps): Update pymdown-extensions requirement\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/python-dev-6ffa451956",
+    "sha": "1f61a41",
+    "status": "failed",
+    "subject": "deps(deps): Bump mypy from 2.2.0 to 2.3.0 in the python-dev group",
+    "error": "error: could not apply 1f61a410... deps(deps): Bump mypy from 2.2.0 to 2.3.0 in the python-dev group\n"
+  },
+  {
+    "branch": "origin/dependabot/pip/uvicorn-gte-0.51.0-and-lt-1",
+    "sha": "3b2af4d",
+    "status": "failed",
+    "subject": "deps(deps): Update uvicorn requirement from <1,>=0.50.1 to >=0.51.0,<1",
+    "error": "error: could not apply 3b2af4d7... deps(deps): Update uvicorn requirement from <1,>=0.50.1 to >=0.51.0,<1\n"
+  }
+]

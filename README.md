@@ -64,6 +64,11 @@ bash OFFLINE_BOOTSTRAP.sh \ --wheelhouse ./wheelhouse \ --artifact ./dist/codex_
 - [Local Development Setup](docs/guides/local-development-setup.md) - Development environment
 - [Offline Deployment](docs/release/OFFLINE_DEPLOYMENT.md) - Air-gapped environment setup
 - [PyPI Setup](docs/operations/pypi-trusted-publishing-setup.md) - Package publishing setup
+
+**Optional Features & Integration:**
+- [Optional Features & Dependencies Guide](docs/optional_features_guide.md) - Feature-based dependency management
+- [Comprehensive Integration Guide](docs/INTEGRATION_GUIDE_COMPREHENSIVE.md) - 5+ integration examples with RAG, Cognitive Brain, Memory Systems
+- [Optional Dependencies](docs/optional_dependencies.md) - Detailed dependency information
 ---
 ## Genesis Protocol - Pre-token Setup
 **Status:** Template files added, **awaiting human admin secret injection**

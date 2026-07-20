@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -63,7 +63,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -110,7 +110,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -139,7 +139,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -185,7 +185,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -208,7 +208,7 @@ jobs:
         for category, cost in report['cost_breakdown'].items():\n    print(f\\\" \
         \ - {category}: \\${cost:.2f}\\\")\n\"\n"
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -228,7 +228,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -255,7 +255,7 @@ jobs:
         \    exit(0)\nelse:\n    print(f'✗ Code coverage: {coverage_pct:.1f}% (target:\
         \ ≥85%)')\n    exit(1)\n\"\n"
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -280,7 +280,7 @@ jobs:
         path: failover-drill-*.json
         name: failover-drill-report
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip

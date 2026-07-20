@@ -1,4 +1,75 @@
-"""Monitoring helpers for Codex ML."""
+"""Monitoring and observability for Codex ML.
+
+This module provides comprehensive monitoring capabilities including:
+
+- Cognitive logging with memory consolidation (STM/LTM)
+- Metrics collection and export (Prometheus)
+- System resource monitoring
+- Data drift detection
+- Model drift detection
+- Health checks
+
+Installation:
+    Monitoring is included in all profiles. For advanced features:
+    pip install codex-ml[cognitive]  # For memory consolidation
+    pip install codex-ml[full]       # For all monitoring features
+
+Quick Start:
+    from codex_ml.monitoring.codex_logging import CodexLogger
+    
+    logger = CodexLogger(experiment_name="training")
+    logger.log_event("training_start", {"epoch": 0})
+    
+    # Query learned patterns across sessions
+    patterns = logger.query_patterns("training_*")
+
+Features:
+    - **Cognitive Logging**: Logs events to memory with automatic consolidation
+    - **Pattern Learning**: Learns patterns from event history
+    - **STM/LTM**: Automatic consolidation from short-term to long-term memory
+    - **Metrics Export**: Prometheus metrics endpoint
+    - **Drift Detection**: Detect data and model drift automatically
+    - **Health Monitoring**: Track system resource usage
+
+Classes:
+    CodexLogger: Main logging interface for cognitive memory
+    CodexMetricsRegistry: Prometheus metrics registry
+    SystemMetricsLogger: System resource monitoring
+    DataDriftDetector: Detect data distribution changes
+    ModelDriftDetector: Detect model performance degradation
+
+Functions:
+    metrics_enabled: Check if metrics collection is enabled
+    get_metrics_text: Get metrics in text format
+    metrics_endpoint_fastapi: FastAPI metrics endpoint
+
+Configuration:
+    Set environment variables to control monitoring:
+    
+    CODEX_EXPERIMENTS_DIR: Directory for experiment logs (default: .codex/experiments)
+    CODEX_LOG_LEVEL: Logging level (default: INFO)
+    CODEX_METRICS_ENABLED: Enable metrics (default: true)
+    CODEX_DRIFT_THRESHOLD: Drift detection threshold (default: 0.1)
+
+Integration with Training:
+    from codex_ml.monitoring.codex_logging import CodexLogger
+    from codex_ml.training.trainer import Trainer
+    
+    logger = CodexLogger(experiment_name="model_training")
+    trainer = Trainer(config=config, logger=logger)
+    trainer.train()
+    
+    # Patterns automatically consolidated from STM to LTM
+    patterns = logger.query_patterns("*")
+
+See Also:
+    - docs/optional_features_guide.md for Cognitive Brain and Memory Systems
+    - docs/INTEGRATION_GUIDE_COMPREHENSIVE.md for integration examples
+    - docs/PERFORMANCE_OPTIMIZATION_GUIDE.md for tuning monitoring overhead
+
+Author: Codex Team
+Version: 0.3.0
+"""
 
 from __future__ import annotations
 

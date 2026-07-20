@@ -40,7 +40,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -156,7 +156,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -235,7 +235,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
@@ -310,7 +310,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7.0.0
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip

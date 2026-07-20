@@ -1,0 +1,116 @@
+[
+  {
+    "branch": "origin/dependabot/cargo/anyhow-1.0.104",
+    "sha": "5391dd4",
+    "subject": "deps(deps): Bump anyhow from 1.0.100 to 1.0.104",
+    "date": "2026-07-20T09:40:32Z"
+  },
+  {
+    "branch": "origin/dependabot/cargo/rayon-1.12.0",
+    "sha": "878795d",
+    "subject": "deps(deps): Bump rayon from 1.11.0 to 1.12.0",
+    "date": "2026-07-20T09:40:23Z"
+  },
+  {
+    "branch": "origin/dependabot/cargo/serde-1.0.229",
+    "sha": "9a79e5d",
+    "subject": "deps(deps): Bump serde from 1.0.228 to 1.0.229",
+    "date": "2026-07-20T09:40:14Z"
+  },
+  {
+    "branch": "origin/dependabot/cargo/tracing-subscriber-0.3.23",
+    "sha": "137d045",
+    "subject": "deps(deps): Bump tracing-subscriber from 0.3.22 to 0.3.23",
+    "date": "2026-07-20T09:40:38Z"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-node-7",
+    "sha": "ec96f9c",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "date": "2026-07-20T09:43:54Z"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/actions/setup-python-7.0.0",
+    "sha": "2a0c80c",
+    "subject": "chore(auth): write provenance session token [skip ci]",
+    "date": "2026-07-20T10:07:21Z"
+  },
+  {
+    "branch": "origin/dependabot/github_actions/softprops/action-gh-release-3.0.2",
+    "sha": "f8ee414",
+    "subject": "ci(deps): Bump softprops/action-gh-release from 3.0.1 to 3.0.2",
+    "date": "2026-07-20T09:10:22Z"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/github/spark-0.46.15",
+    "sha": "2efb932",
+    "subject": "deps(deps): Bump @github/spark from 0.44.15 to 0.46.15 in /cognitive_app",
+    "date": "2026-07-20T09:39:35Z"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/lucide-react-1.25.0",
+    "sha": "2ece4dd",
+    "subject": "deps(deps): Bump lucide-react from 0.484.0 to 1.25.0 in /cognitive_app",
+    "date": "2026-07-20T09:39:52Z"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-dialog-1.1.20",
+    "sha": "e895287",
+    "subject": "deps(deps): Bump @radix-ui/react-dialog in /cognitive_app",
+    "date": "2026-07-20T09:40:10Z"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/radix-ui/react-tooltip-1.2.13",
+    "sha": "08c90f2",
+    "subject": "deps(deps): Bump @radix-ui/react-tooltip in /cognitive_app",
+    "date": "2026-07-20T09:39:44Z"
+  },
+  {
+    "branch": "origin/dependabot/npm_and_yarn/cognitive_app/tailwindcss/postcss-4.3.3",
+    "sha": "261c92b",
+    "subject": "deps(deps-dev): Bump @tailwindcss/postcss in /cognitive_app",
+    "date": "2026-07-20T09:40:03Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/mkdocs-macros-plugin-gte-1.5.0",
+    "sha": "bf6071c",
+    "subject": "deps(deps): Update mkdocs-macros-plugin requirement",
+    "date": "2026-07-20T09:11:24Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/opentelemetry-sdk-gte-1.44.0",
+    "sha": "c451ceb",
+    "subject": "deps(deps): Update opentelemetry-sdk requirement from >=1.24 to >=1.44.0",
+    "date": "2026-07-20T09:11:32Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/pyarrow-25.0.0",
+    "sha": "27880f4",
+    "subject": "deps(deps-dev): Bump pyarrow from 16.1.0 to 25.0.0",
+    "date": "2026-07-20T09:11:42Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/pygments-gte-2.20.0",
+    "sha": "6ef17ba",
+    "subject": "deps(deps): Update pygments requirement from >=2.15.1 to >=2.20.0",
+    "date": "2026-07-20T09:11:13Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/pymdown-extensions-gte-11.0.1",
+    "sha": "c9132b3",
+    "subject": "deps(deps): Update pymdown-extensions requirement",
+    "date": "2026-07-20T09:11:49Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/python-dev-6ffa451956",
+    "sha": "1f61a41",
+    "subject": "deps(deps): Bump mypy from 2.2.0 to 2.3.0 in the python-dev group",
+    "date": "2026-07-20T09:11:07Z"
+  },
+  {
+    "branch": "origin/dependabot/pip/uvicorn-gte-0.51.0-and-lt-1",
+    "sha": "3b2af4d",
+    "subject": "deps(deps): Update uvicorn requirement from <1,>=0.50.1 to >=0.51.0,<1",
+    "date": "2026-07-20T09:12:00Z"
+  }
+]

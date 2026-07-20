@@ -1,0 +1,114 @@
+{
+  "campaign": "POST_DEPLOY_v0.3.0_VALIDATION",
+  "timestamp": "2026-07-20T04:02:15.432815",
+  "version_target": "0.3.0",
+  "sections": {
+    "installation": {
+      "pypi_available": true,
+      "pip_install_success": true,
+      "site_packages_found": true,
+      "details": {
+        "site_packages": [
+          "codex_audit",
+          "codex_ml",
+          "codex_core",
+          "codex_harness",
+          "codex_crm",
+          "codex_cli",
+          "codex_plans",
+          "codex_bridge",
+          "codex",
+          "codex_ml-0.3.0.dist-info",
+          "codex_utils"
+        ]
+      }
+    },
+    "import_validation": {
+      "modules": {
+        "codex_ml": "SUCCESS",
+        "codex_cli": "SUCCESS",
+        "codex_core": "SUCCESS",
+        "codex_utils": "SUCCESS"
+      },
+      "version_check": {
+        "codex_ml": "0.2.0",
+        "codex_cli": "0.0.0",
+        "match": "MISMATCH"
+      },
+      "benchmark": {
+        "import_time_ms": 312.58487701416016
+      }
+    },
+    "cli_testing": {
+      "commands": {
+        "version": "EXIT_CODE_1",
+        "help": "EXIT_CODE_1",
+        "ml_help": "SUCCESS"
+      },
+      "status": "PARTIAL"
+    },
+    "api_testing": {
+      "modules": {
+        "core_config": "UNAVAILABLE: cannot import name 'config' from 'codex_core' (unknown location)",
+        "ml_config": "UNAVAILABLE: cannot import name 'MlConfig' from 'codex_ml.config' (/home/runner/work/_codex_/_codex_/src/codex_ml/config/__init__.py)"
+      },
+      "endpoints": {},
+      "status": "LIMITED"
+    },
+    "cognitive_app": {
+      "url": "https://aries-serpent.github.io/_codex_/cognitive_app/",
+      "http_status": 200,
+      "accessible": true,
+      "deployment": "LIVE"
+    },
+    "dependencies": {
+      "critical": {
+        "omegaconf": "2.3.1",
+        "hydra": "1.3.2",
+        "pydantic": "2.13.4",
+        "typer": "0.27.0",
+        "pyyaml": "MISSING"
+      },
+      "important": {
+        "jinja2": "3.1.6",
+        "requests": "2.34.2",
+        "cryptography": "49.0.0",
+        "click": "8.1.6"
+      },
+      "optional": {}
+    },
+    "health_score": {
+      "installation": 20,
+      "imports": 20.0,
+      "cli": 5.0,
+      "api": 0.0,
+      "cognitive_app": 15,
+      "dependencies": 12.0,
+      "overall": 72.0
+    },
+    "performance": {
+      "import_time_ms": 312.58487701416016,
+      "baseline_comparison": {
+        "v0.2.2_expected_import_ms": 45.0,
+        "current_import_ms": 312.58487701416016,
+        "regression_percentage": 594.633060031467,
+        "status": "REGRESSION"
+      }
+    }
+  },
+  "summary": {
+    "overall_status": "PASS_WITH_WARNINGS",
+    "score": 72.0,
+    "timestamp": "2026-07-20T04:02:17.063787",
+    "recommendations": [
+      "Address low-scoring sections before release",
+      "Fix CLI entry points and command routing",
+      "Verify API module availability and endpoints"
+    ],
+    "thresholds": {
+      "production_ready": 90,
+      "acceptable": 70,
+      "critical": 50
+    }
+  }
+}
