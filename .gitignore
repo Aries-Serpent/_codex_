@@ -94,6 +94,7 @@ data/checkpoints/
 .dmypy.json
 dmypy.json
 .ruff_cache/
+.cache/
 
 # Batch 0 cleanup: Hardened venv patterns
 venv_test/

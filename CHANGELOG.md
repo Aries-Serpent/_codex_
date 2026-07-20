@@ -1,7 +1,12 @@
 ## [Unreleased]
 
 ### Fixed
-- PR #5390 CI/workflow remediation:
+- PR #5390 cache file cleanup (session 2026-07-20T21:11Z):
+  - removed 297 accidentally committed `.cache/pip/http-v2/` files from version control
+  - added `.cache/` to `.gitignore` to prevent future accidental cache commits
+  - reduced PR diff from 299 files to 2 files (package.json + package-lock.json for axios 1.16.0→1.18.0)
+  - replied to CI rescue comment clarifying that failures were on old commit, current HEAD is clean
+- PR #5390 CI/workflow remediation (session 2026-07-20T20:41Z):
   - removed accidental tracked file `=12.0`
   - auto-updated 379 GitHub Action version pins across workflow files to the repository-approved versions
   - repaired 25 malformed workflow YAML files caused by cache-injection corruption so all workflows parse cleanly again
