@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-07-20T05:35:52Z",
+  "timestamp": "2026-07-20T05:37:31Z",
   "package_version": "0.3.0",
   "summary": {
-    "total_tests": 18,
-    "passed": 18,
+    "total_tests": 24,
+    "passed": 23,
     "failed": 0,
-    "skipped": 0,
+    "skipped": 1,
     "errors": 0,
-    "pass_rate": "100.0%",
-    "total_duration_ms": "57.35ms"
+    "pass_rate": "95.8%",
+    "total_duration_ms": "64.56ms"
   },
   "results": [
     {
       "category": "Imports",
       "test_name": "Import codex_ml",
       "status": "PASS",
-      "duration_ms": 0.0040531158447265625,
+      "duration_ms": 0.003814697265625,
       "error_msg": "",
       "details": {}
     },
@@ -23,7 +23,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.config",
       "status": "PASS",
-      "duration_ms": 0.002384185791015625,
+      "duration_ms": 0.003337860107421875,
       "error_msg": "",
       "details": {}
     },
@@ -31,7 +31,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.cli.main",
       "status": "PASS",
-      "duration_ms": 54.903507232666016,
+      "duration_ms": 57.55186080932617,
       "error_msg": "",
       "details": {}
     },
@@ -39,7 +39,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.api.rag_api",
       "status": "PASS",
-      "duration_ms": 0.6537437438964844,
+      "duration_ms": 0.6551742553710938,
       "error_msg": "",
       "details": {}
     },
@@ -47,7 +47,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.metrics",
       "status": "PASS",
-      "duration_ms": 0.002384185791015625,
+      "duration_ms": 0.0026226043701171875,
       "error_msg": "",
       "details": {}
     },
@@ -55,7 +55,7 @@
       "category": "Imports",
       "test_name": "Import codex_ml.data",
       "status": "PASS",
-      "duration_ms": 0.001430511474609375,
+      "duration_ms": 0.0016689300537109375,
       "error_msg": "",
       "details": {}
     },
@@ -71,7 +71,7 @@
       "category": "CLI",
       "test_name": "CLI main entry point",
       "status": "PASS",
-      "duration_ms": 0.0016689300537109375,
+      "duration_ms": 0.0011920928955078125,
       "error_msg": "",
       "details": {
         "has_context": false
@@ -89,7 +89,7 @@
       "category": "Config",
       "test_name": "Config creation and attributes",
       "status": "PASS",
-      "duration_ms": 0.011205673217773438,
+      "duration_ms": 0.015735626220703125,
       "error_msg": "",
       "details": {
         "has_required_attrs": true
@@ -99,7 +99,7 @@
       "category": "API",
       "test_name": "RAG API module",
       "status": "PASS",
-      "duration_ms": 0.0021457672119140625,
+      "duration_ms": 0.002384185791015625,
       "error_msg": "",
       "details": {
         "exported_items": 14
@@ -109,7 +109,7 @@
       "category": "API",
       "test_name": "Metrics API module",
       "status": "PASS",
-      "duration_ms": 0.001430511474609375,
+      "duration_ms": 0.0016689300537109375,
       "error_msg": "",
       "details": {
         "exported_items": 50
@@ -119,7 +119,7 @@
       "category": "CognitiveBrain",
       "test_name": "Module codex_ml.cognitive_brain",
       "status": "PASS",
-      "duration_ms": 0.6809234619140625,
+      "duration_ms": 0.0019073486328125,
       "error_msg": "",
       "details": {
         "exports": 17
@@ -129,7 +129,7 @@
       "category": "Memory",
       "test_name": "Memory system modules",
       "status": "PASS",
-      "duration_ms": 0.13113021850585938,
+      "duration_ms": 0.059604644775390625,
       "error_msg": "",
       "details": {
         "available_modules": [
@@ -141,7 +141,7 @@
       "category": "DataValidation",
       "test_name": "Validation module",
       "status": "PASS",
-      "duration_ms": 0.89263916015625,
+      "duration_ms": 0.9837150573730469,
       "error_msg": "",
       "details": {
         "validators": 28
@@ -151,7 +151,7 @@
       "category": "Integration",
       "test_name": "Config + CLI integration",
       "status": "PASS",
-      "duration_ms": 0.016689300537109375,
+      "duration_ms": 0.020265579223632812,
       "error_msg": "",
       "details": {}
     },
@@ -159,7 +159,7 @@
       "category": "Integration",
       "test_name": "Module cross-imports",
       "status": "PASS",
-      "duration_ms": 0.004291534423828125,
+      "duration_ms": 0.0,
       "error_msg": "",
       "details": {}
     },
@@ -167,11 +167,75 @@
       "category": "Performance",
       "test_name": "Package import time",
       "status": "PASS",
-      "duration_ms": 0.0007152557373046875,
+      "duration_ms": 0.00095367431640625,
       "error_msg": "",
       "details": {
-        "import_time_ms": 0.0002384185791015625
+        "import_time_ms": 0.0
       }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "Config + CLI + API integration",
+      "status": "PASS",
+      "duration_ms": 0.010967254638671875,
+      "error_msg": "",
+      "details": {
+        "config_data": {
+          "model_name": "default",
+          "batch_size": 32
+        }
+      }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "Config + Memory + Tracking integration",
+      "status": "PASS",
+      "duration_ms": 0.012874603271484375,
+      "error_msg": "",
+      "details": {
+        "has_tracking": true,
+        "has_mlflow": true
+      }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "API + RAG + Indexing integration",
+      "status": "PASS",
+      "duration_ms": 0.13637542724609375,
+      "error_msg": "",
+      "details": {
+        "rag_available": true,
+        "indexing_available": true
+      }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "Cognitive Brain + Memory + Training Loop integration",
+      "status": "PASS",
+      "duration_ms": 5.042076110839844,
+      "error_msg": "",
+      "details": {
+        "training_available": false,
+        "callbacks_available": true
+      }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "Circular dependency detection",
+      "status": "PASS",
+      "duration_ms": 0.012159347534179688,
+      "error_msg": "",
+      "details": {
+        "circular_deps_found": 0
+      }
+    },
+    {
+      "category": "CrossModuleIntegration",
+      "test_name": "Import performance validation",
+      "status": "SKIP",
+      "duration_ms": 0.0035762786865234375,
+      "error_msg": "No new imports to measure",
+      "details": {}
     }
   ]
 }

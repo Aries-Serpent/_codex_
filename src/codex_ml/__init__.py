@@ -17,6 +17,30 @@ __version__ = "0.3.0"
 # Avoid importing heavy deps at import time (Torch/HF) to keep `pip install` fast
 # and to prevent side-effects when tools only query metadata.
 
+# Cognitive Brain module - core reasoning and context management
+try:  # pragma: no cover - optional module
+    from .cognitive_brain import CognitiveBrain, ContextManager, ReasoningEngine
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
+    CognitiveBrain = None  # type: ignore[assignment]
+    ContextManager = None  # type: ignore[assignment]
+    ReasoningEngine = None  # type: ignore[assignment]
+
+# Memory module - STM/LTM memory systems
+try:  # pragma: no cover - optional module
+    from .memory import (
+        ConsolidationRecord,
+        LTMMemory,
+        MemoryConsolidation,
+        MemoryEntry,
+        STMMemory,
+    )
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
+    ConsolidationRecord = None  # type: ignore[assignment]
+    LTMMemory = None  # type: ignore[assignment]
+    MemoryConsolidation = None  # type: ignore[assignment]
+    MemoryEntry = None  # type: ignore[assignment]
+    STMMemory = None  # type: ignore[assignment]
+
 try:  # pragma: no cover - optional dependency (OmegaConf)
     from .config import (
         PretrainingConfig,
