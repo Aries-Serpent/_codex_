@@ -16,10 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: python -m pip install -q statsmodels prophet scikit-learn scipy pandas
@@ -55,10 +57,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: python -m pip install -q statsmodels prophet scikit-learn scipy pandas
@@ -97,10 +101,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: python -m pip install -q scikit-learn scipy pandas numpy pytest
@@ -142,10 +148,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: python -m pip install -q scikit-learn scipy pandas numpy pytest

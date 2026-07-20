@@ -8,10 +8,12 @@ jobs:
     name: Model Accuracy Tracking
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
@@ -51,10 +53,12 @@ jobs:
         path: .codex/ensemble_metrics.json
         retention-days: 30
         name: ensemble-metrics
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
@@ -86,10 +90,12 @@ jobs:
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: '⚠️ **Model\
           \ Drift Detected** in ensemble predictor. Consider running retraining workflow.'\n\
           })\n"
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
@@ -110,10 +116,12 @@ jobs:
         \   print(f\"\\n✓ SLA PASSED: p99 latency {p99:.1f}ms < 200ms\")\nelse:\n\
         \    print(f\"\\n✗ SLA FAILED: p99 latency {p99:.1f}ms > 200ms\")\n    exit(1)\n\
         EOF\n"
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
@@ -135,10 +143,12 @@ jobs:
         =\"*60)\n\nif escalation_rate <= 0.05:\n    print(f\"\\n✓ ESCALATION RATE\
         \ OK: {escalation_rate:.1%} ≤ 5%\")\nelse:\n    print(f\"\\n⚠️ HIGH ESCALATION\
         \ RATE: {escalation_rate:.1%} > 5%\")\n    exit(1)\nEOF\n"
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt

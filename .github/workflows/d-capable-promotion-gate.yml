@@ -29,8 +29,8 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache: pip
@@ -38,7 +38,9 @@ jobs:
       run: pip install pyyaml --quiet
     - name: Run promotion evaluation
       id: promotion
-      run: "# Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).\n\
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }"# Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).\n\
         APPLY_FLAG=\"\"\nif [ \"${{ github.event_name }}\" = \"schedule\" ] || [ \"\
         ${{ github.event.inputs.apply_promotions }}\" = \"true\" ]; then\n  APPLY_FLAG=\"\
         --promote\"\nfi\npython scripts/cognitive/d_capable_promotion.py ${APPLY_FLAG}\n"
@@ -54,6 +56,14 @@ jobs:
         \ngit push\n"
       env:
         GITHUB_TOKEN: ${{ github.token }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-d_capable_promotion_gate-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-d_capable_promotion_gate-
+            ${{ runner.os }}-pip-
     - name: Post promotion summary
       if: always()
       run: "{\n  echo \"## D_CAPABLE Promotion Gate\"\n  echo \"\"\n  echo '```json'\n\

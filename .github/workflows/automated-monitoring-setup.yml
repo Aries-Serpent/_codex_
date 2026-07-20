@@ -48,10 +48,12 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
         cache: pip
     - name: Install dependencies
       run: 'pip install pyyaml jinja2
@@ -186,6 +188,14 @@ jobs:
       with:
         github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
           }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-automated_monitoring_setup-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-automated_monitoring_setup-
+            ${{ runner.os }}-pip-
         script: "const fs = require('fs');\nconst report = fs.readFileSync('setup-report.md',\
           \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## \U0001F4CA\

@@ -46,13 +46,15 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install -q pyyaml ruff
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -q pyyaml ruff
 
         '
     - name: Detect failing patterns
@@ -76,6 +78,14 @@ jobs:
         path: .codex/ci-patterns-detected.json
         retention-days: 30
         name: ci-patterns-detected-${{ github.run_id }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-ci_pattern_healer-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-ci_pattern_healer-
+            ${{ runner.os }}-pip-
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -93,13 +103,15 @@ jobs:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install -q pyyaml ruff
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'pip install -q pyyaml ruff
 
         '
     - name: Apply automated fixes

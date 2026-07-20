@@ -34,10 +34,12 @@ jobs:
       uses: actions/checkout@v5
       with:
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
         cache: pip
     - name: Install dependencies
       run: "python -m pip install --upgrade pip\npip install -e .\npip install \\\n\

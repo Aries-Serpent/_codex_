@@ -31,13 +31,15 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache: pip
     - name: Install with test dependencies
-      run: 'pip install --upgrade pip --quiet
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install --upgrade pip --quiet
 
         pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 --quiet
 

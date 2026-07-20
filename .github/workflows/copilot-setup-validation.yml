@@ -40,13 +40,15 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache: pip
     - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      run: 
+        cache-tier: common
+        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }'python -m pip install --upgrade pip
 
         pip install pyyaml yamllint
 
@@ -146,6 +148,14 @@ jobs:
       uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-copilot_setup_validation-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-copilot_setup_validation-
+            ${{ runner.os }}-pip-
         script: "const fs = require('fs');\n\nlet markdown = '## \U0001F916 Copilot\
           \ Setup Steps Validation\\n\\n';\nmarkdown += '### Test Results\\n\\n';\n\
           \nlet totalPassed = 0, totalTests = 0, totalFailed = 0;\n\n// Core validation\n\

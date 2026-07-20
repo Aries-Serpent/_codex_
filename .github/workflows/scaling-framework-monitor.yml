@@ -10,13 +10,15 @@ jobs:
     name: Multi-Tenant Isolation Health
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest pytest-cov
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest pytest-cov
 
         '
     - name: Test multi-tenant isolation
@@ -63,13 +65,15 @@ jobs:
     name: Failover Capability Check
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
 
         '
     - name: Test failover capability
@@ -111,13 +115,15 @@ jobs:
     name: Load Distribution Check
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
 
         '
     - name: Test load distribution
@@ -141,13 +147,15 @@ jobs:
     name: Auto-Scaling Trigger Check
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
 
         '
     - name: Test auto-scaling triggers
@@ -188,13 +196,15 @@ jobs:
     name: Cost Optimization Check
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest
 
         '
     - name: Test cost optimization
@@ -211,13 +221,15 @@ jobs:
         \ {report['ri_utilization']:.1f}%\\\")\nprint(f\\\"✓ Cost Breakdown:\\\")\n\
         for category, cost in report['cost_breakdown'].items():\n    print(f\\\" \
         \ - {category}: \\${cost:.2f}\\\")\n\"\n"
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Check multi-region uptime
-      run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}"echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
         \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
         \n  # Mock health check\n  echo \"✓ $region: Healthy\"\ndone\n"
     - name: Verify SLA >99%
@@ -232,13 +244,15 @@ jobs:
     name: Test Coverage Report
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Install dependencies
-      run: 'pip install pytest pytest-cov
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'pip install pytest pytest-cov
 
         '
     - name: Run tests with coverage
@@ -259,13 +273,15 @@ jobs:
         \ 85:\n    print(f'✓ Code coverage: {coverage_pct:.1f}% (target: ≥85%)')\n\
         \    exit(0)\nelse:\n    print(f'✗ Code coverage: {coverage_pct:.1f}% (target:\
         \ ≥85%)')\n    exit(1)\n\"\n"
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Execute failover drill
-      run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}"python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
         \ HealthStatus\nimport time\n\nprint('=== Failover Drill ===')\n\nmgr = FailoverManager(check_interval=0.1)\n\
         \n# Setup regions\nmgr.add_region(RegionConfig('us-east-1', 'region-1', primary=True))\n\
         mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))\n\nprint('✓\
@@ -284,13 +300,15 @@ jobs:
       with:
         path: failover-drill-*.json
         name: failover-drill-report
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Python with caching
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: Generate cost report
-      run: 'python -c "
+      run: 
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}'python -c "
 
         from datetime import datetime
 
