@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-20T01:30:51.275984+00:00",
+  "generated_at": "2026-07-20T02:03:56.558195+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4940,
+  "rest_remaining": 4013,
   "graphql_available": true,
-  "graphql_remaining": 4993,
+  "graphql_remaining": 4976,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [],
+  "open_prs": [
+    5367
+  ],
   "branch": "copilot/fix-pypi-upload-error",
   "recommendation": "Use REST for data fetches. "
 }
