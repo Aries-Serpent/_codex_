@@ -21,6 +21,7 @@ Exit codes:
 import json
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -291,7 +292,7 @@ def save_asset_manifest() -> bool:
             return True
         
         manifest = {
-            "generated_at": __import__("datetime").datetime.utcnow().isoformat() + "Z",
+            "generated_at": datetime.utcnow().isoformat() + "Z",
             "assets": {}
         }
         

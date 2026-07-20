@@ -82,26 +82,26 @@ def extract_asset_urls(html_content: str, base_url: str) -> dict:
     for match in re.finditer(r'<script[^>]+src=["\']([^"\']+)["\']', html_content):
         url = match.group(1)
         # Convert relative URLs to absolute
-        if url.startswith('/'):
+        if not url.startswith(('http://', 'https://')):
             assets["scripts"].append(urljoin(base_url, url))
         else:
-            assets["scripts"].append(urljoin(base_url, url))
+            assets["scripts"].append(url)
     
     # Extract link tags with href for stylesheets
     for match in re.finditer(r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']([^"\']+)["\']', html_content):
         url = match.group(1)
-        if url.startswith('/'):
+        if not url.startswith(('http://', 'https://')):
             assets["styles"].append(urljoin(base_url, url))
         else:
-            assets["styles"].append(urljoin(base_url, url))
+            assets["styles"].append(url)
     
     # Also check for alternate format (href before rel)
     for match in re.finditer(r'<link[^>]+href=["\']([^"\']+)["\'][^>]+rel=["\']stylesheet["\']', html_content):
         url = match.group(1)
-        if url.startswith('/'):
+        if not url.startswith(('http://', 'https://')):
             assets["styles"].append(urljoin(base_url, url))
         else:
-            assets["styles"].append(urljoin(base_url, url))
+            assets["styles"].append(url)
     
     return assets
 
