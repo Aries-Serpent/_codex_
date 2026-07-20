@@ -19628,3 +19628,4 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 
 **Note**: PyPI Trusted Publisher configuration verified on PyPI portal. No recreation needed — existing setup is perfect and correctly configured.
 
+
