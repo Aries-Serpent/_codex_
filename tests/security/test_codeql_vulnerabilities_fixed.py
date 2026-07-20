@@ -50,6 +50,9 @@ class TestCWE89SQLInjection:
             # Secure code raises TypeError because string is not int
             with pytest.raises(TypeError, match="user_id must be int"):
                 executor.get_user_by_id("1 OR 1=1--")
+            
+            # Close the connection properly
+            executor.conn.close()
         
         finally:
             Path(db_path).unlink(missing_ok=True)
@@ -275,7 +278,7 @@ class TestCWE798HardcodedCredentials:
             assert config.api_key == 'sk-1234567890abcdef'
             assert config.api_secret == 'secret_xyz'
 
-    def test_dotenv_loader_integration(self):
+    def test_env_file_integration(self):
         """Verify .env file loading works (development only)."""
         with tempfile.TemporaryDirectory() as tmpdir:
             dotenv_path = Path(tmpdir) / '.env'

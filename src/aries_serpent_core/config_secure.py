@@ -103,3 +103,14 @@ class APIConfig:
             'Authorization': f'******',
             'Content-Type': 'application/json',
         }
+    
+    def get_headers_redacted(self) -> dict:
+        """
+        Get API request headers with redacted authentication for logging.
+        
+        Returns headers with redacted API key for safe logging.
+        """
+        return {
+            'Authorization': '******',
+            'Content-Type': 'application/json',
+        }

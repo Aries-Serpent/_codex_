@@ -19467,7 +19467,7 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 #### Features
 - Migrated PyPI publishing from token-based to OIDC-based trusted publishing
 - Eliminated long-lived API tokens from secrets, using keyless authentication
-- Pinned pypa/gh-action-pypi-publish to immutable commit SHA ba38be9e
+- Pinned pypa/gh-action-pypi-publish to immutable commit SHA ba38be9e (verified via inline comment in workflow)
 - Configured both TestPyPI and production PyPI jobs for OIDC
 
 #### Compliance

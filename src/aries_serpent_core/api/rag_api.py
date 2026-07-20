@@ -129,7 +129,7 @@ def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
                 raise HTTPException(status_code=400, detail="Path must be relative (cannot start with / or \\)")
             
             # Reject Windows drive letters (C:, D:, etc.) and UNC paths
-            if len(segment) >= 2 and segment[1] == ":" or segment.startswith("\\\\"):
+            if (len(segment) >= 2 and segment[1] == ":") or segment.startswith("\\\\"):
                 raise HTTPException(status_code=400, detail="Absolute paths not allowed")
             
             # Use pathlib.Path to normalize and check for parent references
