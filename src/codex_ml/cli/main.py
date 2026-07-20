@@ -668,7 +668,7 @@ else:
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: Optional[list[str]] = None) -> int:
+    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore[misc]
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 

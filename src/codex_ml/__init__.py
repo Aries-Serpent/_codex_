@@ -21,9 +21,9 @@ __version__ = "0.3.0"
 try:  # pragma: no cover - optional module
     from .cognitive_brain import CognitiveBrain, ContextManager, ReasoningEngine
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
-    CognitiveBrain = None  # type: ignore[assignment]
-    ContextManager = None  # type: ignore[assignment]
-    ReasoningEngine = None  # type: ignore[assignment]
+    CognitiveBrain = None  # type: ignore[assignment,misc]
+    ContextManager = None  # type: ignore[assignment,misc]
+    ReasoningEngine = None  # type: ignore[assignment,misc]
 
 # Memory module - STM/LTM memory systems
 try:  # pragma: no cover - optional module
@@ -35,11 +35,11 @@ try:  # pragma: no cover - optional module
         STMMemory,
     )
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
-    ConsolidationRecord = None  # type: ignore[assignment]
-    LTMMemory = None  # type: ignore[assignment]
-    MemoryConsolidation = None  # type: ignore[assignment]
-    MemoryEntry = None  # type: ignore[assignment]
-    STMMemory = None  # type: ignore[assignment]
+    ConsolidationRecord = None  # type: ignore[assignment,misc]
+    LTMMemory = None  # type: ignore[assignment,misc]
+    MemoryConsolidation = None  # type: ignore[assignment,misc]
+    MemoryEntry = None  # type: ignore[assignment,misc]
+    STMMemory = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - optional dependency (OmegaConf)
     from .config import (

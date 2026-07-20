@@ -6,7 +6,7 @@ search, retrieval, and lifecycle management of stored data.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from .schemas import MemoryEntry
 
@@ -79,7 +79,7 @@ class LTMMemory:
             raise KeyError(f"Memory entry {entry_id} not found")
         return self.storage[entry_id].data
 
-    def search(self, predicate: callable) -> list[tuple[int, Any]]:
+    def search(self, predicate: Callable[..., Any]) -> list[tuple[int, Any]]:
         """Search long-term memory with a predicate function.
 
         Searches entries matching the predicate function and returns

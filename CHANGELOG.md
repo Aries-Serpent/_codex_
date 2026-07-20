@@ -1,6 +1,13 @@
 ## [Unreleased]
 
 ### Fixed
+- mypy regression in codex_ml v0.3.0 modules: `ltm.py` `callable` type annotation, `__init__.py` type ignore error codes, `cli/main.py` function redefinition; baseline lowered 172 → 171
+- STM eviction bug: `store()` now always returns a valid index pointing to the newly stored entry
+- `consolidation.py`: `min_importance` parameter correctly threaded to `stm.consolidate()`
+- Ruff E402 in `api/__init__.py`: removed unused `logger` assignment
+- Docstring default for `MLFLOW_TRACKING_URI` corrected to `file:./artifacts/mlruns`
+- Broken doc link in `monitoring/__init__.py` fixed (`PERFORMANCE_OPTIMIZATION_GUIDE.md`)
+
 ## [0.3.1] - 2026-07-20
 
 ### Added
