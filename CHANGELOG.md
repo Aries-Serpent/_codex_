@@ -1,6 +1,9 @@
 ## [Unreleased]
 
 ### Fixed
+- Encoding issues in verification scripts: added explicit UTF-8 encoding to file I/O operations
+  - `cognitive_app_verification_v0.3.0.py`: lines 95, 140, 180 - added `encoding='utf-8'`
+  - `deployment_validation_v0.3.0.py`: lines 126, 162, 237 - added `encoding='utf-8'` and `.decode('utf-8')`
 - mypy regression in codex_ml v0.3.0 modules: `ltm.py` `callable` type annotation, `__init__.py` type ignore error codes, `cli/main.py` function redefinition; baseline lowered 172 → 171
 - STM eviction bug: `store()` now always returns a valid index pointing to the newly stored entry
 - `consolidation.py`: `min_importance` parameter correctly threaded to `stm.consolidate()`
