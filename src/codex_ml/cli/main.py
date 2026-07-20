@@ -14,6 +14,7 @@ import importlib.util
 import json
 import os
 import sys
+import textwrap
 from collections.abc import Iterable
 from pathlib import Path
 from types import ModuleType
@@ -624,10 +625,14 @@ else:
                         try:
                             from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
                         except (ImportError, ModuleNotFoundError) as e:
-                            error_msg = (
-                                "Pipeline module is not available. "
-                                "Ensure you have installed codex-ml with the full profile: "
-                                "pip install codex-ml[full] or pip install codex-ml[runtime]"
+                            error_msg = textwrap.dedent(
+                                """\
+                                Pipeline module is not available.
+                                Ensure you have installed codex-ml with the full profile:
+                                  pip install codex-ml[full]
+                                  or
+                                  pip install codex-ml[runtime]
+                                """
                             )
                             get_default_logger().error(f"{error_msg}\nOriginal error: {e}")
                             raise ImportError(error_msg) from e
