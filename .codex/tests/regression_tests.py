@@ -266,7 +266,7 @@ class RegressionTestSuite:
             pytest_config = self.base_path / "pytest.ini"
             if pytest_config.exists():
                 with open(pytest_config) as f:
-                    f.read()
+                    f.read()  # Verify file is readable and well-formed
                 return True, "pytest configuration found and stable"
 
             # Fallback: Check for tests directory

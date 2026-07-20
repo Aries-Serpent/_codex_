@@ -321,7 +321,8 @@ def main() -> int:
             return 3
         print()
         
-        # Widget presence validation (only post-build)
+        # Widget presence validation (inherently only runs in post-build phase
+        # since this block is inside the "if run_post_build:" condition)
         if not validate_widget_presence():
             log("ERROR", "Widget presence validation failed")
             return 4
