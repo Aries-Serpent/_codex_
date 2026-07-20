@@ -9,6 +9,16 @@ import json
 from pathlib import Path
 from typing import Tuple, List, Dict
 
+# Module imports for testing (imported here to avoid duplication in test functions)
+try:
+    from codex_ml.config import CodexConfig, MlConfig
+    from codex_ml.memory import STMMemory, LTMMemory
+    from codex_ml.api import RagAPI, BaseRagAPI
+    from codex_ml.cognitive_brain import CognitiveBrain, ReasoningEngine
+except ImportError:
+    # Modules will be imported individually in test functions if needed
+    pass
+
 class FunctionalTester:
     def __init__(self):
         self.results: Dict[str, List[Tuple[str, bool, str]]] = {}
@@ -181,10 +191,7 @@ class FunctionalTester:
         print("="*80)
         
         try:
-            from codex_ml.config import CodexConfig
-            from codex_ml.memory import STMMemory, LTMMemory
-            from codex_ml.api import RagAPI
-            from codex_ml.cognitive_brain import CognitiveBrain
+            # Modules imported at module level to avoid duplication
             
             # Test 1: Config + Memory integration
             try:
