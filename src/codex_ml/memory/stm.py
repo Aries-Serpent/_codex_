@@ -73,17 +73,18 @@ class STMMemory:
         self.entries.append(entry)
 
         # Remove least important entry if capacity exceeded.
-        # The newly appended entry (last index) is excluded from eviction
-        # to guarantee the caller's returned index is always valid.
+        # The newly appended entry (always at last_idx) is excluded from
+        # eviction to guarantee the returned index always refers to it.
+        # Invariant: len > capacity >= 1 implies len >= 2, so last_idx >= 1
+        # and min_idx = 0 is always a valid, non-last index to seed the search.
         if len(self.entries) > self.capacity:
             last_idx = len(self.entries) - 1
-            # Seed the search with any index other than last_idx
-            min_idx = 0 if last_idx != 0 else 1
+            min_idx = 0  # last_idx >= 1, so 0 is always a safe initial candidate
             for i, e in enumerate(self.entries):
                 if i != last_idx and e.importance < self.entries[min_idx].importance:
                     min_idx = i
             self.entries.pop(min_idx)
-            # min_idx < last_idx always, so the new entry shifted one position left
+            # min_idx < last_idx always, so the new entry shifts one position left
 
         return len(self.entries) - 1
 
