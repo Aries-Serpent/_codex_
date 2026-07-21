@@ -16,6 +16,7 @@ Exit codes:
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -30,19 +31,58 @@ def log(level: str, msg: str) -> None:
     print(f"[{prefix.get(level, '•')}] {msg}")
 
 
-def get_local_manifest() -> Optional[dict]:
+def manifest_search_candidates(cli_path: Optional[str] = None) -> list[Path]:
+    """Return manifest path candidates in priority order."""
+    candidates = []
+
+    if cli_path:
+        candidates.append(Path(cli_path).expanduser().resolve())
+
+    env_path = os.environ.get("COGNITIVE_APP_MANIFEST")
+    if env_path:
+        candidates.append(Path(env_path).expanduser().resolve())
+
+    # Standard repo layout: script at scripts/ci/ -> repo root
+    script_repo_root = Path(__file__).resolve().parents[2]
+    candidates.append(script_repo_root / "cognitive_app" / "dist" / "manifest.json")
+
+    # Flat artifact layout: script and manifest in same directory
+    script_dir = Path(__file__).resolve().parent
+    candidates.append(script_dir / "manifest.json")
+
+    # Current working directory layouts
+    candidates.append(Path.cwd() / "manifest.json")
+    candidates.append(Path.cwd() / "cognitive_app" / "dist" / "manifest.json")
+
+    return candidates
+
+
+def resolve_manifest_path(cli_path: Optional[str] = None) -> Optional[Path]:
+    """Resolve the local manifest path using CLI arg, env var, or heuristics."""
+    for candidate in manifest_search_candidates(cli_path):
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def get_local_manifest(manifest_path: Optional[Path] = None) -> Optional[dict]:
     """Load locally built asset manifest."""
-    repo_root = Path(__file__).resolve().parents[2]
-    manifest_file = repo_root / "cognitive_app" / "dist" / "manifest.json"
-    
-    if not manifest_file.exists():
-        log("ERROR", f"Local manifest not found: {manifest_file}")
+    manifest_file = manifest_path or resolve_manifest_path()
+
+    if not manifest_file:
+        log("ERROR", "Local manifest not found: cognitive_app/dist/manifest.json")
+        log("INFO", "Searched the following locations:")
+        for candidate in manifest_search_candidates():
+            exists_marker = "✓ exists" if candidate.exists() else "✗ missing"
+            log("INFO", f"  {candidate} ({exists_marker})")
+        log("INFO", "Use --manifest <path> or set COGNITIVE_APP_MANIFEST environment variable")
         return None
-    
+
     try:
         with open(manifest_file, 'r') as f:
             manifest = json.load(f)
         log("SUCCESS", f"Loaded local manifest ({len(manifest.get('assets', {}))} assets)")
+        log("INFO", f"   Manifest path: {manifest_file}")
         return manifest
     except Exception as e:
         log("ERROR", f"Failed to load local manifest: {e}")
@@ -85,9 +125,13 @@ def calculate_file_hash(file_path: Path, algorithm: str = "sha256") -> str:
     return hasher.hexdigest()
 
 
-def verify_local_file_hashes(manifest: dict) -> dict:
+def verify_local_file_hashes(manifest: dict, manifest_path: Optional[Path] = None) -> dict:
     """Verify that local files match their manifest hashes."""
-    repo_root = Path(__file__).resolve().parents[2]
+    if manifest_path:
+        base_dir = manifest_path.parent
+    else:
+        base_dir = Path(__file__).resolve().parents[2]
+    
     results = {
         "total": 0,
         "verified": 0,
@@ -97,7 +141,7 @@ def verify_local_file_hashes(manifest: dict) -> dict:
     
     for asset_name, asset_info in manifest.get('assets', {}).items():
         results["total"] += 1
-        asset_path = repo_root / asset_info['path']
+        asset_path = base_dir / asset_info['path']
         
         if not asset_path.exists():
             results["missing"].append(asset_name)
@@ -265,6 +309,11 @@ def main() -> int:
         help="Base URL of cognitive_app deployment"
     )
     parser.add_argument(
+        "--manifest",
+        "-m",
+        help="Path to local manifest.json (default: auto-detect)"
+    )
+    parser.add_argument(
         "--report",
         help="Save report to file"
     )
@@ -276,7 +325,8 @@ def main() -> int:
     
     # Phase 1: Load local manifest
     log("INFO", "Phase 1: Loading local manifest")
-    local_manifest = get_local_manifest()
+    manifest_path = Path(args.manifest).expanduser().resolve() if args.manifest else None
+    local_manifest = get_local_manifest(manifest_path)
     if not local_manifest:
         return 3
     print()

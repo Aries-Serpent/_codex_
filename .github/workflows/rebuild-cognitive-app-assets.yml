@@ -200,6 +200,7 @@ jobs:
           echo ""
           
           python scripts/ci/cognitive_app_asset_manifest_verifier.py \
+            --manifest cognitive_app/dist/manifest.json \
             --url "https://aries-serpent.github.io/_codex_/cognitive_app/"
           
           VERIFY_RESULT=$?
