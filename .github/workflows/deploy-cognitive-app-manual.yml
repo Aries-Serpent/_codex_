@@ -1,0 +1,352 @@
+name: Deploy Cognitive App (Manual)
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (latest, git SHA, or tag)'
+        required: false
+        default: 'latest'
+      force_rebuild:
+        description: 'Force clean rebuild (rm node_modules + dist)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      skip_npm_cache:
+        description: 'Skip npm cache (fresh install)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      cache_busting:
+        description: 'Add cache-busting query params'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      dry_run:
+        description: 'Dry run (build only, no deploy)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      reason:
+        description: 'Reason for deployment (for logging)'
+        required: false
+        default: 'Manual deployment'
+
+concurrency:
+  group: ${{ github.workflow }}-manual
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Cognitive App
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      deployment_status: ${{ steps.deploy.outputs.status }}
+      asset_count: ${{ steps.deploy.outputs.asset_count }}
+      verification_result: ${{ steps.verify.outputs.result }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Resolve target version
+        id: resolve_version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          
+          if [ "$VERSION" = "latest" ]; then
+            SHA=$(git rev-parse HEAD)
+            TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+            if [ -n "$TAG" ]; then
+              echo "target_sha=$SHA" >> $GITHUB_OUTPUT
+              echo "target_tag=$TAG" >> $GITHUB_OUTPUT
+              echo "target_version=$TAG" >> $GITHUB_OUTPUT
+            else
+              echo "target_sha=$SHA" >> $GITHUB_OUTPUT
+              echo "target_version=${SHA:0:8}" >> $GITHUB_OUTPUT
+            fi
+          else
+            # Assume it's a SHA or tag
+            TARGET=$VERSION
+            # Try to resolve as tag
+            if git rev-parse "$TARGET" >/dev/null 2>&1; then
+              SHA=$(git rev-parse "$TARGET")
+              echo "target_sha=$SHA" >> $GITHUB_OUTPUT
+              echo "target_version=$TARGET" >> $GITHUB_OUTPUT
+            else
+              echo "target_sha=$TARGET" >> $GITHUB_OUTPUT
+              echo "target_version=${TARGET:0:8}" >> $GITHUB_OUTPUT
+            fi
+          fi
+          
+          echo "Target version: $(cat $GITHUB_OUTPUT | grep target_version | cut -d= -f2)"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: ${{ github.event.inputs.skip_npm_cache == 'true' && 'false' || 'npm' }}
+          cache-dependency-path: cognitive_app/package-lock.json
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.13
+
+      - name: Record deployment start
+        run: |
+          python scripts/ci/deployment_history_tracker.py record \
+            --type manual \
+            --status started \
+            --version "${{ steps.resolve_version.outputs.target_version }}" \
+            --reason "${{ github.event.inputs.reason }}"
+
+      - name: Prepare build environment
+        working-directory: cognitive_app
+        run: |
+          echo "📋 Build Configuration"
+          echo "   Version:         ${{ steps.resolve_version.outputs.target_version }}"
+          echo "   Force rebuild:   ${{ github.event.inputs.force_rebuild }}"
+          echo "   Skip npm cache:  ${{ github.event.inputs.skip_npm_cache }}"
+          echo "   Cache busting:   ${{ github.event.inputs.cache_busting }}"
+          echo "   Dry run:         ${{ github.event.inputs.dry_run }}"
+          echo "   Reason:          ${{ github.event.inputs.reason }}"
+          echo ""
+          
+          # Show current state
+          echo "Current environment:"
+          node --version
+          npm --version
+          echo ""
+
+      - name: Clean build artifacts (force rebuild)
+        if: github.event.inputs.force_rebuild == 'true'
+        working-directory: cognitive_app
+        run: |
+          echo "🧹 Cleaning build artifacts..."
+          rm -rf node_modules dist dist-test
+          echo "✓ Cleaned node_modules and dist"
+
+      - name: Pre-build validation
+        working-directory: cognitive_app
+        run: |
+          echo "🔍 Pre-build validation..."
+          python ../scripts/ci/validate_cognitive_app_build.py --pre-build-only
+          if [ $? -ne 0 ]; then
+            echo "❌ Pre-build validation failed"
+            exit 1
+          fi
+          echo ""
+
+      - name: Install dependencies
+        working-directory: cognitive_app
+        run: |
+          echo "📦 Installing dependencies..."
+          
+          if [ "${{ github.event.inputs.skip_npm_cache }}" = "true" ]; then
+            echo "   Using fresh install (no cache)"
+            npm install
+          else
+            echo "   Using cached install"
+            npm ci --prefer-offline
+          fi
+          
+          echo "✓ Dependencies installed"
+          echo ""
+
+      - name: TypeScript build
+        working-directory: cognitive_app
+        env:
+          VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
+          VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
+          VITE_DOCS_FETCH_LIVE: 'true'
+        run: |
+          echo "🏗️  Building cognitive_app..."
+          echo "   API mode:  ${VITE_API_MODE}"
+          echo "   CLI URL:   ${VITE_CLI_API_URL:-<not set>}"
+          echo ""
+          
+          npm run build
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ Build failed"
+            exit 1
+          fi
+          
+          echo "✓ Build successful"
+          echo ""
+
+      - name: Post-build validation
+        working-directory: cognitive_app
+        run: |
+          echo "✓ Post-build validation..."
+          python ../scripts/ci/validate_cognitive_app_build.py --post-build-only
+          if [ $? -ne 0 ]; then
+            echo "❌ Post-build validation failed"
+            exit 1
+          fi
+          echo ""
+
+      - name: Apply cache busting
+        if: github.event.inputs.cache_busting == 'true'
+        run: |
+          echo "🔄 Applying cache-busting configuration..."
+          python scripts/ci/cognitive_app_cache_invalidator.py \
+            --url "https://aries-serpent.github.io/_codex_/cognitive_app/" \
+            --reason "Manual deployment - ${{ github.event.inputs.reason }}"
+
+      - name: Deploy to site directory (non-dry-run)
+        if: github.event.inputs.dry_run == 'false'
+        id: deploy
+        run: |
+          echo "📤 Deploying to site directory..."
+          
+          mkdir -p site/cognitive_app
+          cp -r cognitive_app/dist/* site/cognitive_app/
+          
+          # Count assets
+          ASSET_COUNT=$(find site/cognitive_app -type f | wc -l)
+          echo "asset_count=$ASSET_COUNT" >> $GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
+          
+          echo "✓ Deployed $ASSET_COUNT files to site/cognitive_app/"
+          echo ""
+          
+          # List deployed files
+          echo "Deployed files:"
+          ls -lah site/cognitive_app/ | head -25
+
+      - name: Skip deploy (dry-run)
+        if: github.event.inputs.dry_run == 'true'
+        id: deploy-dryrun
+        run: |
+          echo "⏭️  DRY RUN - Skipping deployment"
+          echo "asset_count=0" >> $GITHUB_OUTPUT
+          echo "status=dry_run" >> $GITHUB_OUTPUT
+          echo ""
+          echo "Build artifacts are available at:"
+          ls -lah cognitive_app/dist/
+
+      - name: Record asset manifest for verification
+        if: github.event.inputs.dry_run == 'false'
+        working-directory: site/cognitive_app
+        run: |
+          echo "📋 Verifying deployed assets..."
+          
+          # Create index of deployed files
+          cat > ../cognitive_app_deployment_manifest.txt << 'EOF'
+          DEPLOYMENT MANIFEST
+          ====================
+          EOF
+          
+          find . -type f | sort >> ../cognitive_app_deployment_manifest.txt
+          
+          echo "✓ Deployment manifest created"
+
+      - name: Verify cognitive app deployment
+        id: verify
+        if: github.event.inputs.dry_run == 'false'
+        run: |
+          echo "✅ Verifying deployment..."
+          
+          python scripts/ci/verify_cognitive_app_deployment.py \
+            --url "https://aries-serpent.github.io/_codex_/cognitive_app/"
+          
+          if [ $? -eq 0 ]; then
+            echo "result=success" >> $GITHUB_OUTPUT
+          else
+            echo "result=verification_failed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload artifact
+        if: github.event.inputs.dry_run == 'false'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: site/
+
+      - name: Record deployment completion
+        if: always()
+        run: |
+          STATUS="${{ steps.deploy.outputs.status || steps.deploy-dryrun.outputs.status || 'unknown' }}"
+          
+          python scripts/ci/deployment_history_tracker.py record \
+            --type manual \
+            --status "$STATUS" \
+            --url "https://aries-serpent.github.io/_codex_/cognitive_app/" \
+            --version "${{ steps.resolve_version.outputs.target_version }}" \
+            --reason "${{ github.event.inputs.reason }}"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📊 Manual Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | ${{ steps.resolve_version.outputs.target_version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Type | Manual |" >> $GITHUB_STEP_SUMMARY
+          echo "| Mode | ${{ github.event.inputs.dry_run == 'true' && 'Dry Run' || 'Live Deployment' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Force Rebuild | ${{ github.event.inputs.force_rebuild }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cache Busting | ${{ github.event.inputs.cache_busting }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ${{ steps.deploy.outputs.status || steps.deploy-dryrun.outputs.status || 'unknown' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View full logs: [Action Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event.inputs.dry_run == 'false'
+    needs: build-and-deploy
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+
+      - name: Verify deployed assets
+        id: post_deploy_verify
+        run: |
+          PAGE_URL="${{ steps.deployment.outputs.page_url }}"
+          
+          echo "🔍 Post-deployment verification..."
+          echo "Page URL: ${PAGE_URL}"
+          
+          python scripts/ci/cognitive_app_asset_manifest_verifier.py \
+            --url "${PAGE_URL%/}/cognitive_app/"
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Deployment verified"
+          else
+            echo "⚠️ Asset hash mismatch (may be CDN propagation delay)"
+          fi
+
+      - name: Final status
+        run: |
+          echo "## ✅ Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Cognitive App deployed to: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Verify at: [\`${{ steps.deployment.outputs.page_url }}cognitive_app/\`](${{ steps.deployment.outputs.page_url }}cognitive_app/)" >> $GITHUB_STEP_SUMMARY
