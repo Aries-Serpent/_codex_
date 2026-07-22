@@ -391,3 +391,28 @@
 
 ---
 
+## Incident [HIGH] - Hour 259
+**Time:** 2026-07-22T03:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 260
+**Time:** 2026-07-22T06:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 263
+**Time:** 2026-07-22T14:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
