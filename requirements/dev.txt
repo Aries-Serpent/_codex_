@@ -11,7 +11,7 @@ bandit==1.7.5  # Security scanning (pinned for consistency)
 defusedxml==0.0.1  # XML parsing hardening (pinned)
 semgrep==1.75.0  # SAST (pinned for rule consistency)
 detect-secrets==1.4.0  # Secrets detection (pinned)
-pre-commit==4.6.0
+pre-commit==4.6.1
 nox==2026.7.11  # Pinned for reproducibility
 yamllint==1.26.3  # YAML validation (pinned)
 jsonschema>=4.26.0
