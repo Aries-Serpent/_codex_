@@ -1,6 +1,6 @@
 # Segmented Evaluation stack — Generated: 2025-11-12 16:24:19 UTC | Author: mbaetiong
 scikit-learn==1.9.0
-scipy==1.17.1
+scipy==1.18.0
 statsmodels==0.14.6
 pandas>=3.0.3,<4  # Must match pyproject.toml and other requirement files
 lm-eval==0.4.12
