@@ -456,3 +456,297 @@
 
 ---
 
+## Incident [HIGH] - Hour 275
+**Time:** 2026-07-23T19:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 278
+**Time:** 2026-07-24T03:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 279
+**Time:** 2026-07-24T06:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 281
+**Time:** 2026-07-24T11:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 283
+**Time:** 2026-07-24T15:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 284
+**Time:** 2026-07-24T17:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 287
+**Time:** 2026-07-24T23:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 290
+**Time:** 2026-07-25T09:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 291
+**Time:** 2026-07-25T11:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 293
+**Time:** 2026-07-25T15:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 295
+**Time:** 2026-07-25T19:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 296
+**Time:** 2026-07-25T21:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 299
+**Time:** 2026-07-26T03:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 302
+**Time:** 2026-07-26T11:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 303
+**Time:** 2026-07-26T13:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 305
+**Time:** 2026-07-26T17:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 307
+**Time:** 2026-07-26T21:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 308
+**Time:** 2026-07-26T23:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 311
+**Time:** 2026-07-27T11:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 314
+**Time:** 2026-07-27T18:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 315
+**Time:** 2026-07-27T20:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 317
+**Time:** 2026-07-28T00:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 319
+**Time:** 2026-07-28T07:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 320
+**Time:** 2026-07-28T10:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 323
+**Time:** 2026-07-28T17:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 326
+**Time:** 2026-07-28T23:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 327
+**Time:** 2026-07-29T03:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 329
+**Time:** 2026-07-29T09:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 331
+**Time:** 2026-07-29T15:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 332
+**Time:** 2026-07-29T17:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 335
+**Time:** 2026-07-29T23:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 338
+**Time:** 2026-07-30T09:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 339
+**Time:** 2026-07-30T12:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 341
+**Time:** 2026-07-30T16:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 343
+**Time:** 2026-07-30T20:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+
+---
+
+## Incident [HIGH] - Hour 344
+**Time:** 2026-07-30T22:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
