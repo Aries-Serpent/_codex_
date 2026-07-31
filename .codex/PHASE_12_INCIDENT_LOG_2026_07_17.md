@@ -750,3 +750,20 @@
 
 ---
 
+## Incident [HIGH] - Hour 347
+**Time:** 2026-07-31T08:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Error rate 0.055% > 0.05% threshold
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
+## Incident [HIGH] - Hour 350
+**Time:** 2026-07-31T15:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
