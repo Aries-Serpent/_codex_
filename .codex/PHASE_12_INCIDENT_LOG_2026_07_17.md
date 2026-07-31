@@ -759,3 +759,11 @@
 
 ---
 
+## Incident [HIGH] - Hour 350
+**Time:** 2026-07-31T15:00:00Z
+**Status:** DEGRADED
+**Anomalies:**
+  - Latency p95 variance 5.7% > 5% threshold
+
+---
+
