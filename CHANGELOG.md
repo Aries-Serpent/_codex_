@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5415)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5415 (SHA `ed571271`) at 2026-08-01T09:46Z [auto-generated]
+
 ### Fixed
 - PR #5415 review comment resolution (session 2026-08-01):
   - Removed global `**/*.html` exclusion from both CodeQL config files; replaced with narrower `site/**`-only exclusion to preserve coverage of `cognitive_app/index.html` and other source HTML
