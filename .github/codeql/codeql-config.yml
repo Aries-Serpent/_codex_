@@ -31,7 +31,6 @@ paths-ignore:
   - "**/*.pyc"
   - "**/*.pyo"
   - "site/**"
-  - "**/*.html"
 
   # Documentation (no security analysis needed)
   - "docs/"

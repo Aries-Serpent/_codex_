@@ -1,6 +1,13 @@
 ## [Unreleased]
 
 ### Fixed
+- PR #5415 review comment resolution (session 2026-08-01):
+  - Removed global `**/*.html` exclusion from both CodeQL config files; replaced with narrower `site/**`-only exclusion to preserve coverage of `cognitive_app/index.html` and other source HTML
+  - Fixed URL-encoding in `resolve-push-target` `remote_branch_exists()`: branch names with `/` are now encoded as `%2F` before GitHub API calls
+  - Hardened `commit-to-staging-chain` `git ls-remote` check: exit code 2 = ref not found (creates from HEAD); other exit codes hard-fail to prevent pushing to wrong target on network/auth errors
+  - Fixed accountability report: corrected "four" → "three" outstanding review concerns for PR #5412 session entry; synced archive copy for REQ-4/REQ-14 governance
+  - Fixed `13-3-enterprise-compliance.yml`: corrected YAML `true:` → `'on':` (bare `on` is YAML boolean `true`; caused actionlint failure)
+  - Fixed action version violations in `deploy-cognitive-app-manual.yml`: `upload-artifact` and `download-artifact` bumped to v5
 - PR #5390 comment resolution + cognitive app investigation (session 2026-07-20T21:26Z):
   - replied to all 5 blocking PR comments per REQ-13 compliance before making any commits
   - diagnosed cognitive app widget regression: asset hash mismatch on GitHub Pages (live page references `index-B13VvkbT.js` which returns 404, current build has `index-CSBH0jbB.js`)

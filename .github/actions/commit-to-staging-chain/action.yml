@@ -37,14 +37,22 @@ runs:
         # If the target branch exists remotely, base our local branch off it so
         # we can rebase deterministically.  Otherwise, create the target branch
         # from the current checkout SHA; there is no rebase to perform.
-        if git ls-remote --exit-code --heads origin "$TARGET" >/dev/null 2>&1; then
+        # Detect remote branch presence, distinguishing "ref not found" (exit 2)
+        # from unexpected failures like network or auth errors.  Any failure other
+        # than exit 2 is treated as a hard error to avoid pushing to the wrong target.
+        ls_rc=0
+        git ls-remote --exit-code --heads origin "$TARGET" >/dev/null 2>&1 || ls_rc=$?
+        if [ "$ls_rc" -eq 0 ]; then
           git fetch origin "$TARGET" --depth=5
           git checkout -B "$TARGET" "origin/${TARGET}"
           REMOTE_EXISTS=true
-        else
+        elif [ "$ls_rc" -eq 2 ]; then
           echo "ℹ️  Remote branch origin/${TARGET} does not exist; creating from current HEAD"
           git checkout -B "$TARGET"
           REMOTE_EXISTS=false
+        else
+          echo "❌ ls-remote failed with exit code ${ls_rc} — possible network or auth error; aborting to prevent push to wrong target"
+          exit "$ls_rc"
         fi
 
         # Stage the requested files, failing loudly on any error.

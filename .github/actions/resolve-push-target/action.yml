@@ -58,9 +58,12 @@ runs:
         # Return "true" if the branch exists on the remote, else "false".
         # Handles API and network failures as "does not exist" so the caller
         # falls back rather than crashing.
+        # Branch names containing "/" are URL-encoded ("%2F") to avoid the
+        # GitHub REST API treating them as path separators.
         remote_branch_exists() {
           local branch="$1"
-          gh api "repos/${REPO}/branches/${branch}" --silent 2>/dev/null && echo true || echo false
+          local encoded_branch="${branch//\//%2F}"
+          gh api "repos/${REPO}/branches/${encoded_branch}" --silent 2>/dev/null && echo true || echo false
         }
 
         # ── Step 1: find the most-recently-updated open PR targeting 0D_base_ ──
