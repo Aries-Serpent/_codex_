@@ -56,10 +56,11 @@ gh workflow run workflow.yml --repo Aries-Serpent/_codex_ --ref BRANCH
 **The GitHub MCP Server does NOT support Secrets/Variables CRUD.**  
 Use REST API or `gh` CLI for all secret/variable write operations.
 
-The Copilot runtime currently exposes **36 read-only GitHub MCP tools** for Actions,
-code, commits, discussions, issues, labels, pull requests, releases, search, security,
-tags, and users. See the live inventory below; availability is a runtime surface and
-does not imply write access.
+The Copilot runtime currently exposes **35 read-only GitHub MCP tools** for Actions,
+code, commits, discussions, issues, labels, pull requests, releases, search,
+security, tags, and users, plus standalone `web_search`. The supplied startup
+inventory groups these as 36 research capabilities. Availability does not imply
+write access.
 
 ---
 
@@ -69,8 +70,8 @@ does not imply write access.
 |---|---|---|
 | **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Complete REST API tables, CLI patterns, MCP config |
 | **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body protocol |
-| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Live tool inventory (21 Playwright + 36 GitHub MCP) |
-| **GitHub MCP Inventory** | `.codex/docs/MCP_GITHUB_CAPABILITIES.md` | Exact 36-tool runtime identifiers and capability matrix |
+| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Live inventory (21 Playwright MCP + 35 GitHub MCP + `web_search`) |
+| **Research Inventory** | `.codex/docs/MCP_GITHUB_CAPABILITIES.md` | Exact supplied 36-name inventory and runtime topology |
 | **MCP Capabilities Reference** | `docs/mcp/MCP_CAPABILITIES_REFERENCE.md` | Internal MCP server implementation |
 | **GitHub MCP Capabilities** | `docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md` | External GitHub MCP server capabilities |
 | **MCP Developer Guide** | `docs/mcp/MCP_DEVELOPER_GUIDE.md` | Integration patterns |

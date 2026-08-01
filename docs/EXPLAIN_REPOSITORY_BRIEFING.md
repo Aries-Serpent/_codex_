@@ -36,8 +36,8 @@ decision-and-learning layer. Its implemented surfaces support these journeys:
 | Train or evaluate a model | CLI → Hydra/OmegaConf config → ingestion/tokenization → `codex_ml` training/evaluation | Implemented; heavy ML packages are optional |
 | Run inference or serve a model | `codex_ml` inference → FastAPI or Ray Serve integration | Optional runtime profile |
 | Ingest and retrieve knowledge | ingestion → chunking/embedding → `rag` retrieval and evaluation | Implemented; vector backends vary by profile |
-| Process repository signals | GitHub/CI/security observation → Cognitive Brain OODA → specialist action → validation | Implemented as composable services and agents |
-| Preserve operational learning | outcome → AfterMath/PDA record → STM analysis → LTM promotion/retention | Implemented |
+| Process repository signals | GitHub/CI/security observation → logging, recommendation, or specialist tooling | Partly operational; there is no unified autonomous OODA runtime |
+| Preserve operational learning | CI failure/fix records, session records, and several independent memory engines | Fragmented; JSONL logging is operational, adaptive policy learning is experimental |
 | Expose repository tools | internal `src/mcp` JSON-RPC/HTTP server or Copilot runtime MCP aggregator | Two distinct implemented surfaces |
 | Operate the dashboard | React/Vite Cognitive App → API and telemetry surfaces | Implemented frontend; deployment is environment-specific |
 | Govern delivery | pytest/nox/pre-commit/Ruff/mypy plus GitHub Actions and CodeQL declarations | Implemented tooling and workflow definitions |
@@ -46,6 +46,10 @@ The repository is therefore both a Python distribution and an agent-operated
 engineering workspace. It is not one monolithic service.
 
 ## 3. Canonical five-layer architecture
+
+This model organizes ownership and navigation. Arrows show intended or composable
+dependencies; they do not assert that every component is connected in one deployed
+runtime.
 
 ```mermaid
 flowchart TB
@@ -105,8 +109,8 @@ flowchart TB
 | Path | Responsibility |
 |---|---|
 | `src/codex_ml/` | Main ML distribution: CLI, data, training, evaluation, plugins, inference, and serving. |
-| `src/cognitive_brain/` | Shared cognitive contracts, analytics, uncertainty models, learning, and multi-agent coordination. |
-| `src/aries_serpent_core/brain/` | Concrete OODA orchestration, pattern discovery, checkpoints, session resume, and STM→LTM engines. |
+| `src/cognitive_brain/` | Shared cognitive contracts plus standalone analytics, uncertainty, learning, memory, and coordination experiments. |
+| `src/aries_serpent_core/brain/` | Optional OODA demonstration, pattern/checkpoint utilities, session resume, and independent STM→LTM engines. |
 | `src/aries_serpent_core/skills/` | Active Cognitive Brain skill manifests and handlers. |
 | `src/mcp/` | Repository-owned MCP implementation and supporting adapters/workers. |
 | `src/rag/` | Retrieval, embedding, indexing, evaluation, and experimental retrieval pipelines. |
@@ -249,7 +253,11 @@ sequenceDiagram
     Interface-->>User: response or artifact location
 ```
 
-### Repository-signal request
+### Repository-signal objective
+
+This is the desired end-to-end loop. Current source implements its stages across
+separate loggers, libraries, workflows, and simulated adapters; it does not provide
+one production-wired execution path.
 
 ```mermaid
 sequenceDiagram
@@ -272,55 +280,66 @@ sequenceDiagram
     Learn->>Memory: consolidate or update pattern
 ```
 
-## 9. Cognitive Brain
+## 9. Cognitive Brain: objective and current implementation
 
-### Contracts and responsibilities
+The architectural objective is a continuous Observe/Perceive → Decide → Act →
+AfterMath loop. Static call-site inspection shows several useful but mostly
+independent systems, not one unified production Cognitive Brain.
 
-- **`Planner`** in `src/cognitive_brain/base.py` defines `observe`, `orient`,
-  `decide`, and `act`, plus a complete OODA-loop entry point.
-- **`MemoryInterface`** defines storage, retrieval, search, deletion, clearing, and
-  version history without forcing one backend.
-- **Concrete OODA components** in `src/aries_serpent_core/brain/` separate observer,
-  orienter, decider, actor, and orchestrator responsibilities.
-- **PDA** records the plan/do/assess improvement cycle around execution.
-- **AfterMath** converts validated outcomes into learning records, reward signals,
-  patterns, and the next decision context.
+### Contracts, OODA, PDA, and AfterMath
 
-OODA is the decision loop; PDA is the execution-improvement loop; AfterMath is the
-post-outcome learning stage. They complement rather than replace one another.
+- **`Planner`** in `src/cognitive_brain/base.py` is an abstract contract for
+  `observe`, `orient`, `decide`, and `act`; its concrete `ooda_loop()` composes those
+  methods.
+- **`MemoryInterface`** is also abstract and specifies storage, retrieval, search,
+  deletion, clearing, and history. No concrete production subclass of either base
+  contract was found.
+- **`PhysicsOfThought`** composes a planner and memory interface, but is not a
+  runnable planner by itself.
+- **Aries OODA** in `src/aries_serpent_core/brain/` is an executable optional
+  demonstration. Repository observation is real, while agent inventory, precedent
+  retrieval, candidate actions, and dispatch include fixed or synthetic behavior.
+- **PDA is overloaded:** source uses Plan–Do–Assess, Plan–Do–Act, and
+  Perception–Decision–Action for different components. These are not one uniform
+  protocol.
+- **The strongest operational PDA/AfterMath surface** is CI failure, fix, and session
+  persistence in `scripts/ci/pda_failure_logger.py`. The separate
+  `scripts/cognitive/cognitive_brain_core.py` has real sensing and SQLite storage but
+  placeholder decisions, stubbed GitHub action execution, and fixed learning output.
 
-### Context, memory, and retention
+### Memory, retrieval, consolidation, and retention
 
-The implemented memory flow is:
+There is no canonical memory backend:
 
-1. collect structured observations and session context;
-2. search historical records and similar patterns;
-3. score alternatives using confidence, recency, frequency, outcome, and policy;
-4. execute and validate a selected strategy;
-5. record success, errors, metrics, and reward;
-6. promote repeatedly useful STM entries into LTM; and
-7. merge near-duplicates and prune or archive low-value records under retention
-   policy.
+| Implementation | What is real | Boundary |
+|---|---|---|
+| Cognitive App SQLite memory | STM/LTM routes, access-count promotion, low-confidence age pruning, SQL search | Search is SQL `LIKE`; some routes use a separate table; it does not fully implement `MemoryInterface` |
+| `QuantumMemoryManager` | In-process cosine retrieval, temporal decay, duplicate rejection, promotion and capacity pruning | Process memory; principal integration appears only in experiments/tests |
+| `codex_ml.memory` | STM, dictionary-backed LTM, and consolidation classes | In-process implementations without an operational application caller found |
+| Aries memory sync/consolidation | Frequency/confidence scoring, fuzzy duplicate matching, improvement tags, promotion, retention, pruning, archival, and metrics | Defaults to `:memory:`, expects tables it does not initialize, uses a schema incompatible with the app, and has no runtime construction site found |
 
-`src/aries_serpent_core/brain/memory_sync.py` implements an 80% default STM trigger,
-frequency and confidence thresholds, duplicate similarity detection, fuzzy matching,
-improvement-area tagging, promotion, pruning, merging, and metrics. Temporal
-retention uses recency and age decay; evergreen records are protected from ordinary
-pruning. Similarity retrieval and persistent storage are backend-dependent, with
-SQLite and file-backed artifacts present in the repository.
+The intended flow—context lookup, alternative scoring, execution, outcome capture,
+STM promotion, duplicate merge, and retention—is therefore an architectural
+composition of these capabilities rather than a verified end-to-end runtime.
 
 ### Outcome analysis and reinforcement learning
 
-`src/cognitive_brain/learning/` contains an outcome analyzer and a strategy
-optimizer. The optimizer can select:
+`OutcomeAnalyzer` performs bounded reward calculation and heuristic temporal,
+contextual, sequential, causal-labelled, and efficiency pattern extraction. Its
+state is in memory and no operational caller was found.
 
-- **Q-learning** for small, discrete strategy/state spaces;
-- **DQN** for more complex state/action estimation; and
-- **PPO** for higher-complexity policy optimization.
+`src/cognitive_brain/learning/rl_algorithms.py` contains:
 
-These components train from historical `LearningOutcome` rewards and report
-improvement/convergence metrics. Their presence is an implemented learning
-capability, not proof that every agent action is trained online.
+- genuine tabular **Q-learning** with Bellman updates, epsilon-greedy selection, and
+  replay;
+- a class named **DQN** that hashes state into a scalar feature and learns scalar
+  action weights, without a neural network; and
+- a class named **PPO** that uses scalar hash features, scalar actor weights, and a
+  dictionary critic.
+
+`StrategyOptimizer` consumes these classes and replays fixed historical rewards. The
+code is executable experimental learning code, not a deployed adaptive policy or
+evidence that agent decisions train online.
 
 ### Physics-inspired terminology
 
@@ -333,18 +352,33 @@ The repository's “quantum” vocabulary describes classical software:
 | Uncertainty | Carry confidence ranges and incomplete evidence through scoring. |
 | Bayesian analysis | Update probabilities as new evidence arrives. |
 | Fuzzy logic | Represent graded membership and boundary conditions rather than only booleans. |
-| Coherence/GHZ/topology | Coordination and consistency abstractions for multi-agent experiments. |
+| Coherence/GHZ/topology | Classical matrices, hashes, voting, and consistency abstractions for multi-agent experiments. |
 
-No claim in this document implies qubits, quantum hardware, a quantum simulator, or
-quantum computational speedup.
+No claim in this document implies qubits, a quantum circuit backend, quantum
+hardware, or quantum computational speedup; the NumPy simulations are classical.
 
-### Coordination and dashboard
+### Coordination, session injection, telemetry, and dashboard
 
-The brain delegates bounded work to specialist agents, persists decision evidence,
-and exposes metrics through monitoring/telemetry modules. The React Cognitive App is
-the visualization and control surface; it does not replace the Python decision or
-memory engines. Deployment-specific API wiring must be verified in the target
-environment.
+- `PlansetOrchestrator` and `AgentBrainAPI` rank steps, retrieve patterns, persist
+  planset state, and generate prompts naming specialists. They do not launch,
+  supervise, or verify those specialists.
+- `SessionContextInjector` implements API/cache lookup, allowlisting, recency ranking,
+  reconstruction, and token budgeting as a callable library. Static inspection did
+  not establish automatic runtime registration, and one reconstruction path calls a
+  missing `AgentBrainAPI.store_memory()` method.
+- Telemetry primitives exist for OpenTelemetry, SQLite, and Prometheus, but their
+  construction and data contracts are fragmented. The WebSocket channel filter and
+  `CognitiveAppMain.get_metrics()` return different shapes.
+- Cognitive App quantum and agent hooks silently use a mock client when expected API
+  routes are absent. Memory routes are the main live integration, though memory
+  search response shapes also differ between frontend and backend.
+
+| Maturity class | Current examples |
+|---|---|
+| Operational | CI JSONL failure/fix/session logging; Cognitive App SQLite memory routes |
+| Implemented but optional/disconnected | Aries OODA, memory managers, outcome analysis, RL, Bayesian/fuzzy engines, session injector, Prometheus collectors |
+| Simulated/mock-backed | Agent dispatch, multi-agent votes, standalone PDA action/learning, frontend quantum and agent views |
+| Architectural objective | One autonomous brain that observes, invokes specialists, validates actions, and learns a durable policy end to end |
 
 ## 10. Technology and runtime matrix
 
@@ -374,18 +408,21 @@ There are three separate MCP-related surfaces.
 
 ### A. Copilot runtime aggregator
 
-As observed on **2026-08-01**, the local aggregator at `127.0.0.1:2301` exposed
-**57 tools** from two servers:
+As observed on **2026-08-01**, the local runtime exposed **57 research/browser
+capabilities**: 56 from two MCP servers and one companion search tool.
 
 | Server | Mode | Tools | Capability groups |
 |---|---|---:|---|
-| `github-mcp-server` | Read-only remote endpoint | 36 | Actions, code/commits, discussions, issues/labels, PRs, releases/tags, search/users, security |
+| `github-mcp-server` | Read-only remote endpoint | 35 | Actions, code/commits, discussions, issues/labels, PRs, releases/tags, search/users, security |
 | `playwright` | Local browser process | 21 | Navigation, snapshots, interaction, forms, upload, tabs, screenshots, console, network |
+| `web_search` | Standalone runtime companion | 1 | AI-assisted current-web research with citations |
 
-The exact 36 runtime identifiers requested for this repository are maintained in
-[`MCP_GITHUB_CAPABILITIES.md`](../.codex/docs/MCP_GITHUB_CAPABILITIES.md). Runtime
-registration uses `github-mcp-server/<tool>`; callable API names may render the
-separator as a hyphen.
+The exact supplied 36-name research inventory is maintained in
+[`MCP_GITHUB_CAPABILITIES.md`](../.codex/docs/MCP_GITHUB_CAPABILITIES.md). It contains
+35 `github-mcp-server/<tool>` registrations plus the supplied
+`github-mcp-server/web_search` alias; the callable API exposes that last capability
+as top-level `web_search`. A static contract test validates the dated
+[machine-readable inventory](../.codex/mcp/runtime_inventory_2026-08-01.json).
 
 #### GitHub MCP category matrix
 
@@ -398,7 +435,8 @@ separator as a hyphen.
 | Pull requests | 3 | Read PR details/diffs/files/reviews/checks and list/search PRs |
 | Releases/tags | 5 | Latest/by-tag/list releases and get/list tags |
 | Security | 4 | Get/list code-scanning and secret-scanning alerts |
-| Discovery/users | 4 | List collaborators, search repositories/users, web search |
+| Discovery/users | 3 | List collaborators and search repositories/users |
+| Companion search | 1 | Web search |
 
 This GitHub MCP surface is **read-only**. It cannot create, update, or delete
 repository variables or secrets. Those operations require an authorized REST/CLI
@@ -534,13 +572,14 @@ agent availability from archived reports.
 | Topic | Reference |
 |---|---|
 | Package and profiles | [`pyproject.toml`](../pyproject.toml) |
-| CLI | [`docs/CLI.md`](CLI.md) |
+| CLI | [`src/codex_ml/cli/main.py`](../src/codex_ml/cli/main.py) |
 | Cognitive map | [`docs/system/CODEBASE_COGNITIVE_MAP.md`](system/CODEBASE_COGNITIVE_MAP.md) |
 | RAG | [`docs/rag/RAG_QUICKSTART.md`](rag/RAG_QUICKSTART.md) |
 | Serving | [`docs/INFERENCE_SERVING_GUIDE.md`](INFERENCE_SERVING_GUIDE.md) |
 | Internal MCP | [`docs/mcp/MCP_CAPABILITIES_REFERENCE.md`](mcp/MCP_CAPABILITIES_REFERENCE.md) |
 | Runtime MCP tools | [`.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`](../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Exact 36 GitHub tools | [`.codex/docs/MCP_GITHUB_CAPABILITIES.md`](../.codex/docs/MCP_GITHUB_CAPABILITIES.md) |
+| Machine-readable runtime tools | [`.codex/mcp/runtime_inventory_2026-08-01.json`](../.codex/mcp/runtime_inventory_2026-08-01.json) |
 | GitHub variable/secret boundary | [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md) |
 | Custom agents | [`docs/agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md`](agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md) |
 | Chronicle snapshot | [`.codex/chronicle_analysis/chronicle_snapshot_2026-08-01.json`](../.codex/chronicle_analysis/chronicle_snapshot_2026-08-01.json) |

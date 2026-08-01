@@ -1,3 +1,86 @@
+## Session: 2026-08-01T22:33Z — Repository Briefing, MCP Inventory, and Agent Validation
+
+**Objective:** Publish one implementation-grounded repository explanation, align the
+Copilot runtime with the supplied 36-name research inventory, refresh Chronicle
+evidence, and harden the custom-agent validation contract.
+
+**Implemented:**
+
+1. **Authoritative repository explanation**
+   - Replaced the v0.2.0 briefing with a source-backed `codex-ml` 0.3.0 briefing.
+   - Documented supported journeys, canonical/compatibility paths, the `src` import
+     boundary, five architecture layers, primary flows, entry points, dependency
+     profiles, Cognitive Brain behavior, and four Mermaid diagrams.
+   - Classified optional, experimental, compatibility, historical, and aspirational
+     surfaces instead of presenting declarations as deployed facts.
+
+2. **Cognitive Brain accuracy**
+   - Grounded `Planner`, `MemoryInterface`, OODA, PDA, and AfterMath responsibilities
+     in current source.
+   - Documented STM→LTM promotion, duplicate/fuzzy matching, retention and temporal
+     decay, outcome learning, and Q-learning/DQN/PPO roles.
+   - Explicitly described superposition, entanglement, Bayesian, fuzzy, and
+     uncertainty components as classical physics-inspired models.
+
+3. **MCP inventory**
+   - Reconciled the supplied 36-name research inventory into 35 read-only GitHub MCP
+     tools plus standalone `web_search`, alongside 21 Playwright MCP tools (57
+     surfaced capabilities) as observed on 2026-08-01.
+   - Added the eight capabilities absent from the older 28-tool reference:
+     Discussion get/list operations, issue fields, label listing, collaborator
+     listing, and commit search.
+   - Preserved the boundary that repository-variable and secret CRUD requires an
+     authorized REST/CLI write path.
+   - Added a machine-readable exact-name/method contract and static regression test.
+
+4. **Chronicle refresh**
+   - Queried the authoritative session store over the exact half-open 30-day window
+     ending `2026-08-01T22:33:49.495Z`.
+   - Exported frequency, tool, agent, time, trend, metadata-quality, performance
+     availability, and confidence-labelled recommendation data to
+     `.codex/chronicle_analysis/chronicle_snapshot_2026-08-01.json`.
+   - Recorded 753 sessions, 158,481 tool starts, 92% Coding Agent use, 8% Code Review
+     use, a 74-call median, and a 2,813-call maximum.
+
+5. **Strict custom-agent validation**
+   - Split GitHub frontmatter and registry-entry schemas.
+   - Required nonblank descriptions and rejected missing/malformed frontmatter and
+     empty prompts.
+   - Added registered root/nested profile discovery, duplicate ID/name/file checks,
+     registry/profile consistency checks, and local handler/manifest resolution.
+   - Added explicit regression fixtures for Pattern Discovery Skill and Memory Sync
+     Consolidation Skill.
+
+**Validation completed at this checkpoint:**
+- Targeted validator suite: 17 tests passed after the CLI fixture correction.
+- Runtime inventory contract suite: 4 tests passed; 21 targeted tests passed together.
+- Ruff and Black checks passed for the validator and its tests.
+- All four changed/new JSON artifacts parsed successfully.
+- Canonical briefing Mermaid diagrams and local links in the changed MCP/reference
+  documents validated successfully.
+- The full nox test session reached collection, where its isolated environment lacked
+  optional application imports including HTTPX, NumPy, and FastAPI.
+- Secret scanning reported no findings in the first implementation checkpoint.
+
+**Environment constraint:** sandbox policy denies direct access to the repository's
+`.github/agents/` directory. This session therefore did not alter or inspect the two
+profile files or their registry entries, and it did not claim that the Copilot UI
+cards were enabled. The new strict contract detects and reports their profile state
+when run in an environment authorized to read that directory.
+
+**Agents used:**
+- `skills-master-agent` — package and source-location audit
+- `cognitive-brain-session-injector` — Cognitive Brain audit
+- `github-guru-agent` — MCP audit
+- `config-validator` — validation-gap audit
+- `documentation-quality-agent` — technology audit
+- `session-analysis-agent` — Chronicle provenance audit
+- built-in task agents — targeted tests and artifact validation
+
+**Checkpoint:** `64731290`
+
+---
+
 ## Session: 2026-08-01T12:00Z — PR #5418 CI Rescue & Workflow Fix (Session 2)
 
 **Objective**: Address CI rescue blocking comments, fix post_rescue_comment workflow environment variables, and prepare PR for merge.

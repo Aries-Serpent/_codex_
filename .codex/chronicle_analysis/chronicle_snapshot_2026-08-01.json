@@ -13,6 +13,12 @@
     "query_interface": "session_store_sql",
     "query_dialect": "DuckDB",
     "refresh_note": "The repository documents a chronicle reindex command, but that command is not implemented. This snapshot was rebuilt directly from the authoritative session and event records.",
+    "local_tips_command": {
+      "command": "PYTHONPATH=src python -m aries_serpent_core.cli chronicle tips --format json",
+      "exit_code": 0,
+      "warning": "Failed to load chronicle sessions: no such column: id",
+      "result": "The command returned empty pattern groups and three generic tips because its analytics schema does not match .codex/codex.sqlite; none of its metrics were used in this snapshot."
+    },
     "tables": [
       "sessions",
       "events"

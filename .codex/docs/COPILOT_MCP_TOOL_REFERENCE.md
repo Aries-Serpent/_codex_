@@ -9,6 +9,7 @@
 > **GitHub MCP server:** remote `https://api.individual.githubcopilot.com/mcp/readonly`  
 > **Last verified:** 2026-08-01 (S1485 / PR #5415)
 > **Related strategy docs:** [`MCP_INTEGRATION_MASTER_PLAN.md`](./MCP_INTEGRATION_MASTER_PLAN.md), [`MCP_CAPABILITY_MATRIX.md`](./MCP_CAPABILITY_MATRIX.md), [`CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md`](./CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md)
+> **Machine-readable contract:** [`.codex/mcp/runtime_inventory_2026-08-01.json`](../mcp/runtime_inventory_2026-08-01.json)
 
 ---
 
@@ -16,13 +17,15 @@
 
 Every Copilot coding agent session spins up a **local MCP aggregator** (Node.js process,
 `index.js`) that connects to two external MCP servers and exposes a merged tool list on
-`http://127.0.0.1:2301`:
+`http://127.0.0.1:2301`. A separate companion web-search tool completes the
+36-capability research inventory:
 
 ```
 Copilot agent process
   └─ MCP aggregator :2301
        ├─ playwright    (local subprocess: npx @playwright/mcp@0.0.40)  → 21 tools
-       └─ github-mcp-server  (remote HTTPS: api.individual.githubcopilot.com/mcp/readonly)  → 36 tools
+       ├─ github-mcp-server  (remote HTTPS: api.individual.githubcopilot.com/mcp/readonly)  → 35 tools
+       └─ web_search companion (top-level runtime tool)  → 1 tool
 ```
 
 On top of that, a set of **built-in tools** are compiled into `index.js` itself and
@@ -74,7 +77,7 @@ npx @playwright/mcp@0.0.40
 
 ---
 
-### Server 2 — `github-mcp-server` (36 tools)
+### Server 2 — `github-mcp-server` (35 tools)
 
 Runtime registration uses `github-mcp-server/<tool>`; the agent API exposes the
 equivalent callable name with the `github-mcp-server-` prefix.
@@ -174,7 +177,15 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 | `get_label` | `owner`, `repo`, `name` | Get a label |
 | `list_label` | `owner`, `repo` | List repository labels |
 | `list_repository_collaborators` | `owner`, `repo`, `affiliation`, `page`, `perPage` | List collaborators and affiliations |
-| `web_search` | `query` | AI-powered web search with citations |
+
+---
+
+### Companion research surface — `web_search` (1 tool)
+
+`web_search(query)` is exposed as a top-level runtime tool, not with the
+`github-mcp-server-` callable prefix. The supplied startup inventory labels the same
+capability `github-mcp-server/web_search`; the manifest records that alias without
+misstating the callable topology.
 
 ---
 

@@ -238,11 +238,10 @@ def _resolve_file_reference(
         repo_root / candidate,
         agents_dir / candidate,
     )
+    allowed_roots = (repo_root.resolve(), agents_dir.resolve())
     for item in candidates:
         resolved = item.resolve()
-        try:
-            resolved.relative_to(repo_root.resolve())
-        except ValueError:
+        if not any(resolved == root or root in resolved.parents for root in allowed_roots):
             continue
         if resolved.is_file():
             return resolved

@@ -1,17 +1,17 @@
 # MCP Integration Master Plan
 
-> **Scope:** Aries-Serpent/_codex_ cognitive brain integration strategy for the full MCP surface  
-> **Servers:** `github-mcp-server` + `playwright`  
+> **Scope:** Aries-Serpent/_codex_ cognitive brain integration strategy for the full MCP surface
+> **Servers:** `github-mcp-server` + `playwright`; companion: `web_search`
 > **Research basis:** `.codex/agent_context.json`, MCP reference docs, skill manifests/handlers, PDA loop state, and memory backends inspected on 2026-08-01
 
 ---
 
 ## 1. Executive Summary
 
-- **Total MCP surface:** **57 tools** across **2 servers** (36 GitHub-side + 21 Playwright).
+- **Total surfaced research/browser capabilities:** **57**: 35 GitHub MCP, 21 Playwright MCP, and standalone `web_search`.
 - **Current integration coverage:** **28/57** explicit repo-local references or integration paths found in `.codex/docs/`, `.github/agents/`, `docs/`, or `src/` (**estimate**, documentation/code scan rather than runtime telemetry).
 - **Gaps identified:** **29 tools** have no clear first-class integration path today.
-- **Inventory baseline:** companion references are aligned to the current **36 GitHub-side tools** and **21 Playwright tools**; reverify this dated runtime surface before changing counts.
+- **Inventory baseline:** companion references are aligned to **35 GitHub MCP tools**, standalone `web_search`, and **21 Playwright MCP tools**; reverify this dated runtime surface before changing counts.
 - **Recommended P0 integrations:**
   1. Discussion-backed memory bridge: wire `get_discussion`, `get_discussion_comments`, `list_discussion_categories`, and `list_discussions` into continuation chains and STM→LTM promotion.
   2. Secret-scanning ingestion: wire `list_secret_scanning_alerts` + `get_secret_scanning_alert` into `unified-security-scanner` and `secret-detection-agent`.
@@ -25,10 +25,13 @@
 
 | Server | Version | Tool Count | Status |
 |--------|---------|-----------:|--------|
-| `github-mcp-server` | `remote-112de3b831975632257acbdeb73b577f32ea1762` | 36 | Active |
+| `github-mcp-server` | `remote-112de3b831975632257acbdeb73b577f32ea1762` | 35 | Active, read-only |
 | `playwright` | `0.0.40` | 21 | Active |
+| Companion `web_search` | Runtime-managed | 1 | Active, separate callable namespace |
 
-> **Note:** the GitHub-side total follows the current agent-exposed surface used for this project. Variable/secret mutation is still **not** provided by the read-only GitHub MCP endpoint; writes remain `gh`/REST/agent-side workflows.
+> **Note:** the supplied startup list writes `github-mcp-server/web_search`; the
+> agent API exposes it as standalone `web_search`. Variable/secret mutation is still
+> **not** provided by the read-only GitHub MCP endpoint.
 
 ---
 
@@ -118,7 +121,7 @@ flowchart TD
 ## 6. Implementation Roadmap
 
 ### Phase 1 — Immediate (P0 gaps)
-- Reverify the dated runtime surface before publication and keep all companion references aligned to 57 tools (36 GitHub-side + 21 Playwright).
+- Reverify the dated runtime surface before publication and keep all companion references aligned to 57 surfaced capabilities (35 GitHub MCP + `web_search` + 21 Playwright MCP).
 - Implement discussion-backed memory sync and continuation-chain harvesting.
 - Add secret-scanning alert ingestion and issue/project queue ingestion to CI/security agents.
 - Add Playwright deployment-observability primitives (`network_requests`, `console_messages`, `wait_for`) to `github-pages-manager` and `qa-walkthrough-agent` playbooks.
