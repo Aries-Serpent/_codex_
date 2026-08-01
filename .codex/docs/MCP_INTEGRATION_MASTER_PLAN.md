@@ -11,7 +11,7 @@
 - **Total MCP surface:** **57 tools** across **2 servers** (36 GitHub-side + 21 Playwright).
 - **Current integration coverage:** **28/57** explicit repo-local references or integration paths found in `.codex/docs/`, `.github/agents/`, `docs/`, or `src/` (**estimate**, documentation/code scan rather than runtime telemetry).
 - **Gaps identified:** **29 tools** have no clear first-class integration path today.
-- **Key drift:** `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` still documents **28 GitHub tools**, while the live agent surface now exposes **36 GitHub-side tools**; this master plan normalizes to the current 57-tool inventory.
+- **Inventory baseline:** companion references are aligned to the current **36 GitHub-side tools** and **21 Playwright tools**; reverify this dated runtime surface before changing counts.
 - **Recommended P0 integrations:**
   1. Discussion-backed memory bridge: wire `get_discussion`, `get_discussion_comments`, `list_discussion_categories`, and `list_discussions` into continuation chains and STM→LTM promotion.
   2. Secret-scanning ingestion: wire `list_secret_scanning_alerts` + `get_secret_scanning_alert` into `unified-security-scanner` and `secret-detection-agent`.
@@ -118,7 +118,7 @@ flowchart TD
 ## 6. Implementation Roadmap
 
 ### Phase 1 — Immediate (P0 gaps)
-- Correct the baseline inventory drift: treat the runtime surface as 57 tools (36 GitHub-side + 21 Playwright) and align all docs to that count.
+- Reverify the dated runtime surface before publication and keep all companion references aligned to 57 tools (36 GitHub-side + 21 Playwright).
 - Implement discussion-backed memory sync and continuation-chain harvesting.
 - Add secret-scanning alert ingestion and issue/project queue ingestion to CI/security agents.
 - Add Playwright deployment-observability primitives (`network_requests`, `console_messages`, `wait_for`) to `github-pages-manager` and `qa-walkthrough-agent` playbooks.
@@ -207,4 +207,3 @@ flowchart TD
 - The largest structural gap is **state mutation**: GitHub MCP can observe nearly everything needed for routing, but it still cannot mutate repository variables/secrets, so the cognitive brain needs a durable write bridge.
 - The largest unused value pool is the **discussion + issue/project** surface, which can convert one-off session outputs into durable memory, triage queues, and governance signals.
 - The largest Playwright gap is **observability tooling** (`network_requests`, `console_messages`, `wait_for`, `tabs`, `resize`) for post-deploy verification; navigation and screenshots alone are not enough for reliable cognitive-app/Pages validation.
-

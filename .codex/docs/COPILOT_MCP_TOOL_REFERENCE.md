@@ -22,7 +22,7 @@ Every Copilot coding agent session spins up a **local MCP aggregator** (Node.js 
 Copilot agent process
   └─ MCP aggregator :2301
        ├─ playwright    (local subprocess: npx @playwright/mcp@0.0.40)  → 21 tools
-       └─ github-mcp-server  (remote HTTPS: api.individual.githubcopilot.com/mcp/readonly)  → 28 tools
+       └─ github-mcp-server  (remote HTTPS: api.individual.githubcopilot.com/mcp/readonly)  → 36 tools
 ```
 
 On top of that, a set of **built-in tools** are compiled into `index.js` itself and
@@ -74,9 +74,10 @@ npx @playwright/mcp@0.0.40
 
 ---
 
-### Server 2 — `github-mcp-server` (28 tools)
+### Server 2 — `github-mcp-server` (36 tools)
 
-All tools prefixed `github-mcp-server-` in the agent's tool-call syntax.
+Runtime registration uses `github-mcp-server/<tool>`; the agent API exposes the
+equivalent callable name with the `github-mcp-server-` prefix.
 Mode: **read-only** (`/mcp/readonly` endpoint).
 
 #### Actions / CI
@@ -108,7 +109,8 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 | `issue_read` | `method`, `owner`, `repo`, `issue_number` | Read issue details, comments, labels, sub-issues |
 | `list_issues` | `owner`, `repo`, `state`, `labels`, `orderBy`, `direction`, `since`, `perPage` | List issues with filters |
 | `search_issues` | `query`, `owner`, `repo`, `sort`, `order`, `perPage` | Search issues (scoped to `is:issue`) |
-| `list_issue_types` | `owner` | List issue types for an org |
+| `list_issue_fields` | `owner`, optional `repo` | List custom issue fields and select options |
+| `list_issue_types` | `owner`, optional `repo` | List issue types for an org or repository |
 | `pull_request_read` | `method`, `owner`, `repo`, `pullNumber` | Read PR details, diff, files, reviews, comments, checks |
 | `list_pull_requests` | `owner`, `repo`, `state`, `base`, `head`, `sort`, `direction`, `perPage` | List PRs |
 | `search_pull_requests` | `query`, `owner`, `repo`, `sort`, `order`, `perPage` | Search PRs (scoped to `is:pr`) |
@@ -117,6 +119,7 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 - `get` — full PR metadata
 - `get_diff` — unified diff of changes
 - `get_files` — list of changed files
+- `get_commits` — commits on the pull request
 - `get_status` — combined commit status
 - `get_review_comments` — review threads with metadata
 - `get_reviews` — PR reviews
@@ -128,10 +131,11 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 | Tool | Key params | Purpose |
 |------|-----------|---------|
 | `get_file_contents` | `owner`, `repo`, `path`, `ref`, `sha` | Read file/directory from any ref |
-| `get_commit` | `owner`, `repo`, `sha`, `include_diff`, `page`, `perPage` | Inspect a commit with diff |
+| `get_commit` | `owner`, `repo`, `sha`, `detail`, `page`, `perPage` | Inspect a commit with optional stats or full patch |
 | `list_commits` | `owner`, `repo`, `sha`, `author`, `page`, `perPage` | List commits on a branch |
 | `list_branches` | `owner`, `repo`, `page`, `perPage` | List branches |
 | `search_code` | `query`, `sort`, `order`, `page`, `perPage` | Full-text code search across GitHub |
+| `search_commits` | `query`, `sort`, `order`, `page`, `perPage` | Search commit messages on default branches |
 
 #### Releases & Tags
 
@@ -152,6 +156,15 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 | `list_secret_scanning_alerts` | `owner`, `repo`, `state`, `resolution`, `secret_type` | List secret scanning alerts |
 | `get_secret_scanning_alert` | `owner`, `repo`, `alertNumber` | Get a single secret scanning alert |
 
+#### Discussions
+
+| Tool | Key params | Purpose |
+|------|-----------|---------|
+| `get_discussion` | `owner`, `repo`, `discussionNumber` | Get one discussion |
+| `get_discussion_comments` | `owner`, `repo`, `discussionNumber`, `includeReplies`, `perPage`, `after` | Get discussion comments and optional replies |
+| `list_discussion_categories` | `owner`, optional `repo` | List discussion categories |
+| `list_discussions` | `owner`, optional `repo`, `category`, `orderBy`, `direction`, `perPage`, `after` | List discussions |
+
 #### Discovery
 
 | Tool | Key params | Purpose |
@@ -159,6 +172,8 @@ Mode: **read-only** (`/mcp/readonly` endpoint).
 | `search_repositories` | `query`, `sort`, `order`, `page`, `perPage`, `minimal_output` | Search GitHub repos |
 | `search_users` | `query`, `sort`, `order`, `page`, `perPage` | Search GitHub users |
 | `get_label` | `owner`, `repo`, `name` | Get a label |
+| `list_label` | `owner`, `repo` | List repository labels |
+| `list_repository_collaborators` | `owner`, `repo`, `affiliation`, `page`, `perPage` | List collaborators and affiliations |
 | `web_search` | `query` | AI-powered web search with citations |
 
 ---
