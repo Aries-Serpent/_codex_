@@ -56,14 +56,31 @@ runs:
         set -euo pipefail
 
         # Return "true" if the branch exists on the remote, else "false".
-        # Handles API and network failures as "does not exist" so the caller
-        # falls back rather than crashing.
+        # When ensure-exists is enabled, treat non-404 API failures as hard errors
+        # to avoid silently routing to the wrong branch.
         # Branch names containing "/" are URL-encoded ("%2F") to avoid the
         # GitHub REST API treating them as path separators.
         remote_branch_exists() {
           local branch="$1"
           local encoded_branch="${branch//\//%2F}"
-          gh api "repos/${REPO}/branches/${encoded_branch}" --silent 2>/dev/null && echo true || echo false
+          local err=""
+
+          if err=$(gh api "repos/${REPO}/branches/${encoded_branch}" --silent 2>&1 1>/dev/null); then
+            echo true
+            return 0
+          fi
+
+          if echo "$err" | grep -qi "HTTP 404"; then
+            echo false
+            return 0
+          fi
+
+          if [ "${ENSURE_EXISTS:-false}" = "true" ]; then
+            echo "❌ GitHub API error while checking branch ${branch}: ${err}" >&2
+            exit 1
+          fi
+
+          echo false
         }
 
         # ── Step 1: find the most-recently-updated open PR targeting 0D_base_ ──
