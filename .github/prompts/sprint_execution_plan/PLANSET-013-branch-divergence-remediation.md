@@ -247,7 +247,7 @@ actionlint .github/workflows/phase-12-hourly-monitoring.yml
    - Add `uses: ./.github/actions/resolve-push-target`.
    - Replace the final `git push origin HEAD:refs/heads/main` with `uses: ./.github/actions/commit-to-staging-chain`.
 2. Keep the `sweep-staging` job as-is (it already targets `0D_base_`).
-3. Ensure commit subject remains: `fix(ci): nightly codebase health sweep — main [skip ci]`.
+3. Ensure commit subject remains: `fix(ci): nightly codebase health sweep — staging chain [skip ci]`.
 
 **Validation:**
 ```bash

@@ -30,21 +30,39 @@ runs:
         set -euo pipefail
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git fetch origin "$TARGET" --depth=5 || true
-        git checkout "$TARGET" || git checkout -b "$TARGET"
-        for f in $FILE_LIST; do
+        # Ensure we have the latest remote state for the target branch.
+        git fetch origin "$TARGET" --depth=5
+
+        # Create or reset a local branch that tracks origin/$TARGET so we never
+        # branch from the current HEAD or a stale local checkout.
+        if git show-ref --verify --quiet "refs/remotes/origin/${TARGET}"; then
+          git checkout -B "$TARGET" "origin/${TARGET}"
+        else
+          echo "❌ Remote tracking branch origin/${TARGET} does not exist"
+          exit 1
+        fi
+
+        # Stage the requested files, failing loudly on any error.
+        while IFS= read -r -d ' ' f || [ -n "$f" ]; do
+          [ -n "$f" ] || continue
           mkdir -p "$(dirname "$f")"
-          git add "$f" || true
-        done
+          git add "$f"
+        done < <(printf '%s ' "$FILE_LIST")
+
         git diff --cached --quiet && { echo "No changes to commit"; exit 0; }
+
+        # Capture the tree state before commit so a rebase failure can be replayed
+        # deterministically instead of relying on the reflog.
         git commit -m "$MESSAGE"
+        STAGING_SHA=$(git rev-parse HEAD)
+
         git pull --rebase --autostash origin "$TARGET" || {
-          echo "\u26a0\ufe0f Rebase failed \u2014 resetting to latest $TARGET and re-applying"
+          echo "⚠️ Rebase failed — resetting to latest origin/$TARGET and re-applying ${STAGING_SHA}"
           git rebase --abort 2>/dev/null || true
           git fetch origin "$TARGET" --depth=5
-          git reset --hard origin/"$TARGET"
-          git cherry-pick HEAD@{1} --no-commit || {
-            echo "\u274c Could not re-apply changes"
+          git checkout -B "$TARGET" "origin/${TARGET}"
+          git cherry-pick "$STAGING_SHA" --no-commit || {
+            echo "❌ Could not re-apply changes from ${STAGING_SHA}"
             exit 1
           }
           git commit -m "$MESSAGE (post-rebase retry)"
