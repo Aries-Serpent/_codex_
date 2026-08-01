@@ -1,8 +1,9 @@
 name: Commit to Staging Chain
 description: |
   Resolve the deepest staging branch, stage files, commit, rebase onto the
-  latest target, and push. Falls back to the current branch only if no
-  integration branch is active.
+  latest target, and push. If the resolved target does not yet exist on the
+  remote, creates it from the current checkout SHA and pushes the new commit
+  directly. Falls back to main if no staging layer is active.
 inputs:
   message:
     description: 'Commit message first line (must include [skip ci])'
@@ -20,6 +21,8 @@ runs:
     - name: \ud83d\udd00 Resolve push target
       id: resolve
       uses: ./.github/actions/resolve-push-target
+      with:
+        ensure-exists: true
     - name: \ud83d\udce6 Stage, commit, and push
       shell: bash
       env:
@@ -30,16 +33,18 @@ runs:
         set -euo pipefail
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        # Ensure we have the latest remote state for the target branch.
-        git fetch origin "$TARGET" --depth=5
 
-        # Create or reset a local branch that tracks origin/$TARGET so we never
-        # branch from the current HEAD or a stale local checkout.
-        if git show-ref --verify --quiet "refs/remotes/origin/${TARGET}"; then
+        # If the target branch exists remotely, base our local branch off it so
+        # we can rebase deterministically.  Otherwise, create the target branch
+        # from the current checkout SHA; there is no rebase to perform.
+        if git ls-remote --exit-code --heads origin "$TARGET" >/dev/null 2>&1; then
+          git fetch origin "$TARGET" --depth=5
           git checkout -B "$TARGET" "origin/${TARGET}"
+          REMOTE_EXISTS=true
         else
-          echo "❌ Remote tracking branch origin/${TARGET} does not exist"
-          exit 1
+          echo "ℹ️  Remote branch origin/${TARGET} does not exist; creating from current HEAD"
+          git checkout -B "$TARGET"
+          REMOTE_EXISTS=false
         fi
 
         # Stage the requested files, failing loudly on any error.
@@ -56,16 +61,20 @@ runs:
         git commit -m "$MESSAGE"
         STAGING_SHA=$(git rev-parse HEAD)
 
-        git pull --rebase --autostash origin "$TARGET" || {
-          echo "⚠️ Rebase failed — resetting to latest origin/$TARGET and re-applying ${STAGING_SHA}"
-          git rebase --abort 2>/dev/null || true
-          git fetch origin "$TARGET" --depth=5
-          git checkout -B "$TARGET" "origin/${TARGET}"
-          git cherry-pick "$STAGING_SHA" --no-commit || {
-            echo "❌ Could not re-apply changes from ${STAGING_SHA}"
-            exit 1
+        # Only attempt a rebase when the target branch already exists remotely.
+        if [ "$REMOTE_EXISTS" = "true" ]; then
+          git pull --rebase --autostash origin "$TARGET" || {
+            echo "⚠️ Rebase failed — resetting to latest origin/$TARGET and re-applying ${STAGING_SHA}"
+            git rebase --abort 2>/dev/null || true
+            git fetch origin "$TARGET" --depth=5
+            git checkout -B "$TARGET" "origin/${TARGET}"
+            git cherry-pick "$STAGING_SHA" --no-commit || {
+              echo "❌ Could not re-apply changes from ${STAGING_SHA}"
+              exit 1
+            }
+            git commit -m "$MESSAGE (post-rebase retry)"
           }
-          git commit -m "$MESSAGE (post-rebase retry)"
-        }
+        fi
+
         git push origin "HEAD:${TARGET}"
         echo "target_branch=${TARGET}" >> "$GITHUB_OUTPUT"
