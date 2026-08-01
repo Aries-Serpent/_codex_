@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5425)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5425 (SHA `79c522a1`) at 2026-08-01T17:31Z [auto-generated]
+
 ### Fixed
 - PR #5418 security remediation completion (session 2026-08-01):
   - Remediated 16 security vulnerabilities (11 High, 5 Low) across nltk, PyJWT, pyasn1
