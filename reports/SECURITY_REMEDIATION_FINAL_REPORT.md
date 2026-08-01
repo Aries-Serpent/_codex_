@@ -2,7 +2,7 @@
 **Date:** 2026-08-01  
 **Report Generated:** 2026-08-01T11:10:49Z  
 **Status:** ✅ **REMEDIATION COMPLETE & VERIFIED**  
-**Commit:** `d02ab0c2` - Merged to main  
+**Commit:** `d02ab0c2` - Applied to `0D_base_`
 **PR:** Closes #5416  
 **Authority:** @mbaetiong (D-tier autonomous)
 
@@ -11,7 +11,7 @@
 ## 📋 Executive Summary
 
 ### Vulnerability Overview
-GitHub Dependabot identified **16 critical security vulnerabilities** across the Codex ML repository affecting three key dependencies. The remediation campaign successfully patched all CVEs with **zero breaking changes** and **full backward compatibility**.
+GitHub Dependabot identified **16 security alerts covering 6 unique CVEs** across the Codex ML repository, affecting three key dependencies. The remediation campaign successfully patched all CVEs with **zero breaking changes** and **full backward compatibility**.
 
 | Metric | Value |
 |--------|-------|

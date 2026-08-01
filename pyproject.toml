@@ -46,7 +46,7 @@ dependencies = [
     "jinja2>=3.1.6",  # Security: Phase 5.4.1 - PYSEC-2026-1473/1471/1474/1475/1472 (template injection fixes)
     # Security (CVE fixes)
     "cryptography>=48.0.0,<50.0.0",  # Security: CVE fixes (46.0.5+ required for CVE-2026-26007)
-    "PyJWT>=2.14.0,<3.0.0",  # Security: CVE fixes (2.14.0+ required for PYSEC-2026-120)
+    "PyJWT>=2.14.0,<3.0.0",  # Security: CVE-2026-48524 (PyJWKClient JWKS DoS fix)
     "PyNaCl>=1.5.0,<2.0.0",  # Security: Cryptographic library
     "pyOpenSSL>=26.0.0,<27.0.0",  # Security: CVE-2026-27448/27459 fixes
     "pyasn1>=0.4.8",  # Security: Transitive dependency from cryptography/pyOpenSSL
@@ -203,7 +203,7 @@ full = [
     "pyotp>=2.8.0",
     # Additional features
     "lm-eval>=0.4.2,<1",
-    "nltk>=3.10",  # Security: Issue #5299 - PYSEC-2026-597 fix
+    "nltk>=3.10",  # Security: Issue #5416 - CVE fixes
     "rouge-score>=0.1.2",
     "sacrebleu>=2.6.0",
     "scipy>=1.15,<2",
