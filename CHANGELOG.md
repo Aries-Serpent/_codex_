@@ -10,6 +10,7 @@
 - Hardened `validate_agent_specs.py` so parse errors fail validation, registered Markdown profiles are discovered recursively, registry/profile identity and selectability are compared, and handler/manifest references and duplicate IDs/names/files are checked.
 - Required nonblank descriptions in the repository agent-registry schema.
 - Updated Copilot MCP references and added a tested machine-readable contract for the supplied 36-name research inventory: 35 read-only GitHub MCP tools plus standalone `web_search`, alongside 21 Playwright MCP tools.
+- Synchronized the mandatory archived accountability record with the repository briefing, MCP inventory, Chronicle, validation, and verification results.
 
 ### Fixed (auto-update — PR #5425)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5425 (SHA `79c522a1`) at 2026-08-01T17:31Z [auto-generated]

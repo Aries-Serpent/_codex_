@@ -389,18 +389,20 @@ hardware, or quantum computational speedup; the NumPy simulations are classical.
 | ML/training | PyTorch, Transformers, Datasets, Accelerate, PEFT, scikit-learn | Runtime/full optional | `pyproject.toml`, `src/codex_ml/` |
 | Serving | FastAPI, Litestar, Ray Serve, HTTPX | Runtime/full optional | `pyproject.toml`, `services/`, serving modules |
 | Tracking/metrics | MLflow, W&B, TensorBoard, Prometheus, Evidently | Full or runtime optional | `pyproject.toml`, tracking/telemetry modules |
-| Data quality/versioning | Great Expectations, DVC | Full optional | `pyproject.toml` |
+| Data quality/versioning | Great Expectations, DVC | Full optional; DVC stages are configured and Great Expectations backs a tested clean-checkpoint path | `pyproject.toml`, `dvc.yaml`, `src/common/validate.py` |
 | Relational/analytic data | SQLite, DuckDB | SQLite in stdlib; DuckDB runtime/full | memory/logging source, `pyproject.toml` |
-| Retrieval | sentence-transformers, ChromaDB, FAISS; Pinecone-compatible adapters | Runtime/full plus adapter integrations | `pyproject.toml`, `src/rag/`, `src/mcp/adapters/` |
+| Retrieval | sentence-transformers, ChromaDB, FAISS; Pinecone/Weaviate-compatible surfaces | Runtime/full; FAISS is implemented, while Pinecone/Weaviate stores are stubs | `pyproject.toml`, `src/rag/`, `src/mcp/adapters/` |
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS, Radix primitives, shadcn-style components | Separate Node 22+ app | `cognitive_app/package.json` |
 | Frontend tests | Vitest, Testing Library, Playwright | Cognitive App development | `cognitive_app/package.json` |
-| Rust swarm | PyO3, Tokio, Rayon, DashMap, Crossbeam, LZ4, Zstandard, DEFLATE, Maturin | Separate experimental companion build | `Cargo.toml` |
-| Delivery | Docker, Kubernetes, Helm, AWS/GCP/Azure Terraform | Implemented declarations; environment-specific | `docker/`, `k8s/`, `deploy/`, `infrastructure/` |
+| Rust companions | PyO3/Maturin, root-swarm threads/Crossbeam/gzip, and `codex_core` Tokio interop are wired; Rayon/DashMap/LZ4/Zstandard remain in alternate unwired modules | Separate experimental builds with placeholder and unwired paths | `Cargo.toml`, `rust_swarm/`, `src/codex_core/` |
+| Delivery | Docker, Kubernetes, Helm, AWS/GCP/Azure Terraform | Declarations are environment-specific and divergent; no single image-to-Kubernetes service chain is verified | `docker/`, `k8s/`, `deploy/`, `infrastructure/` |
 | Quality/security | pytest, nox, pre-commit, Ruff, Black, isort, mypy, CodeQL | Development and CI | `pyproject.toml`, `noxfile.py`, workflow definitions |
 
 Version labels embedded in deployment manifests may differ from the Python package
 version. Use `pyproject.toml` for the distribution version and validate deployed
-images independently.
+images independently. As of 2026-08-01, `uv.lock` still records project version
+0.2.2, and several container/CI declarations select Python versions below or above
+the package's declared 3.12+ support boundary.
 
 ## 11. MCP capabilities and boundaries
 
@@ -513,7 +515,7 @@ Run:
 python scripts/validate_agent_specs.py --strict
 ```
 
-Use `--report <path>` for a machine-readable result.
+Use `--report --report-path <path>` for a machine-readable result.
 
 ## 13. Chronicle: dated usage evidence
 
@@ -578,7 +580,7 @@ agent availability from archived reports.
 | Serving | [`docs/INFERENCE_SERVING_GUIDE.md`](INFERENCE_SERVING_GUIDE.md) |
 | Internal MCP | [`docs/mcp/MCP_CAPABILITIES_REFERENCE.md`](mcp/MCP_CAPABILITIES_REFERENCE.md) |
 | Runtime MCP tools | [`.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`](../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
-| Exact 36 GitHub tools | [`.codex/docs/MCP_GITHUB_CAPABILITIES.md`](../.codex/docs/MCP_GITHUB_CAPABILITIES.md) |
+| Exact 36-name research inventory | [`.codex/docs/MCP_GITHUB_CAPABILITIES.md`](../.codex/docs/MCP_GITHUB_CAPABILITIES.md) |
 | Machine-readable runtime tools | [`.codex/mcp/runtime_inventory_2026-08-01.json`](../.codex/mcp/runtime_inventory_2026-08-01.json) |
 | GitHub variable/secret boundary | [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md) |
 | Custom agents | [`docs/agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md`](agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md) |

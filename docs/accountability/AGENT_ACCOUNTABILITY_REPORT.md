@@ -11556,7 +11556,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
-- Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
+- Recovery Workflow: [archived session-recovery-handler.yml](../../.github/workflows/_archived/session-recovery-handler.yml.archived)
 
 **Next Steps:**
 - Session can now safely resume work on branch `copilot/create-implementation-plan`
@@ -12868,7 +12868,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
-- Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
+- Recovery Workflow: [archived session-recovery-handler.yml](../../.github/workflows/_archived/session-recovery-handler.yml.archived)
 
 **Next Steps:**
 - Session can now safely resume work on branch `copilot/create-implementation-plan`
