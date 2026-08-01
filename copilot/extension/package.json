@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "lint": "eslint server --ext .js"
+    "lint": "eslint server"
   },
   "dependencies": {
     "axios": "^1.18.0",
@@ -21,6 +21,7 @@
     "qs": "6.15.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.8.0"
   }
 }
