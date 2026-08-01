@@ -21563,7 +21563,7 @@ agent signatures and a direct meta-tensor regression run are absent.
 - `npm run lint` in `copilot/extension`: ✅ exit 0
 - `actionlint` on changed actions/workflow: ✅ passed
 - `shellcheck` on changed action shell scripts: ✅ clean
-- `pre-commit` on changed files: ✅ relevant checks passed
+- `pre-commit` on changed files: ✅ relevant checks passed (yamllint `workflow_dispatch: null` warning and unrelated shell/XML/test/mypy failures are pre-existing)
 
 **Authority:** @mbaetiong D-tier autonomous
 **Status:** ✅ COMPLETE
