@@ -1,0 +1,53 @@
+name: Commit to Staging Chain
+description: |
+  Resolve the deepest staging branch, stage files, commit, rebase onto the
+  latest target, and push. Falls back to the current branch only if no
+  integration branch is active.
+inputs:
+  message:
+    description: 'Commit message first line (must include [skip ci])'
+    required: true
+  files:
+    description: 'Space-separated list of files/paths to commit'
+    required: true
+outputs:
+  target_branch:
+    description: 'Branch the commit was pushed to'
+    value: ${{ steps.resolve.outputs.branch }}
+runs:
+  using: composite
+  steps:
+    - name: \ud83d\udd00 Resolve push target
+      id: resolve
+      uses: ./.github/actions/resolve-push-target
+    - name: \ud83d\udce6 Stage, commit, and push
+      shell: bash
+      env:
+        TARGET: ${{ steps.resolve.outputs.branch }}
+        MESSAGE: ${{ inputs.message }}
+        FILE_LIST: ${{ inputs.files }}
+      run: |
+        set -euo pipefail
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git fetch origin "$TARGET" --depth=5 || true
+        git checkout "$TARGET" || git checkout -b "$TARGET"
+        for f in $FILE_LIST; do
+          mkdir -p "$(dirname "$f")"
+          git add "$f" || true
+        done
+        git diff --cached --quiet && { echo "No changes to commit"; exit 0; }
+        git commit -m "$MESSAGE"
+        git pull --rebase --autostash origin "$TARGET" || {
+          echo "\u26a0\ufe0f Rebase failed \u2014 resetting to latest $TARGET and re-applying"
+          git rebase --abort 2>/dev/null || true
+          git fetch origin "$TARGET" --depth=5
+          git reset --hard origin/"$TARGET"
+          git cherry-pick HEAD@{1} --no-commit || {
+            echo "\u274c Could not re-apply changes"
+            exit 1
+          }
+          git commit -m "$MESSAGE (post-rebase retry)"
+        }
+        git push origin "HEAD:${TARGET}"
+        echo "target_branch=${TARGET}" >> "$GITHUB_OUTPUT"
