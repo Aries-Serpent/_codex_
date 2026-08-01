@@ -7,7 +7,8 @@
 > **MCP SDK:** `@modelcontextprotocol/sdk ^1.27.1`  
 > **Playwright MCP:** `@playwright/mcp@0.0.40`  
 > **GitHub MCP server:** remote `https://api.individual.githubcopilot.com/mcp/readonly`  
-> **Last verified:** 2026-03-15 (S46 / PR #3584)
+> **Last verified:** 2026-08-01 (S1485 / PR #5415)
+> **Related strategy docs:** [`MCP_INTEGRATION_MASTER_PLAN.md`](./MCP_INTEGRATION_MASTER_PLAN.md), [`MCP_CAPABILITY_MATRIX.md`](./MCP_CAPABILITY_MATRIX.md), [`CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md`](./CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md)
 
 ---
 

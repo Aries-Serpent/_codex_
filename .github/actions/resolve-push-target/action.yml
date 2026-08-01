@@ -18,10 +18,21 @@ description: |
      itself exists.  If so, use 0D_base_.
   3. Fall back to main (no staging layer is active).
 
+  When `ensure-exists` is `true`, each candidate is verified to exist on the
+  remote before being returned.  The first candidate that exists remotely is
+  chosen; if none of the staging candidates exist, the action falls back to
+  `main`.
+
   Outputs
   ───────
   branch  — name of the resolved target branch
   reason  — one of: sub_pr | integration_branch | default
+
+inputs:
+  ensure-exists:
+    description: 'Verify the resolved branch exists on the remote before returning it'
+    required: false
+    default: 'false'
 
 outputs:
   branch:
@@ -40,8 +51,20 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
         REPO:     ${{ github.repository }}
+        ENSURE_EXISTS: ${{ inputs.ensure-exists }}
       run: |
         set -euo pipefail
+
+        # Return "true" if the branch exists on the remote, else "false".
+        # Handles API and network failures as "does not exist" so the caller
+        # falls back rather than crashing.
+        # Branch names containing "/" are URL-encoded ("%2F") to avoid the
+        # GitHub REST API treating them as path separators.
+        remote_branch_exists() {
+          local branch="$1"
+          local encoded_branch="${branch//\//%2F}"
+          gh api "repos/${REPO}/branches/${encoded_branch}" --silent 2>/dev/null && echo true || echo false
+        }
 
         # ── Step 1: find the most-recently-updated open PR targeting 0D_base_ ──
         # This is the "hottest" tip in the chain: sub-PR → 0D_base_ → main.
@@ -51,7 +74,7 @@ runs:
         # when _0D_EXISTS is false and the variable was never assigned (run #41 fix).
         SUB_PR=""
         _0D_EXISTS=false
-        if gh api "repos/${REPO}/branches/0D_base_" --silent 2>/dev/null; then
+        if [ "$(remote_branch_exists 0D_base_)" = "true" ]; then
           _0D_EXISTS=true
           SUB_PR=$(gh pr list \
             --repo   "$REPO" \
@@ -65,11 +88,18 @@ runs:
           [ "$SUB_PR" = "null" ] && SUB_PR=""
         fi
 
+        # When ensure-exists is enabled, validate the remote presence of a
+        # sub-PR branch before selecting it.
         if [ -n "$SUB_PR" ]; then
-          echo "🔀 Sub-PR detected  →  routing: ${SUB_PR} → 0D_base_ → main"
-          printf 'branch=%s\n' "$SUB_PR" >> "$GITHUB_OUTPUT"
-          echo  'reason=sub_pr'          >> "$GITHUB_OUTPUT"
-          exit 0
+          if [ "$ENSURE_EXISTS" = "true" ] && [ "$(remote_branch_exists "$SUB_PR")" != "true" ]; then
+            echo "ℹ️  Sub-PR ${SUB_PR} resolved but does not exist remotely; walking to next candidate"
+            SUB_PR=""
+          else
+            echo "🔀 Sub-PR detected  →  routing: ${SUB_PR} → 0D_base_ → main"
+            printf 'branch=%s\n' "$SUB_PR" >> "$GITHUB_OUTPUT"
+            echo  'reason=sub_pr'          >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
         fi
 
         # ── Step 2: use 0D_base_ directly if it exists (no sub-PR open) ─────

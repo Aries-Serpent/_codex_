@@ -21524,3 +21524,47 @@ agent signatures and a direct meta-tensor regression run are absent.
 **Authority:** @mbaetiong D-tier autonomous
 **Status:** ✅ COMPLETE
 **Decision:** READY FOR DEPLOYMENT AND MEASUREMENT
+
+
+---
+
+## Session: 2026-08-01T07:54:09Z — PR #5412 Review Comment Resolution
+
+**Objective:** Resolve the three outstanding code review concerns on PR #5412 raised by @copilot-pull-request-reviewer.
+
+**Problem:** PR #5412 had three unresolved review items:
+1. `.github/actions/commit-to-staging-chain/action.yml` hard-failed when `origin/$TARGET` did not exist (discussions r3694896420, r3694896459).
+2. `copilot/extension/eslint.config.js` enabled `@eslint/js` recommended rules but omitted Node/CommonJS globals, causing `no-undef` errors for `server/index.js` (discussion r3694975433).
+3. `.github/workflows/phase-12-hourly-monitoring.yml` used `github.rest.issues.createComment` without `issues: write` permission (discussion r3694975470).
+
+**Solution Implemented:**
+- **Concern 1 — Staging chain resilience:**
+  - Updated `.github/actions/commit-to-staging-chain/action.yml` to detect remote branch presence with `git ls-remote`. If `origin/$TARGET` exists, it fetches, checks out from the remote tip, and rebases as before. If it does not exist, it creates the target branch from the current checkout SHA and pushes directly, skipping the rebase.
+  - Added an `ensure-exists` input (default `false`) to `.github/actions/resolve-push-target/action.yml`. When `true`, the action verifies each resolved candidate branch exists remotely before returning it, falling back through the chain (sub-PR → `0D_base_` → `main`).
+  - Wired `commit-to-staging-chain` to call `resolve-push-target` with `ensure-exists: true`.
+  - Validated with `actionlint` (composite-action schema false positives filtered) and `shellcheck` (clean).
+- **Concern 2 — ESLint CommonJS globals:**
+  - Updated `copilot/extension/eslint.config.js` to import `globals` and use `...globals.node` in `languageOptions.globals`, covering `require`, `module`, `exports`, `__filename`, etc.
+  - Added `globals` `^16.0.0` to `copilot/extension/package.json` devDependencies.
+  - Ran `npm install && npm run lint` in `copilot/extension`; ESLint passed with zero `no-undef` errors.
+- **Concern 3 — Workflow permission:**
+  - Added `issues: write` to the `permissions` block of `.github/workflows/phase-12-hourly-monitoring.yml` while preserving existing `contents: read`, `checks: write`, and `pull-requests: write`.
+  - Audited other workflows using `createComment` and found pre-existing permission gaps; documented them as out-of-scope for this PR.
+  - Validated workflow YAML with `actionlint`.
+
+**Files Modified:**
+- `.github/actions/commit-to-staging-chain/action.yml`
+- `.github/actions/resolve-push-target/action.yml`
+- `.github/workflows/phase-12-hourly-monitoring.yml`
+- `copilot/extension/eslint.config.js`
+- `copilot/extension/package.json`
+
+**Validation:**
+- `npm run lint` in `copilot/extension`: ✅ exit 0
+- `actionlint` on changed actions/workflow: ✅ passed
+- `shellcheck` on changed action shell scripts: ✅ clean
+- `pre-commit` on changed files: ✅ relevant checks passed (yamllint `workflow_dispatch: null` warning and unrelated shell/XML/test/mypy failures are pre-existing)
+
+**Authority:** @mbaetiong D-tier autonomous
+**Status:** ✅ COMPLETE
+**Decision:** READY FOR REVIEW

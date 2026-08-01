@@ -265,7 +265,7 @@ jobs:
 
       - name: Upload verifier artifact for deploy job
         if: github.event.inputs.dry_run == 'false'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cognitive-app-verifier
           path: |
@@ -337,7 +337,7 @@ jobs:
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
 
       - name: Download verifier artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: cognitive-app-verifier
 

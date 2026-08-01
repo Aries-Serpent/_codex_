@@ -48,6 +48,7 @@ paths-ignore:
   # Build artifacts
   - "build/"
   - "dist/"
+  - "site/**"
   - "*.egg-info/"
 
   # Coverage and cache

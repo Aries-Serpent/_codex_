@@ -85,19 +85,63 @@ jobs:
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        script: "const fs = require('fs');\n\nlet findingsContent = '';\nif (fs.existsSync('pr-findings.md'))\
-          \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
-          \nif (findingsContent && findingsContent.trim()) {\n  const lines = [\n\
-          \    '## \U0001F510 Security Findings Detected',\n    '',\n    'This PR\
-          \ has the following security findings from automated scans:',\n    '',\n\
-          \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
-          \ for informational purposes. Please review carefully and address any critical\
-          \ or high-severity findings before merging.'\n  ];\n  const comment = lines.join('\\\
-          n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
-          \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
-          \ context.issue.number,\n      body: comment\n    });\n    console.log('\u2705\
-          \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('\u26A0\
-          \uFE0F  Could not add comment:', error.message);\n  }\n}\n"
+        script: |
+          const fs = require('fs');
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const issue_number = context.issue.number;
+          const anchor = '<!-- security-findings-detected -->';
+
+          let findingsContent = '';
+          if (fs.existsSync('pr-findings.md')) {
+            findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
+          }
+
+          if (findingsContent && findingsContent.trim()) {
+            const lines = [
+              anchor,
+              '',
+              '## 🔐 Security Findings Detected',
+              '',
+              'This PR has the following security findings from automated scans:',
+              '',
+              findingsContent,
+              '',
+              '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
+            ];
+            const comment = lines.join('\n');
+
+            try {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number,
+                per_page: 100,
+              });
+
+              const existing = comments.find((commentItem) => commentItem.user?.login === 'github-actions[bot]' && commentItem.body?.includes(anchor));
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body: comment,
+                });
+                console.log(`✅ Updated security findings comment #${existing.id}`);
+              } else {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number,
+                  body: comment,
+                });
+                console.log('✅ Security findings comment added to PR');
+              }
+            } catch (error) {
+              console.log('⚠️  Could not add comment:', error.message);
+            }
+          }
     timeout-minutes: 30
   validate-findings-json:
     name: Validate Findings JSON

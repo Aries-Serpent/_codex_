@@ -30,6 +30,7 @@ paths-ignore:
   - "**/__pycache__/"
   - "**/*.pyc"
   - "**/*.pyo"
+  - "site/**"
 
   # Documentation (no security analysis needed)
   - "docs/"
