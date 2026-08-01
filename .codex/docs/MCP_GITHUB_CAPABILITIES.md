@@ -77,14 +77,14 @@
 
 Only derived summaries should be written; raw MCP output should remain session-local.
 
-| Tool output source | Repo variable target | Agent / subsystem consumer |
-|---|---|---|
-| `actions_list` + `actions_get` + `get_job_logs` failure summaries | `CODEX_CI_FAILURE_RATE` | `ci-health-alert-agent`, `workflow-health-monitor`, `okr_tracker` |
-| `list_commits` + `get_commit` + `list_branches` green-commit confirmation | `CODEX_CI_LAST_GREEN_SHA` | `workflow-health-monitor`, `okr_tracker`, session wrap-up flows |
-| `pull_request_read` pre-load snapshot | `COGNITIVE_BRAIN_SESSION_NUMBER` | `cognitive-brain-session-injector`, `mcp_session_bridge` |
-| `list_repository_collaborators` + `search_users` actor validation | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `structural_policy_manager`, `agent-auth-delegation`, `repo-var-sync-agent` |
-| `get_file_contents` + `search_code` repo-change detection | `EMBEDDING_INDEX_AUTO_REBUILD` | `doc.retriever.core`, `rag-index-manager`, embedding refresh jobs |
-| `list_code_scanning_alerts` / `get_code_scanning_alert` / `list_secret_scanning_alerts` / `get_secret_scanning_alert` risk rollups | `COPILOT_AGENT_FIREWALL_ENABLED` | `security-alert-verification-agent`, `codeql-alert-resolution-agent` |
+| Tool output source | Repo variable target | Current value (from `agent_context.json` · 2026-08-01) | Agent / subsystem consumer |
+|---|---|---|---|
+| `actions_list` + `actions_get` + `get_job_logs` failure summaries | `CODEX_CI_FAILURE_RATE` | `7.3:ok` | `ci-health-alert-agent`, `workflow-health-monitor`, `okr_tracker` |
+| `list_commits` + `get_commit` + `list_branches` green-commit confirmation | `CODEX_CI_LAST_GREEN_SHA` | `19e97a3ba18dd27e9ef20501546d1839d61c8534` | `workflow-health-monitor`, `okr_tracker`, session wrap-up flows |
+| `pull_request_read` pre-load snapshot | `COGNITIVE_BRAIN_SESSION_NUMBER` | `1485` | `cognitive-brain-session-injector`, `mcp_session_bridge` |
+| `list_repository_collaborators` + `search_users` actor validation | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | `structural_policy_manager`, `agent-auth-delegation`, `repo-var-sync-agent` |
+| `get_file_contents` + `search_code` repo-change detection | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | `doc.retriever.core`, `rag-index-manager`, embedding refresh jobs |
+| `list_code_scanning_alerts` / `get_code_scanning_alert` / `list_secret_scanning_alerts` / `get_secret_scanning_alert` risk rollups | `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | `security-alert-verification-agent`, `codeql-alert-resolution-agent` |
 
 ```mermaid
 flowchart LR
