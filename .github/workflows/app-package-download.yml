@@ -116,7 +116,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Total applications\
         \ found**: $TOTAL_APPS\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
         cache: pip

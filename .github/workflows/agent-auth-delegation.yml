@@ -37,7 +37,7 @@ jobs:
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         cache: pip
         python-version: 3.12.13
@@ -1396,7 +1396,7 @@ jobs:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         cache: pip
         python-version: 3.12.13
