@@ -3,7 +3,7 @@
 **Campaign ID:** SR-2026-08-01  
 **Total Reports Generated:** 3  
 **Execution Status:** ✅ COMPLETE  
-**Merge Status:** ✅ MERGED TO MAIN (commit d02ab0c2)
+**Merge Status:** ✅ APPLIED TO `0D_base_` (commit d02ab0c2)
 
 ---
 
