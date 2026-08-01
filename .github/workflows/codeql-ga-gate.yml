@@ -1,5 +1,5 @@
 name: CodeQL GA Security Gate
-true:
+'on':
   push:
     branches:
     - main
