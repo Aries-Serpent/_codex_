@@ -4,7 +4,7 @@ on:
   - cron: 5 * * * *
   workflow_dispatch: null
 permissions:
-  contents: write
+  contents: read
   checks: write
   pull-requests: write
 jobs:
@@ -20,8 +20,7 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
@@ -39,22 +38,16 @@ jobs:
         \ }}\" \\\n  --output=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
         \ \\\n  --dashboard=\".codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md\" \\\n \
         \ --incident-log=\".codex/PHASE_12_INCIDENT_LOG_2026_07_17.md\"\n"
-    - name: Commit checkpoint results
+    - name: Upload checkpoint artifacts
       if: always()
-      run: 'git config user.name "github-actions[bot]"
-
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-
-        git add .codex/PHASE_12_*.md
-
-        git commit -m "docs(phase-12): Hourly checkpoint ${{ github.run_number }}
-        - $(date -u +''%Y-%m-%dT%H:%M:%SZ'')" || echo "No changes to commit"
-
-        git push || echo "Nothing to push"
-
-        '
-      env:
-        RUN_NUMBER: ${{ github.run_number }}
+      uses: actions/upload-artifact@v5
+      with:
+        name: phase-12-checkpoint-${{ github.run_number }}-${{ github.run_attempt }}
+        path: |
+          .codex/PHASE_12_HOURLY_CHECKPOINT_LOG_*.md
+          .codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md
+          .codex/PHASE_12_INCIDENT_LOG_*.md
+        retention-days: 7
     - name: Check for critical alerts
       run: "python scripts/monitoring/check_alert_thresholds.py \\\n  --log=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
         \ \\\n  --escalate-on-critical\n  \n"
