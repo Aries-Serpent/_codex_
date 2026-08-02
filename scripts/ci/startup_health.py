@@ -47,7 +47,7 @@ def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str
 def build_packet(
     manifest: dict | None = None, context: dict | None = None
 ) -> dict:
-    """Build a startup packet with numeric CI rate and raw fallback metadata."""
+    """Build a packet with numeric CI rate; unavailable rates are ``None``."""
     manifest = manifest or (
         json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     )
