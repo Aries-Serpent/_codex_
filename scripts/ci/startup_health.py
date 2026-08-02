@@ -59,18 +59,21 @@ def build_packet(
     )
     token_ok = token_status == "pass"
     ci_failure_rate = str(context.get("CODEX_CI_FAILURE_RATE", "unknown"))
-    rate_value, _, rate_status = ci_failure_rate.partition(":")
+    rate_value, separator, rate_status = ci_failure_rate.partition(":")
     try:
         ci_failure_rate_value = float(rate_value)
     except ValueError:
         ci_failure_rate_value = None
+    ci_failure_status = (
+        rate_status if separator and ci_failure_rate_value is not None else None
+    )
     score, fixes = _score(manifest, context, token_ok)
     packet = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "branch_drift_severity": manifest.get("branch_drift_severity", "UNKNOWN"),
         "main_commits_ahead": manifest.get("main_commits_ahead", 0),
         "ci_failure_rate": ci_failure_rate_value,
-        "ci_failure_status": rate_status or None,
+        "ci_failure_status": ci_failure_status,
         "ci_failure_rate_raw": ci_failure_rate,
         "token_contract": token_status,
         "bootstrap_health_score": score,
