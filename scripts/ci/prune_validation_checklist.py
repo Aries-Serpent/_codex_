@@ -10,6 +10,7 @@ from pathlib import Path
 
 STAGES = ("CANDIDATE", "QUARANTINE", "CONSOLIDATED", "ARCHIVED")
 REQUIRED_FIELDS = ("workflow_name", "stage", "candidate_date", "owner")
+OPTIONAL_FIELDS = ("dependency_map_path", "parity_report_path", "rollback_sha")
 
 
 def validate(record: dict[str, object]) -> list[str]:
@@ -39,10 +40,10 @@ def load_records(path: Path) -> list[dict[str, object]]:
         if not line.startswith("|") or line.startswith("|---") or "workflow_name" in line:
             continue
         cells = [cell.strip() for cell in line.strip("|").split("|")]
-        if len(cells) != len(REQUIRED_FIELDS) + 3:
+        if len(cells) != len(REQUIRED_FIELDS) + len(OPTIONAL_FIELDS):
             continue
         records.append(dict(zip(
-            (*REQUIRED_FIELDS, "dependency_map_path", "parity_report_path", "rollback_sha"),
+            (*REQUIRED_FIELDS, *OPTIONAL_FIELDS),
             (None if cell == "—" else cell for cell in cells),
         )))
     return records

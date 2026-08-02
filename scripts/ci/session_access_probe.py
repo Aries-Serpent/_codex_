@@ -519,7 +519,42 @@ def _determine_best_method(manifest: AccessManifest) -> tuple[str, str]:
     return "WAIT", f"All REST tokens exhausted — resets {reset_human} (~{wait//60}m {wait%60}s)"
 
 
-# ── Main probe orchestrator ─────────────────────────────────────────────────────
+# ── Branch drift and main probe orchestration ───────────────────────────────────
+def _branch_drift() -> tuple[str, int]:
+    """Return severity and commits on main unseen by the current branch."""
+    try:
+        branch = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        if branch in {"main", "HEAD", "unknown"}:
+            return "LOW", 0
+        subprocess.run(
+            ["git", "rev-parse", "--verify", "origin/main"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=True,
+        )
+        ahead = int(
+            subprocess.run(
+                ["git", "rev-list", "--count", "HEAD..origin/main"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+            or "0"
+        )
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return "UNKNOWN", 0
+    if ahead == 0:
+        return "LOW", 0
+    return ("CRITICAL" if ahead > 3 else "HIGH" if ahead > 1 else "MEDIUM"), ahead
+
+
 def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool = False) -> AccessManifest:
     branch = os.environ.get("GITHUB_REF_NAME", os.environ.get("GITHUB_HEAD_REF", "unknown"))
     sha    = os.environ.get("GITHUB_SHA", "")[:12] or "local"
@@ -594,30 +629,6 @@ def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool
     manifest.recommended_method, manifest.recommended_method_detail = _determine_best_method(manifest)
 
     return manifest
-
-
-def _branch_drift() -> tuple[str, int]:
-    """Return severity and commits on main unseen by the current branch."""
-    try:
-        branch = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            cwd=REPO_ROOT, capture_output=True, text=True, check=True,
-        ).stdout.strip()
-        if branch in {"main", "HEAD", "unknown"}:
-            return "LOW", 0
-        subprocess.run(
-            ["git", "rev-parse", "--verify", "origin/main"],
-            cwd=REPO_ROOT, capture_output=True, check=True,
-        )
-        ahead = int(subprocess.run(
-            ["git", "rev-list", "--count", "HEAD..origin/main"],
-            cwd=REPO_ROOT, capture_output=True, text=True, check=True,
-        ).stdout.strip() or "0")
-    except (OSError, subprocess.CalledProcessError, ValueError):
-        return "UNKNOWN", 0
-    if ahead == 0:
-        return "LOW", 0
-    return ("CRITICAL" if ahead > 3 else "HIGH" if ahead > 1 else "MEDIUM"), ahead
 
 
 # ── Output writers ──────────────────────────────────────────────────────────────
