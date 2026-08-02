@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
-from collections import Counter, defaultdict
+from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -295,8 +295,11 @@ class ChronicleStore:
                     commits=int(_as_number(_first(row, columns, "commits", "commit_count")) or data.get("commits", 0)),
                     tests=int(_as_number(_first(row, columns, "tests", "test_count")) or data.get("tests", 0)),
                     blockers=list(data.get("blockers", [])),
-                    uncommitted_changes=_as_number(
-                        _first(row, columns, "uncommitted_changes", "dirty_files")
+                    uncommitted_changes=(
+                        int(value)
+                        if (value := _as_number(_first(row, columns, "uncommitted_changes", "dirty_files")))
+                        is not None
+                        else None
                     ),
                     checkpoints=int(
                         _as_number(_first(row, columns, "checkpoints", "checkpoint_count"))
