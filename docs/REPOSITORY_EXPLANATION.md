@@ -363,7 +363,7 @@ python -m codex_ml.cli.hydra_train --config-name=training/offline/tiny_functiona
 python -m codex_ml.cli.infer --model-name stub --prompt "hello codex" --max-new-tokens 16
 # Or start the FastAPI inference server (requires runtime/full profile)
 export CODEX_MODEL_TYPE=stub
-python -m src.codex_ml.serving.inference_server
+python -m codex_ml.serving.inference_server
 
 # RAG and ingestion — inspect the RAG pipelines and run a minimal retrieval smoke test
 python -c "from rag.pipelines import retrieval; print(retrieval.__all__)"
@@ -374,7 +374,7 @@ python cognitive_app/src/server/cli_api_server.py &
 curl -s http://localhost:8765/health
 
 # Internal MCP — validate the local MCP registry and schemas
-python -m src.mcp --help 2>/dev/null || python -c "from mcp.server.server import MCPJSONRPCServer; print('OK')"
+python -m mcp --help 2>/dev/null || python -c "from mcp.server.server import MCPJSONRPCServer; print('OK')"
 
 # Custom agents — validate all registered agent specs
 python scripts/validate_agent_specs.py --check
