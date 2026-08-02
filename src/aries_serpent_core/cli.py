@@ -717,6 +717,44 @@ def chronicle_standup(
         raise click.ClickException(f"Failed to generate standup: {exc}") from exc
 
 
+@chronicle.command("reindex")
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=".codex/codex.sqlite",
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    default=".codex/chronicle_search_index.json",
+    show_default=True,
+)
+def chronicle_reindex(database: str, output: str) -> None:
+    """Rebuild the local Chronicle search index from the session store."""
+    try:
+        from aries_serpent_core.logging.chronicle_cost import (
+            ChronicleStore,
+            build_chronicle_index,
+            dump_json,
+        )
+
+        store = ChronicleStore(database)
+        records = store.load_sessions()
+        index = build_chronicle_index(records, store.diagnostics, scope=str(database))
+        output_path = Path(output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(dump_json(index) + "\n", encoding="utf-8")
+        click.echo(f"✅ Reindexed {len(records)} sessions to {output}")
+        _append_campaign_metric(
+            "reindex_requested",
+            {"database": database, "output": output, "sessions": len(records)},
+        )
+    except (IOError, OSError, ModuleNotFoundError, ImportError, sqlite3.Error) as exc:
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        raise click.ClickException(f"Failed to reindex Chronicle: {exc}") from exc
+
+
 @chronicle.command("analyze")
 @click.option(
     "--pattern",

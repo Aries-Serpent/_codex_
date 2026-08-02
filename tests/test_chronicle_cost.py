@@ -12,6 +12,7 @@ from click.testing import CliRunner
 from aries_serpent_core.logging.chronicle_cost import (
     ChronicleStore,
     analyze_costs,
+    build_chronicle_index,
     build_standup_report,
     extract_task_id,
 )
@@ -202,6 +203,23 @@ def test_standup_materializes_diagnostics_iterable() -> None:
     assert "source unavailable" in report["missing_work"]
 
 
+def test_build_chronicle_index_preserves_session_evidence(tmp_path: Path) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+    store = ChronicleStore(database)
+
+    index = build_chronicle_index(
+        store.load_sessions(),
+        store.diagnostics,
+        scope="test",
+    )
+
+    assert index["schema_version"] == "1.0"
+    assert index["scope"] == "test"
+    assert index["summary"]["total_sessions"] == 2
+    assert index["sessions"][0]["session_id"] == "S-open"
+
+
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
     database = tmp_path / "chronicle.sqlite"
     task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
@@ -226,8 +244,22 @@ def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> 
             "--json",
         ],
     )
+    index_path = tmp_path / "index.json"
+    reindex_result = runner.invoke(
+        module.cli,
+        [
+            "chronicle",
+            "reindex",
+            "--database",
+            str(database),
+            "--output",
+            str(index_path),
+        ],
+    )
 
     assert cost_result.exit_code == 0, cost_result.output
     assert standup_result.exit_code == 0, standup_result.output
+    assert reindex_result.exit_code == 0, reindex_result.output
     assert json.loads(cost_result.output)["schema_version"] == "1.0"
     assert json.loads(standup_result.output)["task_id"] == task_id
+    assert json.loads(index_path.read_text())["summary"]["total_sessions"] == 2

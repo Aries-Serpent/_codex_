@@ -734,6 +734,38 @@ def format_standup(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def build_chronicle_index(
+    records: Iterable[SessionRecord],
+    diagnostics: Iterable[str],
+    *,
+    scope: str = "local Chronicle session store",
+) -> dict[str, Any]:
+    """Build a deterministic, searchable summary from normalized sessions."""
+
+    sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id), reverse=True)
+    status_counts: dict[str, int] = defaultdict(int)
+    branch_counts: dict[str, int] = defaultdict(int)
+    for record in sessions:
+        status_counts[record.status or "unknown"] += 1
+        branch_counts[record.branch or "unknown"] += 1
+
+    return {
+        "schema_version": "1.0",
+        "generated_at": _now(),
+        "scope": scope,
+        "summary": {
+            "total_sessions": len(sessions),
+            "commits": sum(record.commits for record in sessions),
+            "tests": sum(record.tests for record in sessions),
+            "tool_calls": sum(record.tool_calls for record in sessions),
+            "status_distribution": dict(sorted(status_counts.items())),
+            "branch_distribution": dict(sorted(branch_counts.items())),
+        },
+        "sessions": [asdict(record) for record in sessions],
+        "source_diagnostics": list(diagnostics),
+    }
+
+
 def dump_json(payload: dict[str, Any]) -> str:
     """Serialize report data consistently for CLI and tests."""
 
