@@ -64,9 +64,7 @@ def build_packet(
         ci_failure_rate_value = float(rate_value)
     except ValueError:
         ci_failure_rate_value = 0.0
-    ci_failure_status = (
-        rate_status if separator and ci_failure_rate_value is not None else None
-    )
+    ci_failure_status = rate_status if separator else None
     score, fixes = _score(manifest, context, token_ok)
     packet = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
