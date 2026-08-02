@@ -12,7 +12,7 @@
     "source": "Copilot session store",
     "query_interface": "session_store_sql",
     "query_dialect": "DuckDB",
-    "refresh_note": "The repository documents a chronicle reindex command, but that command is not implemented. This snapshot was rebuilt directly from the authoritative session and event records.",
+    "refresh_note": "The repository now implements a chronicle reindex command, but this snapshot was rebuilt directly from the authoritative session and event records instead of relying on the local reindex flow.",
     "local_tips_command": {
       "command": "PYTHONPATH=src python -m aries_serpent_core.cli chronicle tips --format json",
       "exit_code": 0,
