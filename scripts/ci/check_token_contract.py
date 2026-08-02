@@ -8,6 +8,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import cast
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_MARKER = "## 📦 Tokenized Variable Contract"
@@ -90,7 +91,8 @@ def main() -> int:
     report = check(paths)
     if args.json_path:
         Path(args.json_path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    for item in report["violations"]:
+    violations = cast(list[dict[str, str]], report["violations"])
+    for item in violations:
         _annotation(f"{item['path']}: {item['message']}")
     print(f"Token contract check: {len(paths)} document(s), {len(report['violations'])} warning(s)")
     return 0

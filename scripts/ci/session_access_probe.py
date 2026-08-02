@@ -748,9 +748,9 @@ def write_manifest_json(manifest: AccessManifest) -> None:
     MANIFEST_PATH.write_text(json.dumps(data, indent=2))
 
 
-def write_startup_packet() -> None:
+def write_startup_packet(manifest: AccessManifest) -> None:
     """Refresh the deterministic startup packet after the manifest is written."""
-    packet = startup_health.build_packet()
+    packet = startup_health.build_packet(asdict(manifest))
     startup_health.PACKET.write_text(
         json.dumps(packet, indent=2) + "\n", encoding="utf-8"
     )
@@ -817,7 +817,7 @@ def main() -> int:
     write_github_env(manifest)
     write_step_summary(manifest)
     write_manifest_json(manifest)
-    write_startup_packet()
+    write_startup_packet(manifest)
 
     if args.json:
         print(json.dumps(asdict(manifest), indent=2, default=str))
