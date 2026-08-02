@@ -20,8 +20,7 @@ from aries_serpent_core.logging.chronicle_cost import (
 def _database(path: Path) -> None:
     task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
     connection = sqlite3.connect(path)
-    connection.executescript(
-        f"""
+    connection.executescript(f"""
         CREATE TABLE sessions (
             id TEXT PRIMARY KEY,
             task_id TEXT,
@@ -43,7 +42,10 @@ def _database(path: Path) -> None:
             ref_value TEXT
         );
         INSERT INTO sessions VALUES
-            ('S-heavy', '{task_id}', '2026-08-01T00:00:00Z', 'complete', 'agent-a', 'implementation'),
+            (
+                'S-heavy', '{task_id}', '2026-08-01T00:00:00Z',
+                'complete', 'agent-a', 'implementation'
+            ),
             ('S-open', NULL, '2026-08-01T01:00:00Z', 'in-progress', 'agent-b', 'validation');
         INSERT INTO events VALUES
             ('S-heavy', 'view', 'inspect file', 10, 20),
@@ -52,8 +54,7 @@ def _database(path: Path) -> None:
             ('S-heavy', 'bash', 'commit abcdef1234567', 10, 20);
         INSERT INTO session_refs VALUES
             ('S-heavy', 'task', 'https://github.com/Aries-Serpent/_codex_/tasks/{task_id}');
-        """
-    )
+        """)
     connection.commit()
     connection.close()
 
@@ -96,6 +97,104 @@ def test_standup_filters_task_url_and_identifies_incomplete_work(tmp_path: Path)
     assert report["summary"]["completed_sessions"] == 1
     assert report["summary"]["commits"] == 1
     assert report["summary"]["tests"] >= 1
+
+
+def test_task_reference_url_without_direct_task_is_matched(tmp_path: Path) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+    connection = sqlite3.connect(database)
+    connection.execute(
+        "INSERT INTO sessions VALUES (?, ?, ?, ?, ?, ?)",
+        ("S-ref", None, "2026-08-01T02:00:00Z", "complete", "agent-c", "linked"),
+    )
+    connection.execute(
+        "INSERT INTO session_refs VALUES (?, ?, ?)",
+        (
+            "S-ref",
+            "task",
+            "https://github.com/Aries-Serpent/_codex_/tasks/"
+            "98a181d6-d9af-448e-8fab-6f4760fd7a6f",
+        ),
+    )
+    connection.commit()
+    connection.close()
+
+    store = ChronicleStore(database)
+    records = store.load_sessions(task_id="98a181d6-d9af-448e-8fab-6f4760fd7a6f")
+
+    assert {record.session_id for record in records} == {"S-heavy", "S-ref"}
+
+
+def test_session_events_preserve_zero_credits_and_tool_boundaries(
+    tmp_path: Path,
+) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    connection = sqlite3.connect(database)
+    connection.executescript("""
+        CREATE TABLE sessions (
+            session_id TEXT PRIMARY KEY,
+            status TEXT,
+            credits INTEGER
+        );
+        CREATE TABLE session_events (
+            session_id TEXT,
+            event_type TEXT,
+            event_details TEXT
+        );
+        INSERT INTO sessions VALUES ('S-events', 'complete', 0);
+        INSERT INTO session_events VALUES
+            ('S-events', 'start', 'unrelated 1234567'),
+            ('S-events', 'check_passed', 'pytest passed'),
+            ('S-events', 'complete', 'commit abcdef1');
+        """)
+    connection.commit()
+    connection.close()
+
+    store = ChronicleStore(database)
+    records = store.load_sessions()
+    report = analyze_costs(records, store.diagnostics)
+
+    assert records[0].tool_calls == 0
+    assert records[0].credits == 0
+    assert records[0].commits == 1
+    assert report["metrics"]["credits_available"] is True
+    assert not any(tip["category"] == "measurement" for tip in report["tips"])
+
+
+def test_event_rows_count_only_tool_events(tmp_path: Path) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    connection = sqlite3.connect(database)
+    connection.executescript("""
+        CREATE TABLE sessions (session_id TEXT PRIMARY KEY, status TEXT);
+        CREATE TABLE events (
+            session_id TEXT,
+            type TEXT,
+            tool_name TEXT,
+            user_content TEXT
+        );
+        INSERT INTO sessions VALUES ('S-mixed', 'complete');
+        INSERT INTO events VALUES
+            ('S-mixed', 'user.message', NULL, 'question'),
+            ('S-mixed', 'assistant.message', NULL, 'answer'),
+            ('S-mixed', 'tool.execution_complete', 'view', 'result');
+        """)
+    connection.commit()
+    connection.close()
+
+    records = ChronicleStore(database).load_sessions()
+
+    assert records[0].tool_calls == 1
+
+
+def test_standup_materializes_diagnostics_iterable() -> None:
+    report = build_standup_report(
+        [],
+        (diagnostic for diagnostic in ["source unavailable"]),
+        task_id="task-id",
+    )
+
+    assert report["source_diagnostics"] == ["source unavailable"]
+    assert "source unavailable" in report["missing_work"]
 
 
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
