@@ -1,0 +1,129 @@
+"""Tests for schema-tolerant Chronicle cost and standup reporting."""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import sqlite3
+from pathlib import Path
+
+from click.testing import CliRunner
+
+from aries_serpent_core.logging.chronicle_cost import (
+    ChronicleStore,
+    analyze_costs,
+    build_standup_report,
+    extract_task_id,
+)
+
+
+def _database(path: Path) -> None:
+    task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
+    connection = sqlite3.connect(path)
+    connection.executescript(
+        f"""
+        CREATE TABLE sessions (
+            id TEXT PRIMARY KEY,
+            task_id TEXT,
+            created_at TEXT,
+            status TEXT,
+            agent_name TEXT,
+            summary TEXT
+        );
+        CREATE TABLE events (
+            session_id TEXT,
+            tool_name TEXT,
+            user_content TEXT,
+            input_tokens INTEGER,
+            output_tokens INTEGER
+        );
+        CREATE TABLE session_refs (
+            session_id TEXT,
+            ref_type TEXT,
+            ref_value TEXT
+        );
+        INSERT INTO sessions VALUES
+            ('S-heavy', '{task_id}', '2026-08-01T00:00:00Z', 'complete', 'agent-a', 'implementation'),
+            ('S-open', NULL, '2026-08-01T01:00:00Z', 'in-progress', 'agent-b', 'validation');
+        INSERT INTO events VALUES
+            ('S-heavy', 'view', 'inspect file', 10, 20),
+            ('S-heavy', 'view', 'inspect file', 10, 20),
+            ('S-heavy', 'bash', 'pytest failed with error', 10, 20),
+            ('S-heavy', 'bash', 'commit abcdef1234567', 10, 20);
+        INSERT INTO session_refs VALUES
+            ('S-heavy', 'task', 'https://github.com/Aries-Serpent/_codex_/tasks/{task_id}');
+        """
+    )
+    connection.commit()
+    connection.close()
+
+
+def _cli_module():
+    path = Path(__file__).resolve().parents[1] / "src" / "aries_serpent_core" / "cli.py"
+    spec = importlib.util.spec_from_file_location("chronicle_cli_test_module", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+
+    store = ChronicleStore(database)
+    records = store.load_sessions()
+    report = analyze_costs(records, store.diagnostics)
+
+    assert [record.session_id for record in records] == ["S-heavy", "S-open"]
+    assert report["metrics"]["credits_available"] is False
+    assert report["metrics"]["tool_calls"] == 4
+    assert any(tip["category"] == "measurement" for tip in report["tips"])
+
+
+def test_standup_filters_task_url_and_identifies_incomplete_work(tmp_path: Path) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+
+    task_id = extract_task_id(
+        "https://github.com/Aries-Serpent/_codex_/tasks/98a181d6-d9af-448e-8fab-6f4760fd7a6f"
+    )
+    store = ChronicleStore(database)
+    records = store.load_sessions(task_id=task_id)
+    report = build_standup_report(records, store.diagnostics, task_id=task_id)
+
+    assert [record.session_id for record in records] == ["S-heavy"]
+    assert report["summary"]["completed_sessions"] == 1
+    assert report["summary"]["commits"] == 1
+    assert report["summary"]["tests"] >= 1
+
+
+def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
+    database = tmp_path / "chronicle.sqlite"
+    task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    runner = CliRunner()
+
+    cost_result = runner.invoke(
+        module.cli,
+        ["chronicle", "cost-tips", "--database", str(database), "--format", "json"],
+    )
+    standup_result = runner.invoke(
+        module.cli,
+        [
+            "chronicle",
+            "standup",
+            "98a181d6-d9af-448e-8fab-6f4760fd7a6f",
+            "--database",
+            str(database),
+            "--json",
+        ],
+    )
+
+    assert cost_result.exit_code == 0, cost_result.output
+    assert standup_result.exit_code == 0, standup_result.output
+    assert json.loads(cost_result.output)["schema_version"] == "1.0"
+    assert json.loads(standup_result.output)["task_id"] == task_id

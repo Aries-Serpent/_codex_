@@ -12,6 +12,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from codex.logging.chronicle_analytics import ChronicleAnalytics
+from aries_serpent_core.logging.chronicle_cost import (
+    ChronicleStore,
+    analyze_costs,
+    build_standup_report,
+    format_cost_tips,
+    format_standup,
+)
 from codex.logging.session_database import SessionDatabase
 
 
@@ -153,6 +160,21 @@ def example_trend_analysis():
         print("\n➡️  Your session activity is stable")
 
 
+def example_cost_and_standup():
+    """Generate cost tips and a completion report without inventing metrics."""
+    print("=" * 70)
+    print("EXAMPLE 7: Cost Tips and Standup")
+    print("=" * 70)
+
+    store = ChronicleStore(".codex/codex.sqlite")
+    records = store.load_sessions()
+    cost_report = analyze_costs(records, store.diagnostics)
+    print("\n" + format_cost_tips(cost_report))
+
+    standup_report = build_standup_report(records, store.diagnostics)
+    print("\n" + format_standup(standup_report))
+
+
 def main():
     """Run all examples."""
     print("\n" + "=" * 70)
@@ -176,6 +198,9 @@ def main():
         print("\n")
         
         example_trend_analysis()
+        print("\n")
+
+        example_cost_and_standup()
         
         print("\n" + "=" * 70)
         print("✅ All examples completed successfully!")
