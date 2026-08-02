@@ -47,6 +47,11 @@ def _as_int(value: Any, default: int = 0) -> int:
     return int(number) if number is not None else default
 
 
+def _prefer_int(value: Any, fallback: Any = 0) -> int:
+    number = _as_number(value)
+    return int(number) if number is not None else _as_int(fallback)
+
+
 def _prefer_number(value: Any, fallback: Any = None) -> int | float | None:
     number = _as_number(value)
     return number if number is not None else _as_number(fallback)
@@ -416,13 +421,13 @@ class ChronicleStore:
                     duration_minutes=_as_number(
                         _first(row, columns, "duration_minutes", "duration", "duration_seconds")
                     ),
-                    commits=int(
-                        _as_number(_first(row, columns, "commits", "commit_count"))
-                        or data.get("commits", 0)
+                    commits=_prefer_int(
+                        _first(row, columns, "commits", "commit_count"),
+                        data.get("commits", 0),
                     ),
-                    tests=int(
-                        _as_number(_first(row, columns, "tests", "test_count"))
-                        or data.get("tests", 0)
+                    tests=_prefer_int(
+                        _first(row, columns, "tests", "test_count"),
+                        data.get("tests", 0),
                     ),
                     blockers=list(data.get("blockers", [])),
                     uncommitted_changes=(
@@ -435,9 +440,9 @@ class ChronicleStore:
                         is not None
                         else None
                     ),
-                    checkpoints=int(
-                        _as_number(_first(row, columns, "checkpoints", "checkpoint_count"))
-                        or data.get("checkpoints", 0)
+                    checkpoints=_prefer_int(
+                        _first(row, columns, "checkpoints", "checkpoint_count"),
+                        data.get("checkpoints", 0),
                     ),
                     repeated_tool_calls=int(data.get("repeated_tool_calls", 0)),
                 )

@@ -134,14 +134,17 @@ def test_session_events_preserve_zero_credits_and_tool_boundaries(
         CREATE TABLE sessions (
             session_id TEXT PRIMARY KEY,
             status TEXT,
-            credits INTEGER
+            credits INTEGER,
+            commits INTEGER,
+            tests INTEGER,
+            checkpoints INTEGER
         );
         CREATE TABLE session_events (
             session_id TEXT,
             event_type TEXT,
             event_details TEXT
         );
-        INSERT INTO sessions VALUES ('S-events', 'complete', 0);
+        INSERT INTO sessions VALUES ('S-events', 'complete', 0, 0, 0, 0);
         INSERT INTO session_events VALUES
             ('S-events', 'start', 'unrelated 1234567'),
             ('S-events', 'check_passed', 'pytest passed'),
@@ -156,7 +159,9 @@ def test_session_events_preserve_zero_credits_and_tool_boundaries(
 
     assert records[0].tool_calls == 0
     assert records[0].credits == 0
-    assert records[0].commits == 1
+    assert records[0].commits == 0
+    assert records[0].tests == 0
+    assert records[0].checkpoints == 0
     assert report["metrics"]["credits_available"] is True
     assert not any(tip["category"] == "measurement" for tip in report["tips"])
 
