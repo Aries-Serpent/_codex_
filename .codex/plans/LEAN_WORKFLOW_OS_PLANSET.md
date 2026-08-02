@@ -541,6 +541,6 @@ Enhancements needed:
 - [Long-Term Planset](cognitive_brain_long_term_planset.md) — Plan 4
 - [Short-Term Planset](cognitive_brain_short_term_planset.md) — Plan 5
 - [Cognitive Brain Core](../../scripts/cognitive/cognitive_brain_core.py)
-- [Session Logger](../../src/codex/logging/session_logger.py)
+- [Session Logger](../../src/codex_ml/logging/session_logger.py)
 - [Aftermath Updater](../../scripts/aftermath/update_cognitive_brain.py)
 - [Copilot Setup Steps](../../.github/workflows/copilot-setup-steps.yml)
