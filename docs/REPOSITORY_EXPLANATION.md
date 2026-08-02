@@ -371,8 +371,8 @@ pytest tests/rag -k "retrieval or embedding" -q --no-header
 uvicorn cognitive_app.server.cli_api_server:app --host 0.0.0.0 --port 8765 &
 curl -s http://localhost:8765/api/health
 
-# Internal MCP — validate the local MCP registry and schemas
-python -m mcp --help 2>/dev/null || python -c "from mcp.server.server import MCPJSONRPCServer; print('OK')"
+# Internal MCP — validate that the local MCP server class is importable
+python -c "from src.mcp.server import MCPServer; print('OK')"
 
 # Custom agents — validate all registered agent specs
 python scripts/validate_agent_specs.py --check
