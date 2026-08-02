@@ -355,12 +355,11 @@ Heavy technologies (torch, transformers, ray, etc.) are **not** base requirement
 Run these from the repository root after `pip install -e .` (add `[runtime]` or `[full]` extras when ML/Ray packages are needed).
 
 ```bash
-# Training/evaluation — list Hydra training configs and run a tiny offline training smoke test
-python -m codex_ml.cli config list training
-python -m codex_ml.cli.hydra_train --config-name=training/offline/tiny_functional max_steps=10
+# Training/evaluation — list training configs and start a tiny offline training smoke test
+codex train --config-name=training/offline/tiny_functional max_steps=10
 
-# Inference/serving — local stub-model inference
-python -m codex_ml.cli.infer --model-name stub --prompt "hello codex" --max-new-tokens 16
+# Inference/serving — local stub-model inference via the console entry point
+codex-ml infer --model-name stub --prompt "hello codex" --max-new-tokens 16
 # Or start the FastAPI inference server (requires runtime/full profile)
 export CODEX_MODEL_TYPE=stub
 python -m codex_ml.serving.inference_server
@@ -370,7 +369,7 @@ python -c "from rag.pipelines import retrieval; print(retrieval.__all__)"
 pytest tests/rag -k "retrieval or embedding" -q --no-header
 
 # Cognitive Brain — run the CLI API server and query health
-python cognitive_app/src/server/cli_api_server.py &
+python -m codex.cli &
 curl -s http://localhost:8765/health
 
 # Internal MCP — validate the local MCP registry and schemas
