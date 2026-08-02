@@ -350,6 +350,51 @@ Heavy technologies (torch, transformers, ray, etc.) are **not** base requirement
 | Cognitive App | `cognitive_app/src/`, `cognitive_app/package.json` | [Connection guide](agent/COGNITIVE_APP_CONNECTION_GUIDE.md) | `github-pages-manager` |
 | CI/security/governance | `.github/workflows/`, `scripts/ci/`, `src/security/` | [Copilot Agent API reference](ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) | `workflow-compliance-guardian` |
 
+### Quick-start commands by task
+
+Run these from the repository root after `pip install -e .` (add `[runtime]` or `[full]` extras when ML/Ray packages are needed).
+
+```bash
+# Training/evaluation — list Hydra training configs and run a tiny offline training smoke test
+python -m codex_ml.cli config list training
+python -m codex_ml.cli.hydra_train --config-name=training/offline/tiny_functional max_steps=10
+
+# Inference/serving — local stub-model inference
+python -m codex_ml.cli.infer --model-name stub --prompt "hello codex" --max-new-tokens 16
+# Or start the FastAPI inference server (requires runtime/full profile)
+export CODEX_MODEL_TYPE=stub
+python -m src.codex_ml.serving.inference_server
+
+# RAG and ingestion — inspect the RAG pipelines and run a minimal retrieval smoke test
+python -c "from rag.pipelines import retrieval; print(retrieval.__all__)"
+pytest tests/rag -k "retrieval or embedding" -q --no-header
+
+# Cognitive Brain — run the CLI API server and query health
+python cognitive_app/src/server/cli_api_server.py &
+curl -s http://localhost:8765/health
+
+# Internal MCP — validate the local MCP registry and schemas
+python -m src.mcp --help 2>/dev/null || python -c "from mcp.server.server import MCPJSONRPCServer; print('OK')"
+
+# Custom agents — validate all registered agent specs
+python scripts/validate_agent_specs.py --check
+
+# Cognitive App — install dependencies and start the Vite dev server
+cd cognitive_app
+npm install
+npm run dev
+
+# CI/security/governance — run lint/format and the test suite on changed files
+pre-commit run --files $(git diff --name-only)
+nox -s tests
+```
+
+### Important boundaries
+
+- **Internal MCP (`src/mcp/`)** is the repository's own JSON-RPC/FastAPI MCP server. It is separate from the **Copilot MCP runtime**, which is provided by the Copilot environment and documented in `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`.
+- **`copilot/extension/server/index.js`** is an ITA proxy shim, not an MCP aggregator. The actual GitHub MCP tools are surfaced by the runtime aggregator.
+- **Autonomous workflows** (Genesis Protocol) are disabled by default. Set `autonomous_actions_enabled: true` and inject admin secrets only after following [`docs/admin/GENESIS_SETUP_GUIDE.md`](admin/GENESIS_SETUP_GUIDE.md).
+
 ---
 
 ## 12. CI/CD and governance
