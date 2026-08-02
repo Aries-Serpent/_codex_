@@ -572,6 +572,189 @@ def chronicle_tips(format: str, output: str | None) -> None:
         sys.exit(1)
 
 
+@chronicle.command("cost-tips")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+    help="Output format for cost tips",
+)
+@click.option("--json", "as_json", is_flag=True, help="Alias for --format json")
+@click.option("--session-id", default=None, help="Analyze one session")
+@click.option("--task-id", default=None, help="Analyze sessions linked to a task UUID")
+@click.option("--start", default=None, help="Inclusive ISO-8601 start timestamp")
+@click.option("--end", default=None, help="Exclusive ISO-8601 end timestamp")
+@click.option(
+    "--warning-budget",
+    type=click.IntRange(min=1),
+    default=16_000,
+    show_default=True,
+    help="Credit threshold that emits a warning",
+)
+@click.option(
+    "--hard-budget",
+    type=click.IntRange(min=1),
+    default=20_000,
+    show_default=True,
+    help="Credit threshold that recommends stopping",
+)
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=".codex/codex.sqlite",
+    show_default=True,
+    help="Chronicle SQLite database",
+)
+@click.option("--output", type=click.Path(dir_okay=False), default=None)
+def chronicle_cost_tips(
+    output_format: str,
+    as_json: bool,
+    session_id: str | None,
+    task_id: str | None,
+    start: str | None,
+    end: str | None,
+    warning_budget: int,
+    hard_budget: int,
+    database: str,
+    output: str | None,
+) -> None:
+    """Generate evidence-backed recommendations for reducing session cost."""
+    if hard_budget < warning_budget:
+        raise click.ClickException("--hard-budget must be greater than or equal to --warning-budget")
+    try:
+        from aries_serpent_core.logging.chronicle_cost import (
+            ChronicleStore,
+            analyze_costs,
+            dump_json,
+            format_cost_tips,
+        )
+
+        store = ChronicleStore(database)
+        records = store.load_sessions(
+            session_id=session_id,
+            task_id=task_id,
+            start=start,
+            end=end,
+        )
+        report = analyze_costs(
+            records,
+            store.diagnostics,
+            warning_budget=warning_budget,
+            hard_budget=hard_budget,
+        )
+        result = dump_json(report) if as_json or output_format == "json" else format_cost_tips(report)
+        if output:
+            Path(output).write_text(result + "\n", encoding="utf-8")
+            click.echo(f"✅ Cost tips exported to {output}")
+        else:
+            click.echo(result)
+        _append_campaign_metric(
+            "cost_tips_requested",
+            {
+                "database": database,
+                "session_id": session_id,
+                "task_id": task_id,
+                "format": "json" if as_json or output_format == "json" else "text",
+            },
+        )
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        raise click.ClickException(f"Failed to generate cost tips: {exc}") from exc
+
+
+@chronicle.command("standup")
+@click.argument("task", required=False)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+    help="Output format for the standup report",
+)
+@click.option("--json", "as_json", is_flag=True, help="Alias for --format json")
+@click.option("--database", type=click.Path(dir_okay=False), default=".codex/codex.sqlite", show_default=True)
+@click.option("--output", type=click.Path(dir_okay=False), default=None)
+def chronicle_standup(
+    task: str | None,
+    output_format: str,
+    as_json: bool,
+    database: str,
+    output: str | None,
+) -> None:
+    """Summarize linked sessions and identify incomplete work."""
+    try:
+        from aries_serpent_core.logging.chronicle_cost import (
+            ChronicleStore,
+            build_standup_report,
+            dump_json,
+            extract_task_id,
+            format_standup,
+        )
+
+        task_id = extract_task_id(task) if task else None
+        store = ChronicleStore(database)
+        records = store.load_sessions(task_id=task_id)
+        report = build_standup_report(records, store.diagnostics, task_id=task_id)
+        result = dump_json(report) if as_json or output_format == "json" else format_standup(report)
+        if output:
+            Path(output).write_text(result + "\n", encoding="utf-8")
+            click.echo(f"✅ Standup exported to {output}")
+        else:
+            click.echo(result)
+        _append_campaign_metric(
+            "standup_requested",
+            {
+                "database": database,
+                "task_id": task_id,
+                "format": "json" if as_json or output_format == "json" else "text",
+            },
+        )
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        raise click.ClickException(f"Failed to generate standup: {exc}") from exc
+
+
+@chronicle.command("reindex")
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=".codex/codex.sqlite",
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    default=".codex/chronicle_search_index.json",
+    show_default=True,
+)
+def chronicle_reindex(database: str, output: str) -> None:
+    """Rebuild the local Chronicle search index from the session store."""
+    try:
+        from aries_serpent_core.logging.chronicle_cost import (
+            ChronicleStore,
+            build_chronicle_index,
+            dump_json,
+        )
+
+        store = ChronicleStore(database)
+        records = store.load_sessions()
+        index = build_chronicle_index(records, store.diagnostics, scope=str(database))
+        output_path = Path(output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(dump_json(index) + "\n", encoding="utf-8")
+        click.echo(f"✅ Reindexed {len(records)} sessions to {output}")
+        _append_campaign_metric(
+            "reindex_requested",
+            {"database": database, "output": output, "sessions": len(records)},
+        )
+    except (IOError, OSError, ModuleNotFoundError, ImportError, sqlite3.Error) as exc:
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        raise click.ClickException(f"Failed to reindex Chronicle: {exc}") from exc
+
+
 @chronicle.command("analyze")
 @click.option(
     "--pattern",

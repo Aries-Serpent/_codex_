@@ -50,7 +50,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: "\xA73a Verify CODEX_MASTER_KEY functional"
       id: test_master
       env:

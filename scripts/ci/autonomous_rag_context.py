@@ -97,6 +97,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.cognitive.context_window_optimizer import truncate_text
+except Exception:  # pragma: no cover - standalone fallback
+
+    def truncate_text(text: str, max_chars: int) -> str:
+        if len(text) <= max_chars:
+            return text
+        return (
+            text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
+        )
+
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -106,34 +118,46 @@ logging.basicConfig(
 logger = logging.getLogger("rag_ctx")
 
 # ── Repo constants ─────────────────────────────────────────────────────────────
-REPO_ROOT   = Path(__file__).resolve().parent.parent.parent
-CODEX_DIR   = REPO_ROOT / ".codex"
-MANIFEST    = CODEX_DIR / "session_access_manifest.json"
-CTX_OUT     = CODEX_DIR / "session_context_latest.md"
-RAG_DELTA   = CODEX_DIR / "rag" / "session_delta.json"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+CODEX_DIR = REPO_ROOT / ".codex"
+MANIFEST = CODEX_DIR / "session_access_manifest.json"
+CTX_OUT = CODEX_DIR / "session_context_latest.md"
+RAG_DELTA = CODEX_DIR / "rag" / "session_delta.json"
 ACCESS_STRATEGY_FILE = CODEX_DIR / "session_access_strategy.json"
 
 OWNER = "Aries-Serpent"
-REPO  = "_codex_"
-BASE  = "https://api.github.com"
+REPO = "_codex_"
+BASE = "https://api.github.com"
 
 # Tuning — all overridable via env / repo variables set by pending_var_updates.json.
 #: Max .py files to re-embed per session in incremental RAG update.
 MAX_FILES_PER_RAG_UPDATE: int = int(os.environ.get("CODEX_RAG_MAX_FILES_PER_SESSION", "20"))
+#: Max pattern previews written to the session context.
+MAX_RAG_PATTERN_PREVIEWS: int = int(os.environ.get("CODEX_RAG_MAX_PATTERNS", "5"))
+#: Max file previews written to the session context.
+MAX_RAG_FILE_PREVIEWS: int = int(os.environ.get("CODEX_RAG_MAX_FILES", "10"))
+#: Max preview length for any single rendered item.
+MAX_RAG_PREVIEW_CHARS: int = int(os.environ.get("CODEX_RAG_PREVIEW_CHARS", "120"))
 #: Max file size in bytes to pass to the RAG indexer (skip huge generated files).
-MAX_FILE_SIZE_FOR_RAG: int   = int(os.environ.get("CODEX_RAG_MAX_FILE_BYTES", "500000"))
+MAX_FILE_SIZE_FOR_RAG: int = int(os.environ.get("CODEX_RAG_MAX_FILE_BYTES", "500000"))
 #: Polite sleep between GitHub API calls (seconds) — mirrors GH_TRICKLE_POLITE_SLEEP.
-POLITE_SLEEP: float          = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.4"))
+POLITE_SLEEP: float = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.4"))
 #: Minimum newline position required when truncating the policy excerpt;
 #: ensures at least one full line of policy text is shown rather than a tiny stub.
 _MIN_POLICY_EXCERPT_NL_POS: int = 50
+
 
 # ── Token discovery (mirrors session_access_probe.py) ─────────────────────────
 def _tokens() -> list[tuple[str, str]]:
     """Return [(value, var_name)] for all available tokens."""
     slots = [
-        "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "CODEX_ADMIN_KEY",
-        "AGENT_GITHUB_TOKEN", "GITHUB_COPILOT_API_TOKEN", "GITHUB_TOKEN", "GH_TOKEN",
+        "CODEX_MASTER_KEY",
+        "CODEX_BACKUP_KEY",
+        "CODEX_ADMIN_KEY",
+        "AGENT_GITHUB_TOKEN",
+        "GITHUB_COPILOT_API_TOKEN",
+        "GITHUB_TOKEN",
+        "GH_TOKEN",
     ]
     seen: set[str] = set()
     result = []
@@ -144,6 +168,7 @@ def _tokens() -> list[tuple[str, str]]:
             result.append((val, var))
     return result
 
+
 TOKENS = _tokens()
 
 
@@ -153,17 +178,18 @@ TOKENS = _tokens()
 @dataclass
 class AccessStrategy:
     """Ordered list of methods to try, derived from access manifest."""
-    methods: list[str]                       # e.g. ["rest", "graphql", "gh_cli"]
-    rest_available: bool      = False
-    rest_remaining: int       = 0
-    rest_reset_epoch: int     = 0
-    graphql_available: bool   = False
-    graphql_remaining: int    = 0
-    gh_cli_available: bool    = False
-    codeql_available: bool    = False
-    best_token_var: str       = ""
-    open_prs: list[int]       = field(default_factory=list)
-    branch: str               = ""
+
+    methods: list[str]  # e.g. ["rest", "graphql", "gh_cli"]
+    rest_available: bool = False
+    rest_remaining: int = 0
+    rest_reset_epoch: int = 0
+    graphql_available: bool = False
+    graphql_remaining: int = 0
+    gh_cli_available: bool = False
+    codeql_available: bool = False
+    best_token_var: str = ""
+    open_prs: list[int] = field(default_factory=list)
+    branch: str = ""
 
     @classmethod
     def from_manifest(cls) -> "AccessStrategy":
@@ -172,7 +198,7 @@ class AccessStrategy:
                 data = json.loads(MANIFEST.read_text())
                 methods: list[str] = []
                 rest_rem = data.get("best_token_rest_remaining", 0)
-                gql_rem  = data.get("graphql_remaining", 0)
+                gql_rem = data.get("graphql_remaining", 0)
                 if rest_rem >= 100:
                     methods.append("rest")
                 if gql_rem >= 100:
@@ -206,17 +232,23 @@ class AccessStrategy:
     def _inline_probe(cls) -> "AccessStrategy":
         methods: list[str] = []
         rest_rem = 0
-        gql_rem  = 0
+        gql_rem = 0
         best_var = ""
         for token, var in TOKENS:
             try:
-                req = urllib.request.Request(f"{BASE}/rate_limit",  # noqa: S310  # BASE = https://api.github.com (https-only constant)
-                    headers={"Authorization": f"Bearer {token}",
-                             "Accept": "application/vnd.github+json"})
-                with urllib.request.urlopen(req, timeout=8) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+                req = urllib.request.Request(
+                    f"{BASE}/rate_limit",  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+                    headers={
+                        "Authorization": f"Bearer {token}",
+                        "Accept": "application/vnd.github+json",
+                    },
+                )
+                with urllib.request.urlopen(
+                    req, timeout=8
+                ) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                     d = json.load(r)
                 core = d.get("resources", {}).get("core", {})
-                gql  = d.get("resources", {}).get("graphql", {})
+                gql = d.get("resources", {}).get("graphql", {})
                 if core.get("remaining", 0) > rest_rem:
                     rest_rem = core["remaining"]
                     best_var = var
@@ -231,9 +263,13 @@ class AccessStrategy:
             methods.append("graphql")
         if not methods:
             methods = ["local_fs"]
-        return cls(methods=methods, rest_available=rest_rem >= 10,
-                   rest_remaining=rest_rem, graphql_remaining=gql_rem,
-                   best_token_var=best_var)
+        return cls(
+            methods=methods,
+            rest_available=rest_rem >= 10,
+            rest_remaining=rest_rem,
+            graphql_remaining=gql_rem,
+            best_token_var=best_var,
+        )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -271,8 +307,12 @@ class TrickleDownFetcher:
             return None
         time.sleep(self.POLITE)
         try:
-            req = urllib.request.Request(f"{BASE}{path}", headers=self._headers(token))  # noqa: S310  # BASE = https://api.github.com (https-only constant)
-            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+            req = urllib.request.Request(
+                f"{BASE}{path}", headers=self._headers(token)
+            )  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+            with urllib.request.urlopen(
+                req, timeout=15
+            ) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                 return json.load(r)
         except urllib.error.HTTPError as exc:
             if exc.code == 403:
@@ -295,13 +335,18 @@ class TrickleDownFetcher:
             return {}
         time.sleep(self.POLITE)
         try:
-            payload = json.dumps({"query": query, **({"variables": variables} if variables else {})}).encode()
+            payload = json.dumps(
+                {"query": query, **({"variables": variables} if variables else {})}
+            ).encode()
             req = urllib.request.Request(  # noqa: S310  # BASE = https://api.github.com (https-only constant)
-                f"{BASE}/graphql", data=payload,
+                f"{BASE}/graphql",
+                data=payload,
                 headers={**self._headers(token), "Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
+            with urllib.request.urlopen(
+                req, timeout=15
+            ) as r:  # noqa: S310  # BASE = https://api.github.com (https-only constant)
                 result = json.load(r)
             return result.get("data", {})
         except Exception as exc:
@@ -313,8 +358,9 @@ class TrickleDownFetcher:
         if "gh_cli" not in self.strategy.methods:
             return None
         try:
-            r = subprocess.run(["gh"] + args, capture_output=True, text=True,
-                               timeout=20, shell=False)
+            r = subprocess.run(
+                ["gh"] + args, capture_output=True, text=True, timeout=20, shell=False
+            )
             if r.returncode == 0:
                 try:
                     return json.loads(r.stdout)
@@ -335,15 +381,17 @@ class TrickleDownFetcher:
         # Try REST first
         pr = self._rest_get(f"/repos/{OWNER}/{REPO}/pulls/{self.pr_number}")
         if pr:
-            ctx.update({
-                "title":  pr.get("title", ""),
-                "state":  pr.get("state", ""),
-                "head_sha": pr.get("head", {}).get("sha", "")[:12],
-                "base_branch": pr.get("base", {}).get("ref", ""),
-                "head_branch": pr.get("head", {}).get("ref", ""),
-                "mergeable": pr.get("mergeable"),
-                "draft": pr.get("draft", False),
-            })
+            ctx.update(
+                {
+                    "title": pr.get("title", ""),
+                    "state": pr.get("state", ""),
+                    "head_sha": pr.get("head", {}).get("sha", "")[:12],
+                    "base_branch": pr.get("base", {}).get("ref", ""),
+                    "head_branch": pr.get("head", {}).get("ref", ""),
+                    "mergeable": pr.get("mergeable"),
+                    "draft": pr.get("draft", False),
+                }
+            )
             # Check runs for head SHA
             sha = pr.get("head", {}).get("sha", "")
             if sha:
@@ -353,14 +401,20 @@ class TrickleDownFetcher:
                 if checks and isinstance(checks, dict):
                     runs = checks.get("check_runs", [])
                     failing = [
-                        {"name": r["name"], "conclusion": r.get("conclusion"), "status": r.get("status")}
-                        for r in runs if r.get("conclusion") in ("failure", "timed_out", "cancelled")
+                        {
+                            "name": r["name"],
+                            "conclusion": r.get("conclusion"),
+                            "status": r.get("status"),
+                        }
+                        for r in runs
+                        if r.get("conclusion") in ("failure", "timed_out", "cancelled")
                     ]
                     ctx["failing_checks"] = failing
-                    ctx["total_checks"]   = len(runs)
+                    ctx["total_checks"] = len(runs)
         else:
             # Fall back to GraphQL
-            data = self._graphql("""
+            data = self._graphql(
+                """
             query($owner: String!, $repo: String!, $pr: Int!) {
               repository(owner: $owner, name: $repo) {
                 pullRequest(number: $pr) {
@@ -378,27 +432,39 @@ class TrickleDownFetcher:
                   } }
                 }
               }
-            }""", {"owner": OWNER, "repo": REPO, "pr": self.pr_number})
+            }""",
+                {"owner": OWNER, "repo": REPO, "pr": self.pr_number},
+            )
             pr_data = data.get("repository", {}).get("pullRequest", {}) if data else {}
             if pr_data:
-                ctx.update({
-                    "title":  pr_data.get("title", ""),
-                    "state":  pr_data.get("state", ""),
-                    "draft":  pr_data.get("isDraft", False),
-                    "head_branch": pr_data.get("headRefName", ""),
-                    "base_branch": pr_data.get("baseRefName", ""),
-                    "head_sha": pr_data.get("headRefOid", "")[:12],
-                })
+                ctx.update(
+                    {
+                        "title": pr_data.get("title", ""),
+                        "state": pr_data.get("state", ""),
+                        "draft": pr_data.get("isDraft", False),
+                        "head_branch": pr_data.get("headRefName", ""),
+                        "base_branch": pr_data.get("baseRefName", ""),
+                        "head_sha": pr_data.get("headRefOid", "")[:12],
+                    }
+                )
                 # Unresolved review threads
                 threads = pr_data.get("reviewThreads", {}).get("nodes", [])
                 ctx["unresolved_threads"] = [
-                    {"path": t["path"],
-                     "comment": t["comments"]["nodes"][0]["body"][:120] if t["comments"]["nodes"] else ""}
-                    for t in threads if not t.get("isResolved")
+                    {
+                        "path": t["path"],
+                        "comment": (
+                            t["comments"]["nodes"][0]["body"][:120]
+                            if t["comments"]["nodes"]
+                            else ""
+                        ),
+                    }
+                    for t in threads
+                    if not t.get("isResolved")
                 ]
             elif "gh_cli" in self.strategy.methods:
-                gh = self._gh_cli(["pr", "view", str(self.pr_number),
-                                   "--json", "title,state,headRefName,isDraft"])
+                gh = self._gh_cli(
+                    ["pr", "view", str(self.pr_number), "--json", "title,state,headRefName,isDraft"]
+                )
                 if gh and isinstance(gh, dict):
                     ctx.update(gh)
 
@@ -412,13 +478,15 @@ class TrickleDownFetcher:
         )
         if data and isinstance(data, dict):
             for run in data.get("workflow_runs", []):
-                failures.append({
-                    "workflow": run.get("name", ""),
-                    "conclusion": run.get("conclusion", ""),
-                    "branch": run.get("head_branch", ""),
-                    "updated_at": run.get("updated_at", ""),
-                    "run_id": run.get("id"),
-                })
+                failures.append(
+                    {
+                        "workflow": run.get("name", ""),
+                        "conclusion": run.get("conclusion", ""),
+                        "branch": run.get("head_branch", ""),
+                        "updated_at": run.get("updated_at", ""),
+                        "run_id": run.get("id"),
+                    }
+                )
         return failures[:5]
 
     def fetch_recent_commits(self, n: int = 10) -> list[dict]:
@@ -431,8 +499,12 @@ class TrickleDownFetcher:
         )
         if data and isinstance(data, list):
             return [
-                {"sha": c["sha"][:8], "message": c["commit"]["message"].splitlines()[0][:80],
-                 "author": c["commit"]["author"]["name"], "date": c["commit"]["author"]["date"]}
+                {
+                    "sha": c["sha"][:8],
+                    "message": c["commit"]["message"].splitlines()[0][:80],
+                    "author": c["commit"]["author"]["name"],
+                    "date": c["commit"]["author"]["date"],
+                }
                 for c in data
             ]
         return _local_git_log(n)
@@ -446,14 +518,24 @@ def _local_git_log(n: int = 10) -> list[dict]:
     try:
         r = subprocess.run(
             ["git", "--no-pager", "log", f"-{n}", "--format=%H|%s|%an|%ai"],
-            capture_output=True, text=True, timeout=10, cwd=REPO_ROOT, shell=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=REPO_ROOT,
+            shell=False,
         )
         result = []
         for line in r.stdout.strip().splitlines():
             parts = line.split("|", 3)
             if len(parts) == 4:
-                result.append({"sha": parts[0][:8], "message": parts[1][:120],
-                               "author": parts[2], "date": parts[3][:19]})
+                result.append(
+                    {
+                        "sha": parts[0][:8],
+                        "message": parts[1][:MAX_RAG_PREVIEW_CHARS],
+                        "author": parts[2],
+                        "date": parts[3][:19],
+                    }
+                )
         return result
     except Exception:
         return []
@@ -464,9 +546,15 @@ def _changed_files_since_last_session() -> list[str]:
     try:
         r = subprocess.run(
             ["git", "--no-pager", "diff", "--name-only", "HEAD~1", "HEAD"],
-            capture_output=True, text=True, timeout=10, cwd=REPO_ROOT, shell=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=REPO_ROOT,
+            shell=False,
         )
-        return [f for f in r.stdout.strip().splitlines() if f.endswith(".py")]
+        return [f for f in r.stdout.strip().splitlines() if f.endswith(".py")][
+            :MAX_FILES_PER_RAG_UPDATE
+        ]
     except Exception:
         return []
 
@@ -488,7 +576,22 @@ def _harvest_local_context() -> dict:
     if pda.exists():
         try:
             lines = pda.read_text().strip().splitlines()
-            last_5 = [json.loads(line) for line in lines[-5:] if line.strip()]
+            last_5 = []
+            for line in lines[-5:]:
+                if not line.strip():
+                    continue
+                entry = json.loads(line)
+                last_5.append(
+                    {
+                        "timestamp": entry.get("timestamp", "")[:19],
+                        "pattern_id": entry.get("pattern_id", "?"),
+                        "status": entry.get("status", "?"),
+                        "summary": truncate_text(
+                            entry.get("summary") or entry.get("title") or "(no description)",
+                            MAX_RAG_PREVIEW_CHARS,
+                        ),
+                    }
+                )
             ctx["pda_last_5"] = last_5
         except Exception:
             logger.debug("Suppressed exception", exc_info=True)
@@ -496,19 +599,19 @@ def _harvest_local_context() -> dict:
     # Recent session context
     if CTX_OUT.exists():
         try:
-            ctx["prev_session_context"] = CTX_OUT.read_text()[:2000]
+            ctx["prev_session_context"] = truncate_text(CTX_OUT.read_text(), 1_200)
         except Exception:
             logger.debug("Suppressed exception", exc_info=True)
 
     # Git log
-    ctx["recent_commits"] = _local_git_log(8)
-    ctx["changed_files"]  = _changed_files_since_last_session()
+    ctx["recent_commits"] = _local_git_log(5)
+    ctx["changed_files"] = _changed_files_since_last_session()
 
     # CODEBASE_AGENCY_POLICY excerpt
     policy = CODEX_DIR / "CODEBASE_AGENCY_POLICY.md"
     if policy.exists():
         try:
-            ctx["policy_excerpt"] = policy.read_text()[:800]
+            ctx["policy_excerpt"] = truncate_text(policy.read_text(), 500)
         except Exception:
             logger.debug("Suppressed exception", exc_info=True)
 
@@ -516,7 +619,7 @@ def _harvest_local_context() -> dict:
     state = CODEX_DIR / "AGENTIC_REPO_STATE.md"
     if state.exists():
         try:
-            ctx["agentic_state"] = state.read_text()[:600]
+            ctx["agentic_state"] = truncate_text(state.read_text(), 400)
         except Exception:
             logger.debug("Suppressed exception", exc_info=True)
 
@@ -526,7 +629,7 @@ def _harvest_local_context() -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 # RAG index query (wraps src/codex/rag/retriever.py gracefully)
 # ─────────────────────────────────────────────────────────────────────────────
-def _query_rag_index(query: str, top_k: int = 5) -> list[dict]:
+def _query_rag_index(query: str, top_k: int = MAX_RAG_PATTERN_PREVIEWS) -> list[dict]:
     """
     Query the existing FAISS RAG index for relevant patterns.
     Gracefully degrades to [] if the index or dependencies are unavailable.
@@ -534,9 +637,17 @@ def _query_rag_index(query: str, top_k: int = 5) -> list[dict]:
     try:
         sys.path.insert(0, str(REPO_ROOT / "src"))
         from codex.rag.retriever import RAGRetriever  # type: ignore[import]
+
         retriever = RAGRetriever()
         results = retriever.retrieve(query, top_k=top_k)
-        return [{"text": r.text[:300], "score": r.score, "source": r.source} for r in results]
+        return [
+            {
+                "text": truncate_text(r.text, MAX_RAG_PREVIEW_CHARS),
+                "score": r.score,
+                "source": r.source,
+            }
+            for r in results[:MAX_RAG_PATTERN_PREVIEWS]
+        ]
     except ImportError:
         logger.debug("RAGRetriever not available — skipping index query")
     except Exception as exc:
@@ -556,6 +667,7 @@ def _incremental_rag_update(changed_files: list[str]) -> dict:
     try:
         sys.path.insert(0, str(REPO_ROOT / "src"))
         from codex.rag.indexer import RAGIndexer  # type: ignore[import]
+
         indexer = RAGIndexer()
         for rel_path in changed_files[:MAX_FILES_PER_RAG_UPDATE]:
             abs_path = REPO_ROOT / rel_path
@@ -589,9 +701,14 @@ def _compress_context(text: str, max_tokens: int = 3000) -> str:
     try:
         sys.path.insert(0, str(REPO_ROOT / "src"))
         from codex.cognitive.context_compressor import ContextCompressor  # type: ignore[import]
+
         compressor = ContextCompressor()
         compressed = compressor.compress(text, max_tokens=max_tokens)
-        return compressed.summary + "\n\nKey points:\n" + "\n".join(f"- {p}" for p in compressed.key_points)
+        return (
+            compressed.summary
+            + "\n\nKey points:\n"
+            + "\n".join(f"- {p}" for p in compressed.key_points)
+        )
     except Exception:
         logger.debug("Suppressed exception", exc_info=True)
     # Simple truncation with sentinel
@@ -602,12 +719,12 @@ def _compress_context(text: str, max_tokens: int = 3000) -> str:
 # Context renderer
 # ─────────────────────────────────────────────────────────────────────────────
 def _render_context_md(
-    strategy:  AccessStrategy,
-    pr_ctx:    dict,
-    ci_fails:  list[dict],
-    commits:   list[dict],
+    strategy: AccessStrategy,
+    pr_ctx: dict,
+    ci_fails: list[dict],
+    commits: list[dict],
     local_ctx: dict,
-    rag_hits:  list[dict],
+    rag_hits: list[dict],
     rag_delta: dict,
 ) -> str:
     """Render the full session context as Markdown."""
@@ -639,33 +756,43 @@ def _render_context_md(
         threads = pr_ctx.get("unresolved_threads", [])
         if threads:
             lines.append(f"### ⚠️ {len(threads)} Unresolved Review Thread(s)")
-            for t in threads[:5]:
-                lines.append(f"- `{t['path']}` — {t['comment'][:100]}")
+            for t in threads[:3]:
+                lines.append(
+                    f"- `{t['path']}` — {truncate_text(t['comment'], MAX_RAG_PREVIEW_CHARS)}"
+                )
             lines.append("")
         failing = pr_ctx.get("failing_checks", [])
         if failing:
             lines.append(f"### ❌ {len(failing)} Failing CI Check(s)")
-            for c in failing[:8]:
+            for c in failing[:5]:
                 lines.append(f"- `{c['name']}` ({c['conclusion']})")
             lines.append("")
 
     if ci_fails:
         lines.append("## 🚨 Recent CI Failures (last 5 runs)")
-        for f in ci_fails:
-            lines.append(f"- **{f['workflow']}** — `{f['conclusion']}` on `{f['branch']}` ({f['updated_at'][:10]})")
+        for f in ci_fails[:3]:
+            lines.append(
+                f"- **{f['workflow']}** — `{f['conclusion']}` on "
+                f"`{f['branch']}` ({f['updated_at'][:10]})"
+            )
         lines.append("")
 
     if commits:
         lines.append("## 📝 Recent Commits")
-        for c in commits[:8]:
-            lines.append(f"- `{c['sha']}` {c['message']} — {c['author']} ({c.get('date', '')[:10]})")
+        for c in commits[:5]:
+            lines.append(
+                f"- `{c['sha']}` {truncate_text(c['message'], MAX_RAG_PREVIEW_CHARS)} "
+                f"— {c['author']} ({c.get('date', '')[:10]})"
+            )
         lines.append("")
 
     if rag_hits:
         lines.append("## 🧠 RAG Index — Relevant Patterns")
-        for h in rag_hits:
-            lines.append(f"- [{h.get('source', '?')}] (score={h.get('score', 0):.2f}): "
-                         f"{h.get('text', '')[:120]}")
+        for h in rag_hits[:MAX_RAG_PATTERN_PREVIEWS]:
+            lines.append(
+                f"- [{h.get('source', '?')}] (score={h.get('score', 0):.2f}): "
+                f"{truncate_text(h.get('text', ''), MAX_RAG_PREVIEW_CHARS)}"
+            )
         lines.append("")
 
     if rag_delta.get("updated", 0) > 0:
@@ -681,9 +808,12 @@ def _render_context_md(
     if rv:
         lines.append("## ⚙️ Repository Variables (live)")
         priority_vars = [
-            "COPILOT_AGENT_AUTH_ENABLED", "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
-            "COGNITIVE_BRAIN_SESSION_NUMBER", "CODEX_CI_FAILURE_RATE",
-            "CODEX_CI_LAST_GREEN_SHA", "COPILOT_AGENT_FIREWALL_ENABLED",
+            "COPILOT_AGENT_AUTH_ENABLED",
+            "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
+            "COGNITIVE_BRAIN_SESSION_NUMBER",
+            "CODEX_CI_FAILURE_RATE",
+            "CODEX_CI_LAST_GREEN_SHA",
+            "COPILOT_AGENT_FIREWALL_ENABLED",
         ]
         for k in priority_vars:
             v = rv.get(k)
@@ -695,9 +825,9 @@ def _render_context_md(
     if pda:
         lines.append("## 🔁 PDA Loop — Last 5 Iterations")
         for entry in pda[-3:]:
-            ts   = entry.get("timestamp", "")[:10]
-            act  = entry.get("action", "?")[:60]
-            pat  = entry.get("pattern_id", "?")
+            ts = entry.get("timestamp", "")[:10]
+            act = entry.get("summary", "?")
+            pat = entry.get("pattern_id", "?")
             lines.append(f"- [{ts}] `{pat}`: {act}")
         lines.append("")
 
@@ -734,7 +864,7 @@ def _write_step_summary(context_md: str) -> None:
         return
     with open(path, "a") as f:
         f.write("\n## 🧠 Autonomous RAG Session Context\n")
-        f.write(context_md[:8000])
+        f.write(truncate_text(context_md, 4_000))
         f.write("\n")
 
 
@@ -742,7 +872,14 @@ def _write_rag_delta(delta: dict, strategy: AccessStrategy) -> None:
     RAG_DELTA.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
-        "rag_delta": delta,
+        "rag_delta": {
+            "updated": int(delta.get("updated", 0)),
+            "skipped": int(delta.get("skipped", 0)),
+            "errors": [
+                truncate_text(str(err), MAX_RAG_PREVIEW_CHARS)
+                for err in delta.get("errors", [])[:MAX_RAG_FILE_PREVIEWS]
+            ],
+        },
         "access_strategy": strategy.methods,
         "rest_remaining": strategy.rest_remaining,
         "graphql_remaining": strategy.graphql_remaining,
@@ -762,14 +899,16 @@ def _write_access_strategy(strategy: AccessStrategy) -> None:
         "gh_cli_available": strategy.gh_cli_available,
         "codeql_available": strategy.codeql_available,
         "best_token_var": strategy.best_token_var,
-        "open_prs": strategy.open_prs,
+        "open_prs": strategy.open_prs[:MAX_RAG_FILE_PREVIEWS],
         "branch": strategy.branch,
         "recommendation": (
             "Use REST for data fetches. "
             if strategy.rest_available and strategy.rest_remaining >= 100
-            else "REST exhausted — use GraphQL or gh CLI. "
-            if strategy.graphql_available
-            else "All API methods exhausted — use local CodeQL/FS only. "
+            else (
+                "REST exhausted — use GraphQL or gh CLI. "
+                if strategy.graphql_available
+                else "All API methods exhausted — use local CodeQL/FS only. "
+            )
         ),
     }
     ACCESS_STRATEGY_FILE.write_text(json.dumps(payload, indent=2))
@@ -779,10 +918,10 @@ def _write_access_strategy(strategy: AccessStrategy) -> None:
 # Main orchestrator
 # ─────────────────────────────────────────────────────────────────────────────
 def build_context(
-    pr_number:   int | None = None,
-    offline:     bool       = False,
-    dry_run:     bool       = False,
-    rebuild_rag: bool       = False,
+    pr_number: int | None = None,
+    offline: bool = False,
+    dry_run: bool = False,
+    rebuild_rag: bool = False,
 ) -> str:
     """Full context build pipeline. Returns the rendered Markdown string."""
 
@@ -804,20 +943,25 @@ def build_context(
 
     # 2. Fetch GitHub context
     fetcher = TrickleDownFetcher(strategy, pr_number=pr_num)
-    pr_ctx    = fetcher.fetch_pr_context() if pr_num and not offline else {}
-    ci_fails  = fetcher.fetch_recent_ci_failures() if not offline else []
-    commits   = fetcher.fetch_recent_commits()
+    pr_ctx = fetcher.fetch_pr_context() if pr_num and not offline else {}
+    ci_fails = fetcher.fetch_recent_ci_failures() if not offline else []
+    commits = fetcher.fetch_recent_commits()
 
     # 3. Local filesystem context
     local_ctx = _harvest_local_context()
 
     # 4. Build RAG query from current context
-    rag_query = " ".join(filter(None, [
-        pr_ctx.get("title", ""),
-        strategy.branch,
-        " ".join(c["message"][:40] for c in commits[:3]),
-        " ".join(f["workflow"] for f in ci_fails[:2]),
-    ]))[:300]
+    rag_query = " ".join(
+        filter(
+            None,
+            [
+                pr_ctx.get("title", ""),
+                strategy.branch,
+                " ".join(c["message"][:40] for c in commits[:3]),
+                " ".join(f["workflow"] for f in ci_fails[:2]),
+            ],
+        )
+    )[:300]
 
     rag_hits = _query_rag_index(rag_query) if rag_query.strip() else []
 
@@ -825,11 +969,16 @@ def build_context(
     changed = local_ctx.get("changed_files", [])
     if rebuild_rag:
         changed = [str(p.relative_to(REPO_ROOT)) for p in (REPO_ROOT / "src").rglob("*.py")]
-    rag_delta = _incremental_rag_update(changed) if changed else {"updated": 0, "skipped": 0, "errors": []}
+    rag_delta = (
+        _incremental_rag_update(changed) if changed else {"updated": 0, "skipped": 0, "errors": []}
+    )
 
     # 6. Render + compress
-    context_md = _render_context_md(strategy, pr_ctx, ci_fails, commits, local_ctx, rag_hits, rag_delta)
+    context_md = _render_context_md(
+        strategy, pr_ctx, ci_fails, commits, local_ctx, rag_hits, rag_delta
+    )
     context_md = _compress_context(context_md, max_tokens=4000)
+    context_md = truncate_text(context_md, 12_000)
 
     if not dry_run:
         # 7. Write outputs
@@ -847,12 +996,16 @@ def build_context(
 # Entry point
 # ─────────────────────────────────────────────────────────────────────────────
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--pr",          type=int,       help="PR number to fetch context for")
-    parser.add_argument("--offline",     action="store_true", help="No network calls — local FS only")
-    parser.add_argument("--dry-run",     action="store_true", help="Build context but do not write outputs")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("--pr", type=int, help="PR number to fetch context for")
+    parser.add_argument("--offline", action="store_true", help="No network calls — local FS only")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Build context but do not write outputs"
+    )
     parser.add_argument("--rebuild-rag", action="store_true", help="Force full RAG index rebuild")
-    parser.add_argument("--json",        action="store_true", help="Print access strategy JSON to stdout")
+    parser.add_argument("--json", action="store_true", help="Print access strategy JSON to stdout")
     args = parser.parse_args()
 
     ctx = build_context(
@@ -864,12 +1017,17 @@ def main() -> int:
 
     if args.json:
         strategy = AccessStrategy.from_manifest()
-        print(json.dumps({
-            "methods": strategy.methods,
-            "rest_remaining": strategy.rest_remaining,
-            "graphql_remaining": strategy.graphql_remaining,
-            "context_chars": len(ctx),
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "methods": strategy.methods,
+                    "rest_remaining": strategy.rest_remaining,
+                    "graphql_remaining": strategy.graphql_remaining,
+                    "context_chars": len(ctx),
+                },
+                indent=2,
+            )
+        )
     else:
         print(ctx[:1200])
         print(f"\n→ Full context: {CTX_OUT}")

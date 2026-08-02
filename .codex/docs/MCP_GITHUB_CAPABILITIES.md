@@ -1,11 +1,17 @@
-# GitHub MCP Server Native Capabilities for Cognitive Brain
+# GitHub MCP and Companion Research Capabilities
 
 - **Version:** `github-mcp-server/remote-112de3b831975632257acbdeb73b577f32ea1762`
 - **Date:** 2026-08-01
 - **Author:** `mcp-github-doc-agent`
-- **Scope:** Aries-Serpent/_codex_ cognitive brain integration map for the 36 surfaced GitHub MCP capabilities
+- **Scope:** Aries-Serpent/_codex_ integration map for the supplied 36-name research inventory: 35 GitHub MCP tools plus standalone `web_search`
 
-> Key repo findings: `src/codex/skills/` does **not** exist in this checkout; the active cognitive brain skill tree is `src/aries_serpent_core/skills/`. Also, `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` and `.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md` still describe **28** GitHub MCP tools, so they lag the 36-tool surface documented here.
+> Key repo finding: `src/codex/skills/` does **not** exist in this checkout; the
+> active cognitive brain skill tree is `src/aries_serpent_core/skills/`. The
+> companion MCP references are aligned to this 35+1 runtime topology as of
+> 2026-08-01. The supplied startup identifier `github-mcp-server/web_search` is
+> retained as an alias; the callable tool is top-level `web_search`.
+> Machine-readable names and consolidated method enums:
+> [`.codex/mcp/runtime_inventory_2026-08-01.json`](../mcp/runtime_inventory_2026-08-01.json).
 
 ## 1. Tool Catalog Table
 
@@ -46,7 +52,7 @@
 | `github-mcp-server/search_pull_requests` | Search | Search PRs using GitHub query syntax. | `query`, `owner`, `repo`, `sort`, `order` | 🔲 Planned |
 | `github-mcp-server/search_repositories` | Search | Search repositories by topic/name/metadata. | `query`, `sort`, `order`, `minimal_output` | ⬜ Not Planned |
 | `github-mcp-server/search_users` | Users/Collaborators | Search GitHub users and profiles. | `query`, `sort`, `order` | 🔲 Planned |
-| `github-mcp-server/web_search` | Search | AI-assisted web search for current external facts. | `query` | 🔲 Planned |
+| `web_search` (startup alias: `github-mcp-server/web_search`) | Companion Search | AI-assisted web search for current external facts. | `query` | 🔲 Planned |
 
 ## 2. Cognitive Brain Integration Plan
 
@@ -151,7 +157,7 @@ flowchart LR
 | Gap | Evidence | Recommended next step |
 |---|---|---|
 | Skills path in request is stale | `src/codex/skills/` absent; active skills live in `src/aries_serpent_core/skills/` | Update cognitive brain docs and prompts to point at the real skill tree. |
-| Existing MCP docs are outdated | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` and `.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md` still say 28 GitHub MCP tools | Refresh both docs to align with this 36-tool reference. |
+| Runtime inventory can change | The 35 GitHub MCP + 1 companion list is a dated runtime observation rather than a permanent contract | Recheck the MCP startup inventory before publishing a new count. |
 | Discussions tooling has no current consumer path | No checked skill/agent explicitly routes GitHub Discussions data today | Add a `discussion-harvester` flow under `cross-agent-knowledge-graph` or `ci-pattern-guardian`. |
 | Release/tag tooling is not wired into deployment memory | Release agents exist, but no checked skill manifest consumes MCP release/tag outputs | Feed release/tag metadata into `doc-freshness-checker` and `github-pages-manager` validation loops. |
 | Label and issue-schema tooling is underused | `github-guru-agent` mentions label taxonomy, but no skill wiring was found | Add field-aware issue routing skill and label taxonomy audit command. |
@@ -161,6 +167,6 @@ flowchart LR
 ## 6. Summary Findings
 
 1. The repo already has strong **CI/security cognitive consumers**, so Actions, PR, issue, CodeQL, and secret-scanning MCP tools should be treated as first-class P0 surfaces.
-2. The **largest documentation drift** is the 28-tool count in existing MCP docs; this new file should become the canonical 36-tool reference until those are updated.
+2. The exact runtime inventory is centralized here and cross-linked from the companion MCP references.
 3. The **largest structural drift** is the missing `src/codex/skills/` path; all live skill manifests examined are under `src/aries_serpent_core/skills/`.
 4. Because the MCP server is **read-only**, variable mutation must stay in the existing `gh api` + `repo-var-sync-agent` pattern.

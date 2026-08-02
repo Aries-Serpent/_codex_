@@ -35,7 +35,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Install with test dependencies
       run: 'pip install --upgrade pip --quiet
 

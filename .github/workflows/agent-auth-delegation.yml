@@ -39,7 +39,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: "Hardened WEC preservation \u2014 re-apply all maintainer selections"
       env:
@@ -1398,7 +1398,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: Approve all action_required runs for this PR
       continue-on-error: true

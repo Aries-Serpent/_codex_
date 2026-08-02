@@ -14,7 +14,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest pytest-cov
 
@@ -67,7 +67,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest
 
@@ -115,7 +115,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest
 
@@ -145,7 +145,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest
 
@@ -192,7 +192,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest
 
@@ -215,7 +215,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Check multi-region uptime
       run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
         \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
@@ -236,7 +236,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pytest pytest-cov
 
@@ -263,7 +263,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Execute failover drill
       run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
         \ HealthStatus\nimport time\n\nprint('=== Failover Drill ===')\n\nmgr = FailoverManager(check_interval=0.1)\n\
@@ -288,7 +288,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Generate cost report
       run: 'python -c "
 

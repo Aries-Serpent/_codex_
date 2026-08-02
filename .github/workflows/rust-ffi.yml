@@ -35,7 +35,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Build with maturin
       uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8
       with:

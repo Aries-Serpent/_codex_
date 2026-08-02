@@ -76,7 +76,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Run RP-001 validation
       id: rp001
       run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
@@ -104,7 +104,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install --quiet mypy tomli 2>/dev/null || true
 
@@ -147,7 +147,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Run RP-003 validation
       id: rp003
       continue-on-error: true

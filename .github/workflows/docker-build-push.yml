@@ -1,5 +1,5 @@
 name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE)
-true:
+on:
   push:
     branches:
     - main

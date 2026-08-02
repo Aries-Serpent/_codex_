@@ -44,9 +44,37 @@ class ChronicleAnalytics:
         try:
             with self.db.get_connection() as conn:
                 cursor = conn.cursor()
+                columns = {
+                    row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()
+                }
+                id_column = next(
+                    (name for name in ("session_id", "id") if name in columns),
+                    None,
+                )
+                created_column = (
+                    "created_at"
+                    if "created_at" in columns
+                    else "timestamp"
+                    if "timestamp" in columns
+                    else None
+                )
+                if id_column is None or created_column is None:
+                    raise sqlite3.OperationalError(
+                        "sessions table has no compatible identifier/timestamp columns"
+                    )
+                optional_columns = ("status", "agent_name", "repository")
+                selected_columns = [
+                    (
+                        f'"{name}" AS "{name}"'
+                        if name in columns
+                        else f'NULL AS "{name}"'
+                    )
+                    for name in optional_columns
+                ]
                 cursor.execute(
-                    "SELECT id, created_at, status, agent_name, repository "
-                    "FROM sessions ORDER BY created_at DESC"
+                    f'SELECT "{id_column}" AS "id", "{created_column}" AS "created_at", '
+                    f'{", ".join(selected_columns)} '
+                    f'FROM sessions ORDER BY "{created_column}" DESC'
                 )
                 self.sessions = [
                     {
@@ -212,7 +240,12 @@ class ChronicleAnalytics:
 
         # Count by status
         status_counter = Counter(s["status"] for s in self.sessions)
-        success_count = status_counter.get("completed", 0) + status_counter.get("succeeded", 0)
+        success_count = (
+            status_counter.get("complete", 0)
+            + status_counter.get("completed", 0)
+            + status_counter.get("succeeded", 0)
+            + status_counter.get("success", 0)
+        )
         failure_count = status_counter.get("failed", 0) + status_counter.get("error", 0)
 
         success_rate = (success_count / total * 100) if total > 0 else 0

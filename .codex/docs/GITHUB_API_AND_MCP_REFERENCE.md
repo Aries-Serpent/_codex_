@@ -1,6 +1,6 @@
 # GitHub API & MCP Reference — Cognitive Brain Knowledge Entry
 
-> **Last verified:** 2026-04-05 | **Upstream sources confirmed accurate**  
+> **Last verified:** 2026-08-01 | **Runtime inventory verified**  
 > **Loaded by:** CB session injector, agent-auth-delegation.yml cognitive-preflight job  
 > **Primary doc:** `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`
 
@@ -56,9 +56,11 @@ gh workflow run workflow.yml --repo Aries-Serpent/_codex_ --ref BRANCH
 **The GitHub MCP Server does NOT support Secrets/Variables CRUD.**  
 Use REST API or `gh` CLI for all secret/variable write operations.
 
-MCP toolsets available in this repo's agent sessions:
-- `context`, `issues`, `pull_requests`, `repos`, `users` (default — read-only endpoint)
-- `actions`, `secret_protection`, `dependabot` (available but not in default config)
+The Copilot runtime currently exposes **35 read-only GitHub MCP tools** for Actions,
+code, commits, discussions, issues, labels, pull requests, releases, search,
+security, tags, and users, plus standalone `web_search`. The supplied startup
+inventory groups these as 36 research capabilities. Availability does not imply
+write access.
 
 ---
 
@@ -68,7 +70,8 @@ MCP toolsets available in this repo's agent sessions:
 |---|---|---|
 | **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Complete REST API tables, CLI patterns, MCP config |
 | **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body protocol |
-| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Live tool inventory (21 Playwright + 28 GitHub MCP) |
+| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Live inventory (21 Playwright MCP + 35 GitHub MCP + `web_search`) |
+| **Research Inventory** | `.codex/docs/MCP_GITHUB_CAPABILITIES.md` | Exact supplied 36-name inventory and runtime topology |
 | **MCP Capabilities Reference** | `docs/mcp/MCP_CAPABILITIES_REFERENCE.md` | Internal MCP server implementation |
 | **GitHub MCP Capabilities** | `docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md` | External GitHub MCP server capabilities |
 | **MCP Developer Guide** | `docs/mcp/MCP_DEVELOPER_GUIDE.md` | Integration patterns |
@@ -76,7 +79,7 @@ MCP toolsets available in this repo's agent sessions:
 
 ---
 
-## Upstream Sources (verified 2026-04-05)
+## Upstream Sources (inventory reverified 2026-08-01)
 
 - [REST API: Actions Secrets](https://docs.github.com/en/rest/actions/secrets)
 - [REST API: Actions Variables](https://docs.github.com/en/rest/actions/variables)

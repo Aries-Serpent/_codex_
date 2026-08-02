@@ -22,8 +22,8 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 
@@ -120,7 +120,7 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip
 

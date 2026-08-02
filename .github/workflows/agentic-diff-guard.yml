@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.11'
-        cache: pip
+
     - name: Run deterministic diff guard
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}

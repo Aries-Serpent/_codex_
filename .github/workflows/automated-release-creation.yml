@@ -44,7 +44,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Extract release notes
       id: extract-notes
       run: "python scripts/deployment/extract_release_notes.py \\\n  --version ${{\

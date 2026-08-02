@@ -52,7 +52,7 @@ jobs:
     - name: Set up Python (for approve_pending_runs.py)
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: Dispatch unified approval hub
       uses: actions/github-script@v8

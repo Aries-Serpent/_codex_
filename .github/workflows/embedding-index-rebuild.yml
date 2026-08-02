@@ -37,7 +37,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Check RAG index freshness
       id: freshness
       run: "python3 - <<\"PYEOF\"\nimport json, os, sys\nfrom datetime import datetime,\

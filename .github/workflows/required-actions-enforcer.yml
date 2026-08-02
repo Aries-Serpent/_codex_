@@ -54,7 +54,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: Check action versions (PR / push)
       if: "github.event_name != 'schedule' &&\ngithub.event.inputs.fix != 'true' &&\n\

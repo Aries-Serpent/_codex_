@@ -22,7 +22,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q pyyaml
     - name: Verify freshness SLA
       run: python scripts/rag/rag_rebuild_audit.py --check freshness
@@ -40,7 +40,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q -r requirements-dev.txt
     - name: Run retrieval benchmark against thresholds
       run: python scripts/rag/rag_rebuild_audit.py --check quality
@@ -58,7 +58,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q pyyaml
     - name: Log rebuild audit entry
       run: python scripts/rag/rag_rebuild_audit.py --check audit

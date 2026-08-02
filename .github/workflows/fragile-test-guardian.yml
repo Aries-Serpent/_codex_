@@ -1,5 +1,5 @@
 name: Fragile Test Guardian
-true:
+on:
   pull_request:
     types:
     - opened
@@ -41,7 +41,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Run fragile tests scan
       id: scan
       run: "set +e  # Don't exit on error, we want to capture results\n\npython .codex/scripts/fragile_tests_scan.py\
@@ -77,7 +77,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Detect unhandled flaky tests
       id: detect
       run: "python3 << 'PYTHON_SCRIPT'\nimport re\nimport json\nfrom pathlib import\
@@ -141,7 +141,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Analyze docstring coverage
       id: coverage
       run: "python3 << 'PYTHON_SCRIPT'\nimport ast\nimport json\nfrom pathlib import\

@@ -1,10 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/Aries-Serpent/_codex_/configs/schemas/agent_spec.schema.json",
-  "title": "Agent Specification Schema",
-  "description": "Canonical schema for _codex_ agent specifications. All 290+ agents must conform to this schema.",
+  "title": "Agent Registry Entry Schema",
+  "description": "Canonical schema for entries in the _codex_ agent registry. GitHub Markdown agent frontmatter uses github_agent_frontmatter.schema.json.",
   "type": "object",
-  "required": ["id", "name", "status", "maturity"],
+  "required": ["id", "name", "description", "status", "maturity"],
   "properties": {
     "id": {
       "type": "string",
@@ -19,6 +19,7 @@
       "description": "Human-readable display name for the agent",
       "minLength": 3,
       "maxLength": 128,
+      "pattern": "\\S",
       "examples": ["CI Testing Agent", "QA Walkthrough Agent"]
     },
     "version": {
@@ -41,13 +42,13 @@
     "status": {
       "type": "string",
       "description": "Current operational status of the agent",
-      "enum": ["active", "inactive", "deprecated", "experimental"],
+      "enum": ["active", "inactive", "archived", "deprecated", "experimental"],
       "default": "active"
     },
     "maturity": {
       "type": "string",
       "description": "Development maturity level",
-      "enum": ["experimental", "alpha", "beta", "production", "deprecated"],
+      "enum": ["experimental", "alpha", "beta", "stable", "production", "deprecated"],
       "default": "experimental"
     },
     "priority": {
@@ -65,6 +66,8 @@
     "description": {
       "type": "string",
       "description": "Detailed description of the agent's capabilities and use cases",
+      "minLength": 1,
+      "pattern": "\\S",
       "maxLength": 2000
     },
     "capabilities": {
@@ -76,6 +79,15 @@
       },
       "uniqueItems": true,
       "examples": [["ci_failure_diagnosis", "test_failure_analysis", "log_analysis"]]
+    },
+    "capability_tags": {
+      "type": "array",
+      "description": "Searchable capability labels used for agent routing",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
+      },
+      "uniqueItems": true
     },
     "integration_points": {
       "type": "array",
@@ -251,33 +263,39 @@
     "category": {
       "type": "string",
       "description": "Primary category of the agent",
-      "enum": [
-        "testing",
-        "documentation",
-        "security",
-        "ci_cd",
-        "quality",
-        "ai",
-        "architecture",
-        "deployment",
-        "dependencies",
-        "validation",
-        "linting",
-        "monitoring",
-        "automation",
-        "coordination",
-        "analysis",
-        "migration",
-        "compliance",
-        "other"
-      ]
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "Optional registry-specific subcategory",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "handler": {
+      "type": "string",
+      "description": "Optional handler module or repository-relative handler path",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "manifest": {
+      "type": "string",
+      "description": "Optional repository-relative skill manifest path",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "selectable": {
+      "type": "boolean",
+      "description": "Whether the agent may be selected directly in supported user interfaces",
+      "default": true
     }
   },
-  "additionalProperties": false,
+  "additionalProperties": true,
   "examples": [
     {
       "id": "ci-testing-agent",
       "name": "CI Testing Agent",
+      "description": "Diagnoses CI failures, analyzes test and build logs, and recommends targeted repairs.",
       "version": "1.0.0",
       "directory": ".github/agents/ci-testing-agent",
       "status": "active",

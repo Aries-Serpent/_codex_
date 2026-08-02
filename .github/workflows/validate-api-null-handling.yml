@@ -52,7 +52,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Check for unsafe API field handling patterns
       id: safety-check
       run: "set +e\n\necho \"Scanning for unsafe API null-handling patterns...\"\n\
