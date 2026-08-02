@@ -84,7 +84,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: Load Copilot test environment
       id: env_setup

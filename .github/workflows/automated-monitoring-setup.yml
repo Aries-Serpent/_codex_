@@ -54,7 +54,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install pyyaml jinja2
 

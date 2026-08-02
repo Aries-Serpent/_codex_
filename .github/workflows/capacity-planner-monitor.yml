@@ -21,8 +21,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: python -m pip install -q statsmodels prophet scikit-learn scipy pandas
         numpy pytest
@@ -62,8 +62,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: python -m pip install -q statsmodels prophet scikit-learn scipy pandas
         numpy pytest
@@ -106,8 +106,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: python -m pip install -q scikit-learn scipy pandas numpy pytest
     - name: Run recommendation tests
@@ -153,8 +153,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: python -m pip install -q scikit-learn scipy pandas numpy pytest
     - name: Run dashboard tests

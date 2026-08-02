@@ -20,8 +20,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -65,8 +65,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -102,8 +102,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -128,8 +128,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -155,8 +155,8 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 

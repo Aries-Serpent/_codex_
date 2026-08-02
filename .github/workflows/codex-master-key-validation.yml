@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Validate CODEX_MASTER_KEY Scopes
       id: validate
       run: 'python scripts/ci/test_codex_master_key_scopes.py --report-json scope_report.json

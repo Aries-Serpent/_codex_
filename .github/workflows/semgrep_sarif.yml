@@ -60,7 +60,7 @@ jobs:
         python-version: '3.11'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Install Semgrep CLI
       run: 'python -m pip install --upgrade pip
 

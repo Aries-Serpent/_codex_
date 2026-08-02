@@ -222,7 +222,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Detect recent workflow failures
       id: detect
       env:
@@ -298,7 +298,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Analyze patterns and generate plan
       id: analyze
       shell: bash
@@ -367,7 +367,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Enforce policy tier ceiling
       id: policy-check
       shell: bash

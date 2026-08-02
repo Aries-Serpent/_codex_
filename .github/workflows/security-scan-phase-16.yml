@@ -43,7 +43,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install security tools
       run: 'python -m pip install --upgrade pip setuptools wheel
 
@@ -159,7 +159,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip setuptools wheel
 
@@ -239,7 +239,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'python -m pip install --upgrade pip setuptools wheel
 
@@ -314,7 +314,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Check SECURITY.md
       run: "if [ ! -f SECURITY.md ]; then\n  echo \"\u274C SECURITY.md not found\"\
         \n  exit 1\nfi\necho \"\u2713 SECURITY.md exists\"\ngrep -E \"email|report|contact\"\

@@ -59,7 +59,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Install dependencies
       run: pip install requests --quiet
     - name: Resolve PR number
