@@ -91,9 +91,9 @@ def main() -> int:
     report = check(paths)
     if args.json_path:
         Path(args.json_path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    violations = cast(list[dict[str, str]], report["violations"])
+    violations = cast(list[dict[str, object]], report["violations"])
     for item in violations:
-        _annotation(f"{item['path']}: {item['message']}")
+        _annotation(f"{str(item['path'])}: {str(item['message'])}")
     print(f"Token contract check: {len(paths)} document(s), {len(report['violations'])} warning(s)")
     return 0
 

@@ -750,7 +750,12 @@ def write_manifest_json(manifest: AccessManifest) -> None:
 
 def write_startup_packet(manifest: AccessManifest) -> None:
     """Refresh the deterministic startup packet after the manifest is written."""
-    packet = startup_health.build_packet(asdict(manifest))
+    context = (
+        json.loads(startup_health.CONTEXT.read_text(encoding="utf-8"))
+        if startup_health.CONTEXT.exists()
+        else {}
+    )
+    packet = startup_health.build_packet(asdict(manifest), context)
     startup_health.PACKET.write_text(
         json.dumps(packet, indent=2) + "\n", encoding="utf-8"
     )

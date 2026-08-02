@@ -44,11 +44,15 @@ def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str
     return max(0, min(100, score)), fixes
 
 
-def build_packet(manifest: dict | None = None) -> dict:
+def build_packet(
+    manifest: dict | None = None, context: dict | None = None
+) -> dict:
     manifest = manifest or (
         json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     )
-    context = json.loads(CONTEXT.read_text(encoding="utf-8")) if CONTEXT.exists() else {}
+    context = context if context is not None else (
+        json.loads(CONTEXT.read_text(encoding="utf-8")) if CONTEXT.exists() else {}
+    )
     token_status = str(
         os.environ.get("TOKEN_CONTRACT_STATUS")
         or manifest.get("token_contract_status", "pass")

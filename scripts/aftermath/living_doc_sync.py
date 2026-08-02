@@ -4,14 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 try:
     from .update_cognitive_brain import living_doc_sync
 except ImportError:
     # Allow direct execution from the repository root without requiring installation.
-    import sys
-
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from update_cognitive_brain import living_doc_sync
 
