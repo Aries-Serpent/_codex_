@@ -485,8 +485,8 @@ Moving toward a **lean, high-signal workflow operating system** for Copilot sess
 - [x] `branch_drift_severity` added to the session access manifest
 
 #### Phase 6C — Living-Doc Automation & Session Logging ✅ COMPLETE
-- [ ] `session_logger.py` extended with `meta` dict + schema validation
-- [ ] `update_cognitive_brain.py` extended with `living_doc_sync()` function
+- [x] `session_logger.py` extended with `meta` dict + schema validation
+- [x] `update_cognitive_brain.py` extended with `living_doc_sync()` function
 - [x] `living_doc_sync.py` standalone CLI created
 - [ ] Freshness check step wired into `copilot-setup-steps.yml`
 

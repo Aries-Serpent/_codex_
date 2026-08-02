@@ -31,7 +31,11 @@ def main() -> int:
     args = parser.parse_args()
     data = json.loads(args.registry.read_text(encoding="utf-8"))
     records = data if isinstance(data, list) else data.get("candidates", [])
-    errors = {str(i): validate(item) for i, item in enumerate(records) if validate(item)}
+    errors = {}
+    for i, item in enumerate(records):
+        item_errors = validate(item)
+        if item_errors:
+            errors[str(i)] = item_errors
     print(json.dumps({"records": len(records), "errors": errors}, indent=2))
     return 1 if errors else 0
 

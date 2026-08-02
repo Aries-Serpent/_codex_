@@ -11,7 +11,6 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_MARKER = "## 📦 Tokenized Variable Contract"
-TOKEN_RE = re.compile(r"`(TVAR|TSEC|TENV)_[A-Z0-9_]+`")
 CANONICAL = {
     "TVAR_COPILOT_AGENT_AUTH_ENABLED",
     "TVAR_COPILOT_AGENT_MAX_AUTONOMY",
