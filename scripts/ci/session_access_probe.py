@@ -601,7 +601,7 @@ def _branch_drift() -> tuple[str, int]:
         return "UNKNOWN", 0
     if ahead == 0:
         return "LOW", 0
-    return ("CRITICAL" if ahead > 3 else "MEDIUM"), ahead
+    return ("CRITICAL" if ahead > 3 else "HIGH" if ahead > 1 else "MEDIUM"), ahead
 
 
 # ── Output writers ──────────────────────────────────────────────────────────────
@@ -632,7 +632,7 @@ def write_github_env(manifest: AccessManifest) -> None:
         f"BRANCH_DRIFT_SEVERITY={manifest.branch_drift_severity}",
         f"BRANCH_MAIN_COMMITS_AHEAD={manifest.main_commits_ahead}",
     ]
-    with open(gh_env, "a") as f:
+    with open(gh_env, "a", encoding="utf-8") as f:
         f.writelines(line + "\n" for line in lines)
 
 
