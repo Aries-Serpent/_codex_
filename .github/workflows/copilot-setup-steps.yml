@@ -174,6 +174,16 @@ jobs:
         \ agent will use cached context\"\nfi\nif [ -f .codex/session_access_strategy.json\
         \ ]; then\n  echo \"--- Access Strategy ---\"\n  cat .codex/session_access_strategy.json\n\
         fi\necho \"::endgroup::\"\n"
+    - name: "Token contract warning gate"
+      id: token_contract
+      continue-on-error: true
+      run: |
+        python3 scripts/ci/check_token_contract.py
+    - name: "Startup health packet"
+      id: startup_health
+      continue-on-error: true
+      run: |
+        python3 scripts/ci/startup_health.py
     - name: "\U0001F9E0 Phase 10.3: Context Scorer Invocation (pattern relevance scoring)"
       id: context_scorer
       continue-on-error: true

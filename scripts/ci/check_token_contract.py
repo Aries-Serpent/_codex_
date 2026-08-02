@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""Check the canonical token contract in session-critical documentation."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CONTRACT_MARKER = "## 📦 Tokenized Variable Contract"
+TOKEN_RE = re.compile(r"`(TVAR|TSEC|TENV)_[A-Z0-9_]+`")
+CANONICAL = {
+    "TVAR_COPILOT_AGENT_AUTH_ENABLED",
+    "TVAR_COPILOT_AGENT_MAX_AUTONOMY",
+    "TVAR_COGNITIVE_BRAIN_SESSION_NUM",
+    "TVAR_CODEX_CI_FAILURE_RATE",
+    "TVAR_CODEX_CI_LAST_GREEN_SHA",
+    "TVAR_CODEX_SWEEP_SKIP_MAIN",
+    "TVAR_CODEX_MAX_HEALER_RUNS",
+    "TVAR_CODEX_HEALER_SKIP_SKIPCI",
+    "TSEC_CODEX_MASTER_KEY",
+    "TSEC_CODEX_BACKUP_KEY",
+    "TENV_PYTHON_VERSION",
+    "TENV_NODE_VERSION",
+}
+DEFAULT_DOCS = (
+    ".codex/plans/LEAN_WORKFLOW_OS_PLANSET.md",
+    "docs/reporting/copilot_agent_session_standard_operation.md",
+    "docs/reporting/workflow_portfolio_7d_analysis.md",
+)
+
+
+def _annotation(message: str) -> None:
+    print(f"::warning::{message}")
+
+
+def check(paths: list[Path]) -> dict[str, object]:
+    violations: list[dict[str, object]] = []
+    for path in paths:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            violations.append({"path": str(path), "kind": "read_error", "message": str(exc)})
+            continue
+        found = set(re.findall(r"`((?:TVAR|TSEC|TENV)_[A-Z0-9_]+)`", text))
+        if CONTRACT_MARKER not in text:
+            violations.append(
+                {"path": str(path), "kind": "missing_contract", "message": "missing token contract block"}
+            )
+        unknown = sorted(found - CANONICAL)
+        if unknown:
+            violations.append(
+                {"path": str(path), "kind": "unknown_tokens", "message": ", ".join(unknown)}
+            )
+    return {"checked": [str(p) for p in paths], "violations": violations}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("paths", nargs="*", help="Documentation paths relative to repository root")
+    parser.add_argument("--json", dest="json_path", help="Write a JSON report")
+    args = parser.parse_args()
+    paths = [REPO_ROOT / p for p in (args.paths or DEFAULT_DOCS)]
+    report = check(paths)
+    if args.json_path:
+        Path(args.json_path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    for item in report["violations"]:
+        _annotation(f"{item['path']}: {item['message']}")
+    print(f"Token contract check: {len(paths)} document(s), {len(report['violations'])} warning(s)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

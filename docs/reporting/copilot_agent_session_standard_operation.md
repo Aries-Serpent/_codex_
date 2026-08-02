@@ -182,6 +182,23 @@ Detect drift: git log main..HEAD --oneline | wc -l
 
 > **Full machine-readable planset (Plans A–F):** [LEAN_WORKFLOW_OS_PLANSET.md](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
 
+## 📦 Tokenized Variable Contract
+
+| Token | Canonical Variable | Current Value Source |
+|---|---|---|
+| `TVAR_COPILOT_AGENT_AUTH_ENABLED` | `COPILOT_AGENT_AUTH_ENABLED` | `.codex/agent_context.json` |
+| `TVAR_COPILOT_AGENT_MAX_AUTONOMY` | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `.codex/agent_context.json` |
+| `TVAR_COGNITIVE_BRAIN_SESSION_NUM` | `COGNITIVE_BRAIN_SESSION_NUMBER` | `.codex/agent_context.json` |
+| `TVAR_CODEX_CI_FAILURE_RATE` | `CODEX_CI_FAILURE_RATE` | `.codex/agent_context.json` |
+| `TVAR_CODEX_CI_LAST_GREEN_SHA` | `CODEX_CI_LAST_GREEN_SHA` | `.codex/agent_context.json` |
+| `TVAR_CODEX_SWEEP_SKIP_MAIN` | `CODEX_SWEEP_SKIP_MAIN` | GitHub Repo Variables |
+| `TVAR_CODEX_MAX_HEALER_RUNS` | `CODEX_MAX_HEALER_RUNS_PER_HOUR` | GitHub Repo Variables |
+| `TVAR_CODEX_HEALER_SKIP_SKIPCI` | `CODEX_HEALER_SKIP_SKIPCI` | GitHub Repo Variables |
+| `TSEC_CODEX_MASTER_KEY` | `CODEX_MASTER_KEY` | Org Secret |
+| `TSEC_CODEX_BACKUP_KEY` | `CODEX_BACKUP_KEY` | Org Secret |
+| `TENV_PYTHON_VERSION` | `CODEX_ENV_PYTHON_VERSION` | setup environment |
+| `TENV_NODE_VERSION` | `CODEX_ENV_NODE_VERSION` | setup environment |
+
 ### Plan A — Entry Contract Standardization
 - Create a single "session entry contract" section template reused across PR living docs.
 - Require tokenized variable block (`TVAR_*`, `TSEC_*`) in each PR `whats_next` update.

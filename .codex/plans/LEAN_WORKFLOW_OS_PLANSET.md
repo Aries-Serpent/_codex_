@@ -520,15 +520,15 @@ Enhancements needed:
 
 - [x] **A** — One canonical active Cognitive Brain planset established; all plan objects have
   lifecycle status; cross-links are present
-- [ ] **B** — Tokenized variable contracts are standardized and present in all session-critical
+- [x] **B** — Tokenized variable contracts are standardized and present in all session-critical
   docs; `check_token_contract.py` passes
-- [ ] **C** — Conflict-risk governance object exists; every HIGH-risk workflow has required
+- [x] **C** — Conflict-risk governance object exists; every HIGH-risk workflow has required
   controls; startup packet includes drift severity
-- [ ] **D** — Pruning candidate registry is current; no workflow archived without all three
+- [x] **D** — Pruning candidate registry is current; no workflow archived without all three
   validation gates passing
-- [ ] **E** — `session_end` events deterministically produce living-doc updates; freshness
+- [x] **E** — `session_end` events deterministically produce living-doc updates; freshness
   check passes
-- [ ] **F** — Every Copilot session startup emits a health score ≥ 80; must-fix list is
+- [x] **F** — Every Copilot session startup emits a health score ≥ 80; must-fix list is
   generated when score < 80
 
 ---

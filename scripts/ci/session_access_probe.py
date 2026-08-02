@@ -148,6 +148,8 @@ class AccessManifest:
     # Repository context
     open_prs: list[int] = field(default_factory=list)
     head_sha: str = ""
+    branch_drift_severity: str = "UNKNOWN"
+    main_commits_ahead: int = 0
 
     # Trickle-down recommendation
     recommended_method: str = ""
@@ -570,11 +572,36 @@ def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool
 
     # ── Repository context ───────────────────────────────────────────────────
     manifest.head_sha, manifest.open_prs = probe_repo_context(raw_tokens, owner, repo)
+    manifest.branch_drift_severity, manifest.main_commits_ahead = _branch_drift()
 
     # ── Determine recommended method ─────────────────────────────────────────
     manifest.recommended_method, manifest.recommended_method_detail = _determine_best_method(manifest)
 
     return manifest
+
+
+def _branch_drift() -> tuple[str, int]:
+    """Return severity and commits on main unseen by the current branch."""
+    try:
+        branch = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        if branch in {"main", "HEAD", "unknown"}:
+            return "LOW", 0
+        subprocess.run(
+            ["git", "rev-parse", "--verify", "origin/main"],
+            cwd=REPO_ROOT, capture_output=True, check=True,
+        )
+        ahead = int(subprocess.run(
+            ["git", "rev-list", "--count", f"HEAD..origin/main"],
+            cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+        ).stdout.strip() or "0")
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return "UNKNOWN", 0
+    if ahead == 0:
+        return "LOW", 0
+    return ("CRITICAL" if ahead > 3 else "MEDIUM"), ahead
 
 
 # ── Output writers ──────────────────────────────────────────────────────────────
@@ -602,6 +629,8 @@ def write_github_env(manifest: AccessManifest) -> None:
         f"SESSION_HEAD_SHA={manifest.head_sha}",
         f"SESSION_OPEN_PRS={','.join(str(p) for p in manifest.open_prs)}",
         f"SESSION_BRANCH={manifest.branch}",
+        f"BRANCH_DRIFT_SEVERITY={manifest.branch_drift_severity}",
+        f"BRANCH_MAIN_COMMITS_AHEAD={manifest.main_commits_ahead}",
     ]
     with open(gh_env, "a") as f:
         f.writelines(line + "\n" for line in lines)
@@ -664,6 +693,8 @@ def write_step_summary(manifest: AccessManifest) -> None:
         "5. `WAIT` → sleep until earliest reset epoch, then retry from step 1",
         "",
         f"Open PRs: {manifest.open_prs or 'none found'}",
+        f"Branch drift severity: `{manifest.branch_drift_severity}` "
+        f"({manifest.main_commits_ahead} main commit(s) ahead)",
     ]
 
     with open(summary_path, "a") as f:

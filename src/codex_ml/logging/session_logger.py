@@ -34,6 +34,16 @@ from codex_ml.safety.redaction import SecretRedactor  # noqa: E402
 
 DEFAULT_LOG_DIR = Path(".codex") / "logs"
 
+SESSION_EVENT_SCHEMA: dict[str, tuple[str, ...]] = {
+    "session_start": ("session_id", "branch", "context_load_status", "drift_severity"),
+    "check_baseline": ("tool", "exit_code", "summary"),
+    "decision": ("decision_type", "rationale", "files_affected"),
+    "artifact_touch": ("path", "operation", "is_living_doc"),
+    "validation_gate": ("gate_name", "status", "tool", "summary"),
+    "conflict_posture": ("drift_severity", "main_commits_ahead", "mitigation_applied"),
+    "session_end": ("session_id", "completed_tasks", "pending_tasks", "living_docs_updated"),
+}
+
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -66,6 +76,7 @@ class SessionLogger:
         data: Mapping[str, Any] | None = None,
         *,
         role: str = "system",
+        meta: Mapping[str, Any] | None = None,
     ) -> Path:
         payload: dict[str, Any] = {
             "timestamp": _utc_now(),
@@ -75,6 +86,13 @@ class SessionLogger:
         }
         if data:
             payload["data"] = self._redactor.redact_dict(dict(data))
+        if meta is not None:
+            safe_meta = self._redactor.redact_dict(dict(meta))
+            required = SESSION_EVENT_SCHEMA.get(event_type, ())
+            missing = [key for key in required if key not in safe_meta]
+            if missing:
+                logger.warning("Event %s missing metadata: %s", event_type, ", ".join(missing))
+            payload["meta"] = safe_meta
         with self.session_file.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
         return self.session_file
@@ -156,4 +174,4 @@ class SessionLogger:
                     continue
 
 
-__all__ = ["DEFAULT_LOG_DIR", "SessionLogger"]
+__all__ = ["DEFAULT_LOG_DIR", "SESSION_EVENT_SCHEMA", "SessionLogger"]
