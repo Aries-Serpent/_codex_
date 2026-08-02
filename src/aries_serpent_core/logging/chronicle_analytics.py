@@ -47,7 +47,10 @@ class ChronicleAnalytics:
                 columns = {
                     row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()
                 }
-                id_column = "session_id" if "session_id" in columns else "id"
+                id_column = next(
+                    (name for name in ("session_id", "id") if name in columns),
+                    None,
+                )
                 created_column = (
                     "created_at"
                     if "created_at" in columns
@@ -55,13 +58,23 @@ class ChronicleAnalytics:
                     if "timestamp" in columns
                     else None
                 )
-                if id_column not in columns or created_column is None:
+                if id_column is None or created_column is None:
                     raise sqlite3.OperationalError(
                         "sessions table has no compatible identifier/timestamp columns"
                     )
+                optional_columns = ("status", "agent_name", "repository")
+                selected_columns = [
+                    (
+                        f'"{name}" AS "{name}"'
+                        if name in columns
+                        else f'NULL AS "{name}"'
+                    )
+                    for name in optional_columns
+                ]
                 cursor.execute(
-                    f"SELECT {id_column}, {created_column}, status, agent_name, repository "
-                    f"FROM sessions ORDER BY {created_column} DESC"
+                    f'SELECT "{id_column}" AS "id", "{created_column}" AS "created_at", '
+                    f'{", ".join(selected_columns)} '
+                    f'FROM sessions ORDER BY "{created_column}" DESC'
                 )
                 self.sessions = [
                     {
