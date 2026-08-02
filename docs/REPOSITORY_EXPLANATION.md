@@ -368,9 +368,9 @@ python -m codex_ml.serving.inference_server
 python -c "from rag.pipelines import retrieval; print(retrieval.__all__)"
 pytest tests/rag -k "retrieval or embedding" -q --no-header
 
-# Cognitive Brain — run the CLI API server and query health
-python -m codex.cli &
-curl -s http://localhost:8765/health
+# Cognitive Brain — start the CLI API server (auto-started in Copilot sessions by copilot-setup-steps.yml)
+uvicorn cognitive_app.src.server.cli_api_server:app --host 0.0.0.0 --port 8765 &
+curl -s http://localhost:8765/api/health
 
 # Internal MCP — validate the local MCP registry and schemas
 python -m mcp --help 2>/dev/null || python -c "from mcp.server.server import MCPJSONRPCServer; print('OK')"
