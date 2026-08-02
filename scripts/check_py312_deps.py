@@ -509,7 +509,7 @@ def main() -> int:
     with open(report_path, "w") as f:
         json.dump(
             {
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "fingerprint": fingerprint,
                 "total_packages": len(results),
                 "compatible": compatible_count,
