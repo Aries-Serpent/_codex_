@@ -1,8 +1,14 @@
 # Changelog
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-08-02
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
+
+## Unreleased — 2026-08-02
+
+### Documentation
+- **Repository explanation accuracy:** Neutralized stale marketing claims in `README.md`, `docs/system/CODEBASE_COGNITIVE_MAP.md`, and `docs/CHANGELOG.md` (agent count 145 → 131, workflow count 285 → 229 active/205 archived, coverage/tests/CVE wording aligned with `pyproject.toml` and CI evidence).
+- **Section 11 onboarding:** Added per-task quick-start commands, MCP boundary clarifications, and default-disabled-autonomy note to `docs/REPOSITORY_EXPLANATION.md`.
 
 ## [0.3.0] — 2026-07-11
 

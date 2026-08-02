@@ -1,3 +1,36 @@
+## Session: 2026-08-02T09:14Z — Implement Section 11 "Where to Start" Quick Wins
+
+**Objective:** Execute the implementation plan derived from `docs/REPOSITORY_EXPLANATION.md` section 11, starting with quick wins that neutralize stale marketing claims and add runnable onboarding guidance.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- Reviewed mandatory pre-load files (`AGENTIC_REPO_STATE.md`, `CODEBASE_AGENCY_POLICY.md`, `agent_context.json`, PDA AfterMath tail).
+- Confirmed `COPILOT_AGENT_AUTH_ENABLED=true` and CCA version-lock settings are active.
+- Neutralized stale claims in `README.md` (removed hard-coded test/coverage/CVE/agent/workflow badges and marketing wording).
+- Updated `docs/system/CODEBASE_COGNITIVE_MAP.md` stats to source-backed values (131 active agents, 229 active workflows, 34% coverage baseline).
+- Updated `docs/CHANGELOG.md` v0.3.0 and v0.2.1 entries to use source-backed quality/readiness wording.
+- Enriched `docs/REPOSITORY_EXPLANATION.md` section 11 with:
+  - Per-task quick-start shell commands.
+  - Boundaries between Internal MCP, Copilot runtime MCP, and the ITA proxy shim.
+  - A note that autonomous workflows remain disabled by default.
+- Preserved WEC in `engine-tools-report_progress` calls.
+
+**Validation**:
+- Pre-commit hooks run on changed documentation files.
+- No secrets introduced; all changes are documentation-only.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated with documentation corrections.
+
+**Agents used**:
+- Built-in Copilot coding agent — direct documentation edits and validation.
+
+**Checkpoint**: TBD
+
+---
+
 ## Session: 2026-08-02T04:49Z — Pre-Flight Review and Accountability Sync
 
 **Objective:** Complete mandatory pre-flight checklist items (review bot comments, address failing CI checks, update accountability report), and ensure merge-readiness scorecard compliance.
