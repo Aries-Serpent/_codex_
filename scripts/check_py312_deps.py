@@ -180,7 +180,7 @@ def _cache_save(fingerprint: str, payload: dict[str, Any]) -> None:
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
     payload = dict(payload)
     payload["fingerprint"] = fingerprint
-    payload["generated_at"] = datetime.now(timezone.utc).isoformat()
+    payload["generated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     CACHE_PATH.write_text(json.dumps(payload, indent=2))
 
 
@@ -560,17 +560,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-REPO_ROOT = Path(__file__).resolve().parent.parent
-ACTIVE_MANIFEST_NAMES = (
-    "pyproject.toml",
-    "requirements.txt",
-    "requirements-dev.txt",
-    "requirements-test.txt",
-    "requirements-base.txt",
-    "uv.lock",
-    "poetry.lock",
-    "Pipfile.lock",
-)
-CACHE_PATH = REPO_ROOT / ".codex" / "py312_deps_cache.json"
-PACKAGE_TIMEOUT_SECONDS = 15
-SHOW_TIMEOUT_SECONDS = 10

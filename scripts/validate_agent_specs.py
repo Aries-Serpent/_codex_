@@ -337,6 +337,7 @@ def validate_repository(
 
     entries, registry_errors = _load_registry(registry_path)
     spec_paths = set(find_agent_specs(agents_dir))
+    registry_spec_paths: set[Path] = set()
     for entry in entries:
         file_reference = entry.get("file")
         if not isinstance(file_reference, str) or not file_reference.strip():
@@ -348,6 +349,7 @@ def validate_repository(
         )
         if resolved is not None and resolved.suffix.lower() in {".md", ".yaml", ".yml"}:
             spec_paths.add(resolved)
+            registry_spec_paths.add(resolved)
 
     for spec_path in sorted(spec_paths, key=lambda path: path.as_posix().casefold()):
         relative_path = _relative(spec_path, repo_root)
@@ -363,7 +365,8 @@ def validate_repository(
             definition_names.append((key, relative_path, display_name))
         except SpecParseError as exc:
             errors = [str(exc)]
-        result = _result(relative_path, "github_profile", errors)
+        kind = "registry" if spec_path in registry_spec_paths else "github_profile"
+        result = _result(relative_path, kind, errors)
         results.append(result)
         results_by_key[key] = result
 
