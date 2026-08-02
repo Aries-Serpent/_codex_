@@ -34,7 +34,10 @@ def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str
         failure_rate = float(str(context.get("CODEX_CI_FAILURE_RATE", "0")).split(":")[0])
     except ValueError:
         failure_rate = 0
-    threshold = float(context.get("CODEX_CI_FAILURE_THRESHOLD", 10))
+    try:
+        threshold = float(context.get("CODEX_CI_FAILURE_THRESHOLD", 10))
+    except (TypeError, ValueError):
+        threshold = 10
     if failure_rate > threshold:
         score -= 10
         fixes.append("Investigate CI failure rate above threshold")
@@ -44,14 +47,18 @@ def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str
 def build_packet() -> dict:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     context = json.loads(CONTEXT.read_text(encoding="utf-8")) if CONTEXT.exists() else {}
-    token_ok = os.environ.get("TOKEN_CONTRACT_STATUS", "pass") == "pass"
+    token_status = str(
+        os.environ.get("TOKEN_CONTRACT_STATUS")
+        or manifest.get("token_contract_status", "pass")
+    )
+    token_ok = token_status == "pass"
     score, fixes = _score(manifest, context, token_ok)
     packet = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "branch_drift_severity": manifest.get("branch_drift_severity", "UNKNOWN"),
         "main_commits_ahead": manifest.get("main_commits_ahead", 0),
         "ci_failure_rate": context.get("CODEX_CI_FAILURE_RATE", "unknown"),
-        "token_contract": "pass" if token_ok else "warning",
+        "token_contract": token_status,
         "bootstrap_health_score": score,
         "status": "GREEN" if score >= 80 else "YELLOW" if score >= 50 else "RED",
         "must_fix_before_editing": fixes if score < 80 else [],

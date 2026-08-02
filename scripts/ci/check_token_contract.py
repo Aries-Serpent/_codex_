@@ -84,6 +84,7 @@ def main() -> int:
     args = parser.parse_args()
     paths = [REPO_ROOT / p for p in (args.paths or DEFAULT_DOCS)]
     report = check(paths)
+    report["status"] = "warning" if report["violations"] else "pass"
     if args.json_path:
         Path(args.json_path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     for item in report["violations"]:

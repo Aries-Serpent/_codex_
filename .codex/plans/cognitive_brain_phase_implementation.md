@@ -279,7 +279,7 @@ Build 4-layer cognitive system: **Perception → Decision → Action → AfterMa
 
 ## Execution Checklist
 
-### All Phases Complete ✅
+### Historical Phases 0–7 Complete ✅
 - [x] Create cognitive directory structure
 - [x] Implement data collectors
 - [x] Complete Perception Layer (Pattern detection, Anomaly detection, Reports, Workflow)
@@ -306,7 +306,8 @@ Build 4-layer cognitive system: **Perception → Decision → Action → AfterMa
 
 ## Next Steps
 
-**ALL PHASES COMPLETE** ✅
+**Historical Phases 0–7 complete** ✅; Phase 8 remains a separately scoped production-hardening
+roadmap and is not part of the canonical active planset.
 
 ### Implementation Summary:
 1. ✅ Phase 0: Foundation (10 V10 agents, infrastructure)
@@ -327,7 +328,7 @@ Build 4-layer cognitive system: **Perception → Decision → Action → AfterMa
 
 ---
 
-**STATUS**: ✅ ALL 5 PHASES COMPLETE
+**STATUS**: ✅ HISTORICAL PHASES 0–7 COMPLETE — Phase 8 PLANNED
 **ACTION**: System operational and ready for continuous evolution
 
 
