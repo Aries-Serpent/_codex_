@@ -364,8 +364,7 @@ codex-ml infer --model-name stub --prompt "hello codex" --max-new-tokens 16
 export CODEX_MODEL_TYPE=stub
 python -m codex_ml.serving.inference_server
 
-# RAG and ingestion — inspect the RAG pipelines and run a minimal retrieval smoke test
-python -c "from rag.pipelines import retrieval; print(retrieval.__all__)"
+# RAG and ingestion — run the RAG retrieval smoke tests (imports require the `src` path context set by pytest.ini)
 pytest tests/rag -k "retrieval or embedding" -q --no-header
 
 # Cognitive Brain — start the CLI API server (auto-started in Copilot sessions by copilot-setup-steps.yml)

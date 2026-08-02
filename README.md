@@ -1,7 +1,7 @@
 # `_codex_` (codex-ml)
 > **v0.3.0** - ML platform with repository automation and a persistent decision-and-learning layer. See [`docs/REPOSITORY_EXPLANATION.md`](docs/REPOSITORY_EXPLANATION.md) for an evidence-based repository overview.
 **Release Status**: v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists. Autonomous automation templates exist but are disabled by default and require human admin secret injection.
-** Latest Release**: [v0.3.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.3.0) | ** Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.3.0/_codex_.v0.3.0.zip)
+**Latest Release**: [v0.3.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.3.0) | **Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.3.0/_codex_.v0.3.0.zip)
 ![Version](https://img.shields.io/badge/version-0.3.0-brightgreen)
 ![Python](https://img.shields.io/badge/python-%3E%3D3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
