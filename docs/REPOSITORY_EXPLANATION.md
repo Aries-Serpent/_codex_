@@ -340,15 +340,15 @@ Heavy technologies (torch, transformers, ray, etc.) are **not** base requirement
 
 | Contributor task | Start here | Deeper guide | Owner |
 |---|---|---|---|
-| Training/evaluation | `src/codex_ml/training/`, `src/codex_ml/eval/`, `configs/` | [Training workflow](../training/TRAINING_WORKFLOW.md) | `ml-validation-suite-agent` |
-| Inference/serving | `src/codex_ml/serving/`, `src/codex_ml/cli/infer.py`, `services/` | [Inference serving guide](../INFERENCE_SERVING_GUIDE.md) | `performance-monitor-agent` |
-| RAG and ingestion | `src/rag/`, ingestion modules, embedding registries | [RAG quickstart](../rag/RAG_QUICKSTART.md) | `rag-module-management-agent` |
+| Training/evaluation | `src/codex_ml/training/`, `src/codex_ml/eval/`, `configs/` | [Training workflow](training/TRAINING_WORKFLOW.md) | `ml-validation-suite-agent` |
+| Inference/serving | `src/codex_ml/serving/`, `src/codex_ml/cli/infer.py`, `services/` | [Inference serving guide](INFERENCE_SERVING_GUIDE.md) | `performance-monitor-agent` |
+| RAG and ingestion | `src/rag/`, ingestion modules, embedding registries | [RAG quickstart](rag/RAG_QUICKSTART.md) | `rag-module-management-agent` |
 | Cognitive Brain | `src/cognitive_brain/`, `src/aries_serpent_core/brain/` | [Cognitive architecture](cognitive_brain/architecture/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md) | `cognitive-brain-session-injector` |
-| Internal MCP | `src/mcp/` | [MCP capability reference](../mcp/MCP_CAPABILITIES_REFERENCE.md) | `skills-master-agent` |
+| Internal MCP | `src/mcp/` | [MCP capability reference](mcp/MCP_CAPABILITIES_REFERENCE.md) | `skills-master-agent` |
 | Copilot MCP runtime | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | [Exact GitHub inventory](../.codex/docs/MCP_GITHUB_CAPABILITIES.md) | `github-guru-agent` |
-| Custom agents | profile registry, `scripts/validate_agent_specs.py` | [Custom-agent index](../agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md) | `skills-master-agent` |
-| Cognitive App | `cognitive_app/src/`, `cognitive_app/package.json` | [Connection guide](../agent/COGNITIVE_APP_CONNECTION_GUIDE.md) | `github-pages-manager` |
-| CI/security/governance | `.github/workflows/`, `scripts/ci/`, `src/security/` | [Copilot Agent API reference](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) | `workflow-compliance-guardian` |
+| Custom agents | profile registry, `scripts/validate_agent_specs.py` | [Custom-agent index](agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md) | `skills-master-agent` |
+| Cognitive App | `cognitive_app/src/`, `cognitive_app/package.json` | [Connection guide](agent/COGNITIVE_APP_CONNECTION_GUIDE.md) | `github-pages-manager` |
+| CI/security/governance | `.github/workflows/`, `scripts/ci/`, `src/security/` | [Copilot Agent API reference](ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) | `workflow-compliance-guardian` |
 
 ---
 
