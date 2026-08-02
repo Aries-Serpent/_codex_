@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 STAGES = ("CANDIDATE", "QUARANTINE", "CONSOLIDATED", "ARCHIVED")
@@ -25,12 +26,33 @@ def validate(record: dict[str, object]) -> list[str]:
     return errors
 
 
+def load_records(path: Path) -> list[dict[str, object]]:
+    """Load JSON registries and the Markdown registry used by this repository."""
+    text = path.read_text(encoding="utf-8")
+    if path.suffix.lower() == ".json":
+        data = json.loads(text)
+        return data if isinstance(data, list) else data.get("candidates", [])
+    if re.search(r"\|\s*_No candidates registered_\s*\|", text):
+        return []
+    records = []
+    for line in text.splitlines():
+        if not line.startswith("|") or line.startswith("|---") or "workflow_name" in line:
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if len(cells) != len(REQUIRED_FIELDS) + 3:
+            continue
+        records.append(dict(zip(
+            (*REQUIRED_FIELDS, "dependency_map_path", "parity_report_path", "rollback_sha"),
+            (None if cell == "—" else cell for cell in cells),
+        )))
+    return records
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("registry", type=Path)
     args = parser.parse_args()
-    data = json.loads(args.registry.read_text(encoding="utf-8"))
-    records = data if isinstance(data, list) else data.get("candidates", [])
+    records = load_records(args.registry)
     errors = {}
     for i, item in enumerate(records):
         item_errors = validate(item)
