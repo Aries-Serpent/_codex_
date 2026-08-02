@@ -11,16 +11,84 @@ Provides utilities for:
 Usage:
     python scripts/cognitive/context_window_optimizer.py [--snapshot] [--estimate]
 """
+
 from __future__ import annotations
 
 import argparse
 import json
 import re
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTEXT_BUDGET = 128_000  # tokens (approximate)
 CHARS_PER_TOKEN = 4  # rough estimate
+MAX_SUMMARY_ITEMS = 8
+MAX_PREVIEW_CHARS = 160
+MAX_SERIALIZED_CHARS = 8_000
+
+
+def truncate_text(text: str, max_chars: int) -> str:
+    """Return text capped to max_chars with a truncation sentinel."""
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
+
+
+def summarize_sequence(
+    values: list[str],
+    max_items: int = MAX_SUMMARY_ITEMS,
+    max_chars: int = MAX_PREVIEW_CHARS,
+) -> str:
+    """Summarize a sequence of values into a capped, human-readable string."""
+    if not values:
+        return ""
+    preview = [truncate_text(str(value), max_chars) for value in values[:max_items]]
+    if len(values) > max_items:
+        preview.append(f"… (+{len(values) - max_items} more)")
+    return "\n".join(f"- {value}" for value in preview)
+
+
+def summarize_session_state(session_state: dict[str, Any]) -> dict[str, Any]:
+    """Return a compact session-state payload suitable for prompt assembly."""
+    summary: dict[str, Any] = {
+        "session_id": session_state.get("session_id", "unknown"),
+        "branch": session_state.get("branch", "unknown"),
+        "commit_hash": session_state.get("last_commit", "none"),
+        "next_action": session_state.get("next_action", "Continue"),
+    }
+
+    summary["completed"] = summarize_sequence(
+        [str(item) for item in session_state.get("completed", [])]
+    )
+    summary["pending"] = summarize_sequence(
+        [str(item) for item in session_state.get("pending", [])]
+    )
+
+    context = session_state.get("context") or session_state.get("detailed_context", "")
+    summary["context_summary"] = truncate_text(str(context), MAX_SERIALIZED_CHARS)
+
+    files_modified = session_state.get("files_modified", {})
+    if isinstance(files_modified, dict):
+        file_items = [f"{name}: {count} lines" for name, count in files_modified.items()]
+    else:
+        file_items = [str(item) for item in files_modified]
+    summary["file_list_with_line_counts"] = summarize_sequence(file_items)
+
+    decisions = session_state.get("decisions", "")
+    if isinstance(decisions, list):
+        decisions_text = "\n".join(str(item) for item in decisions)
+    else:
+        decisions_text = str(decisions)
+    summary["decisions_made_and_rationale"] = truncate_text(decisions_text, MAX_SERIALIZED_CHARS)
+
+    return summary
+
+
+def serialize_bounded_state(payload: dict[str, Any], max_chars: int = MAX_SERIALIZED_CHARS) -> str:
+    """Serialize a payload and cap the resulting string."""
+    rendered = json.dumps(payload, indent=2, sort_keys=True)
+    return truncate_text(rendered, max_chars)
 
 
 class ContextWindowOptimizer:
@@ -53,20 +121,20 @@ class ContextWindowOptimizer:
     ) -> None:
         """Add a content segment with priority tier."""
         priority = self.PRIORITY_TIERS.get(tier, 1)
-        self.segments.append({
-            "content": content,
-            "tier": tier,
-            "priority": priority,
-            "source": source,
-            "chars": len(content),
-            "tokens_est": len(content) // CHARS_PER_TOKEN,
-        })
+        self.segments.append(
+            {
+                "content": content,
+                "tier": tier,
+                "priority": priority,
+                "source": source,
+                "chars": len(content),
+                "tokens_est": len(content) // CHARS_PER_TOKEN,
+            }
+        )
 
     def optimize(self) -> list[dict]:
         """Return segments sorted by priority, trimmed to fit budget."""
-        sorted_segments = sorted(
-            self.segments, key=lambda s: s["priority"], reverse=True
-        )
+        sorted_segments = sorted(self.segments, key=lambda s: s["priority"], reverse=True)
         result = []
         used_chars = 0
         for seg in sorted_segments:
@@ -97,9 +165,9 @@ class ContextWindowOptimizer:
         return {
             "budget_tokens": self.budget_tokens,
             "used_tokens_est": total_tokens,
-            "utilization_pct": round(total_tokens / self.budget_tokens * 100, 1)
-            if self.budget_tokens
-            else 0,
+            "utilization_pct": (
+                round(total_tokens / self.budget_tokens * 100, 1) if self.budget_tokens else 0
+            ),
             "segments": len(self.segments),
             "by_tier": {
                 k: {"chars": v, "tokens_est": v // CHARS_PER_TOKEN}
