@@ -63,7 +63,7 @@ def build_packet(
     try:
         ci_failure_rate_value = float(rate_value)
     except ValueError:
-        ci_failure_rate_value = None
+        ci_failure_rate_value = 0.0
     ci_failure_status = (
         rate_status if separator and ci_failure_rate_value is not None else None
     )
