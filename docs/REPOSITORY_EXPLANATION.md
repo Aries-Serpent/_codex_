@@ -367,8 +367,8 @@ python -m codex_ml.serving.inference_server
 # RAG and ingestion — run the RAG retrieval smoke tests (imports require the `src` path context set by pytest.ini)
 pytest tests/rag -k "retrieval or embedding" -q --no-header
 
-# Cognitive Brain — start the CLI API server (auto-started in Copilot sessions by copilot-setup-steps.yml)
-uvicorn cognitive_app.server.cli_api_server:app --host 0.0.0.0 --port 8765 &
+# Cognitive Brain — start the CLI API server from the repo root (auto-started in Copilot sessions by copilot-setup-steps.yml)
+PYTHONPATH=. uvicorn cognitive_app.server.cli_api_server:app --host 0.0.0.0 --port 8765 &
 curl -s http://localhost:8765/api/health
 
 # Internal MCP — validate that the local MCP server class is importable
