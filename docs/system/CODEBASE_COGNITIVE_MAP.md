@@ -136,25 +136,25 @@ graph LR
 
 ### Code Ingestion
 ```
-External Source Ingest Static Analysis Runtime Analysis 
+External Source Ingest Static Analysis Runtime Analysis
 LLM Intent Inference Transformation Verification PR Creation
 ```
 
 ### agent workflow
 ```
-Request WorkflowNavigator agent Orchestration 
+Request WorkflowNavigator agent Orchestration
 Task Execution Verification State Persistence
 ```
 
 ### MCP Packaging
 ```
-Human Request component Selection File Flattening 
+Human Request component Selection File Flattening
 Manifest Generation ZIP Creation ChatGPT Upload
 ```
 
 ### CI/CD
 ```
-Git Push Status Validation Security Gates Quality Gates 
+Git Push Status Validation Security Gates Quality Gates
 Test Execution Cache Management Artifact Generation
 ```
 
