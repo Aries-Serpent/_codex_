@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5427)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5427 (SHA `7de0bcf9`) at 2026-08-02T04:53Z [auto-generated]
+
 ### Added
 - Canonical, source-backed repository briefing for `codex-ml` 0.3.0, including the five-layer architecture, Cognitive Brain behavior, runtime matrix, MCP boundaries, and dated Chronicle guidance.
 - Separate GitHub Markdown frontmatter schema requiring a nonblank custom-agent `description`.
