@@ -22,8 +22,8 @@
 ## Architecture Overview
 
 **Type**: Modular ML/AI Platform with agent Orchestration
-**MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
-**Stats**: 21,500+ tests (100% passing), 10.7% coverage, 0 vulnerabilities, **145 active agents** (post Phase-5 consolidation; registry total 159 — 14 archived), 285 workflow files under `.github/workflows/` (includes dispatch-only stubs).
+**MLOps Maturity**: Level 4 target; see readiness checklists in `docs/` and `.codex/` for current gaps.
+**Stats**: Thousands of test files and test functions across `tests/`; coverage baseline is 34% (locked 2026-07-02). Dependencies are audited and known CVEs are remediated. The agent registry contains 159 entries; **131 are active** after Phase 6 consolidation. There are **229 active workflow files** under `.github/workflows/` and 205 archived under `.github/workflow-archive/`.
 
 ### Repository Structure
 ```
@@ -136,25 +136,25 @@ graph LR
 
 ### Code Ingestion
 ```
-External Source Ingest Static Analysis Runtime Analysis 
+External Source Ingest Static Analysis Runtime Analysis
 LLM Intent Inference Transformation Verification PR Creation
 ```
 
 ### agent workflow
 ```
-Request WorkflowNavigator agent Orchestration 
+Request WorkflowNavigator agent Orchestration
 Task Execution Verification State Persistence
 ```
 
 ### MCP Packaging
 ```
-Human Request component Selection File Flattening 
+Human Request component Selection File Flattening
 Manifest Generation ZIP Creation ChatGPT Upload
 ```
 
 ### CI/CD
 ```
-Git Push Status Validation Security Gates Quality Gates 
+Git Push Status Validation Security Gates Quality Gates
 Test Execution Cache Management Artifact Generation
 ```
 

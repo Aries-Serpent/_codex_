@@ -62,6 +62,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+try:
+    import check_token_contract
+except ImportError:  # pragma: no cover - supports package-style imports
+    from scripts.ci import check_token_contract
+try:
+    import startup_health
+except ImportError:  # pragma: no cover - supports package-style imports
+    from scripts.ci import startup_health
+
 logger = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -148,6 +157,10 @@ class AccessManifest:
     # Repository context
     open_prs: list[int] = field(default_factory=list)
     head_sha: str = ""
+    branch_drift_severity: str = "UNKNOWN"
+    main_commits_ahead: int = 0
+    token_contract_status: str = "warning"
+    token_contract_warnings: int = 0
 
     # Trickle-down recommendation
     recommended_method: str = ""
@@ -506,7 +519,42 @@ def _determine_best_method(manifest: AccessManifest) -> tuple[str, str]:
     return "WAIT", f"All REST tokens exhausted — resets {reset_human} (~{wait//60}m {wait%60}s)"
 
 
-# ── Main probe orchestrator ─────────────────────────────────────────────────────
+# ── Branch drift and main probe orchestration ───────────────────────────────────
+def _branch_drift() -> tuple[str, int]:
+    """Return severity and commits on main unseen by the current branch."""
+    try:
+        branch = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        if branch in {"main", "HEAD", "unknown"}:
+            return "LOW", 0
+        subprocess.run(
+            ["git", "rev-parse", "--verify", "origin/main"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=True,
+        )
+        ahead = int(
+            subprocess.run(
+                ["git", "rev-list", "--count", "HEAD..origin/main"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+            or "0"
+        )
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return "UNKNOWN", 0
+    if ahead == 0:
+        return "LOW", 0
+    return ("CRITICAL" if ahead > 3 else "HIGH" if ahead > 1 else "MEDIUM"), ahead
+
+
 def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool = False) -> AccessManifest:
     branch = os.environ.get("GITHUB_REF_NAME", os.environ.get("GITHUB_HEAD_REF", "unknown"))
     sha    = os.environ.get("GITHUB_SHA", "")[:12] or "local"
@@ -570,6 +618,12 @@ def run_probe(owner: str = "Aries-Serpent", repo: str = "_codex_", verbose: bool
 
     # ── Repository context ───────────────────────────────────────────────────
     manifest.head_sha, manifest.open_prs = probe_repo_context(raw_tokens, owner, repo)
+    manifest.branch_drift_severity, manifest.main_commits_ahead = _branch_drift()
+    token_report = check_token_contract.check(
+        [check_token_contract.REPO_ROOT / path for path in check_token_contract.DEFAULT_DOCS]
+    )
+    manifest.token_contract_warnings = len(token_report["violations"])
+    manifest.token_contract_status = str(token_report["status"])
 
     # ── Determine recommended method ─────────────────────────────────────────
     manifest.recommended_method, manifest.recommended_method_detail = _determine_best_method(manifest)
@@ -602,8 +656,12 @@ def write_github_env(manifest: AccessManifest) -> None:
         f"SESSION_HEAD_SHA={manifest.head_sha}",
         f"SESSION_OPEN_PRS={','.join(str(p) for p in manifest.open_prs)}",
         f"SESSION_BRANCH={manifest.branch}",
+        f"BRANCH_DRIFT_SEVERITY={manifest.branch_drift_severity}",
+        f"BRANCH_MAIN_COMMITS_AHEAD={manifest.main_commits_ahead}",
+        f"TOKEN_CONTRACT_STATUS={manifest.token_contract_status}",
+        f"TOKEN_CONTRACT_WARNINGS={manifest.token_contract_warnings}",
     ]
-    with open(gh_env, "a") as f:
+    with open(gh_env, "a", encoding="utf-8") as f:
         f.writelines(line + "\n" for line in lines)
 
 
@@ -664,9 +722,13 @@ def write_step_summary(manifest: AccessManifest) -> None:
         "5. `WAIT` → sleep until earliest reset epoch, then retry from step 1",
         "",
         f"Open PRs: {manifest.open_prs or 'none found'}",
+        f"Branch drift severity: `{manifest.branch_drift_severity}` "
+        f"({manifest.main_commits_ahead} main commit(s) ahead)",
+        f"Token contract: `{manifest.token_contract_status}` "
+        f"({manifest.token_contract_warnings} warning(s))",
     ]
 
-    with open(summary_path, "a") as f:
+    with open(summary_path, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
 
 
@@ -684,6 +746,23 @@ def write_manifest_json(manifest: AccessManifest) -> None:
 
     data = _serialize(manifest)
     MANIFEST_PATH.write_text(json.dumps(data, indent=2))
+
+
+def write_startup_packet(manifest: AccessManifest) -> None:
+    """Refresh the deterministic startup packet after the manifest is written."""
+    context = (
+        json.loads(startup_health.CONTEXT.read_text(encoding="utf-8"))
+        if startup_health.CONTEXT.exists()
+        else {}
+    )
+    packet = startup_health.build_packet(asdict(manifest), context)
+    startup_health.PACKET.write_text(
+        json.dumps(packet, indent=2) + "\n", encoding="utf-8"
+    )
+    gh_env = os.environ.get("GITHUB_ENV")
+    if gh_env:
+        with open(gh_env, "a", encoding="utf-8") as handle:
+            handle.write(f"SESSION_BOOTSTRAP_HEALTH={packet['bootstrap_health_score']}\n")
 
 
 def print_summary_table(manifest: AccessManifest) -> None:
@@ -743,6 +822,7 @@ def main() -> int:
     write_github_env(manifest)
     write_step_summary(manifest)
     write_manifest_json(manifest)
+    write_startup_packet(manifest)
 
     if args.json:
         print(json.dumps(asdict(manifest), indent=2, default=str))

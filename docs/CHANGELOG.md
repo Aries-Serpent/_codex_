@@ -1,8 +1,14 @@
 # Changelog
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-08-02
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
+
+## Unreleased — 2026-08-02
+
+### Documentation
+- **Repository explanation accuracy:** Neutralized stale marketing claims in `README.md`, `docs/system/CODEBASE_COGNITIVE_MAP.md`, and `docs/CHANGELOG.md` (agent count 145 → 131, workflow count 285 → 229 active/205 archived, coverage/tests/CVE wording aligned with `pyproject.toml` and CI evidence).
+- **Section 11 onboarding:** Added per-task quick-start commands, MCP boundary clarifications, and default-disabled-autonomy note to `docs/REPOSITORY_EXPLANATION.md`.
 
 ## [0.3.0] — 2026-07-11
 
@@ -21,7 +27,7 @@ All notable changes to this project will be documented in this file.
 - **CWE-502:** Unsafe deserialization prevention implemented (commit be200c40)
 - **CWE-798:** Hardcoded credentials removed, token-based auth enabled (commit 9dd50a12)
 - **CWE-22:** Path traversal vulnerabilities fixed (commits 44f401cd, dad39ddf)
-- **Total:** 6 critical vulnerabilities addressed | 0 CVEs remaining
+- **Total:** 6 critical vulnerabilities addressed; see `SECURITY.md` and `pyproject.toml` for current dependency security posture.
 
 ### Infrastructure Improvements
 - **PyPI Publishing:** Token-based authentication configured
@@ -37,10 +43,10 @@ All notable changes to this project will be documented in this file.
 - **Security Advisory:** Vulnerability disclosures documented
 
 ### Testing & Quality
-- **Total Tests:** 1,247 with 90.2% coverage
+- **Test suite:** Thousands of test files and test functions across `tests/`; see `pytest.ini` and CI artifacts for current collection results.
 - **New Security Tests:** 14 tests added for CWE validation
-- **Test Coverage:** Maintained 90.2% across all modules
-- **Code Quality:** Zero new vulnerabilities introduced
+- **Test Coverage:** Coverage baseline is 34% (locked 2026-07-02); 80%+ is an aspirational target. See `.codex/COVERAGE_GAP_REPORT.md`.
+- **Code Quality:** Security scanning gates passed (CodeQL, Bandit, Semgrep)
 
 ### Dependencies Updated
 - setuptools>=78.1.1,<82 (Security: PYSEC-2025-49, PYSEC-2026-1918)
@@ -56,8 +62,7 @@ All notable changes to this project will be documented in this file.
 
 ### Verification
 - All security scanning gates passed (CodeQL, Bandit, Semgrep)
-- Production deployment readiness: 100/100
-- Zero known issues or limitations
+- Production deployment readiness: stable core functionality; review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists before production deployment.
 - Full backward compatibility verified
 
 ---
@@ -122,7 +127,7 @@ All notable changes to this project will be documented in this file.
 
 ### Release Verification
 - All 32 certification gates passed (inherited from v0.2.0-final)
-- Production readiness score: 100/100
+- Production readiness: stable core functionality; review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists before production deployment.
 - Zero new vulnerabilities introduced
 - Full backward compatibility maintained
 

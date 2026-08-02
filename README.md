@@ -1,36 +1,33 @@
 # `_codex_` (codex-ml)
-> **v0.3.0 Production Release** - Level 4 MLOps Certified ML platform with 1,247 tests, 90.2% coverage, 0 CVEs, and 145 active autonomous agents.
-**Production Ready**: We are releasing v0.3.0 as a fully production-certified MLOps platform. All core systems are stable and battle-tested. This release represents 100% production readiness with continuous autonomous maintenance and zero known security vulnerabilities. Phase 3 release featuring improved workflow compliance, SBOM updates, and enhanced documentation.
-** Latest Release**: [v0.3.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.3.0) | ** Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.3.0/_codex_.v0.3.0.zip)
+> **v0.3.0** - ML platform with repository automation and a persistent decision-and-learning layer. See [`docs/REPOSITORY_EXPLANATION.md`](docs/REPOSITORY_EXPLANATION.md) for an evidence-based repository overview.
+**Release Status**: v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists. Autonomous automation templates exist but are disabled by default and require human admin secret injection.
+**Latest Release**: [v0.3.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.3.0) | **Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.3.0/_codex_.v0.3.0.zip)
 ![Version](https://img.shields.io/badge/version-0.3.0-brightgreen)
-![Tests](https://img.shields.io/badge/tests-1247-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-90.2%25-brightgreen)
-![Security](https://img.shields.io/badge/security-0%20CVEs%20%7C%20Production%20Grade-brightgreen)
-![Production](https://img.shields.io/badge/production-100%25%20Ready-green)
-![Agents](https://img.shields.io/badge/agents-145%20active-purple)
+![Python](https://img.shields.io/badge/python-%3E%3D3.12-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 ## Achievement Status
-** 100/100 Azure MLOps Maturity (Level 4)** PRODUCTION CERTIFIED
+**MLOps Maturity**: Level 4 target; see readiness checklists in `docs/` and `.codex/` for current gaps.
 End-to-End Automation | Auto-Retraining | Observability
 Production Engineering | Cross-Functional | Governance
-**Gap Analysis Status:** 47/47 Items Complete (100%)
-**Latest Milestone:** v0.3.0 Production Release (2026-07-11)
-**Release Quality:** 90.2% coverage | 1,247 tests | 0 CVEs | 4 certification gates
-**Phase 3 Improvements:** Workflow compliance (99.5%), SBOM updates, production deployment verification
+**Gap Analysis Status:** In progress; see `.codex/COVERAGE_GAP_REPORT.md`
+**Latest Milestone:** v0.3.0 Release (2026-07-11)
+**Release Quality:** Stable core functionality; coverage baseline is 34% (locked 2026-07-02); see `pytest.ini`, `pyproject.toml`, and CI artifacts for current test/coverage results.
+**Phase 3 Improvements:** Workflow compliance, SBOM updates, production deployment verification
 **Phase 4 Security:** CodeQL blocker resolved with API-only workflow validation (2026-07-14)
-[Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) | [Dashboard](docs/system/CODEBASE_DASHBOARD.md) | [Roadmap](docs/ROADMAP.md)
+[Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) | [Dashboard](docs/system/CODEBASE_DASHBOARD.md) | [Roadmap](docs/ROADMAP.md) | [Repository Explanation](docs/REPOSITORY_EXPLANATION.md)
 ---
 ## High-Level Architecture (v0.1.0-final Production)
 ```mermaid
-graph TB subgraph "codex-ml v0.1.0-final Production Release" subgraph "Core ML Platform" CLI[CLI Interface<br/>Typer + Click<br/> Training/Eval/Serve] Training[Training Engine<br/>PyTorch + Transformers<br/> Distributed Training] Eval[Evaluation Engine<br/>lm-eval + Metrics<br/> 90.2% Coverage] Serve[Model Serving<br/>Ray Serve + FastAPI<br/> Production Ready] end subgraph "Cognitive Brain System" Brain[Quantum Decision Engine<br/>k₁=0.35 Optimized<br/> 2.86x Advantage] Memory[Memory Manager<br/>STM/LTM + Patterns<br/> 60% Compression] Agents[Agent Orchestrator<br/>145 Active Agents<br/> MCP Integration] end subgraph "MCP Ecosystem" MCP[MCP Core<br/>Model Context Protocol<br/> Standardized Interface] Adapters[MCP Adapters<br/>Pinecone/Mock/Custom<br/> Extensible] Workers[Background Workers<br/>Embeddings + Checkpoints<br/> Async Processing] end subgraph "Python Ingestion Pipeline" Ingest[Code Ingest<br/>File/ZIP/Git<br/> Multi-source] Analyze[Analysis Engine<br/>Static + Runtime<br/> AST + Sandbox] Transform[Transform Engine<br/>Tier A/B/C<br/> LLM-guided] Verify[Verification<br/>Behavior Compare<br/> Test Generation] end subgraph "Infrastructure & Monitoring" Config[Configuration<br/>Hydra + OmegaConf<br/> Hierarchical] Logging[Session Tracking<br/>SQLite + Telemetry<br/> Complete Audit] Security[Security Layer<br/>0 CVEs<br/> Production Grade] CI[CI/CD Automation<br/>Auto-Fix + Self-Heal<br/> 75-87% Time Savings] end end subgraph "External Integrations" HF[Hugging Face Hub<br/>Models + Datasets] MLflow[MLflow<br/>Experiment Tracking] Storage[Cloud Storage<br/>S3/Azure/GCS] GitHub[GitHub<br/>PR Automation + Actions] end %% Core Flow CLI --> Training CLI --> Eval CLI --> Serve CLI --> Ingest %% Cognitive Flow Brain --> Memory Brain --> Agents Agents --> MCP MCP --> Adapters MCP --> Workers %% Pipeline Flow Ingest --> Analyze Analyze --> Transform Transform --> Verify %% Infrastructure Config -.configures.-> Training Config -.configures.-> Eval Config -.configures.-> Brain Logging -.tracks.-> Training Logging -.tracks.-> Agents Security -.protects.-> Training Security -.protects.-> MCP CI -.automates.-> GitHub %% External Training --> HF Training --> MLflow Training --> Storage Eval --> MLflow Agents --> GitHub %% Styling style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff style MCP fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff style Ingest fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff style Security fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff style CI fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
+graph TB subgraph "codex-ml v0.3.0" subgraph "Core ML Platform" CLI[CLI Interface<br/>Typer + Click] Training[Training Engine<br/>PyTorch + Transformers] Eval[Evaluation Engine<br/>lm-eval + Metrics] Serve[Model Serving<br/>Ray Serve + FastAPI] end subgraph "Cognitive Brain System" Brain[Quantum Decision Engine<br/>k₁=0.35] Memory[Memory Manager<br/>STM/LTM + Patterns] Agents[Agent Orchestrator<br/>131 Active Agents] end subgraph "MCP Ecosystem" MCP[MCP Core<br/>Model Context Protocol] Adapters[MCP Adapters] Workers[Background Workers] end subgraph "Python Ingestion Pipeline" Ingest[Code Ingest] Analyze[Analysis Engine] Transform[Transform Engine] Verify[Verification] end subgraph "Infrastructure & Monitoring" Config[Configuration<br/>Hydra + OmegaConf] Logging[Session Tracking] Security[Security Layer] CI[CI/CD Automation] end end subgraph "External Integrations" HF[Hugging Face Hub] MLflow[MLflow] Storage[Cloud Storage] GitHub[GitHub Actions + API] end %% Core Flow CLI --> Training CLI --> Eval CLI --> Serve CLI --> Ingest %% Cognitive Flow Brain --> Memory Brain --> Agents Agents --> MCP MCP --> Adapters MCP --> Workers %% Pipeline Flow Ingest --> Analyze Analyze --> Transform Transform --> Verify %% Infrastructure Config -.configures.-> Training Config -.configures.-> Eval Config -.configures.-> Brain Logging -.tracks.-> Training Logging -.tracks.-> Agents Security -.protects.-> Training Security -.protects.-> MCP CI -.automates.-> GitHub %% External Training --> HF Training --> MLflow Training --> Storage Eval --> MLflow Agents --> GitHub %% Styling style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff style MCP fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff style Ingest fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff style Security fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff style CI fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
 ```
-### Key Capabilities (v0.1.0-final)
-- ** 1,247 Tests**: Comprehensive test coverage across all components
-- ** 90.2% Coverage**: Full coverage with continuous improvement (coverage ratchet active)
-- ** 0 CVEs**: Zero known vulnerabilities - production grade security
-- ** 145 Active Agents**: Autonomous operation with specialized domain agents
-- ** Cognitive Brain**: 2.86x quantum advantage (k₁=0.35)
-- ** MCP System**: Standardized agent-model-context protocol
-- ** CI/CD**: 75-87% time savings via auto-fix and self-healing
+### Key Capabilities (v0.3.0)
+- **Test suite**: Thousands of test files and test functions across `tests/`; see `pytest.ini` and CI artifacts for current collection results.
+- **Coverage**: Coverage baseline is 34% (locked 2026-07-02); 80%+ is an aspirational target. See `.codex/COVERAGE_GAP_REPORT.md`.
+- **Security**: Dependencies are audited and known CVEs are remediated; see `SECURITY.md` and `pyproject.toml` for pinned security fixes.
+- **Active Agents**: The agent registry contains 159 entries; 131 are active after Phase 6 consolidation.
+- **Cognitive Brain**: Quantum-inspired decision engine with memory and agent orchestration.
+- **MCP System**: Model Context Protocol surfaces (repository `src/mcp/` and Copilot runtime aggregator).
+- **CI/CD**: Automated validation, auto-fix, and self-healing workflows.
 ---
 ## Installation Profiles
 Codex ML uses a **3-profile packaging strategy** for flexible deployment:

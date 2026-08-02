@@ -2,11 +2,11 @@
 
 > **Generated:** 2026-02-05T09:30:00Z
 > **Planset ID:** CB-ST-2026-02-05
-> **Status:** ✅ COMPLETE (Plans 1–4) — Plan 5 ACTIVE (lean-OS immediate actions)
+> **Status:** ✅ COMPLETE — superseded by the canonical Lean Workflow OS planset
 > **Timeline:** 5 Copilot sessions
 > **Owner:** GitHub Copilot Coding Agent
 > **Completed (Plans 1–4):** 2026-02-05T12:17:00Z
-> **Lifecycle:** COMPLETE → extends via [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md) (Plan 5)
+> **Lifecycle:** HISTORICAL — superseded by [LEAN_WORKFLOW_OS_PLANSET.md](LEAN_WORKFLOW_OS_PLANSET.md)
 
 ---
 
