@@ -37,7 +37,7 @@ def simulate(workflow: str, workflow_dir: Path = WORKFLOW_DIR) -> dict[str, obje
         "workflow": _workflow_name(target),
         "triggers": trigger_lines,
         "workflow_run_dependants": dependants,
-        "required_check_names": re.findall(r"name:\s*[\"']?([^\"'\n]+)", text),
+        "workflow_name_values": re.findall(r"^\s*name:\s*[\"']?([^\"'\n]+)", text, re.MULTILINE),
         "coverage_impact": "review-required" if dependants else "no discovered dependants",
     }
 

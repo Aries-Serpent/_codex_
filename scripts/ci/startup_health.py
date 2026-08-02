@@ -31,7 +31,7 @@ def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str
         score -= 5
         fixes.append("Review token-contract warnings")
     try:
-        failure_rate = float(str(context.get("CODEX_CI_FAILURE_RATE", "0").split(":")[0]))
+        failure_rate = float(str(context.get("CODEX_CI_FAILURE_RATE", "0")).split(":")[0])
     except ValueError:
         failure_rate = 0
     threshold = float(context.get("CODEX_CI_FAILURE_THRESHOLD", 10))

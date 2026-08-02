@@ -594,7 +594,7 @@ def _branch_drift() -> tuple[str, int]:
             cwd=REPO_ROOT, capture_output=True, check=True,
         )
         ahead = int(subprocess.run(
-            ["git", "rev-list", "--count", f"HEAD..origin/main"],
+            ["git", "rev-list", "--count", "HEAD..origin/main"],
             cwd=REPO_ROOT, capture_output=True, text=True, check=True,
         ).stdout.strip() or "0")
     except (OSError, subprocess.CalledProcessError, ValueError):
