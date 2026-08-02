@@ -71,6 +71,9 @@ def build_packet(
         "main_commits_ahead": manifest.get("main_commits_ahead", 0),
         "ci_failure_rate": ci_failure_rate_value,
         "ci_failure_status": rate_status or None,
+        "ci_failure_rate_raw": (
+            ci_failure_rate if ci_failure_rate_value is None else None
+        ),
         "token_contract": token_status,
         "bootstrap_health_score": score,
         "status": "GREEN" if score >= 80 else "YELLOW" if score >= 50 else "RED",

@@ -4,6 +4,7 @@
   "main_commits_ahead": 0,
   "ci_failure_rate": 7.3,
   "ci_failure_status": "ok",
+  "ci_failure_rate_raw": null,
   "token_contract": "pass",
   "bootstrap_health_score": 100,
   "status": "GREEN",
