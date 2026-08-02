@@ -717,7 +717,7 @@ def write_step_summary(manifest: AccessManifest) -> None:
         f"({manifest.token_contract_warnings} warning(s))",
     ]
 
-    with open(summary_path, "a") as f:
+    with open(summary_path, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
 
 
@@ -737,7 +737,7 @@ def write_manifest_json(manifest: AccessManifest) -> None:
     MANIFEST_PATH.write_text(json.dumps(data, indent=2))
 
 
-def write_startup_packet(manifest: AccessManifest) -> None:
+def write_startup_packet() -> None:
     """Refresh the deterministic startup packet after the manifest is written."""
     packet = startup_health.build_packet()
     startup_health.PACKET.write_text(
@@ -806,7 +806,7 @@ def main() -> int:
     write_github_env(manifest)
     write_step_summary(manifest)
     write_manifest_json(manifest)
-    write_startup_packet(manifest)
+    write_startup_packet()
 
     if args.json:
         print(json.dumps(asdict(manifest), indent=2, default=str))

@@ -74,7 +74,11 @@ def check(paths: list[Path]) -> dict[str, object]:
             violations.append(
                 {"path": str(path), "kind": "unknown_tokens", "message": ", ".join(unknown)}
             )
-    return {"checked": [str(p) for p in paths], "violations": violations}
+    return {
+        "checked": [str(p) for p in paths],
+        "violations": violations,
+        "status": "warning" if violations else "pass",
+    }
 
 
 def main() -> int:
