@@ -324,8 +324,12 @@ def check_package_py312_support(
                                 result["supports_312"] = True
                     elif "<" not in req and "!=" not in req:
                         result["supports_312"] = True
-        except Exception:
-            pass
+        except Exception as e:
+            fallback_warning = f"Fallback metadata check failed: {e}"
+            if result.get("warning"):
+                result["warning"] = f"{result['warning']}; {fallback_warning}"
+            else:
+                result["warning"] = fallback_warning
     except Exception as e:
         result["error"] = str(e)
 
