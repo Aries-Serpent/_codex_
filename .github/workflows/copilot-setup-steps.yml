@@ -336,6 +336,7 @@ jobs:
         \ false\necho \"\u2705 git configured: core.editor=true, advice.mergeConflict=false\"\
         \n"
     - name: "\U0001F500 Fetch remote branch refs for PR diff support"
+      if: always()
       run: "git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null\
         \ \\\n  && echo \"\u2705 Remote branch refs fetched (as origin/*)\" \\\n \
         \ || echo \"\u26A0\uFE0F Remote ref fetch failed (non-blocking)\"\ngit branch\
@@ -614,7 +615,7 @@ jobs:
       id: gen_report
       if: always()
       shell: bash
-      run: "set -euo pipefail\nREPORT_DIR=\"${RUNNER_TEMP:-/tmp}\"\nREPORT=\"$REPORT_DIR/.copilot-agent-environment-report.txt\"\
+      run: "set -euo pipefail\nREPORT_DIR=\"${RUNNER_TEMP:-/tmp}\"\nREPORT=\"$REPORT_DIR/copilot-agent-environment-report.txt\"\
         \n{\n  echo \"==================== Copilot Agent Environment Report ====================\"\
         \n  echo \"Generated: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\"\n  echo \"Environment\
         \ Type: ${{ steps.detect_env.outputs.environment_type }}\"\n  echo \"Runner:\
@@ -624,7 +625,7 @@ jobs:
         \"\n  echo \"Installed Packages: $(pip list | wc -l) packages\"\n  echo \"\
         Disk Space: $(df -h / | tail -1 | awk '{print $4}') available\"\n  echo \"\
         \"\n  echo \"Status: \u2705 Environment ready for Copilot agent operations\"\
-        \n} > \"$REPORT\"\necho \"Report written to $REPORT\"\nhead -20 \"$REPORT\"\
+        \n} > \"$REPORT\"\ntest -s \"$REPORT\"\necho \"Report written to $REPORT\"\nhead -20 \"$REPORT\"\
         \ || true\necho \"REPORT_PATH=$REPORT\" >> \"$GITHUB_OUTPUT\"\n"
     - name: "\U0001F4E4 Upload Environment Report"
       if: always()
