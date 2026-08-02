@@ -59,8 +59,8 @@ def build_packet(
         or manifest.get("token_contract_status", "pass")
     )
     token_ok = token_status == "pass"
-    ci_failure_rate = str(context.get("CODEX_CI_FAILURE_RATE", "unknown"))
-    rate_value, separator, rate_status = ci_failure_rate.partition(":")
+    ci_failure_rate_raw = str(context.get("CODEX_CI_FAILURE_RATE", "unknown"))
+    rate_value, separator, rate_status = ci_failure_rate_raw.partition(":")
     try:
         ci_failure_rate_value = float(rate_value)
     except ValueError:
@@ -77,7 +77,7 @@ def build_packet(
         "main_commits_ahead": manifest.get("main_commits_ahead", 0),
         "ci_failure_rate": ci_failure_rate_value,
         "ci_failure_status": ci_failure_status,
-        "ci_failure_rate_raw": ci_failure_rate,
+        "ci_failure_rate_raw": ci_failure_rate_raw,
         "token_contract": token_status,
         "bootstrap_health_score": score,
         "status": "GREEN" if score >= 80 else "YELLOW" if score >= 50 else "RED",
