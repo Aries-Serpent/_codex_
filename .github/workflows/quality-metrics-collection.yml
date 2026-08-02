@@ -1,5 +1,5 @@
 name: Quality Metrics Collection
-true:
+on:
   push:
     branches:
     - main
@@ -39,8 +39,8 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: "python -m pip install --upgrade pip\npip install -e .\npip install \\\n\
         \  pytest>=7.0 \\\n  pytest-cov>=4.0 \\\n  pytest-timeout \\\n  pytest-xdist\

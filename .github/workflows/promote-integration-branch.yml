@@ -59,7 +59,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        cache: pip
+
         python-version: 3.12.13
     - name: Install package (for mcp_poster CLI)
       run: pip install -e . --quiet

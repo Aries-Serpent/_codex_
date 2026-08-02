@@ -61,7 +61,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Gate check
       run: "set -euo pipefail\necho \"\u2713 Gate check initialized successfully\"\
         \nif [ -n \"${{ inputs.pr_number }}\" ]; then\n  echo \"PR_NUMBER: ${{ inputs.pr_number\

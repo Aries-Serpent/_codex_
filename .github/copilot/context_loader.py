@@ -7,6 +7,35 @@ from pathlib import Path
 
 import yaml
 
+try:
+    from scripts.cognitive.context_window_optimizer import summarize_session_state, truncate_text
+except Exception:  # pragma: no cover - fallback for standalone execution
+
+    def truncate_text(text: str, max_chars: int) -> str:
+        if len(text) <= max_chars:
+            return text
+        return (
+            text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
+        )
+
+    def summarize_session_state(session_state: dict) -> dict:
+        completed = session_state.get("completed", [])
+        pending = session_state.get("pending", [])
+        files_modified = session_state.get("files_modified", {})
+        if isinstance(files_modified, dict):
+            file_items = [f"{name}: {count} lines" for name, count in files_modified.items()]
+        else:
+            file_items = [str(item) for item in files_modified]
+        return {
+            "context_summary": truncate_text(str(session_state.get("context", "")), 8_000),
+            "file_list_with_line_counts": "\n".join(f"- {item}" for item in file_items[:8]),
+            "decisions_made_and_rationale": truncate_text(
+                str(session_state.get("decisions", "")), 8_000
+            ),
+            "completed": "\n".join(f"- {item}" for item in completed[:8]),
+            "pending": "\n".join(f"- {item}" for item in pending[:8]),
+        }
+
 
 class AgentContextLoader:
     """Load and provide context to Copilot Agent."""
@@ -67,22 +96,24 @@ class AgentContextLoader:
         return existing_paths
 
     def generate_continuation_prompt(self, session_state: dict) -> str:
-        """Generate continuation prompt with full context."""
+        """Generate continuation prompt with compact context."""
         template = self.config.get("continuation_protocol", {}).get(
             "continuation_prompt_format", ""
         )
+        summary = summarize_session_state(session_state)
 
-        return template.format(
-            session_id=session_state.get("session_id", "unknown"),
-            branch=session_state.get("branch", "unknown"),
-            commit_hash=session_state.get("last_commit", "none"),
-            completed_list="\n".join(f"- {t}" for t in session_state.get("completed", [])),
-            pending_list="\n".join(f"- {t}" for t in session_state.get("pending", [])),
-            detailed_context=session_state.get("context", ""),
-            action_1_with_specific_details=session_state.get("next_action", "Continue"),
-            action_2_with_specific_details="",
-            file_list_with_line_counts="\n".join(
-                f"- {f}: {c} lines" for f, c in session_state.get("files_modified", {}).items()
+        return truncate_text(
+            template.format(
+                session_id=session_state.get("session_id", "unknown"),
+                branch=session_state.get("branch", "unknown"),
+                commit_hash=session_state.get("last_commit", "none"),
+                completed_list=summary.get("completed", ""),
+                pending_list=summary.get("pending", ""),
+                detailed_context=summary.get("context_summary", ""),
+                action_1_with_specific_details=session_state.get("next_action", "Continue"),
+                action_2_with_specific_details="",
+                file_list_with_line_counts=summary.get("file_list_with_line_counts", ""),
+                decisions_made_and_rationale=summary.get("decisions_made_and_rationale", ""),
             ),
-            decisions_made_and_rationale=session_state.get("decisions", ""),
+            8_000,
         )

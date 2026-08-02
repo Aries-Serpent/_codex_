@@ -1,15 +1,23 @@
-# MCP Capability Matrix: Full End-to-End Capabilities
+# MCP Capability Matrix: Historical General Catalog
 
 > **Generated**: 2026-02-17T11:19:53Z
 > **Repository**: Aries-Serpent/_codex_
-> **Purpose**: Comprehensive reference for MCP tools, runtime requirements, and use cases
-> **Status**: Production-Ready Documentation
+> **Purpose**: Historical upstream/general catalog of MCP ideas and use cases
+> **Status**: Historical; not the current Copilot runtime inventory
+>
+> **Current runtime source:** `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` documents
+> 35 read-only GitHub MCP tools, 21 Playwright MCP tools, and standalone
+> `web_search` as observed on 2026-08-01. This file mixes configurable upstream,
+> built-in, and historical write-capable surfaces and must not be used to infer
+> current-session availability or permissions.
 
 ---
 
 ## Executive Summary
 
-This document provides the complete capability matrix for Model Context Protocol (MCP) tools available to GitHub Copilot Agent and other AI assistants working in the _codex_ repository. It includes:
+This retained catalog describes a broad historical design space for Model Context
+Protocol tools and adjacent agent capabilities. Its counts are not a current runtime
+contract. It includes:
 
 - **100+ MCP tools** across 10 categories
 - **Runtime requirements** for each tool type

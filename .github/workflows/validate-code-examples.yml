@@ -35,7 +35,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Extract Python code blocks
       run: "python3 <<'EOF'\nimport json\nimport os\nimport re\nimport subprocess\n\
         from pathlib import Path\n\npattern = re.compile(r\"```python\\n(.*?)\\n```\"\
@@ -149,7 +149,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Extract and validate YAML
       continue-on-error: true
       run: "pip install pyyaml\n\npython3 <<'EOF'\nimport os\nimport re\nimport subprocess\n\

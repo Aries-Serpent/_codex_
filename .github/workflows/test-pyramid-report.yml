@@ -21,7 +21,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q -r requirements-dev.txt
     - name: Count test pyramid tiers
       run: python scripts/ci/test_pyramid_report.py --output reports/test_pyramid_latest.json

@@ -24,7 +24,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q pyyaml
     - name: Run SLO canary test
       id: canary
@@ -50,7 +50,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q -r requirements-dev.txt
     - name: Generate MTTR report
       env:
@@ -92,7 +92,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q -r requirements-dev.txt
     - name: Generate MTTD report
       env:

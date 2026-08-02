@@ -950,7 +950,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Run findings aggregator + normalized exports
       id: aggregate
       env:
@@ -1132,7 +1132,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Download comprehensive findings
       uses: actions/download-artifact@v5
       continue-on-error: true

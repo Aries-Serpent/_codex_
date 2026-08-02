@@ -295,6 +295,14 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 > Remote endpoint: `https://api.githubcopilot.com/mcp/`
 > Source: <https://github.com/github/github-mcp-server>
 > Config guide: <https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md>
+>
+> **Copilot runtime observation (2026-08-01):** this repository session exposes
+> 35 GitHub MCP tools through a read-only endpoint plus the standalone `web_search`
+> companion capability. The supplied startup inventory groups these as 36 research
+> capabilities. The exact list is maintained in
+> [`.codex/docs/MCP_GITHUB_CAPABILITIES.md`](../../.codex/docs/MCP_GITHUB_CAPABILITIES.md).
+> The configurable upstream server has a broader surface; do not infer runtime
+> write access from the upstream toolsets below.
 
 ### 3a. Available Toolsets
 
@@ -314,7 +322,10 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 
 ### 3b. Critical Gap — Secrets/Variables CRUD not available via MCP
 
-As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, update, or delete Actions variables, Actions secrets, Dependabot secrets, or Codespaces secrets. Use the REST API or `gh` CLI for write operations on secrets and variables.
+As reverified for the repository's read-only endpoint on 2026-08-01, the GitHub MCP
+Server does **not** include tools to create, update, or delete Actions variables,
+Actions secrets, Dependabot secrets, or Codespaces secrets. Use the REST API or
+`gh` CLI for write operations on secrets and variables.
 
 | Operation | REST API | CLI (`gh`) | MCP Server |
 |---|---|---|---|
@@ -329,7 +340,7 @@ As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, up
 | Secret scanning alerts (read) | | | (`secret_protection`) |
 | Dependabot alerts (read) | | | (`dependabot`) |
 | workflow runs/jobs (read) | | | (`actions`) |
-| PR comments (write) | | | (`pull_requests`) |
+| PR comments (write) | | | Upstream configurable; unavailable on this read-only runtime endpoint |
 
 ### 3c. MCP Server Configuration — Remote (VS Code / Copilot)
 
@@ -382,12 +393,13 @@ docker run -i --rm \
 
 ### 3f. This repository's MCP Wiring
 
-From `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` (verified 2026-04-05):
+From `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` (verified 2026-08-01):
 
 ```
 MCP aggregator :2301
  playwright (npx @playwright/mcp@0.0.40) 21 tools
- github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) 28 tools
+ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) 35 tools
+ companion web_search 1 tool
 ```
 
 > **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.

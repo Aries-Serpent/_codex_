@@ -172,7 +172,7 @@ nox -s tests
 |----------|------|-------------|
 | **Variables & Secrets Reference** | `docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md` | Any operation on variables, secrets, Dependabot, Codespaces secrets | <!-- pragma: allowlist secret -->
 | **Copilot Agent API Reference** | `docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md` | Token hierarchy, repo variables, PR body WEC protocol, workflow ops | <!-- pragma: allowlist secret -->
-| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Tool inventory: 21 Playwright + 28 GitHub MCP tools |
+| **MCP Tool Reference** | `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` | Runtime inventory: 21 Playwright MCP + 35 GitHub MCP + standalone `web_search` |
 | **CB API Knowledge Entry** | `.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md` | Quick-access summary + wiring map |
 | **MCP Server Config Guide** | Upstream: `github.com/github/github-mcp-server/docs/server-configuration.md` | Toolsets, read-only mode, lockdown, insiders |
 
@@ -267,13 +267,13 @@ When workflows fail or governance checks block merge, reference these guides:
   - 8 documented failure patterns (WF-001 through WF-008)
   - Detection methods, remediation steps, prevention strategies
   - Use when: REQ-4 failures, REQ-5 failures, WEC corruption, approval failures, rate limiting
-  
+
 - **Auto-Approve Prerequisite Guide:** `.codex/AUTO_APPROVE_PREREQUISITE_GUIDE.md`
   - Token hierarchy and scope requirements (why github.token fails)
   - Auto-approval selection logic and WEC mapping
   - 4 failure scenarios with recovery procedures
   - Use when: Workflows won't auto-approve, approval tokens failing, 403 errors
-  
+
 - **Main Branch Workflow Health Baseline:** `.codex/MAIN_BRANCH_WORKFLOW_HEALTH.md`
   - Health metrics for "healthy PR" state
   - Reference profiles and alert thresholds

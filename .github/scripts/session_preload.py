@@ -11,14 +11,29 @@ Phase 1.4 Update (2026-06-23):
 - Now queries last 7 days of sessions instead of parsing large JSONL file
 - Maintains backward compatibility with graceful fallback
 """
+
 import json
 import os
 from datetime import datetime
 
+try:
+    from scripts.cognitive.context_window_optimizer import truncate_text
+except Exception:  # pragma: no cover - standalone fallback
+
+    def truncate_text(text: str, max_chars: int) -> str:
+        if len(text) <= max_chars:
+            return text
+        return (
+            text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
+        )
+
+
+MAX_SECTION_CHARS = 8_000
+
 
 def section(title: str, body: str) -> None:
     print(f"::group::{title}")
-    print(body.rstrip())
+    print(truncate_text(body.rstrip(), MAX_SECTION_CHARS))
     print("::endgroup::")
 
 
@@ -39,7 +54,7 @@ def _calculate_recency_score(timestamp_str: str) -> float:
     Score = 1 / (days_old + 1) to always give weight to older sessions.
     """
     try:
-        session_dt = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+        session_dt = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
         now = datetime.now(session_dt.tzinfo) if session_dt.tzinfo else datetime.utcnow()
         delta = now - session_dt
         days_old = delta.total_seconds() / 86400
@@ -69,7 +84,7 @@ def _pda_summary_from_index() -> str:
         # Score by recency and display top results
         scored_sessions = []
         for session in recent_sessions[:20]:  # Check first 20, score all
-            timestamp = session.get('first_timestamp') or session.get('last_timestamp')
+            timestamp = session.get("first_timestamp") or session.get("last_timestamp")
             score = _calculate_recency_score(timestamp)
             scored_sessions.append((session, score))
 
@@ -78,10 +93,10 @@ def _pda_summary_from_index() -> str:
 
         out = []
         for session, score in scored_sessions[:10]:  # Display top 10
-            sid = session.get('session_id', '?')
-            timestamp = session.get('first_timestamp') or session.get('last_timestamp', '')
-            status = session.get('status', 'unknown')
-            event_count = session.get('event_count', 0)
+            sid = session.get("session_id", "?")
+            timestamp = session.get("first_timestamp") or session.get("last_timestamp", "")
+            status = session.get("status", "unknown")
+            event_count = session.get("event_count", 0)
 
             # Confidence indicator based on recency score
             if score >= 0.8:
@@ -184,15 +199,11 @@ def ctx_summary() -> str:
         if actual is None:
             gov_issues.append(f"  ⚠️  GOVERNANCE: {k} is missing from agent_context.json")
         elif str(actual).lower() != expected.lower():
-            gov_issues.append(
-                f"  ❌ GOVERNANCE: {k} = '{actual}' (expected '{expected}')"
-            )
+            gov_issues.append(f"  ❌ GOVERNANCE: {k} = '{actual}' (expected '{expected}')")
     if gov_issues:
         lines_out.append("")
         lines_out.extend(gov_issues)
-        lines_out.append(
-            "  ❗ Fix: run repo-var-sync-agent to synchronize repository variables."
-        )
+        lines_out.append("  ❗ Fix: run repo-var-sync-agent to synchronize repository variables.")
     return "\n".join(lines_out)
 
 
@@ -231,21 +242,29 @@ def chpp_drift_check() -> str:
     )
 
 
-section("✅ AGENTIC REPO STATE — Auth is PERMANENTLY ACTIVE",
-        read(".codex/AGENTIC_REPO_STATE.md"))
+section(
+    "✅ AGENTIC REPO STATE — Auth is PERMANENTLY ACTIVE",
+    read(".codex/AGENTIC_REPO_STATE.md", lines=120),
+)
 
-section("📋 CODEBASE AGENCY POLICY (mandatory rules for this session)",
-        read(".codex/CODEBASE_AGENCY_POLICY.md", lines=120))
+section(
+    "📋 CODEBASE AGENCY POLICY (mandatory rules for this session)",
+    read(".codex/CODEBASE_AGENCY_POLICY.md", lines=120),
+)
 
-section("📊 AGENT ACCOUNTABILITY REPORT (last session state)",
-        read("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md", lines=80))
+section(
+    "📊 AGENT ACCOUNTABILITY REPORT (last session state)",
+    read("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md", lines=80),
+)
 
 section("🔄 PDA AFTERMATH — last 5 iterations", pda_summary())
 
 section("🔑 REPO VARIABLE SNAPSHOT (agent_context.json)", ctx_summary())
 
-section("🛡️ COPILOT HARDENED PLANNING PROTOCOL (CHPP)",
-        read(".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"))
+section(
+    "🛡️ COPILOT HARDENED PLANNING PROTOCOL (CHPP)",
+    read(".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"),
+)
 
 section("🔍 CHPP DRIFT DETECTION", chpp_drift_check())
 

@@ -35,7 +35,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Install sigstore SDK (best-effort)
       run: 'pip install sigstore --quiet || echo "sigstore SDK not available; running
         in structured-warning mode"

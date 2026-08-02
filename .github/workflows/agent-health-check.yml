@@ -82,7 +82,7 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - run: pip install -q -r requirements-dev.txt
     - name: Validate OODA loop components present
       run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\n# Verify\

@@ -101,7 +101,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Run Health Checks
       id: health
       env:
@@ -152,7 +152,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Run Smoke Tests
       id: smoke
       continue-on-error: true
@@ -194,7 +194,7 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-        cache: pip
+
     - name: Run Critical Path Tests
       id: critical
       continue-on-error: true

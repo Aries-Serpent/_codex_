@@ -28,7 +28,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Install PyYAML
       run: pip install PyYAML --quiet
     - name: Run compliance check

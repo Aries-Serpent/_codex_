@@ -42,6 +42,6 @@ jobs:
       if: always()
       shell: bash
       run: "{\n  echo \"## Runner diagnostics\"\n  echo\n  echo \"- RUNS_ON: ${{ vars.RUNS_ON\
-        \ || '[\\\"self-hosted\\\",\\\"linux\\\"]' }}\"\n  echo \"- Docker: present\"\
+        \ || '[\\\'self-hosted\\\',\\\'linux\\\']' }}\"\n  echo \"- Docker: present\"\
         \n  echo \"- Buildx: checked\"\n  echo \"- binfmt: checked (best-effort)\"\
         \n} >> \"$GITHUB_STEP_SUMMARY\"\n"

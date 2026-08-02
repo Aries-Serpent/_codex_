@@ -26,7 +26,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: "\U0001F4E6 Install pip-tools for validation"
       run: pip install pip-tools --quiet
     - name: "\U0001F50D Validate all .github requirements files are pip-parseable"

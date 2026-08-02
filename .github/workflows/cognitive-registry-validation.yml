@@ -48,7 +48,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        cache: pip
+
     - name: Query Cognitive Brain patterns
       id: query_patterns
       run: 'echo "Querying Cognitive Brain for registry patterns..."

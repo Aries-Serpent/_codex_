@@ -1,0 +1,777 @@
+{
+  "sessions": [
+    {
+      "session_id": "dummy",
+      "first_timestamp": "2026-05-17T11:29:17.424422Z",
+      "last_timestamp": "2026-05-18T06:37:56.745333Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish",
+        "training_end",
+        "cli.exit",
+        "training_start"
+      ],
+      "event_count": 24,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "f02ccd11-5147-4012-b2a3-ef5e0509c17f",
+      "first_timestamp": "2026-05-14T04:08:07.219159Z",
+      "last_timestamp": "2026-05-14T04:11:42.689000Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "965cdd96-80a5-400e-aac9-ed5ab7851251",
+      "first_timestamp": "2026-03-23T14:07:50.573423Z",
+      "last_timestamp": "2026-03-23T14:07:50.618549Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "e77ac6b1-13a1-4fb4-826e-3ec80ee1a199",
+      "first_timestamp": "2026-05-12T13:42:22.432862Z",
+      "last_timestamp": "2026-05-12T13:42:22.441652Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 4,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "36798482-75ed-4266-a0e1-22d33d979325",
+      "first_timestamp": "2026-03-17T03:43:20.811869Z",
+      "last_timestamp": "2026-03-17T03:43:20.812518Z",
+      "event_types": [
+        "cli.exit",
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 3,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b14de908-497c-4625-9814-0361ae53e2b7",
+      "first_timestamp": "2026-03-15T01:36:16.958994Z",
+      "last_timestamp": "2026-03-15T01:36:16.958994Z",
+      "event_types": [
+        "training_start"
+      ],
+      "event_count": 1,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "e28499b7-44db-49bd-8745-c1f5635991a2",
+      "first_timestamp": "2026-03-12T19:11:18.396676Z",
+      "last_timestamp": "2026-03-12T19:11:18.399571Z",
+      "event_types": [
+        "app.exception",
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 3,
+      "status": "failed",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "f072ac94-888e-4e79-b384-b87b34341220",
+      "first_timestamp": "2026-03-13T16:10:13.068445Z",
+      "last_timestamp": "2026-03-13T16:10:13.068983Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "52d545c6-d8ff-4734-a70b-08e1fc3d06dc",
+      "first_timestamp": "2026-05-17T20:31:27.539058Z",
+      "last_timestamp": "2026-05-17T20:31:27.541008Z",
+      "event_types": [
+        "cli.exit",
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 3,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b84c4905-6cc3-4a03-9248-a6fcce0b8177",
+      "first_timestamp": "2026-05-18T14:44:48.408381Z",
+      "last_timestamp": "2026-05-18T14:44:48.629923Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "36f7ea47-3ceb-465d-8f06-5a62250207e1",
+      "first_timestamp": "2026-03-17T03:47:00.105371Z",
+      "last_timestamp": "2026-03-17T03:47:00.105673Z",
+      "event_types": [
+        "app.exception",
+        "cli.argparse_error"
+      ],
+      "event_count": 2,
+      "status": "failed",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "d01d9090-95cf-4e04-ab8f-dbcd5e7830b8",
+      "first_timestamp": "2026-03-05T03:06:36.070896Z",
+      "last_timestamp": "2026-03-05T03:06:36.072166Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "fb0cba51-e131-4349-af8c-c7bc7869edb0",
+      "first_timestamp": "2026-03-11T03:38:05.405538Z",
+      "last_timestamp": "2026-03-11T03:38:05.407641Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 2,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "f4e0e78c-ed98-4569-97c7-02edcc08fbac",
+      "first_timestamp": "2026-03-23T13:58:04.137319Z",
+      "last_timestamp": "2026-03-23T13:58:04.137319Z",
+      "event_types": [
+        "training_start"
+      ],
+      "event_count": 1,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "ef77574f-7140-4896-9abc-2cd4ea2f230b",
+      "first_timestamp": "2026-03-23T14:05:45.084919Z",
+      "last_timestamp": "2026-03-23T14:05:45.109694Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "02d5a62c-0d85-458b-8acf-369dd8250ecd",
+      "first_timestamp": "2026-05-18T14:48:58.858458Z",
+      "last_timestamp": "2026-05-18T14:48:58.920935Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "c3f766a1-7516-4f17-a458-27d191190fc5",
+      "first_timestamp": "2026-05-14T04:11:52.496055Z",
+      "last_timestamp": "2026-05-14T04:11:52.539790Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "d3584423-343b-4f48-9465-6c3fb37321af",
+      "first_timestamp": "2026-05-09T05:02:40.265232Z",
+      "last_timestamp": "2026-05-09T05:02:40.374734Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "fe6d49f3-4330-4ec7-a6e1-e0ec190dc423",
+      "first_timestamp": "2026-03-23T14:06:43.289153Z",
+      "last_timestamp": "2026-03-23T14:06:43.361674Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "8cc5b9a4-81a8-4002-9ad2-c8726a8b70a6",
+      "first_timestamp": "2026-04-26T19:15:02.605190Z",
+      "last_timestamp": "2026-04-26T19:15:02.605190Z",
+      "event_types": [
+        "training_start"
+      ],
+      "event_count": 1,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "daf17a0d-79da-4530-b6c9-d8b3fa464e3c",
+      "first_timestamp": "2026-05-12T13:34:58.176289Z",
+      "last_timestamp": "2026-05-12T13:34:58.176764Z",
+      "event_types": [
+        "cli.exit",
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 3,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "40402150-36bb-488b-bc99-7b22c5287472",
+      "first_timestamp": "2026-05-17T20:33:44.354074Z",
+      "last_timestamp": "2026-05-17T20:33:44.422721Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 4,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "c61458ca-ab65-47d0-9017-892538ebbe5a",
+      "first_timestamp": "2026-05-13T18:37:41.610791Z",
+      "last_timestamp": "2026-05-13T18:37:41.645079Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "a5a8289a-64a1-4899-95e9-8ddd5da20d06",
+      "first_timestamp": "2026-05-22T21:41:19.793657Z",
+      "last_timestamp": "2026-05-22T21:41:19.813506Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 2,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "bde67131-b65a-44de-881e-50f18fdd9025",
+      "first_timestamp": "2026-05-14T04:11:51.718197Z",
+      "last_timestamp": "2026-05-14T04:11:51.848257Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "cc1f135c-ad61-410f-a43a-bc32efea2c63",
+      "first_timestamp": "2026-03-23T13:59:46.398193Z",
+      "last_timestamp": "2026-03-23T13:59:46.399974Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 2,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "ce35d6bd-5d5a-4ea0-b883-4255a23fd8cf",
+      "first_timestamp": "2026-03-13T16:09:44.526405Z",
+      "last_timestamp": "2026-03-13T16:09:44.526405Z",
+      "event_types": [
+        "cli.exit"
+      ],
+      "event_count": 1,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "cca47338-a115-476e-ba5e-c0b923e22f40",
+      "first_timestamp": "2026-05-18T14:46:59.639244Z",
+      "last_timestamp": "2026-05-18T14:46:59.639808Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "babae822-5703-4c54-95ef-7a94e9fda744",
+      "first_timestamp": "2026-03-05T03:09:07.359452Z",
+      "last_timestamp": "2026-03-05T03:09:07.361084Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "f99732e2-6a2e-45e2-bf32-4a903ada1c78",
+      "first_timestamp": "2026-03-23T14:38:26.357184Z",
+      "last_timestamp": "2026-03-23T14:38:26.760776Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "a6c30f57-00e3-47f0-9d2b-da222379f399",
+      "first_timestamp": "2026-05-18T14:44:45.835151Z",
+      "last_timestamp": "2026-05-18T14:44:45.899801Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "eb4213f4-59a9-4df3-a3e4-17438a5917c3",
+      "first_timestamp": "2026-05-18T06:37:19.341330Z",
+      "last_timestamp": "2026-05-18T06:37:19.348869Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 2,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "4c363819-609e-433e-96b4-e6a490046d0e",
+      "first_timestamp": "2026-05-17T11:25:00.814424Z",
+      "last_timestamp": "2026-05-17T11:25:00.820755Z",
+      "event_types": [
+        "cli.exit",
+        "cli.start"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "bc641647-4ee2-472b-8456-273ad59640fa",
+      "first_timestamp": "2026-05-18T14:44:49.155997Z",
+      "last_timestamp": "2026-05-18T14:44:49.233665Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b40bc2bd-91ca-4e95-988c-20b918b18e73",
+      "first_timestamp": "2026-03-05T03:06:28.871414Z",
+      "last_timestamp": "2026-03-05T03:06:28.872727Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "e2b0e5b3-65ac-4f11-95ae-91caa4d9a170",
+      "first_timestamp": "2026-05-22T21:41:13.401605Z",
+      "last_timestamp": "2026-05-22T21:41:13.442294Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 2,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "dd754e73-f7fb-4066-bded-c4767b05346a",
+      "first_timestamp": "2026-03-12T19:10:27.074697Z",
+      "last_timestamp": "2026-03-12T19:10:27.077546Z",
+      "event_types": [
+        "app.exception",
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 3,
+      "status": "failed",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "efae40a4-10be-4228-bf75-8d229ecdff4a",
+      "first_timestamp": "2026-03-13T16:10:25.720511Z",
+      "last_timestamp": "2026-03-13T16:10:25.759906Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "497a59af-9c64-4e30-9cf1-2c99696ccd4e",
+      "first_timestamp": "2026-05-18T06:30:36.384924Z",
+      "last_timestamp": "2026-05-18T06:30:36.391738Z",
+      "event_types": [
+        "cli.exit",
+        "cli.start"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "cb0fda80-74b2-47bd-99f9-966f41198f0f",
+      "first_timestamp": "2026-05-18T14:46:59.544457Z",
+      "last_timestamp": "2026-05-18T14:46:59.545072Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b3487779-b2bf-4ab5-86be-f699ff78dd2e",
+      "first_timestamp": "2026-05-14T04:34:17.653698Z",
+      "last_timestamp": "2026-05-14T04:48:32.531402Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish",
+        "training_end",
+        "cli.exit",
+        "training_start"
+      ],
+      "event_count": 15,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "cb6a3fb7-89f8-44b7-aaf4-6876c9a9787d",
+      "first_timestamp": "2026-03-23T14:07:14.191087Z",
+      "last_timestamp": "2026-03-23T14:07:14.256302Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "c3b9628f-deea-4ee5-b199-2148dd37f1a2",
+      "first_timestamp": "2026-03-23T13:57:45.458826Z",
+      "last_timestamp": "2026-03-23T13:57:45.458826Z",
+      "event_types": [
+        "training_start"
+      ],
+      "event_count": 1,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "d24496cb-fcf3-4823-b9f4-03603e4dfc35",
+      "first_timestamp": "2026-03-13T16:10:33.975578Z",
+      "last_timestamp": "2026-03-13T16:10:34.011858Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "c5cbb9ed-4e29-452c-b57e-e0f987226f33",
+      "first_timestamp": "2026-05-17T11:30:36.775381Z",
+      "last_timestamp": "2026-05-17T11:30:37.326357Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 4,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b6f681a1-6604-4062-aa60-b9704d3ab470",
+      "first_timestamp": "2026-03-17T04:58:01.686792Z",
+      "last_timestamp": "2026-03-17T04:58:01.686792Z",
+      "event_types": [
+        "training_start"
+      ],
+      "event_count": 1,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "4f6a95a4-b0d8-4a7b-ba31-c6a2d570ddae",
+      "first_timestamp": "2026-05-17T20:34:22.734615Z",
+      "last_timestamp": "2026-05-17T20:34:22.869996Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "b13655c1-4f8b-46a8-ab18-71ac6d382603",
+      "first_timestamp": "2026-03-23T14:06:48.362797Z",
+      "last_timestamp": "2026-03-23T14:06:48.476905Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "372fa126-03e1-415b-bc23-2d0f3b0e98a5",
+      "first_timestamp": "2026-03-23T14:08:51.630358Z",
+      "last_timestamp": "2026-03-23T14:08:51.671846Z",
+      "event_types": [
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 6,
+      "status": "in_progress",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "test-session",
+      "first_timestamp": "2026-05-17T11:28:51.141482Z",
+      "last_timestamp": "2026-05-18T06:37:03.656084Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish",
+        "cli.exit",
+        "training_end",
+        "training_start"
+      ],
+      "event_count": 15,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    },
+    {
+      "session_id": "ee08e1ca-afb5-4bff-b87e-9fa7598dfb83",
+      "first_timestamp": "2026-03-12T22:26:28.945416Z",
+      "last_timestamp": "2026-03-12T22:26:28.948407Z",
+      "event_types": [
+        "cli.start",
+        "cli.finish"
+      ],
+      "event_count": 2,
+      "status": "complete",
+      "agent_name": null,
+      "pr_number": null,
+      "branch": null,
+      "tags": []
+    }
+  ]
+}

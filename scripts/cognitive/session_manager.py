@@ -26,10 +26,41 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+try:
+    from scripts.cognitive.context_window_optimizer import (
+        summarize_session_state,
+        truncate_text,
+    )
+except Exception:  # pragma: no cover - standalone fallback
+
+    def truncate_text(text: str, max_chars: int) -> str:
+        if len(text) <= max_chars:
+            return text
+        return (
+            text[:max_chars] + f"\n\n[TRUNCATED — original {len(text)} chars > {max_chars} limit]"
+        )
+
+    def summarize_session_state(session_state: dict[str, Any]) -> dict[str, Any]:
+        completed = [str(item) for item in session_state.get("completed", [])][:8]
+        pending = [str(item) for item in session_state.get("pending", [])][:8]
+        files_created = [str(item) for item in session_state.get("files_created", [])][:8]
+        files_modified = [str(item) for item in session_state.get("files_modified", [])][:8]
+        return {
+            "session_id": session_state.get("session_id", "unknown"),
+            "completed": "\n".join(f"- {item}" for item in completed),
+            "pending": "\n".join(f"- {item}" for item in pending),
+            "context_summary": truncate_text(str(session_state.get("context", "")), 8_000),
+            "file_list_with_line_counts": "\n".join(f"- {item}" for item in files_modified),
+            "decisions_made_and_rationale": truncate_text(
+                str(session_state.get("decisions", "")), 8_000
+            ),
+            "files_created": files_created,
+        }
+
+
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -37,6 +68,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SessionState:
     """Represents the current session state."""
+
     session_id: str
     pr_number: Optional[int]
     phase: str
@@ -55,6 +87,7 @@ class SessionState:
 @dataclass
 class Pattern:
     """Represents a learned pattern."""
+
     id: str
     category: str
     symptoms: list[str]
@@ -97,7 +130,7 @@ class CognitiveBrainSessionManager:
                             solutions=pattern_data.get("solutions", []),
                             success_rate=pattern_data.get("success_rate", 0.0),
                             times_applied=pattern_data.get("times_applied", 0),
-                            last_used=pattern_data.get("last_used", "")
+                            last_used=pattern_data.get("last_used", ""),
                         )
                 logger.info(f"Loaded {len(self.patterns)} patterns")
             except (json.JSONDecodeError, KeyError) as e:
@@ -117,14 +150,14 @@ class CognitiveBrainSessionManager:
                 data["patterns"][name]["last_used"] = pattern.last_used
                 data["patterns"][name]["success_rate"] = pattern.success_rate
 
-        with open(self.pattern_store_path, 'w') as f:
+        with open(self.pattern_store_path, "w") as f:
             json.dump(data, f, indent=2)
 
     def start_session(
         self,
         session_id: str,
         pr_number: Optional[int] = None,
-        objectives: Optional[list[str]] = None
+        objectives: Optional[list[str]] = None,
     ) -> SessionState:
         """Start a new session."""
         timestamp = datetime.now(timezone.utc).isoformat()
@@ -135,7 +168,7 @@ class CognitiveBrainSessionManager:
             phase="initialization",
             started=timestamp,
             status="in_progress",
-            objectives=objectives or []
+            objectives=objectives or [],
         )
 
         logger.info(f"Started session: {session_id}")
@@ -146,7 +179,7 @@ class CognitiveBrainSessionManager:
         phase: str,
         completed: Optional[list[str]] = None,
         pending: Optional[list[str]] = None,
-        notes: Optional[str] = None
+        notes: Optional[str] = None,
     ) -> dict[str, Any]:
         """Create a session checkpoint."""
         if not self.current_session:
@@ -159,7 +192,7 @@ class CognitiveBrainSessionManager:
             "phase": phase,
             "completed": completed or [],
             "pending": pending or [],
-            "notes": notes
+            "notes": notes,
         }
 
         self.current_session.phase = phase
@@ -187,7 +220,9 @@ class CognitiveBrainSessionManager:
         # Alpha=0.1 weights: 10% current result, 90% historical average.
         # This creates stability while still adapting to recent outcomes.
         alpha = 0.1
-        pattern.success_rate = alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
+        pattern.success_rate = (
+            alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
+        )
 
         if self.current_session:
             self.current_session.patterns_applied.append(pattern_name)
@@ -197,11 +232,7 @@ class CognitiveBrainSessionManager:
         return pattern
 
     def learn_pattern(
-        self,
-        name: str,
-        category: str,
-        symptoms: list[str],
-        solutions: list[str]
+        self, name: str, category: str, symptoms: list[str], solutions: list[str]
     ) -> Pattern:
         """Learn a new pattern."""
         pattern_id = f"{category.upper()[:2]}-{len(self.patterns) + 1:03d}"
@@ -214,7 +245,7 @@ class CognitiveBrainSessionManager:
             solutions=solutions,
             success_rate=0.5,  # Initial neutral rate
             times_applied=0,
-            last_used=now
+            last_used=now,
         )
 
         self.patterns[name] = pattern
@@ -234,7 +265,10 @@ class CognitiveBrainSessionManager:
             for symptom in symptoms:
                 symptom_lower = symptom.lower()
                 for pattern_symptom in pattern.symptoms:
-                    if symptom_lower in pattern_symptom.lower() or pattern_symptom.lower() in symptom_lower:
+                    if (
+                        symptom_lower in pattern_symptom.lower()
+                        or pattern_symptom.lower() in symptom_lower
+                    ):
                         applicable.append(pattern)
                         break
                 else:
@@ -254,20 +288,37 @@ class CognitiveBrainSessionManager:
 
         self.current_session.status = outcome
 
-        summary = {
-            "session_id": self.current_session.session_id,
-            "pr_number": self.current_session.pr_number,
-            "started": self.current_session.started,
-            "ended": now,
-            "outcome": outcome,
-            "completed_tasks": self.current_session.completed_tasks,
-            "pending_tasks": self.current_session.pending_tasks,
-            "patterns_applied": self.current_session.patterns_applied,
-            "patterns_learned": self.current_session.patterns_learned,
-            "checkpoints": len(self.current_session.checkpoints),
-            "files_created": self.current_session.files_created,
-            "files_modified": self.current_session.files_modified
-        }
+        summary = summarize_session_state(
+            {
+                "session_id": self.current_session.session_id,
+                "pr_number": self.current_session.pr_number,
+                "started": self.current_session.started,
+                "ended": now,
+                "outcome": outcome,
+                "completed": self.current_session.completed_tasks,
+                "pending": self.current_session.pending_tasks,
+                "decisions": self.current_session.patterns_applied
+                + self.current_session.patterns_learned,
+                "checkpoints": len(self.current_session.checkpoints),
+                "files_created": self.current_session.files_created,
+                "files_modified": self.current_session.files_modified,
+            }
+        )
+        summary.update(
+            {
+                "pr_number": self.current_session.pr_number,
+                "started": self.current_session.started,
+                "ended": now,
+                "outcome": outcome,
+                "checkpoints": len(self.current_session.checkpoints),
+                "completed_tasks": self.current_session.completed_tasks[:8],
+                "pending_tasks": self.current_session.pending_tasks[:8],
+                "patterns_applied": self.current_session.patterns_applied[:8],
+                "patterns_learned": self.current_session.patterns_learned[:8],
+                "files_created": self.current_session.files_created[:8],
+                "files_modified": self.current_session.files_modified[:8],
+            }
+        )
 
         logger.info(f"Session ended: {self.current_session.session_id} ({outcome})")
         return summary
@@ -287,15 +338,15 @@ class CognitiveBrainSessionManager:
 
 ### Completed Tasks
 """
-        for task in self.current_session.completed_tasks:
+        for task in self.current_session.completed_tasks[:8]:
             prompt += f"- [x] {task}\n"
 
         prompt += "\n### Pending Tasks\n"
-        for task in self.current_session.pending_tasks:
+        for task in self.current_session.pending_tasks[:8]:
             prompt += f"- [ ] {task}\n"
 
         prompt += "\n### Patterns Applied\n"
-        for pattern in self.current_session.patterns_applied:
+        for pattern in self.current_session.patterns_applied[:8]:
             if pattern in self.patterns:
                 p = self.patterns[pattern]
                 prompt += f"- **{pattern}** (success rate: {p.success_rate:.0%})\n"
@@ -304,7 +355,7 @@ class CognitiveBrainSessionManager:
         if self.current_session.checkpoints:
             last_checkpoint = self.current_session.checkpoints[-1]
             prompt += f"- Last phase: {last_checkpoint.get('phase', 'unknown')}\n"
-            if last_checkpoint.get('notes'):
+            if last_checkpoint.get("notes"):
                 prompt += f"- Notes: {last_checkpoint['notes']}\n"
 
         prompt += "\n### Recommended Next Actions\n"
@@ -313,7 +364,7 @@ class CognitiveBrainSessionManager:
         prompt += "2. Review cognitive brain objectives for alignment\n"
         prompt += "3. Apply relevant patterns from pattern store\n"
 
-        return prompt
+        return truncate_text(prompt, 8_000)
 
     def track_file_operation(self, path: str, operation: str) -> None:
         """Track a file operation."""
@@ -332,16 +383,19 @@ def main():
     parser.add_argument("--start", action="store_true", help="Start a new session")
     parser.add_argument("--checkpoint", action="store_true", help="Create a checkpoint")
     parser.add_argument("--end", action="store_true", help="End the current session")
-    parser.add_argument("--generate-continuation", action="store_true",
-                        help="Generate continuation prompt")
+    parser.add_argument(
+        "--generate-continuation", action="store_true", help="Generate continuation prompt"
+    )
     parser.add_argument("--session-id", type=str, help="Session ID")
     parser.add_argument("--pr", type=int, help="PR number")
     parser.add_argument("--phase", type=str, help="Current phase")
-    parser.add_argument("--find-patterns", type=str, nargs="+",
-                        help="Find patterns matching symptoms")
+    parser.add_argument(
+        "--find-patterns", type=str, nargs="+", help="Find patterns matching symptoms"
+    )
     parser.add_argument("--apply-pattern", type=str, help="Apply a pattern")
-    parser.add_argument("--outcome", type=str, default="success",
-                        help="Session outcome (success/failure)")
+    parser.add_argument(
+        "--outcome", type=str, default="success", help="Session outcome (success/failure)"
+    )
 
     args = parser.parse_args()
 

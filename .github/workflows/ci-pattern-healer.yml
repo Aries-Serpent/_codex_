@@ -50,7 +50,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install -q pyyaml ruff
 
@@ -97,7 +97,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install -q pyyaml ruff
 

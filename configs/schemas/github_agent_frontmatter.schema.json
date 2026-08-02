@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Aries-Serpent/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
+  "title": "GitHub Custom Agent Frontmatter Schema",
+  "description": "Repository contract for YAML frontmatter in .github/agents Markdown profiles. Description is the GitHub-required field; name is optional because GitHub can derive it from the filename.",
+  "type": "object",
+  "required": ["description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "\\S",
+      "description": "Optional display name; the filename is used when omitted"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S",
+      "description": "Non-empty summary of the agent's expertise and when to use it"
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "uniqueItems": true
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "mcp-servers": {
+      "type": "object"
+    },
+    "user-invocable": {
+      "type": "boolean"
+    },
+    "disable-model-invocation": {
+      "type": "boolean"
+    },
+    "selectable": {
+      "type": "boolean",
+      "description": "Repository compatibility alias checked against active registry entries"
+    }
+  },
+  "additionalProperties": true
+}

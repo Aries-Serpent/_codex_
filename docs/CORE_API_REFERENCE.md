@@ -171,6 +171,27 @@ Get personalized tips based on your session history.
 
 ---
 
+#### `chronicle_cost_tips(...) -> None`
+**Signature:** `chronicle cost-tips [OPTIONS]`
+
+Generate evidence-backed cost recommendations from normalized session and event
+records. Use `--format json` for automation, `--session-id` or `--task-id` for
+scoping, and `--database` to select a local SQLite source. Credit warnings are
+only emitted when the source contains explicit credit fields; otherwise the
+report labels tool-call metrics as proxies.
+
+---
+
+#### `chronicle_standup(task: str | None, ...) -> None`
+**Signature:** `chronicle standup [TASK] [OPTIONS]`
+
+Summarize linked sessions for a task UUID or task URL, including completion
+status, commits, tests, blockers, and uncommitted changes. Missing session
+records are reported as incomplete evidence rather than inferred completion.
+Use `--format json` for machine-readable continuation planning.
+
+---
+
 ### RAG Subcommand Group
 
 #### `rag(ctx: click.Context) -> None`

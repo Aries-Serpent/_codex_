@@ -157,7 +157,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-        cache: pip
+
     - name: Install minimal deps
       run: pip install pyyaml --quiet
     - name: Check if C2 (manifest staleness) is the failing condition

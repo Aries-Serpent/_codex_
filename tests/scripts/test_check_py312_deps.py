@@ -16,9 +16,9 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def cleanup_mocks():
-   """Automatically reset all mocks after each test."""
-   yield
-   patch.stopall()
+    """Automatically reset all mocks after each test."""
+    yield
+    patch.stopall()
 
 
 # Import the script module
@@ -31,6 +31,7 @@ spec.loader.exec_module(check_py312_deps)
 # Import functions from the loaded module
 from check_py312_deps import (
     check_package_py312_support,
+    load_dependencies_from_active_manifests,
     load_dependencies_from_pyproject,
     parse_dependency_spec,
 )
@@ -141,7 +142,9 @@ class TestCheckPackagePy312Support:
 
         result = check_package_py312_support("slow-package")
 
-        assert result["error"] == "Timeout querying PyPI", "Result must not be empty"
+        assert result["error"] is None, "Result must not be empty"
+        assert result["warning"] is not None, "Result must not be empty"
+        assert result["supports_312"] in {None, True}, "Result must not be empty"
 
 
 class TestLoadDependenciesFromPyproject:
@@ -165,14 +168,22 @@ class TestLoadDependenciesFromPyproject:
         # Should include both main and optional dependencies
         assert len(deps) > 30, "Deps must not be empty"
 
+    def test_active_manifest_loader_returns_dependencies(self):
+        """Test that the active manifest loader returns dependency specs."""
+        deps = load_dependencies_from_active_manifests()
+        assert isinstance(deps, list)
+        assert len(deps) > 0, "Deps must not be empty"
+
 
 class TestMain:
     """Test main function integration."""
 
-    @patch("check_py312_deps.load_dependencies_from_pyproject")
+    @patch("check_py312_deps._cache_load")
+    @patch("check_py312_deps.load_dependencies_from_active_manifests")
     @patch("check_py312_deps.check_package_py312_support")
-    def test_main_all_compatible(self, mock_check, mock_load):
+    def test_main_all_compatible(self, mock_check, mock_load, mock_cache_load):
         """Test main function with all compatible packages."""
+        mock_cache_load.return_value = None
         mock_load.return_value = ["numpy>=1.26", "torch>=2.0"]
         mock_check.return_value = {
             "name": "test",
@@ -181,6 +192,7 @@ class TestMain:
             "latest_version": "1.0.0",
             "python_requires": ">=3.9",
             "error": None,
+            "warning": None,
         }
 
         from check_py312_deps import main
@@ -190,10 +202,12 @@ class TestMain:
 
         assert exit_code == 0, "exit_code is not valid"
 
-    @patch("check_py312_deps.load_dependencies_from_pyproject")
+    @patch("check_py312_deps._cache_load")
+    @patch("check_py312_deps.load_dependencies_from_active_manifests")
     @patch("check_py312_deps.check_package_py312_support")
-    def test_main_with_incompatible(self, mock_check, mock_load):
+    def test_main_with_incompatible(self, mock_check, mock_load, mock_cache_load):
         """Test main function with incompatible package."""
+        mock_cache_load.return_value = None
         mock_load.return_value = ["old-package==1.0"]
         mock_check.return_value = {
             "name": "old-package",
@@ -202,6 +216,7 @@ class TestMain:
             "latest_version": "1.0.0",
             "python_requires": ">=3.8,<3.11",
             "error": None,
+            "warning": None,
         }
 
         from check_py312_deps import main
@@ -210,6 +225,28 @@ class TestMain:
             exit_code = main()
 
         assert exit_code == 1, "exit_code is not valid"
+
+    @patch("check_py312_deps._cache_load")
+    @patch("check_py312_deps._print_cached_report")
+    def test_main_uses_cache_when_fresh(self, mock_cached_report, mock_cache_load):
+        """Test main function returns cached results without recomputing."""
+        mock_cache_load.return_value = {
+            "total_packages": 1,
+            "compatible": 1,
+            "incompatible": 0,
+            "errors": 0,
+            "warnings": [],
+            "exit_code": 0,
+        }
+        mock_cached_report.return_value = 0
+
+        from check_py312_deps import main
+
+        with patch("builtins.print"):
+            exit_code = main()
+
+        mock_cached_report.assert_called_once()
+        assert exit_code == 0, "exit_code is not valid"
 
 
 @pytest.mark.integration
@@ -230,4 +267,6 @@ class TestIntegration:
 
         # Script should run (may pass or fail depending on actual compatibility)
         assert result.returncode in [0, 1]
-        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout, "Result must not be empty"
+        assert (
+            "Python 3.12 Dependency Compatibility Checker" in result.stdout
+        ), "Result must not be empty"

@@ -52,7 +52,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
-        cache: pip
+
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
@@ -91,8 +91,8 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
@@ -111,8 +111,8 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || "v2" }}
-        cache: pip
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
