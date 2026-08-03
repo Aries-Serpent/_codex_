@@ -14,6 +14,11 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 4. **READ** last 5 lines of `.codex/aftermath/pda_iterations.jsonl` — PDA loop state
 5. **READ** `.codex/agent_context.json` — repo variable snapshot (COPILOT_AGENT_AUTH_ENABLED etc.)
 6. **LOAD** all stored session memories (store_memory tool)
+7. **ACTIVATE** Multi-Lane Delegation Mode — MANDATORY for ALL sessions:
+   - ALL tasks MUST use `task(agent_type="...", mode="background")` for parallel execution
+   - NEVER run agents sequentially when parallel execution is possible
+   - Dispatch ALL independent agents simultaneously in your FIRST response
+   - See **Multi-Lane Custom Agent Delegation Framework** section below for lane patterns
 
 This is not optional. This is not only triggered by deferral language.
 **Every session starts here.** The copilot-setup-steps.yml workflow automates this
@@ -289,6 +294,86 @@ When workflows fail or governance checks block merge, reference these guides:
 - Keep automation artefacts confined to `.codex/`.
 - Do **not** upgrade CCA version without explicit session review (violates `COPILOT_AGENT_CCA_VERSION_LOCK`).
 - Do **not** strip the WEC section from PR body during `report_progress` calls.
+
+## 🚀 Multi-Lane Custom Agent Delegation Framework
+
+**MANDATORY DEFAULT for ALL Copilot Agent Sessions.**
+
+Multi-lane delegation means launching ALL independent custom agents simultaneously using `task(agent_type="...", mode="background")` in your VERY FIRST response, rather than running agents one-at-a-time. This is non-negotiable.
+
+### Core Principle
+
+```
+Every session MUST:
+1. Identify ALL independent workstreams in the first 30 seconds
+2. Launch ALL background agents simultaneously in the FIRST response
+3. Continue independent local work while agents run
+4. Collect results and integrate when agents complete
+5. Only run agents sequentially when B genuinely depends on A's output
+```
+
+### Lane Structure
+
+| Lane Type | Mode | When to Use |
+|-----------|------|-------------|
+| **Primary (P1, P2...)** | `mode="background"` | Core task domains, run in parallel immediately |
+| **Support (S1, S2...)** | `mode="background"` | Complementary coverage, docs, security — launch same time as Primary |
+| **Sequential (Seq1...)** | `mode="sync"` or `wait=True` | Only when output of prior lane is required as input |
+
+### Default Lane Patterns
+
+**CI/CD & Test Fix (3-Lane Parallel):**
+```
+P1: ci-failure-resolution-agent  ─┐
+P2: autonomous-test-healer-agent  ─┼─→ Sync → Seq1: ci-pattern-guardian
+S1: unified-coverage-agent        ─┘
+```
+
+**Security Audit (2-Lane Parallel):**
+```
+P1: security-audit-agent + unified-security-scanner  ─┐
+P2: codeql-alert-resolution-agent                     ─┼─→ Seq1: code-scanning-remediation-agent
+S1: dependency-vulnerability-scanner                  ─┘
+```
+
+**Workflow/CI Fix (2-Lane Parallel):**
+```
+P1: workflow-ci-fixer              ─┐
+P2: ci-log-retrieval-agent         ─┼─→ Seq1: workflow-compliance-guardian
+S1: ci-testing-agent               ─┘
+```
+
+**Multi-Category (4-Lane Parallel):**
+```
+P1: <CI agent>       ─┐
+P2: <Security agent> ─┼─→ Sync → Seq1: accountability + docs updates
+P3: <Test agent>     ─┤
+S1: <Doc agent>      ─┘
+```
+
+### Enforcement Rules
+
+1. **Multi-Lane is DEFAULT** — Sequential execution requires explicit written justification
+2. **First-response launch** — All background agents must be launched in the FIRST tool call batch
+3. **No polling** — After launching agents, immediately continue independent local work; use `read_agent` only after notification
+4. **Violation triggers HARD STOP** — Any session running agents serially (without justification) violates CAD-Mandate Rule 1
+
+### Non-Negotiable Anti-Patterns (Violations)
+
+```
+❌ Launching agents one at a time in separate turns
+❌ Waiting for agent A to complete before launching agent B (when they are independent)
+❌ Skipping agent delegation and doing all work manually
+❌ Using mode="sync" when mode="background" is possible
+```
+
+### Minimum Required Per Session
+
+Every session that involves more than one workstream MUST:
+- [ ] Launch ≥2 background agents in the first response
+- [ ] Show lane assignments in the progress plan
+- [ ] Document synchronization points in the plan
+- [ ] Achieve ≥2 parallel lanes (P1 + P2 minimum)
 
 ## Documentation & Architecture Conventions
 

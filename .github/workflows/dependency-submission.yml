@@ -21,6 +21,14 @@ jobs:
     name: Submit dependency snapshot
     runs-on: ubuntu-latest
     steps:
+    - name: Validate repository context (prevent org/repo placeholder panics)
+      run: |
+        : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY env var is required}"
+        if [[ "$GITHUB_REPOSITORY" == "org/repo" || "$GITHUB_REPOSITORY" == "owner/repo" ]]; then
+          echo "::error::GITHUB_REPOSITORY is a placeholder ('$GITHUB_REPOSITORY'). Refusing to run dependency submission against a non-existent repo — this causes Rust proxy stderr panics (os error 11) in CCA runtime."
+          exit 1
+        fi
+        echo "✅ GITHUB_REPOSITORY=$GITHUB_REPOSITORY — proceeding"
     - name: Checkout
       uses: actions/checkout@v5
       with:
