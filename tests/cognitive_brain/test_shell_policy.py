@@ -170,8 +170,6 @@ class TestRiskAudit:
         d = p.gate("git push --force")
         assert d.verdict == PolicyVerdict.AUDIT
         assert "force_flag" in d.risk_flags
-
-
 # ---------------------------------------------------------------------------
 # Token redaction
 # ---------------------------------------------------------------------------

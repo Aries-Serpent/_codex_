@@ -24,7 +24,7 @@ Usage::
         session_config={"reasoning_effort": "high", "max_tokens": 4096},
         required_capabilities=["reasoning_effort"],
     )
-    # safe_cfg["model_id"] == "claude-sonnet-5"  (fallback chosen)
+    # safe_cfg["model"] == "claude-sonnet-5"  (fallback chosen)
     # safe_cfg["reasoning_effort"]  → absent (unsupported on original model)
 """
 

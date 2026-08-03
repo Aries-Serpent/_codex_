@@ -354,7 +354,9 @@ class ShellPolicy:
 
         if "rm -rf" in cmd_lower or "rm -r" in cmd_lower:
             flags.append("recursive_delete")
-        if "--force" in cmd_lower or "-f " in cmd_lower:
+        # Only flag --force (full word) to avoid false positives on `-f pattern_file`
+        # or other single-letter flags that are not destructive force operations.
+        if "--force" in cmd_lower:
             flags.append("force_flag")
         if "|" in command and ("sh" in cmd_lower or "bash" in cmd_lower):
             flags.append("pipe_to_shell")
