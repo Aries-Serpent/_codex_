@@ -31,6 +31,24 @@ def _policy(**kw) -> ShellPolicy:
     return ShellPolicy(**kw)
 
 
+ADVERSARIAL_VECTORS = (
+    ("command_chaining", "git status; rm -rf /"),
+    ("logical_and", "git status && malicious"),
+    ("logical_or", "git status || malicious"),
+    ("pipe_chaining", "git log | sh"),
+    ("command_substitution", "echo $(rm -rf /)"),
+    ("backtick_substitution", "echo `malicious`"),
+    ("newline_chaining", "git\nmalicious"),
+    ("output_redirection", "git status > /etc/passwd"),
+    ("input_redirection", "cat < /etc/shadow"),
+    ("error_redirection", "git 2> /dev/null && rm -rf /"),
+    ("subshell_grouping", "git && (rm -rf /)"),
+    ("brace_grouping", "git && { rm -rf /; }"),
+    ("background_execution", "malicious &"),
+    ("double_redirection", "git status 2>&1"),
+)
+
+
 # ---------------------------------------------------------------------------
 # Allow pattern tests
 # ---------------------------------------------------------------------------
@@ -322,6 +340,15 @@ class TestDefaultPolicySingleton:
 class TestShellMetacharacterBlocking:
     """Tests for shell metacharacter detection — prevents chaining/redirection attacks."""
 
+    @pytest.mark.parametrize(("label", "command"), ADVERSARIAL_VECTORS)
+    def test_all_adversarial_vectors_denied(self, label: str, command: str) -> None:
+        """Every documented adversarial shell-control vector must be denied."""
+        p = _policy()
+        d = p.gate(command)
+        assert d.verdict == PolicyVerdict.DENY, label
+        assert "shell metacharacter" in d.reason.lower()
+        assert "shell_metacharacter_detected" in d.risk_flags
+
     def test_semicolon_chaining_denied(self) -> None:
         """Semicolon (;) enables command chaining and must be blocked."""
         p = _policy()
@@ -417,6 +444,13 @@ class TestShellMetacharacterBlocking:
         """Stderr redirection (2>) enables output manipulation."""
         p = _policy()
         d = p.gate("git status 2> /tmp/error")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_allow_pattern_does_not_bypass_metacharacter_deny(self) -> None:
+        """Metacharacter denial must win even when an allow glob would match."""
+        p = _policy(allow_patterns=["git *"], default_shell_enabled=True)
+        d = p.gate("git status; rm -rf /")
         assert d.verdict == PolicyVerdict.DENY
         assert "shell metacharacter" in d.reason.lower()
 

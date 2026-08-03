@@ -56,6 +56,7 @@ from .session_guard import (
     reset_default_guard,
     safe_create_session,
 )
+from .shell_executor import ShellExecutionDenied, execute_command
 from .shell_policy import (
     GateDecision,
     PolicyVerdict,
@@ -135,4 +136,6 @@ __all__ = [
     "PolicyVerdict",
     "get_default_policy",
     "reset_default_policy",
+    "ShellExecutionDenied",
+    "execute_command",
 ]
