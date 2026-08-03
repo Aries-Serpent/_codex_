@@ -175,6 +175,10 @@ class CognitiveBrainKernel:
             "turn_isolation": turn_iso,
         }
         self._telemetry.startup(__kernel_version__, config_summary)
+        # Initialize SessionGuard eagerly to avoid race conditions in multi-threaded contexts
+        self._session_guard = SessionGuard(
+            negotiator=self._negotiator, telemetry=self._telemetry
+        )
         self._loaded = True
         logger.info(
             "🧠 Cognitive Brain Kernel v%s loaded "
@@ -229,10 +233,6 @@ class CognitiveBrainKernel:
             The negotiation result with stripped parameters and resolved model.
         """
         self.assert_loaded()  # Ensure kernel is booted before reasoning
-        if self._session_guard is None:
-            self._session_guard = SessionGuard(
-                negotiator=self._negotiator, telemetry=self._telemetry
-            )
         result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id
@@ -269,10 +269,6 @@ class CognitiveBrainKernel:
             The cleaned session configuration with model key set.
         """
         self.assert_loaded()  # Ensure kernel is booted before reasoning
-        if self._session_guard is None:
-            self._session_guard = SessionGuard(
-                negotiator=self._negotiator, telemetry=self._telemetry
-            )
         result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id
