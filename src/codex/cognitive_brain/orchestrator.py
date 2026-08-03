@@ -262,6 +262,11 @@ class MCPOrchestrator:
             Optional :class:`~policy.PolicyContext` to guide scoring.
             If omitted, a default neutral context is constructed.
         """
+        # Ensure kernel is loaded before planning
+        from src.codex.cognitive_brain.kernel import get_kernel
+        kernel = get_kernel()
+        kernel.assert_loaded()
+
         ctx = context or self._default_context(task_intent)
         candidates = _make_candidates(task_intent, self._allow_shell)
         scored = self._policy.rank(candidates, ctx)

@@ -64,6 +64,33 @@ _DEFAULT_REDACT_PATTERNS: Tuple[re.Pattern[str], ...] = (
 
 _REDACTED = "[REDACTED]"
 
+# Shell metacharacters that enable command chaining, redirection, and substitution.
+# These MUST be detected and blocked BEFORE pattern matching, regardless of
+# whether the base command is in the allow list.
+# Examples of bypasses we prevent:
+#   - "git stash; rm -rf /" matches allow pattern "git *"
+#   - "echo hello && sudo" matches allow pattern "echo *"
+#   - "cat file | sh" matches allow pattern "cat *"
+#   - "echo $(malicious_code)" matches allow pattern "echo *"
+_SHELL_METACHARACTERS: Tuple[str, ...] = (
+    ";",  # Command separator
+    "&&",  # Logical AND (conditional execution)
+    "||",  # Logical OR (conditional execution)
+    "|",  # Pipe (output redirection)
+    "\n",  # Newline (multi-line commands)
+    "\r",  # Carriage return
+    "$(", # Command substitution
+    "`",  # Backtick command substitution
+    "{",  # Brace grouping/expansion
+    "}",  # Brace grouping/expansion
+    "(",  # Subshell grouping
+    ")",  # Subshell grouping
+    ">",  # Output redirection
+    "<",  # Input redirection
+    "2>", # Error redirection
+    "&",  # Background execution (when not part of &&)
+)
+
 # Default allow-patterns: safe read-only and build commands.
 _DEFAULT_ALLOW_PATTERNS: Tuple[str, ...] = (
     "git *",
@@ -234,6 +261,26 @@ class ShellPolicy:
         safe_cmd = self.redact(command)
         risk_flags: List[str] = []
 
+        # Step 0: Shell metacharacter validation (BEFORE pattern matching).
+        # This prevents chained-command bypass attacks regardless of allow patterns.
+        metachar_check = self._check_shell_metacharacters(command)
+        if metachar_check is not None:
+            logger.warning(
+                "ShellPolicy DENY (shell metacharacter): %s command=%r",
+                metachar_check,
+                safe_cmd,
+            )
+            return GateDecision(
+                verdict=PolicyVerdict.DENY,
+                command=command,
+                safe_command=safe_cmd,
+                cwd=cwd,
+                reason=metachar_check,
+                timeout_s=0.0,
+                max_retries=0,
+                risk_flags=["shell_metacharacter_detected"],
+            )
+
         # Step 1: working-directory constraint check.
         if cwd is not None and self._cwd_allowlist is not None:
             cwd_ok = any(cwd.startswith(prefix) for prefix in self._cwd_allowlist)
@@ -346,6 +393,20 @@ class ShellPolicy:
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
+
+    def _check_shell_metacharacters(self, command: str) -> Optional[str]:
+        """Check if *command* contains shell metacharacters that enable chaining.
+
+        Returns an error message if found, None if clean.
+
+        This check happens BEFORE pattern matching to prevent bypass attacks
+        like "git stash; rm -rf /" matching the allow pattern "git *".
+        """
+        for metachar in _SHELL_METACHARACTERS:
+            if metachar in command:
+                return f"Command contains shell metacharacter '{metachar}' which enables chaining/redirection"
+
+        return None
 
     def _risk_audit(self, command: str) -> Tuple[PolicyVerdict, List[str]]:
         """Return (ALLOW|AUDIT, risk_flags) for a command that passed allow rules."""

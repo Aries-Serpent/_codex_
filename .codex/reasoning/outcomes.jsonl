@@ -34,3 +34,12 @@
 {"decision_id": "dec1", "success": 1, "actual_result": "ok", "expected_result": "ok", "confidence_was_accurate": 1, "latency_ms": 40.0, "timestamp": "2026-08-03T01:19:01.083254Z"}
 {"decision_id": "dec2", "success": 0, "actual_result": "failed", "expected_result": "ok", "confidence_was_accurate": 0, "latency_ms": 35.0, "timestamp": "2026-08-03T01:19:01.083275Z"}
 {"decision_id": "decision_1785719941378", "success": 1, "actual_result": "coverage_increased", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 0.10156631469726562, "timestamp": "2026-08-03T01:19:01.378929Z"}
+{"decision_id": "dec1", "success": 1, "actual_result": "ok", "expected_result": "ok", "confidence_was_accurate": 1, "latency_ms": 40.0, "timestamp": "2026-08-03T03:02:40.193530Z"}
+{"decision_id": "dec2", "success": 0, "actual_result": "failed", "expected_result": "ok", "confidence_was_accurate": 0, "latency_ms": 35.0, "timestamp": "2026-08-03T03:02:40.193558Z"}
+{"decision_id": "test_decision_1", "success": 1, "actual_result": "coverage_increased_6%", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 45.5, "timestamp": "2026-08-03T03:02:40.391998Z"}
+{"decision_id": "decision_1785726167275", "success": 1, "actual_result": "coverage_increased", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 0.12874603271484375, "timestamp": "2026-08-03T03:02:47.276003Z"}
+{"decision_id": "decision_1785726171448", "success": 1, "actual_result": "result_0", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.1068115234375, "timestamp": "2026-08-03T03:02:51.448174Z"}
+{"decision_id": "decision_1785726171448", "success": 0, "actual_result": "result_1", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.1068115234375, "timestamp": "2026-08-03T03:02:51.448196Z"}
+{"decision_id": "decision_1785726171448", "success": 1, "actual_result": "result_2", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.1068115234375, "timestamp": "2026-08-03T03:02:51.448210Z"}
+{"decision_id": "decision_1785726171448", "success": 0, "actual_result": "result_3", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.1068115234375, "timestamp": "2026-08-03T03:02:51.448220Z"}
+{"decision_id": "decision_1785726171448", "success": 1, "actual_result": "result_4", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.1068115234375, "timestamp": "2026-08-03T03:02:51.448231Z"}

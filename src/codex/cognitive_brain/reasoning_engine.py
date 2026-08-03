@@ -226,6 +226,11 @@ class ReasoningLayer:
         Returns:
             List of candidate decisions with reasoning
         """
+        # Ensure kernel is loaded before reasoning
+        from src.codex.cognitive_brain.kernel import get_kernel
+        kernel = get_kernel()
+        kernel.assert_loaded()
+
         candidates = []
 
         # Heuristic strategy
@@ -713,6 +718,11 @@ class ReasoningEngine:
         Returns:
             Final Decision
         """
+        # Ensure kernel is loaded before end-to-end reasoning
+        from src.codex.cognitive_brain.kernel import get_kernel
+        kernel = get_kernel()
+        kernel.assert_loaded()
+
         start_time = time.time()
 
         # Layer 1: Perception

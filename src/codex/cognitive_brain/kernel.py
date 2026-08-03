@@ -43,6 +43,7 @@ from src.codex.cognitive_brain.policy import (
     DeterministicPolicy,
     PolicyContext,
 )
+from src.codex.cognitive_brain.session_guard import SessionGuard
 from src.codex.cognitive_brain.telemetry import CognitiveTelemetry, TelemetryBackend
 
 logger = logging.getLogger(__name__)
@@ -196,33 +197,78 @@ class CognitiveBrainKernel:
         model_id: str,
         session_config: Dict[str, Any],
         required_capabilities: Optional[Sequence[str]] = None,
+        *,
+        turn_id: Optional[str] = None,
+        task_id: Optional[str] = None,
     ) -> NegotiationResult:
         """Gate and rewrite *session_config* for *model_id*.
 
         Strips parameters unsupported by the model (e.g. ``reasoning_effort``
         on ``claude-haiku-4.5``), selects a fallback if required capabilities
         are unavailable, and emits a telemetry event.
+        
+        Parameters
+        ----------
+        model_id : str
+            Requested model identifier.
+        session_config : Dict[str, Any]
+            Raw session configuration dict.
+        required_capabilities : Optional[Sequence[str]]
+            Capabilities that must be available on the resolved model.
+        turn_id : Optional[str]
+            Caller's turn identifier (for telemetry / forensics).
+        task_id : Optional[str]
+            Caller's task identifier (for telemetry / forensics).
+        
+        Returns
+        -------
+        NegotiationResult
+            The negotiation result with stripped parameters and resolved model.
         """
-        t0 = time.monotonic()
-        result = self._negotiator.negotiate(model_id, session_config, required_capabilities)
-        duration_ms = (time.monotonic() - t0) * 1000
-        self._telemetry.negotiation(
-            model_id=model_id,
-            stripped=result.stripped_params,
-            fallback_used=result.fallback_used,
-            resolved_model=result.resolved_model_id,
-            duration_ms=duration_ms,
+        self.assert_loaded()  # Ensure kernel is booted before reasoning
+        guard = SessionGuard(negotiator=self._negotiator, telemetry=self._telemetry)
+        result = guard.create_session(
+            model_id, session_config, required_capabilities,
+            turn_id=turn_id, task_id=task_id
         )
-        return result
+        return result.negotiation
 
     def safe_session_config(
         self,
         model_id: str,
         session_config: Dict[str, Any],
         required_capabilities: Optional[Sequence[str]] = None,
+        *,
+        turn_id: Optional[str] = None,
+        task_id: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Convenience wrapper — returns the cleaned config dict with ``model`` key."""
-        return self._negotiator.safe_session_config(model_id, session_config, required_capabilities)
+        """Convenience wrapper — returns the cleaned config dict with ``model`` key.
+        
+        Parameters
+        ----------
+        model_id : str
+            Requested model identifier.
+        session_config : Dict[str, Any]
+            Raw session configuration dict.
+        required_capabilities : Optional[Sequence[str]]
+            Capabilities that must be available on the resolved model.
+        turn_id : Optional[str]
+            Caller's turn identifier (for telemetry / forensics).
+        task_id : Optional[str]
+            Caller's task identifier (for telemetry / forensics).
+        
+        Returns
+        -------
+        Dict[str, Any]
+            The cleaned session configuration with model key set.
+        """
+        self.assert_loaded()  # Ensure kernel is booted before reasoning
+        guard = SessionGuard(negotiator=self._negotiator, telemetry=self._telemetry)
+        result = guard.create_session(
+            model_id, session_config, required_capabilities,
+            turn_id=turn_id, task_id=task_id
+        )
+        return result.safe_config
 
     # ------------------------------------------------------------------
     # Tool orchestration
@@ -242,6 +288,7 @@ class CognitiveBrainKernel:
         Emits both an orchestration telemetry event and a forensics event
         with ``decision_id``, ``turn_id``, and ``task_id`` for traceability.
         """
+        self.assert_loaded()  # Ensure kernel is booted before orchestration
         t0 = time.monotonic()
         plan = self._orchestrator.plan(task_intent, context)
         duration_ms = (time.monotonic() - t0) * 1000
@@ -425,3 +472,20 @@ def auto_load() -> Optional[CognitiveBrainKernel]:
     except Exception as exc:  # noqa: BLE001
         logger.warning("Cognitive Brain auto-load failed (non-fatal): %s", exc)
         return None
+
+
+def assert_loaded() -> None:
+    """Assert that the Cognitive Brain kernel has been booted.
+
+    This is a convenience module-level function that calls assert_loaded()
+    on the current kernel instance. Useful for external code that wants to
+    guard reasoning operations.
+
+    Raises
+    ------
+    RuntimeError
+        If the kernel has not been booted yet.
+    """
+    kernel = get_kernel()
+    kernel.assert_loaded()
+
