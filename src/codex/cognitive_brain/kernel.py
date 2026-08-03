@@ -489,8 +489,13 @@ def assert_loaded() -> None:
     Raises
     ------
     RuntimeError
-        If the kernel has not been booted yet.
+        If the kernel has not been booted yet or if get_kernel() fails.
     """
-    kernel = get_kernel()
+    try:
+        kernel = get_kernel()
+    except Exception as exc:
+        raise RuntimeError(
+            f"Failed to get or boot Cognitive Brain kernel: {exc}"
+        ) from exc
     kernel.assert_loaded()
 

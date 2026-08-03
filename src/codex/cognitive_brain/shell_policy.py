@@ -78,7 +78,7 @@ _SHELL_METACHARACTERS: Tuple[str, ...] = (
     "&&",  # Logical AND (conditional execution)
     "||",  # Logical OR (conditional execution)
     "$(", # Command substitution
-    "2>", # Error redirection
+    "2>",  # Error redirection
     # Single-character metacharacters
     ";",  # Command separator
     "|",  # Pipe (stdout to stdin chaining)

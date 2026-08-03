@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
 import numpy as np
 
 from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
-from src.codex.cognitive_brain.kernel import get_kernel
+from src.codex.cognitive_brain.kernel import assert_loaded
 
 if TYPE_CHECKING:
     from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
@@ -228,8 +228,7 @@ class ReasoningLayer:
             List of candidate decisions with reasoning
         """
         # Ensure kernel is loaded before reasoning
-        kernel = get_kernel()
-        kernel.assert_loaded()
+        assert_loaded()
 
         candidates = []
 
@@ -719,8 +718,7 @@ class ReasoningEngine:
             Final Decision
         """
         # Ensure kernel is loaded before end-to-end reasoning
-        kernel = get_kernel()
-        kernel.assert_loaded()
+        assert_loaded()
 
         start_time = time.time()
 
