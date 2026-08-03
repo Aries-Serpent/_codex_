@@ -232,7 +232,10 @@ class CognitiveBrainKernel:
         NegotiationResult
             The negotiation result with stripped parameters and resolved model.
         """
-        self.assert_loaded()  # Ensure kernel is booted before reasoning
+        self.assert_loaded()
+        # Type narrowing: assert_loaded() guarantees _session_guard is initialized
+        if self._session_guard is None:
+            raise RuntimeError("Session guard not initialized after assert_loaded()")
         result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id
@@ -268,7 +271,10 @@ class CognitiveBrainKernel:
         Dict[str, Any]
             The cleaned session configuration with model key set.
         """
-        self.assert_loaded()  # Ensure kernel is booted before reasoning
+        self.assert_loaded()
+        # Type narrowing: assert_loaded() guarantees _session_guard is initialized
+        if self._session_guard is None:
+            raise RuntimeError("Session guard not initialized after assert_loaded()")
         result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import shlex
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from src.aries_serpent_core.utils import subprocess as secure_subprocess
 
@@ -51,7 +51,7 @@ def execute_command(
         argv,
         cwd=cwd_path,
         capture_output=capture_output,
-        text=text,
+        text=cast(Any, text),
         check=check,
         timeout=decision.timeout_s,
         env=env,
