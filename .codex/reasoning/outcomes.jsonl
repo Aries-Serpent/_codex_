@@ -259,3 +259,7 @@
 {"decision_id": "decision_1785743407721", "success": 1, "actual_result": "result_2", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10466575622558594, "timestamp": "2026-08-03T07:50:07.721956Z"}
 {"decision_id": "decision_1785743407721", "success": 0, "actual_result": "result_3", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.10466575622558594, "timestamp": "2026-08-03T07:50:07.721966Z"}
 {"decision_id": "decision_1785743407721", "success": 1, "actual_result": "result_4", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10466575622558594, "timestamp": "2026-08-03T07:50:07.721976Z"}
+{"decision_id": "test_decision_1", "success": 1, "actual_result": "coverage_increased_6%", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 45.5, "timestamp": "2026-08-03T07:55:04.924734Z"}
+{"decision_id": "dec1", "success": 1, "actual_result": "ok", "expected_result": "ok", "confidence_was_accurate": 1, "latency_ms": 40.0, "timestamp": "2026-08-03T07:55:05.191614Z"}
+{"decision_id": "dec2", "success": 0, "actual_result": "failed", "expected_result": "ok", "confidence_was_accurate": 0, "latency_ms": 35.0, "timestamp": "2026-08-03T07:55:05.191644Z"}
+{"decision_id": "decision_1785743707023", "success": 1, "actual_result": "coverage_increased", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 0.1304149627685547, "timestamp": "2026-08-03T07:55:07.023108Z"}
