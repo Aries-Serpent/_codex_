@@ -33,7 +33,7 @@
 | Offline environment / JSON serialization drift | `tests/cognitive_brain/test_inject_with_brain_client.py` | Environment / mock drift | cognitive-brain-legacy-debt | No — informational | P3 |
 | Malformed YAML fixture in `TaskRouter` registry | `tests/cognitive_brain/test_task_router_codex.py` | Malformed fixture | cognitive-brain-legacy-debt | No — informational | P2 |
 
-### Detailed Failure Counts
+## Detailed Failure Counts
 
 | File | Failed | Errored |
 |---|---|---|
@@ -53,7 +53,7 @@
 ## Trend Table
 
 | Snapshot Date | Failed | Errored | Total | Delta vs Previous | Top Cause |
-|---|---:|---:|---:|---:|---|
+|---|---|---|---|---|---|
 | 2026-08-03 | 24 | 13 | 1041 | baseline | Malformed YAML fixture in `TaskRouter` registry |
 
 ## Phased Remediation Plan

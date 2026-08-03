@@ -149,13 +149,13 @@ def run_pytest(test_path: str = "tests/cognitive_brain") -> PytestResult:
     lines = output.splitlines()
 
     # Parse the final summary line, e.g.:
-    # 1041 passed, 24 failed, 13 error in 12.34s
-    # 1041 passed, 13 error in 12.34s
+    # 1041 passed, 24 failed, 13 errors in 12.34s
+    # 1041 passed, 13 errors in 12.34s
     # 1041 passed in 12.34s
     summary_pattern = re.compile(
         r"(?P<passed>\d+)\s+passed"
         r"(?:,\s*(?P<failed>\d+)\s+failed)?"
-        r"(?:,\s*(?P<errored>\d+)\s+error)?"
+        r"(?:,\s*(?P<errored>\d+)\s+errors?)?"
         r"(?:,\s*(?P<skipped>\d+)\s+skipped)?"
         r"(?:,\s*(?P<xfail>\d+)\s+xfail)?"
         r"(?:,\s*(?P<xpass>\d+)\s+xpass)?"
@@ -367,13 +367,21 @@ def _insert_or_update_trend_table(content: str, result: PytestResult) -> str:
     return content[:header_idx] + new_table + content[table_end:]
 
 
-def update_quarantine(test_path: str = "tests/cognitive_brain") -> tuple[PytestResult, bool]:
+def update_quarantine(
+    test_path: str = "tests/cognitive_brain",
+    result: PytestResult | None = None,
+) -> tuple[PytestResult, bool]:
     """Run pytest and update the quarantine document.
+
+    If *result* is supplied the pytest run is skipped and the provided result
+    is used directly (avoids a redundant second run when the caller already has
+    the results).
 
     Returns the parsed result and a boolean indicating whether the non-
     attributable failure count changed from the previous snapshot.
     """
-    result = run_pytest(test_path)
+    if result is None:
+        result = run_pytest(test_path)
 
     content = _read_doc()
     previous = _parse_latest_summary(content)
@@ -422,7 +430,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
-        _, changed = update_quarantine(args.test_path)
+        _, changed = update_quarantine(args.test_path, result=result)
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: failed to update quarantine doc: {exc}", file=sys.stderr)
         return 1
