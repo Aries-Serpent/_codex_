@@ -1,6 +1,6 @@
 # Cognitive Brain Telemetry Baseline
 
-**Generated:** 2026-08-03T16:32:40Z
+**Generated:** 2026-08-03T19:09:13Z
 
 This baseline is produced by a static, file-only scan of the Cognitive Brain source tree and its test suite.  It estimates telemetry event volume, forensics completeness, session-guard interception, and shell-policy verdict distribution without requiring external infrastructure or test execution.
 
