@@ -453,7 +453,7 @@ def reset_kernel() -> None:
 #
 # To trigger auto-boot from a script or entry point:
 #
-#   from src.codex.cognitive_brain.kernel import auto_load
+#   from codex.cognitive_brain.kernel import auto_load
 #   auto_load()
 #
 # Set COGNITIVE_BRAIN_FAILSAFE_OFF=true to disable all auto-boot calls.
