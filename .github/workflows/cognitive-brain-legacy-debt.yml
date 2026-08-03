@@ -1,0 +1,51 @@
+name: cognitive-brain-legacy-debt
+
+# Informational, non-blocking lane for pre-existing test debt outside the
+# PR #5430 Cognitive Brain delivery scope. Failures here do NOT block merge,
+# but they are recorded for visibility and remediation tracking.
+on:
+  pull_request:
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-legacy-debt.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-legacy-debt.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  legacy-debt-inventory:
+    name: Legacy test debt inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run full cognitive_brain test suite (informational)
+        run: |
+          python -m pytest tests/cognitive_brain -q --tb=no || true
+
+      - name: Upload legacy debt summary
+        if: always()
+        run: |
+          echo "## Legacy Test Debt" >> "$GITHUB_STEP_SUMMARY"
+          echo "See docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md for inventory and remediation plan." >> "$GITHUB_STEP_SUMMARY"
