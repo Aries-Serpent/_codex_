@@ -77,7 +77,7 @@ _SHELL_METACHARACTERS: Tuple[str, ...] = (
     # (e.g., "||" before "|", "&&" before "&", "2>" before ">", "$(" before "$")
     "&&",  # Logical AND (conditional execution)
     "||",  # Logical OR (conditional execution)
-    "$(", # Command substitution
+    "$(",  # Command substitution
     "2>",  # Error redirection
     # Single-character metacharacters
     ";",  # Command separator

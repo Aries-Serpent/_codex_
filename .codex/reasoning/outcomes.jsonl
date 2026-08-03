@@ -79,3 +79,12 @@
 {"decision_id": "decision_1785727140832", "success": 1, "actual_result": "result_2", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10800361633300781, "timestamp": "2026-08-03T03:19:00.832949Z"}
 {"decision_id": "decision_1785727140832", "success": 0, "actual_result": "result_3", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.10800361633300781, "timestamp": "2026-08-03T03:19:00.832960Z"}
 {"decision_id": "decision_1785727140832", "success": 1, "actual_result": "result_4", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10800361633300781, "timestamp": "2026-08-03T03:19:00.832971Z"}
+{"decision_id": "decision_1785727657367", "success": 1, "actual_result": "coverage_increased", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 0.10609626770019531, "timestamp": "2026-08-03T03:27:37.367597Z"}
+{"decision_id": "decision_1785727658598", "success": 1, "actual_result": "result_0", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10395050048828125, "timestamp": "2026-08-03T03:27:38.598434Z"}
+{"decision_id": "decision_1785727658598", "success": 0, "actual_result": "result_1", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.10395050048828125, "timestamp": "2026-08-03T03:27:38.598460Z"}
+{"decision_id": "decision_1785727658598", "success": 1, "actual_result": "result_2", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10395050048828125, "timestamp": "2026-08-03T03:27:38.598474Z"}
+{"decision_id": "decision_1785727658598", "success": 0, "actual_result": "result_3", "expected_result": "", "confidence_was_accurate": 1, "latency_ms": 0.10395050048828125, "timestamp": "2026-08-03T03:27:38.598486Z"}
+{"decision_id": "decision_1785727658598", "success": 1, "actual_result": "result_4", "expected_result": "", "confidence_was_accurate": 0, "latency_ms": 0.10395050048828125, "timestamp": "2026-08-03T03:27:38.598497Z"}
+{"decision_id": "test_decision_1", "success": 1, "actual_result": "coverage_increased_6%", "expected_result": "coverage_increase", "confidence_was_accurate": 1, "latency_ms": 45.5, "timestamp": "2026-08-03T03:27:46.784275Z"}
+{"decision_id": "dec1", "success": 1, "actual_result": "ok", "expected_result": "ok", "confidence_was_accurate": 1, "latency_ms": 40.0, "timestamp": "2026-08-03T03:27:47.146590Z"}
+{"decision_id": "dec2", "success": 0, "actual_result": "failed", "expected_result": "ok", "confidence_was_accurate": 0, "latency_ms": 35.0, "timestamp": "2026-08-03T03:27:47.146612Z"}

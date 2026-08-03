@@ -493,9 +493,11 @@ def assert_loaded() -> None:
     """
     try:
         kernel = get_kernel()
+        kernel.assert_loaded()
+    except RuntimeError:
+        raise
     except Exception as exc:
         raise RuntimeError(
             f"Failed to get or boot Cognitive Brain kernel: {exc}"
         ) from exc
-    kernel.assert_loaded()
 
