@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-16T18:11:00Z",
+  "generated_at": "2026-08-03T20:23:01Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -989,18 +989,8 @@
   ],
   "workflows": [
     {
-      "name": "13-3-cve-scanning",
-      "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
       "name": "13-3-enterprise-compliance",
       "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
-      "name": "13-3-secrets-detection",
-      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1091,6 +1081,11 @@
     {
       "name": "artifact-monitoring",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "audit-logging",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1240,7 +1235,7 @@
     },
     {
       "name": "ci-rescue",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1264,6 +1259,11 @@
       "has_concurrency": true
     },
     {
+      "name": "codeql-ga-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "codex-manifest-refresh",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1280,6 +1280,41 @@
     },
     {
       "name": "cognitive-analysis-feed",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-app-validate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-legacy-debt-update",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-legacy-debt",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-regression-guard",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-required-check-selftest",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-required-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "cognitive-brain-telemetry-baseline",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1310,6 +1345,11 @@
     },
     {
       "name": "comment-review-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "compliance-scanner",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -1351,7 +1391,7 @@
     {
       "name": "correlation-engine-monitor",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "cost-gate",
@@ -1371,6 +1411,11 @@
     {
       "name": "create-sub-pr-to-0D_base_",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "cve-scanning",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1409,8 +1454,18 @@
       "has_concurrency": true
     },
     {
+      "name": "dependency-security-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "dependency-submission",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "deploy-cognitive-app-manual",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1446,7 +1501,12 @@
     {
       "name": "ensemble-predictor-monitor",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
+    },
+    {
+      "name": "enterprise-compliance",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
     },
     {
       "name": "fast-forward-safe-files",
@@ -1461,6 +1521,11 @@
     {
       "name": "forward-sync-autogen",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "fragile-test-guardian",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1590,7 +1655,7 @@
     },
     {
       "name": "pages-mkdocs",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1621,6 +1686,11 @@
     {
       "name": "phase-12-2-compliance-check",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "phase-12-hourly-monitoring",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1709,6 +1779,11 @@
       "has_concurrency": true
     },
     {
+      "name": "quality-metrics-collection",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "rag-freshness-scheduler",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1726,6 +1801,11 @@
     {
       "name": "reasoning-engine-monitor",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "rebuild-cognitive-app-assets",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1801,7 +1881,7 @@
     {
       "name": "scaling-framework-monitor",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "scan-secrets-variables",
@@ -1824,6 +1904,11 @@
       "has_concurrency": true
     },
     {
+      "name": "secrets-detection",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "secrets-false-positive-healer",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1835,7 +1920,7 @@
     },
     {
       "name": "security-copilot-commands",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1959,9 +2044,14 @@
       "has_concurrency": true
     },
     {
+      "name": "unified-cognitive-brain-suite",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "unified-copilot-management",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "unified-deployment",
@@ -1971,7 +2061,7 @@
     {
       "name": "unified-documentation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "unified-governance-check",
@@ -1981,27 +2071,37 @@
     {
       "name": "unified-health-monitoring",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
+    },
+    {
+      "name": "unified-monitoring-suite",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
     },
     {
       "name": "unified-phase-gates",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "unified-post-merge-management",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
+    },
+    {
+      "name": "unified-security-ops-suite",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
     },
     {
       "name": "unified-security-scanning",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "unified-session-management",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "validate-api-null-handling",
@@ -2020,7 +2120,7 @@
     },
     {
       "name": "validate",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2318,11 +2418,23 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/MCP_GITHUB_CAPABILITIES.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/MCP_INTEGRATION_MASTER_PLAN.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/MCP_MASTER_PROMPT_SUMMARY.md",
       "type": "enforcement"
     },
     {
       "path": ".codex/docs/MCP_PACKAGE_JSON_RECIPE.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/MCP_PLAYWRIGHT_CAPABILITIES.md",
       "type": "enforcement"
     },
     {
@@ -2443,5 +2555,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "51316397efe0aa4ece3d0575b32a963562bcb4559389de93c7ccc07a3587bf16"
+  "integrity_sha256": "b96f2fe11b391fb3b1cc59ce23a308d26a9c9b21887759fd4e226562a5a8c72c"
 }

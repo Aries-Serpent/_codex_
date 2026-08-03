@@ -79,7 +79,7 @@ jobs:
 
           ### Scope
           - Informational / non-blocking.
-          - Failures listed here are pre-existing and outside the PR #5430 Cognitive Brain delivery scope.
+          - Failures listed here are tracked in the quarantine log for active remediation per the Cognitive Brain delivery roadmap.
 
           ## 🔄 Workflow Execution Checklist
 

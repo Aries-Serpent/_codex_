@@ -207,7 +207,7 @@ def percentage(numerator: int, denominator: int) -> float:
 
 
 def build_report(src: Dict[str, Any], tests: Dict[str, Any]) -> str:
-    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     total_record_calls = src["record_calls"] + tests["record_calls"]
     total_cogtel_ctors = src["cogtel_ctors"] + tests["cogtel_ctors"]
