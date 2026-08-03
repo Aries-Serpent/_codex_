@@ -43,7 +43,7 @@ from src.codex.cognitive_brain.policy import (
     DeterministicPolicy,
     PolicyContext,
 )
-from src.codex.cognitive_brain.telemetry import CognitiveTelemetry
+from src.codex.cognitive_brain.telemetry import CognitiveTelemetry, TelemetryBackend
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +137,7 @@ class CognitiveBrainKernel:
             NDJSONTelemetryBackend,
         )
 
-        backends = [InMemoryTelemetryBackend()]
+        backends: List[TelemetryBackend] = [InMemoryTelemetryBackend()]
         if self._config.telemetry_ndjson_path:
             backends.append(NDJSONTelemetryBackend(self._config.telemetry_ndjson_path))
         self._telemetry = CognitiveTelemetry(

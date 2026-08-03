@@ -123,7 +123,7 @@ class NDJSONTelemetryBackend(TelemetryBackend):
         if not self._path.exists():
             return []
         events: List[TelemetryEvent] = []
-        _known_fields = {f.name for f in TelemetryEvent.__dataclass_fields__.values()}  # type: ignore[attr-defined]
+        _known_fields = {f.name for f in TelemetryEvent.__dataclass_fields__.values()}
         with self._lock:
             with self._path.open(encoding="utf-8") as fh:
                 for line in fh:

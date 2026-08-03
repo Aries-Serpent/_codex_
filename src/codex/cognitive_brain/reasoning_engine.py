@@ -24,11 +24,14 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 
 from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
+
+if TYPE_CHECKING:
+    from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
 
 logger = logging.getLogger(__name__)
 
