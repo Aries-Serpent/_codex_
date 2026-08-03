@@ -281,6 +281,11 @@ class MCPOrchestrator:
         steps = self._build_steps(best, task_intent)
         fallback_plan = self._build_fallback_plan(scored, task_intent, ctx)
 
+        # Enforce tool availability: validate all selected tools (including fallbacks)
+        # are in the available_tools set. This prevents plan execution failures due to
+        # unavailable tools and ensures runtime safety.
+        self._validate_tool_availability(steps, fallback_plan, task_intent)
+
         plan = ToolchainPlan(
             task_intent=task_intent,
             steps=steps,
@@ -392,3 +397,74 @@ class MCPOrchestrator:
             known_patterns=known,
             constraints=["read_only"],
         )
+
+    def _validate_tool_availability(
+        self,
+        steps: List[ToolchainStep],
+        fallback_plan: Optional[ToolchainPlan],
+        task_intent: str,
+    ) -> None:
+        """Validate that all tools in the plan are available.
+
+        P1 enforcement: Orchestrator.plan() must reject any plan that uses tools
+        not in the available_tools set. This prevents runtime failures due to
+        unavailable tool surfaces.
+
+        Parameters
+        ----------
+        steps:
+            Primary plan steps to validate.
+        fallback_plan:
+            Optional fallback plan to validate.
+        task_intent:
+            Task intent (for logging).
+
+        Raises
+        ------
+        RuntimeError
+            If any step uses a tool not in available_tools.
+        """
+        unavailable_tools = set()
+
+        # Check primary plan steps
+        for step in steps:
+            if step.tool not in self._available_tools:
+                unavailable_tools.add(step.tool)
+                logger.error(
+                    "Tool '%s' not in available_tools for task '%s'. "
+                    "Available: %s",
+                    step.tool,
+                    task_intent,
+                    ", ".join(sorted(self._available_tools)),
+                )
+            # Check fallback tool if specified
+            if step.fallback_tool and step.fallback_tool not in self._available_tools:
+                unavailable_tools.add(step.fallback_tool)
+                logger.error(
+                    "Fallback tool '%s' not in available_tools for task '%s'. "
+                    "Available: %s",
+                    step.fallback_tool,
+                    task_intent,
+                    ", ".join(sorted(self._available_tools)),
+                )
+
+        # Check fallback plan steps
+        if fallback_plan:
+            for step in fallback_plan.steps:
+                if step.tool not in self._available_tools:
+                    unavailable_tools.add(step.tool)
+                    logger.error(
+                        "Fallback plan tool '%s' not in available_tools for task '%s'. "
+                        "Available: %s",
+                        step.tool,
+                        task_intent,
+                        ", ".join(sorted(self._available_tools)),
+                    )
+
+        if unavailable_tools:
+            raise RuntimeError(
+                f"MCPOrchestrator.plan() rejected for task '{task_intent}': "
+                f"unavailable tools {sorted(unavailable_tools)} not in runtime set "
+                f"{sorted(self._available_tools)}"
+            )
+
