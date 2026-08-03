@@ -3,7 +3,7 @@ torch==2.6.1  # Standard (GPU/CUDA) torch; CVE-2024-XXXXX RCE fix in torch.load 
 transformers==5.13.0  # Security: CVE-2024-SSSSS RCE/deserialization fix from 4.41
 peft==0.19.1
 accelerate>=1.14.0
-datasets==5.0.0
+datasets==5.0.1
 numpy==2.5.1
 hydra-core==1.3.2
 omegaconf==2.3.0
