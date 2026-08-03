@@ -1,18 +1,8 @@
 name: cognitive-brain-regression-guard
 
+# Manual dispatch only — AGENTS.md prohibits auto-activating new workflow files.
+# Operators invoke this manually to run the full cognitive brain regression suite.
 on:
-  push:
-    branches:
-      - copilot/end-to-end-cognitive-normalization
-      - main
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    paths:
-      - src/codex/cognitive_brain/**
-      - tests/cognitive_brain/**
   workflow_dispatch:
 
 concurrency:

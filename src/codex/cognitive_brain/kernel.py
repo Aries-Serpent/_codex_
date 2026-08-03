@@ -30,6 +30,7 @@ import logging
 import os
 import threading
 import time
+import uuid as _uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -241,8 +242,6 @@ class CognitiveBrainKernel:
         Emits both an orchestration telemetry event and a forensics event
         with ``decision_id``, ``turn_id``, and ``task_id`` for traceability.
         """
-        import uuid as _uuid
-
         t0 = time.monotonic()
         plan = self._orchestrator.plan(task_intent, context)
         duration_ms = (time.monotonic() - t0) * 1000
