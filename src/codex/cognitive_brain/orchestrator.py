@@ -264,6 +264,7 @@ class MCPOrchestrator:
         """
         # Ensure kernel is loaded before planning (deferred import avoids circular dependency)
         from .kernel import assert_loaded
+
         assert_loaded()
 
         ctx = context or self._default_context(task_intent)
@@ -431,8 +432,7 @@ class MCPOrchestrator:
             if step.tool not in self._available_tools:
                 unavailable_tools.add(step.tool)
                 logger.error(
-                    "Tool '%s' not in available_tools for task '%s'. "
-                    "Available: %s",
+                    "Tool '%s' not in available_tools for task '%s'. " "Available: %s",
                     step.tool,
                     task_intent,
                     ", ".join(sorted(self._available_tools)),
@@ -441,8 +441,7 @@ class MCPOrchestrator:
             if step.fallback_tool and step.fallback_tool not in self._available_tools:
                 unavailable_tools.add(step.fallback_tool)
                 logger.error(
-                    "Fallback tool '%s' not in available_tools for task '%s'. "
-                    "Available: %s",
+                    "Fallback tool '%s' not in available_tools for task '%s'. " "Available: %s",
                     step.fallback_tool,
                     task_intent,
                     ", ".join(sorted(self._available_tools)),
@@ -467,4 +466,3 @@ class MCPOrchestrator:
                 f"unavailable tools {sorted(unavailable_tools)} not in runtime set "
                 f"{sorted(self._available_tools)}"
             )
-
