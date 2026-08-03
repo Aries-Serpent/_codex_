@@ -1,0 +1,102 @@
+name: cognitive-brain-required-check-selftest
+
+# Non-blocking self-test that validates the required-gate workflow's job-name
+# contract against an embedded hardcoded list. A mismatch means the required
+# gate drifted without updating this contract, which is surfaced loudly but
+# does not block merge because this workflow is not required.
+on:
+  pull_request:
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-required-gate.yml'
+      - '.github/workflows/cognitive-brain-required-check-selftest.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-required-gate.yml'
+      - '.github/workflows/cognitive-brain-required-check-selftest.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  required-gate-contract-selftest:
+    name: Required gate contract self-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Verify required-gate job-name contract
+        run: |
+          python << 'PY'
+          import pathlib
+          import re
+          import sys
+
+          GATE = pathlib.Path(".github/workflows/cognitive-brain-required-gate.yml")
+          # Hardcoded contract of job `name:` values as displayed in GitHub Checks UI.
+          CONTRACT = {
+              "Ruff lint (cognitive_brain)",
+              "Mypy type check (cognitive_brain)",
+              "Targeted pytest (cognitive_brain core)",
+              "Regression guard (cognitive_brain)",
+          }
+
+          text = GATE.read_text(encoding="utf-8")
+          # Extract `name:` values inside `jobs:` only.
+          jobs_pos = text.find("jobs:")
+          if jobs_pos == -1:
+              print("::error::Could not locate jobs: section in required gate")
+              sys.exit(1)
+
+          jobs_text = text[jobs_pos:]
+          # Job-level name keys are at the same indentation level (4 spaces) under each job key.
+          found = set(re.findall(r"^    name: (.+)$", jobs_text, flags=re.MULTILINE))
+
+          missing = CONTRACT - found
+          extra = found - CONTRACT
+
+          summary_path = pathlib.Path(__import__("os").environ.get("GITHUB_STEP_SUMMARY", "/dev/null"))
+          with summary_path.open("a", encoding="utf-8") as fh:
+              print("## Cognitive Brain Required Gate Contract Self-Test\n", file=fh)
+              print(f"**Expected ({len(CONTRACT)}) jobs:**", file=fh)
+              for name in sorted(CONTRACT):
+                  print(f"- `{name}`", file=fh)
+              print(f"\n**Found ({len(found)}) jobs:**", file=fh)
+              for name in sorted(found):
+                  print(f"- `{name}`", file=fh)
+
+              if missing or extra:
+                  print("\n### ❌ Contract mismatch detected", file=fh)
+                  if missing:
+                      print("\n**Missing from required gate (still expected by contract):**", file=fh)
+                      for name in sorted(missing):
+                          print(f"- `{name}`", file=fh)
+                  if extra:
+                      print("\n**Extra jobs not in contract:**", file=fh)
+                      for name in sorted(extra):
+                          print(f"- `{name}`", file=fh)
+                  print("\n> Update the CONTRACT in this workflow or adjust the required gate job names.", file=fh)
+                  print("::error::Required gate job names do not match the hardcoded contract")
+                  sys.exit(1)
+              else:
+                  print("\n### ✅ Contract matches required gate exactly", file=fh)
+
+          print("Required gate contract self-test passed.")
+          PY
