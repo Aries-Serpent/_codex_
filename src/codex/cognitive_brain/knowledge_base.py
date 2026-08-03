@@ -356,7 +356,12 @@ class KnowledgeBase:
 
         return patterns
 
-    def query(self, category: Optional[str] = None, decision_type: Optional[str] = None, tag: Optional[str] = None) -> List[Pattern]:
+    def query(
+        self,
+        category: Optional[str] = None,
+        decision_type: Optional[str] = None,
+        tag: Optional[str] = None,
+    ) -> List[Pattern]:
         """Generic query interface.
 
         Args:
