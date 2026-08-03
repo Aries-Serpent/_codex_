@@ -5,11 +5,14 @@ and provides queryable pattern database for downstream reasoning layers.
 """
 
 import json
+import logging
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -190,7 +193,7 @@ class KnowledgeBase:
                 self.last_updated = data.get("last_updated")
                 self.query_interface = QueryInterface(self.patterns)
         except Exception as e:
-            print(f"Failed to load KB: {e}")
+            logger.error(f"Failed to load KB: {e}")
             self.patterns = []
             self.query_interface = QueryInterface([])
 
