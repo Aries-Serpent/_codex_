@@ -1,0 +1,351 @@
+"""Cognitive Brain Kernel — central orchestration entry point.
+
+The kernel wires together all Cognitive Brain sub-systems:
+
+    CapabilityRegistry  → capability profiles with TTL cache
+    ModelNegotiator     → gates unsupported session parameters
+    DeterministicPolicy → physics-inspired plan scoring
+    MCPOrchestrator     → MCP toolchain planner
+    FallbackChain       → auto-recovery strategies
+    CognitiveTelemetry  → structured event logging
+
+It provides:
+- A single ``boot()`` / ``get_kernel()`` API for environment auto-load.
+- Task-level convenience methods (``negotiate_model``, ``plan_tools``).
+- Explicit startup log + telemetry confirming the brain is loaded.
+- CCA stability guards (deduplication, turn isolation).
+
+Usage::
+
+    from src.codex.cognitive_brain.kernel import get_kernel
+
+    kernel = get_kernel()
+    safe_cfg = kernel.negotiate_model("claude-haiku-4.5", raw_cfg)
+    toolchain = kernel.plan_tools("repo_introspection")
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+import threading
+import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Sequence
+
+from src.codex.cognitive_brain.capability_registry import (
+    CapabilityRegistry,
+)
+from src.codex.cognitive_brain.model_negotiator import ModelNegotiator, NegotiationResult
+from src.codex.cognitive_brain.orchestrator import MCPOrchestrator, ToolchainPlan
+from src.codex.cognitive_brain.policy import (
+    DeterministicPolicy,
+    PolicyContext,
+)
+from src.codex.cognitive_brain.telemetry import CognitiveTelemetry
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Kernel version
+# ---------------------------------------------------------------------------
+
+__kernel_version__ = "1.0.0"
+
+# ---------------------------------------------------------------------------
+# CCA stability flags (mandatory per AGENTS.md)
+# ---------------------------------------------------------------------------
+
+_CCA_VERSION_LOCK = os.getenv("COPILOT_AGENT_CCA_VERSION_LOCK", "stable")
+_DEDUP_ENABLED = os.getenv("COPILOT_AGENT_DEDUPLICATION_ENABLED", "true").lower() == "true"
+_TURN_ISOLATION = os.getenv("COPILOT_AGENT_TURN_ISOLATION_ENABLED", "true").lower() == "true"
+
+
+# ---------------------------------------------------------------------------
+# Kernel configuration
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class KernelConfig:
+    """Runtime configuration for the :class:`CognitiveBrainKernel`."""
+
+    policy_seed: int = 42
+    policy_weights: Dict[str, float] = field(default_factory=dict)
+    registry_ttl_seconds: float = 3600.0
+    fallback_model_chain: List[str] = field(default_factory=list)
+    allow_shell: bool = False
+    available_mcp_tools: Optional[List[str]] = None
+    telemetry_ndjson_path: Optional[str] = None
+    session_id: Optional[str] = None
+
+    @classmethod
+    def from_env(cls) -> "KernelConfig":
+        """Build a :class:`KernelConfig` from environment variables."""
+        return cls(
+            policy_seed=int(os.getenv("COGNITIVE_BRAIN_POLICY_SEED", "42")),
+            registry_ttl_seconds=float(os.getenv("COGNITIVE_BRAIN_REGISTRY_TTL", "3600")),
+            allow_shell=os.getenv("COGNITIVE_BRAIN_ALLOW_SHELL", "false").lower() == "true",
+            telemetry_ndjson_path=os.getenv("COGNITIVE_BRAIN_TELEMETRY_PATH"),
+            session_id=os.getenv("CODEX_SESSION_ID"),
+        )
+
+
+# ---------------------------------------------------------------------------
+# Kernel
+# ---------------------------------------------------------------------------
+
+
+class CognitiveBrainKernel:
+    """Central runtime kernel for the Cognitive Brain subsystem.
+
+    Parameters
+    ----------
+    config:
+        Kernel configuration.  Defaults to :meth:`KernelConfig.from_env`.
+    """
+
+    def __init__(self, config: Optional[KernelConfig] = None) -> None:
+        self._config = config or KernelConfig.from_env()
+        self._boot_time: Optional[float] = None
+
+        # Assemble sub-systems.
+        self._registry = CapabilityRegistry(
+            ttl_seconds=self._config.registry_ttl_seconds
+        )
+        self._negotiator = ModelNegotiator(
+            registry=self._registry,
+            fallback_chain=self._config.fallback_model_chain or None,
+        )
+        self._policy = DeterministicPolicy(
+            seed=self._config.policy_seed,
+            weights=self._config.policy_weights or None,
+        )
+        self._orchestrator = MCPOrchestrator(
+            policy=self._policy,
+            allow_shell=self._config.allow_shell,
+            available_tools=self._config.available_mcp_tools,
+        )
+
+        # Telemetry backends.
+        from src.codex.cognitive_brain.telemetry import (
+            InMemoryTelemetryBackend,
+            NDJSONTelemetryBackend,
+        )
+
+        backends = [InMemoryTelemetryBackend()]
+        if self._config.telemetry_ndjson_path:
+            backends.append(NDJSONTelemetryBackend(self._config.telemetry_ndjson_path))
+        self._telemetry = CognitiveTelemetry(
+            backends=backends,
+            session_id=self._config.session_id,
+        )
+
+        self._loaded = False
+
+    # ------------------------------------------------------------------
+    # Boot
+    # ------------------------------------------------------------------
+
+    def boot(self) -> None:
+        """Initialise all sub-systems and emit the startup telemetry event.
+
+        Idempotent — safe to call multiple times; only the first call
+        has effect.
+        """
+        if self._loaded:
+            return
+        self._boot_time = time.monotonic()
+        self._assert_cca_stability()
+        config_summary = {
+            "version": __kernel_version__,
+            "policy_seed": self._config.policy_seed,
+            "allow_shell": self._config.allow_shell,
+            "cca_version_lock": _CCA_VERSION_LOCK,
+            "deduplication": _DEDUP_ENABLED,
+            "turn_isolation": _TURN_ISOLATION,
+        }
+        self._telemetry.startup(__kernel_version__, config_summary)
+        self._loaded = True
+        logger.info(
+            "🧠 Cognitive Brain Kernel v%s loaded "
+            "(policy_seed=%d cca_lock=%s dedup=%s turn_isolation=%s)",
+            __kernel_version__,
+            self._config.policy_seed,
+            _CCA_VERSION_LOCK,
+            _DEDUP_ENABLED,
+            _TURN_ISOLATION,
+        )
+
+    @property
+    def is_loaded(self) -> bool:
+        """True if :meth:`boot` has been called successfully."""
+        return self._loaded
+
+    # ------------------------------------------------------------------
+    # Model negotiation
+    # ------------------------------------------------------------------
+
+    def negotiate_model(
+        self,
+        model_id: str,
+        session_config: Dict[str, Any],
+        required_capabilities: Optional[Sequence[str]] = None,
+    ) -> NegotiationResult:
+        """Gate and rewrite *session_config* for *model_id*.
+
+        Strips parameters unsupported by the model (e.g. ``reasoning_effort``
+        on ``claude-haiku-4.5``), selects a fallback if required capabilities
+        are unavailable, and emits a telemetry event.
+        """
+        t0 = time.monotonic()
+        result = self._negotiator.negotiate(model_id, session_config, required_capabilities)
+        duration_ms = (time.monotonic() - t0) * 1000
+        self._telemetry.negotiation(
+            model_id=model_id,
+            stripped=result.stripped_params,
+            fallback_used=result.fallback_used,
+            resolved_model=result.resolved_model_id,
+            duration_ms=duration_ms,
+        )
+        return result
+
+    def safe_session_config(
+        self,
+        model_id: str,
+        session_config: Dict[str, Any],
+        required_capabilities: Optional[Sequence[str]] = None,
+    ) -> Dict[str, Any]:
+        """Convenience wrapper — returns the cleaned config dict with ``model`` key."""
+        return self._negotiator.safe_session_config(
+            model_id, session_config, required_capabilities
+        )
+
+    # ------------------------------------------------------------------
+    # Tool orchestration
+    # ------------------------------------------------------------------
+
+    def plan_tools(
+        self,
+        task_intent: str,
+        context: Optional[PolicyContext] = None,
+    ) -> ToolchainPlan:
+        """Select an ordered MCP toolchain for *task_intent*.
+
+        Emits a telemetry event with the policy scores.
+        """
+        t0 = time.monotonic()
+        plan = self._orchestrator.plan(task_intent, context)
+        duration_ms = (time.monotonic() - t0) * 1000
+        self._telemetry.orchestration(
+            task_intent=task_intent,
+            primary_tool=plan.primary_tool,
+            plan_notes=plan.notes,
+            duration_ms=duration_ms,
+        )
+        return plan
+
+    # ------------------------------------------------------------------
+    # Telemetry access
+    # ------------------------------------------------------------------
+
+    @property
+    def telemetry(self) -> CognitiveTelemetry:
+        """Return the telemetry facade for querying recorded events."""
+        return self._telemetry
+
+    # ------------------------------------------------------------------
+    # CCA stability
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _assert_cca_stability() -> None:
+        """Log warnings if CCA stability env vars are misconfigured."""
+        if _CCA_VERSION_LOCK != "stable":
+            logger.warning(
+                "COPILOT_AGENT_CCA_VERSION_LOCK is '%s'; expected 'stable'. "
+                "Risk of CCA version upgrade causing duplicate function-call errors.",
+                _CCA_VERSION_LOCK,
+            )
+        if not _DEDUP_ENABLED:
+            logger.warning(
+                "COPILOT_AGENT_DEDUPLICATION_ENABLED is not 'true'. "
+                "Payload deduplication disabled — risk of duplicate fc_call IDs."
+            )
+        if not _TURN_ISOLATION:
+            logger.warning(
+                "COPILOT_AGENT_TURN_ISOLATION_ENABLED is not 'true'. "
+                "Turn-state isolation disabled — risk of state leakage across turns."
+            )
+
+    # ------------------------------------------------------------------
+    # Accessors for sub-systems
+    # ------------------------------------------------------------------
+
+    @property
+    def registry(self) -> CapabilityRegistry:
+        return self._registry
+
+    @property
+    def negotiator(self) -> ModelNegotiator:
+        return self._negotiator
+
+    @property
+    def policy(self) -> DeterministicPolicy:
+        return self._policy
+
+    @property
+    def orchestrator(self) -> MCPOrchestrator:
+        return self._orchestrator
+
+
+# ---------------------------------------------------------------------------
+# Module-level singleton (auto-load)
+# ---------------------------------------------------------------------------
+
+_kernel_instance: Optional[CognitiveBrainKernel] = None
+_kernel_lock = threading.Lock()
+
+
+def boot(config: Optional[KernelConfig] = None) -> CognitiveBrainKernel:
+    """Boot and return the process-level :class:`CognitiveBrainKernel`.
+
+    Thread-safe.  Multiple calls return the same instance without re-booting.
+    Pass a new *config* only on the first call (subsequent configs are ignored).
+    """
+    global _kernel_instance
+    with _kernel_lock:
+        if _kernel_instance is None:
+            _kernel_instance = CognitiveBrainKernel(config)
+            _kernel_instance.boot()
+    return _kernel_instance
+
+
+def get_kernel() -> CognitiveBrainKernel:
+    """Return the booted kernel, auto-booting with default config if needed."""
+    return boot()
+
+
+def reset_kernel() -> None:
+    """Reset the singleton (for testing only)."""
+    global _kernel_instance
+    with _kernel_lock:
+        _kernel_instance = None
+
+
+# ---------------------------------------------------------------------------
+# Environment auto-load
+# ---------------------------------------------------------------------------
+# When COGNITIVE_BRAIN_AUTO_LOAD=true (default), importing this module
+# triggers kernel boot automatically — satisfying FR-5 (Environment Auto-Load).
+
+_AUTO_LOAD_ENV = os.getenv("COGNITIVE_BRAIN_AUTO_LOAD", "true").lower()
+_FAILSAFE_OFF = os.getenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "false").lower() == "true"
+
+if _AUTO_LOAD_ENV == "true" and not _FAILSAFE_OFF:
+    try:
+        get_kernel()
+    except Exception as _auto_load_exc:  # noqa: BLE001
+        logger.warning(
+            "Cognitive Brain auto-load failed (non-fatal): %s", _auto_load_exc
+        )

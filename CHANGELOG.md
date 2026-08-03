@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+### Added (2026-08-02 — Cognitive Brain Runtime Layer)
+- `src/codex/cognitive_brain/capability_registry.py`: TTL-aware model capability cache; gates `reasoning_effort` and other params per model profile.
+- `src/codex/cognitive_brain/model_negotiator.py`: `ModelNegotiator` strips unsupported session config params (fixes `claude-haiku-4.5` reasoning-effort runtime error) and selects ranked fallback models when required capabilities are unmet.
+- `src/codex/cognitive_brain/policy.py`: `DeterministicPolicy` scoring across five physics-inspired dimensions — Path, Fields, Patterns, Redundancy, Balance — with seeded deterministic output.
+- `src/codex/cognitive_brain/orchestrator.py`: `MCPOrchestrator` toolchain planner composes GitHub MCP, Playwright, web_search, and shell tool surfaces using policy scores.
+- `src/codex/cognitive_brain/fallbacks.py`: `FallbackChain`, `with_fallback` decorator, `rate_limited_call`, `import_optional`, and `safe_default_config` for auto-recovery.
+- `src/codex/cognitive_brain/telemetry.py`: Structured telemetry with `InMemoryTelemetryBackend` and `NDJSONTelemetryBackend`; captures negotiation, policy-score, orchestration, fallback, and startup events.
+- `src/codex/cognitive_brain/kernel.py`: `CognitiveBrainKernel` singleton wiring all sub-systems; environment auto-load via `COGNITIVE_BRAIN_AUTO_LOAD=true`; CCA stability guards.
+- 91 new unit/integration tests across 4 test modules for the above components.
+
 ### Fixed (auto-update — PR #5428)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5428 (SHA `99619ba4`) at 2026-08-02T05:54Z [auto-generated]
 

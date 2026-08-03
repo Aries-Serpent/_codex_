@@ -21779,3 +21779,31 @@ agent signatures and a direct meta-tensor regression run are absent.
 **Authority:** @mbaetiong D-tier autonomous
 **Status:** ✅ COMPLETE
 **Decision:** READY FOR REVIEW
+
+---
+
+## Session: Cognitive Brain Runtime Layer — 2026-08-02
+
+**PR:** TBD (new branch)
+**Session ID:** CognitiveBrainRuntime_20260802
+**Authority:** @mbaetiong D-tier autonomous
+
+**Changes:**
+- Created `src/codex/cognitive_brain/capability_registry.py` — TTL-aware model capability cache
+- Created `src/codex/cognitive_brain/model_negotiator.py` — gates `reasoning_effort` for unsupported models (FR-1 fix for claude-haiku-4.5 error)
+- Created `src/codex/cognitive_brain/policy.py` — physics-inspired deterministic policy (Path/Fields/Patterns/Redundancy/Balance)
+- Created `src/codex/cognitive_brain/orchestrator.py` — MCP toolchain planner (GitHub MCP, Playwright, web_search, shell)
+- Created `src/codex/cognitive_brain/fallbacks.py` — FallbackChain, with_fallback, rate_limited_call, import_optional
+- Created `src/codex/cognitive_brain/telemetry.py` — structured telemetry with in-memory and NDJSON backends
+- Created `src/codex/cognitive_brain/kernel.py` — central kernel with singleton boot, environment auto-load, CCA stability guards
+- Updated `src/codex/cognitive_brain/__init__.py` — exports all new public symbols
+- Created 4 test modules: test_model_negotiator.py (36 tests), test_policy.py (24 tests), test_orchestrator.py (18 tests), test_kernel.py (23 tests) = 91 tests total
+
+**Validation:**
+- All 91 new tests pass
+- Ruff lint: ✅ clean on all new files
+- Key regression: `claude-haiku-4.5` with `reasoning_effort` → param stripped, no crash
+- Kernel auto-boot: ✅ startup telemetry event emitted
+- CCA stability flags: `COPILOT_AGENT_CCA_VERSION_LOCK=stable`, `DEDUPLICATION=true`, `TURN_ISOLATION=true` all honoured
+
+**Status:** ✅ COMPLETE
