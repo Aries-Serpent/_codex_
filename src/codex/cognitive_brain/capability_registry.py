@@ -8,12 +8,23 @@ the session-creation API and cause runtime errors such as:
     Request session.create failed … Model 'claude-haiku-4.5' does not support
     reasoning effort configuration
 
+Phase 2 additions
+-----------------
+- :class:`ToolSurfaceCategory` — enum for the four MCP-backed tool surfaces.
+- :class:`ToolSurfaceProfile` — versioned capability descriptor per surface.
+- :data:`CAPABILITY_SCHEMA_VERSION` — current schema version string.
+- :func:`get_tool_surface_registry` — returns the built-in tool surface catalog.
+
 Usage::
 
     registry = CapabilityRegistry()
     profile = registry.get("claude-haiku-4.5")
     if not profile.supports_reasoning_effort:
         config.pop("reasoning_effort", None)
+
+    surfaces = get_tool_surface_registry()
+    gh = surfaces[ToolSurfaceCategory.GITHUB_MCP]
+    print(gh.tool_count)  # 35
 """
 
 from __future__ import annotations
@@ -22,13 +33,225 @@ import logging
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from enum import Enum
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Capability profile
+# Schema version (bump when breaking changes are made to capability profiles)
 # ---------------------------------------------------------------------------
+
+CAPABILITY_SCHEMA_VERSION: str = "2.0.0"
+
+# ---------------------------------------------------------------------------
+# Tool surface category (Phase 2C — MCP capability matrix parity)
+# ---------------------------------------------------------------------------
+
+
+class ToolSurfaceCategory(str, Enum):
+    """Enumeration of the four MCP-backed tool surfaces available in the runtime."""
+
+    GITHUB_MCP = "github_mcp"
+    PLAYWRIGHT = "playwright"
+    WEB_SEARCH = "web_search"
+    SHELL = "shell"
+
+
+@dataclass
+class ToolSurfaceProfile:
+    """Versioned capability descriptor for a single MCP tool surface.
+
+    Attributes
+    ----------
+    category:
+        Which surface this profile describes.
+    tool_count:
+        Number of individual tools exposed by this surface.
+    schema_version:
+        Schema version this profile was built against.
+    read_only:
+        True if all tools in this surface are non-mutating.
+    requires_auth:
+        True if the surface needs external credentials (e.g. a GitHub token).
+    network_access:
+        True if the surface makes outbound network calls.
+    shell_access:
+        True if the surface can run local OS commands.
+    policy_gated:
+        True if a policy check is required before invoking any tool.
+    available_tools:
+        List of canonical tool-name strings exposed by this surface.
+    notes:
+        Free-form notes about this surface.
+    """
+
+    category: ToolSurfaceCategory
+    tool_count: int
+    schema_version: str = CAPABILITY_SCHEMA_VERSION
+    read_only: bool = True
+    requires_auth: bool = False
+    network_access: bool = False
+    shell_access: bool = False
+    policy_gated: bool = False
+    available_tools: List[str] = field(default_factory=list)
+    notes: str = ""
+
+    def is_compatible_with(self, other_version: str) -> bool:
+        """Return True if this profile is compatible with *other_version*.
+
+        Uses SemVer major-version compatibility: same major → compatible.
+        """
+        try:
+            our_major = int(self.schema_version.split(".")[0])
+            other_major = int(other_version.split(".")[0])
+            return our_major == other_major
+        except (ValueError, IndexError):
+            return False
+
+
+# Built-in tool surface registry (aligned with MCP Capability Matrix).
+def _build_tool_surface_registry() -> Dict[ToolSurfaceCategory, ToolSurfaceProfile]:
+    """Construct the canonical tool surface registry from documented capabilities."""
+    return {
+        ToolSurfaceCategory.GITHUB_MCP: ToolSurfaceProfile(
+            category=ToolSurfaceCategory.GITHUB_MCP,
+            tool_count=35,
+            read_only=True,
+            requires_auth=True,
+            network_access=True,
+            shell_access=False,
+            policy_gated=False,
+            available_tools=[
+                # Repository
+                "get_file_contents",
+                "search_code",
+                "search_repositories",
+                "list_commits",
+                "get_commit",
+                "list_branches",
+                "list_tags",
+                "get_tag",
+                "list_repository_collaborators",
+                # Pull requests
+                "list_pull_requests",
+                "search_pull_requests",
+                "pull_request_read",
+                "get_job_logs",
+                # Issues
+                "list_issues",
+                "search_issues",
+                "issue_read",
+                "list_label",
+                "get_label",
+                "list_issue_types",
+                "list_issue_fields",
+                # CI/Actions
+                "github-mcp-server-actions_get",
+                "github-mcp-server-actions_list",
+                # Security
+                "list_code_scanning_alerts",
+                "get_code_scanning_alert",
+                "list_secret_scanning_alerts",
+                "get_secret_scanning_alert",
+                # Releases
+                "list_releases",
+                "get_latest_release",
+                "get_release_by_tag",
+                # Discussions
+                "list_discussions",
+                "get_discussion",
+                "get_discussion_comments",
+                "list_discussion_categories",
+                # Users/search
+                "search_users",
+                "search_commits",
+            ],
+            notes="35 read-only GitHub MCP tools as documented on 2026-08-01",
+        ),
+        ToolSurfaceCategory.PLAYWRIGHT: ToolSurfaceProfile(
+            category=ToolSurfaceCategory.PLAYWRIGHT,
+            tool_count=21,
+            read_only=False,  # browser can fill forms / click
+            requires_auth=False,
+            network_access=True,
+            shell_access=False,
+            policy_gated=False,
+            available_tools=[
+                "playwright-browser_click",
+                "playwright-browser_close",
+                "playwright-browser_console_messages",
+                "playwright-browser_drag",
+                "playwright-browser_evaluate",
+                "playwright-browser_file_upload",
+                "playwright-browser_fill_form",
+                "playwright-browser_handle_dialog",
+                "playwright-browser_hover",
+                "playwright-browser_install",
+                "playwright-browser_navigate",
+                "playwright-browser_navigate_back",
+                "playwright-browser_network_requests",
+                "playwright-browser_press_key",
+                "playwright-browser_resize",
+                "playwright-browser_select_option",
+                "playwright-browser_snapshot",
+                "playwright-browser_tabs",
+                "playwright-browser_take_screenshot",
+                "playwright-browser_type",
+                "playwright-browser_wait_for",
+            ],
+            notes="21 Playwright MCP tools as documented on 2026-08-01",
+        ),
+        ToolSurfaceCategory.WEB_SEARCH: ToolSurfaceProfile(
+            category=ToolSurfaceCategory.WEB_SEARCH,
+            tool_count=1,
+            read_only=True,
+            requires_auth=False,
+            network_access=True,
+            shell_access=False,
+            policy_gated=False,
+            available_tools=["web_search"],
+            notes="Standalone web_search tool (AI-powered search with citations)",
+        ),
+        ToolSurfaceCategory.SHELL: ToolSurfaceProfile(
+            category=ToolSurfaceCategory.SHELL,
+            tool_count=1,
+            read_only=False,
+            requires_auth=False,
+            network_access=True,
+            shell_access=True,
+            policy_gated=True,  # Must pass ShellPolicy.gate() before execution
+            available_tools=["bash"],
+            notes=(
+                "Local shell execution — policy-gated via ShellPolicy. "
+                "Requires COGNITIVE_BRAIN_ALLOW_SHELL=true."
+            ),
+        ),
+    }
+
+
+_TOOL_SURFACE_REGISTRY: Optional[Dict[ToolSurfaceCategory, ToolSurfaceProfile]] = None
+_surface_lock = threading.Lock()
+
+
+def get_tool_surface_registry() -> Dict[ToolSurfaceCategory, ToolSurfaceProfile]:
+    """Return the canonical (cached) tool surface registry."""
+    global _TOOL_SURFACE_REGISTRY
+    with _surface_lock:
+        if _TOOL_SURFACE_REGISTRY is None:
+            _TOOL_SURFACE_REGISTRY = _build_tool_surface_registry()
+    return _TOOL_SURFACE_REGISTRY
+
+
+def check_capability_schema_version(required_version: str) -> bool:
+    """Return True if the current schema is compatible with *required_version*."""
+    try:
+        current_major = int(CAPABILITY_SCHEMA_VERSION.split(".")[0])
+        required_major = int(required_version.split(".")[0])
+        return current_major == required_major
+    except (ValueError, IndexError):
+        return False
+
 
 # Known models that support extended-thinking / reasoning-effort config.
 # Populated from public Anthropic/OpenAI documentation; update as APIs evolve.

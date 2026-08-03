@@ -115,9 +115,7 @@ class CognitiveBrainKernel:
         self._boot_time: Optional[float] = None
 
         # Assemble sub-systems.
-        self._registry = CapabilityRegistry(
-            ttl_seconds=self._config.registry_ttl_seconds
-        )
+        self._registry = CapabilityRegistry(ttl_seconds=self._config.registry_ttl_seconds)
         self._negotiator = ModelNegotiator(
             registry=self._registry,
             fallback_chain=self._config.fallback_model_chain or None,
@@ -223,9 +221,7 @@ class CognitiveBrainKernel:
         required_capabilities: Optional[Sequence[str]] = None,
     ) -> Dict[str, Any]:
         """Convenience wrapper — returns the cleaned config dict with ``model`` key."""
-        return self._negotiator.safe_session_config(
-            model_id, session_config, required_capabilities
-        )
+        return self._negotiator.safe_session_config(model_id, session_config, required_capabilities)
 
     # ------------------------------------------------------------------
     # Tool orchestration
@@ -235,11 +231,18 @@ class CognitiveBrainKernel:
         self,
         task_intent: str,
         context: Optional[PolicyContext] = None,
+        *,
+        decision_id: Optional[str] = None,
+        turn_id: Optional[str] = None,
+        task_id: Optional[str] = None,
     ) -> ToolchainPlan:
         """Select an ordered MCP toolchain for *task_intent*.
 
-        Emits a telemetry event with the policy scores.
+        Emits both an orchestration telemetry event and a forensics event
+        with ``decision_id``, ``turn_id``, and ``task_id`` for traceability.
         """
+        import uuid as _uuid
+
         t0 = time.monotonic()
         plan = self._orchestrator.plan(task_intent, context)
         duration_ms = (time.monotonic() - t0) * 1000
@@ -249,7 +252,53 @@ class CognitiveBrainKernel:
             plan_notes=plan.notes,
             duration_ms=duration_ms,
         )
+        # Forensics event with rejected alternatives.
+        _decision_id = decision_id or str(_uuid.uuid4())
+        rejected = [
+            step.tool
+            for step in (plan.fallback_plan.steps if plan.fallback_plan else [])
+            if plan.primary_tool and step.tool != plan.primary_tool
+        ]
+        self._telemetry.forensics(
+            decision_id=_decision_id,
+            turn_id=turn_id,
+            task_id=task_id,
+            selected_toolchain=plan.primary_tool,
+            rejected_alternatives=rejected,
+            negotiation_outcome=None,
+            task_intent=task_intent,
+            duration_ms=duration_ms,
+        )
         return plan
+
+    # ------------------------------------------------------------------
+    # Entrypoint guard
+    # ------------------------------------------------------------------
+
+    def assert_loaded(self) -> None:
+        """Assert that the kernel has been booted; emit a diagnostic if not.
+
+        Call this at reasoning-critical entrypoints to guarantee the
+        cognitive brain is initialised before any reasoning occurs.
+
+        Raises
+        ------
+        RuntimeError
+            If the kernel has not been booted and
+            ``COGNITIVE_BRAIN_FAILSAFE_OFF=true`` is set (fail-fast mode).
+        """
+        if self._loaded:
+            return
+        failsafe_off = os.getenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "false").lower() == "true"
+        msg = (
+            "CognitiveBrainKernel.assert_loaded(): kernel not yet booted. "
+            "Call boot() or get_kernel() before entering reasoning-critical code."
+        )
+        if failsafe_off:
+            logger.error(msg)
+            raise RuntimeError(msg)
+        logger.warning("%s  Auto-booting now.", msg)
+        self.boot()
 
     # ------------------------------------------------------------------
     # Telemetry access

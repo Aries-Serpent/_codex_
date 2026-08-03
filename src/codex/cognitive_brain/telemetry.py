@@ -51,6 +51,10 @@ class TelemetryEvent:
     task_intent: Optional[str] = None
     duration_ms: Optional[float] = None
     success: Optional[bool] = None
+    # Decision forensics fields (Phase 2E)
+    decision_id: Optional[str] = None
+    turn_id: Optional[str] = None
+    task_id: Optional[str] = None
     payload: Dict[str, Any] = field(default_factory=dict)
     notes: List[str] = field(default_factory=list)
 
@@ -119,6 +123,7 @@ class NDJSONTelemetryBackend(TelemetryBackend):
         if not self._path.exists():
             return []
         events: List[TelemetryEvent] = []
+        _known_fields = {f.name for f in TelemetryEvent.__dataclass_fields__.values()}  # type: ignore[attr-defined]
         with self._lock:
             with self._path.open(encoding="utf-8") as fh:
                 for line in fh:
@@ -126,7 +131,10 @@ class NDJSONTelemetryBackend(TelemetryBackend):
                     if line:
                         try:
                             data = json.loads(line)
-                            events.append(TelemetryEvent(**data))
+                            # Strip unknown keys for backward-compat with
+                            # records written by older schema versions.
+                            filtered = {k: v for k, v in data.items() if k in _known_fields}
+                            events.append(TelemetryEvent(**filtered))
                         except Exception:  # noqa: BLE001
                             pass
         return events
@@ -263,6 +271,56 @@ class CognitiveTelemetry:
                 success=True,
                 payload={"version": version, "config": config_summary},
                 notes=["Cognitive Brain runtime loaded"],
+            )
+        )
+
+    def forensics(
+        self,
+        decision_id: str,
+        turn_id: Optional[str],
+        task_id: Optional[str],
+        selected_toolchain: Optional[str],
+        rejected_alternatives: Optional[List[str]],
+        negotiation_outcome: Optional[str],
+        *,
+        model_id: Optional[str] = None,
+        task_intent: Optional[str] = None,
+        duration_ms: Optional[float] = None,
+        extra: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Emit a traceable decision-forensics event.
+
+        Parameters
+        ----------
+        decision_id:
+            Unique ID for this decision (UUID recommended).
+        turn_id:
+            Agent turn identifier for cross-referencing turn logs.
+        task_id:
+            Task or PR-level identifier.
+        selected_toolchain:
+            Tool surface chosen (e.g. ``"github_mcp"``).
+        rejected_alternatives:
+            Tool surfaces that were considered but not chosen.
+        negotiation_outcome:
+            Short description of the model negotiation result.
+        """
+        self.record(
+            TelemetryEvent(
+                event_type="forensics",
+                model_id=model_id,
+                task_intent=task_intent,
+                duration_ms=duration_ms,
+                success=True,
+                decision_id=decision_id,
+                turn_id=turn_id,
+                task_id=task_id,
+                payload={
+                    "selected_toolchain": selected_toolchain,
+                    "rejected_alternatives": rejected_alternatives or [],
+                    "negotiation_outcome": negotiation_outcome,
+                    **(extra or {}),
+                },
             )
         )
 
