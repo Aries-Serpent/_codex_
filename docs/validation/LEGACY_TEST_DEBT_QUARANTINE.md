@@ -50,6 +50,12 @@
 | `tests/cognitive_brain/test_task_router_codex.py` | 0 | 8 |
 | **Total** | **24** | **13** |
 
+## Trend Table
+
+| Snapshot Date | Failed | Errored | Total | Delta vs Previous | Top Cause |
+|---|---:|---:|---:|---:|---|
+| 2026-08-03 | 24 | 13 | 1041 | baseline | Malformed YAML fixture in `TaskRouter` registry |
+
 ## Phased Remediation Plan
 
 ### P1 — Fix behavioral regressions (quantum)
@@ -80,6 +86,13 @@
   `tests/cognitive_brain/test_inject_with_brain_client.py`.
 - Resolve `QuantumConfig` import path in
   `tests/cognitive_brain/quantum/test_quantum_config.py`.
+
+## Escalation Threshold
+
+If the `Total non-attributable failures` (Failed + Errored) increases by more
+than **20% week-over-week**, a blocking governance issue must be opened
+automatically. This prevents the non-blocking legacy lane from silently
+degrading.
 
 ## Exit Criteria
 

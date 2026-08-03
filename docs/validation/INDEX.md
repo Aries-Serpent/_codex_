@@ -21,6 +21,7 @@
 - [CODEBASE_Status_Audit_2025-10-14](CODEBASE_Status_Audit_2025-10-14.md)
 - [Capability_Gaps_Validation](Capability_Gaps_Validation.md)
 - [CCA_RUNTIME_BOUNDARY_NOTES](CCA_RUNTIME_BOUNDARY_NOTES.md)
+- [COGNITIVE_BRAIN_TELEMETRY_BASELINE](COGNITIVE_BRAIN_TELEMETRY_BASELINE.md)
 - [Convergence_Runbook](Convergence_Runbook.md)
 - [Coverage_Enforcement_Validation](Coverage_Enforcement_Validation.md)
 - [Coverage_Gate_Remediation](Coverage_Gate_Remediation.md)

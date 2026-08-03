@@ -7,11 +7,16 @@ PR #5430:
 2. Shell adversarial vector coverage
 3. Entrypoint assert_loaded enforcement
 4. Forensics field preservation (decision_id, turn_id, task_id)
+5. Required check-name contract governance
+6. Legacy quarantine schema integrity
 """
 
 from __future__ import annotations
 
+import ast
 import json
+import pathlib
+import re
 from pathlib import Path
 
 import pytest
@@ -114,6 +119,79 @@ class TestSessionCreateBoundary:
 
 
 # ---------------------------------------------------------------------------
+# 1b. Negative architecture test — no new direct session.create paths
+# ---------------------------------------------------------------------------
+
+
+class TestNoDirectSessionCreatePaths:
+    """Fail the suite if any new production path bypasses SessionGuard."""
+
+    # Files that already legitimately create raw sessions outside SessionGuard.
+    ALLOWLIST: set[str] = set()
+
+    def test_cognitive_brain_source_has_no_unapproved_create_session(self) -> None:
+        """All session.create calls must route through SessionGuard."""
+        repo_root = pathlib.Path(__file__).resolve().parents[2]
+        src_dir = repo_root / "src" / "codex" / "cognitive_brain"
+        violations: list[str] = []
+        for py_file in sorted(src_dir.rglob("*.py")):
+            text = py_file.read_text(encoding="utf-8")
+            tree = ast.parse(text)
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                name = self._call_name(node.func)
+                if name.endswith(".create") or name.endswith(".create_session"):
+                    rel = str(py_file.relative_to(repo_root))
+                    if rel in self.ALLOWLIST:
+                        continue
+                    # Calls routed through a SessionGuard instance are allowed.
+                    if self._is_session_guard_call(node):
+                        continue
+                    violations.append(f"{rel}:{node.lineno} {name}()")
+        assert not violations, (
+            "Direct session.create paths detected; add to SessionGuard or allowlist: "
+            + "; ".join(violations)
+        )
+
+    @staticmethod
+    def _is_session_guard_call(node: ast.Call) -> bool:
+        """Return True if the call is on a SessionGuard attribute (e.g. guard.create_session)."""
+        func = node.func
+        if isinstance(func, ast.Attribute) and func.attr in ("create", "create_session"):
+            receiver = func.value
+            if isinstance(receiver, ast.Name):
+                # Heuristic: variable name ends with _guard or is named guard.
+                if receiver.id.endswith("_guard") or receiver.id == "guard":
+                    return True
+            if isinstance(receiver, ast.Attribute) and receiver.attr.endswith("_guard"):
+                return True
+        return False
+
+    def test_session_guard_module_is_present(self) -> None:
+        """The SessionGuard module must remain importable and contain the expected API."""
+        from src.codex.cognitive_brain import session_guard
+
+        assert hasattr(session_guard, "SessionGuard")
+        assert hasattr(session_guard, "safe_create_session")
+
+    @staticmethod
+    def _call_name(func: ast.expr) -> str:
+        if isinstance(func, ast.Attribute):
+            parts: list[str] = []
+            node: ast.expr = func
+            while isinstance(node, ast.Attribute):
+                parts.append(node.attr)
+                node = node.value
+            if isinstance(node, ast.Name):
+                parts.append(node.id)
+            return ".".join(reversed(parts))
+        if isinstance(func, ast.Name):
+            return func.id
+        return ""
+
+
+# ---------------------------------------------------------------------------
 # 2. Shell adversarial vector coverage
 # ---------------------------------------------------------------------------
 
@@ -156,6 +234,34 @@ class TestShellAdversarialCoverage:
     def test_metacharacter_list_is_non_empty(self) -> None:
         """The metacharacter inventory must never be accidentally emptied."""
         assert len(_SHELL_METACHARACTERS) >= 10
+
+
+# ---------------------------------------------------------------------------
+# 2b. Required check-name drift guard
+# ---------------------------------------------------------------------------
+
+
+class TestRequiredCheckNameContract:
+    """Mirror the Phase 1 required-check contract to detect governance drift."""
+
+    # These must match the job `name:` values in cognitive-brain-required-gate.yml.
+    CONTRACT = {
+        "Ruff lint (cognitive_brain)",
+        "Mypy type check (cognitive_brain)",
+        "Targeted pytest (cognitive_brain core)",
+        "Regression guard (cognitive_brain)",
+    }
+
+    def test_required_gate_job_names_match_contract(self) -> None:
+        gate = pathlib.Path(".github/workflows/cognitive-brain-required-gate.yml")
+        assert gate.exists(), f"Required gate workflow missing: {gate}"
+        text = gate.read_text(encoding="utf-8")
+        jobs_pos = text.find("jobs:")
+        assert jobs_pos != -1, "Could not locate jobs: section in required gate"
+        found = set(re.findall(r"^    name: (.+)$", text[jobs_pos:], flags=re.MULTILINE))
+        assert found == self.CONTRACT, (
+            f"Required gate job names {sorted(found)} do not match contract {sorted(self.CONTRACT)}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -265,3 +371,69 @@ class TestForensicsFieldPreservation:
         assert last.task_id == "pr-42"
         assert "selected_toolchain" in last.payload
         assert "rejected_alternatives" in last.payload
+
+
+# ---------------------------------------------------------------------------
+# 5. Legacy quarantine schema integrity
+# ---------------------------------------------------------------------------
+
+
+class TestLegacyQuarantineSchema:
+    """Validate the structure of LEGACY_TEST_DEBT_QUARANTINE.md."""
+
+    def test_quarantine_file_exists(self) -> None:
+        path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
+        assert path.exists(), "Legacy debt quarantine file is missing"
+
+    def test_quarantine_summary_table_has_expected_columns(self) -> None:
+        path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
+        content = path.read_text(encoding="utf-8")
+        # Find the summary table.
+        match = re.search(
+            r"## Quarantine Summary\s*\n\s*\n\|(.+?)\|\s*\n\|[-:\s|]+\|\s*\n",
+            content,
+        )
+        assert match, "Quarantine Summary table not found or malformed"
+        header = match.group(1)
+        cells = [c.strip() for c in header.split("|") if c.strip()]
+        assert "Metric" in cells, "Summary table missing 'Metric' column"
+        assert "Count" in cells, "Summary table missing 'Count' column"
+
+    def test_trend_table_schema(self) -> None:
+        path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
+        content = path.read_text(encoding="utf-8")
+        # Look for the trend table header; if present, validate columns.
+        if "## Trend Table" not in content:
+            pytest.skip("Trend table not yet added")
+        match = re.search(
+            r"## Trend Table\s*\n\s*\n\|(.+?)\|\s*\n\|[-:\s|]+\|\s*\n",
+            content,
+        )
+        assert match, "Trend table header malformed"
+        header = match.group(1)
+        cells = [c.strip() for c in header.split("|") if c.strip()]
+        expected = ["Snapshot Date", "Failed", "Errored", "Total", "Delta vs Previous", "Top Cause"]
+        assert cells == expected, f"Trend table columns {cells} do not match expected {expected}"
+
+    def test_detailed_failure_counts_table_integrity(self) -> None:
+        path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
+        content = path.read_text(encoding="utf-8")
+        assert "## Detailed Failure Counts" in content, "Detailed Failure Counts section missing"
+        match = re.search(
+            r"## Detailed Failure Counts\s*\n\s*\n\|(.+?)\|\s*\n\|[-:\s|]+\|\s*\n",
+            content,
+        )
+        assert match, "Detailed Failure Counts table header malformed"
+        header = match.group(1)
+        cells = [c.strip() for c in header.split("|") if c.strip()]
+        assert "File" in cells
+        assert "Failed" in cells
+        assert "Errored" in cells
+
+    def test_total_row_present(self) -> None:
+        path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
+        content = path.read_text(encoding="utf-8")
+        assert re.search(
+            r"\|\s*\*\*Total\*\*\s*\|\s*\*\*\d+\*\*\s*\|\s*\*\*\d+\*\*\s*\|",
+            content,
+        ), "Total row in Detailed Failure Counts table is missing or malformed"

@@ -66,13 +66,36 @@ These failures existed independent of the merge and are tracked in
 - **No security risk** introduced by PR #5430; shell adversarial coverage and
   forensics preservation are enforced by regression meta-tests.
 
+## Required Checks Contract
+
+The branch-protection required checks for `main` must reference the exact job
+names emitted by `.github/workflows/cognitive-brain-required-gate.yml`, as
+displayed in the GitHub Checks UI.
+
+| Required check name | Workflow file | Blocking |
+|---|---|---|
+| `Ruff lint (cognitive_brain)` | `cognitive-brain-required-gate.yml` | Yes |
+| `Mypy type check (cognitive_brain)` | `cognitive-brain-required-gate.yml` | Yes |
+| `Targeted pytest (cognitive_brain core)` | `cognitive-brain-required-gate.yml` | Yes |
+| `Regression guard (cognitive_brain)` | `cognitive-brain-required-gate.yml` | Yes |
+
+A non-blocking CI self-test (`.github/workflows/cognitive-brain-required-check-selftest.yml`)
+parses the required gate on every relevant PR/push and fails loudly in the
+GitHub Actions step summary if these names drift from the contract above.
+
 ## Evidence Artifacts
 
 - `docs/validation/POST_MERGE_VALIDATION_PR5430.md` (this report)
 - `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md`
 - `docs/validation/CCA_RUNTIME_BOUNDARY_NOTES.md`
+- `docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md`
 - `.github/workflows/cognitive-brain-required-gate.yml`
+- `.github/workflows/cognitive-brain-required-check-selftest.yml`
 - `.github/workflows/cognitive-brain-legacy-debt.yml`
+- `.github/workflows/cognitive-brain-legacy-debt-update.yml`
+- `.github/workflows/cognitive-brain-telemetry-baseline.yml`
+- `scripts/validation/update_legacy_debt_quarantine.py`
+- `scripts/validation/generate_cognitive_brain_telemetry_baseline.py`
 - `tests/cognitive_brain/test_boundary_regression_guards.py`
 
 ## Sign-off

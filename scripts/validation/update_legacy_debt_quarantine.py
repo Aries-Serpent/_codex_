@@ -24,7 +24,6 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 QUARANTINE_DOC = Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
 
 SUMMARY_TABLE_HEADER = "## Quarantine Summary\n"
@@ -154,11 +153,13 @@ def run_pytest(test_path: str = "tests/cognitive_brain") -> PytestResult:
     # 1041 passed, 13 error in 12.34s
     # 1041 passed in 12.34s
     summary_pattern = re.compile(
-        r"^(?P<total>\d+)\s+\w+"
-        r"(?:,\s*(?P<passed>\d+)\s+passed)?"
+        r"(?P<passed>\d+)\s+passed"
         r"(?:,\s*(?P<failed>\d+)\s+failed)?"
         r"(?:,\s*(?P<errored>\d+)\s+error)?"
-        r"\s+in\s+[\d.]+s"
+        r"(?:,\s*(?P<skipped>\d+)\s+skipped)?"
+        r"(?:,\s*(?P<xfail>\d+)\s+xfail)?"
+        r"(?:,\s*(?P<xpass>\d+)\s+xpass)?"
+        r"(?:\s+in\s+[\d.]+s)?"
     )
 
     summary_match: re.Match | None = None
@@ -167,22 +168,27 @@ def run_pytest(test_path: str = "tests/cognitive_brain") -> PytestResult:
         if summary_match:
             break
 
-    if summary_match is None:
-        raise RuntimeError(f"Could not locate pytest summary in output:\n{output}")
+    if summary_match is not None:
+        result.passed = int(summary_match.group("passed") or 0)
+        result.failed = int(summary_match.group("failed") or 0)
+        result.errored = int(summary_match.group("errored") or 0)
+    else:
+        # Fallback: count short test summary lines when the summary is missing
+        # (e.g. large output buffers or non-standard pytest configs).
+        result.failed = len(re.findall(r"^FAILED\s+", output, flags=re.MULTILINE))
+        result.errored = len(re.findall(r"^ERROR\s+", output, flags=re.MULTILINE))
 
-    result.total = int(summary_match.group("total"))
-    result.passed = int(summary_match.group("passed") or 0)
-    result.failed = int(summary_match.group("failed") or 0)
-    result.errored = int(summary_match.group("errored") or 0)
+    result.total = result.passed + result.failed + result.errored
 
     # Collect short error lines that pytest prints after the failing test
     # identifier, e.g.:
-    # tests/.../test_foo.py::test_bar - NameError: name 'x' is not defined
-    error_pattern = re.compile(r"^\S+::\S+\s+-\s+(.+)$")
+    # tests/.../test_foo.py::TestClass::test_bar - NameError: name 'x' is not defined
+    error_pattern = re.compile(r"^\s*\S+\s+-\s+(.+)$")
     for line in lines:
-        match = error_pattern.match(line)
-        if match:
-            result.failure_messages.append(match.group(1))
+        if line.startswith("FAILED ") or line.startswith("ERROR "):
+            match = error_pattern.match(line[7:])
+            if match:
+                result.failure_messages.append(match.group(1))
 
     # Fallback: if no short messages were parsed, gather lines that look like
     # exception headers from the captured output.

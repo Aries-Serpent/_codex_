@@ -1,3 +1,49 @@
+## Session: 2026-08-03T12:02Z — PR #5430 Phase 3 Final Operationalization
+
+**Objective:** Convert durability assets into enforceable branch-protection behavior, baseline telemetry observability, and auto-maintained legacy debt burn-down tracking.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- **Phase 1 — Branch Protection + Required Check Contract:**
+  - Documented exact required check names (`Ruff lint (cognitive_brain)`, `Mypy type check (cognitive_brain)`, `Targeted pytest (cognitive_brain core)`, `Regression guard (cognitive_brain)`) in `docs/validation/POST_MERGE_VALIDATION_PR5430.md` under a new “Required Checks Contract” section.
+  - Added `.github/workflows/cognitive-brain-required-check-selftest.yml` to parse the required gate and fail loudly in the GitHub Actions step summary if job names drift from the contract.
+- **Phase 2 — Legacy Debt Auto-Tracking:**
+  - Added `scripts/validation/update_legacy_debt_quarantine.py` to refresh `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md` from the latest pytest run, preserving manual notes and appending to a trend table.
+  - Added `.github/workflows/cognitive-brain-legacy-debt-update.yml` (weekly cron + dispatch) to run the updater and open/update a PR when counts change.
+  - Added the Trend Table and a 20% week-over-week escalation threshold to the quarantine doc.
+- **Phase 3 — Cognitive Brain Telemetry Baseline:**
+  - Added `scripts/validation/generate_cognitive_brain_telemetry_baseline.py` for file-based telemetry baseline generation.
+  - Generated `docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md` with decision event volume, forensics completeness rate, session-guard interception rate, and shell verdict distribution.
+  - Added `.github/workflows/cognitive-brain-telemetry-baseline.yml` to regenerate the report on cognitive_brain source/script changes.
+- **Phase 4 — Regression Guard Expansion:**
+  - Extended `tests/cognitive_brain/test_boundary_regression_guards.py` with:
+    - Negative architecture test blocking new direct production `session.create` paths unless allowlisted.
+    - Check-name drift test mirroring the Phase 1 contract.
+    - Legacy quarantine schema validator tests for table integrity.
+- **Phase 5 — Governance Sync:**
+  - Updated `docs/validation/INDEX.md`.
+  - Updated `docs/CHANGELOG.md` with Phase 3 deliverables.
+  - Updated this report (REQ-4).
+
+**Validation**:
+- `python scripts/ci/sync_tracked_files.py --fix` — clean.
+- `python scripts/ci/enforce_actions_versions.py --summary` — compliant.
+- `python -m ruff check src/codex/cognitive_brain tests/cognitive_brain scripts/validation` — clean.
+- `python -m mypy src/codex/cognitive_brain` — clean.
+- `python -m pytest tests/cognitive_brain/test_boundary_regression_guards.py -q` — passing.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated.
+
+**Agents used**:
+- `workflow-management-agent` (task) — drafted WEC-aware workflows and required-check self-test.
+- `autonomous-test-healer-agent` (task) — implemented legacy debt updater script.
+- `code-analysis-agent` (task) — implemented telemetry baseline generator.
+
+---
+
 ## Session: 2026-08-03T07:40Z — PR #5430 Post-Merge Durability Pass
 
 **Objective:** Convert post-merge validation findings into durable CI/governance assets and isolate unrelated legacy failures from the cognitive_brain signal.
