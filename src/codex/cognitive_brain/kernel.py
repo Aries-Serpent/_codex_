@@ -495,6 +495,8 @@ def assert_loaded() -> None:
         kernel = get_kernel()
         kernel.assert_loaded()
     except RuntimeError:
+        # Re-raise RuntimeError as-is without wrapping, to preserve the original
+        # exception and its message (prevents double-wrapping and preserves semantics)
         raise
     except Exception as exc:
         raise RuntimeError(

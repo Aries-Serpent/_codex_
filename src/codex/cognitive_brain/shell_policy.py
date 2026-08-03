@@ -74,7 +74,7 @@ _REDACTED = "[REDACTED]"
 #   - "echo $(malicious_code)" matches allow pattern "echo *"
 _SHELL_METACHARACTERS: Tuple[str, ...] = (
     # Multi-character metacharacters MUST be checked first to avoid substring matching
-    # (e.g., "||" before "|", "&&" before "&", "2>" before ">", "$(" before "$")
+    # (e.g., "||" before "|", "&&" before "&", "2>" before ">")
     "&&",  # Logical AND (conditional execution)
     "||",  # Logical OR (conditional execution)
     "$(",  # Command substitution
