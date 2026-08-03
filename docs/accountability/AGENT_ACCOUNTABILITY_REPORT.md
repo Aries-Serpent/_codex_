@@ -1,4 +1,41 @@
-## Session: 2026-08-02T09:14Z — Implement Section 11 "Where to Start" Quick Wins
+## Session: 2026-08-03T00:51Z — PR #5430 Phase 2 — Complete End-to-End Cognitive Brain Runtime
+
+**Objective:** Close all remaining end-to-end gaps in the Cognitive Brain Runtime delivery so the system provides robust native Copilot-Agent-capability runtime behaviour.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- Reviewed mandatory pre-load files (AGENTIC_REPO_STATE.md, CODEBASE_AGENCY_POLICY.md, agent_context.json, PDA tail).
+- **Phase 2A** — Added `src/codex/cognitive_brain/shell_policy.py`: `ShellPolicy` with allow/deny glob rules, `working_dir_allowlist`, `timeout_ceiling_s`, `max_retries`, and token redaction (GitHub PATs, ****** `--token`, `--password` flags). `PolicyVerdict` enum (ALLOW / DENY / AUDIT). Module-level singleton with `COGNITIVE_BRAIN_ALLOW_SHELL` env gate.
+- **Phase 2B** — Added `src/codex/cognitive_brain/session_guard.py`: `SessionGuard.create_session()` guarantees every session creation passes through `ModelNegotiator`. `SessionCreateResult` carries `decision_id`, `turn_id`, `task_id`. `safe_create_session()` module-level convenience wrapper.
+- **Phase 2C** — Extended `src/codex/cognitive_brain/telemetry.py`: added `decision_id`, `turn_id`, `task_id` to `TelemetryEvent`; new `forensics()` emit method; backward-compatible NDJSON deserialization (unknown keys silently stripped).
+- **Phase 2D** — Extended `src/codex/cognitive_brain/capability_registry.py`: `ToolSurfaceCategory` enum, `ToolSurfaceProfile` dataclass, `CAPABILITY_SCHEMA_VERSION="2.0.0"`, `get_tool_surface_registry()` (GitHub MCP 35 / Playwright 21 / web_search 1 / shell 1), `check_capability_schema_version()`.
+- **Phase 2E** — Extended `src/codex/cognitive_brain/kernel.py`: `assert_loaded()` entrypoint guard (auto-boot or fail-fast per `COGNITIVE_BRAIN_FAILSAFE_OFF`); `plan_tools()` now emits a `forensics` telemetry event with `decision_id`, `turn_id`, `task_id`, selected toolchain, and rejected alternatives. `uuid` moved to module-level import.
+- **Phase 2F** — Updated `src/codex/cognitive_brain/__init__.py` to export all new symbols.
+- **Phase 2G** — Added 5 new test files: `test_shell_policy.py`, `test_session_guard.py`, `test_forensics.py`, `test_capability_categories.py`, `test_failure_injection.py`. Total: **231 tests passing**.
+- **Phase 2H** — Added `.github/workflows/cognitive-brain-regression-guard.yml` (`workflow_dispatch`-only per AGENTS.md): 7 regression check steps covering reasoning-param stripping, negotiator interception, auto-load guard, shell bypass prevention, capability outage, stale cache, and full suite.
+- **Phase 2I** — Added `docs/cognitive_brain/OPERATOR_RUNBOOK.md`: 13-section runbook covering env vars, startup, negotiation, session guard, shell policy, capability registry, telemetry forensics, enable/disable guide, fallback order, incident response, verification steps, and CCA stability requirements.
+- Delegated to 3 parallel custom agents: `fix-shell-tests-verify`, `ci-regression-workflow`, `operator-runbook`.
+- Addressed all code review findings across 2 rounds: `force_flag` narrowed to `--force` only, docstring key fixed, `uuid` moved to module level, workflow converted to dispatch-only.
+
+**Validation**:
+- 231 tests passing (0 failures).
+- CodeQL scan: 0 alerts.
+- Black + Ruff clean on all modified files.
+- No secrets detected in changed files.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated.
+
+**Agents used**:
+- `fix-shell-tests-verify` (general-purpose) — fixed shell regex, ran full suite, applied Black/Ruff
+- `ci-regression-workflow` (general-purpose) — created CI regression guard workflow
+- `operator-runbook` (general-purpose) — wrote 13-section operator runbook
+
+---
+
+
 
 **Objective:** Execute the implementation plan derived from `docs/REPOSITORY_EXPLANATION.md` section 11, starting with quick wins that neutralize stale marketing claims and add runnable onboarding guidance.
 

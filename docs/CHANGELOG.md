@@ -1,8 +1,20 @@
 # Changelog
-**Last Updated:** 2026-08-02
+**Last Updated:** 2026-08-03
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
+
+## Unreleased — 2026-08-03
+
+### Cognitive Brain Runtime — Phase 2 (PR #5430 continuation)
+- **`shell_policy.py`** — Shell execution safety layer: allow/deny glob rules, working-directory constraints, timeout ceilings, retry limits, token redaction (GitHub PATs, ****** `--token`/`--password` flags). `PolicyVerdict` enum (ALLOW / DENY / AUDIT). Env-gated singleton.
+- **`session_guard.py`** — Central `session.create` safety wrapper: guarantees every session creation passes through `ModelNegotiator`; emits `session_guard` telemetry with `decision_id`, `turn_id`, `task_id`.
+- **`telemetry.py`** — Added `decision_id`, `turn_id`, `task_id` fields to `TelemetryEvent`; new `forensics()` emit method for traceable decision records; backward-compatible NDJSON deserialization.
+- **`capability_registry.py`** — `ToolSurfaceCategory` enum, versioned `ToolSurfaceProfile` dataclass, `CAPABILITY_SCHEMA_VERSION="2.0.0"`, `get_tool_surface_registry()` (GitHub MCP 35 / Playwright 21 / web_search 1 / shell 1), `check_capability_schema_version()`.
+- **`kernel.py`** — `assert_loaded()` entrypoint guard; `plan_tools()` now emits forensics event with selected toolchain and rejected alternatives.
+- **Tests** — 5 new test files; total **231 cognitive brain tests passing**.
+- **CI** — `cognitive-brain-regression-guard.yml` (dispatch-only): 7-step regression guard covering reasoning-param, negotiator, auto-load, shell bypass, capability outage, stale cache, and full suite.
+- **Docs** — `docs/cognitive_brain/OPERATOR_RUNBOOK.md`: 13-section operator runbook.
 
 ## Unreleased — 2026-08-02
 
