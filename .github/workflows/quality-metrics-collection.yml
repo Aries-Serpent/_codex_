@@ -42,10 +42,21 @@ jobs:
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
     - name: Install dependencies
-      run: "python -m pip install --upgrade pip\npip install -e .\npip install \\\n\
-        \  pytest>=7.0 \\\n  pytest-cov>=4.0 \\\n  pytest-timeout \\\n  pytest-xdist\
-        \ \\\n  pytest-asyncio \\\n  mutmut \\\n  radon \\\n  pydocstyle \\\n  pip-audit\
-        \ \\\n  bandit \\\n  semgrep\n"
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install \
+          "pytest>=7.0" \
+          "pytest-cov>=4.0" \
+          pytest-timeout \
+          pytest-xdist \
+          pytest-asyncio \
+          mutmut \
+          radon \
+          pydocstyle \
+          pip-audit \
+          bandit \
+          semgrep
     - name: Create metrics directory
       run: 'mkdir -p .reports/metrics
 

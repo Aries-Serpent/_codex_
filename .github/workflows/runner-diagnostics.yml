@@ -41,7 +41,13 @@ jobs:
     - name: Summary
       if: always()
       shell: bash
-      run: "{\n  echo \"## Runner diagnostics\"\n  echo\n  echo \"- RUNS_ON: ${{ vars.RUNS_ON\
-        \ || '[\\"self-hosted\\",\\"linux\\"]' }}"\n  echo \"- Docker: present\"\
-        \n  echo \"- Buildx: checked\"\n  echo \"- binfmt: checked (best-effort)\"\
-        \n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+      run: |
+        {
+          echo "## Runner diagnostics"
+          echo
+          RUNS_ON_LABEL="${{ vars.RUNS_ON || '["self-hosted","linux"]' }}"
+          echo "- RUNS_ON: ${RUNS_ON_LABEL}"
+          echo "- Docker: present"
+          echo "- Buildx: checked"
+          echo "- binfmt: checked (best-effort)"
+        } >> "$GITHUB_STEP_SUMMARY"
