@@ -7,9 +7,9 @@ arbitrary code execution (CWE-502: Insecure Deserialization).
 
 import json
 import logging
-from typing import Any, Dict, Optional, Type, TypeVar
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from enum import Enum
+from typing import Any, Dict, Type, TypeVar
 
 logger = logging.getLogger(__name__)
 

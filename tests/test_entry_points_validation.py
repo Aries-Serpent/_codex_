@@ -12,6 +12,7 @@ for each profile. It tests:
 
 import subprocess
 import sys
+
 import pytest
 
 

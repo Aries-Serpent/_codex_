@@ -17,8 +17,7 @@ from src.codex.cognitive_brain.capability_registry import (
     ModelCapabilityProfile,
 )
 from src.codex.cognitive_brain.fallbacks import safe_default_config
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator, NegotiationResult
-
+from src.codex.cognitive_brain.model_negotiator import ModelNegotiator
 
 # ---------------------------------------------------------------------------
 # Fixtures

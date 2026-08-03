@@ -100,7 +100,7 @@ class APIConfig:
         For logging/display purposes, redact the key value.
         """
         return {
-            'Authorization': f'******',
+            'Authorization': '******',
             'Content-Type': 'application/json',
         }
     

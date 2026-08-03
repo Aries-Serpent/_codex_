@@ -9,12 +9,8 @@ Coverage targets:
 - Optional YAML/JSON handling
 """
 
-import json
 import logging
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -152,8 +148,9 @@ class TestUtilityHelpers:
     def test_parse_flags_with_int(self):
         """Test _parse_flags with int."""
         try:
-            from codex_ml.safety.filters import _parse_flags
             import re
+
+            from codex_ml.safety.filters import _parse_flags
             
             result = _parse_flags(re.IGNORECASE)
             assert isinstance(result, int)
@@ -164,8 +161,9 @@ class TestUtilityHelpers:
     def test_parse_flags_with_string_ignorecase(self):
         """Test _parse_flags with string IGNORECASE."""
         try:
-            from codex_ml.safety.filters import _parse_flags
             import re
+
+            from codex_ml.safety.filters import _parse_flags
             
             result = _parse_flags("IGNORECASE")
             assert result == re.IGNORECASE
@@ -175,8 +173,9 @@ class TestUtilityHelpers:
     def test_parse_flags_with_string_i(self):
         """Test _parse_flags with string I."""
         try:
-            from codex_ml.safety.filters import _parse_flags
             import re
+
+            from codex_ml.safety.filters import _parse_flags
             
             result = _parse_flags("I")
             assert result == re.IGNORECASE
@@ -186,8 +185,9 @@ class TestUtilityHelpers:
     def test_parse_flags_with_string_multiline(self):
         """Test _parse_flags with string MULTILINE."""
         try:
-            from codex_ml.safety.filters import _parse_flags
             import re
+
+            from codex_ml.safety.filters import _parse_flags
             
             result = _parse_flags("MULTILINE")
             assert result == re.MULTILINE
@@ -475,6 +475,7 @@ class TestEnvVarHandling:
         """Test that bypass env var can be read."""
         try:
             import os
+
             from codex_ml.safety.filters import BYPASS_ENV_VAR
             
             value = os.getenv(BYPASS_ENV_VAR, "false")

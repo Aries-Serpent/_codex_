@@ -12,21 +12,20 @@ Tests:
 """
 
 import sys
-import json
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent / "scripts" / "ci"))
 
+from automated_recovery import ExponentialBackoffRetry
 from error_classifier import (
-    ErrorClassifier,
     ErrorCategory,
-    RecoverySeverity,
+    ErrorClassifier,
     RecoveryMetrics,
+    RecoverySeverity,
 )
-from automated_recovery import AutomatedRecovery, ExponentialBackoffRetry
-from telemetry_monitor import TelemetryCollector, MetricsReporter
+from telemetry_monitor import TelemetryCollector
 
 
 class TestSuite:

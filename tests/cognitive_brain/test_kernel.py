@@ -12,19 +12,14 @@ Covers:
 
 from __future__ import annotations
 
-import os
-
 import pytest
 
 from src.codex.cognitive_brain.kernel import (
     CognitiveBrainKernel,
     KernelConfig,
-    boot,
     get_kernel,
     reset_kernel,
 )
-from src.codex.cognitive_brain.telemetry import TelemetryEvent
-
 
 # ---------------------------------------------------------------------------
 # Helpers

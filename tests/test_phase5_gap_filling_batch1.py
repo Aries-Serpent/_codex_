@@ -8,13 +8,11 @@ Mutation kill rate target: ≥85%
 This batch focuses on utility modules and core infrastructure.
 """
 
-import pytest
-import sys
 import os
 import tempfile
-import json
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, mock_open
+
+import pytest
+
 
 # Test bridge_manager.py
 class TestBridgeManager:
@@ -299,7 +297,7 @@ class TestSecurityUtils:
     def test_security_encrypt_decrypt(self):
         """Test encryption/decryption operations"""
         try:
-            from src.aries_serpent_core.security_utils import encrypt_string, decrypt_string
+            from src.aries_serpent_core.security_utils import decrypt_string, encrypt_string
             encrypted = encrypt_string("sensitive data")
             decrypted = decrypt_string(encrypted)
             assert decrypted == "sensitive data"
@@ -603,9 +601,7 @@ class TestPhase5Integration:
     def test_module_import_chain(self):
         """Test importing multiple related modules"""
         try:
-            from src.aries_serpent_core import cli
-            from src.aries_serpent_core import file_utils
-            from src.aries_serpent_core import logging_safe
+            from src.aries_serpent_core import cli, file_utils, logging_safe
             assert True
         except ImportError:
             pytest.skip("Import chain incomplete")
