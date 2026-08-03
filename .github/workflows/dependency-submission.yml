@@ -25,7 +25,7 @@ jobs:
       run: |
         : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY env var is required}"
         if [[ "$GITHUB_REPOSITORY" == "org/repo" || "$GITHUB_REPOSITORY" == "owner/repo" ]]; then
-          echo "::error::GITHUB_REPOSITORY is a placeholder ('$GITHUB_REPOSITORY'). Refusing to run dependency submission against a non-existent repo — this causes Rust proxy stderr panics (os error 11) in CCA runtime."
+          echo "::error::GITHUB_REPOSITORY contains a placeholder value ('$GITHUB_REPOSITORY'). This guard exists to prevent dependency submission from running against a non-existent repository. Ensure this workflow is triggered by a real push or pull_request event in an actual GitHub repository — do not invoke it with a synthetic or test repository context."
           exit 1
         fi
         echo "✅ GITHUB_REPOSITORY=$GITHUB_REPOSITORY — proceeding"
