@@ -1,3 +1,44 @@
+## Session: 2026-08-03T07:40Z — PR #5430 Post-Merge Durability Pass
+
+**Objective:** Convert post-merge validation findings into durable CI/governance assets and isolate unrelated legacy failures from the cognitive_brain signal.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- Reviewed mandatory pre-load files (AGENTIC_REPO_STATE.md, CODEBASE_AGENCY_POLICY.md, agent_context.json, PDA tail).
+- **Phase 1 — Evidence persistence:**
+  - Created `docs/validation/POST_MERGE_VALIDATION_PR5430.md` with merge commit `7a54909c6d287524462c5405ee46cd1cbeb72ff1`, command matrix, outcomes, scope and residual risk statements.
+  - Updated `docs/CHANGELOG.md` and this report (REQ-4/REQ-5).
+- **Phase 2 — CI signal separation:**
+  - Added `.github/workflows/cognitive-brain-required-gate.yml` (blocking): ruff, mypy, targeted pytest, regression guard.
+  - Added `.github/workflows/cognitive-brain-legacy-debt.yml` (informational, `continue-on-error: true`): full cognitive_brain suite with legacy failures visible but non-blocking.
+- **Phase 3 — Legacy failure quarantine:**
+  - Created `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md` enumerating 24 failed + 13 errored non-cognitive_brain failures, classified by root cause, with owner lane and phased remediation priorities.
+- **Phase 4 — Regression meta-tests:**
+  - Added `tests/cognitive_brain/test_boundary_regression_guards.py` with guards for session/create boundary, shell adversarial vector coverage, `assert_loaded()` enforcement, and forensics field preservation (`decision_id`, `turn_id`, `task_id`).
+- **Phase 5 — Hosted runtime boundary clarification:**
+  - Created `docs/validation/CCA_RUNTIME_BOUNDARY_NOTES.md` documenting repo-controlled vs hosted-runtime-controlled mitigations for CCA failure modes.
+
+**Validation**:
+- `python scripts/ci/sync_tracked_files.py --fix` — clean.
+- `python scripts/ci/enforce_actions_versions.py --summary` — 243 workflow files checked, all approved.
+- `python -m ruff check src/codex/cognitive_brain tests/cognitive_brain/test_boundary_regression_guards.py` — clean.
+- `python -m mypy src/codex/cognitive_brain` — clean (no issues in 15 source files).
+- Targeted cognitive_brain pytest — 231+ tests passing, 0 regressions in scope.
+- Full cognitive_brain pytest — 1,041 passing, 24 failed, 13 errored, all pre-existing and quarantined.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated.
+
+**Agents used**:
+- `cb-test-inventory` (task) — produced structured inventory of legacy failures.
+- `explore-ci-structure` (explore) — identified reusable CI patterns and gaps.
+- `explore-validation-docs` (explore) — confirmed validation doc conventions.
+- `explore-cognitive-sources` (explore) — mapped boundary guarantees to lock with meta-tests.
+
+---
+
 ## Session: 2026-08-03T02:53Z — P0 Security Hardening: Runtime Boundaries & Shell Metacharacter Prevention
 
 **Objective:** Close P0 security gaps in Cognitive Brain runtime by hardening three critical entry points: (1) shell-command chaining bypass prevention, (2) SessionGuard centralization for all model negotiation, (3) kernel.assert_loaded() at all reasoning entrypoints.
