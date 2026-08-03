@@ -262,7 +262,7 @@ class MCPOrchestrator:
             Optional :class:`~policy.PolicyContext` to guide scoring.
             If omitted, a default neutral context is constructed.
         """
-        # Ensure kernel is loaded before planning (deferred import required to avoid circular dependency)
+        # Ensure kernel is loaded before planning (deferred import avoids circular dependency)
         from .kernel import assert_loaded
         assert_loaded()
 
