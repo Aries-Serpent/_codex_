@@ -54,11 +54,16 @@ __kernel_version__ = "1.0.0"
 
 # ---------------------------------------------------------------------------
 # CCA stability flags (mandatory per AGENTS.md)
+# Read at call-time (inside _assert_cca_stability) so tests can monkeypatch.
 # ---------------------------------------------------------------------------
 
-_CCA_VERSION_LOCK = os.getenv("COPILOT_AGENT_CCA_VERSION_LOCK", "stable")
-_DEDUP_ENABLED = os.getenv("COPILOT_AGENT_DEDUPLICATION_ENABLED", "true").lower() == "true"
-_TURN_ISOLATION = os.getenv("COPILOT_AGENT_TURN_ISOLATION_ENABLED", "true").lower() == "true"
+
+def _read_cca_flags() -> tuple[str, bool, bool]:
+    """Return (version_lock, dedup_enabled, turn_isolation) from env at call time."""
+    lock = os.getenv("COPILOT_AGENT_CCA_VERSION_LOCK", "stable")
+    dedup = os.getenv("COPILOT_AGENT_DEDUPLICATION_ENABLED", "true").lower() == "true"
+    turn = os.getenv("COPILOT_AGENT_TURN_ISOLATION_ENABLED", "true").lower() == "true"
+    return lock, dedup, turn
 
 
 # ---------------------------------------------------------------------------
@@ -157,13 +162,14 @@ class CognitiveBrainKernel:
             return
         self._boot_time = time.monotonic()
         self._assert_cca_stability()
+        cca_lock, dedup, turn_iso = _read_cca_flags()
         config_summary = {
             "version": __kernel_version__,
             "policy_seed": self._config.policy_seed,
             "allow_shell": self._config.allow_shell,
-            "cca_version_lock": _CCA_VERSION_LOCK,
-            "deduplication": _DEDUP_ENABLED,
-            "turn_isolation": _TURN_ISOLATION,
+            "cca_version_lock": cca_lock,
+            "deduplication": dedup,
+            "turn_isolation": turn_iso,
         }
         self._telemetry.startup(__kernel_version__, config_summary)
         self._loaded = True
@@ -172,9 +178,9 @@ class CognitiveBrainKernel:
             "(policy_seed=%d cca_lock=%s dedup=%s turn_isolation=%s)",
             __kernel_version__,
             self._config.policy_seed,
-            _CCA_VERSION_LOCK,
-            _DEDUP_ENABLED,
-            _TURN_ISOLATION,
+            cca_lock,
+            dedup,
+            turn_iso,
         )
 
     @property
@@ -260,19 +266,23 @@ class CognitiveBrainKernel:
 
     @staticmethod
     def _assert_cca_stability() -> None:
-        """Log warnings if CCA stability env vars are misconfigured."""
-        if _CCA_VERSION_LOCK != "stable":
+        """Log warnings if CCA stability env vars are misconfigured.
+
+        Reads env vars at call time so that monkeypatching in tests works.
+        """
+        cca_lock, dedup, turn_iso = _read_cca_flags()
+        if cca_lock != "stable":
             logger.warning(
                 "COPILOT_AGENT_CCA_VERSION_LOCK is '%s'; expected 'stable'. "
                 "Risk of CCA version upgrade causing duplicate function-call errors.",
-                _CCA_VERSION_LOCK,
+                cca_lock,
             )
-        if not _DEDUP_ENABLED:
+        if not dedup:
             logger.warning(
                 "COPILOT_AGENT_DEDUPLICATION_ENABLED is not 'true'. "
                 "Payload deduplication disabled — risk of duplicate fc_call IDs."
             )
-        if not _TURN_ISOLATION:
+        if not turn_iso:
             logger.warning(
                 "COPILOT_AGENT_TURN_ISOLATION_ENABLED is not 'true'. "
                 "Turn-state isolation disabled — risk of state leakage across turns."
@@ -336,16 +346,34 @@ def reset_kernel() -> None:
 # ---------------------------------------------------------------------------
 # Environment auto-load
 # ---------------------------------------------------------------------------
-# When COGNITIVE_BRAIN_AUTO_LOAD=true (default), importing this module
-# triggers kernel boot automatically — satisfying FR-5 (Environment Auto-Load).
+# FR-5 (Environment Auto-Load): call `get_kernel()` (or `boot()`) from
+# application entry points and agent boot hooks.  The helper below is
+# provided for scripts that want conditional auto-boot without importing
+# all kernel internals.
+#
+# To trigger auto-boot from a script or entry point:
+#
+#   from src.codex.cognitive_brain.kernel import auto_load
+#   auto_load()
+#
+# Set COGNITIVE_BRAIN_FAILSAFE_OFF=true to disable all auto-boot calls.
 
-_AUTO_LOAD_ENV = os.getenv("COGNITIVE_BRAIN_AUTO_LOAD", "true").lower()
-_FAILSAFE_OFF = os.getenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "false").lower() == "true"
 
-if _AUTO_LOAD_ENV == "true" and not _FAILSAFE_OFF:
+def auto_load() -> Optional[CognitiveBrainKernel]:
+    """Boot the kernel if COGNITIVE_BRAIN_AUTO_LOAD=true (default) and
+    COGNITIVE_BRAIN_FAILSAFE_OFF is not set.
+
+    Safe to call multiple times; returns None when auto-load is disabled.
+    Does not raise — failures are logged as warnings.
+    """
+    failsafe_off = os.getenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "false").lower() == "true"
+    if failsafe_off:
+        return None
+    auto = os.getenv("COGNITIVE_BRAIN_AUTO_LOAD", "true").lower()
+    if auto != "true":
+        return None
     try:
-        get_kernel()
-    except Exception as _auto_load_exc:  # noqa: BLE001
-        logger.warning(
-            "Cognitive Brain auto-load failed (non-fatal): %s", _auto_load_exc
-        )
+        return get_kernel()
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Cognitive Brain auto-load failed (non-fatal): %s", exc)
+        return None

@@ -25,6 +25,7 @@ import abc
 import json
 import logging
 import threading
+from collections import deque
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -80,14 +81,11 @@ class InMemoryTelemetryBackend(TelemetryBackend):
 
     def __init__(self, max_events: int = 10_000) -> None:
         self._lock = threading.Lock()
-        self._events: List[TelemetryEvent] = []
-        self._max = max_events
+        self._events: deque[TelemetryEvent] = deque(maxlen=max_events)
 
     def write(self, event: TelemetryEvent) -> None:
         with self._lock:
-            if len(self._events) >= self._max:
-                self._events.pop(0)
-            self._events.append(event)
+            self._events.append(event)  # O(1); deque auto-evicts oldest when full
 
     def read_all(self) -> List[TelemetryEvent]:
         with self._lock:

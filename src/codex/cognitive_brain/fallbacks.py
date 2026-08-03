@@ -17,6 +17,7 @@ Usage::
 from __future__ import annotations
 
 import functools
+import importlib
 import logging
 import time
 from dataclasses import dataclass, field
@@ -252,8 +253,6 @@ def import_optional(module_name: str, attr: Optional[str] = None) -> Any:
             mlflow.log_metric("loss", 0.5)
     """
     try:
-        import importlib
-
         mod = importlib.import_module(module_name)
         if attr is not None:
             return getattr(mod, attr, None)

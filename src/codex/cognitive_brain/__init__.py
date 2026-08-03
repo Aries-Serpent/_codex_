@@ -17,6 +17,7 @@ from src.codex.cognitive_brain.fallbacks import (
 from src.codex.cognitive_brain.kernel import (
     CognitiveBrainKernel,
     KernelConfig,
+    auto_load,
     boot,
     get_kernel,
     reset_kernel,
@@ -91,6 +92,7 @@ __all__ = [
     # Kernel
     "CognitiveBrainKernel",
     "KernelConfig",
+    "auto_load",
     "boot",
     "get_kernel",
     "reset_kernel",
