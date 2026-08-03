@@ -57,7 +57,6 @@ jobs:
       with:
         python-version: 3.12.13
 
-        cache-dependency-path: pyproject.toml
     - name: Install ruff
       run: pip install ruff
     - name: Run Ruff linting
@@ -84,7 +83,6 @@ jobs:
       with:
         python-version: 3.12.13
 
-        cache-dependency-path: pyproject.toml
     - name: Install mypy
       run: pip install mypy
     - name: Run mypy type checking
@@ -115,7 +113,6 @@ jobs:
       with:
         python-version: 3.12.13
 
-        cache-dependency-path: pyproject.toml
     - name: Install bandit
       run: pip install bandit[toml]
     - name: Run Bandit security analysis

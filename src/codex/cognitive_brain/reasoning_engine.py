@@ -24,11 +24,15 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
+from .calibration import ConfidenceCalibrator
+from .kernel import assert_loaded
+
+if TYPE_CHECKING:
+    from .knowledge_base import KnowledgeBase
 
 logger = logging.getLogger(__name__)
 
@@ -223,6 +227,9 @@ class ReasoningLayer:
         Returns:
             List of candidate decisions with reasoning
         """
+        # Ensure kernel is loaded before reasoning
+        assert_loaded()
+
         candidates = []
 
         # Heuristic strategy
@@ -710,6 +717,9 @@ class ReasoningEngine:
         Returns:
             Final Decision
         """
+        # Ensure kernel is loaded before end-to-end reasoning
+        assert_loaded()
+
         start_time = time.time()
 
         # Layer 1: Perception

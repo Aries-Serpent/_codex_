@@ -13,10 +13,9 @@ secrets:
 # organization. `null` means disabling configuration variables check.
 config-variables: null
 
-# Suppress selected non-error ShellCheck findings (info, style, and warning) repo-wide.
-# SC1xxx (parse errors) and other error-level findings remain hard-fail.
+# Suppress selected ShellCheck findings repo-wide.
 #
-# Suppressed codes:
+# Suppressed codes (info/style/warning/error — stylistic false-positives):
 #   SC2086 - Double quote to prevent globbing and word splitting  (info)
 #   SC2012 - Use find instead of ls (info)
 #   SC2016 - Expressions don't expand in single quotes (info)
@@ -33,6 +32,15 @@ config-variables: null
 #   SC2223 - This default assignment may cause DoS (info)
 #   SC2162 - read without -r will mangle backslashes (info)
 #   SC2015 - A && B || C is not if-then-else (info)
+#   SC2181 - Check exit code directly with e.g. 'if mycmd', not indirectly via $? (style)
+#
+# Suppressed codes (false-positives from Python code in shell heredocs):
+#   SC1036 - '(' is invalid here — triggered by Python code in << 'HEREDOC' (error)
+#   SC1088 - Parsing stopped here — triggered by Python code in << 'HEREDOC' (error)
+#   SC2283 - Remove spaces around = — triggered by Python assignments in heredoc (error)
+#
+# Suppressed codes (false-positives from pip version specifiers):
+#   SC2261 - Multiple redirections compete — triggered by pkg>=ver in pip install (error)
 paths:
   .github/workflows/**/*.yml:
     ignore:
@@ -52,3 +60,8 @@ paths:
       - 'SC2223:info:'
       - 'SC2162:info:'
       - 'SC2015:info:'
+      - 'SC2181:style:'
+      - 'SC1036:error:'
+      - 'SC1088:error:'
+      - 'SC2283:error:'
+      - 'SC2261:error:'

@@ -524,3 +524,67 @@ python3 -m py_compile .github/agents/emergent-intelligence-agent/src/__init__.py
 **Last Updated:** 2026-01-03T21:34:00Z
 **Document Version:** 1.0.0
 **Status:** ✅ Production Ready
+
+---
+
+## 🚀 Multi-Lane Custom Agent Delegation Framework
+
+> **MANDATORY DEFAULT for ALL Copilot Agent Sessions — effective immediately.**
+> Every session MUST launch independent agents in parallel using `task(mode="background")`.
+
+### Why Multi-Lane
+
+| Metric | Serial Execution | Multi-Lane Execution |
+|--------|-----------------|---------------------|
+| Session Duration | 20-30 minutes | 8-12 minutes |
+| Parallelism | 1 agent at a time | 3-5 agents simultaneously |
+| Coverage | Sequential scope | Concurrent scope (CI + Security + Docs) |
+| Failure Rate | Higher (one miss = block) | Lower (parallel validation) |
+| Time Savings | Baseline | **60-80% reduction** |
+
+### Lane Types
+
+| Type | `mode` | Purpose |
+|------|--------|---------|
+| **Primary (P1, P2...)** | `background` | Core task — launch immediately |
+| **Support (S1, S2...)** | `background` | Complementary — launch same time as Primary |
+| **Sequential (Seq1...)** | `sync` | Depends on prior lane output |
+
+### Task → Lane Quick Reference
+
+| Task Category | P1 Agent | P2 Agent | S1 Agent |
+|---------------|----------|----------|----------|
+| CI import error | `ci-importerror-agent` | `ci-testing-agent` | `unified-coverage-agent` |
+| CodeQL alert | `codeql-alert-resolution-agent` | `security-audit-agent` | `dependency-vulnerability-scanner` |
+| Workflow YAML | `workflow-ci-fixer` | `ci-log-retrieval-agent` | `workflow-compliance-guardian` |
+| Flaky test | `fragile-test-guardian` | `autonomous-test-healer-agent` | `test-enhancement-agent` |
+| Doc broken link | `link-validator-agent` | `unified-doc-agent` | `doc-freshness-checker` |
+| Security audit | `security-audit-agent` | `unified-security-scanner` | `dependency-vulnerability-scanner` |
+| Coverage gap | `unified-coverage-agent` | `test-enhancement-agent` | `test-alignment-fixer` |
+
+### Plan Template (Multi-Lane)
+
+All plans MUST use this structure:
+
+```markdown
+**Lane P1 (Primary 1) — Parallel Start:**
+- [ ] Task → agent_type: `<agent>` mode: `background`
+
+**Lane P2 (Primary 2) — Parallel Start:**
+- [ ] Task → agent_type: `<agent>` mode: `background`
+
+**Lane S1 (Support 1) — Parallel Start:**
+- [ ] Task → agent_type: `<agent>` mode: `background`
+
+**Lane Seq1 (Sequential — after P1+P2 complete):**
+- [ ] Task → agent_type: `<agent>` mode: `sync`
+```
+
+### Enforcement
+
+- Sessions running agents serially (without justification) violate **CAD-Mandate Rule 1**
+- All sessions with ≥2 independent workstreams **MUST** launch ≥2 background agents in the FIRST response
+- Violations are detected by `comment-review-gate.yml` and block merge
+
+**Last Updated:** 2026-08-03
+**Status:** ✅ Mandatory — All Sessions

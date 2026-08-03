@@ -80,7 +80,7 @@ jobs:
 
     - name: Detect unhandled flaky tests
       id: detect
-      run: "python3 << 'PYTHON_SCRIPT'\nimport re\nimport json\nfrom pathlib import\
+      run: "# shellcheck disable=SC1036,SC1088,SC2283\npython3 << 'PYTHON_SCRIPT'\nimport re\nimport json\nfrom pathlib import\
         \ Path\n\n# Flaky patterns that should be marked with @pytest.mark.flaky\n\
         FLAKY_PATTERNS = {\n    'async_operations': r'(@pytest\\.mark\\.asyncio|asyncio\\\
         .run|await |async def)',\n    'network_calls': r'(requests\\.|http\\.|socket\\\
@@ -144,7 +144,7 @@ jobs:
 
     - name: Analyze docstring coverage
       id: coverage
-      run: "python3 << 'PYTHON_SCRIPT'\nimport ast\nimport json\nfrom pathlib import\
+      run: "# shellcheck disable=SC1036,SC1088,SC2283\npython3 << 'PYTHON_SCRIPT'\nimport ast\nimport json\nfrom pathlib import\
         \ Path\n\ntest_files = list(Path('tests').rglob('test_*.py'))\n\ntotal_tests\
         \ = 0\ndocumented_tests = 0\nmissing_docstrings = []\n\nfor test_file in test_files[:200]:\
         \  # Sample\n    try:\n        content = test_file.read_text(encoding='utf-8',\
