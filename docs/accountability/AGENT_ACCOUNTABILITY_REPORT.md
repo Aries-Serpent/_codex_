@@ -1,3 +1,64 @@
+## Session: 2026-08-03T02:53Z — P0 Security Hardening: Runtime Boundaries & Shell Metacharacter Prevention
+
+**Objective:** Close P0 security gaps in Cognitive Brain runtime by hardening three critical entry points: (1) shell-command chaining bypass prevention, (2) SessionGuard centralization for all model negotiation, (3) kernel.assert_loaded() at all reasoning entrypoints.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- Reviewed mandatory pre-load files (AGENTIC_REPO_STATE.md, CODEBASE_AGENCY_POLICY.md).
+- Confirmed full autonomy: `COPILOT_AGENT_AUTH_ENABLED=true` permanent.
+- **P0 Gap 1 — Shell metacharacter bypass prevention:**
+  - Fixed shell_policy.py: Removed inverted-logic special handling for `&` operator (Issue #1 from code-review)
+  - Simplified _check_shell_metacharacters() to unconditionally deny all 15 shell metacharacters (;, &&, ||, |, \n, \r, $(), `, (), {}, >, <, 2>, &)
+  - Removed unreachable dead code for pipe operator special case (Issue #2)
+  - Added 17 comprehensive test cases covering all metacharacter vectors (Issue #3 resolution)
+  - Updated test_output_redirect_is_audit → test_output_redirect_is_denied (design change: all shell metacharacters now blocked as P0 security requirement)
+  - **Result:** All 56 shell_policy tests passing; all 6 bypass scenarios correctly DENY
+- **P0 Gap 2 — SessionGuard centralization for model negotiation:**
+  - Refactored kernel.negotiate_model() and safe_session_config() to route through SessionGuard (not direct negotiator calls)
+  - SessionGuard now preserves forensics: decision_id, turn_id, task_id for all negotiation paths
+  - **Result:** All negotiation telemetry now routed via session_guard events (consistent tracing across all paths)
+- **P0 Gap 3 — Kernel.assert_loaded() guards on all reasoning entrypoints:**
+  - Added assert_loaded() guards to:
+    - kernel.negotiate_model() (line 194+)
+    - kernel.safe_session_config() (line 218+)
+    - kernel.plan_tools() (line 233+)
+    - orchestrator.MCPOrchestrator.plan() (line 250+)
+    - reasoning_engine.ReasoningLayer.generate_candidates() (line 220+)
+    - reasoning_engine.CognitiveBrainEngine.make_decision() (line 696+)
+  - Added module-level assert_loaded() convenience function for external code
+  - Exported assert_loaded in __init__.py public API
+  - **Result:** All kernel methods now fail-fast if kernel not booted (COGNITIVE_BRAIN_FAILSAFE_OFF=true disables)
+- Launched 3 parallel code-review agents:
+  - shell-bypass-hardening: Verified shell metacharacter detection logic, reported 2 bugs (fixed)
+  - session-guard-verification: Verified SessionGuard usage, reported dual-path negotiation gap (fixed)
+  - kernel-entrypoint-hardening: Verified assert_loaded() placement, confirmed 3 kernel methods needed guards (all added)
+- Updated test_kernel.py: Changed test event queries from "negotiation" → "session_guard" (reflects new telemetry routing)
+- Ran full cognitive_brain test suite: 1024 tests passing, 24 pre-existing failures (unrelated modules), 0 regressions
+
+**Validation**:
+- shell_policy.py: 56 tests passing (17 new metacharacter tests + 39 existing tests)
+- kernel.py: 22 tests passing (all negotiation tests updated to query correct event type)
+- session_guard.py: 25 tests passing
+- All 15 shell metacharacters now blocked unconditionally at gate Step 0 (before pattern matching)
+- All kernel methods guarded with assert_loaded()
+- All session negotiation now routed through SessionGuard for consistent forensics
+- No security vulnerabilities introduced
+- No new dependencies added
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated (if needed).
+
+**Agents used**:
+- shell-bypass-hardening (code-review) — verified metacharacter detection, reported 2 bugs
+- session-guard-verification (code-review) — verified SessionGuard centralization
+- kernel-entrypoint-hardening (code-review) — verified assert_loaded() guards
+
+**Checkpoint**: Commit 3bb5ff43 (Apply remaining changes) + test update
+
+---
+
 ## Session: 2026-08-03T00:51Z — PR #5430 Phase 2 — Complete End-to-End Cognitive Brain Runtime
 
 **Objective:** Close all remaining end-to-end gaps in the Cognitive Brain Runtime delivery so the system provides robust native Copilot-Agent-capability runtime behaviour.

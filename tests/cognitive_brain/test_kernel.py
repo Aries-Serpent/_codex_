@@ -123,7 +123,7 @@ class TestKernelNegotiateModel:
     def test_negotiation_event_recorded(self) -> None:
         k = _fresh_kernel()
         k.negotiate_model("claude-haiku-4.5", {"reasoning_effort": "high"})
-        events = k.telemetry.query(event_type="negotiation")
+        events = k.telemetry.query(event_type="session_guard")
         assert len(events) >= 1
         assert events[-1].model_id == "claude-haiku-4.5"
 
@@ -133,7 +133,7 @@ class TestKernelNegotiateModel:
             "claude-haiku-4.5",
             {"reasoning_effort": "high"},
         )
-        events = k.telemetry.query(event_type="negotiation")
+        events = k.telemetry.query(event_type="session_guard")
         payload = events[-1].payload
         assert "stripped_params" in payload
         assert "reasoning_effort" in payload["stripped_params"]
