@@ -73,13 +73,17 @@ _REDACTED = "[REDACTED]"
 #   - "cat file | sh" matches allow pattern "cat *"
 #   - "echo $(malicious_code)" matches allow pattern "echo *"
 _SHELL_METACHARACTERS: Tuple[str, ...] = (
-    ";",  # Command separator
+    # Multi-character metacharacters MUST be checked first to avoid substring matching
+    # (e.g., "||" before "|", "&&" before "&", "2>" before ">", "$(" before "$")
     "&&",  # Logical AND (conditional execution)
     "||",  # Logical OR (conditional execution)
+    "$(", # Command substitution
+    "2>", # Error redirection
+    # Single-character metacharacters
+    ";",  # Command separator
     "|",  # Pipe (output redirection)
     "\n",  # Newline (multi-line commands)
     "\r",  # Carriage return
-    "$(", # Command substitution
     "`",  # Backtick command substitution
     "{",  # Brace grouping/expansion
     "}",  # Brace grouping/expansion
@@ -87,7 +91,6 @@ _SHELL_METACHARACTERS: Tuple[str, ...] = (
     ")",  # Subshell grouping
     ">",  # Output redirection
     "<",  # Input redirection
-    "2>", # Error redirection
     "&",  # Background execution (when not part of &&)
 )
 
@@ -404,7 +407,10 @@ class ShellPolicy:
         """
         for metachar in _SHELL_METACHARACTERS:
             if metachar in command:
-                return f"Command contains shell metacharacter '{metachar}' which enables chaining/redirection"
+                return (
+                    f"Command contains shell metacharacter '{metachar}' which "
+                    "enables chaining/redirection"
+                )
 
         return None
 

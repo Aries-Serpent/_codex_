@@ -146,6 +146,9 @@ class CognitiveBrainKernel:
             session_id=self._config.session_id,
         )
 
+        # Session guard for model negotiation (initialized lazily on first use).
+        self._session_guard: Optional[SessionGuard] = None
+
         self._loaded = False
 
     # ------------------------------------------------------------------
@@ -226,8 +229,11 @@ class CognitiveBrainKernel:
             The negotiation result with stripped parameters and resolved model.
         """
         self.assert_loaded()  # Ensure kernel is booted before reasoning
-        guard = SessionGuard(negotiator=self._negotiator, telemetry=self._telemetry)
-        result = guard.create_session(
+        if self._session_guard is None:
+            self._session_guard = SessionGuard(
+                negotiator=self._negotiator, telemetry=self._telemetry
+            )
+        result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id
         )
@@ -263,8 +269,11 @@ class CognitiveBrainKernel:
             The cleaned session configuration with model key set.
         """
         self.assert_loaded()  # Ensure kernel is booted before reasoning
-        guard = SessionGuard(negotiator=self._negotiator, telemetry=self._telemetry)
-        result = guard.create_session(
+        if self._session_guard is None:
+            self._session_guard = SessionGuard(
+                negotiator=self._negotiator, telemetry=self._telemetry
+            )
+        result = self._session_guard.create_session(
             model_id, session_config, required_capabilities,
             turn_id=turn_id, task_id=task_id
         )
