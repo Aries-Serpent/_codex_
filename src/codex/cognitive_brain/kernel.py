@@ -146,7 +146,7 @@ class CognitiveBrainKernel:
             session_id=self._config.session_id,
         )
 
-        # Session guard for model negotiation (initialized lazily on first use).
+        # Session guard for model negotiation (initialized eagerly during boot()).
         self._session_guard: Optional[SessionGuard] = None
 
         self._loaded = False

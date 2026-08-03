@@ -81,7 +81,7 @@ _SHELL_METACHARACTERS: Tuple[str, ...] = (
     "2>", # Error redirection
     # Single-character metacharacters
     ";",  # Command separator
-    "|",  # Pipe (output redirection)
+    "|",  # Pipe (stdout to stdin chaining)
     "\n",  # Newline (multi-line commands)
     "\r",  # Carriage return
     "`",  # Backtick command substitution
