@@ -33,7 +33,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-from src.codex.cognitive_brain.policy import (
+from .policy import (
     CandidatePlan,
     DeterministicPolicy,
     PolicyContext,
@@ -263,7 +263,7 @@ class MCPOrchestrator:
             If omitted, a default neutral context is constructed.
         """
         # Ensure kernel is loaded before planning (deferred import required to avoid circular dependency)
-        from src.codex.cognitive_brain.kernel import assert_loaded
+        from .kernel import assert_loaded
         assert_loaded()
 
         ctx = context or self._default_context(task_intent)

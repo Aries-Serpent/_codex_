@@ -135,8 +135,8 @@ class NDJSONTelemetryBackend(TelemetryBackend):
                             # records written by older schema versions.
                             filtered = {k: v for k, v in data.items() if k in _known_fields}
                             events.append(TelemetryEvent(**filtered))
-                        except Exception:  # noqa: BLE001
-                            pass
+                        except Exception as e:  # noqa: BLE001
+                            logger.debug(f"Skipped malformed telemetry line: {e}")
         return events
 
 

@@ -34,7 +34,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-from src.codex.cognitive_brain.capability_registry import (
+from .capability_registry import (
     CapabilityRegistry,
     ModelCapabilityProfile,
     get_default_registry,

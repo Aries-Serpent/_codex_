@@ -16,7 +16,7 @@ Design
 
 Usage::
 
-    from src.codex.cognitive_brain.shell_policy import ShellPolicy, PolicyVerdict
+    from codex.cognitive_brain.shell_policy import ShellPolicy, PolicyVerdict
 
     policy = ShellPolicy()
     decision = policy.gate("git status", cwd="/repo")

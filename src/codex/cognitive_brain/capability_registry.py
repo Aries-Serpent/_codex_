@@ -147,8 +147,8 @@ def _build_tool_surface_registry() -> Dict[ToolSurfaceCategory, ToolSurfaceProfi
                 "list_issue_types",
                 "list_issue_fields",
                 # CI/Actions
-                "github-mcp-server-actions_get",
-                "github-mcp-server-actions_list",
+                "actions_get",
+                "actions_list",
                 # Security
                 "list_code_scanning_alerts",
                 "get_code_scanning_alert",

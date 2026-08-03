@@ -28,11 +28,11 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
-from src.codex.cognitive_brain.kernel import assert_loaded
+from .calibration import ConfidenceCalibrator
+from .kernel import assert_loaded
 
 if TYPE_CHECKING:
-    from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
+    from .knowledge_base import KnowledgeBase
 
 logger = logging.getLogger(__name__)
 

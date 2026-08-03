@@ -30,8 +30,8 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-from src.codex.cognitive_brain.capability_registry import CapabilityRegistry, get_default_registry
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator, NegotiationResult
+from .capability_registry import CapabilityRegistry, get_default_registry
+from .model_negotiator import ModelNegotiator, NegotiationResult
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +201,7 @@ class SessionGuard:
         if self._telemetry is None:
             return
         try:
-            from src.codex.cognitive_brain.telemetry import TelemetryEvent
+            from .telemetry import TelemetryEvent
 
             self._telemetry.record(
                 TelemetryEvent(

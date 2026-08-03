@@ -1,7 +1,7 @@
 """Cognitive Brain Module — Multi-layer Reasoning Architecture + Runtime Kernel."""
 
-from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
-from src.codex.cognitive_brain.capability_registry import (
+from .calibration import ConfidenceCalibrator
+from .capability_registry import (
     CAPABILITY_SCHEMA_VERSION,
     CapabilityRegistry,
     ModelCapabilityProfile,
@@ -11,7 +11,7 @@ from src.codex.cognitive_brain.capability_registry import (
     get_default_registry,
     get_tool_surface_registry,
 )
-from src.codex.cognitive_brain.fallbacks import (
+from .fallbacks import (
     FallbackChain,
     FallbackResult,
     import_optional,
@@ -19,7 +19,7 @@ from src.codex.cognitive_brain.fallbacks import (
     safe_default_config,
     with_fallback,
 )
-from src.codex.cognitive_brain.kernel import (
+from .kernel import (
     CognitiveBrainKernel,
     KernelConfig,
     assert_loaded,
@@ -28,20 +28,20 @@ from src.codex.cognitive_brain.kernel import (
     get_kernel,
     reset_kernel,
 )
-from src.codex.cognitive_brain.knowledge_base import KnowledgeBase, QueryInterface
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator, NegotiationResult
-from src.codex.cognitive_brain.orchestrator import (
+from .knowledge_base import KnowledgeBase, QueryInterface
+from .model_negotiator import ModelNegotiator, NegotiationResult
+from .orchestrator import (
     MCPOrchestrator,
     ToolchainPlan,
     ToolchainStep,
 )
-from src.codex.cognitive_brain.policy import (
+from .policy import (
     CandidatePlan,
     DeterministicPolicy,
     PolicyContext,
     ScoredPlan,
 )
-from src.codex.cognitive_brain.reasoning_engine import (
+from .reasoning_engine import (
     ActionLayer,
     FeedbackLayer,
     ImprovementLayer,
@@ -49,21 +49,21 @@ from src.codex.cognitive_brain.reasoning_engine import (
     ReasoningEngine,
     ReasoningLayer,
 )
-from src.codex.cognitive_brain.session_guard import (
+from .session_guard import (
     SessionCreateResult,
     SessionGuard,
     get_default_guard,
     reset_default_guard,
     safe_create_session,
 )
-from src.codex.cognitive_brain.shell_policy import (
+from .shell_policy import (
     GateDecision,
     PolicyVerdict,
     ShellPolicy,
     get_default_policy,
     reset_default_policy,
 )
-from src.codex.cognitive_brain.telemetry import (
+from .telemetry import (
     CognitiveTelemetry,
     InMemoryTelemetryBackend,
     NDJSONTelemetryBackend,

@@ -17,7 +17,7 @@ It provides:
 
 Usage::
 
-    from src.codex.cognitive_brain.kernel import get_kernel
+    from codex.cognitive_brain.kernel import get_kernel
 
     kernel = get_kernel()
     safe_cfg = kernel.negotiate_model("claude-haiku-4.5", raw_cfg)
@@ -34,17 +34,17 @@ import uuid as _uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-from src.codex.cognitive_brain.capability_registry import (
+from .capability_registry import (
     CapabilityRegistry,
 )
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator, NegotiationResult
-from src.codex.cognitive_brain.orchestrator import MCPOrchestrator, ToolchainPlan
-from src.codex.cognitive_brain.policy import (
+from .model_negotiator import ModelNegotiator, NegotiationResult
+from .orchestrator import MCPOrchestrator, ToolchainPlan
+from .policy import (
     DeterministicPolicy,
     PolicyContext,
 )
-from src.codex.cognitive_brain.session_guard import SessionGuard
-from src.codex.cognitive_brain.telemetry import CognitiveTelemetry, TelemetryBackend
+from .session_guard import SessionGuard
+from .telemetry import CognitiveTelemetry, TelemetryBackend
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +133,7 @@ class CognitiveBrainKernel:
         )
 
         # Telemetry backends.
-        from src.codex.cognitive_brain.telemetry import (
+        from .telemetry import (
             InMemoryTelemetryBackend,
             NDJSONTelemetryBackend,
         )

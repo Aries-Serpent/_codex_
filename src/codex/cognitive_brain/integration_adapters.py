@@ -12,7 +12,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from src.codex.cognitive_brain.reasoning_engine import Decision
+from .reasoning_engine import Decision
 
 
 @dataclass

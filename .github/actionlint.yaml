@@ -15,7 +15,7 @@ config-variables: null
 
 # Suppress selected ShellCheck findings repo-wide.
 #
-# Suppressed codes (info/style/warning — stylistic false-positives):
+# Suppressed codes (info/style/warning/error — stylistic false-positives):
 #   SC2086 - Double quote to prevent globbing and word splitting  (info)
 #   SC2012 - Use find instead of ls (info)
 #   SC2016 - Expressions don't expand in single quotes (info)
