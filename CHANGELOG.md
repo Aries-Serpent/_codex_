@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed (PR #5462)
+- Resolved stacked PR merge conflict by rebasing `copilot/fix-rag-module-test-timeout` onto latest `0D_base_`.
+- Preserved base-branch `.codex/session_startup_packet.json` to avoid generated timestamp churn.
+- Synced accountability report to canonical archive and CHANGELOG to root copy.
+
+
 ### Fixed (auto-update — PR #5460)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5460 (SHA `03201a3f`) at 2026-08-04T05:02Z [auto-generated]
 
