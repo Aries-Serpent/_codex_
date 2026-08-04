@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5460)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5460 (SHA `03201a3f`) at 2026-08-04T05:02Z [auto-generated]
+
 ### Fixed (2026-08-03 — PR #5430 Code Review Comment Resolution)
 - Fixed import system compatibility: Replaced `from src.codex...` with relative `from .` imports throughout cognitive_brain module to ensure compatibility with installed package environments where `src` is not a top-level package.
   - Files: telemetry.py, session_guard.py, model_negotiator.py, orchestrator.py, reasoning_engine.py, kernel.py, __init__.py, shell_policy.py, integration_adapters.py
