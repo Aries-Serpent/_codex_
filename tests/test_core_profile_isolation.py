@@ -288,7 +288,7 @@ class TestCoreProfileSize:
             import typer
             import yaml
 
-            import omegaconf
+            from omegaconf import OmegaConf
             
             elapsed = time.time() - start_time
             
