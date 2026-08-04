@@ -623,7 +623,9 @@ else:
                     elif step == "pipeline":
                         # Lazy import: only load heavy pipeline module if this step is actually used
                         try:
-                            from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
+                            from codex_ml.pipeline import (
+                                run_codex_pipeline_from_config,  # type: ignore[attr-defined]
+                            )
                         except (ImportError, ModuleNotFoundError) as e:
                             error_msg = textwrap.dedent(
                                 """\

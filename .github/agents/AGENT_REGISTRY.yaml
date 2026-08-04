@@ -1,7 +1,7 @@
 version: 2.0.0
 last_updated: '2026-07-01T15:26:30Z'
 total_agents: 164
-active_agents: 149
+active_agents: 150
 archived_agents: 15
 enforcement_tier: MIXED
 agents:

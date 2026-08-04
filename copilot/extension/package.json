@@ -8,7 +8,7 @@
     "lint": "eslint server"
   },
   "dependencies": {
-    "axios": "^1.18.0",
+    "axios": "^1.19.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
@@ -23,6 +23,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.8.0",
-    "globals": "^16.0.0"
+    "globals": "^17.8.0"
   }
 }

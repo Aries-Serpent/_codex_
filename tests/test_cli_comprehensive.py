@@ -10,8 +10,6 @@ Coverage targets:
 """
 
 import logging
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -225,6 +223,7 @@ class TestCLIVersionHandling:
         """Test CLI version compatibility."""
         try:
             import sys
+
             from aries_serpent_core import cli
             
             # Should work with Python 3.11+
@@ -343,6 +342,7 @@ class TestCLICaching:
         """Test that module is cached in sys.modules."""
         try:
             import sys
+
             from aries_serpent_core import cli
             
             assert "aries_serpent_core.cli" in sys.modules

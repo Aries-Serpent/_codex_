@@ -8,7 +8,6 @@ Tests validate that all 4 CRITICAL vulnerabilities are properly remediated:
 4. CWE-798: Hardcoded Credentials
 """
 
-import pytest
 import json
 import os
 import sqlite3
@@ -16,13 +15,19 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
+from src.aries_serpent_core.cli_secure import SecureHTMLOutput
+from src.aries_serpent_core.config_secure import (
+    APIConfig,
+    ConfigurationError,
+    DatabaseConfig,
+    SecureConfig,
+)
+
 # Import secure implementations
 from src.aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
-from src.aries_serpent_core.cli_secure import SecureHTMLOutput
-from src.codex_ml.utils.serialization_secure import SecureSerializer, UserData, SerializationError
-from src.aries_serpent_core.config_secure import (
-    SecureConfig, ConfigurationError, DatabaseConfig, APIConfig
-)
+from src.codex_ml.utils.serialization_secure import SecureSerializer, SerializationError, UserData
 
 
 class TestCWE89SQLInjection:

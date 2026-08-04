@@ -2,7 +2,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from aries_serpent_core.monitoring import Histogram as Histogram, PerformanceSnapshot as PerformanceSnapshot
+    from aries_serpent_core.monitoring import Histogram as Histogram
+    from aries_serpent_core.monitoring import PerformanceSnapshot as PerformanceSnapshot
 else:
     try:
         from aries_serpent_core.monitoring import Histogram, PerformanceSnapshot

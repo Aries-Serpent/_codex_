@@ -1,0 +1,124 @@
+name: cognitive-brain-required-gate
+
+# Required, blocking CI gate for the Cognitive Brain runtime.
+# Triggers on any PR touching the cognitive_brain module or its tests,
+# and on pushes to main so the signal is always current.
+on:
+  pull_request:
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-required-gate.yml'
+      - '.github/workflows/cognitive-brain-legacy-debt.yml'
+      - '.github/workflows/cognitive-brain-regression-guard.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - 'tests/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-required-gate.yml'
+      - '.github/workflows/cognitive-brain-legacy-debt.yml'
+      - '.github/workflows/cognitive-brain-regression-guard.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  cognitive-brain-ruff:
+    name: Ruff lint (cognitive_brain)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run ruff on cognitive_brain
+        run: |
+          python -m ruff check src/codex/cognitive_brain tests/cognitive_brain/test_boundary_regression_guards.py
+
+  cognitive-brain-mypy:
+    name: Mypy type check (cognitive_brain)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run mypy on cognitive_brain
+        run: |
+          python -m mypy src/codex/cognitive_brain
+
+  cognitive-brain-pytest:
+    name: Targeted pytest (cognitive_brain core)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run targeted cognitive_brain tests
+        run: |
+          python -m pytest \
+            tests/cognitive_brain/test_kernel.py \
+            tests/cognitive_brain/test_model_negotiator.py \
+            tests/cognitive_brain/test_policy.py \
+            tests/cognitive_brain/test_orchestrator.py \
+            tests/cognitive_brain/test_cb_fallbacks.py \
+            tests/cognitive_brain/test_shell_policy.py \
+            tests/cognitive_brain/test_session_guard.py \
+            tests/cognitive_brain/test_forensics.py \
+            tests/cognitive_brain/test_capability_categories.py \
+            tests/cognitive_brain/test_failure_injection.py \
+            tests/cognitive_brain/test_boundary_regression_guards.py \
+            -q --tb=short
+
+  cognitive-brain-regression-guard:
+    name: Regression guard (cognitive_brain)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run regression guard checks
+        run: |
+          python -m pytest \
+            tests/cognitive_brain/test_failure_injection.py::TestReasoningParamImpossibleByConstruction \
+            tests/cognitive_brain/test_failure_injection.py::TestNegotiatorInterception \
+            tests/cognitive_brain/test_failure_injection.py::TestKernelAutoLoadGuard \
+            tests/cognitive_brain/test_failure_injection.py::TestShellPolicyBypass \
+            tests/cognitive_brain/test_failure_injection.py::TestModelCapabilityOutage \
+            tests/cognitive_brain/test_failure_injection.py::TestStaleCapabilityCache \
+            tests/cognitive_brain/test_session_guard.py::TestSessionGuardParamStripping \
+            tests/cognitive_brain/test_shell_policy.py::TestDenyPatterns \
+            tests/cognitive_brain/test_boundary_regression_guards.py \
+            -q --tb=short

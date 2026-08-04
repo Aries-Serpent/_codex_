@@ -1,0 +1,115 @@
+name: cognitive-brain-legacy-debt-update
+
+# Weekly bot-run that refreshes the legacy test debt quarantine inventory.
+# If the quarantine file changes, the bot opens or updates a PR with the
+# standard WEC canonical-items section.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-legacy-debt-quarantine:
+    name: Update legacy debt quarantine
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Run legacy debt quarantine update
+        run: |
+          python scripts/validation/update_legacy_debt_quarantine.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet -- docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure git
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create or update PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: bot/legacy-debt-update-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          RUN_DATE=$(date -u +%Y-%m-%d)
+          BRANCH="bot/legacy-debt-update-${RUN_DATE}"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+
+          git checkout -b "$BRANCH"
+          git add docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md
+          git commit -m "bot: update legacy test debt quarantine [skip ci]"
+          git push --force-with-lease origin "$BRANCH"
+
+          PR_BODY=$(cat << 'EOF'
+          ## 🤖 Weekly Legacy Test Debt Quarantine Update
+
+          Automated refresh of `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md`.
+
+          ### What changed
+          - Re-ran the full `tests/cognitive_brain` suite.
+          - Updated failure inventory, counts, and remediation priorities.
+
+          ### Scope
+          - Informational / non-blocking.
+          - Failures listed here are tracked in the quarantine log for active remediation per the Cognitive Brain delivery roadmap.
+
+          ## 🔄 Workflow Execution Checklist
+
+          Select workflows to execute for this PR. **REQUIRED items must be checked to merge.**
+
+          ### REQUIRED for All Merges
+          - [x] pre-merge-validation.yml — Pre-merge checks
+          - [x] comment-review-gate.yml — Comment review gate
+          - [x] deferral-language-gate.yml — Deferral language guard
+          - [x] agent-auth-delegation.yml — Agent token delegation
+          - [x] workflow-execution-gate.yml — WEC gate
+
+          ### OPTIONAL - Select as Needed
+          - [x] unified-copilot-management.yml — Copilot management suite (consolidates: agent-checkin, session-done, self-healing, and more)
+          - [ ] cost-gate.yml — Cost governance gate
+          EOF
+          )
+
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_PR" ]; then
+            gh pr edit "$EXISTING_PR" \
+              --title "bot: update legacy test debt quarantine (${RUN_DATE})" \
+              --body "$PR_BODY"
+            echo "Updated PR #${EXISTING_PR}"
+          else
+            NEW_PR=$(gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "bot: update legacy test debt quarantine (${RUN_DATE})" \
+              --body "$PR_BODY" \
+              --label "bot,legacy-debt,non-blocking")
+            echo "Created PR #${NEW_PR}"
+          fi

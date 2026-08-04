@@ -1,0 +1,67 @@
+name: cognitive-brain-telemetry-baseline
+
+# Path-triggered workflow that regenerates the Cognitive Brain telemetry
+# baseline markdown artifact whenever source, this workflow, or the generator
+# script changes. The generated file is committed back to the PR branch if it
+# differs from the current baseline.
+on:
+  pull_request:
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-telemetry-baseline.yml'
+      - 'scripts/validation/generate_cognitive_brain_telemetry_baseline.py'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/codex/cognitive_brain/**'
+      - '.github/workflows/cognitive-brain-telemetry-baseline.yml'
+      - 'scripts/validation/generate_cognitive_brain_telemetry_baseline.py'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-telemetry-baseline:
+    name: Generate telemetry baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ github.token }}
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+
+      - name: Generate telemetry baseline
+        run: |
+          python scripts/validation/generate_cognitive_brain_telemetry_baseline.py
+
+      - name: Commit baseline to PR branch if changed
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md; then
+            echo "No telemetry baseline changes detected."
+            exit 0
+          fi
+
+          git add docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md
+          git commit -m "bot: regenerate cognitive brain telemetry baseline"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"

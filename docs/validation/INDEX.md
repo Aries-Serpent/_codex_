@@ -1,6 +1,6 @@
 # Validation
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-08-03
+**Version:** v0.3.0
 
 > **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/validation/`
@@ -20,6 +20,8 @@
 - [CODEBASE_Curated_PatchPlan_main_2025-10-18](CODEBASE_Curated_PatchPlan_main_2025-10-18.md)
 - [CODEBASE_Status_Audit_2025-10-14](CODEBASE_Status_Audit_2025-10-14.md)
 - [Capability_Gaps_Validation](Capability_Gaps_Validation.md)
+- [CCA_RUNTIME_BOUNDARY_NOTES](CCA_RUNTIME_BOUNDARY_NOTES.md)
+- [COGNITIVE_BRAIN_TELEMETRY_BASELINE](COGNITIVE_BRAIN_TELEMETRY_BASELINE.md)
 - [Convergence_Runbook](Convergence_Runbook.md)
 - [Coverage_Enforcement_Validation](Coverage_Enforcement_Validation.md)
 - [Coverage_Gate_Remediation](Coverage_Gate_Remediation.md)
@@ -36,6 +38,7 @@
 - [OptionalDeps_SoftFail_Validation](OptionalDeps_SoftFail_Validation.md)
 - [Owner_Approval_Validation](Owner_Approval_Validation.md)
 - [Owner_Approved_CI_Validation](Owner_Approved_CI_Validation.md)
+- [POST_MERGE_VALIDATION_PR5430](POST_MERGE_VALIDATION_PR5430.md)
 - [PR2208_CI_Failure_Remediation_Plan](PR2208_CI_Failure_Remediation_Plan.md)
 - [PR_Template_Batch01](PR_Template_Batch01.md)
 - [PartB_Completion_Report](PartB_Completion_Report.md)
@@ -45,6 +48,7 @@
 - [Post_Apply_Validation_Checklist_2025-10-11](Post_Apply_Validation_Checklist_2025-10-11.md)
 - [Remediation_Execution_Log](Remediation_Execution_Log.md)
 - [Repo_Variables_Management_Validation](Repo_Variables_Management_Validation.md)
+- [LEGACY_TEST_DEBT_QUARANTINE](LEGACY_TEST_DEBT_QUARANTINE.md)
 - [Repro_Validation](Repro_Validation.md)
 - [Runner_Status_Validation](Runner_Status_Validation.md)
 - [SBOM_Config_Validation](SBOM_Config_Validation.md)

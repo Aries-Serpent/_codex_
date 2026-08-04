@@ -8,12 +8,10 @@ Focus: API clients, utilities, and error handling
 This batch covers client modules and utility functions.
 """
 
-import pytest
-import tempfile
 import os
-import json
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+import tempfile
+
+import pytest
 
 
 # Test API clients

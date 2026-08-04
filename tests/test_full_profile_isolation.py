@@ -17,7 +17,6 @@ Coverage:
 - Integration between all profiles works
 """
 
-import sys
 import pytest
 
 
@@ -183,9 +182,9 @@ class TestFullProfileComplexIntegration:
     def test_ml_pipeline_with_core_config(self):
         """Test ML pipeline can use core configuration."""
         try:
-            from omegaconf import OmegaConf
             import torch
             import torch.nn as nn
+            from omegaconf import OmegaConf
             
             # Create config using core infrastructure
             cfg = OmegaConf.create({
@@ -205,6 +204,7 @@ class TestFullProfileComplexIntegration:
         """Test FastAPI app can use ML models."""
         try:
             from fastapi import FastAPI
+
             import torch
             import torch.nn as nn
             
@@ -226,9 +226,10 @@ class TestFullProfileComplexIntegration:
     def test_testing_with_ml_fixtures(self):
         """Test that testing infrastructure works with ML."""
         try:
-            import pytest
-            import torch
             import numpy as np
+            import pytest
+
+            import torch
             
             @pytest.fixture
             def sample_tensor():
@@ -249,6 +250,7 @@ class TestFullProfileComplexIntegration:
         """Test ML training can use accelerate."""
         try:
             from accelerate import Accelerator
+
             import torch
             import torch.nn as nn
             
@@ -338,10 +340,11 @@ class TestFullProfileFeatureCompleteness:
     def test_ml_training_features(self):
         """Test ML training features are available."""
         try:
+            from accelerate import Accelerator
+            from peft import LoraConfig, get_peft_model
+
             import torch
             from transformers import AutoModelForCausalLM
-            from accelerate import Accelerator
-            from peft import get_peft_model, LoraConfig
             
             # All ML training components available
             assert torch is not None
@@ -370,8 +373,9 @@ class TestFullProfileFeatureCompleteness:
         """Test testing features are available."""
         try:
             import pytest
+            from hypothesis import given
+            from hypothesis import strategies as st
             from pytest_cov import plugin as cov_plugin
-            from hypothesis import given, strategies as st
             
             assert pytest is not None
             assert cov_plugin is not None
@@ -384,9 +388,9 @@ class TestFullProfileFeatureCompleteness:
         """Test code quality features are available."""
         try:
             import black
-            import ruff
-            import mypy.api
             import isort
+            import mypy.api
+            import ruff
             
             assert black is not None
             assert ruff is not None

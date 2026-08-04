@@ -10,8 +10,6 @@ Coverage targets:
 """
 
 import logging
-from typing import Any, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -280,8 +278,9 @@ class TestHFTrainerPathHandling:
     def test_module_file_is_valid_path(self):
         """Test that module file path is valid."""
         try:
-            from training import engine_hf_trainer
             from pathlib import Path
+
+            from training import engine_hf_trainer
             
             module_file = engine_hf_trainer.__file__
             assert module_file is not None
@@ -299,6 +298,7 @@ class TestHFTrainerCaching:
         """Test that module is cached after import."""
         try:
             import sys
+
             from training import engine_hf_trainer as hf1
             from training import engine_hf_trainer as hf2
             
@@ -351,6 +351,7 @@ class TestHFTrainerVersionCompatibility:
         """Test that module import is version-safe."""
         try:
             import sys
+
             from training import engine_hf_trainer
             
             # Should work regardless of Python version (3.11+)
@@ -378,8 +379,9 @@ class TestHFTrainerComplexStructure:
     def test_logger_is_logger_instance(self):
         """Test that logger is proper logger instance."""
         try:
-            from training.engine_hf_trainer import logger
             import logging
+
+            from training.engine_hf_trainer import logger
             
             assert isinstance(logger, logging.Logger)
             assert logger.name == "training.engine_hf_trainer"

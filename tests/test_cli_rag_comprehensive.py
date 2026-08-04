@@ -8,12 +8,10 @@ Coverage targets:
 - Optional dependency handling
 """
 
-import json
 import logging
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -124,9 +122,10 @@ class TestRAGCLIValidators:
     def test_validate_files_with_glob_pattern(self):
         """Test validate_files with glob patterns."""
         try:
-            from aries_serpent_core.cli_rag import _validate_files
-            import tempfile
             import os
+            import tempfile
+
+            from aries_serpent_core.cli_rag import _validate_files
             
             # Create a temporary directory with test files
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -145,8 +144,9 @@ class TestRAGCLIValidators:
     def test_validate_files_with_no_matches(self):
         """Test validate_files with pattern that matches no files."""
         try:
-            from aries_serpent_core.cli_rag import _validate_files
             import typer
+
+            from aries_serpent_core.cli_rag import _validate_files
             
             # Should raise BadParameter when no files match
             with pytest.raises(typer.BadParameter):
@@ -268,10 +268,10 @@ class TestRAGCLIIntegration:
     def test_cli_app_structure(self):
         """Test that CLI app has expected structure."""
         try:
-            from aries_serpent_core.cli_rag import app
-            
             # Check that app is a Typer instance
             import typer
+
+            from aries_serpent_core.cli_rag import app
             assert isinstance(app, typer.Typer)
         except ImportError:
             pytest.skip("app not available")

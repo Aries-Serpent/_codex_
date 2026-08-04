@@ -1,3 +1,90 @@
+## Session: 2026-08-03T12:02Z — PR #5430 Phase 3 Final Operationalization
+
+**Objective:** Convert durability assets into enforceable branch-protection behavior, baseline telemetry observability, and auto-maintained legacy debt burn-down tracking.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- **Phase 1 — Branch Protection + Required Check Contract:**
+  - Documented exact required check names (`Ruff lint (cognitive_brain)`, `Mypy type check (cognitive_brain)`, `Targeted pytest (cognitive_brain core)`, `Regression guard (cognitive_brain)`) in `docs/validation/POST_MERGE_VALIDATION_PR5430.md` under a new “Required Checks Contract” section.
+  - Added `.github/workflows/cognitive-brain-required-check-selftest.yml` to parse the required gate and fail loudly in the GitHub Actions step summary if job names drift from the contract.
+- **Phase 2 — Legacy Debt Auto-Tracking:**
+  - Added `scripts/validation/update_legacy_debt_quarantine.py` to refresh `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md` from the latest pytest run, preserving manual notes and appending to a trend table.
+  - Added `.github/workflows/cognitive-brain-legacy-debt-update.yml` (weekly cron + dispatch) to run the updater and open/update a PR when counts change.
+  - Added the Trend Table and a 20% week-over-week escalation threshold to the quarantine doc.
+- **Phase 3 — Cognitive Brain Telemetry Baseline:**
+  - Added `scripts/validation/generate_cognitive_brain_telemetry_baseline.py` for file-based telemetry baseline generation.
+  - Generated `docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md` with decision event volume, forensics completeness rate, session-guard interception rate, and shell verdict distribution.
+  - Added `.github/workflows/cognitive-brain-telemetry-baseline.yml` to regenerate the report on cognitive_brain source/script changes.
+- **Phase 4 — Regression Guard Expansion:**
+  - Extended `tests/cognitive_brain/test_boundary_regression_guards.py` with:
+    - Negative architecture test blocking new direct production `session.create` paths unless allowlisted.
+    - Check-name drift test mirroring the Phase 1 contract.
+    - Legacy quarantine schema validator tests for table integrity.
+- **Phase 5 — Governance Sync:**
+  - Updated `docs/validation/INDEX.md`.
+  - Updated `docs/CHANGELOG.md` with Phase 3 deliverables.
+  - Updated this report (REQ-4).
+
+**Validation**:
+- `python scripts/ci/sync_tracked_files.py --fix` — clean.
+- `python scripts/ci/enforce_actions_versions.py --summary` — compliant.
+- `python -m ruff check src/codex/cognitive_brain tests/cognitive_brain scripts/validation` — clean.
+- `python -m mypy src/codex/cognitive_brain` — clean.
+- `python -m pytest tests/cognitive_brain/test_boundary_regression_guards.py -q` — passing.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated.
+
+**Agents used**:
+- `workflow-management-agent` (task) — drafted WEC-aware workflows and required-check self-test.
+- `autonomous-test-healer-agent` (task) — implemented legacy debt updater script.
+- `code-analysis-agent` (task) — implemented telemetry baseline generator.
+
+---
+
+## Session: 2026-08-03T07:40Z — PR #5430 Post-Merge Durability Pass
+
+**Objective:** Convert post-merge validation findings into durable CI/governance assets and isolate unrelated legacy failures from the cognitive_brain signal.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+- Reviewed mandatory pre-load files (AGENTIC_REPO_STATE.md, CODEBASE_AGENCY_POLICY.md, agent_context.json, PDA tail).
+- **Phase 1 — Evidence persistence:**
+  - Created `docs/validation/POST_MERGE_VALIDATION_PR5430.md` with merge commit `7a54909c6d287524462c5405ee46cd1cbeb72ff1`, command matrix, outcomes, scope and residual risk statements.
+  - Updated `docs/CHANGELOG.md` and this report (REQ-4/REQ-5).
+- **Phase 2 — CI signal separation:**
+  - Added `.github/workflows/cognitive-brain-required-gate.yml` (blocking): ruff, mypy, targeted pytest, regression guard.
+  - Added `.github/workflows/cognitive-brain-legacy-debt.yml` (informational, `continue-on-error: true`): full cognitive_brain suite with legacy failures visible but non-blocking.
+- **Phase 3 — Legacy failure quarantine:**
+  - Created `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md` enumerating 24 failed + 13 errored non-cognitive_brain failures, classified by root cause, with owner lane and phased remediation priorities.
+- **Phase 4 — Regression meta-tests:**
+  - Added `tests/cognitive_brain/test_boundary_regression_guards.py` with guards for session/create boundary, shell adversarial vector coverage, `assert_loaded()` enforcement, and forensics field preservation (`decision_id`, `turn_id`, `task_id`).
+- **Phase 5 — Hosted runtime boundary clarification:**
+  - Created `docs/validation/CCA_RUNTIME_BOUNDARY_NOTES.md` documenting repo-controlled vs hosted-runtime-controlled mitigations for CCA failure modes.
+
+**Validation**:
+- `python scripts/ci/sync_tracked_files.py --fix` — clean.
+- `python scripts/ci/enforce_actions_versions.py --summary` — 243 workflow files checked, all approved.
+- `python -m ruff check src/codex/cognitive_brain tests/cognitive_brain/test_boundary_regression_guards.py` — clean.
+- `python -m mypy src/codex/cognitive_brain` — clean (no issues in 15 source files).
+- Targeted cognitive_brain pytest — 231+ tests passing, 0 regressions in scope.
+- Full cognitive_brain pytest — 1,041 passing, 24 failed, 13 errored, all pre-existing and quarantined.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` updated.
+
+**Agents used**:
+- `cb-test-inventory` (task) — produced structured inventory of legacy failures.
+- `explore-ci-structure` (explore) — identified reusable CI patterns and gaps.
+- `explore-validation-docs` (explore) — confirmed validation doc conventions.
+- `explore-cognitive-sources` (explore) — mapped boundary guarantees to lock with meta-tests.
+
+---
+
 ## Session: 2026-08-03T02:53Z — P0 Security Hardening: Runtime Boundaries & Shell Metacharacter Prevention
 
 **Objective:** Close P0 security gaps in Cognitive Brain runtime by hardening three critical entry points: (1) shell-command chaining bypass prevention, (2) SessionGuard centralization for all model negotiation, (3) kernel.assert_loaded() at all reasoning entrypoints.

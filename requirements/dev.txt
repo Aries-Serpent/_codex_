@@ -18,7 +18,7 @@ jsonschema>=4.26.0
 shellcheck-py==0.11.0.1  # Shell script linting (pinned)
 pip-audit==2.6.1  # Dependency audit (pinned)
 cyclonedx-bom>=7.3.0
-pandas==3.0.3  # Pinned version
+pandas==3.0.5  # Pinned version
 pyarrow==16.1.0  # Data science (pinned)
 zstandard==0.23.0  # Compression (pinned)
 mlflow>=3.11.0  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal) fixed in 3.11.0

@@ -19,7 +19,6 @@ Coverage:
 - No indirect torch/transformers imports via core packages
 """
 
-import sys
 import pytest
 
 
@@ -40,7 +39,7 @@ class TestCoreProfileBaseImports:
     def test_omegaconf_import(self):
         """Test omegaconf import and basic functionality."""
         try:
-            from omegaconf import OmegaConf, DictConfig
+            from omegaconf import DictConfig, OmegaConf
             assert OmegaConf is not None
             assert DictConfig is not None
             # Test basic functionality
@@ -227,8 +226,9 @@ class TestCoreProfileDependencyTree:
     def test_no_torch_via_libcst(self):
         """Verify libcst doesn't bring in torch."""
         try:
-            import libcst as cst
             import sys
+
+            import libcst as cst
             # Check if torch is in sys.modules after libcst import
             if 'torch' in sys.modules:
                 pytest.fail("torch was imported indirectly via libcst")
@@ -238,8 +238,9 @@ class TestCoreProfileDependencyTree:
     def test_no_torch_via_parso(self):
         """Verify parso doesn't bring in torch."""
         try:
-            import parso
             import sys
+
+            import parso
             if 'torch' in sys.modules:
                 pytest.fail("torch was imported indirectly via parso")
         except ImportError:
@@ -248,8 +249,9 @@ class TestCoreProfileDependencyTree:
     def test_no_torch_via_pydantic(self):
         """Verify pydantic doesn't bring in torch."""
         try:
-            from pydantic import BaseModel
             import sys
+
+            from pydantic import BaseModel
             if 'torch' in sys.modules:
                 pytest.fail("torch was imported indirectly via pydantic")
         except ImportError:
@@ -262,7 +264,6 @@ class TestCoreProfileSize:
     def test_core_profile_imports_quickly(self):
         """Verify core profile imports complete quickly (lightweight)."""
         import time
-        import sys
         
         # Remove any already-loaded core modules for fresh import timing
         core_modules = [
@@ -275,18 +276,19 @@ class TestCoreProfileSize:
         
         try:
             # Import all core dependencies
+            import click
             import hydra
-            import omegaconf
+            import libcst
+            import marshmallow
+            import parso
             import pydantic
             import pydantic_settings
-            import marshmallow
-            import yaml
-            import typer
-            import click
-            import libcst
-            import parso
-            import tree_sitter
             import sqlparse
+            import tree_sitter
+            import typer
+            import yaml
+
+            import omegaconf
             
             elapsed = time.time() - start_time
             

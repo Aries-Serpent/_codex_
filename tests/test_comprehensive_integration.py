@@ -4,11 +4,9 @@ Tests actual execution paths, not just imports
 Targets line coverage, branch coverage, and real functionality
 """
 
-import json
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch, call
+from unittest.mock import patch
 
 import pytest
 
@@ -123,8 +121,9 @@ class TestSafetyFiltersCore:
     def test_parse_flags_combinations(self):
         """Test _parse_flags with multiple flags."""
         try:
-            from codex_ml.safety.filters import _parse_flags
             import re
+
+            from codex_ml.safety.filters import _parse_flags
             
             # Single flag
             result = _parse_flags("I")
@@ -268,9 +267,10 @@ class TestFileFunctionality:
     def test_path_operations_on_file_patterns(self):
         """Test Path operations with file patterns."""
         try:
-            from aries_serpent_core.cli_rag import _validate_files
-            from pathlib import Path
             import tempfile
+            from pathlib import Path
+
+            from aries_serpent_core.cli_rag import _validate_files
             
             # Create temp directory with files
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -352,6 +352,7 @@ class TestEnvironmentVariableHandling:
         """Test that safety bypass env var is read correctly."""
         try:
             import os
+
             from codex_ml.safety.filters import BYPASS_ENV_VAR
             
             env_value = os.getenv(BYPASS_ENV_VAR)
@@ -408,7 +409,7 @@ class TestComplexScenarios:
     def test_safety_policy_workflow(self):
         """Test complete safety policy workflow."""
         try:
-            from codex_ml.safety.filters import SafetyPolicy, PolicyRule, sanitize_prompt
+            from codex_ml.safety.filters import PolicyRule, SafetyPolicy, sanitize_prompt
             
             # Create policy
             policy = SafetyPolicy()
@@ -453,8 +454,9 @@ def test_ensure_sequence_type_handling(test_input, expected_type):
 def test_glob_pattern_handling(file_pattern):
     """Test glob pattern handling."""
     try:
-        from aries_serpent_core.cli_rag import _validate_files
         import tempfile
+
+        from aries_serpent_core.cli_rag import _validate_files
         
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create test file

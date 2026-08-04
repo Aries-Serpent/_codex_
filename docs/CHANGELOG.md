@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-03
 
+### Final Operationalization — PR #5430 Phase 3
+- **Branch protection required-check contract:** Added “Required Checks Contract” section to `docs/validation/POST_MERGE_VALIDATION_PR5430.md` with exact job names from `cognitive-brain-required-gate.yml`; added `.github/workflows/cognitive-brain-required-check-selftest.yml` to detect drift.
+- **Legacy debt auto-tracking:** Added `scripts/validation/update_legacy_debt_quarantine.py` and `.github/workflows/cognitive-brain-legacy-debt-update.yml` (weekly) to refresh `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md`; added Trend Table and 20% week-over-week escalation threshold.
+- **Telemetry baseline dashboard:** Added `scripts/validation/generate_cognitive_brain_telemetry_baseline.py`, generated `docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md`, and added `.github/workflows/cognitive-brain-telemetry-baseline.yml` for path-triggered regeneration.
+- **Regression guard expansion:** Extended `tests/cognitive_brain/test_boundary_regression_guards.py` with negative architecture test for direct `session.create` paths, required-check name drift test, and legacy quarantine schema validator.
+- **Governance sync:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `docs/CHANGELOG.md`, and `docs/validation/INDEX.md`.
+
+### Post-Merge Durability Pass — PR #5430
+- **Validation report:** `docs/validation/POST_MERGE_VALIDATION_PR5430.md` — merge commit `7a54909c6d287524462c5405ee46cd1cbeb72ff1`, command matrix, pass/fail outcomes, scope and residual risk statements.
+- **Legacy debt quarantine:** `docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md` — 24 failed + 13 errored non-cognitive_brain failures classified and tracked with phased remediation.
+- **CCA runtime boundary notes:** `docs/validation/CCA_RUNTIME_BOUNDARY_NOTES.md` — repo-controlled vs hosted-runtime-controlled mitigation matrix.
+- **CI signal separation:** Added `.github/workflows/cognitive-brain-required-gate.yml` (blocking ruff/mypy/pytest/regression) and `.github/workflows/cognitive-brain-legacy-debt.yml` (non-blocking informational lane).
+- **Regression meta-tests:** Added `tests/cognitive_brain/test_boundary_regression_guards.py` locking session/create boundary, shell adversarial vectors, `assert_loaded` enforcement, and forensics field preservation.
+- **Verification:** ruff/mypy clean on `src/codex/cognitive_brain`; 231+ targeted cognitive_brain tests passing.
+
 ### Cognitive Brain Runtime — Phase 2 (PR #5430 continuation)
 - **`shell_policy.py`** — Shell execution safety layer: allow/deny glob rules, working-directory constraints, timeout ceilings, retry limits, token redaction (GitHub PATs, ****** `--token`/`--password` flags). `PolicyVerdict` enum (ALLOW / DENY / AUDIT). Env-gated singleton.
 - **`session_guard.py`** — Central `session.create` safety wrapper: guarantees every session creation passes through `ModelNegotiator`; emits `session_guard` telemetry with `decision_id`, `turn_id`, `task_id`.

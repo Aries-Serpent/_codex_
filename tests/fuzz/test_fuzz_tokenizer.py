@@ -1,5 +1,6 @@
 import pytest
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 pytest.importorskip("tensorboard")
 #     assert set(train) | set(eval_) == set(ids) or (, "Condition must be true"
