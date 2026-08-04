@@ -232,7 +232,7 @@ class TestControlFlow:
             "update_legacy_debt_quarantine._read_doc"
         ) as mock_read, patch(
             "update_legacy_debt_quarantine._write_doc"
-        ) as mock_write, patch(
+        ), patch(
             "update_legacy_debt_quarantine._parse_latest_summary",
             return_value=None,
         ):
