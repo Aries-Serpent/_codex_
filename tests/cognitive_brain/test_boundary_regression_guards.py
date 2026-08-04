@@ -88,7 +88,10 @@ class TestSessionCreateBoundary:
 
     def test_decision_id_unique_per_call(self, guard: SessionGuard) -> None:
         """Each create_session invocation must receive a unique decision_id."""
-        decision_ids = {guard.create_session("claude-haiku-4.5", {}).decision_id for _ in range(50)}
+        decision_ids = {
+            guard.create_session("claude-haiku-4.5", {}).decision_id
+            for _ in range(50)
+        }
         assert len(decision_ids) == 50
 
     def test_turn_id_and_task_id_roundtrip(self, guard: SessionGuard) -> None:
@@ -127,7 +130,9 @@ class TestNoDirectSessionCreatePaths:
     """Fail the suite if any new production path bypasses SessionGuard."""
 
     # Files that already legitimately create raw sessions outside SessionGuard.
-    ALLOWLIST: set[str] = set()
+    ALLOWLIST: set[str] = {
+        "src/codex/cognitive_brain/session_guard.py",
+    }
 
     def test_cognitive_brain_source_has_no_unapproved_create_session(self) -> None:
         """All session.create calls must route through SessionGuard."""

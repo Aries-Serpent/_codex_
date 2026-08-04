@@ -35,7 +35,12 @@ jobs:
 
       - name: Run legacy debt quarantine update
         run: |
-          python scripts/validation/update_legacy_debt_quarantine.py
+          python scripts/validation/update_legacy_debt_quarantine.py || EXIT_CODE=$?
+          # Exit code 2 means counts changed (expected), which is not an error
+          if [ "${EXIT_CODE:-0}" = "2" ]; then
+            exit 0
+          fi
+          exit "${EXIT_CODE:-0}"
 
       - name: Check for changes
         id: diff
@@ -78,25 +83,15 @@ jobs:
           - Updated failure inventory, counts, and remediation priorities.
 
           ### Scope
-          - Informational / non-blocking.
+          - Informational update to quarantine tracking document.
           - Failures listed here are tracked in the quarantine log for active remediation per the Cognitive Brain delivery roadmap.
 
-          ## 🔄 Workflow Execution Checklist
-
-          Select workflows to execute for this PR. **REQUIRED items must be checked to merge.**
-
-          ### REQUIRED for All Merges
-          - [x] pre-merge-validation.yml — Pre-merge checks
-          - [x] comment-review-gate.yml — Comment review gate
-          - [x] deferral-language-gate.yml — Deferral language guard
-          - [x] agent-auth-delegation.yml — Agent token delegation
-          - [x] workflow-execution-gate.yml — WEC gate
-
-          ### OPTIONAL - Select as Needed
-          - [x] unified-copilot-management.yml — Copilot management suite (consolidates: agent-checkin, session-done, self-healing, and more)
-          - [ ] cost-gate.yml — Cost governance gate
           EOF
           )
+
+          # Generate canonical WEC block programmatically and append to PR body
+          WEC_BLOCK=$(python -c "from scripts.ci.pr_description_helper import build_wec_block; print(build_wec_block())")
+          PR_BODY="${PR_BODY}${WEC_BLOCK}"
 
           EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number // empty')
           if [ -n "$EXISTING_PR" ]; then
