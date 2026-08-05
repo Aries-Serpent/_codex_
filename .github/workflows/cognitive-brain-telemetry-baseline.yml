@@ -51,6 +51,7 @@ jobs:
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           set -euo pipefail
 
@@ -64,4 +65,4 @@ jobs:
 
           git add docs/validation/COGNITIVE_BRAIN_TELEMETRY_BASELINE.md
           git commit -m "bot: regenerate cognitive brain telemetry baseline"
-          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
+          git push origin "HEAD:${TARGET_BRANCH}"

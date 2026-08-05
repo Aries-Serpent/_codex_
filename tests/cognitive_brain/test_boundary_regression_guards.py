@@ -216,9 +216,7 @@ class TestShellAdversarialCoverage:
             "echo redirect\r\n",
         ],
     )
-    def test_all_metachar_vectors_denied(
-        self, shell_policy: ShellPolicy, command: str
-    ) -> None:
+    def test_all_metachar_vectors_denied(self, shell_policy: ShellPolicy, command: str) -> None:
         """Every documented shell metacharacter vector must be denied."""
         decision = shell_policy.gate(command)
         assert decision.verdict == PolicyVerdict.DENY

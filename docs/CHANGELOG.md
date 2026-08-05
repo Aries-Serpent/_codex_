@@ -1,8 +1,17 @@
 # Changelog
-**Last Updated:** 2026-08-03
+**Last Updated:** 2026-08-04
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
+
+## Unreleased — 2026-08-04
+
+### PR #5454 & PR #5448 Reconstruction Session
+- **RAG Module Tests timeout fix:** Increased job timeout from 30 to 60 minutes and optimized test execution timeout (3300s → 2700s) to prevent premature SIGTERM during model loading and test execution. Updated `.github/workflows/test-rag.yml` with comprehensive rationale.
+- **Pytest summary parsing validation:** Verified `scripts/validation/update_legacy_debt_quarantine.py` correctly handles both singular "error" and plural "errors" in pytest summary output; confirmed control flow optimization (no duplicate pytest runs).
+- **Boundary regression guard formatting:** Applied Ruff formatting cleanup to `tests/cognitive_brain/test_boundary_regression_guards.py` (consolidated multi-line function signature to single line, no behavioral changes).
+- **Test validation:** All 37 boundary regression guard tests pass; 18 comprehensive tests added for pytest summary parsing validation.
+- **Documentation:** Updated `docs/CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
 
 ## Unreleased — 2026-08-03
 

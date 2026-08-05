@@ -414,6 +414,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
+        # Run pytest once; result will be passed to update_quarantine to avoid
+        # duplicate execution.
         result = run_pytest(args.test_path)
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: failed to run pytest: {exc}", file=sys.stderr)
@@ -430,6 +432,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        # Pass result to update_quarantine to avoid redundant pytest execution.
         _, changed = update_quarantine(args.test_path, result=result)
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: failed to update quarantine doc: {exc}", file=sys.stderr)
