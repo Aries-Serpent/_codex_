@@ -288,7 +288,7 @@ class ScenarioBuilder:
     
     def __init__(self):
         self.agents: dict[str, tuple[int, float]] = {}  # agent_id -> (max_concurrent, failure_rate)
-        self.workloads: list[tuple[WorkloadProfile, float, float, float]] = []  # (profile, rate, duration, failure_rate)
+        self.workloads: list[tuple[WorkloadProfile, float, float, float, float]] = []  # (profile, rate, avg_duration_ms, duration, failure_rate)
         self.failure_injections: dict[str, float] = {}
     
     def add_agent(
@@ -335,7 +335,7 @@ class ScenarioBuilder:
 
 class SimulationEngine:
     """Run multi-agent simulations."""
-    
+
     def run_scenario(
         self,
         scenario: dict[str, Any],
@@ -343,14 +343,30 @@ class SimulationEngine:
     ) -> SimulationMetrics:
         """Run a simulation scenario."""
         metrics = SimulationMetrics()
-        
-        # Initialize agents
-        agents = {}
+        agents = self._initialize_agents(scenario, metrics)
+        all_tasks = self._generate_workloads(scenario)
+        self._dispatch_tasks(agents, all_tasks)
+        self._collect_metrics(agents, all_tasks, metrics)
+
+        if verbose:
+            print(f"Simulation complete. Success rate: {metrics.success_rate():.1%}")
+            print(f"SLA compliance: {metrics.sla_compliance_rate():.1%}")
+            print(f"Avg latency: {metrics.avg_latency_ms():.1f}ms")
+
+        return metrics
+
+    def _initialize_agents(
+        self,
+        scenario: dict[str, Any],
+        metrics: SimulationMetrics,
+    ) -> dict[str, AgentSimulator]:
+        agents: dict[str, AgentSimulator] = {}
+        default_duration = self._default_task_duration_ms(scenario)
         for agent_id, (max_concurrent, failure_rate) in scenario["agents"].items():
             agents[agent_id] = AgentSimulator(
                 agent_id=agent_id,
                 max_concurrent=max_concurrent,
-                avg_task_duration_ms=5000.0,
+                avg_task_duration_ms=default_duration,
                 failure_rate=failure_rate,
             )
             metrics.agent_metrics[agent_id] = {
@@ -358,71 +374,84 @@ class SimulationEngine:
                 "failed": 0,
                 "avg_latency_ms": 0.0,
             }
-        
-        # Generate workloads
-        all_tasks = []
-        for profile, rate, duration, failure_rate in scenario["workloads"]:
-            gen = WorkloadGenerator(profile, rate, 5000.0, duration, failure_rate)
+        return agents
+
+    @staticmethod
+    def _default_task_duration_ms(scenario: dict[str, Any]) -> float:
+        durations = [avg_duration_ms for _, _, avg_duration_ms, _, _ in scenario["workloads"]]
+        return sum(durations) / len(durations) if durations else 5000.0
+
+    def _generate_workloads(self, scenario: dict[str, Any]) -> list[SimulationTask]:
+        all_tasks: list[SimulationTask] = []
+        for profile, rate, avg_duration_ms, duration, failure_rate in scenario["workloads"]:
+            gen = WorkloadGenerator(profile, rate, avg_duration_ms, duration, failure_rate)
             all_tasks.extend(gen.generate())
-        
         all_tasks.sort(key=lambda t: t.created_at)
-        metrics.total_tasks = len(all_tasks)
-        
-        # Simulate
+        return all_tasks
+
+    def _dispatch_tasks(
+        self,
+        agents: dict[str, AgentSimulator],
+        all_tasks: list[SimulationTask],
+    ) -> None:
         current_time = 0.0
         max_time = max((t.created_at for t in all_tasks), default=0.0) + 60.0
         task_queue: list[SimulationTask] = []
         task_index = 0
-        
+
         while current_time < max_time:
-            # Add new tasks to queue
             while task_index < len(all_tasks) and all_tasks[task_index].created_at <= current_time:
                 task = all_tasks[task_index]
-                # Assign to least busy agent
                 best_agent = min(agents.values(), key=lambda a: a.active_tasks)
                 task.agent_id = best_agent.agent_id
                 task_queue.append(task)
                 task_index += 1
-            
-            # Dispatch tasks to agents
+
             for agent in agents.values():
                 while task_queue and agent.can_accept_task():
                     task = task_queue.pop(0)
                     if task.agent_id == agent.agent_id:
                         agent.execute_task(task, current_time)
-            
-            # Advance time
+
             current_time += 0.1
-        
-        # Collect results
+
+    def _collect_metrics(
+        self,
+        agents: dict[str, AgentSimulator],
+        all_tasks: list[SimulationTask],
+        metrics: SimulationMetrics,
+    ) -> None:
+        metrics.total_tasks = len(all_tasks)
         for agent_id, agent in agents.items():
             metrics.completed_tasks += agent.completed_tasks
             metrics.failed_tasks += agent.failed_tasks
             metrics.total_latency_ms += agent.total_latency_ms
-            
-            if agent.completed_tasks > 0:
-                avg_latency = agent.total_latency_ms / agent.completed_tasks
-            else:
-                avg_latency = 0.0
-            
+
+            avg_latency = (
+                agent.total_latency_ms / agent.completed_tasks
+                if agent.completed_tasks > 0
+                else 0.0
+            )
             metrics.agent_metrics[agent_id] = {
                 "completed": agent.completed_tasks,
                 "failed": agent.failed_tasks,
                 "avg_latency_ms": avg_latency,
             }
-        
-        metrics.max_latency_ms = max((t.completed_at - t.created_at) * 1000.0 for t in all_tasks if t.completed_at) if all_tasks else 0.0
-        
+
+        metrics.max_latency_ms = (
+            max((t.completed_at - t.created_at) * 1000.0 for t in all_tasks if t.completed_at)
+            if all_tasks
+            else 0.0
+        )
+
         for task in all_tasks:
-            if task.success and (task.completed_at - task.created_at) * 1000.0 <= metrics.sla_target_ms:
+            if task.completed_at is None:
+                continue
+            if (
+                task.success
+                and (task.completed_at - task.created_at) * 1000.0 <= metrics.sla_target_ms
+            ):
                 metrics.sla_compliant_tasks += 1
-        
-        if verbose:
-            print(f"Simulation complete. Success rate: {metrics.success_rate():.1%}")
-            print(f"SLA compliance: {metrics.sla_compliance_rate():.1%}")
-            print(f"Avg latency: {metrics.avg_latency_ms():.1f}ms")
-        
-        return metrics
 
 
 if __name__ == "__main__":
