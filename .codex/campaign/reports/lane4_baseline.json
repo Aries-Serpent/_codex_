@@ -1,0 +1,34 @@
+[
+  {
+    "file": "src/aries_serpent_core/logging/chronicle_cost.py",
+    "name": "_event_data",
+    "type": "Function",
+    "line": 179,
+    "complexity": 44,
+    "rank": "F"
+  },
+  {
+    "file": "src/aries_serpent_core/logging/chronicle_cost.py",
+    "name": "load_sessions",
+    "type": "Function",
+    "line": 320,
+    "complexity": 30,
+    "rank": "D"
+  },
+  {
+    "file": "src/aries_serpent_core/logging/chronicle_cost.py",
+    "name": "analyze_costs",
+    "type": "Function",
+    "line": 480,
+    "complexity": 29,
+    "rank": "D"
+  },
+  {
+    "file": "src/orchestration/simulation.py",
+    "name": "SimulationEngine",
+    "type": "Class",
+    "line": 336,
+    "complexity": 21,
+    "rank": "D"
+  }
+]

@@ -104,3 +104,10 @@ The following tasks can execute in parallel **after** Lane A passes and before d
 - Dependency rules derived from `.codex/MULTI_LANE_GOVERNANCE.md` §Cross-Lane Dependency Management
 - Artifact transfer derived from Lane Definitions deliverables and campaign framework requirements
 - Scheduling logic supported by `src/orchestration/scheduling/lane_scheduler_v1.py`
+
+## Related Campaign Reports
+
+- [Repository Grounding Report](REPOSITORY_GROUNDING.md) — canonical grounding report and CLI gap closure details.
+- [Baseline Status Report](BASELINE_STATUS.md) — readiness baseline and risks.
+- [Agent Delegation Map](AGENT_DELEGATION_MAP.md) — agent role mappings and gap register.
+- [Lane 5 DOCS Report](Lane_5_DOCS_REPORT.md) — documentation consolidation and link health.

@@ -185,15 +185,7 @@ class ChronicleStore:
         start: str | None = None,
         end: str | None = None,
     ) -> dict[str, dict[str, Any]]:
-        table = (
-            "tool_calls"
-            if "tool_calls" in tables
-            else (
-                "events"
-                if "events" in tables
-                else "session_events" if "session_events" in tables else None
-            )
-        )
+        table = self._select_event_table(tables)
         if table is None:
             self.diagnostics.append("tool/event table unavailable; tool metrics are unavailable")
             return {}
@@ -203,6 +195,30 @@ class ChronicleStore:
         if not session_column:
             self.diagnostics.append(f"{table} has no session identifier column")
             return {}
+
+        rows = self._fetch_event_rows(
+            connection, table, columns, session_column, session_ids, start=start, end=end
+        )
+        grouped = self._group_event_rows(rows, session_column)
+        return {session_id: self._aggregate_event_rows(session_rows, columns, table) for session_id, session_rows in grouped.items()}
+
+    def _select_event_table(self, tables: set[str]) -> str | None:
+        for candidate in ("tool_calls", "events", "session_events"):
+            if candidate in tables:
+                return candidate
+        return None
+
+    def _fetch_event_rows(
+        self,
+        connection: sqlite3.Connection,
+        table: str,
+        columns: set[str],
+        session_column: str,
+        session_ids: set[str],
+        *,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[sqlite3.Row]:
         conditions = [
             f"{_quote_identifier(session_column)} IN ({','.join('?' for _ in session_ids)})"
         ]
@@ -217,95 +233,99 @@ class ChronicleStore:
         if end and timestamp_column:
             conditions.append(f"{_quote_identifier(timestamp_column)} < ?")
             parameters.append(end)
-        rows = connection.execute(
+        return connection.execute(
             f"SELECT * FROM {_quote_identifier(table)} WHERE {' AND '.join(conditions)}",
             parameters,
         ).fetchall()
+
+    @staticmethod
+    def _group_event_rows(
+        rows: list[sqlite3.Row], session_column: str
+    ) -> dict[str, list[sqlite3.Row]]:
         grouped: dict[str, list[sqlite3.Row]] = defaultdict(list)
         for row in rows:
             if row[session_column]:
                 grouped[str(row[session_column])].append(row)
+        return grouped
 
-        result: dict[str, dict[str, Any]] = {}
-        for session_id, session_rows in grouped.items():
-            tool_rows = [
-                row
-                for row in session_rows
-                if table == "tool_calls" or self._is_tool_row(row, columns)
-            ]
-            tool_names = [
-                str(value)
-                for row in tool_rows
-                if (value := _first(row, columns, "tool_name", "name", "tool_start_name"))
-            ]
-            text_parts = []
-            for row in session_rows:
-                for name in (
-                    "user_content",
-                    "assistant_content",
-                    "tool_complete_result_content",
-                    "event_details",
-                    "user_message",
-                    "assistant_response",
-                ):
-                    value = _first(row, columns, name)
-                    if value:
-                        text_parts.append(str(value))
-            text = "\n".join(text_parts)
-            input_tokens = sum(
-                (_as_number(_first(row, columns, "input_tokens", "usage_input_tokens")) or 0)
-                for row in session_rows
+    def _aggregate_event_rows(
+        self,
+        session_rows: list[sqlite3.Row],
+        columns: set[str],
+        table: str,
+    ) -> dict[str, Any]:
+        tool_rows = [
+            row for row in session_rows if table == "tool_calls" or self._is_tool_row(row, columns)
+        ]
+        tool_names = [
+            str(value)
+            for row in tool_rows
+            if (value := _first(row, columns, "tool_name", "name", "tool_start_name"))
+        ]
+        text = self._extract_event_text(session_rows, columns)
+        input_tokens = self._sum_token_metric(session_rows, columns, "input_tokens", "usage_input_tokens")
+        output_tokens = self._sum_token_metric(session_rows, columns, "output_tokens", "usage_output_tokens")
+        return {
+            "tool_calls": len(tool_rows),
+            "repeated_tool_calls": len(tool_names) - len(set(tool_names)),
+            "input_tokens": input_tokens if self._has_token_value(session_rows, columns, "input_tokens", "usage_input_tokens") else None,
+            "output_tokens": output_tokens if self._has_token_value(session_rows, columns, "output_tokens", "usage_output_tokens") else None,
+            "credits": self._sum_credits(session_rows, columns),
+            "commits": len(set(_COMMIT_RE.findall(text))),
+            "tests": len(_TEST_RE.findall(text)),
+            "blockers": sorted(
+                {
+                    line.strip()
+                    for line in text.splitlines()
+                    if line.strip() and _BLOCKER_RE.search(line)
+                }
+            )[:10],
+            "checkpoints": sum("checkpoint" in name.lower() for name in tool_names),
+        }
+
+    @staticmethod
+    def _extract_event_text(session_rows: list[sqlite3.Row], columns: set[str]) -> str:
+        parts = []
+        for row in session_rows:
+            for name in (
+                "user_content",
+                "assistant_content",
+                "tool_complete_result_content",
+                "event_details",
+                "user_message",
+                "assistant_response",
+            ):
+                value = _first(row, columns, name)
+                if value:
+                    parts.append(str(value))
+        return "\n".join(parts)
+
+    @staticmethod
+    def _sum_token_metric(
+        session_rows: list[sqlite3.Row], columns: set[str], *names: str
+    ) -> int | float:
+        return sum(
+            (_as_number(_first(row, columns, *names)) or 0) for row in session_rows
+        )
+
+    @staticmethod
+    def _has_token_value(
+        session_rows: list[sqlite3.Row], columns: set[str], *names: str
+    ) -> bool:
+        return any(
+            _as_number(_first(row, columns, *names)) is not None for row in session_rows
+        )
+
+    @staticmethod
+    def _sum_credits(session_rows: list[sqlite3.Row], columns: set[str]) -> int | float | None:
+        values = [
+            _as_number(
+                _first(row, columns, "credits", "ai_credits", "credit_usage", "total_credits")
             )
-            output_tokens = sum(
-                (_as_number(_first(row, columns, "output_tokens", "usage_output_tokens")) or 0)
-                for row in session_rows
-            )
-            credits_values = [
-                _as_number(
-                    _first(row, columns, "credits", "ai_credits", "credit_usage", "total_credits")
-                )
-                for row in session_rows
-            ]
-            available_credits = [value for value in credits_values if value is not None]
-            credits = sum(available_credits) if available_credits else None
-            result[session_id] = {
-                "tool_calls": len(tool_rows),
-                "repeated_tool_calls": len(tool_names) - len(set(tool_names)),
-                "input_tokens": (
-                    input_tokens
-                    if any(
-                        value is not None
-                        for value in (
-                            _as_number(_first(row, columns, "input_tokens", "usage_input_tokens"))
-                            for row in session_rows
-                        )
-                    )
-                    else None
-                ),
-                "output_tokens": (
-                    output_tokens
-                    if any(
-                        value is not None
-                        for value in (
-                            _as_number(_first(row, columns, "output_tokens", "usage_output_tokens"))
-                            for row in session_rows
-                        )
-                    )
-                    else None
-                ),
-                "credits": credits,
-                "commits": len(set(_COMMIT_RE.findall(text))),
-                "tests": len(_TEST_RE.findall(text)),
-                "blockers": sorted(
-                    {
-                        line.strip()
-                        for line in text.splitlines()
-                        if line.strip() and _BLOCKER_RE.search(line)
-                    }
-                )[:10],
-                "checkpoints": sum("checkpoint" in name.lower() for name in tool_names),
-            }
-        return result
+            for row in session_rows
+        ]
+        available = [value for value in values if value is not None]
+        return sum(available) if available else None
 
     @staticmethod
     def _is_tool_row(row: sqlite3.Row, columns: set[str]) -> bool:
@@ -341,41 +361,9 @@ class ChronicleStore:
             if not id_column:
                 self.diagnostics.append("sessions has no session identifier column")
                 return []
-            query = f"SELECT * FROM {_quote_identifier('sessions')}"
-            conditions: list[str] = []
-            parameters: list[str] = []
-            if session_id:
-                conditions.append(f"{_quote_identifier(id_column)} = ?")
-                parameters.append(session_id)
-            created_column = next(
-                (name for name in ("created_at", "timestamp", "started_at") if name in columns),
-                None,
-            )
-            if start and created_column:
-                conditions.append(f"{_quote_identifier(created_column)} >= ?")
-                parameters.append(start)
-            if end and created_column:
-                conditions.append(f"{_quote_identifier(created_column)} < ?")
-                parameters.append(end)
-            if conditions:
-                query += " WHERE " + " AND ".join(conditions)
-            rows = connection.execute(query, parameters).fetchall()
 
-            matched_rows: list[tuple[sqlite3.Row, str, set[str]]] = []
-            for row in rows:
-                current_id = str(row[id_column])
-                direct_task = _first(row, columns, "task_id", "task")
-                ref_tasks = self._session_task_ids(connection, tables, current_id)
-                record_task = _normalise_task_id(direct_task) or next(iter(ref_tasks), None)
-                normalized_task_id = _normalise_task_id(task_id)
-                if (
-                    normalized_task_id
-                    and record_task != normalized_task_id
-                    and normalized_task_id not in ref_tasks
-                ):
-                    continue
-                matched_rows.append((row, current_id, ref_tasks))
-
+            rows = self._fetch_session_rows(connection, columns, id_column, session_id, start, end)
+            matched_rows = self._match_session_rows(connection, tables, columns, id_column, rows, task_id)
             event_data = (
                 self._event_data(
                     connection,
@@ -387,66 +375,11 @@ class ChronicleStore:
                 if matched_rows
                 else {}
             )
-            records: list[SessionRecord] = []
-            for row, current_id, ref_tasks in matched_rows:
-                direct_task = _first(row, columns, "task_id", "task")
-                record_task = _normalise_task_id(direct_task) or next(iter(ref_tasks), None)
-                data = event_data.get(current_id, {})
-                record = SessionRecord(
-                    session_id=current_id,
-                    task_id=record_task,
-                    created_at=_first(row, columns, "created_at", "timestamp", "started_at"),
-                    updated_at=_first(row, columns, "updated_at", "ended_at", "completed_at"),
-                    status=_first(row, columns, "status", "state"),
-                    agent_name=_first(row, columns, "agent_name", "agent"),
-                    repository=_first(row, columns, "repository", "repo"),
-                    branch=_first(row, columns, "branch"),
-                    summary=_first(row, columns, "summary", "task", "description"),
-                    tool_calls=_as_int(
-                        _first(row, columns, "tool_calls", "tool_call_count"),
-                        _as_int(data.get("tool_calls")),
-                    ),
-                    input_tokens=_prefer_number(
-                        _first(row, columns, "input_tokens"), data.get("input_tokens")
-                    ),
-                    output_tokens=_prefer_number(
-                        _first(row, columns, "output_tokens"), data.get("output_tokens")
-                    ),
-                    credits=_prefer_number(
-                        _first(
-                            row, columns, "credits", "ai_credits", "credit_usage", "total_credits"
-                        ),
-                        data.get("credits"),
-                    ),
-                    duration_minutes=_as_number(
-                        _first(row, columns, "duration_minutes", "duration", "duration_seconds")
-                    ),
-                    commits=_prefer_int(
-                        _first(row, columns, "commits", "commit_count"),
-                        data.get("commits", 0),
-                    ),
-                    tests=_prefer_int(
-                        _first(row, columns, "tests", "test_count"),
-                        data.get("tests", 0),
-                    ),
-                    blockers=list(data.get("blockers", [])),
-                    uncommitted_changes=(
-                        int(value)
-                        if (
-                            value := _as_number(
-                                _first(row, columns, "uncommitted_changes", "dirty_files")
-                            )
-                        )
-                        is not None
-                        else None
-                    ),
-                    checkpoints=_prefer_int(
-                        _first(row, columns, "checkpoints", "checkpoint_count"),
-                        data.get("checkpoints", 0),
-                    ),
-                    repeated_tool_calls=int(data.get("repeated_tool_calls", 0)),
-                )
-                records.append(record)
+            records = [
+                self._build_session_record(row, current_id, ref_tasks, columns, event_data)
+                for row, current_id, ref_tasks in matched_rows
+            ]
+
             if task_id and not records:
                 self.diagnostics.append(f"no sessions matched task: {task_id}")
             if not records and not session_id and not task_id:
@@ -458,23 +391,310 @@ class ChronicleStore:
         finally:
             connection.close()
 
+    def _fetch_session_rows(
+        self,
+        connection: sqlite3.Connection,
+        columns: set[str],
+        id_column: str,
+        session_id: str | None,
+        start: str | None,
+        end: str | None,
+    ) -> list[sqlite3.Row]:
+        query = f"SELECT * FROM {_quote_identifier('sessions')}"
+        conditions: list[str] = []
+        parameters: list[str] = []
+        if session_id:
+            conditions.append(f"{_quote_identifier(id_column)} = ?")
+            parameters.append(session_id)
+        created_column = next(
+            (name for name in ("created_at", "timestamp", "started_at") if name in columns),
+            None,
+        )
+        if start and created_column:
+            conditions.append(f"{_quote_identifier(created_column)} >= ?")
+            parameters.append(start)
+        if end and created_column:
+            conditions.append(f"{_quote_identifier(created_column)} < ?")
+            parameters.append(end)
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        return connection.execute(query, parameters).fetchall()
 
-def _tip(
-    category: str,
-    title: str,
-    description: str,
-    evidence: str,
-    savings: str,
-    confidence: str,
-) -> dict[str, str]:
-    return {
-        "category": category,
-        "title": title,
-        "description": description,
-        "evidence": evidence,
-        "estimated_savings": savings,
-        "confidence": confidence,
-    }
+    def _match_session_rows(
+        self,
+        connection: sqlite3.Connection,
+        tables: set[str],
+        columns: set[str],
+        id_column: str,
+        rows: list[sqlite3.Row],
+        task_id: str | None,
+    ) -> list[tuple[sqlite3.Row, str, set[str]]]:
+        matched: list[tuple[sqlite3.Row, str, set[str]]] = []
+        normalized_filter = _normalise_task_id(task_id)
+        for row in rows:
+            current_id = str(row[id_column])
+            direct_task = _first(row, columns, "task_id", "task")
+            ref_tasks = self._session_task_ids(connection, tables, current_id)
+            record_task = _normalise_task_id(direct_task) or next(iter(ref_tasks), None)
+            if (
+                normalized_filter
+                and record_task != normalized_filter
+                and normalized_filter not in ref_tasks
+            ):
+                continue
+            matched.append((row, current_id, ref_tasks))
+        return matched
+
+    def _build_session_record(
+        self,
+        row: sqlite3.Row,
+        current_id: str,
+        ref_tasks: set[str],
+        columns: set[str],
+        event_data: dict[str, dict[str, Any]],
+    ) -> SessionRecord:
+        direct_task = _first(row, columns, "task_id", "task")
+        record_task = _normalise_task_id(direct_task) or next(iter(ref_tasks), None)
+        data = event_data.get(current_id, {})
+        return SessionRecord(
+            session_id=current_id,
+            task_id=record_task,
+            created_at=_first(row, columns, "created_at", "timestamp", "started_at"),
+            updated_at=_first(row, columns, "updated_at", "ended_at", "completed_at"),
+            status=_first(row, columns, "status", "state"),
+            agent_name=_first(row, columns, "agent_name", "agent"),
+            repository=_first(row, columns, "repository", "repo"),
+            branch=_first(row, columns, "branch"),
+            summary=_first(row, columns, "summary", "task", "description"),
+            tool_calls=_as_int(
+                _first(row, columns, "tool_calls", "tool_call_count"),
+                _as_int(data.get("tool_calls")),
+            ),
+            input_tokens=_prefer_number(
+                _first(row, columns, "input_tokens"), data.get("input_tokens")
+            ),
+            output_tokens=_prefer_number(
+                _first(row, columns, "output_tokens"), data.get("output_tokens")
+            ),
+            credits=_prefer_number(
+                _first(
+                    row, columns, "credits", "ai_credits", "credit_usage", "total_credits"
+                ),
+                data.get("credits"),
+            ),
+            duration_minutes=_as_number(
+                _first(row, columns, "duration_minutes", "duration", "duration_seconds")
+            ),
+            commits=_prefer_int(
+                _first(row, columns, "commits", "commit_count"),
+                data.get("commits", 0),
+            ),
+            tests=_prefer_int(
+                _first(row, columns, "tests", "test_count"),
+                data.get("tests", 0),
+            ),
+            blockers=list(data.get("blockers", [])),
+            uncommitted_changes=(
+                int(value)
+                if (
+                    value := _as_number(
+                        _first(row, columns, "uncommitted_changes", "dirty_files")
+                    )
+                )
+                is not None
+                else None
+            ),
+            checkpoints=_prefer_int(
+                _first(row, columns, "checkpoints", "checkpoint_count"),
+                data.get("checkpoints", 0),
+            ),
+            repeated_tool_calls=int(data.get("repeated_tool_calls", 0)),
+        )
+
+
+class _TipStrategy:
+    """Base for pluggable cost-tip strategies."""
+
+    category: str = ""
+    title: str = ""
+    description: str = ""
+    savings: str = ""
+    confidence: str = ""
+
+    def applies(self, ctx: _CostContext) -> bool:
+        raise NotImplementedError
+
+    def evidence(self, ctx: _CostContext) -> str:
+        raise NotImplementedError
+
+    def build(self, ctx: _CostContext) -> dict[str, str]:
+        return {
+            "category": self.category,
+            "title": self.title,
+            "description": self.description,
+            "evidence": self.evidence(ctx),
+            "estimated_savings": self.savings,
+            "confidence": self.confidence,
+        }
+
+
+class _MeasurementTip(_TipStrategy):
+    category = "measurement"
+    title = "Capture AI-credit usage"
+    description = (
+        "The selected source does not expose AI credits. Preserve token or usage "
+        "fields in the session event store so budget warnings are evidence-based."
+    )
+    savings = "Enables budget enforcement"
+    confidence = "high"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return ctx.total_credits is None
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return "No credits/ai_credits/credit_usage column was available."
+
+
+class _HardBudgetTip(_TipStrategy):
+    category = "budget"
+    title = "Hard budget exceeded"
+    description = (
+        "Stop exploratory work and resume from a checkpoint in a new, narrowly scoped session."
+    )
+    savings = "Prevents further overrun"
+    confidence = "high"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return ctx.total_credits is not None and ctx.total_credits >= ctx.hard_budget
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return f"{ctx.total_credits:g} credits >= hard threshold {ctx.hard_budget}"
+
+
+class _WarningBudgetTip(_TipStrategy):
+    category = "budget"
+    title = "Approaching session budget"
+    description = (
+        "Switch to targeted searches, delegate only bounded work, and validate once at the end."
+    )
+    savings = "10-25% of remaining budget"
+    confidence = "high"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return (
+            ctx.total_credits is not None
+            and ctx.warning_budget <= ctx.total_credits < ctx.hard_budget
+        )
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return f"{ctx.total_credits:g} credits >= warning threshold {ctx.warning_budget}"
+
+
+class _HeavySessionTip(_TipStrategy):
+    category = "session-shape"
+    title = "Split tool-heavy sessions"
+    description = (
+        "Create checkpoint boundaries between exploration, implementation, and validation "
+        "instead of carrying every lane in one session."
+    )
+    savings = "20-40% fewer repeated calls"
+    confidence = "high"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return bool(ctx.heavy)
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return (
+            f"{len(ctx.heavy)} session(s) used at least {ctx.heavy_threshold:g} tool calls; "
+            f"median was {ctx.median_calls:g}."
+        )
+
+
+class _RepeatedCallsTip(_TipStrategy):
+    category = "redundancy"
+    title = "Reduce repeated tool calls"
+    description = (
+        "Cache file summaries and use one bounded search per question before opening "
+        "additional files."
+    )
+    savings = "10-30% fewer tool calls"
+    confidence = "medium"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return ctx.repeated > 0
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return f"{ctx.repeated} repeated tool-name calls were observed."
+
+
+class _FailureTip(_TipStrategy):
+    category = "recovery"
+    title = "Stop and triage repeated failures"
+    description = (
+        "Record the first failure, identify its root cause, and use a focused continuation "
+        "rather than rerunning the same command."
+    )
+    savings = "Reduces retry spend"
+    confidence = "medium"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return ctx.failures > 0
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return f"{ctx.failures} failure/blocker signal(s) were observed."
+
+
+class _CheckpointTip(_TipStrategy):
+    category = "checkpointing"
+    title = "Checkpoint before validation"
+    description = (
+        "Persist a checkpoint after each independently verifiable lane and resume it instead "
+        "of reloading repository context."
+    )
+    savings = "15-35% lower context overhead"
+    confidence = "high"
+
+    def applies(self, ctx: _CostContext) -> bool:
+        return bool(ctx.without_checkpoints)
+
+    def evidence(self, ctx: _CostContext) -> str:
+        return f"{len(ctx.without_checkpoints)} heavy session(s) had no checkpoint signal."
+
+
+class _CostContext:
+    """Shared data passed to each cost-tip strategy."""
+
+    def __init__(
+        self,
+        records: list[SessionRecord],
+        diagnostics: list[str],
+        warning_budget: int,
+        hard_budget: int,
+    ) -> None:
+        self.sessions = records
+        self.diagnostics = diagnostics
+        self.warning_budget = warning_budget
+        self.hard_budget = hard_budget
+
+        tool_counts = [record.tool_calls for record in records if record.tool_calls]
+        self.median_calls = median(tool_counts) if tool_counts else 0
+        explicit_credits = [record.credits for record in records if record.credits is not None]
+        self.total_credits: int | float | None = sum(explicit_credits) if explicit_credits else None
+        self.heavy_threshold = max(500, self.median_calls * 3 if self.median_calls else 500)
+        self.heavy = [record for record in records if record.tool_calls >= self.heavy_threshold]
+        self.repeated = sum(record.repeated_tool_calls for record in records)
+        self.failures = sum(len(record.blockers) for record in records)
+        self.without_checkpoints = [record for record in self.heavy if record.checkpoints == 0]
+
+    @property
+    def input_values(self) -> list[int | float]:
+        return [record.input_tokens for record in self.sessions if record.input_tokens is not None]
+
+    @property
+    def output_values(self) -> list[int | float]:
+        return [
+            record.output_tokens for record in self.sessions if record.output_tokens is not None
+        ]
 
 
 def analyze_costs(
@@ -488,127 +708,19 @@ def analyze_costs(
 
     diagnostics = list(diagnostics)
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
-    tool_counts = [record.tool_calls for record in sessions if record.tool_calls]
-    median_calls = median(tool_counts) if tool_counts else 0
-    explicit_credits = [record.credits for record in sessions if record.credits is not None]
-    total_credits = sum(explicit_credits) if explicit_credits else None
-    tips: list[dict[str, str]] = []
+    ctx = _CostContext(sessions, diagnostics, warning_budget, hard_budget)
 
-    if total_credits is None:
-        tips.append(
-            _tip(
-                "measurement",
-                "Capture AI-credit usage",
-                (
-                    "The selected source does not expose AI credits. Preserve token or usage "
-                    "fields in the session event store so budget warnings are evidence-based."
-                ),
-                "No credits/ai_credits/credit_usage column was available.",
-                "Enables budget enforcement",
-                "high",
-            )
-        )
-    elif total_credits >= hard_budget:
-        tips.append(
-            _tip(
-                "budget",
-                "Hard budget exceeded",
-                (
-                    "Stop exploratory work and resume from a checkpoint in a new, narrowly "
-                    "scoped session."
-                ),
-                f"{total_credits:g} credits >= hard threshold {hard_budget}",
-                "Prevents further overrun",
-                "high",
-            )
-        )
-    elif total_credits >= warning_budget:
-        tips.append(
-            _tip(
-                "budget",
-                "Approaching session budget",
-                (
-                    "Switch to targeted searches, delegate only bounded work, and validate "
-                    "once at the end."
-                ),
-                f"{total_credits:g} credits >= warning threshold {warning_budget}",
-                "10-25% of remaining budget",
-                "high",
-            )
-        )
-
-    heavy_threshold = max(500, median_calls * 3 if median_calls else 500)
-    heavy = [record for record in sessions if record.tool_calls >= heavy_threshold]
-    if heavy:
-        tips.append(
-            _tip(
-                "session-shape",
-                "Split tool-heavy sessions",
-                (
-                    "Create checkpoint boundaries between exploration, implementation, and "
-                    "validation instead of carrying every lane in one session."
-                ),
-                (
-                    f"{len(heavy)} session(s) used at least {heavy_threshold:g} tool calls; "
-                    f"median was {median_calls:g}."
-                ),
-                "20-40% fewer repeated calls",
-                "high",
-            )
-        )
-
-    repeated = sum(record.repeated_tool_calls for record in sessions)
-    if repeated:
-        tips.append(
-            _tip(
-                "redundancy",
-                "Reduce repeated tool calls",
-                (
-                    "Cache file summaries and use one bounded search per question before "
-                    "opening additional files."
-                ),
-                f"{repeated} repeated tool-name calls were observed.",
-                "10-30% fewer tool calls",
-                "medium",
-            )
-        )
-
-    failures = sum(len(record.blockers) for record in sessions)
-    if failures:
-        tips.append(
-            _tip(
-                "recovery",
-                "Stop and triage repeated failures",
-                (
-                    "Record the first failure, identify its root cause, and use a focused "
-                    "continuation rather than rerunning the same command."
-                ),
-                f"{failures} failure/blocker signal(s) were observed.",
-                "Reduces retry spend",
-                "medium",
-            )
-        )
-
-    without_checkpoints = [record for record in heavy if record.checkpoints == 0]
-    if without_checkpoints:
-        tips.append(
-            _tip(
-                "checkpointing",
-                "Checkpoint before validation",
-                (
-                    "Persist a checkpoint after each independently verifiable lane and resume "
-                    "it instead of reloading repository context."
-                ),
-                f"{len(without_checkpoints)} heavy session(s) had no checkpoint signal.",
-                "15-35% lower context overhead",
-                "high",
-            )
-        )
-
-    input_values = [record.input_tokens for record in sessions if record.input_tokens is not None]
-    output_values = [
-        record.output_tokens for record in sessions if record.output_tokens is not None
+    strategies: list[_TipStrategy] = [
+        _MeasurementTip(),
+        _HardBudgetTip(),
+        _WarningBudgetTip(),
+        _HeavySessionTip(),
+        _RepeatedCallsTip(),
+        _FailureTip(),
+        _CheckpointTip(),
     ]
+    tips = [strategy.build(ctx) for strategy in strategies if strategy.applies(ctx)]
+
     return {
         "schema_version": "1.0",
         "generated_at": _now(),
@@ -616,11 +728,11 @@ def analyze_costs(
         "metrics": {
             "sessions": len(sessions),
             "tool_calls": sum(record.tool_calls for record in sessions),
-            "median_tool_calls": median_calls,
-            "input_tokens": sum(input_values) if input_values else None,
-            "output_tokens": sum(output_values) if output_values else None,
-            "credits": total_credits,
-            "credits_available": total_credits is not None,
+            "median_tool_calls": ctx.median_calls,
+            "input_tokens": sum(ctx.input_values) if ctx.input_values else None,
+            "output_tokens": sum(ctx.output_values) if ctx.output_values else None,
+            "credits": ctx.total_credits,
+            "credits_available": ctx.total_credits is not None,
             "warning_budget": warning_budget,
             "hard_budget": hard_budget,
         },

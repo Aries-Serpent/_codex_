@@ -65,3 +65,10 @@ The campaign framework defines 13 distinct agent roles. The repository already h
 - Agent registry inspected: `.github/agents/AGENT_REGISTRY.yaml`
 - Lane implementation modules confirmed present under `src/orchestration/` and `src/security/factory/`
 - Governance docs `.codex/MULTI_LANE_GOVERNANCE.md` and `.codex/SELF_HEALING_POLICY_TIERS.md` define tier rules and escalation chains
+
+## Related Campaign Reports
+
+- [Repository Grounding Report](REPOSITORY_GROUNDING.md) — canonical grounding report and CLI gap closure details.
+- [Baseline Status Report](BASELINE_STATUS.md) — readiness baseline and risks.
+- [Dependency Graph](DEPENDENCY_GRAPH.md) — lane ordering and artifact transfer.
+- [Lane 5 DOCS Report](Lane_5_DOCS_REPORT.md) — documentation consolidation and link health.

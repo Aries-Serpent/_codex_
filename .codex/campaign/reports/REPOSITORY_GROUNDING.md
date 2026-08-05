@@ -130,15 +130,20 @@ The CLI surface is in `src/aries_serpent_core/cli.py` under the `chronicle` grou
 | `route-task` | ✅ | Task delegation recommendation |
 | `agent-chain` | ✅ | Multi-agent chain generation |
 | `auto-fix` | ✅ | CI auto-fix wrappers (Tier 0–1 only) |
-| `improve` | ❌ **GAP** | Referenced in docs; no CLI subcommand |
-| `search` | ❌ **GAP** | Referenced in docs; no CLI subcommand |
+| `improve` | ✅ | Read-only adapter: `chronicle analyze` + cost analytics → roadmap JSON |
+| `search` | ✅ | Read-only adapter: local consolidation search over `.codex/chronicle_search_index.json` |
 
 ### Gap Mitigation Strategy
 
-- `/chronicle improve`: Propose a CLI adapter that calls `chronicle analyze` + cost analytics and emits a roadmap JSON. Must not claim to generate improvement lists without repository data.
-- `/chronicle search`: Propose a CLI adapter that reads `.codex/chronicle_search_index.json` (produced by `reindex`) and performs local consolidation search. Must not call external search APIs.
+- `/chronicle improve`: Implemented as a read-only CLI adapter that invokes the existing `chronicle analyze` pattern analytics and `chronicle cost-tips` cost analytics, then emits a roadmap JSON. When the Chronicle DB is missing, it returns an empty-state report instead of inventing improvements.
+- `/chronicle search`: Implemented as a read-only CLI adapter that reads `.codex/chronicle_search_index.json` (produced by `chronicle reindex`) and performs a local consolidation search. It does not call external search APIs.
 
-Both adapters will be **read-only / proposal-only** and fall under Tier 0 documentation/proposal scope unless they mutate files.
+Both adapters are **read-only / proposal-only** and fall under Tier 0 documentation/proposal scope because they do not mutate files. See also:
+
+- [Baseline Status Report](BASELINE_STATUS.md) — readiness baseline and risks.
+- [Agent Delegation Map](AGENT_DELEGATION_MAP.md) — agent role mappings and gap register.
+- [Dependency Graph](DEPENDENCY_GRAPH.md) — lane ordering and artifact flow.
+- [Lane 5 DOCS Report](Lane_5_DOCS_REPORT.md) — documentation consolidation and link health.
 
 ---
 

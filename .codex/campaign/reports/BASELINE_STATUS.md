@@ -54,8 +54,8 @@
 | `/chronicle analyze` | ✅ Implemented | `src/aries_serpent_core/cli.py` |
 | `/chronicle standup` | ✅ Implemented | `src/aries_serpent_core/cli.py` |
 | `/chronicle cost-tips` | ✅ Implemented | `src/aries_serpent_core/cli.py` |
-| `/chronicle improve` | ❌ **GAP** | Referenced in docs, not in CLI |
-| `/chronicle search` | ❌ **GAP** | Referenced in docs, not in CLI |
+| `/chronicle improve` | ✅ Implemented | Read-only adapter in `src/aries_serpent_core/cli.py` |
+| `/chronicle search` | ✅ Implemented | Read-only adapter in `src/aries_serpent_core/cli.py` |
 
 ---
 
@@ -113,3 +113,10 @@ If the campaign must be rolled back from Phase 0:
 - File hashes: Python `hashlib.sha256`
 - Directory checks: `ls` on lane implementation directories
 - Capability inventory: grep and view of `src/aries_serpent_core/cli.py`, `src/orchestration/`, `src/security/factory/`
+
+## 9. Related Campaign Reports
+
+- [Repository Grounding Report](REPOSITORY_GROUNDING.md) — canonical grounding report and CLI gap closure details.
+- [Agent Delegation Map](AGENT_DELEGATION_MAP.md) — agent role mappings and gap register.
+- [Dependency Graph](DEPENDENCY_GRAPH.md) — lane ordering, artifact transfer, and scheduling rules.
+- [Lane 5 DOCS Report](Lane_5_DOCS_REPORT.md) — documentation consolidation and link health.
