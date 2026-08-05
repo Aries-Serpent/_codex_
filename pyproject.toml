@@ -57,6 +57,7 @@ dependencies = [
     "urllib3>=2.7.0",  # Security: Phase 5.4.1 - PYSEC-2026-141/1999/1998/1995/1994/1996 (connection/proxy fixes)
     "requests>=2.33.0",  # Security: Phase 5.4.1 - PYSEC-2026-1873/1872/2275 (HTTP request library fixes)
     "defusedxml>=0.7.1",
+    "structlog>=25.0",
 ]
 version = "0.3.0"  # New release: OIDC security migration, 6 CWE fixes, 14 new security tests
 

@@ -6,6 +6,7 @@ Lane 1: Security Vulnerability Remediation
 Verifies that SQL injection vulnerabilities have been properly fixed.
 """
 
+import os
 import sqlite3
 import tempfile
 from pathlib import Path
