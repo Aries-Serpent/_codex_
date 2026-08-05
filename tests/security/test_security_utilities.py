@@ -272,9 +272,9 @@ class TestSubprocessSecurity:
 
     def test_secure_wrapper_rejects_shell_true(self):
         """Secure subprocess wrapper should reject shell=True explicitly."""
-        from security.security_hardening import secure_subprocess_run
+        from security.security_hardening import SubprocessSecurityError, secure_subprocess_run
 
-        with pytest.raises((ValueError, security.security_hardening.SubprocessSecurityError), match="shell=True"):
+        with pytest.raises((ValueError, SubprocessSecurityError), match="shell=True"):
             secure_subprocess_run(["echo", "hello"], shell=True)
 
 

@@ -4,16 +4,16 @@ Test Audit Logging
 Test module for audit logging.
 """
 
-import logging
-
 import pytest
 
-from security import log_security_event
+from security import SecurityEventType, get_audit_logger, log_security_event
 
 
-def test_security_event_logged(caplog: pytest.LogCaptureFixture) -> None:
-    # Target the specific logger used by log_security_event so caplog captures
-    # its messages even when the logger's propagate flag is False in CI.
-    caplog.set_level(logging.INFO, logger="codex.security")
-    log_security_event(action="user blocked")
-    assert "user blocked" in caplog.messages, "Condition must be true"
+def test_security_event_logged() -> None:
+    """A security event must be recorded by the audit logger."""
+    logger = get_audit_logger()
+    # Reset in-memory buffer for deterministic assertion.
+    pre_count = len(logger.events)
+    log_security_event(SecurityEventType.RBAC_VIOLATION, action="user blocked")
+    assert len(logger.events) == pre_count + 1, "Event was not recorded"
+    assert logger.events[-1].action == "user blocked", "Action mismatch"
