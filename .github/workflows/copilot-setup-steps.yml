@@ -103,6 +103,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-copilot-setup-steps-
           ${{ runner.os }}-pip-
+    # DO NOT REFACTOR THIS STEP
     - name: "\U0001F9E0 Session Context Pre-load (memory + policy + accountability\
         \ + PDA)"
       continue-on-error: true

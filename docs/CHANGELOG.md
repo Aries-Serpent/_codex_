@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-04
 
+### PR #5462 Merge Conflict Resolution + Documentation Sync
+- Resolved stacked PR merge conflict by rebasing `copilot/fix-rag-module-test-timeout` onto latest `0D_base_`.
+- Preserved base-branch `.codex/session_startup_packet.json` to avoid generated timestamp churn.
+- Synced `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to canonical archive copy at `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.
+- Synced `docs/CHANGELOG.md` updates to root `CHANGELOG.md`.
+
+
 ### PR #5454 & PR #5448 Reconstruction Session
 - **RAG Module Tests timeout fix:** Increased job timeout from 30 to 60 minutes and optimized test execution timeout (3300s → 2700s) to prevent premature SIGTERM during model loading and test execution. Updated `.github/workflows/test-rag.yml` with comprehensive rationale.
 - **Pytest summary parsing validation:** Verified `scripts/validation/update_legacy_debt_quarantine.py` correctly handles both singular "error" and plural "errors" in pytest summary output; confirmed control flow optimization (no duplicate pytest runs).
