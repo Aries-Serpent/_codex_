@@ -4,6 +4,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased — 2026-08-06
+
+### CCA Runtime Hardening — Run 30980481579 Recovery
+- Added fail-fast "🔒 Validate CCA lock variables" step to `.github/workflows/copilot-setup-steps.yml` before session pre-load. Validates `COPILOT_AGENT_CCA_VERSION_LOCK=stable`, `COPILOT_AGENT_DEDUPLICATION_ENABLED=true`, and `COPILOT_AGENT_TURN_ISOLATION_ENABLED=true` via repository variables; aborts bootstrap with clear `::error::` messages if any value is wrong.
+- Delegated parallel follow-up lanes:
+  - `ci-testing-agent`: fix deduplication/turn-isolation regression tests in `.github/copilot-evolution/`.
+  - `workflow-health-monitor`: assess/add CCA trailing-work telemetry watcher.
+- Verified previous multi-lane campaign deliverables remain green locally:
+  - `pytest tests/orchestration/test_chronicle_cli_gaps.py tests/test_chronicle_cost.py tests/orchestration/test_phase_4d_optimization.py -q` → 33 passed.
+  - `mypy src/aries_serpent_core/logging/chronicle_cost.py src/orchestration/simulation.py --config-file mypy.ini` → clean.
+
 ## Unreleased — 2026-08-04
 
 ### PR #5462 Merge Conflict Resolution + Documentation Sync
