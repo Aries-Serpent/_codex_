@@ -1,0 +1,51 @@
+name: Dependabot PR Consolidator
+
+on:
+  schedule:
+    - cron: "30 10 * * 2"  # Run after Dependabot Monday/Tuesday windows
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry-run mode"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+concurrency:
+  group: dependabot-consolidation
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mask secrets
+        run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"'
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Consolidate Dependabot PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 scripts/ci/dependabot_consolidator.py \
+            --base-branch main \
+            --dry-run ${{ github.event.inputs.dry_run || 'false' }}
