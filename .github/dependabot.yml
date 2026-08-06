@@ -1,11 +1,27 @@
 # Dependabot configuration for automated dependency updates
 # Corrected to reduce update_graph unknown_error risk and keep behavior stable.
+#
+# Remediation context (run 31061088340):
+# - Dependabot CLI/proxy must authenticate to github.com for metadata.
+# - The registry below supplies a token so public/private action refs resolve.
+# - If a CI step invokes Dependabot and tries to sign commits, ensure the
+#   signing binary exists OR disable commit signing for that step.
+# - Long-running Node agents should set NODE_OPTIONS="--max-old-space-size=8192"
+#   to reduce SIGABRT risk from heap exhaustion.
 
 version: 2
+registries:
+  github-actions:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    password: ${{ secrets.GITHUB_TOKEN }}
 updates:
   # GitHub Actions - Monitor workflow dependencies
   - package-ecosystem: "github-actions"
     directory: "/"
+    registries:
+      - github-actions
     schedule:
       interval: "weekly"
       day: "monday"
