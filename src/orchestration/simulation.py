@@ -151,7 +151,7 @@ class AgentSimulator:
         if task.success:
             self.completed_tasks += 1
 
-        self.active_tasks -= 1
+        self.active_tasks -= 1  # task completed
 
 
 @dataclass

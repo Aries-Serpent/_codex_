@@ -68,8 +68,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--dry-run",
-        choices=("true", "false"),
-        default="false",
+        action="store_true",
         help="Log actions without pushing branches or modifying PRs.",
     )
     parser.add_argument(
@@ -197,12 +196,16 @@ def list_dependabot_prs(repo: str, token: str) -> list[dict[str, Any]]:
 
 def find_existing_consolidation_pr(repo: str, token: str) -> dict[str, Any] | None:
     """Return an existing open consolidation PR labelled dependabot-consolidated."""
-    encoded = urllib.parse.quote(f"label:{CONSOLIDATED_LABEL}", safe="")
-    pulls = gh_api_paginated(
-        f"/repos/{repo}/issues?state=open&labels={encoded}&per_page=10",
+    owner, name = repo.split("/", 1)
+    query = urllib.parse.quote(
+        f"repo:{owner}/{name} is:pr is:open label:{CONSOLIDATED_LABEL}",
+        safe="",
+    )
+    items = gh_api_paginated(
+        f"/search/issues?q={query}&per_page=10",
         token,
     )
-    for issue in pulls:
+    for issue in items:
         if "pull_request" in (issue or {}):
             return issue
     return None
@@ -380,10 +383,16 @@ def create_or_update_consolidation_pr(
         "head": branch,
         "base": base_branch,
         "body": body,
-        "labels": [CONSOLIDATED_LABEL, "dependencies"],
     }
     result = gh_api("POST", f"/repos/{repo}/pulls", token, json.dumps(payload).encode())
     pr_number = result.get("number")
+    if pr_number:
+        gh_api(
+            "POST",
+            f"/repos/{repo}/issues/{pr_number}/labels",
+            token,
+            json.dumps({"labels": [CONSOLIDATED_LABEL, "dependencies"]}).encode(),
+        )
     log.info("Created consolidation PR #%d", pr_number)
     return pr_number
 
@@ -429,7 +438,7 @@ def main(argv: list[str] | None = None) -> int:
         datefmt="%Y-%m-%dT%H:%M:%SZ",
     )
 
-    dry_run = args.dry_run == "true"
+    dry_run = args.dry_run
     if dry_run:
         log.info("Running in DRY-RUN mode")
 
@@ -454,9 +463,10 @@ def main(argv: list[str] | None = None) -> int:
 
     with tempfile.TemporaryDirectory(prefix="dependabot-consolidator-") as tmp:
         workdir = Path(tmp)
-        clone_url = f"https://x-access-token:{token}@github.com/{repo}.git"
-        _run_git(["clone", "--depth", "1", clone_url, "."], workdir)
-        _run_git(["fetch", "origin", base_branch, "--depth=1"], workdir)
+        clone_url = f"https://github.com/{repo}.git"
+        git_env = {"GIT_ASKPASS": "echo", "GIT_USERNAME": "x-access-token", "GIT_PASSWORD": token}
+        _run_git(["clone", "--depth", "1", clone_url, "."], workdir, env=git_env)
+        _run_git(["fetch", "origin", base_branch, "--depth=1"], workdir, env=git_env)
 
         branch = create_consolidation_branch(workdir, base_branch, run_id, dry_run)
 

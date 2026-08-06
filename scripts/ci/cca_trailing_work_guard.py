@@ -61,7 +61,7 @@ DUPLICATE_WINDOW_SECONDS = int(os.environ.get("CCA_DUPLICATE_WINDOW_SECONDS", "3
 
 
 def _now() -> str:
-    return datetime.now(tz=timezone.utc).isoformat()
+    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _resolve_int(name: str, default: int) -> int:
@@ -81,8 +81,7 @@ def _resolve_str(name: str, default: str = "") -> str:
 def _rate_limit_remaining() -> int:
     """Probe GitHub /rate_limit for core remaining; return -1 on failure."""
     token = (
-        os.environ.get("CODEX_MASTER_KEY")
-        or os.environ.get("CODEX_BACKUP_KEY")
+        os.environ.get("GH_TOKEN")
         or os.environ.get("GITHUB_TOKEN")
         or ""
     )
