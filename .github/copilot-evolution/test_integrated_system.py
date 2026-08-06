@@ -710,7 +710,7 @@ class IntegratedSystemTester:
         logger.info(f"\n📝 Results saved to {output_path}")
 
 
-async def main() -> None:
+async def main() -> dict[str, Any]:
     """Run all tests."""
     tester = IntegratedSystemTester()
 
@@ -738,6 +738,7 @@ async def main() -> None:
         print(f"\n⚠️  {results['failed']} test(s) failed")
 
     print("=" * 60 + "\n")
+    return results
 
 
 if __name__ == "__main__":
