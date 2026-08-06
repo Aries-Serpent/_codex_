@@ -1,8 +1,39 @@
 # Changelog
-**Last Updated:** 2026-08-04
+**Last Updated:** 2026-08-06
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
+
+## Unreleased — 2026-08-06
+
+### Hardened Dependabot Consolidation (GAP-DEPENDABOT-CONSOLIDATE-01)
+- Tightened `.github/dependabot.yml` so every package ecosystem now uses `open-pull-requests-limit: 1` and a catch-all `groups` entry (`all-dependencies`/`python-all`), enforcing at most one grouped PR per ecosystem.
+- Added `scripts/ci/dependabot_consolidator.py` to merge eligible Dependabot branches into a single cross-ecosystem consolidation branch and PR, with `--dry-run` and `--base-branch` support, conflict detection/abort, security-label exclusion, and idempotent reuse of an existing `dependabot-consolidated` PR.
+- Added `.github/workflows/dependabot-consolidation.yml` scheduled after Dependabot windows and available via `workflow_dispatch` with a `dry_run` toggle; uses concurrency `dependabot-consolidation` and least-privilege `contents: write` + `pull-requests: write` permissions.
+- Added `tests/ci/test_dependabot_consolidator.py` with mocked subprocess and GitHub API calls covering zero/one PR exits, clean merge, conflict handling, security exclusion, dry-run, and existing consolidation PR reuse.
+- Updated accountability report and AI agent utilities registry.
+
+### CCA Dependabot Graph Failure Remediation — Run 31061088340
+- Hardened `.github/dependabot.yml` with a `github-actions` registry (`type: git`, `url: https://github.com`) authenticated via `${{ secrets.GITHUB_TOKEN }}`. Associated the registry with the `github-actions` ecosystem so Dependabot CLI/proxy can resolve action metadata even when token scoping is tight.
+- Added remediation context comments documenting:
+  - Commit-signing failures caused by missing `gh-gpgsign` binaries should be handled by ensuring the signing tool exists or disabling commit signing for the updater step.
+  - Long-running Node agents should set `NODE_OPTIONS="--max-old-space-size=8192"` to reduce SIGABRT risk from heap exhaustion.
+- Re-pinned the four actions that emitted invalid PURL warnings to verified commit SHAs:
+  - `PyO3/maturin-action` → `e83996d129638aa358a18fbd1dfb82f0b0fb5d3b` (`rust-ffi.yml`)
+  - `aquasecurity/trivy-action` → `ed142fd0673e97e23eac54620cfb913e5ce36c25` (`container-scan.yml`, `security-scanning-suite.yml`)
+  - `dorny/test-reporter` → `3eeb9fc888e82e8be2fb356bbeec2750231672bc` (`reasoning-engine-monitor.yml`)
+  - `dtolnay/rust-toolchain` → `4360b52568e2003a75bf9bc1d59f33a8e3fc893c` (`dependency-security-gate.yml`, `optimized-test-execution.yml`)
+- Verified all updated SHA references resolve to real GitHub commits.
+- Note: the failing step is inside the GitHub-managed dynamic workflow `dynamic/copilot-swe-agent/copilot`; repository-side mitigations are applied above.
+
+### CCA Runtime Hardening — Run 30980481579 Recovery
+- Added fail-fast "🔒 Validate CCA lock variables" step to `.github/workflows/copilot-setup-steps.yml` before session pre-load. Validates `COPILOT_AGENT_CCA_VERSION_LOCK=stable`, `COPILOT_AGENT_DEDUPLICATION_ENABLED=true`, and `COPILOT_AGENT_TURN_ISOLATION_ENABLED=true` via repository variables; aborts bootstrap with clear `::error::` messages if any value is wrong.
+- Delegated parallel follow-up lanes:
+  - `ci-testing-agent`: fix deduplication/turn-isolation regression tests in `.github/copilot-evolution/`.
+  - `workflow-health-monitor`: assess/add CCA trailing-work telemetry watcher.
+- Verified previous multi-lane campaign deliverables remain green locally:
+  - `pytest tests/orchestration/test_chronicle_cli_gaps.py tests/test_chronicle_cost.py tests/orchestration/test_phase_4d_optimization.py -q` → 33 passed.
+  - `mypy src/aries_serpent_core/logging/chronicle_cost.py src/orchestration/simulation.py --config-file mypy.ini` → clean.
 
 ## Unreleased — 2026-08-04
 

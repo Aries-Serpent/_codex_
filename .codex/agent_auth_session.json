@@ -1,10 +1,10 @@
 {
-  "issued_at": "2026-08-04T09:40:47Z",
-  "expires_at": 1785879647,
+  "issued_at": "2026-08-06T04:31:40Z",
+  "expires_at": 1786033900,
   "issued_by": "agent-auth-delegation",
-  "run_id": "30888573228",
-  "run_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/30888573228",
-  "pr_number": "5462",
+  "run_id": "31071064177",
+  "run_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/31071064177",
+  "pr_number": "5466",
   "bypass_tools": "",
   "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL. Renew by re-triggering agent-auth-delegation."
 }

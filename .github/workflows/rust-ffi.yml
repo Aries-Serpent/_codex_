@@ -37,7 +37,7 @@ jobs:
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
 
     - name: Build with maturin
-      uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8
+      uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b  # v1
       with:
         command: build
         args: --release --manifest-path src/codex_core/Cargo.toml --out dist

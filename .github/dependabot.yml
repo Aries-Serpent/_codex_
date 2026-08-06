@@ -1,11 +1,29 @@
 # Dependabot configuration for automated dependency updates
+# Consolidation enforcement: see .github/workflows/dependabot-consolidation.yml
+#
 # Corrected to reduce update_graph unknown_error risk and keep behavior stable.
+#
+# Remediation context (run 31061088340):
+# - Dependabot CLI/proxy must authenticate to github.com for metadata.
+# - The registry below supplies a token so public/private action refs resolve.
+# - If a CI step invokes Dependabot and tries to sign commits, ensure the
+#   signing binary exists OR disable commit signing for that step.
+# - Long-running Node agents should set NODE_OPTIONS="--max-old-space-size=8192"
+#   to reduce SIGABRT risk from heap exhaustion.
 
 version: 2
+registries:
+  github-actions:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    token: ${{ secrets.GITHUB_TOKEN }}
 updates:
   # GitHub Actions - Monitor workflow dependencies
   - package-ecosystem: "github-actions"
     directory: "/"
+    registries:
+      - github-actions
     schedule:
       interval: "weekly"
       day: "monday"
@@ -16,7 +34,11 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
-    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
 
   # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
@@ -39,23 +61,12 @@ updates:
       - dependency-name: "torch"
         versions:
           - ">=2.3.0"
-    # Start with simple grouping; expand later only after green runs
+    # Consolidate every Python dependency into a single grouped PR
     groups:
-      python-core:
+      python-all:
         patterns:
-          - "pyjwt*"
-          - "starlette*"
-          - "fastapi*"
-          - "pydantic*"
-          - "cryptography*"
-      python-dev:
-        patterns:
-          - "pytest*"
-          - "ruff*"
-          - "black*"
-          - "mypy*"
-          - "pre-commit*"
-    open-pull-requests-limit: 5
+          - "*"
+    open-pull-requests-limit: 1
 
   # Docker - Monitor base images (if using Dockerfile)
   - package-ecosystem: "docker"
@@ -69,7 +80,11 @@ updates:
       - "docker"
     commit-message:
       prefix: "docker"
-    open-pull-requests-limit: 3
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
 
   # npm - Monitor root-level JavaScript/TypeScript dependencies
   - package-ecosystem: "npm"
@@ -84,7 +99,11 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
 
   # npm - Monitor cognitive_app JavaScript/TypeScript dependencies
   # (consolidated here; cognitive_app/.github/dependabot.yml was not
@@ -103,7 +122,11 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
 
   # npm - Monitor copilot/extension JavaScript/TypeScript dependencies
   - package-ecosystem: "npm"
@@ -119,7 +142,11 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
 
   # Cargo - Monitor Rust workspace dependencies
   - package-ecosystem: "cargo"
@@ -134,4 +161,8 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1

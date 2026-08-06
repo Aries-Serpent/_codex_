@@ -1,7 +1,8 @@
+import time
+
 import pytest
 
-#     assert secrets.check_secret_entropy("Aa1!Bb2@Cc3, "Condition must be true"
-#     assert secrets.check_secret_entropy("short") is False, "Condition must be true"
+import security.secrets as secrets
 
 
 def test_rotate_secret_respects_age(monkeypatch) -> None:

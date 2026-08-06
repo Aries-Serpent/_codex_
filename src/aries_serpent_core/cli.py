@@ -1076,6 +1076,250 @@ def chronicle_auto_fix(
         click.echo(f"- {next_step}")
 
 
+@chronicle.command("improve")
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=".codex/codex.sqlite",
+    show_default=True,
+    help="Chronicle SQLite database",
+)
+@click.option(
+    "--warning-budget",
+    type=click.IntRange(min=1),
+    default=16_000,
+    show_default=True,
+    help="Credit threshold that emits a warning",
+)
+@click.option(
+    "--hard-budget",
+    type=click.IntRange(min=1),
+    default=20_000,
+    show_default=True,
+    help="Credit threshold that recommends stopping",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Optional JSON output path (default: stdout)",
+)
+def chronicle_improve(
+    database: str,
+    warning_budget: int,
+    hard_budget: int,
+    output: str | None,
+) -> None:
+    """Build a read-only improvement roadmap from Chronicle analytics.
+
+    Combines `chronicle analyze` pattern observations with `chronicle cost-tips`
+    cost analytics. When the Chronicle database is missing or empty, the command
+    returns an empty-state roadmap instead of inventing improvements.
+    """
+
+    if hard_budget < warning_budget:
+        raise click.ClickException("--hard-budget must be greater than or equal to --warning-budget")
+
+    try:
+        from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
+        from aries_serpent_core.logging.chronicle_cost import (
+            ChronicleStore,
+            analyze_costs,
+            dump_json,
+        )
+        from aries_serpent_core.logging.session_database import SessionDatabase
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+        raise click.ClickException(f"Chronicle analytics unavailable: {exc}") from exc
+
+    db_path = Path(database)
+    state = "available" if db_path.exists() else "empty"
+    patterns: dict[str, object] = {}
+    cost_report: dict[str, object] = {}
+    diagnostics: list[str] = []
+
+    if db_path.exists():
+        try:
+            store = ChronicleStore(str(db_path))
+            records = store.load_sessions()
+            cost_report = analyze_costs(
+                records,
+                store.diagnostics,
+                warning_budget=warning_budget,
+                hard_budget=hard_budget,
+            )
+            diagnostics.extend(store.diagnostics)
+
+            db = SessionDatabase(str(db_path))
+            analytics = ChronicleAnalytics(db)
+            patterns = analytics.analyze_patterns()
+            if not getattr(analytics, "sessions", []):
+                diagnostics.append("No session records found in Chronicle database.")
+                state = "empty"
+        except (IOError, OSError, ValueError, sqlite3.Error) as exc:
+            diagnostics.append(f"Failed to read Chronicle database: {exc}")
+            state = "empty"
+    else:
+        diagnostics.append(f"Chronicle database not found: {db_path}")
+
+    roadmap = {
+        "schema_version": "1.0",
+        "generated_at": _utc_timestamp(),
+        "state": state,
+        "database": str(db_path),
+        "repository": _snapshot_repository_state(),
+        "cost_report": cost_report,
+        "pattern_observations": patterns,
+        "diagnostics": sorted(set(diagnostics)),
+    }
+
+    result = dump_json(roadmap)
+    if output:
+        Path(output).write_text(result + "\n", encoding="utf-8")
+        click.echo(f"✅ Improvement roadmap exported to {output}")
+    else:
+        click.echo(result)
+
+    _append_campaign_metric(
+        "improve_roadmap_requested",
+        {
+            "database": str(db_path),
+            "state": state,
+            "has_cost_report": bool(cost_report),
+            "has_patterns": bool(patterns),
+        },
+    )
+
+
+@chronicle.command("search")
+@click.argument("query", required=False)
+@click.option(
+    "--index",
+    type=click.Path(dir_okay=False),
+    default=".codex/chronicle_search_index.json",
+    show_default=True,
+    help="Path to the Chronicle search index produced by `chronicle reindex`",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Optional JSON output path (default: stdout)",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON instead of text")
+def chronicle_search(query: str | None, index: str, output: str | None, as_json: bool) -> None:
+    """Search the local Chronicle search index without calling external APIs.
+
+    Performs a local consolidation search over `.codex/chronicle_search_index.json`.
+    Results are ranked by exact title match, summary keyword match, and branch match.
+    """
+
+    index_path = Path(index)
+    state = "available" if index_path.exists() else "empty"
+    diagnostics: list[str] = []
+    hits: list[dict[str, object]] = []
+
+    if not query:
+        diagnostics.append("No search query provided; returning empty results.")
+        state = "empty"
+    elif not index_path.exists():
+        diagnostics.append(f"Search index not found: {index_path}")
+    else:
+        try:
+            data = json.loads(index_path.read_text(encoding="utf-8"))
+            sessions = data.get("sessions", [])
+            if not sessions:
+                diagnostics.append("Search index contains no sessions.")
+                state = "empty"
+            else:
+                hits = _search_chronicle_index(query, sessions)
+        except (IOError, OSError, json.JSONDecodeError) as exc:
+            diagnostics.append(f"Failed to read search index: {exc}")
+            state = "empty"
+
+    report = {
+        "schema_version": "1.0",
+        "generated_at": _utc_timestamp(),
+        "state": state,
+        "index": str(index_path),
+        "query": query,
+        "hit_count": len(hits),
+        "hits": hits,
+        "diagnostics": sorted(set(diagnostics)),
+    }
+
+    _append_campaign_metric(
+        "search_requested",
+        {
+            "index": str(index_path),
+            "query": query or "",
+            "hits": len(hits),
+            "state": state,
+        },
+    )
+
+    result = json.dumps(report, indent=2, sort_keys=True)
+    if output:
+        Path(output).write_text(result + "\n", encoding="utf-8")
+        click.echo(f"✅ Search results exported to {output}")
+        return
+
+    if as_json:
+        click.echo(result)
+        return
+
+    click.echo(f"Query: {query or '(none)'}")
+    click.echo(f"Index: {index_path}")
+    click.echo(f"Hits: {len(hits)}")
+    for rank, hit in enumerate(hits, 1):
+        session_id = hit.get("session_id", "unknown")
+        score = hit.get("score", 0)
+        summary = hit.get("summary", "")
+        click.echo(f"{rank}. {session_id} (score={score})")
+        if summary:
+            click.echo(f"   {summary}")
+
+
+def _search_chronicle_index(query: str, sessions: list[dict[str, object]]) -> list[dict[str, object]]:
+    """Local consolidation search over Chronicle index sessions."""
+
+    terms = {term.lower() for term in query.split() if term}
+    if not terms:
+        return []
+
+    scored: list[tuple[int, dict[str, object]]] = []
+    for session in sessions:
+        session_id = str(session.get("session_id", ""))
+        summary = str(session.get("summary", "") or "")
+        branch = str(session.get("branch", "") or "")
+        status = str(session.get("status", "") or "")
+        text = f"{session_id} {summary} {branch} {status}".lower()
+
+        score = 0
+        for term in terms:
+            if term in session_id.lower():
+                score += 10
+            if term in summary.lower():
+                score += 5
+            if term in branch.lower():
+                score += 2
+            if term in status.lower():
+                score += 1
+
+        if score:
+            hit = {
+                "session_id": session_id,
+                "summary": summary,
+                "branch": branch,
+                "status": status,
+                "score": score,
+                "matched_terms": sorted(term for term in terms if term in text),
+            }
+            scored.append((score, hit))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    return [hit for _, hit in scored]
+
+
 @cli.command("train", context_settings={"ignore_unknown_options": True})
 @click.option(
     "--engine",
@@ -2808,7 +3052,7 @@ def _load_cached_credentials() -> dict | None:
         )  # codeql[py/clear-text-logging-sensitive-data]
     except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring read error
         logger.debug(
-            "keyring read error — falling back to file-based lookup: %s", 
+            "keyring read error — falling back to file-based lookup: %s",
             type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
 

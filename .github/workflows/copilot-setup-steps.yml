@@ -57,7 +57,7 @@ jobs:
     name: Copilot Agent Environment Preparation
     runs-on: ${{ (vars.COPILOT_RUNNER_PROFILE != '' && vars.COPILOT_RUNNER_PROFILE)
       || 'ubuntu-latest' }}
-    timeout-minutes: 59
+    timeout-minutes: 60
     permissions:
       contents: read
       actions: write
@@ -103,6 +103,24 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-copilot-setup-steps-
           ${{ runner.os }}-pip-
+    - name: "\U0001F510 Validate CCA lock variables"
+      shell: bash
+      env:
+        LOCK: ${{ vars.COPILOT_AGENT_CCA_VERSION_LOCK }}
+        DEDUP: ${{ vars.COPILOT_AGENT_DEDUPLICATION_ENABLED }}
+        ISO: ${{ vars.COPILOT_AGENT_TURN_ISOLATION_ENABLED }}
+      run: |
+        fail=0
+        if [[ "${LOCK}" != "stable" ]]; then
+          echo "::error::COPILOT_AGENT_CCA_VERSION_LOCK must be 'stable' (got '${LOCK}')"; fail=1
+        fi
+        if [[ "${DEDUP}" != "true" ]]; then
+          echo "::error::COPILOT_AGENT_DEDUPLICATION_ENABLED must be 'true' (got '${DEDUP}')"; fail=1
+        fi
+        if [[ "${ISO}" != "true" ]]; then
+          echo "::error::COPILOT_AGENT_TURN_ISOLATION_ENABLED must be 'true' (got '${ISO}')"; fail=1
+        fi
+        exit $fail
     # DO NOT REFACTOR THIS STEP
     - name: "\U0001F9E0 Session Context Pre-load (memory + policy + accountability\
         \ + PDA)"

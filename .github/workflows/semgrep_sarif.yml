@@ -57,7 +57,7 @@ jobs:
     - name: Set up Python with caching
       uses: ./.github/actions/setup-python-cached
       with:
-        python-version: '3.11'
+        python-version: '3.12'
         cache-tier: common
         cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
 

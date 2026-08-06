@@ -92,11 +92,17 @@
     "35:.codex/CI_REMEDIATION_194F6AF0.md": 2,
     "35:.codex/SECURITY_SCAN_194F6AF0.md": 2,
     "20:.github/workflows/fragile-test-guardian.yml": 2,
-    "20:.github/workflows/workflow-expiry-enforcer.yml": 2,
-    "20:.github/workflows/workflow-restore.yml": 2,
+    "20:.github/workflows/workflow-expiry-enforcer.yml": 4,
+    "20:.github/workflows/workflow-restore.yml": 4,
     "21:.github/workflows/audit-logging.yml": 1,
     "21:.github/workflows/codeql-ga-gate.yml": 1,
-    "21:.github/workflows/compliance-scanner.yml": 1
+    "21:.github/workflows/compliance-scanner.yml": 1,
+    "21:.github/workflows/rust_swarm_ci.yml": 4,
+    "31:src/codex_ml/cli/main.py": 4,
+    "31:src/aries_serpent_core/archive/util.py": 4,
+    "31:src/utils/trackers.py": 4,
+    "31:src/utils/logging_factory.py": 4,
+    "31:src/codex_ml/utils/logging_wandb.py": 4
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -116,7 +122,8 @@
     "24": "BROKEN",
     "35": "OPEN",
     "19": "BROKEN",
-    "21": "OPEN",
-    "20": "OPEN"
+    "21": "BROKEN",
+    "20": "BROKEN",
+    "31": "BROKEN"
   }
 }
