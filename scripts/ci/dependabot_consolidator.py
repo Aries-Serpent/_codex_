@@ -122,7 +122,7 @@ def verify_gh_auth(token: str) -> None:
 
 def _api_headers(token: str) -> dict[str, str]:
     return {
-        "Authorization": f"******",
+        "Authorization": f"token {token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "User-Agent": "codex-dependabot-consolidator/1.0",
@@ -143,6 +143,7 @@ def gh_api(
         headers=_api_headers(token),
         data=data,
     )
+    log.debug("GitHub API %s %s", method, path)
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             body = resp.read()
@@ -452,7 +453,8 @@ def main(argv: list[str] | None = None) -> int:
 
     with tempfile.TemporaryDirectory(prefix="dependabot-consolidator-") as tmp:
         workdir = Path(tmp)
-        _run_git(["clone", "--depth", "1", f"https://x-access-token:{token}@github.com/{repo}.git", "."], workdir)
+        clone_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+        _run_git(["clone", "--depth", "1", clone_url, "."], workdir)
         _run_git(["fetch", "origin", base_branch, "--depth=1"], workdir)
 
         branch = create_consolidation_branch(workdir, base_branch, run_id, dry_run)
