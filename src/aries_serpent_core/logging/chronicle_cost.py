@@ -200,7 +200,10 @@ class ChronicleStore:
             connection, table, columns, session_column, session_ids, start=start, end=end
         )
         grouped = self._group_event_rows(rows, session_column)
-        return {session_id: self._aggregate_event_rows(session_rows, columns, table) for session_id, session_rows in grouped.items()}
+        return {
+            session_id: self._aggregate_event_rows(session_rows, columns, table)
+            for session_id, session_rows in grouped.items()
+        }
 
     def _select_event_table(self, tables: set[str]) -> str | None:
         for candidate in ("tool_calls", "events", "session_events"):

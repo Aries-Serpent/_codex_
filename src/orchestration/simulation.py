@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import logging
 import random
+from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
@@ -128,6 +129,7 @@ class AgentSimulator:
 
     def execute_task(self, task: SimulationTask, current_time: float) -> None:
         """Execute a task."""
+        self.active_tasks += 1
         task.started_at = current_time
 
         # Add random variance
@@ -396,7 +398,7 @@ class SimulationEngine:
     ) -> None:
         current_time = 0.0
         max_time = max((t.created_at for t in all_tasks), default=0.0) + 60.0
-        task_queue: list[SimulationTask] = []
+        task_queue: deque[SimulationTask] = deque()
         task_index = 0
 
         while current_time < max_time:
@@ -409,9 +411,12 @@ class SimulationEngine:
 
             for agent in agents.values():
                 while task_queue and agent.can_accept_task():
-                    task = task_queue.pop(0)
+                    task = task_queue.popleft()
                     if task.agent_id == agent.agent_id:
                         agent.execute_task(task, current_time)
+                    else:
+                        task_queue.appendleft(task)
+                        break
 
             current_time += 0.1
 
