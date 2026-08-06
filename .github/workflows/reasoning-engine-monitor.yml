@@ -26,7 +26,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-reasoning-engine-monitor-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
@@ -34,7 +34,7 @@ jobs:
           ${{ runner.os }}-pip-reasoning-engine-monitor-
           ${{ runner.os }}-pip-
     - name: Cache pytest
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .pytest_cache
         key: ${{ runner.os }}-pytest-${{ hashFiles('**/pyproject.toml') }}
@@ -101,7 +101,7 @@ jobs:
         \    print(\\\"\u2705 All\\ metrics within target\\\")\n\nEOF"
     - name: Upload artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: '.codex/reasoning/daily_monitor_report.json
 

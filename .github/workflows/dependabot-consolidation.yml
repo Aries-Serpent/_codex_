@@ -51,6 +51,11 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
+          if [ "${{ github.event.inputs.dry_run || 'false' }}" = "true" ]; then
+            DRY_RUN_FLAG="--dry-run"
+          else
+            DRY_RUN_FLAG=""
+          fi
           python3 scripts/ci/dependabot_consolidator.py \
             --base-branch main \
-            --dry-run ${{ github.event.inputs.dry_run || 'false' }}
+            ${DRY_RUN_FLAG}
