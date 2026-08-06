@@ -5,12 +5,20 @@
 ### Fixed (2026-08-06 — [auto-sync])
 - Auto-sync stub added by sync_tracked_files.py
 
-**Last Updated:** 2026-08-04
+**Last Updated:** 2026-08-06
 **Version:** v0.3.0
 
 All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-06
+
+### CCA Dependabot Graph Failure Remediation — Run 31061088340
+- Hardened `.github/dependabot.yml` with a `github-actions` registry (`type: git`, `url: https://github.com`) authenticated via `${{ secrets.GITHUB_TOKEN }}`. Associated the registry with the `github-actions` ecosystem so Dependabot CLI/proxy can resolve action metadata even when token scoping is tight.
+- Added remediation context comments documenting:
+  - Commit-signing failures caused by missing `gh-gpgsign` binaries should be handled by ensuring the signing tool exists or disabling commit signing for the updater step.
+  - Long-running Node agents should set `NODE_OPTIONS="--max-old-space-size=8192"` to reduce SIGABRT risk from heap exhaustion.
+- Audited active workflows under `.github/workflows` for unpinned `aquasecurity/trivy-action`, `dorny/test-reporter`, `dtolnay/rust-toolchain`, and `PyO3/maturin-action` references. All active usages are already SHA-pinned.
+- Note: the failing step is inside the GitHub-managed dynamic workflow `dynamic/copilot-swe-agent/copilot`; repository-side mitigations are applied above.
 
 ### CCA Runtime Hardening — Run 30980481579 Recovery
 - Added fail-fast "🔒 Validate CCA lock variables" step to `.github/workflows/copilot-setup-steps.yml` before session pre-load. Validates `COPILOT_AGENT_CCA_VERSION_LOCK=stable`, `COPILOT_AGENT_DEDUPLICATION_ENABLED=true`, and `COPILOT_AGENT_TURN_ISOLATION_ENABLED=true` via repository variables; aborts bootstrap with clear `::error::` messages if any value is wrong.
