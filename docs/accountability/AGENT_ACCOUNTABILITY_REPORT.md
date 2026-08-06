@@ -17,9 +17,14 @@
    - Added `registries:` block for `github-actions` (`type: git`, `url: https://github.com`) with `username: x-access-token` and `password: ${{ secrets.GITHUB_TOKEN }}`.
    - Linked the registry to the `github-actions` update entry.
    - Added remediation context comments for GPG signing and `NODE_OPTIONS` memory limits.
-3. Audited active workflows under `.github/workflows` for unpinned action references. Confirmed all active uses of `aquasecurity/trivy-action`, `dorny/test-reporter`, `dtolnay/rust-toolchain`, and `PyO3/maturin-action` are SHA-pinned.
-4. Validated YAML syntax of `.github/dependabot.yml` with `python -c "import yaml; yaml.safe_load(...)"`.
-5. Updated `docs/CHANGELOG.md` and queued accountability/CHANGELOG sync.
+3. Audited active workflows under `.github/workflows` for unpinned action references.
+4. Re-pinned the four actions that emitted invalid PURL warnings to verified commit SHAs (via `ci-failure-resolution-agent`):
+   - `PyO3/maturin-action` → `e83996d129638aa358a18fbd1dfb82f0b0fb5d3b` (`rust-ffi.yml`)
+   - `aquasecurity/trivy-action` → `ed142fd0673e97e23eac54620cfb913e5ce36c25` (`container-scan.yml`, `security-scanning-suite.yml`)
+   - `dorny/test-reporter` → `3eeb9fc888e82e8be2fb356bbeec2750231672bc` (`reasoning-engine-monitor.yml`)
+   - `dtolnay/rust-toolchain` → `4360b52568e2003a75bf9bc1d59f33a8e3fc893c` (`dependency-security-gate.yml`, `optimized-test-execution.yml`)
+5. Validated YAML syntax of `.github/dependabot.yml` and all affected workflow files.
+6. Updated `docs/CHANGELOG.md` and queued accountability/CHANGELOG sync.
 
 **Limitations**:
 - The actual failing step runs inside the GitHub-managed dynamic workflow `dynamic/copilot-swe-agent/copilot`, which is generated at runtime and is not present in this repository. Repository-side configuration cannot directly modify that workflow's signing binary, target repository placeholder, or Node memory limits.

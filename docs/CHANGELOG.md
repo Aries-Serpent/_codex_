@@ -11,7 +11,12 @@ All notable changes to this project will be documented in this file.
 - Added remediation context comments documenting:
   - Commit-signing failures caused by missing `gh-gpgsign` binaries should be handled by ensuring the signing tool exists or disabling commit signing for the updater step.
   - Long-running Node agents should set `NODE_OPTIONS="--max-old-space-size=8192"` to reduce SIGABRT risk from heap exhaustion.
-- Audited active workflows under `.github/workflows` for unpinned `aquasecurity/trivy-action`, `dorny/test-reporter`, `dtolnay/rust-toolchain`, and `PyO3/maturin-action` references. All active usages are already SHA-pinned.
+- Re-pinned the four actions that emitted invalid PURL warnings to verified commit SHAs:
+  - `PyO3/maturin-action` → `e83996d129638aa358a18fbd1dfb82f0b0fb5d3b` (`rust-ffi.yml`)
+  - `aquasecurity/trivy-action` → `ed142fd0673e97e23eac54620cfb913e5ce36c25` (`container-scan.yml`, `security-scanning-suite.yml`)
+  - `dorny/test-reporter` → `3eeb9fc888e82e8be2fb356bbeec2750231672bc` (`reasoning-engine-monitor.yml`)
+  - `dtolnay/rust-toolchain` → `4360b52568e2003a75bf9bc1d59f33a8e3fc893c` (`dependency-security-gate.yml`, `optimized-test-execution.yml`)
+- Verified all updated SHA references resolve to real GitHub commits.
 - Note: the failing step is inside the GitHub-managed dynamic workflow `dynamic/copilot-swe-agent/copilot`; repository-side mitigations are applied above.
 
 ### CCA Runtime Hardening — Run 30980481579 Recovery
