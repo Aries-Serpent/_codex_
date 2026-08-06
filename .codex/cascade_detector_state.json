@@ -92,8 +92,8 @@
     "35:.codex/CI_REMEDIATION_194F6AF0.md": 2,
     "35:.codex/SECURITY_SCAN_194F6AF0.md": 2,
     "20:.github/workflows/fragile-test-guardian.yml": 2,
-    "20:.github/workflows/workflow-expiry-enforcer.yml": 2,
-    "20:.github/workflows/workflow-restore.yml": 2,
+    "20:.github/workflows/workflow-expiry-enforcer.yml": 3,
+    "20:.github/workflows/workflow-restore.yml": 3,
     "21:.github/workflows/audit-logging.yml": 1,
     "21:.github/workflows/codeql-ga-gate.yml": 1,
     "21:.github/workflows/compliance-scanner.yml": 1

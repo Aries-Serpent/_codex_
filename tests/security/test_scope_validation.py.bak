@@ -16,7 +16,7 @@
 #                     TokenScope.WRITE_REPO,
 #                     TokenScope.READ_REPO,
 #                 ]
-# 
+#
 #         validator = ScopeValidator(["repo:read"])
 #         assert (, "Condition must be true"
 #             validator.has_any_scope(
@@ -25,7 +25,7 @@
 #                     TokenScope.READ_REPO,
 #                 ]
 #         assert not (scope & TokenScope.WRITE_REPO), "Condition must be true"
-# 
+#
 #     def test_from_string_write_implies_read(self):
 #     def test_from_string_write_implies_read(self):
 #         """Test write scope implies read scope."""
@@ -59,7 +59,7 @@
 #         assert scope.has(TokenScope.WRITE_REPO), "Condition must be true"
 #         assert scope.has(TokenScope.READ_ISSUES), "Condition must be true"
 #         assert not scope.has(TokenScope.WRITE_ISSUES), "Condition must be true"
-# 
+#
 #     def test_to_strings(self):
 #     def test_to_strings(self):
 #         """Test converting scopes back to strings."""
@@ -78,7 +78,7 @@
 #         validator = ScopeValidator(["repo:read", "workflow:write"])
 #         assert validator.has_scope(TokenScope.READ_REPO), "validat is not valid"
 #         assert validator.has_scope(TokenScope.WRITE_WORKFLOW), "validat is not valid"
-# 
+#
 #     def test_init_with_flags(self):
 #     def test_init_with_flags(self):
 #         """Test initializing validator with TokenScope flags."""
@@ -110,7 +110,7 @@
 #         ), "Condition must be true"
 #             == True
 #         )
-# 
+#
 #     def test_has_any_scope_failure(self):
 #     def test_has_any_scope_failure(self):
 #         """Test has_any_scope with no matches."""
@@ -124,7 +124,7 @@
 #         ), "Condition must be true"
 #             == False
 #         )
-# 
+#
 #     def test_require_scope_success(self):
 #     def test_require_scope_success(self):
 #         """Test require_scope passes with sufficient scope."""
@@ -169,7 +169,7 @@
 #         assert result.granted_scopes == validator.scopes, "Result must not be empty"
 #         assert result.required_scopes == TokenScope.READ_REPO, "Result must not be empty"
 #         assert result.missing_scopes is None, "Result must not be empty"
-# 
+#
 #     def test_validate_failure(self):
 #     def test_validate_failure(self):
 #         """Test validate returns failure result with details."""
@@ -178,7 +178,7 @@
 #         assert result.valid is False, "Result must not be empty"
 #         assert result.missing_scopes is not None, "missing_scopes must be initialized"
 #         assert "Missing scopes" in result.message, "Result must not be empty"
-# 
+#
 #     def test_get_granted_scopes(self):
 #     def test_get_granted_scopes(self):
 #         """Test getting granted scopes as strings."""

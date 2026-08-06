@@ -3052,7 +3052,7 @@ def _load_cached_credentials() -> dict | None:
         )  # codeql[py/clear-text-logging-sensitive-data]
     except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring read error
         logger.debug(
-            "keyring read error — falling back to file-based lookup: %s", 
+            "keyring read error — falling back to file-based lookup: %s",
             type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
 
