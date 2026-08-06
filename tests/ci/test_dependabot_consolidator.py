@@ -2,6 +2,7 @@
 
 All external subprocess and HTTP calls are mocked so the tests run offline.
 """
+
 from __future__ import annotations
 
 import json
@@ -53,9 +54,7 @@ def mock_paginated() -> Generator[MagicMock, None, None]:
 @pytest.fixture
 def mock_tempdir(tmp_path: Path) -> Generator[Path, None, None]:
     """Provide a temporary directory that the consolidation git commands can use."""
-    with patch(
-        "scripts.ci.dependabot_consolidator.tempfile.TemporaryDirectory"
-    ) as tmp:
+    with patch("scripts.ci.dependabot_consolidator.tempfile.TemporaryDirectory") as tmp:
         tmp.return_value.__enter__ = MagicMock(return_value=str(tmp_path))
         tmp.return_value.__exit__ = MagicMock(return_value=False)
         yield tmp_path
@@ -85,6 +84,7 @@ def configure_subprocess_for_clean_merge(
     tmp_path: Path,
 ) -> None:
     """Set subprocess.run return values for a successful clone/merge/push path."""
+
     def side_effect(
         cmd: list[str],
         **kwargs: Any,
@@ -147,9 +147,7 @@ def test_merge_clean_pr(
 
     # PR creation call
     calls = mock_gh_api.call_args_list
-    create_call = [
-        c for c in calls if c.args[0] == "POST" and "/pulls" in c.args[1]
-    ]
+    create_call = [c for c in calls if c.args[0] == "POST" and "/pulls" in c.args[1]]
     assert create_call, "Expected PR creation call"
     payload = json.loads(create_call[0].args[3])
     assert payload["title"].startswith("chore(deps): consolidated dependency updates")
@@ -188,8 +186,7 @@ def test_conflict_skipped_and_reported(
     assert dc.main(["--base-branch", "main"]) == 0
 
     create_call = [
-        c for c in mock_gh_api.call_args_list
-        if c.args[0] == "POST" and "/pulls" in c.args[1]
+        c for c in mock_gh_api.call_args_list if c.args[0] == "POST" and "/pulls" in c.args[1]
     ]
     payload = json.loads(create_call[0].args[3])
     body = payload["body"]
@@ -219,8 +216,7 @@ def test_security_label_excluded(
     assert dc.main(["--base-branch", "main"]) == 0
 
     create_call = [
-        c for c in mock_gh_api.call_args_list
-        if c.args[0] == "POST" and "/pulls" in c.args[1]
+        c for c in mock_gh_api.call_args_list if c.args[0] == "POST" and "/pulls" in c.args[1]
     ]
     payload = json.loads(create_call[0].args[3])
     body = payload["body"]
@@ -280,7 +276,6 @@ def test_existing_consolidation_pr_reused(
     assert dc.main(["--base-branch", "main"]) == 0
 
     update_call = [
-        c for c in mock_gh_api.call_args_list
-        if c.args[0] == "PATCH" and "/pulls/42" in c.args[1]
+        c for c in mock_gh_api.call_args_list if c.args[0] == "PATCH" and "/pulls/42" in c.args[1]
     ]
     assert update_call, "Expected existing PR update call"

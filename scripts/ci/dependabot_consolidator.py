@@ -24,6 +24,7 @@ Exit codes
     1   Runtime error (auth, merge conflict handling failure, API error)
     2   Invalid arguments or environment
 """
+
 from __future__ import annotations
 
 import argparse
