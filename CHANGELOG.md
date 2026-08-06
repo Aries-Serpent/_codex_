@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+- [PR #5466] Addressed workflow/script/source review comments and CI failures (2026-08-06).
+
 
 ### Fixed (auto-update — PR #5466)
 - Auto-fix: final REQ-4/REQ-5 update for PR #5466 promotion at 2026-08-06T04:40Z [auto-generated]
