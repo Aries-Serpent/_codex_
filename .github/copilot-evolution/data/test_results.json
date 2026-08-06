@@ -1,0 +1,145 @@
+{
+  "total_tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "details": [
+    {
+      "test": "test_pattern_extraction",
+      "success": true,
+      "data": {
+        "domains": 2,
+        "total_patterns": 12
+      },
+      "error": null
+    },
+    {
+      "test": "test_pattern_correlation",
+      "success": true,
+      "data": {
+        "correlations_found": 4,
+        "top_capability": "quantum_secure_validation"
+      },
+      "error": null
+    },
+    {
+      "test": "test_knowledge_gap_detection",
+      "success": true,
+      "data": {
+        "gaps_detected": 3,
+        "domains": [
+          "quantum_physics",
+          "security"
+        ]
+      },
+      "error": null
+    },
+    {
+      "test": "test_question_generation",
+      "success": true,
+      "data": {
+        "questions_generated": 1,
+        "question_types": [
+          "practical"
+        ]
+      },
+      "error": null
+    },
+    {
+      "test": "test_knowledge_integration",
+      "success": true,
+      "data": {
+        "capabilities_added": 0,
+        "status": "integrated"
+      },
+      "error": null
+    },
+    {
+      "test": "test_evolution_cycle",
+      "success": true,
+      "data": {
+        "generation_advanced": false,
+        "fitness_changed": true,
+        "capabilities_count": 1
+      },
+      "error": null
+    },
+    {
+      "test": "test_security_scenario",
+      "success": true,
+      "data": {
+        "gaps_detected": 3,
+        "questions_generated": 4,
+        "patterns_extracted": 265
+      },
+      "error": null
+    },
+    {
+      "test": "test_turn_isolation",
+      "success": true,
+      "data": {
+        "turn1_id": "turn_7f2d8f93_1785978380808",
+        "turn2_id": "turn_4bfe748e_1785978380808",
+        "turn1_calls": 0,
+        "turn2_calls": 0,
+        "isolation_verified": true
+      },
+      "error": null
+    },
+    {
+      "test": "test_payload_deduplication",
+      "success": true,
+      "data": {
+        "original_count": 4,
+        "cleaned_count": 3,
+        "duplicates_removed": 1,
+        "payload_hash": "662b1b72f81ba8fb"
+      },
+      "error": null
+    },
+    {
+      "test": "test_multi_turn_state",
+      "success": true,
+      "data": {
+        "turns_tested": 3,
+        "global_calls_registered": 6,
+        "turn_isolation_verified": true,
+        "turn_results": [
+          {
+            "turn_id": "turn_b05e2817_1785978380810",
+            "cleaned_calls": 2,
+            "stats": {
+              "turn_id": "turn_b05e2817_1785978380810",
+              "timestamp": "2026-08-06T01:06:20.810080",
+              "function_calls": 2,
+              "payload_hash": "897f2fd184058d86",
+              "is_finalized": false
+            }
+          },
+          {
+            "turn_id": "turn_4120a459_1785978380810",
+            "cleaned_calls": 2,
+            "stats": {
+              "turn_id": "turn_4120a459_1785978380810",
+              "timestamp": "2026-08-06T01:06:20.810351",
+              "function_calls": 2,
+              "payload_hash": "2489eb75f3a98ee3",
+              "is_finalized": false
+            }
+          },
+          {
+            "turn_id": "turn_66f7a42e_1785978380810",
+            "cleaned_calls": 2,
+            "stats": {
+              "turn_id": "turn_66f7a42e_1785978380810",
+              "timestamp": "2026-08-06T01:06:20.810578",
+              "function_calls": 2,
+              "payload_hash": "b2b69847bbaa1f91",
+              "is_finalized": false
+            }
+          }
+        ]
+      },
+      "error": null
+    }
+  ]
+}

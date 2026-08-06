@@ -505,23 +505,23 @@ class IntegratedSystemTester:
 
             system = IntegratedEvolutionSystem()
 
-            turn1_id = system.deduplicator.start_new_turn()
-            logger.info(f"✅ Turn 1 started: {turn1_id}")
-
+            # process_task_with_learning manages its own turn lifecycle: it
+            # starts a fresh turn internally, exposes the turn_id in the result,
+            # and finalizes it before returning. The test asserts on the turns
+            # returned by that method rather than on externally-started turns.
             task1 = {"description": "Task 1", "domain": "security"}
-            await system.process_task_with_learning(task1)
+            result1 = await system.process_task_with_learning(task1)
+            turn1_id = result1["turn_id"]
             turn1_stats = system.deduplicator.get_turn_stats(turn1_id)
-
+            logger.info(f"✅ Turn 1 completed: {turn1_id}")
             logger.info(f"   Turn 1 stats: {turn1_stats}")
             assert turn1_stats["is_finalized"], "Turn 1 should be finalized"
 
-            turn2_id = system.deduplicator.start_new_turn()
-            logger.info(f"✅ Turn 2 started: {turn2_id}")
-
             task2 = {"description": "Task 2", "domain": "quantum_physics"}
-            await system.process_task_with_learning(task2)
+            result2 = await system.process_task_with_learning(task2)
+            turn2_id = result2["turn_id"]
             turn2_stats = system.deduplicator.get_turn_stats(turn2_id)
-
+            logger.info(f"✅ Turn 2 completed: {turn2_id}")
             logger.info(f"   Turn 2 stats: {turn2_stats}")
             assert turn2_stats["is_finalized"], "Turn 2 should be finalized"
 
