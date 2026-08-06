@@ -1,4 +1,10 @@
 # Changelog
+
+## [Unreleased]
+
+### Fixed (2026-08-06 — [auto-sync])
+- Auto-sync stub added by sync_tracked_files.py
+
 **Last Updated:** 2026-08-04
 **Version:** v0.3.0
 
