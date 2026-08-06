@@ -9,8 +9,10 @@
 ## Table of Contents
 
 1. [Documentation Link Fixer](#documentation-link-fixer)
-2. [Future Utilities (Planned)](#future-utilities-planned)
-3. [Implementation Guidelines](#implementation-guidelines)
+2. [Test Artifact Guarantee System](#test-artifact-guarantee-system)
+3. [Dependabot PR Consolidator](#dependabot-pr-consolidator)
+4. [Future Utilities (Planned)](#future-utilities-planned)
+5. [Implementation Guidelines](#implementation-guidelines)
 
 ---
 
@@ -130,6 +132,59 @@ python scripts/ensure_test_artifacts.py --bandit
 - [ ] Add artifact size reporting
 - [ ] Generate artifact manifest JSON
 - [ ] Add `--strict` mode that fails if artifacts missing
+
+---
+
+## Dependabot PR Consolidator
+
+**Created:** 2026-08-06 (GAP-DEPENDABOT-CONSOLIDATE-01)
+**Agent:** GitHub Copilot
+**Status:** ✅ Implemented & Tested
+
+### Description
+Repository-owned tool that merges all eligible open Dependabot PRs into a single cross-ecosystem consolidation branch and PR, then closes the original PRs with a pointer comment. Designed to keep at most one Dependabot-related open PR in the repository by combining with the tightened Dependabot configuration.
+
+### Location
+```
+scripts/ci/dependabot_consolidator.py
+.github/workflows/dependabot-consolidation.yml
+tests/ci/test_dependabot_consolidator.py
+```
+
+### Usage
+```bash
+# Run locally (dry-run)
+python scripts/ci/dependabot_consolidator.py --base-branch main --dry-run true
+
+# Run in CI
+python scripts/ci/dependabot_consolidator.py --base-branch main
+```
+
+### Features
+- Lists open PRs authored by `dependabot[bot]` or labelled `dependencies`/`dependabot`.
+- Excludes security-labelled PRs and PRs with non-clean `mergeStateStatus`.
+- Creates a dated consolidation branch `dependabot/consolidated-<date>-<run-id>`.
+- Merges eligible Dependabot branches with `git merge --no-ff`; aborts and logs conflicts.
+- Creates or updates a consolidated PR labelled `dependabot-consolidated`.
+- Closes original Dependabot PRs with a comment linking to the consolidated PR.
+- Supports `--dry-run` and `--base-branch`.
+- Verifies `GH_TOKEN` via `gh auth status`.
+- Uses concurrency-safe temporary directories.
+
+### Tests
+```bash
+pytest tests/ci/test_dependabot_consolidator.py -v
+```
+
+### Dependencies
+- Python 3.12+
+- `gh` CLI
+- `GH_TOKEN` or `GITHUB_TOKEN` with `contents:write` and `pull-requests:write`
+
+### Future Enhancements
+- [ ] Expose configurable excluded labels via CLI argument.
+- [ ] Add retry/back-off for transient GitHub API failures.
+- [ ] Support reuse of an existing consolidation branch without force-push.
 
 ---
 

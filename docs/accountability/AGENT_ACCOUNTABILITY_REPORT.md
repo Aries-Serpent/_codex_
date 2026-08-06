@@ -1,3 +1,46 @@
+## Session: 2026-08-06T03:12Z — Hardened Dependabot PR Consolidation (GAP-DEPENDABOT-CONSOLIDATE-01)
+
+**Objective:** Implement a hardened, automated method that ensures no more than one Dependabot-related open PR exists at any time in `Aries-Serpent/_codex_`.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. Tightened `.github/dependabot.yml`:
+   - Set `open-pull-requests-limit: 1` for all seven `updates` entries.
+   - Replaced per-ecosystem groups with a single catch-all group (`all-dependencies` for all ecosystems; `python-all` for `pip`) so each ecosystem raises at most one grouped PR.
+   - Preserved the `github-actions` registry block and `ignore` rules for `nbconvert` and `torch`.
+   - Added top-level consolidation enforcement comment pointing to `.github/workflows/dependabot-consolidation.yml`.
+2. Created `scripts/ci/dependabot_consolidator.py`:
+   - Lists open Dependabot PRs, filters by author/label, excludes security-labelled or non-clean PRs.
+   - Creates a consolidation branch, merges eligible Dependabot branches with conflict detection and abort.
+   - Opens or updates a PR titled `chore(deps): consolidated dependency updates for <date>` with included/excluded tables.
+   - Closes individual Dependabot PRs with a pointer comment.
+   - Supports `--dry-run` and `--base-branch`; verifies `GH_TOKEN` via `gh auth status`; uses concurrency-safe temp directories.
+3. Created `.github/workflows/dependabot-consolidation.yml`:
+   - Runs on `schedule: "30 10 * * 2"` and `workflow_dispatch` with a `dry_run` choice input.
+   - Uses `concurrency: group: dependabot-consolidation` and least-privilege `contents: write` + `pull-requests: write` permissions.
+   - Checks out with `fetch-depth: 0`, configures git, and invokes the consolidator script.
+4. Created `tests/ci/test_dependabot_consolidator.py` covering no-PR, single-PR, clean merge, conflict handling, security exclusion, dry-run, and existing consolidation PR reuse.
+5. Updated `docs/CHANGELOG.md` and root `CHANGELOG.md` under `[Unreleased]`.
+6. Updated `.codex/AI_AGENT_UTILITIES_REGISTRY.md` with the new consolidator script.
+7. Synced this report to the canonical archive copy.
+
+**Validation**:
+- `python -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))"` → exit 0.
+- `python -c "import yaml; yaml.safe_load(open('.github/workflows/dependabot-consolidation.yml'))"` → exit 0.
+- `pytest tests/ci/test_dependabot_consolidator.py -v` → 7 passed.
+- `ruff check scripts/ci/dependabot_consolidator.py tests/ci/test_dependabot_consolidator.py` → clean.
+- No secrets or hardcoded tokens introduced; token sourced from `GH_TOKEN`/`GITHUB_TOKEN` env.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `docs/CHANGELOG.md` + `CHANGELOG.md` updated.
+
+### Agents Used
+- [x] `workflow-ci-fixer` (background, S1) — workflow/checkout version and policy validation
+
+---
+
 ## Session: 2026-08-06T01:55Z — CCA Run 31061088340 Dependabot Graph Failure Remediation
 
 **Objective:** Apply repository-side remediations for the failed Copilot Cloud Agent run `31061088340` (job `92489031545`) on branch `copilot/multi-lane-campaign-execution`.

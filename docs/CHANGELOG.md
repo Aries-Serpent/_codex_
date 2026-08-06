@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-06
 
+### Hardened Dependabot Consolidation (GAP-DEPENDABOT-CONSOLIDATE-01)
+- Tightened `.github/dependabot.yml` so every package ecosystem now uses `open-pull-requests-limit: 1` and a catch-all `groups` entry (`all-dependencies`/`python-all`), enforcing at most one grouped PR per ecosystem.
+- Added `scripts/ci/dependabot_consolidator.py` to merge eligible Dependabot branches into a single cross-ecosystem consolidation branch and PR, with `--dry-run` and `--base-branch` support, conflict detection/abort, security-label exclusion, and idempotent reuse of an existing `dependabot-consolidated` PR.
+- Added `.github/workflows/dependabot-consolidation.yml` scheduled after Dependabot windows and available via `workflow_dispatch` with a `dry_run` toggle; uses concurrency `dependabot-consolidation` and least-privilege `contents: write` + `pull-requests: write` permissions.
+- Added `tests/ci/test_dependabot_consolidator.py` with mocked subprocess and GitHub API calls covering zero/one PR exits, clean merge, conflict handling, security exclusion, dry-run, and existing consolidation PR reuse.
+- Updated accountability report and AI agent utilities registry.
+
 ### CCA Dependabot Graph Failure Remediation — Run 31061088340
 - Hardened `.github/dependabot.yml` with a `github-actions` registry (`type: git`, `url: https://github.com`) authenticated via `${{ secrets.GITHUB_TOKEN }}`. Associated the registry with the `github-actions` ecosystem so Dependabot CLI/proxy can resolve action metadata even when token scoping is tight.
 - Added remediation context comments documenting:
