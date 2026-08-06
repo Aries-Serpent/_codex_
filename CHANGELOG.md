@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5466)
+- Auto-fix: final REQ-4/REQ-5 update for PR #5466 promotion at 2026-08-06T04:40Z [auto-generated]
+
+### Fixed (auto-update — PR #5466)
 - Auto-fix: accountability report and CHANGELOG updated for final PR #5466 promotion at 2026-08-06T04:30Z [auto-generated]
 
 
