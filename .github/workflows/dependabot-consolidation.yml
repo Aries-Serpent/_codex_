@@ -15,7 +15,7 @@ on:
           - "true"
 
 concurrency:
-  group: dependabot-consolidation
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -31,7 +31,8 @@ jobs:
       - name: Mask secrets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"'
+        run: |
+          echo "::add-mask::${GH_TOKEN}"
 
       - name: Checkout
         uses: actions/checkout@v5

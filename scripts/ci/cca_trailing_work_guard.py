@@ -80,18 +80,14 @@ def _resolve_str(name: str, default: str = "") -> str:
 
 def _rate_limit_remaining() -> int:
     """Probe GitHub /rate_limit for core remaining; return -1 on failure."""
-    token = (
-        os.environ.get("GH_TOKEN")
-        or os.environ.get("GITHUB_TOKEN")
-        or ""
-    )
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
     headers = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "User-Agent": "codex-cca-trailing-work-guard/1.0",
     }
     if token:
-        headers["Authorization"] = f"******"
+        headers["Authorization"] = f"token {token}"
     req = urllib.request.Request("https://api.github.com/rate_limit", headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -162,15 +158,11 @@ def _compute_status(
     # Step-count thresholds
     if step_count > ESCALATE_STEP_THRESHOLD:
         status = "escalate_steps"
-        reasons.append(
-            f"step_count {step_count} > escalate threshold {ESCALATE_STEP_THRESHOLD}"
-        )
+        reasons.append(f"step_count {step_count} > escalate threshold {ESCALATE_STEP_THRESHOLD}")
         exit_code = max(exit_code, 1)
     elif step_count > WARN_STEP_THRESHOLD:
         status = "warn_steps"
-        reasons.append(
-            f"step_count {step_count} > warning threshold {WARN_STEP_THRESHOLD}"
-        )
+        reasons.append(f"step_count {step_count} > warning threshold {WARN_STEP_THRESHOLD}")
         exit_code = max(exit_code, 1)
 
     # API quota
@@ -195,7 +187,9 @@ def _compute_status(
     # Duplicate fc_call_ detection
     if _is_duplicate_fc_call(run_id, job_id, fc_call_id):
         status = "abort_duplicate"
-        reasons.append(f"duplicate fc_call_id {fc_call_id!r} within {DUPLICATE_WINDOW_SECONDS}s window")
+        reasons.append(
+            f"duplicate fc_call_id {fc_call_id!r} within {DUPLICATE_WINDOW_SECONDS}s window"
+        )
         exit_code = 2
 
     return status, reasons, exit_code
@@ -208,7 +202,9 @@ def emit_checkpoint(args: argparse.Namespace) -> int:
     job_id = args.job_id or _resolve_str("GITHUB_JOB", "local")
     lane = args.lane or _resolve_str("CCA_LANE", "")
     fix_id = args.fix_id or _resolve_str("CCA_FIX_ID", "")
-    step_count = args.step_count if args.step_count is not None else _resolve_int("CCA_STEP_COUNT", 0)
+    step_count = (
+        args.step_count if args.step_count is not None else _resolve_int("CCA_STEP_COUNT", 0)
+    )
     fc_call_id = args.fc_call_id or _resolve_str("CCA_FC_CALL_ID", "")
 
     api_quota = args.quota
@@ -217,9 +213,7 @@ def emit_checkpoint(args: argparse.Namespace) -> int:
     if api_quota < 0:
         api_quota = _rate_limit_remaining()
 
-    status, reasons, exit_code = _compute_status(
-        step_count, api_quota, run_id, job_id, fc_call_id
-    )
+    status, reasons, exit_code = _compute_status(step_count, api_quota, run_id, job_id, fc_call_id)
 
     next_checkpoint = _now()
 
@@ -278,7 +272,11 @@ def check_run(args: argparse.Namespace) -> int:
 
     latest = records[-1]
     print(json.dumps(latest, indent=2))
-    return 0 if latest.get("status") == "ok" else (2 if latest.get("status", "").startswith("abort") else 1)
+    return (
+        0
+        if latest.get("status") == "ok"
+        else (2 if latest.get("status", "").startswith("abort") else 1)
+    )
 
 
 def generate_report(_args: argparse.Namespace) -> int:
@@ -323,7 +321,7 @@ def _parse_args() -> argparse.Namespace:
     check = sub.add_parser("check", help="Check latest record for a run")
     check.add_argument("--run-id", default="")
 
-    report = sub.add_parser("report", help="Print telemetry summary report")
+    sub.add_parser("report", help="Print telemetry summary report")
 
     return parser.parse_args()
 

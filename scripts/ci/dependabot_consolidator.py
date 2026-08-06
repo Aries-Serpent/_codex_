@@ -179,7 +179,6 @@ def gh_api_paginated(path: str, token: str) -> list[dict[str, Any]]:
 
 def list_dependabot_prs(repo: str, token: str) -> list[dict[str, Any]]:
     """List open PRs authored by Dependabot or labelled as dependencies/dependabot."""
-    owner, name = repo.split("/", 1)
     pulls = gh_api_paginated(f"/repos/{repo}/pulls?state=open&per_page=100", token)
     dependabot_prs: list[dict[str, Any]] = []
     for pr in pulls:

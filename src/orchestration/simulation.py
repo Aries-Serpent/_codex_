@@ -39,6 +39,7 @@ logger = logging.getLogger(__name__)
 
 class WorkloadProfile(Enum):
     """Workload patterns."""
+
     STEADY_STATE = "steady_state"
     BURSTY = "bursty"
     WAVE = "wave"
@@ -49,6 +50,7 @@ class WorkloadProfile(Enum):
 @dataclass
 class SimulationMetrics:
     """Metrics collected during simulation."""
+
     total_tasks: int = 0
     completed_tasks: int = 0
     failed_tasks: int = 0
@@ -99,6 +101,7 @@ class SimulationMetrics:
 @dataclass
 class SimulationTask:
     """Task in simulation."""
+
     task_id: str
     agent_id: str
     priority: int
@@ -113,6 +116,7 @@ class SimulationTask:
 @dataclass
 class AgentSimulator:
     """Simulated agent."""
+
     agent_id: str
     max_concurrent: int
     avg_task_duration_ms: float
@@ -157,6 +161,7 @@ class AgentSimulator:
 @dataclass
 class WorkloadGenerator:
     """Generate workload patterns."""
+
     profile: WorkloadProfile
     tasks_per_sec: float
     avg_task_duration_ms: float
@@ -187,13 +192,15 @@ class WorkloadGenerator:
             for i in range(int(self.tasks_per_sec)):
                 created_at = t + (i * task_interval)
                 if created_at < self.duration_sec:
-                    tasks.append(SimulationTask(
-                        task_id=f"task-{task_id}",
-                        agent_id="",  # To be assigned
-                        priority=2,
-                        estimated_duration_ms=self.avg_task_duration_ms,
-                        created_at=created_at,
-                    ))
+                    tasks.append(
+                        SimulationTask(
+                            task_id=f"task-{task_id}",
+                            agent_id="",  # To be assigned
+                            priority=2,
+                            estimated_duration_ms=self.avg_task_duration_ms,
+                            created_at=created_at,
+                        )
+                    )
                     task_id += 1
 
         return tasks
@@ -208,13 +215,15 @@ class WorkloadGenerator:
             for i in range(burst_size):
                 created_at = burst_start + (i * 0.01)
                 if created_at < self.duration_sec:
-                    tasks.append(SimulationTask(
-                        task_id=f"task-{task_id}",
-                        agent_id="",
-                        priority=2,
-                        estimated_duration_ms=self.avg_task_duration_ms,
-                        created_at=created_at,
-                    ))
+                    tasks.append(
+                        SimulationTask(
+                            task_id=f"task-{task_id}",
+                            agent_id="",
+                            priority=2,
+                            estimated_duration_ms=self.avg_task_duration_ms,
+                            created_at=created_at,
+                        )
+                    )
                     task_id += 1
 
         return tasks
@@ -231,13 +240,15 @@ class WorkloadGenerator:
             for i in range(int(rate)):
                 created_at = t + (i / rate)
                 if created_at < self.duration_sec:
-                    tasks.append(SimulationTask(
-                        task_id=f"task-{task_id}",
-                        agent_id="",
-                        priority=2,
-                        estimated_duration_ms=self.avg_task_duration_ms,
-                        created_at=created_at,
-                    ))
+                    tasks.append(
+                        SimulationTask(
+                            task_id=f"task-{task_id}",
+                            agent_id="",
+                            priority=2,
+                            estimated_duration_ms=self.avg_task_duration_ms,
+                            created_at=created_at,
+                        )
+                    )
                     task_id += 1
 
         return tasks
@@ -254,13 +265,15 @@ class WorkloadGenerator:
             for i in range(int(rate)):
                 created_at = t + (i / max(rate, 1))
                 if created_at < self.duration_sec:
-                    tasks.append(SimulationTask(
-                        task_id=f"task-{task_id}",
-                        agent_id="",
-                        priority=2,
-                        estimated_duration_ms=self.avg_task_duration_ms * 2,  # Longer tasks
-                        created_at=created_at,
-                    ))
+                    tasks.append(
+                        SimulationTask(
+                            task_id=f"task-{task_id}",
+                            agent_id="",
+                            priority=2,
+                            estimated_duration_ms=self.avg_task_duration_ms * 2,  # Longer tasks
+                            created_at=created_at,
+                        )
+                    )
                     task_id += 1
 
         return tasks
@@ -272,15 +285,19 @@ class WorkloadGenerator:
 
         for i in range(expected_count):
             created_at = random.uniform(0, self.duration_sec)
-            duration = max(100, random.gauss(self.avg_task_duration_ms, self.avg_task_duration_ms * 0.3))
+            duration = max(
+                100, random.gauss(self.avg_task_duration_ms, self.avg_task_duration_ms * 0.3)
+            )
 
-            tasks.append(SimulationTask(
-                task_id=f"task-{i}",
-                agent_id="",
-                priority=random.randint(0, 3),
-                estimated_duration_ms=duration,
-                created_at=created_at,
-            ))
+            tasks.append(
+                SimulationTask(
+                    task_id=f"task-{i}",
+                    agent_id="",
+                    priority=random.randint(0, 3),
+                    estimated_duration_ms=duration,
+                    created_at=created_at,
+                )
+            )
 
         return sorted(tasks, key=lambda t: t.created_at)
 
@@ -290,7 +307,9 @@ class ScenarioBuilder:
 
     def __init__(self):
         self.agents: dict[str, tuple[int, float]] = {}  # agent_id -> (max_concurrent, failure_rate)
-        self.workloads: list[tuple[WorkloadProfile, float, float, float, float]] = []  # (profile, rate, avg_duration_ms, duration, failure_rate)
+        self.workloads: list[tuple[WorkloadProfile, float, float, float, float]] = (
+            []
+        )  # (profile, rate, avg_duration_ms, duration, failure_rate)
         self.failure_injections: dict[str, float] = {}
 
     def add_agent(
@@ -415,8 +434,7 @@ class SimulationEngine:
                     if task.agent_id == agent.agent_id:
                         agent.execute_task(task, current_time)
                     else:
-                        task_queue.appendleft(task)
-                        break
+                        task_queue.append(task)
 
             current_time += 0.1
 
@@ -433,9 +451,7 @@ class SimulationEngine:
             metrics.total_latency_ms += agent.total_latency_ms
 
             avg_latency = (
-                agent.total_latency_ms / agent.completed_tasks
-                if agent.completed_tasks > 0
-                else 0.0
+                agent.total_latency_ms / agent.completed_tasks if agent.completed_tasks > 0 else 0.0
             )
             metrics.agent_metrics[agent_id] = {
                 "completed": agent.completed_tasks,
@@ -461,12 +477,14 @@ class SimulationEngine:
 
 if __name__ == "__main__":
     # Run example scenario
-    scenario = (ScenarioBuilder()
+    scenario = (
+        ScenarioBuilder()
         .add_agent("ci-testing-agent", max_concurrent=5)
         .add_agent("ci-importerror-agent", max_concurrent=3)
         .add_agent("ci-health-alert-agent", max_concurrent=2)
         .add_workload("steady_state", tasks_per_sec=2, avg_duration_ms=5000, duration_sec=30)
-        .build())
+        .build()
+    )
 
     engine = SimulationEngine()
     results = engine.run_scenario(scenario, verbose=True)

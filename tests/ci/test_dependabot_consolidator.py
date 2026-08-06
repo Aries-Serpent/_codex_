@@ -105,7 +105,7 @@ def test_no_prs_exits_cleanly(
 ) -> None:
     """Empty PR list returns 0."""
     mock_paginated.return_value = []
-    args = ["--base-branch", "main", "--dry-run", "true"]
+    args = ["--base-branch", "main", "--dry-run"]
     assert dc.main(args) == 0
 
 
@@ -119,7 +119,7 @@ def test_single_pr_exits_cleanly(
         [make_pr(1, "Bump foo", "dependabot/foo")],  # pulls
         [],  # issues search for existing consolidation PR
     ]
-    args = ["--base-branch", "main", "--dry-run", "true"]
+    args = ["--base-branch", "main", "--dry-run"]
     assert dc.main(args) == 0
 
 
@@ -142,7 +142,7 @@ def test_merge_clean_pr(
     configure_subprocess_for_clean_merge(mock_subprocess, mock_tempdir)
     mock_gh_api.return_value = {"number": 99}
 
-    args = ["--base-branch", "main", "--dry-run", "false"]
+    args = ["--base-branch", "main"]
     assert dc.main(args) == 0
 
     # PR creation call
@@ -241,7 +241,7 @@ def test_dry_run_no_push(
     ]
     configure_subprocess_for_clean_merge(mock_subprocess, mock_tempdir)
 
-    assert dc.main(["--base-branch", "main", "--dry-run", "true"]) == 0
+    assert dc.main(["--base-branch", "main", "--dry-run"]) == 0
 
     # No PR creation/update and no comments/close calls
     for call in mock_gh_api.call_args_list:
@@ -262,7 +262,6 @@ def test_existing_consolidation_pr_reused(
     mock_tempdir: Path,
 ) -> None:
     """When a consolidation PR already exists, its body is updated."""
-    existing = {"number": 42, "title": "existing"}
     mock_paginated.side_effect = [
         [
             make_pr(1, "Bump foo", "dependabot/foo"),

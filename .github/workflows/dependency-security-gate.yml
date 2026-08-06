@@ -54,13 +54,13 @@ jobs:
         fetch-depth: 0
     - name: Setup Python
       if: matrix.ecosystem == 'python'
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
 
     - name: Setup Node.js
       if: matrix.ecosystem == 'npm'
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: npm

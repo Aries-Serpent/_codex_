@@ -6,7 +6,6 @@ import json
 import sqlite3
 from pathlib import Path
 
-import pytest
 from click.testing import CliRunner
 
 from aries_serpent_core.cli import cli
@@ -51,10 +50,13 @@ class TestChronicleImprove:
         # Schema compatible with both ChronicleStore and SessionDatabase/ChronicleAnalytics.
         connection.execute(
             "CREATE TABLE sessions ("
-            "session_id TEXT PRIMARY KEY, pr_number INTEGER, branch TEXT, timestamp TEXT, "
-            "git_sha TEXT, status TEXT NOT NULL CHECK (status IN ('pending', 'in-progress', 'complete', 'failed')), "
-            "agent_name TEXT, duration_minutes INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
-            "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, UNIQUE(session_id)"
+            "session_id TEXT PRIMARY KEY, pr_number INTEGER, branch TEXT, "
+            "timestamp TEXT, git_sha TEXT, "
+            "status TEXT NOT NULL CHECK (status IN ('pending', 'in-progress', 'complete', 'failed')), "
+            "agent_name TEXT, duration_minutes INTEGER, "
+            "created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            "UNIQUE(session_id)"
             ")"
         )
         connection.execute(
@@ -86,7 +88,14 @@ class TestChronicleImprove:
         runner = CliRunner()
         result = runner.invoke(
             chronicle_improve,
-            ["--database", str(tmp_path / "missing.sqlite"), "--warning-budget", "100", "--hard-budget", "50"],
+            [
+                "--database",
+                str(tmp_path / "missing.sqlite"),
+                "--warning-budget",
+                "100",
+                "--hard-budget",
+                "50",
+            ],
         )
         assert result.exit_code != 0
         assert "--hard-budget must be greater than or equal to --warning-budget" in result.output
@@ -115,7 +124,9 @@ class TestChronicleSearch:
         """When the search index has no sessions, search returns an empty-state JSON."""
 
         index_path = tmp_path / "chronicle_search_index.json"
-        index_path.write_text(json.dumps({"schema_version": "1.0", "sessions": []}), encoding="utf-8")
+        index_path.write_text(
+            json.dumps({"schema_version": "1.0", "sessions": []}), encoding="utf-8"
+        )
 
         runner = CliRunner()
         result = runner.invoke(chronicle_search, ["test", "--index", str(index_path), "--json"])
@@ -154,7 +165,9 @@ class TestChronicleSearch:
         )
 
         runner = CliRunner()
-        result = runner.invoke(chronicle_search, ["lane docs", "--index", str(index_path), "--json"])
+        result = runner.invoke(
+            chronicle_search, ["lane docs", "--index", str(index_path), "--json"]
+        )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
         assert payload["state"] == "available"
@@ -167,7 +180,9 @@ class TestChronicleSearch:
         """Search without a query returns empty results and a diagnostic."""
 
         runner = CliRunner()
-        result = runner.invoke(chronicle_search, ["--index", str(tmp_path / "missing.json"), "--json"])
+        result = runner.invoke(
+            chronicle_search, ["--index", str(tmp_path / "missing.json"), "--json"]
+        )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
         assert payload["state"] == "empty"
