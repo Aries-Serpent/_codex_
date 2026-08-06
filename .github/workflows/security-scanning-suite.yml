@@ -439,7 +439,7 @@ jobs:
         \ not found: ${{ matrix.dockerfile }}\"\n  exit 1\nfi\necho \"\u2705 Dockerfile\
         \ found: ${{ matrix.dockerfile }}\"\n"
     - name: Run Trivy filesystem scan (pre-build)
-      uses: aquasecurity/trivy-action@ed142fd341e2811a1b3a3d15dc3e3c1e5df2b2f7
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
       with:
         scan-type: fs
         scan-ref: .

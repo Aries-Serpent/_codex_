@@ -111,7 +111,7 @@ jobs:
         name: reasoning-engine-reports
     - name: Publish test results
       if: always()
-      uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
+      uses: dorny/test-reporter@3eeb9fc888e82e8be2fb356bbeec2750231672bc  # v1
       with:
         path: test_report.json
         reporter: java-junit

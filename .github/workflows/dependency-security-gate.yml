@@ -66,7 +66,7 @@ jobs:
         cache: npm
     - name: Setup Rust
       if: matrix.ecosystem == 'rust'
-      uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb
+      uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c  # stable
     - name: Scan Python dependencies with pip-audit
       if: matrix.ecosystem == 'python'
       id: python-scan
