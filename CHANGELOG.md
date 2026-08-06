@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5466)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5466 (SHA `dbb4d118`) at 2026-08-06T04:16Z [auto-generated]
+
 ### Fixed (2026-08-06 — [auto-sync])
 - Auto-sync stub added by sync_tracked_files.py
 
