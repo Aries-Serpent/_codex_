@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed (auto-update — PR #5466, SHA `b89f7d4d`)
+- Addressed PR #5466 review comments: workflow permissions, secret masking, CCA guard auth, unused variables, simulation task dispatch, test lint issues, and action-version compliance (2026-08-06T05:21Z).
+
 - [PR #5466] Addressed workflow/script/source review comments and CI failures (2026-08-06).
 
 
