@@ -191,6 +191,10 @@
   "tests/codex_ml/metrics/test_streaming.py": [
     "numpy"
   ],
+  "tests/codex_ml/metrics/test_unified_api.py": [
+    "numpy",
+    "numpy"
+  ],
   "tests/codex_ml/test_cli_train_config_bridge.py": [
     "typer.testing"
   ],
@@ -270,6 +274,7 @@
     "hypothesis"
   ],
   "tests/fuzz/test_fuzz_tokenizer.py": [
+    "hypothesis",
     "hypothesis"
   ],
   "tests/integration/test_cross_capability.py": [
