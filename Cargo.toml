@@ -53,7 +53,7 @@ tracing = "0.1.40"  # High-performance instrumentation
 tracing-subscriber = "0.3.18"
 
 [build-dependencies]
-pyo3-build-config = "0.24.1"
+pyo3-build-config = "0.29.2"
 
 [dev-dependencies]
 criterion = "0.5"
