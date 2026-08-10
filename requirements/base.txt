@@ -1,6 +1,6 @@
 duckdb==1.5.4
 torch==2.6.1  # Standard (GPU/CUDA) torch; CVE-2024-XXXXX RCE fix in torch.load with weights_only=True
-transformers==5.13.0  # Security: CVE-2024-SSSSS RCE/deserialization fix from 4.41
+transformers==5.14.1  # Security: CVE-2024-SSSSS RCE/deserialization fix from 4.41
 peft==0.19.1
 accelerate>=1.14.0
 datasets==5.0.1
