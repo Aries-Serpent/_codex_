@@ -132,6 +132,10 @@ class TestBranchNameValidation(unittest.TestCase):
         """Test valid copilot automation branch."""
         self.assertTrue(_check_branch_name("copilot/my-feature"))
 
+    def test_valid_dependabot_branch(self):
+        """Test valid dependabot automation branch."""
+        self.assertTrue(_check_branch_name("dependabot/npm_and_yarn/package-1.2.3"))
+
     def test_invalid_no_slash(self):
         """Test invalid branch (no slash)."""
         self.assertFalse(_check_branch_name("feature-name"))
