@@ -1,3 +1,29 @@
+## Session: 2026-08-17T11:37Z — PR #5483 Pre-Merge Dispatch Auth Fix
+
+**Objective:** Remove the remaining repo-side workflow auth gap affecting the Dependabot ESLint bump PR.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. Reviewed the CI rescue context and confirmed the earlier `dependabot/` branch-name and preload-workflow regressions were already fixed on the branch.
+2. Traced the remaining `Resource not accessible by integration` failure to the `actions/github-script@v8` dispatch step in `.github/workflows/pre-merge-validation.yml`.
+3. Added the explicit `with.github-token` input so the auto-approve workflow dispatch uses the delegated token instead of the default integration token.
+
+**Validation**:
+- `python - <<'PY' ... yaml.safe_load('.github/workflows/pre-merge-validation.yml') ... PY`
+- Verified `github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` is present in the dispatch step.
+- `pre-commit run --files .github/workflows/pre-merge-validation.yml` *(shows unrelated repository-wide existing failures; changed workflow passes YAML parsing and secret scans)*
+
+**Governance**:
+- REQ-4: Accountability report refreshed in the same commit.
+- REQ-5: Changelog refreshed in the same commit.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent` (background) — identified the remaining `pre-merge-validation` auth failure.
+- [x] `ci-testing-agent` (background) — confirmed the earlier branch/workflow fixes were already green locally.
+
+---
+
 ## Session: 2026-08-17T11:11Z — PR #5483 PDA Entry Follow-Up
 
 **Objective:** Clear the remaining merge-readiness gap for the Dependabot ESLint bump by recording today's PDA activity and re-validating the governance state.

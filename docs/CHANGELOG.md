@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-06
 
+### PR #5483 Pre-Merge Dispatch Auth Fix
+- Added `with.github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` to the `actions/github-script@v8` auto-approve dispatch step in `.github/workflows/pre-merge-validation.yml` so workflow dispatches use the delegated token instead of the default integration token.
+- Re-validated the edited workflow YAML locally and confirmed the earlier Dependabot branch-name and preload-workflow fixes remain in place.
+
 ### PR #5483 Governance Follow-Up
 - Reviewed the PR #5483 CI/comment-review blockers for the Dependabot `eslint` bump in `copilot/extension`.
 - Verified the package diff remains limited to `eslint` `10.8.0` → `10.8.1`.

@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5483)
+- Follow-up: added the explicit delegated `github-token` input to the `pre-merge-validation.yml` auto-approve dispatch step to avoid `Resource not accessible by integration` failures on PR #5483.
+
+### Fixed (auto-update — PR #5483)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5483 (SHA `5162d019`) at 2026-08-17T10:00Z [auto-generated]
 - Follow-up: recorded today's PDA iteration for PR #5483 and refreshed the paired governance artifacts at 2026-08-17T11:11Z.
 ### Fixed (auto-update — PR #5466, SHA `b89f7d4d`)
