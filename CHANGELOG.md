@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+### Fixed (auto-update — PR #5483)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5483 (SHA `5162d019`) at 2026-08-17T10:00Z [auto-generated]
 ### Fixed (auto-update — PR #5466, SHA `b89f7d4d`)
 - Addressed PR #5466 review comments: workflow permissions, secret masking, CCA guard auth, unused variables, simulation task dispatch, test lint issues, and action-version compliance (2026-08-06T05:21Z).
 
