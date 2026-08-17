@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-06
 
+### PR #5483 Workflow Compliance + QA Walkthrough Fix
+- Removed the invalid `timeout-minutes` field from the reusable `cost-gate` caller job in `.github/workflows/rust_swarm_ci.yml`, resolving the `actionlint — Workflow Compliance` failure.
+- Replaced the local cached Python setup composite action with `actions/setup-python@v6` in `.github/workflows/audit-qa-suite.yml` so the walkthrough job can install its ad hoc QA tooling without requiring a checked-out project root.
+
 ### PR #5483 Pre-Merge Dispatch Auth Fix
 - Added `with.github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` to the `actions/github-script@v8` auto-approve dispatch step in `.github/workflows/pre-merge-validation.yml` so workflow dispatches use the delegated token instead of the default integration token.
 - Re-validated the edited workflow YAML locally and confirmed the earlier Dependabot branch-name and preload-workflow fixes remain in place.

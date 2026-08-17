@@ -1,3 +1,29 @@
+## Session: 2026-08-17T12:23Z — PR #5483 Workflow Compliance + QA Walkthrough Fix
+
+**Objective:** Clear the remaining PR #5483 CI rescue failures for `actionlint — Workflow Compliance` and `Codebase QA Walkthrough`.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. Used GitHub Actions run listings and failed job logs for PR #5483 commit `f148e7d9f41142e946860b38faab16a84aa2d2a6` to isolate the two repo-side workflow failures.
+2. Removed the invalid `timeout-minutes` key from the reusable-workflow caller job `cost-gate` in `.github/workflows/rust_swarm_ci.yml`, matching actionlint's allowed key set for `jobs.<id>.uses`.
+3. Replaced the cached local composite Python setup action with `actions/setup-python@v6` in `.github/workflows/audit-qa-suite.yml` so the walkthrough job no longer attempts an editable install in a workspace without a checked out `pyproject.toml`.
+
+**Validation**:
+- `python - <<'PY' ... yaml.safe_load(...) ... PY` for `.github/workflows/rust_swarm_ci.yml` and `.github/workflows/audit-qa-suite.yml`
+- `pre-commit run --files .github/workflows/rust_swarm_ci.yml .github/workflows/audit-qa-suite.yml` *(changed files pass YAML parsing and secret scans; remaining failures are unrelated repository-wide baseline issues in existing hooks)*
+- Reviewed failed job logs for runs `32026749362` and `32026749227` before patching.
+
+**Governance**:
+- REQ-4: Accountability report refreshed in the same commit.
+- REQ-5: Changelog refreshed in the same commit.
+
+### Agents Used
+- [x] `workflow-ci-fixer` (background) — identified the invalid reusable-workflow caller key and the walkthrough setup mismatch.
+- [x] `ci-log-retrieval-agent` (background) — collected the failing workflow run and job log details.
+
+---
+
 ## Session: 2026-08-17T11:37Z — PR #5483 Pre-Merge Dispatch Auth Fix
 
 **Objective:** Remove the remaining repo-side workflow auth gap affecting the Dependabot ESLint bump PR.

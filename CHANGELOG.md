@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5483)
+- Follow-up: removed the invalid `timeout-minutes` key from the reusable `cost-gate` caller in `.github/workflows/rust_swarm_ci.yml` and switched the audit walkthrough job in `.github/workflows/audit-qa-suite.yml` to `actions/setup-python@v6` so PR #5483 no longer fails workflow compliance or editable-install setup.
+
+### Fixed (auto-update — PR #5483)
 - Follow-up: added the explicit delegated `github-token` input to the `pre-merge-validation.yml` auto-approve dispatch step to avoid `Resource not accessible by integration` failures on PR #5483.
 
 ### Fixed (auto-update — PR #5483)
