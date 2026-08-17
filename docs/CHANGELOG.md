@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Reviewed the PR #5483 CI/comment-review blockers for the Dependabot `eslint` bump in `copilot/extension`.
 - Verified the package diff remains limited to `eslint` `10.8.0` → `10.8.1`.
 - Restored the required governance artifacts by updating the accountability report and root `CHANGELOG.md`.
+- Added today's PDA iteration entry so the remaining merge-readiness scorecard gap is cleared.
 
 ### Hardened Dependabot Consolidation (GAP-DEPENDABOT-CONSOLIDATE-01)
 - Tightened `.github/dependabot.yml` so every package ecosystem now uses `open-pull-requests-limit: 1` and a catch-all `groups` entry (`all-dependencies`/`python-all`), enforcing at most one grouped PR per ecosystem.
