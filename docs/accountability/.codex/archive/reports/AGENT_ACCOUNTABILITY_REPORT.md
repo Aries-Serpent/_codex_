@@ -1,80 +1,3 @@
-## Session: 2026-08-17T12:23Z — PR #5483 Workflow Compliance + QA Walkthrough Fix
-
-**Objective:** Clear the remaining PR #5483 CI rescue failures for `actionlint — Workflow Compliance` and `Codebase QA Walkthrough`.
-
-**Status**: ✅ COMPLETE
-
-**Actions**:
-1. Used GitHub Actions run listings and failed job logs for PR #5483 commit `f148e7d9f41142e946860b38faab16a84aa2d2a6` to isolate the two repo-side workflow failures.
-2. Removed the invalid `timeout-minutes` key from the reusable-workflow caller job `cost-gate` in `.github/workflows/rust_swarm_ci.yml`, matching actionlint's allowed key set for `jobs.<id>.uses`.
-3. Replaced the cached local composite Python setup action with `actions/setup-python@v6` in `.github/workflows/audit-qa-suite.yml` so the walkthrough job no longer attempts an editable install in a workspace without a checked out `pyproject.toml`.
-
-**Validation**:
-- `python - <<'PY' ... yaml.safe_load(...) ... PY` for `.github/workflows/rust_swarm_ci.yml` and `.github/workflows/audit-qa-suite.yml`
-- `pre-commit run --files .github/workflows/rust_swarm_ci.yml .github/workflows/audit-qa-suite.yml` *(changed files pass YAML parsing and secret scans; remaining failures are unrelated repository-wide baseline issues in existing hooks)*
-- Reviewed failed job logs for runs `32026749362` and `32026749227` before patching.
-
-**Governance**:
-- REQ-4: Accountability report refreshed in the same commit.
-- REQ-5: Changelog refreshed in the same commit.
-
-### Agents Used
-- [x] `workflow-ci-fixer` (background) — identified the invalid reusable-workflow caller key and the walkthrough setup mismatch.
-- [x] `ci-log-retrieval-agent` (background) — collected the failing workflow run and job log details.
-
----
-
-## Session: 2026-08-17T11:37Z — PR #5483 Pre-Merge Dispatch Auth Fix
-
-**Objective:** Remove the remaining repo-side workflow auth gap affecting the Dependabot ESLint bump PR.
-
-**Status**: ✅ COMPLETE
-
-**Actions**:
-1. Reviewed the CI rescue context and confirmed the earlier `dependabot/` branch-name and preload-workflow regressions were already fixed on the branch.
-2. Traced the remaining `Resource not accessible by integration` failure to the `actions/github-script@v8` dispatch step in `.github/workflows/pre-merge-validation.yml`.
-3. Added the explicit `with.github-token` input so the auto-approve workflow dispatch uses the delegated token instead of the default integration token.
-
-**Validation**:
-- `python - <<'PY' ... yaml.safe_load('.github/workflows/pre-merge-validation.yml') ... PY`
-- Verified `github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` is present in the dispatch step.
-- `pre-commit run --files .github/workflows/pre-merge-validation.yml` *(shows unrelated repository-wide existing failures; changed workflow passes YAML parsing and secret scans)*
-
-**Governance**:
-- REQ-4: Accountability report refreshed in the same commit.
-- REQ-5: Changelog refreshed in the same commit.
-
-### Agents Used
-- [x] `ci-log-retrieval-agent` (background) — identified the remaining `pre-merge-validation` auth failure.
-- [x] `ci-testing-agent` (background) — confirmed the earlier branch/workflow fixes were already green locally.
-
----
-
-## Session: 2026-08-17T11:11Z — PR #5483 PDA Entry Follow-Up
-
-**Objective:** Clear the remaining merge-readiness gap for the Dependabot ESLint bump by recording today's PDA activity and re-validating the governance state.
-
-**Status**: ✅ COMPLETE
-
-**Actions**:
-1. Reviewed the approval-dispatched PR status and confirmed the only current scorecard gap was `PDA entry today`.
-2. Appended a new PDA iteration record for PR #5483 to `.codex/aftermath/pda_iterations.jsonl`.
-3. Updated the accountability and changelog artifacts again so the next commit keeps REQ-4/REQ-5 satisfied.
-
-**Validation**:
-- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5483`
-- `tail -n 5 .codex/aftermath/pda_iterations.jsonl`
-
-**Governance**:
-- REQ-PDA: Today's PDA entry recorded.
-- REQ-4/REQ-5: Governance artifacts refreshed in the same commit.
-
-### Agents Used
-- [x] `ci-log-retrieval-agent` (background) — summarized current workflow/comment blockers
-- [x] `explore` (background) — confirmed local governance file/script touchpoints
-
----
-
 ### Auto-update — 2026-08-06T05:21Z (PR #5466, SHA `b89f7d4d`)
 - Finalized review-comment fixes and merge-readiness remediation for PR #5466.
 - Fixed `.github/workflows/dependabot-consolidation.yml` permissions, secret masking, and `--dry-run` invocation.
@@ -22471,7 +22394,7 @@ and the CI gate requirement.
 
 ---
 
-## SESSION SUMMARY — 2026-08-17T10:00Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5483)
+## SESSION SUMMARY — 2026-08-17T14:09Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5483)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
@@ -22485,7 +22408,7 @@ and the CI gate requirement.
 
 ### Work Completed (Auto-generated)
 1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
-   touched in the last commit of PR #5483 (SHA: `5162d019`). This entry was
+   touched in the last commit of PR #5483 (SHA: `eb10e8cb`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
 2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;

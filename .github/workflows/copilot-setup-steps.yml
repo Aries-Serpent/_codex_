@@ -45,7 +45,7 @@ name: Copilot Agent Environment Setup
     - .codex/agent_environment_config.yaml
 env:
   PYTHON_VERSION: '3.12'
-  NODE_VERSION: "22"
+  NODE_VERSION: '22'
   RUST_VERSION: stable
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -122,63 +122,46 @@ jobs:
         fi
         exit $fail
     # DO NOT REFACTOR THIS STEP
-    - name: "\U0001F9E0 Session Context Pre-load (memory + policy + accountability + PDA)"
+    - name: "\U0001F9E0 Session Context Pre-load (memory + policy + accountability\
+        \ + PDA)"
       continue-on-error: true
-      run: |
-        echo "::group::Unified Session Context Pre-load"
-
-        if ! python3 .github/scripts/session_preload.py; then
-          echo "⚠️ session_preload.py failed (non-blocking)"
-        fi
-
-        # Component 5: Load aggregated context from data aggregation system
-        MANIFEST=".codex/session_context_manifest.json"
-
-        if [ -f "$MANIFEST" ]; then
-          echo "✅ Loading aggregated context from manifest"
-
-          # Parse manifest safely with fallback to defaults
-          PHASE=$(python3 -c "import json; m=json.load(open('$MANIFEST')); print((m.get('phase_state', {}).get('current_phase') or m.get('current_phase')) or 'unknown')" 2>/dev/null || echo "unknown")
-          AGENTS=$(python3 -c "import json; m=json.load(open('$MANIFEST')); print(len(m.get('in_flight_agents', [])))" 2>/dev/null || echo "0")
-          PATTERNS=$(python3 -c "import json; m=json.load(open('$MANIFEST')); print(len(m.get('recent_patterns', [])))" 2>/dev/null || echo "0")
-          LAST_UPDATED=$(python3 -c "import json; m=json.load(open('$MANIFEST')); ts=m.get('generated_at', m.get('timestamp', 'unknown')); print(ts)" 2>/dev/null || echo "unknown")
-          RECOMMENDATIONS=$(python3 -c "import json; m=json.load(open('$MANIFEST')); print(len(m.get('delegation_recommendations', [])))" 2>/dev/null || echo "0")
-
-          # Inject into environment
-          echo "SESSION_CONTEXT_PHASE=$PHASE" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_AGENTS_COUNT=$AGENTS" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_PATTERNS=$PATTERNS" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_LAST_UPDATED=$LAST_UPDATED" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_RECOMMENDATIONS=$RECOMMENDATIONS" >> "$GITHUB_ENV"
-
-          # Log summary
-          echo "✅ Context loaded:"
-          echo "   Phase: $PHASE"
-          echo "   In-flight agents: $AGENTS"
-          echo "   Recent patterns: $PATTERNS"
-          echo "   Recommendations: $RECOMMENDATIONS"
-          echo "   Generated: $LAST_UPDATED"
-
-          # Add to step summary for visibility
-          echo "## 🧠 Session Context Pre-loaded" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Phase | \`$PHASE\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| In-flight Agents | $AGENTS |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Recent Patterns | $PATTERNS |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Recommendations | $RECOMMENDATIONS |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Generated | $LAST_UPDATED |" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-        else
-          echo "ℹ️ Aggregated context manifest not found"
-          echo "SESSION_CONTEXT_PHASE=unknown" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_AGENTS_COUNT=0" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_PATTERNS=0" >> "$GITHUB_ENV"
-          echo "SESSION_CONTEXT_RECOMMENDATIONS=0" >> "$GITHUB_ENV"
-        fi
-
-        echo "::endgroup::"
+      run: "echo \"::group::Unified Session Context Pre-load\"\n\nif ! python3 .github/scripts/session_preload.py;\
+        \ then\n  echo \"\u26A0\uFE0F session_preload.py failed (non-blocking)\"\n\
+        fi\n\n# Component 5: Load aggregated context from data aggregation system\n\
+        MANIFEST=\".codex/session_context_manifest.json\"\n\nif [ -f \"$MANIFEST\"\
+        \ ]; then\n  echo \"\u2705 Loading aggregated context from manifest\"\n\n\
+        \  # Parse manifest safely with fallback to defaults\n  PHASE=$(python3 -c\
+        \ \"import json; m=json.load(open('$MANIFEST')); print((m.get('phase_state',\
+        \ {}).get('current_phase') or m.get('current_phase')) or 'unknown')\" 2>/dev/null\
+        \ || echo \"unknown\")\n  AGENTS=$(python3 -c \"import json; m=json.load(open('$MANIFEST'));\
+        \ print(len(m.get('in_flight_agents', [])))\" 2>/dev/null || echo \"0\")\n\
+        \  PATTERNS=$(python3 -c \"import json; m=json.load(open('$MANIFEST')); print(len(m.get('recent_patterns',\
+        \ [])))\" 2>/dev/null || echo \"0\")\n  LAST_UPDATED=$(python3 -c \"import\
+        \ json; m=json.load(open('$MANIFEST')); ts=m.get('generated_at', m.get('timestamp',\
+        \ 'unknown')); print(ts)\" 2>/dev/null || echo \"unknown\")\n  RECOMMENDATIONS=$(python3\
+        \ -c \"import json; m=json.load(open('$MANIFEST')); print(len(m.get('delegation_recommendations',\
+        \ [])))\" 2>/dev/null || echo \"0\")\n\n  # Inject into environment\n  echo\
+        \ \"SESSION_CONTEXT_PHASE=$PHASE\" >> \"$GITHUB_ENV\"\n  echo \"SESSION_CONTEXT_AGENTS_COUNT=$AGENTS\"\
+        \ >> \"$GITHUB_ENV\"\n  echo \"SESSION_CONTEXT_PATTERNS=$PATTERNS\" >> \"\
+        $GITHUB_ENV\"\n  echo \"SESSION_CONTEXT_LAST_UPDATED=$LAST_UPDATED\" >> \"\
+        $GITHUB_ENV\"\n  echo \"SESSION_CONTEXT_RECOMMENDATIONS=$RECOMMENDATIONS\"\
+        \ >> \"$GITHUB_ENV\"\n\n  # Log summary\n  echo \"\u2705 Context loaded:\"\
+        \n  echo \"   Phase: $PHASE\"\n  echo \"   In-flight agents: $AGENTS\"\n \
+        \ echo \"   Recent patterns: $PATTERNS\"\n  echo \"   Recommendations: $RECOMMENDATIONS\"\
+        \n  echo \"   Generated: $LAST_UPDATED\"\n\n  # Add to step summary for visibility\n\
+        \  echo \"## \U0001F9E0 Session Context Pre-loaded\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"| Metric | Value |\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"|--------|-------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"| Phase | \\`$PHASE\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
+        \ \"| In-flight Agents | $AGENTS |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
+        | Recent Patterns | $PATTERNS |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"|\
+        \ Recommendations | $RECOMMENDATIONS |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
+        \ \"| Generated | $LAST_UPDATED |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
+        \" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"\u2139\uFE0F Aggregated context\
+        \ manifest not found\"\n  echo \"SESSION_CONTEXT_PHASE=unknown\" >> \"$GITHUB_ENV\"\
+        \n  echo \"SESSION_CONTEXT_AGENTS_COUNT=0\" >> \"$GITHUB_ENV\"\n  echo \"\
+        SESSION_CONTEXT_PATTERNS=0\" >> \"$GITHUB_ENV\"\n  echo \"SESSION_CONTEXT_RECOMMENDATIONS=0\"\
+        \ >> \"$GITHUB_ENV\"\nfi\n\necho \"::endgroup::\"\n"
     - name: "\U0001F50C Session Access Probe (token inventory + rate limits)"
       id: access_probe
       continue-on-error: true

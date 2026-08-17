@@ -6,20 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased — 2026-08-06
 
-### PR #5483 Workflow Compliance + QA Walkthrough Fix
-- Removed the invalid `timeout-minutes` field from the reusable `cost-gate` caller job in `.github/workflows/rust_swarm_ci.yml`, resolving the `actionlint — Workflow Compliance` failure.
-- Replaced the local cached Python setup composite action with `actions/setup-python@v6` in `.github/workflows/audit-qa-suite.yml` so the walkthrough job can install its ad hoc QA tooling without requiring a checked-out project root.
-
-### PR #5483 Pre-Merge Dispatch Auth Fix
-- Added `with.github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}` to the `actions/github-script@v8` auto-approve dispatch step in `.github/workflows/pre-merge-validation.yml` so workflow dispatches use the delegated token instead of the default integration token.
-- Re-validated the edited workflow YAML locally and confirmed the earlier Dependabot branch-name and preload-workflow fixes remain in place.
-
-### PR #5483 Governance Follow-Up
-- Reviewed the PR #5483 CI/comment-review blockers for the Dependabot `eslint` bump in `copilot/extension`.
-- Verified the package diff remains limited to `eslint` `10.8.0` → `10.8.1`.
-- Restored the required governance artifacts by updating the accountability report and root `CHANGELOG.md`.
-- Added today's PDA iteration entry so the remaining merge-readiness scorecard gap is cleared.
-
 ### Hardened Dependabot Consolidation (GAP-DEPENDABOT-CONSOLIDATE-01)
 - Tightened `.github/dependabot.yml` so every package ecosystem now uses `open-pull-requests-limit: 1` and a catch-all `groups` entry (`all-dependencies`/`python-all`), enforcing at most one grouped PR per ecosystem.
 - Added `scripts/ci/dependabot_consolidator.py` to merge eligible Dependabot branches into a single cross-ecosystem consolidation branch and PR, with `--dry-run` and `--base-branch` support, conflict detection/abort, security-label exclusion, and idempotent reuse of an existing `dependabot-consolidated` PR.

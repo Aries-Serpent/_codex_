@@ -172,7 +172,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "await github.rest.actions.createWorkflowDispatch({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  workflow_id: 'auto-approve-workflows.yml',\n\
           \  ref: github.head_ref || github.ref,\n  inputs: {\n    approval_source:\

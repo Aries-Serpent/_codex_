@@ -3,14 +3,7 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5483)
-- Follow-up: removed the invalid `timeout-minutes` key from the reusable `cost-gate` caller in `.github/workflows/rust_swarm_ci.yml` and switched the audit walkthrough job in `.github/workflows/audit-qa-suite.yml` to `actions/setup-python@v6` so PR #5483 no longer fails workflow compliance or editable-install setup.
-
-### Fixed (auto-update — PR #5483)
-- Follow-up: added the explicit delegated `github-token` input to the `pre-merge-validation.yml` auto-approve dispatch step to avoid `Resource not accessible by integration` failures on PR #5483.
-
-### Fixed (auto-update — PR #5483)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5483 (SHA `5162d019`) at 2026-08-17T10:00Z [auto-generated]
-- Follow-up: recorded today's PDA iteration for PR #5483 and refreshed the paired governance artifacts at 2026-08-17T11:11Z.
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5483 (SHA `eb10e8cb`) at 2026-08-17T14:09Z [auto-generated]
 ### Fixed (auto-update — PR #5466, SHA `b89f7d4d`)
 - Addressed PR #5466 review comments: workflow permissions, secret masking, CCA guard auth, unused variables, simulation task dispatch, test lint issues, and action-version compliance (2026-08-06T05:21Z).
 

@@ -251,9 +251,10 @@ jobs:
         \ from origin/main ($ERROR_MSG...) \u2014 will use fallback\"\nfi\n\necho\
         \ \"\u2705 Trusted code fetch complete (API-based, no git operations)\"\n"
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
+        cache-tier: common
     - name: Install QA dependencies
       run: 'pip install pylint mypy bandit safety
 
