@@ -119,7 +119,7 @@ If the campaign must be rolled back from Phase 0:
 | Lane | Status | Evidence |
 |---|---|---|
 | C | PASS | Policy tier drift resolved; T1 no approval, T3 requires @mbaetiong + 2 stakeholder signatures |
-| E | PASS | Fresh IQ artifact at 82.4 vs. 60.0 threshold |
+| E | PASS | Fresh IQ artifact at 78.4 vs. 70.0 threshold |
 | K | VALID | Scheduler confirms the A → B/C/D → E dependency chain remains intact |
 
 ---
