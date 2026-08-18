@@ -139,8 +139,14 @@ class WaveExecutor:
 
                 except Exception as e:
                     report.failed += 1
+                    family = futures[future]
+                    family_id = getattr(family, "family_id", None)
+                    if family_id is None and hasattr(family, "family"):
+                        family_id = getattr(family.family, "family_id", "unknown")
+                    if family_id is None:
+                        family_id = "unknown"
                     result = ExecutionResult(
-                        family_id=futures[future].family_id,
+                        family_id=family_id,
                         status=ExecutionStatus.FAILED,
                         error_message=str(e),
                     )

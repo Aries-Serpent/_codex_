@@ -114,6 +114,16 @@ If the campaign must be rolled back from Phase 0:
 - Directory checks: `ls` on lane implementation directories
 - Capability inventory: grep and view of `src/aries_serpent_core/cli.py`, `src/orchestration/`, `src/security/factory/`
 
+## 10. Post-Remediation Gate State
+
+| Lane | Status | Evidence |
+|---|---|---|
+| C | PASS | Policy tier drift resolved; T1 no approval, T3 requires @mbaetiong + 2 stakeholder signatures |
+| E | PASS | Fresh IQ artifact at 78.4 vs. 70.0 threshold |
+| K | VALID | Scheduler confirms the A → B/C/D → E dependency chain remains intact |
+
+---
+
 ## 9. Related Campaign Reports
 
 - [Repository Grounding Report](REPOSITORY_GROUNDING.md) — canonical grounding report and CLI gap closure details.

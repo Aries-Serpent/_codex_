@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5487 governance + validation sync
+- Refreshed the PR #5487 T1/T3 policy contract and IQ evidence alignment while closing the current session-wrapup metadata gap.
+- Synced the accountability report and root changelog so REQ-4 and REQ-5 pass on the active branch.
+- Verified the active session passes the wrap-up gate (`python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5487`).
+
 ### Dependencies — date-fns bump (PR #5477)
 - Bumped `date-fns` from 3.6.0 to 4.4.0 in `cognitive_app` (low-risk dependency update, 2026-08-18).
 - Verified v4 compatibility (2026-08-18): sole usage is `formatDistanceToNow(new Date(...), { addSuffix: true })` in 4 component files; `tsc -b --noCheck` passes against installed `date-fns@4.4.0` with zero date-fns type errors. No source changes required.

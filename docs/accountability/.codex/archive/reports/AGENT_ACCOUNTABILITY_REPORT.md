@@ -1,3 +1,30 @@
+## Session: 2026-08-18T22:57Z — PR #5487 governance + IQ evidence sync
+
+**Objective:** Validate the refreshed T1/T3 policy contract and Lane C/Lane E IQ evidence for PR #5487 and close the current governance metadata gap flagged by the session wrap-up gate.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. Re-validated the T1/T3 policy contract against the refreshed governance evidence and confirmed the Lane C / Lane E artifact timestamps and score summaries are aligned for the current branch.
+2. Synced the accountability metadata and root changelog for the active PR so REQ-4 and REQ-5 are satisfied by the latest commit.
+3. Confirmed the active session metadata reflects the final validation-status fix without introducing unrelated source churn.
+
+**Validation**:
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5487` → pass.
+- `ruff check` was reviewed only for the changed validation scope; the current PR fix is limited to the required governance-sync artifacts and evidence metadata, not broad repository-wide lint churn.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]`.
+
+### Agents Used
+- [x] `ci-testing-agent` (validation gate and evidence re-check)
+- [x] `unified-coverage-agent` (evidence alignment review)
+- [x] `ci-auto-healer-agent` (session wrap-up drive)
+- [x] `general-purpose` (PR documentation and compliance sync)
+
+---
+
 ### Auto-update — 2026-08-06T05:21Z (PR #5466, SHA `b89f7d4d`)
 - Finalized review-comment fixes and merge-readiness remediation for PR #5466.
 - Fixed `.github/workflows/dependabot-consolidation.yml` permissions, secret masking, and `--dry-run` invocation.

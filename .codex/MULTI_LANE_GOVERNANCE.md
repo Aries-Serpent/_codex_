@@ -49,6 +49,7 @@ This document establishes the governance structure for 11 orchestration lanes (A
 ### Tier 1 (Auto-Execute with Audit Trail)
 **Scope:** Low-risk operational changes, test fixes, documentation  
 **Authority:** Lane owner autonomously executes + audit trail generation  
+**Approval Contract:** No explicit approval required; execution is post-hoc audited  
 **Evidence Required:** Decision trace + change summary + affected module list  
 
 **Examples:**
@@ -77,6 +78,7 @@ This document establishes the governance structure for 11 orchestration lanes (A
 ### Tier 3 (Governance Review, Stakeholder Gate)
 **Scope:** Policy changes, governance model updates, high-risk shifts  
 **Authority:** @mbaetiong reviews + 2 stakeholder signatures required  
+**Approval Contract:** Tier 3 governance actions are blocked until @mbaetiong and two nominated stakeholders approve the change packet  
 **Evidence Required:** Full provenance chain, determinism certification, 50+ replay verification tests  
 
 **Examples:**
