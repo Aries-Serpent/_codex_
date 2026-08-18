@@ -43,14 +43,6 @@ def _gh(method: str, path: str, token: str, body: dict[str, Any] | None = None) 
         return exc.code, err_body
 
 
-def get_pr_labels(token: str, repo: str, pr_number: int) -> list[str]:
-    status, data = _gh("GET", f"/repos/{repo}/issues/{pr_number}", token)
-    if status != 200 or not isinstance(data, dict):
-        return []
-    labels = data.get("labels", [])
-    return [label.get("name", "") for label in labels if isinstance(label, dict)]
-
-
 def _parse_pr_created_at(value: Any) -> datetime | None:
     if not value or not isinstance(value, str):
         return None
@@ -102,10 +94,10 @@ def main() -> int:
         return 0
 
     print(
-        f"::notice::Approval denied for PR #{args.pr_number}: missing required label '{LABEL_NAME}'. "
-        "No workflow action is taken."
+        f"::error::Approval denied for PR #{args.pr_number}: missing required label '{LABEL_NAME}'. "
+        "Add the label to enable auto-approval."
     )
-    return 0
+    return 1
 
 
 if __name__ == "__main__":
