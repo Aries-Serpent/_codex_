@@ -3,7 +3,7 @@
 **Campaign:** Multi-Lane Campaign Framework Execution  
 **Repository:** `Aries-Serpent/_codex_`  
 **Lane:** E — Guarded Hybrid Promotion  
-**Generated:** 2026-08-18T20:47:54Z  
+**Generated:** 2026-08-18T20:51:54.736Z  
 **Status:** PASS  
 
 ---
@@ -14,7 +14,7 @@ Lane E is explicitly PASS after the fresh IQ gate artifact was refreshed and val
 
 ## Validation Evidence
 
-- `.codex/WAVE_4_AGENT_IQ_SCORES.json` refreshed at `2026-08-18T20:47:54Z`
+- `.codex/WAVE_4_AGENT_IQ_SCORES.json` refreshed at `2026-08-18T20:51:54.736Z`
 - `promotion_gate.status = PASS`
 - `promotion_gate.aggregate_score = 78.4`
 - `promotion_gate.threshold = 70.0`
