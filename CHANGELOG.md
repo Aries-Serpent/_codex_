@@ -5,6 +5,10 @@
 ### Dependencies — date-fns bump (PR #5477)
 - Bumped `date-fns` from 3.6.0 to 4.4.0 in `cognitive_app` (low-risk dependency update, 2026-08-18).
 - Verified v4 compatibility (2026-08-18): sole usage is `formatDistanceToNow(new Date(...), { addSuffix: true })` in 4 component files; `tsc -b --noCheck` passes against installed `date-fns@4.4.0` with zero date-fns type errors. No source changes required.
+- Validated full Dependabot implementation (2026-08-18): `package.json` + `package-lock.json` both resolve `date-fns@4.4.0` with no 3.x remnants; `react-day-picker@9.14.0` peer range `^4.1.0` satisfied; production build passes.
+
+### Fixed — Approval-dispatch comment loop (PR #5477)
+- `.github/workflows/trigger-on-approval.yml`: stopped unbounded "⚡ Approval Dispatch — Copilot Resume" comment loop. The workflow fired on every approval (including automated "Auto-approved low-risk changes" reviews), re-dispatching the approval hub and re-posting the resume comment each push. Added a job-level loop guard (skip bot/auto-approve reviews) and a per-SHA dedup marker on the resume-comment step (2026-08-18).
 
 ### Dependencies — Consolidated Dependabot Updates (PR #5483)
 - Completed consolidation of 13 eligible Dependabot PRs into branch `dependabot/npm_and_yarn/copilot/extension/eslint-10.8.1` (PR #5483). Covered npm, pip, and github-actions ecosystem version bumps.
