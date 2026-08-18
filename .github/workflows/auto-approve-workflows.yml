@@ -363,6 +363,25 @@ jobs:
         \ 4: github.token (limited scope, same-repo only)\necho \"token=${{ github.token\
         \ }}\" >> $GITHUB_OUTPUT\necho \"token_source=github_token\" >> $GITHUB_OUTPUT\n\
         echo \"Resolved: Using github.token (Tier 4, limited scope)\"\n"
+    - name: Enforce WEC auto-approve policy
+      env:
+        GH_TOKEN: ${{ steps.token.outputs.token }}
+        TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
+        REPO: ${{ github.repository }}
+      run: |
+        set -euo pipefail
+        if [ -z "${TARGET_PR:-}" ]; then
+          echo "::notice::No target PR; skipping auto-approve execution"
+          exit 0
+        fi
+
+        LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
+        if ! echo "$LABELS" | grep -qx 'wec:auto-approve'; then
+          echo "::notice::Skipping PR #$TARGET_PR: missing 'wec:auto-approve' label"
+          exit 0
+        fi
+
+        echo "✅ WEC label present on PR #$TARGET_PR — continuing approval"
     - name: Approve workflow run(s)
       id: approve
       env:

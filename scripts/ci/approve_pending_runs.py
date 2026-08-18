@@ -78,7 +78,7 @@ def _gh(
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": f""******",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
@@ -160,6 +160,29 @@ def _resolve_token() -> tuple[str, str]:
     print("❌ No token available — set GH_TOKEN, CODEX_MASTER_KEY, or App secrets",
           file=sys.stderr)
     raise SystemExit(1)
+
+
+def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int) -> bool:
+    """Require the explicit WEC auto-approve label before approving a PR."""
+    status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status != 200 or not isinstance(payload, dict):
+        return False
+    labels = payload.get("labels", [])
+    return any((label.get("name") if isinstance(label, dict) else label) == "wec:auto-approve" for label in labels)
+
+
+def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return only PRs currently opted into WEC auto-approval."""
+    authorized: list[dict[str, Any]] = []
+    for pr in prs:
+        pr_number = pr.get("number")
+        if pr_number is None:
+            continue
+        if _has_wec_auto_approve_label(token, repo, pr_number):
+            authorized.append(pr)
+        else:
+            print(f"⏭️  Skipping PR #{pr_number}: missing 'wec:auto-approve' label")
+    return authorized
 
 
 def _get_action_required_runs(
@@ -369,6 +392,9 @@ def main() -> int:
 
     # Collect (pr_number, head_sha) targets ───────────────────────────────────
     if head_sha and pr_number:
+        if not _has_wec_auto_approve_label(token, repo, pr_number):
+            print(f"⏭️  Skipping PR #{pr_number}: missing 'wec:auto-approve' label")
+            return 0
         targets = [(pr_number, head_sha)]
     elif head_sha:
         targets = [("?", head_sha)]
@@ -376,10 +402,12 @@ def main() -> int:
         # Sweep mode: all open PRs
         print("📋 Sweep mode — resolving all open PRs…")  # codeql[py/clear-text-logging-sensitive-data]
         targets = _get_open_pr_shas(token, repo)
-        print(f"   Found {len(targets)} open PR(s)")  # codeql[py/clear-text-logging-sensitive-data]
+        filtered = _filter_prs_by_wec_label(token, repo, [{"number": pr_num, "head": {"sha": sha}} for pr_num, sha in targets])
+        targets = [(str(pr["number"]), pr["head"]["sha"]) for pr in filtered]
+        print(f"   Found {len(targets)} authorized PR(s) with the 'wec:auto-approve' label")  # codeql[py/clear-text-logging-sensitive-data]
 
     if not targets:
-        print("ℹ️  No targets — nothing to do.")  # codeql[py/clear-text-logging-sensitive-data]
+        print("ℹ️  No authorized targets — nothing to do.")  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     # Wait briefly for runs to register after a fresh push ────────────────────
