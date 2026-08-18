@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Dependencies — date-fns bump (PR #5477)
+- Bumped `date-fns` from 3.6.0 to 4.4.0 in `cognitive_app` (low-risk dependency update, 2026-08-18).
+
 ### Dependencies — Consolidated Dependabot Updates (PR #5483)
 - Completed consolidation of 13 eligible Dependabot PRs into branch `dependabot/npm_and_yarn/copilot/extension/eslint-10.8.1` (PR #5483). Covered npm, pip, and github-actions ecosystem version bumps.
 - Excluded PR #5477 (`pyo3-build-config` 0.24.2 → 0.29.2) from consolidation due to Rust source migration risk; kept separate for targeted review.
