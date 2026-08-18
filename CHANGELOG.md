@@ -8,7 +8,8 @@
 - Validated full Dependabot implementation (2026-08-18): `package.json` + `package-lock.json` both resolve `date-fns@4.4.0` with no 3.x remnants; `react-day-picker@9.14.0` peer range `^4.1.0` satisfied; production build passes.
 
 ### Fixed — Approval-dispatch comment loop (PR #5477)
-- `.github/workflows/trigger-on-approval.yml`: stopped unbounded "⚡ Approval Dispatch — Copilot Resume" comment loop. The workflow fired on every approval (including automated "Auto-approved low-risk changes" reviews), re-dispatching the approval hub and re-posting the resume comment each push. Added a job-level loop guard (skip bot/auto-approve reviews) and a per-SHA dedup marker on the resume-comment step (2026-08-18).
+- `.github/workflows/trigger-on-approval.yml`: stopped unbounded "⚡ Approval Dispatch — Copilot Resume" comment loop. The workflow fired on every approval (including automated "Auto-approved low-risk changes" reviews), re-dispatching the approval hub and re-posting the resume comment each push. Added a job-level loop guard (skip bot/auto-approve reviews), a per-SHA dedup marker on the resume-comment step, and an intent gate so dispatches only proceed for human-approved `main`-targeting PRs whose SHA wasn't already dispatched (2026-08-18).
+- `scripts/ci/tiered_approval_gate.py`: added `wec:auto-approve` label precondition — the bot no longer posts "Auto-approved low-risk changes" reviews unless that label is active on the PR (it previously fired with no label, driving the loop). `auto-approve-workflows.yml` Priority 4 now excludes automated "Auto-approved" reviews so the maintainer-approval rule can't be satisfied by the bot's own approval (2026-08-18).
 
 ### Dependencies — Consolidated Dependabot Updates (PR #5483)
 - Completed consolidation of 13 eligible Dependabot PRs into branch `dependabot/npm_and_yarn/copilot/extension/eslint-10.8.1` (PR #5483). Covered npm, pip, and github-actions ecosystem version bumps.

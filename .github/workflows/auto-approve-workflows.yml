@@ -284,8 +284,9 @@ jobs:
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \nAPPROVER=$(gh pr view \"$TARGET_PR\" --repo \"$REPO\" --json reviews -q\
-        \ '.reviews[] | select(.state==\"APPROVED\") | .author.login' 2>/dev/null\
-        \ | head -1 || echo \"\")\nif [ \"$APPROVER\" = \"mbaetiong\" ]; then\n  echo\
+        \ '.reviews[] | select(.state==\"APPROVED\" and (.body | contains(\"Auto-approved\"\
+        \ ) | not)) | .author.login' 2>/dev/null | head -1 || echo \"\")\nif [ \"$APPROVER\"\
+        \ = \"mbaetiong\" ]; then\n  echo\
         \ \"decision=APPROVE\" >> $GITHUB_OUTPUT\n  echo \"rule=maintainer_approval_rule\"\
         \ >> $GITHUB_OUTPUT\n  echo \"confidence=0.99\" >> $GITHUB_OUTPUT\n  echo\
         \ \"target_pr=$TARGET_PR\" >> $GITHUB_OUTPUT\n  echo \"should_proceed=true\"\
