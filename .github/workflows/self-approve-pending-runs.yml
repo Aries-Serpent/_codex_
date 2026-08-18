@@ -104,9 +104,10 @@ jobs:
       id: pending
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
-      run: "PENDING_RUNS=$(gh run list --status action_required --json databaseId,name,workflowName\
-        \ 2>/dev/null | wc -l)\necho \"count=$((PENDING_RUNS - 1))\" >> \"$GITHUB_OUTPUT\"\
-        \necho \"\u2139\uFE0F  Found ${PENDING_RUNS:-0} pending runs\"\n"
+      run: |
+        PENDING_RUNS=$(gh run list --status action_required --json databaseId --jq 'length' 2>/dev/null || echo 0)
+        echo "count=${PENDING_RUNS:-0}" >> "$GITHUB_OUTPUT"
+        echo "ℹ️  Found ${PENDING_RUNS:-0} pending runs"
     - name: Skip if no pending runs
       if: steps.pending.outputs.count == '0'
       run: 'echo "No pending runs detected; skipping hub dispatch"
@@ -115,6 +116,7 @@ jobs:
 
         '
     - name: Require wec:auto-approve label for explicit PR targets
+      id: label_check
       if: steps.target.outputs.pr_number != ''
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
@@ -123,7 +125,7 @@ jobs:
       run: |
         python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
     - name: Dispatch hub for batch approval (self-approve-pending-runs)
-      if: steps.pending.outputs.count != '0'
+      if: ${{ steps.pending.outputs.count != '0' && (steps.target.outputs.pr_number == '' || steps.label_check.outcome == 'success') }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ steps.token.outputs.token }}

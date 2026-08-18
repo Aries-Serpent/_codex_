@@ -143,16 +143,19 @@ jobs:
 
           '
     - name: Require wec:auto-approve label
+      id: label_check
+      if: ${{ needs.detect-checkbox.outputs.pr_number != '' }}
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         REPO: ${{ github.repository }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
       run: |
         python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
     - name: Dispatch auto-approve-workflows.yml
+      if: ${{ needs.detect-checkbox.outputs.auth_requested == 'true' && needs.detect-checkbox.outputs.pr_number != '' && steps.label_check.outcome == 'success' }}
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
       run: 'gh workflow run auto-approve-workflows.yml \
 
         -f approval_source=agent-auth-delegation \

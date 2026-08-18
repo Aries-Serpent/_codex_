@@ -456,7 +456,10 @@ def main() -> int:
     # Collect (pr_number, head_sha) targets ───────────────────────────────────
     if head_sha and pr_number:
         if not _has_wec_auto_approve_label(token, repo, pr_number):
-            print(f"⏭️  Skipping PR #{pr_number}: missing 'wec:auto-approve' label")
+            print(
+                f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
+                "('wec:auto-approve' or active 'wec:auto-approve-once')"
+            )
             return 0
         targets = [(pr_number, head_sha)]
     elif head_sha:
@@ -465,7 +468,10 @@ def main() -> int:
         # Sweep mode: use Search API to find only WEC-labelled PRs in one query
         print("📋 Sweep mode — searching for WEC-labelled open PRs…")  # codeql[py/clear-text-logging-sensitive-data]
         targets = _search_wec_labelled_prs(token, repo)
-        print(f"   Found {len(targets)} authorized PR(s) with the 'wec:auto-approve' label")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   Found {len(targets)} authorized PR(s) with a valid WEC auto-approve label "
+            "('wec:auto-approve' or active 'wec:auto-approve-once')"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     if not targets:
         print("ℹ️  No authorized targets — nothing to do.")  # codeql[py/clear-text-logging-sensitive-data]

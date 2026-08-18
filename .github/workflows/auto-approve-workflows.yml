@@ -381,6 +381,7 @@ jobs:
         \ }}\" >> $GITHUB_OUTPUT\necho \"token_source=github_token\" >> $GITHUB_OUTPUT\n\
         echo \"Resolved: Using github.token (Tier 4, limited scope)\"\n"
     - name: Enforce WEC auto-approve policy
+      id: label_check
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
         TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
@@ -392,15 +393,10 @@ jobs:
           exit 0
         fi
 
-        LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name' 2>/dev/null || echo "")
-        if ! echo "$LABELS" | grep -qx 'wec:auto-approve'; then
-          echo "::notice::Skipping PR #$TARGET_PR: missing 'wec:auto-approve' label"
-          exit 0
-        fi
-
-        echo "✅ WEC label present on PR #$TARGET_PR — continuing approval"
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$TARGET_PR" --repo "$REPO"
     - name: Approve workflow run(s)
       id: approve
+      if: ${{ needs.evaluate-approval.outputs.should_proceed == 'true' && needs.evaluate-approval.outputs.approval_decision == 'APPROVE' && steps.label_check.outcome == 'success' }}
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
         RUN_ID: ${{ github.event.inputs.target_run_id }}
