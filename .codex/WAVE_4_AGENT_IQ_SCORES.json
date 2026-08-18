@@ -20,7 +20,7 @@
     "active_gate": {
       "lane_id": "E",
       "status": "PASS",
-      "threshold": 60.0,
+      "threshold": 70.0,
       "gate_name": "agent_iq_promotion_gate",
       "evaluated_at": "2026-08-18T20:47:54Z"
     }
@@ -4140,8 +4140,8 @@
   "promotion_gate": {
     "lane_id": "E",
     "status": "PASS",
-    "threshold": 60.0,
-    "aggregate_score": 82.4,
+    "threshold": 70.0,
+    "aggregate_score": 78.4,
     "freshness": "2026-08-18T20:47:54Z",
     "evidence": ".codex/WAVE_4_AGENT_IQ_SCORES.json",
     "required_by": "Lane E guarded hybrid promotion"

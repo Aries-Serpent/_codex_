@@ -16,8 +16,8 @@ Lane E is explicitly PASS after the fresh IQ gate artifact was refreshed and val
 
 - `.codex/WAVE_4_AGENT_IQ_SCORES.json` refreshed at `2026-08-18T20:47:54Z`
 - `promotion_gate.status = PASS`
-- `promotion_gate.aggregate_score = 82.4`
-- `promotion_gate.threshold = 60.0`
+- `promotion_gate.aggregate_score = 78.4`
+- `promotion_gate.threshold = 70.0`
 
 ## Dependency State
 
