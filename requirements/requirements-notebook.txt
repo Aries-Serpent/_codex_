@@ -1,5 +1,5 @@
 # Optional Notebook/Visualization surface — Generated: 2025-11-12 16:24:19 UTC | Author: mbaetiong
-jupyterlab==4.6.1
+jupyterlab==4.6.2
 notebook==7.5.6
 nbconvert==7.17.1
 matplotlib==3.10.9
