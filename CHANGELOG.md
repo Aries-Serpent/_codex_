@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Dependencies — Consolidated Dependabot Updates (PR #5483)
+- Completed consolidation of 13 eligible Dependabot PRs into branch `dependabot/npm_and_yarn/copilot/extension/eslint-10.8.1` (PR #5483). Covered npm, pip, and github-actions ecosystem version bumps.
+- Excluded PR #5477 (`pyo3-build-config` 0.24.2 → 0.29.2) from consolidation due to Rust source migration risk; kept separate for targeted review.
+- Folded branches: `dependabot/npm_and_yarn/cognitive_app/eslint-10.8.0`, `katex-0.18.1`, `eslint-plugin-react-refresh-0.5.3`, `framer-motion-13.0.0`, `date-fns-4.4.0`; `dependabot/npm_and_yarn/copilot/extension/globals-17.11.0`; `dependabot/pip/sphinx-autodoc-typehints-gte-3.13.2`, `transformers-5.14.1`, `jupyterlab-4.6.2`, `types-pyyaml-6.0.12.20260724`, `python-core-18c674f953`; `dependabot/github_actions/dorny/test-reporter-3`, `MishaKav/pytest-coverage-comment-1.11.0`.
+- Validation: `pytest tests/ci/test_dependabot_consolidator.py` → 7 passed; `ruff check` on consolidator script/tests → clean; `npm audit` for `copilot/extension` → 0 vulnerabilities; `npm audit` for `cognitive_app` → 1 high (`nanoid`) resolved via `npm audit fix --legacy-peer-deps`, now 0 vulnerabilities.
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with continuation entry, folded branch names, and validation results; REQ-4/REQ-5 governance markers satisfied.
+
 ### Fixed (auto-update — PR #5483)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5483 (SHA `eb10e8cb`) at 2026-08-17T14:09Z [auto-generated]
 ### Fixed (auto-update — PR #5466, SHA `b89f7d4d`)
