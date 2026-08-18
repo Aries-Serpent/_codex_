@@ -85,9 +85,9 @@
   "summary_statistics": {
     "aggregate": {
       "mean": 60.9,
-      "median": 84.0,
+      "median": 58.5,
       "stdev": 7.4,
-      "min": 69.0,
+      "min": 47.2,
       "max": 94.2
     },
     "dimensions": {
