@@ -4,6 +4,7 @@
 
 ### Dependencies — date-fns bump (PR #5477)
 - Bumped `date-fns` from 3.6.0 to 4.4.0 in `cognitive_app` (low-risk dependency update, 2026-08-18).
+- Verified v4 compatibility (2026-08-18): sole usage is `formatDistanceToNow(new Date(...), { addSuffix: true })` in 4 component files; `tsc -b --noCheck` passes against installed `date-fns@4.4.0` with zero date-fns type errors. No source changes required.
 
 ### Dependencies — Consolidated Dependabot Updates (PR #5483)
 - Completed consolidation of 13 eligible Dependabot PRs into branch `dependabot/npm_and_yarn/copilot/extension/eslint-10.8.1` (PR #5483). Covered npm, pip, and github-actions ecosystem version bumps.
