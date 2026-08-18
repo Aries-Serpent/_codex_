@@ -142,6 +142,13 @@ jobs:
         restore-keys: '${{ runner.os }}-pytest-
 
           '
+    - name: Require wec:auto-approve label
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
     - name: Dispatch auto-approve-workflows.yml
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

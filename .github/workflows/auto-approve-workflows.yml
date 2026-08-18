@@ -124,6 +124,15 @@ jobs:
         \  echo \"pr_number=\" >> $GITHUB_OUTPUT\n  exit 0\nfi\n\necho \"pr_number=$PR_NUMBER\"\
         \ >> $GITHUB_OUTPUT\necho \"\u2705 Found PR  #$PR_NUMBER for branch ${{ github.ref_name\
         \ }}\"\n"
+    - name: Require wec:auto-approve label for this PR
+      if: steps.resolve.outputs.pr_number
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+      run: |
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
     - name: Approve pending runs (if PR found)
       if: steps.resolve.outputs.pr_number
       env:
@@ -158,6 +167,14 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
+    - name: Gate approval on wec:auto-approve label
+      if: ${{ github.event.inputs.target_pr != '' }}
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
+        TARGET_PR: ${{ github.event.inputs.target_pr }}
+      run: |
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$TARGET_PR" --repo "$REPO"
     - name: Evaluate 5-tier priority rule system
       id: evaluate
       env:

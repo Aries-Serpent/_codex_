@@ -13,11 +13,14 @@ Reference Documents:
 import json
 import os
 import subprocess
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
+from scripts.ci import approve_pending_runs, require_wec_auto_approve
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Test Fixtures
@@ -125,6 +128,14 @@ class TestApprovalRuleEngine:
         decision = self._evaluate_all_rules(context)
         assert decision == "DENY", "decision is not valid"
 
+    def test_single_session_rule_is_treated_as_label_gate(self):
+        """Test: one-session label remains a valid auto-approve gate while TTL is active."""
+        labels = ["wec:auto-approve-once"]
+        created_at = datetime.utcnow() - timedelta(minutes=30)
+        decision, confidence = self._evaluate_single_session_rule(labels, created_at, 1)
+        assert decision == "APPROVE", "one-session gate should allow auto-approve while within TTL"
+        assert confidence == 1.0, "confidence is not valid"
+
     # Helper methods for rule evaluation
     def _evaluate_approval_intent(self, context):
         """Evaluate approval intent."""
@@ -180,6 +191,53 @@ class TestApprovalRuleEngine:
             return "APPROVE"
 
         return "DENY"
+
+
+class TestWecLabelGateGuard:
+    """Ensure the label gate authorizes only valid opt-in labels and never blocks validation flow."""
+
+    def test_require_wec_auto_approve_accepts_one_session_label_within_ttl(self, monkeypatch):
+        def fake_gh(method, path, token, body=None):
+            assert path.startswith("/repos/owner/repo/issues/123")
+            return (
+                200,
+                {
+                    "labels": [{"name": "wec:auto-approve-once"}],
+                    "created_at": (datetime.utcnow() - timedelta(minutes=30)).isoformat() + "Z",
+                },
+            )
+
+        monkeypatch.setattr(require_wec_auto_approve, "_gh", fake_gh)
+        assert require_wec_auto_approve.has_wec_auto_approve("token", "owner/repo", 123) is True
+
+    def test_require_wec_auto_approve_does_not_fail_validation_when_label_missing(self, monkeypatch):
+        monkeypatch.setattr(
+            require_wec_auto_approve,
+            "_gh",
+            lambda *args, **kwargs: (
+                200,
+                {"labels": [], "created_at": (datetime.utcnow() - timedelta(hours=2)).isoformat() + "Z"},
+            ),
+        )
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["require_wec_auto_approve.py", "--pr-number", "123", "--repo", "owner/repo", "--token", "token"],
+        )
+        assert require_wec_auto_approve.main() == 0
+
+    def test_pending_run_gate_accepts_one_session_label_within_ttl(self, monkeypatch):
+        def fake_gh(method, path, token, body=None):
+            return (
+                200,
+                {
+                    "labels": [{"name": "wec:auto-approve-once"}],
+                    "created_at": (datetime.utcnow() - timedelta(minutes=30)).isoformat() + "Z",
+                },
+            )
+
+        monkeypatch.setattr(approve_pending_runs, "_gh", fake_gh)
+        assert approve_pending_runs._has_wec_auto_approve_label("token", "owner/repo", 123) is True
 
 
 # ──────────────────────────────────────────────────────────────────────────────

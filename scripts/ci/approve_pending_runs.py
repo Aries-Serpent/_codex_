@@ -60,6 +60,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
 from typing import Any
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -78,7 +79,7 @@ def _gh(
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
-        "Authorization": f""******",
+        "Authorization": "Bearer " + token,
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
@@ -162,13 +163,42 @@ def _resolve_token() -> tuple[str, str]:
     raise SystemExit(1)
 
 
-def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int) -> bool:
-    """Require the explicit WEC auto-approve label before approving a PR."""
+def _parse_iso8601_datetime(value: str | None) -> datetime | None:
+    if not value or not isinstance(value, str):
+        return None
+    candidate = value
+    if candidate.endswith("Z"):
+        candidate = candidate[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(candidate).astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int, *, ttl_hours: int = 1) -> bool:
+    """Require a valid label-based WEC auto-approve gate before approving a PR.
+
+    The permanent label (wec:auto-approve) is always allowed. The one-session label
+    (wec:auto-approve-once) is also allowed only while it remains within the TTL window.
+    """
     status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
     if status != 200 or not isinstance(payload, dict):
         return False
+
     labels = payload.get("labels", [])
-    return any((label.get("name") if isinstance(label, dict) else label) == "wec:auto-approve" for label in labels)
+    label_names = {label.get("name") if isinstance(label, dict) else label for label in labels}
+    if "wec:auto-approve" in label_names:
+        return True
+    if "wec:auto-approve-once" not in label_names:
+        return False
+
+    created_at = payload.get("created_at") or payload.get("createdAt")
+    created_dt = _parse_iso8601_datetime(created_at)
+    if created_dt is None:
+        return False
+
+    age_hours = (datetime.now(timezone.utc) - created_dt).total_seconds() / 3600
+    return age_hours <= ttl_hours
 
 
 def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -181,7 +211,7 @@ def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -
         if _has_wec_auto_approve_label(token, repo, pr_number):
             authorized.append(pr)
         else:
-            print(f"⏭️  Skipping PR #{pr_number}: missing 'wec:auto-approve' label")
+            print(f"⏭️  Skipping PR #{pr_number}: missing or expired required auto-approve label")
     return authorized
 
 

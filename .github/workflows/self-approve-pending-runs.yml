@@ -114,6 +114,14 @@ jobs:
         exit 0
 
         '
+    - name: Require wec:auto-approve label for explicit PR targets
+      if: steps.target.outputs.pr_number != ''
+      env:
+        GH_TOKEN: ${{ steps.token.outputs.token }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+      run: |
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
     - name: Dispatch hub for batch approval (self-approve-pending-runs)
       if: steps.pending.outputs.count != '0'
       uses: actions/github-script@v8

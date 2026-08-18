@@ -86,6 +86,13 @@ jobs:
           }\n\ncore.info(`Intent satisfied: human approval on main-targeting PR @\
           \ ${sha8} — proceeding`);\ncore.setOutput('proceed', 'true');"
       continue-on-error: true
+    - name: Require wec:auto-approve label
+      if: ${{ steps.gate.outputs.proceed == 'true' }}
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
+      run: |
+        python3 scripts/ci/require_wec_auto_approve.py --pr-number "${{ steps.ctx.outputs.pr_num }}" --repo "$REPO"
     - name: Dispatch unified approval hub
       if: ${{ steps.gate.outputs.proceed == 'true' }}
       uses: actions/github-script@v8

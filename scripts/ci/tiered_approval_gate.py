@@ -58,15 +58,24 @@ def check_manager_override(pr_number: int) -> bool:
     return False
 
 def check_auto_approve_label(pr_number: int) -> bool:
-    # Auto-approval is opt-in: require the 'wec:auto-approve' label to be active on
-    # the PR. Without it the bot must not post approvals (prevents an unbounded
-    # auto-approve -> re-trigger -> auto-approve loop).
-    success, output = run_gh_command(['gh', 'pr', 'view', str(pr_number), '--json', 'labels'])
+    # Auto-approval is opt-in: require the permanent label to be active on the PR.
+    # The single-session override can still be used only when explicitly present and
+    # still within its TTL window.
+    success, output = run_gh_command(['gh', 'pr', 'view', str(pr_number), '--json', 'labels', 'createdAt'])
     if success:
         try:
             data = json.loads(output)
             labels = [lbl['name'] for lbl in data.get('labels', [])]
-            return 'wec:auto-approve' in labels
+            if 'wec:auto-approve' in labels:
+                return True
+            if 'wec:auto-approve-once' in labels:
+                created = data.get('createdAt')
+                if not created:
+                    return False
+                import datetime
+                created_dt = datetime.datetime.fromisoformat(created.replace('Z', '+00:00'))
+                age_hours = (datetime.datetime.now(datetime.timezone.utc) - created_dt).total_seconds() / 3600
+                return age_hours <= 1
         except Exception:
             pass
     return False
@@ -90,7 +99,10 @@ def main():
     print(f"Required Approvals: {required_approvals}")
 
     if is_hotfix:
-        print("HOTFIX/MANAGER OVERRIDE ACTIVE. Bot auto-approving.")
+        if not check_auto_approve_label(pr_number):
+            print("HOTFIX/MANAGER OVERRIDE requires the 'wec:auto-approve' label — skipping bot approval.")
+            sys.exit(1)
+        print("HOTFIX/MANAGER OVERRIDE ACTIVE. Approval allowed only with 'wec:auto-approve' label.")
         run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved via manager hotfix override'])
         sys.exit(0)
 
