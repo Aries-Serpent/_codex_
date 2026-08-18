@@ -37,6 +37,16 @@ class ScoredFamily:
     impact_score: float = 0.5  # 0-1 scale
     wave: int = 0  # Wave assignment (1, 2, or 3)
 
+    @property
+    def family_id(self) -> str:
+        """Return the family identifier for downstream pipeline contracts."""
+        return self.family.family_id
+
+    @property
+    def root_cwe(self) -> str | None:
+        """Expose the root cause CWE for downstream consumers."""
+        return self.family.root_cwe
+
     def __lt__(self, other: "ScoredFamily") -> bool:
         """Compare by risk score (for sorting)."""
         return self.risk_score > other.risk_score  # Higher risk first

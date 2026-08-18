@@ -19,36 +19,52 @@ Phase: 3 (Weeks 7-10)
 Status: ACTIVE
 """
 
-from .burndown_intelligence import BurndownTracker, compute_metrics
-from .clustering import FindingClusterer, build_finding_families
-from .ingest import SecurityIngestor, deduplicate_findings, normalize_finding
-from .recurrence_prevention import RecurrencePrevention, generate_suppression_patterns
-from .scoring import RiskScorer, plan_waves
-from .validation_gates import ValidationGateEngine, run_validation_gates
-from .wave_executor import WaveExecutor, execute_wave
+from .burndown_intelligence import BurndownMetrics, BurndownReport, BurndownTracker, compute_metrics
+from .clustering import FindingClusterer, FindingFamily, build_finding_families
+from .ingest import FindingSeverity, IngestMetrics, NormalizedFinding, SecurityIngestor, deduplicate_findings, normalize_finding
+from .recurrence_prevention import RecurrencePrevention, SuppressionPattern, generate_suppression_patterns
+from .scoring import Exploitability, RiskScorer, ScoredFamily, WavePlan, plan_waves
+from .validation_gates import GateResult, GateStatus, ValidationGateEngine, ValidationGateReport, run_validation_gates
+from .wave_executor import ExecutionResult, ExecutionStatus, WaveExecutionReport, WaveExecutor, execute_wave
 
 __all__ = [
     # S1: Ingest
     'SecurityIngestor',
+    'NormalizedFinding',
+    'FindingSeverity',
+    'IngestMetrics',
     'normalize_finding',
     'deduplicate_findings',
     # S2: Clustering
     'FindingClusterer',
+    'FindingFamily',
     'build_finding_families',
     # S3: Scoring & Wave Planning
     'RiskScorer',
+    'ScoredFamily',
+    'Exploitability',
+    'WavePlan',
     'plan_waves',
     # S4: Wave Executor
     'WaveExecutor',
+    'ExecutionResult',
+    'ExecutionStatus',
+    'WaveExecutionReport',
     'execute_wave',
     # S5: Validation Gates
     'ValidationGateEngine',
+    'ValidationGateReport',
+    'GateResult',
+    'GateStatus',
     'run_validation_gates',
     # S6: Recurrence Prevention
     'RecurrencePrevention',
+    'SuppressionPattern',
     'generate_suppression_patterns',
     # S7: Burndown Intelligence
     'BurndownTracker',
+    'BurndownMetrics',
+    'BurndownReport',
     'compute_metrics',
 ]
 

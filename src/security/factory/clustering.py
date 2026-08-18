@@ -27,8 +27,15 @@ class FindingFamily:
     def add_finding(self, finding: NormalizedFinding) -> None:
         """Add a finding to this family."""
         self.findings.append(finding)
-        # Update severity to max
-        if finding.severity.value > self.severity_level.value:
+        # Update severity to max using a defined order rather than string ordering.
+        severity_rank = {
+            FindingSeverity.INFO: 0,
+            FindingSeverity.LOW: 1,
+            FindingSeverity.MEDIUM: 2,
+            FindingSeverity.HIGH: 3,
+            FindingSeverity.CRITICAL: 4,
+        }
+        if severity_rank.get(finding.severity, 0) > severity_rank.get(self.severity_level, 0):
             self.severity_level = finding.severity
 
     def aggregate_risk(self) -> float:

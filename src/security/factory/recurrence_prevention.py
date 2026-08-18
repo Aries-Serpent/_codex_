@@ -89,9 +89,10 @@ class RecurrencePrevention:
     @staticmethod
     def _normalize_title_pattern(title: str) -> str:
         """Normalize a finding title into a regex pattern."""
-        # Remove specific identifiers, keep generic pattern
-        normalized = re.sub(r"[0-9]+", "\\d+", title)  # Replace numbers with \d+
-        normalized = re.sub(r"'[^']*'", "'[^']*'", normalized)  # Keep string patterns generic
+        # Remove specific identifiers, keep generic pattern.
+        # Use a raw replacement string so Python does not treat \d as an invalid escape.
+        normalized = re.sub(r"[0-9]+", r"\\d+", title)
+        normalized = re.sub(r"'[^']*'", r"'[^']*'", normalized)
         return normalized
 
     @staticmethod
