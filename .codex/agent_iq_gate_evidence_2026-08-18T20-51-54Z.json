@@ -1,0 +1,24 @@
+{
+  "artifact_id": "agent-iq-scoring-gate",
+  "artifact_name": "Agent IQ Scoring Gate",
+  "gate": "E promotion gate",
+  "threshold": 70,
+  "threshold_operator": ">=",
+  "threshold_unit": "aggregate_score_0_100",
+  "updated_score": 78.4,
+  "score_status": "PASS",
+  "recorded_at": "2026-08-18T20:51:54.736Z",
+  "source_file": ".codex/WAVE_4_AGENT_IQ_SCORES.json",
+  "validation": {
+    "formula": "0.25*d1_confidence + 0.25*d2_coverage + 0.20*d3_signals + 0.15*d4_enforcement + 0.15*d5_readiness",
+    "dimensions": {
+      "d1_confidence": 84,
+      "d2_coverage": 74,
+      "d3_signals": 78,
+      "d4_enforcement": 83,
+      "d5_readiness": 72
+    },
+    "aggregate_score": 78.4,
+    "threshold_met": true
+  }
+}

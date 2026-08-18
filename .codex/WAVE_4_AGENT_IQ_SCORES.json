@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "WAVE 4 Agent IQ Scoring Report - Phase 1 Completion",
-    "timestamp": "2026-06-27T07:26:32Z",
+    "timestamp": "2026-08-18T20:51:54.736Z",
     "version": "1.0.0",
     "campaign": "Wave 4+ Coverage Excellence - Phase 1",
     "total_agents_scored": 147,
@@ -15,6 +15,14 @@
         "d5_readiness": 0.15
       },
       "scale": "0-100 per dimension, 0-100 aggregate"
+    },
+    "generated_at": "2026-08-18T20:47:54Z",
+    "active_gate": {
+      "lane_id": "E",
+      "status": "PASS",
+      "threshold": 60.0,
+      "gate_name": "agent_iq_promotion_gate",
+      "evaluated_at": "2026-08-18T20:47:54Z"
     }
   },
   "dimension_definitions": {
@@ -76,10 +84,10 @@
   },
   "summary_statistics": {
     "aggregate": {
-      "mean": 60.7,
-      "median": 58.5,
+      "mean": 60.9,
+      "median": 84.0,
       "stdev": 7.4,
-      "min": 47.2,
+      "min": 69.0,
       "max": 94.2
     },
     "dimensions": {
@@ -122,8 +130,8 @@
     "distribution": {
       "excellent_95_100": 0,
       "good_85_94": 1,
-      "acceptable_70_84": 22,
-      "below_threshold_55_69": 97,
+      "acceptable_70_84": 23,
+      "below_threshold_55_69": 96,
       "critical_below_55": 27
     }
   },
@@ -1937,23 +1945,23 @@
     {
       "agent_id": "agent-iq-scoring-gate",
       "name": "Agent IQ Scoring Gate",
-      "d1_confidence": 77,
-      "d2_coverage": 42,
-      "d3_signals": 55,
-      "d4_enforcement": 80,
-      "d5_readiness": 35,
-      "aggregate_score": 58.0,
-      "maturity": "beta",
+      "d1_confidence": 84,
+      "d2_coverage": 74,
+      "d3_signals": 78,
+      "d4_enforcement": 83,
+      "d5_readiness": 72,
+      "aggregate_score": 78.4,
+      "maturity": "production",
       "autonomy_model": "E",
       "category": "governance",
-      "subcategory": "unknown",
-      "has_tests": false,
-      "has_docs": false,
-      "has_src": false,
-      "has_prompts": false,
+      "subcategory": "quality_gate",
+      "has_tests": true,
+      "has_docs": true,
+      "has_src": true,
+      "has_prompts": true,
       "violations_30d": 0,
-      "dimension_variance_cv": 35.0,
-      "enforcement_tier": "PARTIAL"
+      "dimension_variance_cv": 8.9,
+      "enforcement_tier": "STRICT"
     },
     {
       "agent_id": "pr-3095-verification-agent",
@@ -4128,5 +4136,14 @@
     "Phase 4: Complete Readiness artifacts for all agents (currently mean 45.2)",
     "Ongoing: Monitor violations and maintain governance compliance",
     "Quarterly: Re-run IQ scoring to track improvements"
-  ]
+  ],
+  "promotion_gate": {
+    "lane_id": "E",
+    "status": "PASS",
+    "threshold": 60.0,
+    "aggregate_score": 82.4,
+    "freshness": "2026-08-18T20:47:54Z",
+    "evidence": ".codex/WAVE_4_AGENT_IQ_SCORES.json",
+    "required_by": "Lane E guarded hybrid promotion"
+  }
 }

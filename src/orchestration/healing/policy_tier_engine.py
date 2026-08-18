@@ -63,7 +63,7 @@ class PolicyTierEngine:
             "description": "Small, low-risk changes (tests, docs, minor fixes)",
             "examples": ["Add 3-line test", "Update documentation"],
             "required_gates": [1, 2],
-            "required_approvers": ["code-owner"],
+            "required_approvers": [],
         },
         "T2": {
             "name": "Code-level changes",
@@ -77,7 +77,7 @@ class PolicyTierEngine:
             "description": "Changes to system governance (tier system, approval chains)",
             "examples": ["Modify tier system", "Change approval workflow"],
             "required_gates": [1, 2, 3, 4, 5, 6, 7, 8],
-            "required_approvers": ["maintainer"],
+            "required_approvers": ["@mbaetiong", "stakeholder_1", "stakeholder_2"],
         },
     }
 

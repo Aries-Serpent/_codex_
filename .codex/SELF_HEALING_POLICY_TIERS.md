@@ -12,6 +12,8 @@ This document defines the 4-tier policy framework for self-healing automation. E
 
 **Core Principle:** Higher tiers require proportionally higher governance gates before execution. T0/T1 auto-execute with audit trails; T2/T3 require explicit approval.
 
+**Authoritative approval contract:** Tier 1 has no approval gate and is auto-executed with a post-hoc audit trail; Tier 3 requires @mbaetiong plus two stakeholder sign-offs before governance changes can proceed.
+
 ---
 
 ## Tier 0: Metadata & Configuration (Auto-Execute, Zero Approval)
