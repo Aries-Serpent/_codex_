@@ -57,6 +57,20 @@ def check_manager_override(pr_number: int) -> bool:
             pass
     return False
 
+def check_auto_approve_label(pr_number: int) -> bool:
+    # Auto-approval is opt-in: require the 'wec:auto-approve' label to be active on
+    # the PR. Without it the bot must not post approvals (prevents an unbounded
+    # auto-approve -> re-trigger -> auto-approve loop).
+    success, output = run_gh_command(['gh', 'pr', 'view', str(pr_number), '--json', 'labels'])
+    if success:
+        try:
+            data = json.loads(output)
+            labels = [lbl['name'] for lbl in data.get('labels', [])]
+            return 'wec:auto-approve' in labels
+        except Exception:
+            pass
+    return False
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: tiered_approval_gate.py <pr_number>")
@@ -85,7 +99,10 @@ def main():
         sys.exit(0)
 
     if risk_tier == 'low' and approvals == 0:
-        print("Low risk changes detected. Bot auto-approving trivial changes.")
+        if not check_auto_approve_label(pr_number):
+            print("Low-risk changes, but 'wec:auto-approve' label is not active — skipping bot auto-approve.")
+            sys.exit(1)
+        print("Low risk changes detected and 'wec:auto-approve' label active. Bot auto-approving trivial changes.")
         run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved low-risk changes'])
         sys.exit(0)
 
