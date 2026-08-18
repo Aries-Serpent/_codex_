@@ -59,6 +59,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any
@@ -213,6 +214,38 @@ def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -
         else:
             print(f"⏭️  Skipping PR #{pr_number}: missing or expired required auto-approve label")
     return authorized
+
+
+def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
+    """Use the Search API to find open PRs with a WEC auto-approve label in one request."""
+    results: dict[int, str] = {}
+    for label in ("wec:auto-approve", "wec:auto-approve-once"):
+        page = 1
+        while True:
+            q = urllib.parse.quote(f"repo:{repo} is:pr is:open label:{label}")
+            status, payload = _gh("GET", f"/search/issues?q={q}&per_page=100&page={page}", token)
+            if status != 200 or not isinstance(payload, dict):
+                break
+            items = payload.get("items", [])
+            for item in items:
+                pr_num = item.get("number")
+                if pr_num is not None:
+                    results[pr_num] = ""
+            if len(items) < 100:
+                break
+            page += 1
+
+    if not results:
+        return []
+
+    targets: list[tuple[str, str]] = []
+    for pr_num in results:
+        status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_num}", token)
+        if status == 200 and isinstance(payload, dict):
+            sha = (payload.get("head") or {}).get("sha", "")
+            if sha:
+                targets.append((str(pr_num), sha))
+    return targets
 
 
 def _get_action_required_runs(
@@ -429,11 +462,9 @@ def main() -> int:
     elif head_sha:
         targets = [("?", head_sha)]
     else:
-        # Sweep mode: all open PRs
-        print("📋 Sweep mode — resolving all open PRs…")  # codeql[py/clear-text-logging-sensitive-data]
-        targets = _get_open_pr_shas(token, repo)
-        filtered = _filter_prs_by_wec_label(token, repo, [{"number": pr_num, "head": {"sha": sha}} for pr_num, sha in targets])
-        targets = [(str(pr["number"]), pr["head"]["sha"]) for pr in filtered]
+        # Sweep mode: use Search API to find only WEC-labelled PRs in one query
+        print("📋 Sweep mode — searching for WEC-labelled open PRs…")  # codeql[py/clear-text-logging-sensitive-data]
+        targets = _search_wec_labelled_prs(token, repo)
         print(f"   Found {len(targets)} authorized PR(s) with the 'wec:auto-approve' label")  # codeql[py/clear-text-logging-sensitive-data]
 
     if not targets:

@@ -210,7 +210,7 @@ class TestWecLabelGateGuard:
         monkeypatch.setattr(require_wec_auto_approve, "_gh", fake_gh)
         assert require_wec_auto_approve.has_wec_auto_approve("token", "owner/repo", 123) is True
 
-    def test_require_wec_auto_approve_does_not_fail_validation_when_label_missing(self, monkeypatch):
+    def test_require_wec_auto_approve_blocks_when_label_missing(self, monkeypatch):
         monkeypatch.setattr(
             require_wec_auto_approve,
             "_gh",
@@ -224,7 +224,7 @@ class TestWecLabelGateGuard:
             "argv",
             ["require_wec_auto_approve.py", "--pr-number", "123", "--repo", "owner/repo", "--token", "token"],
         )
-        assert require_wec_auto_approve.main() == 0
+        assert require_wec_auto_approve.main() == 1
 
     def test_pending_run_gate_accepts_one_session_label_within_ttl(self, monkeypatch):
         def fake_gh(method, path, token, body=None):

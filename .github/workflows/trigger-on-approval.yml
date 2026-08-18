@@ -87,6 +87,7 @@ jobs:
           \ ${sha8} — proceeding`);\ncore.setOutput('proceed', 'true');"
       continue-on-error: true
     - name: Require wec:auto-approve label
+      id: label_check
       if: ${{ steps.gate.outputs.proceed == 'true' }}
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -94,7 +95,7 @@ jobs:
       run: |
         python3 scripts/ci/require_wec_auto_approve.py --pr-number "${{ steps.ctx.outputs.pr_num }}" --repo "$REPO"
     - name: Dispatch unified approval hub
-      if: ${{ steps.gate.outputs.proceed == 'true' }}
+      if: ${{ success() && steps.gate.outputs.proceed == 'true' }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||

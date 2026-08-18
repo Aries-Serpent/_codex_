@@ -100,9 +100,9 @@ def main():
 
     if is_hotfix:
         if not check_auto_approve_label(pr_number):
-            print("HOTFIX/MANAGER OVERRIDE requires the 'wec:auto-approve' label — skipping bot approval.")
+            print("HOTFIX/MANAGER OVERRIDE requires the 'wec:auto-approve' or 'wec:auto-approve-once' label — skipping bot approval.")
             sys.exit(1)
-        print("HOTFIX/MANAGER OVERRIDE ACTIVE. Approval allowed only with 'wec:auto-approve' label.")
+        print("HOTFIX/MANAGER OVERRIDE ACTIVE. Approval allowed only with 'wec:auto-approve' or 'wec:auto-approve-once' label.")
         run_gh_command(['gh', 'pr', 'review', str(pr_number), '--approve', '--body', 'Auto-approved via manager hotfix override'])
         sys.exit(0)
 

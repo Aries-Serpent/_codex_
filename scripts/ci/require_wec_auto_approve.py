@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -84,10 +83,10 @@ def main() -> int:
 
     if not args.repo:
         print("::error::REPO is required to validate wec:auto-approve.")
-        return 0
+        return 1
     if not args.token:
         print("::notice::No GH_TOKEN/CODEX_MASTER_KEY provided; refusing to auto-approve without a token and label gate.")
-        return 0
+        return 1
 
     if has_wec_auto_approve(args.token, args.repo, args.pr_number):
         print(f"✅ PR #{args.pr_number} has required label '{LABEL_NAME}'.")
