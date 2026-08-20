@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5489 workflow classification follow-up
+- Repaired the current merge-readiness compliance gap for PR #5489 by appending a fresh session entry to the PDA log and refreshing the accountability report for 2026-08-20.
+- Verified the session-close compliance gate: `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5489` now passes after the cluster of required governance updates.
+
 ### Fixed — PR #5487 governance + validation sync
 - Refreshed the PR #5487 T1/T3 policy contract and IQ evidence alignment while closing the current session-wrapup metadata gap.
 - Synced the accountability report and root changelog so REQ-4 and REQ-5 pass on the active branch.
