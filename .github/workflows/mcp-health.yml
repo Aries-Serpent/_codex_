@@ -8,8 +8,6 @@ on:
     - src/mcp/**
     - .copilot-space/mcp.example.json
     - .github/workflows/mcp-health.yml
-  schedule:
-  - cron: 0 4 * * 1
   workflow_dispatch:
     inputs:
       latency-threshold-ms:

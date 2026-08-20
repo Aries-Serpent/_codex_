@@ -1,7 +1,5 @@
 name: Workflow Analytics & Health (Unified)
 on:
-  schedule:
-  - cron: 0 0 * * 1
   workflow_dispatch:
     inputs:
       mode:

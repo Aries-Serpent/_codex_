@@ -402,8 +402,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 'on':
-  schedule:
-  - cron: '0 4 * * 1'
   workflow_dispatch:
   push:
     paths:
