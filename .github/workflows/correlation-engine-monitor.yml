@@ -1,7 +1,5 @@
 name: Correlation Engine Monitoring - Phase 4E Planset 011
 on:
-  schedule:
-  - cron: 0 0 * * *
   workflow_dispatch: null
   push:
     paths:

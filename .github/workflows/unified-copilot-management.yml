@@ -1,7 +1,5 @@
 name: Copilot Management Suite
 on:
-  schedule:
-  - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       operation:
