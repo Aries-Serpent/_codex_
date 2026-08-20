@@ -403,7 +403,7 @@ concurrency:
   cancel-in-progress: true
 'on':
   schedule:
-  - cron: 0 * * * *
+  - cron: '0 4 * * *'
   - cron: 0 9 * * 0
   - cron: 0 10 * * 1
   workflow_dispatch: null

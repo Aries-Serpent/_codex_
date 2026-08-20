@@ -1,8 +1,6 @@
 name: Agent Orchestration Health Check
 on:
   workflow_dispatch: null
-  schedule:
-  - cron: 30 5 * * *
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

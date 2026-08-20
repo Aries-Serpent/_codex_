@@ -1,7 +1,7 @@
 name: "\U0001F50D Proactive CI Monitor"
 on:
   schedule:
-  - cron: 0 */6 * * *
+  - cron: '0 8 * * *'
   workflow_dispatch:
     inputs:
       scope:

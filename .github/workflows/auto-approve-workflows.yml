@@ -22,7 +22,7 @@ on:
     types:
     - submitted
   schedule:
-  - cron: '*/5 * * * *'
+  - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       approval_source:

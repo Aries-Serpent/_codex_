@@ -1,7 +1,7 @@
 name: Artifact Monitoring
 on:
   schedule:
-  - cron: 0 */3 * * *
+  - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

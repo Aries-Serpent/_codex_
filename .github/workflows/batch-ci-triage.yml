@@ -17,8 +17,6 @@ on:
         required: false
         type: number
         default: 5
-  schedule:
-  - cron: 0 * * * *
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

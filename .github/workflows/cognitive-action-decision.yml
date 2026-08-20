@@ -1,7 +1,7 @@
 name: Cognitive Action & Decision (Unified)
 on:
   schedule:
-  - cron: 15 */6 * * *
+  - cron: '15 2 * * *'
   workflow_run:
     workflows:
     - Cognitive Decision Engine

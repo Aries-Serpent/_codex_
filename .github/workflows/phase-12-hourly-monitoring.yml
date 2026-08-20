@@ -1,7 +1,7 @@
 name: Phase 12 Post-Release Monitoring - Hourly Checkpoint
 on:
   schedule:
-  - cron: 5 * * * *
+  - cron: '0 8 * * *'
   workflow_dispatch: null
 permissions:
   contents: read
