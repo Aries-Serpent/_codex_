@@ -19,9 +19,6 @@ name: Security Scanning Suite
     - docs/**
     - .codex/**
     - LICENSE
-  schedule:
-  - cron: 0 2 * * *
-  - cron: 0 3 * * 0
   workflow_dispatch:
     inputs:
       scan-type:

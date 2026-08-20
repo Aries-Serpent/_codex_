@@ -1,7 +1,7 @@
 name: Performance Monitoring - Regression Detection
 on:
   schedule:
-  - cron: 0 2 * * *
+  - cron: 0 2 * * 1
   workflow_dispatch:
     inputs:
       check_regressions:

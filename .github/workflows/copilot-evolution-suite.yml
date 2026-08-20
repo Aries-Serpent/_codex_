@@ -1,7 +1,7 @@
 name: Copilot Evolution & Review (Unified)
 on:
   schedule:
-  - cron: 0 */4 * * *
+  - cron: 0 0 * * 1
   pull_request:
     types:
     - opened

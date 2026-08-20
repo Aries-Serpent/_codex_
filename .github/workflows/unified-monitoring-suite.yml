@@ -1,8 +1,7 @@
 name: unified-monitoring-suite
 on:
   schedule:
-  - cron: '0 7 * * *'
-  - cron: 0 2 * * 0
+  - cron: '0 6 * * *'
   push:
     branches:
     - main
