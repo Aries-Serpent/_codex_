@@ -1,3 +1,16 @@
+import sys
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.ci import session_wrapup_autofix as swa
+
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
