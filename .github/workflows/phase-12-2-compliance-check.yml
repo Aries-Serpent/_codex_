@@ -6,8 +6,6 @@ name: Phase 12.2 Compliance Check
   pull_request:
     branches:
     - '**'
-  schedule:
-  - cron: 0 9 * * 1
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

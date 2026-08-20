@@ -15,8 +15,6 @@ on:
     - CI/CD Pipeline
     types:
     - completed
-  schedule:
-  - cron: 0 */6 * * *
 concurrency:
   group: audit-logging-${{ github.ref }}
   cancel-in-progress: false
