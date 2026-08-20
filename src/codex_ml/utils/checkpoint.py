@@ -90,9 +90,9 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
         kwargs["weights_only"] = True
     try:
         return load_fn(source, **kwargs)
-    except TypeError as exc:
+    except (TypeError, ValueError, RuntimeError) as exc:
         type(exc).__name__
-        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.debug("torch.load rejected payload: %s", exc)
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)

@@ -867,8 +867,19 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
     if version is None:
@@ -911,8 +922,19 @@ def load_checkpoint(
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})
