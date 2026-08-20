@@ -31,7 +31,7 @@ try:  # pragma: no cover - optional dependency import
     import pynvml
 
     _NVML_AVAILABLE = True
-except (ImportError, AttributeError):  # pragma: no cover - optional dependency
+except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - optional dependency
     pynvml = None
     _NVML_AVAILABLE = False
 

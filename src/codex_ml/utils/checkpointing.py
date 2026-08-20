@@ -18,6 +18,7 @@ import inspect
 import io
 import json
 import logging
+import pickle
 import platform
 import random
 import shutil
@@ -431,7 +432,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, TypeError, RuntimeError, pickle.UnpicklingError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         errors.append(exc)

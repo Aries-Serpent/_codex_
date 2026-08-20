@@ -32,7 +32,7 @@ except (ImportError, AttributeError):  # pragma: no cover - allow execution with
 
 try:  # pragma: no cover - optional GPU metrics dependency
     import pynvml
-except (ImportError, AttributeError):  # pragma: no cover - allow execution without NVML bindings
+except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - allow execution without NVML bindings
     pynvml = None
 
 
@@ -489,12 +489,12 @@ def system_metrics() -> dict[str, Any]:
                     }
                 )
             snapshot["gpus"] = gpus
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - NVML metrics best-effort
+        except Exception:  # pragma: no cover - NVML metrics best-effort
             LOGGER.debug("NVML metrics collection failed", exc_info=True)
         finally:
             try:
                 pynvml.nvmlShutdown()
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best-effort shutdown
+            except (IOError, OSError, ModuleNotFoundError, ImportError, RuntimeError, ValueError):  # pragma: no cover - best-effort shutdown
                 LOGGER.debug("NVML shutdown failed", exc_info=True)
 
     return snapshot
