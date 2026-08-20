@@ -1,4 +1,6 @@
 name: Scaling Framework Monitor
+on:
+  workflow_dispatch:
 permissions:
   contents: read
 env:

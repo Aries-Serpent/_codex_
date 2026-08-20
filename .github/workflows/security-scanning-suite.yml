@@ -1,24 +1,5 @@
 name: Security Scanning Suite
 'on':
-  push:
-    branches:
-    - main
-    - develop
-    - copilot/**
-    paths-ignore:
-    - '**.md'
-    - docs/**
-    - .codex/**
-    - LICENSE
-  pull_request:
-    branches:
-    - main
-    - develop
-    paths-ignore:
-    - '**.md'
-    - docs/**
-    - .codex/**
-    - LICENSE
   workflow_dispatch:
     inputs:
       scan-type:
