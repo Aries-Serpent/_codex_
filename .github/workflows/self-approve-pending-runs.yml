@@ -1,7 +1,5 @@
 name: "\u26A1 Self-Approve Pending Workflow Runs"
 on:
-  schedule:
-  - cron: '*/5 * * * *'
   workflow_run:
     workflows:
     - '*'

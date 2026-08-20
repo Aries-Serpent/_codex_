@@ -37,6 +37,8 @@ jobs:
   cost-gate:
     name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
+    permissions:
+      contents: read
     with:
       workflow_name: Rust Swarm CI
       runner: ubuntu-latest
@@ -112,6 +114,8 @@ jobs:
   rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
     needs: rust_tests
 
@@ -171,6 +175,8 @@ jobs:
   code_coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: rust_tests
 
@@ -230,6 +236,8 @@ jobs:
   python_integration:
     name: Python Integration Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: rust_tests
 
@@ -321,6 +329,10 @@ jobs:
   performance_regression:
     name: Performance Regression Detection
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     timeout-minutes: 30
     needs: [rust_benchmarks]
 
@@ -399,6 +411,8 @@ jobs:
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
 
     steps:
@@ -423,6 +437,8 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
 
     steps:
@@ -444,6 +460,8 @@ jobs:
   release:
     name: Build Release
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     timeout-minutes: 60
     needs: [rust_tests, python_integration, code_coverage]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -479,6 +497,8 @@ jobs:
   status_check:
     name:  Overall Status
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
     needs: [rust_tests, rust_benchmarks, code_coverage, python_integration, security_audit]
     if: always()

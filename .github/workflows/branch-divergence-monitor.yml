@@ -1,7 +1,5 @@
 name: "\U0001F500 Branch Divergence Monitor \u2014 0D_base_ \u2194 main"
 on:
-  schedule:
-  - cron: 0 */6 * * *
   workflow_dispatch:
     inputs:
       dry_run:

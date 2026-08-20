@@ -1,8 +1,7 @@
 name: unified-security-ops-suite
 on:
-  schedule:
-  - cron: 0 3 * * *
-  - cron: 0 3 * * 0
+  # Canonical scheduled security coverage is handled by unified-security-scanning.yml.
+  # Keeping this suite push/PR/manual-driven avoids duplicate master workflow overlap.
   push:
     branches:
     - main

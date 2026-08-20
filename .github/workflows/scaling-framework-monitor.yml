@@ -1,4 +1,10 @@
 name: Scaling Framework Monitor
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - src/codex/scaling/**
+      - .github/workflows/scaling-framework-monitor.yml
 permissions:
   contents: read
 env:
@@ -401,13 +407,3 @@ jobs:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-'on':
-  schedule:
-  - cron: 0 * * * *
-  - cron: 0 9 * * 0
-  - cron: 0 10 * * 1
-  workflow_dispatch: null
-  push:
-    paths:
-    - src/codex/scaling/**
-    - .github/workflows/scaling-framework-monitor.yml

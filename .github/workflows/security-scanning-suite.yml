@@ -1,27 +1,5 @@
-name: Security Scanning Suite
+name: Security Scanning Suite (Manual)
 'on':
-  push:
-    branches:
-    - main
-    - develop
-    - copilot/**
-    paths-ignore:
-    - '**.md'
-    - docs/**
-    - .codex/**
-    - LICENSE
-  pull_request:
-    branches:
-    - main
-    - develop
-    paths-ignore:
-    - '**.md'
-    - docs/**
-    - .codex/**
-    - LICENSE
-  schedule:
-  - cron: 0 2 * * *
-  - cron: 0 3 * * 0
   workflow_dispatch:
     inputs:
       scan-type:

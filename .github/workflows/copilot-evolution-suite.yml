@@ -1,14 +1,7 @@
 name: Copilot Evolution & Review (Unified)
 on:
   schedule:
-  - cron: 0 */4 * * *
-  pull_request:
-    types:
-    - opened
-    - reopened
-  issue_comment:
-    types:
-    - created
+    - cron: '0 2 * * 1'
   workflow_dispatch:
     inputs:
       mode:

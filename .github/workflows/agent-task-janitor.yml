@@ -30,8 +30,6 @@ on:
         options:
         - 'true'
         - 'false'
-  schedule:
-  - cron: 27 3 * * *
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
