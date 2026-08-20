@@ -52,6 +52,6 @@ This pass keeps the repo’s safety-critical and governance-critical workflows i
 
 - Keep one canonical workflow per domain.
 - Keep the repo’s WEC-critical workflows untouched and active.
-- Keep security and token-health jobs on a reliable daily cadence.
+- Keep security and token-health jobs on a reliable weekly cadence.
 - Reduce low-signal monitoring to weekly cadence or manual dispatch.
 - Remove schedule overlap that would otherwise create rate-limit collisions or redundant scanning loops.
