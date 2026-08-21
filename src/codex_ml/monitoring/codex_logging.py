@@ -745,18 +745,18 @@ def _codex_sample_system() -> dict[str, Any]:
             metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
             gpu_done = True
         except Exception as exc:
-            type(exc).__name__
-            get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().debug("NVML sampling failed", exc_info=exc)
+            get_default_logger().debug(
+                "NVML sampling failed (%s)", type(exc).__name__, exc_info=exc
+            )
             gpu_done = False
         finally:
             if nvml_initialized:
                 try:
                     pynvml.nvmlShutdown()
                 except Exception as shutdown_exc:
-                    type(shutdown_exc).__name__
-                    get_default_logger().debug("Exception: <ERROR_TYPE>")
-                    get_default_logger().debug("NVML shutdown failed", exc_info=shutdown_exc)
+                    get_default_logger().debug(
+                        "NVML shutdown failed (%s)", type(shutdown_exc).__name__, exc_info=shutdown_exc
+                    )
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
         gpus = []

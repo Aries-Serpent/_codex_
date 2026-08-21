@@ -493,12 +493,15 @@ def _can_retry_without_weights_only(exc: BaseException) -> bool:
     if not isinstance(exc, TypeError):
         return False
     message = str(exc).lower()
+    # Compatibility fallback is only valid when the Torch API itself rejects the
+    # `weights_only` keyword. Payload/runtime failures must fail closed.
     return any(
         token in message
         for token in (
-            "weights_only",
-            "unexpected keyword",
-            "unknown keyword",
+            "unexpected keyword argument 'weights_only'",
+            "unknown keyword argument 'weights_only'",
+            "unexpected keyword: weights_only",
+            "unknown keyword: weights_only",
         )
     )
 
@@ -527,7 +530,7 @@ def _deserialize_payload(
             kwargs["weights_only"] = True
         try:
             return torch_load(buf, **kwargs)
-        except (TypeError, ValueError, RuntimeError) as exc:
+        except TypeError as exc:
             logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             if use_weights_only and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
                 logger.warning(
@@ -536,6 +539,9 @@ def _deserialize_payload(
                 )
                 buf.seek(0)
                 raise
+            buf.seek(0)
+        except (ValueError, RuntimeError) as exc:
+            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.

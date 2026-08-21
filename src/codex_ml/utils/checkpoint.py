@@ -51,12 +51,15 @@ def _can_retry_without_weights_only(exc: BaseException) -> bool:
     if not isinstance(exc, TypeError):
         return False
     message = str(exc).lower()
+    # Only allow a compatibility fallback for old Torch builds that reject the
+    # `weights_only` keyword entirely. Payload/runtime failures must fail closed.
     return any(
         token in message
         for token in (
-            "weights_only",
-            "unexpected keyword",
-            "unknown keyword",
+            "unexpected keyword argument 'weights_only'",
+            "unknown keyword argument 'weights_only'",
+            "unexpected keyword: weights_only",
+            "unknown keyword: weights_only",
         )
     )
 
@@ -104,12 +107,14 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
         kwargs["weights_only"] = True
     try:
         return load_fn(source, **kwargs)
-    except (TypeError, ValueError, RuntimeError) as exc:
-        type(exc).__name__
+    except TypeError as exc:
         logger.debug("torch.load rejected payload: %s", exc)
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)
+        raise
+    except (ValueError, RuntimeError) as exc:
+        logger.debug("torch.load rejected payload: %s", exc)
         raise
 
 
