@@ -98,10 +98,16 @@ class RestrictedUnpickler(pickle.Unpickler):
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "numpy._core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
+        "torch._utils": {
+            "_rebuild_tensor",
+            "_rebuild_tensor_v2",
+            "_rebuild_parameter",
+            "_rebuild_sparse_tensor",
+        },
         # Private `torch.storage` helpers remain necessary to reconstruct trusted
         # tensor cache payloads; `_TypedStorage` is still emitted by tensor
         # pickles on supported torch versions.
-        "torch.storage": {"_TypedStorage", "TypedStorage"},
+        "torch.storage": {"_TypedStorage", "TypedStorage", "_load_from_bytes"},
         "codex_ml": {"ModelCheckpoint", "TrainingState"},
     }
 

@@ -144,22 +144,16 @@ def load_checkpoint(
         payload = torch_load(
             weights, **kwargs
         )  # nosec B614 - weights_only=False required for optimizer/RNG state
-    except TypeError as exc:
+    except (TypeError, ValueError, RuntimeError) as exc:
         type(exc).__name__
-        logger.debug("TypeError: <ERROR_TYPE>")
-        if "weights_only" in kwargs and "weights_only" in str(exc):
-            kwargs.pop("weights_only", None)
-            payload = torch_load(
-                weights, **kwargs
-            )  # nosec B614 - Retrying without weights_only parameter
-        else:
-            raise
+        logger.debug("Checkpoint load rejected with %s: %s", type(exc).__name__, exc)
+        raise
     meta: dict[str, Any] = {}
     if os.path.exists(metadata):
         try:
             with open(metadata, encoding="utf-8") as f:
                 meta = json.load(f)
-        except (IOError, OSError, ModuleNotFoundError, ImportError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError):
             logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility

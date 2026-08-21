@@ -32,8 +32,8 @@ def _read_index(index_path: Path) -> dict[str, Any]:
         return {"entries": []}
     try:
         return json.loads(index_path.read_text())
-    except (IOError, OSError, ModuleNotFoundError, ImportError):
-        logger.warning("Exception occurred", exc_info=True)
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, TypeError, json.JSONDecodeError):
+        logger.warning("Invalid checkpoint index JSON at %s; resetting to empty index", index_path, exc_info=True)
         return {"entries": []}
 
 
