@@ -531,17 +531,28 @@ def _deserialize_payload(
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
-            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
-            if use_weights_only and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
+            logger.debug(
+                "torch.load rejected payload: %s",
+                exc,
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            if (
+                use_weights_only
+                and "weights_only" in kwargs
+                and _can_retry_without_weights_only(exc)
+            ):
                 logger.warning(
-                    "Rejecting unsafe weights_only retry path for payload failure; keeping restricted loader boundary.",
+                    "torch.load rejected the weights_only keyword; falling back "
+                    "to the restricted pickle loader.",
                     exc_info=False,
                 )
                 buf.seek(0)
-                raise
+                return safe_pickle_load_bytes(buf.getvalue(), use_restricted_unpickler=True)
             buf.seek(0)
         except (ValueError, RuntimeError) as exc:
-            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "torch.load rejected payload: %s",
+                exc,
+            )  # codeql[py/clear-text-logging-sensitive-data]
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.

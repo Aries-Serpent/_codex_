@@ -518,13 +518,20 @@ def load_checkpoint(
                 if map_location is not None:
                     kwargs["map_location"] = map_location
                 return torch.load(p, **kwargs)  # nosec B614
-            except (ValueError, TypeError, RuntimeError) as exc:
+            except TypeError as exc:
                 msg = str(exc).lower()
                 if (
-                    isinstance(exc, TypeError)
-                    and any(token in msg for token in ("weights_only", "unexpected keyword", "unknown keyword"))
+                    any(token in msg for token in ("unexpected keyword", "unknown keyword"))
+                    and "weights_only" in msg
                 ):
-                    raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
+                    logger.warning(
+                        "torch.load rejected the legacy weights_only keyword; "
+                        "falling back to restricted-pickle loading.",
+                        exc_info=False,
+                    )
+                    return safe_pickle_load(str(p), use_restricted_unpickler=True)
+                raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
+            except (ValueError, RuntimeError) as exc:
                 raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
 
     try:

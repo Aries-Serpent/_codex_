@@ -7,6 +7,7 @@ Test module for checkpointing safe load.
 from __future__ import annotations
 
 import inspect
+import pickle
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -80,3 +81,30 @@ def test_load_checkpoint_trusted_path(tmp_path: Path) -> None:
     for t in out.values():
         assert hasattr(t, "shape")
         assert torch.is_tensor(t), "t is not valid"
+
+
+def test_load_checkpoint_legacy_weights_only_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """safe=True falls back when the runtime rejects the weights_only keyword."""
+    torch = _require_torch()
+    state = _make_state_dict(torch)
+    ckpt_path = tmp_path / "legacy_state.pkl"
+    ckpt_path.write_bytes(pickle.dumps(state))
+
+    real_load = torch.load
+
+    def fake_load(source: object, *args: object, **kwargs: object) -> object:
+        if kwargs.get("weights_only") is True:
+            raise TypeError("unexpected keyword argument 'weights_only'")
+        return real_load(source, *args, **kwargs)
+
+    fake_load.__signature__ = inspect.signature(real_load)  # type: ignore[attr-defined]
+
+    monkeypatch.setattr(torch, "load", fake_load)
+
+    out = load_checkpoint(ckpt_path, safe=True, map_location="cpu")
+    assert isinstance(out, Mapping)
+    assert set(out.keys()) == set(state.keys())
+    for tensor in out.values():
+        assert torch.is_tensor(tensor)
