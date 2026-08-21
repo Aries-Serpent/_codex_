@@ -147,11 +147,7 @@ def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, A
     except TypeError as exc:
         type(exc).__name__
         logger.debug("TypeError: <ERROR_TYPE>")
-        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
-            kwargs.pop("weights_only", None)
-            result = _TORCH_LOAD_FN(path, **kwargs)
-        else:
-            raise
+        raise
     if not isinstance(result, Mapping):
         return {}
     return result

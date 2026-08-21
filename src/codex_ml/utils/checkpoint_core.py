@@ -21,6 +21,7 @@ import hashlib
 import io
 import json
 import logging
+import pickle
 import platform
 import random
 import re
@@ -313,19 +314,11 @@ def restore_rng_state(state: Mapping[str, Any]) -> None:
 def capture_environment_summary() -> dict[str, Any]:
     """Collect lightweight environment details for checkpoint metadata.
 
-    Delegates to the richer provenance-based ``environment_summary`` when
-    available, then merges in the lightweight local fields as a fallback
-    or supplement.
+    Keep this summary compact and stable so metadata.json remains small and
+    predictable across environments. The richer provenance report is intentionally
+    not used here because it emits very large package inventories that regress
+    downstream schema expectations and checkpoint metadata readability.
     """
-    # Prefer the provenance-module summary (richer: git SHA, package versions, etc.)
-    if _environment_summary is not None:
-        try:
-            return dict(_environment_summary())
-        except (ImportError, AttributeError) as exc:  # pragma: no cover
-            logger.debug(
-                "provenance.environment_summary failed, using local fallback: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-
     summary: dict[str, Any] = {
         "python_version": platform.python_version(),
         "python_implementation": platform.python_implementation(),
@@ -496,6 +489,23 @@ def _torch_supports_weights_only() -> bool:
         return False
 
 
+def _can_retry_without_weights_only(exc: BaseException) -> bool:
+    if not isinstance(exc, TypeError):
+        return False
+    message = str(exc).lower()
+    # Compatibility fallback is only valid when the Torch API itself rejects the
+    # `weights_only` keyword. Payload/runtime failures must fail closed.
+    return any(
+        token in message
+        for token in (
+            "unexpected keyword argument 'weights_only'",
+            "unknown keyword argument 'weights_only'",
+            "unexpected keyword: weights_only",
+            "unknown keyword: weights_only",
+        )
+    )
+
+
 def _deserialize_payload(
     b: bytes, *, map_location: str | torch.device | None = "cpu"
 ) -> dict[str, Any]:
@@ -521,24 +531,17 @@ def _deserialize_payload(
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
-            logger.debug("TypeError: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
-            if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
+            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+            if use_weights_only and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
+                logger.warning(
+                    "Rejecting unsafe weights_only retry path for payload failure; keeping restricted loader boundary.",
+                    exc_info=False,
+                )
                 buf.seek(0)
-                fallback_kwargs = dict(kwargs)
-                fallback_kwargs.pop("weights_only", None)
-                try:
-                    return torch_load(buf, **fallback_kwargs)
-                except (ValueError, TypeError, RuntimeError):
-                    logger.warning(
-                        "Exception occurred", exc_info=True
-                    )  # codeql[py/clear-text-logging-sensitive-data]
-                    buf.seek(0)
-            else:
-                buf.seek(0)
-        except ValueError:
-            logger.warning(
-                "Exception occurred", exc_info=True
-            )  # codeql[py/clear-text-logging-sensitive-data]
+                raise
+            buf.seek(0)
+        except (ValueError, RuntimeError) as exc:
+            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.
@@ -866,8 +869,20 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+        pickle.UnpicklingError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
     if version is None:
@@ -910,8 +925,20 @@ def load_checkpoint(
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+        pickle.UnpicklingError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})

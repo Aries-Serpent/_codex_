@@ -63,7 +63,7 @@ if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
 else:
     try:  # pragma: no cover - optional
         import pynvml  # type: ignore
-    except (ImportError, AttributeError):  # pragma: no cover - nvml not installed
+    except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - nvml not installed
         pynvml = None
 
 try:  # pragma: no cover - optional
@@ -427,7 +427,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             _nv.nvmlInit()
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
-        except (IOError, OSError, ModuleNotFoundError, ImportError):
+        except Exception:
             get_default_logger().warning("Exception occurred", exc_info=True)
             gpu = False
 
@@ -716,9 +716,11 @@ def _codex_sample_system() -> dict[str, Any]:
 
     # Prefer NVML for GPU stats with per-device enumeration
     gpu_done = False
+    nvml_initialized = False
     if pynvml is not None:
         try:  # pragma: no cover - depends on GPU/NVML availability
             pynvml.nvmlInit()
+            nvml_initialized = True
             count = pynvml.nvmlDeviceGetCount()
             gpus = []
             util_sum = 0.0
@@ -741,13 +743,20 @@ def _codex_sample_system() -> dict[str, Any]:
                 )
             metrics["gpus"] = gpus
             metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
-            pynvml.nvmlShutdown()
             gpu_done = True
-        except (ValueError, TypeError, RuntimeError) as exc:
-            type(exc).__name__
-            get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().debug("NVML sampling failed", exc_info=exc)
+        except Exception as exc:
+            get_default_logger().debug(
+                "NVML sampling failed (%s)", type(exc).__name__, exc_info=exc
+            )
             gpu_done = False
+        finally:
+            if nvml_initialized:
+                try:
+                    pynvml.nvmlShutdown()
+                except Exception as shutdown_exc:
+                    get_default_logger().debug(
+                        "NVML shutdown failed (%s)", type(shutdown_exc).__name__, exc_info=shutdown_exc
+                    )
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
         gpus = []

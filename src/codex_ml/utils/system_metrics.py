@@ -15,12 +15,12 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency 
 
 try:  # pragma: no cover - optional dependency
     import pynvml
-except (ImportError, AttributeError):  # pragma: no cover - optional dependency may be absent
+except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - optional dependency may be absent
     pynvml = None
 else:  # pragma: no cover - NVML initialisation best effort
     try:
         pynvml.nvmlInit()
-    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - unavailable runtime
+    except Exception:  # pragma: no cover - unavailable runtime
         LOGGER.debug("NVML initialisation failed", exc_info=True)
         pynvml = None
 
@@ -51,7 +51,7 @@ def collect_metrics() -> dict[str, float]:
     if pynvml is not None:
         try:
             device_count = pynvml.nvmlDeviceGetCount()
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - NVML failure
+        except Exception:  # pragma: no cover - NVML failure
             LOGGER.debug("NVML device enumeration failed", exc_info=True)
         else:
             for index in range(device_count):
@@ -59,11 +59,7 @@ def collect_metrics() -> dict[str, float]:
                     handle = pynvml.nvmlDeviceGetHandleByIndex(index)
                     utilisation = pynvml.nvmlDeviceGetUtilizationRates(handle)
                     memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-                except (
-                    ValueError,
-                    TypeError,
-                    RuntimeError,
-                ):  # pragma: no cover - per-device failure best effort
+                except Exception:  # pragma: no cover - per-device failure best effort
                     LOGGER.debug("NVML metrics failed for device %s", index, exc_info=True)
                     continue
                 metrics[f"gpu{index}_util_percent"] = float(utilisation.gpu)

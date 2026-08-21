@@ -62,7 +62,7 @@ try:  # pragma: no cover - optional dependency
         import pynvml
     else:  # pragma: no cover - GPU polling disabled via feature flag
         pynvml = None
-except (ImportError, AttributeError) as exc:  # pragma: no cover - pynvml missing
+except (ImportError, AttributeError, OSError, RuntimeError, ValueError) as exc:  # pragma: no cover - pynvml missing
     logger.debug(
         "pynvml import failed; GPU metrics disabled",
         exc_info=True,
@@ -269,7 +269,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
 
     try:  # pragma: no cover - depends on NVML
         pynvml.nvmlInit()
-    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - NVML init failure
+    except Exception as exc:  # pragma: no cover - NVML init failure
         logger.warning(
             "NVML initialisation failed; disabling GPU polling",
             extra={
@@ -302,12 +302,12 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
                         handle, getattr(pynvml, "NVML_TEMPERATURE_GPU", 0)
                     )
                 )
-            except (ValueError, TypeError, RuntimeError):
+            except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 entry["temp_c"] = None
             try:
                 entry["power_w"] = float(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0)
-            except (ValueError, TypeError, RuntimeError):
+            except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 entry["power_w"] = None
             devices.append(entry)
@@ -317,7 +317,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
             "gpus": devices,
             "gpu_util_mean": util_sum / max(len(devices), 1) if devices else None,
         }
-    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - NVML query failure
+    except Exception as exc:  # pragma: no cover - NVML query failure
         logger.warning(
             "NVML sampling failed; disabling GPU polling",
             extra={
@@ -331,7 +331,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
     finally:  # pragma: no cover - depends on NVML
         try:
             pynvml.nvmlShutdown()
-        except (ValueError, TypeError, RuntimeError):
+        except Exception:
             logger.warning("Exception occurred", exc_info=True)
 
 
