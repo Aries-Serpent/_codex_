@@ -21,6 +21,7 @@ import hashlib
 import io
 import json
 import logging
+import pickle
 import platform
 import random
 import re
@@ -324,20 +325,6 @@ def capture_environment_summary() -> dict[str, Any]:
         "platform": platform.platform(),
         "machine": platform.machine(),
     }
-    if _environment_summary is not None:
-        try:
-            provenance = dict(_environment_summary())
-            for key in ("python_version", "python_implementation", "platform", "machine"):
-                if key in provenance and provenance[key] is not None:
-                    summary[key] = provenance[key]
-            if "torch_version" in provenance and provenance["torch_version"] is not None:
-                summary["torch_version"] = provenance["torch_version"]
-            if "numpy_version" in provenance and provenance["numpy_version"] is not None:
-                summary["numpy_version"] = provenance["numpy_version"]
-        except (ImportError, AttributeError) as exc:  # pragma: no cover
-            logger.debug(
-                "provenance.environment_summary failed, using local fallback: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat()
     except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
@@ -502,6 +489,20 @@ def _torch_supports_weights_only() -> bool:
         return False
 
 
+def _can_retry_without_weights_only(exc: BaseException) -> bool:
+    if not isinstance(exc, TypeError):
+        return False
+    message = str(exc).lower()
+    return any(
+        token in message
+        for token in (
+            "weights_only",
+            "unexpected keyword",
+            "unknown keyword",
+        )
+    )
+
+
 def _deserialize_payload(
     b: bytes, *, map_location: str | torch.device | None = "cpu"
 ) -> dict[str, Any]:
@@ -528,19 +529,14 @@ def _deserialize_payload(
             return torch_load(buf, **kwargs)
         except (TypeError, ValueError, RuntimeError) as exc:
             logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
-            if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
+            if use_weights_only and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
+                logger.warning(
+                    "Rejecting unsafe weights_only retry path for payload failure; keeping restricted loader boundary.",
+                    exc_info=False,
+                )
                 buf.seek(0)
-                fallback_kwargs = dict(kwargs)
-                fallback_kwargs.pop("weights_only", None)
-                try:
-                    return torch_load(buf, **fallback_kwargs)
-                except (ValueError, TypeError, RuntimeError):
-                    logger.warning(
-                        "Exception occurred", exc_info=True
-                    )  # codeql[py/clear-text-logging-sensitive-data]
-                    buf.seek(0)
-            else:
-                buf.seek(0)
+                raise
+            buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.
     # When that happens, keep the fallback on RestrictedUnpickler so the
@@ -876,6 +872,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
         EOFError,
         RuntimeError,
         TypeError,
+        pickle.UnpicklingError,
     ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     if not isinstance(obj, dict):
@@ -931,6 +928,7 @@ def load_checkpoint(
         EOFError,
         RuntimeError,
         TypeError,
+        pickle.UnpicklingError,
     ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     if not isinstance(obj, dict):

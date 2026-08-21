@@ -519,17 +519,12 @@ def load_checkpoint(
                     kwargs["map_location"] = map_location
                 return torch.load(p, **kwargs)  # nosec B614
             except (ValueError, TypeError, RuntimeError) as exc:
-                msg = str(exc)
-                if "weights_only" in msg.lower():
-                    try:
-                        fallback_kwargs = {k: v for k, v in kwargs.items() if k != "weights_only"}
-                        if map_location is not None:
-                            fallback_kwargs["map_location"] = map_location
-                        return torch.load(p, **fallback_kwargs)  # nosec B614
-                    except (ValueError, TypeError, RuntimeError) as fallback_exc:
-                        raise CheckpointLoadError(
-                            f"safe load failed for {p}: {fallback_exc}"
-                        ) from fallback_exc
+                msg = str(exc).lower()
+                if (
+                    isinstance(exc, TypeError)
+                    and any(token in msg for token in ("weights_only", "unexpected keyword", "unknown keyword"))
+                ):
+                    raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
                 raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
 
     try:

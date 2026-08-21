@@ -47,6 +47,20 @@ def _torch_supports_weights_only() -> bool:
 _TORCH_SUPPORTS_WEIGHTS_ONLY = _torch_supports_weights_only()
 
 
+def _can_retry_without_weights_only(exc: BaseException) -> bool:
+    if not isinstance(exc, TypeError):
+        return False
+    message = str(exc).lower()
+    return any(
+        token in message
+        for token in (
+            "weights_only",
+            "unexpected keyword",
+            "unknown keyword",
+        )
+    )
+
+
 def _torch_rng_get_state() -> Any:
     if torch is None:
         raise RuntimeError("torch is required to capture RNG state")
@@ -93,7 +107,7 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
     except (TypeError, ValueError, RuntimeError) as exc:
         type(exc).__name__
         logger.debug("torch.load rejected payload: %s", exc)
-        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
+        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)
         raise

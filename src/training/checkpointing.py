@@ -149,9 +149,6 @@ def _torch_load(path: str, *, map_location: str | torch.device | None) -> Any:
         return load_fn(path, **kwargs)
     except TypeError as exc:
         logger.debug("TypeError: %s", exc)
-        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
-            kwargs.pop("weights_only", None)
-            return load_fn(path, **kwargs)
         raise
 
 

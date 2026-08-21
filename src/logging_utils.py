@@ -494,7 +494,7 @@ def system_metrics() -> dict[str, Any]:
         finally:
             try:
                 pynvml.nvmlShutdown()
-            except (IOError, OSError, ModuleNotFoundError, ImportError, RuntimeError, ValueError):  # pragma: no cover - best-effort shutdown
+            except Exception:  # pragma: no cover - best-effort shutdown
                 LOGGER.debug("NVML shutdown failed", exc_info=True)
 
     return snapshot
