@@ -313,25 +313,31 @@ def restore_rng_state(state: Mapping[str, Any]) -> None:
 def capture_environment_summary() -> dict[str, Any]:
     """Collect lightweight environment details for checkpoint metadata.
 
-    Delegates to the richer provenance-based ``environment_summary`` when
-    available, then merges in the lightweight local fields as a fallback
-    or supplement.
+    Keep this summary compact and stable so metadata.json remains small and
+    predictable across environments. The richer provenance report is intentionally
+    not used here because it emits very large package inventories that regress
+    downstream schema expectations and checkpoint metadata readability.
     """
-    # Prefer the provenance-module summary (richer: git SHA, package versions, etc.)
-    if _environment_summary is not None:
-        try:
-            return dict(_environment_summary())
-        except (ImportError, AttributeError) as exc:  # pragma: no cover
-            logger.debug(
-                "provenance.environment_summary failed, using local fallback: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-
     summary: dict[str, Any] = {
         "python_version": platform.python_version(),
         "python_implementation": platform.python_implementation(),
         "platform": platform.platform(),
         "machine": platform.machine(),
     }
+    if _environment_summary is not None:
+        try:
+            provenance = dict(_environment_summary())
+            for key in ("python_version", "python_implementation", "platform", "machine"):
+                if key in provenance and provenance[key] is not None:
+                    summary[key] = provenance[key]
+            if "torch_version" in provenance and provenance["torch_version"] is not None:
+                summary["torch_version"] = provenance["torch_version"]
+            if "numpy_version" in provenance and provenance["numpy_version"] is not None:
+                summary["numpy_version"] = provenance["numpy_version"]
+        except (ImportError, AttributeError) as exc:  # pragma: no cover
+            logger.debug(
+                "provenance.environment_summary failed, using local fallback: %s", exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat()
     except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
@@ -520,8 +526,8 @@ def _deserialize_payload(
             kwargs["weights_only"] = True
         try:
             return torch_load(buf, **kwargs)
-        except TypeError as exc:
-            logger.debug("TypeError: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+        except (TypeError, ValueError, RuntimeError) as exc:
+            logger.debug("torch.load rejected payload: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
                 fallback_kwargs = dict(kwargs)
@@ -535,11 +541,6 @@ def _deserialize_payload(
                     buf.seek(0)
             else:
                 buf.seek(0)
-        except ValueError:
-            logger.warning(
-                "Exception occurred", exc_info=True
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.
     # When that happens, keep the fallback on RestrictedUnpickler so the
@@ -866,8 +867,19 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
     if version is None:
@@ -910,8 +922,19 @@ def load_checkpoint(
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        EOFError,
+        RuntimeError,
+        TypeError,
+    ) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
+    if not isinstance(obj, dict):
+        raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})

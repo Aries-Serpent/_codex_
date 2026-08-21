@@ -18,6 +18,7 @@ import inspect
 import io
 import json
 import logging
+import pickle
 import platform
 import random
 import shutil
@@ -431,7 +432,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, TypeError, RuntimeError, pickle.UnpicklingError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         errors.append(exc)
@@ -517,7 +518,18 @@ def load_checkpoint(
                 if map_location is not None:
                     kwargs["map_location"] = map_location
                 return torch.load(p, **kwargs)  # nosec B614
-            except (ValueError, TypeError) as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
+                msg = str(exc)
+                if "weights_only" in msg.lower():
+                    try:
+                        fallback_kwargs = {k: v for k, v in kwargs.items() if k != "weights_only"}
+                        if map_location is not None:
+                            fallback_kwargs["map_location"] = map_location
+                        return torch.load(p, **fallback_kwargs)  # nosec B614
+                    except (ValueError, TypeError, RuntimeError) as fallback_exc:
+                        raise CheckpointLoadError(
+                            f"safe load failed for {p}: {fallback_exc}"
+                        ) from fallback_exc
                 raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
 
     try:
