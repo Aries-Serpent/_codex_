@@ -206,6 +206,14 @@ class HiddenScriptsManager:
         if source != "CODEX_MASTER_KEY":
             return False, f"Only CODEX_MASTER_KEY allowed. Got: {source}"
 
+        token_scope = get_token_scope(token)
+        if token_scope != "elevated":
+            return (
+                False,
+                f"Insufficient token scope for secret script '{script_name}': "
+                f"detected scope '{token_scope}', expected 'elevated'",
+            )
+
         # Validate scopes
         required_scopes = ["security_events", "actions:write"]
         is_valid, msg = validate_token_scope(token, required_scopes)
