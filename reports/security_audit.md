@@ -14,6 +14,23 @@
 - Generate an offline CycloneDX SBOM via `nox -s sbom` (Makefile alias `make sbom`). Artifacts are written to `artifacts/sbom/` (`cyclonedx.json` + `packages.txt`).
 - Inputs: `requirements/lock.txt` and `uv.lock` are parsed locally; no network calls are made.
 
+### Hydra configuration-instantiation advisory (2026-08-22)
+
+**Issue:** [#5498](https://github.com/Aries-Serpent/_codex_/issues/5498)  
+**Severity:** High (CVSS 7.8)  
+**Advisory:** CVE-2026-68508 / GHSA-2cp2-2r3c-7p7r  
+**Package:** `hydra-core`  
+**Affected versions:** through 1.3.3  
+**Fixed in:** 1.3.4
+
+**Status:** Remediated in dependency declarations and active lockfiles.
+
+The project upgraded `hydra-core` 1.3.2 to the first patched release, 1.3.4.
+The remediation covers the primary package manifests, requirements inputs, and
+generated lock sets. No production call to `hydra.utils.instantiate()` with an
+untrusted `_target_` was identified; trusted configuration remains a required
+application boundary because the patched blocklist is defense in depth.
+
 ### aiohttp Security Analysis (2026-01-06)
 **Status:** ✅ ALL RESOLVED - No action required
 

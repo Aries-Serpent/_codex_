@@ -1063,9 +1063,9 @@ humanize==4.15.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:1dd098483eb1c7ee8e32eb2e99ad1910baefa4b75c3aff3a82f4d78688993b10 \
     --hash=sha256:b1186eb9f5a9749cd9cb8565aee77919dd7c8d076161cf44d70e59e3301e1769
     # via nox
-hydra-core==1.3.2 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:8a878ed67216997c3e9d88a8e72e7b4767e81af37afb4ea3334b269a4390a824 \
-    --hash=sha256:fa0238a9e31df3373b35b0bfb672c34cc92718d21f81311d8996a16de1141d8b
+hydra-core==1.3.4 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:ad0f7b05a0242255a8984d5a4ed2f6847f7b783ed727368a2c0155ec52d6c34c \
+    --hash=sha256:e58683692904a09f1fdfffa1a9b86bfd94e215b59f1ee17e7cd7d92738090d33
     # via
     #   codex-ml
     #   dvc

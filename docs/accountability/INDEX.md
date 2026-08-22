@@ -7,9 +7,17 @@
 
 ## Contents
 
-- [AGENT_ACCESS_EXPERIENCE_REPORT](AGENT_ACCESS_EXPERIENCE_REPORT.md)
-- [AGENT_ACCOUNTABILITY_REPORT](./AGENT_ACCOUNTABILITY_REPORT.md)
-- [INDEX](INDEX.md)
+- [Agent access experience report](AGENT_ACCESS_EXPERIENCE_REPORT.md) records access
+  observations and operational constraints.
+- [Agent accountability report](AGENT_ACCOUNTABILITY_REPORT.md) records session
+  objectives, actions, delegated agents, and validation evidence.
+
+Accountability records are part of the operational intelligence layer described in the
+[session and agent-state guide](../SESSION_STATE_GUIDE.md). Read the newest dated
+entry first, verify claims against current source and live workflow state, and retain
+the session or PR identifier when citing an outcome. Historical entries provide
+provenance; they do not override current package manifests, source code, or workflow
+definitions.
 
 ---
 

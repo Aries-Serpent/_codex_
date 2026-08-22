@@ -7,9 +7,19 @@
 
 ## Contents
 
-- [INDEX](INDEX.md)
-- [REPORTING](REPORTING.md)
-- [Copilot Workflow Report Console](copilot_workflow_report_console.html)
+- [Reporting guide](REPORTING.md) explains repository reporting conventions and
+  supported outputs.
+- [Copilot Workflow Report Console](copilot_workflow_report_console.html) presents the
+  workflow-report interface.
+
+Reports summarize observed state at a specific point in the repository lifecycle.
+Confirm timestamps, source artifacts, and the generating workflow before treating a
+report as current. For workflow ownership and supporting scripts, use the
+[workflow and governance map](../WORKFLOW_MAP.md). For session artifacts,
+accountability records, checkpoints, and retained memory, use the
+[session and agent-state guide](../SESSION_STATE_GUIDE.md). Package manifests, source
+code, and active workflow definitions remain authoritative when a report disagrees
+with current implementation.
 
 ---
 

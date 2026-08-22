@@ -1,20 +1,21 @@
-# architecture
+# Architecture
 
-> **Status**: Stub file - To be populated
+`_codex_` combines an ML platform, repository automation, and a persistent
+decision-and-learning layer. New Python implementation lives under `src/`; application,
+configuration, test, documentation, and operational layers surround that boundary.
 
-## Overview
-This documentation file is referenced in the knowledge base but content is pending.
+## Start with the right map
 
-## References
-- See related documentation for context
-- To contribute content to this file, submit a pull request
+- [Repository map](REPOSITORY_MAP.md) provides the concise directory-level orientation.
+- [Repository explanation](REPOSITORY_EXPLANATION.md) describes the evidence-based
+  five-layer architecture and component maturity.
+- [Cognitive map](system/CODEBASE_COGNITIVE_MAP.md) focuses on cognitive, agent, ML,
+  MCP, and delivery relationships.
+- [Workflow map](WORKFLOW_MAP.md) explains CI, security, coverage, self-healing, and
+  governance entry points.
+- [Session-state guide](SESSION_STATE_GUIDE.md) explains the operational intelligence
+  that carries evidence and learning between agent sessions.
 
-## TODOs
-- [ ] Add introductory content
-- [ ] Add usage examples
-- [ ] Add cross-references
-- [ ] Link to related topics
-
----
-**Created**: 2026-07-17  
-**Status**: Draft - Awaiting content population
+Use source, package manifests, and active workflow definitions as implementation
+authority. Treat dated reports and generated inventories as evidence for the state they
+recorded.

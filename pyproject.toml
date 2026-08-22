@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "codex-ml"
-description = "Codex ML training, evaluation, and plugin framework with 145 active autonomous agents, OIDC security, and production-grade reliability"
+description = "Codex ML training, evaluation, plugin, and repository automation framework"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
@@ -31,7 +31,7 @@ classifiers = [
 dependencies = [
     # Essential configuration & validation (offline-first)
     "omegaconf>=2.3",
-    "hydra-core==1.3.2",
+    "hydra-core==1.3.4",
     "pydantic>=2.4",
     "pydantic-settings>=2.14.2",
     "pyyaml>=6.0.1",  # Security: CVE fix for YAML deserialization
@@ -85,7 +85,7 @@ version = "0.3.0"  # New release: OIDC security migration, 6 CWE fixes, 14 new s
 # CORE PROFILE (minimum viable, offline-first)
 core = [
     # Configuration management (already in base)
-    "hydra-core==1.3.2",
+    "hydra-core==1.3.4",
     "omegaconf>=2.3",
     # Data validation (already in base)
     "pydantic>=2.4",
@@ -143,7 +143,7 @@ runtime = [
 # FULL PROFILE (development + all features)
 full = [
     # All core + runtime
-    "hydra-core==1.3.2",
+    "hydra-core==1.3.4",
     "omegaconf>=2.3",
     "pydantic>=2.4",
     "pydantic-settings>=2.14.2",

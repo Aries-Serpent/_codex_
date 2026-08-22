@@ -1,3 +1,43 @@
+## Session: 2026-08-22 — Onboarding discoverability and issue #5498
+
+**Objective:** Improve repository onboarding through a canonical repo map,
+role-specific entry points, dependency-profile guidance, workflow discoverability, and
+session-state explanations while resolving the Hydra security alert tracked in issue
+#5498.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Aligned `README.md`, `docs/REPOSITORY_EXPLANATION.md`, and
+   `docs/system/CODEBASE_COGNITIVE_MAP.md` around the canonical `src/` implementation
+   boundary and the documentation/operational layers.
+2. Added four role pages plus concise repository, workflow, dependency-profile, and
+   session-state maps; linked them from the documentation hub and MkDocs navigation.
+3. Upgraded `hydra-core` from 1.3.2 to patched release 1.3.4 across all 23
+   alert-bearing manifests and lock artifacts for CVE-2026-68508.
+4. Recorded the security resolution in `reports/security_audit.md`.
+
+**Validation:**
+- `python scripts/ci/docs_lint.py --strict` → pass (0 errors).
+- Documentation link and consistency agents → no blocking findings after corrections.
+- Security remediation lane → 23/23 alert-bearing dependency files covered; TOML,
+  lock hashes, Hydra composition, and unsafe-target blocking verified.
+
+**Governance:**
+- REQ-4: This report and its archive copy updated.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]`.
+
+### Agents Used
+- [x] `unified-doc-agent` (P1 — canonical narrative and repo map)
+- [x] `packaging-validation-agent` (P2 — dependency profiles)
+- [x] `workflow-management-agent` (P3 — workflow/governance map)
+- [x] `session-analysis-agent` (P4 — session-state guidance)
+- [x] `github-guru-agent` (issue #5498 requirements)
+- [x] `security-review` and `security-alert-verification-agent` (P5 — CVE review and remediation)
+- [x] `link-validator-agent` and `rubber-duck` (S1 — final consistency review)
+
+---
+
 ## Session: 2026-08-20T16:19Z — PR #5489 workflow classification follow-up
 
 **Objective:** Resolve the current merge-readiness scorecard gaps for PR #5489 by refreshing the day-stamped PDA record and accountability report, then re-check the session-close compliance gate.

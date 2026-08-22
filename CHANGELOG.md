@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Documentation — role-based onboarding and repository discoverability
+- Added a canonical repository map, four role-specific onboarding pages, dependency-profile guidance, a workflow/governance map, and a session-state guide with Chronicle search keywords.
+- Aligned `README.md`, the repository explanation, the cognitive map, and MkDocs navigation around `src/` as the canonical implementation boundary and `.codex/`/GitHub Actions as operational layers.
+
+### Security — Hydra CVE-2026-68508 (Issue #5498)
+- Upgraded `hydra-core` from 1.3.2 to patched release 1.3.4 across package manifests, requirement inputs, and lock artifacts.
+- Recorded the advisory, trust-boundary guidance, and remediation evidence in `reports/security_audit.md`.
+
 ### Fixed — PR #5489 workflow classification follow-up
 - Repaired the current merge-readiness compliance gap for PR #5489 by appending a fresh session entry to the PDA log and refreshing the accountability report for 2026-08-20.
 - Verified the session-close compliance gate: `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5489` now passes after the cluster of required governance updates.

@@ -23,27 +23,26 @@
 
 **Type**: Modular ML/AI Platform with agent Orchestration
 **MLOps Maturity**: Level 4 target; see readiness checklists in `docs/` and `.codex/` for current gaps.
-**Stats**: Thousands of test files and test functions across `tests/`; coverage baseline is 34% (locked 2026-07-02). Dependencies are audited and known CVEs are remediated. The agent registry contains 159 entries; **131 are active** after Phase 6 consolidation. There are **229 active workflow files** under `.github/workflows/` and 205 archived under `.github/workflow-archive/`.
+**Stats**: Thousands of test files and test functions exist across `tests/`; coverage baseline is 34% (locked 2026-07-02). Dependency status is tracked by current security alerts and audits. Volatile agent and workflow counts belong in generated inventories rather than this map.
 
 ### Repository Structure
 ```
 _codex_/
- src/ # Core application code
- codex/ # Ingestion pipeline (ingestanalyzetransformverify)
- rag/ # RAG pipelines & retrieval
- verification/ # Chain-of-Verification (CoVe)
- mcp/ # Model Context Protocol adapters
- tools/ # Tool registry
- agents/ # Autonomous agents (workflow, quantum, physics)
- scripts/ # Automation & utilities
- mcp/ # ChatGPT Project packaging system
- tests/ # 21,500+ test suite
- docs/ # Documentation hub
- mcp/ # MCP packaging docs (93+ KB)
- system/ # Cognitive brain (this file)
- capabilities/ # Capability guides
- .github/ # CI/CD workflows & automation
+ src/                 # Canonical Python implementation
+ tests/               # Pytest suites
+ configs/             # Primary Hydra configuration
+ agents/              # Packaged orchestration primitives
+ cognitive_app/       # React/TypeScript application
+ scripts/             # Validation and operational commands
+ docs/                # Guidance and architecture
+ .codex/              # Agent state, policy, and operational evidence
+ .github/workflows/   # Active CI and governance definitions
 ```
+
+Selected root package directories are compatibility or packaging bridges. New Python
+implementation should use the appropriate package under `src/` and installed-package
+imports. See the contributor-facing [repository map](../REPOSITORY_MAP.md) for
+role-specific shortcuts.
 
 ---
 
@@ -73,7 +72,7 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 
 **Tokens**: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
 
-**Active count:** 145 (post Phase-5 consolidation — see [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md)). Registry total 159; 14 archived (5 prior coverage merges + 9 Phase-5 family merges); 1 prompt file (`workflow-health-monitor.deprecated.md`) archived without registry entry. Unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `ci-testing-agent`, `ci-emergency-response-agent`, `cache-management-agent`.
+**Canonical registry:** See [`agents/AGENT_CONSOLIDATION_MATRIX.md`](../../agents/AGENT_CONSOLIDATION_MATRIX.md) for dated counts and consolidation status. Unified entry points include `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `ci-testing-agent`, `ci-emergency-response-agent`, and `cache-management-agent`.
 
 **Unified entry points:**
 
@@ -338,10 +337,10 @@ All agents universally MUST check `AGENT_KILL_SWITCH` at startup.
 - **Current Cache**: 7.69 GB (23% buffer)
 
 ### Quality Metrics
-- **Tests**: 21,500+ (100% passing)
-- **Coverage**: 10.7% (ratchet roadmap targeting 80%+)
-- **Security**: 0 vulnerabilities
-- **Cache Hit Rate**: 90%+ projected
+- **Tests**: Thousands of test files and functions; use current CI artifacts for results.
+- **Coverage**: `pyproject.toml` defines the current baseline; roadmap values are targets.
+- **Security**: Use current security alerts and audit artifacts.
+- **Cache**: Use current cache-health workflow artifacts.
 
 ### Performance Targets
 - Test execution: <5 min

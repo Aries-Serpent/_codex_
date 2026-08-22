@@ -9,6 +9,18 @@
 
 This document explains the structure, goals, technologies, and organization of the `Aries-Serpent/_codex_` repository. It is written for new contributors, agents, and maintainers. Counts that change at runtime are dated. A component marked **implemented** exists in source; that label alone does not prove that it is deployed or enabled.
 
+For accelerated orientation, use the concise [repository map](REPOSITORY_MAP.md)
+and [role-based onboarding](onboarding/README.md).
+
+The repository narrative uses these boundaries consistently:
+
+- `src/` is the canonical boundary for new Python implementation.
+- Selected root packages are historical compatibility or packaging bridges unless
+  `pyproject.toml` explicitly says otherwise.
+- `docs/` contains human-facing guidance and architecture.
+- `.codex/` and `.github/workflows/` are the operational-intelligence and governance
+  layers, supported by `scripts/ci/`.
+
 ---
 
 ## 1. Status vocabulary
@@ -53,9 +65,9 @@ The README and some docs contain marketing-style claims that diverge from on-dis
 |---|---|---|
 | "1,247 tests" (README badge) | 2,903 `test_*.py` files; 5,496 `test_*` functions; internal docs claim 21,500+ tests. Counts are inconsistent and unverified in this session. | "The repository contains thousands of test files and test functions across `tests/`; see `pytest.ini` and CI artifacts for current collection results." |
 | "90.2% coverage" (README badge) | `pyproject.toml` `fail_under = 34`; internal docs report 10.7%; 139/943 `src/` modules have no import reference in tests. | "Coverage baseline is 34% (locked 2026-07-02); 80%+ is an aspirational target. See `.codex/COVERAGE_GAP_REPORT.md`." |
-| "0 CVEs" / "zero known vulnerabilities" (README) | `SECURITY.md` documents 26 CVEs remediated across 11 packages; dependency versions are pinned with security fixes. | "Dependencies are audited and known CVEs are remediated; see `SECURITY.md` and `pyproject.toml` for pinned security fixes." |
+| "0 CVEs" / "zero known vulnerabilities" (README) | Security status changes over time and is tracked by repository alerts and audit records. | "Dependencies are audited; see `SECURITY.md`, current security alerts, and `pyproject.toml` for the active dependency policy." |
 | "145 active autonomous agents" (README badge) | `agents/AGENT_CONSOLIDATION_MATRIX.md` shows 159 registry entries, 145 active after Phase 5, **131 active after Phase 6** (14 archived/deprecated). | "The agent registry contains 159 entries; 131 are active after Phase 6 consolidation." |
-| "285 workflow files" (`CODEBASE_COGNITIVE_MAP.md`) | 229 `.yml` files under `.github/workflows/`; 205 archived under `.github/workflow-archive/`. | "Hundreds of workflow files exist; 229 are active under `.github/workflows/` and 205 are archived." |
+| Fixed workflow counts (`CODEBASE_COGNITIVE_MAP.md`) | Workflow inventory changes frequently as definitions are consolidated or restored. | "Active workflows live under `.github/workflows/`; use a current filesystem or API inventory for counts." |
 | "fully production-certified MLOps platform" / "100% production readiness" (README) | Coverage is 34% baseline, 139 modules untested, multiple roadmap phases unstarted, Genesis Protocol disabled by default. | "v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists." |
 | "continuous autonomous maintenance" (README) | Genesis Protocol is in pre-token state; workflows disabled by default; `SAFE_MODE = True`; `autonomous_actions_enabled: false`. | "Autonomous automation templates exist but are disabled by default; human admin setup is required." |
 | Local MCP aggregator on `:2301` (`.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`) | `copilot/extension/server/index.js` is an Express proxy to an ITA service on port 3978; no JSON-RPC, tool aggregation, Playwright subprocess, or GitHub MCP client code was found. | "The Copilot runtime exposes tools through a runtime aggregator (environment-provided); repository code includes an ITA proxy shim, not an MCP aggregator." |
@@ -118,6 +130,10 @@ flowchart TB
 ---
 
 ## 5. Repository map
+
+The short, navigable version is maintained in
+[`docs/REPOSITORY_MAP.md`](REPOSITORY_MAP.md). The tables below provide the detailed
+component inventory.
 
 ### Canonical and primary locations
 
@@ -430,7 +446,8 @@ nox -s tests
 - **MCP aggregator**: The Copilot runtime aggregator is environment-provided; the repository's `copilot/extension/server/index.js` is an ITA proxy, not an MCP aggregator.
 - **Genesis Protocol**: Autonomous workflows are disabled by default and require human admin secret injection.
 - **Agent counts**: README badge is stale (145); actual active count is 131 post-Phase 6.
-- **Workflow counts**: `CODEBASE_COGNITIVE_MAP.md` claims 285; 229 are active.
+- **Workflow counts**: treat generated filesystem or API inventories as authoritative;
+  fixed counts in narrative documentation become stale.
 
 ---
 

@@ -4,7 +4,8 @@
 **Last Updated:** 2026-07-18  
 **Status:** ✅ Production Documentation
 
-Welcome to the comprehensive documentation for **Aries-Serpent/_codex_** — a quantum-enhanced AI agent orchestration platform with advanced code generation capabilities.
+Welcome to the documentation for **Aries-Serpent/_codex_**, an ML platform,
+repository-automation workspace, and persistent decision-and-learning system.
 
 ---
 
@@ -12,20 +13,19 @@ Welcome to the comprehensive documentation for **Aries-Serpent/_codex_** — a q
 
 Choose your entry point based on your role:
 
-### 👤 For Users
-- **[Quick Start](tutorials/quickstart.md)** — Get up and running in 5 minutes
-- **[Contributing Guide](CONTRIBUTING.md)** — Development workflow and guidelines
-- **[API Reference](api/index.md)** — Complete API documentation
+| Role | Entry point |
+|---|---|
+| Contributor | [Contributor onboarding](onboarding/CONTRIBUTOR.md) |
+| ML engineer | [ML engineer onboarding](onboarding/ML_ENGINEER.md) |
+| GitHub Actions maintainer | [Workflow maintainer onboarding](onboarding/GITHUB_ACTIONS_MAINTAINER.md) |
+| Agent/session operator | [Agent/session operator onboarding](onboarding/AGENT_SESSION_OPERATOR.md) |
 
-### 🧠 For AI Agents & Cognitive Systems
-- **[Cognitive Brain Overview](cognitive_brain/INDEX.md)** — AI agent coordination and memory systems
-- **[Cognitive App](cognitive_app.md)** — Real-time quantum-enhanced code generation
-- **[Architecture Overview](architecture.md)** — System design and components
+Shared orientation:
 
-### 🔧 For Developers & Operators
-- **[Setup & Integration](guides/codex_setup.md)** — Configure your development environment
-- **[Code Style Guide](guides/code_style_guide.md)** — Coding conventions and best practices
-- **[Deployment Guide](deployment/DEPLOYMENT_GUIDE.md)** — Deploy to production
+- **[Repository map](REPOSITORY_MAP.md)** — Canonical boundaries and directory map
+- **[Quick start by profile](QUICKSTART_BY_PROFILE.md)** — Core, runtime, and full setup
+- **[Workflow and governance map](WORKFLOW_MAP.md)** — CI, security, coverage, and policy
+- **[Session and agent-state guide](SESSION_STATE_GUIDE.md)** — Memory, checkpoints, and accountability
 
 ---
 
