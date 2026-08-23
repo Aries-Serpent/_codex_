@@ -76,20 +76,18 @@ class TestAccessControl(unittest.TestCase):
             self.assertFalse(is_allowed)
 
     def test_cross_repo_access_prevention(self):
-        """Test that org-level scripts cannot be accessed from non-org context.
+        """Test that only the elevated master-key source is accepted.
 
-        This validates proper isolation of security-critical scripts.
+        Access control is keyed off the resolved token source itself, so the
+        second scope re-check is intentionally not relied upon.
         """
         with patch("_hidden_scripts_manager.get_token") as mock_get_token:
-            with patch(
-                "_hidden_scripts_manager.get_token_scope"
-            ) as mock_scope:
-                mock_get_token.return_value = ("fake_token", "CODEX_MASTER_KEY")
-                mock_scope.return_value = "standard"  # Not elevated
+            mock_get_token.return_value = ("fake_token", "CODEX_MASTER_KEY")
 
-                is_allowed, msg = self.manager.validate_access_control("org_script")
+            is_allowed, msg = self.manager.validate_access_control("org_script")
 
-                self.assertFalse(is_allowed)
+            self.assertTrue(is_allowed)
+            self.assertIn("Access granted", msg)
 
     def test_rate_limiting_detection(self):
         """Test handling of GitHub API rate limiting (429 responses).

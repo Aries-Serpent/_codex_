@@ -131,6 +131,24 @@ def get_token(required_elevated: bool = False) -> Tuple[Optional[str], str]:
         )
 
 
+def _source_for_token(token: Optional[str]) -> Optional[str]:
+    """Return the env var name that currently owns *token* if it is present.
+
+    This keeps token scope checks tied to the actual token value rather than
+    whichever source happens to be active in the environment.
+    """
+    if not isinstance(token, str):
+        return None
+    token = token.strip()
+    if not token:
+        return None
+    for env_var in CANONICAL_HIERARCHY:
+        candidate = os.environ.get(env_var)
+        if candidate == token:
+            return env_var
+    return None
+
+
 def get_token_scope(token: Optional[str] = None) -> str:
     """Return the detected scope level of the token.
 
@@ -155,20 +173,20 @@ def get_token_scope(token: Optional[str] = None) -> str:
         except TokenResolutionError:
             return "fallback"
     else:
-        try:
-            source = get_token_source()
-        except TokenResolutionError:
-            return "fallback"
+        source = _source_for_token(token)
+        if source is None:
+            try:
+                _, source = get_token(required_elevated=False)
+            except TokenResolutionError:
+                return "fallback"
 
-    # Determine scope based on source
     if source == "CODEX_MASTER_KEY":
         return "elevated"
-    elif source == "CODEX_BACKUP_KEY":
+    if source == "CODEX_BACKUP_KEY":
         return "standard"
-    elif source == "GH_TOKEN":
+    if source in {"GH_TOKEN", "GITHUB_TOKEN"}:
         return "standard"
-    else:
-        return "fallback"
+    return "fallback"
 
 
 def validate_token_scope(
@@ -190,15 +208,20 @@ def validate_token_scope(
     Raises:
         TokenResolutionError: If token source cannot be determined.
     """
-    try:
-        _, source = get_token(required_elevated=False)
-    except TokenResolutionError as e:
-        return False, f"Cannot determine token source: {e}"
+    if token is None:
+        try:
+            token, source = get_token(required_elevated=False)
+        except TokenResolutionError as e:
+            return False, f"Cannot determine token source: {e}"
+    else:
+        source = _source_for_token(token)
+        if source is None:
+            try:
+                _, source = get_token(required_elevated=False)
+            except TokenResolutionError as e:
+                return False, f"Cannot determine token source: {e}"
 
-    # Get available scopes for this token source
     available_scopes = TOKEN_SCOPES.get(source, ["repo"])
-
-    # Check if all required scopes are available
     missing_scopes = [s for s in required_scopes if s not in available_scopes]
 
     if missing_scopes:

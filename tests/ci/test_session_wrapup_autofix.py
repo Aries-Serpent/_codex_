@@ -1,3 +1,4 @@
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -338,6 +339,61 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert "- [x] resilient_validation.yml" in captured_body[0], "Condition must be true"
 #         assert "- [x] auto-approve-workflows" in captured_body[0], "Condition must be true"
 #         assert "- [ ] nox_gates.yml" in captured_body[0], "Condition must be true"
+
+
+def test_append_session_evidence_strips_values_and_uses_full_second_timestamp(tmp_path):
+    evidence_path = tmp_path / "pda_iterations.jsonl"
+    with patch.object(swa, "_session_evidence_path", return_value=evidence_path):
+        swa._append_session_evidence(
+            "smoke-test",
+            issue_summary="needs fixing",
+            files_changed=["  scripts/ci/foo.py  ", "bar.py"],
+            commands=["  python -m pytest  ", "  "],
+            evidence_refs=["  https://example.test  "],
+        )
+
+    record = json.loads(evidence_path.read_text(encoding="utf-8").strip().splitlines()[-1])
+    assert record["affected_files"] == ["scripts/ci/foo.py", "bar.py"]
+    assert record["commands"] == ["python -m pytest"]
+    assert record["evidence_refs"] == ["https://example.test"]
+    assert record["timestamp"].endswith("Z")
+    assert record["timestamp"].count(":") == 2
+
+
+def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
+    evidence_path = tmp_path / "pda_iterations.jsonl"
+    with patch.dict("os.environ", {"CODEX_SESSION_ID": "session-auto"}, clear=False), patch.object(
+        swa, "_session_evidence_path", return_value=evidence_path
+    ), patch.object(swa, "_now_iso", return_value="2026-08-23T00:00:00Z"):
+        payload = {
+            "type": "session_loop",
+            "session_id": "session-auto",
+            "timestamp": "2026-08-23T00:00:00Z",
+            "branch": "unknown",
+            "target_base": "0D_base_",
+            "phase": "duplicate-check",
+            "issue_summary": "",
+            "root_cause": "",
+            "affected_files": ["path/to/file.py"],
+            "commands": ["python -m pytest"],
+            "status": "pass",
+            "evidence_refs": ["https://example.test"],
+            "doc_summary": "",
+            "gate_status": "pass",
+            "final_decision": "ready",
+            "wec_state": "preserved",
+            "follow_up_required": False,
+        }
+        evidence_path.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="utf-8")
+
+        swa._append_session_evidence(
+            "duplicate-check",
+            files_changed=["path/to/file.py"],
+            commands=["python -m pytest"],
+            evidence_refs=["https://example.test"],
+        )
+
+    assert evidence_path.read_text(encoding="utf-8").count('"phase": "duplicate-check"') == 1
 # 
 #     def test_gh_cli_failure_returns_false(self):
 #         with patch("subprocess.run", side_effect=FileNotFoundError("gh not found")):

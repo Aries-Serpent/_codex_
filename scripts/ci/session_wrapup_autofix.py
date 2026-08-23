@@ -885,7 +885,7 @@ def _build_meaningful_pr_body(pr_number: str, existing_wec_state: dict) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _short_sha() -> str:
@@ -2290,8 +2290,109 @@ def _run_verify_issues(
 
 
 # ---------------------------------------------------------------------------
-# Main
+# Session evidence ledger for diagnose → validate → document → gate
 # ---------------------------------------------------------------------------
+
+
+def _session_evidence_path() -> Path:
+    """Return the canonical append-only evidence path used for compact loop records."""
+    return REPO_ROOT / ".codex" / "aftermath" / "pda_iterations.jsonl"
+
+
+def _append_session_evidence(
+    phase: str,
+    *,
+    issue_summary: str = "",
+    root_cause: str = "",
+    files_changed: list[str] | None = None,
+    commands: list[str] | None = None,
+    status: str = "pass",
+    evidence_refs: list[str] | None = None,
+    doc_summary: str = "",
+    gate_status: str = "pass",
+    final_decision: str = "ready",
+    wec_state: str = "preserved",
+    follow_up_required: bool = False,
+    exit_code: int | None = None,
+) -> int:
+    """Append a compact structured record to the repo's existing evidence log.
+
+    The repository already persists session evidence via ``.codex/aftermath/pda_iterations.jsonl``.
+    This helper keeps the loop machine-readable while using that canonical sink instead of creating a
+    separate state system or report tree.
+    """
+    evidence_path = _session_evidence_path()
+    evidence_path.parent.mkdir(parents=True, exist_ok=True)
+    if not evidence_path.exists():
+        evidence_path.touch()
+
+    files = [str(f).strip() for f in (files_changed or []) if str(f).strip()]
+    commands_list = [str(c).strip() for c in (commands or []) if str(c).strip()]
+    refs = [str(r).strip() for r in (evidence_refs or []) if str(r).strip()]
+
+    entry = {
+        "type": "session_loop",
+        "session_id": os.environ.get("CODEX_SESSION_ID") or "session-auto",
+        "timestamp": _now_iso(),
+        "branch": subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip() or "unknown",
+        "target_base": os.environ.get("CODEX_TARGET_BASE", "0D_base_"),
+        "phase": phase,
+        "issue_summary": issue_summary,
+        "root_cause": root_cause,
+        "affected_files": files,
+        "commands": commands_list,
+        "status": status,
+        "evidence_refs": refs,
+        "doc_summary": doc_summary,
+        "gate_status": gate_status,
+        "final_decision": final_decision,
+        "wec_state": wec_state,
+        "follow_up_required": follow_up_required,
+    }
+    if exit_code is not None:
+        entry["exit_code"] = exit_code
+
+    encoded = json.dumps(entry, sort_keys=True)
+    previous_lines: list[str] = []
+    if evidence_path.exists():
+        with evidence_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                stripped = line.strip()
+                if stripped:
+                    previous_lines.append(stripped)
+                if len(previous_lines) > 30:
+                    previous_lines.pop(0)
+    for line in previous_lines:
+        try:
+            previous_entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (
+            previous_entry.get("phase") == phase
+            and previous_entry.get("issue_summary") == issue_summary
+            and previous_entry.get("root_cause") == root_cause
+            and tuple(previous_entry.get("affected_files") or []) == tuple(files)
+            and tuple(previous_entry.get("commands") or []) == tuple(commands_list)
+            and previous_entry.get("status") == status
+            and tuple(previous_entry.get("evidence_refs") or []) == tuple(refs)
+            and previous_entry.get("doc_summary") == doc_summary
+            and previous_entry.get("gate_status") == gate_status
+            and previous_entry.get("final_decision") == final_decision
+            and previous_entry.get("wec_state") == wec_state
+            and bool(previous_entry.get("follow_up_required")) == bool(follow_up_required)
+        ):
+            print(f"✅ Session evidence already recorded for phase '{phase}'")
+            return 0
+
+    with evidence_path.open("a", encoding="utf-8") as handle:
+        handle.write(encoded + "\n")
+    print(f"✅ Appended {phase} evidence record to {evidence_path}")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -2458,6 +2559,95 @@ def main(argv: list[str] | None = None) -> int:
         dest="merge_target",
         help="Target branch for merge compliance check (main or 0D_base_)",
     )
+    parser.add_argument(
+        "--record-diagnosis",
+        action="store_true",
+        default=False,
+        help="Append a compact diagnose record to the repo's canonical .codex/aftermath/pda_iterations.jsonl evidence log.",
+    )
+    parser.add_argument(
+        "--diagnosis-summary",
+        default="",
+        help="Single-sentence diagnosis recorded in the session evidence ledger.",
+    )
+    parser.add_argument(
+        "--diagnosis-root-cause",
+        default="",
+        help="Root cause summary for the recorded diagnosis.",
+    )
+    parser.add_argument(
+        "--diagnosis-files",
+        nargs="*",
+        default=[],
+        help="Affected file paths for the diagnosis record.",
+    )
+    parser.add_argument(
+        "--record-validation",
+        action="store_true",
+        default=False,
+        help="Append a compact validate record to the repo's canonical session evidence log.",
+    )
+    parser.add_argument(
+        "--validation-command",
+        nargs="*",
+        default=[],
+        help="Exact validation command(s) run in the session.",
+    )
+    parser.add_argument(
+        "--validation-status",
+        default="pass",
+        help="Validation status for the record: pass/fail/partial.",
+    )
+    parser.add_argument(
+        "--validation-exit-code",
+        type=int,
+        default=0,
+        help="Exit code for the validation command.",
+    )
+    parser.add_argument(
+        "--validation-evidence",
+        nargs="*",
+        default=[],
+        help="Evidence references or log excerpts for the validation record.",
+    )
+    parser.add_argument(
+        "--finalize-session-summary",
+        action="store_true",
+        default=False,
+        help="Append a compact document+gate record for the session and optionally validate WEC compliance.",
+    )
+    parser.add_argument(
+        "--document-summary",
+        default="",
+        help="Compact final document summary for the session.",
+    )
+    parser.add_argument(
+        "--document-files",
+        nargs="*",
+        default=[],
+        help="Files changed in the final session summary.",
+    )
+    parser.add_argument(
+        "--gate-status",
+        default="pass",
+        help="Final gate status for the session summary: pass/fail/blocked.",
+    )
+    parser.add_argument(
+        "--final-decision",
+        default="ready",
+        help="Final decision recorded in the session summary.",
+    )
+    parser.add_argument(
+        "--follow-up-required",
+        action="store_true",
+        default=False,
+        help="Set when follow-up work remains after the session closes.",
+    )
+    parser.add_argument(
+        "--session-evidence-output",
+        default="",
+        help="Optional path to export the evidence log as JSON. Useful for human review or downstream tooling.",
+    )
 
 
     args = parser.parse_args(argv)
@@ -2473,6 +2663,69 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     sha = args.sha or _short_sha()
+
+    if getattr(args, "record_diagnosis", False):
+        _append_session_evidence(
+            "diagnose",
+            issue_summary=args.diagnosis_summary,
+            root_cause=args.diagnosis_root_cause,
+            files_changed=args.diagnosis_files,
+            status="investigating",
+        )
+        return 0
+
+    if getattr(args, "record_validation", False):
+        _append_session_evidence(
+            "validate",
+            commands=args.validation_command,
+            status=args.validation_status,
+            evidence_refs=args.validation_evidence,
+            exit_code=args.validation_exit_code,
+        )
+        return 0
+
+    if getattr(args, "finalize_session_summary", False):
+        _append_session_evidence(
+            "document",
+            doc_summary=args.document_summary,
+            files_changed=args.document_files,
+            status="finalized",
+            gate_status=args.gate_status,
+            final_decision=args.final_decision,
+            wec_state="preserved",
+            follow_up_required=args.follow_up_required,
+        )
+        _append_session_evidence(
+            "gate",
+            issue_summary="session gate",
+            status=args.gate_status,
+            gate_status=args.gate_status,
+            final_decision=args.final_decision,
+            wec_state="preserved",
+            follow_up_required=args.follow_up_required,
+        )
+        if args.pr_number and args.pr_number != "unknown":
+            return check_wec_compliance(
+                pr_number=args.pr_number,
+                merge_target=getattr(args, "merge_target", "main"),
+                verbose=True,
+            )
+        return 0
+
+    if args.session_evidence_output:
+        records = []
+        if _session_evidence_path().exists():
+            for line in _session_evidence_path().read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    try:
+                        records.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+        out_path = Path(args.session_evidence_output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps({"records": records}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"✅ Exported session evidence JSON to {out_path}")
+        return 0
 
     # --check-wec-compliance (Phase 3.1): Validate WEC compliance
     if getattr(args, "check_wec_compliance", False):

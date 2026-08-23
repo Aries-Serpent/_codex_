@@ -15,38 +15,55 @@ Production Engineering | Cross-Functional | Governance
 **Phase 3 Improvements:** Workflow compliance, SBOM updates, production deployment verification
 **Phase 4 Security:** CodeQL blocker resolved with API-only workflow validation (2026-07-14)
 [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) | [Dashboard](docs/system/CODEBASE_DASHBOARD.md) | [Roadmap](docs/ROADMAP.md) | [Repository Explanation](docs/REPOSITORY_EXPLANATION.md)
+
+## Start here
+
+| Need | Entry point |
+|---|---|
+| Understand the repository | [Repository map](docs/REPOSITORY_MAP.md) |
+| Choose a role | [Role-based onboarding](docs/onboarding/README.md) |
+| Choose dependencies | [Quick start by profile](docs/QUICKSTART_BY_PROFILE.md) |
+| Maintain CI or governance | [Workflow and governance map](docs/WORKFLOW_MAP.md) |
+| Operate agents or sessions | [Session and agent-state guide](docs/SESSION_STATE_GUIDE.md) |
+
+New Python implementation belongs under `src/`. Root-level package mirrors are
+compatibility or bridge surfaces unless `pyproject.toml` explicitly maps them.
+`docs/` is the human guidance layer; `.codex/` and `.github/workflows/` hold
+operational intelligence and governance.
+
 ---
-## High-Level Architecture (v0.1.0-final Production)
+## High-Level Architecture
 ```mermaid
-graph TB subgraph "codex-ml v0.3.0" subgraph "Core ML Platform" CLI[CLI Interface<br/>Typer + Click] Training[Training Engine<br/>PyTorch + Transformers] Eval[Evaluation Engine<br/>lm-eval + Metrics] Serve[Model Serving<br/>Ray Serve + FastAPI] end subgraph "Cognitive Brain System" Brain[Quantum Decision Engine<br/>k₁=0.35] Memory[Memory Manager<br/>STM/LTM + Patterns] Agents[Agent Orchestrator<br/>131 Active Agents] end subgraph "MCP Ecosystem" MCP[MCP Core<br/>Model Context Protocol] Adapters[MCP Adapters] Workers[Background Workers] end subgraph "Python Ingestion Pipeline" Ingest[Code Ingest] Analyze[Analysis Engine] Transform[Transform Engine] Verify[Verification] end subgraph "Infrastructure & Monitoring" Config[Configuration<br/>Hydra + OmegaConf] Logging[Session Tracking] Security[Security Layer] CI[CI/CD Automation] end end subgraph "External Integrations" HF[Hugging Face Hub] MLflow[MLflow] Storage[Cloud Storage] GitHub[GitHub Actions + API] end %% Core Flow CLI --> Training CLI --> Eval CLI --> Serve CLI --> Ingest %% Cognitive Flow Brain --> Memory Brain --> Agents Agents --> MCP MCP --> Adapters MCP --> Workers %% Pipeline Flow Ingest --> Analyze Analyze --> Transform Transform --> Verify %% Infrastructure Config -.configures.-> Training Config -.configures.-> Eval Config -.configures.-> Brain Logging -.tracks.-> Training Logging -.tracks.-> Agents Security -.protects.-> Training Security -.protects.-> MCP CI -.automates.-> GitHub %% External Training --> HF Training --> MLflow Training --> Storage Eval --> MLflow Agents --> GitHub %% Styling style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff style MCP fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff style Ingest fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff style Security fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff style CI fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
+graph TB subgraph "codex-ml v0.3.0" subgraph "Core ML Platform" CLI[CLI Interface<br/>Typer + Click] Training[Training Engine<br/>PyTorch + Transformers] Eval[Evaluation Engine<br/>lm-eval + Metrics] Serve[Model Serving<br/>Ray Serve + FastAPI] end subgraph "Cognitive Brain System" Brain[Decision Engine] Memory[Memory Manager<br/>STM/LTM + Patterns] Agents[Agent Orchestrator] end subgraph "MCP Ecosystem" MCP[MCP Core<br/>Model Context Protocol] Adapters[MCP Adapters] Workers[Background Workers] end subgraph "Python Ingestion Pipeline" Ingest[Code Ingest] Analyze[Analysis Engine] Transform[Transform Engine] Verify[Verification] end subgraph "Infrastructure & Monitoring" Config[Configuration<br/>Hydra + OmegaConf] Logging[Session Tracking] Security[Security Layer] CI[CI/CD Automation] end end subgraph "External Integrations" HF[Hugging Face Hub] MLflow[MLflow] Storage[Cloud Storage] GitHub[GitHub Actions + API] end %% Core Flow CLI --> Training CLI --> Eval CLI --> Serve CLI --> Ingest %% Cognitive Flow Brain --> Memory Brain --> Agents Agents --> MCP MCP --> Adapters MCP --> Workers %% Pipeline Flow Ingest --> Analyze Analyze --> Transform Transform --> Verify %% Infrastructure Config -.configures.-> Training Config -.configures.-> Eval Config -.configures.-> Brain Logging -.tracks.-> Training Logging -.tracks.-> Agents Security -.protects.-> Training Security -.protects.-> MCP CI -.automates.-> GitHub %% External Training --> HF Training --> MLflow Training --> Storage Eval --> MLflow Agents --> GitHub %% Styling style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff style MCP fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff style Ingest fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff style Security fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff style CI fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
 ```
 ### Key Capabilities (v0.3.0)
 - **Test suite**: Thousands of test files and test functions across `tests/`; see `pytest.ini` and CI artifacts for current collection results.
 - **Coverage**: Coverage baseline is 34% (locked 2026-07-02); 80%+ is an aspirational target. See `.codex/COVERAGE_GAP_REPORT.md`.
-- **Security**: Dependencies are audited and known CVEs are remediated; see `SECURITY.md` and `pyproject.toml` for pinned security fixes.
-- **Active Agents**: The agent registry contains 159 entries; 131 are active after Phase 6 consolidation.
+- **Security**: Dependencies are audited; see `SECURITY.md`, current security alerts, and `pyproject.toml` for the active dependency policy.
+- **Agents**: Specialist and unified agents support repository operations; use the generated registry and consolidation matrix for current status.
 - **Cognitive Brain**: Quantum-inspired decision engine with memory and agent orchestration.
 - **MCP System**: Model Context Protocol surfaces (repository `src/mcp/` and Copilot runtime aggregator).
 - **CI/CD**: Automated validation, auto-fix, and self-healing workflows.
 ---
 ## Installation Profiles
-Codex ML uses a **3-profile packaging strategy** for flexible deployment:
-| Profile | Size | Use Case | Install Command |
-|---------|------|----------|-----------------|
-| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install codex-ml[core]` |
-| **runtime** | 20-35 MB | Production inference, API services | `pip install codex-ml[runtime]` |
-| **full** | 100+ MB | Development, testing, all features | `pip install codex-ml[full]` |
+Codex ML uses three optional-dependency profiles on top of its required base
+dependencies. The authoritative contents are in `pyproject.toml`.
+
+| Profile | Adds | Typical use |
+|---|---|---|
+| **core** | Parsing and configuration helpers | CLI, configuration, and offline-oriented analysis |
+| **runtime** | ML, RAG, data, serving, and telemetry packages | Inference, retrieval, and API services |
+| **full** | Runtime capabilities plus test, quality, training, and experiment tooling | Repository development and ML training |
+
+See [Quick start by profile](docs/QUICKSTART_BY_PROFILE.md) for task-based setup.
+
 ### Quick Start
 ```bash
 # Create virtual environment
 python3 -m venv .venv
 source .venv/bin/activate # or .venv\Scripts\activate on Windows
-# Install from PyPI (v0.3.0)
-pip install aries-serpent-ml==0.3.0
-# Or install a specific profile
-pip install aries-serpent-ml[core]==0.3.0 # Lightweight offline
-pip install aries-serpent-ml[runtime]==0.3.0 # Production inference
-pip install aries-serpent-ml[full]==0.3.0 # Development
+# Install this checkout for repository development
+python -m pip install -e '.[full]'
 # Verify installation
 python -c "import codex; print(codex.__version__)"
 ```
@@ -556,7 +573,7 @@ View the generated docs at `artifacts/docs/api/index.html` or serve locally:
 ```bash
 python -m http.server -d artifacts/docs/api 8000
 ```text
-### New to _codex_? **Start here**: [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
+### New to `_codex_`? **Start here**: [Role-based onboarding](docs/onboarding/README.md)
 ### Quick Links - Status & Validation
 - **Status Update Generator**: [tools/generate_status_update.py](tools/generate_status_update.py) - Automated JSON status report generator
 - **Status Update Schema**: [schemas/codex_status_update.schema.json](schemas/codex_status_update.schema.json) - JSON Schema v1.2
@@ -567,7 +584,7 @@ python -m http.server -d artifacts/docs/api 8000
 - **Validation Guides**: [docs/validation](docs/validation)
 - **Ops workflow**: [status_reports.md](docs/ops/status_reports.md)
 ### Quick Links - General
-- **General Onboarding**: [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md)
+- **General Onboarding**: [Role-based onboarding](docs/onboarding/README.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 - **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
 - **Contribution Guidelines**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
@@ -588,18 +605,19 @@ pytest -m "not slow" # Skip slow tests
 pytest --cov=src --cov-report=html --cov-report=xml --cov-report=term
 open htmlcov/index.html # View coverage report
 ```
-**CI/CD:** All PRs run automated tests via `.github/workflows/ci-pytest.yml`
-- Python 3.12+ (ubuntu-latest)
-- 90% coverage threshold (configurable)
-- Coverage reports uploaded as artifacts
-- Automatic PR comments with results
+**CI/CD:** Validation is distributed across the workflows summarized in the
+[workflow and governance map](docs/WORKFLOW_MAP.md).
+- Python 3.12+ is the package requirement.
+- `pyproject.toml` defines the current coverage floor; higher values in roadmap
+  documents are targets.
+- Workflow artifacts and PR feedback vary by the selected validation path.
 See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 ### Local DoD (short)
 ```bash
 # Run all quality gates
 nox -s lint typecheck tests gates
-# Run tests with coverage
-pytest --cov=src --cov-fail-under=90
+# Run tests through the repository test session
+nox -s tests
 # Validate status schema
 pytest -q tests/status/test_example_report_schema.py
 # Validate configs

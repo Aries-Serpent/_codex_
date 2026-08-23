@@ -45,6 +45,11 @@ nav:
 - API Reference:
   - Overview: api/index.md
 - Guides:
+  - Role-based Onboarding: onboarding/README.md
+  - Repository Map: REPOSITORY_MAP.md
+  - Dependency Profiles: QUICKSTART_BY_PROFILE.md
+  - Workflow Map: WORKFLOW_MAP.md
+  - Session State: SESSION_STATE_GUIDE.md
   - Contributing: CONTRIBUTING.md
   - Code Style: guides/code_style_guide.md
   - Checkpointing: guides/checkpointing.md
@@ -119,7 +124,7 @@ nav:
   - CI Rescue Pipeline: ci/CI_RESCUE_PIPELINE.md
   - CI/CD Index: ci/INDEX.md
   - Failure Analysis: ci/CI_FAILURE_ANALYSIS.md
-  - CI Fix Summary: ci/CI_FIX_SUMMARY.md
+  - CI Fix Summary: ci/WORKFLOW_FIXES_SUMMARY.md
   - Root Org Validation: ci/ROOT_ORG_VALIDATION.md
 - Safety:
   - Safety Guide: safety/safety_guide.md
