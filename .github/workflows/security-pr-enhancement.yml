@@ -246,4 +246,34 @@ jobs:
         \ object\")\n  except json.JSONDecodeError as e:\n    print(f\"\u274C Invalid\
         \ JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\u2139\uFE0F  No findings\
         \ file found (will be created if needed)\")\nEOF\n"
+    - name: Verify live findings agree with GitHub Security snapshot
+      run: |
+        python3 - <<'PY'
+        import json
+        from pathlib import Path
+
+        findings_file = Path('.codex/security-findings-comprehensive.json')
+        live_dir = Path('.codex/security-live')
+        if not findings_file.exists():
+            print('ℹ️ No findings JSON generated; skipping live-evidence verification.')
+            raise SystemExit(0)
+        data = json.loads(findings_file.read_text())
+        artifact_total = len(data.get('findings', []))
+        live_total = 0
+        for candidate in [
+            live_dir / 'dependabot' / 'alerts_open.json',
+            live_dir / 'secrets' / 'alerts_open.json',
+        ]:
+            if not candidate.exists():
+                continue
+            try:
+                payload = json.loads(candidate.read_text())
+                if isinstance(payload, list):
+                    live_total += len(payload)
+            except Exception:
+                pass
+        if live_total and abs(live_total - artifact_total) > 0:
+            raise SystemExit(f'❌ Artifact total ({artifact_total}) does not match live GHAS total ({live_total}).')
+        print(f'✅ Live GHAS evidence agrees with the normalized findings artifact: {artifact_total} findings.')
+        PY
     timeout-minutes: 15

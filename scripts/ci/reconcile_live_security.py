@@ -29,6 +29,14 @@ SEVERITY_ALIASES = {
 }
 
 
+def _compact_count(value: int) -> str:
+    if value < 1000:
+        return str(value)
+    if value < 10000:
+        return f"{value / 1000:.1f}k+"
+    return f"{value / 1000:.0f}k+"
+
+
 def _token() -> str | None:
     return (
         os.environ.get("GH_TOKEN")
@@ -189,7 +197,7 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
         "",
         "## Live open alerts",
         "",
-        f"- Total: **{payload['total_open_alerts']}**",
+        f"- Total: **{payload['total_open_alerts']}** ({_compact_count(int(payload['total_open_alerts']))})",
         "",
         "| Severity | Count |",
         "|----------|-------|",
@@ -202,14 +210,29 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
         lines.append(f"| {source} | {payload['by_source'].get(source, 0)} |")
 
     artifact_summary = payload.get("artifact_generated_findings", {})
-    lines.extend(["", "## Artifact-generated findings", "", f"- Total: **{artifact_summary.get('total_findings', 0)}**", ""])
+    artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+    lines.extend([
+        "",
+        "## Artifact-generated findings",
+        "",
+        f"- Total: **{artifact_total}** ({_compact_count(artifact_total)})",
+        "",
+    ])
     lines.append("| Severity | Count |")
     lines.append("|----------|-------|")
     for severity in SEVERITY_ORDER:
         lines.append(f"| {severity} | {artifact_summary.get('by_severity', {}).get(severity, 0)} |")
 
     delta_total = payload.get("delta", {}).get("total_findings", 0)
-    lines.extend(["", "## Delta", "", f"- Total delta: **{delta_total}**", f"- Needs triage: **{payload.get('needs_triage', False)}**", ""])
+    delta_display = _compact_count(abs(int(delta_total))) if int(delta_total) != 0 else "0"
+    lines.extend([
+        "",
+        "## Delta",
+        "",
+        f"- Total delta: **{delta_total}** ({delta_display})",
+        f"- Needs triage: **{payload.get('needs_triage', False)}**",
+        "",
+    ])
     lines.append("| Severity | Live | Artifact | Delta |")
     lines.append("|----------|------|----------|-------|")
     for severity in SEVERITY_ORDER:
@@ -235,9 +258,11 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "default_branch_only": True,
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_open_alerts": artifact_total,
+            "total_open_alerts_display": _compact_count(artifact_total),
             "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
             "by_source": {src: 0 for src in SOURCE_ORDER},
             "artifact_generated_findings": artifact_summary,
+            "artifact_generated_findings_display": _compact_count(artifact_total),
             "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
@@ -307,9 +332,11 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "default_branch_only": bool(default_branch),
         "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "total_open_alerts": live_total,
+        "total_open_alerts_display": _compact_count(live_total),
         "by_severity": {sev: totals.get(sev, 0) for sev in SEVERITY_ORDER},
         "by_source": {src: len(by_source.get(src, [])) for src in SOURCE_ORDER},
         "artifact_generated_findings": artifact_summary,
+        "artifact_generated_findings_display": _compact_count(artifact_total),
         "delta": {"total_findings": delta_total, "needs_triage": delta_total != 0},
         "needs_triage": delta_total != 0,
         "source_of_truth": source_of_truth,
@@ -338,6 +365,9 @@ def main() -> int:
     print(json.dumps({
         "repo": args.repo,
         "total_open_alerts": payload["total_open_alerts"],
+        "total_open_alerts_display": payload.get("total_open_alerts_display", _compact_count(int(payload["total_open_alerts"]))),
+        "artifact_generated_findings": payload["artifact_generated_findings"]["total_findings"],
+        "artifact_generated_findings_display": payload.get("artifact_generated_findings_display", _compact_count(int(payload["artifact_generated_findings"]["total_findings"]))),
         "by_severity": payload["by_severity"],
         "by_source": payload["by_source"],
         "delta": payload["delta"]["total_findings"],
