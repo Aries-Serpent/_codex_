@@ -103,6 +103,37 @@ def test_failure_classification_and_raw_evidence_are_exposed(tmp_path):
     assert payload["security_overview"]["severity_summary"] == payload["severity_summary"]
 
 
+def test_artifact_backlog_reports_4k_plus_findings_in_summary(tmp_path):
+    artifact = tmp_path / "security-findings-comprehensive.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "metadata": {
+                    "total_findings": 4100,
+                    "by_severity": {"CRITICAL": 1100, "HIGH": 1600, "MEDIUM": 900, "LOW": 300, "INFO": 200},
+                },
+                "findings": [{"severity": "CRITICAL"} for _ in range(1100)]
+                + [{"severity": "HIGH"} for _ in range(1600)]
+                + [{"severity": "MEDIUM"} for _ in range(900)]
+                + [{"severity": "LOW"} for _ in range(300)]
+                + [{"severity": "INFO"} for _ in range(200)],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
+    markdown_path = tmp_path / "report.md"
+    rls._write_markdown(markdown_path, payload)
+    text = markdown_path.read_text(encoding="utf-8")
+
+    assert rls._compact_count(4100) == "4.1k+"
+    assert "Historical artifact backlog: **4100**" in text
+    assert "Stale or archived findings: **4100**" in text
+    assert "Final recommendation: **advisory-only**" in text
+
+
 def test_paginate_handles_network_errors(monkeypatch):
     def fake_api_get(_url):
         raise OSError("broken socket")

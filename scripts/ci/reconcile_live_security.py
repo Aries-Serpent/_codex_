@@ -323,10 +323,13 @@ def _raw_evidence_artifacts(*paths: str | Path) -> list[str]:
 
 def _final_recommendation(payload: dict[str, object]) -> str:
     status = str(payload.get("status", "clean")).lower()
+    source_of_truth = str(payload.get("source_of_truth", "")).lower()
     if status in {"compliance-unknown", "unknown"}:
         return "advisory-only"
     live_total = int(payload.get("total_open_alerts", 0) or 0)
     artifact_total = int((payload.get("artifact_generated_findings") or {}).get("total_findings", 0) or 0)
+    if source_of_truth == "artifact":
+        return "advisory-only" if artifact_total > 0 else "compliant"
     if live_total > 0:
         return "action required"
     if artifact_total > 0:
@@ -380,7 +383,7 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
         lines.append(f"| {severity} | {artifact_summary.get('by_severity', {}).get(severity, 0)} |")
 
     live_total = int(payload.get("total_open_alerts", 0) or 0)
-    stale_total = max(artifact_total - live_total, 0)
+    stale_total = artifact_total if payload.get("source_of_truth") == "artifact" else max(artifact_total - live_total, 0)
     default_branch_matched = int(security_overview.get("default_branch_matched_active_items", 0) or 0)
     delta_total = payload.get("delta", {}).get("total_findings", 0)
     delta_display = _compact_count(abs(int(delta_total))) if int(delta_total) != 0 else "0"
@@ -428,6 +431,12 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         severity_summary = {sev: int(artifact_summary.get("by_severity", {}).get(sev, 0) or 0) for sev in SEVERITY_ORDER}
         failure_classification = _failure_classification(severity_summary)
         status = "artifact-only" if artifact_total else "clean"
+        final_recommendation = _final_recommendation({
+            "status": status,
+            "source_of_truth": "artifact",
+            "total_open_alerts": artifact_total,
+            "artifact_generated_findings": artifact_summary,
+        })
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -448,14 +457,22 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
             "classification": failure_classification,
+            "final_recommendation": final_recommendation,
             "security_overview": {
                 "default_branch": default_branch,
                 "default_branch_only": False,
                 "repo_url": repo_url,
+                "live_active_alerts": artifact_total,
+                "historical_artifact_backlog": artifact_total,
+                "stale_or_archived_findings": artifact_total,
+                "pending_triage": artifact_total > 0,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
                 "classification": failure_classification,
                 "severity_summary": severity_summary,
+                "source_of_truth": "artifact",
+                "status": status,
+                "final_recommendation": final_recommendation,
             },
         }
 
@@ -468,6 +485,12 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         severity_summary = {sev: int(artifact_summary.get("by_severity", {}).get(sev, 0) or 0) for sev in SEVERITY_ORDER}
         failure_classification = _failure_classification(severity_summary)
         status = "artifact-only" if artifact_total else "clean"
+        final_recommendation = _final_recommendation({
+            "status": status,
+            "source_of_truth": "artifact",
+            "total_open_alerts": artifact_total,
+            "artifact_generated_findings": artifact_summary,
+        })
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -488,14 +511,22 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
             "classification": failure_classification,
+            "final_recommendation": final_recommendation,
             "security_overview": {
                 "default_branch": default_branch,
                 "default_branch_only": False,
                 "repo_url": repo_url,
+                "live_active_alerts": artifact_total,
+                "historical_artifact_backlog": artifact_total,
+                "stale_or_archived_findings": artifact_total,
+                "pending_triage": artifact_total > 0,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
                 "classification": failure_classification,
                 "severity_summary": severity_summary,
+                "source_of_truth": "artifact",
+                "status": status,
+                "final_recommendation": final_recommendation,
             },
         }
 
@@ -561,8 +592,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     status = "triage-required" if delta_total != 0 else "clean"
     if source_of_truth == "artifact":
         status = "artifact-only" if artifact_total else "clean"
-    stale_or_archived_findings = max(artifact_total - live_total, 0) if artifact_total > 0 else 0
-    final_recommendation = "action required" if live_total > 0 else "advisory-only" if artifact_total > 0 else "compliant"
+    stale_or_archived_findings = artifact_total if source_of_truth == "artifact" else max(artifact_total - live_total, 0) if artifact_total > 0 else 0
+    final_recommendation = "action required" if live_total > 0 and source_of_truth != "artifact" else "advisory-only" if artifact_total > 0 else "compliant"
 
     return {
         "repo_url": repo_url,

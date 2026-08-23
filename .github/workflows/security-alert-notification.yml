@@ -18,6 +18,7 @@ permissions:
 jobs:
   advisory-summary:
     name: Advisory summary (non-blocking)
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -31,6 +32,7 @@ jobs:
 
       - name: Fetch live GitHub security snapshot
         id: fetch
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         shell: bash
@@ -167,6 +169,7 @@ jobs:
 
       - name: Publish reconciliation report
         id: publish
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         shell: bash

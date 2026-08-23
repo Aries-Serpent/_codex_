@@ -3,7 +3,7 @@
 - Repository: `https://github.com/Aries-Serpent/_codex_`
 - Default branch: `main`
 - Default branch only: `False`
-- Last synced: `2026-08-23T23:39:56Z`
+- Last synced: `2026-08-23T23:42:19Z`
 
 ## GitHub Security views
 
@@ -48,9 +48,9 @@
 - Live active alerts: **10**
 - Historical artifact backlog: **10**
 - Default-branch-matched active items: **0**
-- Stale or archived findings: **0**
+- Stale or archived findings: **10**
 - Pending triage: **True**
-- Final recommendation: **action required**
+- Final recommendation: **advisory-only**
 
 ## Delta
 
