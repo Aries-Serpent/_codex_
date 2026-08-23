@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from collections import Counter
 from datetime import datetime, timezone
@@ -83,6 +84,50 @@ def _normalize_branch_name(branch_name: str) -> str:
     value = value.replace("refs/tags/", "")
     value = value.replace("origin/", "")
     return value.strip("/")
+
+
+def _discover_default_branch(repo: str) -> str:
+    for env_name in ("GITHUB_DEFAULT_BRANCH", "GITHUB_REF_NAME", "GITHUB_HEAD_REF", "GITHUB_BASE_REF"):
+        candidate = _normalize_branch_name(os.environ.get(env_name, ""))
+        if candidate:
+            return candidate
+
+    try:
+        repo_meta = _api_get(f"https://api.github.com/repos/{repo}")
+        if isinstance(repo_meta, dict):
+            candidate = _normalize_branch_name(str(repo_meta.get("default_branch") or ""))
+            if candidate:
+                return candidate
+    except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
+        pass
+
+    try:
+        git_outputs = [
+            subprocess.run(
+                ["git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+                check=False,
+                capture_output=True,
+                text=True,
+            ),
+            subprocess.run(
+                ["git", "symbolic-ref", "--quiet", "--short", "HEAD"],
+                check=False,
+                capture_output=True,
+                text=True,
+            ),
+        ]
+        for proc in git_outputs:
+            value = (proc.stdout or "").strip()
+            if not value:
+                continue
+            value = value.replace("origin/HEAD -> ", "")
+            candidate = _normalize_branch_name(value)
+            if candidate:
+                return candidate
+    except (FileNotFoundError, OSError):
+        pass
+
+    return "main"
 
 
 def _with_default_branch_ref(endpoint: str, default_branch: str) -> str:
