@@ -3,7 +3,13 @@
 - Repository: `https://github.com/Aries-Serpent/_codex_`
 - Default branch: `main`
 - Default branch only: `False`
-- Last synced: `2026-08-23T23:16:14Z`
+- Last synced: `2026-08-23T23:39:56Z`
+
+## GitHub Security views
+
+- code_scanning: `https://github.com/Aries-Serpent/_codex_/security/code-scanning`
+- dependabot: `https://github.com/Aries-Serpent/_codex_/security/dependabot`
+- secret_scanning: `https://github.com/Aries-Serpent/_codex_/security/secret-scanning`
 
 ## Live open alerts
 
@@ -37,10 +43,19 @@
 | LOW | 0 |
 | INFO | 0 |
 
+## Evidence classification
+
+- Live active alerts: **10**
+- Historical artifact backlog: **10**
+- Default-branch-matched active items: **0**
+- Stale or archived findings: **0**
+- Pending triage: **True**
+- Final recommendation: **action required**
+
 ## Delta
 
 - Total delta: **0** (0)
-- Needs triage: **False**
+- Needs triage: **True**
 
 | Severity | Live | Artifact | Delta |
 |----------|------|----------|-------|

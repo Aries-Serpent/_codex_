@@ -41,7 +41,9 @@ jobs:
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
             --markdown ".codex/live-security-reconciliation.md" \
-            --strict-artifact
+            --strict-artifact \
+            --require-live-source \
+            --fail-on-delta
           echo "fetch_status=ok" >> "$GITHUB_OUTPUT"
 
       - name: Summarize advisory state
@@ -52,6 +54,19 @@ jobs:
           total_open_alerts="0"
           status="clean"
           source_of_truth="artifact"
+          if [ "${{ steps.fetch.outcome }}" = "failure" ] || [ ! -f ".codex/live-security-reconciliation.json" ]; then
+            status="compliance-unknown"
+            source_of_truth="artifact"
+            echo "action_required=false" >> "$GITHUB_OUTPUT"
+            echo "total_open_alerts=$total_open_alerts" >> "$GITHUB_OUTPUT"
+            echo "source_of_truth=$source_of_truth" >> "$GITHUB_OUTPUT"
+            echo "status=$status" >> "$GITHUB_OUTPUT"
+            echo "## 🔐 Security alert advisory summary" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Compliance is unknown because the live GitHub security fetch did not complete successfully." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ -f ".codex/live-security-reconciliation.json" ]; then
             total_open_alerts=$(python - <<'PY'
           import json
@@ -162,7 +177,9 @@ jobs:
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
             --markdown ".codex/live-security-reconciliation.md" \
-            --strict-artifact
+            --strict-artifact \
+            --require-live-source \
+            --fail-on-delta
           source_of_truth=$(python - <<'PY'
           import json
           from pathlib import Path
@@ -185,3 +202,13 @@ jobs:
           echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
           echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
           cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reconciliation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-security-reconciliation
+          path: |
+            .codex/security-findings-comprehensive.json
+            .codex/live-security-reconciliation.json
+            .codex/live-security-reconciliation.md
+          if-no-files-found: error

@@ -387,6 +387,18 @@ jobs:
           echo "## Rust dependency audit" >> "$GITHUB_STEP_SUMMARY"
           cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Upload dependency security evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-security-evidence-${{ matrix.ecosystem }}
+          path: |
+            .codex/security/*.json
+            .codex/security/*.txt
+            .codex/security/*.err
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Enforce dependency gate
         if: always()
         shell: bash

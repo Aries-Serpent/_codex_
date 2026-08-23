@@ -1,4 +1,5 @@
 import json
+import sys
 
 from scripts.ci import reconcile_live_security as rls
 
@@ -109,3 +110,53 @@ def test_paginate_handles_network_errors(monkeypatch):
     monkeypatch.setattr(rls, "_api_get", fake_api_get)
 
     assert rls._paginate("/repos/test/repo/code-scanning/alerts?state=open") == []
+
+
+def test_artifact_validation_rejects_invalid_payload(tmp_path):
+    artifact = tmp_path / "invalid.json"
+    artifact.write_text("[]", encoding="utf-8")
+
+    assert rls._artifact_is_valid(artifact) is False
+
+
+def test_default_branch_detection_uses_git_remote_when_api_unavailable(monkeypatch):
+    for env_name in (
+        "GH_TOKEN",
+        "CODEX_MASTER_KEY",
+        "CODEX_BACKUP_KEY",
+        "GITHUB_TOKEN",
+        "GITHUB_DEFAULT_BRANCH",
+        "GITHUB_REF_NAME",
+        "GITHUB_HEAD_REF",
+        "GITHUB_BASE_REF",
+    ):
+        monkeypatch.delenv(env_name, raising=False)
+    monkeypatch.setenv("GITHUB_REF_NAME", "copilot/understanding-security-alerts")
+
+    monkeypatch.setattr(rls, "_api_get", lambda _url: (_ for _ in ()).throw(OSError("offline")))
+
+    class FakeProc:
+        def __init__(self, stdout: str):
+            self.stdout = stdout
+
+    def fake_run(args, check=False, capture_output=False, text=False):
+        if args[:4] == ["git", "symbolic-ref", "--quiet", "--short"] and args[4] == "refs/remotes/origin/HEAD":
+            return FakeProc("origin/HEAD -> origin/0D_base_")
+        if args[:4] == ["git", "symbolic-ref", "--quiet", "--short"] and args[4] == "HEAD":
+            return FakeProc("main")
+        return FakeProc("")
+
+    monkeypatch.setattr(rls.subprocess, "run", fake_run)
+
+    assert rls._discover_default_branch("Aries-Serpent/_codex_") == "0D_base_"
+
+
+def test_main_rejects_invalid_artifact_under_strict_validation(monkeypatch, tmp_path):
+    artifact = tmp_path / "invalid-security-artifact.json"
+    artifact.write_text("[]", encoding="utf-8")
+
+    monkeypatch.setattr(sys, "argv", ["reconcile_live_security.py", "--artifact", str(artifact), "--strict-artifact"])
+    monkeypatch.delenv("GITHUB_DEFAULT_BRANCH", raising=False)
+    monkeypatch.setattr(rls, "_token", lambda: None)
+
+    assert rls.main() == 2

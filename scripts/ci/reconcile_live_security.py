@@ -87,10 +87,9 @@ def _normalize_branch_name(branch_name: str) -> str:
 
 
 def _discover_default_branch(repo: str) -> str:
-    for env_name in ("GITHUB_DEFAULT_BRANCH", "GITHUB_REF_NAME", "GITHUB_HEAD_REF", "GITHUB_BASE_REF"):
-        candidate = _normalize_branch_name(os.environ.get(env_name, ""))
-        if candidate:
-            return candidate
+    candidate = _normalize_branch_name(os.environ.get("GITHUB_DEFAULT_BRANCH", ""))
+    if candidate:
+        return candidate
 
     try:
         repo_meta = _api_get(f"https://api.github.com/repos/{repo}")
@@ -214,7 +213,10 @@ def _severity_counts_from_mapping(raw: object) -> dict[str, int]:
         return counts
     for key, value in raw.items():
         key_name = str(key).strip().upper().replace("-", "_")
-        int_value = int(value or 0)
+        try:
+            int_value = int(value or 0)
+        except (TypeError, ValueError):
+            continue
         if "CRITICAL" in key_name:
             counts["CRITICAL"] = int_value
         elif "HIGH" in key_name:
@@ -226,6 +228,28 @@ def _severity_counts_from_mapping(raw: object) -> dict[str, int]:
         elif "INFO" in key_name:
             counts["INFO"] = int_value
     return counts
+
+
+def _artifact_is_valid(path: Path) -> bool:
+    if not path.exists() or not path.is_file():
+        return False
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return False
+    if not isinstance(payload, dict):
+        return False
+    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else None
+    metadata = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else None
+    if summary is not None and summary.get("total_findings") is not None:
+        return True
+    if metadata is not None and metadata.get("total_findings") is not None:
+        return True
+    if isinstance(payload.get("findings"), list):
+        return True
+    if isinstance(payload.get("finding_index"), list):
+        return True
+    return isinstance(payload.get("findings_by_severity"), dict)
 
 
 def _artifact_summary(path: Path) -> dict[str, object]:
@@ -297,7 +321,21 @@ def _raw_evidence_artifacts(*paths: str | Path) -> list[str]:
     return evidence
 
 
+def _final_recommendation(payload: dict[str, object]) -> str:
+    status = str(payload.get("status", "clean")).lower()
+    if status in {"compliance-unknown", "unknown"}:
+        return "advisory-only"
+    live_total = int(payload.get("total_open_alerts", 0) or 0)
+    artifact_total = int((payload.get("artifact_generated_findings") or {}).get("total_findings", 0) or 0)
+    if live_total > 0:
+        return "action required"
+    if artifact_total > 0:
+        return "advisory-only"
+    return "compliant"
+
+
 def _write_markdown(path: Path, payload: dict[str, object]) -> None:
+    security_overview = payload.get("security_overview", {}) if isinstance(payload.get("security_overview"), dict) else {}
     lines = [
         "# 🔐 Live GitHub Security Reconciliation",
         "",
@@ -306,13 +344,20 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
         f"- Default branch only: `{payload['default_branch_only']}`",
         f"- Last synced: `{payload['last_synced_at']}`",
         "",
+        "## GitHub Security views",
+        "",
+    ]
+    for label, url in (payload.get("source_urls") or {}).items():
+        lines.append(f"- {label}: `{url}`")
+    lines.extend([
+        "",
         "## Live open alerts",
         "",
         f"- Total: **{payload['total_open_alerts']}** ({_compact_count(int(payload['total_open_alerts']))})",
         "",
         "| Severity | Count |",
         "|----------|-------|",
-    ]
+    ])
     for severity in SEVERITY_ORDER:
         lines.append(f"| {severity} | {payload['by_severity'].get(severity, 0)} |")
 
@@ -334,9 +379,21 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
     for severity in SEVERITY_ORDER:
         lines.append(f"| {severity} | {artifact_summary.get('by_severity', {}).get(severity, 0)} |")
 
+    live_total = int(payload.get("total_open_alerts", 0) or 0)
+    stale_total = max(artifact_total - live_total, 0)
+    default_branch_matched = int(security_overview.get("default_branch_matched_active_items", 0) or 0)
     delta_total = payload.get("delta", {}).get("total_findings", 0)
     delta_display = _compact_count(abs(int(delta_total))) if int(delta_total) != 0 else "0"
     lines.extend([
+        "",
+        "## Evidence classification",
+        "",
+        f"- Live active alerts: **{live_total}**",
+        f"- Historical artifact backlog: **{artifact_total}**",
+        f"- Default-branch-matched active items: **{default_branch_matched}**",
+        f"- Stale or archived findings: **{stale_total}**",
+        f"- Pending triage: **{payload.get('needs_triage', False)}**",
+        f"- Final recommendation: **{payload.get('final_recommendation', _final_recommendation(payload))}**",
         "",
         "## Delta",
         "",
@@ -358,7 +415,7 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
 
 def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     repo_url = f"https://github.com/{repo}"
-    default_branch = "main"
+    default_branch = _discover_default_branch(repo)
     artifact_summary = _artifact_summary(Path(artifact_path))
     source_urls = {
         "code_scanning": f"{repo_url}/security/code-scanning",
@@ -469,10 +526,13 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     delta_total = live_total - artifact_total
     source_of_truth = "live" if live_total or any(by_source.values()) else "artifact"
     branch_filtered_sources = []
+    default_branch_matched_active_items = 0
     for source in ("code_scanning", "secret_scanning"):
         alerts = by_source.get(source, [])
         if not alerts:
             continue
+        default_branch_matches = [alert for alert in alerts if _alert_ref_matches_default(alert, default_branch)]
+        default_branch_matched_active_items += len(default_branch_matches)
         branch_filtered_sources.append(all(_alert_ref_matches_default(alert, default_branch) for alert in alerts))
     default_branch_only = bool(default_branch) and not by_source.get("dependabot") and (
         not branch_filtered_sources or all(branch_filtered_sources)
@@ -483,6 +543,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         totals = Counter({sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER})
         delta_total = 0
         default_branch_only = False
+        default_branch_matched_active_items = 0
 
     by_severity = {sev: totals.get(sev, 0) for sev in SEVERITY_ORDER}
     severity_summary = {sev: int(by_severity.get(sev, 0) or 0) for sev in SEVERITY_ORDER}
@@ -500,6 +561,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     status = "triage-required" if delta_total != 0 else "clean"
     if source_of_truth == "artifact":
         status = "artifact-only" if artifact_total else "clean"
+    stale_or_archived_findings = max(artifact_total - live_total, 0) if artifact_total > 0 else 0
+    final_recommendation = "action required" if live_total > 0 else "advisory-only" if artifact_total > 0 else "compliant"
 
     return {
         "repo_url": repo_url,
@@ -514,21 +577,30 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "artifact_generated_findings": artifact_summary,
         "artifact_generated_findings_display": _compact_count(artifact_total),
         "delta": {"total_findings": delta_total, "needs_triage": delta_total != 0},
-        "needs_triage": delta_total != 0,
+        "needs_triage": delta_total != 0 or artifact_total > 0,
         "source_of_truth": source_of_truth,
         "status": status,
         "failure_classification": failure_classification,
         "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
         "source_urls": source_urls,
         "classification": classification,
+        "final_recommendation": final_recommendation,
         "security_overview": {
             "default_branch": default_branch,
             "default_branch_only": default_branch_only,
             "repo_url": repo_url,
+            "live_active_alerts": live_total,
+            "historical_artifact_backlog": artifact_total,
+            "stale_or_archived_findings": stale_or_archived_findings,
+            "default_branch_matched_active_items": default_branch_matched_active_items,
+            "pending_triage": delta_total != 0 or artifact_total > 0,
             "live_open_alerts": live_total,
             "artifact_total": artifact_total,
             "classification": classification,
             "severity_summary": severity_summary,
+            "source_of_truth": source_of_truth,
+            "status": status,
+            "final_recommendation": final_recommendation,
         },
     }
 
@@ -546,7 +618,8 @@ def main() -> int:
 
     payload = _build_payload(args.repo, args.artifact)
     artifact_total = int(payload.get("artifact_generated_findings", {}).get("total_findings", 0) or 0)
-    if args.strict_artifact and (not Path(args.artifact).exists() or artifact_total < 0):
+    artifact_path = Path(args.artifact)
+    if args.strict_artifact and not _artifact_is_valid(artifact_path):
         print(f"::error::Missing or invalid security artifact at {args.artifact}", file=sys.stderr)
         return 2
     if args.require_live_source and payload.get("source_of_truth") == "artifact":

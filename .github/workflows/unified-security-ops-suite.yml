@@ -139,7 +139,10 @@ jobs:
             --repo "${GITHUB_REPOSITORY}" \
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
-            --markdown ".codex/live-security-reconciliation.md"
+            --markdown ".codex/live-security-reconciliation.md" \
+            --strict-artifact \
+            --require-live-source \
+            --fail-on-delta
           if [ ! -s ".codex/live-security-reconciliation.json" ] || [ ! -s ".codex/live-security-reconciliation.md" ]; then
             echo "::error::Live security reconciliation output is missing or empty."
             exit 1
@@ -209,6 +212,7 @@ jobs:
         with:
           name: live-security-reconciliation
           path: |
+            .codex/security-findings-comprehensive.json
             .codex/live-security-reconciliation.json
             .codex/live-security-reconciliation.md
           if-no-files-found: error
