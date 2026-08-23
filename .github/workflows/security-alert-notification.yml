@@ -18,6 +18,8 @@ jobs:
     name: Check and notify on security alerts
     steps:
     - name: Mask secrets
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
@@ -36,7 +38,7 @@ jobs:
       continue-on-error: true
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        github-token: ${{ github.token }}
         script: "let alerts;\ntry {\n  const response = await github.rest.dependabot.listAlertsForRepo({\n\
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    state:\
           \ 'open',\n    sort: 'created',\n    direction: 'desc',\n    per_page: 100\n\
@@ -65,7 +67,7 @@ jobs:
       env:
         ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        github-token: ${{ github.token }}
         script: "const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');\n\nlet\
           \ summary = '## \U0001F6A8 New Security Alerts Detected\\n\\n';\nsummary\
           \ += `**Total New Alerts:** ${alerts.length}\\n\\n`;\n\n// Summary table\n\
@@ -110,7 +112,7 @@ jobs:
         CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}
         HIGH_COUNT: ${{ steps.get-alerts.outputs.high-count }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        github-token: ${{ github.token }}
         script: "const summary = process.env.ISSUE_SUMMARY || '';\nconst criticalCount\
           \ = parseInt(process.env.CRITICAL_COUNT || '0', 10);\nconst highCount =\
           \ parseInt(process.env.HIGH_COUNT || '0', 10);\n\n// Only create issue for\
@@ -151,4 +153,4 @@ jobs:
         \ }} critical security alert(s) detected!\"\necho \"Configure Slack/Teams/Email\
         \ notifications by adding secrets and updating this step\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ github.token }}

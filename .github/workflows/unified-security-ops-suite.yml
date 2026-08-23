@@ -1,7 +1,5 @@
 name: unified-security-ops-suite
 on:
-  # Canonical scheduled security coverage is handled by unified-security-scanning.yml.
-  # Keeping this suite push/PR/manual-driven avoids duplicate master workflow overlap.
   push:
     branches:
     - main
@@ -33,23 +31,24 @@ on:
         - pr-enhancement
         - scan-phase-16
         - tools-bootstrap
+  schedule:
+    - cron: '0 9 * * *'
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 permissions:
   contents: read
   statuses: write
+  issues: write
   pull-requests: write
   security-events: read
   id-token: write
 jobs:
   security-alert-notify:
-    if: '(github.event.inputs.operation == ''alert-notify'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''schedule'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'alert-notify' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
     runs-on: ubuntu-latest
     name: Security Alert Notification
     steps:
@@ -62,13 +61,11 @@ jobs:
         \ sent\"\n"
     timeout-minutes: 30
   security-copilot-commands:
-    if: '(github.event.inputs.operation == ''copilot-commands'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''push''
-      || github.event_name == ''pull_request'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'copilot-commands' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'push' ||
+      github.event_name == 'pull_request'))
     runs-on: ubuntu-latest
     name: Security Copilot Commands
     steps:
@@ -78,12 +75,10 @@ jobs:
         \ processed\"\n"
     timeout-minutes: 30
   security-findings-api:
-    if: '(github.event.inputs.operation == ''findings-api'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''schedule'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'findings-api' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
     runs-on: ubuntu-latest
     name: Security Findings API
     steps:
@@ -93,12 +88,10 @@ jobs:
         \ fetched\"\n"
     timeout-minutes: 30
   security-findings-handoff:
-    if: '(github.event.inputs.operation == ''findings-handoff'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''schedule'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'findings-handoff' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
     runs-on: ubuntu-latest
     name: Security Findings Copilot Handoff
     needs:
@@ -110,12 +103,10 @@ jobs:
         \ Handoff completed\"\n"
     timeout-minutes: 30
   security-pr-enhancement:
-    if: '(github.event.inputs.operation == ''pr-enhancement'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''pull_request'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'pr-enhancement' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'))
     runs-on: ubuntu-latest
     name: Security PR Enhancement
     steps:
@@ -125,13 +116,11 @@ jobs:
         \ PR enhancement completed\"\n"
     timeout-minutes: 30
   security-scan-phase-16:
-    if: '(github.event.inputs.operation == ''scan-phase-16'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''schedule''
-      || github.event_name == ''push'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'scan-phase-16' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
+      github.event_name == 'push'))
     runs-on: ubuntu-latest
     name: Security Scan Phase 16
     steps:
@@ -141,12 +130,10 @@ jobs:
         \ completed\"\n"
     timeout-minutes: 30
   security-tools-bootstrap:
-    if: '(github.event.inputs.operation == ''tools-bootstrap'' || github.event.inputs.operation
-      == ''all'') &&
-
-      (github.event_name == ''workflow_dispatch'' || github.event_name == ''push'')
-
-      '
+    if: >-
+      (((github.event.inputs.operation || 'all') == 'tools-bootstrap' ||
+      (github.event.inputs.operation || 'all') == 'all') &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'push'))
     runs-on: ubuntu-latest
     name: Security Tools Bootstrap
     steps:

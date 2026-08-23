@@ -6,16 +6,20 @@ on:
     - synchronize
 permissions:
   contents: read
+  issues: write
   pull-requests: write
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 jobs:
   enhance-pr-security:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     name: PR Security Enhancement
     runs-on: ubuntu-latest
     steps:
     - name: Mask secrets
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
@@ -53,8 +57,7 @@ jobs:
     - name: Update PR body with findings section
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const fs = require('fs');\n\n// Read findings content\nlet findingsContent\
           \ = 'No security findings detected.';\nif (fs.existsSync('pr-findings.md'))\
           \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
@@ -83,8 +86,7 @@ jobs:
       name: Add PR comment with summary
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: |
           const fs = require('fs');
           const owner = context.repo.owner;

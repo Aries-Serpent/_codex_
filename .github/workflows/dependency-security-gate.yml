@@ -188,6 +188,51 @@ jobs:
         echo "high_count=0" >> $GITHUB_OUTPUT
 
         '
+    - name: Reconcile live GitHub security alerts
+      id: security-api
+      if: always()
+      continue-on-error: true
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const [dependabotResponse, codeScanningResponse] = await Promise.all([
+            github.rest.dependabot.listAlertsForRepo({ owner, repo, state: 'open', per_page: 100 }).catch(() => ({ data: [] })),
+            github.rest.codeScanning.listAlertsForRepo({ owner, repo, state: 'open', per_page: 100 }).catch(() => ({ data: [] }))
+          ]);
+
+          const dependabotAlerts = Array.isArray(dependabotResponse.data) ? dependabotResponse.data : [];
+          const codeAlerts = Array.isArray(codeScanningResponse.data) ? codeScanningResponse.data : [];
+
+          const severity = (value) => (value || '').toLowerCase();
+          const critical = [...dependabotAlerts, ...codeAlerts].filter((alert) => {
+            if (alert.security_advisory && alert.security_advisory.severity) {
+              return severity(alert.security_advisory.severity) === 'critical';
+            }
+            return severity(alert.rule?.severity || alert.severity) === 'critical';
+          }).length;
+          const high = [...dependabotAlerts, ...codeAlerts].filter((alert) => {
+            if (alert.security_advisory && alert.security_advisory.severity) {
+              return severity(alert.security_advisory.severity) === 'high';
+            }
+            return severity(alert.rule?.severity || alert.severity) === 'high';
+          }).length;
+
+          core.setOutput('dependabot_count', dependabotAlerts.length);
+          core.setOutput('code_scanning_count', codeAlerts.length);
+          core.setOutput('critical_count', critical);
+          core.setOutput('high_count', high);
+
+          const summary = [
+            '## GitHub Security API Reconciliation',
+            `- Dependabot alerts (open): ${dependabotAlerts.length}`,
+            `- Code scanning alerts (open): ${codeAlerts.length}`,
+            `- Critical: ${critical}`,
+            `- High: ${high}`
+          ].join('\n');
+          core.summary.addRaw(summary).write();
     - name: Enforce security gate
       id: gate-check
       run: "# Aggregate results\nTOTAL_CRITICAL=0\nTOTAL_HIGH=0\n\n# Python results\n\
@@ -201,7 +246,7 @@ jobs:
         \ + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH + HIGH))\n\n# npm extension\nCRITICAL=${{\
         \ steps.npm-scan-extension.outputs.critical_count || 0 }}\nHIGH=${{ steps.npm-scan-extension.outputs.high_count\
         \ || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH\
-        \ + HIGH))\n\necho \"total_critical=${TOTAL_CRITICAL}\" >> $GITHUB_OUTPUT\n\
+        \ + HIGH))\n\n# GitHub Security API reconciliation\nCRITICAL=${{ steps.security-api.outputs.critical_count || 0 }}\nHIGH=${{ steps.security-api.outputs.high_count || 0 }}\nTOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))\nTOTAL_HIGH=$((TOTAL_HIGH + HIGH))\n\necho \"total_critical=${TOTAL_CRITICAL}\" >> $GITHUB_OUTPUT\n\
         echo \"total_high=${TOTAL_HIGH}\" >> $GITHUB_OUTPUT\n\necho \"## Dependency\
         \ Security Gate Summary\" >> $GITHUB_STEP_SUMMARY\necho \"- **Total Critical**:\
         \ $TOTAL_CRITICAL\" >> $GITHUB_STEP_SUMMARY\necho \"- **Total High**: $TOTAL_HIGH\"\
