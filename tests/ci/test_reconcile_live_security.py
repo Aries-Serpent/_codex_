@@ -77,6 +77,31 @@ def test_default_branch_ref_filtering_handles_branch_matches():
     assert rls._with_default_branch_ref("/repos/test/repo/code-scanning/alerts?state=open", "main") == "/repos/test/repo/code-scanning/alerts?state=open&ref=refs/heads/main"
 
 
+def test_failure_classification_and_raw_evidence_are_exposed(tmp_path):
+    artifact = tmp_path / "security-findings-comprehensive.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "metadata": {
+                    "total_findings": 2,
+                    "by_severity": {"CRITICAL": 1, "HIGH": 1, "MEDIUM": 0, "LOW": 0, "INFO": 0},
+                },
+                "findings": [{"severity": "CRITICAL"}, {"severity": "HIGH"}],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
+
+    assert payload["failure_classification"] == "blocked_by_critical_or_high_vulnerabilities"
+    assert payload["raw_evidence_artifacts"] == [str(artifact)]
+    assert payload["severity_summary"]["CRITICAL"] == 1
+    assert payload["severity_summary"]["HIGH"] == 1
+    assert payload["security_overview"]["severity_summary"] == payload["severity_summary"]
+
+
 def test_paginate_handles_network_errors(monkeypatch):
     def fake_api_get(_url):
         raise OSError("broken socket")

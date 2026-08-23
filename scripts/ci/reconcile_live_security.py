@@ -323,6 +323,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
 
     if not _token():
         artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+        severity_summary = {sev: int(artifact_summary.get("by_severity", {}).get(sev, 0) or 0) for sev in SEVERITY_ORDER}
+        failure_classification = _failure_classification(severity_summary)
         status = "artifact-only" if artifact_total else "clean"
         return {
             "repo_url": repo_url,
@@ -331,7 +333,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_open_alerts": artifact_total,
             "total_open_alerts_display": _compact_count(artifact_total),
-            "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
+            "by_severity": severity_summary,
+            "severity_summary": severity_summary,
             "by_source": {src: 0 for src in SOURCE_ORDER},
             "artifact_generated_findings": artifact_summary,
             "artifact_generated_findings_display": _compact_count(artifact_total),
@@ -339,14 +342,18 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
             "status": status,
+            "failure_classification": failure_classification,
+            "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
+            "classification": failure_classification,
             "security_overview": {
                 "default_branch": default_branch,
                 "default_branch_only": False,
                 "repo_url": repo_url,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
-                "classification": "historical_artifact_backlog" if artifact_total > 0 else "no_findings",
+                "classification": failure_classification,
+                "severity_summary": severity_summary,
             },
         }
 
@@ -356,6 +363,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             default_branch = str(repo_meta.get("default_branch") or default_branch)
     except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
         artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+        severity_summary = {sev: int(artifact_summary.get("by_severity", {}).get(sev, 0) or 0) for sev in SEVERITY_ORDER}
+        failure_classification = _failure_classification(severity_summary)
         status = "artifact-only" if artifact_total else "clean"
         return {
             "repo_url": repo_url,
@@ -364,7 +373,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_open_alerts": artifact_total,
             "total_open_alerts_display": _compact_count(artifact_total),
-            "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
+            "by_severity": severity_summary,
+            "severity_summary": severity_summary,
             "by_source": {src: 0 for src in SOURCE_ORDER},
             "artifact_generated_findings": artifact_summary,
             "artifact_generated_findings_display": _compact_count(artifact_total),
@@ -372,14 +382,18 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
             "status": status,
+            "failure_classification": failure_classification,
+            "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
+            "classification": failure_classification,
             "security_overview": {
                 "default_branch": default_branch,
                 "default_branch_only": False,
                 "repo_url": repo_url,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
-                "classification": "historical_artifact_backlog" if artifact_total > 0 else "no_findings",
+                "classification": failure_classification,
+                "severity_summary": severity_summary,
             },
         }
 
@@ -425,6 +439,10 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         delta_total = 0
         default_branch_only = False
 
+    by_severity = {sev: totals.get(sev, 0) for sev in SEVERITY_ORDER}
+    severity_summary = {sev: int(by_severity.get(sev, 0) or 0) for sev in SEVERITY_ORDER}
+    failure_classification = _failure_classification(severity_summary)
+
     if live_total > 0 and artifact_total > 0:
         classification = "live_alerts_exceed_artifact_backlog" if live_total > artifact_total else "artifact_backlog_exceeds_live_alerts"
     elif live_total > 0:
@@ -445,7 +463,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "total_open_alerts": live_total,
         "total_open_alerts_display": _compact_count(live_total),
-        "by_severity": {sev: totals.get(sev, 0) for sev in SEVERITY_ORDER},
+        "by_severity": by_severity,
+        "severity_summary": severity_summary,
         "by_source": {src: filtered_source_counts.get(src, 0) for src in SOURCE_ORDER},
         "artifact_generated_findings": artifact_summary,
         "artifact_generated_findings_display": _compact_count(artifact_total),
@@ -453,6 +472,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "needs_triage": delta_total != 0,
         "source_of_truth": source_of_truth,
         "status": status,
+        "failure_classification": failure_classification,
+        "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
         "source_urls": source_urls,
         "classification": classification,
         "security_overview": {
@@ -462,6 +483,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "live_open_alerts": live_total,
             "artifact_total": artifact_total,
             "classification": classification,
+            "severity_summary": severity_summary,
         },
     }
 
@@ -501,10 +523,13 @@ def main() -> int:
         "artifact_generated_findings": payload["artifact_generated_findings"]["total_findings"],
         "artifact_generated_findings_display": payload.get("artifact_generated_findings_display", _compact_count(int(payload["artifact_generated_findings"]["total_findings"]))),
         "by_severity": payload["by_severity"],
+        "severity_summary": payload.get("severity_summary", payload.get("by_severity", {})),
         "by_source": payload["by_source"],
         "delta": payload["delta"]["total_findings"],
         "source_of_truth": payload.get("source_of_truth", "artifact"),
         "status": payload.get("status", "clean"),
+        "failure_classification": payload.get("failure_classification", _failure_classification(payload.get("by_severity", {}))),
+        "raw_evidence_artifacts": payload.get("raw_evidence_artifacts", []),
     }, indent=2))
     return 0
 
