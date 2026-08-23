@@ -229,6 +229,29 @@ def _artifact_summary(path: Path) -> dict[str, object]:
     return {"total_findings": int(total), "by_severity": severity}
 
 
+def _failure_classification(by_severity: dict[str, int]) -> str:
+    critical = int(by_severity.get("CRITICAL", 0) or 0)
+    high = int(by_severity.get("HIGH", 0) or 0)
+    medium = int(by_severity.get("MEDIUM", 0) or 0)
+    low = int(by_severity.get("LOW", 0) or 0)
+    if critical or high:
+        return "blocked_by_critical_or_high_vulnerabilities"
+    if medium or low:
+        return "warning_only"
+    return "clean"
+
+
+def _raw_evidence_artifacts(*paths: str | Path) -> list[str]:
+    evidence: list[str] = []
+    for path in paths:
+        if not path:
+            continue
+        candidate = Path(path)
+        if candidate.exists() and candidate.is_file():
+            evidence.append(str(candidate))
+    return evidence
+
+
 def _write_markdown(path: Path, payload: dict[str, object]) -> None:
     lines = [
         "# 🔐 Live GitHub Security Reconciliation",
@@ -300,6 +323,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
 
     if not _token():
         artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+        status = "artifact-only" if artifact_total else "clean"
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -314,6 +338,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
+            "status": status,
             "source_urls": source_urls,
             "security_overview": {
                 "default_branch": default_branch,
@@ -331,6 +356,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             default_branch = str(repo_meta.get("default_branch") or default_branch)
     except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
         artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+        status = "artifact-only" if artifact_total else "clean"
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -345,6 +371,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
+            "status": status,
             "source_urls": source_urls,
             "security_overview": {
                 "default_branch": default_branch,
@@ -407,6 +434,10 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     else:
         classification = "no_findings"
 
+    status = "triage-required" if delta_total != 0 else "clean"
+    if source_of_truth == "artifact":
+        status = "artifact-only" if artifact_total else "clean"
+
     return {
         "repo_url": repo_url,
         "default_branch": default_branch,
@@ -421,6 +452,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "delta": {"total_findings": delta_total, "needs_triage": delta_total != 0},
         "needs_triage": delta_total != 0,
         "source_of_truth": source_of_truth,
+        "status": status,
         "source_urls": source_urls,
         "classification": classification,
         "security_overview": {
@@ -440,9 +472,23 @@ def main() -> int:
     parser.add_argument("--artifact", default=".codex/security-findings-comprehensive.json")
     parser.add_argument("--output", default=".codex/live-security-reconciliation.json")
     parser.add_argument("--markdown", default=".codex/live-security-reconciliation.md")
+    parser.add_argument("--strict-artifact", action="store_true", help="Fail when the security artifact is missing or invalid.")
+    parser.add_argument("--require-live-source", action="store_true", help="Fail when live security data is unavailable and artifact fallback must not be treated as authoritative.")
+    parser.add_argument("--fail-on-delta", action="store_true", help="Fail when live alerts and artifact totals disagree.")
     args = parser.parse_args()
 
     payload = _build_payload(args.repo, args.artifact)
+    artifact_total = int(payload.get("artifact_generated_findings", {}).get("total_findings", 0) or 0)
+    if args.strict_artifact and (not Path(args.artifact).exists() or artifact_total < 0):
+        print(f"::error::Missing or invalid security artifact at {args.artifact}", file=sys.stderr)
+        return 2
+    if args.require_live_source and payload.get("source_of_truth") == "artifact":
+        print("::error::Live GitHub security data is unavailable; refusing to treat the generated artifact as the source of truth.", file=sys.stderr)
+        return 2
+    if args.fail_on_delta and payload.get("delta", {}).get("total_findings", 0) != 0:
+        print("::error::Live GitHub security totals differ from the generated artifact by %s; workflow should stop and reconcile before continuing." % payload["delta"]["total_findings"], file=sys.stderr)
+        return 2
+
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -457,6 +503,8 @@ def main() -> int:
         "by_severity": payload["by_severity"],
         "by_source": payload["by_source"],
         "delta": payload["delta"]["total_findings"],
+        "source_of_truth": payload.get("source_of_truth", "artifact"),
+        "status": payload.get("status", "clean"),
     }, indent=2))
     return 0
 

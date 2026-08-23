@@ -1,0 +1,52 @@
+{
+  "repo_url": "https://github.com/Aries-Serpent/_codex_",
+  "default_branch": "main",
+  "default_branch_only": false,
+  "last_synced_at": "2026-08-23T23:16:14Z",
+  "total_open_alerts": 10,
+  "total_open_alerts_display": "10",
+  "by_severity": {
+    "CRITICAL": 4,
+    "HIGH": 4,
+    "MEDIUM": 2,
+    "LOW": 0,
+    "INFO": 0
+  },
+  "by_source": {
+    "code_scanning": 0,
+    "dependabot": 0,
+    "secret_scanning": 0
+  },
+  "artifact_generated_findings": {
+    "total_findings": 10,
+    "by_severity": {
+      "CRITICAL": 4,
+      "HIGH": 4,
+      "MEDIUM": 2,
+      "LOW": 0,
+      "INFO": 0
+    }
+  },
+  "artifact_generated_findings_display": "10",
+  "delta": {
+    "total_findings": 0,
+    "needs_triage": false
+  },
+  "needs_triage": false,
+  "source_of_truth": "artifact",
+  "status": "artifact-only",
+  "source_urls": {
+    "code_scanning": "https://github.com/Aries-Serpent/_codex_/security/code-scanning",
+    "dependabot": "https://github.com/Aries-Serpent/_codex_/security/dependabot",
+    "secret_scanning": "https://github.com/Aries-Serpent/_codex_/security/secret-scanning"
+  },
+  "classification": "artifact_backlog_exceeds_live_alerts",
+  "security_overview": {
+    "default_branch": "main",
+    "default_branch_only": false,
+    "repo_url": "https://github.com/Aries-Serpent/_codex_",
+    "live_open_alerts": 10,
+    "artifact_total": 10,
+    "classification": "artifact_backlog_exceeds_live_alerts"
+  }
+}

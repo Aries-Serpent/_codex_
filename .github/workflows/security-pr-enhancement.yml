@@ -2,278 +2,374 @@ name: Security PR Enhancement
 on:
   pull_request_target:
     types:
-    - opened
-    - synchronize
+      - opened
+      - synchronize
+
 permissions:
   contents: read
   issues: write
   pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
+
 jobs:
   enhance-pr-security:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.head.repo.fork }}
     name: PR Security Enhancement
     runs-on: ubuntu-latest
     steps:
-    - name: Mask secrets
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Fail-closed guard for untrusted PR contexts
+        shell: bash
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CURRENT_REPO: ${{ github.repository }}
+          PR_IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+        run: |
+          set -euo pipefail
+          if [[ "${PR_HEAD_REPO}" != "${CURRENT_REPO}" ]] || [[ "${PR_IS_FORK}" == "true" ]]; then
+            echo "::error::Fail-closed: refusing to execute or mutate PR metadata for forked or external repository PRs."
+            exit 1
+          fi
+          echo "Trusted same-repository PR confirmed: ${PR_HEAD_REPO}"
 
-        '
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v7
-      with:
+      - name: Mask secrets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "::add-mask::$(echo "$GH_TOKEN" | head -c 10)"
 
-        python-version: '3.12'
-    - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      - name: Checkout trusted base branch
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 1
+          persist-credentials: false
 
-        pip install -q pyyaml
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
 
-        '
-    - id: findings
-      name: Generate security findings section
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        set -euo pipefail
-        mkdir -p .codex .codex/security-live
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -q pyyaml
 
-        python scripts/ci/fetch_security_snapshot.py \
-          --types dependabot,secrets,analyses \
-          --out-dir .codex/security-live \
-          --cache-dir .codex/security-cache \
-          --cache-ttl 1800
+      - id: findings
+        name: Generate security findings section
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .codex .codex/security-live
 
-        python3 - <<'PY'
-        import json
-        from datetime import datetime, timezone
-        from pathlib import Path
+          python scripts/ci/fetch_security_snapshot.py \
+            --types dependabot,secrets,analyses \
+            --out-dir .codex/security-live \
+            --cache-dir .codex/security-cache \
+            --cache-ttl 1800
 
-        root = Path('.codex/security-live')
-        findings = []
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
 
-        for alert_file, tool in [
-            (root / 'dependabot' / 'alerts_open.json', 'dependabot'),
-            (root / 'secrets' / 'alerts_open.json', 'secret-scanning'),
-        ]:
-            if not alert_file.exists():
-                continue
-            payload = json.loads(alert_file.read_text())
-            if not isinstance(payload, list):
-                continue
-            for item in payload:
-                if tool == 'dependabot':
-                    vuln = item.get('security_vulnerability') or {}
-                    pkg = (item.get('dependency') or {}).get('package') or {}
-                    findings.append({
-                        'cwe': vuln.get('ghsa_id') or 'CWE-UNKNOWN',
-                        'severity': (vuln.get('severity') or 'LOW').upper(),
-                        'description': vuln.get('description') or f"Dependabot alert in {pkg.get('name', 'dependency')}",
-                        'file_path': pkg.get('name') or 'dependency',
-                        'line_number': 0,
-                        'tool': 'dependabot',
-                        'fix_recommendation': 'Upgrade the affected dependency to the minimum fixed version.',
-                        'confidence': 0.9,
-                    })
-                else:
-                    findings.append({
-                        'cwe': 'CWE-798',
-                        'severity': 'HIGH',
-                        'description': f"Active secret scan finding: {item.get('secret_type', 'unknown')}",
-                        'file_path': item.get('secret_type') or 'secret-scanning',
-                        'line_number': 0,
-                        'tool': 'secret-scanning',
-                        'fix_recommendation': 'Revoke the leaked secret and rotate it through the approved secret manager.',
-                        'confidence': 0.95,
-                    })
+          root = Path('.codex/security-live')
+          findings = []
 
-        summary = {
-            'timestamp': datetime.now(timezone.utc).isoformat(),
-            'scan_duration_seconds': 0,
-            'total_findings': len(findings),
-            'by_severity': {},
-            'by_tool': {},
-            'status': 'scan_complete' if findings else 'no_findings',
-        }
-        for finding in findings:
-            summary['by_severity'][finding['severity']] = summary['by_severity'].get(finding['severity'], 0) + 1
-            summary['by_tool'][finding['tool']] = summary['by_tool'].get(finding['tool'], 0) + 1
+          for alert_file, tool in [
+              (root / 'dependabot' / 'alerts_open.json', 'dependabot'),
+              (root / 'secrets' / 'alerts_open.json', 'secret-scanning'),
+          ]:
+              if not alert_file.exists():
+                  continue
+              payload = json.loads(alert_file.read_text())
+              if not isinstance(payload, list):
+                  continue
+              for item in payload:
+                  if tool == 'dependabot':
+                      vuln = item.get('security_vulnerability') or {}
+                      pkg = (item.get('dependency') or {}).get('package') or {}
+                      findings.append({
+                          'cwe': vuln.get('ghsa_id') or 'CWE-UNKNOWN',
+                          'severity': (vuln.get('severity') or 'LOW').upper(),
+                          'description': vuln.get('description') or f"Dependabot alert in {pkg.get('name', 'dependency')}",
+                          'file_path': pkg.get('name') or 'dependency',
+                          'line_number': 0,
+                          'tool': 'dependabot',
+                          'fix_recommendation': 'Upgrade the affected dependency to the minimum fixed version.',
+                          'confidence': 0.9,
+                      })
+                  else:
+                      findings.append({
+                          'cwe': 'CWE-798',
+                          'severity': 'HIGH',
+                          'description': f"Active secret scan finding: {item.get('secret_type', 'unknown')}",
+                          'file_path': item.get('secret_type') or 'secret-scanning',
+                          'line_number': 0,
+                          'tool': 'secret-scanning',
+                          'fix_recommendation': 'Revoke the leaked secret and rotate it through the approved secret manager.',
+                          'confidence': 0.95,
+                      })
 
-        Path('.codex/security-findings-comprehensive.json').write_text(
-            json.dumps({'findings': findings, 'metadata': summary}, indent=2),
-            encoding='utf-8',
-        )
-        PY
-
-        python scripts/ci/security_pr_formatter.py generate \
-          --findings .codex/security-findings-comprehensive.json \
-          --output pr-findings.md \
-          --limit 5
-
-        echo "## 🔐 Security Findings Report" >> "$GITHUB_STEP_SUMMARY"
-        cat pr-findings.md >> "$GITHUB_STEP_SUMMARY"
-    - id: read-findings
-      name: Read findings content
-      run: "if [ -f \"pr-findings.md\" ]; then\n  echo \"\u2705 Findings file exists\"\
-        \nelse\n  echo \"\u2139\uFE0F  Findings file will be created during generation\"\
-        \nfi\n"
-    - name: Update PR body with findings section
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ github.token }}
-        script: "const fs = require('fs');\n\n// Read findings content\nlet findingsContent\
-          \ = 'No security findings detected.';\nif (fs.existsSync('pr-findings.md'))\
-          \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
-          \nconst pr = context.payload.pull_request;\nconst body = pr.body || '';\n\
-          \n// Remove old findings section (safely)\nlet newBody = body.replace(/##\
-          \ \U0001F510 Security Findings[\\s\\S]*?(?=##|$)/m, '');\nnewBody = newBody.trim();\n\
-          \n// Check if WEC (\U0001F504 Workflow Execution Checklist) section exists\n\
-          const hasWEC = body.includes('\U0001F504 Workflow Execution Checklist')\
-          \ || body.includes('Workflow Execution Checklist');\n\n// Build updated\
-          \ body - preserve WEC if present\nlet updatedBody = '';\nif (hasWEC) {\n\
-          \  // If WEC exists, inject findings after it\n  updatedBody = newBody.replace(\n\
-          \    /(## \U0001F504 Workflow Execution Checklist[\\s\\S]*?)(?=##|$)/m,\n\
-          \    '$1\\n\\n## \U0001F510 Security Findings\\n\\n' + findingsContent\n\
-          \  );\n  // If replacement didn't work, just append\n  if (updatedBody ===\
-          \ newBody) {\n    updatedBody = newBody + '\\n\\n## \U0001F510 Security\
-          \ Findings\\n\\n' + findingsContent;\n  }\n} else {\n  // If no WEC, just\
-          \ append findings\n  updatedBody = newBody + '\\n\\n## \U0001F510 Security\
-          \ Findings\\n\\n' + findingsContent;\n}\n\n// Update PR body\ntry {\n  await\
-          \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
-          \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
-          \  });\n  console.log('\u2705 PR body updated with security findings (WEC-aware)');\n\
-          } catch (error) {\n  console.error('\u274C Failed to update PR body:', error.message);\n\
-          \  if (error.status === 422) {\n    console.log('\u26A0\uFE0F  PR body update\
-          \ rejected (likely due to size limits)');\n  }\n}\n"
-    - if: always()
-      name: Add PR comment with summary
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ github.token }}
-        script: |
-          const fs = require('fs');
-          const owner = context.repo.owner;
-          const repo = context.repo.repo;
-          const issue_number = context.issue.number;
-          const anchor = '<!-- security-findings-detected -->';
-
-          let findingsContent = '';
-          if (fs.existsSync('pr-findings.md')) {
-            findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
+          summary = {
+              'timestamp': datetime.now(timezone.utc).isoformat(),
+              'scan_duration_seconds': 0,
+              'total_findings': len(findings),
+              'by_severity': {},
+              'by_tool': {},
+              'status': 'scan_complete' if findings else 'no_findings',
           }
+          for finding in findings:
+              summary['by_severity'][finding['severity']] = summary['by_severity'].get(finding['severity'], 0) + 1
+              summary['by_tool'][finding['tool']] = summary['by_tool'].get(finding['tool'], 0) + 1
 
-          if (findingsContent && findingsContent.trim()) {
-            const lines = [
-              anchor,
-              '',
-              '## 🔐 Security Findings Detected',
-              '',
-              'This PR has the following security findings from automated scans:',
-              '',
-              findingsContent,
-              '',
-              '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
-            ];
-            const comment = lines.join('\n');
+          Path('.codex/security-findings-comprehensive.json').write_text(
+              json.dumps({'findings': findings, 'metadata': summary}, indent=2),
+              encoding='utf-8',
+          )
+          PY
+
+          python scripts/ci/security_pr_formatter.py generate \
+            --findings .codex/security-findings-comprehensive.json \
+            --output pr-findings.md \
+            --limit 5
+
+          echo "## 🔐 Security Findings Report" >> "$GITHUB_STEP_SUMMARY"
+          cat pr-findings.md >> "$GITHUB_STEP_SUMMARY"
+
+      - id: read-findings
+        name: Read findings content
+        run: |
+          if [ -f "pr-findings.md" ]; then
+            echo "✅ Findings file exists"
+          else
+            echo "ℹ️  Findings file will be created during generation"
+          fi
+
+      - name: Update PR body with findings section
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.head.repo.fork }}
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const fs = require('fs');
+            const pr = context.payload.pull_request;
+            const repoName = `${context.repo.owner}/${context.repo.repo}`;
+            const isTrustedRepo = pr?.head?.repo?.full_name === repoName && pr?.head?.repo?.fork === false;
+
+            if (!isTrustedRepo) {
+              core.setFailed('Fail-closed: refusing to mutate PR metadata for forked or external repository PRs.');
+              return;
+            }
+
+            let findingsContent = 'No security findings detected.';
+            if (fs.existsSync('pr-findings.md')) {
+              findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
+            }
+
+            const body = pr.body || '';
+            let newBody = body.replace(/## 🔐 Security Findings[\s\S]*?(?=##|$)/m, '');
+            newBody = newBody.trim();
+
+            const hasWEC = body.includes('🔄 Workflow Execution Checklist') || body.includes('Workflow Execution Checklist');
+            let updatedBody = '';
+            if (hasWEC) {
+              updatedBody = newBody.replace(
+                /(## 🔄 Workflow Execution Checklist[\s\S]*?)(?=##|$)/m,
+                '$1\n\n## 🔐 Security Findings\n\n' + findingsContent
+              );
+              if (updatedBody === newBody) {
+                updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
+              }
+            } else {
+              updatedBody = newBody + '\n\n## 🔐 Security Findings\n\n' + findingsContent;
+            }
 
             try {
-              const comments = await github.paginate(github.rest.issues.listComments, {
-                owner,
-                repo,
-                issue_number,
-                per_page: 100,
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                body: updatedBody,
               });
+              console.log('✅ PR body updated with security findings (WEC-aware)');
+            } catch (error) {
+              console.error('❌ Failed to update PR body:', error.message);
+              if (error.status === 422) {
+                console.log('⚠️  PR body update rejected (likely due to size limits)');
+              }
+              core.setFailed(error.message);
+            }
 
-              const existing = comments.find((commentItem) => commentItem.user?.login === 'github-actions[bot]' && commentItem.body?.includes(anchor));
+      - if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.head.repo.fork }}
+        name: Add PR comment with summary
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const anchor = '<!-- security-findings-detected -->';
+            const pr = context.payload.pull_request;
+            const repoName = `${context.repo.owner}/${context.repo.repo}`;
+            const isTrustedRepo = pr?.head?.repo?.full_name === repoName && pr?.head?.repo?.fork === false;
 
-              if (existing) {
-                await github.rest.issues.updateComment({
-                  owner,
-                  repo,
-                  comment_id: existing.id,
-                  body: comment,
-                });
-                console.log(`✅ Updated security findings comment #${existing.id}`);
-              } else {
-                await github.rest.issues.createComment({
+            if (!isTrustedRepo) {
+              core.setFailed('Fail-closed: refusing to post PR comments for forked or external repository PRs.');
+              return;
+            }
+
+            let findingsContent = '';
+            if (fs.existsSync('pr-findings.md')) {
+              findingsContent = fs.readFileSync('pr-findings.md', 'utf8');
+            }
+
+            if (findingsContent && findingsContent.trim()) {
+              const lines = [
+                anchor,
+                '',
+                '## 🔐 Security Findings Detected',
+                '',
+                'This PR has the following security findings from automated scans:',
+                '',
+                findingsContent,
+                '',
+                '**Note**: This is an automated scan for informational purposes. Please review carefully and address any critical or high-severity findings before merging.'
+              ];
+              const comment = lines.join('\n');
+
+              try {
+                const comments = await github.paginate(github.rest.issues.listComments, {
                   owner,
                   repo,
                   issue_number,
-                  body: comment,
+                  per_page: 100,
                 });
-                console.log('✅ Security findings comment added to PR');
+
+                const existing = comments.find((commentItem) => commentItem.user?.login === 'github-actions[bot]' && commentItem.body?.includes(anchor));
+
+                if (existing) {
+                  await github.rest.issues.updateComment({
+                    owner,
+                    repo,
+                    comment_id: existing.id,
+                    body: comment,
+                  });
+                  console.log(`✅ Updated security findings comment #${existing.id}`);
+                } else {
+                  await github.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number,
+                    body: comment,
+                  });
+                  console.log('✅ Security findings comment added to PR');
+                }
+              } catch (error) {
+                console.log('⚠️  Could not add comment:', error.message);
               }
-            } catch (error) {
-              console.log('⚠️  Could not add comment:', error.message);
             }
-          }
+
     timeout-minutes: 30
+
   validate-findings-json:
     name: Validate Findings JSON
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Set up Python with caching
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: '3.12'
-        cache-tier: common
-        cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
-    - name: Validate findings JSON structure
-      run: "python3 << 'EOF'\nimport json\nimport sys\nfrom pathlib import Path\n\n\
-        findings_file = Path(\".codex/security-findings-comprehensive.json\")\n\n\
-        if findings_file.exists():\n  try:\n    with open(findings_file) as f:\n \
-        \     data = json.load(f)\n\n    # Basic structure validation\n    if isinstance(data,\
-        \ dict):\n      if \"findings\" in data and \"metadata\" in data:\n      \
-        \  print(\"\u2705 Findings JSON structure is valid\")\n        print(f\" \
-        \  - Total findings: {len(data.get('findings', []))}\")\n        if \"metadata\"\
-        \ in data and \"timestamp\" in data[\"metadata\"]:\n          print(f\"  \
-        \ - Last updated: {data['metadata']['timestamp']}\")\n      else:\n      \
-        \  print(\"\u26A0\uFE0F  Expected 'findings' and 'metadata' keys in JSON\"\
-        )\n    else:\n      print(\"\u26A0\uFE0F  Findings file should contain a JSON\
-        \ object\")\n  except json.JSONDecodeError as e:\n    print(f\"\u274C Invalid\
-        \ JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\u2139\uFE0F  No findings\
-        \ file found (will be created if needed)\")\nEOF\n"
-    - name: Verify live findings agree with GitHub Security snapshot
-      run: |
-        python3 - <<'PY'
-        import json
-        from pathlib import Path
+      - name: Fail-closed guard for untrusted PR contexts
+        shell: bash
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CURRENT_REPO: ${{ github.repository }}
+          PR_IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+        run: |
+          set -euo pipefail
+          if [[ "${PR_HEAD_REPO}" != "${CURRENT_REPO}" ]] || [[ "${PR_IS_FORK}" == "true" ]]; then
+            echo "::error::Fail-closed: refusing to validate findings for forked or external repository PRs."
+            exit 1
+          fi
+          echo "Trusted same-repository PR confirmed: ${PR_HEAD_REPO}"
 
-        findings_file = Path('.codex/security-findings-comprehensive.json')
-        live_dir = Path('.codex/security-live')
-        if not findings_file.exists():
-            print('ℹ️ No findings JSON generated; skipping live-evidence verification.')
-            raise SystemExit(0)
-        data = json.loads(findings_file.read_text())
-        artifact_total = len(data.get('findings', []))
-        live_total = 0
-        for candidate in [
-            live_dir / 'dependabot' / 'alerts_open.json',
-            live_dir / 'secrets' / 'alerts_open.json',
-        ]:
-            if not candidate.exists():
-                continue
-            try:
-                payload = json.loads(candidate.read_text())
-                if isinstance(payload, list):
-                    live_total += len(payload)
-            except Exception:
-                pass
-        if live_total and abs(live_total - artifact_total) > 0:
-            raise SystemExit(f'❌ Artifact total ({artifact_total}) does not match live GHAS total ({live_total}).')
-        print(f'✅ Live GHAS evidence agrees with the normalized findings artifact: {artifact_total} findings.')
-        PY
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${ vars.CODEX_CACHE_VERSION || "v2" }
+
+      - name: Validate findings JSON structure
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          findings_file = Path('.codex/security-findings-comprehensive.json')
+          if findings_file.exists():
+              try:
+                  with findings_file.open() as f:
+                      data = json.load(f)
+                  if isinstance(data, dict):
+                      if 'findings' in data and 'metadata' in data:
+                          print('✅ Findings JSON structure is valid')
+                          print(f"  - Total findings: {len(data.get('findings', []))}")
+                          if 'metadata' in data and 'timestamp' in data['metadata']:
+                              print(f"  - Last updated: {data['metadata']['timestamp']}")
+                      else:
+                          print("⚠️  Expected 'findings' and 'metadata' keys in JSON")
+                  else:
+                      print('⚠️  Findings file should contain a JSON object')
+              except json.JSONDecodeError as exc:
+                  print(f'❌ Invalid JSON: {exc}')
+                  raise SystemExit(1)
+          else:
+              print('ℹ️  No findings file found (will be created if needed)')
+          PY
+
+      - name: Verify live findings agree with GitHub Security snapshot
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          findings_file = Path('.codex/security-findings-comprehensive.json')
+          live_dir = Path('.codex/security-live')
+          if not findings_file.exists():
+              print('ℹ️ No findings JSON generated; skipping live-evidence verification.')
+              raise SystemExit(0)
+
+          data = json.loads(findings_file.read_text())
+          artifact_total = len(data.get('findings', []))
+          live_total = 0
+          for candidate in [
+              live_dir / 'dependabot' / 'alerts_open.json',
+              live_dir / 'secrets' / 'alerts_open.json',
+          ]:
+              if not candidate.exists():
+                  continue
+              try:
+                  payload = json.loads(candidate.read_text())
+                  if isinstance(payload, list):
+                      live_total += len(payload)
+              except Exception:
+                  pass
+          if live_total and abs(live_total - artifact_total) > 0:
+              raise SystemExit(f'❌ Artifact total ({artifact_total}) does not match live GHAS total ({live_total}).')
+          print(f'✅ Live GHAS evidence agrees with the normalized findings artifact: {artifact_total} findings.')
+          PY
+
     timeout-minutes: 15

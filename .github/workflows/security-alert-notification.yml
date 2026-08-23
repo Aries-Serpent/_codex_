@@ -23,26 +23,26 @@ jobs:
     outputs:
       action_required: ${{ steps.summary.outputs.action_required }}
       total_open_alerts: ${{ steps.summary.outputs.total_open_alerts }}
+      source_of_truth: ${{ steps.summary.outputs.source_of_truth }}
+      status: ${{ steps.summary.outputs.status }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
       - name: Fetch live GitHub security snapshot
         id: fetch
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         shell: bash
         run: |
-          set +e
+          set -euo pipefail
           python scripts/ci/reconcile_live_security.py \
             --repo "${GITHUB_REPOSITORY}" \
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
-            --markdown ".codex/live-security-reconciliation.md"
-          status=$?
-          echo "fetch_status=$status" >> "$GITHUB_OUTPUT"
-          exit 0
+            --markdown ".codex/live-security-reconciliation.md" \
+            --strict-artifact
+          echo "fetch_status=ok" >> "$GITHUB_OUTPUT"
 
       - name: Summarize advisory state
         id: summary
@@ -50,6 +50,8 @@ jobs:
         run: |
           set -euo pipefail
           total_open_alerts="0"
+          status="clean"
+          source_of_truth="artifact"
           if [ -f ".codex/live-security-reconciliation.json" ]; then
             total_open_alerts=$(python - <<'PY'
           import json
@@ -65,21 +67,57 @@ jobs:
               print(payload.get('total_open_alerts', 0))
           PY
             )
+            source_of_truth=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('artifact')
+          else:
+              try:
+                  payload = json.loads(path.read_text(encoding='utf-8'))
+              except json.JSONDecodeError:
+                  print('artifact')
+                  raise SystemExit
+              print(payload.get('source_of_truth', 'artifact'))
+          PY
+            )
+            status=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('clean')
+          else:
+              try:
+                  payload = json.loads(path.read_text(encoding='utf-8'))
+              except json.JSONDecodeError:
+                  print('clean')
+                  raise SystemExit
+              print(payload.get('status', 'clean'))
+          PY
+            )
           fi
-          if [ "$total_open_alerts" = "0" ]; then
+          if [ "$total_open_alerts" = "0" ] || [ "$status" = "clean" ] || [ "$status" = "artifact-only" ]; then
             echo "action_required=false" >> "$GITHUB_OUTPUT"
-            echo "total_open_alerts=0" >> "$GITHUB_OUTPUT"
+            echo "total_open_alerts=$total_open_alerts" >> "$GITHUB_OUTPUT"
+            echo "source_of_truth=$source_of_truth" >> "$GITHUB_OUTPUT"
+            echo "status=$status" >> "$GITHUB_OUTPUT"
             echo "## 🔐 Security alert advisory summary" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
             echo "- GitHub reports no open alerts right now." >> "$GITHUB_STEP_SUMMARY"
-            echo "- Status: advisory-only" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
           echo "action_required=true" >> "$GITHUB_OUTPUT"
           echo "total_open_alerts=$total_open_alerts" >> "$GITHUB_OUTPUT"
+          echo "source_of_truth=$source_of_truth" >> "$GITHUB_OUTPUT"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
           echo "## 🔐 Security alert advisory summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
           echo "- GitHub reports $total_open_alerts open alerts." >> "$GITHUB_STEP_SUMMARY"
-          echo "- Status: action required" >> "$GITHUB_STEP_SUMMARY"
           if [ -f ".codex/live-security-reconciliation.md" ]; then
             cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -105,11 +143,15 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      source_of_truth: ${{ steps.publish.outputs.source_of_truth }}
+      status: ${{ steps.publish.outputs.status }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
       - name: Publish reconciliation report
+        id: publish
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         shell: bash
@@ -119,6 +161,27 @@ jobs:
             --repo "${GITHUB_REPOSITORY}" \
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
-            --markdown ".codex/live-security-reconciliation.md"
+            --markdown ".codex/live-security-reconciliation.md" \
+            --strict-artifact
+          source_of_truth=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'source_of_truth': 'artifact'}
+          print(payload.get('source_of_truth', 'artifact'))
+          PY
+          )
+          status=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'status': 'clean'}
+          print(payload.get('status', 'clean'))
+          PY
+          )
+          echo "source_of_truth=$source_of_truth" >> "$GITHUB_OUTPUT"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
           echo "## Live GitHub security reconciliation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
           cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"

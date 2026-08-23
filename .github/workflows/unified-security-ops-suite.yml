@@ -92,12 +92,23 @@ jobs:
           }
           JSON
           fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/security-findings-comprehensive.json')
+          if not path.exists():
+              raise SystemExit('artifact missing after preflight')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          if not isinstance(payload, dict) or not isinstance(payload.get('summary'), dict):
+              raise SystemExit('artifact root is not a valid findings summary object')
+          PY
           echo "artifact_path=$artifact_path" >> "$GITHUB_OUTPUT"
-          echo "status=ready" >> "$GITHUB_OUTPUT"
+          echo "status=validated" >> "$GITHUB_OUTPUT"
           echo "generated_at=$generated_at" >> "$GITHUB_OUTPUT"
           echo "## Security preflight" >> "$GITHUB_STEP_SUMMARY"
           echo "- Artifact path: $artifact_path" >> "$GITHUB_STEP_SUMMARY"
           echo "- Generated at: $generated_at" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: validated" >> "$GITHUB_STEP_SUMMARY"
 
   security-live-reconciliation:
     name: Live GitHub security reconciliation (enforcement)
@@ -108,6 +119,7 @@ jobs:
       status: ${{ steps.reconcile.outputs.status }}
       delta: ${{ steps.reconcile.outputs.delta }}
       default_branch_only: ${{ steps.reconcile.outputs.default_branch_only }}
+      source_of_truth: ${{ steps.reconcile.outputs.source_of_truth }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -165,12 +177,31 @@ jobs:
               print('true' if payload.get('default_branch_only') else 'false')
           PY
           )
+          source_of_truth=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'source_of_truth': 'artifact'}
+          print(payload.get('source_of_truth', 'artifact'))
+          PY
+          )
+          status=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'status': 'clean'}
+          print(payload.get('status', 'clean'))
+          PY
+          )
           echo "total_live_alerts=$total_live_alerts" >> "$GITHUB_OUTPUT"
-          echo "status=live-reconciled" >> "$GITHUB_OUTPUT"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "source_of_truth=$source_of_truth" >> "$GITHUB_OUTPUT"
           echo "delta=$delta" >> "$GITHUB_OUTPUT"
           echo "default_branch_only=$default_branch_only" >> "$GITHUB_OUTPUT"
           echo "## Live security reconciliation" >> "$GITHUB_STEP_SUMMARY"
           echo "- Default branch only: $default_branch_only" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source of truth: $source_of_truth" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: $status" >> "$GITHUB_STEP_SUMMARY"
           cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload reconciliation artifacts
@@ -180,7 +211,7 @@ jobs:
           path: |
             .codex/live-security-reconciliation.json
             .codex/live-security-reconciliation.md
-          if-no-files-found: warn
+          if-no-files-found: error
 
   security-summary:
     name: Security Operations Summary
@@ -196,9 +227,11 @@ jobs:
           set -euo pipefail
           echo "## Unified Security Operations Suite Summary" >> "$GITHUB_STEP_SUMMARY"
           echo "- Artifact path: ${{ needs.security-preflight.outputs.artifact_path }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source of truth: ${{ needs.security-live-reconciliation.outputs.source_of_truth }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Reconciliation status: ${{ needs.security-live-reconciliation.outputs.status }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Live open alerts: ${{ needs.security-live-reconciliation.outputs.total_live_alerts }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Reconciliation delta: ${{ needs.security-live-reconciliation.outputs.delta }}" >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ needs.security-live-reconciliation.outputs.total_live_alerts }}" = "0" ]; then
+          if [ "${{ needs.security-live-reconciliation.outputs.status }}" = "clean" ] || [ "${{ needs.security-live-reconciliation.outputs.total_live_alerts }}" = "0" ]; then
             echo "- Action required: no" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "- Action required: yes" >> "$GITHUB_STEP_SUMMARY"
