@@ -40,15 +40,86 @@ jobs:
         '
     - id: findings
       name: Generate security findings section
-      run: "# Create findings file if not exists (for initial runs)\nif [ ! -f \"\
-        .codex/security-findings-comprehensive.json\" ]; then\n  mkdir -p .codex\n\
-        \  echo '{\"findings\": [], \"metadata\": {\"timestamp\": \"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"\
-        , \"status\": \"no_findings\"}}' > .codex/security-findings-comprehensive.json\n\
-        fi\n\n# Generate PR findings markdown\npython scripts/ci/security_pr_formatter.py\
-        \ generate \\\n  --findings \".codex/security-findings-comprehensive.json\"\
-        \ \\\n  --output pr-findings.md \\\n  --limit 5\n\n# Add to step summary\n\
-        echo \"## \U0001F510 Security Findings Report\" >> $GITHUB_STEP_SUMMARY\n\
-        cat pr-findings.md >> $GITHUB_STEP_SUMMARY\n"
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        mkdir -p .codex .codex/security-live
+
+        python scripts/ci/fetch_security_snapshot.py \
+          --types dependabot,secrets,analyses \
+          --out-dir .codex/security-live \
+          --cache-dir .codex/security-cache \
+          --cache-ttl 1800
+
+        python3 - <<'PY'
+        import json
+        from datetime import datetime, timezone
+        from pathlib import Path
+
+        root = Path('.codex/security-live')
+        findings = []
+
+        for alert_file, tool in [
+            (root / 'dependabot' / 'alerts_open.json', 'dependabot'),
+            (root / 'secrets' / 'alerts_open.json', 'secret-scanning'),
+        ]:
+            if not alert_file.exists():
+                continue
+            payload = json.loads(alert_file.read_text())
+            if not isinstance(payload, list):
+                continue
+            for item in payload:
+                if tool == 'dependabot':
+                    vuln = item.get('security_vulnerability') or {}
+                    pkg = (item.get('dependency') or {}).get('package') or {}
+                    findings.append({
+                        'cwe': vuln.get('ghsa_id') or 'CWE-UNKNOWN',
+                        'severity': (vuln.get('severity') or 'LOW').upper(),
+                        'description': vuln.get('description') or f"Dependabot alert in {pkg.get('name', 'dependency')}",
+                        'file_path': pkg.get('name') or 'dependency',
+                        'line_number': 0,
+                        'tool': 'dependabot',
+                        'fix_recommendation': 'Upgrade the affected dependency to the minimum fixed version.',
+                        'confidence': 0.9,
+                    })
+                else:
+                    findings.append({
+                        'cwe': 'CWE-798',
+                        'severity': 'HIGH',
+                        'description': f"Active secret scan finding: {item.get('secret_type', 'unknown')}",
+                        'file_path': item.get('secret_type') or 'secret-scanning',
+                        'line_number': 0,
+                        'tool': 'secret-scanning',
+                        'fix_recommendation': 'Revoke the leaked secret and rotate it through the approved secret manager.',
+                        'confidence': 0.95,
+                    })
+
+        summary = {
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+            'scan_duration_seconds': 0,
+            'total_findings': len(findings),
+            'by_severity': {},
+            'by_tool': {},
+            'status': 'scan_complete' if findings else 'no_findings',
+        }
+        for finding in findings:
+            summary['by_severity'][finding['severity']] = summary['by_severity'].get(finding['severity'], 0) + 1
+            summary['by_tool'][finding['tool']] = summary['by_tool'].get(finding['tool'], 0) + 1
+
+        Path('.codex/security-findings-comprehensive.json').write_text(
+            json.dumps({'findings': findings, 'metadata': summary}, indent=2),
+            encoding='utf-8',
+        )
+        PY
+
+        python scripts/ci/security_pr_formatter.py generate \
+          --findings .codex/security-findings-comprehensive.json \
+          --output pr-findings.md \
+          --limit 5
+
+        echo "## 🔐 Security Findings Report" >> "$GITHUB_STEP_SUMMARY"
+        cat pr-findings.md >> "$GITHUB_STEP_SUMMARY"
     - id: read-findings
       name: Read findings content
       run: "if [ -f \"pr-findings.md\" ]; then\n  echo \"\u2705 Findings file exists\"\
@@ -147,6 +218,7 @@ jobs:
     timeout-minutes: 30
   validate-findings-json:
     name: Validate Findings JSON
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository

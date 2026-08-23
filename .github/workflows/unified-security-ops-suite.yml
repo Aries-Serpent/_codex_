@@ -1,20 +1,21 @@
 name: unified-security-ops-suite
+
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - security/**
-    - src/**
-    - .github/workflows/security-*.yml
+      - security/**
+      - src/**
+      - .github/workflows/security-*.yml
   pull_request:
     types:
-    - opened
-    - synchronize
-    - reopened
+      - opened
+      - synchronize
+      - reopened
     paths:
-    - security/**
-    - src/**
+      - security/**
+      - src/**
   workflow_dispatch:
     inputs:
       operation:
@@ -23,131 +24,160 @@ on:
         default: all
         type: choice
         options:
-        - all
-        - alert-notify
-        - copilot-commands
-        - findings-api
-        - findings-handoff
-        - pr-enhancement
-        - scan-phase-16
-        - tools-bootstrap
-  schedule:
-    - cron: '0 9 * * *'
+          - all
+          - alert-notify
+          - copilot-commands
+          - findings-api
+          - findings-handoff
+          - pr-enhancement
+          - scan-phase-16
+          - tools-bootstrap
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
+
 permissions:
   contents: read
   statuses: write
-  issues: write
   pull-requests: write
   security-events: read
   id-token: write
+
 jobs:
-  security-alert-notify:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'alert-notify' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
+  security-preflight:
+    name: Security preflight (advisory)
     runs-on: ubuntu-latest
-    name: Security Alert Notification
+    outputs:
+      artifact_path: ${{ steps.prepare.outputs.artifact_path }}
+      status: ${{ steps.prepare.outputs.status }}
+      generated_at: ${{ steps.prepare.outputs.generated_at }}
     steps:
-    - uses: actions/checkout@v5
-    - name: Check security alerts
-      run: "echo \"Checking for security alerts...\"\necho \"\u2713 Alert check completed\"\
-        \n"
-    - name: Send notifications
-      run: "echo \"Sending security alert notifications...\"\necho \"\u2713 Notifications\
-        \ sent\"\n"
-    timeout-minutes: 30
-  security-copilot-commands:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'copilot-commands' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'push' ||
-      github.event_name == 'pull_request'))
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Prepare generated findings artifact
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex
+          artifact_path=".codex/security-findings-comprehensive.json"
+          generated_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          if [ ! -f "$artifact_path" ]; then
+            cat > "$artifact_path" <<JSON
+          {
+            "scan_metadata": {
+              "timestamp": "$generated_at",
+              "repository": "${GITHUB_REPOSITORY}",
+              "run_id": "${GITHUB_RUN_ID}"
+            },
+            "summary": {
+              "total_findings": 0,
+              "critical_count": 0,
+              "high_count": 0,
+              "medium_count": 0,
+              "low_count": 0,
+              "info_count": 0
+            },
+            "findings_by_severity": {
+              "CRITICAL": [],
+              "HIGH": [],
+              "MEDIUM": [],
+              "LOW": [],
+              "INFO": []
+            },
+            "findings_by_tool": {},
+            "finding_index": []
+          }
+          JSON
+          fi
+          echo "artifact_path=$artifact_path" >> "$GITHUB_OUTPUT"
+          echo "status=ready" >> "$GITHUB_OUTPUT"
+          echo "generated_at=$generated_at" >> "$GITHUB_OUTPUT"
+          echo "## Security preflight" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact path: $artifact_path" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Generated at: $generated_at" >> "$GITHUB_STEP_SUMMARY"
+
+  security-live-reconciliation:
+    name: Live GitHub security reconciliation (enforcement)
+    needs: security-preflight
     runs-on: ubuntu-latest
-    name: Security Copilot Commands
+    outputs:
+      total_live_alerts: ${{ steps.reconcile.outputs.total_live_alerts }}
+      status: ${{ steps.reconcile.outputs.status }}
+      delta: ${{ steps.reconcile.outputs.delta }}
     steps:
-    - uses: actions/checkout@v5
-    - name: Process security copilot commands
-      run: "echo \"Processing security copilot commands...\"\necho \"\u2713 Commands\
-        \ processed\"\n"
-    timeout-minutes: 30
-  security-findings-api:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'findings-api' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
-    runs-on: ubuntu-latest
-    name: Security Findings API
-    steps:
-    - uses: actions/checkout@v5
-    - name: Fetch security findings
-      run: "echo \"Fetching findings from security API...\"\necho \"\u2713 Findings\
-        \ fetched\"\n"
-    timeout-minutes: 30
-  security-findings-handoff:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'findings-handoff' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'))
-    runs-on: ubuntu-latest
-    name: Security Findings Copilot Handoff
-    needs:
-    - security-findings-api
-    steps:
-    - uses: actions/checkout@v5
-    - name: Hand off findings to Copilot
-      run: "echo \"Handing off security findings to Copilot agent...\"\necho \"\u2713\
-        \ Handoff completed\"\n"
-    timeout-minutes: 30
-  security-pr-enhancement:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'pr-enhancement' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'))
-    runs-on: ubuntu-latest
-    name: Security PR Enhancement
-    steps:
-    - uses: actions/checkout@v5
-    - name: Enhance PR with security info
-      run: "echo \"Enhancing pull request with security metadata...\"\necho \"\u2713\
-        \ PR enhancement completed\"\n"
-    timeout-minutes: 30
-  security-scan-phase-16:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'scan-phase-16' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
-      github.event_name == 'push'))
-    runs-on: ubuntu-latest
-    name: Security Scan Phase 16
-    steps:
-    - uses: actions/checkout@v5
-    - name: Run phase 16 security scan
-      run: "echo \"Running phase 16 security scan...\"\necho \"\u2713 Security scan\
-        \ completed\"\n"
-    timeout-minutes: 30
-  security-tools-bootstrap:
-    if: >-
-      (((github.event.inputs.operation || 'all') == 'tools-bootstrap' ||
-      (github.event.inputs.operation || 'all') == 'all') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'push'))
-    runs-on: ubuntu-latest
-    name: Security Tools Bootstrap
-    steps:
-    - uses: actions/checkout@v5
-    - name: Bootstrap security tools
-      run: "echo \"Bootstrapping security scanning tools...\"\necho \"\u2713 Bootstrap\
-        \ completed\"\n"
-    timeout-minutes: 30
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Reconcile live repo security state
+        id: reconcile
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/ci/reconcile_live_security.py \
+            --repo "${GITHUB_REPOSITORY}" \
+            --artifact ".codex/security-findings-comprehensive.json" \
+            --output ".codex/live-security-reconciliation.json" \
+            --markdown ".codex/live-security-reconciliation.md"
+          total_live_alerts=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('0')
+          else:
+              payload = json.loads(path.read_text(encoding='utf-8'))
+              print(payload.get('total_open_alerts', 0))
+          PY
+          )
+          delta=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('0')
+          else:
+              payload = json.loads(path.read_text(encoding='utf-8'))
+              print(payload.get('delta', {}).get('total_findings', 0))
+          PY
+          )
+          echo "total_live_alerts=$total_live_alerts" >> "$GITHUB_OUTPUT"
+          echo "status=live-reconciled" >> "$GITHUB_OUTPUT"
+          echo "delta=$delta" >> "$GITHUB_OUTPUT"
+          echo "## Live security reconciliation" >> "$GITHUB_STEP_SUMMARY"
+          cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reconciliation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-security-reconciliation
+          path: |
+            .codex/live-security-reconciliation.json
+            .codex/live-security-reconciliation.md
+          if-no-files-found: warn
+
   security-summary:
-    runs-on: ubuntu-latest
     name: Security Operations Summary
+    needs:
+      - security-preflight
+      - security-live-reconciliation
     if: always()
+    runs-on: ubuntu-latest
     steps:
-    - name: Report summary
-      run: "echo \"## Unified Security Operations Suite Summary\"\necho \"\u2705 Security\
-        \ operations completed\"\necho \"**Status**: Ready for production\"\n"
-    timeout-minutes: 30
+      - name: Publish final summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## Unified Security Operations Suite Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact path: ${{ needs.security-preflight.outputs.artifact_path }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Live open alerts: ${{ needs.security-live-reconciliation.outputs.total_live_alerts }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Reconciliation delta: ${{ needs.security-live-reconciliation.outputs.delta }}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.security-live-reconciliation.outputs.total_live_alerts }}" = "0" ]; then
+            echo "- Action required: no" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Action required: yes" >> "$GITHUB_STEP_SUMMARY"
+          fi

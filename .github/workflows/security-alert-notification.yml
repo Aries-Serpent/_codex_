@@ -1,156 +1,124 @@
 name: Security Alert Notification
+
 on:
-  workflow_dispatch: null
+  workflow_dispatch: {}
   schedule:
-  - cron: 0 9 * * *
+    - cron: '0 9 * * *'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: read
   issues: write
   pull-requests: write
+
 jobs:
-  check-security-alerts:
+  advisory-summary:
+    name: Advisory summary (non-blocking)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-    name: Check and notify on security alerts
+    timeout-minutes: 30
+    outputs:
+      action_required: ${{ steps.summary.outputs.action_required }}
+      total_open_alerts: ${{ steps.summary.outputs.total_open_alerts }}
     steps:
-    - name: Mask secrets
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-        '
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: CacheManager health check
-      continue-on-error: true
-      run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification
-        2>/dev/null || echo "Cache health: check skipped"
+      - name: Fetch live GitHub security snapshot
+        id: fetch
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        shell: bash
+        run: |
+          set +e
+          python scripts/ci/reconcile_live_security.py \
+            --repo "${GITHUB_REPOSITORY}" \
+            --artifact ".codex/security-findings-comprehensive.json" \
+            --output ".codex/live-security-reconciliation.json" \
+            --markdown ".codex/live-security-reconciliation.md"
+          status=$?
+          echo "fetch_status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
-        '
-    - name: Get Dependabot alerts
-      id: get-alerts
-      continue-on-error: true
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ github.token }}
-        script: "let alerts;\ntry {\n  const response = await github.rest.dependabot.listAlertsForRepo({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    state:\
-          \ 'open',\n    sort: 'created',\n    direction: 'desc',\n    per_page: 100\n\
-          \  });\n  alerts = response.data;\n} catch (err) {\n  core.warning(`Unable\
-          \ to fetch Dependabot alerts: ${err.message} (status ${err.status})`);\n\
-          \  core.setOutput('alert-count', 0);\n  core.setOutput('critical-count',\
-          \ 0);\n  core.setOutput('high-count', 0);\n  core.setOutput('moderate-count',\
-          \ 0);\n  core.setOutput('low-count', 0);\n  core.setOutput('alerts', '[]');\n\
-          \  core.setOutput('has-alerts', false);\n  return { count: 0, alerts: []\
-          \ };\n}\n\n// Filter alerts created in last 24 hours\nconst oneDayAgo =\
-          \ new Date(Date.now() - 24 * 60 * 60 * 1000);\nconst newAlerts = alerts.filter(alert\
-          \ =>\n  new Date(alert.created_at) > oneDayAgo\n);\n\n// Group by severity\n\
-          const groupedAlerts = {\n  critical: [],\n  high: [],\n  moderate: [],\n\
-          \  low: []\n};\n\nnewAlerts.forEach(alert => {\n  const severity = alert.security_advisory.severity.toLowerCase();\n\
-          \  if (groupedAlerts[severity]) {\n    groupedAlerts[severity].push(alert);\n\
-          \  }\n});\n\ncore.setOutput('alert-count', newAlerts.length);\ncore.setOutput('critical-count',\
-          \ groupedAlerts.critical.length);\ncore.setOutput('high-count', groupedAlerts.high.length);\n\
-          core.setOutput('moderate-count', groupedAlerts.moderate.length);\ncore.setOutput('low-count',\
-          \ groupedAlerts.low.length);\ncore.setOutput('alerts', JSON.stringify(newAlerts));\n\
-          core.setOutput('has-alerts', newAlerts.length > 0);\n\nreturn {\n  count:\
-          \ newAlerts.length,\n  alerts: newAlerts\n};\n"
-    - name: Create security summary
-      id: create-summary
-      if: steps.get-alerts.outputs.has-alerts == 'true'
-      uses: actions/github-script@v8
-      env:
-        ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
-      with:
-        github-token: ${{ github.token }}
-        script: "const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');\n\nlet\
-          \ summary = '## \U0001F6A8 New Security Alerts Detected\\n\\n';\nsummary\
-          \ += `**Total New Alerts:** ${alerts.length}\\n\\n`;\n\n// Summary table\n\
-          summary += '| Severity | Count |\\n';\nsummary += '|----------|-------|\\\
-          n';\nsummary += `| Critical | ${{ steps.get-alerts.outputs.critical-count\
-          \ }} |\\n`;\nsummary += `| High | ${{ steps.get-alerts.outputs.high-count\
-          \ }} |\\n`;\nsummary += `| Moderate | ${{ steps.get-alerts.outputs.moderate-count\
-          \ }} |\\n`;\nsummary += `| Low | ${{ steps.get-alerts.outputs.low-count\
-          \ }} |\\n\\n`;\n\n// Group and display alerts\nconst severityGroups = {\n\
-          \  'critical': { emoji: '\U0001F534', alerts: [] },\n  'high': { emoji:\
-          \ '\U0001F7E0', alerts: [] },\n  'moderate': { emoji: '\U0001F7E1', alerts:\
-          \ [] },\n  'low': { emoji: '\U0001F535', alerts: [] }\n};\n\nalerts.forEach(alert\
-          \ => {\n  const severity = alert.security_advisory.severity.toLowerCase();\n\
-          \  if (severityGroups[severity]) {\n    severityGroups[severity].alerts.push(alert);\n\
-          \  }\n});\n\n// Add alert details by severity\nfor (const [severity, group]\
-          \ of Object.entries(severityGroups)) {\n  if (group.alerts.length > 0) {\n\
-          \    summary += `### ${group.emoji} ${severity.charAt(0).toUpperCase() +\
-          \ severity.slice(1)} Severity\\n\\n`;\n\n    group.alerts.forEach(alert\
-          \ => {\n      const advisory = alert.security_advisory;\n      summary +=\
-          \ `#### Alert  #${alert.number}: ${advisory.summary}\\n`;\n      summary\
-          \ += `- **Package:** ${alert.dependency.package.name} (${alert.dependency.package.ecosystem})\\\
-          n`;\n      if (advisory.cve_id) {\n        summary += `- **CVE:** [${advisory.cve_id}](${advisory.references[0]?.url\
-          \ || advisory.html_url})\\n`;\n      }\n      if (advisory.cvss?.score)\
-          \ {\n        summary += `- **CVSS Score:** ${advisory.cvss.score}\\n`;\n\
-          \      }\n      summary += `- **URL:** ${alert.html_url}\\n`;\n      summary\
-          \ += `- **Created:** ${new Date(alert.created_at).toISOString().split('T')[0]}\\\
-          n\\n`;\n    });\n  }\n}\n\nsummary += '\\n---\\n\\n';\nsummary += '### \U0001F4CB\
-          \ Next Steps\\n\\n';\nsummary += '1. **Critical/High Alerts:** Address within\
-          \ 48 hours\\n';\nsummary += '2. **Moderate Alerts:** Address within 1 week\\\
-          n';\nsummary += '3. **Low Alerts:** Address within 1 month\\n\\n';\nsummary\
-          \ += '**Review Process:**\\n';\nsummary += '- Check if current version includes\
-          \ the fix\\n';\nsummary += '- If patched: Dismiss alert and document in\
-          \ `reports/security_audit.md`\\n';\nsummary += '- If not patched: Create\
-          \ PR to update dependency\\n\\n';\nsummary += `**View All Alerts:** https://github.com/${context.repo.owner}/${context.repo.repo}/security/dependabot\\\
-          n`;\n\ncore.setOutput('summary', summary);\nreturn summary;\n"
-    - name: Create GitHub Issue for new alerts
-      if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count
-        > 0 || steps.get-alerts.outputs.high-count > 0)
-      uses: actions/github-script@v8
-      env:
-        ISSUE_SUMMARY: ${{ steps.create-summary.outputs.summary }}
-        CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}
-        HIGH_COUNT: ${{ steps.get-alerts.outputs.high-count }}
-      with:
-        github-token: ${{ github.token }}
-        script: "const summary = process.env.ISSUE_SUMMARY || '';\nconst criticalCount\
-          \ = parseInt(process.env.CRITICAL_COUNT || '0', 10);\nconst highCount =\
-          \ parseInt(process.env.HIGH_COUNT || '0', 10);\n\n// Only create issue for\
-          \ critical/high severity alerts\nif (criticalCount > 0 || highCount > 0)\
-          \ {\n  const title = `\U0001F6A8 Security Alert: ${criticalCount} Critical,\
-          \ ${highCount} High Severity Vulnerabilities Detected`;\n\n  // Check if\
-          \ similar issue already exists\n  const { data: existingIssues } = await\
-          \ github.rest.issues.listForRepo({\n    owner: context.repo.owner,\n   \
-          \ repo: context.repo.repo,\n    state: 'open',\n    labels: 'security,dependabot',\n\
-          \    per_page: 10\n  });\n\n  // Don't create duplicate if issue already\
-          \ exists from today\n  const today = new Date().toISOString().split('T')[0];\n\
-          \  const existingToday = existingIssues.find(issue =>\n    issue.created_at.startsWith(today)\n\
-          \  );\n\n  if (!existingToday) {\n    await github.rest.issues.create({\n\
-          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-          \  title: title,\n      body: summary,\n      labels: ['security', 'dependabot',\
-          \ 'high-priority']\n    });\n\n    core.info('Created security alert issue');\n\
-          \  } else {\n    core.info('Security issue already exists for today, skipping\
-          \ creation');\n  }\n}\n"
-    - name: Add workflow summary
-      if: always()
-      env:
-        STEPS_GET-ALERTS_OUTPUTS_HAS-ALERTS: ${{ steps.get-alerts.outputs.has-alerts
-          }}
-      run: "if [ \"${{ steps.get-alerts.outputs.has-alerts }}\" = \"true\" ]; then\n\
-        \  echo \"${{ steps.create-summary.outputs.summary }}\" >> $GITHUB_STEP_SUMMARY\n\
-        else\n  echo \"## \u2705 No New Security Alerts\" >> $GITHUB_STEP_SUMMARY\n\
-        \  echo \"No new Dependabot security alerts detected in the last 24 hours.\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"\
-        **Last Check:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')\" >> $GITHUB_STEP_SUMMARY\n\
-        fi\n"
-    - name: Send notification (optional - requires configuration)
-      if: steps.get-alerts.outputs.has-alerts == 'true' && steps.get-alerts.outputs.critical-count
-        > 0
-      env:
-        STEPS_GET-ALERTS_OUTPUTS_CRITICAL-COUNT: ${{ steps.get-alerts.outputs.critical-count
-          }}
-      run: "echo \"::notice::\U0001F6A8 ${{ steps.get-alerts.outputs.critical-count\
-        \ }} critical security alert(s) detected!\"\necho \"Configure Slack/Teams/Email\
-        \ notifications by adding secrets and updating this step\"\n"
-    env:
-      GH_TOKEN: ${{ github.token }}
+      - name: Summarize advisory state
+        id: summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          total_open_alerts="0"
+          if [ -f ".codex/live-security-reconciliation.json" ]; then
+            total_open_alerts=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('0')
+          else:
+              try:
+                  payload = json.loads(path.read_text(encoding='utf-8'))
+              except json.JSONDecodeError:
+                  payload = {'total_open_alerts': 0}
+              print(payload.get('total_open_alerts', 0))
+          PY
+            )
+          fi
+          if [ "$total_open_alerts" = "0" ]; then
+            echo "action_required=false" >> "$GITHUB_OUTPUT"
+            echo "total_open_alerts=0" >> "$GITHUB_OUTPUT"
+            echo "## 🔐 Security alert advisory summary" >> "$GITHUB_STEP_SUMMARY"
+            echo "- GitHub reports no open alerts right now." >> "$GITHUB_STEP_SUMMARY"
+            echo "- Status: advisory-only" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "action_required=true" >> "$GITHUB_OUTPUT"
+          echo "total_open_alerts=$total_open_alerts" >> "$GITHUB_OUTPUT"
+          echo "## 🔐 Security alert advisory summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- GitHub reports $total_open_alerts open alerts." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: action required" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f ".codex/live-security-reconciliation.md" ]; then
+            cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  enforcement:
+    name: Security alert enforcement
+    needs: advisory-summary
+    if: needs.advisory-summary.outputs.action_required == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Enforce alert threshold
+        shell: bash
+        run: |
+          set -euo pipefail
+          total_open_alerts="${{ needs.advisory-summary.outputs.total_open_alerts }}"
+          echo "::error::Action required: GitHub reports $total_open_alerts open security alerts."
+          exit 1
+
+  live-security-reconciliation:
+    name: Live GitHub security reconciliation
+    needs: advisory-summary
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Publish reconciliation report
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/ci/reconcile_live_security.py \
+            --repo "${GITHUB_REPOSITORY}" \
+            --artifact ".codex/security-findings-comprehensive.json" \
+            --output ".codex/live-security-reconciliation.json" \
+            --markdown ".codex/live-security-reconciliation.md"
+          echo "## Live GitHub security reconciliation" >> "$GITHUB_STEP_SUMMARY"
+          cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"

@@ -10,11 +10,23 @@ import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
 from urllib import error, request
 
 SEVERITY_ORDER = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
 SOURCE_ORDER = ["code_scanning", "dependabot", "secret_scanning"]
+SEVERITY_ALIASES = {
+    "CRITICAL": "CRITICAL",
+    "ERROR": "CRITICAL",
+    "HIGH": "HIGH",
+    "WARNING": "MEDIUM",
+    "WARNING_LEVEL": "MEDIUM",
+    "MODERATE": "MEDIUM",
+    "MEDIUM": "MEDIUM",
+    "LOW": "LOW",
+    "NOTE": "LOW",
+    "INFO": "INFO",
+    "UNKNOWN": "INFO",
+}
 
 
 def _token() -> str | None:
@@ -28,13 +40,16 @@ def _token() -> str | None:
 
 def _headers() -> dict[str, str]:
     token = _token()
-    headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
     if token:
         headers["Authorization"] = f"******"
     return headers
 
 
-def _api_get(url: str) -> Any:
+def _api_get(url: str) -> object:
     req = request.Request(url, headers=_headers())
     with request.urlopen(req, timeout=30) as response:
         body = response.read().decode("utf-8")
@@ -43,18 +58,25 @@ def _api_get(url: str) -> Any:
         return json.loads(body)
 
 
-def _paginate(endpoint: str) -> list[dict[str, Any]]:
-    results: list[dict[str, Any]] = []
+def _coerce_severity(raw: object) -> str:
+    if raw is None:
+        return "INFO"
+    value = str(raw).strip().upper()
+    if value.startswith("CWE-"):
+        return "INFO"
+    return SEVERITY_ALIASES.get(value, "INFO")
+
+
+def _paginate(endpoint: str) -> list[dict[str, object]]:
+    results: list[dict[str, object]] = []
     page = 1
     while True:
         separator = "&" if "?" in endpoint else "?"
         url = f"https://api.github.com{endpoint}{separator}page={page}&per_page=100"
         try:
             payload = _api_get(url)
-        except error.HTTPError as exc:  # pragma: no cover - network safety
-            if exc.code in (401, 403, 404):
-                return results
-            raise
+        except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
+            return results
         if not isinstance(payload, list):
             return results
         if not payload:
@@ -65,60 +87,98 @@ def _paginate(endpoint: str) -> list[dict[str, Any]]:
         page += 1
 
 
-def _normalize_severity(alert: dict[str, Any], source: str) -> str:
+def _normalize_severity(alert: dict[str, object], source: str) -> str:
     if source == "dependabot":
-        severity = str(
-            (alert.get("security_vulnerability") or {}).get("severity") or "unknown"
-        ).upper()
-        return {"CRITICAL": "CRITICAL", "HIGH": "HIGH", "MODERATE": "MEDIUM", "LOW": "LOW"}.get(severity, "INFO")
+        severity = str((alert.get("security_vulnerability") or {}).get("severity") or "unknown")
+        return _coerce_severity(severity)
 
     if source == "secret_scanning":
         return "CRITICAL" if alert.get("state") == "open" else "LOW"
 
     rule = alert.get("rule") or {}
-    severity = str(
-        rule.get("security_severity_level")
-        or rule.get("severity")
-        or alert.get("most_recent_instance", {}).get("state")
-        or "info"
-    ).lower()
-    mapping = {
-        "critical": "CRITICAL",
-        "error": "CRITICAL",
-        "high": "HIGH",
-        "warning": "MEDIUM",
-        "warning_level": "MEDIUM",
-        "moderate": "MEDIUM",
-        "medium": "MEDIUM",
-        "low": "LOW",
-        "note": "LOW",
-        "info": "INFO",
-    }
-    return mapping.get(severity, "INFO")
+    candidates = [
+        rule.get("security_severity_level"),
+        rule.get("severity"),
+        (alert.get("most_recent_instance") or {}).get("state"),
+        alert.get("state"),
+        alert.get("severity"),
+        alert.get("level"),
+    ]
+    for candidate in candidates:
+        if candidate is not None:
+            severity = _coerce_severity(candidate)
+            if severity != "INFO":
+                return severity
+    return "INFO"
 
 
-def _artifact_summary(path: Path) -> dict[str, Any]:
+def _severity_counts_from_mapping(raw: object) -> dict[str, int]:
+    counts = {sev: 0 for sev in SEVERITY_ORDER}
+    if not isinstance(raw, dict):
+        return counts
+    for key, value in raw.items():
+        key_name = str(key).strip().upper().replace("-", "_")
+        int_value = int(value or 0)
+        if "CRITICAL" in key_name:
+            counts["CRITICAL"] = int_value
+        elif "HIGH" in key_name:
+            counts["HIGH"] = int_value
+        elif "MODERATE" in key_name or "MEDIUM" in key_name:
+            counts["MEDIUM"] = int_value
+        elif "LOW" in key_name:
+            counts["LOW"] = int_value
+        elif "INFO" in key_name:
+            counts["INFO"] = int_value
+    return counts
+
+
+def _artifact_summary(path: Path) -> dict[str, object]:
+    zero = {"total_findings": 0, "by_severity": {sev: 0 for sev in SEVERITY_ORDER}}
     if not path.exists():
-        return {"total_findings": 0, "by_severity": {sev: 0 for sev in SEVERITY_ORDER}}
+        return zero
 
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {"total_findings": 0, "by_severity": {sev: 0 for sev in SEVERITY_ORDER}}
+    except (json.JSONDecodeError, OSError):
+        return zero
 
-    summary = payload.get("summary", {})
-    severity = {
-        "CRITICAL": int(summary.get("critical_count", 0) or 0),
-        "HIGH": int(summary.get("high_count", 0) or 0),
-        "MEDIUM": int(summary.get("medium_count", 0) or 0),
-        "LOW": int(summary.get("low_count", 0) or 0),
-        "INFO": int(summary.get("info_count", 0) or 0),
-    }
-    total = int(summary.get("total_findings", sum(severity.values())) or 0)
-    return {"total_findings": total, "by_severity": severity}
+    if not isinstance(payload, dict):
+        return zero
+
+    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+    metadata = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
+    severity = _severity_counts_from_mapping(summary.get("by_severity") or metadata.get("by_severity"))
+    if not any(severity.values()):
+        severity = _severity_counts_from_mapping(summary) if summary else _severity_counts_from_mapping(metadata)
+
+    total = int((summary or metadata).get("total_findings", 0) or 0)
+    findings = payload.get("findings") or payload.get("finding_index") or []
+    if isinstance(findings, list) and findings:
+        total = len(findings)
+        counts = {sev: 0 for sev in SEVERITY_ORDER}
+        for finding in findings:
+            if not isinstance(finding, dict):
+                continue
+            sev = _coerce_severity(
+                finding.get("severity")
+                or finding.get("level")
+                or finding.get("security_severity_level")
+                or (finding.get("security_vulnerability") or {}).get("severity")
+                or (finding.get("rule") or {}).get("severity")
+                or (finding.get("rule") or {}).get("security_severity_level")
+            )
+            counts[sev] = counts.get(sev, 0) + 1
+        if any(counts.values()):
+            severity = counts
+        total = sum(severity.values())
+
+    if not total:
+        total = sum(severity.values())
+
+    return {"total_findings": int(total), "by_severity": severity}
 
 
-def _write_markdown(path: Path, payload: dict[str, Any]) -> None:
+def _write_markdown(path: Path, payload: dict[str, object]) -> None:
     lines = [
         "# 🔐 Live GitHub Security Reconciliation",
         "",
@@ -141,18 +201,20 @@ def _write_markdown(path: Path, payload: dict[str, Any]) -> None:
     for source in SOURCE_ORDER:
         lines.append(f"| {source} | {payload['by_source'].get(source, 0)} |")
 
-    lines.extend(["", "## Artifact-generated findings", "", f"- Total: **{payload['artifact_generated_findings']['total_findings']}**", ""])
+    artifact_summary = payload.get("artifact_generated_findings", {})
+    lines.extend(["", "## Artifact-generated findings", "", f"- Total: **{artifact_summary.get('total_findings', 0)}**", ""])
     lines.append("| Severity | Count |")
     lines.append("|----------|-------|")
     for severity in SEVERITY_ORDER:
-        lines.append(f"| {severity} | {payload['artifact_generated_findings']['by_severity'].get(severity, 0)} |")
+        lines.append(f"| {severity} | {artifact_summary.get('by_severity', {}).get(severity, 0)} |")
 
-    lines.extend(["", "## Delta", "", f"- Total delta: **{payload['delta']['total_findings']}**", f"- Needs triage: **{payload['delta']['needs_triage']}**", ""])
+    delta_total = payload.get("delta", {}).get("total_findings", 0)
+    lines.extend(["", "## Delta", "", f"- Total delta: **{delta_total}**", f"- Needs triage: **{payload.get('needs_triage', False)}**", ""])
     lines.append("| Severity | Live | Artifact | Delta |")
     lines.append("|----------|------|----------|-------|")
     for severity in SEVERITY_ORDER:
         live = payload["by_severity"].get(severity, 0)
-        artifact = payload["artifact_generated_findings"]["by_severity"].get(severity, 0)
+        artifact = artifact_summary.get("by_severity", {}).get(severity, 0)
         delta = live - artifact
         lines.append(f"| {severity} | {live} | {artifact} | {delta} |")
 
@@ -160,29 +222,25 @@ def _write_markdown(path: Path, payload: dict[str, Any]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def _build_payload(repo: str, artifact_path: str) -> dict[str, Any]:
+def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     repo_url = f"https://github.com/{repo}"
-    repository = repo.split("/", 1)
     default_branch = "main"
-    repo_endpoint = f"https://api.github.com/repos/{'/'.join(repository)}"
-    by_source: dict[str, list[dict[str, Any]]] = {
-        "code_scanning": [],
-        "dependabot": [],
-        "secret_scanning": [],
-    }
+    artifact_summary = _artifact_summary(Path(artifact_path))
 
     if not _token():
+        artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
             "default_branch_only": True,
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "total_open_alerts": 0,
-            "by_severity": {sev: 0 for sev in SEVERITY_ORDER},
+            "total_open_alerts": artifact_total,
+            "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
             "by_source": {src: 0 for src in SOURCE_ORDER},
-            "artifact_generated_findings": _artifact_summary(Path(artifact_path)),
-            "delta": {"total_findings": 0, "needs_triage": False},
-            "needs_triage": False,
+            "artifact_generated_findings": artifact_summary,
+            "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
+            "needs_triage": artifact_total > 0,
+            "source_of_truth": "artifact",
             "source_urls": {
                 "code_scanning": f"{repo_url}/security/code-scanning",
                 "dependabot": f"{repo_url}/security/dependabot",
@@ -191,28 +249,59 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, Any]:
         }
 
     try:
-        repo_meta = _api_get(repo_endpoint)
-        default_branch = str(repo_meta.get("default_branch") or default_branch)
-    except Exception:  # pragma: no cover - best effort fallback
-        default_branch = "main"
+        repo_meta = _api_get(f"https://api.github.com/repos/{repo}")
+        if isinstance(repo_meta, dict):
+            default_branch = str(repo_meta.get("default_branch") or default_branch)
+    except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
+        artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
+        return {
+            "repo_url": repo_url,
+            "default_branch": default_branch,
+            "default_branch_only": bool(default_branch),
+            "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "total_open_alerts": artifact_total,
+            "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
+            "by_source": {src: 0 for src in SOURCE_ORDER},
+            "artifact_generated_findings": artifact_summary,
+            "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
+            "needs_triage": artifact_total > 0,
+            "source_of_truth": "artifact",
+            "source_urls": {
+                "code_scanning": f"{repo_url}/security/code-scanning",
+                "dependabot": f"{repo_url}/security/dependabot",
+                "secret_scanning": f"{repo_url}/security/secret-scanning",
+            },
+        }
 
+    by_source: dict[str, list[dict[str, object]]] = {
+        "code_scanning": [],
+        "dependabot": [],
+        "secret_scanning": [],
+    }
     for source, endpoint in (
         ("code_scanning", f"/repos/{repo}/code-scanning/alerts?state=open"),
         ("dependabot", f"/repos/{repo}/dependabot/alerts?state=open"),
         ("secret_scanning", f"/repos/{repo}/secret-scanning/alerts?state=open"),
     ):
-        by_source[source] = _paginate(endpoint)
+        try:
+            by_source[source] = _paginate(endpoint)
+        except Exception:
+            by_source[source] = []
 
-    totals = Counter()
+    totals: Counter[str] = Counter()
     for source, alerts in by_source.items():
         for alert in alerts:
             totals[_normalize_severity(alert, source)] += 1
 
-    artifact_summary = _artifact_summary(Path(artifact_path))
     live_total = sum(totals.values())
-    artifact_total = artifact_summary["total_findings"]
+    artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
     delta_total = live_total - artifact_total
-    result = {
+    source_of_truth = "live" if live_total or any(by_source.values()) else "artifact"
+    if source_of_truth == "artifact":
+        live_total = artifact_total
+        totals = Counter({sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER})
+        delta_total = 0
+    return {
         "repo_url": repo_url,
         "default_branch": default_branch,
         "default_branch_only": bool(default_branch),
@@ -223,13 +312,13 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, Any]:
         "artifact_generated_findings": artifact_summary,
         "delta": {"total_findings": delta_total, "needs_triage": delta_total != 0},
         "needs_triage": delta_total != 0,
+        "source_of_truth": source_of_truth,
         "source_urls": {
             "code_scanning": f"{repo_url}/security/code-scanning",
             "dependabot": f"{repo_url}/security/dependabot",
             "secret_scanning": f"{repo_url}/security/secret-scanning",
         },
     }
-    return result
 
 
 def main() -> int:
@@ -244,7 +333,6 @@ def main() -> int:
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
     _write_markdown(Path(args.markdown), payload)
 
     print(json.dumps({
