@@ -885,7 +885,7 @@ def _build_meaningful_pr_body(pr_number: str, existing_wec_state: dict) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _short_sha() -> str:
@@ -1555,7 +1555,7 @@ def fix_pda_entry_today(
 
     pda_file = REPO_ROOT / ".codex" / "aftermath" / "pda_iterations.jsonl"
     today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
-    timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     sha = sha or _short_sha()
 
     existing_content = ""
@@ -2626,6 +2626,27 @@ def main(argv: list[str] | None = None) -> int:
 
 
     args = parser.parse_args(argv)
+
+    # Reject mutually exclusive evidence-recording/export modes supplied together
+    _exclusive_modes = [
+        ("record_diagnosis", "--record-diagnosis"),
+        ("record_validation", "--record-validation"),
+        ("finalize_session_summary", "--finalize-session-summary"),
+        ("session_evidence_output", "--session-evidence-output"),
+    ]
+    _active_modes = [
+        label
+        for attr, label in _exclusive_modes
+        if (attr == "session_evidence_output" and getattr(args, attr, ""))
+        or (attr != "session_evidence_output" and getattr(args, attr, False))
+    ]
+    if len(_active_modes) > 1:
+        print(
+            f"❌ Conflicting flags: {', '.join(_active_modes)} are mutually exclusive. "
+            "Supply only one at a time.",
+            file=sys.stderr,
+        )
+        return 1
 
     # --print-wec-block: one-shot WEC generator for agents before report_progress
     if getattr(args, "print_wec_block", False):
