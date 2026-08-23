@@ -28,7 +28,13 @@ import pytest
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
-from ci._token_resolver import TokenResolutionError, get_token, validate_token
+from ci._token_resolver import (
+    TokenResolutionError,
+    get_token,
+    get_token_scope,
+    validate_token,
+    validate_token_scope,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -210,8 +216,22 @@ class TestScopeValidation:
 
             assert scope in ["standard", "fallback"], "GH_TOKEN should have limited scope"
 
+    def test_scope_checks_use_the_actual_token_value(self):
+        """TEST E2: Scope detection should follow the token value, not the active env default."""
+        with patch.dict(
+            os.environ,
+            {"CODEX_MASTER_KEY": "master_token", "CODEX_BACKUP_KEY": "backup_token"},
+            clear=True,
+        ):
+            assert get_token_scope("master_token") == "elevated"
+            assert get_token_scope("backup_token") == "standard"
+            assert validate_token_scope("master_token", ["repo", "workflow", "actions:write"]) == (
+                True,
+                "Token from CODEX_MASTER_KEY has all required scopes",
+            )
+
     def test_log_token_usage_no_exposure(self):
-        """TEST E2: Verify log_token_usage never exposes token values."""
+        """TEST E3: Verify log_token_usage never exposes token values."""
         from ci._token_resolver import log_token_usage
 
         with patch("ci._token_resolver.logger") as mock_logger:

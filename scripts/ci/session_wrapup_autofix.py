@@ -885,7 +885,7 @@ def _build_meaningful_pr_body(pr_number: str, existing_wec_state: dict) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _short_sha() -> str:
@@ -2326,9 +2326,9 @@ def _append_session_evidence(
     if not evidence_path.exists():
         evidence_path.touch()
 
-    files = [f for f in (files_changed or []) if f and str(f).strip()]
-    commands_list = [c for c in (commands or []) if c and str(c).strip()]
-    refs = [r for r in (evidence_refs or []) if r and str(r).strip()]
+    files = [str(f).strip() for f in (files_changed or []) if str(f).strip()]
+    commands_list = [str(c).strip() for c in (commands or []) if str(c).strip()]
+    refs = [str(r).strip() for r in (evidence_refs or []) if str(r).strip()]
 
     entry = {
         "type": "session_loop",
@@ -2357,12 +2357,37 @@ def _append_session_evidence(
     if exit_code is not None:
         entry["exit_code"] = exit_code
 
-    content = evidence_path.read_text(encoding="utf-8") if evidence_path.exists() else ""
-    previous = content.splitlines()[-30:]
     encoded = json.dumps(entry, sort_keys=True)
-    if any(line.strip() == encoded for line in previous):
-        print(f"✅ Session evidence already recorded for phase '{phase}'")
-        return 0
+    previous_lines: list[str] = []
+    if evidence_path.exists():
+        with evidence_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                stripped = line.strip()
+                if stripped:
+                    previous_lines.append(stripped)
+                if len(previous_lines) > 30:
+                    previous_lines.pop(0)
+    for line in previous_lines:
+        try:
+            previous_entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (
+            previous_entry.get("phase") == phase
+            and previous_entry.get("issue_summary") == issue_summary
+            and previous_entry.get("root_cause") == root_cause
+            and tuple(previous_entry.get("affected_files") or []) == tuple(files)
+            and tuple(previous_entry.get("commands") or []) == tuple(commands_list)
+            and previous_entry.get("status") == status
+            and tuple(previous_entry.get("evidence_refs") or []) == tuple(refs)
+            and previous_entry.get("doc_summary") == doc_summary
+            and previous_entry.get("gate_status") == gate_status
+            and previous_entry.get("final_decision") == final_decision
+            and previous_entry.get("wec_state") == wec_state
+            and bool(previous_entry.get("follow_up_required")) == bool(follow_up_required)
+        ):
+            print(f"✅ Session evidence already recorded for phase '{phase}'")
+            return 0
 
     with evidence_path.open("a", encoding="utf-8") as handle:
         handle.write(encoded + "\n")
