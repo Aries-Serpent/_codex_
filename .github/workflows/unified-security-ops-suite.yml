@@ -107,6 +107,7 @@ jobs:
       total_live_alerts: ${{ steps.reconcile.outputs.total_live_alerts }}
       status: ${{ steps.reconcile.outputs.status }}
       delta: ${{ steps.reconcile.outputs.delta }}
+      default_branch_only: ${{ steps.reconcile.outputs.default_branch_only }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -118,11 +119,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ ! -s ".codex/security-findings-comprehensive.json" ]; then
+            echo "::error::Missing required artifact: .codex/security-findings-comprehensive.json"
+            exit 1
+          fi
           python scripts/ci/reconcile_live_security.py \
             --repo "${GITHUB_REPOSITORY}" \
             --artifact ".codex/security-findings-comprehensive.json" \
             --output ".codex/live-security-reconciliation.json" \
             --markdown ".codex/live-security-reconciliation.md"
+          if [ ! -s ".codex/live-security-reconciliation.json" ] || [ ! -s ".codex/live-security-reconciliation.md" ]; then
+            echo "::error::Live security reconciliation output is missing or empty."
+            exit 1
+          fi
           total_live_alerts=$(python - <<'PY'
           import json
           from pathlib import Path
@@ -145,10 +154,23 @@ jobs:
               print(payload.get('delta', {}).get('total_findings', 0))
           PY
           )
+          default_branch_only=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.codex/live-security-reconciliation.json')
+          if not path.exists():
+              print('false')
+          else:
+              payload = json.loads(path.read_text(encoding='utf-8'))
+              print('true' if payload.get('default_branch_only') else 'false')
+          PY
+          )
           echo "total_live_alerts=$total_live_alerts" >> "$GITHUB_OUTPUT"
           echo "status=live-reconciled" >> "$GITHUB_OUTPUT"
           echo "delta=$delta" >> "$GITHUB_OUTPUT"
+          echo "default_branch_only=$default_branch_only" >> "$GITHUB_OUTPUT"
           echo "## Live security reconciliation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Default branch only: $default_branch_only" >> "$GITHUB_STEP_SUMMARY"
           cat ".codex/live-security-reconciliation.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload reconciliation artifacts

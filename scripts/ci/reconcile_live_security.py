@@ -75,6 +75,49 @@ def _coerce_severity(raw: object) -> str:
     return SEVERITY_ALIASES.get(value, "INFO")
 
 
+def _normalize_branch_name(branch_name: str) -> str:
+    value = str(branch_name or "").strip()
+    if not value:
+        return ""
+    value = value.replace("refs/heads/", "")
+    value = value.replace("refs/tags/", "")
+    value = value.replace("origin/", "")
+    return value.strip("/")
+
+
+def _with_default_branch_ref(endpoint: str, default_branch: str) -> str:
+    if not default_branch:
+        return endpoint
+    if "ref=" in endpoint:
+        return endpoint
+    delimiter = "&" if "?" in endpoint else "?"
+    branch_ref = f"refs/heads/{_normalize_branch_name(default_branch)}"
+    return f"{endpoint}{delimiter}ref={branch_ref}"
+
+
+def _alert_ref_matches_default(alert: dict[str, object], default_branch: str) -> bool:
+    if not default_branch:
+        return True
+    default_name = _normalize_branch_name(default_branch)
+    if not default_name:
+        return True
+    for candidate in (
+        alert.get("ref"),
+        (alert.get("most_recent_instance") or {}).get("ref"),
+        (alert.get("most_recent_instance") or {}).get("branch"),
+        (alert.get("most_recent_instance") or {}).get("analysis_key"),
+        alert.get("branch"),
+    ):
+        if candidate is None:
+            continue
+        branch_name = _normalize_branch_name(str(candidate))
+        if not branch_name:
+            continue
+        if branch_name == default_name or branch_name.endswith(f"/{default_name}"):
+            return True
+    return False
+
+
 def _paginate(endpoint: str) -> list[dict[str, object]]:
     results: list[dict[str, object]] = []
     page = 1
@@ -249,13 +292,18 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     repo_url = f"https://github.com/{repo}"
     default_branch = "main"
     artifact_summary = _artifact_summary(Path(artifact_path))
+    source_urls = {
+        "code_scanning": f"{repo_url}/security/code-scanning",
+        "dependabot": f"{repo_url}/security/dependabot",
+        "secret_scanning": f"{repo_url}/security/secret-scanning",
+    }
 
     if not _token():
         artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
-            "default_branch_only": True,
+            "default_branch_only": False,
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_open_alerts": artifact_total,
             "total_open_alerts_display": _compact_count(artifact_total),
@@ -266,10 +314,14 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
-            "source_urls": {
-                "code_scanning": f"{repo_url}/security/code-scanning",
-                "dependabot": f"{repo_url}/security/dependabot",
-                "secret_scanning": f"{repo_url}/security/secret-scanning",
+            "source_urls": source_urls,
+            "security_overview": {
+                "default_branch": default_branch,
+                "default_branch_only": False,
+                "repo_url": repo_url,
+                "live_open_alerts": artifact_total,
+                "artifact_total": artifact_total,
+                "classification": "historical_artifact_backlog" if artifact_total > 0 else "no_findings",
             },
         }
 
@@ -282,19 +334,25 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
-            "default_branch_only": bool(default_branch),
+            "default_branch_only": False,
             "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "total_open_alerts": artifact_total,
+            "total_open_alerts_display": _compact_count(artifact_total),
             "by_severity": {sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER},
             "by_source": {src: 0 for src in SOURCE_ORDER},
             "artifact_generated_findings": artifact_summary,
+            "artifact_generated_findings_display": _compact_count(artifact_total),
             "delta": {"total_findings": 0, "needs_triage": artifact_total > 0},
             "needs_triage": artifact_total > 0,
             "source_of_truth": "artifact",
-            "source_urls": {
-                "code_scanning": f"{repo_url}/security/code-scanning",
-                "dependabot": f"{repo_url}/security/dependabot",
-                "secret_scanning": f"{repo_url}/security/secret-scanning",
+            "source_urls": source_urls,
+            "security_overview": {
+                "default_branch": default_branch,
+                "default_branch_only": False,
+                "repo_url": repo_url,
+                "live_open_alerts": artifact_total,
+                "artifact_total": artifact_total,
+                "classification": "historical_artifact_backlog" if artifact_total > 0 else "no_findings",
             },
         }
 
@@ -304,9 +362,9 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
         "secret_scanning": [],
     }
     for source, endpoint in (
-        ("code_scanning", f"/repos/{repo}/code-scanning/alerts?state=open"),
+        ("code_scanning", _with_default_branch_ref(f"/repos/{repo}/code-scanning/alerts?state=open", default_branch)),
         ("dependabot", f"/repos/{repo}/dependabot/alerts?state=open"),
-        ("secret_scanning", f"/repos/{repo}/secret-scanning/alerts?state=open"),
+        ("secret_scanning", _with_default_branch_ref(f"/repos/{repo}/secret-scanning/alerts?state=open", default_branch)),
     ):
         try:
             by_source[source] = _paginate(endpoint)
@@ -314,7 +372,9 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             by_source[source] = []
 
     totals: Counter[str] = Counter()
+    filtered_source_counts = {source: 0 for source in SOURCE_ORDER}
     for source, alerts in by_source.items():
+        filtered_source_counts[source] = len(alerts)
         for alert in alerts:
             totals[_normalize_severity(alert, source)] += 1
 
@@ -322,28 +382,54 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     artifact_total = int(artifact_summary.get("total_findings", 0) or 0)
     delta_total = live_total - artifact_total
     source_of_truth = "live" if live_total or any(by_source.values()) else "artifact"
+    branch_filtered_sources = []
+    for source in ("code_scanning", "secret_scanning"):
+        alerts = by_source.get(source, [])
+        if not alerts:
+            continue
+        branch_filtered_sources.append(all(_alert_ref_matches_default(alert, default_branch) for alert in alerts))
+    default_branch_only = bool(default_branch) and not by_source.get("dependabot") and (
+        not branch_filtered_sources or all(branch_filtered_sources)
+    )
+
     if source_of_truth == "artifact":
         live_total = artifact_total
         totals = Counter({sev: artifact_summary.get("by_severity", {}).get(sev, 0) for sev in SEVERITY_ORDER})
         delta_total = 0
+        default_branch_only = False
+
+    if live_total > 0 and artifact_total > 0:
+        classification = "live_alerts_exceed_artifact_backlog" if live_total > artifact_total else "artifact_backlog_exceeds_live_alerts"
+    elif live_total > 0:
+        classification = "live_alerts_active"
+    elif artifact_total > 0:
+        classification = "historical_artifact_backlog"
+    else:
+        classification = "no_findings"
+
     return {
         "repo_url": repo_url,
         "default_branch": default_branch,
-        "default_branch_only": bool(default_branch),
+        "default_branch_only": default_branch_only,
         "last_synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "total_open_alerts": live_total,
         "total_open_alerts_display": _compact_count(live_total),
         "by_severity": {sev: totals.get(sev, 0) for sev in SEVERITY_ORDER},
-        "by_source": {src: len(by_source.get(src, [])) for src in SOURCE_ORDER},
+        "by_source": {src: filtered_source_counts.get(src, 0) for src in SOURCE_ORDER},
         "artifact_generated_findings": artifact_summary,
         "artifact_generated_findings_display": _compact_count(artifact_total),
         "delta": {"total_findings": delta_total, "needs_triage": delta_total != 0},
         "needs_triage": delta_total != 0,
         "source_of_truth": source_of_truth,
-        "source_urls": {
-            "code_scanning": f"{repo_url}/security/code-scanning",
-            "dependabot": f"{repo_url}/security/dependabot",
-            "secret_scanning": f"{repo_url}/security/secret-scanning",
+        "source_urls": source_urls,
+        "classification": classification,
+        "security_overview": {
+            "default_branch": default_branch,
+            "default_branch_only": default_branch_only,
+            "repo_url": repo_url,
+            "live_open_alerts": live_total,
+            "artifact_total": artifact_total,
+            "classification": classification,
         },
     }
 

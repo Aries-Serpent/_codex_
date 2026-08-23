@@ -70,6 +70,13 @@ def test_build_payload_falls_back_to_artifact_evidence(monkeypatch, tmp_path):
     assert payload["artifact_generated_findings"]["total_findings"] == 3
 
 
+def test_default_branch_ref_filtering_handles_branch_matches():
+    alert = {"ref": "refs/heads/main", "most_recent_instance": {"ref": "refs/heads/main"}}
+    assert rls._alert_ref_matches_default(alert, "main") is True
+    assert rls._alert_ref_matches_default({"ref": "refs/heads/feature/demo"}, "main") is False
+    assert rls._with_default_branch_ref("/repos/test/repo/code-scanning/alerts?state=open", "main") == "/repos/test/repo/code-scanning/alerts?state=open&ref=refs/heads/main"
+
+
 def test_paginate_handles_network_errors(monkeypatch):
     def fake_api_get(_url):
         raise OSError("broken socket")

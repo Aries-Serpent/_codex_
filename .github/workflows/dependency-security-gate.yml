@@ -84,9 +84,13 @@ jobs:
           python -m pip install --upgrade pip pip-audit
           audit_file=".codex/security/pip-audit.json"
           summary_file=".codex/security/pip-audit-summary.json"
-          status='passed'
-          if ! pip-audit --format json --desc > "$audit_file" 2> .codex/security/pip-audit.err; then
-            status='failed'
+          tool_status='passed'
+          set +e
+          pip-audit --format json --desc > "$audit_file" 2> .codex/security/pip-audit.err
+          audit_exit=$?
+          set -e
+          if [ "$audit_exit" -ne 0 ] && [ ! -s "$audit_file" ]; then
+            tool_status='tool_failed'
           fi
           python - "$audit_file" "$summary_file" <<'PY'
           import json
@@ -116,6 +120,7 @@ jobs:
               'status': 'failed' if any(counts[k] for k in ('CRITICAL', 'HIGH')) else 'passed',
               'counts': counts,
               'total_vulnerabilities': sum(counts.values()),
+              'tool_status': 'tool_failed' if not payload and not audit_file.exists() else 'vuln_found' if any(counts[k] for k in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW')) else 'clean',
           }
           summary_file.write_text(json.dumps(summary, indent=2), encoding='utf-8')
           print(json.dumps(summary, indent=2))
@@ -141,7 +146,7 @@ jobs:
           print(summary.get('counts', {}).get('MEDIUM', 0))
           PY
           )
-          echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "status=$tool_status" >> "$GITHUB_OUTPUT"
           echo "critical_count=$critical" >> "$GITHUB_OUTPUT"
           echo "high_count=$high" >> "$GITHUB_OUTPUT"
           echo "medium_count=$medium" >> "$GITHUB_OUTPUT"
@@ -171,7 +176,7 @@ jobs:
           import subprocess
           from pathlib import Path
 
-          summary = {'ecosystem': 'npm', 'status': 'passed', 'counts': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}, 'projects': {}}
+          summary = {'ecosystem': 'npm', 'status': 'passed', 'tool_status': 'clean', 'counts': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}, 'projects': {}}
           project_matrix = [
               ('root', '.'),
               ('cognitive_app', 'cognitive_app'),
@@ -188,9 +193,12 @@ jobs:
                       out_file.write_text(result.stdout, encoding='utf-8')
                   else:
                       out_file.write_text('{"metadata":{"vulnerabilities":{"critical":0,"high":0,"moderate":0,"low":0}},"vulnerabilities":{}}', encoding='utf-8')
+                  if result.returncode not in (0, 1):
+                      summary['tool_status'] = 'tool_failed'
                   data = json.loads(out_file.read_text(encoding='utf-8')) if out_file.exists() else {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}}}
               except Exception:
                   data = {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}}}
+                  summary['tool_status'] = 'tool_failed'
               metadata = data.get('metadata', {}).get('vulnerabilities', {})
               project_counts = {
                   'CRITICAL': int(metadata.get('critical', 0) or 0),
@@ -204,6 +212,7 @@ jobs:
                   summary['counts'][key] += project_counts.get(key, 0)
               if project_counts['CRITICAL'] > 0 or project_counts['HIGH'] > 0:
                   summary['status'] = 'failed'
+                  summary['tool_status'] = 'vuln_found'
           summary_path = Path('.codex/security/npm-audit-summary.json')
           summary_path.write_text(json.dumps(summary, indent=2), encoding='utf-8')
           print(json.dumps(summary, indent=2))
@@ -248,10 +257,22 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .codex/security
-          cargo tree --depth 1 > .codex/security/cargo-tree.txt 2>&1 || true
-          summary='{"ecosystem":"rust","status":"passed","counts":{"CRITICAL":0,"HIGH":0,"MEDIUM":0,"LOW":0,"INFO":0},"notes":["cargo tree inspection; cargo-audit not configured in this workflow"]}'
+          tool_status='passed'
+          set +e
+          cargo tree --depth 1 > .codex/security/cargo-tree.txt 2>&1
+          cargo_exit=$?
+          set -e
+          if [ "$cargo_exit" -ne 0 ]; then
+            tool_status='tool_failed'
+          fi
+          if [ "$cargo_exit" -ne 0 ]; then
+            summary='{"ecosystem":"rust","status":"tool_failed","tool_status":"tool_failed","counts":{"CRITICAL":0,"HIGH":0,"MEDIUM":0,"LOW":0,"INFO":0},"notes":["cargo tree inspection failed; cargo-audit is not configured in this workflow"]}'
+          else
+            summary='{"ecosystem":"rust","status":"passed","tool_status":"clean","counts":{"CRITICAL":0,"HIGH":0,"MEDIUM":0,"LOW":0,"INFO":0},"notes":["cargo tree inspection completed; cargo-audit is not configured in this workflow"]}'
+          fi
           printf '%s\n' "$summary" > .codex/security/rust-audit-summary.json
-          echo "status=passed" >> "$GITHUB_OUTPUT"
+          echo "status=$tool_status" >> "$GITHUB_OUTPUT"
+          echo "tool_status=$tool_status" >> "$GITHUB_OUTPUT"
           echo "critical_count=0" >> "$GITHUB_OUTPUT"
           echo "high_count=0" >> "$GITHUB_OUTPUT"
           echo "medium_count=0" >> "$GITHUB_OUTPUT"
