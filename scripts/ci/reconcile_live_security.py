@@ -337,6 +337,22 @@ def _final_recommendation(payload: dict[str, object]) -> str:
     return "compliant"
 
 
+def _classify_alert_balance(live_total: int, artifact_total: int, source_of_truth: str = "live") -> str:
+    if source_of_truth == "artifact":
+        return "historical_artifact_backlog" if artifact_total > 0 else "no_findings"
+    if live_total > 0 and artifact_total > 0:
+        if live_total > artifact_total:
+            return "live_alerts_exceed_artifact_backlog"
+        if live_total < artifact_total:
+            return "artifact_backlog_exceeds_live_alerts"
+        return "live_alerts_match_artifact_backlog"
+    if live_total > 0:
+        return "live_alerts_active"
+    if artifact_total > 0:
+        return "historical_artifact_backlog"
+    return "no_findings"
+
+
 def _write_markdown(path: Path, payload: dict[str, object]) -> None:
     security_overview = payload.get("security_overview", {}) if isinstance(payload.get("security_overview"), dict) else {}
     lines = [
@@ -345,6 +361,7 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
         f"- Repository: `{payload['repo_url']}`",
         f"- Default branch: `{payload['default_branch']}`",
         f"- Default branch only: `{payload['default_branch_only']}`",
+        f"- Source of truth: `{payload.get('source_of_truth', 'artifact')}`",
         f"- Last synced: `{payload['last_synced_at']}`",
         "",
         "## GitHub Security views",
@@ -387,7 +404,16 @@ def _write_markdown(path: Path, payload: dict[str, object]) -> None:
     default_branch_matched = int(security_overview.get("default_branch_matched_active_items", 0) or 0)
     delta_total = payload.get("delta", {}).get("total_findings", 0)
     delta_display = _compact_count(abs(int(delta_total))) if int(delta_total) != 0 else "0"
+    evidence_artifacts = payload.get("raw_evidence_artifacts", []) or []
+    evidence_text = ", ".join(str(item) for item in evidence_artifacts) if evidence_artifacts else "none"
     lines.extend([
+        "",
+        "## Evidence package",
+        "",
+        f"- Source of truth: **{payload.get('source_of_truth', 'artifact')}**",
+        f"- Default branch: **{payload.get('default_branch', 'unknown')}**",
+        f"- Default branch only: **{payload.get('default_branch_only', False)}**",
+        f"- Evidence artifacts: **{evidence_text}**",
         "",
         "## Evidence classification",
         "",
@@ -437,6 +463,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "total_open_alerts": artifact_total,
             "artifact_generated_findings": artifact_summary,
         })
+        classification = _classify_alert_balance(artifact_total, artifact_total, "artifact")
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -456,7 +483,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "failure_classification": failure_classification,
             "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
-            "classification": failure_classification,
+            "classification": classification,
             "final_recommendation": final_recommendation,
             "security_overview": {
                 "default_branch": default_branch,
@@ -468,7 +495,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
                 "pending_triage": artifact_total > 0,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
-                "classification": failure_classification,
+                "classification": classification,
                 "severity_summary": severity_summary,
                 "source_of_truth": "artifact",
                 "status": status,
@@ -491,6 +518,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "total_open_alerts": artifact_total,
             "artifact_generated_findings": artifact_summary,
         })
+        classification = _classify_alert_balance(artifact_total, artifact_total, "artifact")
         return {
             "repo_url": repo_url,
             "default_branch": default_branch,
@@ -510,7 +538,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
             "failure_classification": failure_classification,
             "raw_evidence_artifacts": _raw_evidence_artifacts(artifact_path),
             "source_urls": source_urls,
-            "classification": failure_classification,
+            "classification": classification,
             "final_recommendation": final_recommendation,
             "security_overview": {
                 "default_branch": default_branch,
@@ -522,7 +550,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
                 "pending_triage": artifact_total > 0,
                 "live_open_alerts": artifact_total,
                 "artifact_total": artifact_total,
-                "classification": failure_classification,
+                "classification": classification,
                 "severity_summary": severity_summary,
                 "source_of_truth": "artifact",
                 "status": status,
@@ -580,14 +608,7 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     severity_summary = {sev: int(by_severity.get(sev, 0) or 0) for sev in SEVERITY_ORDER}
     failure_classification = _failure_classification(severity_summary)
 
-    if live_total > 0 and artifact_total > 0:
-        classification = "live_alerts_exceed_artifact_backlog" if live_total > artifact_total else "artifact_backlog_exceeds_live_alerts"
-    elif live_total > 0:
-        classification = "live_alerts_active"
-    elif artifact_total > 0:
-        classification = "historical_artifact_backlog"
-    else:
-        classification = "no_findings"
+    classification = _classify_alert_balance(live_total, artifact_total, source_of_truth)
 
     status = "triage-required" if delta_total != 0 else "clean"
     if source_of_truth == "artifact":

@@ -134,6 +134,37 @@ def test_artifact_backlog_reports_4k_plus_findings_in_summary(tmp_path):
     assert "Final recommendation: **advisory-only**" in text
 
 
+def test_artifact_only_classification_and_markdown_evidence_are_explicit(monkeypatch, tmp_path):
+    for env_name in ("GH_TOKEN", "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
+        monkeypatch.delenv(env_name, raising=False)
+
+    artifact = tmp_path / "security-findings-comprehensive.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "metadata": {
+                    "total_findings": 3,
+                    "by_severity": {"CRITICAL": 1, "HIGH": 1, "MEDIUM": 1, "LOW": 0, "INFO": 0},
+                },
+                "findings": [{"severity": "CRITICAL"}, {"severity": "HIGH"}, {"severity": "MEDIUM"}],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
+    assert payload["classification"] == "historical_artifact_backlog"
+    assert payload["source_of_truth"] == "artifact"
+
+    markdown_path = tmp_path / "report.md"
+    rls._write_markdown(markdown_path, payload)
+    text = markdown_path.read_text(encoding="utf-8")
+    assert "Source of truth: **artifact**" in text
+    assert "Evidence artifacts:" in text
+    assert str(artifact) in text
+
+
 def test_paginate_handles_network_errors(monkeypatch):
     def fake_api_get(_url):
         raise OSError("broken socket")
