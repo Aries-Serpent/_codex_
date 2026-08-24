@@ -1,7 +1,7 @@
 # BEGIN: CODEX_DEV_REQUIREMENTS
 black==26.5.1  # Code formatter (pinned for consistency)
 isort==5.13.2  # Import sorting (pinned for consistency)
-flake8==7.0.0  # Linting (pinned for consistency)
+flake8==7.3.0  # Linting (pinned for consistency)
 mypy==2.3.0  # Type checking (pinned for strictness)
 pytest>=9.0.3,<10.0.0  # CVE-2025-71176 fix
 pytest-randomly>=4.0
