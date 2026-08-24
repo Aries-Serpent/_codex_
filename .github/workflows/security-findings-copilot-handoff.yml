@@ -17,8 +17,7 @@ jobs:
     name: Create Security Findings Issue
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch
-      == 'develop' || contains(github.event.workflow_run.head_branch, 'copilot')
+    if: github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop' || contains(github.event.workflow_run.head_branch, 'copilot'))
     steps:
     - name: Mask secrets
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
@@ -51,8 +50,7 @@ jobs:
       if: steps.findings.outputs.TOTAL != ''
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json',\
           \ 'utf8'));\n\nconst summary = findings.summary;\nconst metadata = findings.scan_metadata;\n\
           \n// Build issue title\nlet title = `\U0001F510 [Auto] Security Findings`;\n\
@@ -90,8 +88,7 @@ jobs:
       if: github.event.workflow_run.event == 'pull_request'
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json',\
           \ 'utf8'));\n\nconst summary = findings.summary;\n\n// Find PR from workflow\
           \ run\nconst runs = await github.rest.actions.listWorkflowRuns({\n  owner:\
