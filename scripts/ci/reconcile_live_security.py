@@ -54,7 +54,7 @@ def _headers() -> dict[str, str]:
         "X-GitHub-Api-Version": "2022-11-28",
     }
     if token:
-        headers["Authorization"] = f"******"
+        headers["Authorization"] = "Bearer " + token
     return headers
 
 
@@ -98,6 +98,7 @@ def _discover_default_branch(repo: str) -> str:
             if candidate:
                 return candidate
     except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
+        # Fall back to git metadata when GitHub API access is unavailable in CI or private runners.
         pass
 
     git_commands = [
