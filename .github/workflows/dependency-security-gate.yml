@@ -34,6 +34,10 @@ on:
     - cron: '0 9 * * *'
   workflow_dispatch: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -458,6 +462,7 @@ jobs:
   report-health:
     name: Generate Dependency Health Report
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: dependency-security-gate
     if: always()
     permissions:

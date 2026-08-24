@@ -12,8 +12,8 @@ on:
   schedule:
   - cron: 0 6 * * *
 concurrency:
-  group: compliance-scan-${{ github.ref }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 env:
   COMPLIANCE_REPORT_DIR: .codex/reports/compliance
   PII_PATTERNS_FILE: .semgrep/pii-patterns.yml

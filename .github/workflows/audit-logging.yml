@@ -16,8 +16,8 @@ on:
     types:
     - completed
 concurrency:
-  group: audit-logging-${{ github.ref }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 env:
   AUDIT_LOG_DIR: .codex/logs
   AUDIT_REPORT_DIR: .codex/reports/audit

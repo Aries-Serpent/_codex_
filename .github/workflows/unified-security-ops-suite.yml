@@ -48,6 +48,7 @@ jobs:
   security-preflight:
     name: Security preflight (advisory)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     outputs:
       artifact_path: ${{ steps.prepare.outputs.artifact_path }}
       status: ${{ steps.prepare.outputs.status }}
@@ -114,6 +115,7 @@ jobs:
     name: Live GitHub security reconciliation (enforcement)
     needs: security-preflight
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       total_live_alerts: ${{ steps.reconcile.outputs.total_live_alerts }}
       status: ${{ steps.reconcile.outputs.status }}
@@ -123,6 +125,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      - name: Log token fallback tier
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${{ secrets.CODEX_MASTER_KEY }}" ]; then
+            TOKEN_TIER="TIER_1_MASTER_KEY"
+          elif [ -n "${{ secrets.CODEX_BACKUP_KEY }}" ]; then
+            TOKEN_TIER="TIER_2_BACKUP_KEY"
+          else
+            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
+          fi
+          echo "[TELEMETRY] workflow=unified-security-ops-suite | job=security-live-reconciliation | event=token-selection | tier=${TOKEN_TIER}"
+          echo "## 🔑 Token fallback tier" >> "$GITHUB_STEP_SUMMARY"
+          echo "Selected tier: \`${TOKEN_TIER}\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Reconcile live repo security state
         id: reconcile
@@ -224,6 +241,7 @@ jobs:
       - security-live-reconciliation
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Publish final summary
         shell: bash
