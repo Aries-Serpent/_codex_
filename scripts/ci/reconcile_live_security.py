@@ -561,7 +561,8 @@ def _build_payload(repo: str, artifact_path: str) -> dict[str, object]:
     ):
         try:
             by_source[source] = _paginate(endpoint)
-        except Exception:
+        except Exception as exc:  # Network/API failures should degrade to artifact fallback rather than fail silently.
+            print(f"::warning::Unable to load {source} alerts for {repo}: {exc}", file=sys.stderr)
             by_source[source] = []
 
     totals: Counter[str] = Counter()
@@ -660,7 +661,6 @@ def main() -> int:
     args = parser.parse_args()
 
     payload = _build_payload(args.repo, args.artifact)
-    artifact_total = int(payload.get("artifact_generated_findings", {}).get("total_findings", 0) or 0)
     artifact_path = Path(args.artifact)
     if args.strict_artifact and not _artifact_is_valid(artifact_path):
         print(f"::error::Missing or invalid security artifact at {args.artifact}", file=sys.stderr)
