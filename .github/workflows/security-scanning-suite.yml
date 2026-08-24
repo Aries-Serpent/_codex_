@@ -261,7 +261,7 @@ jobs:
           .codex/contracts/output-contract-codeql-${{ matrix.language }}.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   semgrep:
     name: Semgrep SAST (SARIF Upload)
@@ -378,7 +378,7 @@ jobs:
           .codex/contracts/output-contract-semgrep.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   container-scan:
     name: Container Security Scan (Trivy)
@@ -480,7 +480,7 @@ jobs:
           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   cve-scan:
     name: CVE & Dependency Audit
@@ -583,7 +583,7 @@ jobs:
           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   dependency-scan:
     name: Dependency Security Scan
@@ -678,7 +678,7 @@ jobs:
           .codex/contracts/output-contract-dependency.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   secret-scan:
     name: Secret Scanning
@@ -755,7 +755,7 @@ jobs:
           .codex/contracts/output-contract-secrets.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   sbom-generation:
     name: SBOM Generation
@@ -836,7 +836,7 @@ jobs:
           .codex/contracts/output-contract-sbom.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 90
   security-suite-summary:
     name: Security Suite Summary
@@ -900,7 +900,7 @@ jobs:
           .codex/contracts/output-contract-summary.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   aggregate-all-findings:
     name: Aggregate All Security Findings
@@ -1014,7 +1014,7 @@ jobs:
           security/remediation-input-lock.json
 
           '
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 90
     - name: Summary
       if: always()
@@ -1092,7 +1092,7 @@ jobs:
       with:
         name: security-suite-artifact-contract-report
         path: security-artifact-contract-report.md
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   cache-findings:
     name: Cache Security Findings
@@ -1132,7 +1132,7 @@ jobs:
       with:
         name: security-cache
         path: .codex/security-cache/
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 90
     - name: Upload Trend Report
       if: success()
@@ -1140,7 +1140,7 @@ jobs:
       with:
         name: security-findings-trend-report
         path: .codex/security-findings-trend-report.md
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 30
   rescue-comment:
     name: Post rescue comment on failure

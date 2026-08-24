@@ -8,7 +8,7 @@ on:
         default: 'Stale deployment recovery'
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 
 permissions:

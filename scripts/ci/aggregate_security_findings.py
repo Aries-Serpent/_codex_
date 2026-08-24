@@ -377,6 +377,19 @@ class FindingsAggregator:
             if finding.agent_assignee:
                 agent_assignments[finding.agent_assignee] += 1
 
+        failure_classification = (
+            "blocked_by_critical_or_high_vulnerabilities"
+            if severity_counts["CRITICAL"] > 0 or severity_counts["HIGH"] > 0
+            else "warning_only"
+            if severity_counts["MEDIUM"] > 0 or severity_counts["LOW"] > 0
+            else "clean"
+        )
+        raw_evidence_artifacts = sorted(
+            str(path)
+            for path in self.artifacts_dir.rglob("*")
+            if path.is_file()
+        )
+
         # Build report structure
         report = {
             "scan_metadata": {
@@ -396,6 +409,9 @@ class FindingsAggregator:
                 for tool in sorted(findings_by_tool.keys())
             },
             "finding_index": [f.to_dict() for f in self.findings],
+            "severity_summary": severity_counts,
+            "failure_classification": failure_classification,
+            "raw_evidence_artifacts": raw_evidence_artifacts,
             "summary": {
                 "total_findings": len(self.findings),
                 "critical_count": severity_counts["CRITICAL"],
@@ -410,6 +426,9 @@ class FindingsAggregator:
                     {"agent": agent, "findings_count": count}
                     for agent, count in sorted(agent_assignments.items(), key=lambda x: x[1], reverse=True)
                 ],
+                "severity_summary": severity_counts,
+                "failure_classification": failure_classification,
+                "raw_evidence_artifacts": raw_evidence_artifacts,
             },
         }
 

@@ -16,7 +16,7 @@ on:
     paths:
     - tests/**/*.py
 concurrency:
-  group: fragile-test-guardian-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 env:
   PYTHON_VERSION: '3.11'
