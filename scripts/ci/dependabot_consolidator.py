@@ -47,7 +47,10 @@ log = logging.getLogger(__name__)
 DEFAULT_REPO = "Aries-Serpent/_codex_"
 CONSOLIDATED_LABEL = "dependabot-consolidated"
 SKIP_LABELS = {"security"}
-UNCLEAN_STATES = {"DIRTY", "BLOCKED", "UNKNOWN"}
+# GitHub reports merge_state_status as "UNKNOWN" for many Dependabot PRs until
+# checks or the mergeability graph has been computed. Those PRs are still valid
+# consolidation candidates; we only reject obviously unmergeable states.
+UNCLEAN_STATES = {"DIRTY", "BLOCKED"}
 BOT_AUTHORS = {"dependabot[bot]", "dependabot"}
 
 
@@ -266,6 +269,12 @@ def create_consolidation_branch(
     return branch
 
 
+def configure_git_identity(workdir: Path) -> None:
+    """Set a Git identity in the temporary clone so git commit works during merges."""
+    _run_git(["config", "user.name", "Copilot Agent"], workdir)
+    _run_git(["config", "user.email", "copilot@github.com"], workdir)
+
+
 def merge_dependabot_branch(
     workdir: Path,
     branch: str,
@@ -274,13 +283,29 @@ def merge_dependabot_branch(
     dry_run: bool,
 ) -> tuple[bool, str]:
     """Merge a Dependabot branch into the consolidation branch."""
-    _run_git(["fetch", "origin", branch], workdir, check=False)
     if dry_run:
         log.info("[dry-run] Would merge PR #%d (%s) from %s", pr_number, title, branch)
         return True, ""
 
+    remote_ref = f"refs/heads/{branch}"
+    tracking_ref = f"refs/remotes/origin/{branch}"
+    fetch_result = _run_git(
+        ["fetch", "--no-tags", "origin", f"{remote_ref}:{tracking_ref}"],
+        workdir,
+        check=False,
+    )
+    if fetch_result.returncode != 0:
+        log.warning(
+            "Fetch failed for PR #%d (%s) from %s: %s",
+            pr_number,
+            title,
+            branch,
+            fetch_result.stderr,
+        )
+        return False, "fetch failed"
+
     result = _run_git(
-        ["merge", "--no-ff", "--no-commit", f"origin/{branch}"],
+        ["merge", "--no-ff", "--no-commit", tracking_ref],
         workdir,
         check=False,
     )
@@ -468,6 +493,7 @@ def main(argv: list[str] | None = None) -> int:
         _run_git(["fetch", "origin", base_branch, "--depth=1"], workdir, env=git_env)
 
         branch = create_consolidation_branch(workdir, base_branch, run_id, dry_run)
+        configure_git_identity(workdir)
 
         for pr in dependabot_prs:
             pr_number = pr.get("number", 0)
