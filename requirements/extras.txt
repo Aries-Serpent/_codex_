@@ -19,8 +19,8 @@
 #       In CI use: playwright install --with-deps chromium
 #
 # The playwright extra is declared in pyproject.toml under
-# [project.optional-dependencies].playwright = ["playwright>=1.40"]
-playwright>=1.40
+# [project.optional-dependencies].playwright = ["playwright>=1.62.0"]
+playwright>=1.62.0
 
 # Security: Critical build tools updates
 setuptools>=78.1.1  # CVE-2024-ZZZZZ, CVE-2024-WWWWW path traversal/injection fixes

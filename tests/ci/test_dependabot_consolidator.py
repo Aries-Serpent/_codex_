@@ -194,6 +194,57 @@ def test_conflict_skipped_and_reported(
     assert "| #2 | Bump bar | merge conflict |" in body
 
 
+def test_fetches_branch_to_remote_tracking_ref(
+    token_env: None,
+    mock_gh_auth: MagicMock,
+    mock_subprocess: MagicMock,
+    mock_tempdir: Path,
+) -> None:
+    """Dependabot heads are fetched under a remote-tracking ref so slash-containing branches merge."""
+    def side_effect(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        if cmd[1] == "clone":
+            (mock_tempdir / ".git").mkdir(exist_ok=True)
+            return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+        return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+    mock_subprocess.side_effect = side_effect
+    dc.configure_git_identity(mock_tempdir)
+
+    ok, reason = dc.merge_dependabot_branch(
+        mock_tempdir,
+        "dependabot/npm_and_yarn/cognitive_app/eslint-10.8.1",
+        5515,
+        "Bump eslint",
+        False,
+    )
+
+    assert ok and reason == ""
+    config_call = next(
+        call for call in mock_subprocess.call_args_list if call.args[0][:3] == ["git", "config", "user.name"]
+    )
+    assert config_call.args[0] == ["git", "config", "user.name", "Copilot Agent"]
+    fetch_call = next(
+        call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "fetch"]
+    )
+    assert fetch_call.args[0] == [
+        "git",
+        "fetch",
+        "--no-tags",
+        "origin",
+        "refs/heads/dependabot/npm_and_yarn/cognitive_app/eslint-10.8.1:refs/remotes/origin/dependabot/npm_and_yarn/cognitive_app/eslint-10.8.1",
+    ]
+    merge_call = next(
+        call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "merge"]
+    )
+    assert merge_call.args[0] == [
+        "git",
+        "merge",
+        "--no-ff",
+        "--no-commit",
+        "refs/remotes/origin/dependabot/npm_and_yarn/cognitive_app/eslint-10.8.1",
+    ]
+
+
 def test_security_label_excluded(
     token_env: None,
     mock_gh_auth: MagicMock,
@@ -221,6 +272,33 @@ def test_security_label_excluded(
     payload = json.loads(create_call[0].args[3])
     body = payload["body"]
     assert "security label" in body
+
+
+def test_unknown_merge_state_is_eligible(
+    token_env: None,
+    mock_gh_auth: MagicMock,
+    mock_paginated: MagicMock,
+    mock_gh_api: MagicMock,
+    mock_subprocess: MagicMock,
+    mock_tempdir: Path,
+) -> None:
+    """UNKNOWN mergeability is treated as retryable rather than a hard exclusion."""
+    mock_paginated.side_effect = [
+        [
+            make_pr(1, "Bump foo", "dependabot/foo", merge_state_status="UNKNOWN"),
+            make_pr(2, "Bump bar", "dependabot/bar", merge_state_status="UNKNOWN"),
+        ],
+        [],
+    ]
+    configure_subprocess_for_clean_merge(mock_subprocess, mock_tempdir)
+    mock_gh_api.return_value = {"number": 99}
+
+    assert dc.main(["--base-branch", "main", "--dry-run"]) == 0
+
+    create_call = [
+        c for c in mock_gh_api.call_args_list if c.args[0] == "POST" and "/pulls" in c.args[1]
+    ]
+    assert not create_call, "Dry-run should not create a PR or mutate GitHub state"
 
 
 def test_dry_run_no_push(

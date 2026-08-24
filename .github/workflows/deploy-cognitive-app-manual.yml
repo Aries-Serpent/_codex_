@@ -44,7 +44,7 @@ on:
         default: 'Manual deployment'
 
 concurrency:
-  group: ${{ github.workflow }}-manual
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 
 permissions:
