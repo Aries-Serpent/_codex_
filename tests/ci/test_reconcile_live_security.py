@@ -206,11 +206,40 @@ def test_default_branch_detection_uses_git_remote_when_api_unavailable(monkeypat
             return FakeProc("origin/HEAD -> origin/0D_base_")
         if args[:4] == ["git", "symbolic-ref", "--quiet", "--short"] and args[4] == "HEAD":
             return FakeProc("main")
+        if args[:3] == ["git", "rev-parse", "--abbrev-ref"] and args[3] == "origin/HEAD":
+            return FakeProc("origin/0D_base_")
         return FakeProc("")
 
     monkeypatch.setattr(rls.subprocess, "run", fake_run)
 
     assert rls._discover_default_branch("Aries-Serpent/_codex_") == "0D_base_"
+
+
+def test_artifact_summary_uses_severity_bucket_totals_for_counting(tmp_path):
+    artifact = tmp_path / "security-findings-comprehensive.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {"severity": "HIGH"},
+                    {"severity": "HIGH"},
+                    {"severity": "LOW"},
+                    {"severity": "LOW"},
+                    {"severity": "LOW"},
+                    {"severity": "unknown"},
+                ],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    summary = rls._artifact_summary(artifact)
+
+    assert summary["total_findings"] == 6
+    assert summary["by_severity"]["HIGH"] == 2
+    assert summary["by_severity"]["LOW"] == 3
+    assert summary["by_severity"]["INFO"] == 1
 
 
 def test_main_rejects_invalid_artifact_under_strict_validation(monkeypatch, tmp_path):

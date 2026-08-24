@@ -100,31 +100,23 @@ def _discover_default_branch(repo: str) -> str:
     except (error.HTTPError, error.URLError, TimeoutError, ValueError, OSError):
         pass
 
-    try:
-        git_outputs = [
-            subprocess.run(
-                ["git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
-                check=False,
-                capture_output=True,
-                text=True,
-            ),
-            subprocess.run(
-                ["git", "symbolic-ref", "--quiet", "--short", "HEAD"],
-                check=False,
-                capture_output=True,
-                text=True,
-            ),
-        ]
-        for proc in git_outputs:
-            value = (proc.stdout or "").strip()
-            if not value:
-                continue
-            value = value.replace("origin/HEAD -> ", "")
-            candidate = _normalize_branch_name(value)
-            if candidate:
-                return candidate
-    except (FileNotFoundError, OSError):
-        pass
+    git_commands = [
+        ["git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+        ["git", "symbolic-ref", "--quiet", "--short", "HEAD"],
+        ["git", "rev-parse", "--abbrev-ref", "origin/HEAD"],
+    ]
+    for cmd in git_commands:
+        try:
+            proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
+        except (FileNotFoundError, OSError):
+            continue
+        value = (proc.stdout or "").strip()
+        if not value:
+            continue
+        value = value.replace("origin/HEAD -> ", "")
+        candidate = _normalize_branch_name(value)
+        if candidate:
+            return candidate
 
     return "main"
 
@@ -274,7 +266,6 @@ def _artifact_summary(path: Path) -> dict[str, object]:
     total = int((summary or metadata).get("total_findings", 0) or 0)
     findings = payload.get("findings") or payload.get("finding_index") or []
     if isinstance(findings, list) and findings:
-        total = len(findings)
         counts = {sev: 0 for sev in SEVERITY_ORDER}
         for finding in findings:
             if not isinstance(finding, dict):
