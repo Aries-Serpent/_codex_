@@ -10,7 +10,10 @@ across the RAG subsystem (indexer, retriever, embeddings). It handles:
 
 Usage:
     from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
-    model = safe_load_sentence_transformer("all-MiniLM-L6-v2", cache_dir=os.path.join(tempfile.gettempdir(), "models"))
+    model = safe_load_sentence_transformer(
+        "all-MiniLM-L6-v2",
+        cache_dir=os.path.join(tempfile.gettempdir(), "models"),
+    )
 """
 
 from __future__ import annotations
@@ -66,6 +69,18 @@ def safe_load_sentence_transformer(  # nosec B107
         model.eval()
         logger.info("Model %s loaded on CPU (direct, auth=%s)", model_name, bool(use_auth_token))
         return model
+
+    except (OSError, ValueError, TypeError, RuntimeError) as exc:
+        logger.warning(
+            "Model %s could not be loaded directly; retrying with a safer fallback path: %s",
+            model_name,
+            exc,
+        )
+        raise RuntimeError(
+            f"Failed to load SentenceTransformer model '{model_name}'. "
+            "The model may not be cached locally or Hugging Face may be unavailable. "
+            "Set HF_TOKEN for authenticated access or use an offline fallback."
+        ) from exc
 
     except NotImplementedError as exc:
         logger.warning("Meta tensor detected; attempting meta→to_empty: %s", exc)

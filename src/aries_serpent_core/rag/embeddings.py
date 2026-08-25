@@ -95,11 +95,13 @@ class LocalSentenceTransformerProvider:
                 "Install with: pip install sentence-transformers"
             )
             raise
-        except (ValueError, TypeError) as e:
-            type(e).__name__
-            logger.error(
-                "Error loading local embedding model: <ERROR_TYPE>"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
+            logger.warning(
+                "Error loading local embedding model '%s'; "
+                "falling back to offline-safe handling: %s",
+                self.model_name,
+                e,
+            )
             raise
 
     def encode(
@@ -461,7 +463,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except (ImportError, AttributeError, RuntimeError) as e:
+        except (ImportError, AttributeError, RuntimeError, OSError) as e:
             error_type = type(e).__name__
             logger.debug(
                 f"sentence-transformers unavailable: {error_type}"
