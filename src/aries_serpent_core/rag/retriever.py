@@ -70,15 +70,14 @@ class Retriever:
                 tenant_id=self.tenant_id,
                 index_dir=self.index_dir,
             )
-            logger.info(f"Loaded index '{self.index_name}' with {len(self.chunks_metadata)} chunks")
+            logger.info("Loaded index with %d chunks", len(self.chunks_metadata))
         except FileNotFoundError as e:
             type(e).__name__
-            logger.warning("Index not found: <ERROR_TYPE>")
-            logger.warning("Use indexer.py to build an index first")
+            logger.warning("Index not found; use indexer.py to build an index first")
             # Allow initialization without an index for testing
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
-            logger.error("Error loading index: <ERROR_TYPE>")
+            logger.error("Error loading index")
             raise
 
     def _load_model(self) -> None:
@@ -93,7 +92,7 @@ class Retriever:
         try:
             from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
-            logger.info(f"Loading query embedding model: {self.model_name}")
+            logger.info("Loading query embedding model")
 
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
@@ -103,7 +102,7 @@ class Retriever:
             self._load_tfidf_fallback_model()
         except TypeError as e:
             type(e).__name__
-            logger.error("Error loading embedding model: <ERROR_TYPE>")
+            logger.error("Error loading embedding model")
             raise
 
     def _load_tfidf_fallback_model(self) -> None:
@@ -163,13 +162,13 @@ class Retriever:
             top_k = 5
 
         # Encode query
-        logger.debug(f"Encoding query: {q[:100]}...")
+        logger.debug("Encoding query input")
         query_embedding = self.model.encode(
             [q], convert_to_numpy=True, show_progress_bar=False, device="cpu"
         )
 
         # Search index
-        logger.debug(f"Searching index for top {top_k} results")
+        logger.debug("Searching index for top %d results", top_k)
         distances, indices = self.faiss_index.search(query_embedding.astype(np.float32), top_k)
 
         # Build results with provenance
@@ -208,7 +207,7 @@ class Retriever:
 
             results.append(result)
 
-        logger.info(f"Retrieved {len(results)} results for query")
+        logger.info("Retrieved %d results for query", len(results))
         return results
 
     def _estimate_line_number(self, char_pos: int, chars_per_line: int = 80) -> int:

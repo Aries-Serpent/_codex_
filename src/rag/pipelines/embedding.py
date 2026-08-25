@@ -170,11 +170,12 @@ class EmbeddingPipeline:
                 embedding = raw_embedding.tolist()
                 model_name = self.config.model_name
             except (OSError, ValueError, TypeError, RuntimeError) as e:
+                text_fingerprint = hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
                 logger.warning(
-                    "Embedding failed for text '%s' with model '%s'; using fallback: %s",
-                    text[:50],
+                    "Embedding failed for text fingerprint '%s' with model '%s'; using fallback (%s)",
+                    text_fingerprint,
                     self.config.model_name,
-                    e,
+                    type(e).__name__,
                 )
                 embedding = self._fallback_embedding(text)
                 model_name = "fallback-hash"
