@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — RAG Module Tests dependency resolver deadlock
+- Corrected the packaging aliases behind the failing `RAG Module Tests` workflow: the legacy `dev` extra no longer resolves to the heavy `full` profile, and the missing `rag` alias now points to the runtime profile used by the workflow's `[rag,test-core]` install path.
+- Kept the repository's required `cryptography>=50.0.0,<51.0.0` security pin intact while removing the default `mlflow`-driven resolver deadlock that blocked CI before the RAG tests could start.
+
 ### Documentation — role-based onboarding and repository discoverability
 - Added a canonical repository map, four role-specific onboarding pages, dependency-profile guidance, a workflow/governance map, and a session-state guide with Chronicle search keywords.
 - Aligned `README.md`, the repository explanation, the cognitive map, and MkDocs navigation around `src/` as the canonical implementation boundary and `.codex/`/GitHub Actions as operational layers.

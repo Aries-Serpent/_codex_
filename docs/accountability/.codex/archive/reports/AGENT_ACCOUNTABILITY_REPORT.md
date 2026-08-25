@@ -1,3 +1,28 @@
+## Session: 2026-08-25T16:10Z — RAG Module Tests dependency fix (Issue #5520)
+
+**Objective:** Resolve the dependency deadlock blocking the `RAG Module Tests` workflow by aligning the package extras with the workflow install path and preserving the security-first `cryptography` policy.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Traced the resolver failure to the legacy `dev` alias in `pyproject.toml`, which was resolving to the `full` profile and dragging the optional ML stack into the test environment.
+2. Updated the compatibility aliases so `dev` resolves to the lightweight `test-core` stack and added the missing `rag` alias pointing at the runtime profile used by the workflow's `[rag,test-core]` install command.
+3. Verified the fix keeps the project on the required `cryptography>=50.0.0,<51.0.0` security policy while removing the `mlflow`-driven deadlock.
+
+**Validation:**
+- `python -m pip install -e ".[rag,test-core]"` from a clean virtual environment → resolves without the cryptography/mlflow conflict.
+- The install path used by the `RAG Module Tests` workflow now matches the package metadata and avoids the pre-test deadlock.
+
+**Governance:**
+- REQ-4: This report updated.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]`.
+
+### Agents Used
+- [x] `ci-testing-agent` (dependency-resolution diagnosis)
+- [x] `general-purpose` (packaging/compatibility fix and final governance sync)
+
+---
+
 ## Session: 2026-08-22 — Onboarding discoverability and issue #5498
 
 **Objective:** Improve repository onboarding through a canonical repo map,
