@@ -1,5 +1,5 @@
 name: "\U0001F50D Issue Resolution Gate"
-on:
+true:
   pull_request:
     types:
     - opened
@@ -42,10 +42,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Extract issue references from PR body
       id: extract
       env:

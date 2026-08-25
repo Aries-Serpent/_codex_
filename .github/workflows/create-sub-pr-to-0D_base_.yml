@@ -1,5 +1,5 @@
 name: "\U0001F500 Create Sub-PR: Session Branch \u2192 0D_base_"
-on:
+true:
   workflow_dispatch:
     inputs:
       session_branch:
@@ -38,10 +38,11 @@ jobs:
         ref: ${{ inputs.session_branch }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install package
       run: pip install -e . --quiet
     - name: Verify 0D_base_ exists

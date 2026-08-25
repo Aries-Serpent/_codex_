@@ -1,5 +1,5 @@
 name: Workflow Documentation Link Validation
-on:
+true:
   pull_request:
     branches:
     - main
@@ -52,10 +52,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install PyYAML (required by setup-python-cached)
       run: pip install pyyaml --quiet
     - name: CacheManager health check

@@ -1,5 +1,5 @@
 name: Security Copilot Commands
-on:
+true:
   issue_comment:
     types:
     - created
@@ -28,10 +28,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - env:
         COMMENT_BODY: ${{ github.event.comment.body }}
       id: parse

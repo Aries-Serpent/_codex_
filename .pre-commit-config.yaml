@@ -56,6 +56,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: python-setup-policy
+        name: Python setup policy
+        entry: python .github/scripts/check_python_setup_policy.py
+        language: system
+        pass_filenames: false
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+
       # Security checks - Command injection prevention
       - id: check-shell-true
         name: Check for subprocess shell=True (command injection risk)

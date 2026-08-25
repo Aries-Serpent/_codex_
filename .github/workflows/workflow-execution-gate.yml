@@ -1,7 +1,10 @@
 name: Workflow Execution Gate
-on:
+true:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+    - opened
+    - synchronize
+    - reopened
   workflow_dispatch:
     inputs:
       pr_number:
@@ -25,7 +28,8 @@ jobs:
     name: Workflow Execution Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+      }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -58,10 +62,11 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Gate check
       run: "set -euo pipefail\necho \"\u2713 Gate check initialized successfully\"\
         \nif [ -n \"${{ inputs.pr_number }}\" ]; then\n  echo \"PR_NUMBER: ${{ inputs.pr_number\

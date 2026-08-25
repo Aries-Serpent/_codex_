@@ -1,20 +1,19 @@
 name: ML Components Test Suite
-
-on:
+true:
   push:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     paths:
-      - 'src/**/*.py'
-      - 'training/**/*.py'
-      - 'tests/**/*.py'
-      - requirements.txt
+    - src/**/*.py
+    - training/**/*.py
+    - tests/**/*.py
+    - requirements.txt
   pull_request:
     branches:
-      - main
+    - main
   schedule:
-    - cron: '0 2 * * *'
+  - cron: 0 2 * * *
 permissions:
   contents: read
   checks: write
@@ -49,10 +48,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ matrix.python-version }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
@@ -91,8 +91,7 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
@@ -111,8 +110,7 @@ jobs:
       with:
         python-version: '3.12'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: 'pip install --upgrade pip
 

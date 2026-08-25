@@ -1,5 +1,5 @@
 name: Resilient Dependency Submission
-on:
+true:
   push:
     branches:
     - main
@@ -22,23 +22,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Validate repository context (prevent org/repo placeholder panics)
-      run: |
-        : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY env var is required}"
-        if [[ "$GITHUB_REPOSITORY" == "org/repo" || "$GITHUB_REPOSITORY" == "owner/repo" ]]; then
-          echo "::error::GITHUB_REPOSITORY contains a placeholder value ('$GITHUB_REPOSITORY'). This guard exists to prevent dependency submission from running against a non-existent repository. Ensure this workflow is triggered by a real push or pull_request event in an actual GitHub repository — do not invoke it with a synthetic or test repository context."
-          exit 1
-        fi
-        echo "✅ GITHUB_REPOSITORY=$GITHUB_REPOSITORY — proceeding"
+      run: ": \"${GITHUB_REPOSITORY:?GITHUB_REPOSITORY env var is required}\"\nif\
+        \ [[ \"$GITHUB_REPOSITORY\" == \"org/repo\" || \"$GITHUB_REPOSITORY\" == \"\
+        owner/repo\" ]]; then\n  echo \"::error::GITHUB_REPOSITORY contains a placeholder\
+        \ value ('$GITHUB_REPOSITORY'). This guard exists to prevent dependency submission\
+        \ from running against a non-existent repository. Ensure this workflow is\
+        \ triggered by a real push or pull_request event in an actual GitHub repository\
+        \ \u2014 do not invoke it with a synthetic or test repository context.\"\n\
+        \  exit 1\nfi\necho \"\u2705 GITHUB_REPOSITORY=$GITHUB_REPOSITORY \u2014 proceeding\"\
+        \n"
     - name: Checkout
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Submit via component-detection (attempt 1, with retry)
       id: submit_component
       continue-on-error: true

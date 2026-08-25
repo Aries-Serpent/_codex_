@@ -1,5 +1,5 @@
 name: "\U0001F9F9 Discussion Cleanup \u2014 Deduplicate Comments"
-on:
+true:
   workflow_dispatch:
     inputs:
       manifest_path:
@@ -52,10 +52,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: "\U0001F511 Resolve auth token for discussions:write"
       id: auth
       env:

@@ -1,5 +1,5 @@
 name: CI Pattern Prevention Gate
-on:
+true:
   pull_request:
     branches:
     - main
@@ -73,10 +73,11 @@ jobs:
 
           '
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run RP-001 validation
       id: rp001
       run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
@@ -101,10 +102,11 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: 'pip install --quiet mypy tomli 2>/dev/null || true
 
@@ -144,10 +146,11 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run RP-003 validation
       id: rp003
       continue-on-error: true

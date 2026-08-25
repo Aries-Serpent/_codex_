@@ -1,5 +1,5 @@
 name: "\U0001F500 Branch Rebase Gate"
-on:
+true:
   pull_request:
     types:
     - opened
@@ -42,9 +42,11 @@ jobs:
     - name: "\U0001F5C2\uFE0F Pre-create pip cache dir"
       run: mkdir -p ~/.cache/pip
     - name: "\U0001F40D Set up Python"
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: "\U0001F50D Check rebase status"
       id: check
       env:

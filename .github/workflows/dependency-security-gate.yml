@@ -1,48 +1,44 @@
 name: Dependency Security Gate
-
-on:
+true:
   push:
     branches:
-      - main
-      - develop
-      - release/**
-      - feature/**
-      - copilot/**
+    - main
+    - develop
+    - release/**
+    - feature/**
+    - copilot/**
     paths:
-      - pyproject.toml
-      - requirements*.txt
-      - package.json
-      - package-lock.json
-      - Cargo.toml
-      - Cargo.lock
-      - cognitive_app/package.json
-      - copilot/extension/package.json
+    - pyproject.toml
+    - requirements*.txt
+    - package.json
+    - package-lock.json
+    - Cargo.toml
+    - Cargo.lock
+    - cognitive_app/package.json
+    - copilot/extension/package.json
   pull_request:
     branches:
-      - main
-      - develop
+    - main
+    - develop
     paths:
-      - pyproject.toml
-      - requirements*.txt
-      - package.json
-      - package-lock.json
-      - Cargo.toml
-      - Cargo.lock
-      - cognitive_app/package.json
-      - copilot/extension/package.json
+    - pyproject.toml
+    - requirements*.txt
+    - package.json
+    - package-lock.json
+    - Cargo.toml
+    - Cargo.lock
+    - cognitive_app/package.json
+    - copilot/extension/package.json
   schedule:
-    - cron: '0 9 * * *'
+  - cron: 0 9 * * *
   workflow_dispatch: {}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pull-requests: write
   security-events: read
-
 jobs:
   dependency-security-gate:
     name: Dependency Security Gate Check
@@ -51,414 +47,232 @@ jobs:
     strategy:
       matrix:
         ecosystem:
-          - python
-          - npm
-          - rust
+        - python
+        - npm
+        - rust
       fail-fast: false
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Setup Python
+      if: matrix.ecosystem == 'python'
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Setup Node.js
+      if: matrix.ecosystem == 'npm'
+      uses: actions/setup-node@v5
+      with:
+        node-version: '22'
+        cache: npm
+    - name: Setup Rust
+      if: matrix.ecosystem == 'rust'
+      uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c
+    - name: Scan Python dependencies with pip-audit
+      if: matrix.ecosystem == 'python'
+      id: python-audit
+      shell: bash
+      run: "set -euo pipefail\nmkdir -p .codex/security\npython -m pip install --upgrade\
+        \ pip pip-audit\naudit_file=\".codex/security/pip-audit.json\"\nerr_file=\"\
+        .codex/security/pip-audit.err\"\nsummary_file=\".codex/security/pip-audit-summary.json\"\
+        \nstatus=\"passed\"\nif pip-audit --format json --desc > \"$audit_file\" 2>\
+        \ \"$err_file\"; then\n  status=\"passed\"\nelse\n  audit_exit=$?\n  if [\
+        \ -s \"$audit_file\" ]; then\n    status=\"vuln_found\"\n  else\n    status=\"\
+        tool_failed\"\n  fi\nfi\npython - \"$audit_file\" \"$err_file\" \"$summary_file\"\
+        \ <<'PY'\nimport json\nimport sys\nfrom pathlib import Path\n\naudit_file\
+        \ = Path(sys.argv[1])\nerr_file = Path(sys.argv[2])\nsummary_file = Path(sys.argv[3])\n\
+        payload = []\ntry:\n    with audit_file.open('r', encoding='utf-8') as handle:\n\
+        \        payload = json.load(handle)\nexcept (FileNotFoundError, json.JSONDecodeError):\n\
+        \    payload = []\n\ncounts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW':\
+        \ 0, 'INFO': 0}\nfor dependency in payload:\n    for vuln in dependency.get('vulns',\
+        \ []):\n        severity = str(vuln.get('severity', 'info')).upper()\n   \
+        \     if severity == 'MODERATE':\n            severity = 'MEDIUM'\n      \
+        \  counts.setdefault(severity, 0)\n        counts[severity] += 1\n\nraw_evidence\
+        \ = []\nif audit_file.exists():\n    raw_evidence.append(str(audit_file))\n\
+        if err_file.exists():\n    raw_evidence.append(str(err_file))\n\ncritical\
+        \ = counts.get('CRITICAL', 0)\nhigh = counts.get('HIGH', 0)\nmedium = counts.get('MEDIUM',\
+        \ 0)\nlow = counts.get('LOW', 0)\nfailure_classification = (\n    'blocked_by_critical_or_high_vulnerabilities'\n\
+        \    if critical or high\n    else 'warning_only' if medium or low else 'clean'\n\
+        )\ntool_status = (\n    'tool_failed'\n    if not payload and not audit_file.exists()\n\
+        \    else 'vuln_found' if any((critical, high, medium, low)) else 'clean'\n\
+        )\nsummary = {\n    'ecosystem': 'python',\n    'status': 'failed' if critical\
+        \ or high else 'passed',\n    'tool_status': tool_status,\n    'failure_classification':\
+        \ failure_classification,\n    'counts': counts,\n    'severity_summary':\
+        \ counts,\n    'total_vulnerabilities': sum(counts.values()),\n    'raw_evidence_artifacts':\
+        \ raw_evidence,\n    'summary_path': str(summary_file),\n}\nsummary_file.write_text(json.dumps(summary,\
+        \ indent=2), encoding='utf-8')\nprint(json.dumps(summary, indent=2))\nPY\n\
+        critical=$(python - \"$summary_file\" <<'PY'\nimport json, sys\nfrom pathlib\
+        \ import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('counts', {}).get('CRITICAL', 0))\nPY\n)\nhigh=$(python\
+        \ - \"$summary_file\" <<'PY'\nimport json, sys\nfrom pathlib import Path\n\
+        summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\nprint(summary.get('counts',\
+        \ {}).get('HIGH', 0))\nPY\n)\nmedium=$(python - \"$summary_file\" <<'PY'\n\
+        import json, sys\nfrom pathlib import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('counts', {}).get('MEDIUM', 0))\nPY\n)\nfailure_classification=$(python\
+        \ - \"$summary_file\" <<'PY'\nimport json, sys\nfrom pathlib import Path\n\
+        summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\nprint(summary.get('failure_classification',\
+        \ 'clean'))\nPY\n)\necho \"status=$status\" >> \"$GITHUB_OUTPUT\"\necho \"\
+        critical_count=$critical\" >> \"$GITHUB_OUTPUT\"\necho \"high_count=$high\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"medium_count=$medium\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"failure_classification=$failure_classification\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"summary_path=$summary_file\" >> \"$GITHUB_OUTPUT\"\necho \"## Python\
+        \ dependency audit\" >> \"$GITHUB_STEP_SUMMARY\"\ncat \"$summary_file\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\nif [ \"$critical\" -gt 0 ] || [ \"$high\" -gt\
+        \ 0 ]; then\n  echo \"::error::Python audit found $critical critical and $high\
+        \ high vulnerabilities.\"\n  exit 1\nfi\n"
+    - name: Scan npm dependencies
+      if: matrix.ecosystem == 'npm'
+      id: npm-audit
+      shell: bash
+      run: "set -euo pipefail\nmkdir -p .codex/security\npython - <<'PY'\nimport json\n\
+        import subprocess\nfrom pathlib import Path\n\nsummary = {\n    'ecosystem':\
+        \ 'npm',\n    'status': 'passed',\n    'tool_status': 'clean',\n    'failure_classification':\
+        \ 'clean',\n    'counts': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0,\
+        \ 'INFO': 0},\n    'severity_summary': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM':\
+        \ 0, 'LOW': 0, 'INFO': 0},\n    'projects': {},\n    'raw_evidence_artifacts':\
+        \ [],\n}\nproject_matrix = [\n    ('root', '.'),\n    ('cognitive_app', 'cognitive_app'),\n\
+        \    ('extension', 'copilot/extension'),\n]\nfor name, directory in project_matrix:\n\
+        \    target = Path(directory)\n    if not target.exists():\n        continue\n\
+        \    out_file = Path('.codex/security') / f'npm-{name}-audit.json'\n    err_file\
+        \ = Path('.codex/security') / f'npm-{name}-audit.err'\n    try:\n        result\
+        \ = subprocess.run(['npm', 'audit', '--json'], cwd=directory, capture_output=True,\
+        \ text=True, check=False)\n        if result.stdout.strip():\n           \
+        \ out_file.write_text(result.stdout, encoding='utf-8')\n        else:\n  \
+        \          out_file.write_text('{\"metadata\":{\"vulnerabilities\":{\"critical\"\
+        :0,\"high\":0,\"moderate\":0,\"low\":0}},\"vulnerabilities\":{}}', encoding='utf-8')\n\
+        \        if result.stderr.strip():\n            err_file.write_text(result.stderr,\
+        \ encoding='utf-8')\n        if result.returncode not in (0, 1):\n       \
+        \     summary['tool_status'] = 'tool_failed'\n    except Exception as exc:\n\
+        \        out_file.write_text('{\"metadata\":{\"vulnerabilities\":{\"critical\"\
+        :0,\"high\":0,\"moderate\":0,\"low\":0}},\"vulnerabilities\":{}}', encoding='utf-8')\n\
+        \        err_file.write_text(str(exc), encoding='utf-8')\n        summary['tool_status']\
+        \ = 'tool_failed'\n        data = {'metadata': {'vulnerabilities': {'critical':\
+        \ 0, 'high': 0, 'moderate': 0, 'low': 0}}}\n    else:\n        try:\n    \
+        \        data = json.loads(out_file.read_text(encoding='utf-8')) if out_file.exists()\
+        \ else {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate':\
+        \ 0, 'low': 0}}}\n        except json.JSONDecodeError:\n            data =\
+        \ {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate':\
+        \ 0, 'low': 0}}}\n    metadata = data.get('metadata', {}).get('vulnerabilities',\
+        \ {})\n    project_counts = {\n        'CRITICAL': int(metadata.get('critical',\
+        \ 0) or 0),\n        'HIGH': int(metadata.get('high', 0) or 0),\n        'MEDIUM':\
+        \ int(metadata.get('moderate', 0) or 0),\n        'LOW': int(metadata.get('low',\
+        \ 0) or 0),\n        'INFO': 0,\n    }\n    summary['projects'][name] = project_counts\n\
+        \    for key in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'):\n        summary['counts'][key]\
+        \ += project_counts.get(key, 0)\n    if out_file.exists():\n        summary['raw_evidence_artifacts'].append(str(out_file))\n\
+        \    if err_file.exists():\n        summary['raw_evidence_artifacts'].append(str(err_file))\n\
+        \    if project_counts['CRITICAL'] > 0 or project_counts['HIGH'] > 0:\n  \
+        \      summary['status'] = 'failed'\n        summary['tool_status'] = 'vuln_found'\n\
+        summary['severity_summary'] = dict(summary['counts'])\nsummary['failure_classification']\
+        \ = (\n    'blocked_by_critical_or_high_vulnerabilities'\n    if summary['counts']['CRITICAL']\
+        \ > 0 or summary['counts']['HIGH'] > 0\n    else 'warning_only' if summary['counts']['MEDIUM']\
+        \ > 0 or summary['counts']['LOW'] > 0 else 'clean'\n)\nsummary['raw_evidence_artifacts']\
+        \ = sorted(set(summary['raw_evidence_artifacts']))\nsummary_path = Path('.codex/security/npm-audit-summary.json')\n\
+        summary_path.write_text(json.dumps(summary, indent=2), encoding='utf-8')\n\
+        print(json.dumps(summary, indent=2))\nPY\ncritical=$(python - '.codex/security/npm-audit-summary.json'\
+        \ <<'PY'\nimport json, sys\nfrom pathlib import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('counts', {}).get('CRITICAL', 0))\nPY\n)\nhigh=$(python\
+        \ - '.codex/security/npm-audit-summary.json' <<'PY'\nimport json, sys\nfrom\
+        \ pathlib import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('counts', {}).get('HIGH', 0))\nPY\n)\nmedium=$(python -\
+        \ '.codex/security/npm-audit-summary.json' <<'PY'\nimport json, sys\nfrom\
+        \ pathlib import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('counts', {}).get('MEDIUM', 0))\nPY\n)\nfailure_classification=$(python\
+        \ - '.codex/security/npm-audit-summary.json' <<'PY'\nimport json, sys\nfrom\
+        \ pathlib import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('failure_classification', 'clean'))\nPY\n)\necho \"status=passed\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"critical_count=$critical\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"high_count=$high\" >> \"$GITHUB_OUTPUT\"\necho \"medium_count=$medium\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"failure_classification=$failure_classification\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"summary_path=.codex/security/npm-audit-summary.json\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"## npm dependency audit\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \ncat \".codex/security/npm-audit-summary.json\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \nif [ \"$critical\" -gt 0 ] || [ \"$high\" -gt 0 ]; then\n  echo \"::error::npm\
+        \ audit found $critical critical and $high high vulnerabilities.\"\n  exit\
+        \ 1\nfi\n"
+    - name: Scan Rust dependencies
+      if: matrix.ecosystem == 'rust'
+      id: rust-audit
+      shell: bash
+      run: "set -euo pipefail\nmkdir -p .codex/security\ncargo_tree_file=\".codex/security/cargo-tree.txt\"\
+        \nsummary_file=\".codex/security/rust-audit-summary.json\"\npython - \"$cargo_tree_file\"\
+        \ \"$summary_file\" <<'PY'\nimport json\nimport subprocess\nimport sys\nfrom\
+        \ pathlib import Path\n\ncargo_tree_file = Path(sys.argv[1])\nsummary_file\
+        \ = Path(sys.argv[2])\ncargo_tree_file.parent.mkdir(parents=True, exist_ok=True)\n\
+        result = subprocess.run(['cargo', 'tree', '--depth', '1'], capture_output=True,\
+        \ text=True, check=False)\noutput = (result.stdout or '') + (result.stderr\
+        \ or '')\ncargo_tree_file.write_text(output, encoding='utf-8')\ncounts = {'CRITICAL':\
+        \ 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}\nif result.returncode ==\
+        \ 0:\n    status = 'passed'\n    tool_status = 'clean'\n    failure_classification\
+        \ = 'clean'\n    notes = ['cargo tree inspection completed; cargo-audit is\
+        \ not configured in this workflow']\nelse:\n    status = 'tool_failed'\n \
+        \   tool_status = 'tool_failed'\n    failure_classification = 'tool_failed'\n\
+        \    notes = ['cargo tree inspection failed; cargo-audit is not configured\
+        \ in this workflow']\nsummary = {\n    'ecosystem': 'rust',\n    'status':\
+        \ status,\n    'tool_status': tool_status,\n    'failure_classification':\
+        \ failure_classification,\n    'counts': counts,\n    'severity_summary':\
+        \ dict(counts),\n    'raw_evidence_artifacts': [str(cargo_tree_file)] if cargo_tree_file.exists()\
+        \ else [],\n    'notes': notes,\n}\nsummary_file.write_text(json.dumps(summary,\
+        \ indent=2), encoding='utf-8')\nprint(json.dumps(summary, indent=2))\nPY\n\
+        status=$(python - \"$summary_file\" <<'PY'\nimport json, sys\nfrom pathlib\
+        \ import Path\nsummary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n\
+        print(summary.get('status', 'passed'))\nPY\n)\nfailure_classification=$(python\
+        \ - \"$summary_file\" <<'PY'\nimport json, sys\nfrom pathlib import Path\n\
+        summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\nprint(summary.get('failure_classification',\
+        \ 'clean'))\nPY\n)\necho \"status=$status\" >> \"$GITHUB_OUTPUT\"\necho \"\
+        tool_status=$status\" >> \"$GITHUB_OUTPUT\"\necho \"failure_classification=$failure_classification\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"critical_count=0\" >> \"$GITHUB_OUTPUT\"\n\
+        echo \"high_count=0\" >> \"$GITHUB_OUTPUT\"\necho \"medium_count=0\" >> \"\
+        $GITHUB_OUTPUT\"\necho \"summary_path=$summary_file\" >> \"$GITHUB_OUTPUT\"\
+        \necho \"## Rust dependency audit\" >> \"$GITHUB_STEP_SUMMARY\"\ncat \"$summary_file\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n"
+    - name: Upload dependency security evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-security-evidence-${{ matrix.ecosystem }}
+        path: '.codex/security/*.json
 
-      - name: Setup Python
-        if: matrix.ecosystem == 'python'
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
+          .codex/security/*.txt
 
-      - name: Setup Node.js
-        if: matrix.ecosystem == 'npm'
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: npm
+          .codex/security/*.err
 
-      - name: Setup Rust
-        if: matrix.ecosystem == 'rust'
-        uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c
-
-      - name: Scan Python dependencies with pip-audit
-        if: matrix.ecosystem == 'python'
-        id: python-audit
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .codex/security
-          python -m pip install --upgrade pip pip-audit
-          audit_file=".codex/security/pip-audit.json"
-          err_file=".codex/security/pip-audit.err"
-          summary_file=".codex/security/pip-audit-summary.json"
-          status="passed"
-          if pip-audit --format json --desc > "$audit_file" 2> "$err_file"; then
-            status="passed"
-          else
-            audit_exit=$?
-            if [ -s "$audit_file" ]; then
-              status="vuln_found"
-            else
-              status="tool_failed"
-            fi
-          fi
-          python - "$audit_file" "$err_file" "$summary_file" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          audit_file = Path(sys.argv[1])
-          err_file = Path(sys.argv[2])
-          summary_file = Path(sys.argv[3])
-          payload = []
-          try:
-              with audit_file.open('r', encoding='utf-8') as handle:
-                  payload = json.load(handle)
-          except (FileNotFoundError, json.JSONDecodeError):
-              payload = []
-
-          counts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}
-          for dependency in payload:
-              for vuln in dependency.get('vulns', []):
-                  severity = str(vuln.get('severity', 'info')).upper()
-                  if severity == 'MODERATE':
-                      severity = 'MEDIUM'
-                  counts.setdefault(severity, 0)
-                  counts[severity] += 1
-
-          raw_evidence = []
-          if audit_file.exists():
-              raw_evidence.append(str(audit_file))
-          if err_file.exists():
-              raw_evidence.append(str(err_file))
-
-          critical = counts.get('CRITICAL', 0)
-          high = counts.get('HIGH', 0)
-          medium = counts.get('MEDIUM', 0)
-          low = counts.get('LOW', 0)
-          failure_classification = (
-              'blocked_by_critical_or_high_vulnerabilities'
-              if critical or high
-              else 'warning_only' if medium or low else 'clean'
-          )
-          tool_status = (
-              'tool_failed'
-              if not payload and not audit_file.exists()
-              else 'vuln_found' if any((critical, high, medium, low)) else 'clean'
-          )
-          summary = {
-              'ecosystem': 'python',
-              'status': 'failed' if critical or high else 'passed',
-              'tool_status': tool_status,
-              'failure_classification': failure_classification,
-              'counts': counts,
-              'severity_summary': counts,
-              'total_vulnerabilities': sum(counts.values()),
-              'raw_evidence_artifacts': raw_evidence,
-              'summary_path': str(summary_file),
-          }
-          summary_file.write_text(json.dumps(summary, indent=2), encoding='utf-8')
-          print(json.dumps(summary, indent=2))
-          PY
-          critical=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('CRITICAL', 0))
-          PY
-          )
-          high=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('HIGH', 0))
-          PY
-          )
-          medium=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('MEDIUM', 0))
-          PY
-          )
-          failure_classification=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('failure_classification', 'clean'))
-          PY
-          )
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          echo "critical_count=$critical" >> "$GITHUB_OUTPUT"
-          echo "high_count=$high" >> "$GITHUB_OUTPUT"
-          echo "medium_count=$medium" >> "$GITHUB_OUTPUT"
-          echo "failure_classification=$failure_classification" >> "$GITHUB_OUTPUT"
-          echo "summary_path=$summary_file" >> "$GITHUB_OUTPUT"
-          echo "## Python dependency audit" >> "$GITHUB_STEP_SUMMARY"
-          cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$critical" -gt 0 ] || [ "$high" -gt 0 ]; then
-            echo "::error::Python audit found $critical critical and $high high vulnerabilities."
-            exit 1
-          fi
-
-      - name: Scan npm dependencies
-        if: matrix.ecosystem == 'npm'
-        id: npm-audit
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .codex/security
-          python - <<'PY'
-          import json
-          import subprocess
-          from pathlib import Path
-
-          summary = {
-              'ecosystem': 'npm',
-              'status': 'passed',
-              'tool_status': 'clean',
-              'failure_classification': 'clean',
-              'counts': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0},
-              'severity_summary': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0},
-              'projects': {},
-              'raw_evidence_artifacts': [],
-          }
-          project_matrix = [
-              ('root', '.'),
-              ('cognitive_app', 'cognitive_app'),
-              ('extension', 'copilot/extension'),
-          ]
-          for name, directory in project_matrix:
-              target = Path(directory)
-              if not target.exists():
-                  continue
-              out_file = Path('.codex/security') / f'npm-{name}-audit.json'
-              err_file = Path('.codex/security') / f'npm-{name}-audit.err'
-              try:
-                  result = subprocess.run(['npm', 'audit', '--json'], cwd=directory, capture_output=True, text=True, check=False)
-                  if result.stdout.strip():
-                      out_file.write_text(result.stdout, encoding='utf-8')
-                  else:
-                      out_file.write_text('{"metadata":{"vulnerabilities":{"critical":0,"high":0,"moderate":0,"low":0}},"vulnerabilities":{}}', encoding='utf-8')
-                  if result.stderr.strip():
-                      err_file.write_text(result.stderr, encoding='utf-8')
-                  if result.returncode not in (0, 1):
-                      summary['tool_status'] = 'tool_failed'
-              except Exception as exc:
-                  out_file.write_text('{"metadata":{"vulnerabilities":{"critical":0,"high":0,"moderate":0,"low":0}},"vulnerabilities":{}}', encoding='utf-8')
-                  err_file.write_text(str(exc), encoding='utf-8')
-                  summary['tool_status'] = 'tool_failed'
-                  data = {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}}}
-              else:
-                  try:
-                      data = json.loads(out_file.read_text(encoding='utf-8')) if out_file.exists() else {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}}}
-                  except json.JSONDecodeError:
-                      data = {'metadata': {'vulnerabilities': {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}}}
-              metadata = data.get('metadata', {}).get('vulnerabilities', {})
-              project_counts = {
-                  'CRITICAL': int(metadata.get('critical', 0) or 0),
-                  'HIGH': int(metadata.get('high', 0) or 0),
-                  'MEDIUM': int(metadata.get('moderate', 0) or 0),
-                  'LOW': int(metadata.get('low', 0) or 0),
-                  'INFO': 0,
-              }
-              summary['projects'][name] = project_counts
-              for key in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'):
-                  summary['counts'][key] += project_counts.get(key, 0)
-              if out_file.exists():
-                  summary['raw_evidence_artifacts'].append(str(out_file))
-              if err_file.exists():
-                  summary['raw_evidence_artifacts'].append(str(err_file))
-              if project_counts['CRITICAL'] > 0 or project_counts['HIGH'] > 0:
-                  summary['status'] = 'failed'
-                  summary['tool_status'] = 'vuln_found'
-          summary['severity_summary'] = dict(summary['counts'])
-          summary['failure_classification'] = (
-              'blocked_by_critical_or_high_vulnerabilities'
-              if summary['counts']['CRITICAL'] > 0 or summary['counts']['HIGH'] > 0
-              else 'warning_only' if summary['counts']['MEDIUM'] > 0 or summary['counts']['LOW'] > 0 else 'clean'
-          )
-          summary['raw_evidence_artifacts'] = sorted(set(summary['raw_evidence_artifacts']))
-          summary_path = Path('.codex/security/npm-audit-summary.json')
-          summary_path.write_text(json.dumps(summary, indent=2), encoding='utf-8')
-          print(json.dumps(summary, indent=2))
-          PY
-          critical=$(python - '.codex/security/npm-audit-summary.json' <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('CRITICAL', 0))
-          PY
-          )
-          high=$(python - '.codex/security/npm-audit-summary.json' <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('HIGH', 0))
-          PY
-          )
-          medium=$(python - '.codex/security/npm-audit-summary.json' <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('counts', {}).get('MEDIUM', 0))
-          PY
-          )
-          failure_classification=$(python - '.codex/security/npm-audit-summary.json' <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('failure_classification', 'clean'))
-          PY
-          )
-          echo "status=passed" >> "$GITHUB_OUTPUT"
-          echo "critical_count=$critical" >> "$GITHUB_OUTPUT"
-          echo "high_count=$high" >> "$GITHUB_OUTPUT"
-          echo "medium_count=$medium" >> "$GITHUB_OUTPUT"
-          echo "failure_classification=$failure_classification" >> "$GITHUB_OUTPUT"
-          echo "summary_path=.codex/security/npm-audit-summary.json" >> "$GITHUB_OUTPUT"
-          echo "## npm dependency audit" >> "$GITHUB_STEP_SUMMARY"
-          cat ".codex/security/npm-audit-summary.json" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$critical" -gt 0 ] || [ "$high" -gt 0 ]; then
-            echo "::error::npm audit found $critical critical and $high high vulnerabilities."
-            exit 1
-          fi
-
-      - name: Scan Rust dependencies
-        if: matrix.ecosystem == 'rust'
-        id: rust-audit
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .codex/security
-          cargo_tree_file=".codex/security/cargo-tree.txt"
-          summary_file=".codex/security/rust-audit-summary.json"
-          python - "$cargo_tree_file" "$summary_file" <<'PY'
-          import json
-          import subprocess
-          import sys
-          from pathlib import Path
-
-          cargo_tree_file = Path(sys.argv[1])
-          summary_file = Path(sys.argv[2])
-          cargo_tree_file.parent.mkdir(parents=True, exist_ok=True)
-          result = subprocess.run(['cargo', 'tree', '--depth', '1'], capture_output=True, text=True, check=False)
-          output = (result.stdout or '') + (result.stderr or '')
-          cargo_tree_file.write_text(output, encoding='utf-8')
-          counts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}
-          if result.returncode == 0:
-              status = 'passed'
-              tool_status = 'clean'
-              failure_classification = 'clean'
-              notes = ['cargo tree inspection completed; cargo-audit is not configured in this workflow']
-          else:
-              status = 'tool_failed'
-              tool_status = 'tool_failed'
-              failure_classification = 'tool_failed'
-              notes = ['cargo tree inspection failed; cargo-audit is not configured in this workflow']
-          summary = {
-              'ecosystem': 'rust',
-              'status': status,
-              'tool_status': tool_status,
-              'failure_classification': failure_classification,
-              'counts': counts,
-              'severity_summary': dict(counts),
-              'raw_evidence_artifacts': [str(cargo_tree_file)] if cargo_tree_file.exists() else [],
-              'notes': notes,
-          }
-          summary_file.write_text(json.dumps(summary, indent=2), encoding='utf-8')
-          print(json.dumps(summary, indent=2))
-          PY
-          status=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('status', 'passed'))
-          PY
-          )
-          failure_classification=$(python - "$summary_file" <<'PY'
-          import json, sys
-          from pathlib import Path
-          summary = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-          print(summary.get('failure_classification', 'clean'))
-          PY
-          )
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          echo "tool_status=$status" >> "$GITHUB_OUTPUT"
-          echo "failure_classification=$failure_classification" >> "$GITHUB_OUTPUT"
-          echo "critical_count=0" >> "$GITHUB_OUTPUT"
-          echo "high_count=0" >> "$GITHUB_OUTPUT"
-          echo "medium_count=0" >> "$GITHUB_OUTPUT"
-          echo "summary_path=$summary_file" >> "$GITHUB_OUTPUT"
-          echo "## Rust dependency audit" >> "$GITHUB_STEP_SUMMARY"
-          cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload dependency security evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-security-evidence-${{ matrix.ecosystem }}
-          path: |
-            .codex/security/*.json
-            .codex/security/*.txt
-            .codex/security/*.err
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Enforce dependency gate
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          artifacts = {
-              'python': Path('.codex/security/pip-audit-summary.json'),
-              'npm': Path('.codex/security/npm-audit-summary.json'),
-              'rust': Path('.codex/security/rust-audit-summary.json'),
-          }
-          gate_summary = {
-              'status': 'passed',
-              'failure_classification': 'clean',
-              'severity_summary': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0},
-              'ecosystem_totals': {},
-              'raw_evidence_artifacts': [],
-              'missing_artifacts': [],
-          }
-          for name, path in artifacts.items():
-              if not path.exists():
-                  gate_summary['missing_artifacts'].append(str(path))
-                  continue
-              try:
-                  payload = json.loads(path.read_text(encoding='utf-8'))
-              except json.JSONDecodeError:
-                  gate_summary['missing_artifacts'].append(str(path))
-                  continue
-              counts = payload.get('severity_summary') or payload.get('counts') or {}
-              gate_summary['ecosystem_totals'][name] = {
-                  'counts': counts,
-                  'status': payload.get('status', 'passed'),
-                  'failure_classification': payload.get('failure_classification', 'clean'),
-              }
-              for sev in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'):
-                  gate_summary['severity_summary'][sev] += int(counts.get(sev, 0) or 0)
-              for evidence in payload.get('raw_evidence_artifacts', []):
-                  if evidence:
-                      gate_summary['raw_evidence_artifacts'].append(evidence)
-          gate_summary['raw_evidence_artifacts'] = sorted(set(gate_summary['raw_evidence_artifacts']))
-          if gate_summary['severity_summary']['CRITICAL'] > 0 or gate_summary['severity_summary']['HIGH'] > 0:
-              gate_summary['failure_classification'] = 'blocked_by_critical_or_high_vulnerabilities'
-              gate_summary['status'] = 'failed'
-          elif gate_summary['severity_summary']['MEDIUM'] > 0 or gate_summary['severity_summary']['LOW'] > 0:
-              gate_summary['failure_classification'] = 'warning_only'
-          summary_path = Path('.codex/security/dependency-gate-summary.json')
-          summary_path.parent.mkdir(parents=True, exist_ok=True)
-          summary_path.write_text(json.dumps(gate_summary, indent=2), encoding='utf-8')
-          print(json.dumps(gate_summary, indent=2))
-          if gate_summary['failure_classification'] == 'blocked_by_critical_or_high_vulnerabilities':
-              raise SystemExit(1)
-          PY
-
+          '
+        if-no-files-found: warn
+        retention-days: 30
+    - name: Enforce dependency gate
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\npython - <<'PY'\nimport json\nfrom pathlib import Path\n\
+        \nartifacts = {\n    'python': Path('.codex/security/pip-audit-summary.json'),\n\
+        \    'npm': Path('.codex/security/npm-audit-summary.json'),\n    'rust': Path('.codex/security/rust-audit-summary.json'),\n\
+        }\ngate_summary = {\n    'status': 'passed',\n    'failure_classification':\
+        \ 'clean',\n    'severity_summary': {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0,\
+        \ 'LOW': 0, 'INFO': 0},\n    'ecosystem_totals': {},\n    'raw_evidence_artifacts':\
+        \ [],\n    'missing_artifacts': [],\n}\nfor name, path in artifacts.items():\n\
+        \    if not path.exists():\n        gate_summary['missing_artifacts'].append(str(path))\n\
+        \        continue\n    try:\n        payload = json.loads(path.read_text(encoding='utf-8'))\n\
+        \    except json.JSONDecodeError:\n        gate_summary['missing_artifacts'].append(str(path))\n\
+        \        continue\n    counts = payload.get('severity_summary') or payload.get('counts')\
+        \ or {}\n    gate_summary['ecosystem_totals'][name] = {\n        'counts':\
+        \ counts,\n        'status': payload.get('status', 'passed'),\n        'failure_classification':\
+        \ payload.get('failure_classification', 'clean'),\n    }\n    for sev in ('CRITICAL',\
+        \ 'HIGH', 'MEDIUM', 'LOW', 'INFO'):\n        gate_summary['severity_summary'][sev]\
+        \ += int(counts.get(sev, 0) or 0)\n    for evidence in payload.get('raw_evidence_artifacts',\
+        \ []):\n        if evidence:\n            gate_summary['raw_evidence_artifacts'].append(evidence)\n\
+        gate_summary['raw_evidence_artifacts'] = sorted(set(gate_summary['raw_evidence_artifacts']))\n\
+        if gate_summary['severity_summary']['CRITICAL'] > 0 or gate_summary['severity_summary']['HIGH']\
+        \ > 0:\n    gate_summary['failure_classification'] = 'blocked_by_critical_or_high_vulnerabilities'\n\
+        \    gate_summary['status'] = 'failed'\nelif gate_summary['severity_summary']['MEDIUM']\
+        \ > 0 or gate_summary['severity_summary']['LOW'] > 0:\n    gate_summary['failure_classification']\
+        \ = 'warning_only'\nsummary_path = Path('.codex/security/dependency-gate-summary.json')\n\
+        summary_path.parent.mkdir(parents=True, exist_ok=True)\nsummary_path.write_text(json.dumps(gate_summary,\
+        \ indent=2), encoding='utf-8')\nprint(json.dumps(gate_summary, indent=2))\n\
+        if gate_summary['failure_classification'] == 'blocked_by_critical_or_high_vulnerabilities':\n\
+        \    raise SystemExit(1)\nPY\n"
   report-health:
     name: Generate Dependency Health Report
     runs-on: ubuntu-latest
@@ -468,17 +282,18 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Publish health summary
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo '## Dependency Security Health Report' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Status: ${{ needs.dependency-security-gate.result }}' >> "$GITHUB_STEP_SUMMARY"
-          echo "- Policy: Fail on critical/high findings; record medium/low warnings separately." >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ needs.dependency-security-gate.result }}" != "success" ]; then
-            echo '::error::Dependency security gate blocked the merge because critical/high findings are present.'
-            exit 1
-          fi
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Publish health summary
+      shell: bash
+      env:
+        DEPENDENCY_GATE_RESULT: ${{ needs.dependency-security-gate.result }}
+      run: |
+        set -euo pipefail
+        echo '## Dependency Security Health Report' >> "$GITHUB_STEP_SUMMARY"
+        echo "- Status: ${DEPENDENCY_GATE_RESULT}" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Policy: Fail on critical/high findings; record medium/low warnings separately." >> "$GITHUB_STEP_SUMMARY"
+        if [ "${DEPENDENCY_GATE_RESULT}" != "success" ]; then
+          echo '::error::Dependency security gate blocked the merge because critical/high findings are present.'
+          exit 1
+        fi

@@ -1,5 +1,5 @@
 name: agentic-diff-guard
-on:
+true:
   pull_request:
     branches:
     - main
@@ -22,10 +22,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run deterministic diff guard
       env:
         GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}

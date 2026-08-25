@@ -1,5 +1,5 @@
 name: "\U0001F33F Branch Cleanup"
-on:
+true:
   schedule:
   - cron: 0 2 * * 0
   workflow_dispatch:
@@ -61,10 +61,11 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: "\U0001F40D Set up Python"
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: "\U0001F33F Run branch cleanup"
       id: cleanup
       env:
