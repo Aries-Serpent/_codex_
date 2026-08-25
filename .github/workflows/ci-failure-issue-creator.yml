@@ -1,5 +1,5 @@
 name: "\U0001F6A8 CI Failure Issue Creator"
-true:
+'on':
   workflow_run:
     workflows:
     - CI

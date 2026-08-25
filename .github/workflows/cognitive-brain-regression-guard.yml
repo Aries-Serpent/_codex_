@@ -1,5 +1,5 @@
 name: cognitive-brain-regression-guard
-true:
+'on':
   workflow_dispatch: null
   pull_request:
     paths:

@@ -1,5 +1,5 @@
 name: mypy Baseline (Type-Check Anti-Regression)
-true:
+'on':
   pull_request:
     paths:
     - src/**

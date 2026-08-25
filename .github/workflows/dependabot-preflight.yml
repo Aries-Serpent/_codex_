@@ -1,5 +1,5 @@
 name: "\U0001F50D Dependabot Pre-flight Check"
-true:
+'on':
   schedule:
   - cron: 0 23 * * 0
   pull_request:

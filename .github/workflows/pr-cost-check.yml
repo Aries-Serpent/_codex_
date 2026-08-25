@@ -1,5 +1,5 @@
 name: "\U0001F4B0 PR Cost Check"
-true:
+'on':
   pull_request:
     branches:
     - main

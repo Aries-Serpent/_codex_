@@ -1,5 +1,5 @@
 name: "\U0001F6A8 Deferral Language Gate"
-true:
+'on':
   pull_request:
     types:
     - opened

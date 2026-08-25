@@ -1,5 +1,5 @@
 name: "\U0001F500 Branch Rebase Gate"
-true:
+'on':
   pull_request:
     types:
     - opened

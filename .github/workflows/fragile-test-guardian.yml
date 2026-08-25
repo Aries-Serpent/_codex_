@@ -1,5 +1,5 @@
 name: Fragile Test Guardian
-true:
+'on':
   pull_request:
     types:
     - opened

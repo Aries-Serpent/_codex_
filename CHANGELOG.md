@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed — Bulk workflow YAML parse error (2026-08-25)
+- Fixed 64 active GitHub Actions workflow files where bare `on:` was being serialised as `true:` by YAML parsers, making all trigger blocks invalid and silently disabling those workflows. All occurrences of `^true:` on line 2 were replaced with `'on':`.
+
 ### Fixed — Workflow metadata drift (2026-08-25)
 - Resolved duplicate workflow display name (`CodeQL Security Analysis`) shared by `13-3-enterprise-compliance.yml` and `enterprise-compliance.yml`; renamed to `CodeQL Security Analysis (Matrix)` and `Enterprise Compliance & CodeQL` respectively.
 - Fixed YAML parse error (`true:` → `'on':`) in `enterprise-compliance.yml` that rendered the trigger block invalid.

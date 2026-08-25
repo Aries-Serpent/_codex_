@@ -1,5 +1,5 @@
 name: Tiered Approval Gate
-true:
+'on':
   pull_request:
     types:
     - opened

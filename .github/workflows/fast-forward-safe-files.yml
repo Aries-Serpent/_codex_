@@ -1,5 +1,5 @@
 name: "\u26A1 Fast-Forward Safe Files to Main"
-true:
+'on':
   workflow_dispatch:
     inputs:
       pr_number:

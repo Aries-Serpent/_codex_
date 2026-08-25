@@ -1,5 +1,5 @@
 name: "CI Rescue \u2014 Auto-Fix & @copilot RCA"
-true:
+'on':
   workflow_run:
     workflows:
     - Auto-Fix Common CI Issues

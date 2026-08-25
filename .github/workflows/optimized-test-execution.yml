@@ -1,5 +1,5 @@
 name: Optimized Test Execution (Consolidated)
-true:
+'on':
   pull_request:
     branches:
     - main

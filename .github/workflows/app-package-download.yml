@@ -1,5 +1,5 @@
 name: App Package Download
-true:
+'on':
   workflow_dispatch:
     inputs:
       app_name:

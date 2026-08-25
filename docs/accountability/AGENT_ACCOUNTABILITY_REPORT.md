@@ -22577,3 +22577,24 @@ agent signatures and a direct meta-tensor regression run are absent.
 
 ### Agents Used
 - None (direct execution)
+
+---
+
+## Session: 2026-08-25T21:48Z — Bulk Workflow YAML Trigger Fix
+
+**Objective:** Find and fix all GitHub Actions workflow files where bare `on` was serialised as `true:`, making trigger blocks invalid.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. **Audit** — `grep -rln "^true:" .github/workflows/*.yml` found **64 affected files**.
+2. **Bulk fix** — Applied `sed -i '0,/^true:/{s/^true:$/'on':/}'` to all 64 files; replaced `true:` with `'on':` on the trigger line only (first occurrence, non-greedy).
+3. **Verification** — `grep -rn "^true:" .github/workflows/*.yml | wc -l` → **0** remaining occurrences.
+4. **Spot-checked** `action-version-check.yml`, `workflow-execution-gate.yml`, `release.yml` — all now show `'on':` correctly.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `CHANGELOG.md` updated.
+
+### Agents Used
+- None (direct bulk sed execution)

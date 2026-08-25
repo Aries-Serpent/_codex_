@@ -1,5 +1,5 @@
 name: Resilient Dependency Submission
-true:
+'on':
   push:
     branches:
     - main

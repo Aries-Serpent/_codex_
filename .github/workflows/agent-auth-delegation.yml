@@ -1,5 +1,5 @@
 name: Agent Token Delegation
-true:
+'on':
   pull_request:
     types:
     - opened

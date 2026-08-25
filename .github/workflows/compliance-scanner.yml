@@ -1,5 +1,5 @@
 name: Compliance Scanner - GDPR/CCPA/SOC2
-true:
+'on':
   pull_request:
     types:
     - opened

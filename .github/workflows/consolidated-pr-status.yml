@@ -1,5 +1,5 @@
 name: Consolidated PR Status
-true:
+'on':
   workflow_call:
     inputs:
       workflow-name:

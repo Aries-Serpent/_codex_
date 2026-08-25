@@ -1,5 +1,5 @@
 name: Audit Trail Logging - Phase 6 Lane 3
-true:
+'on':
   pull_request:
     types:
     - opened
