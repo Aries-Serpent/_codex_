@@ -72,12 +72,14 @@ class Retriever:
             )
             logger.info("Loaded index with %d chunks", len(self.chunks_metadata))
         except FileNotFoundError as e:
-            type(e).__name__
-            logger.warning("Index not found; use indexer.py to build an index first")
+            logger.warning(
+                "Index not found; use indexer.py to build an index first: %s",
+                type(e).__name__,
+                exc_info=True,
+            )
             # Allow initialization without an index for testing
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-            type(e).__name__
-            logger.error("Error loading index")
+            logger.error("Error loading index: %s", type(e).__name__, exc_info=True)
             raise
 
     def _load_model(self) -> None:
@@ -97,12 +99,14 @@ class Retriever:
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-            type(e).__name__
-            logger.warning("Failed to load query embedding model; using TF-IDF fallback")
+            logger.warning(
+                "Failed to load query embedding model; using TF-IDF fallback: %s",
+                type(e).__name__,
+                exc_info=True,
+            )
             self._load_tfidf_fallback_model()
         except TypeError as e:
-            type(e).__name__
-            logger.error("Error loading embedding model")
+            logger.error("Error loading embedding model: %s", type(e).__name__, exc_info=True)
             raise
 
     def _load_tfidf_fallback_model(self) -> None:

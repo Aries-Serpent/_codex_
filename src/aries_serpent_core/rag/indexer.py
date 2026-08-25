@@ -20,6 +20,9 @@ except ImportError:  # pragma: no cover - exercised in readiness smoke tests
     class _NumpyFallback:
         ndarray = object
 
+        def __getattr__(self, name: str):
+            raise ImportError("numpy is required for aries_serpent_core.rag.indexer")
+
         @staticmethod
         def array(*_args, **_kwargs):
             raise ImportError("numpy is required for aries_serpent_core.rag.indexer")
@@ -140,8 +143,7 @@ def embed_chunks(
         model = safe_load_sentence_transformer(model_name, cache_dir)
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-        type(e).__name__
-        logger.error("Failed to load embedding model")
+        logger.error("Failed to load embedding model: %s", type(e).__name__, exc_info=True)
         raise
 
     # Extract text from chunks
@@ -175,8 +177,12 @@ def embed_chunks(
         logger.info("Successfully encoded %d texts", len(texts_filtered))
         return embeddings
     except IndexError as e:
-        type(e).__name__
-        logger.error("IndexError during encoding for %d text inputs", len(texts_filtered))
+        logger.error(
+            "IndexError during encoding for %d text inputs: %s",
+            len(texts_filtered),
+            type(e).__name__,
+            exc_info=True,
+        )
         logger.error("Embedding model type: %s", type(model).__name__)
         logger.error(
             "Embedding model sequence length: %s",
