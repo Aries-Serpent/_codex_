@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5524)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5524 (SHA `f9c8f5aebf1bd273071c2cc473d3a9e412962d31`) at 2026-08-25T23:38:36Z [auto-generated]
+
 ### Fixed — Bulk workflow YAML parse error (2026-08-25)
 - Fixed 64 active GitHub Actions workflow files where bare `on:` was being serialised as `true:` by YAML parsers, making all trigger blocks invalid and silently disabling those workflows. All occurrences of `^true:` on line 2 were replaced with `'on':`.
 
