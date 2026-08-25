@@ -1,5 +1,5 @@
 name: Cognitive K8s Provisioning Pipeline
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
@@ -37,10 +37,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Query Patterns
       id: query
       run: 'python scripts/cognitive/query_k8s_patterns.py
@@ -69,10 +70,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -99,10 +101,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -129,10 +132,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
@@ -159,10 +163,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download Terraform Modules
       uses: actions/download-artifact@v5
       with:

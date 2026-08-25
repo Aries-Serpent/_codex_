@@ -52,10 +52,11 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Check action versions (PR / push)
       if: "github.event_name != 'schedule' &&\ngithub.event.inputs.fix != 'true' &&\n\
         !(\n  github.event_name == 'push' &&\n  (\n    startsWith(github.ref, 'refs/heads/copilot/')\

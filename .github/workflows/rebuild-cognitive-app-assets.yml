@@ -1,21 +1,18 @@
 name: Rebuild Cognitive App Assets
-on:
+true:
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason for rebuild'
+        description: Reason for rebuild
         required: false
-        default: 'Stale deployment recovery'
-
+        default: Stale deployment recovery
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 jobs:
   rebuild:
     name: Rebuild and Redeploy
@@ -23,223 +20,135 @@ jobs:
     timeout-minutes: 60
     outputs:
       rebuild_status: ${{ steps.build.outputs.status }}
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Node.js 22
+      uses: actions/setup-node@v5
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: cognitive_app/package-lock.json
+    - name: Set up Python 3.12
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Log rebuild start
+      env:
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "🔄 Starting cognitive app rebuild..."
+        echo "Reason: ${REBUILD_REASON}"
+        echo ""
 
-      - name: Set up Node.js 22
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: cognitive_app/package-lock.json
+        python scripts/ci/deployment_history_tracker.py record           --type rebuild           --status started           --reason "$REBUILD_REASON"
+    - name: Clean node_modules and dist
+      working-directory: cognitive_app
+      run: "echo \"\U0001F9F9 Cleaning build artifacts...\"\nrm -rf node_modules package-lock.json\n\
+        rm -rf dist\nrm -rf .dist\necho \"\u2713 Cleaned: node_modules, package-lock.json,\
+        \ dist\"\necho \"\"\n"
+    - name: Fresh npm install
+      working-directory: cognitive_app
+      run: "echo \"\U0001F4E6 Fresh npm install...\"\nnpm install --verbose\n\nif\
+        \ [ $? -ne 0 ]; then\n  echo \"\u274C npm install failed\"\n  exit 1\nfi\n\
+        echo \"\"\n"
+    - name: Pre-build validation
+      working-directory: cognitive_app
+      run: "echo \"\U0001F50D Pre-build validation...\"\npython ../scripts/ci/validate_cognitive_app_build.py\
+        \ --pre-build-only\n\nif [ $? -ne 0 ]; then\n  echo \"\u274C Pre-build validation\
+        \ failed\"\n  exit 1\nfi\necho \"\"\n"
+    - name: Build cognitive app
+      id: build
+      working-directory: cognitive_app
+      env:
+        VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
+        VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
+        VITE_DOCS_FETCH_LIVE: 'true'
+      run: "echo \"\U0001F3D7\uFE0F  Building cognitive app (fresh)...\"\necho \"\
+        \   API mode: ${VITE_API_MODE}\"\necho \"   CLI URL:  ${VITE_CLI_API_URL:-<not\
+        \ set>}\"\necho \"\"\n\nnpm run build 2>&1 | tee build.log\n\nif [ $? -ne\
+        \ 0 ]; then\n  echo \"\u274C Build failed\"\n  echo \"\"\n  echo \"Last 50\
+        \ lines of build log:\"\n  tail -50 build.log\n  exit 1\nfi\n\necho \"\u2713\
+        \ Build successful\"\necho \"status=success\" >> $GITHUB_OUTPUT\necho \"\"\
+        \n"
+    - name: Post-build validation
+      working-directory: cognitive_app
+      run: "echo \"\u2705 Post-build validation...\"\npython ../scripts/ci/validate_cognitive_app_build.py\
+        \ --post-build-only\n\nif [ $? -ne 0 ]; then\n  echo \"\u274C Post-build validation\
+        \ failed\"\n  exit 1\nfi\necho \"\"\n"
+    - name: List build artifacts
+      working-directory: cognitive_app
+      run: "echo \"\U0001F4CB Build artifacts:\"\necho \"\"\nfind dist -type f -name\
+        \ \"*.js\" -o -name \"*.css\" | head -20\necho \"\"\necho \"Total files:\"\
+        \nfind dist -type f | wc -l\n"
+    - name: Apply cache invalidation
+      env:
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "🔄 Applying cache invalidation..."
+        python scripts/ci/cognitive_app_cache_invalidator.py           --url "https://aries-serpent.github.io/_codex_/cognitive_app/"           --reason "Rebuild: ${REBUILD_REASON}"
+        echo ""
+    - name: Deploy to site
+      run: "echo \"\U0001F4E4 Deploying to site/cognitive_app...\"\n\nmkdir -p site/cognitive_app\n\
+        cp -r cognitive_app/dist/* site/cognitive_app/\n\nASSET_COUNT=$(find site/cognitive_app\
+        \ -type f | wc -l)\necho \"\u2713 Deployed $ASSET_COUNT files\"\necho \"\"\
+        \n\necho \"Deployed structure:\"\nls -lah site/cognitive_app/ | head -20\n"
+    - name: Verify local build
+      run: "echo \"\U0001F50D Verifying local build artifacts...\"\n\nif [ -d \"site/cognitive_app/assets\"\
+        \ ]; then\n  echo \"\u2713 assets/ directory exists\"\n  JS_COUNT=$(find site/cognitive_app/assets\
+        \ -name \"*.js\" | wc -l)\n  CSS_COUNT=$(find site/cognitive_app/assets -name\
+        \ \"*.css\" | wc -l)\n  echo \"  - JavaScript files: $JS_COUNT\"\n  echo \"\
+        \  - CSS files: $CSS_COUNT\"\nfi\n\nif [ -f \"site/cognitive_app/index.html\"\
+        \ ]; then\n  echo \"\u2713 index.html exists\"\n  \n  if grep -q 'id=\"root\"\
+        ' site/cognitive_app/index.html; then\n    echo \"\u2713 React root element\
+        \ found\"\n  else\n    echo \"\u274C React root element NOT found\"\n    exit\
+        \ 1\n  fi\nfi\n\necho \"\"\n"
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+      with:
+        path: site/
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+    - name: Verify deployment with hash checking
+      id: verify
+      run: "echo \"\u2705 Verifying deployed assets...\"\necho \"\"\n\npython scripts/ci/cognitive_app_asset_manifest_verifier.py\
+        \ \\\n  --manifest cognitive_app/dist/manifest.json \\\n  --url \"https://aries-serpent.github.io/_codex_/cognitive_app/\"\
+        \n\nVERIFY_RESULT=$?\n\nif [ $VERIFY_RESULT -eq 0 ]; then\n  echo \"\"\n \
+        \ echo \"\u2705 Deployment verification PASSED\"\n  echo \"result=success\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"\"\n  echo \"\u26A0\uFE0F Asset verification\
+        \ result: $VERIFY_RESULT\"\n  echo \"result=verification_warning\" >> $GITHUB_OUTPUT\n\
+        fi\n"
+    - name: Log rebuild completion
+      if: always()
+      env:
+        BUILD_STATUS: ${{ steps.build.outputs.status }}
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        RESULT="${BUILD_STATUS}"
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v7
-        with:
-          python-version: 3.12.13
-
-      - name: Log rebuild start
-        run: |
-          echo "🔄 Starting cognitive app rebuild..."
-          echo "Reason: ${{ github.event.inputs.reason }}"
-          echo ""
-          
-          python scripts/ci/deployment_history_tracker.py record \
-            --type rebuild \
-            --status started \
-            --reason "${{ github.event.inputs.reason }}"
-
-      - name: Clean node_modules and dist
-        working-directory: cognitive_app
-        run: |
-          echo "🧹 Cleaning build artifacts..."
-          rm -rf node_modules package-lock.json
-          rm -rf dist
-          rm -rf .dist
-          echo "✓ Cleaned: node_modules, package-lock.json, dist"
-          echo ""
-
-      - name: Fresh npm install
-        working-directory: cognitive_app
-        run: |
-          echo "📦 Fresh npm install..."
-          npm install --verbose
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ npm install failed"
-            exit 1
-          fi
-          echo ""
-
-      - name: Pre-build validation
-        working-directory: cognitive_app
-        run: |
-          echo "🔍 Pre-build validation..."
-          python ../scripts/ci/validate_cognitive_app_build.py --pre-build-only
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ Pre-build validation failed"
-            exit 1
-          fi
-          echo ""
-
-      - name: Build cognitive app
-        id: build
-        working-directory: cognitive_app
-        env:
-          VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
-          VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
-          VITE_DOCS_FETCH_LIVE: 'true'
-        run: |
-          echo "🏗️  Building cognitive app (fresh)..."
-          echo "   API mode: ${VITE_API_MODE}"
-          echo "   CLI URL:  ${VITE_CLI_API_URL:-<not set>}"
-          echo ""
-          
-          npm run build 2>&1 | tee build.log
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ Build failed"
-            echo ""
-            echo "Last 50 lines of build log:"
-            tail -50 build.log
-            exit 1
-          fi
-          
-          echo "✓ Build successful"
-          echo "status=success" >> $GITHUB_OUTPUT
-          echo ""
-
-      - name: Post-build validation
-        working-directory: cognitive_app
-        run: |
-          echo "✅ Post-build validation..."
-          python ../scripts/ci/validate_cognitive_app_build.py --post-build-only
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ Post-build validation failed"
-            exit 1
-          fi
-          echo ""
-
-      - name: List build artifacts
-        working-directory: cognitive_app
-        run: |
-          echo "📋 Build artifacts:"
-          echo ""
-          find dist -type f -name "*.js" -o -name "*.css" | head -20
-          echo ""
-          echo "Total files:"
-          find dist -type f | wc -l
-
-      - name: Apply cache invalidation
-        run: |
-          echo "🔄 Applying cache invalidation..."
-          python scripts/ci/cognitive_app_cache_invalidator.py \
-            --url "https://aries-serpent.github.io/_codex_/cognitive_app/" \
-            --reason "Rebuild: ${{ github.event.inputs.reason }}"
-          echo ""
-
-      - name: Deploy to site
-        run: |
-          echo "📤 Deploying to site/cognitive_app..."
-          
-          mkdir -p site/cognitive_app
-          cp -r cognitive_app/dist/* site/cognitive_app/
-          
-          ASSET_COUNT=$(find site/cognitive_app -type f | wc -l)
-          echo "✓ Deployed $ASSET_COUNT files"
-          echo ""
-          
-          echo "Deployed structure:"
-          ls -lah site/cognitive_app/ | head -20
-
-      - name: Verify local build
-        run: |
-          echo "🔍 Verifying local build artifacts..."
-          
-          if [ -d "site/cognitive_app/assets" ]; then
-            echo "✓ assets/ directory exists"
-            JS_COUNT=$(find site/cognitive_app/assets -name "*.js" | wc -l)
-            CSS_COUNT=$(find site/cognitive_app/assets -name "*.css" | wc -l)
-            echo "  - JavaScript files: $JS_COUNT"
-            echo "  - CSS files: $CSS_COUNT"
-          fi
-          
-          if [ -f "site/cognitive_app/index.html" ]; then
-            echo "✓ index.html exists"
-            
-            if grep -q 'id="root"' site/cognitive_app/index.html; then
-              echo "✓ React root element found"
-            else
-              echo "❌ React root element NOT found"
-              exit 1
-            fi
-          fi
-          
-          echo ""
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
-        with:
-          path: site/
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
-
-      - name: Verify deployment with hash checking
-        id: verify
-        run: |
-          echo "✅ Verifying deployed assets..."
-          echo ""
-          
-          python scripts/ci/cognitive_app_asset_manifest_verifier.py \
-            --manifest cognitive_app/dist/manifest.json \
-            --url "https://aries-serpent.github.io/_codex_/cognitive_app/"
-          
-          VERIFY_RESULT=$?
-          
-          if [ $VERIFY_RESULT -eq 0 ]; then
-            echo ""
-            echo "✅ Deployment verification PASSED"
-            echo "result=success" >> $GITHUB_OUTPUT
-          else
-            echo ""
-            echo "⚠️ Asset verification result: $VERIFY_RESULT"
-            echo "result=verification_warning" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Log rebuild completion
-        if: always()
-        run: |
-          RESULT="${{ steps.build.outputs.status }}"
-          
-          python scripts/ci/deployment_history_tracker.py record \
-            --type rebuild \
-            --status "$RESULT" \
-            --url "https://aries-serpent.github.io/_codex_/cognitive_app/" \
-            --reason "${{ github.event.inputs.reason }}"
-
-      - name: Summary
-        if: always()
-        run: |
-          VERIFY_RESULT="${{ steps.verify.outputs.result || 'unknown' }}"
-          PAGE_URL="${{ steps.deployment.outputs.page_url }}"
-          
-          echo "## 🔄 Cognitive App Rebuild Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Status | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ steps.build.outputs.status || 'unknown' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Deployment | Success |" >> $GITHUB_STEP_SUMMARY
-          echo "| Verification | $VERIFY_RESULT |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**URL**: [\`${PAGE_URL}cognitive_app/\`](${PAGE_URL}cognitive_app/)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Reason**: ${{ github.event.inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+        python scripts/ci/deployment_history_tracker.py record           --type rebuild           --status "$RESULT"           --url "https://aries-serpent.github.io/_codex_/cognitive_app/"           --reason "$REBUILD_REASON"
+    - name: Summary
+      if: always()
+      env:
+        VERIFY_RESULT: ${{ steps.verify.outputs.result || 'unknown' }}
+        PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        BUILD_STATUS: ${{ steps.build.outputs.status || 'unknown' }}
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "## 🔄 Cognitive App Rebuild Complete" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Status | Result |" >> "$GITHUB_STEP_SUMMARY"
+        echo "|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Build | ${BUILD_STATUS} |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Deployment | Success |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Verification | ${VERIFY_RESULT} |" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**URL**: [\`${PAGE_URL}cognitive_app/\`](${PAGE_URL}cognitive_app/)" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Reason**: ${REBUILD_REASON}" >> "$GITHUB_STEP_SUMMARY"

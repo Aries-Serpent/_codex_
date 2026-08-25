@@ -1,5 +1,5 @@
 name: "\u26A1 Fast-Forward Safe Files to Main"
-on:
+true:
   workflow_dispatch:
     inputs:
       pr_number:
@@ -68,10 +68,11 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Classify files (dry run)
@@ -133,10 +134,11 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Execute promotion

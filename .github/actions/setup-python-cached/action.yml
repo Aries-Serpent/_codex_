@@ -15,9 +15,9 @@ author: 'Aries-Serpent'
 
 inputs:
   python-version:
-    description: 'Python version to use'
+    description: 'Python version to use. Keep this aligned with .python-version.'
     required: false
-    default: '3.12.13'
+    default: '3.12.10'
   extras:
     description: 'Package extras to install from pyproject.toml (e.g. "dev")'
     required: false
@@ -31,11 +31,14 @@ inputs:
   install-preflight-extras:
     description: >
       Pre-install all optional extras required by the full test matrix:
-        libcst (analysis), sqlparse/tree-sitter (ast), numpy/mlflow (perf),
+        libcst (analysis), sqlparse/tree-sitter (ast), numpy/scipy (perf),
         transformers/datasets/peft/accelerate (ml), hydra/omegaconf (configs).
       Torch is excluded here — handled by install-torch to avoid the
-      CPU/GPU version conflict.  Set to "true" for the Resilient Validation
-      Suite and any workflow that exercises the complete test suite.
+      CPU/GPU version conflict.  MLflow remains intentionally optional and is
+      not forced into this preflight step because it can deadlock the resolver
+      with the project's pinned scientific stack.  Set to "true" for the
+      Resilient Validation Suite and any workflow that exercises the complete
+      test suite.
     required: false
     default: 'false'
   install-npm-tools:
@@ -62,11 +65,11 @@ inputs:
     default: 'live'
   cache-version:
     description: >
-      Cache-bust version token — mirrors the CODEX_CACHE_VERSION repo variable (default v2).
+      Cache-bust version token — mirrors the CODEX_CACHE_VERSION repo variable (default v3).
       Increment to invalidate the entire shared cache hierarchy without deleting
       individual entries.  Pass in as: cache-version: vars.CODEX_CACHE_VERSION (fallback v2).
     required: false
-    default: 'v2'
+    default: 'v3'
 
 outputs:
   venv-python:
@@ -282,9 +285,11 @@ runs:
           --quiet
 
         # Perf / numeric extras
+        # MLflow is intentionally left out of the shared preflight step.
+        # Keep it optional for jobs that opt into tracking explicitly rather
+        # than forcing an incompatible resolver path into every workflow.
         "$PYTHON_BIN" -m pip install $CACHE \
           "numpy>=1.24" \
-          "mlflow>=2.22.4,<4" \
           "scipy>=1.11" \
           --quiet
 
@@ -335,6 +340,14 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     # 10. Expose venv on PATH and emit outputs
     # ─────────────────────────────────────────────────────────────────
+    - name: Smoke check managed Python environment
+      shell: bash
+      run: |
+        PYTHON_BIN="$GITHUB_WORKSPACE/.venv_ci/bin/python"
+        "$PYTHON_BIN" --version
+        "$PYTHON_BIN" -m pip --version
+        "$PYTHON_BIN" -c "import sys; print(f'Python smoke OK: {sys.version.split()[0]}')"
+
     - name: Add venv to PATH
       shell: bash
       run: echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"

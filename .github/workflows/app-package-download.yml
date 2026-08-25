@@ -1,5 +1,5 @@
 name: App Package Download
-on:
+true:
   workflow_dispatch:
     inputs:
       app_name:
@@ -116,10 +116,11 @@ jobs:
         \ >> $GITHUB_OUTPUT\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Total applications\
         \ found**: $TOTAL_APPS\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Create package directory
       run: 'mkdir -p package_staging
 

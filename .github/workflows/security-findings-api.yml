@@ -12,10 +12,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Setup Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - env:
         QUERY_TYPE: ${{ github.event.client_payload.query_type }}
         QUERY_VALUE: ${{ github.event.client_payload.value }}

@@ -1,6 +1,6 @@
 name: ML Lifecycle E2E Gate
-on:
-  workflow_dispatch:
+true:
+  workflow_dispatch: null
   schedule:
   - cron: 0 4 * * 1
   push:
@@ -26,10 +26,11 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q -r requirements-dev.txt
     - name: Run reproducibility validator
       run: python scripts/ml/validate_ml_lifecycle.py --check reproducibility
@@ -42,10 +43,11 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q -r requirements-dev.txt
     - name: Run serving smoke test
       run: python scripts/ml/validate_ml_lifecycle.py --check serving
@@ -58,10 +60,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q -r requirements-dev.txt
     - name: Run model registry audit
       run: python scripts/ml/validate_ml_lifecycle.py --check registry
@@ -78,10 +81,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q -r requirements-dev.txt
     - name: Run E2E gate validation
       run: python scripts/ml/validate_ml_lifecycle.py --check e2e

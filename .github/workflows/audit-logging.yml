@@ -1,5 +1,5 @@
 name: Audit Trail Logging - Phase 6 Lane 3
-on:
+true:
   pull_request:
     types:
     - opened
@@ -40,15 +40,18 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Cache pip dependencies
       uses: actions/cache@v5
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-audit-logging-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-audit-logging-
+        key: ${{ runner.os }}-pip-audit-logging-${{ hashFiles('**/requirements*.txt',
+          '**/pyproject.toml') }}
+        restore-keys: '${{ runner.os }}-pip-audit-logging-
+
           ${{ runner.os }}-pip-
+
+          '
     - name: Install audit logging dependencies
       run: "pip install \\\n  python-dateutil \\\n  pyyaml \\\n  jsonlines\n"
     - name: Initialize audit log directory
@@ -89,8 +92,8 @@ jobs:
         GDPR\", \"CCPA\", \"SOC2\"],\n        \"control_ids\": [\"A7\", \"I1.2\",\
         \ \"P1.2\"]\n    }\n}\n\n# Append to audit log\nlog_file = \"${{ env.AUDIT_LOG_DIR\
         \ }}/audit_trail_$(date +%Y-%m-%d).jsonl\"\nwith open(log_file, \"a\") as\
-        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(f\"✅ PR merge event\
-        \ logged: PR #{pr['number']}\")\nEOF\n"
+        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(f\"\u2705 PR merge\
+        \ event logged: PR #{pr['number']}\")\nEOF\n"
       env:
         PR_JSON: ${{ toJson(github.event.pull_request) }}
     - name: Collect dependency update events
@@ -113,7 +116,8 @@ jobs:
         : [\"GDPR\", \"SOC2\"],\n            \"control_ids\": [\"A3\"]\n        }\n\
         \    }\n    \n    log_file = \"${{ env.AUDIT_LOG_DIR }}/audit_trail_$(date\
         \ +%Y-%m-%d).jsonl\"\n    with open(log_file, \"a\") as f:\n        f.write(json.dumps(event)\
-        \ + \"\\n\")\n    \n    print(\"✅ Dependency update event logged\")\nEOF\n"
+        \ + \"\\n\")\n    \n    print(\"\u2705 Dependency update event logged\")\n\
+        EOF\n"
     - name: Collect access control events
       id: collect_access_events
       run: "python3 << 'EOF'\nimport json\nfrom datetime import datetime, timezone\n\
@@ -129,7 +133,7 @@ jobs:
         \      \"regulations_affected\": [\"GDPR\", \"CCPA\", \"SOC2\"],\n       \
         \ \"control_ids\": [\"CC6.1\", \"CC8.1\"]\n    }\n}\n\nlog_file = \"${{ env.AUDIT_LOG_DIR\
         \ }}/audit_trail_$(date +%Y-%m-%d).jsonl\"\nwith open(log_file, \"a\") as\
-        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(\"✅ Access control\
+        \ f:\n    f.write(json.dumps(event) + \"\\n\")\n\nprint(\"\u2705 Access control\
         \ event logged\")\nEOF\n"
     - name: Upload audit events
       if: always()
@@ -148,9 +152,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install verification dependencies
       run: 'pip install hashlib pyyaml
 
@@ -169,9 +175,9 @@ jobs:
         \ current checksums\nwith open(checksum_file, \"w\") as f:\n    f.write(f\"\
         # Audit Log Checksums ({datetime.now().isoformat()})\\n\")\n    for filename,\
         \ checksum in checksums.items():\n        f.write(f\"{filename}: {checksum}\\\
-        n\")\n\nprint(f\"✅ Calculated checksums for {len(checksums)} log files\")\n\
-        print(f\"✅ Checksums saved to {checksum_file}\")\n\n# Set output\nwith open(os.environ[\"\
-        GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"checksum_count={len(checksums)}\\\
+        n\")\n\nprint(f\"\u2705 Calculated checksums for {len(checksums)} log files\"\
+        )\nprint(f\"\u2705 Checksums saved to {checksum_file}\")\n\n# Set output\n\
+        with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"checksum_count={len(checksums)}\\\
         n\")\n    f.write(\"verification_status=PASS\\n\")\nEOF\n"
     - name: Verify audit log completeness
       id: verify_completeness
@@ -179,9 +185,10 @@ jobs:
         \ }}\"\ntotal_events = 0\n\nfor log_file in os.listdir(audit_dir):\n    if\
         \ log_file.endswith(\".jsonl\"):\n        with open(os.path.join(audit_dir,\
         \ log_file), \"r\") as f:\n            for line in f:\n                if\
-        \ line.strip():\n                    total_events += 1\n\nprint(f\"✅ Total\
-        \ audit events logged: {total_events}\")\n\nwith open(os.environ[\"GITHUB_OUTPUT\"\
-        ], \"a\") as f:\n    f.write(f\"total_events={total_events}\\n\")\nEOF\n"
+        \ line.strip():\n                    total_events += 1\n\nprint(f\"\u2705\
+        \ Total audit events logged: {total_events}\")\n\nwith open(os.environ[\"\
+        GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"total_events={total_events}\\\
+        n\")\nEOF\n"
     - name: Publish integrity verification report
       if: always()
       uses: actions/upload-artifact@v5
@@ -199,9 +206,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install export dependencies
       run: "pip install \\\n  pandas \\\n  jsonlines \\\n  pyyaml\n"
     - name: Export audit logs to CSV
@@ -233,8 +242,8 @@ jobs:
         result\", {}).get(\"status\"),\n                \"regulations_affected\":\
         \ \", \".join(\n                    event.get(\"compliance_impact\", {}).get(\"\
         regulations_affected\", [])\n                )\n            }\n          \
-        \  writer.writerow(row)\n\nprint(f\"✅ Exported {len(all_events)} events to\
-        \ {csv_file}\")\nEOF\n"
+        \  writer.writerow(row)\n\nprint(f\"\u2705 Exported {len(all_events)} events\
+        \ to {csv_file}\")\nEOF\n"
     - name: Generate audit summary report
       id: summary_report
       run: "python3 << 'EOF'\nimport json\nimport os\nfrom datetime import datetime\n\
@@ -258,7 +267,7 @@ jobs:
         \ \"FAILURE\"]),\n        \"encryption_failures\": 0\n    }\n}\n\n# Write\
         \ summary\nsummary_file = f\"{export_dir}/audit_summary_{datetime.now().strftime('%Y-%m-%d')}.json\"\
         \nwith open(summary_file, \"w\") as f:\n    json.dump(summary, f, indent=2,\
-        \ default=str)\n\nprint(f\"✅ Audit summary report generated: {summary_file}\"\
+        \ default=str)\n\nprint(f\"\u2705 Audit summary report generated: {summary_file}\"\
         )\nprint(f\"   Total Events: {len(all_events)}\")\nprint(f\"   Critical: {len(summary['critical_events'])}\"\
         )\nprint(f\"   High: {len(summary['high_events'])}\")\nEOF\n"
     - name: Upload audit export reports
@@ -280,9 +289,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: 'Check PII SLO (SLO-001: Zero PII)'
       id: check_pii_slo
       run: "echo \"Checking PII detection SLO...\"\n# Count PII violations in audit\
@@ -328,7 +339,7 @@ jobs:
         72-hour SLA\",\n        \"actual\": \"No active breaches\",\n        \"status\"\
         : \"${{ steps.check_breach_slo.outputs.status }}\"\n    }\n}\n\nreport_file\
         \ = \"${{ env.AUDIT_REPORT_DIR }}/slo_compliance_report.json\"\nwith open(report_file,\
-        \ \"w\") as f:\n    json.dump(slos, f, indent=2)\n\nprint(\"✅ SLO Compliance\
+        \ \"w\") as f:\n    json.dump(slos, f, indent=2)\n\nprint(\"\u2705 SLO Compliance\
         \ Report Generated\")\nEOF\n"
     - name: Post SLO status to PR (if applicable)
       if: github.event_name == 'pull_request'
@@ -338,8 +349,8 @@ jobs:
           \ | Status |\n|-----|--------|--------|\n| PII Detection | 0 violations\
           \ | ${{ steps.check_pii_slo.outputs.slo_status }} |\n| Secret Rotation |\
           \ 90-day cycle | ${{ steps.check_secret_slo.outputs.slo_status }} |\n| Breach\
-          \ Notification | 72-hour SLA | PASS |\n\n✅ All critical SLOs are on track\n\
-          `;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \ Notification | 72-hour SLA | PASS |\n\n\u2705 All critical SLOs are on\
+          \ track\n`;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
           });\n"
     timeout-minutes: 30
@@ -356,31 +367,28 @@ jobs:
       with:
         fetch-depth: 0
     - name: Create backup of audit logs
-      run: 'echo "Creating backup of audit logs..."
-
+      env:
+        AUDIT_LOG_DIR_PATH: ${{ env.AUDIT_LOG_DIR }}
+        AUDIT_REPORT_DIR_PATH: ${{ env.AUDIT_REPORT_DIR }}
+        TARGET_GITHUB_REF: ${{ github.ref }}
+      run: |
+        set -euo pipefail
+        echo "Creating backup of audit logs..."
 
         backup_dir=".codex/backup/audit_logs_$(date +%Y-%m-%d)"
-
         mkdir -p "$backup_dir"
 
-
-        # Copy audit logs to backup
-
-        cp -r "${{ env.AUDIT_LOG_DIR }}"/*.jsonl "$backup_dir/" || true
-
-        cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.csv "$backup_dir/" || true
-
-        cp -r "${{ env.AUDIT_REPORT_DIR }}"/*.json "$backup_dir/" || true
-
-
-        # Compress for archive
+        cp -r "${AUDIT_LOG_DIR_PATH}"/*.jsonl "$backup_dir/" || true
+        cp -r "${AUDIT_REPORT_DIR_PATH}"/*.csv "$backup_dir/" || true
+        cp -r "${AUDIT_REPORT_DIR_PATH}"/*.json "$backup_dir/" || true
 
         tar -czf "$backup_dir.tar.gz" "$backup_dir"
 
-
         echo "✅ Backup created: $backup_dir.tar.gz"
 
-        '
+        if [ -n "$(git status --porcelain)" ]; then
+          git push origin "HEAD:${TARGET_GITHUB_REF}" || true
+        fi
     - name: Commit backup to repository
       run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         41898282+github-actions[bot]@users.noreply.github.com\"\n\ngit add -A .codex/backup/\
@@ -415,7 +423,7 @@ jobs:
         : 0,\n        \"high\": 0\n    },\n    \"next_audit\": \"2026-10-18\",\n \
         \   \"last_updated\": datetime.now().isoformat()\n}\n\n# Write dashboard JSON\n\
         dashboard_file = \".codex/compliance_dashboard.json\"\nwith open(dashboard_file,\
-        \ \"w\") as f:\n    json.dump(dashboard, f, indent=2)\n\nprint(f\"✅ Compliance\
+        \ \"w\") as f:\n    json.dump(dashboard, f, indent=2)\n\nprint(f\"\u2705 Compliance\
         \ dashboard generated: {dashboard_file}\")\nEOF\n"
     - name: Commit dashboard update
       run: 'git config user.name "github-actions[bot]"

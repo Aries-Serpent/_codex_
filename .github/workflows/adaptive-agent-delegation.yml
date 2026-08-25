@@ -1,5 +1,5 @@
 name: Adaptive Agent Delegation Framework
-on:
+true:
   workflow_call:
     inputs:
       context_manifest:
@@ -199,10 +199,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - id: collect
       name: Collect parallel outputs
       run: "python3 << 'PYTHON_EOF'\nimport json\nimport os\nfrom pathlib import Path\n\

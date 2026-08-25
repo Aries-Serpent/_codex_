@@ -1,5 +1,5 @@
 name: Action Version Enforcement Check
-on:
+true:
   push:
     paths:
     - .github/workflows/**
@@ -19,9 +19,11 @@ jobs:
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Check action versions
       id: check
       env:

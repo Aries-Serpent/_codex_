@@ -1,5 +1,5 @@
 name: Validate Token Health
-on:
+true:
   workflow_dispatch: null
   schedule:
   - cron: 0 9 * * *
@@ -35,10 +35,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install gh CLI
       run: 'which gh || sudo apt-get update && sudo apt-get install -y gh
 

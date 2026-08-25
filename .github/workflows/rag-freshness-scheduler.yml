@@ -1,7 +1,7 @@
 name: RAG Freshness Scheduler
-on:
+true:
   schedule:
-  - cron: '0 3 * * 0'
+  - cron: 0 3 * * 0
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -25,10 +25,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Evaluate index age
       id: age
       run: "python3 - <<'PYEOF'\nimport json, os, sys\nfrom datetime import datetime,\

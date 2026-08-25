@@ -1,5 +1,5 @@
 name: "\U0001F680 Promote Commit SHA to Target Branch"
-on:
+true:
   workflow_dispatch:
     inputs:
       source_sha:
@@ -57,10 +57,11 @@ jobs:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install package (for mcp_poster CLI)
       run: pip install -e . --quiet
     - name: Resolve source SHA

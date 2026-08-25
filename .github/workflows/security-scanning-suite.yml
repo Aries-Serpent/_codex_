@@ -417,7 +417,7 @@ jobs:
         \ not found: ${{ matrix.dockerfile }}\"\n  exit 1\nfi\necho \"\u2705 Dockerfile\
         \ found: ${{ matrix.dockerfile }}\"\n"
     - name: Run Trivy filesystem scan (pre-build)
-      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
       with:
         scan-type: fs
         scan-ref: .
@@ -925,10 +925,11 @@ jobs:
         pattern: security-suite-*
         merge-multiple: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run findings aggregator + normalized exports
       id: aggregate
       env:
@@ -1107,10 +1108,11 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v6
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download comprehensive findings
       uses: actions/download-artifact@v5
       continue-on-error: true

@@ -1,5 +1,5 @@
 name: Smoke Tests - Deployment Verification
-on:
+true:
   workflow_run:
     workflows:
     - Release to PyPI
@@ -59,10 +59,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ matrix.python-version }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Create fresh virtual environment
       run: 'python -m venv test-venv
 
