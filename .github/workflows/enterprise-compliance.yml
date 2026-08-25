@@ -1,5 +1,5 @@
-name: CodeQL Security Analysis
-true:
+name: Enterprise Compliance & CodeQL
+'on':
   pull_request:
     branches:
     - main

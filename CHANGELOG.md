@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — Workflow metadata drift (2026-08-25)
+- Resolved duplicate workflow display name (`CodeQL Security Analysis`) shared by `13-3-enterprise-compliance.yml` and `enterprise-compliance.yml`; renamed to `CodeQL Security Analysis (Matrix)` and `Enterprise Compliance & CodeQL` respectively.
+- Fixed YAML parse error (`true:` → `'on':`) in `enterprise-compliance.yml` that rendered the trigger block invalid.
+
 ### Fixed — RAG Module Tests dependency resolver deadlock
 - Corrected the packaging aliases behind the failing `RAG Module Tests` workflow: the legacy `dev` extra no longer resolves to the heavy `full` profile, and the missing `rag` alias now points to the runtime profile used by the workflow's `[rag,test-core]` install path.
 - Kept the repository's required `cryptography>=50.0.0,<51.0.0` security pin intact while removing the default `mlflow`-driven resolver deadlock that blocked CI before the RAG tests could start.

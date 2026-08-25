@@ -22555,3 +22555,25 @@ agent signatures and a direct meta-tensor regression run are absent.
 
 ### Agents Used
 - [x] `built-in-copilot-coding-agent`
+
+---
+
+## Session: 2026-08-25T21:34Z — Workflow Metadata Drift Fix
+
+**Objective:** Resolve duplicate workflow display names and fix YAML parse error identified in planning audit.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. **Duplicate `name:` resolved** — `13-3-enterprise-compliance.yml` renamed from `CodeQL Security Analysis` → `CodeQL Security Analysis (Matrix)` (matrix strategy over python + javascript). `enterprise-compliance.yml` renamed → `Enterprise Compliance & CodeQL`.
+2. **YAML parse error fixed** — `enterprise-compliance.yml` line 2 `true:` corrected to `'on':` (YAML was interpreting bare `on` as boolean `true`, making triggers invalid).
+3. **14 path-like filenames confirmed clean** — all already carried human-readable `name:` display values; no further changes needed.
+4. **Python setup drift confirmed clean** — `check_python_setup_policy.py` returns `OK: no active workflow uses raw actions/setup-python.`
+5. **Duplicate name verification** — `grep -rh "^name:" .github/workflows/*.yml | sort | uniq -d` returns empty; no remaining duplicates.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `CHANGELOG.md` updated.
+
+### Agents Used
+- None (direct execution)
