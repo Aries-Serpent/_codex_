@@ -17,7 +17,7 @@ inputs:
   python-version:
     description: 'Python version to use'
     required: false
-    default: '3.12.13'
+    default: '3.12.10'
   extras:
     description: 'Package extras to install from pyproject.toml (e.g. "dev")'
     required: false
@@ -31,11 +31,14 @@ inputs:
   install-preflight-extras:
     description: >
       Pre-install all optional extras required by the full test matrix:
-        libcst (analysis), sqlparse/tree-sitter (ast), numpy/mlflow (perf),
+        libcst (analysis), sqlparse/tree-sitter (ast), numpy/scipy (perf),
         transformers/datasets/peft/accelerate (ml), hydra/omegaconf (configs).
       Torch is excluded here — handled by install-torch to avoid the
-      CPU/GPU version conflict.  Set to "true" for the Resilient Validation
-      Suite and any workflow that exercises the complete test suite.
+      CPU/GPU version conflict.  MLflow remains intentionally optional and is
+      not forced into this preflight step because it can deadlock the resolver
+      with the project's pinned scientific stack.  Set to "true" for the
+      Resilient Validation Suite and any workflow that exercises the complete
+      test suite.
     required: false
     default: 'false'
   install-npm-tools:
@@ -282,9 +285,11 @@ runs:
           --quiet
 
         # Perf / numeric extras
+        # MLflow is intentionally left out of the shared preflight step.
+        # Keep it optional for jobs that opt into tracking explicitly rather
+        # than forcing an incompatible resolver path into every workflow.
         "$PYTHON_BIN" -m pip install $CACHE \
           "numpy>=1.24" \
-          "mlflow>=2.22.4,<4" \
           "scipy>=1.11" \
           --quiet
 
