@@ -15,7 +15,7 @@ author: 'Aries-Serpent'
 
 inputs:
   python-version:
-    description: 'Python version to use'
+    description: 'Python version to use. Keep this aligned with .python-version.'
     required: false
     default: '3.12.10'
   extras:
