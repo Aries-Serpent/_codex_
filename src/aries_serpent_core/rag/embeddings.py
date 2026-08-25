@@ -97,10 +97,9 @@ class LocalSentenceTransformerProvider:
             raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
-                "Error loading local embedding model '%s'; "
-                "falling back to offline-safe handling: %s",
+                "Local embedding model '%s' failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",
                 self.model_name,
-                e,
+                type(e).__name__,
             )
             raise
 
