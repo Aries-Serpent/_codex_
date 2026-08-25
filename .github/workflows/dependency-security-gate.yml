@@ -286,9 +286,14 @@ jobs:
       uses: actions/checkout@v5
     - name: Publish health summary
       shell: bash
-      run: "set -euo pipefail\necho '## Dependency Security Health Report' >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho '- Status: ${{ needs.dependency-security-gate.result }}' >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"- Policy: Fail on critical/high findings; record medium/low warnings\
-        \ separately.\" >> \"$GITHUB_STEP_SUMMARY\"\nif [ \"${{ needs.dependency-security-gate.result\
-        \ }}\" != \"success\" ]; then\n  echo '::error::Dependency security gate blocked\
-        \ the merge because critical/high findings are present.'\n  exit 1\nfi\n"
+      env:
+        DEPENDENCY_GATE_RESULT: ${{ needs.dependency-security-gate.result }}
+      run: |
+        set -euo pipefail
+        echo '## Dependency Security Health Report' >> "$GITHUB_STEP_SUMMARY"
+        echo "- Status: ${DEPENDENCY_GATE_RESULT}" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Policy: Fail on critical/high findings; record medium/low warnings separately." >> "$GITHUB_STEP_SUMMARY"
+        if [ "${DEPENDENCY_GATE_RESULT}" != "success" ]; then
+          echo '::error::Dependency security gate blocked the merge because critical/high findings are present.'
+          exit 1
+        fi

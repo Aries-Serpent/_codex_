@@ -1,6 +1,6 @@
 name: Security PR Enhancement
-true:
-  pull_request_target:
+'on':
+  pull_request:
     types:
     - opened
     - synchronize

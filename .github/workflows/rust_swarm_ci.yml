@@ -410,8 +410,16 @@ jobs:
 
         '
     - name: Check all jobs
-      run: "echo \"All required jobs completed\"\nif [[ \"${{ needs.rust_tests.result\
-        \ }}\" != \"success\" ]]; then\n  echo \"\u274C Rust tests failed\"\n  exit\
-        \ 1\nfi\nif [[ \"${{ needs.code_coverage.result }}\" != \"success\" ]]; then\n\
-        \  echo \"\u26A0\uFE0F  Coverage check failed\"\nfi\necho \"\u2705 All checks\
-        \ passed\"\n"
+      env:
+        RUST_TESTS_RESULT: ${{ needs.rust_tests.result }}
+        CODE_COVERAGE_RESULT: ${{ needs.code_coverage.result }}
+      run: |
+        echo "All required jobs completed"
+        if [[ "${RUST_TESTS_RESULT}" != "success" ]]; then
+          echo "❌ Rust tests failed"
+          exit 1
+        fi
+        if [[ "${CODE_COVERAGE_RESULT}" != "success" ]]; then
+          echo "⚠️  Coverage check failed"
+        fi
+        echo "✅ All checks passed"

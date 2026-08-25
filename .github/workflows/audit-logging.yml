@@ -367,13 +367,28 @@ jobs:
       with:
         fetch-depth: 0
     - name: Create backup of audit logs
-      run: "echo \"Creating backup of audit logs...\"\n\nbackup_dir=\".codex/backup/audit_logs_$(date\
-        \ +%Y-%m-%d)\"\nmkdir -p \"$backup_dir\"\n\n# Copy audit logs to backup\n\
-        cp -r \"${{ env.AUDIT_LOG_DIR }}\"/*.jsonl \"$backup_dir/\" || true\ncp -r\
-        \ \"${{ env.AUDIT_REPORT_DIR }}\"/*.csv \"$backup_dir/\" || true\ncp -r \"\
-        ${{ env.AUDIT_REPORT_DIR }}\"/*.json \"$backup_dir/\" || true\n\n# Compress\
-        \ for archive\ntar -czf \"$backup_dir.tar.gz\" \"$backup_dir\"\n\necho \"\u2705\
-        \ Backup created: $backup_dir.tar.gz\"\n"
+      env:
+        AUDIT_LOG_DIR_PATH: ${{ env.AUDIT_LOG_DIR }}
+        AUDIT_REPORT_DIR_PATH: ${{ env.AUDIT_REPORT_DIR }}
+        TARGET_GITHUB_REF: ${{ github.ref }}
+      run: |
+        set -euo pipefail
+        echo "Creating backup of audit logs..."
+
+        backup_dir=".codex/backup/audit_logs_$(date +%Y-%m-%d)"
+        mkdir -p "$backup_dir"
+
+        cp -r "${AUDIT_LOG_DIR_PATH}"/*.jsonl "$backup_dir/" || true
+        cp -r "${AUDIT_REPORT_DIR_PATH}"/*.csv "$backup_dir/" || true
+        cp -r "${AUDIT_REPORT_DIR_PATH}"/*.json "$backup_dir/" || true
+
+        tar -czf "$backup_dir.tar.gz" "$backup_dir"
+
+        echo "✅ Backup created: $backup_dir.tar.gz"
+
+        if [ -n "$(git status --porcelain)" ]; then
+          git push origin "HEAD:${TARGET_GITHUB_REF}" || true
+        fi
     - name: Commit backup to repository
       run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         41898282+github-actions[bot]@users.noreply.github.com\"\n\ngit add -A .codex/backup/\

@@ -39,10 +39,14 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Log rebuild start
-      run: "echo \"\U0001F504 Starting cognitive app rebuild...\"\necho \"Reason:\
-        \ ${{ github.event.inputs.reason }}\"\necho \"\"\n\npython scripts/ci/deployment_history_tracker.py\
-        \ record \\\n  --type rebuild \\\n  --status started \\\n  --reason \"${{\
-        \ github.event.inputs.reason }}\"\n"
+      env:
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "🔄 Starting cognitive app rebuild..."
+        echo "Reason: ${REBUILD_REASON}"
+        echo ""
+
+        python scripts/ci/deployment_history_tracker.py record           --type rebuild           --status started           --reason "$REBUILD_REASON"
     - name: Clean node_modules and dist
       working-directory: cognitive_app
       run: "echo \"\U0001F9F9 Cleaning build artifacts...\"\nrm -rf node_modules package-lock.json\n\
@@ -83,9 +87,12 @@ jobs:
         \ \"*.js\" -o -name \"*.css\" | head -20\necho \"\"\necho \"Total files:\"\
         \nfind dist -type f | wc -l\n"
     - name: Apply cache invalidation
-      run: "echo \"\U0001F504 Applying cache invalidation...\"\npython scripts/ci/cognitive_app_cache_invalidator.py\
-        \ \\\n  --url \"https://aries-serpent.github.io/_codex_/cognitive_app/\" \\\
-        \n  --reason \"Rebuild: ${{ github.event.inputs.reason }}\"\necho \"\"\n"
+      env:
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "🔄 Applying cache invalidation..."
+        python scripts/ci/cognitive_app_cache_invalidator.py           --url "https://aries-serpent.github.io/_codex_/cognitive_app/"           --reason "Rebuild: ${REBUILD_REASON}"
+        echo ""
     - name: Deploy to site
       run: "echo \"\U0001F4E4 Deploying to site/cognitive_app...\"\n\nmkdir -p site/cognitive_app\n\
         cp -r cognitive_app/dist/* site/cognitive_app/\n\nASSET_COUNT=$(find site/cognitive_app\
@@ -119,19 +126,29 @@ jobs:
         fi\n"
     - name: Log rebuild completion
       if: always()
-      run: "RESULT=\"${{ steps.build.outputs.status }}\"\n\npython scripts/ci/deployment_history_tracker.py\
-        \ record \\\n  --type rebuild \\\n  --status \"$RESULT\" \\\n  --url \"https://aries-serpent.github.io/_codex_/cognitive_app/\"\
-        \ \\\n  --reason \"${{ github.event.inputs.reason }}\"\n"
+      env:
+        BUILD_STATUS: ${{ steps.build.outputs.status }}
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        RESULT="${BUILD_STATUS}"
+
+        python scripts/ci/deployment_history_tracker.py record           --type rebuild           --status "$RESULT"           --url "https://aries-serpent.github.io/_codex_/cognitive_app/"           --reason "$REBUILD_REASON"
     - name: Summary
       if: always()
-      run: "VERIFY_RESULT=\"${{ steps.verify.outputs.result || 'unknown' }}\"\nPAGE_URL=\"\
-        ${{ steps.deployment.outputs.page_url }}\"\n\necho \"## \U0001F504 Cognitive\
-        \ App Rebuild Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"| Status | Result |\" >> $GITHUB_STEP_SUMMARY\necho \"|--------|--------|\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"| Build | ${{ steps.build.outputs.status\
-        \ || 'unknown' }} |\" >> $GITHUB_STEP_SUMMARY\necho \"| Deployment | Success\
-        \ |\" >> $GITHUB_STEP_SUMMARY\necho \"| Verification | $VERIFY_RESULT |\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**URL**:\
-        \ [\\`${PAGE_URL}cognitive_app/\\`](${PAGE_URL}cognitive_app/)\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Reason**: ${{ github.event.inputs.reason\
-        \ }}\" >> $GITHUB_STEP_SUMMARY\n"
+      env:
+        VERIFY_RESULT: ${{ steps.verify.outputs.result || 'unknown' }}
+        PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        BUILD_STATUS: ${{ steps.build.outputs.status || 'unknown' }}
+        REBUILD_REASON: ${{ github.event.inputs.reason }}
+      run: |
+        echo "## 🔄 Cognitive App Rebuild Complete" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Status | Result |" >> "$GITHUB_STEP_SUMMARY"
+        echo "|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Build | ${BUILD_STATUS} |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Deployment | Success |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Verification | ${VERIFY_RESULT} |" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**URL**: [\`${PAGE_URL}cognitive_app/\`](${PAGE_URL}cognitive_app/)" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Reason**: ${REBUILD_REASON}" >> "$GITHUB_STEP_SUMMARY"
