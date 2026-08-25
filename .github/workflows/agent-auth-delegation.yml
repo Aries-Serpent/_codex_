@@ -1,5 +1,5 @@
 name: Agent Token Delegation
-on:
+true:
   pull_request:
     types:
     - opened
@@ -37,10 +37,11 @@ jobs:
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: "Hardened WEC preservation \u2014 re-apply all maintainer selections"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -146,13 +147,17 @@ jobs:
       id: label_check
       if: ${{ needs.detect-checkbox.outputs.pr_number != '' }}
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
-      run: |
-        python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER" --repo "$REPO"
+      run: 'python3 scripts/ci/require_wec_auto_approve.py --pr-number "$PR_NUMBER"
+        --repo "$REPO"
+
+        '
     - name: Dispatch auto-approve-workflows.yml
-      if: ${{ needs.detect-checkbox.outputs.auth_requested == 'true' && needs.detect-checkbox.outputs.pr_number != '' && steps.label_check.outcome == 'success' }}
+      if: ${{ needs.detect-checkbox.outputs.auth_requested == 'true' && needs.detect-checkbox.outputs.pr_number
+        != '' && steps.label_check.outcome == 'success' }}
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
@@ -1406,10 +1411,11 @@ jobs:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Approve all action_required runs for this PR
       continue-on-error: true
       env:

@@ -1,5 +1,5 @@
 name: Release
-on:
+true:
   workflow_dispatch:
     inputs:
       tag:
@@ -24,10 +24,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Validate version tag
       run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\necho \"Release\
         \ tag: $TAG\"\nif [[ ! \"$TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+ ]]; then\n \

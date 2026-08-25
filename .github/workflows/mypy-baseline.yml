@@ -1,5 +1,5 @@
 name: mypy Baseline (Type-Check Anti-Regression)
-on:
+true:
   pull_request:
     paths:
     - src/**
@@ -48,10 +48,11 @@ jobs:
         \ from local run)\"\nelse\n  echo \"\u2705  No SHA drift: trigger and checked-out\
         \ SHA match.\"\nfi\n"
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install mypy and stubs in isolated venv
       run: 'python -m venv /tmp/mypy-venv --clear
 

@@ -1,60 +1,66 @@
 name: cognitive-brain-regression-guard
-
-# Runs on:
-# 1. Manual dispatch (operators can run anytime)
-# 2. Push to PR with changes to cognitive_brain module (path-aware trigger for automated defense)
-on:
-  workflow_dispatch:
+true:
+  workflow_dispatch: null
   pull_request:
     paths:
-      - 'src/codex/cognitive_brain/**'
-      - 'tests/cognitive_brain/**'
-      - '.github/workflows/cognitive-brain-regression-guard.yml'
-
+    - src/codex/cognitive_brain/**
+    - tests/cognitive_brain/**
+    - .github/workflows/cognitive-brain-regression-guard.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   cognitive-brain-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python 3.12
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Install dependencies
+      run: 'pip install -e ".[dev]" || pip install pytest pytest-mock black ruff
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
+        '
+    - name: Reasoning-param regression check
+      run: 'python -m pytest tests/cognitive_brain/test_failure_injection.py::TestReasoningParamImpossibleByConstruction
+        tests/cognitive_brain/test_session_guard.py::TestSessionGuardParamStripping
+        -v --tb=short
 
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]" || pip install pytest pytest-mock black ruff
+        '
+    - name: Negotiator interception check
+      run: 'python -m pytest tests/cognitive_brain/test_failure_injection.py::TestNegotiatorInterception
+        -v --tb=short
 
-      - name: Reasoning-param regression check
-        run: |
-          python -m pytest tests/cognitive_brain/test_failure_injection.py::TestReasoningParamImpossibleByConstruction tests/cognitive_brain/test_session_guard.py::TestSessionGuardParamStripping -v --tb=short
+        '
+    - name: Auto-load entrypoint guard check
+      run: 'python -m pytest tests/cognitive_brain/test_failure_injection.py::TestKernelAutoLoadGuard
+        -v --tb=short
 
-      - name: Negotiator interception check
-        run: |
-          python -m pytest tests/cognitive_brain/test_failure_injection.py::TestNegotiatorInterception -v --tb=short
+        '
+    - name: Shell policy bypass check
+      run: 'python -m pytest tests/cognitive_brain/test_failure_injection.py::TestShellPolicyBypass
+        tests/cognitive_brain/test_shell_policy.py::TestDenyPatterns -v --tb=short
 
-      - name: Auto-load entrypoint guard check
-        run: |
-          python -m pytest tests/cognitive_brain/test_failure_injection.py::TestKernelAutoLoadGuard -v --tb=short
+        '
+    - name: Full cognitive brain test suite
+      run: 'python -m pytest tests/cognitive_brain/test_kernel.py tests/cognitive_brain/test_model_negotiator.py
+        tests/cognitive_brain/test_policy.py tests/cognitive_brain/test_orchestrator.py
+        tests/cognitive_brain/test_cb_fallbacks.py tests/cognitive_brain/test_shell_policy.py
+        tests/cognitive_brain/test_session_guard.py tests/cognitive_brain/test_forensics.py
+        tests/cognitive_brain/test_capability_categories.py tests/cognitive_brain/test_failure_injection.py
+        -v --tb=short
 
-      - name: Shell policy bypass check
-        run: |
-          python -m pytest tests/cognitive_brain/test_failure_injection.py::TestShellPolicyBypass tests/cognitive_brain/test_shell_policy.py::TestDenyPatterns -v --tb=short
+        '
+    - name: Capability outage injection
+      run: 'python -m pytest tests/cognitive_brain/test_failure_injection.py::TestModelCapabilityOutage
+        tests/cognitive_brain/test_failure_injection.py::TestStaleCapabilityCache
+        -v --tb=short
 
-      - name: Full cognitive brain test suite
-        run: |
-          python -m pytest tests/cognitive_brain/test_kernel.py tests/cognitive_brain/test_model_negotiator.py tests/cognitive_brain/test_policy.py tests/cognitive_brain/test_orchestrator.py tests/cognitive_brain/test_cb_fallbacks.py tests/cognitive_brain/test_shell_policy.py tests/cognitive_brain/test_session_guard.py tests/cognitive_brain/test_forensics.py tests/cognitive_brain/test_capability_categories.py tests/cognitive_brain/test_failure_injection.py -v --tb=short
-
-      - name: Capability outage injection
-        run: |
-          python -m pytest tests/cognitive_brain/test_failure_injection.py::TestModelCapabilityOutage tests/cognitive_brain/test_failure_injection.py::TestStaleCapabilityCache -v --tb=short
+        '

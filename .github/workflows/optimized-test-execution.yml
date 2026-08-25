@@ -1,5 +1,5 @@
 name: Optimized Test Execution (Consolidated)
-on:
+true:
   pull_request:
     branches:
     - main
@@ -59,12 +59,12 @@ permissions:
 env:
   PYTEST_XDIST_WORKER_COUNT: auto
   PYTEST_TIMEOUT_DEFAULT: '300'
-  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
   CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
 jobs:
   check-imports:
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: ⚙️ Check P19 Shadow Imports
+    name: "\u2699\uFE0F Check P19 Shadow Imports"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -74,19 +74,18 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Check for P19 shadow imports
       run: "python -c \"\nimport sys\nimport importlib.util\ntry:\n    spec = importlib.util.find_spec('codex')\n\
         \    if spec and spec.origin:\n        path = spec.origin\n        if 'site-packages'\
         \ in path and 'src' not in str(sys.path):\n            print('::warning::P19\
         \ Shadow Import Detected')\n            print(f'  codex resolved to: {path}')\n\
         \            print('  Fix: pip install --force-reinstall --no-deps -e .')\n\
-        \            sys.exit(1)\n        elif 'src' in path:\n            print('✓\
-        \ Import resolved correctly to src/')\nexcept ImportError:\n    print('✓ Package\
-        \ not yet installed (first run)')\n\"\n"
+        \            sys.exit(1)\n        elif 'src' in path:\n            print('\u2713\
+        \ Import resolved correctly to src/')\nexcept ImportError:\n    print('\u2713\
+        \ Package not yet installed (first run)')\n\"\n"
     timeout-minutes: 15
   test-fast:
-    name: 🚀 Fast Unit Tests
+    name: "\U0001F680 Fast Unit Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
@@ -100,7 +99,6 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Install dependencies
       run: 'pip install -e ".[dev]"
 
@@ -113,7 +111,7 @@ jobs:
         \ \\\n  --dist=loadscope\n"
     timeout-minutes: 30
   test-integration:
-    name: 🔗 Integration Tests
+    name: "\U0001F517 Integration Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
@@ -127,7 +125,6 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Install dependencies
       run: 'pip install -e ".[dev]"
 
@@ -139,7 +136,7 @@ jobs:
         \ \\\n  --tb=short \\\n  -v \\\n  --maxfail=3 \\\n  --dist=loadscope\n"
     timeout-minutes: 30
   test-slow:
-    name: 🐢 Slow Tests
+    name: "\U0001F422 Slow Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event_name == 'pull_request' ||\n  github.event_name\
@@ -153,7 +150,6 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Install dependencies
       run: 'pip install -e ".[dev]"
 
@@ -165,7 +161,7 @@ jobs:
         \ \\\n  -v\n"
     timeout-minutes: 30
   test-auth:
-    name: 🔐 Authentication Tests
+    name: "\U0001F510 Authentication Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
@@ -179,7 +175,6 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Install dependencies
       run: 'pip install -e ".[dev]"
 
@@ -192,7 +187,7 @@ jobs:
       continue-on-error: true
     timeout-minutes: 30
   test-ml:
-    name: 🤖 ML Components Tests
+    name: "\U0001F916 ML Components Tests"
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: check-imports
@@ -213,11 +208,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ matrix.python-version }}
-
-        cache-dependency-path: pyproject.toml
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: 'pip install --upgrade pip
 
@@ -233,7 +228,7 @@ jobs:
         \ \\\n  --tb=short \\\n  -v \\\n  --cov=src/codex/ml \\\n  -n 2 || true\n"
       continue-on-error: true
   test-rag:
-    name: 🔍 RAG Module Tests
+    name: "\U0001F50D RAG Module Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
@@ -247,7 +242,6 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
     - name: Install dependencies
       run: 'pip install -e ".[dev]"
 
@@ -260,7 +254,7 @@ jobs:
       continue-on-error: true
     timeout-minutes: 30
   test-rust:
-    name: 🦀 Rust Unit Tests
+    name: "\U0001F980 Rust Unit Tests"
     runs-on: ubuntu-latest
     needs: check-imports
     if: "always() &&\n(github.event.inputs.test-type == 'all' ||\n  github.event.inputs.test-type\
@@ -271,7 +265,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Install Rust toolchain
-      uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c  # stable
+      uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c
       with:
         toolchain: stable
         components: rustfmt, clippy
@@ -299,7 +293,7 @@ jobs:
       continue-on-error: true
     timeout-minutes: 30
   test-coverage:
-    name: 📊 Coverage Report
+    name: "\U0001F4CA Coverage Report"
     runs-on: ubuntu-latest
     needs:
     - test-fast
@@ -314,8 +308,7 @@ jobs:
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
-    - name: 🔍 P19 Shadow Import Check (Pre-Coverage)
+    - name: "\U0001F50D P19 Shadow Import Check (Pre-Coverage)"
       run: "python -c \"\nimport sys, importlib.util\nspec = importlib.util.find_spec('codex')\n\
         if spec and spec.origin:\n    if 'site-packages' in spec.origin and '.egg-link'\
         \ in spec.origin:\n        print('::warning::P19 Shadow Import Detected -\
@@ -353,7 +346,7 @@ jobs:
         name: coverage-report-${{ github.run_number }}
     timeout-minutes: 30
   test-summary:
-    name: 📋 Test Execution Summary
+    name: "\U0001F4CB Test Execution Summary"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
@@ -381,18 +374,18 @@ jobs:
         \ ${{ needs.test-ml.result }} | 45m | ML paths |\n| RAG Module | ${{ needs.test-rag.result\
         \ }} | 30m | RAG paths |\n| Rust Swarm | ${{ needs.test-rust.result }} | 45m\
         \ | Rust paths |\n\n### Consolidation Status\n**Workflows Consolidated:**\
-        \ 8 → 3 (63% reduction)\n- ✓ Core + Auth + ML + RAG + Rust tests unified\n\
-        - ✓ P19 shadow import detection enabled\n- ✓ Conditional job execution by\
-        \ test type\n- ✓ Parallel execution matrix for ML tests\n- ✓ Selective execution\
-        \ via workflow_dispatch\n\n### Test Matrix Strategy\n```yaml\nCore Tests:\n\
-        \  - Fast Unit Tests (parallel via xdist)\n  - Integration Tests (2-worker\
-        \ parallel)\n  - Slow Tests (sequential)\n\nSpecialized (conditional):\n \
-        \ - Auth: Triggered on auth path changes\n  - ML: 2 Python versions × 3 test\
-        \ suites\n  - RAG: Full RAG test suite\n  - Rust: Cargo-based Rust tests\n\
-        ```\n\n### Next Steps\n- Archive 3 disabled workflows (ci-pytest, comprehensive_tests,\
-        \ tests.yml)\n- Monitor execution times for further optimization\n- Update\
-        \ CI documentation with new consolidation\nEOF\n\n# Fail if core tests failed\n\
-        if [[ \"${{ needs.test-fast.result }}\" == \"failure\" ]] || \\\n  [[ \"${{\
-        \ needs.test-integration.result }}\" == \"failure\" ]] || \\\n  [[ \"${{ needs.test-slow.result\
-        \ }}\" == \"failure\" ]]; then\n  echo \"::error::Core test suite failed\"\
-        \n  exit 1\nfi\n"
+        \ 8 \u2192 3 (63% reduction)\n- \u2713 Core + Auth + ML + RAG + Rust tests\
+        \ unified\n- \u2713 P19 shadow import detection enabled\n- \u2713 Conditional\
+        \ job execution by test type\n- \u2713 Parallel execution matrix for ML tests\n\
+        - \u2713 Selective execution via workflow_dispatch\n\n### Test Matrix Strategy\n\
+        ```yaml\nCore Tests:\n  - Fast Unit Tests (parallel via xdist)\n  - Integration\
+        \ Tests (2-worker parallel)\n  - Slow Tests (sequential)\n\nSpecialized (conditional):\n\
+        \  - Auth: Triggered on auth path changes\n  - ML: 2 Python versions \xD7\
+        \ 3 test suites\n  - RAG: Full RAG test suite\n  - Rust: Cargo-based Rust\
+        \ tests\n```\n\n### Next Steps\n- Archive 3 disabled workflows (ci-pytest,\
+        \ comprehensive_tests, tests.yml)\n- Monitor execution times for further optimization\n\
+        - Update CI documentation with new consolidation\nEOF\n\n# Fail if core tests\
+        \ failed\nif [[ \"${{ needs.test-fast.result }}\" == \"failure\" ]] || \\\n\
+        \  [[ \"${{ needs.test-integration.result }}\" == \"failure\" ]] || \\\n \
+        \ [[ \"${{ needs.test-slow.result }}\" == \"failure\" ]]; then\n  echo \"\
+        ::error::Core test suite failed\"\n  exit 1\nfi\n"

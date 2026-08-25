@@ -1,5 +1,5 @@
 name: Trigger validations on approval
-on:
+true:
   pull_request_review:
     types:
     - submitted
@@ -15,13 +15,9 @@ permissions:
 jobs:
   on-approval:
     name: Maintainer dispatch on approval
-    # Loop guard: only fire on a genuine human approval. Skip automated "Auto-approved
-    # low-risk changes" reviews (posted by auto-approve-workflows/self-approve) which
-    # would otherwise re-trigger this workflow and create an unbounded approval loop.
-    if: >-
-      ${{ github.event.review.state == 'approved' &&
-          github.event.review.user.type != 'Bot' &&
-          !contains(github.event.review.body, 'Auto-approved low-risk changes') }}
+    if: "${{ github.event.review.state == 'approved' &&\n    github.event.review.user.type\
+      \ != 'Bot' &&\n    !contains(github.event.review.body, 'Auto-approved low-risk\
+      \ changes') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -41,13 +37,14 @@ jobs:
         \ }}\"\nPR_REF=\"$PR_HEAD_REF\"\nREVIEWER=\"$REVIEWER_LOGIN\"\necho \"pr_sha=${PR_SHA}\"\
         \ >> \"$GITHUB_OUTPUT\"\necho \"pr_num=${PR_NUM}\" >> \"$GITHUB_OUTPUT\"\n\
         echo \"pr_ref=${PR_REF}\" >> \"$GITHUB_OUTPUT\"\necho \"reviewer=${REVIEWER}\"\
-        \ >> \"$GITHUB_OUTPUT\"\nPR_BASE=\"${{ github.event.pull_request.base.ref }}\"\
-        \necho \"pr_base=${PR_BASE}\" >> \"$GITHUB_OUTPUT\"\nif [ -z \"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY\
-        \ }}\" ]; then\n  echo \"::warning::CODEX_MASTER_KEY not set \u2014 workflow\
-        \ dispatch and auto-approve will use github.token fallback (may 403)\"\n \
-        \ echo \"token_tier=fallback\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"token_tier=master\"\
-        \ >> \"$GITHUB_OUTPUT\"\nfi\necho \"Approval by ${REVIEWER} on PR  #${PR_NUM}\
-        \ @ ${PR_SHA} (${PR_REF} -> ${PR_BASE})\"\n"
+        \ >> \"$GITHUB_OUTPUT\"\nPR_BASE=\"${{ github.event.pull_request.base.ref\
+        \ }}\"\necho \"pr_base=${PR_BASE}\" >> \"$GITHUB_OUTPUT\"\nif [ -z \"${{ secrets.CODEX_MASTER_KEY\
+        \ || secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"::warning::CODEX_MASTER_KEY\
+        \ not set \u2014 workflow dispatch and auto-approve will use github.token\
+        \ fallback (may 403)\"\n  echo \"token_tier=fallback\" >> \"$GITHUB_OUTPUT\"\
+        \nelse\n  echo \"token_tier=master\" >> \"$GITHUB_OUTPUT\"\nfi\necho \"Approval\
+        \ by ${REVIEWER} on PR  #${PR_NUM} @ ${PR_SHA} (${PR_REF} -> ${PR_BASE})\"\
+        \n"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -57,14 +54,12 @@ jobs:
           }}
         ref: ${{ github.event.pull_request.head.ref }}
     - name: Set up Python (for approve_pending_runs.py)
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
-    # Intent + frequency gate: only proceed when this approval is *actionable* —
-    # a human-approved PR targeting `main` whose head SHA has not already been
-    # dispatched. Prevents the workflow firing on every approval / unchanged SHA.
-    - name: Gate — fire only when intended
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: "Gate \u2014 fire only when intended"
       id: gate
       uses: actions/github-script@v8
       with:
@@ -73,29 +68,33 @@ jobs:
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
           const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
           \ sha = '${{ steps.ctx.outputs.pr_sha }}';\nconst base = '${{ steps.ctx.outputs.pr_base\
-          \ }}';\nconst sha8 = sha.slice(0, 8);\n\n// 1) Only act on PRs targeting the\
-          \ main line — side/integration branches are handled by their own gates.\n\
-          if (base !== 'main') {\n  core.info(`base=${base} (not main) — skipping dispatch`);\n\
-          \  core.setOutput('proceed', 'false');\n  return;\n}\n\n// 2) Skip if this\
-          \ exact SHA was already dispatched (repeat approvals on an unchanged head).\n\
-          const marker = `<!-- trigger-on-approval-agent-resume sha=${sha8} -->`;\n\
-          const comments = await github.paginate(github.rest.issues.listComments, {\
-          \ owner, repo, issue_number: prNumber, per_page: 100 });\nif (comments.some(c\
+          \ }}';\nconst sha8 = sha.slice(0, 8);\n\n// 1) Only act on PRs targeting\
+          \ the main line \u2014 side/integration branches are handled by their own\
+          \ gates.\nif (base !== 'main') {\n  core.info(`base=${base} (not main) \u2014\
+          \ skipping dispatch`);\n  core.setOutput('proceed', 'false');\n  return;\n\
+          }\n\n// 2) Skip if this exact SHA was already dispatched (repeat approvals\
+          \ on an unchanged head).\nconst marker = `<!-- trigger-on-approval-agent-resume\
+          \ sha=${sha8} -->`;\nconst comments = await github.paginate(github.rest.issues.listComments,\
+          \ { owner, repo, issue_number: prNumber, per_page: 100 });\nif (comments.some(c\
           \ => (c.body || '').includes(marker))) {\n  core.info(`SHA ${sha8} already\
-          \ dispatched — skipping`);\n  core.setOutput('proceed', 'false');\n  return;\n\
-          }\n\ncore.info(`Intent satisfied: human approval on main-targeting PR @\
-          \ ${sha8} — proceeding`);\ncore.setOutput('proceed', 'true');"
+          \ dispatched \u2014 skipping`);\n  core.setOutput('proceed', 'false');\n\
+          \  return;\n}\n\ncore.info(`Intent satisfied: human approval on main-targeting\
+          \ PR @ ${sha8} \u2014 proceeding`);\ncore.setOutput('proceed', 'true');"
       continue-on-error: true
     - name: Require wec:auto-approve label
       id: label_check
       if: ${{ steps.gate.outputs.proceed == 'true' }}
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         REPO: ${{ github.repository }}
-      run: |
-        python3 scripts/ci/require_wec_auto_approve.py --pr-number "${{ steps.ctx.outputs.pr_num }}" --repo "$REPO"
+      run: 'python3 scripts/ci/require_wec_auto_approve.py --pr-number "${{ steps.ctx.outputs.pr_num
+        }}" --repo "$REPO"
+
+        '
     - name: Dispatch unified approval hub
-      if: ${{ steps.gate.outputs.proceed == 'true' && steps.label_check.outcome == 'success' }}
+      if: ${{ steps.gate.outputs.proceed == 'true' && steps.label_check.outcome ==
+        'success' }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -171,19 +170,20 @@ jobs:
           try {\n  const marker = `<!-- trigger-on-approval-agent-resume sha=${sha.slice(0,8)}\
           \ -->`;\n  const comments = await github.paginate(github.rest.issues.listComments,\
           \ { owner, repo, issue_number: prNumber, per_page: 100 });\n  const already\
-          \ = comments.some(c => (c.body || '').includes(marker));\n  if (already) {\n\
-          \    core.info(`Resume comment for ${sha.slice(0,8)} already present — skipping`);\n\
-          \    return;\n  }\n  const body = [\n    marker,\n    `## \u26A1 Approval\
-          \ Dispatch \u2014 Copilot Resume`,\n    ``,\n    `PR  #${prNumber} approved\
-          \ by **@${reviewer}** at \\`${sha.slice(0,8)}\\`.`,\n    ``,\n    `**Dispatched\
-          \ workflows:**`,\n    `- \\`validate.yml\\` (fast mode) \u2705`,\n    `-\
-          \ \\`pre-merge-validation.yml\\` \u2705`,\n    `- \\`codeql-alert-fetcher.yml\\\
-          ` (requires CODEX_MASTER_KEY) \u2705`,\n    `- All \\`action_required\\` runs\
-          \ auto-approved via \\`approve_pending_runs.py\\` \u2705`,\n    ``,\n    `@copilot\
-          \ continue`,\n  ].join('\\n');\n  await github.rest.issues.createComment({ owner,\
-          \ repo, issue_number: prNumber, body });\n  core.info('\u2705 @copilot continue\
-          \ comment posted');\n} catch (err) {\n  core.warning(`Could not post @copilot\
-          \ continue comment: ${err.message}`);\n}"
+          \ = comments.some(c => (c.body || '').includes(marker));\n  if (already)\
+          \ {\n    core.info(`Resume comment for ${sha.slice(0,8)} already present\
+          \ \u2014 skipping`);\n    return;\n  }\n  const body = [\n    marker,\n\
+          \    `## \u26A1 Approval Dispatch \u2014 Copilot Resume`,\n    ``,\n   \
+          \ `PR  #${prNumber} approved by **@${reviewer}** at \\`${sha.slice(0,8)}\\\
+          `.`,\n    ``,\n    `**Dispatched workflows:**`,\n    `- \\`validate.yml\\\
+          ` (fast mode) \u2705`,\n    `- \\`pre-merge-validation.yml\\` \u2705`,\n\
+          \    `- \\`codeql-alert-fetcher.yml\\` (requires CODEX_MASTER_KEY) \u2705\
+          `,\n    `- All \\`action_required\\` runs auto-approved via \\`approve_pending_runs.py\\\
+          ` \u2705`,\n    ``,\n    `@copilot continue`,\n  ].join('\\n');\n  await\
+          \ github.rest.issues.createComment({ owner, repo, issue_number: prNumber,\
+          \ body });\n  core.info('\u2705 @copilot continue comment posted');\n} catch\
+          \ (err) {\n  core.warning(`Could not post @copilot continue comment: ${err.message}`);\n\
+          }"
       continue-on-error: true
     - name: Summary
       if: always()

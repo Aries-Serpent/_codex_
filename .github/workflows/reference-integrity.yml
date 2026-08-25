@@ -1,5 +1,5 @@
 name: "\U0001F517 Reference Integrity + Agent Size Gate"
-on:
+true:
   pull_request:
     types:
     - opened
@@ -46,10 +46,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run cross-reference check
       id: xref
       run: 'python scripts/ci/check_cross_references.py 2>&1 | tee /tmp/xref_report.txt
@@ -101,10 +102,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run agent file size check
       id: size
       run: 'python scripts/ci/check_agent_file_sizes.py 2>&1 | tee /tmp/size_report.txt

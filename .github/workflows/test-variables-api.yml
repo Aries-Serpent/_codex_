@@ -1,5 +1,5 @@
 name: Test Variables API
-on:
+true:
   workflow_dispatch:
     inputs:
       run_org_tests:
@@ -69,10 +69,11 @@ jobs:
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run repo variable tests
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
@@ -109,10 +110,11 @@ jobs:
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run org variable tests
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY

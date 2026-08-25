@@ -1,5 +1,5 @@
 name: restore-pipeline CI
-on:
+true:
   push:
     branches:
     - feature/cpu-image-restore
@@ -29,11 +29,11 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
-        cache-dependency-path: src/restore_pipeline/requirements.txt
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install dependencies
       run: pip install -r src/restore_pipeline/requirements.txt
     - name: Install package (editable)

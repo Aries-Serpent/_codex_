@@ -1,5 +1,5 @@
 name: Self-Healing CI Loop
-on:
+true:
   workflow_dispatch:
     inputs:
       target_workflow:
@@ -219,10 +219,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Detect recent workflow failures
       id: detect
       env:
@@ -295,10 +296,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Analyze patterns and generate plan
       id: analyze
       shell: bash
@@ -364,10 +366,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Enforce policy tier ceiling
       id: policy-check
       shell: bash

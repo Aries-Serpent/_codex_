@@ -1,5 +1,5 @@
 name: "\U0001F4B0 PR Cost Check"
-on:
+true:
   pull_request:
     branches:
     - main
@@ -31,10 +31,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install cost estimator dependencies
       run: pip install --quiet dataclasses 2>/dev/null || true
     - name: Estimate aggregate PR cost

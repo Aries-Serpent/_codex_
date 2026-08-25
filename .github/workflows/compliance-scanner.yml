@@ -1,5 +1,5 @@
 name: Compliance Scanner - GDPR/CCPA/SOC2
-on:
+true:
   pull_request:
     types:
     - opened
@@ -36,15 +36,18 @@ jobs:
       with:
         python-version: '3.11'
         cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Cache pip dependencies
       uses: actions/cache@v5
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-compliance-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-compliance-
+        key: ${{ runner.os }}-pip-compliance-${{ hashFiles('**/requirements*.txt',
+          '**/pyproject.toml') }}
+        restore-keys: '${{ runner.os }}-pip-compliance-
+
           ${{ runner.os }}-pip-
+
+          '
     - name: Install detect-secrets
       run: 'pip install detect-secrets detect-secrets-core
 
@@ -104,9 +107,9 @@ jobs:
           \ |\n|------|--------|--------|\n| detect-secrets | ${{ steps.detect_secrets.outputs.status\
           \ }} | - |\n| semgrep (PII) | ${{ steps.semgrep_pii.outputs.status }} |\
           \ ${{ steps.semgrep_pii.outputs.violations || 0 }} |\n| gitleaks | ${{ steps.gitleaks.outputs.status\
-          \ }} | - |\n\n${allPass ? '✅ **All PII scans PASSED** - No PII violations\
-          \ detected' : '⚠️ **PII violations detected** - Please review and fix'}\n\
-          `;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \ }} | - |\n\n${allPass ? '\u2705 **All PII scans PASSED** - No PII violations\
+          \ detected' : '\u26A0\uFE0F **PII violations detected** - Please review\
+          \ and fix'}\n`;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
           });\n"
     - name: 'Gate: Fail on PII violations'
@@ -117,13 +120,8 @@ jobs:
         steps.gitleaks.outputs.status == ''FAIL''
 
         '
-      run: 'echo "❌ COMPLIANCE GATE FAILED: PII/Secret violations detected"
-
-        echo "This PR cannot be merged until violations are resolved"
-
-        exit 1
-
-        '
+      run: "echo \"\u274C COMPLIANCE GATE FAILED: PII/Secret violations detected\"\
+        \necho \"This PR cannot be merged until violations are resolved\"\nexit 1\n"
     timeout-minutes: 30
   secret_detection:
     name: Hardcoded Secrets Detection
@@ -168,8 +166,8 @@ jobs:
           \ !== 'FAIL';\n\nconst comment = `## \U0001F511 Compliance Scan: Hardcoded\
           \ Secrets\n\n| Tool | Status |\n|------|--------|\n| truffleHog | ${{ steps.trufflehog.outputs.status\
           \ }} |\n| AWS Pattern Scan | ${{ steps.aws_secrets.outputs.status || 'PASS'\
-          \ }} |\n\n${allPass ? '✅ **No secrets detected**' : '⚠️ **Secrets found**\
-          \ - Please remove and rotate'}\n`;\n\ngithub.rest.issues.createComment({\n\
+          \ }} |\n\n${allPass ? '\u2705 **No secrets detected**' : '\u26A0\uFE0F **Secrets\
+          \ found** - Please remove and rotate'}\n`;\n\ngithub.rest.issues.createComment({\n\
           \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     - name: 'Gate: Fail on secret detection'
@@ -178,13 +176,9 @@ jobs:
         steps.aws_secrets.outputs.status == ''FAIL''
 
         '
-      run: 'echo "❌ COMPLIANCE GATE FAILED: Hardcoded secrets detected"
-
-        echo "Please remove all secrets and use AWS Secrets Manager / HashiCorp Vault"
-
-        exit 1
-
-        '
+      run: "echo \"\u274C COMPLIANCE GATE FAILED: Hardcoded secrets detected\"\necho\
+        \ \"Please remove all secrets and use AWS Secrets Manager / HashiCorp Vault\"\
+        \nexit 1\n"
     timeout-minutes: 30
   encryption_compliance:
     name: Encryption & TLS Compliance
@@ -196,20 +190,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.11'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Check TLS configuration
       id: tls_check
       continue-on-error: true
       run: "echo \"Checking TLS 1.3+ configuration...\"\n\n# Check for TLS_VERSION\
         \ in code\nif grep -r \"TLS_VERSION.*1.3\\|TLSv1.3\\|TLS13\" src/ --include=\"\
         *.py\" 2>/dev/null; then\n  echo \"tls_version=COMPLIANT\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"⚠️ TLS 1.3 not explicitly configured - checking for weak protocols...\"\
-        \n  if grep -r \"TLSv1.0\\|TLSv1.1\\|SSLv2\\|SSLv3\" src/ --include=\"*.py\"\
-        \ 2>/dev/null; then\n    echo \"tls_version=WEAK_PROTOCOLS_FOUND\" >> $GITHUB_OUTPUT\n\
-        \  else\n    echo \"tls_version=NOT_EXPLICIT\" >> $GITHUB_OUTPUT\n  fi\nfi\n\
-        \necho \"status=PASS\" >> $GITHUB_OUTPUT\n"
+        else\n  echo \"\u26A0\uFE0F TLS 1.3 not explicitly configured - checking for\
+        \ weak protocols...\"\n  if grep -r \"TLSv1.0\\|TLSv1.1\\|SSLv2\\|SSLv3\"\
+        \ src/ --include=\"*.py\" 2>/dev/null; then\n    echo \"tls_version=WEAK_PROTOCOLS_FOUND\"\
+        \ >> $GITHUB_OUTPUT\n  else\n    echo \"tls_version=NOT_EXPLICIT\" >> $GITHUB_OUTPUT\n\
+        \  fi\nfi\n\necho \"status=PASS\" >> $GITHUB_OUTPUT\n"
     - name: Check AES encryption usage
       id: aes_check
       continue-on-error: true
@@ -225,7 +221,7 @@ jobs:
         script: "const comment = `## \U0001F512 Compliance Scan: Encryption & TLS\n\
           \n| Check | Status |\n|-------|--------|\n| TLS 1.3+ Configuration | ${{\
           \ steps.tls_check.outputs.tls_version }} |\n| AES-256 Encryption | ${{ steps.aes_check.outputs.aes_usage\
-          \ }} |\n\n✅ Encryption standards checked\n`;\n\ngithub.rest.issues.createComment({\n\
+          \ }} |\n\n\u2705 Encryption standards checked\n`;\n\ngithub.rest.issues.createComment({\n\
           \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     timeout-minutes: 30
@@ -244,28 +240,29 @@ jobs:
       run: "echo \"Checking GDPR documentation...\"\n\nfiles_required=(\n  \"docs/GDPR_COMPLIANCE.md\"\
         \n  \"SECURITY.md\"\n  \"docs/PRIVACY_BY_DESIGN.md\"\n)\n\nmissing=0\nfor\
         \ file in \"${files_required[@]}\"; do\n  if [ ! -f \"$file\" ]; then\n  \
-        \  echo \"⚠️ Missing: $file\"\n    ((missing++))\n  fi\ndone\n\nif [ $missing\
-        \ -eq 0 ]; then\n  echo \"status=COMPLETE\" >> $GITHUB_OUTPUT\nelse\n  echo\
-        \ \"status=INCOMPLETE (missing $missing files)\" >> $GITHUB_OUTPUT\nfi\n"
+        \  echo \"\u26A0\uFE0F Missing: $file\"\n    ((missing++))\n  fi\ndone\n\n\
+        if [ $missing -eq 0 ]; then\n  echo \"status=COMPLETE\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"status=INCOMPLETE (missing $missing files)\" >> $GITHUB_OUTPUT\n\
+        fi\n"
     - name: Check CCPA documentation
       id: ccpa_docs
       continue-on-error: true
       run: "echo \"Checking CCPA documentation...\"\n\nfiles_required=(\n  \"docs/CCPA_PRIVACY_POLICY.md\"\
         \n  \"docs/CCPA_NON_DISCRIMINATION_POLICY.md\"\n)\n\nmissing=0\nfor file in\
         \ \"${files_required[@]}\"; do\n  if [ ! -f \"$file\" ]; then\n    echo \"\
-        ⚠️ Missing: $file\"\n    ((missing++))\n  fi\ndone\n\nif [ $missing -eq 0\
-        \ ]; then\n  echo \"status=COMPLETE\" >> $GITHUB_OUTPUT\nelse\n  echo \"status=INCOMPLETE\
-        \ (missing $missing files)\" >> $GITHUB_OUTPUT\nfi\n"
+        \u26A0\uFE0F Missing: $file\"\n    ((missing++))\n  fi\ndone\n\nif [ $missing\
+        \ -eq 0 ]; then\n  echo \"status=COMPLETE\" >> $GITHUB_OUTPUT\nelse\n  echo\
+        \ \"status=INCOMPLETE (missing $missing files)\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Check SOC2 documentation
       id: soc2_docs
       continue-on-error: true
       run: "echo \"Checking SOC2 documentation...\"\n\nfiles_required=(\n  \"INCIDENT_RESPONSE.md\"\
         \n  \".codex/PHASE_6_COMPLIANCE_FRAMEWORK.md\"\n  \".codex/PHASE_6_COMPLIANCE_SLOS.yaml\"\
         \n)\n\nmissing=0\nfor file in \"${files_required[@]}\"; do\n  if [ ! -f \"\
-        $file\" ]; then\n    echo \"⚠️ Missing: $file\"\n    ((missing++))\n  fi\n\
-        done\n\nif [ $missing -eq 0 ]; then\n  echo \"status=COMPLETE\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"status=INCOMPLETE (missing $missing files)\" >> $GITHUB_OUTPUT\n\
-        fi\n"
+        $file\" ]; then\n    echo \"\u26A0\uFE0F Missing: $file\"\n    ((missing++))\n\
+        \  fi\ndone\n\nif [ $missing -eq 0 ]; then\n  echo \"status=COMPLETE\" >>\
+        \ $GITHUB_OUTPUT\nelse\n  echo \"status=INCOMPLETE (missing $missing files)\"\
+        \ >> $GITHUB_OUTPUT\nfi\n"
     - name: Publish documentation compliance results
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8
@@ -273,7 +270,7 @@ jobs:
         script: "const comment = `## \U0001F4CB Compliance Scan: Documentation\n\n\
           | Regulation | Status |\n|-----------|--------|\n| GDPR | ${{ steps.gdpr_docs.outputs.status\
           \ }} |\n| CCPA | ${{ steps.ccpa_docs.outputs.status }} |\n| SOC2 | ${{ steps.soc2_docs.outputs.status\
-          \ }} |\n\n✅ Documentation requirements checked\n`;\n\ngithub.rest.issues.createComment({\n\
+          \ }} |\n\n\u2705 Documentation requirements checked\n`;\n\ngithub.rest.issues.createComment({\n\
           \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     timeout-minutes: 30
@@ -295,31 +292,27 @@ jobs:
         \ needs.secret_detection.result }}\"\nencryption_status=\"${{ needs.encryption_compliance.result\
         \ }}\"\ndocs_status=\"${{ needs.documentation_compliance.result }}\"\n\nif\
         \ [ \"$pii_status\" == \"failure\" ] || [ \"$secret_status\" == \"failure\"\
-        \ ]; then\n  echo \"gate_status=FAILED\" >> $GITHUB_OUTPUT\n  echo \"message=❌\
+        \ ]; then\n  echo \"gate_status=FAILED\" >> $GITHUB_OUTPUT\n  echo \"message=\u274C\
         \ COMPLIANCE GATE FAILED: PII/Secret violations detected\"\n  exit 1\nelse\n\
-        \  echo \"gate_status=PASSED\" >> $GITHUB_OUTPUT\n  echo \"message=✅ COMPLIANCE\
-        \ GATE PASSED: All checks successful\"\nfi\n"
+        \  echo \"gate_status=PASSED\" >> $GITHUB_OUTPUT\n  echo \"message=\u2705\
+        \ COMPLIANCE GATE PASSED: All checks successful\"\nfi\n"
     - name: Post gate status to PR
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8
       with:
         script: "const gateStatus = '${{ steps.gate.outputs.gate_status }}';\nconst\
-          \ emoji = gateStatus === 'PASSED' ? '✅' : '❌';\n\nconst comment = `## ${emoji}\
-          \ Phase 6 Lane 3: Compliance Gate Status\n\n**Overall Status**: ${gateStatus}\n\
-          \nThis PR has been scanned for:\n- ✅ PII violations (GDPR A8, CCPA)\n- ✅\
-          \ Hardcoded secrets (GDPR A3, CCPA C1)\n- ✅ Encryption compliance (GDPR\
-          \ A3, SOC2 C1)\n- ✅ Documentation requirements\n\n**Blocking Issues**: \n\
-          ${gateStatus === 'FAILED' ? '- PII or secret violations found (see above)'\
-          \ : 'None'}\n\n**Compliance Score**: 69.3% (GDPR: 66.7%, CCPA: 66.7%, SOC2:\
-          \ 83.3%)\n\nFor more information, see [.codex/PHASE_6_COMPLIANCE_FRAMEWORK.md](.codex/PHASE_6_COMPLIANCE_FRAMEWORK.md)\n\
+          \ emoji = gateStatus === 'PASSED' ? '\u2705' : '\u274C';\n\nconst comment\
+          \ = `## ${emoji} Phase 6 Lane 3: Compliance Gate Status\n\n**Overall Status**:\
+          \ ${gateStatus}\n\nThis PR has been scanned for:\n- \u2705 PII violations\
+          \ (GDPR A8, CCPA)\n- \u2705 Hardcoded secrets (GDPR A3, CCPA C1)\n- \u2705\
+          \ Encryption compliance (GDPR A3, SOC2 C1)\n- \u2705 Documentation requirements\n\
+          \n**Blocking Issues**: \n${gateStatus === 'FAILED' ? '- PII or secret violations\
+          \ found (see above)' : 'None'}\n\n**Compliance Score**: 69.3% (GDPR: 66.7%,\
+          \ CCPA: 66.7%, SOC2: 83.3%)\n\nFor more information, see [.codex/PHASE_6_COMPLIANCE_FRAMEWORK.md](.codex/PHASE_6_COMPLIANCE_FRAMEWORK.md)\n\
           `;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
           });\n"
     - name: Fail gate if violations
       if: steps.gate.outputs.gate_status == 'FAILED'
-      run: 'echo "❌ COMPLIANCE GATE FAILED"
-
-        exit 1
-
-        '
+      run: "echo \"\u274C COMPLIANCE GATE FAILED\"\nexit 1\n"
     timeout-minutes: 30

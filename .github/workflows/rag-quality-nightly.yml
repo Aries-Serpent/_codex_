@@ -1,5 +1,5 @@
 name: RAG Quality Nightly Gate
-on:
+true:
   workflow_dispatch: null
   schedule:
   - cron: 30 3 * * *
@@ -19,10 +19,11 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q pyyaml
     - name: Verify freshness SLA
       run: python scripts/rag/rag_rebuild_audit.py --check freshness
@@ -37,10 +38,11 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q -r requirements-dev.txt
     - name: Run retrieval benchmark against thresholds
       run: python scripts/rag/rag_rebuild_audit.py --check quality
@@ -55,10 +57,11 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - uses: actions/setup-python@v7
+    - uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - run: pip install -q pyyaml
     - name: Log rebuild audit entry
       run: python scripts/rag/rag_rebuild_audit.py --check audit

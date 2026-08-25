@@ -1,5 +1,5 @@
 name: Scheduled Dependency Audit & SBOM
-on:
+true:
   pull_request:
     paths:
     - requirements*.txt
@@ -282,15 +282,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
-        cache-dependency-path: 'requirements.txt
-
-          requirements-dev.txt
-
-          '
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Install audit tools
       run: 'pip install pip-audit safety
 

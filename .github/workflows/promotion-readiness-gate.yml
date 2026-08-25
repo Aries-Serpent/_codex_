@@ -1,5 +1,5 @@
 name: Promotion Readiness Gate
-on:
+true:
   pull_request:
     types:
     - opened
@@ -26,10 +26,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run promotion readiness gate
       id: gate
       run: "python scripts/ci/promotion_readiness_gate.py \\\n  --json-out .codex/promotion-readiness-report.json\n\

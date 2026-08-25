@@ -1,5 +1,5 @@
 name: Automated Release Creation
-on:
+true:
   workflow_dispatch:
     inputs:
       version:
@@ -41,10 +41,11 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Extract release notes
       id: extract-notes
       run: "python scripts/deployment/extract_release_notes.py \\\n  --version ${{\

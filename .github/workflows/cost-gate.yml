@@ -1,5 +1,5 @@
 name: "\U0001F4B0 Cost Gate"
-on:
+true:
   workflow_call:
     inputs:
       workflow_name:
@@ -65,10 +65,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Estimate cost
       id: estimate
       run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
@@ -261,7 +262,8 @@ jobs:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: gate
-    if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name
+      == github.repository
     permissions:
       pull-requests: write
       issues: write

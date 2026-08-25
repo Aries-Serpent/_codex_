@@ -1,5 +1,5 @@
 name: "\U0001F50D Dependabot Pre-flight Check"
-on:
+true:
   schedule:
   - cron: 0 23 * * 0
   pull_request:
@@ -23,10 +23,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: "\U0001F40D Set up Python"
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: "\U0001F4E6 Install pip-tools for validation"
       run: pip install pip-tools --quiet
     - name: "\U0001F50D Validate all .github requirements files are pip-parseable"

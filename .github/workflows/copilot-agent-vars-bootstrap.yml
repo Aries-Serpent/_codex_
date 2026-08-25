@@ -1,5 +1,5 @@
 name: Copilot Agent Variables Bootstrap
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
@@ -25,10 +25,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Validate CCA variable configuration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

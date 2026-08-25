@@ -1,6 +1,5 @@
 name: Rust-Python Hybrid Swarm CI/CD
-
-on:
+true:
   push:
     branches:
     - main
@@ -21,21 +20,17 @@ on:
     - .codex/notes/**
     - .codex/sessions/**
     - .github/copilot-prompts/**
-
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: '1'
   RUST_TEST_THREADS: '1'
-
 concurrency:
-  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions: {}
-
 jobs:
   cost-gate:
-    name: 💰 Cost Gate
+    name: "\U0001F4B0 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     permissions:
       contents: read
@@ -46,8 +41,6 @@ jobs:
       matrix_count: 3
       pushes_to_ghcr: false
     timeout-minutes: 30
-
-
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
@@ -55,62 +48,56 @@ jobs:
     permissions:
       contents: read
     timeout-minutes: 60
-
     steps:
-      - name: Free disk space
-        run: |
-          echo "=== Before cleanup ==="
-          df -h
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-          sudo docker rmi $(docker images -q) || true
-          echo "=== After cleanup ==="
-          df -h
+    - name: Free disk space
+      run: 'echo "=== Before cleanup ==="
 
-      - uses: actions/checkout@v5
+        df -h
 
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
+        sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
 
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path:  ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        sudo docker rmi $(docker images -q) || true
 
-      - name: Cache cargo index
-        uses: actions/cache@v5
-        with:
-          path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+        echo "=== After cleanup ==="
 
-      - name: Cache cargo build
-        uses: actions/cache@v5
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+        df -h
 
-      - name: Validate Cargo.toml features
-        run: python scripts/ci/validate_cargo_features.py
-
-      - name: Run cargo fmt
-        run: cargo fmt --all -- --check
-
-      - name: Run cargo clippy
-        run: cargo clippy --all-targets --all-features --locked -- -D warnings
-
-      - name: Run unit tests
-        run: cargo test --lib --release --locked --verbose
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: rust-test-results
-          path: target/release/deps/*.log
-
+        '
+    - uses: actions/checkout@v5
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
+    - name: Cache cargo registry
+      uses: actions/cache@v5
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+    - name: Cache cargo index
+      uses: actions/cache@v5
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+    - name: Cache cargo build
+      uses: actions/cache@v5
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+    - name: Validate Cargo.toml features
+      run: python scripts/ci/validate_cargo_features.py
+    - name: Run cargo fmt
+      run: cargo fmt --all -- --check
+    - name: Run cargo clippy
+      run: cargo clippy --all-targets --all-features --locked -- -D warnings
+    - name: Run unit tests
+      run: cargo test --lib --release --locked --verbose
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: rust-test-results
+        path: target/release/deps/*.log
   rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
@@ -118,60 +105,43 @@ jobs:
       contents: read
     timeout-minutes: 30
     needs: rust_tests
-
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Run benchmarks
+      timeout-minutes: 12
+      continue-on-error: true
+      run: "# Run benchmarks with timeout to prevent hanging\n# Reduced sample size\
+        \ and measurement time for faster CI execution\ntimeout 10m cargo bench --bench\
+        \ swarm_benchmarks -- \\\n  --sample-size 10 \\\n  --measurement-time 5 \\\
+        \n  --warm-up-time 1 \\\n  || echo \"\u26A0\uFE0F Benchmarks timed out or\
+        \ failed - not blocking CI\"\n\n# Verify Criterion results exist\nif [ -d\
+        \ \"target/criterion\" ]; then\n  echo \"\u2705 Criterion results generated\"\
+        \n  find target/criterion -name \"*.json\" | head -5\nelse\n  echo \"\u26A0\
+        \uFE0F Warning: No Criterion results found in target/criterion\"\n  mkdir\
+        \ -p target/criterion\nfi\n\n# Generate benchmark summary report\necho \"\
+        # Rust Swarm Benchmark Results\" > benchmark_results.txt\necho \"\" >> benchmark_results.txt\n\
+        echo \"Generated:  $(date -u +\"%Y-%m-%d %H:%M:%S UTC\")\" >> benchmark_results.txt\n\
+        echo \"Commit: ${GITHUB_SHA:0:8}\" >> benchmark_results.txt\necho \"\" >>\
+        \ benchmark_results.txt\n\nif [ -d \"target/criterion\" ] && [ \"$(find target/criterion\
+        \ -name '*.json' -print0 | grep -zc . )\" -gt 0 ]; then\n  echo \"## Benchmark\
+        \ Summary\" >> benchmark_results.txt\n  echo \"\" >> benchmark_results.txt\n\
+        \  find target/criterion -name \"*.json\" -print0 | while IFS= read -r -d\
+        \ '' file; do\n    echo \"- $(basename \"$(dirname \"$file\")\"): Found JSON\
+        \ results\" >> benchmark_results.txt\n  done\nelse\n  echo \"\u26A0\uFE0F\
+        \  No benchmark data available (timeout or failure)\" >> benchmark_results.txt\n\
+        fi\n"
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v5
+      with:
+        name: benchmark-results
+        path: 'benchmark_results.txt
 
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
+          target/criterion/
 
-      - name: Run benchmarks
-        timeout-minutes: 12
-        continue-on-error: true
-        run: |
-          # Run benchmarks with timeout to prevent hanging
-          # Reduced sample size and measurement time for faster CI execution
-          timeout 10m cargo bench --bench swarm_benchmarks -- \
-            --sample-size 10 \
-            --measurement-time 5 \
-            --warm-up-time 1 \
-            || echo "⚠️ Benchmarks timed out or failed - not blocking CI"
-
-          # Verify Criterion results exist
-          if [ -d "target/criterion" ]; then
-            echo "✅ Criterion results generated"
-            find target/criterion -name "*.json" | head -5
-          else
-            echo "⚠️ Warning: No Criterion results found in target/criterion"
-            mkdir -p target/criterion
-          fi
-
-          # Generate benchmark summary report
-          echo "# Rust Swarm Benchmark Results" > benchmark_results.txt
-          echo "" >> benchmark_results.txt
-          echo "Generated:  $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> benchmark_results.txt
-          echo "Commit: ${GITHUB_SHA:0:8}" >> benchmark_results.txt
-          echo "" >> benchmark_results.txt
-
-          if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' -print0 | grep -zc . )" -gt 0 ]; then
-            echo "## Benchmark Summary" >> benchmark_results.txt
-            echo "" >> benchmark_results.txt
-            find target/criterion -name "*.json" -print0 | while IFS= read -r -d '' file; do
-              echo "- $(basename "$(dirname "$file")"): Found JSON results" >> benchmark_results.txt
-            done
-          else
-            echo "⚠️  No benchmark data available (timeout or failure)" >> benchmark_results.txt
-          fi
-
-      - name: Upload benchmark results
-        uses: actions/upload-artifact@v5
-        with:
-          name: benchmark-results
-          path:  |
-            benchmark_results.txt
-            target/criterion/
-          if-no-files-found: warn
-
+          '
+        if-no-files-found: warn
   code_coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
@@ -179,60 +149,47 @@ jobs:
       contents: read
     timeout-minutes: 60
     needs: rust_tests
-
     steps:
-      - name: Free disk space
-        run: |
-          echo "=== Before cleanup ==="
-          df -h
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-          sudo docker rmi $(docker images -q) || true
-          echo "=== After cleanup ==="
-          df -h
+    - name: Free disk space
+      run: 'echo "=== Before cleanup ==="
 
-      - uses: actions/checkout@v5
+        df -h
 
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
+        sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
 
-      - name: Install tarpaulin
-        run: cargo install cargo-tarpaulin
+        sudo docker rmi $(docker images -q) || true
 
-      - name: Generate coverage
-        run: |
-          mkdir -p coverage
-          cargo tarpaulin --out Lcov --out Xml --output-dir coverage --release --timeout 600
+        echo "=== After cleanup ==="
 
-          # Verify coverage files were created
-          if [ -f coverage/lcov.info ]; then
-            echo "✅ Coverage generated:  lcov.info"
-            ls -lh coverage/lcov.info
-          else
-            echo "⚠️ Warning: lcov.info not generated"
-          fi
+        df -h
 
-          if [ -f coverage/cobertura.xml ]; then
-            echo "✅ Coverage generated: cobertura.xml"
-            ls -lh coverage/cobertura.xml
-          else
-            echo "⚠️ Warning: cobertura.xml not generated"
-          fi
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v5
-        with:
-          name: coverage-report
-          path: coverage/
-          if-no-files-found: warn
-
+        '
+    - uses: actions/checkout@v5
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Install tarpaulin
+      run: cargo install cargo-tarpaulin
+    - name: Generate coverage
+      run: "mkdir -p coverage\ncargo tarpaulin --out Lcov --out Xml --output-dir coverage\
+        \ --release --timeout 600\n\n# Verify coverage files were created\nif [ -f\
+        \ coverage/lcov.info ]; then\n  echo \"\u2705 Coverage generated:  lcov.info\"\
+        \n  ls -lh coverage/lcov.info\nelse\n  echo \"\u26A0\uFE0F Warning: lcov.info\
+        \ not generated\"\nfi\n\nif [ -f coverage/cobertura.xml ]; then\n  echo \"\
+        \u2705 Coverage generated: cobertura.xml\"\n  ls -lh coverage/cobertura.xml\n\
+        else\n  echo \"\u26A0\uFE0F Warning: cobertura.xml not generated\"\nfi\n"
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac
+      if: always()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage/lcov.info
+        fail_ci_if_error: false
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v5
+      with:
+        name: coverage-report
+        path: coverage/
+        if-no-files-found: warn
   python_integration:
     name: Python Integration Tests
     runs-on: ubuntu-latest
@@ -240,92 +197,65 @@ jobs:
       contents: read
     timeout-minutes: 60
     needs: rust_tests
-
     steps:
-      - name: Free disk space
-        run: |
-          echo "=== Before cleanup ==="
-          df -h
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-          sudo docker rmi $(docker images -q) || true
-          echo "=== After cleanup ==="
-          df -h
+    - name: Free disk space
+      run: 'echo "=== Before cleanup ==="
 
-      - uses: actions/checkout@v5
+        df -h
 
-      - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12'
-          cache-tier: common
+        sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
 
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
+        sudo docker rmi $(docker images -q) || true
 
-      - name: Install maturin and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install maturin pytest pytest-cov setuptools wheel virtualenv
+        echo "=== After cleanup ==="
 
-      - name: Build Python extension with maturin
-        run: |
-          # Build and install the extension using extension-module feature
-          # This avoids linking libpython which causes issues in CI
-          maturin build --release --features extension-module || {
-            echo "⚠️ Maturin build failed"
-            exit 1
-          }
-          pip install target/wheels/*.whl || {
-            echo "⚠️ Wheel installation failed, continuing without Python extension"
-            exit 0
-          }
+        df -h
 
-          # Verify the extension can be imported using a heredoc to avoid quoting issues
-          python - <<'PY'
-          try:
-              import codex_engine
-              print("✅ Extension imported successfully")
-          except ImportError as e:
-              print(f"⚠️ Import failed: {e}")
-              print("This is expected if Python bindings are not configured")
-              raise SystemExit(0)
-          PY
+        '
+    - uses: actions/checkout@v5
+    - name: Set up Python 3.12 with tiered cache
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: '3.12'
+        cache-tier: common
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Install maturin and dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Run integration tests
-        continue-on-error: true
-        run: |
-          # Check if integration tests exist
-          if [ -d "tests/integration" ]; then
-            python -m pytest tests/integration/ -v --cov-report=html --cov-report=term || echo "Integration tests completed with issues"
-          else
-            echo "⚠️ No integration tests found in tests/integration/"
-            echo "Creating placeholder for future tests"
-            mkdir -p tests/integration
-          fi
+        pip install maturin pytest pytest-cov setuptools wheel virtualenv
 
-          # Ensure htmlcov directory exists for artifact upload
-          if [ !  -d "htmlcov" ]; then
-            mkdir -p htmlcov
-            cat > htmlcov/index.html <<'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head><title>Integration Test Coverage Report</title></head>
-          <body>
-          <h1>Integration Test Coverage Report</h1>
-          <p>No coverage data available - tests not run or no tests found</p>
-          </body>
-          </html>
-          EOF
-          fi
-
-      - name: Upload integration test results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: integration-test-results
-          path:  htmlcov/
-          if-no-files-found: warn
-
+        '
+    - name: Build Python extension with maturin
+      run: "# Build and install the extension using extension-module feature\n# This\
+        \ avoids linking libpython which causes issues in CI\nmaturin build --release\
+        \ --features extension-module || {\n  echo \"\u26A0\uFE0F Maturin build failed\"\
+        \n  exit 1\n}\npip install target/wheels/*.whl || {\n  echo \"\u26A0\uFE0F\
+        \ Wheel installation failed, continuing without Python extension\"\n  exit\
+        \ 0\n}\n\n# Verify the extension can be imported using a heredoc to avoid\
+        \ quoting issues\npython - <<'PY'\ntry:\n    import codex_engine\n    print(\"\
+        \u2705 Extension imported successfully\")\nexcept ImportError as e:\n    print(f\"\
+        \u26A0\uFE0F Import failed: {e}\")\n    print(\"This is expected if Python\
+        \ bindings are not configured\")\n    raise SystemExit(0)\nPY\n"
+    - name: Run integration tests
+      continue-on-error: true
+      run: "# Check if integration tests exist\nif [ -d \"tests/integration\" ]; then\n\
+        \  python -m pytest tests/integration/ -v --cov-report=html --cov-report=term\
+        \ || echo \"Integration tests completed with issues\"\nelse\n  echo \"\u26A0\
+        \uFE0F No integration tests found in tests/integration/\"\n  echo \"Creating\
+        \ placeholder for future tests\"\n  mkdir -p tests/integration\nfi\n\n# Ensure\
+        \ htmlcov directory exists for artifact upload\nif [ !  -d \"htmlcov\" ];\
+        \ then\n  mkdir -p htmlcov\n  cat > htmlcov/index.html <<'EOF'\n<!DOCTYPE\
+        \ html>\n<html>\n<head><title>Integration Test Coverage Report</title></head>\n\
+        <body>\n<h1>Integration Test Coverage Report</h1>\n<p>No coverage data available\
+        \ - tests not run or no tests found</p>\n</body>\n</html>\nEOF\nfi\n"
+    - name: Upload integration test results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: integration-test-results
+        path: htmlcov/
+        if-no-files-found: warn
   performance_regression:
     name: Performance Regression Detection
     runs-on: ubuntu-latest
@@ -334,195 +264,154 @@ jobs:
       pull-requests: write
       issues: write
     timeout-minutes: 30
-    needs: [rust_benchmarks]
-
+    needs:
+    - rust_benchmarks
     steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth:  0  # Fetch all history for comparison
-
-      - name: Download benchmark results
-        uses: actions/download-artifact@v5
-        with:
-          name: benchmark-results
-
-      - name: Verify benchmark results exist
-        run: |
-          echo "=== Downloaded benchmark artifacts ==="
-          ls -lah
-
-          if [ -f "benchmark_results.txt" ]; then
-            echo "✅ Found benchmark_results.txt"
-            head -10 benchmark_results.txt
-          else
-            echo "❌ benchmark_results.txt not found"
-            echo "Available files:"
-            find . -name "*.txt" -o -name "*.json"
-            exit 1
-          fi
-
-      - name: Compare with baseline
-        run: |
-          # Create coverage directory for report output
-          mkdir -p coverage
-
-          # Check if comparison script exists
-          if [ -f "scripts/validate_benchmarks.py" ]; then
-            echo "Running benchmark validation..."
-            python scripts/validate_benchmarks.py || {
-              echo "⚠️ Benchmark validation failed or no baseline exists"
-              echo "This is expected for first run or when benchmarks change"
-              echo "Storing current results as baseline for future comparison"
-
-              # Create a simple report indicating baseline establishment
-              {
-                echo "Benchmark Validation Report"
-                echo "================================="
-                echo ""
-                echo "Status:  Baseline Establishment"
-                echo "This is the first run or baseline files are missing."
-                echo "Current benchmark results will serve as the baseline for future comparisons."
-                echo ""
-                echo "Next runs will compare against this baseline to detect performance regressions."
-              } > coverage/benchmark_validation_report.txt
-            }
-          else
-            echo "⚠️ scripts/validate_benchmarks.py not found"
-            echo "Skipping regression comparison"
-            echo "Benchmark results recorded for future comparison"
-            mkdir -p coverage
-            echo "Benchmark validation skipped - validation script not found" > coverage/benchmark_validation_report.txt
-          fi
-
-      - name: Comment on PR
-        if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != '' }}
-        uses: actions/github-script@v8
-        with:
-          script:  |
-            const fs = require('fs');
-            const results = fs.readFileSync('coverage/benchmark_validation_report.txt', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## 📊 Benchmark Results\n\n\`\`\`\n${results}\n\`\`\``
-            });
-
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Download benchmark results
+      uses: actions/download-artifact@v5
+      with:
+        name: benchmark-results
+    - name: Verify benchmark results exist
+      run: "echo \"=== Downloaded benchmark artifacts ===\"\nls -lah\n\nif [ -f \"\
+        benchmark_results.txt\" ]; then\n  echo \"\u2705 Found benchmark_results.txt\"\
+        \n  head -10 benchmark_results.txt\nelse\n  echo \"\u274C benchmark_results.txt\
+        \ not found\"\n  echo \"Available files:\"\n  find . -name \"*.txt\" -o -name\
+        \ \"*.json\"\n  exit 1\nfi\n"
+    - name: Compare with baseline
+      run: "# Create coverage directory for report output\nmkdir -p coverage\n\n#\
+        \ Check if comparison script exists\nif [ -f \"scripts/validate_benchmarks.py\"\
+        \ ]; then\n  echo \"Running benchmark validation...\"\n  python scripts/validate_benchmarks.py\
+        \ || {\n    echo \"\u26A0\uFE0F Benchmark validation failed or no baseline\
+        \ exists\"\n    echo \"This is expected for first run or when benchmarks change\"\
+        \n    echo \"Storing current results as baseline for future comparison\"\n\
+        \n    # Create a simple report indicating baseline establishment\n    {\n\
+        \      echo \"Benchmark Validation Report\"\n      echo \"=================================\"\
+        \n      echo \"\"\n      echo \"Status:  Baseline Establishment\"\n      echo\
+        \ \"This is the first run or baseline files are missing.\"\n      echo \"\
+        Current benchmark results will serve as the baseline for future comparisons.\"\
+        \n      echo \"\"\n      echo \"Next runs will compare against this baseline\
+        \ to detect performance regressions.\"\n    } > coverage/benchmark_validation_report.txt\n\
+        \  }\nelse\n  echo \"\u26A0\uFE0F scripts/validate_benchmarks.py not found\"\
+        \n  echo \"Skipping regression comparison\"\n  echo \"Benchmark results recorded\
+        \ for future comparison\"\n  mkdir -p coverage\n  echo \"Benchmark validation\
+        \ skipped - validation script not found\" > coverage/benchmark_validation_report.txt\n\
+        fi\n"
+    - name: Comment on PR
+      if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt')
+        != '' }}
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst results = fs.readFileSync('coverage/benchmark_validation_report.txt',\
+          \ 'utf8');\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## \U0001F4CA\
+          \ Benchmark Results\\n\\n\\`\\`\\`\\n${results}\\n\\`\\`\\``\n});\n"
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 30
-
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
-
-      - name: Run cargo audit
-        uses: rustsec/audit-check@69366f00c59eabb3c207528bdd9e103ccbdf1e3c
-        with:
-          token:  ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-
-      - name: Run cargo deny (if available)
-        continue-on-error: true
-        run: |
-          if ! command -v cargo-deny &> /dev/null; then
-            cargo install cargo-deny --locked
-          fi
-          cargo deny check advisories
-
+    - uses: actions/checkout@v5
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Run cargo audit
+      uses: rustsec/audit-check@69366f00c59eabb3c207528bdd9e103ccbdf1e3c
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    - name: Run cargo deny (if available)
+      continue-on-error: true
+      run: "if ! command -v cargo-deny &> /dev/null; then\n  cargo install cargo-deny\
+        \ --locked\nfi\ncargo deny check advisories\n"
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 30
-
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Build Rust docs
+      run: 'cargo doc --no-deps --document-private-items --all-features
 
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
-
-      - name:  Build Rust docs
-        run: |
-          cargo doc --no-deps --document-private-items --all-features
-
-      - name: Upload documentation
-        uses: actions/upload-artifact@v5
-        with:
-          name: rust-documentation
-          path: target/doc/
-
+        '
+    - name: Upload documentation
+      uses: actions/upload-artifact@v5
+      with:
+        name: rust-documentation
+        path: target/doc/
   release:
     name: Build Release
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
     timeout-minutes: 60
-    needs: [rust_tests, python_integration, code_coverage]
+    needs:
+    - rust_tests
+    - python_integration
+    - code_coverage
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12']
-
+        os:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
+        python-version:
+        - '3.12'
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
-
-      - name: Install maturin
-        run: pip install maturin
-
-      - name: Build wheel
-        run: maturin build --release
-
-      - name: Upload wheel
-        uses: actions/upload-artifact@v5
-        with:
-          name:  wheel-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: target/wheels/*.whl
-
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
+    - name: Install maturin
+      run: pip install maturin
+    - name: Build wheel
+      run: maturin build --release
+    - name: Upload wheel
+      uses: actions/upload-artifact@v5
+      with:
+        name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
+        path: target/wheels/*.whl
   status_check:
-    name:  Overall Status
+    name: Overall Status
     runs-on: ubuntu-latest
     permissions:
       contents: read
     timeout-minutes: 30
-    needs: [rust_tests, rust_benchmarks, code_coverage, python_integration, security_audit]
+    needs:
+    - rust_tests
+    - rust_benchmarks
+    - code_coverage
+    - python_integration
+    - security_audit
     if: always()
-
     steps:
-      - name: Checkout for cache health
-        uses: actions/checkout@v5
-        with:
-          sparse-checkout: scripts/ci
+    - name: Checkout for cache health
+      uses: actions/checkout@v5
+      with:
+        sparse-checkout: scripts/ci
+    - name: Cache health report
+      continue-on-error: true
+      run: 'pip install -q pip 2>/dev/null
 
-      - name: Cache health report
-        continue-on-error: true
-        run: |
-          pip install -q pip 2>/dev/null
-          python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci
+        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
-      - name: Check all jobs
-        run: |
-          echo "All required jobs completed"
-          if [[ "${{ needs.rust_tests.result }}" != "success" ]]; then
-            echo "❌ Rust tests failed"
-            exit 1
-          fi
-          if [[ "${{ needs.code_coverage.result }}" != "success" ]]; then
-            echo "⚠️  Coverage check failed"
-          fi
-          echo "✅ All checks passed"
+        '
+    - name: Check all jobs
+      run: "echo \"All required jobs completed\"\nif [[ \"${{ needs.rust_tests.result\
+        \ }}\" != \"success\" ]]; then\n  echo \"\u274C Rust tests failed\"\n  exit\
+        \ 1\nfi\nif [[ \"${{ needs.code_coverage.result }}\" != \"success\" ]]; then\n\
+        \  echo \"\u26A0\uFE0F  Coverage check failed\"\nfi\necho \"\u2705 All checks\
+        \ passed\"\n"

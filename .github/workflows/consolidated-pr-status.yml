@@ -1,5 +1,5 @@
 name: Consolidated PR Status
-on:
+true:
   workflow_call:
     inputs:
       workflow-name:
@@ -60,10 +60,11 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Build details with duration
       id: build-details
       shell: bash

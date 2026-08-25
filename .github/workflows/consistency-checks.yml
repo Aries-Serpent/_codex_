@@ -1,5 +1,5 @@
 name: Consistency Checks
-on:
+true:
   push:
     branches:
     - main
@@ -80,10 +80,11 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Setup Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Run cross-reference checker
       id: crossref
       run: "python3 .github/scripts/check-cross-references.py \\\n  --repo-root=\"\
@@ -118,10 +119,11 @@ jobs:
       with:
         persist-credentials: false
     - name: Setup Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Validate heading hierarchy
       id: heading
       run: "python3 - << 'EOF'\nimport re\nfrom pathlib import Path\n\ndef validate_heading_hierarchy(file_path):\n\

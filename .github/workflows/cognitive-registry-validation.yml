@@ -1,5 +1,5 @@
 name: Cognitive Registry Validation Workflow
-on:
+true:
   workflow_dispatch:
     inputs:
       registry_type:
@@ -45,10 +45,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
-
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Query Cognitive Brain patterns
       id: query_patterns
       run: 'echo "Querying Cognitive Brain for registry patterns..."
@@ -100,9 +101,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Test registry connectivity
       id: connectivity
       run: "echo \"Testing registry connectivity...\"\n\ncat > /tmp/registry_test_config.json\
@@ -226,9 +229,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
         python-version: '3.12'
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Send webhook notification
       env:
         WEBHOOK_URL: ${{ secrets.COGNITIVE_BRAIN_WEBHOOK_URL }}

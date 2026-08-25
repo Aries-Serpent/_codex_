@@ -1,7 +1,7 @@
 name: "\U0001F50D Proactive CI Monitor"
-on:
+true:
   schedule:
-  - cron: '0 8 * * *'
+  - cron: 0 8 * * *
   workflow_dispatch:
     inputs:
       scope:
@@ -54,10 +54,11 @@ jobs:
         sparse-checkout: scripts/ci/proactive_ci_monitor.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+      uses: ./.github/actions/setup-python-cached
       with:
-
         python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Build CLI arguments
       id: args
       shell: bash
