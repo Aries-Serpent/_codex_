@@ -31,18 +31,6 @@ compatibility or bridge surfaces unless `pyproject.toml` explicitly maps them.
 `docs/` is the human guidance layer; `.codex/` and `.github/workflows/` hold
 operational intelligence and governance.
 
-## Runtime policy (source of truth)
-
-The active runtime baseline for this repository is Node.js 22. The live package manifests
-(`package.json`, `cognitive_app/package.json`, and `copilot/extension/package.json`)
-all declare `node: >=22.0.0`, and active workflow files under `.github/workflows/`
-configure `actions/setup-node` with `node-version: '22'` or a repo-variable default
-that resolves to 22.
-
-Node.js 20 references are historical and archival only; they appear in disabled or
-archived workflow copies and are not active project policy unless a workflow is
-explicitly re-enabled.
-
 ---
 ## High-Level Architecture
 ```mermaid

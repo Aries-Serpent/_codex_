@@ -36,14 +36,6 @@ The repository narrative uses these boundaries consistently:
 
 Authoritative package facts come from [`pyproject.toml`](../pyproject.toml), frontend facts from [`cognitive_app/package.json`](../cognitive_app/package.json), Rust facts from [`Cargo.toml`](../Cargo.toml), and test discovery from [`pytest.ini`](../pytest.ini).
 
-## Active runtime policy
-
-- Python: `>=3.12` is the primary project runtime baseline.
-- Node.js: active code and workflows are on `Node.js 22+`.
-- Live manifests in `package.json`, `cognitive_app/package.json`, and `copilot/extension/package.json` all declare `>=22.0.0`.
-- Active workflows under `.github/workflows/` use `actions/setup-node` with `node-version: '22'` or a repo-variable default that resolves to 22.
-- Node.js 20 references are historical and archival only; they appear in disabled or archived workflow copies and are not current policy unless explicitly re-enabled.
-
 ---
 
 ## 2. What the repository is for
