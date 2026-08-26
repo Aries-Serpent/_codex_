@@ -17,6 +17,9 @@ except ImportError:  # pragma: no cover - exercised in import-only test environm
     class _NumpyFallback:
         ndarray = object
 
+        def __getattr__(self, name: str):
+            raise ImportError("numpy is required for codex.rag.embeddings operations")
+
         @staticmethod
         def array(*_args, **_kwargs) -> None:
             raise ImportError("numpy is required for codex.rag.embeddings operations")
@@ -202,10 +205,11 @@ class OpenAIEmbeddingProvider:
                 embeddings.extend(batch_embeddings)
 
             except (ValueError, TypeError, RuntimeError) as e:
-                type(e).__name__
                 logger.error(
-                    "Error encoding embedding batch for %d items",
+                    "Error encoding embedding batch for %d items: %s",
                     len(batch),
+                    type(e).__name__,
+                    exc_info=True,
                 )
                 raise
 
