@@ -90,11 +90,8 @@ class WorkflowInventory:
         logger.info(f"Scanning {len(workflow_files)} workflow files in {self.workflows_dir}")
 
         for workflow_file in workflow_files:
-            # Skip disabled workflows. GitHub Actions commonly uses a `.disabled`
-            # suffix to archive workflows without removing them from the repo.
-            if workflow_file.name.endswith(".disabled") or any(
-                suffix == ".disabled" for suffix in workflow_file.suffixes
-            ):
+            # Skip disabled workflows
+            if workflow_file.suffix == ".disabled" or ". disabled" in workflow_file.suffixes:
                 logger.debug(f"Skipping disabled workflow:  {workflow_file.name}")
                 continue
 
@@ -106,8 +103,10 @@ class WorkflowInventory:
                     logger.debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
-            except Exception:
-                logger.exception(f"Error parsing workflow: {workflow_file.name}")
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+                type(e).__name__
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.error(f"Error parsing {workflow_file.name}: <ERROR_TYPE>")
 
         # Build dependency graph
         self._build_dependency_graph()
@@ -289,7 +288,9 @@ class WorkflowInventory:
                 self._build_dependency_graph()
                 logger.info(f"Refreshed workflow: {filename}")
                 return True
-        except Exception:
-            logger.exception(f"Error refreshing workflow: {filename}")
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+            type(e).__name__
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error(f"Error refreshing {filename}: <ERROR_TYPE>")
 
         return False
