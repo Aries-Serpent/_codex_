@@ -6,7 +6,9 @@ Authority: D-tier autonomous
 Target Reliability: 99%+
 """
 
+import builtins
 import hashlib
+import importlib
 import sys
 import time
 import types
@@ -32,6 +34,21 @@ from rag.timeout_manager import (
 
 class TestEmbeddingPipelineLogging(unittest.TestCase):
     """Tests for privacy-safe embedding logs and meta-tensor fallback handling."""
+
+    def test_numpy_fallback_error_mentions_current_module(self):
+        """Missing numpy should point at the active module path, not the legacy package path."""
+        original_import = builtins.__import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "numpy":
+                raise ImportError("numpy is unavailable")
+            return original_import(name, *args, **kwargs)
+
+        sys.modules.pop("aries_serpent_core.rag.embeddings", None)
+        with patch("builtins.__import__", side_effect=fake_import):
+            module = importlib.import_module("aries_serpent_core.rag.embeddings")
+            with self.assertRaisesRegex(ImportError, r"aries_serpent_core\.rag\.embeddings"):
+                module.np.array()
 
     def test_embed_text_logs_hash_not_raw_text(self):
         """Sensitive input should not be logged verbatim when the model fails."""

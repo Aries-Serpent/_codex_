@@ -13,24 +13,25 @@ from typing import Any, Optional, Protocol
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - exercised in import-only test environments
+    module_name = __name__
 
     class _NumpyFallback:
         ndarray = object
 
         def __getattr__(self, name: str):
-            raise ImportError("numpy is required for codex.rag.embeddings operations")
+            raise ImportError(f"numpy is required for {module_name} operations")
 
         @staticmethod
         def array(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings operations")
+            raise ImportError(f"numpy is required for {module_name} operations")
 
         @staticmethod
         def load(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings cache loading")
+            raise ImportError(f"numpy is required for {module_name} cache loading")
 
         @staticmethod
         def savez_compressed(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings cache writing")
+            raise ImportError(f"numpy is required for {module_name} cache writing")
 
     np = _NumpyFallback()
 
