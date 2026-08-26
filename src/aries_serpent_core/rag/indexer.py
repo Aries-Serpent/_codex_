@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover - exercised in readiness smoke tests
         ndarray = object
 
         def __getattr__(self, name: str):
-            raise ImportError("numpy is required for aries_serpent_core.rag.indexer")
+            raise AttributeError("numpy is required for aries_serpent_core.rag.indexer")
 
         @staticmethod
         def array(*_args, **_kwargs):

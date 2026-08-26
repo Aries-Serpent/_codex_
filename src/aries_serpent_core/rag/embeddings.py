@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover - exercised in import-only test environm
         ndarray = object
 
         def __getattr__(self, name: str):
-            raise ImportError(f"numpy is required for {module_name} operations")
+            raise AttributeError(f"numpy is required for {module_name} operations")
 
         @staticmethod
         def array(*_args, **_kwargs) -> None:

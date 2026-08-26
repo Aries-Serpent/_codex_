@@ -47,6 +47,8 @@ class TestEmbeddingPipelineLogging(unittest.TestCase):
         sys.modules.pop("aries_serpent_core.rag.embeddings", None)
         with patch("builtins.__import__", side_effect=fake_import):
             module = importlib.import_module("aries_serpent_core.rag.embeddings")
+            with self.assertRaisesRegex(AttributeError, r"aries_serpent_core\.rag\.embeddings"):
+                getattr(module.np, "missing_attribute")
             with self.assertRaisesRegex(ImportError, r"aries_serpent_core\.rag\.embeddings"):
                 module.np.array()
 
