@@ -1,5 +1,5 @@
 name: Admin Setup Verification
-true:
+'on':
   workflow_dispatch:
     inputs:
       pr_number:

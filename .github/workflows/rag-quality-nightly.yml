@@ -1,5 +1,5 @@
 name: RAG Quality Nightly Gate
-true:
+'on':
   workflow_dispatch: null
   schedule:
   - cron: 30 3 * * *

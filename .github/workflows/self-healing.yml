@@ -1,5 +1,5 @@
 name: Self-Healing CI Loop
-true:
+'on':
   workflow_dispatch:
     inputs:
       target_workflow:

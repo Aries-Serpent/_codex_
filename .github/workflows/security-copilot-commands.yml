@@ -1,5 +1,5 @@
 name: Security Copilot Commands
-true:
+'on':
   issue_comment:
     types:
     - created

@@ -1,5 +1,5 @@
 name: Deploy Cognitive App (Manual)
-true:
+'on':
   workflow_dispatch:
     inputs:
       version:

@@ -10,7 +10,10 @@ across the RAG subsystem (indexer, retriever, embeddings). It handles:
 
 Usage:
     from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
-    model = safe_load_sentence_transformer("all-MiniLM-L6-v2", cache_dir=os.path.join(tempfile.gettempdir(), "models"))
+    model = safe_load_sentence_transformer(
+        "all-MiniLM-L6-v2",
+        cache_dir=os.path.join(tempfile.gettempdir(), "models"),
+    )
 """
 
 from __future__ import annotations
@@ -68,14 +71,31 @@ def safe_load_sentence_transformer(  # nosec B107
         return model
 
     except NotImplementedError as exc:
-        logger.warning("Meta tensor detected; attempting meta→to_empty: %s", exc)
-        model = SentenceTransformer(
+        logger.warning(
+            "Meta tensor detected for model %s; attempting meta→to_empty fallback (%s)",
             model_name,
-            device="meta",
-            cache_folder=cache_dir,
-            trust_remote_code=False,
-            use_auth_token=token_value,
+            type(exc).__name__,
         )
+        try:
+            model = SentenceTransformer(
+                model_name,
+                device="meta",
+                cache_folder=cache_dir,
+                trust_remote_code=False,
+                use_auth_token=token_value,
+            )
+        except (OSError, ValueError, TypeError, RuntimeError) as meta_exc:
+            logger.warning(
+                "Model %s could not be loaded via meta fallback; re-raising for higher-level handling (%s)",
+                model_name,
+                type(meta_exc).__name__,
+            )
+            raise RuntimeError(
+                f"Failed to load SentenceTransformer model '{model_name}'. "
+                "The model may not be cached locally or Hugging Face may be unavailable. "
+                "Set HF_TOKEN for authenticated access or use an offline fallback."
+            ) from meta_exc
+
         if not hasattr(model, "to_empty"):
             raise RuntimeError(
                 "PyTorch lacks torch.nn.Module.to_empty(). "
@@ -101,3 +121,15 @@ def safe_load_sentence_transformer(  # nosec B107
 
         logger.info("Model %s materialized via to_empty() and verified", model_name)
         return model
+
+    except (OSError, ValueError, TypeError, RuntimeError) as exc:
+        logger.warning(
+            "Model %s could not be loaded directly; re-raising for higher-level fallback handling (%s)",
+            model_name,
+            type(exc).__name__,
+        )
+        raise RuntimeError(
+            f"Failed to load SentenceTransformer model '{model_name}'. "
+            "The model may not be cached locally or Hugging Face may be unavailable. "
+            "Set HF_TOKEN for authenticated access or use an offline fallback."
+        ) from exc

@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5526)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5526 (SHA `9cebe6c4`) at 2026-08-26T01:28:53Z [auto-generated]
+
+### Fixed (auto-update — PR #5524)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5524 (SHA `f9c8f5aebf1bd273071c2cc473d3a9e412962d31`) at 2026-08-25T23:38:36Z [auto-generated]
+
+### Fixed — Bulk workflow YAML parse error (2026-08-25)
+- Fixed 64 active GitHub Actions workflow files where bare `on:` was being serialised as `true:` by YAML parsers, making all trigger blocks invalid and silently disabling those workflows. All occurrences of `^true:` on line 2 were replaced with `'on':`.
+
+### Fixed — Workflow metadata drift (2026-08-25)
+- Resolved duplicate workflow display name (`CodeQL Security Analysis`) shared by `13-3-enterprise-compliance.yml` and `enterprise-compliance.yml`; renamed to `CodeQL Security Analysis (Matrix)` and `Enterprise Compliance & CodeQL` respectively.
+- Fixed YAML parse error (`true:` → `'on':`) in `enterprise-compliance.yml` that rendered the trigger block invalid.
+
+### Fixed — RAG Module Tests dependency resolver deadlock
+- Corrected the packaging aliases behind the failing `RAG Module Tests` workflow: the legacy `dev` extra no longer resolves to the heavy `full` profile, and the missing `rag` alias now points to the runtime profile used by the workflow's `[rag,test-core]` install path.
+- Kept the repository's required `cryptography>=50.0.0,<51.0.0` security pin intact while removing the default `mlflow`-driven resolver deadlock that blocked CI before the RAG tests could start.
+
 ### Documentation — role-based onboarding and repository discoverability
 - Added a canonical repository map, four role-specific onboarding pages, dependency-profile guidance, a workflow/governance map, and a session-state guide with Chronicle search keywords.
 - Aligned `README.md`, the repository explanation, the cognitive map, and MkDocs navigation around `src/` as the canonical implementation boundary and `.codex/`/GitHub Actions as operational layers.

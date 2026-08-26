@@ -1,5 +1,5 @@
 name: agentic-diff-guard
-true:
+'on':
   pull_request:
     branches:
     - main

@@ -1,5 +1,5 @@
 name: Rebuild Cognitive App Assets
-true:
+'on':
   workflow_dispatch:
     inputs:
       reason:

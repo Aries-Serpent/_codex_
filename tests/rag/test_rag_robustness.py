@@ -6,13 +6,19 @@ Authority: D-tier autonomous
 Target Reliability: 99%+
 """
 
+import builtins
+import hashlib
+import importlib
+import sys
 import time
+import types
 import unittest
+from unittest.mock import MagicMock, patch
 
 from rag.hardened_embedding import HardenedEmbeddingPipeline
 from rag.monitoring import OperationMetric, RAGMonitor
 from rag.monitoring import set_rag_monitor as set_monitor
-from rag.pipelines.embedding import EmbeddingConfig
+from rag.pipelines.embedding import EmbeddingConfig, EmbeddingPipeline
 from rag.resilience import (
     FailureType,
     RetryConfig,
@@ -24,6 +30,73 @@ from rag.timeout_manager import (
     TimeoutManager,
     TimeoutMetrics,
 )
+
+
+class TestEmbeddingPipelineLogging(unittest.TestCase):
+    """Tests for privacy-safe embedding logs and meta-tensor fallback handling."""
+
+    def test_numpy_fallback_error_mentions_current_module(self):
+        """Missing numpy should point at the active module path, not the legacy package path."""
+        original_import = builtins.__import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "numpy":
+                raise ImportError("numpy is unavailable")
+            return original_import(name, *args, **kwargs)
+
+        sys.modules.pop("aries_serpent_core.rag.embeddings", None)
+        with patch("builtins.__import__", side_effect=fake_import):
+            module = importlib.import_module("aries_serpent_core.rag.embeddings")
+            with self.assertRaisesRegex(AttributeError, r"aries_serpent_core\.rag\.embeddings"):
+                getattr(module.np, "missing_attribute")
+            with self.assertRaisesRegex(ImportError, r"aries_serpent_core\.rag\.embeddings"):
+                module.np.array()
+
+    def test_embed_text_logs_hash_not_raw_text(self):
+        """Sensitive input should not be logged verbatim when the model fails."""
+        pipeline = EmbeddingPipeline()
+        pipeline._use_fallback = False
+        pipeline._model = MagicMock()
+        pipeline._model.encode.side_effect = RuntimeError("model exploded")
+        text = "super-secret-query-bearing-user-data"
+        expected_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+        with patch("rag.pipelines.embedding.logger.warning") as mock_warning:
+            result = pipeline.embed_text(text)
+
+        self.assertEqual(result.model, "fallback-hash")
+        logged_payload = " ".join(
+            str(arg) for call in mock_warning.call_args_list for arg in call.args
+        )
+        self.assertNotIn(text, logged_payload)
+        self.assertIn(expected_hash, logged_payload)
+
+    def test_safe_load_sentence_transformer_attempts_meta_fallback(self):
+        """NotImplementedError must trigger the meta-to-empty fallback before generic runtime errors."""
+        from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
+
+        first_model = MagicMock()
+        first_model.eval.return_value = None
+        materialized_model = MagicMock()
+        materialized_model.eval.return_value = None
+        materialized_model.named_parameters.return_value = []
+
+        meta_model = MagicMock()
+        meta_model.to_empty.return_value = materialized_model
+
+        fake_sentence_transformers = types.SimpleNamespace(
+            SentenceTransformer=MagicMock(
+                side_effect=[NotImplementedError("meta tensor"), meta_model]
+            )
+        )
+
+        with patch.dict(sys.modules, {"sentence_transformers": fake_sentence_transformers}):
+            result = safe_load_sentence_transformer("test-model", None)
+
+        self.assertIs(result, materialized_model)
+        self.assertEqual(fake_sentence_transformers.SentenceTransformer.call_count, 2)
+        materialized_model.to_empty.assert_not_called()
+        meta_model.to_empty.assert_called_once_with(device="cpu")
 
 
 class TestTimeoutManager(unittest.TestCase):

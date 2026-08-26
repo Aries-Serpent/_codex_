@@ -1,5 +1,5 @@
 name: Copilot Agent Variables Bootstrap
-true:
+'on':
   workflow_dispatch:
     inputs:
       environment:

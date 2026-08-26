@@ -1,5 +1,5 @@
 name: Rust-Python Hybrid Swarm CI/CD
-true:
+'on':
   push:
     branches:
     - main

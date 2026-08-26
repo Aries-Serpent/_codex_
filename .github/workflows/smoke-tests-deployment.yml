@@ -1,5 +1,5 @@
 name: Smoke Tests - Deployment Verification
-true:
+'on':
   workflow_run:
     workflows:
     - Release to PyPI

@@ -230,11 +230,14 @@ full = [
 
 # BACKWARDS COMPATIBILITY ALIASES (for existing scripts)
 # These are deprecated and will be removed in v1.0.0
+# Keep the default `dev` profile on the lightweight test stack so CI does not
+# resolve the heavy optional ML toolchain (including the `mlflow` deadlock).
 all = ["codex-ml[full]"]
-dev = ["codex-ml[full]"]
+dev = ["codex-ml[test-core]"]
 ml = ["codex-ml[runtime]"]
 train = ["codex-ml[full]"]
 test-core = ["codex-ml[core]"]
+rag = ["codex-ml[runtime]"]
 
 [project.scripts]
 # Core entry points (bundled in all profiles)

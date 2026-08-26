@@ -1,5 +1,5 @@
 name: Dependency Security Gate
-true:
+'on':
   push:
     branches:
     - main
@@ -231,7 +231,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload dependency security evidence
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       with:
         name: dependency-security-evidence-${{ matrix.ecosystem }}
         path: '.codex/security/*.json

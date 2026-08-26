@@ -1,5 +1,5 @@
 name: Scheduled Dependency Audit & SBOM
-true:
+'on':
   pull_request:
     paths:
     - requirements*.txt

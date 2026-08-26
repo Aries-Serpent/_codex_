@@ -1,5 +1,5 @@
 name: "\U0001F680 Promote Commit SHA to Target Branch"
-true:
+'on':
   workflow_dispatch:
     inputs:
       source_sha:

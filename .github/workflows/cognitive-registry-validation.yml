@@ -1,5 +1,5 @@
 name: Cognitive Registry Validation Workflow
-true:
+'on':
   workflow_dispatch:
     inputs:
       registry_type:

@@ -1,5 +1,5 @@
 name: Validate API Null-Handling
-true:
+'on':
   pull_request:
     paths:
     - src/scripts/ci/**

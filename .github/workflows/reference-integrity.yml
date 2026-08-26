@@ -1,5 +1,5 @@
 name: "\U0001F517 Reference Integrity + Agent Size Gate"
-true:
+'on':
   pull_request:
     types:
     - opened

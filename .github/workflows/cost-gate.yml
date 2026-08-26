@@ -1,5 +1,5 @@
 name: "\U0001F4B0 Cost Gate"
-true:
+'on':
   workflow_call:
     inputs:
       workflow_name:

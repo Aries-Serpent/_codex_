@@ -1,5 +1,5 @@
 name: PR Comment Review Gate
-true:
+'on':
   pull_request:
     types:
     - opened

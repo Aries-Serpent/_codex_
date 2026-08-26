@@ -1,5 +1,5 @@
 name: restore-pipeline CI
-true:
+'on':
   push:
     branches:
     - feature/cpu-image-restore

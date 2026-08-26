@@ -33,28 +33,24 @@ class EmbeddingModel:
         self._load_model()
 
     def _load_model(self) -> None:
-        """Load the embedding model"""
+        """Load the embedding model using the shared safe loader."""
         try:
-            from sentence_transformers import SentenceTransformer
+            from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
-            logger.info(f"Loading embedding model: {self.model_name}")
-            self.model = SentenceTransformer(
-                self.model_name,
-                cache_folder=self.cache_dir,
-            )
-            logger.info("Embedding model loaded successfully")
-        except ImportError as e:
-            type(e).__name__
-            logger.debug("ImportError: <ERROR_TYPE>")
-            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.info("Loading embedding model: %s", self.model_name)
+            self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
+            logger.info("Embedding model loaded successfully on CPU")
+        except ImportError:
             logger.error(
-                "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
+                "sentence-transformers not installed. Install with: pip install sentence-transformers"
             )
             raise
-        except (ValueError, TypeError) as e:
-            type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error("Error loading embedding model: <ERROR_TYPE>")
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
+            logger.warning(
+                "Embedding model '%s' failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",
+                self.model_name,
+                type(e).__name__,
+            )
             raise
 
     def encode(

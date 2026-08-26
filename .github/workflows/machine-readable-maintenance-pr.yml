@@ -1,5 +1,5 @@
 name: Machine Readable Maintenance PR
-true:
+'on':
   schedule:
   - cron: 30 6 * * 1
   workflow_dispatch: null

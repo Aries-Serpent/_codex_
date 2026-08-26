@@ -1,5 +1,5 @@
 name: "\U0001F50D Issue Resolution Gate"
-true:
+'on':
   pull_request:
     types:
     - opened

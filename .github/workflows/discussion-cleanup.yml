@@ -1,5 +1,5 @@
 name: "\U0001F9F9 Discussion Cleanup \u2014 Deduplicate Comments"
-true:
+'on':
   workflow_dispatch:
     inputs:
       manifest_path:

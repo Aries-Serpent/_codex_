@@ -1,5 +1,5 @@
 name: "\U0001F500 Create Sub-PR: Session Branch \u2192 0D_base_"
-true:
+'on':
   workflow_dispatch:
     inputs:
       session_branch:

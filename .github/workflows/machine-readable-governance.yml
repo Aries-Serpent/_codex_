@@ -1,5 +1,5 @@
 name: Machine Readable Governance
-true:
+'on':
   pull_request: null
   push:
     branches:

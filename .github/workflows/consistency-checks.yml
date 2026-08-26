@@ -1,5 +1,5 @@
 name: Consistency Checks
-true:
+'on':
   push:
     branches:
     - main

@@ -1,5 +1,5 @@
 name: ML Components Test Suite
-true:
+'on':
   push:
     branches:
     - main

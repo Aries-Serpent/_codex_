@@ -1,5 +1,5 @@
 name: CODEX_MASTER_KEY Scope Validation
-true:
+'on':
   pull_request:
     paths:
     - scripts/ci/_*.py

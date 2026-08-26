@@ -13,7 +13,21 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:  # pragma: no cover - exercised in readiness smoke tests
+
+    class _NumpyFallback:
+        ndarray = object
+
+        def __getattr__(self, name: str):
+            raise AttributeError("numpy is required for aries_serpent_core.rag.indexer")
+
+        @staticmethod
+        def array(*_args, **_kwargs):
+            raise ImportError("numpy is required for aries_serpent_core.rag.indexer")
+
+    np = _NumpyFallback()
 
 logger = logging.getLogger(__name__)
 
@@ -122,19 +136,14 @@ def embed_chunks(
     model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
-    logger.info(
-        f"Loading embedding model: {model_name}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Loading embedding model")
     try:
         from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
         model = safe_load_sentence_transformer(model_name, cache_dir)
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-        type(e).__name__
-        logger.error(
-            "Failed to load embedding model: <ERROR_TYPE>"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("Failed to load embedding model: %s", type(e).__name__, exc_info=True)
         raise
 
     # Extract text from chunks
@@ -146,20 +155,17 @@ def embed_chunks(
 
     if len(texts_filtered) < original_count:
         logger.warning(
-            f"Filtered out {original_count - len(texts_filtered)} empty/whitespace texts"
+            "Filtered out %d empty/whitespace texts",
+            original_count - len(texts_filtered),
         )
 
     if not texts_filtered:
         raise ValueError("No valid text chunks to encode after filtering empty inputs")
 
-    logger.debug(
-        f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.debug("Encoding %d texts", len(texts_filtered))
 
     # Generate embeddings with explicit device parameter and detailed error handling
-    logger.info(
-        f"Generating embeddings for {len(texts_filtered)} chunks"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Generating embeddings for %d chunks", len(texts_filtered))
     try:
         embeddings = model.encode(
             texts_filtered,
@@ -168,25 +174,20 @@ def embed_chunks(
             convert_to_numpy=True,
             device="cpu",  # Explicit device specification
         )
-        logger.info(
-            f"Successfully encoded {len(texts_filtered)} texts, embedding shape: {embeddings.shape}"
-        )
+        logger.info("Successfully encoded %d texts", len(texts_filtered))
         return embeddings
     except IndexError as e:
-        type(e).__name__
         logger.error(
-            "IndexError during encoding: <ERROR_TYPE>"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+            "IndexError during encoding for %d text inputs: %s",
+            len(texts_filtered),
+            type(e).__name__,
+            exc_info=True,
+        )
+        logger.error("Embedding model type: %s", type(model).__name__)
         logger.error(
-            f"Texts count: {len(texts_filtered)}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.error(
-            f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.error(f"Model info: {model}")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.error(
-            f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+            "Embedding model sequence length: %s",
+            getattr(model, "max_seq_length", "unknown"),
+        )
         raise RuntimeError(
             "Failed to encode texts due to IndexError. Check input format and model compatibility."
         ) from e
@@ -235,24 +236,18 @@ def persist_index(
 
     # Build FAISS index
     dimension = embeddings.shape[1]
-    logger.info(
-        f"Building FAISS index with dimension {dimension}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Building FAISS index with dimension %s", dimension)
 
     # Use IndexFlatL2 for exact search (can be upgraded to IndexIVFFlat for larger datasets)
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings.astype(np.float32))
 
-    logger.info(
-        f"Added {index.ntotal} vectors to FAISS index"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Added %d vectors to FAISS index", index.ntotal)
 
     # Save index
     faiss_file = index_path / "index.faiss"
     faiss.write_index(index, str(faiss_file))
-    logger.info(
-        f"Saved FAISS index to {faiss_file}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Saved FAISS index artifact")
 
     # Save chunks metadata
     chunks_metadata = []
@@ -270,9 +265,7 @@ def persist_index(
     chunks_file = index_path / "chunks.json"
     with open(chunks_file, "w", encoding="utf-8") as f:
         json.dump(chunks_metadata, f, indent=2, ensure_ascii=False)
-    logger.info(
-        f"Saved chunks metadata to {chunks_file}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Saved chunk metadata artifact")
 
     # Save index metadata
     index_metadata = {
@@ -288,13 +281,9 @@ def persist_index(
     metadata_file = index_path / "metadata.json"
     with open(metadata_file, "w", encoding="utf-8") as f:
         json.dump(index_metadata, f, indent=2)
-    logger.info(
-        f"Saved index metadata to {metadata_file}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Saved index metadata artifact")
 
-    logger.info(
-        f"✅ Index '{index_name}' persisted to {index_path}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Index persisted successfully")
     return index_path
 
 
@@ -329,9 +318,7 @@ def load_index(
         raise FileNotFoundError(f"FAISS index file not found: {faiss_file}")
 
     index = faiss.read_index(str(faiss_file))
-    logger.info(
-        f"Loaded FAISS index with {index.ntotal} vectors"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Loaded FAISS index with %d vectors", index.ntotal)
 
     # Load chunks metadata
     chunks_file = index_path / "chunks.json"
@@ -349,9 +336,7 @@ def load_index(
     else:
         index_metadata = {}
 
-    logger.info(
-        f"✅ Loaded index '{index_name}' from {index_path}"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Index data loaded from tenant storage")
     return index, chunks_metadata, index_metadata
 
 
@@ -384,9 +369,7 @@ def build_index_from_files(
     # Process each file
     for file_path in files:
         if not file_path.exists():
-            logger.warning(
-                f"File not found: {file_path}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Input file not found during index build")
             continue
 
         try:
@@ -404,21 +387,18 @@ def build_index_from_files(
                 }
             )
 
-            logger.info(
-                f"Processed {file_path}: {len(chunks)} chunks"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Processed one input file with %d chunks", len(chunks))
 
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
             logger.error(
-                f"Error processing {file_path}: {error_type} - unable to read file with UTF-8 encoding"  # noqa: E501
+                "Error processing input file: %s - unable to read file with UTF-8 encoding",
+                error_type,
             )
             processing_errors.append(str(file_path))
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
-            logger.error(
-                f"Error processing {file_path}: {error_type}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("Error processing input file: %s", error_type)
             processing_errors.append(str(file_path))
 
     if not all_chunks:
@@ -435,9 +415,7 @@ def build_index_from_files(
             "No chunks generated from input files - files may be empty or in unsupported format"
         )
 
-    logger.info(
-        f"Total chunks: {len(all_chunks)} from {len(files)} files"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Total chunks: %d from %d files", len(all_chunks), len(files))
 
     # Generate embeddings. Prefer sentence-transformers when available, but
     # fall back to the offline-capable TF-IDF provider so index builds remain

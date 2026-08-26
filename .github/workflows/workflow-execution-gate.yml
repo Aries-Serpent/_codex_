@@ -1,5 +1,5 @@
 name: Workflow Execution Gate
-true:
+'on':
   pull_request:
     types:
     - opened

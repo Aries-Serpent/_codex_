@@ -13,21 +13,25 @@ from typing import Any, Optional, Protocol
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - exercised in import-only test environments
+    module_name = __name__
 
     class _NumpyFallback:
         ndarray = object
 
+        def __getattr__(self, name: str):
+            raise AttributeError(f"numpy is required for {module_name} operations")
+
         @staticmethod
         def array(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings operations")
+            raise ImportError(f"numpy is required for {module_name} operations")
 
         @staticmethod
         def load(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings cache loading")
+            raise ImportError(f"numpy is required for {module_name} cache loading")
 
         @staticmethod
         def savez_compressed(*_args, **_kwargs) -> None:
-            raise ImportError("numpy is required for codex.rag.embeddings cache writing")
+            raise ImportError(f"numpy is required for {module_name} cache writing")
 
     np = _NumpyFallback()
 
@@ -79,15 +83,11 @@ class LocalSentenceTransformerProvider:
         try:
             from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
-            logger.info(
-                f"Loading local embedding model: {self.model_name}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Loading local embedding model")
 
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
-            logger.info(
-                "Local embedding model loaded successfully on CPU"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("Local embedding model loaded successfully on CPU")
 
         except ImportError:
             logger.error(
@@ -95,11 +95,11 @@ class LocalSentenceTransformerProvider:
                 "Install with: pip install sentence-transformers"
             )
             raise
-        except (ValueError, TypeError) as e:
-            type(e).__name__
-            logger.error(
-                "Error loading local embedding model: <ERROR_TYPE>"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
+            logger.warning(
+                "Local embedding model failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",
+                type(e).__name__,
+            )
             raise
 
     def encode(
@@ -173,15 +173,11 @@ class OpenAIEmbeddingProvider:
     def _initialize_client(self, api_key: str) -> None:
         """Initialize OpenAI client."""
         if OpenAI is None:
-            logger.error(
-                "openai package not installed. Install with: pip install openai"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("openai package not installed. Install with: pip install openai")
             raise ImportError("openai package not installed")
 
         self.client = OpenAI(api_key=api_key)
-        logger.info(
-            f"Initialized OpenAI client with model: {self.model_name}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("Initialized OpenAI embedding client")
 
     def encode(self, texts: list[str], batch_size: int = 100, **kwargs) -> np.ndarray:
         """
@@ -210,10 +206,12 @@ class OpenAIEmbeddingProvider:
                 embeddings.extend(batch_embeddings)
 
             except (ValueError, TypeError, RuntimeError) as e:
-                type(e).__name__
                 logger.error(
-                    f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                    "Error encoding embedding batch for %d items: %s",
+                    len(batch),
+                    type(e).__name__,
+                    exc_info=True,
+                )
                 raise
 
         return np.array(embeddings)
@@ -461,7 +459,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except (ImportError, AttributeError, RuntimeError) as e:
+        except (ImportError, AttributeError, RuntimeError, OSError) as e:
             error_type = type(e).__name__
             logger.debug(
                 f"sentence-transformers unavailable: {error_type}"

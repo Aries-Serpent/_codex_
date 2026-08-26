@@ -1,5 +1,5 @@
 name: Test Variables API
-true:
+'on':
   workflow_dispatch:
     inputs:
       run_org_tests:

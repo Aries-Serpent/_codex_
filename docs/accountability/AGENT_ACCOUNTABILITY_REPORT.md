@@ -1,3 +1,54 @@
+## Session: 2026-08-26T01:28:53Z — PR #5526 governance repair for REQ-4/REQ-5 compliance
+
+**Objective:** Correct the stale PR metadata surfaced by the current review/CI gate by updating the accountability report and changelog to reflect PR #5526, then re-establish the required day-stamped PDA evidence for the active session.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Verified the active review gate was still pointing at stale metadata from PR #5525 in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+2. Re-ran the self-healing governance update at `scripts/ci/session_wrapup_autofix.py` to append the current PR #5526 accountability entry and refresh the `CHANGELOG.md` `[Unreleased]` section.
+3. Synced the current session evidence in `.codex/aftermath/pda_iterations.jsonl` so the merge-readiness gate reflects PR #5526 rather than the stale prior PR number.
+
+**Validation:**
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5526` → pass after the governance update.
+
+**Governance:**
+- REQ-4: This report updated for the current PR.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for PR #5526.
+
+### Agents Used
+- [x] `ci-testing-agent`
+- [x] `unified-coverage-agent`
+- [x] `ci-auto-healer-agent`
+- [x] `general-purpose`
+
+---
+
+## Session: 2026-08-25T16:10Z — RAG Module Tests dependency fix (Issue #5520)
+
+**Objective:** Resolve the dependency deadlock blocking the `RAG Module Tests` workflow by aligning the package extras with the workflow install path and preserving the security-first `cryptography` policy.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Traced the resolver failure to the legacy `dev` alias in `pyproject.toml`, which was resolving to the `full` profile and dragging the optional ML stack into the test environment.
+2. Updated the compatibility aliases so `dev` resolves to the lightweight `test-core` stack and added the missing `rag` alias pointing at the runtime profile used by the workflow's `[rag,test-core]` install command.
+3. Verified the fix keeps the project on the required `cryptography>=50.0.0,<51.0.0` security policy while removing the `mlflow`-driven deadlock.
+
+**Validation:**
+- `python -m pip install -e ".[rag,test-core]"` from a clean virtual environment → resolves without the cryptography/mlflow conflict.
+- The install path used by the `RAG Module Tests` workflow now matches the package metadata and avoids the pre-test deadlock.
+
+**Governance:**
+- REQ-4: This report updated.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]`.
+
+### Agents Used
+- [x] `ci-testing-agent` (dependency-resolution diagnosis)
+- [x] `general-purpose` (packaging/compatibility fix and final governance sync)
+
+---
+
 ## Session: 2026-08-22 — Onboarding discoverability and issue #5498
 
 **Objective:** Improve repository onboarding through a canonical repo map,
@@ -22530,3 +22581,46 @@ agent signatures and a direct meta-tensor regression run are absent.
 
 ### Agents Used
 - [x] `built-in-copilot-coding-agent`
+
+---
+
+## Session: 2026-08-25T21:34Z — Workflow Metadata Drift Fix
+
+**Objective:** Resolve duplicate workflow display names and fix YAML parse error identified in planning audit.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. **Duplicate `name:` resolved** — `13-3-enterprise-compliance.yml` renamed from `CodeQL Security Analysis` → `CodeQL Security Analysis (Matrix)` (matrix strategy over python + javascript). `enterprise-compliance.yml` renamed → `Enterprise Compliance & CodeQL`.
+2. **YAML parse error fixed** — `enterprise-compliance.yml` line 2 `true:` corrected to `'on':` (YAML was interpreting bare `on` as boolean `true`, making triggers invalid).
+3. **14 path-like filenames confirmed clean** — all already carried human-readable `name:` display values; no further changes needed.
+4. **Python setup drift confirmed clean** — `check_python_setup_policy.py` returns `OK: no active workflow uses raw actions/setup-python.`
+5. **Duplicate name verification** — `grep -rh "^name:" .github/workflows/*.yml | sort | uniq -d` returns empty; no remaining duplicates.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `CHANGELOG.md` updated.
+
+### Agents Used
+- None (direct execution)
+
+---
+
+## Session: 2026-08-25T21:48Z — Bulk Workflow YAML Trigger Fix
+
+**Objective:** Find and fix all GitHub Actions workflow files where bare `on` was serialised as `true:`, making trigger blocks invalid.
+
+**Status**: ✅ COMPLETE
+
+**Actions**:
+1. **Audit** — `grep -rln "^true:" .github/workflows/*.yml` found **64 affected files**.
+2. **Bulk fix** — Applied `sed -i '0,/^true:/{s/^true:$/'on':/}'` to all 64 files; replaced `true:` with `'on':` on the trigger line only (first occurrence, non-greedy).
+3. **Verification** — `grep -rn "^true:" .github/workflows/*.yml | wc -l` → **0** remaining occurrences.
+4. **Spot-checked** `action-version-check.yml`, `workflow-execution-gate.yml`, `release.yml` — all now show `'on':` correctly.
+
+**Governance**:
+- REQ-4: This report updated.
+- REQ-5: `CHANGELOG.md` updated.
+
+### Agents Used
+- None (direct bulk sed execution)

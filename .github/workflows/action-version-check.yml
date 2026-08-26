@@ -1,5 +1,5 @@
 name: Action Version Enforcement Check
-true:
+'on':
   push:
     paths:
     - .github/workflows/**
