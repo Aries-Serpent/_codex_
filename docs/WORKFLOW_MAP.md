@@ -3,6 +3,14 @@
 Active workflow definitions live in `.github/workflows/`. This page groups the main
 maintainer entry points; it is not an exhaustive inventory.
 
+## Active Node.js policy
+
+The live project baseline is Node.js 22. Active workflows under `.github/workflows/`
+configure `actions/setup-node` with `node-version: '22'` or use a repo-variable default
+that resolves to 22. Historical Node.js 20 references are archival-only and live in
+legacy or disabled workflow copies; they are not current runtime policy unless explicitly
+re-enabled.
+
 | Area | Start with | Supporting code and guidance |
 |---|---|---|
 | CI validation | `pre-merge-validation.yml`, `progressive-validation.yml`, `resilient_validation.yml`, `nox_gates.yml` | `noxfile.py`, `pytest.ini`, `scripts/ci/workflow_orchestrator.py`, [CI index](ci/INDEX.md) |
