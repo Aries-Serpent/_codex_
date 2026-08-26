@@ -29,6 +29,18 @@ flowchart LR
     O --> SC[scripts/ci/]
 ```
 
+## Active runtime policy
+
+`_codex_` is a Python-first platform with a Node.js 22 active runtime layer. The current
+implementation policy is: Node.js 22 for all active application manifests and workflow
+definitions; historical Node.js 20 references are archival and disabled-only, not active
+project policy.
+
+The active sources of truth are the live manifests (`package.json`, `cognitive_app/package.json`,
+`copilot/extension/package.json`) and the active workflow definitions under
+`.github/workflows/`. Archive copies under `.github/workflow-archive/disabled/` are
+historical references, not live runtime requirements.
+
 ## Core directories
 
 | Path | Use it for |

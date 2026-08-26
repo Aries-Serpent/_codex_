@@ -2,6 +2,12 @@
 
 This directory contains all GitHub Actions workflows for the _codex_ repository, organized into categories for easy navigation and understanding.
 
+## Active baseline policy
+
+Only the repo's current baseline workflows remain enabled in the live `.github/workflows/` directory. Experimental, duplicate, and low-frequency automation is intentionally disabled by renaming the workflow file to `.disabled` and keeping it out of the active runtime path. This keeps the active maintenance surface limited to CI, security, release, and governance flows that are actually used today.
+
+The reusable workflow `cost-gate.yml` is part of the active baseline and is still invoked by several active jobs; it is not a historical artifact and should remain enabled.
+
 ## 📑 Quick Navigation
 
 - [Testing Workflows](#testing-workflows) - Test execution and coverage
