@@ -2,6 +2,10 @@
 
 This directory contains GitHub Actions workflow definitions for CI/CD, automation, and security operations.
 
+## Active baseline policy
+
+The live workflow set is intentionally limited to the active baseline used by the repository today. Any workflow that is experimental, duplicate, or not part of the current operational baseline is disabled by renaming it to `.disabled` so it does not run in the normal CI surface.
+
 ## 📋 Table of Contents
 
 - [Workflow Index](#workflow-index)
