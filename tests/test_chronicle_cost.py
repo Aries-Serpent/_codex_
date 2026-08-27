@@ -69,6 +69,18 @@ def _cli_module():
     return module
 
 
+def test_resolve_chronicle_database_prefers_existing_repo_session_db(tmp_path: Path, monkeypatch) -> None:
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    (tmp_path / ".codex").mkdir(parents=True, exist_ok=True)
+    session_db = tmp_path / ".codex" / "session_logs.db"
+    session_db.touch()
+    (tmp_path / ".codex" / "codex.sqlite").touch()
+
+    assert module._resolve_chronicle_database() == str(session_db)
+    assert module._resolve_chronicle_database("/tmp/custom.sqlite") == "/tmp/custom.sqlite"
+
+
 def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
     database = tmp_path / "chronicle.sqlite"
     _database(database)

@@ -96,39 +96,49 @@ def _resolve_chronicle_database(explicit_db: str | None = None) -> str:
 
     Prefer an explicitly supplied path, then the canonical repo environment
     variables used by the logging stack, and finally the repository-local SQLite
-    names that are most commonly used for session tracking.
+    defaults in the order the repo resolves existing session databases.
     """
 
+    seen: set[str] = set()
     candidates: list[str] = []
-    if explicit_db:
-        candidates.append(explicit_db)
+
+    def add_candidate(value: str | None) -> None:
+        if value and value not in seen:
+            seen.add(value)
+            candidates.append(value)
+
+    add_candidate(explicit_db)
 
     for env_name in (
         "CODEX_CHRONICLE_DB_PATH",
         "CODEX_DB_PATH",
         "CODEX_LOG_DB_PATH",
     ):
-        value = os.getenv(env_name)
-        if value and value not in candidates:
-            candidates.append(value)
+        add_candidate(os.getenv(env_name))
 
     repo_root = REPO_ROOT
-    for candidate in (
+    preferred_defaults = (
+        repo_root / ".codex" / "session_logs.db",
         repo_root / ".codex" / "codex.sqlite",
         repo_root / ".codex" / "codex.db",
         repo_root / ".codex" / "sessions.db",
-        repo_root / ".codex" / "session_logs.db",
         repo_root / ".codex" / "chronicle.sqlite",
-    ):
-        value = str(candidate)
-        if value not in candidates:
-            candidates.append(value)
+    )
 
-    for candidate in candidates:
-        if candidate:
-            return candidate
+    existing_default = next(
+        (str(path) for path in preferred_defaults if path.exists()),
+        None,
+    )
+    if existing_default:
+        add_candidate(existing_default)
 
-    return str(repo_root / ".codex" / "codex.sqlite")
+    for candidate in preferred_defaults:
+        add_candidate(str(candidate))
+
+    if candidates:
+        return candidates[0]
+
+    return str(repo_root / ".codex" / "session_logs.db")
 
 
 def _run_git_capture(args: list[str]) -> str:
@@ -656,7 +666,7 @@ def chronicle_cost_tips(
     end: str | None,
     warning_budget: int,
     hard_budget: int,
-    database: str,
+    database: str | None,
     output: str | None,
 ) -> None:
     """Generate evidence-backed recommendations for reducing session cost."""
@@ -1144,7 +1154,7 @@ def chronicle_auto_fix(
     help="Optional JSON output path (default: stdout)",
 )
 def chronicle_improve(
-    database: str,
+    database: str | None,
     warning_budget: int,
     hard_budget: int,
     output: str | None,
