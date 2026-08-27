@@ -2,12 +2,24 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { CodeGenerator } from '../CodeGenerator';
 import { toast } from 'sonner';
+import { CodexAPIClient } from '@/lib/codex-api-client';
+import { SparkLLMClient } from '@/lib/spark-llm-client';
 
 vi.mock('sonner', () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),
+    info: vi.fn(),
   },
+}));
+
+vi.mock('@/lib/codex-api-client', () => ({
+  CodexAPIClient: vi.fn(),
+  CodexAPIError: class CodexAPIError extends Error {},
+}));
+
+vi.mock('@/lib/spark-llm-client', () => ({
+  SparkLLMClient: vi.fn(),
 }));
 
 const mockSpark = {
@@ -17,8 +29,6 @@ const mockSpark = {
   llm: vi.fn(),
 };
 
-(global as any).spark = mockSpark;
-
 describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,6 +37,24 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     return "success"`);
     delete (import.meta.env as any).VITE_CODEX_KEY;
     delete (import.meta.env as any).VITE_CODEX_API;
+
+    vi.mocked(SparkLLMClient).mockImplementation(() => ({
+      getStatus: async () => ({ healthy: true, mode: 'AI-Powered', model: 'gpt-4o-mini (Spark Runtime)' }),
+      generateCode: async ({ prompt }: { prompt: string }) => ({
+        code: `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
+        metadata: { k1_factor: 0.331, coherence: 0.81, cache_hit: false, processing_time_ms: 120 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.82 },
+      }),
+    }) as any);
+
+    vi.mocked(CodexAPIClient).mockImplementation(() => ({
+      getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+      generateCode: async ({ prompt }: { prompt: string }) => ({
+        code: `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
+        metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
+        quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
+      }),
+    }) as any);
   });
 
   afterEach(() => {
@@ -277,21 +305,20 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should download code as file', async () => {
       const mockClick = vi.fn();
-      const mockAppendChild = vi.fn();
-      const mockRemoveChild = vi.fn();
+      const originalCreateElement = document.createElement.bind(document);
+      const originalAppendChild = document.body.appendChild.bind(document.body);
+      const originalRemoveChild = document.body.removeChild.bind(document.body);
 
-      document.createElement = vi.fn().mockImplementation((tag) => {
+      vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
         if (tag === 'a') {
-          return {
-            click: mockClick,
-            href: '',
-            download: '',
-          };
+          const anchor = originalCreateElement(tag, options);
+          vi.spyOn(anchor, 'click').mockImplementation(mockClick);
+          return anchor;
         }
-        return {};
+        return originalCreateElement(tag, options);
       });
-      document.body.appendChild = mockAppendChild;
-      document.body.removeChild = mockRemoveChild;
+      vi.spyOn(document.body, 'appendChild').mockImplementation((node: Node) => originalAppendChild(node));
+      vi.spyOn(document.body, 'removeChild').mockImplementation((node: Node) => originalRemoveChild(node));
 
       render(<CodeGenerator />);
 
