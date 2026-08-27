@@ -91,6 +91,46 @@ def _append_campaign_metric(event: str, payload: dict[str, object]) -> None:
         handle.write(json.dumps(record, sort_keys=True) + "\n")
 
 
+def _resolve_chronicle_database(explicit_db: str | None = None) -> str:
+    """Resolve the session database used by Chronicle commands.
+
+    Prefer an explicitly supplied path, then the canonical repo environment
+    variables used by the logging stack, and finally the repository-local SQLite
+    names that are most commonly used for session tracking.
+    """
+
+    candidates: list[str] = []
+    if explicit_db:
+        candidates.append(explicit_db)
+
+    for env_name in (
+        "CODEX_CHRONICLE_DB_PATH",
+        "CODEX_DB_PATH",
+        "CODEX_LOG_DB_PATH",
+    ):
+        value = os.getenv(env_name)
+        if value and value not in candidates:
+            candidates.append(value)
+
+    repo_root = REPO_ROOT
+    for candidate in (
+        repo_root / ".codex" / "codex.sqlite",
+        repo_root / ".codex" / "codex.db",
+        repo_root / ".codex" / "sessions.db",
+        repo_root / ".codex" / "session_logs.db",
+        repo_root / ".codex" / "chronicle.sqlite",
+    ):
+        value = str(candidate)
+        if value not in candidates:
+            candidates.append(value)
+
+    for candidate in candidates:
+        if candidate:
+            return candidate
+
+    return str(repo_root / ".codex" / "codex.sqlite")
+
+
 def _run_git_capture(args: list[str]) -> str:
     """Run a small git command and return stdout, degrading to 'unknown'."""
 
@@ -549,8 +589,7 @@ def chronicle_tips(format: str, output: str | None) -> None:
         from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
         from aries_serpent_core.logging.session_database import SessionDatabase
 
-        # Initialize database and analytics
-        db_path = ".codex/codex.sqlite"
+        db_path = _resolve_chronicle_database()
         db = SessionDatabase(db_path)
         analytics = ChronicleAnalytics(db)
 
@@ -603,9 +642,9 @@ def chronicle_tips(format: str, output: str | None) -> None:
 @click.option(
     "--database",
     type=click.Path(dir_okay=False),
-    default=".codex/codex.sqlite",
-    show_default=True,
-    help="Chronicle SQLite database",
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
 )
 @click.option("--output", type=click.Path(dir_okay=False), default=None)
 def chronicle_cost_tips(
@@ -631,6 +670,7 @@ def chronicle_cost_tips(
             format_cost_tips,
         )
 
+        database = _resolve_chronicle_database(database)
         store = ChronicleStore(database)
         records = store.load_sessions(
             session_id=session_id,
@@ -774,8 +814,7 @@ def chronicle_analyze(pattern: str | None, output: str | None) -> None:
         from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
         from aries_serpent_core.logging.session_database import SessionDatabase
 
-        # Initialize database and analytics
-        db_path = ".codex/codex.sqlite"
+        db_path = _resolve_chronicle_database()
         db = SessionDatabase(db_path)
         analytics = ChronicleAnalytics(db)
         patterns = analytics.analyze_patterns()
@@ -1080,9 +1119,9 @@ def chronicle_auto_fix(
 @click.option(
     "--database",
     type=click.Path(dir_okay=False),
-    default=".codex/codex.sqlite",
-    show_default=True,
-    help="Chronicle SQLite database",
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
 )
 @click.option(
     "--warning-budget",
@@ -1131,6 +1170,7 @@ def chronicle_improve(
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         raise click.ClickException(f"Chronicle analytics unavailable: {exc}") from exc
 
+    database = _resolve_chronicle_database(database)
     db_path = Path(database)
     state = "available" if db_path.exists() else "empty"
     patterns: dict[str, object] = {}
