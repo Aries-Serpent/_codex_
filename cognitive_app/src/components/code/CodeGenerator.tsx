@@ -152,35 +152,44 @@ export function CodeGenerator() {
         ? response.metadata.coherence
         : 0.8;
 
+      const client = getClient();
       setResult(response);
-      setInfoMessage(source === 'spark' ? `AI Mode: gpt-4o-mini (Spark Runtime)` : null);
+      if (source === 'spark') {
+        setInfoMessage(`AI Mode: gpt-4o-mini (Spark Runtime)`);
+      } else if (source === 'mock') {
+        setInfoMessage(client ? 'API connection failed, using demo mode' : 'Using demo mode (API key not configured)');
+      } else {
+        setInfoMessage(null);
+      }
+
+      const sourceLabel = source === 'spark' ? 'Spark AI' : source === 'api' ? 'Codex API' : 'Demo Mode';
       toast.success('Code generated successfully', {
         description: source === 'spark'
-          ? `Generated with Spark AI • k₁ factor: ${k1Factor.toFixed(4)} • coherence: ${coherence.toFixed(4)}`
-          : `Generated with Spark AI • k₁ factor: ${k1Factor.toFixed(4)}`,
+          ? `Generated with ${sourceLabel} • k₁ factor: ${k1Factor.toFixed(4)} • coherence: ${coherence.toFixed(4)}`
+          : `Generated with ${sourceLabel} • k₁ factor: ${k1Factor.toFixed(4)}`,
       });
       setLoading(false);
     };
 
-    try {
-      const sparkClient = getSparkClient();
-      const response = await sparkClient.generateCode({
-        prompt,
-        context: { language: 'python', tier: useAIMode ? 'B' : 'A' },
-      });
+    if (useAIMode) {
+      try {
+        const sparkClient = getSparkClient();
+        const response = await sparkClient.generateCode({
+          prompt,
+          context: { language: 'python', tier: 'B' },
+        });
 
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 500) {
-        await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 500) {
+          await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+        }
+
+        finishWithResult(response, 'spark');
+        return;
+      } catch {
+        setInfoMessage(null);
+        // Fall through to API/mock generation when Spark is unavailable or fails.
       }
-
-      finishWithResult(response, 'spark');
-      return;
-    } catch (sparkErr) {
-      const sparkErrorMessage = sparkErr instanceof Error ? sparkErr.message : 'Spark generation failed';
-      setInfoMessage(null);
-      // Fall through to API/mock generation when Spark is unavailable or fails.
-      // Keep the error suppressed here so the fallback path can still complete.
     }
 
     const client = getClient();
@@ -220,12 +229,8 @@ export function CodeGenerator() {
         await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
       }
 
-      setResult(mockResponse);
       setError(null);
-      setInfoMessage('Using demo mode (API key not configured)');
-      toast.success('Code generated successfully', {
-        description: `Generated with Spark AI • k₁ factor: ${mockResponse.metadata.k1_factor.toFixed(4)}`,
-      });
+      finishWithResult(mockResponse, 'mock');
     } catch (mockErr) {
       const errorMessage = mockErr instanceof Error
         ? mockErr.message

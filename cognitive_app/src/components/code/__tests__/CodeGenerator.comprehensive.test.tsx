@@ -40,11 +40,14 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     vi.mocked(SparkLLMClient).mockImplementation(() => ({
       getStatus: async () => ({ healthy: true, mode: 'AI-Powered', model: 'gpt-4o-mini (Spark Runtime)' }),
-      generateCode: async ({ prompt }: { prompt: string }) => ({
-        code: `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
-        metadata: { k1_factor: 0.331, coherence: 0.81, cache_hit: false, processing_time_ms: 120 },
-        quantum_metrics: { superposition_states: 3, entanglement_score: 0.82 },
-      }),
+      generateCode: async ({ prompt }: { prompt: string }) => {
+        const code = await mockSpark.llm(prompt);
+        return {
+          code: typeof code === 'string' ? code : `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
+          metadata: { k1_factor: 0.331, coherence: 0.81, cache_hit: false, processing_time_ms: 120 },
+          quantum_metrics: { superposition_states: 3, entanglement_score: 0.82 },
+        };
+      },
     }) as any);
 
     vi.mocked(CodexAPIClient).mockImplementation(() => ({
@@ -173,6 +176,10 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
+
+      // Enable AI Mode so Spark is invoked
+      const aiModeSwitch = screen.getByRole('switch', { name: /toggle ai mode/i });
+      fireEvent.click(aiModeSwitch);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
       fireEvent.change(textarea, { target: { value: 'Create a Python function to add two numbers' } });
