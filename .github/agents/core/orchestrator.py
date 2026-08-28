@@ -90,14 +90,21 @@ class AgentOrchestrator:
         """Register an agent for orchestration."""
         self.agents[name] = agent_instance
 
-    def _budget_warning_active(self) -> bool:
-        """Return True when cost pressure requires lane gating."""
-        active_cost = sum(
+    def _active_cost_total(self) -> float:
+        """Total cost of work currently tracked in the workflow."""
+        return sum(
             float(task.estimated_cost or 0)
             for task in self.tasks.values()
             if task.status in {TaskStatus.RUNNING, TaskStatus.SUCCESS, TaskStatus.PENDING}
         )
-        return active_cost >= self.warning_budget
+
+    def _budget_warning_active(self) -> bool:
+        """Return True when cost pressure requires lane gating."""
+        return self._active_cost_total() >= self.warning_budget
+
+    def _hard_budget_active(self) -> bool:
+        """Return True when the hard budget is reached and extra work should pause."""
+        return self.hard_budget > 0 and self._active_cost_total() >= self.hard_budget
 
     def _lane_running_count(self, lane: str) -> int:
         return sum(
@@ -106,6 +113,8 @@ class AgentOrchestrator:
 
     def _lane_is_allowed(self, task: AgentTask) -> bool:
         lane = _normalize_lane(task.lane)
+        if self._hard_budget_active() and lane != "P1":
+            return False
         if self._budget_warning_active() and lane != "P1":
             return False
         lane_limit = self.lane_budgets.get(lane, self.lane_budgets.get("P1", 1))
@@ -240,7 +249,7 @@ class AgentOrchestrator:
                     task.result = {
                         "status": "deferred",
                         "lane": task.lane,
-                        "reason": "warning-budget lane gate",
+                        "reason": "hard-budget lane gate" if self._hard_budget_active() else "warning-budget lane gate",
                     }
                     results[task.task_id] = task.result
                     continue
