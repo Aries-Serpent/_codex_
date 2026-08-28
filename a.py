@@ -1,1 +1,1 @@
-# train epoch seed rng
+train epoch seed rng

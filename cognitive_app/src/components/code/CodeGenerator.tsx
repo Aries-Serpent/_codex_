@@ -304,7 +304,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
           <Button
             id="generate-code-button"
             onClick={handleGenerate}
-            disabled={loading || !isValidPrompt || apiStatus === 'error'}
+            disabled={loading || (prompt.trim().length > 0 && !isValidPrompt) || apiStatus === 'error'}
             className="w-full sm:w-auto"
             size="lg"
           >
