@@ -12,10 +12,31 @@ vi.mock('sonner', () => ({
   },
 }));
 
-vi.mock('@/lib/codex-api-client', () => ({
-  CodexAPIClient: vi.fn(),
-  CodexAPIError: class CodexAPIError extends Error {},
-}));
+vi.mock('@/lib/codex-api-client', () => {
+  class CodexAPIClientMock {
+    async getStatus() {
+      return { healthy: true, metrics: { k1_factor: 0.312 } };
+    }
+
+    async generateCode() {
+      return {
+        code: 'def generated_function():\n    return "success"',
+        metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
+        quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
+      };
+    }
+  }
+
+  return {
+    CodexAPIClient: CodexAPIClientMock,
+    CodexAPIError: class CodexAPIError extends Error {
+      constructor(public statusCode: number, message: string) {
+        super(message);
+        this.name = 'CodexAPIError';
+      }
+    },
+  };
+});
 
 const mockSpark = {
   llm: vi.fn(),

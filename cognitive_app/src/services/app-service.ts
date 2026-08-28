@@ -49,19 +49,30 @@ export interface AppStatusResult {
 
 export class AppService {
   private clientRef: CodexAPIClient | null = null;
+  private clientConfigKey: string | null = null;
   private mockClientRef: MockCodexAPIClient | null = null;
   private sparkClientRef: SparkLLMClient | null = null;
 
   private createClient(): CodexAPIClient | null {
     const apiKey = import.meta.env.VITE_CODEX_KEY;
-    return apiKey ? new CodexAPIClient(import.meta.env.VITE_CODEX_API || 'http://localhost:8000', apiKey) : null;
+    const apiUrl = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
+    if (!apiKey) {
+      this.clientRef = null;
+      this.clientConfigKey = null;
+      return null;
+    }
+
+    const configKey = `${apiUrl}:${apiKey}`;
+    if (!this.clientRef || this.clientConfigKey !== configKey) {
+      this.clientRef = new CodexAPIClient(apiUrl, apiKey);
+      this.clientConfigKey = configKey;
+    }
+
+    return this.clientRef;
   }
 
   private getClient(): CodexAPIClient | null {
-    if (!this.clientRef) {
-      this.clientRef = this.createClient();
-    }
-    return this.clientRef;
+    return this.createClient();
   }
 
   private getMockClient(): MockCodexAPIClient {

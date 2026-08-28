@@ -29,20 +29,53 @@ const createMockSparkClient = () => ({
   }),
 });
 
-// Mock the modules with factory functions
-vi.mock('@/lib/codex-api-client', () => ({
-  CodexAPIClient: vi.fn(),
-  CodexAPIError: class CodexAPIError extends Error {},
-}));
+// Mock the modules with constructor-safe factory functions
+vi.mock('@/lib/codex-api-client', () => {
+  class CodexAPIClientMock {
+    async getStatus() {
+      return { healthy: true, metrics: { k1_factor: 0.312 } };
+    }
 
-// Don't mock MockCodexAPIClient - use the real implementation
-// vi.mock('@/lib/mock-api-client', () => ({
-//   MockCodexAPIClient: vi.fn(),
-// }));
+    async generateCode() {
+      return {
+        code: '# Generated code',
+        metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+      };
+    }
+  }
 
-vi.mock('@/lib/spark-llm-client', () => ({
-  SparkLLMClient: vi.fn(),
-}));
+  return {
+    CodexAPIClient: CodexAPIClientMock,
+    CodexAPIError: class CodexAPIError extends Error {
+      constructor(public statusCode: number, message: string) {
+        super(message);
+        this.name = 'CodexAPIError';
+      }
+    },
+  };
+});
+
+vi.mock('@/lib/spark-llm-client', () => {
+  class SparkLLMClientMock {
+    async generateCode() {
+      return {
+        code: '# AI generated code',
+        metadata: { k1_factor: 0.28, coherence: 0.85 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+      };
+    }
+
+    async getStatus() {
+      return {
+        healthy: true,
+        model: 'gpt-4o-mini (Spark Runtime)',
+      };
+    }
+  }
+
+  return { SparkLLMClient: SparkLLMClientMock };
+});
 
 describe('CodeGenerator - Lazy Initialization Pattern', () => {
   beforeEach(() => {

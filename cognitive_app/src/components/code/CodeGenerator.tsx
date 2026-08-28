@@ -173,9 +173,14 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
                   ? 'go'
                   : 'sh'
       }`;
+      if (a.parentNode) {
+        a.parentNode.removeChild(a);
+      }
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      if (a.parentNode) {
+        a.parentNode.removeChild(a);
+      }
       URL.revokeObjectURL(url);
       toast.success('Code downloaded');
     }
@@ -183,6 +188,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
 
   const charCount = prompt.length;
   const isValidPrompt = charCount >= 10 && charCount <= 5000;
+  const isPromptInvalid = !isValidPrompt && charCount > 0;
 
   return (
     <div className="space-y-6">
