@@ -218,6 +218,32 @@ class SessionCheckpointManager:
         (self.storage_path / "metadata").mkdir(exist_ok=True)
         (self.storage_path / "archive").mkdir(exist_ok=True)
 
+    def _validate_storage_component(self, value: str, field_name: str) -> str:
+        """Return a safe storage component and reject traversal or absolute paths."""
+        if value is None:
+            raise StorageError(f"{field_name} is required")
+
+        candidate = str(value).strip()
+        if not candidate or candidate in {".", ".."}:
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+        if candidate.startswith(("/", "\\")) or candidate.endswith(("/", "\\")):
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+        if "/" in candidate or "\\" in candidate:
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+
+        return candidate
+
+    def _resolve_session_dir(self, session_id: str) -> Path:
+        """Return a checkpoint directory guaranteed to stay under the v1 root."""
+        safe_session_id = self._validate_storage_component(session_id, "session_id")
+        base_dir = (self.storage_path / "v1").resolve()
+        candidate_dir = (base_dir / safe_session_id).resolve()
+        try:
+            candidate_dir.relative_to(base_dir)
+        except ValueError as exc:
+            raise StorageError(f"Invalid session_id: {session_id!r}") from exc
+        return candidate_dir
+
     def create_checkpoint(
         self,
         session_id: str,
@@ -346,7 +372,7 @@ class SessionCheckpointManager:
         compression_ratio = uncompressed_size / compressed_size if compressed_size > 0 else 1.0
 
         # Determine storage path
-        session_dir = self.storage_path / "v1" / session_id
+        session_dir = self._resolve_session_dir(session_id)
         session_dir.mkdir(exist_ok=True, parents=True)
 
         checkpoint_file = session_dir / f"checkpoint_{checkpoint_id}{file_ext}"
@@ -492,7 +518,7 @@ class SessionCheckpointManager:
         checkpoints = []
 
         if session_id:
-            session_dir = self.storage_path / "v1" / session_id
+            session_dir = self._resolve_session_dir(session_id)
             if not session_dir.exists():
                 return []
             checkpoint_files = list(session_dir.glob("checkpoint_*"))
@@ -767,7 +793,7 @@ class SessionCheckpointManager:
     ) -> Optional[Path]:
         """Find checkpoint file."""
         if session_id:
-            search_dir = self.storage_path / "v1" / session_id
+            search_dir = self._resolve_session_dir(session_id)
             if not search_dir.exists():
                 return None
             candidates = list(search_dir.glob("checkpoint_*"))

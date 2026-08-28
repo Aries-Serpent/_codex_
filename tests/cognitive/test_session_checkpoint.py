@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "cognitive"))
 from session_checkpoint_manager import (
     CheckpointNotFoundError,
     SessionCheckpointManager,
+    StorageError,
 )
 from session_resume_engine import (
     ContextProvider,
@@ -239,6 +240,24 @@ class TestCheckpointCreation:
         )
         
         assert meta1.checkpoint_id != meta2.checkpoint_id
+
+    def test_rejects_session_id_path_traversal(self, checkpoint_manager, sample_checkpoint_state):
+        """Traversal attempts must not escape the session checkpoint root."""
+        malicious_session_id = "../../escape"
+
+        with pytest.raises(StorageError, match="Invalid session_id"):
+            checkpoint_manager.create_checkpoint(
+                session_id=malicious_session_id,
+                agent_state=sample_checkpoint_state["agent_state"],
+                memory_snapshot=sample_checkpoint_state["memory_snapshot"],
+                execution_progress=sample_checkpoint_state["execution_progress"],
+            )
+
+        with pytest.raises(StorageError, match="Invalid session_id"):
+            checkpoint_manager.list_checkpoints(session_id=malicious_session_id)
+
+        with pytest.raises(StorageError, match="Invalid session_id"):
+            checkpoint_manager.restore_checkpoint("cp_ignored", session_id=malicious_session_id)
 
 
 # ============================================================================
