@@ -62,6 +62,14 @@ class CheckpointMetadata:
     compressed: bool = True
     created_by: str = "session-checkpoint-manager"
     tags: Dict[str, str] = field(default_factory=dict)
+    lane_bucket: Optional[str] = None
+    checkpoint_state: Optional[str] = None
+    budget_remaining: Optional[float] = None
+    estimated_cost: Optional[float] = None
+    cost_score: Optional[float] = None
+    task_id: Optional[str] = None
+    last_successful_stage: Optional[str] = None
+    resume_from_checkpoint_id: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary, handling datetime serialization."""

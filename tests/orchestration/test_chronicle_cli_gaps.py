@@ -20,6 +20,8 @@ def _get_command(group_name: str, command_name: str):
 
 chronicle_improve = _get_command("chronicle", "improve")
 chronicle_search = _get_command("chronicle", "search")
+chronicle_cost_tips = _get_command("chronicle", "cost-tips")
+chronicle_standup = _get_command("chronicle", "standup")
 
 
 class TestChronicleImprove:
@@ -189,3 +191,71 @@ class TestChronicleSearch:
         assert payload["state"] == "empty"
         assert payload["hit_count"] == 0
         assert "No search query provided" in payload["diagnostics"][0]
+
+
+class TestChronicleLaneFilters:
+    """Lane-aware CLI entries should accept lane filters without breaking output."""
+
+    def test_cost_tips_accepts_lane_filter(self, tmp_path: Path) -> None:
+        db_path = tmp_path / "chronicle.sqlite"
+        connection = sqlite3.connect(db_path)
+        connection.execute(
+            "CREATE TABLE sessions ("
+            "session_id TEXT PRIMARY KEY, pr_number INTEGER, branch TEXT, "
+            "timestamp TEXT, git_sha TEXT, status TEXT, agent_name TEXT, "
+            "duration_minutes INTEGER, lane_bucket TEXT, checkpoint_state TEXT, "
+            "budget_remaining REAL, estimated_cost REAL, cost_score REAL, "
+            "tool_name TEXT, tool_complete_call_id TEXT, usage_input_tokens INTEGER, "
+            "usage_output_tokens INTEGER, credits REAL, blockers TEXT, "
+            "checkpoint_markers TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
+        )
+        connection.execute(
+            "INSERT INTO sessions (session_id, timestamp, status, lane_bucket, tool_name, "
+            "credits, estimated_cost, budget_remaining) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            ("lane-p1", "2026-08-01T00:00:00Z", "complete", "P1", "grep", 1200, 700, 1500),
+        )
+        connection.commit()
+        connection.close()
+
+        runner = CliRunner()
+        result = runner.invoke(
+            chronicle_cost_tips,
+            ["--database", str(db_path), "--lane", "P1", "--format", "json"],
+        )
+        assert result.exit_code == 0, result.output
+        payload = json.loads(result.output)
+        assert payload["scope"]["lane"] == "P1"
+        assert payload["lane_focus"] == "P1"
+
+    def test_standup_accepts_lane_filter(self, tmp_path: Path) -> None:
+        db_path = tmp_path / "chronicle.sqlite"
+        connection = sqlite3.connect(db_path)
+        connection.execute(
+            "CREATE TABLE sessions ("
+            "session_id TEXT PRIMARY KEY, pr_number INTEGER, branch TEXT, "
+            "timestamp TEXT, git_sha TEXT, status TEXT, agent_name TEXT, "
+            "duration_minutes INTEGER, lane_bucket TEXT, checkpoint_state TEXT, "
+            "budget_remaining REAL, estimated_cost REAL, cost_score REAL, "
+            "tool_name TEXT, tool_complete_call_id TEXT, usage_input_tokens INTEGER, "
+            "usage_output_tokens INTEGER, credits REAL, blockers TEXT, "
+            "checkpoint_markers TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
+        )
+        connection.execute(
+            "INSERT INTO sessions (session_id, timestamp, status, lane_bucket) "
+            "VALUES (?, ?, ?, ?)",
+            ("lane-s1", "2026-08-01T00:00:00Z", "complete", "S1"),
+        )
+        connection.commit()
+        connection.close()
+
+        runner = CliRunner()
+        result = runner.invoke(
+            chronicle_standup,
+            ["--database", str(db_path), "--lane", "S1", "--json"],
+        )
+        assert result.exit_code == 0, result.output
+        payload = json.loads(result.output)
+        assert payload["lane"] == "S1"
+        assert payload["lane_pattern"] in {"fragmented", "batchable"}
