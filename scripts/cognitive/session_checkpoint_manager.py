@@ -207,6 +207,15 @@ class SessionCheckpointManager:
         context_state: Optional[Dict[str, Any]] = None,
         metadata: Optional[Dict[str, str]] = None,
         compress: bool = True,
+        *,
+        lane_bucket: Optional[str] = None,
+        task_id: Optional[str] = None,
+        checkpoint_state: Optional[str] = None,
+        budget_remaining: Optional[float] = None,
+        estimated_cost: Optional[float] = None,
+        cost_score: Optional[float] = None,
+        last_successful_stage: Optional[str] = None,
+        resume_from_checkpoint_id: Optional[str] = None,
     ) -> CheckpointMetadata:
         """
         Create and store a checkpoint.
@@ -232,6 +241,20 @@ class SessionCheckpointManager:
         timestamp = datetime.utcnow()
 
         # Build checkpoint document
+        metadata_dict = dict(metadata or {})
+        for key, value in {
+            "lane_bucket": lane_bucket,
+            "task_id": task_id,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
+            "last_successful_stage": last_successful_stage,
+            "resume_from_checkpoint_id": resume_from_checkpoint_id,
+        }.items():
+            if value is not None:
+                metadata_dict[key] = str(value)
+
         checkpoint_doc = {
             "schema_version": "v1.0",
             "checkpoint_id": checkpoint_id,
@@ -244,7 +267,15 @@ class SessionCheckpointManager:
             "decision_history": decision_history or [],
             "repository_state": repository_state or {},
             "context_state": context_state or {},
-            "metadata": metadata or {},
+            "metadata": metadata_dict,
+            "lane_bucket": lane_bucket,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
+            "task_id": task_id,
+            "last_successful_stage": last_successful_stage,
+            "resume_from_checkpoint_id": resume_from_checkpoint_id,
         }
 
         # Serialize to JSON
@@ -262,13 +293,18 @@ class SessionCheckpointManager:
         if compress and self.compression_algorithm != "none":
             try:
                 if self.compression_algorithm == "zstd":
-                    if zstd is None:
-                        raise CompressionError(
-                            "zstd not installed, install with: pip install zstandard"
+                    if zstd is not None:
+                        cctx = zstd.ZstdCompressor(level=self.compression_level)
+                        compressed_bytes = cctx.compress(json_bytes)
+                        file_ext = ".json.zst"
+                    else:
+                        logger.warning(
+                            "zstd not available; falling back to gzip compression for checkpoint"
                         )
-                    cctx = zstd.ZstdCompressor(level=self.compression_level)
-                    compressed_bytes = cctx.compress(json_bytes)
-                    file_ext = ".json.zst"
+                        compressed_bytes = gzip.compress(
+                            json_bytes, compresslevel=max(1, min(9, self.compression_level))
+                        )
+                        file_ext = ".json.gz"
                 elif self.compression_algorithm == "gzip":
                     compressed_bytes = gzip.compress(
                         json_bytes, compresslevel=self.compression_level
@@ -277,7 +313,9 @@ class SessionCheckpointManager:
                 else:
                     raise CompressionError(f"Unknown algorithm: {self.compression_algorithm}")
             except Exception as e:
-                raise CompressionError(f"Compression failed: {e}")
+                logger.warning("Checkpoint compression failed (%s); writing uncompressed payload", e)
+                compressed_bytes = json_bytes
+                file_ext = ".json"
         else:
             compressed_bytes = json_bytes
             file_ext = ".json"
@@ -311,6 +349,7 @@ class SessionCheckpointManager:
             compression_ratio=compression_ratio,
             checksum_sha256=checksum,
             compressed=compress and self.compression_algorithm != "none",
+            tags=metadata_dict,
         )
 
         # Update metrics
