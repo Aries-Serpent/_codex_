@@ -142,8 +142,12 @@ export function CodeGenerator() {
   }, [getClient, getMockClient, getSparkClient, useAIMode]);
 
   useEffect(() => {
-    checkApiStatus();
-    const interval = setInterval(checkApiStatus, 30000);
+    // Polling status is an intentional background refresh, not a render-only state transition.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void checkApiStatus();
+    const interval = setInterval(() => {
+      void checkApiStatus();
+    }, 30000);
     return () => clearInterval(interval);
   }, [checkApiStatus]);
 

@@ -209,7 +209,10 @@ def _run_ci() -> None:
     try:
         subprocess.run(["nox", "-s", "tests"], check=True)
     except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
-        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "Exception: %s",
+            type(exc).__name__,
+        )  # codeql[py/clear-text-logging-sensitive-data]
         logger.info(f"CI failed: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
         raise SystemExit(1) from exc

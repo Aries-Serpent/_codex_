@@ -438,7 +438,6 @@ def test_tips_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
 
     resolved_paths: list[str | None] = []
-    original_resolve = module._resolve_chronicle_database
 
     def capturing_resolve(db: str | None = None) -> str:
         resolved_paths.append(db)

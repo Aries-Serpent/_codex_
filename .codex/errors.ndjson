@@ -11,3 +11,5 @@
 {"step": "train.dataset", "err": "training dataset is empty or missing", "ctx": "{\"path\": \"data/train_samples.jsonl\", \"texts\": 0}", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
 {"ts": "2026-08-28T06:22Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}
 {"ts": "2026-08-28T06:22Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:40Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:40Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}
