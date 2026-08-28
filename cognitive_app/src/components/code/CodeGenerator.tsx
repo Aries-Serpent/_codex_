@@ -20,6 +20,8 @@ const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
 // - Spark runtime expects tier 'B'
 const API_MOCK_TIER = 'A';
 const SPARK_TIER = 'B';
+const SPARK_MODEL_NAME = 'gpt-4o-mini';
+const DEFAULT_LANGUAGE = 'python';
 
 /**
  * Factory function to create a CodexAPIClient instance.
@@ -171,7 +173,7 @@ export function CodeGenerator() {
       const client = getClient();
       setResult(response);
       if (source === 'spark') {
-        setInfoMessage(`AI Mode: gpt-4o-mini (Spark Runtime)`);
+        setInfoMessage(`AI Mode: ${SPARK_MODEL_NAME} (Spark Runtime)`);
       } else if (source === 'mock') {
         setInfoMessage(client ? 'API connection failed, using demo mode' : 'Using demo mode (API key not configured)');
       } else {
@@ -192,7 +194,7 @@ export function CodeGenerator() {
         const sparkClient = getSparkClient();
         const response = await sparkClient.generateCode({
           prompt,
-          context: { language: 'python', tier: SPARK_TIER },
+          context: { language: DEFAULT_LANGUAGE, tier: SPARK_TIER },
         });
 
         const elapsed = Date.now() - startTime;
@@ -214,7 +216,7 @@ export function CodeGenerator() {
       try {
         const response = await client.generateCode({
           prompt,
-          context: { language: 'python', tier: API_MOCK_TIER },
+          context: { language: DEFAULT_LANGUAGE, tier: API_MOCK_TIER },
         });
 
         const elapsed = Date.now() - startTime;
@@ -248,7 +250,7 @@ export function CodeGenerator() {
       const mockClient = getMockClient();
       const mockResponse = await mockClient.generateCode({
         prompt,
-        context: { language: 'python', tier: API_MOCK_TIER },
+        context: { language: DEFAULT_LANGUAGE, tier: API_MOCK_TIER },
       });
 
       const elapsed = Date.now() - startTime;
@@ -273,9 +275,15 @@ export function CodeGenerator() {
   }, [prompt, getClient, getMockClient, getSparkClient, useAIMode]);
 
   const handleCopy = useCallback(() => {
-    if (result?.code) {
-      navigator.clipboard.writeText(result.code);
-      toast.success('Code copied to clipboard');
+    if (result) {
+      navigator.clipboard.writeText(result.code).then(() => {
+        toast.success('Code copied to clipboard');
+      }).catch((err) => {
+        console.error('Failed to copy to clipboard:', err);
+        toast.error('Failed to copy', {
+          description: 'Could not write to clipboard. Check browser permissions.',
+        });
+      });
     }
   }, [result]);
 

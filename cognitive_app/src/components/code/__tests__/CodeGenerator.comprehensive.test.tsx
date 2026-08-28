@@ -341,6 +341,80 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     generateSpy.mockRestore();
   });
 
+  // Test: clipboard failure shows toast.error
+  it('shows toast.error when clipboard.writeText rejects', async () => {
+    // Mock clipboard to reject
+    const clipboardMock = {
+      writeText: vi.fn().mockRejectedValueOnce(new Error('Permission denied')),
+    };
+    Object.defineProperty(navigator, 'clipboard', {
+      value: clipboardMock,
+      configurable: true,
+    });
+
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a function to add numbers' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    const copyButton = screen.getByRole('button', { name: /copy/i });
+    fireEvent.click(copyButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Failed to copy',
+        expect.objectContaining({
+          description: expect.stringContaining('clipboard'),
+        })
+      );
+    }, { timeout: 3000 });
+
+    // Restore clipboard
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+    });
+  });
+
+  // Test: generation calls use DEFAULT_LANGUAGE ('python')
+  it('calls mock generateCode with language python (DEFAULT_LANGUAGE)', async () => {
+    delete (import.meta.env as any).VITE_CODEX_KEY;
+
+    const { MockCodexAPIClient } = await import('@/lib/mock-api-client');
+    const generateSpy = vi.spyOn(MockCodexAPIClient.prototype, 'generateCode');
+
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a function to multiply numbers' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    expect(generateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        context: expect.objectContaining({ language: 'python', tier: 'A' }),
+      })
+    );
+
+    generateSpy.mockRestore();
+  });
+
   it('renders metrics output once generation succeeds', async () => {
     render(<CodeGenerator />);
 

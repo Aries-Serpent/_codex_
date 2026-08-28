@@ -423,3 +423,165 @@ def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> 
     assert json.loads(cost_result.output)["schema_version"] == "1.0"
     assert json.loads(standup_result.output)["task_id"] == task_id
     assert json.loads(index_path.read_text())["summary"]["total_sessions"] == 2
+
+
+# ---------------------------------------------------------------------------
+# Gap C: chronicle tips — --database CLI path
+# ---------------------------------------------------------------------------
+
+
+def test_tips_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
+    """tips with --database <path> uses the explicit path, not the default."""
+    database = tmp_path / "explicit_tips.sqlite"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+
+    resolved_paths: list[str | None] = []
+    original_resolve = module._resolve_chronicle_database
+
+    def capturing_resolve(db: str | None = None) -> str:
+        resolved_paths.append(db)
+        return str(database)
+
+    monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
+
+    # Stub SessionDatabase and ChronicleAnalytics so we don't need a real DB
+    import unittest.mock as mock
+    fake_analytics = mock.MagicMock()
+    fake_analytics.generate_summary.return_value = "stub tips"
+    fake_db = mock.MagicMock()
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.session_database.SessionDatabase",
+        mock.MagicMock(return_value=fake_db),
+    )
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.chronicle_analytics.ChronicleAnalytics",
+        mock.MagicMock(return_value=fake_analytics),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "tips", "--database", str(database)],
+    )
+
+    assert result.exit_code == 0, result.output
+    # The explicit path must have been forwarded to _resolve_chronicle_database
+    assert resolved_paths == [str(database)]
+
+
+def test_tips_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
+    """tips WITHOUT --database passes None to _resolve_chronicle_database."""
+    database = tmp_path / "chronicle.sqlite"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.setenv("CODEX_CHRONICLE_DB_PATH", str(database))
+
+    resolved_paths: list[str | None] = []
+
+    def capturing_resolve(db: str | None = None) -> str:
+        resolved_paths.append(db)
+        return str(database)
+
+    monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
+
+    import unittest.mock as mock
+    fake_analytics = mock.MagicMock()
+    fake_analytics.generate_summary.return_value = "stub tips"
+    fake_db = mock.MagicMock()
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.session_database.SessionDatabase",
+        mock.MagicMock(return_value=fake_db),
+    )
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.chronicle_analytics.ChronicleAnalytics",
+        mock.MagicMock(return_value=fake_analytics),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(module.cli, ["chronicle", "tips"])
+
+    assert result.exit_code == 0, result.output
+    # Called with None (no explicit --database)
+    assert resolved_paths == [None]
+
+
+# ---------------------------------------------------------------------------
+# Gap D: chronicle analyze — --database CLI path
+# ---------------------------------------------------------------------------
+
+
+def test_analyze_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
+    """analyze with --database <path> uses the explicit path, not the default."""
+    database = tmp_path / "explicit_analyze.sqlite"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+
+    resolved_paths: list[str | None] = []
+
+    def capturing_resolve(db: str | None = None) -> str:
+        resolved_paths.append(db)
+        return str(database)
+
+    monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
+
+    import unittest.mock as mock
+    fake_analytics = mock.MagicMock()
+    fake_analytics.analyze_patterns.return_value = {"frequency": {}, "tools": {}}
+    fake_db = mock.MagicMock()
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.session_database.SessionDatabase",
+        mock.MagicMock(return_value=fake_db),
+    )
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.chronicle_analytics.ChronicleAnalytics",
+        mock.MagicMock(return_value=fake_analytics),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "analyze", "--database", str(database)],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert resolved_paths == [str(database)]
+
+
+def test_analyze_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
+    """analyze WITHOUT --database passes None to _resolve_chronicle_database."""
+    database = tmp_path / "chronicle.sqlite"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.setenv("CODEX_CHRONICLE_DB_PATH", str(database))
+
+    resolved_paths: list[str | None] = []
+
+    def capturing_resolve(db: str | None = None) -> str:
+        resolved_paths.append(db)
+        return str(database)
+
+    monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
+
+    import unittest.mock as mock
+    fake_analytics = mock.MagicMock()
+    fake_analytics.analyze_patterns.return_value = {"frequency": {}, "tools": {}}
+    fake_db = mock.MagicMock()
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.session_database.SessionDatabase",
+        mock.MagicMock(return_value=fake_db),
+    )
+    monkeypatch.setattr(
+        "aries_serpent_core.logging.chronicle_analytics.ChronicleAnalytics",
+        mock.MagicMock(return_value=fake_analytics),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(module.cli, ["chronicle", "analyze"])
+
+    assert result.exit_code == 0, result.output
+    assert resolved_paths == [None]
