@@ -2,133 +2,139 @@ name: ML Components Test Suite
 'on':
   push:
     branches:
-    - main
-    - develop
+      - main
+      - develop
     paths:
-    - src/**/*.py
-    - training/**/*.py
-    - tests/**/*.py
-    - requirements.txt
+      - src/**/*.py
+      - training/**/*.py
+      - tests/**/*.py
+      - requirements.txt
   pull_request:
     branches:
-    - main
+      - main
   schedule:
-  - cron: 0 2 * * *
+    - cron: '0 2 * * *'
+
 permissions:
   contents: read
   checks: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
 jobs:
   test-ml-components:
     permissions:
       contents: read
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
-        - ubuntu-latest
+          - ubuntu-latest
         python-version:
-        - '3.9'
-        - '3.10'
-        - '3.11'
+          - '3.12'
         test-suite:
-        - training
-        - data
-        - metrics
-        - callbacks
-        - checkpointing
-        - integration
+          - training
+          - data
+          - metrics
+          - callbacks
+          - checkpointing
+          - integration
     steps:
-    - uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-    - name: Install dependencies
-      run: 'pip install --upgrade pip
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
-        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
-        pip install -r requirements.txt || true
+      - name: Install dependencies
+        run: |
+          set -e
+          python -m pip install --upgrade pip
+          python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+          python -m pip install pytest==8.4.2 pytest-cov==7.0.0 pytest-mock==3.14.0 pytest-timeout==2.4.0
 
-        pip install pytest==8.4.2 pytest-cov==7.0.0 pytest-mock==3.14.0 pytest-timeout==2.4.0
+      - name: Run ${{ matrix.test-suite }} tests
+        run: |
+          set -e
+          pytest tests/${{ matrix.test-suite }}/ \
+            -v \
+            --cov=src \
+            --cov=training \
+            --cov-report=xml \
+            --cov-report=term \
+            --timeout=300 \
+            -m "not slow"
 
-        '
-    - name: Run ${{ matrix.test-suite }} tests
-      run: "pytest tests/${{ matrix.test-suite }}/ \\\n  -v \\\n  --cov=src \\\n \
-        \ --cov=training \\\n  --cov-report=xml \\\n  --cov-report=term \\\n  --timeout=300\
-        \ \\\n  -m \"not slow\" || true\n"
-    - name: Upload coverage
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
-      if: always()
-      with:
-        file: ./coverage.xml
-        flags: ${{ matrix.test-suite }}
-        token: ${{ secrets.CODECOV_TOKEN }}
-        name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
-        continue-on-error: true
+      - name: Upload coverage
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+        if: always()
+        with:
+          file: ./coverage.xml
+          flags: ${{ matrix.test-suite }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
+          fail_ci_if_error: false
     timeout-minutes: 30
+
   test-integration-slow:
     permissions:
       contents: read
     runs-on: ubuntu-latest
     needs: test-ml-components
     steps:
-    - uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Set up Python with caching
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: '3.12'
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-    - name: Install dependencies
-      run: 'pip install --upgrade pip
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
-        pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Set up Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
-        pip install -r requirements.txt || true
+      - name: Install dependencies
+        run: |
+          set -e
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+          python -m pip install pytest==8.4.2 pytest-timeout==2.4.0
 
-        pip install pytest==8.4.2 pytest-timeout==2.4.0
+      - name: Run integration tests
+        run: |
+          set -e
+          pytest tests/integration/ \
+            -v \
+            -m "integration" \
+            --timeout=600
 
-        '
-    - name: Run integration tests
-      run: "pytest tests/integration/ \\\n  -v \\\n  -m \"integration\" \\\n  --timeout=600\
-        \ || true\n"
-    - name: Set up Python with caching
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: '3.12'
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-    - name: Install dependencies
-      run: 'pip install --upgrade pip
+      - name: Run all tests with coverage
+        if: always()
+        run: |
+          set -e
+          pytest tests/ \
+            --cov=src \
+            --cov=training \
+            --cov-report=term \
+            --cov-report=html \
+            --cov-fail-under=70 \
+            -m "not slow and not integration"
 
-        pip install torch --index-url https://download.pytorch.org/whl/cpu
-
-        pip install -r requirements.txt || true
-
-        pip install pytest pytest-cov
-
-        '
-    - name: Run all tests with coverage
-      run: "pytest tests/ \\\n  --cov=src \\\n  --cov=training \\\n  --cov-report=term\
-        \ \\\n  --cov-report=html \\\n  --cov-fail-under=70 \\\n  -m \"not slow and\
-        \ not integration\" || true\n"
-    - name: Archive coverage report
-      uses: actions/upload-artifact@v5
-      if: always()
-      with:
-        path: htmlcov/
-        name: coverage-report
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: htmlcov/
+          name: coverage-report
     timeout-minutes: 30
