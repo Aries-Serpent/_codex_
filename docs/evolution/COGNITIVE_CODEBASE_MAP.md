@@ -48,7 +48,7 @@ graph TD
  subgraph L6["L6: Task Prosecution (Execution)"]
  T1["src/codex/ (core library)"]
  T2["cognitive_app/ (dashboard)"]
- T3["tests/ (40000+)"]
+ T3["tests/ (40500+)"]
  end
 
  L1 -->|"Ethics flow down"| L2

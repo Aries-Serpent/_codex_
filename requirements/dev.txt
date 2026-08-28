@@ -8,17 +8,17 @@ pytest-randomly>=4.0
 pytest-cov==7.1.0
 tensorboard>=2.14
 bandit==1.7.5  # Security scanning (pinned for consistency)
-defusedxml==0.0.1  # XML parsing hardening (pinned)
-semgrep==1.75.0  # SAST (pinned for rule consistency)
+defusedxml==0.7.1  # XML parsing hardening (pinned)
+semgrep==1.175.0  # SAST (pinned for rule consistency)
 detect-secrets==1.4.0  # Secrets detection (pinned)
 pre-commit==4.6.2
 nox==2026.7.11  # Pinned for reproducibility
 yamllint==1.26.3  # YAML validation (pinned)
-jsonschema>=4.26.0
+jsonschema>=4.25.1,<4.26.0
 shellcheck-py==0.11.0.1  # Shell script linting (pinned)
-pip-audit==2.6.1  # Dependency audit (pinned)
+pip-audit==2.10.1  # Dependency audit (pinned)
 cyclonedx-bom>=7.3.0
-pandas==3.0.5  # Pinned version
+pandas>=2.2.3,<3.0.0  # Pinned within MLflow-compatible range
 pyarrow==16.1.0  # Data science (pinned)
 zstandard==0.23.0  # Compression (pinned)
 mlflow>=3.15.2  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal) fixed in 3.11.0
