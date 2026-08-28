@@ -11,6 +11,7 @@ import { MockCodexAPIClient } from '@/lib/mock-api-client';
 import { SparkLLMClient } from '@/lib/spark-llm-client';
 import { CodeEditor } from './CodeEditor';
 import { MetricsBar } from './MetricsBar';
+import { InteractiveDemo } from './InteractiveDemo';
 
 const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
 
@@ -42,6 +43,7 @@ export function CodeGenerator() {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
   const [useAIMode, setUseAIMode] = useState(false);
+  const [showInteractiveDemo, setShowInteractiveDemo] = useState(false);
 
   // Lazy initialization: clients are created on first use and can be recreated if needed
   const clientRef = useRef<CodexAPIClient | null>(null);
@@ -71,6 +73,8 @@ export function CodeGenerator() {
   }, []);
 
   const checkApiStatus = useCallback(async () => {
+    setApiStatus('checking');
+
     // If AI mode is enabled, check Spark client
     if (useAIMode) {
       try {
@@ -136,10 +140,37 @@ export function CodeGenerator() {
 
     setLoading(true);
     setError(null);
+    setShowInteractiveDemo(false);
 
     const startTime = Date.now();
 
-    // Use Spark LLM client if AI mode is enabled
+    const finishWithResult = (response: CodexResponse, source: 'spark' | 'api' | 'mock') => {
+      const k1Factor = typeof response.metadata?.k1_factor === 'number'
+        ? response.metadata.k1_factor
+        : 0.32;
+      const coherence = typeof response.metadata?.coherence === 'number'
+        ? response.metadata.coherence
+        : 0.8;
+
+      const client = getClient();
+      setResult(response);
+      if (source === 'spark') {
+        setInfoMessage(`AI Mode: gpt-4o-mini (Spark Runtime)`);
+      } else if (source === 'mock') {
+        setInfoMessage(client ? 'API connection failed, using demo mode' : 'Using demo mode (API key not configured)');
+      } else {
+        setInfoMessage(null);
+      }
+
+      const sourceLabel = source === 'spark' ? 'Spark AI' : source === 'api' ? 'Codex API' : 'Demo Mode';
+      toast.success('Code generated successfully', {
+        description: source === 'spark'
+          ? `Generated with ${sourceLabel} • k₁ factor: ${k1Factor.toFixed(4)} • coherence: ${coherence.toFixed(4)}`
+          : `Generated with ${sourceLabel} • k₁ factor: ${k1Factor.toFixed(4)}`,
+      });
+      setLoading(false);
+    };
+
     if (useAIMode) {
       try {
         const sparkClient = getSparkClient();
@@ -153,26 +184,15 @@ export function CodeGenerator() {
           await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
         }
 
-        setResult(response);
-        toast.success('Code generated with AI', {
-          description: `k₁: ${response.metadata.k1_factor.toFixed(4)}, coherence: ${response.metadata.coherence.toFixed(4)}`,
-        });
-        setLoading(false);
+        finishWithResult(response, 'spark');
         return;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'AI generation failed';
-        setError(errorMessage);
-        toast.error('AI generation failed', {
-          description: errorMessage,
-        });
-        setLoading(false);
-        return;
+      } catch {
+        setInfoMessage(null);
+        // Fall through to API/mock generation when Spark is unavailable or fails.
       }
     }
 
     const client = getClient();
-
-    // Try API client first, fall back to mock if not available or fails
     if (client) {
       try {
         const response = await client.generateCode({
@@ -185,14 +205,9 @@ export function CodeGenerator() {
           await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
         }
 
-        setResult(response);
-        toast.success('Code generated successfully', {
-          description: `k₁ factor: ${response.metadata.k1_factor.toFixed(4)}`,
-        });
-        setLoading(false);
+        finishWithResult(response, 'api');
         return;
       } catch (err) {
-        // Fall through to mock client
         if (err instanceof CodexAPIError && err.statusCode === 429) {
           toast.error('Rate limit exceeded', {
             description: 'Please try again later or upgrade your plan',
@@ -202,7 +217,6 @@ export function CodeGenerator() {
       }
     }
 
-    // Use mock client as fallback
     try {
       const mockClient = getMockClient();
       const mockResponse = await mockClient.generateCode({
@@ -215,12 +229,8 @@ export function CodeGenerator() {
         await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
       }
 
-      setResult(mockResponse);
-      toast.success('Code generated successfully (Demo Mode)', {
-        description: `k₁ factor: ${mockResponse.metadata.k1_factor.toFixed(4)}`,
-      });
       setError(null);
-      setInfoMessage(null);
+      finishWithResult(mockResponse, 'mock');
     } catch (mockErr) {
       const errorMessage = mockErr instanceof Error
         ? mockErr.message
@@ -395,8 +405,22 @@ export function CodeGenerator() {
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
+                <Button
+                  onClick={() => setShowInteractiveDemo((prev) => !prev)}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Try It Live
+                </Button>
               </div>
             </div>
+
+            {showInteractiveDemo && (
+              <div className="mt-6 space-y-4">
+                <h3 className="text-lg font-semibold">Interactive Code Demo</h3>
+                <InteractiveDemo script={result.code} language="python" />
+              </div>
+            )}
 
             <CodeEditor code={result.code} language="python" />
           </Card>
