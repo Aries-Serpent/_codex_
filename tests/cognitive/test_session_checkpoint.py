@@ -180,7 +180,33 @@ class TestCheckpointCreation:
         
         assert meta.tags.get("milestone") == "phase1"
         assert meta.tags.get("priority") == "high"
-    
+
+    def test_checkpoint_keeps_lane_and_cost_metadata_fidelity(self, checkpoint_manager, sample_checkpoint_state):
+        """Lane/cost metadata must round-trip without losing valid zeroes."""
+        meta = checkpoint_manager.create_checkpoint(
+            session_id=sample_checkpoint_state["session_id"],
+            agent_state=sample_checkpoint_state["agent_state"],
+            memory_snapshot=sample_checkpoint_state["memory_snapshot"],
+            execution_progress=sample_checkpoint_state["execution_progress"],
+            lane_bucket="P2",
+            checkpoint_state="verified",
+            budget_remaining=0,
+            estimated_cost=0,
+            cost_score=0,
+            task_id="task-123",
+            last_successful_stage="audit",
+            resume_from_checkpoint_id="cp_prev",
+        )
+
+        assert meta.lane_bucket == "P2"
+        assert meta.checkpoint_state == "verified"
+        assert meta.budget_remaining == 0
+        assert meta.estimated_cost == 0
+        assert meta.cost_score == 0
+        assert meta.tags["budget_remaining"] == 0
+        assert meta.tags["estimated_cost"] == 0
+        assert meta.tags["cost_score"] == 0
+
     def test_checkpoint_with_full_state(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint with all optional fields."""
         meta = checkpoint_manager.create_checkpoint(
@@ -236,6 +262,27 @@ class TestCheckpointRestore:
         assert restored["session_id"] == "S001"
         assert restored["agent_state"]["status"] == "in_progress"
         assert len(restored["memory_snapshot"]["short_term_memory"]) == 1
+
+    def test_warm_start_preserves_zero_cost_metadata(self, resume_engine, checkpoint_manager, sample_checkpoint_state):
+        """Warm start must retain valid zero values for budget and cost fields."""
+        meta = checkpoint_manager.create_checkpoint(
+            session_id="S001",
+            agent_state=sample_checkpoint_state["agent_state"],
+            memory_snapshot=sample_checkpoint_state["memory_snapshot"],
+            execution_progress=sample_checkpoint_state["execution_progress"],
+            lane_bucket="S1",
+            checkpoint_state="verified",
+            budget_remaining=0,
+            estimated_cost=0,
+            cost_score=0,
+        )
+
+        context = resume_engine.warm_start(checkpoint_id=meta.checkpoint_id)
+        assert context.lane_bucket == "S1"
+        assert context.checkpoint_state == "verified"
+        assert context.budget_remaining == 0
+        assert context.estimated_cost == 0
+        assert context.cost_score == 0
     
     def test_restore_nonexistent_checkpoint(self, checkpoint_manager):
         """Test restoring nonexistent checkpoint raises error."""

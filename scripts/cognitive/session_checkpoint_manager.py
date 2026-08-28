@@ -275,7 +275,7 @@ class SessionCheckpointManager:
             "resume_from_checkpoint_id": resume_from_checkpoint_id,
         }.items():
             if value is not None:
-                metadata_dict[key] = str(value)
+                metadata_dict[key] = value
 
         checkpoint_doc = {
             "schema_version": "v1.0",
@@ -372,6 +372,14 @@ class SessionCheckpointManager:
             checksum_sha256=checksum,
             compressed=compress and self.compression_algorithm != "none",
             tags=metadata_dict,
+            lane_bucket=lane_bucket,
+            checkpoint_state=checkpoint_state,
+            budget_remaining=budget_remaining,
+            estimated_cost=estimated_cost,
+            cost_score=cost_score,
+            task_id=task_id,
+            last_successful_stage=last_successful_stage,
+            resume_from_checkpoint_id=resume_from_checkpoint_id,
         )
 
         # Update metrics

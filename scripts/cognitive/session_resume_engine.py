@@ -220,7 +220,27 @@ class SessionResumeEngine:
 
         metadata = checkpoint_doc.get("metadata", {}) or {}
 
-        # Build session context
+        def _metadata_value(primary: Any, fallback: Any) -> Any:
+            if primary is not None:
+                return primary
+            return fallback
+
+        def _coerce_numeric(value: Any) -> Any:
+            if value is None or value == "":
+                return None
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return value
+            if isinstance(value, str):
+                stripped = value.strip()
+                if not stripped or stripped.lower() in {"none", "null"}:
+                    return None
+                try:
+                    return float(stripped)
+                except ValueError:
+                    return value
+            return value
+
+        # Build session context preserving valid zero and empty values without lossy coercion.
         context = SessionContext(
             session_id=checkpoint_doc.get("session_id", "unknown"),
             agent_id=checkpoint_doc.get("agent_state", {}).get("agent_id", "unknown"),
@@ -230,14 +250,24 @@ class SessionResumeEngine:
             memory_snapshot=checkpoint_doc.get("memory_snapshot", {}),
             execution_progress=checkpoint_doc.get("execution_progress", {}),
             decision_history=checkpoint_doc.get("decision_history", []),
-            lane_bucket=checkpoint_doc.get("lane_bucket") or metadata.get("lane_bucket"),
-            checkpoint_state=checkpoint_doc.get("checkpoint_state") or metadata.get("checkpoint_state"),
-            budget_remaining=checkpoint_doc.get("budget_remaining") or metadata.get("budget_remaining"),
-            estimated_cost=checkpoint_doc.get("estimated_cost") or metadata.get("estimated_cost"),
-            cost_score=checkpoint_doc.get("cost_score") or metadata.get("cost_score"),
-            task_id=checkpoint_doc.get("task_id") or metadata.get("task_id"),
-            last_successful_stage=checkpoint_doc.get("last_successful_stage") or metadata.get("last_successful_stage"),
-            resume_from_checkpoint_id=checkpoint_doc.get("resume_from_checkpoint_id") or metadata.get("resume_from_checkpoint_id"),
+            lane_bucket=_metadata_value(checkpoint_doc.get("lane_bucket"), metadata.get("lane_bucket")),
+            checkpoint_state=_metadata_value(checkpoint_doc.get("checkpoint_state"), metadata.get("checkpoint_state")),
+            budget_remaining=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("budget_remaining"), metadata.get("budget_remaining"))
+            ),
+            estimated_cost=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("estimated_cost"), metadata.get("estimated_cost"))
+            ),
+            cost_score=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("cost_score"), metadata.get("cost_score"))
+            ),
+            task_id=_metadata_value(checkpoint_doc.get("task_id"), metadata.get("task_id")),
+            last_successful_stage=_metadata_value(
+                checkpoint_doc.get("last_successful_stage"), metadata.get("last_successful_stage")
+            ),
+            resume_from_checkpoint_id=_metadata_value(
+                checkpoint_doc.get("resume_from_checkpoint_id"), metadata.get("resume_from_checkpoint_id")
+            ),
         )
 
         # Apply environment overrides

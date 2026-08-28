@@ -898,6 +898,12 @@ def chronicle_analyze(pattern: str | None, database: str | None, output: str | N
 @click.option("--task", "task_name", default="unspecified", help="Current task summary")
 @click.option("--task-id", default=None, help="Optional task UUID for checkpoint continuity")
 @click.option("--lane", default=None, help="Optional lane bucket: P1, P2, S1, or Seq")
+@click.option("--checkpoint-state", default="pending", help="Checkpoint state for the resume boundary")
+@click.option("--budget-remaining", type=float, default=None, help="Remaining per-session budget at this checkpoint")
+@click.option("--estimated-cost", type=float, default=None, help="Estimated cost for the active task")
+@click.option("--cost-score", type=float, default=None, help="Cost score for the active task")
+@click.option("--last-successful-stage", default=None, help="Last completed stage before checkpoint")
+@click.option("--resume-from-checkpoint", "resume_from_checkpoint_id", default=None, help="Checkpoint ID this work resumes from")
 @click.option(
     "--tag",
     "tags",
@@ -918,6 +924,12 @@ def chronicle_checkpoint(
     task_name: str,
     task_id: str | None,
     lane: str | None,
+    checkpoint_state: str,
+    budget_remaining: float | None,
+    estimated_cost: float | None,
+    cost_score: float | None,
+    last_successful_stage: str | None,
+    resume_from_checkpoint_id: str | None,
     tags: tuple[str, ...],
     output_format: str,
 ) -> None:
@@ -958,14 +970,26 @@ def chronicle_checkpoint(
             "task_completion_percent": 0.0,
         },
         repository_state=repo_state,
-        metadata={**metadata_tags, **({"lane_bucket": lane} if lane else {}), **({"task_id": task_id} if task_id else {})},
+        metadata={
+            **metadata_tags,
+            **({"lane_bucket": lane} if lane else {}),
+            **({"task_id": task_id} if task_id else {}),
+            **({"checkpoint_state": checkpoint_state} if checkpoint_state else {}),
+            **({"budget_remaining": budget_remaining} if budget_remaining is not None else {}),
+            **({"estimated_cost": estimated_cost} if estimated_cost is not None else {}),
+            **({"cost_score": cost_score} if cost_score is not None else {}),
+            **({"last_successful_stage": last_successful_stage} if last_successful_stage else {}),
+            **({"resume_from_checkpoint_id": resume_from_checkpoint_id} if resume_from_checkpoint_id else {}),
+        },
         compress=True,
         lane_bucket=lane,
         task_id=task_id,
-        checkpoint_state="pending",
-        budget_remaining=None,
-        estimated_cost=None,
-        cost_score=None,
+        checkpoint_state=checkpoint_state,
+        budget_remaining=budget_remaining,
+        estimated_cost=estimated_cost,
+        cost_score=cost_score,
+        last_successful_stage=last_successful_stage,
+        resume_from_checkpoint_id=resume_from_checkpoint_id,
     )
     _append_campaign_metric(
         "checkpoint_created",
@@ -973,17 +997,41 @@ def chronicle_checkpoint(
             "checkpoint_id": checkpoint_meta.checkpoint_id,
             "session_id": resolved_session_id,
             "task": task_name,
+            "lane_bucket": lane,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
+            "task_id": task_id,
+            "last_successful_stage": last_successful_stage,
+            "resume_from_checkpoint_id": resume_from_checkpoint_id,
         },
     )
 
     if output_format == "json":
-        click.echo(json.dumps(checkpoint_meta.to_dict(), indent=2, sort_keys=True))
+        payload = checkpoint_meta.to_dict()
+        payload.update(
+            {
+                "lane_bucket": lane,
+                "checkpoint_state": checkpoint_state,
+                "budget_remaining": budget_remaining,
+                "estimated_cost": estimated_cost,
+                "cost_score": cost_score,
+                "task_id": task_id,
+                "last_successful_stage": last_successful_stage,
+                "resume_from_checkpoint_id": resume_from_checkpoint_id,
+            }
+        )
+        click.echo(json.dumps(payload, indent=2, sort_keys=True))
         return
 
     click.echo(f"✅ Checkpoint created: {checkpoint_meta.checkpoint_id}")
     click.echo(f"   Session: {resolved_session_id}")
     click.echo(f"   Task: {task_name}")
     click.echo(f"   Lane: {lane or 'unknown'}")
+    click.echo(f"   Checkpoint state: {checkpoint_state}")
+    click.echo(f"   Budget remaining: {budget_remaining if budget_remaining is not None else 'unknown'}")
+    click.echo(f"   Estimated cost: {estimated_cost if estimated_cost is not None else 'unknown'}")
     click.echo(f"   Branch: {repo_state['branch']}")
     click.echo(f"   Compression ratio: {checkpoint_meta.compression_ratio:.2f}:1")
 
@@ -1023,6 +1071,12 @@ def chronicle_resume_session(checkpoint_id: str, lane: str | None, output_format
             "session_id": context.session_id,
             "task": context.execution_progress.get("current_task", "unknown"),
             "lane": context.lane_bucket or lane,
+            "checkpoint_state": context.checkpoint_state,
+            "budget_remaining": context.budget_remaining,
+            "estimated_cost": context.estimated_cost,
+            "cost_score": context.cost_score,
+            "last_successful_stage": context.last_successful_stage,
+            "resume_from_checkpoint_id": context.resume_from_checkpoint_id,
         },
     )
 
@@ -1033,6 +1087,13 @@ def chronicle_resume_session(checkpoint_id: str, lane: str | None, output_format
         "agent_status": context.agent_status,
         "task": context.execution_progress.get("current_task"),
         "lane": context.lane_bucket or lane,
+        "checkpoint_state": context.checkpoint_state,
+        "budget_remaining": context.budget_remaining,
+        "estimated_cost": context.estimated_cost,
+        "cost_score": context.cost_score,
+        "task_id": context.task_id,
+        "last_successful_stage": context.last_successful_stage,
+        "resume_from_checkpoint_id": context.resume_from_checkpoint_id,
         "completed_tasks": context.execution_progress.get("completed_tasks", []),
         "warmup_complete": context.warmup_complete,
         "patterns": context.memory_snapshot.get("total_patterns", 0),

@@ -111,13 +111,34 @@ class AgentOrchestrator:
             1 for task in self.tasks.values() if task.status == TaskStatus.RUNNING and _normalize_lane(task.lane) == lane
         )
 
+    def _checkpoint_backed_continuation(self, task: AgentTask) -> bool:
+        """Return True when the task is explicitly tied to a checkpoint or resume boundary."""
+        if task.checkpoint_after:
+            return True
+        if task.resume_hint:
+            return True
+        resume_from_checkpoint_id = task.parameters.get("resume_from_checkpoint_id")
+        if resume_from_checkpoint_id:
+            return True
+        return False
+
     def _lane_is_allowed(self, task: AgentTask) -> bool:
         lane = _normalize_lane(task.lane)
-        if self._hard_budget_active() and lane != "P1":
-            return False
-        if self._budget_warning_active() and lane != "P1":
-            return False
         lane_limit = self.lane_budgets.get(lane, self.lane_budgets.get("P1", 1))
+
+        if self._hard_budget_active():
+            if lane == "P1":
+                return self._lane_running_count(lane) < lane_limit
+            return self._checkpoint_backed_continuation(task) and self._lane_running_count(lane) < lane_limit
+
+        if self._budget_warning_active():
+            if lane == "P1":
+                return self._lane_running_count(lane) < lane_limit
+            return (
+                self._checkpoint_backed_continuation(task)
+                and self._lane_running_count(lane) < lane_limit
+            )
+
         return self._lane_running_count(lane) < lane_limit
 
     def add_task(
@@ -249,7 +270,13 @@ class AgentOrchestrator:
                     task.result = {
                         "status": "deferred",
                         "lane": task.lane,
-                        "reason": "hard-budget lane gate" if self._hard_budget_active() else "warning-budget lane gate",
+                        "reason": (
+                            "checkpoint-backed continuation required before resuming non-P1 work"
+                            if not self._checkpoint_backed_continuation(task)
+                            else "hard-budget lane gate"
+                            if self._hard_budget_active()
+                            else "warning-budget lane gate"
+                        ),
                     }
                     results[task.task_id] = task.result
                     continue
