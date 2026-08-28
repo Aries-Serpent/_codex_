@@ -208,7 +208,6 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
 
   const charCount = prompt.length;
   const isValidPrompt = charCount >= 10 && charCount <= 5000;
-  const isPromptInvalid = !isValidPrompt && charCount > 0;
 
   return (
     <div className="space-y-6">
