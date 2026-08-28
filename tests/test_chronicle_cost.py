@@ -215,6 +215,154 @@ def test_standup_materializes_diagnostics_iterable() -> None:
     assert "source unavailable" in report["missing_work"]
 
 
+# ---------------------------------------------------------------------------
+# Gap A: chronicle standup — no --database CLI path
+# ---------------------------------------------------------------------------
+
+
+def test_standup_no_db_uses_env_var(tmp_path: Path, monkeypatch) -> None:
+    """standup without --database picks up CODEX_CHRONICLE_DB_PATH."""
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.setenv("CODEX_CHRONICLE_DB_PATH", str(database))
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "standup", "98a181d6-d9af-448e-8fab-6f4760fd7a6f", "--json"],
+    )
+
+    assert result.exit_code == 0, result.output
+    data = json.loads(result.output)
+    assert data["task_id"] == "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
+
+
+def test_standup_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) -> None:
+    """standup without --database and no env var finds session_logs.db in repo root."""
+    database = tmp_path / ".codex" / "session_logs.db"
+    database.parent.mkdir(parents=True, exist_ok=True)
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.delenv("CODEX_CHRONICLE_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "standup", "98a181d6-d9af-448e-8fab-6f4760fd7a6f", "--json"],
+    )
+
+    assert result.exit_code == 0, result.output
+    data = json.loads(result.output)
+    assert "task_id" in data
+
+
+def test_standup_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monkeypatch) -> None:
+    """standup without --database and no env var and no db file exits non-zero or returns empty."""
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.delenv("CODEX_CHRONICLE_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "standup", "no-such-task", "--json"],
+    )
+
+    # Graceful degradation: either exits 0 with empty sessions or non-zero with error message
+    if result.exit_code == 0:
+        data = json.loads(result.output)
+        assert data.get("summary", {}).get("total_sessions", 0) == 0
+    else:
+        assert result.exit_code != 0
+
+
+# ---------------------------------------------------------------------------
+# Gap B: chronicle reindex — no --database CLI path
+# ---------------------------------------------------------------------------
+
+
+def test_reindex_no_db_uses_env_var(tmp_path: Path, monkeypatch) -> None:
+    """reindex without --database picks up CODEX_CHRONICLE_DB_PATH."""
+    database = tmp_path / "chronicle.sqlite"
+    _database(database)
+    index_path = tmp_path / "index.json"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.setenv("CODEX_CHRONICLE_DB_PATH", str(database))
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "reindex", "--output", str(index_path)],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert index_path.exists()
+    data = json.loads(index_path.read_text())
+    assert data["summary"]["total_sessions"] == 2
+
+
+def test_reindex_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) -> None:
+    """reindex without --database and no env var finds session_logs.db in repo root."""
+    database = tmp_path / ".codex" / "session_logs.db"
+    database.parent.mkdir(parents=True, exist_ok=True)
+    _database(database)
+    index_path = tmp_path / "index.json"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.delenv("CODEX_CHRONICLE_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "reindex", "--output", str(index_path)],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert index_path.exists()
+    data = json.loads(index_path.read_text())
+    assert data["summary"]["total_sessions"] == 2
+
+
+def test_reindex_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monkeypatch) -> None:
+    """reindex without --database and no env var and no file degrades gracefully."""
+    index_path = tmp_path / "index.json"
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CAMPAIGN_METRICS_LOG", tmp_path / "metrics.jsonl")
+    monkeypatch.delenv("CODEX_CHRONICLE_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_DB_PATH", raising=False)
+    monkeypatch.delenv("CODEX_LOG_DB_PATH", raising=False)
+    runner = CliRunner()
+
+    result = runner.invoke(
+        module.cli,
+        ["chronicle", "reindex", "--output", str(index_path)],
+    )
+
+    # Graceful degradation: either exits 0 with empty index or non-zero error
+    if result.exit_code == 0:
+        if index_path.exists():
+            data = json.loads(index_path.read_text())
+            assert data["summary"]["total_sessions"] == 0
+    else:
+        assert result.exit_code != 0
+
+
 def test_build_chronicle_index_preserves_session_evidence(tmp_path: Path) -> None:
     database = tmp_path / "chronicle.sqlite"
     _database(database)

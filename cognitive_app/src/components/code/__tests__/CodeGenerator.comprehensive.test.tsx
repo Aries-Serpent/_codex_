@@ -218,6 +218,129 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     });
   });
 
+  // Gap 2.1 — Spark fallback: assert toast.success fires after successful Spark generation
+  it('fires toast.success after Spark generation succeeds', async () => {
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByRole('switch', { name: /toggle ai mode/i }));
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a function to multiply numbers' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    expect(toast.success).toHaveBeenCalledWith(
+      'Code generated successfully',
+      expect.objectContaining({
+        description: expect.stringContaining('Generated with Spark AI'),
+      })
+    );
+  });
+
+  // Gap 2.5 — Non-429 API error: info message + toast.error + mock fallback succeeds
+  it('shows info message and toast.error on non-429 API error, then falls back to mock', async () => {
+    const apiError = new Error('Internal Server Error');
+    // Use a regular function (not arrow) so vitest spy can call it with `new`.
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return {
+        getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+        generateCode: async () => { throw apiError; },
+      };
+    } as any);
+
+    (import.meta.env as any).VITE_CODEX_KEY = 'test-key';
+
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument(), { timeout: 3000 });
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a function that does something useful' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Primary API unavailable',
+        expect.objectContaining({ description: 'Using mock generation as a fallback.' })
+      );
+    }, { timeout: 3000 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Primary API failed/)).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    delete (import.meta.env as any).VITE_CODEX_KEY;
+  });
+
+  // Gap 2.8 — Prompt too short: the button stays disabled and the char-count hint
+  // "(min: 10)" is visible — this is the UI guard that prevents the toast path from
+  // ever being reached via normal interaction.
+  it('keeps the generate button disabled and shows min-length hint when prompt < 10 chars', async () => {
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+
+    // 5-char prompt
+    fireEvent.change(textarea, { target: { value: 'Short' } });
+    expect(screen.getByText('5 / 5000 (min: 10)')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /generate code/i })).toBeDisabled();
+
+    // 9-char prompt (still one below the threshold)
+    fireEvent.change(textarea, { target: { value: '123456789' } });
+    expect(screen.getByText('9 / 5000 (min: 10)')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /generate code/i })).toBeDisabled();
+
+    // Exactly 10 chars → button becomes enabled and hint disappears
+    fireEvent.change(textarea, { target: { value: '1234567890' } });
+    await waitFor(() => expect(screen.getByRole('button', { name: /generate code/i })).not.toBeDisabled());
+    expect(screen.queryByText(/min: 10/)).not.toBeInTheDocument();
+  });
+
+  // Gap 2.7 — Mock generateCode failure path: toast.error('Generation failed') fires.
+  // The mock-api-client vi.mock factory is module-scoped, so we use prototype spying to
+  // make the already-instantiated mock client's generateCode throw for this one test.
+  it('fires toast.error when mock client generateCode throws', async () => {
+    delete (import.meta.env as any).VITE_CODEX_KEY;
+
+    // Spy on MockCodexAPIClient prototype so ANY instance created by the component throws.
+    const { MockCodexAPIClient } = await import('@/lib/mock-api-client');
+    const generateSpy = vi
+      .spyOn(MockCodexAPIClient.prototype, 'generateCode')
+      .mockRejectedValueOnce(new Error('Mock generation failed'));
+
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a function to divide numbers safely' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Generation failed',
+        expect.objectContaining({ description: 'Mock generation failed' })
+      );
+    }, { timeout: 3000 });
+
+    generateSpy.mockRestore();
+  });
+
   it('renders metrics output once generation succeeds', async () => {
     render(<CodeGenerator />);
 

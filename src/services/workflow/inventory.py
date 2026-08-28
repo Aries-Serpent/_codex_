@@ -69,7 +69,7 @@ class WorkflowInventory:
         """Scan workflows directory and parse all workflow files.
 
         Args:
-            force_refresh:  If True, clear cache and reparse everything.
+            force_refresh: If True, clear cache and reparse everything.
 
         Returns:
             Number of workflows successfully parsed.
@@ -95,7 +95,7 @@ class WorkflowInventory:
             if workflow_file.name.endswith(".disabled") or any(
                 suffix == ".disabled" for suffix in workflow_file.suffixes
             ):
-                logger.debug(f"Skipping disabled workflow:  {workflow_file.name}")
+                logger.debug(f"Skipping disabled workflow: {workflow_file.name}")
                 continue
 
             try:
@@ -103,7 +103,7 @@ class WorkflowInventory:
                 if metadata:
                     self._workflows[workflow_file.name] = metadata
                     parsed_count += 1
-                    logger.debug(f"Parsed workflow:  {workflow_file.name}")
+                    logger.debug(f"Parsed workflow: {workflow_file.name}")
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
             except Exception:
@@ -148,7 +148,7 @@ class WorkflowInventory:
         """Get workflows by trigger type.
 
         Args:
-            trigger_type:  Trigger type to filter by.
+            trigger_type: Trigger type to filter by.
 
         Returns:
             list of workflows with the specified trigger.
@@ -159,7 +159,7 @@ class WorkflowInventory:
         """Get workflows that this workflow depends on.
 
         Args:
-            filename:  Workflow filename.
+            filename: Workflow filename.
 
         Returns:
             list of dependency workflow filenames.
@@ -170,7 +170,7 @@ class WorkflowInventory:
         """Get workflows that depend on this workflow.
 
         Args:
-            filename:  Workflow filename.
+            filename: Workflow filename.
 
         Returns:
             list of dependent workflow filenames.

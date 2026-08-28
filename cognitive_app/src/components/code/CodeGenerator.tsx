@@ -90,7 +90,8 @@ export function CodeGenerator() {
         setError(null);
         setInfoMessage(`AI Mode: ${status.model}`);
         return;
-      } catch {
+      } catch (err) {
+        console.error('Spark status check failed:', err);
         setApiStatus('error');
         setError('Spark LLM client unavailable');
         setInfoMessage(null);
@@ -102,11 +103,18 @@ export function CodeGenerator() {
     if (!client) {
       // No API key - use mock client in demo mode
       const mockClient = getMockClient();
-      // Check mock status to maintain consistent async behavior
-      await mockClient.getStatus();
-      setApiStatus('connected'); // Mock available
-      setInfoMessage('Using demo mode (API key not configured)');
-      setError(null);
+      try {
+        // Check mock status to maintain consistent async behavior
+        await mockClient.getStatus();
+        setApiStatus('connected'); // Mock available
+        setInfoMessage('Using demo mode (API key not configured)');
+        setError(null);
+      } catch (err) {
+        console.error('Mock client status check failed:', err);
+        setApiStatus('error');
+        setError('Demo mode unavailable');
+        setInfoMessage(null);
+      }
       return;
     }
     try {
@@ -114,14 +122,16 @@ export function CodeGenerator() {
       setApiStatus('connected');
       setError(null);
       setInfoMessage(null);
-    } catch {
+    } catch (err) {
+      console.error('Primary API status check failed:', err);
       try {
         const mockClient = getMockClient();
         await mockClient.getStatus();
         setApiStatus('connected'); // Mock available as fallback
         setInfoMessage('API connection failed, using demo mode');
         setError(null);
-      } catch {
+      } catch (err) {
+        console.error('Mock client status check failed:', err);
         setApiStatus('error');
         setError('Unable to connect to API or demo mode');
         setInfoMessage(null);
@@ -220,6 +230,7 @@ export function CodeGenerator() {
             description: 'Please try again later or upgrade your plan',
             duration: 5000,
           });
+          return;
         } else {
           const errorMessage = err instanceof Error
             ? err.message

@@ -262,8 +262,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
         try:  # pragma: no cover - best effort
             sqlite3.connect(str(db))
         except (sqlite3.Error, OSError) as exc:
-            type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
@@ -614,7 +613,7 @@ def chronicle_tips(format: str, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to generate tips: {exc}", err=True)
@@ -865,7 +864,7 @@ def chronicle_analyze(pattern: str | None, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to analyze patterns: {exc}", err=True)

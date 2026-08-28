@@ -28,7 +28,6 @@ def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
             try:
                 mlflow.set_tracking_uri(uri)
             except (ValueError, TypeError, RuntimeError) as e:
-                get_default_logger().debug(f"Exception: {type(e).__name__}: {e}")
                 get_default_logger().warning(
                     f"Exception: {type(e).__name__}: {e}",
                     exc_info=True,
