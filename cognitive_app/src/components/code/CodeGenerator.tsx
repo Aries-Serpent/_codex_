@@ -77,9 +77,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
         onCodeGenerated(response.code);
       }
 
-      if (source === 'spark') {
-        setInfoMessage(`AI Mode: ${selectedModel} (Spark Runtime)`);
-      } else if (source === 'mock') {
+      if (source === 'mock') {
         const fallbackMessage =
           fallbackError instanceof Error
             ? fallbackError.message

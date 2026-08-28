@@ -82,8 +82,10 @@ class BaseGenerationProvider(BaseAdapter):
     def provider_name(self) -> str:
         """Return the provider name."""
 
+    @abstractmethod
     async def complete(self, request: GenerationRequest) -> GenerationResponse:
-        raise NotImplementedError
+        """Generate content for the normalized request."""
 
+    @abstractmethod
     async def health_check(self) -> bool:
-        raise NotImplementedError
+        """Check whether the provider is available."""

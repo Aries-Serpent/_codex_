@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import time
+import asyncio
 
 from .base_adapter import (
     BaseGenerationProvider,
@@ -27,7 +27,7 @@ class MockGenerationProvider(BaseGenerationProvider):
 
     async def complete(self, request: GenerationRequest) -> GenerationResponse:
         self._call_count += 1
-        time.sleep(self._latency_ms / 1000)
+        await asyncio.sleep(self._latency_ms / 1000)
 
         content = self._response_template.format(
             prompt=request.prompt[:100],

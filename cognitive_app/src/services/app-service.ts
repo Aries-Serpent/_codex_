@@ -16,7 +16,6 @@ export const SUPPORTED_LANGUAGES = [
   'typescript',
   'rust',
   'go',
-  'bash',
 ] as const;
 
 export const SUPPORTED_MODELS = [
