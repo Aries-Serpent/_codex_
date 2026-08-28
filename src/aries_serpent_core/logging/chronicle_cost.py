@@ -99,6 +99,11 @@ class SessionRecord:
     repository: str | None = None
     branch: str | None = None
     summary: str | None = None
+    lane_bucket: str | None = None
+    checkpoint_state: str | None = None
+    budget_remaining: int | float | None = None
+    estimated_cost: int | float | None = None
+    cost_score: int | float | None = None
     tool_calls: int = 0
     input_tokens: int | float | None = None
     output_tokens: int | float | None = None
@@ -268,6 +273,21 @@ class ChronicleStore:
         text = self._extract_event_text(session_rows, columns)
         input_tokens = self._sum_token_metric(session_rows, columns, "input_tokens", "usage_input_tokens")
         output_tokens = self._sum_token_metric(session_rows, columns, "output_tokens", "usage_output_tokens")
+        lane_bucket = _first(
+            session_rows[0] if session_rows else sqlite3.Row, columns, "lane_bucket", "lane", "lane_name", "lane_id"
+        ) if session_rows else None
+        checkpoint_state = _first(
+            session_rows[0] if session_rows else sqlite3.Row, columns, "checkpoint_state", "checkpoint_status", "checkpoint"
+        ) if session_rows else None
+        budget_remaining = _first(
+            session_rows[0] if session_rows else sqlite3.Row, columns, "budget_remaining", "remaining_budget", "remaining_credits"
+        ) if session_rows else None
+        estimated_cost = _first(
+            session_rows[0] if session_rows else sqlite3.Row, columns, "estimated_cost", "cost_estimate", "session_cost"
+        ) if session_rows else None
+        cost_score = _first(
+            session_rows[0] if session_rows else sqlite3.Row, columns, "cost_score", "budget_score", "cost"
+        ) if session_rows else None
         return {
             "tool_calls": len(tool_rows),
             "repeated_tool_calls": len(tool_names) - len(set(tool_names)),
@@ -284,6 +304,11 @@ class ChronicleStore:
                 }
             )[:10],
             "checkpoints": sum("checkpoint" in name.lower() for name in tool_names),
+            "lane_bucket": lane_bucket,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
         }
 
     @staticmethod
@@ -459,6 +484,47 @@ class ChronicleStore:
         direct_task = _first(row, columns, "task_id", "task")
         record_task = _normalise_task_id(direct_task) or next(iter(ref_tasks), None)
         data = event_data.get(current_id, {})
+        lane_bucket = _first(
+            row,
+            columns,
+            "lane_bucket",
+            "lane",
+            "lane_name",
+            "lane_id",
+        ) or data.get("lane_bucket")
+        checkpoint_state = _first(
+            row,
+            columns,
+            "checkpoint_state",
+            "checkpoint_status",
+        ) or data.get("checkpoint_state")
+        budget_remaining = _first(
+            row,
+            columns,
+            "budget_remaining",
+            "remaining_budget",
+            "remaining_credits",
+        )
+        if budget_remaining is None:
+            budget_remaining = data.get("budget_remaining")
+        estimated_cost = _first(
+            row,
+            columns,
+            "estimated_cost",
+            "cost_estimate",
+            "session_cost",
+        )
+        if estimated_cost is None:
+            estimated_cost = data.get("estimated_cost")
+        cost_score = _first(
+            row,
+            columns,
+            "cost_score",
+            "budget_score",
+            "cost",
+        )
+        if cost_score is None:
+            cost_score = data.get("cost_score")
         return SessionRecord(
             session_id=current_id,
             task_id=record_task,
@@ -469,6 +535,11 @@ class ChronicleStore:
             repository=_first(row, columns, "repository", "repo"),
             branch=_first(row, columns, "branch"),
             summary=_first(row, columns, "summary", "task", "description"),
+            lane_bucket=str(lane_bucket) if lane_bucket else None,
+            checkpoint_state=str(checkpoint_state) if checkpoint_state else None,
+            budget_remaining=_prefer_number(budget_remaining),
+            estimated_cost=_prefer_number(estimated_cost),
+            cost_score=_prefer_number(cost_score),
             tool_calls=_as_int(
                 _first(row, columns, "tool_calls", "tool_call_count"),
                 _as_int(data.get("tool_calls")),
@@ -700,17 +771,45 @@ class _CostContext:
         ]
 
 
+def _normalize_lane(value: str | None) -> str:
+    """Coerce lane values to the repo's canonical buckets."""
+
+    if value is None:
+        return "unknown"
+    normalised = str(value).strip()
+    if not normalised:
+        return "unknown"
+    upper = normalised.upper().replace(" ", "_")
+    aliases = {
+        "P1": "P1",
+        "PRIMARY": "P1",
+        "P2": "P2",
+        "SECONDARY": "P2",
+        "S1": "S1",
+        "SUPPORT": "S1",
+        "SEQ": "Seq",
+        "SEQUENTIAL": "Seq",
+        "VALIDATION": "Seq",
+        "REVIEW": "Seq",
+    }
+    return aliases.get(upper, upper if upper else "unknown")
+
+
 def analyze_costs(
     records: Iterable[SessionRecord],
     diagnostics: Iterable[str],
     *,
     warning_budget: int = 16_000,
     hard_budget: int = 20_000,
+    lane: str | None = None,
 ) -> dict[str, Any]:
     """Return evidence-backed cost tips without inventing unavailable credits."""
 
     diagnostics = list(diagnostics)
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
+    lane_filter = _normalize_lane(lane)
+    if lane is not None:
+        sessions = [record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter]
     ctx = _CostContext(sessions, diagnostics, warning_budget, hard_budget)
 
     strategies: list[_TipStrategy] = [
@@ -724,10 +823,56 @@ def analyze_costs(
     ]
     tips = [strategy.build(ctx) for strategy in strategies if strategy.applies(ctx)]
 
-    return {
+    lane_summary: dict[str, dict[str, Any]] = {}
+    for record in sessions:
+        bucket = _normalize_lane(record.lane_bucket)
+        entry = lane_summary.setdefault(
+            bucket,
+            {
+                "sessions": 0,
+                "tool_calls": 0,
+                "repeated_tool_calls": 0,
+                "estimated_cost": 0.0,
+                "budget_remaining": None,
+                "warning_budget": warning_budget,
+                "hard_budget": hard_budget,
+                "heavy_sessions": [],
+                "checkpoint_gap": 0,
+            },
+        )
+        entry["sessions"] += 1
+        entry["tool_calls"] += record.tool_calls
+        entry["repeated_tool_calls"] += record.repeated_tool_calls
+        entry["estimated_cost"] += float(record.estimated_cost or 0)
+        if record.budget_remaining is not None:
+            if entry["budget_remaining"] is None:
+                entry["budget_remaining"] = float(record.budget_remaining)
+            else:
+                entry["budget_remaining"] += float(record.budget_remaining)
+        if record.tool_calls >= max(500, int(ctx.median_calls * 3 if ctx.median_calls else 500)):
+            entry["heavy_sessions"].append(record.session_id)
+        if record.checkpoints == 0 and record.tool_calls >= max(500, int(ctx.median_calls * 3 if ctx.median_calls else 500)):
+            entry["checkpoint_gap"] += 1
+
+    heavy_by_lane = {
+        bucket: details["heavy_sessions"]
+        for bucket, details in lane_summary.items()
+        if details["heavy_sessions"]
+    }
+    warning_budget_by_lane = {
+        bucket: {
+            "warning_budget": details["warning_budget"],
+            "hard_budget": details["hard_budget"],
+            "budget_remaining": details["budget_remaining"],
+            "status": "warning" if details["budget_remaining"] is not None and details["budget_remaining"] <= details["warning_budget"] else "healthy",
+        }
+        for bucket, details in lane_summary.items()
+    }
+
+    report = {
         "schema_version": "1.0",
         "generated_at": _now(),
-        "scope": {"sessions": len(sessions)},
+        "scope": {"sessions": len(sessions), "lane": lane_filter if lane else None},
         "metrics": {
             "sessions": len(sessions),
             "tool_calls": sum(record.tool_calls for record in sessions),
@@ -739,9 +884,24 @@ def analyze_costs(
             "warning_budget": warning_budget,
             "hard_budget": hard_budget,
         },
+        "global_summary": {
+            "sessions": len(sessions),
+            "tool_calls": sum(record.tool_calls for record in sessions),
+            "repeated_tool_calls": sum(record.repeated_tool_calls for record in sessions),
+            "heavy_session_count": len(ctx.heavy),
+            "checkpoint_gap_count": len(ctx.without_checkpoints),
+            "estimated_cost": sum(float(record.estimated_cost or 0.0) for record in sessions),
+        },
+        "per_lane": lane_summary,
+        "heavy_sessions_by_lane": heavy_by_lane,
+        "warning_budget_by_lane": warning_budget_by_lane,
         "diagnostics": sorted(set(diagnostics)),
         "tips": tips,
     }
+    if lane is not None:
+        report["lane_focus"] = lane_filter
+        report["lane_pattern"] = "fragmented" if len(sessions) > 1 and sum(r.tool_calls for r in sessions) >= warning_budget / 2 else "batchable"
+    return report
 
 
 def format_cost_tips(report: dict[str, Any]) -> str:
@@ -754,10 +914,20 @@ def format_cost_tips(report: dict[str, Any]) -> str:
         f"Tool calls: {metrics['tool_calls']}",
         f"Median tool calls/session: {metrics['median_tool_calls']}",
     ]
+    if report.get("lane_focus"):
+        lines.append(f"Lane focus: {report['lane_focus']}")
+        lines.append(f"Lane pattern: {report.get('lane_pattern', 'batchable')}")
     if metrics["credits_available"]:
         lines.append(f"Credits: {metrics['credits']}")
     else:
         lines.append("Credits: unavailable (tool-call proxies only)")
+    if report.get("per_lane"):
+        lines.append("Per-lane summary:")
+        for lane, summary in sorted(report["per_lane"].items()):
+            lines.append(
+                f"  - {lane}: {summary['sessions']} sessions, {summary['tool_calls']} tool calls, "
+                f"checkpoint gap {summary['checkpoint_gap']}"
+            )
     if report["diagnostics"]:
         lines.append("Diagnostics: " + "; ".join(report["diagnostics"]))
     for index, tip in enumerate(report["tips"], 1):
@@ -777,11 +947,15 @@ def build_standup_report(
     diagnostics: Iterable[str],
     *,
     task_id: str | None = None,
+    lane: str | None = None,
 ) -> dict[str, Any]:
     """Build a task-scoped completion and gap report."""
 
     diagnostics = list(diagnostics)
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
+    if lane is not None:
+        lane_filter = _normalize_lane(lane)
+        sessions = [record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter]
     completed_statuses = {"complete", "completed", "succeeded", "success"}
     completed = [
         record for record in sessions if (record.status or "").lower() in completed_statuses
@@ -806,10 +980,13 @@ def build_standup_report(
     if not sessions:
         missing_work.append("No linked session records were found; completion cannot be confirmed.")
 
+    lane_pattern = "fragmented" if len(sessions) > 1 and sum(r.tool_calls for r in sessions) >= 500 else "batchable"
     return {
         "schema_version": "1.0",
         "generated_at": _now(),
         "task_id": task_id,
+        "lane": _normalize_lane(lane) if lane else None,
+        "lane_pattern": lane_pattern,
         "source_diagnostics": sorted(set(diagnostics)),
         "sessions": [asdict(record) for record in sessions],
         "summary": {
@@ -841,6 +1018,8 @@ def format_standup(report: dict[str, Any]) -> str:
         f"Tests: {summary['tests']}",
         f"Tool calls: {summary['tool_calls']}",
         f"Uncommitted changes: {summary['uncommitted_changes']}",
+        f"Lane focus: {report.get('lane') or 'all'}",
+        f"Lane pattern: {report.get('lane_pattern', 'batchable')}",
         "Open blockers: "
         + (", ".join(summary["open_blockers"]) if summary["open_blockers"] else "none observed"),
         "Missing work: "
