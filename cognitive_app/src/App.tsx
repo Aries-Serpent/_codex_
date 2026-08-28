@@ -15,7 +15,7 @@ import { DocumentationViewer } from '@/components/documentation';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [generatedCode] = useState<string>('');
+  const [generatedCode, setGeneratedCode] = useState<string>('print("Hello from Codex AI!")');
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -96,7 +96,7 @@ function App() {
           </TabsContent>
 
           <TabsContent value="code">
-            <CodeGenerator />
+            <CodeGenerator onCodeGenerated={setGeneratedCode} />
           </TabsContent>
 
           <TabsContent value="demo">

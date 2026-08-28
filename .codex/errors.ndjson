@@ -9,3 +9,7 @@
 {"ts": "2026-07-17T19:57Z", "step": "STEP logs_init", "step_description": "codex_db --init", "error": "boom", "context": "db=/tmp/test.sqlite"}
 {"ts": "2026-07-17T19:57Z", "step": "STEP logs_query", "step_description": "codex_db --query", "error": "db error", "context": "db=/tmp/test.sqlite"}
 {"step": "train.dataset", "err": "training dataset is empty or missing", "ctx": "{\"path\": \"data/train_samples.jsonl\", \"texts\": 0}", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
+{"ts": "2026-08-28T06:22Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:22Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:40Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:40Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}

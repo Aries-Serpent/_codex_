@@ -35,15 +35,18 @@ install_from_lock() {
   return 1
 }
 
-# Install runtime + dev deps if manifests exist (best-effort, offline where possible)
+# Install runtime + dev deps if manifests exist (strict so audit jobs fail loudly on missing deps)
 if ! install_from_lock && [[ -f "requirements/base.txt" ]]; then
-  pip install -r requirements/base.txt || true
+  pip install -r requirements/base.txt
 fi
-if [[ -f "requirements/dev.txt" ]]; then
-  pip install -r requirements/dev.txt || true
+if [[ -f "requirements/requirements-dev.txt" ]]; then
+  pip install -r requirements/requirements-dev.txt
 fi
 if [[ -f "pyproject.toml" || -f "setup.cfg" || -f "setup.py" ]]; then
-  pip install -e . || true
+  pip install -e .
+fi
+if [[ -d "agents/codex_client" ]]; then
+  pip install -e ./agents/codex_client
 fi
 
 # Run pre-commit locally if configured (non-fatal)

@@ -3,10 +3,68 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CodeGenerator } from '../CodeGenerator';
 import { SparkLLMClient } from '@/lib/spark-llm-client';
 
-// Mock the clients
-vi.mock('@/lib/spark-llm-client');
-vi.mock('@/lib/codex-api-client');
-vi.mock('@/lib/mock-api-client');
+// Mock the clients with real constructor-based classes so prototype assignments work
+vi.mock('@/lib/spark-llm-client', () => {
+  class SparkLLMClientMock {
+    async getStatus() {
+      return { healthy: true, mode: 'AI-Powered', model: 'gpt-4o-mini (Spark Runtime)' };
+    }
+
+    async generateCode() {
+      return {
+        code: 'def ai_generated():\n    pass',
+        metadata: { k1_factor: 0.31, coherence: 0.78, cache_hit: false, processing_time_ms: 123 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.82 },
+      };
+    }
+  }
+
+  return { SparkLLMClient: SparkLLMClientMock };
+});
+
+vi.mock('@/lib/codex-api-client', () => {
+  class CodexAPIClientMock {
+    async getStatus() {
+      return { healthy: true, metrics: { k1_factor: 0.312 } };
+    }
+
+    async generateCode() {
+      return {
+        code: '# Generated code',
+        metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+      };
+    }
+  }
+
+  return {
+    CodexAPIClient: CodexAPIClientMock,
+    CodexAPIError: class CodexAPIError extends Error {
+      constructor(public statusCode: number, message: string) {
+        super(message);
+        this.name = 'CodexAPIError';
+      }
+    },
+  };
+});
+
+vi.mock('@/lib/mock-api-client', () => {
+  class MockCodexAPIClient {
+    async getStatus() {
+      return { healthy: true, metrics: { k1_factor: 0.312 } };
+    }
+
+    async generateCode() {
+      return {
+        code: '# Generated code',
+        metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
+        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+      };
+    }
+  }
+
+  return { MockCodexAPIClient };
+});
 
 describe('CodeGenerator - AI Mode Integration', () => {
   beforeEach(() => {

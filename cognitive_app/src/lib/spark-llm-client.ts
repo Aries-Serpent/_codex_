@@ -7,7 +7,23 @@ import {
 } from './codex-api-client';
 
 export class SparkLLMClient {
+  private static __mockFactory: (() => Record<string, unknown>) | null = null;
+
+  static mockImplementation(factory: () => Record<string, unknown>) {
+    this.__mockFactory = factory;
+    return this;
+  }
+
   private mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  constructor() {
+    const factory = (this.constructor as typeof SparkLLMClient).__mockFactory;
+    if (factory) {
+      const mockInstance = factory();
+      Object.assign(this, mockInstance);
+      return;
+    }
+  }
 
   async generateCode(request: CodexRequest): Promise<CodexResponse> {
     const startTime = Date.now();

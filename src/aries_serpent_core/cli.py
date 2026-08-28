@@ -208,10 +208,12 @@ def _run_ci() -> None:
     """Run local CI checks (lint + tests)."""
     try:
         subprocess.run(["nox", "-s", "tests"], check=True)
-    except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.info("CI failed: <ERROR_TYPE>")
+    except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
+        logger.debug(
+            "Exception: %s",
+            type(exc).__name__,
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(f"CI failed: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
         raise SystemExit(1) from exc
 
@@ -261,9 +263,8 @@ def _fix_pool(max_workers: int | None = None) -> None:
     for _ in range(max(0, workers)):
         try:  # pragma: no cover - best effort
             sqlite3.connect(str(db))
-        except (ConnectionError, TimeoutError) as exc:
-            type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        except (sqlite3.Error, OSError) as exc:
+            logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
@@ -446,9 +447,8 @@ def logs_init(db: str) -> None:
     script = TOOLS_DIR / "codex_db.py"
     try:
         subprocess.run([sys.executable, str(script), "--init", "--db", db], check=True)
-    except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"Failed to init logs DB: {exc}", err=True)
         _log_error("STEP logs_init", "codex_db --init", str(exc), f"db={db}")
         sys.exit(1)
@@ -469,9 +469,8 @@ def logs_ingest(changes, results, branch: str, db: str) -> None:
         args += ["--results", results]
     try:
         subprocess.run(args, check=True)
-    except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"Failed to ingest logs: {exc}", err=True)
         _log_error("STEP logs_ingest", "codex_ingest_md", str(exc), f"db={db}")
         sys.exit(1)
@@ -486,9 +485,8 @@ def logs_query(sql: str, db: str) -> None:
     args = [sys.executable, str(script), "--db", db, "--query", sql]
     try:
         subprocess.run(args, check=True)
-    except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"Failed to query logs: {exc}", err=True)
         _log_error("STEP logs_query", "codex_db --query", str(exc), f"db={db}")
         sys.exit(1)
@@ -562,8 +560,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
         conn.close()
         click.echo(f"✅ Exported {len(rows)} records to {output}")
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Export failed: {exc}", err=True)
         sys.exit(1)
 
@@ -588,18 +585,25 @@ def chronicle(ctx: click.Context) -> None:
     help="Output format for tips",
 )
 @click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
+)
+@click.option(
     "--output",
     type=click.Path(),
     default=None,
     help="Output file path (default: stdout)",
 )
-def chronicle_tips(format: str, output: str | None) -> None:
+def chronicle_tips(format: str, database: str | None, output: str | None) -> None:
     """Get personalized tips based on your session history."""
     try:
         from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
         from aries_serpent_core.logging.session_database import SessionDatabase
 
-        db_path = _resolve_chronicle_database()
+        db_path = _resolve_chronicle_database(database)
         db = SessionDatabase(db_path)
         analytics = ChronicleAnalytics(db)
 
@@ -614,9 +618,8 @@ def chronicle_tips(format: str, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to generate tips: {exc}", err=True)
         sys.exit(1)
 
@@ -710,7 +713,7 @@ def chronicle_cost_tips(
             },
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         raise click.ClickException(f"Failed to generate cost tips: {exc}") from exc
 
 
@@ -725,13 +728,19 @@ def chronicle_cost_tips(
     help="Output format for the standup report",
 )
 @click.option("--json", "as_json", is_flag=True, help="Alias for --format json")
-@click.option("--database", type=click.Path(dir_okay=False), default=".codex/codex.sqlite", show_default=True)
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
+)
 @click.option("--output", type=click.Path(dir_okay=False), default=None)
 def chronicle_standup(
     task: str | None,
     output_format: str,
     as_json: bool,
-    database: str,
+    database: str | None,
     output: str | None,
 ) -> None:
     """Summarize linked sessions and identify incomplete work."""
@@ -745,7 +754,8 @@ def chronicle_standup(
         )
 
         task_id = extract_task_id(task) if task else None
-        store = ChronicleStore(database)
+        resolved_database = _resolve_chronicle_database(database)
+        store = ChronicleStore(resolved_database)
         records = store.load_sessions(task_id=task_id)
         report = build_standup_report(records, store.diagnostics, task_id=task_id)
         result = dump_json(report) if as_json or output_format == "json" else format_standup(report)
@@ -757,13 +767,13 @@ def chronicle_standup(
         _append_campaign_metric(
             "standup_requested",
             {
-                "database": database,
+                "database": resolved_database,
                 "task_id": task_id,
                 "format": "json" if as_json or output_format == "json" else "text",
             },
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         raise click.ClickException(f"Failed to generate standup: {exc}") from exc
 
 
@@ -771,8 +781,9 @@ def chronicle_standup(
 @click.option(
     "--database",
     type=click.Path(dir_okay=False),
-    default=".codex/codex.sqlite",
-    show_default=True,
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
 )
 @click.option(
     "--output",
@@ -780,7 +791,7 @@ def chronicle_standup(
     default=".codex/chronicle_search_index.json",
     show_default=True,
 )
-def chronicle_reindex(database: str, output: str) -> None:
+def chronicle_reindex(database: str | None, output: str) -> None:
     """Rebuild the local Chronicle search index from the session store."""
     try:
         from aries_serpent_core.logging.chronicle_cost import (
@@ -789,19 +800,26 @@ def chronicle_reindex(database: str, output: str) -> None:
             dump_json,
         )
 
-        store = ChronicleStore(database)
+        resolved_database = _resolve_chronicle_database(database)
+        store = ChronicleStore(resolved_database)
         records = store.load_sessions()
-        index = build_chronicle_index(records, store.diagnostics, scope=str(database))
+        index = build_chronicle_index(
+            records, store.diagnostics, scope=str(resolved_database)
+        )
         output_path = Path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(dump_json(index) + "\n", encoding="utf-8")
         click.echo(f"✅ Reindexed {len(records)} sessions to {output}")
         _append_campaign_metric(
             "reindex_requested",
-            {"database": database, "output": output, "sessions": len(records)},
+            {
+                "database": resolved_database,
+                "output": output,
+                "sessions": len(records),
+            },
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError, sqlite3.Error) as exc:
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         raise click.ClickException(f"Failed to reindex Chronicle: {exc}") from exc
 
 
@@ -813,18 +831,25 @@ def chronicle_reindex(database: str, output: str) -> None:
     help="Analyze specific pattern (default: all)",
 )
 @click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
+)
+@click.option(
     "--output",
     type=click.Path(),
     default=None,
     help="Output file path (default: stdout)",
 )
-def chronicle_analyze(pattern: str | None, output: str | None) -> None:
+def chronicle_analyze(pattern: str | None, database: str | None, output: str | None) -> None:
     """Analyze session patterns in detail."""
     try:
         from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
         from aries_serpent_core.logging.session_database import SessionDatabase
 
-        db_path = _resolve_chronicle_database()
+        db_path = _resolve_chronicle_database(database)
         db = SessionDatabase(db_path)
         analytics = ChronicleAnalytics(db)
         patterns = analytics.analyze_patterns()
@@ -851,9 +876,8 @@ def chronicle_analyze(pattern: str | None, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, sqlite3.Error) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to analyze patterns: {exc}", err=True)
         sys.exit(1)
 
@@ -1472,8 +1496,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             run_hf_trainer(args.texts, args.output_dir, **kw)
             return
         except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-            type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
             raise
     else:
@@ -1500,9 +1523,8 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         try:
             sys.argv = [orig_argv[0], *argv]
             run_custom_train()
-        except (ValueError, TypeError, RuntimeError) as exc:
-            type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        except (ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as exc:
+            logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
             raise
         finally:
@@ -1553,9 +1575,8 @@ def batch_triage(issues, from_file, output, as_json, group_by):
 
     try:
         subprocess.run(args, check=True)
-    except (ValueError, TypeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    except (ValueError, TypeError, subprocess.CalledProcessError) as exc:
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"Batch triage failed: {exc}", err=True)
         _log_error("STEP batch_triage", "batch_triage.py", str(exc), "")
         sys.exit(1)
@@ -1731,8 +1752,7 @@ def tokenizer_list_models() -> None:
             click.echo("❌ No tokenizer models available.")
             click.echo("Install codex_ml with tokenizer support to enable model listing.")
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"⚠️  Could not list tokenizer models: {exc}", err=True)
         click.echo("Hint: Ensure codex_ml is installed with tokenization extras.")
 
@@ -1849,8 +1869,7 @@ def repro_checkpoint(path: Path, include_weights: bool) -> None:
         click.echo(f"✅ Checkpoint metadata saved to {path}")
         click.echo(f"   Include weights: {include_weights}")
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to create checkpoint: {exc}", err=True)
         sys.exit(1)
 
@@ -2000,8 +2019,7 @@ def session_logger_cmd(session_id: str | None, role: str, message: str) -> None:
 
         _log()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to log message: {exc}", err=True)
         sys.exit(1)
 
@@ -2034,8 +2052,7 @@ def viewer_cmd(session_id: str | None, output_format: str) -> None:
 
         _view()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to view logs: {exc}", err=True)
         sys.exit(1)
 
@@ -2071,8 +2088,7 @@ def query_logs_cmd(search: str, role: str | None) -> None:
 
         _query()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to query logs: {exc}", err=True)
         sys.exit(1)
 
@@ -2103,8 +2119,7 @@ def validate_env_cmd() -> None:
 
         _validate()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Environment validation failed: {exc}", err=True)
         sys.exit(1)
 
@@ -2142,8 +2157,7 @@ def init_db_cmd(db_path: str | None) -> None:
 
         _init()
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to initialize database: {exc}", err=True)
         sys.exit(1)
 
@@ -2203,8 +2217,7 @@ def export_env_cmd(output_format: str, output: str | None) -> None:
 
         _export()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to export environment: {exc}", err=True)
         sys.exit(1)
 
@@ -2282,8 +2295,7 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
 
         _list()
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to list sessions: {exc}", err=True)
         sys.exit(1)
 
@@ -2363,9 +2375,8 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                     f.unlink()
                     deleted += 1
                 except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-                    type(e).__name__
                     logger.debug(
-                        "Exception: <ERROR_TYPE>"
+                        f"Exception: {type(e).__name__}"
                     )  # codeql[py/clear-text-logging-sensitive-data]
                     click.echo(f"⚠️  Failed to delete {f}: {e}", err=True)
 
@@ -2373,8 +2384,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
 
         _clean()
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to clean logs: {exc}", err=True)
         sys.exit(1)
 
@@ -2436,9 +2446,8 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
             try:
                 total_lines += len(py_file.read_text().splitlines())
             except (OSError, UnicodeDecodeError) as e:
-                type(e).__name__
                 logger.debug(
-                    "Exception: <ERROR_TYPE>"
+                    f"Exception: {type(e).__name__}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
 
@@ -2480,8 +2489,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
             )
 
     except (ImportError, AttributeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to check duplicates: {exc}", err=True)
         import traceback
 
@@ -2609,8 +2617,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
             click.echo(f"💾 Saved to database (ID: {result.get('sqlite_id', 'N/A')})")
 
     except (ImportError, AttributeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to generate report: {exc}", err=True)
         import traceback
 
@@ -2687,8 +2694,7 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
             click.echo("\n💡 Use --baseline to compare against a previous report")
 
     except (ImportError, AttributeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to compare metrics: {exc}", err=True)
         import traceback
 
@@ -2748,8 +2754,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         click.echo(f"   Tag: {baseline_data['baseline_tag']}")
         click.echo(f"   Source: {report}")
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to create baseline: {exc}", err=True)
         sys.exit(1)
 
@@ -2798,10 +2803,9 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
     try:
         from services.workflow.inventory import WorkflowInventory
     except ImportError as e:
-        type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"ImportError: {type(e).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
-            "ImportError: <ERROR_TYPE>", exc_info=True
+            f"ImportError: {type(e).__name__}", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
@@ -3036,8 +3040,7 @@ def auth_refresh_token(session_token: str | None) -> None:
         click.echo(f"   User: {creds['username']}")
         click.echo("   Credentials updated in cache")
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(f"Exception: {type(exc).__name__}")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to refresh token: {exc}", err=True)
         sys.exit(1)
 
@@ -3103,7 +3106,6 @@ def _load_cached_credentials() -> dict | None:
     except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring read error
         logger.debug(
             "keyring read error — falling back to file-based lookup: %s",
-            type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     if _CACHE_FILE.exists():
@@ -3130,7 +3132,6 @@ def _clear_cached_credentials() -> None:
     except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring delete error
         logger.debug(
             "keyring delete error — entry may not exist or backend unavailable: %s",
-            type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)

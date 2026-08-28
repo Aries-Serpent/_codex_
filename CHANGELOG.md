@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5558 review-thread follow-up
+- Corrected the code-generation button lockout in `cognitive_app/src/components/code/CodeGenerator.tsx` so empty/invalid prompts stay disabled while maintaining the API-error guard.
+- Restored valid Python syntax in the root `a.py` and `b.py` helpers and removed the timestamp-only drift in `.codex/session_startup_packet.json`.
+
 ### Fixed (auto-update — PR #5556)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5556 (SHA `3643575f7c8e91263f160828982f14e2716d39b5`) at 2026-08-28T03:27:51Z [auto-generated]
 
