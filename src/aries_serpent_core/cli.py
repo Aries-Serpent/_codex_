@@ -779,7 +779,8 @@ def chronicle_standup(
     "--database",
     type=click.Path(dir_okay=False),
     default=None,
-    show_default=True,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
 )
 @click.option(
     "--output",

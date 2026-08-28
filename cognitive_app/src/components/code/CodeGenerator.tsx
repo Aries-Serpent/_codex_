@@ -228,6 +228,7 @@ export function CodeGenerator() {
         return;
       } catch (err) {
         if (err instanceof CodexAPIError && err.statusCode === 429) {
+          setLoading(false);
           toast.error('Rate limit exceeded', {
             description: 'Please try again later or upgrade your plan',
             duration: 5000,

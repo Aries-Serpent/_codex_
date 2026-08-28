@@ -3,7 +3,6 @@
 import concurrent.futures as cf
 import os
 import sqlite3
-from unittest.mock import patch
 
 from codex.cli import _fix_pool
 from codex.db import sqlite_patch
