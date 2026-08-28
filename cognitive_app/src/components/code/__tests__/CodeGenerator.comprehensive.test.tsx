@@ -188,6 +188,10 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     await waitFor(() => {
       expect(mockSpark.llm).toHaveBeenCalled();
     }, { timeout: 3000 });
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+    }, { timeout: 3000 });
   });
 
   it('shows the interactive demo toggle after generation', async () => {

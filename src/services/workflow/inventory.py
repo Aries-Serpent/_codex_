@@ -229,7 +229,7 @@ class WorkflowInventory:
             # Check for workflow_call usage in jobs
             for job in workflow.jobs.values():
                 if job.uses:
-                    # Extract workflow reference (e.g., ". /.github/workflows/reusable.yml")
+                    # Extract workflow reference (e.g., "./.github/workflows/reusable.yml")
                     if job.uses.startswith("./"):
                         # Local workflow reference
                         parts = job.uses.split("@")[0]  # Remove @ref if present

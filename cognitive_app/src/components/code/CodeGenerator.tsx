@@ -15,6 +15,12 @@ import { InteractiveDemo } from './InteractiveDemo';
 
 const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
 
+// Tier mapping used by generation backends:
+// - API/Mock client expects tier 'A'
+// - Spark runtime expects tier 'B'
+const API_MOCK_TIER = 'A';
+const SPARK_TIER = 'B';
+
 /**
  * Factory function to create a CodexAPIClient instance.
  * Uses lazy initialization to support hot module replacement during development,
@@ -176,7 +182,7 @@ export function CodeGenerator() {
         const sparkClient = getSparkClient();
         const response = await sparkClient.generateCode({
           prompt,
-          context: { language: 'python', tier: 'B' },
+          context: { language: 'python', tier: SPARK_TIER },
         });
 
         const elapsed = Date.now() - startTime;
@@ -186,7 +192,8 @@ export function CodeGenerator() {
 
         finishWithResult(response, 'spark');
         return;
-      } catch {
+      } catch (err) {
+        console.error('Spark code generation failed, falling back to API/mock generation.', err);
         setInfoMessage(null);
         // Fall through to API/mock generation when Spark is unavailable or fails.
       }
@@ -197,7 +204,7 @@ export function CodeGenerator() {
       try {
         const response = await client.generateCode({
           prompt,
-          context: { language: 'python', tier: 'A' },
+          context: { language: 'python', tier: API_MOCK_TIER },
         });
 
         const elapsed = Date.now() - startTime;
@@ -213,6 +220,15 @@ export function CodeGenerator() {
             description: 'Please try again later or upgrade your plan',
             duration: 5000,
           });
+        } else {
+          const errorMessage = err instanceof Error
+            ? err.message
+            : 'Unknown API error';
+
+          setInfoMessage(`Primary API failed (${errorMessage}). Falling back to mock generation.`);
+          toast.error('Primary API unavailable', {
+            description: 'Using mock generation as a fallback.',
+          });
         }
       }
     }
@@ -221,7 +237,7 @@ export function CodeGenerator() {
       const mockClient = getMockClient();
       const mockResponse = await mockClient.generateCode({
         prompt,
-        context: { language: 'python', tier: 'A' },
+        context: { language: 'python', tier: API_MOCK_TIER },
       });
 
       const elapsed = Date.now() - startTime;

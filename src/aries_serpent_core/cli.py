@@ -261,7 +261,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
     for _ in range(max(0, workers)):
         try:  # pragma: no cover - best effort
             sqlite3.connect(str(db))
-        except (ConnectionError, TimeoutError) as exc:
+        except (sqlite3.Error, OSError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
@@ -725,13 +725,19 @@ def chronicle_cost_tips(
     help="Output format for the standup report",
 )
 @click.option("--json", "as_json", is_flag=True, help="Alias for --format json")
-@click.option("--database", type=click.Path(dir_okay=False), default=".codex/codex.sqlite", show_default=True)
+@click.option(
+    "--database",
+    type=click.Path(dir_okay=False),
+    default=None,
+    show_default=False,
+    help="Chronicle SQLite database (defaults to repo-standard session DB paths)",
+)
 @click.option("--output", type=click.Path(dir_okay=False), default=None)
 def chronicle_standup(
     task: str | None,
     output_format: str,
     as_json: bool,
-    database: str,
+    database: str | None,
     output: str | None,
 ) -> None:
     """Summarize linked sessions and identify incomplete work."""
@@ -745,7 +751,8 @@ def chronicle_standup(
         )
 
         task_id = extract_task_id(task) if task else None
-        store = ChronicleStore(database)
+        resolved_database = _resolve_chronicle_database(database)
+        store = ChronicleStore(resolved_database)
         records = store.load_sessions(task_id=task_id)
         report = build_standup_report(records, store.diagnostics, task_id=task_id)
         result = dump_json(report) if as_json or output_format == "json" else format_standup(report)
@@ -757,7 +764,7 @@ def chronicle_standup(
         _append_campaign_metric(
             "standup_requested",
             {
-                "database": database,
+                "database": resolved_database,
                 "task_id": task_id,
                 "format": "json" if as_json or output_format == "json" else "text",
             },
@@ -771,7 +778,7 @@ def chronicle_standup(
 @click.option(
     "--database",
     type=click.Path(dir_okay=False),
-    default=".codex/codex.sqlite",
+    default=None,
     show_default=True,
 )
 @click.option(
@@ -780,7 +787,7 @@ def chronicle_standup(
     default=".codex/chronicle_search_index.json",
     show_default=True,
 )
-def chronicle_reindex(database: str, output: str) -> None:
+def chronicle_reindex(database: str | None, output: str) -> None:
     """Rebuild the local Chronicle search index from the session store."""
     try:
         from aries_serpent_core.logging.chronicle_cost import (
@@ -789,16 +796,23 @@ def chronicle_reindex(database: str, output: str) -> None:
             dump_json,
         )
 
-        store = ChronicleStore(database)
+        resolved_database = _resolve_chronicle_database(database)
+        store = ChronicleStore(resolved_database)
         records = store.load_sessions()
-        index = build_chronicle_index(records, store.diagnostics, scope=str(database))
+        index = build_chronicle_index(
+            records, store.diagnostics, scope=str(resolved_database)
+        )
         output_path = Path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(dump_json(index) + "\n", encoding="utf-8")
         click.echo(f"✅ Reindexed {len(records)} sessions to {output}")
         _append_campaign_metric(
             "reindex_requested",
-            {"database": database, "output": output, "sessions": len(records)},
+            {
+                "database": resolved_database,
+                "output": output,
+                "sessions": len(records),
+            },
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError, sqlite3.Error) as exc:
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
