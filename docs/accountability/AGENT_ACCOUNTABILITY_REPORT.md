@@ -1,3 +1,28 @@
+## Session: 2026-08-28T18:33:00Z — PR #5558 review-thread and CI-rescue sync
+
+**Objective:** Close the remaining review-thread fixes for the code-generation UI and Python helper files, restore the generated artifact baseline, and verify the affected validation paths without broad unrelated churn.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Re-applied the exact disabled-state suggestion in `cognitive_app/src/components/code/CodeGenerator.tsx` so empty/invalid prompts remain blocked while preserving the API-error lockout.
+2. Replaced the invalid root `a.py` and `b.py` content with syntactically valid Python and restored the base `.codex/session_startup_packet.json` timestamp to avoid generated drift.
+3. Re-ran the targeted Python and Vitest validation checks for the impacted code paths.
+
+**Validation:**
+- `python -m py_compile a.py b.py src/agent/adapters/mock_adapter.py` → pass.
+- `cd cognitive_app && npx vitest run src/services/__tests__/app-service.test.ts` → 4/4 passed.
+
+**Governance:**
+- REQ-4: This report updated for the current PR.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for PR #5558.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+
+---
+
 ## Session: 2026-08-26T01:28:53Z — PR #5526 governance repair for REQ-4/REQ-5 compliance
 
 **Objective:** Correct the stale PR metadata surfaced by the current review/CI gate by updating the accountability report and changelog to reflect PR #5526, then re-establish the required day-stamped PDA evidence for the active session.
