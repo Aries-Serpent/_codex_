@@ -27,6 +27,18 @@ except ImportError:  # pragma: no cover - direct script execution fallback
 
 logger = logging.getLogger(__name__)
 
+__all__ = [
+    "ContextProvider",
+    "SessionContext",
+    "RecoveryMetadata",
+    "SessionResumeError",
+    "ContextInjectionError",
+    "DependencyResolutionError",
+    "WarmupError",
+    "SessionResumeEngine",
+    "resume_session",
+]
+
 
 # ============================================================================
 # Data Models

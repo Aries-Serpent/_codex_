@@ -5,7 +5,11 @@ This module intentionally re-exports the canonical implementation living under
 """
 
 from scripts.cognitive.session_checkpoint_manager import *  # noqa: F401,F403
-from scripts.cognitive.session_checkpoint_manager import __all__ as _checkpoint_all
+
+try:
+    from scripts.cognitive.session_checkpoint_manager import __all__ as _checkpoint_all
+except ImportError:
+    _checkpoint_all = None
 
 __all__ = list(_checkpoint_all) if isinstance(_checkpoint_all, list) else [
     "SessionCheckpointManager",

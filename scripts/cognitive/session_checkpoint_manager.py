@@ -26,6 +26,20 @@ import gzip
 
 logger = logging.getLogger(__name__)
 
+__all__ = [
+    "CheckpointMetadata",
+    "DeletionResult",
+    "ValidationError",
+    "ValidationResult",
+    "SessionCheckpointError",
+    "CheckpointNotFoundError",
+    "CheckpointCorruptedError",
+    "CompressionError",
+    "StorageError",
+    "ValidationFailedError",
+    "SessionCheckpointManager",
+]
+
 
 # ============================================================================
 # Data Models
