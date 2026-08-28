@@ -21,7 +21,7 @@ cyclonedx-bom>=7.3.0
 pandas==3.0.5  # Pinned version
 pyarrow==16.1.0  # Data science (pinned)
 zstandard==0.23.0  # Compression (pinned)
-mlflow>=3.15.1  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal) fixed in 3.11.0
+mlflow>=3.15.2  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal) fixed in 3.11.0
 slowapi>=0.1.9
 types-PyYAML==6.0.12.20260724  # Type stub (pinned)
 types-requests==2.31.0.10  # Type stub (pinned)
