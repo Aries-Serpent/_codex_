@@ -21,3 +21,5 @@
 {"ts": "2026-08-28T06:01Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
 {"ts": "2026-08-28T06:01Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
 {"ts": "2026-08-28T06:01Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:01Z", "step": "POOL", "step_description": "warm connection", "error": "no such device", "context": "db=.codex/session_logs.db"}
+{"ts": "2026-08-28T06:01Z", "step": "POOL", "step_description": "warm connection", "error": "disk I/O error", "context": "db=.codex/session_logs.db"}
