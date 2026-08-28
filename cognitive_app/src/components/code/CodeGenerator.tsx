@@ -229,7 +229,10 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Example: Create a FastAPI endpoint for user authentication with JWT tokens..."
               rows={8}
-              className="font-mono resize-none"
+              className={[
+                'font-mono resize-none',
+                !isValidPrompt && charCount > 0 ? 'border-destructive aria-invalid:border-destructive' : '',
+              ].filter(Boolean).join(' ')}
               aria-invalid={!isValidPrompt && charCount > 0}
             />
           </div>

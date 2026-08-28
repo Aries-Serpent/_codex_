@@ -55,8 +55,12 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     const mockSparkClient = createMockSparkClient();
 
     // MockCodexAPIClient uses real implementation, only mock CodexAPIClient and SparkLLMClient
-    vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
-    vi.mocked(SparkLLMClient).mockImplementation(() => mockSparkClient as any);
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return mockCodexClient as any;
+    });
+    vi.mocked(SparkLLMClient).mockImplementation(function () {
+      return mockSparkClient as any;
+    });
   });
 
   afterEach(() => {
@@ -113,7 +117,9 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
 
       // Ensure CodexAPIClient mock is set up for this scenario
       const mockCodexClient = createMockCodexClient();
-      vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
+      vi.mocked(CodexAPIClient).mockImplementation(function () {
+        return mockCodexClient as any;
+      });
     });
 
     it('should show "Checking..." status initially', async () => {
@@ -123,7 +129,9 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         return { healthy: true, metrics: {} };
       };
-      vi.mocked(CodexAPIClient).mockImplementation(() => delayedMock as any);
+      vi.mocked(CodexAPIClient).mockImplementation(function () {
+        return delayedMock as any;
+      });
 
       render(<CodeGenerator />);
 

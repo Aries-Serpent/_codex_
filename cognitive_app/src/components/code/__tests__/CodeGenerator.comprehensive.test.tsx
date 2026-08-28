@@ -67,14 +67,16 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     delete (import.meta.env as any).VITE_CODEX_KEY;
     delete (import.meta.env as any).VITE_CODEX_API;
 
-    vi.mocked(CodexAPIClient).mockImplementation(() => ({
-      getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
-      generateCode: async ({ prompt }: { prompt: string }) => ({
-        code: `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
-        metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
-        quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
-      }),
-    }) as any);
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return {
+        getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+        generateCode: async ({ prompt }: { prompt: string }) => ({
+          code: `def generated_function():\n    """AI-generated code for ${prompt}"""\n    return "success"`,
+          metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
+          quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
+        }),
+      } as any;
+    });
   });
 
   afterEach(() => {
