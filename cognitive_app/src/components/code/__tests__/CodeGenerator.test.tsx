@@ -30,52 +30,48 @@ const createMockSparkClient = () => ({
 });
 
 // Mock the modules with constructor-safe factory functions
-vi.mock('@/lib/codex-api-client', () => {
-  class CodexAPIClientMock {
-    async getStatus() {
-      return { healthy: true, metrics: { k1_factor: 0.312 } };
+vi.mock('@/lib/codex-api-client', () => ({
+  CodexAPIClient: vi.fn(function () {
+    return {
+      async getStatus() {
+        return { healthy: true, metrics: { k1_factor: 0.312 } };
+      },
+      async generateCode() {
+        return {
+          code: '# Generated code',
+          metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
+          quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+        };
+      },
+    };
+  }),
+  CodexAPIError: class CodexAPIError extends Error {
+    constructor(public statusCode: number, message: string) {
+      super(message);
+      this.name = 'CodexAPIError';
     }
+  },
+}));
 
-    async generateCode() {
-      return {
-        code: '# Generated code',
-        metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
-        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
-      };
-    }
-  }
-
-  return {
-    CodexAPIClient: CodexAPIClientMock,
-    CodexAPIError: class CodexAPIError extends Error {
-      constructor(public statusCode: number, message: string) {
-        super(message);
-        this.name = 'CodexAPIError';
-      }
-    },
-  };
-});
-
-vi.mock('@/lib/spark-llm-client', () => {
-  class SparkLLMClientMock {
-    async generateCode() {
-      return {
-        code: '# AI generated code',
-        metadata: { k1_factor: 0.28, coherence: 0.85 },
-        quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
-      };
-    }
-
-    async getStatus() {
-      return {
-        healthy: true,
-        model: 'gpt-4o-mini (Spark Runtime)',
-      };
-    }
-  }
-
-  return { SparkLLMClient: SparkLLMClientMock };
-});
+vi.mock('@/lib/spark-llm-client', () => ({
+  SparkLLMClient: vi.fn(function () {
+    return {
+      async generateCode() {
+        return {
+          code: '# AI generated code',
+          metadata: { k1_factor: 0.28, coherence: 0.85 },
+          quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
+        };
+      },
+      async getStatus() {
+        return {
+          healthy: true,
+          model: 'gpt-4o-mini (Spark Runtime)',
+        };
+      },
+    };
+  }),
+}));
 
 describe('CodeGenerator - Lazy Initialization Pattern', () => {
   beforeEach(() => {
@@ -381,16 +377,17 @@ describe('CodeGenerator - Real Workflows', () => {
   it('should handle download functionality', async () => {
     const createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
     const revokeObjectURL = vi.fn();
-    global.URL.createObjectURL = createObjectURL;
-    global.URL.revokeObjectURL = revokeObjectURL;
-
-    // Mock document.createElement for download link
-    const mockLink = document.createElement('a');
-    vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
+    Object.defineProperty(global.URL, 'createObjectURL', {
+      value: createObjectURL,
+      configurable: true,
+    });
+    Object.defineProperty(global.URL, 'revokeObjectURL', {
+      value: revokeObjectURL,
+      configurable: true,
+    });
 
     render(<CodeGenerator />);
 
-    // Wait for connection status
     await waitFor(() => {
       expect(screen.getByText('Connected')).toBeInTheDocument();
     }, { timeout: 3000 });
@@ -401,22 +398,11 @@ describe('CodeGenerator - Real Workflows', () => {
     const generateButton = screen.getByRole('button', { name: /Generate Code/i });
     fireEvent.click(generateButton);
 
-    // Wait for code generation to complete
     await waitFor(() => {
       expect(screen.getByText('Generated Code')).toBeInTheDocument();
     }, { timeout: 5000 });
 
-    // Find Download button with more flexible selector
-    const downloadButton = await waitFor(() => {
-      const buttons = screen.getAllByRole('button');
-      const downloadBtn = buttons.find(btn =>
-        btn.textContent?.includes('Download') ||
-        btn.getAttribute('aria-label')?.includes('Download')
-      );
-      expect(downloadBtn).toBeDefined();
-      return downloadBtn!;
-    }, { timeout: 3000 });
-
+    const downloadButton = screen.getByRole('button', { name: /Download/i });
     fireEvent.click(downloadButton);
 
     await waitFor(() => {
@@ -438,20 +424,14 @@ describe('CodeGenerator - Accessibility', () => {
   it('should have keyboard navigation support', async () => {
     render(<CodeGenerator />);
 
-    // Wait for component to fully render
     await waitFor(() => {
       expect(screen.getByText('Status:')).toBeInTheDocument();
     });
 
-    // Test textarea focus first (it appears first in DOM)
     const textarea = screen.getByPlaceholderText(/Example: Create a FastAPI/i);
     textarea.focus();
     expect(document.activeElement).toBe(textarea);
 
-    // Test button focus (use Tab key simulation for realistic navigation)
-    fireEvent.keyDown(textarea, { key: 'Tab', code: 'Tab' });
-
-    // Button should be focusable via keyboard or direct focus
     const button = screen.getByRole('button', { name: /Generate Code/i });
     button.focus();
     expect(document.activeElement).toBe(button);

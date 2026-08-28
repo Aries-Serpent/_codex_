@@ -39,6 +39,7 @@ export interface AppGenerationRequest {
 export interface AppGenerationResult {
   source: 'spark' | 'api' | 'mock';
   response: CodexResponse;
+  fallbackError?: unknown;
 }
 
 export interface AppStatusResult {
@@ -202,6 +203,11 @@ export class AppService {
         if (error instanceof CodexAPIError && error.statusCode === 429) {
           throw error;
         }
+
+        const mockResponse = await this.getMockClient().generateCode(
+          this.buildRequest(request.prompt, language, model),
+        );
+        return { source: 'mock', response: mockResponse, fallbackError: error };
       }
     }
 

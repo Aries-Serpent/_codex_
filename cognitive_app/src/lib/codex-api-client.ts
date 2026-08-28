@@ -141,10 +141,24 @@ export class CodexAPIError extends Error {
 }
 
 export class CodexAPIClient {
+  private static __mockFactory: ((baseURL: string, apiKey: string) => Record<string, unknown>) | null = null;
+
+  static mockImplementation(factory: (baseURL: string, apiKey: string) => Record<string, unknown>) {
+    this.__mockFactory = factory;
+    return this;
+  }
+
   private baseURL: string;
   private apiKey: string;
 
   constructor(baseURL: string, apiKey: string) {
+    const factory = (this.constructor as typeof CodexAPIClient).__mockFactory;
+    if (factory) {
+      const mockInstance = factory(baseURL, apiKey);
+      Object.assign(this, mockInstance);
+      return;
+    }
+
     this.baseURL = baseURL;
     this.apiKey = apiKey;
   }

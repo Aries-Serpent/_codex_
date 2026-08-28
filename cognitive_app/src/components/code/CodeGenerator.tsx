@@ -68,7 +68,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
   }, [checkApiStatus]);
 
   const finishWithResult = useCallback(
-    (response: CodexResponse, source: 'spark' | 'api' | 'mock') => {
+    (response: CodexResponse, source: 'spark' | 'api' | 'mock', fallbackError?: unknown) => {
       const k1Factor = typeof response.metadata?.k1_factor === 'number' ? response.metadata.k1_factor : 0.32;
       const coherence = typeof response.metadata?.coherence === 'number' ? response.metadata.coherence : 0.8;
 
@@ -80,7 +80,15 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
       if (source === 'spark') {
         setInfoMessage(`AI Mode: ${selectedModel} (Spark Runtime)`);
       } else if (source === 'mock') {
-        setInfoMessage('Using demo mode (API key not configured)');
+        const fallbackMessage =
+          fallbackError instanceof Error
+            ? fallbackError.message
+            : fallbackError !== undefined && fallbackError !== null
+              ? String(fallbackError)
+              : null;
+        setInfoMessage(
+          fallbackMessage ? `Primary API failed: ${fallbackMessage}. Falling back to demo mode.` : 'Using demo mode (API key not configured)',
+        );
       } else {
         setInfoMessage(null);
       }
@@ -113,7 +121,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
     const startTime = Date.now();
 
     try {
-      const { response, source } = await appService.generateCode({
+      const { response, source, fallbackError } = await appService.generateCode({
         prompt,
         language: selectedLanguage,
         model: selectedModel,
@@ -125,7 +133,14 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
         await new Promise((resolve) => setTimeout(resolve, 500 - elapsed));
       }
 
-      finishWithResult(response, source);
+      if (fallbackError) {
+        const message = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+        toast.error('Generation failed', {
+          description: message,
+        });
+      }
+
+      finishWithResult(response, source, fallbackError);
       return;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown generation error';
@@ -173,15 +188,20 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
                   ? 'go'
                   : 'sh'
       }`;
+      a.rel = 'noopener';
+      a.style.display = 'none';
       if (a.parentNode) {
         a.parentNode.removeChild(a);
       }
-      document.body.appendChild(a);
-      a.click();
-      if (a.parentNode) {
-        a.parentNode.removeChild(a);
+      try {
+        document.body.appendChild(a);
+        a.click();
+      } finally {
+        if (a.parentNode) {
+          a.parentNode.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
       }
-      URL.revokeObjectURL(url);
       toast.success('Code downloaded');
     }
   }, [result, selectedLanguage]);
@@ -233,6 +253,15 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
               id="prompt"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Tab' && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                  e.preventDefault();
+                  const generateButton = document.getElementById('generate-code-button');
+                  if (generateButton instanceof HTMLButtonElement) {
+                    generateButton.focus();
+                  }
+                }
+              }}
               placeholder="Example: Create a FastAPI endpoint for user authentication with JWT tokens..."
               rows={8}
               className={[
@@ -278,8 +307,9 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
           </div>
 
           <Button
+            id="generate-code-button"
             onClick={handleGenerate}
-            disabled={loading || !isValidPrompt || apiStatus === 'error'}
+            disabled={loading || (prompt.length > 0 && !isValidPrompt) || apiStatus === 'error'}
             className="w-full sm:w-auto"
             size="lg"
           >

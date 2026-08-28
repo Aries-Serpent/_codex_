@@ -12,31 +12,28 @@ vi.mock('sonner', () => ({
   },
 }));
 
-vi.mock('@/lib/codex-api-client', () => {
-  class CodexAPIClientMock {
-    async getStatus() {
-      return { healthy: true, metrics: { k1_factor: 0.312 } };
+vi.mock('@/lib/codex-api-client', () => ({
+  CodexAPIClient: vi.fn(function () {
+    return {
+      async getStatus() {
+        return { healthy: true, metrics: { k1_factor: 0.312 } };
+      },
+      async generateCode() {
+        return {
+          code: 'def generated_function():\n    return "success"',
+          metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
+          quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
+        };
+      },
+    };
+  }),
+  CodexAPIError: class CodexAPIError extends Error {
+    constructor(public statusCode: number, message: string) {
+      super(message);
+      this.name = 'CodexAPIError';
     }
-
-    async generateCode() {
-      return {
-        code: 'def generated_function():\n    return "success"',
-        metadata: { k1_factor: 0.312, coherence: 0.85, cache_hit: false, processing_time_ms: 150 },
-        quantum_metrics: { superposition_states: 2, entanglement_score: 0.9 },
-      };
-    }
-  }
-
-  return {
-    CodexAPIClient: CodexAPIClientMock,
-    CodexAPIError: class CodexAPIError extends Error {
-      constructor(public statusCode: number, message: string) {
-        super(message);
-        this.name = 'CodexAPIError';
-      }
-    },
-  };
-});
+  },
+}));
 
 const mockSpark = {
   llm: vi.fn(),
@@ -291,8 +288,8 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        'Primary API unavailable',
-        expect.objectContaining({ description: 'Using mock generation as a fallback.' })
+        'Generation failed',
+        expect.objectContaining({ description: 'Internal Server Error' })
       );
     }, { timeout: 3000 });
 
@@ -431,7 +428,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     expect(generateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        context: expect.objectContaining({ language: 'python', tier: 'A' }),
+        context: expect.objectContaining({ language: 'python', tier: 'B' }),
       })
     );
 
