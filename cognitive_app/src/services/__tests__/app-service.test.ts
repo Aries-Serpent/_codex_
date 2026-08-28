@@ -63,8 +63,9 @@ vi.mock('@/lib/mock-api-client', () => ({
 describe('AppService code generation integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete import.meta.env.VITE_CODEX_KEY;
-    delete import.meta.env.VITE_CODEX_API;
+    const env = import.meta.env as any;
+    delete env.VITE_CODEX_KEY;
+    delete env.VITE_CODEX_API;
   });
 
   it('returns a Spark response when AI mode is enabled and available', async () => {
@@ -83,8 +84,9 @@ describe('AppService code generation integration', () => {
   });
 
   it('falls back to API generation after a Spark failure', async () => {
-    import.meta.env.VITE_CODEX_KEY = 'test-api-key';
-    import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
+    const env = import.meta.env as any;
+    env.VITE_CODEX_KEY = 'test-api-key';
+    env.VITE_CODEX_API = 'http://localhost:8000';
 
     vi.mocked(SparkLLMClient).mockImplementation(function () {
       return {
@@ -121,8 +123,9 @@ describe('AppService code generation integration', () => {
   });
 
   it('re-throws 429 API rate limits to allow the UI recovery path', async () => {
-    import.meta.env.VITE_CODEX_KEY = 'test-rate-limit-key';
-    import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
+    const env = import.meta.env as any;
+    env.VITE_CODEX_KEY = 'test-rate-limit-key';
+    env.VITE_CODEX_API = 'http://localhost:8000';
 
     const rateLimitError = new CodexAPIError(429, 'Rate limit exceeded');
     vi.mocked(CodexAPIClient).mockImplementation(function () {

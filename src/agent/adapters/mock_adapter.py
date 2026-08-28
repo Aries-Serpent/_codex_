@@ -6,8 +6,6 @@ import asyncio
 
 from .base_adapter import (
     BaseGenerationProvider,
-    CompletionRequest,
-    CompletionResponse,
     GenerationRequest,
     GenerationResponse,
 )

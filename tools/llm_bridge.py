@@ -158,7 +158,10 @@ def request_patch(
         headers = {"Content-Type": "application/json"}
         api_key = os.environ.get("CODEX_LLM_API_KEY")
         if api_key:
-            headers["Authorization"] = f"Bearer {api_key}"
+            api_key = api_key.strip()
+            headers["Authorization"] = (
+                api_key if api_key.lower().startswith("bearer ") else "Bearer " + api_key
+            )
 
         req = urllib.request.Request(endpoint, data=data, headers=headers, method="POST")
         try:

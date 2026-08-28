@@ -87,8 +87,6 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
         setInfoMessage(
           fallbackMessage ? `Primary API failed: ${fallbackMessage}. Falling back to demo mode.` : 'Using demo mode (API key not configured)',
         );
-      } else {
-        setInfoMessage(null);
       }
 
       const sourceLabel = source === 'spark' ? 'Spark AI' : source === 'api' ? 'Codex API' : 'Demo Mode';
@@ -306,7 +304,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
           <Button
             id="generate-code-button"
             onClick={handleGenerate}
-            disabled={loading || (prompt.length > 0 && !isValidPrompt) || apiStatus === 'error'}
+            disabled={loading || (prompt.trim().length > 0 && !isValidPrompt) || apiStatus === 'error'}
             className="w-full sm:w-auto"
             size="lg"
           >
