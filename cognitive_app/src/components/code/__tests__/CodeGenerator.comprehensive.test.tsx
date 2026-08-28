@@ -88,7 +88,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     expect(screen.getByText(/Status:/)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/example: create a fastapi/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /generate code/i })).toBeInTheDocument();
-    expect(screen.getByText(/AI Mode:/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/AI Mode:/i).length).toBeGreaterThan(0);
   });
 
   it('disables generation until the prompt is valid', async () => {
@@ -434,5 +434,35 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
     }, { timeout: 3000 });
 
     expect(screen.getByText(/k₁ factor/i)).toBeInTheDocument();
+  });
+
+  it('shows the AI model selection details and status in AI mode', async () => {
+    render(<CodeGenerator />);
+    await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByRole('switch', { name: /toggle ai mode/i }));
+    await waitFor(() => {
+      expect(screen.getByText('AI-Powered')).toBeInTheDocument();
+      expect(screen.getAllByText(/AI Mode:/i).length).toBeGreaterThan(0);
+    });
+
+    const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
+    fireEvent.change(textarea, { target: { value: 'Create a safe REST handler with validation' } });
+
+    const button = screen.getByRole('button', { name: /generate code/i });
+    await waitFor(() => expect(button).not.toBeDisabled());
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Generated Code')).toBeInTheDocument();
+      expect(toast.success).toHaveBeenCalledWith(
+        'Code generated successfully',
+        expect.objectContaining({
+          description: expect.stringContaining('Spark AI'),
+        })
+      );
+    }, { timeout: 3000 });
+
+    expect(screen.getAllByText(/AI Mode:/i).length).toBeGreaterThan(0);
   });
 });
