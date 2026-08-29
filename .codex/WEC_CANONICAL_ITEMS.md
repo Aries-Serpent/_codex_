@@ -36,7 +36,7 @@ These remain in the live workflow baseline and can be selected as needed without
 ## Required rules
 
 - The WEC block must list only active baseline workflows.
-- Legacy names such as `pre-merge-validation.yml`, `comment-review-gate.yml`, `unified-copilot-management.yml`, and `pages-pre-merge-validation.yml` are not valid live required entries unless those files are re-enabled in the active workflow directory.
+- Legacy names such as `pre-merge-validation.yml`, `comment-review-gate.yml`, `unified-copilot-management.yml`, and `pages-pre-merge-validation.yml` are not valid live required entries and must not be reintroduced into the active workflow contract.
 - `auto-approve-workflows` is the live approval path used to resolve pending `action_required` workflow runs on the current SHA.
 - The WEC contract is enforced by `scripts/ci/session_wrapup_autofix.py` and validated by `scripts/ci/wec_enforcer.py`.
 
@@ -73,37 +73,26 @@ A workflow can be auto-approved (via `auto-approve-workflows.yml`) if:
 1. **Workflow is CHECKED in WEC** ✅
 2. **Workflow is in `action_required` state** (awaiting approval)
 3. **Token has `actions:write` scope** (CODEX_MASTER_KEY or CODEX_BACKUP_KEY)
-4. **No override rules apply** (see exceptions below)
+4. **The workflow is part of the active permissioned baseline and not a stale legacy gate**
 
-### Auto-Approval Exceptions
+### Live Approval Contract
 
-| Workflow | Auto-Approvable? | Exception |
-|----------|------------------|-----------|
-| pre-merge-validation.yml | ❌ NO | Passes/fails autonomously; no manual approval needed |
-| comment-review-gate.yml | ❌ NO | Non-blocking informational gate; auto-passes |
-| deferral-language-gate.yml | ❌ NO | Non-blocking; auto-passes |
-| agent-auth-delegation.yml | ✅ YES | Can be auto-approved if checked in WEC |
-| workflow-execution-gate.yml | ❌ NO | Dispatcher workflow; doesn't require approval |
-| copilot-agent-checkin.yml | ❌ NO | Informational; auto-passes |
-| copilot-agent-session-done.yml | ✅ YES | Can be auto-approved if checked |
-| copilot-iterative-self-healing.yml | ✅ YES | Can be auto-approved if checked |
-| cost-gate.yml | ⚠️ MAYBE | Depends on cost impact; may need human review |
-
----
-
-## WEC Item Ownership
-
-| Item | Responsible Agent(s) | Repository Contact |
-|------|---------------------|-------------------|
-| pre-merge-validation.yml | unified-governance-gate | @mbaetiong |
-| comment-review-gate.yml | unified-governance-gate, policy-coach-agent | @mbaetiong |
-| deferral-language-gate.yml | policy-coach-agent | @mbaetiong |
-| agent-auth-delegation.yml | cognitive-brain-cli-agent | @mbaetiong |
-| workflow-execution-gate.yml | unified-governance-gate | @mbaetiong |
-| copilot-agent-checkin.yml | session-analysis-agent | @mbaetiong |
-| copilot-agent-session-done.yml | session-analysis-agent | @mbaetiong |
-| copilot-iterative-self-healing.yml | self-healing-orchestrator-agent | @mbaetiong |
-| cost-gate.yml | cache-management-agent | @mbaetiong |
+| Workflow | Role in the active gate | Auto-applicable? |
+|----------|-------------------------|------------------|
+| deferral-language-gate.yml | Required gate | ❌ No |
+| agent-auth-delegation.yml | Required gate + dispatcher | ✅ Yes when checked |
+| workflow-execution-gate.yml | Required gate | ❌ No |
+| cost-gate.yml | Required gate | ⚠️ Only when cost policy allows |
+| auto-approve-workflows | Live approval path | ✅ Yes |
+| auth-tests.yml | Active opt-in validation | ✅ If checked |
+| audit-qa-suite.yml | Active opt-in validation | ✅ If checked |
+| data-quality-suite.yml | Active opt-in validation | ✅ If checked |
+| docker-build-push.yml | Active opt-in deployment | ✅ If checked |
+| nox_gates.yml | Active opt-in validation | ✅ If checked |
+| security-scanning-suite.yml | Active opt-in security | ✅ If checked |
+| test-rag.yml | Active opt-in validation | ✅ If checked |
+| scheduled-archival.yml | Active opt-in maintenance | ✅ If checked |
+| scheduled-dependency-audit.yml | Active opt-in maintenance | ✅ If checked |
 
 ---
 
@@ -121,16 +110,16 @@ python scripts/ci/wec_enforcer.py --validate-body --pr N
 ```bash
 # Verify all items in this document are in session_wrapup_autofix.py
 python scripts/ci/wec_enforcer.py --list-items --json | \
-  jq '.items | length' # Should equal 9
+  jq '.items | length' # Should match the active workflow baseline count
 ```
 
 ### Required Items Check
 
 ```bash
-# Verify required items are checked for main branch merges
+# Verify the required active gates are checked for merge readiness
 gh pr view N --json body | jq -r '.body' | \
-  grep -E "pre-merge-validation|comment-review-gate|workflow-execution-gate" | \
-  grep "\[x\]" | wc -l  # Should be >= 3
+  grep -E "deferral-language-gate|agent-auth-delegation|workflow-execution-gate|cost-gate|auto-approve-workflows" | \
+  grep "\[x\]" | wc -l  # Should be >= 5
 ```
 
 ---
@@ -139,7 +128,7 @@ gh pr view N --json body | jq -r '.body' | \
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2026-06-26 | Initial canonical list; 9 items defined; merge rules established |
+| 1.2.0 | 2026-08-29 | Aligned the canonical WEC contract to the live workflow baseline and removed stale legacy workflow names |
 
 ---
 

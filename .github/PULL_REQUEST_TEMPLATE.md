@@ -181,10 +181,10 @@ _For Copilot / AI-assisted PRs:_
 |---|-----|-------------|------------|
 | 1 | `cost-gate` | RED-tier timeout waiting for stakeholder checkbox | Tick `💰 Cost Proposal Approved` above or re-run with `workflow_dispatch` |
 | 2 | `actionlint-gate` | SC2086 unquoted vars / duplicate step IDs | `@copilot Fix actionlint-audit: run actionlint .github/workflows/*.yml and fix all errors` |
-| 3 | `validate` / `pre-merge-validation` | pre-commit / detect-secrets / ruff failures | `@copilot Fix validation: run pre-commit run --files <changed> and python -m ruff check src/ tests/ --fix` <!-- pragma: allowlist secret --> |
-| 4 | `agent-auth-delegation` | AGENT_ACCOUNTABILITY_REPORT or CHANGELOG not touched in last commit | `@copilot Fix REQ-4/REQ-5: touch docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in the last commit` |
-| 5 | `comment-review-gate` | Unanswered `<comment_new>` PR comments | `@copilot reply_to_comment for all open <comment_new> items using the reply_to_comment tool` |
-| 6 | `deferral-language-gate` | Prohibited deferral phrase in PR body or commit | `@copilot Fix deferral-language: scan PR body and last 3 commits for prohibited phrases; remove or rephrase` |
+| 3 | `nox_gates.yml` | pre-commit / detect-secrets / ruff failures | `@copilot Fix validation: run pre-commit run --files <changed> and python -m ruff check src/ tests/ --fix` <!-- pragma: allowlist secret --> |
+| 4 | `agent-auth-delegation.yml` | AGENT_ACCOUNTABILITY_REPORT or CHANGELOG not touched in last commit | `@copilot Fix REQ-4/REQ-5: touch docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in the last commit` |
+| 5 | `workflow-execution-gate.yml` | WEC checklist drift or stale workflow-name mismatch | `@copilot Fix WEC contract: align the PR checklist with the active workflow baseline and preserve the current maintainer selections` |
+| 6 | `deferral-language-gate.yml` | Prohibited deferral phrase in PR body or commit | `@copilot Fix deferral-language: scan PR body and last 3 commits for prohibited phrases; remove or rephrase` |
 | 7 | `codeql` | New CWE alert in changed Python | `@copilot Fix CodeQL alert: check security/code-scanning tab; fix the finding or request dismissal with rationale` |
 | 8 | `resilient_validation` | pytest failures or import errors | `@copilot Fix Resilient Validation: run pytest tests/ -x --tb=short and fix any broken imports or assertions` |
 | 9 | `auto-fix-pr-check` | ruff F401 unused imports or Pattern 20 YAML multiline | `@copilot Fix auto-fix: run python scripts/ci/auto_fix_common_issues.py and commit fixes` |
@@ -228,60 +228,22 @@ _For Copilot / AI-assisted PRs:_
 > Generate it via: `python scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number <N>`
 
 ### ✅ Always Required — fire automatically on every push (cannot be skipped)
-- [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
 - [x] agent-auth-delegation.yml — Agent token delegation (always required)
 - [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
-
-### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)
-- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (fires on push)
-- [ ] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run)
-- [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
+- [x] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 
-### ⚡ Auto-Approve
-- [x] auto-approve-workflows — Auto-Approve workflow to run (approves pending runs and processes queued Copilot 👀 cleanup on PR head when permissions allow)
-
-### 🧪 Opt-In: Testing & Validation
-- [ ] validate.yml — Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)
-- [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
-- [ ] test-rag.yml — RAG Module Tests (coverage ≥95%)
-- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-- [ ] mypy-baseline.yml — mypy type-check anti-regression gate
-- [ ] coverage-with-timeout.yml — Coverage with timeout guards
-- [ ] progressive-validation.yml — Progressive Validation Suite
-- [ ] pre-flight-validation.yml — Pre-flight CI validation
-- [ ] ci-checkpoint-validation.yml — CI Checkpoint Validation
-- [ ] data-quality-suite.yml — Data Quality & Determinism Suite
+### 🔄 Active Workflows — currently enabled in the live repo baseline
 - [ ] auth-tests.yml — Authentication Tests
-- [ ] pr-checks.yml — PR Checks (isolated cache, src/ scope)
-- [ ] html_visual_regression.yml — HTML Visual Regression Screenshots
-
-### 🔒 Opt-In: Security & Quality
-- [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
-- [ ] codeql-analysis.yml — CodeQL SAST analysis
-- [ ] actionlint-audit.yml — Workflow compliance audit (actionlint)
-- [ ] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
-- [ ] auto-fix-common-issues.yml — Auto-Fix Common CI Issues
-- [ ] auto-fix-pr-check.yml — PR Auto-Fix Check
-- [ ] code-quality-coverage-suite.yml — Code Quality & Coverage Suite
 - [ ] audit-qa-suite.yml — Audit & QA Suite (Unified)
-- [x] codeql-alert-fetcher.yml — CodeQL Alert Fetcher (artifact for in-session review)
-
-### 📄 Opt-In: Documentation
-- [ ] documentation-link-checker.yml — Documentation link checker
-- [ ] pages-pre-merge-validation.yml — Pages pre-merge validation
-
-### ⚙️ Opt-In: Infrastructure & Deployment
-- [ ] reference-integrity.yml — Reference integrity + agent size gate
-- [ ] dependency-submission.yml — Resilient dependency submission
+- [ ] data-quality-suite.yml — Data Quality & Determinism Suite
 - [ ] docker-build-push.yml — Build & push Docker image (GHCR)
-- [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
-- [ ] root-org-validation.yml — Root organization validation
-- [ ] agent-registry-validation.yml — Agent registry validation
-- [ ] qa-walkthrough.yml — QA walkthrough agent
-- [ ] token-expiry-monitor.yml — Daily PAT expiry monitor (T-02)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+- [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
+- [ ] test-rag.yml — RAG Module Tests (coverage ≥95%)
+- [ ] scheduled-archival.yml — Scheduled archival
+- [ ] scheduled-dependency-audit.yml — Dependency audit
 
 ### ⚡ Fast-Forward Safe Files to `main`
 
