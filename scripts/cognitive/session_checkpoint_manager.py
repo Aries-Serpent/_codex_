@@ -61,7 +61,7 @@ class CheckpointMetadata:
     schema_version: str = "v1.0"
     compressed: bool = True
     created_by: str = "session-checkpoint-manager"
-    tags: Dict[str, str] = field(default_factory=dict)
+    tags: Dict[str, Any] = field(default_factory=dict)
     lane_bucket: Optional[str] = None
     checkpoint_state: Optional[str] = None
     budget_remaining: Optional[float] = None
@@ -253,7 +253,7 @@ class SessionCheckpointManager:
         decision_history: Optional[List[Dict[str, Any]]] = None,
         repository_state: Optional[Dict[str, Any]] = None,
         context_state: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, str]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
         compress: bool = True,
         *,
         lane_bucket: Optional[str] = None,
@@ -338,6 +338,7 @@ class SessionCheckpointManager:
         checksum = hashlib.sha256(json_bytes).hexdigest()
 
         # Compress if requested
+        compression_applied = False
         if compress and self.compression_algorithm != "none":
             try:
                 if self.compression_algorithm == "zstd":
@@ -345,6 +346,7 @@ class SessionCheckpointManager:
                         cctx = zstd.ZstdCompressor(level=self.compression_level)
                         compressed_bytes = cctx.compress(json_bytes)
                         file_ext = ".json.zst"
+                        compression_applied = True
                     else:
                         logger.warning(
                             "zstd not available; falling back to gzip compression for checkpoint"
@@ -353,20 +355,24 @@ class SessionCheckpointManager:
                             json_bytes, compresslevel=max(1, min(9, self.compression_level))
                         )
                         file_ext = ".json.gz"
+                        compression_applied = True
                 elif self.compression_algorithm == "gzip":
                     compressed_bytes = gzip.compress(
                         json_bytes, compresslevel=self.compression_level
                     )
                     file_ext = ".json.gz"
+                    compression_applied = True
                 else:
                     raise CompressionError(f"Unknown algorithm: {self.compression_algorithm}")
             except Exception as e:
                 logger.warning("Checkpoint compression failed (%s); writing uncompressed payload", e)
                 compressed_bytes = json_bytes
                 file_ext = ".json"
+                compression_applied = False
         else:
             compressed_bytes = json_bytes
             file_ext = ".json"
+            compression_applied = False
 
         compressed_size = len(compressed_bytes)
         compression_ratio = uncompressed_size / compressed_size if compressed_size > 0 else 1.0
@@ -396,7 +402,7 @@ class SessionCheckpointManager:
             compressed_size_bytes=compressed_size,
             compression_ratio=compression_ratio,
             checksum_sha256=checksum,
-            compressed=compress and self.compression_algorithm != "none",
+            compressed=compression_applied,
             tags=metadata_dict,
             lane_bucket=lane_bucket,
             checkpoint_state=checkpoint_state,

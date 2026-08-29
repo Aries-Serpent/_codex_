@@ -97,7 +97,7 @@ class SessionDatabase:
             sqlite3.Error: If schema initialization fails.
             FileNotFoundError: If schema file not found.
         """
-        schema_path = Path(__file__).parent.parent.parent / ".codex" / "session_schema.sql"
+        schema_path = Path(__file__).resolve().parents[3] / ".codex" / "session_schema.sql"
 
         if not schema_path.exists():
             # Fallback: create schema inline if file not found
@@ -110,6 +110,36 @@ class SessionDatabase:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.executescript(schema_sql)
+            conn.commit()
+
+        self._ensure_schema_columns()
+
+    def _ensure_schema_columns(self) -> None:
+        """Add missing session columns for older databases created from the legacy schema."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            existing = {
+                row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()
+            }
+            required_columns = {
+                "lane_bucket": "TEXT",
+                "checkpoint_state": "TEXT",
+                "budget_remaining": "REAL",
+                "estimated_cost": "REAL",
+                "cost_score": "REAL",
+                "tool_name": "TEXT",
+                "tool_complete_call_id": "TEXT",
+                "usage_input_tokens": "INTEGER",
+                "usage_output_tokens": "INTEGER",
+                "credits": "REAL",
+                "blockers": "TEXT",
+                "checkpoint_markers": "TEXT",
+            }
+            for column_name, column_type in required_columns.items():
+                if column_name not in existing:
+                    cursor.execute(
+                        f"ALTER TABLE sessions ADD COLUMN {column_name} {column_type}"
+                    )
             conn.commit()
 
     def _create_inline_schema(self) -> None:
