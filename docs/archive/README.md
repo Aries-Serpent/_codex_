@@ -23,6 +23,16 @@ Archive root-level material when it is historical, superseded, or generated duri
 - Validation dumps and compliance artifacts: `VALIDATION_SUMMARY*`, `validation_summary.json`, `workflow-*report*.json`, `telemetry_report.json`, `semgrep-*.json`, `checksums-*`, `*.sarif`
 - Temporary or ad hoc production artifacts: `*_draft.md`, `*.backup`, `*.tmp`, `*fix_all*.py`, `*repair*.py`, `*validation*runner*.py`, `secrets.txt`, `a.py`, `b.py`, `test_a.py`, `test_b.py`
 
+### 2026-08-29 root hygiene archive map
+
+The current checkout already keeps the repository root limited to active metadata. When a stale duplicate or scratch artifact reappears at the root, it should be classified using the destinations in [`root_hygiene_2026_08_29/README.md`](./root_hygiene_2026_08_29/README.md):
+
+- `docs/archive/phases/` for phase summaries and completion reports
+- `docs/archive/session_reports/` for session/completion summaries
+- `docs/archive/pr_reports/` for PR, governance, and remediation reports
+- `docs/archive/validation/` for validation, CI, and generated artifact dumps
+- `docs/archive/misc/` for scratch scripts, one-off helper files, and temporary data dumps
+
 ## Archive layout
 
 ### pr_reports/
