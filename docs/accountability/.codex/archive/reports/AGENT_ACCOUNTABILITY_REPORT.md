@@ -1,3 +1,30 @@
+## Session: 2026-08-29T04:00:00Z — PR #5560 live workflow gate contract alignment
+
+**Objective:** Resolve the live GitHub `action_required` / zero-job gate by aligning the canonical WEC contract with the active workflow baseline and preserving the current maintainer grant selections.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Confirmed the live gate issue was stale WEC/workflow contract state rather than local test failures or branch drift.
+2. Updated the canonical PR template and WEC docs to remove legacy workflow names and align the active checklist with the current repo baseline.
+3. Re-generated the canonical WEC block and validated the governance gate logic used by `session_wrapup_autofix.py`.
+
+**Validation:**
+- `python3 scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number 5560` → emits the canonical active workflow list with no legacy names.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5560` → passes once the REQ-4 / REQ-5 updates are committed.
+
+**Governance:**
+- REQ-4: This report updated for PR #5560 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current session evidence.
+
+### Agents Used
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-08-29T03:30:00Z — PR #5560 future-session hardening for stale setup validation
 
 **Objective:** Remove the stale setup-step validator assumptions that caused repeated action_required mismatches for future Copilot sessions while preserving the active PR branch context and WEC block.
