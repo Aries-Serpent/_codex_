@@ -11,7 +11,7 @@
 
 **Validation:**
 - `gh pr view 5559 --repo Aries-Serpent/_codex_ --json mergeStateStatus,mergeable` → `mergeable: MERGEABLE` after the conflict resolution commit.
-- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5559` → pass once the final governance files are committed together.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5559` → pass after the final governance edits are committed together.
 
 **Governance:**
 - REQ-4: This archive report updated for PR #5559 in the active session.

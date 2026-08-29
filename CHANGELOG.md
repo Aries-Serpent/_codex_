@@ -4,6 +4,7 @@
 
 ### Fixed (auto-update — PR #5559)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5559 (SHA `5830a83d73`) at 2026-08-29T05:42:00Z [auto-generated]
+- Auto-fix: final merge-conflict resolution governance update for PR #5559 (SHA `dffa6d1ec1`) at 2026-08-29T05:52:00Z [auto-generated]
 
 ### Fixed — PR #5560 live workflow gate contract alignment
 - Corrected the stale WEC contract assumption that kept legacy workflow names in the required checklist while the live repo baseline only permits the current active gates.
