@@ -27,6 +27,18 @@ except ImportError:  # pragma: no cover - direct script execution fallback
 
 logger = logging.getLogger(__name__)
 
+__all__ = [
+    "ContextProvider",
+    "SessionContext",
+    "RecoveryMetadata",
+    "SessionResumeError",
+    "ContextInjectionError",
+    "DependencyResolutionError",
+    "WarmupError",
+    "SessionResumeEngine",
+    "resume_session",
+]
+
 
 # ============================================================================
 # Data Models
@@ -68,6 +80,16 @@ class SessionContext:
     memory_snapshot: Dict[str, Any]
     execution_progress: Dict[str, Any]
     decision_history: list = field(default_factory=list)
+
+    # Lane and cost metadata
+    lane_bucket: Optional[str] = None
+    checkpoint_state: Optional[str] = None
+    budget_remaining: Optional[float] = None
+    estimated_cost: Optional[float] = None
+    cost_score: Optional[float] = None
+    task_id: Optional[str] = None
+    last_successful_stage: Optional[str] = None
+    resume_from_checkpoint_id: Optional[str] = None
 
     # Injected context
     observation_data: Dict[str, Any] = field(default_factory=dict)
@@ -196,7 +218,29 @@ class SessionResumeEngine:
         except (CheckpointNotFoundError, CheckpointCorruptedError) as e:
             raise SessionResumeError(f"Failed to load checkpoint: {e}")
 
-        # Build session context
+        metadata = checkpoint_doc.get("metadata", {}) or {}
+
+        def _metadata_value(primary: Any, fallback: Any) -> Any:
+            if primary is not None:
+                return primary
+            return fallback
+
+        def _coerce_numeric(value: Any) -> Any:
+            if value is None or value == "":
+                return None
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return value
+            if isinstance(value, str):
+                stripped = value.strip()
+                if not stripped or stripped.lower() in {"none", "null"}:
+                    return None
+                try:
+                    return float(stripped)
+                except ValueError:
+                    return value
+            return value
+
+        # Build session context preserving valid zero and empty values without lossy coercion.
         context = SessionContext(
             session_id=checkpoint_doc.get("session_id", "unknown"),
             agent_id=checkpoint_doc.get("agent_state", {}).get("agent_id", "unknown"),
@@ -206,11 +250,32 @@ class SessionResumeEngine:
             memory_snapshot=checkpoint_doc.get("memory_snapshot", {}),
             execution_progress=checkpoint_doc.get("execution_progress", {}),
             decision_history=checkpoint_doc.get("decision_history", []),
+            lane_bucket=_metadata_value(checkpoint_doc.get("lane_bucket"), metadata.get("lane_bucket")),
+            checkpoint_state=_metadata_value(checkpoint_doc.get("checkpoint_state"), metadata.get("checkpoint_state")),
+            budget_remaining=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("budget_remaining"), metadata.get("budget_remaining"))
+            ),
+            estimated_cost=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("estimated_cost"), metadata.get("estimated_cost"))
+            ),
+            cost_score=_coerce_numeric(
+                _metadata_value(checkpoint_doc.get("cost_score"), metadata.get("cost_score"))
+            ),
+            task_id=_metadata_value(checkpoint_doc.get("task_id"), metadata.get("task_id")),
+            last_successful_stage=_metadata_value(
+                checkpoint_doc.get("last_successful_stage"), metadata.get("last_successful_stage")
+            ),
+            resume_from_checkpoint_id=_metadata_value(
+                checkpoint_doc.get("resume_from_checkpoint_id"), metadata.get("resume_from_checkpoint_id")
+            ),
         )
 
         # Apply environment overrides
         if environment_overrides:
             context.agent_state.update(environment_overrides)
+            for key, value in environment_overrides.items():
+                if key in {"lane_bucket", "checkpoint_state", "budget_remaining", "estimated_cost", "cost_score", "task_id", "last_successful_stage", "resume_from_checkpoint_id"}:
+                    setattr(context, key, value)
 
         # Inject context from providers
         try:
@@ -227,6 +292,16 @@ class SessionResumeEngine:
             # Augment with context state (from Track 10.3 OODA)
             context_state = checkpoint_doc.get("context_state", {})
             context.decision_context.update(context_state)
+            context.recovery_metadata.update({
+                "lane_bucket": context.lane_bucket,
+                "checkpoint_state": context.checkpoint_state,
+                "budget_remaining": context.budget_remaining,
+                "estimated_cost": context.estimated_cost,
+                "cost_score": context.cost_score,
+                "task_id": context.task_id,
+                "last_successful_stage": context.last_successful_stage,
+                "resume_from_checkpoint_id": context.resume_from_checkpoint_id,
+            })
 
         except Exception as e:
             raise ContextInjectionError(f"Context injection failed: {e}")

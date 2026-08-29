@@ -11,6 +11,7 @@ from click.testing import CliRunner
 
 from aries_serpent_core.logging.chronicle_cost import (
     ChronicleStore,
+    SessionRecord,
     analyze_costs,
     build_chronicle_index,
     build_standup_report,
@@ -202,6 +203,47 @@ def test_event_rows_count_only_tool_events(tmp_path: Path) -> None:
     records = ChronicleStore(database).load_sessions()
 
     assert records[0].tool_calls == 1
+
+
+def test_analyze_costs_keeps_lane_scope_and_cost_proxy_consistent() -> None:
+    records = [
+        SessionRecord(
+            session_id="S-lane-a",
+            created_at="2026-08-01T00:00:00Z",
+            lane_bucket="P2",
+            tool_calls=3,
+            repeated_tool_calls=0,
+            estimated_cost=70.0,
+            budget_remaining=150,
+            commits=0,
+            tests=0,
+            credits=None,
+            checkpoints=0,
+            blockers=[],
+        ),
+        SessionRecord(
+            session_id="S-lane-b",
+            created_at="2026-08-01T00:10:00Z",
+            lane_bucket="P2",
+            tool_calls=2,
+            repeated_tool_calls=0,
+            estimated_cost=5.0,
+            budget_remaining=90,
+            commits=0,
+            tests=0,
+            credits=None,
+            checkpoints=0,
+            blockers=[],
+        ),
+    ]
+
+    report = analyze_costs(records, [], warning_budget=100, lane="P2")
+    empty_scope_report = analyze_costs(records, [], warning_budget=100, lane="")
+
+    assert report["scope"]["lane"] == "P2"
+    assert report["lane_pattern"] == "fragmented"
+    assert empty_scope_report["scope"]["lane"] == "unknown"
+    assert empty_scope_report["lane_focus"] == "unknown"
 
 
 def test_standup_materializes_diagnostics_iterable() -> None:

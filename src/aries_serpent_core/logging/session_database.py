@@ -97,7 +97,7 @@ class SessionDatabase:
             sqlite3.Error: If schema initialization fails.
             FileNotFoundError: If schema file not found.
         """
-        schema_path = Path(__file__).parent.parent.parent / ".codex" / "session_schema.sql"
+        schema_path = Path(__file__).resolve().parents[3] / ".codex" / "session_schema.sql"
 
         if not schema_path.exists():
             # Fallback: create schema inline if file not found
@@ -110,6 +110,36 @@ class SessionDatabase:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.executescript(schema_sql)
+            conn.commit()
+
+        self._ensure_schema_columns()
+
+    def _ensure_schema_columns(self) -> None:
+        """Add missing session columns for older databases created from the legacy schema."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            existing = {
+                row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()
+            }
+            required_columns = {
+                "lane_bucket": "TEXT",
+                "checkpoint_state": "TEXT",
+                "budget_remaining": "REAL",
+                "estimated_cost": "REAL",
+                "cost_score": "REAL",
+                "tool_name": "TEXT",
+                "tool_complete_call_id": "TEXT",
+                "usage_input_tokens": "INTEGER",
+                "usage_output_tokens": "INTEGER",
+                "credits": "REAL",
+                "blockers": "TEXT",
+                "checkpoint_markers": "TEXT",
+            }
+            for column_name, column_type in required_columns.items():
+                if column_name not in existing:
+                    cursor.execute(
+                        f"ALTER TABLE sessions ADD COLUMN {column_name} {column_type}"
+                    )
             conn.commit()
 
     def _create_inline_schema(self) -> None:
@@ -129,6 +159,18 @@ class SessionDatabase:
             status TEXT NOT NULL CHECK (status IN ('pending', 'in-progress', 'complete', 'failed')),
             agent_name TEXT,
             duration_minutes INTEGER,
+            lane_bucket TEXT,
+            checkpoint_state TEXT,
+            budget_remaining REAL,
+            estimated_cost REAL,
+            cost_score REAL,
+            tool_name TEXT,
+            tool_complete_call_id TEXT,
+            usage_input_tokens INTEGER,
+            usage_output_tokens INTEGER,
+            credits REAL,
+            blockers TEXT,
+            checkpoint_markers TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(session_id)
@@ -243,8 +285,11 @@ class SessionDatabase:
                     cursor.execute(
                         """
                         INSERT INTO sessions
-                        (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes,
+                         lane_bucket, checkpoint_state, budget_remaining, estimated_cost, cost_score,
+                         tool_name, tool_complete_call_id, usage_input_tokens, usage_output_tokens,
+                         credits, blockers, checkpoint_markers)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,  # noqa: E501
                         (
                             session["session_id"],
@@ -255,6 +300,18 @@ class SessionDatabase:
                             session["status"],
                             session.get("agent_name"),
                             session.get("duration_minutes"),
+                            session.get("lane_bucket"),
+                            session.get("checkpoint_state"),
+                            session.get("budget_remaining"),
+                            session.get("estimated_cost"),
+                            session.get("cost_score"),
+                            session.get("tool_name"),
+                            session.get("tool_complete_call_id"),
+                            session.get("usage_input_tokens"),
+                            session.get("usage_output_tokens"),
+                            session.get("credits"),
+                            session.get("blockers"),
+                            session.get("checkpoint_markers"),
                         ),
                     )
 
@@ -289,6 +346,38 @@ class SessionDatabase:
                                 """,
                                 (session["session_id"], key, str(value)),
                             )
+
+                    # Persist lane-aware metadata on the session's metadata table even when
+                    # the primary sessions table doesn't expose a dedicated column for it.
+                    lane_metadata = {
+                        key: value
+                        for key, value in session.items()
+                        if key
+                        in {
+                            "lane_bucket",
+                            "checkpoint_state",
+                            "budget_remaining",
+                            "estimated_cost",
+                            "cost_score",
+                            "task_id",
+                            "last_successful_stage",
+                            "resume_from_checkpoint_id",
+                            "checkpoint_markers",
+                            "blockers",
+                            "usage_input_tokens",
+                            "usage_output_tokens",
+                            "credits",
+                        }
+                        and value is not None
+                    }
+                    for key, value in lane_metadata.items():
+                        cursor.execute(
+                            """
+                            INSERT OR REPLACE INTO session_metadata (session_id, key, value)
+                            VALUES (?, ?, ?)
+                            """,
+                            (session["session_id"], key, str(value)),
+                        )
 
                     # Insert patterns if provided
                     if "patterns" in session:

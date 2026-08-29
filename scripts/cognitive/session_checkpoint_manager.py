@@ -11,6 +11,7 @@ Phase: 10.1 - Session Checkpoint/Resume System
 import hashlib
 import json
 import logging
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -25,6 +26,20 @@ except ImportError:
 import gzip
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "CheckpointMetadata",
+    "DeletionResult",
+    "ValidationError",
+    "ValidationResult",
+    "SessionCheckpointError",
+    "CheckpointNotFoundError",
+    "CheckpointCorruptedError",
+    "CompressionError",
+    "StorageError",
+    "ValidationFailedError",
+    "SessionCheckpointManager",
+]
 
 
 # ============================================================================
@@ -47,7 +62,15 @@ class CheckpointMetadata:
     schema_version: str = "v1.0"
     compressed: bool = True
     created_by: str = "session-checkpoint-manager"
-    tags: Dict[str, str] = field(default_factory=dict)
+    tags: Dict[str, Any] = field(default_factory=dict)
+    lane_bucket: Optional[str] = None
+    checkpoint_state: Optional[str] = None
+    budget_remaining: Optional[float] = None
+    estimated_cost: Optional[float] = None
+    cost_score: Optional[float] = None
+    task_id: Optional[str] = None
+    last_successful_stage: Optional[str] = None
+    resume_from_checkpoint_id: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary, handling datetime serialization."""
@@ -196,6 +219,42 @@ class SessionCheckpointManager:
         (self.storage_path / "metadata").mkdir(exist_ok=True)
         (self.storage_path / "archive").mkdir(exist_ok=True)
 
+    def _validate_storage_component(self, value: str, field_name: str) -> str:
+        """Return a safe storage component and reject traversal or malformed identifiers."""
+        if value is None:
+            raise StorageError(f"{field_name} is required")
+
+        candidate = str(value).strip()
+        if not candidate or candidate in {".", ".."}:
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+        if candidate.startswith(("/", "\\")) or candidate.endswith(("/", "\\")):
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", candidate):
+            raise StorageError(f"Invalid {field_name}: {value!r}")
+
+        return candidate
+
+    def _validate_checkpoint_id(self, checkpoint_id: str) -> str:
+        """Validate checkpoint IDs before filesystem access or schema checks."""
+        if checkpoint_id is None:
+            raise StorageError("checkpoint_id is required")
+
+        candidate = str(checkpoint_id).strip()
+        if not candidate or not re.fullmatch(r"cp_[A-Za-z0-9_]+", candidate):
+            raise StorageError(f"Invalid checkpoint_id: {checkpoint_id!r}")
+        return candidate
+
+    def _resolve_session_dir(self, session_id: str) -> Path:
+        """Return a checkpoint directory guaranteed to stay under the v1 root."""
+        safe_session_id = self._validate_storage_component(session_id, "session_id")
+        base_dir = (self.storage_path / "v1").resolve()
+        candidate_dir = (base_dir / safe_session_id).resolve()
+        try:
+            candidate_dir.relative_to(base_dir)
+        except ValueError as exc:
+            raise StorageError(f"Invalid session_id: {session_id!r}") from exc
+        return candidate_dir
+
     def create_checkpoint(
         self,
         session_id: str,
@@ -205,8 +264,17 @@ class SessionCheckpointManager:
         decision_history: Optional[List[Dict[str, Any]]] = None,
         repository_state: Optional[Dict[str, Any]] = None,
         context_state: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, str]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
         compress: bool = True,
+        *,
+        lane_bucket: Optional[str] = None,
+        task_id: Optional[str] = None,
+        checkpoint_state: Optional[str] = None,
+        budget_remaining: Optional[float] = None,
+        estimated_cost: Optional[float] = None,
+        cost_score: Optional[float] = None,
+        last_successful_stage: Optional[str] = None,
+        resume_from_checkpoint_id: Optional[str] = None,
     ) -> CheckpointMetadata:
         """
         Create and store a checkpoint.
@@ -232,6 +300,20 @@ class SessionCheckpointManager:
         timestamp = datetime.utcnow()
 
         # Build checkpoint document
+        metadata_dict = dict(metadata or {})
+        for key, value in {
+            "lane_bucket": lane_bucket,
+            "task_id": task_id,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
+            "last_successful_stage": last_successful_stage,
+            "resume_from_checkpoint_id": resume_from_checkpoint_id,
+        }.items():
+            if value is not None:
+                metadata_dict[key] = value
+
         checkpoint_doc = {
             "schema_version": "v1.0",
             "checkpoint_id": checkpoint_id,
@@ -244,7 +326,15 @@ class SessionCheckpointManager:
             "decision_history": decision_history or [],
             "repository_state": repository_state or {},
             "context_state": context_state or {},
-            "metadata": metadata or {},
+            "metadata": metadata_dict,
+            "lane_bucket": lane_bucket,
+            "checkpoint_state": checkpoint_state,
+            "budget_remaining": budget_remaining,
+            "estimated_cost": estimated_cost,
+            "cost_score": cost_score,
+            "task_id": task_id,
+            "last_successful_stage": last_successful_stage,
+            "resume_from_checkpoint_id": resume_from_checkpoint_id,
         }
 
         # Serialize to JSON
@@ -259,34 +349,47 @@ class SessionCheckpointManager:
         checksum = hashlib.sha256(json_bytes).hexdigest()
 
         # Compress if requested
+        compression_applied = False
         if compress and self.compression_algorithm != "none":
             try:
                 if self.compression_algorithm == "zstd":
-                    if zstd is None:
-                        raise CompressionError(
-                            "zstd not installed, install with: pip install zstandard"
+                    if zstd is not None:
+                        cctx = zstd.ZstdCompressor(level=self.compression_level)
+                        compressed_bytes = cctx.compress(json_bytes)
+                        file_ext = ".json.zst"
+                        compression_applied = True
+                    else:
+                        logger.warning(
+                            "zstd not available; falling back to gzip compression for checkpoint"
                         )
-                    cctx = zstd.ZstdCompressor(level=self.compression_level)
-                    compressed_bytes = cctx.compress(json_bytes)
-                    file_ext = ".json.zst"
+                        compressed_bytes = gzip.compress(
+                            json_bytes, compresslevel=max(1, min(9, self.compression_level))
+                        )
+                        file_ext = ".json.gz"
+                        compression_applied = True
                 elif self.compression_algorithm == "gzip":
                     compressed_bytes = gzip.compress(
                         json_bytes, compresslevel=self.compression_level
                     )
                     file_ext = ".json.gz"
+                    compression_applied = True
                 else:
                     raise CompressionError(f"Unknown algorithm: {self.compression_algorithm}")
             except Exception as e:
-                raise CompressionError(f"Compression failed: {e}")
+                logger.warning("Checkpoint compression failed (%s); writing uncompressed payload", e)
+                compressed_bytes = json_bytes
+                file_ext = ".json"
+                compression_applied = False
         else:
             compressed_bytes = json_bytes
             file_ext = ".json"
+            compression_applied = False
 
         compressed_size = len(compressed_bytes)
         compression_ratio = uncompressed_size / compressed_size if compressed_size > 0 else 1.0
 
         # Determine storage path
-        session_dir = self.storage_path / "v1" / session_id
+        session_dir = self._resolve_session_dir(session_id)
         session_dir.mkdir(exist_ok=True, parents=True)
 
         checkpoint_file = session_dir / f"checkpoint_{checkpoint_id}{file_ext}"
@@ -310,7 +413,16 @@ class SessionCheckpointManager:
             compressed_size_bytes=compressed_size,
             compression_ratio=compression_ratio,
             checksum_sha256=checksum,
-            compressed=compress and self.compression_algorithm != "none",
+            compressed=compression_applied,
+            tags=metadata_dict,
+            lane_bucket=lane_bucket,
+            checkpoint_state=checkpoint_state,
+            budget_remaining=budget_remaining,
+            estimated_cost=estimated_cost,
+            cost_score=cost_score,
+            task_id=task_id,
+            last_successful_stage=last_successful_stage,
+            resume_from_checkpoint_id=resume_from_checkpoint_id,
         )
 
         # Update metrics
@@ -347,9 +459,14 @@ class SessionCheckpointManager:
             CheckpointCorruptedError: If corruption detected and not recoverable
         """
         validation_mode = validation_mode or self.validation_mode
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
+        if session_id is not None:
+            safe_session_id = self._validate_storage_component(session_id, "session_id")
+        else:
+            safe_session_id = None
 
         # Find checkpoint file
-        checkpoint_file = self._find_checkpoint(checkpoint_id, session_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id, safe_session_id)
         if not checkpoint_file:
             raise CheckpointNotFoundError(f"Checkpoint not found: {checkpoint_id}")
 
@@ -373,15 +490,33 @@ class SessionCheckpointManager:
         except Exception as e:
             if fallback_on_corruption:
                 logger.warning(f"Checkpoint read failed: {e}, attempting recovery")
-                checkpoint_doc = self._recover_checkpoint(checkpoint_id)
+                checkpoint_doc = self._recover_checkpoint(safe_checkpoint_id)
                 if checkpoint_doc is None:
-                    raise CheckpointCorruptedError(checkpoint_id, str(e))
+                    raise CheckpointCorruptedError(safe_checkpoint_id, str(e))
             else:
-                raise CheckpointCorruptedError(checkpoint_id, str(e))
+                raise CheckpointCorruptedError(safe_checkpoint_id, str(e))
+
+        if not isinstance(checkpoint_doc, dict):
+            raise CheckpointCorruptedError(safe_checkpoint_id, "Checkpoint payload is not a JSON object")
+        if checkpoint_doc.get("checkpoint_id") not in (None, safe_checkpoint_id):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Checkpoint schema mismatch: payload checkpoint_id={checkpoint_doc.get('checkpoint_id')!r}",
+            )
+        if safe_session_id is not None and checkpoint_doc.get("session_id") not in (None, safe_session_id):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Checkpoint schema mismatch: payload session_id={checkpoint_doc.get('session_id')!r}",
+            )
+        if checkpoint_doc.get("schema_version") not in (None, "v1.0"):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Unsupported checkpoint schema version: {checkpoint_doc.get('schema_version')!r}",
+            )
 
         # Validate if requested
         if validation_mode != "lenient":
-            result = self.validate_checkpoint(checkpoint_id, quick_check=False)
+            result = self.validate_checkpoint(safe_checkpoint_id, quick_check=False)
             if not result.is_valid and validation_mode == "strict":
                 raise ValidationFailedError(f"Checkpoint validation failed: {result.errors}")
             elif not result.is_valid:
@@ -391,7 +526,7 @@ class SessionCheckpointManager:
         if self.enable_metrics:
             self.metrics["checkpoints_restored"] += 1
 
-        logger.info(f"Checkpoint restored: {checkpoint_id}")
+        logger.info(f"Checkpoint restored: {safe_checkpoint_id}")
 
         return checkpoint_doc
 
@@ -422,8 +557,8 @@ class SessionCheckpointManager:
         """
         checkpoints = []
 
-        if session_id:
-            session_dir = self.storage_path / "v1" / session_id
+        if session_id is not None:
+            session_dir = self._resolve_session_dir(session_id)
             if not session_dir.exists():
                 return []
             checkpoint_files = list(session_dir.glob("checkpoint_*"))
@@ -434,12 +569,20 @@ class SessionCheckpointManager:
         for cp_file in checkpoint_files:
             try:
                 session = cp_file.parent.name
+                candidate_name = cp_file.name
+                for suffix in (".json.zst", ".json.gz", ".json", ".zst", ".gz"):
+                    if candidate_name.endswith(suffix):
+                        candidate_name = candidate_name[: -len(suffix)]
+                        break
+                if candidate_name.startswith("checkpoint_"):
+                    candidate_name = candidate_name[len("checkpoint_") :]
+                checkpoint_id = self._validate_checkpoint_id(candidate_name)
 
                 # Try to read file for more info
                 size = cp_file.stat().st_size
 
                 meta = CheckpointMetadata(
-                    checkpoint_id=cp_file.stem,
+                    checkpoint_id=checkpoint_id,
                     session_id=session,
                     timestamp=datetime.fromtimestamp(cp_file.stat().st_mtime),
                     storage_path=str(cp_file),
@@ -482,6 +625,7 @@ class SessionCheckpointManager:
         Returns:
             ValidationResult with integrity score
         """
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
         start_time = datetime.utcnow()
         skip_fields = skip_fields or []
         errors = []
@@ -489,7 +633,7 @@ class SessionCheckpointManager:
         checks_passed = 0
         checks_total = 0
 
-        checkpoint_file = self._find_checkpoint(checkpoint_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id)
         if not checkpoint_file:
             return ValidationResult(
                 is_valid=False,
@@ -498,7 +642,7 @@ class SessionCheckpointManager:
                     ValidationError(
                         category="missing",
                         field="checkpoint",
-                        message=f"Checkpoint not found: {checkpoint_id}",
+                        message=f"Checkpoint not found: {safe_checkpoint_id}",
                         severity="critical",
                     )
                 ],
@@ -509,6 +653,7 @@ class SessionCheckpointManager:
 
         # Check 1: File exists and readable
         checks_total += 1
+        data = None
         try:
             data = checkpoint_file.read_bytes()
             checks_passed += 1
@@ -522,7 +667,9 @@ class SessionCheckpointManager:
                 )
             )
 
-        if not data:
+        if data is None:
+            pass
+        elif not data:
             checks_total += 1
             errors.append(
                 ValidationError(
@@ -663,9 +810,10 @@ class SessionCheckpointManager:
         Raises:
             CheckpointNotFoundError: If checkpoint doesn't exist
         """
-        checkpoint_file = self._find_checkpoint(checkpoint_id)
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id)
         if not checkpoint_file:
-            raise CheckpointNotFoundError(f"Checkpoint not found: {checkpoint_id}")
+            raise CheckpointNotFoundError(f"Checkpoint not found: {safe_checkpoint_id}")
 
         bytes_freed = checkpoint_file.stat().st_size
 
@@ -676,13 +824,13 @@ class SessionCheckpointManager:
                 raise StorageError("File deletion verification failed")
 
             # Log deletion
-            self._log_deletion(checkpoint_id, audit_reason)
+            self._log_deletion(safe_checkpoint_id, audit_reason)
 
-            logger.info(f"Checkpoint deleted: {checkpoint_id} ({bytes_freed/1024:.1f} KB)")
+            logger.info(f"Checkpoint deleted: {safe_checkpoint_id} ({bytes_freed/1024:.1f} KB)")
 
             return DeletionResult(
                 success=True,
-                checkpoint_id=checkpoint_id,
+                checkpoint_id=safe_checkpoint_id,
                 reason=audit_reason,
                 bytes_freed=bytes_freed,
             )
@@ -697,8 +845,9 @@ class SessionCheckpointManager:
         self, checkpoint_id: str, session_id: Optional[str] = None
     ) -> Optional[Path]:
         """Find checkpoint file."""
-        if session_id:
-            search_dir = self.storage_path / "v1" / session_id
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
+        if session_id is not None:
+            search_dir = self._resolve_session_dir(session_id)
             if not search_dir.exists():
                 return None
             candidates = list(search_dir.glob("checkpoint_*"))
@@ -706,11 +855,11 @@ class SessionCheckpointManager:
             candidates = list(self.storage_path.glob("v1/*/checkpoint_*"))
 
         for candidate in candidates:
-            if checkpoint_id in candidate.name:
+            if safe_checkpoint_id in candidate.name:
                 return candidate
 
         for candidate in candidates:
-            if self._checkpoint_file_matches_id(candidate, checkpoint_id):
+            if self._checkpoint_file_matches_id(candidate, safe_checkpoint_id):
                 return candidate
 
         return None

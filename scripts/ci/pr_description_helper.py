@@ -136,15 +136,20 @@ def extract_and_preserve_wec_state(
     except ImportError as e:
         logger.warning(f"Could not import session_wrapup_autofix: {e}. Using default state.")
         return {
-            "pre-merge-validation.yml": True,
-            "comment-review-gate.yml": True,
             "deferral-language-gate.yml": True,
             "agent-auth-delegation.yml": True,
             "workflow-execution-gate.yml": True,
-            "copilot-agent-checkin.yml": False,
-            "copilot-agent-session-done.yml": False,
-            "copilot-iterative-self-healing.yml": False,
             "cost-gate.yml": True,
+            "auto-approve-workflows": True,
+            "auth-tests.yml": False,
+            "audit-qa-suite.yml": False,
+            "data-quality-suite.yml": False,
+            "docker-build-push.yml": False,
+            "nox_gates.yml": False,
+            "security-scanning-suite.yml": False,
+            "test-rag.yml": False,
+            "scheduled-archival.yml": False,
+            "scheduled-dependency-audit.yml": False,
         }
 
 
@@ -174,7 +179,7 @@ def build_wec_block(existing_state: Optional[Dict[str, bool]] = None) -> str:
     except ImportError as e:
         logger.error(f"Could not import session_wrapup_autofix: {e}")
         # Fallback to minimal WEC
-        return "## 🔄 Workflow Execution Checklist\n\nWorkflows can be skipped/dispatched by updating these checkboxes:\n\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n"
+        return "## 🔄 Workflow Execution Checklist\n\nWorkflows can be skipped/dispatched by updating these checkboxes:\n\n- [x] deferral-language-gate.yml\n- [x] agent-auth-delegation.yml\n- [x] workflow-execution-gate.yml\n- [x] cost-gate.yml\n- [x] auto-approve-workflows\n"
 
 
 def compute_body_hash(body_without_wec: str) -> str:

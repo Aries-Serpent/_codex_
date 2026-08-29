@@ -12,6 +12,18 @@ CREATE TABLE IF NOT EXISTS sessions (
     status TEXT NOT NULL CHECK (status IN ('pending', 'in-progress', 'complete', 'failed')),
     agent_name TEXT,
     duration_minutes INTEGER,
+    lane_bucket TEXT,
+    checkpoint_state TEXT,
+    budget_remaining REAL,
+    estimated_cost REAL,
+    cost_score REAL,
+    tool_name TEXT,
+    tool_complete_call_id TEXT,
+    usage_input_tokens INTEGER,
+    usage_output_tokens INTEGER,
+    credits REAL,
+    blockers TEXT,
+    checkpoint_markers TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(session_id)
@@ -99,8 +111,7 @@ CREATE INDEX IF NOT EXISTS idx_outcomes_session ON session_outcomes(session_id);
 
 -- Covering indices for performance (include frequently selected columns)
 -- Allows index-only scans without accessing main table
-CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC)
-    INCLUDE (agent_name, branch);
+CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC);
 
 -- SQLite Performance Optimizations
 -- Enable Write-Ahead Logging for concurrent access
