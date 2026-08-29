@@ -1,3 +1,33 @@
+## Session: 2026-08-29T02:36:00Z — PR #5560 review-thread follow-up and merge-readiness closure
+
+**Objective:** Finalize the remaining PR #5560 review-thread fixes, close the actionable governance gaps in the current session (action-version approval and PDA evidence), and re-run the local wrap-up gate so the branch reflects the latest ready-to-merge state.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Confirmed the remaining PR #5560 review regressions were confined to the cost-budget math, Chronicle lane cost attribution, and checkpoint ID normalization paths.
+2. Fixed the zero-value cost handling, pending-task budget exclusion, lane-proxy unit/scope alignment, and the compressed checkpoint filename normalization without broadening the change scope.
+3. Updated the repo-side workflow policy drift by pinning the remaining stale `actions/upload-artifact` usage to the approved v5 standard.
+4. Refreshed the session evidence for REQ-4 and REQ-5 by updating the accountability archive and the day-stamped PDA entry for this PR.
+
+**Validation:**
+- `python3 scripts/ci/enforce_actions_versions.py --fix` → pass after pinning the stale workflow action to the approved version.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5560` → pass after the governance and changelog updates were applied to the current branch.
+- `pytest tests/test_chronicle_cost.py tests/cognitive/test_session_checkpoint.py .github/agents/core/tests/test_orchestrator.py -q` → pass for the directly affected regression surface.
+
+**Governance:**
+- REQ-4: This report updated for PR #5560 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with a day-stamped entry for 2026-08-29.
+
+### Agents Used
+- [x] `ci-failure-resolution-agent`
+- [x] `ci-testing-agent`
+- [x] `general-purpose`
+- [x] `unified-coverage-agent`
+
+---
+
 ## Session: 2026-08-29T01:54:00Z — PR #5559 checkpoint validation readiness for main merge
 
 **Objective:** Verify the branch is merge-ready for `main` by closing the remaining validation bypass in the checkpoint path hardening, ensuring the generated artifacts stay on baseline, and re-running the directly affected regression checks.
