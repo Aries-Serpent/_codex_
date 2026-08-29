@@ -427,13 +427,34 @@ class TestCheckpointValidation:
             memory_snapshot=sample_checkpoint_state["memory_snapshot"],
             execution_progress=sample_checkpoint_state["execution_progress"],
         )
-        
+
         result = checkpoint_manager.validate_checkpoint(
             meta.checkpoint_id,
             quick_check=True
         )
-        
+
         assert result.validation_time_ms < 100  # Should be fast
+
+    def test_validate_unreadable_checkpoint_returns_failure(self, checkpoint_manager, monkeypatch):
+        """Validation should fail gracefully for unreadable checkpoint files."""
+        meta = checkpoint_manager.create_checkpoint(
+            session_id="S001",
+            agent_state={"agent_id": "test-agent"},
+            memory_snapshot={},
+            execution_progress={"current_task": "run validation"},
+        )
+        checkpoint_file = checkpoint_manager._find_checkpoint(meta.checkpoint_id)
+        assert checkpoint_file is not None
+
+        def crashy_read_bytes(self):
+            raise OSError("simulated unreadable checkpoint")
+
+        monkeypatch.setattr(type(checkpoint_file), "read_bytes", crashy_read_bytes)
+
+        result = checkpoint_manager.validate_checkpoint(meta.checkpoint_id)
+
+        assert result.is_valid is False
+        assert any(error.category == "file_read" for error in result.errors)
 
 
 # ============================================================================

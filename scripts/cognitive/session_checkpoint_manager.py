@@ -653,6 +653,7 @@ class SessionCheckpointManager:
 
         # Check 1: File exists and readable
         checks_total += 1
+        data = b""
         try:
             data = checkpoint_file.read_bytes()
             checks_passed += 1
