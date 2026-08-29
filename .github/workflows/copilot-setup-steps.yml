@@ -71,10 +71,21 @@ jobs:
       COPILOT_AGENT_DEDUPLICATION_ENABLED: ${{ vars.COPILOT_AGENT_DEDUPLICATION_ENABLED || 'true' }}
       COPILOT_AGENT_TURN_ISOLATION_ENABLED: ${{ vars.COPILOT_AGENT_TURN_ISOLATION_ENABLED || 'true' }}
 
-      LFS_DIAGNOSTICS_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
-      LFS_FETCH_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}
-      LFS_TARGETED_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
-      LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}
+      LFS_DIAGNOSTICS_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' &&
+        (inputs.lfs_mode == 'full' ||
+        (inputs.lfs_mode == 'targeted' &&
+        inputs.lfs_include_paths != '')) }}
+      LFS_FETCH_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' &&
+        (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}
+      LFS_TARGETED_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' &&
+        inputs.lfs_mode == 'targeted' &&
+        inputs.lfs_include_paths != '' }}
+      LFS_FULL_ENABLED: >-
+        ${{ github.event_name == 'workflow_dispatch' &&
+        inputs.lfs_mode == 'full' }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
     - name: "📦 Checkout Repository (baseline: no LFS content)"
@@ -143,12 +154,17 @@ jobs:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
-      run: "echo \"::group::Session Access Probe\"\nif ! python3 scripts/ci/session_access_probe.py;\n        \ then\n  echo \"⚠️ Access probe failed (non-blocking) — agent\
-        \ will use local-FS fallback\"\n  echo \"ACCESS_REST=unknown\"          >>\
-        \ \"$GITHUB_ENV\"\n  echo \"ACCESS_GRAPHQL=unknown\"       >> \"$GITHUB_ENV\"\
-        \n  echo \"ACCESS_GH_CLI=unknown\"        >> \"$GITHUB_ENV\"\n  echo \"ACCESS_CODEQL_CLI=unknown\"\
-        \    >> \"$GITHUB_ENV\"\n  echo \"ACCESS_RECOMMENDED_METHOD=local_fs\" >>\
-        \ \"$GITHUB_ENV\"\nfi\necho \"::endgroup::\"\n"
+      run: |
+        echo "::group::Session Access Probe"
+        if ! python3 scripts/ci/session_access_probe.py; then
+          echo "⚠️ Access probe failed (non-blocking) — agent will use local-FS fallback"
+          echo "ACCESS_REST=unknown" >> "$GITHUB_ENV"
+          echo "ACCESS_GRAPHQL=unknown" >> "$GITHUB_ENV"
+          echo "ACCESS_GH_CLI=unknown" >> "$GITHUB_ENV"
+          echo "ACCESS_CODEQL_CLI=unknown" >> "$GITHUB_ENV"
+          echo "ACCESS_RECOMMENDED_METHOD=local_fs" >> "$GITHUB_ENV"
+        fi
+        echo "::endgroup::"
     - name: "🧠 Autonomous RAG Context Build (PR context + RAG query + incremental index)"
       id: rag_context
       continue-on-error: true
@@ -157,12 +173,20 @@ jobs:
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: "echo \"::group::Autonomous RAG Context Build\"\nif [ -n \"${GITHUB_PR_NUMBER:-}\"\
-        \ ]; then\n  if ! python3 scripts/ci/autonomous_rag_context.py --pr \"${GITHUB_PR_NUMBER}\"\
-        ; then\n    echo \"⚠️ RAG context build failed (non-blocking) —\
-        \ agent will use cached context\"\n  fi\nelif ! python3 scripts/ci/autonomous_rag_context.py;\n        \ then\n  echo \"⚠️ RAG context build failed (non-blocking) —\
-        \ agent will use cached context\"\nfi\nif [ -f .codex/session_access_strategy.json\
-        \ ]; then\n  echo \"--- Access Strategy ---\"\n  cat .codex/session_access_strategy.json\n        fi\necho \"::endgroup::\"\n"
+      run: |
+        echo "::group::Autonomous RAG Context Build"
+        if [ -n "${GITHUB_PR_NUMBER:-}" ]; then
+          if ! python3 scripts/ci/autonomous_rag_context.py --pr "${GITHUB_PR_NUMBER}"; then
+            echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+          fi
+        elif ! python3 scripts/ci/autonomous_rag_context.py; then
+          echo "⚠️ RAG context build failed (non-blocking) — agent will use cached context"
+        fi
+        if [ -f .codex/session_access_strategy.json ]; then
+          echo "--- Access Strategy ---"
+          cat .codex/session_access_strategy.json
+        fi
+        echo "::endgroup::"
     - name: "Token contract warning gate"
       id: token_contract
       continue-on-error: true
