@@ -13,6 +13,7 @@ Run with: pytest -q tests/test_import_smoke.py
 
 from __future__ import annotations
 
+import _socket
 import importlib
 import importlib.util
 import os

@@ -42,8 +42,8 @@ name: Copilot Agent Environment Setup
     - .github/workflows/copilot-setup-steps.yml
     - .codex/agent_environment_config.yaml
 env:
-  PYTHON_VERSION: '3.12'
-  NODE_VERSION: '22'
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
   RUST_VERSION: stable
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
