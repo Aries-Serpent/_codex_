@@ -94,59 +94,29 @@ _WEC_MARKER = "## 🔄 Workflow Execution Checklist"
 # Legacy marker (old format) — still detected for backward-compat migration
 _WEC_MARKER_LEGACY = "**🔄 Workflow Execution Checklist**:"
 
-# Full ordered list of WEC workflow items: (filename, label, always_required)
+# WEC workflow items are intentionally limited to the active workflow baseline.
+# Disabled/archived workflow names are excluded so the checklist never points to
+# runs that do not exist on the current SHA; otherwise GitHub leaves the required
+# checks in `action_required` with zero jobs even though the branch is otherwise
+# valid.
 _WEC_ITEMS: list[tuple[str, str, bool]] = [
-    # --- Always Required (fire automatically on every push, cannot be skipped) ---
-    ("pre-merge-validation.yml",      "Pre-merge checks (always required)",                         True),
-    ("comment-review-gate.yml",       "Comment review gate (always required)",                      True),
+    # --- Always Required (active gate workflows only) ---
     ("deferral-language-gate.yml",    "Deferral language guard (always required)",                  True),
     ("agent-auth-delegation.yml",     "Agent token delegation (always required)",                   True),
     ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows (always required)", True),
-    # --- Always Active (fire via push/workflow_run) ---
-    ("unified-copilot-management.yml", "Copilot Management Suite (agent-checkin, session-done, self-healing)", True),
-    ("iterative-self-healing-ci.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", False),
     ("cost-gate.yml",                 "Cost governance gate (called by agent-auth-delegation)",      True),
-    # --- Testing & Validation (opt-in — maintainer checks to activate) ---
-    ("validate.yml",                  "Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)", False),
-    ("resilient_validation.yml",      "Resilient Validation Suite (full pytest, 4 shards)",         False),
-    ("test-rag.yml",                  "RAG Module Tests (coverage ≥95%)",                           False),
-    ("nox_gates.yml",                 "Nox quality gates (ruff, mypy, coverage)",                   False),
-    ("mypy-baseline.yml",             "mypy type-check anti-regression gate",                       False),
-    ("coverage-with-timeout.yml",     "Coverage with timeout guards",                               False),
-    ("progressive-validation.yml",    "Progressive Validation Suite",                               False),
-    ("pre-flight-validation.yml",     "Pre-flight CI validation",                                   False),
-    ("ci-checkpoint-validation.yml",  "CI Checkpoint Validation",                                   False),
-    ("data-quality-suite.yml",        "Data Quality & Determinism Suite",                           False),
-    ("auth-tests.yml",                "Authentication Tests",                                       False),
-    ("pr-checks.yml",                 "PR Checks (isolated cache, src/ scope)",                     False),
-    ("html_visual_regression.yml",    "HTML Visual Regression Screenshots",                         False),
-    # --- Security & Quality (opt-in — maintainer checks to activate) ---
-    ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
-    ("codeql-analysis.yml",           "CodeQL SAST analysis",                                       False),
-    ("actionlint-audit.yml",          "Workflow compliance audit (actionlint)",                     False),
-    ("semgrep_sarif.yml",             "Semgrep SAST (SARIF upload)",                                False),
-    ("auto-fix-common-issues.yml",    "Auto-Fix Common CI Issues",                                  False),
-    ("auto-fix-pr-check.yml",         "PR Auto-Fix Check",                                          False),
-    ("code-quality-coverage-suite.yml", "Code Quality & Coverage Suite",                            False),
-    ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
-    ("template_lint.yml",             "PR Template Lint",                                            False),
-    ("codeql-alert-fetcher.yml",      "CodeQL Alert Fetcher (artifact for in-session review)",      False),
-    # --- Documentation ---
-    ("documentation-link-checker.yml", "Documentation link checker",                                False),
-    ("pages-pre-merge-validation.yml", "Pages pre-merge validation",                                False),
-    # --- Infrastructure & Deployment ---
-    ("reference-integrity.yml",       "Reference integrity + agent size gate",                      False),
-    ("dependency-submission.yml",     "Resilient dependency submission",                            False),
-    ("docker-build-push.yml",         "Build & push Docker image (GHCR)",                          False),
-    ("rust_swarm_ci.yml",             "Rust-Python hybrid swarm CI/CD",                             False),
-    ("root-org-validation.yml",       "Root organization validation",                               False),
-    ("agent-registry-validation.yml", "Agent registry validation",                                  False),
-    ("e-to-d-transition-gate.yml",    "E→D transition readiness gate",                              False),
-    ("d-capable-promotion-gate.yml",  "D_CAPABLE agent promotion gate",                             False),
-    ("qa-walkthrough.yml",            "QA walkthrough agent",                                       False),
-    ("mcp-health.yml",                "MCP health & metrics gate (src/mcp/ scope)",                False),
     # --- Auto-Approve ---
-    ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
+    ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", True),
+    # --- Active opt-in workflows still present in the live .github/workflows baseline ---
+    ("auth-tests.yml",                "Authentication Tests",                                       False),
+    ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
+    ("data-quality-suite.yml",        "Data Quality & Determinism Suite",                           False),
+    ("docker-build-push.yml",         "Build & push Docker image (GHCR)",                          False),
+    ("nox_gates.yml",                 "Nox quality gates (ruff, mypy, coverage)",                   False),
+    ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
+    ("test-rag.yml",                  "RAG Module Tests (coverage ≥95%)",                           False),
+    ("scheduled-archival.yml",        "Scheduled archival",                                         False),
+    ("scheduled-dependency-audit.yml", "Dependency audit",                                            False),
 ]
 
 # Derived from _WEC_ITEMS — workflows that are ALWAYS pre-checked (always required gates).
@@ -156,24 +126,14 @@ _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
 )
 
 # Workflows that must NEVER be auto-checked during WEC generation.
-# Checking these causes the CI rescue system to auto-trigger new Copilot sessions
-# on every push, creating unbounded continuation loops.  Maintainer may check them
-# manually; the agent must never check them automatically.
-#
-# Why each is here:
-#   copilot-agent-session-done.yml  — fires on workflow_run; triggers a new @copilot
-#       review-request comment on every successful run, which the rescue loop then
-#       treats as a new unaddressed comment, firing another Copilot session.
-#   copilot-iterative-self-healing.yml — fires on workflow_run; schedules a new
-#       self-healing CI loop that posts rescue comments and re-triggers Copilot.
-#
-# NOTE: auto-approve-workflows is intentionally NOT in _WEC_NEVER_CHECK.
-# When COPILOT_AGENT_AUTH_ENABLED=true (full maintainer autonomy granted), the
-# system MUST maintain [x] auto-approve-workflows automatically so that ALL
-# pending action_required workflow runs are approved without human interaction.
-# This is controlled by _WEC_AUTONOMOUS_AUTO_CHECK below.
+# Only legacy workflow files that are still disabled in the active baseline are
+# kept here; active workflows like `workflow-execution-gate.yml` and
+# `auto-approve-workflows` remain eligible for the live gate contract.
 _WEC_NEVER_CHECK: frozenset[str] = frozenset({
     "iterative-self-healing-ci.yml",
+    "pre-merge-validation.yml",
+    "comment-review-gate.yml",
+    "unified-copilot-management.yml",
 })
 
 # Workflows that are auto-checked when COPILOT_AGENT_AUTH_ENABLED=true.
