@@ -1,5 +1,7 @@
 # Safe sandbox bundle flow
 
+This is the approved sandbox-to-primary transfer path: write the patch bundle to a repo-owned file, checksum and verify it, then ship the archive instead of streaming raw `git diff` output through a pipe.
+
 ## Audit summary: transfer artefact and root-archive conventions in this repo
 
 The repository already encodes a clear hierarchy for transfer and archival safety:
@@ -10,7 +12,7 @@ The repository already encodes a clear hierarchy for transfer and archival safet
 - The archival workflow in `.github/workflows/scheduled-archival.yml` targets stale content and expects archive outputs under `misc/repo-owner-review/archived/` or similar review-managed paths.
 - The root-consolidation index in `.codex/archive/root-consolidation/INDEX.md` treats temporary outputs, phase history, and deprecated reports as archive-managed assets, not root-owned files.
 
-The safe operational rule is simple: keep transfer payloads in repo-owned staging and archive directories; never persist meaningful state in a transient shell temp directory.
+The safe operational rule is simple: keep transfer payloads in repo-owned staging and archive directories; never persist meaningful state in a transient shell temp directory. The canonical helper for this pattern is `scripts/archive/git_patch_bundle.py`, which writes the patch to disk, verifies the archive checksum, and then applies it on the receiving side.
 
 ## Why the flow must avoid SIGPIPE
 

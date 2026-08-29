@@ -137,7 +137,7 @@ This document establishes the governance structure for 11 orchestration lanes (A
 
 **Scenario:** Two lanes need same resource  
 **Resolution:**
-1. Lane K (Scheduling) arbitrates via `src/orchestration/scheduling/transfer_aware_scheduler.py`
+1. Lane K (Scheduling) arbitrates via `src/orchestration/transfer_fabric/transfer_aware_scheduler.py`
 2. Priority: Lane G > Lane F > Lane B > Lane D > others
 3. Late-arriving lane queues with deterministic wait timestamp
 4. Decision logged in decision-trace

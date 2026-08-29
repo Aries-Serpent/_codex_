@@ -201,7 +201,7 @@ def verify_bundle(bundle_path: str | Path) -> dict:
     with tempfile.TemporaryDirectory(prefix="patch-bundle-") as td:
         extract_dir = Path(td)
         with tarfile.open(bundle_path, "r:gz") as archive:
-            archive.extractall(extract_dir)
+            archive.extractall(extract_dir, filter="data")
 
         manifest_files = sorted(extract_dir.glob("*.manifest.json"))
         if not manifest_files:
@@ -240,7 +240,7 @@ def apply_bundle(bundle_path: str | Path, repo_root: str | Path) -> Path:
     with tempfile.TemporaryDirectory(prefix="patch-apply-") as td:
         extract_dir = Path(td)
         with tarfile.open(bundle_path, "r:gz") as archive:
-            archive.extractall(extract_dir)
+            archive.extractall(extract_dir, filter="data")
 
         patch_name = manifest["patch_file"]
         compressed_name = manifest["compressed_patch_file"]

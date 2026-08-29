@@ -2,7 +2,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from scripts.archive.git_patch_bundle import apply_bundle, bundle_changes
+from scripts.archive.git_patch_bundle import apply_bundle, bundle_changes, verify_bundle
 
 
 def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
@@ -32,6 +32,10 @@ def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
 
     bundle = bundle_changes(source, tmp_path / "bundles", "sandbox-example")
     assert bundle.exists()
+    bundle_hash = bundle.with_name(f"{bundle.name}.sha256")
+    assert bundle_hash.exists()
+    assert bundle_hash.read_text(encoding="utf-8").strip()
+    verify_bundle(bundle)
 
     apply_bundle(bundle, target)
 

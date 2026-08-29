@@ -82,12 +82,13 @@ A complete infrastructure platform for:
 - [ ] `src/orchestration/hybrid/canary_promotion.py`
 
 **Transfer Fabric (Phase 7)**
-- [ ] `src/orchestration/transfer/policy_plane.py`
-- [ ] `src/orchestration/transfer/control_plane.py`
-- [ ] `src/orchestration/transfer/tunnel_plane.py`
-- [ ] `src/orchestration/transfer/data_plane.py`
-- [ ] `src/orchestration/transfer/observability_plane.py`
-- [ ] `src/orchestration/scheduling/transfer_aware_scheduler.py`
+- [ ] `src/orchestration/transfer_fabric/policy_plane.py`
+- [ ] `src/orchestration/transfer_fabric/preflight_checks.py`
+- [ ] `src/orchestration/transfer_fabric/tunnel_lifecycle.py`
+- [ ] `src/orchestration/transfer_fabric/data_plane.py`
+- [ ] `src/orchestration/transfer_fabric/observability_plane.py`
+- [ ] `src/orchestration/transfer_fabric/transfer_aware_scheduler.py`
+- [ ] `docs/ops/safe_sandbox_bundle.md` — repo-owned file-backed bundle workflow for sandbox→primary handoff
 
 **SRE & Lifecycle (Phases 8-9)**
 - [ ] `src/orchestration/sre/error_budget.py`

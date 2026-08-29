@@ -66,12 +66,14 @@ This plan provides an exhaustive, phased implementation roadmap for integrating:
 - `src/orchestration/hybrid/canary_promotion.py` — graduated activation strategy
 
 ### Multi-Sandbox Transfer (Phase 7)
-- `src/orchestration/transfer/policy_plane.py` — trust boundaries, legal routes
-- `src/orchestration/transfer/control_plane.py` — path scoring, route planning
-- `src/orchestration/transfer/tunnel_plane.py` — tunnel lifecycle, failover
-- `src/orchestration/transfer/data_plane.py` — chunked transfer, integrity commit
-- `src/orchestration/transfer/observability_plane.py` — telemetry, anomaly detection
-- `src/orchestration/scheduling/transfer_aware_scheduler.py` — lane scheduling with latency awareness
+- `src/orchestration/transfer_fabric/policy_plane.py` — trust boundaries, legal routes
+- `src/orchestration/transfer_fabric/preflight_checks.py` — path scoring, route readiness, transfer gating
+- `src/orchestration/transfer_fabric/tunnel_lifecycle.py` — tunnel lifecycle, failover
+- `src/orchestration/transfer_fabric/data_plane.py` — chunked transfer, integrity commit
+- `src/orchestration/transfer_fabric/observability_plane.py` — telemetry, anomaly detection
+- `src/orchestration/transfer_fabric/transfer_aware_scheduler.py` — lane scheduling with latency awareness
+
+The sandbox-to-primary transfer path should use the file-backed bundle workflow documented in `docs/ops/safe_sandbox_bundle.md` and implemented by `scripts/archive/git_patch_bundle.py` instead of direct `git diff | ...` streaming assumptions.
 
 ### Operations & Lifecycle (Phase 8-9)
 - `src/orchestration/sre/error_budget.py` — error budget allocation
