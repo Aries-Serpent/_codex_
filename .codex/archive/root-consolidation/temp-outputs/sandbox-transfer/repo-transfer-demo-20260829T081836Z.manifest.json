@@ -1,0 +1,26 @@
+{
+  "bundle_name": "repo-transfer-demo",
+  "bundle_prefix": "repo-transfer-demo-20260829T081836Z",
+  "generated_utc": "2026-08-29T08:18:36Z",
+  "repo_root": "/home/runner/work/_codex_/_codex_",
+  "patch_file": "repo-transfer-demo-20260829T081836Z.patch",
+  "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "compressed_patch_file": "repo-transfer-demo-20260829T081836Z.patch.gz",
+  "compressed_patch_sha256": "d77926ffe9760bb75a5a8c89ad5c509e1c3c1da1c522b284796158ddb672cf83",
+  "git_status_file": "repo-transfer-demo-20260829T081836Z.git-status.txt",
+  "snapshot_dir": "repo-transfer-demo-20260829T081836Z.snapshot",
+  "snapshot_files": [
+    "docs/ops/safe_sandbox_bundle.md",
+    "scripts/archive/git_patch_bundle.py",
+    "scripts/safe_sandbox_bundle.sh",
+    "tests/test_git_patch_bundle.py"
+  ],
+  "deleted_files": [],
+  "head_sha": "18ed2ca8fb2eaacd5a72b1291a8528cfd2cc51ea",
+  "status_lines": [
+    "?? docs/ops/safe_sandbox_bundle.md",
+    "?? scripts/archive/git_patch_bundle.py",
+    "?? scripts/safe_sandbox_bundle.sh",
+    "?? tests/test_git_patch_bundle.py"
+  ]
+}
