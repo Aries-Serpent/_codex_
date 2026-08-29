@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5559)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5559 (SHA `5830a83d73`) at 2026-08-29T05:42:00Z [auto-generated]
+
 ### Fixed — PR #5560 live workflow gate contract alignment
 - Corrected the stale WEC contract assumption that kept legacy workflow names in the required checklist while the live repo baseline only permits the current active gates.
 - Preserved the current maintainers' WEC selections and the expression-based CCA auth flow while aligning the canonical PR contract to the active workflow set (`deferral-language-gate.yml`, `agent-auth-delegation.yml`, `workflow-execution-gate.yml`, `cost-gate.yml`, `auto-approve-workflows`, and the active baseline optionals).
