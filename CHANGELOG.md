@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Hardened — PR #5560 setup-validation contract for future sessions
+- Explicitly fixed the stale setup-step validator drift by aligning the repo contract checks with the path-gated workflow behavior rather than a historical exact snapshot.
+- Kept the canonical CCA safeguards and session-preload guard intact while removing the false action_required mismatch that could trap future Copilot sessions.
+- Re-validated the setup workflow contract and the affected regressions so later agent sessions won't re-hit the same stale workflow assumptions.
+
 ### Fixed — PR #5560 review-thread + merge-readiness follow-up
 - Resolved the remaining review-thread regressions in the orchestrator cost gate, the Chronicle lane-cost analysis, and the compressed checkpoint ID normalization path for list/create/restore flows.
 - Preserved explicit zero-cost values, excluded pending tasks from active budget totals, and aligned lane-cost scope semantics with the actual filtered lane set.

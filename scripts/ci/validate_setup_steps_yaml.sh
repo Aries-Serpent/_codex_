@@ -15,7 +15,7 @@ TARGET=".github/workflows/copilot-setup-steps.yml"
 YAMLLINT_CFG=".yamllint.yml"
 FAIL=0
 
-echo "── Validating ${TARGET} (canonical: commit 12f7a861 / blob 8c84a8c1) ──"
+echo "── Validating ${TARGET} (repo contract: path-gated workflow, action_required no-op is expected) ──"
 
 # ── Check 1: Python YAML parse ────────────────────────────────────────────────
 # Catches: orphaned run: keys, structural YAML errors
@@ -23,7 +23,7 @@ if python3 -c "import yaml; yaml.safe_load(open('${TARGET}'))" 2>&1; then
   echo "✅ Check 1/5: YAML parse (python yaml.safe_load)"
 else
   echo "::error file=${TARGET}::YAML parse failure — likely orphaned run: key"
-  echo "   Restore: git show 12f7a861:${TARGET} > ${TARGET} && python3 scripts/ci/patch_session_preload.py"
+  echo "   Repair the workflow structure; do not treat a path-gated no-op as a regression."
   FAIL=$((FAIL + 1))
 fi
 
@@ -34,9 +34,10 @@ if command -v yamllint >/dev/null 2>&1; then
     echo "✅ Check 2/5: yamllint"
   else
     echo "::error file=${TARGET}::yamllint failed — likely || { } flow scalar in session preload run:"
-    echo "   Fix: python3 scripts/ci/patch_session_preload.py"
+    echo "   Fix the workflow structure; a path-gated no-op is not a failure by itself."
     FAIL=$((FAIL + 1))
   fi
+
 else
   echo "⚠️  yamllint not installed — skipping check 2/5"
 fi
@@ -46,10 +47,9 @@ if grep -A4 "Session Context Pre-load" "${TARGET}" | grep -q "run: |"; then
   echo "✅ Check 3/5: session preload uses block scalar"
 else
   echo "::error file=${TARGET}::Session preload is NOT using block scalar run: | form"
-  echo "   Fix: python3 scripts/ci/patch_session_preload.py"
+    echo "   Fix the workflow structure; do not confuse path-gated no-ops with a regression."
   FAIL=$((FAIL + 1))
 fi
-
 # ── Check 4: Canonical feature regression guard ───────────────────────────────
 GUARD_FAIL=0
 
@@ -75,12 +75,11 @@ check_feature "autonomous_rag_context.py"          "RAG Context Build step"
 check_feature "DO NOT REFACTOR THIS STEP"          "Guard comment on preload step"
 
 if [ "${GUARD_FAIL}" -gt 0 ]; then
-  echo "::error::${GUARD_FAIL} canonical feature(s) missing — file has regressed from baseline"
-  echo "   Restore: git show 12f7a861a067ed5d9f1e1939119325f896624588:${TARGET} > ${TARGET}"
-  echo "   Then:    python3 scripts/ci/patch_session_preload.py"
+  echo "::error::${GUARD_FAIL} required feature(s) missing — workflow no longer matches the repo contract"
+  echo "   Repair the workflow, but do not equate a path-gated no-op with a failure."
   FAIL=$((FAIL + 1))
 else
-  echo "✅ Check 4/5: all canonical features present"
+  echo "✅ Check 4/5: all required workflow features present"
 fi
 
 # ── Check 5: File integrity / no-op contract ─────────────────────────────────
@@ -100,9 +99,9 @@ fi
 # ── Result ────────────────────────────────────────────────────────────────────
 echo ""
 if [ "${FAIL}" -gt 0 ]; then
-  echo "❌ ${FAIL} check(s) failed — canonical baseline: commit 12f7a861 / blob 8c84a8c1"
-  echo "   See: docs/agent/COPILOT_SETUP_STEPS_GUARD.md"
+  echo "❌ ${FAIL} check(s) failed — workflow does not match the repo contract"
+  echo "   Path-gated no-op runs are expected; fix the actual structural issue instead."
   exit 1
 fi
 
-echo "✅ ${TARGET} passes all canonical baseline checks"
+echo "✅ ${TARGET} passes all required repo-contract checks"

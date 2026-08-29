@@ -539,18 +539,13 @@ def test_file_size_regression(workflow_path: str) -> TestResult:
                 message=msg
             )
 
-        percent_of_baseline = (
-            ((line_count - BASELINE_LINE_COUNT) / BASELINE_LINE_COUNT) * 100
-        )
-
-        baseline_info = (
-            f"{line_count} lines "
-            f"({percent_of_baseline:+.1f}% from baseline {BASELINE_LINE_COUNT})"
+        range_info = (
+            f"{line_count} lines (within repo-contract range {min_lines}-{max_lines})"
         )
         return TestResult(
             "File Size Regression",
             True,
-            message=baseline_info
+            message=range_info
         )
     except Exception as e:
         return TestResult(

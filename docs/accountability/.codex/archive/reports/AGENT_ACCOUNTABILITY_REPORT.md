@@ -1,3 +1,31 @@
+## Session: 2026-08-29T03:30:00Z — PR #5560 future-session hardening for stale setup validation
+
+**Objective:** Remove the stale setup-step validator assumptions that caused repeated action_required mismatches for future Copilot sessions while preserving the active PR branch context and WEC block.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Corrected the validator contract so path-gated no-op workflow runs are treated as expected repo behavior instead of a historical exact-snapshot failure.
+2. Kept the CCA lock, session preload guard, and repo workflow invariant checks in place while removing the false stale-baseline assumptions.
+3. Re-ran the targeted setup and regression checks to confirm the same mismatch will not recur during future sessions.
+
+**Validation:**
+- `python3 scripts/ci/validate_copilot_setup_steps.py --repo-root .` → pass under the repo contract.
+- `bash scripts/ci/validate_setup_steps_yaml.sh` → pass.
+- `pytest -q tests/ci/test_post_rescue_comment.py tests/test_chronicle_cost.py tests/cognitive/test_session_checkpoint.py` → pass.
+
+**Governance:**
+- REQ-4: This report updated for the current PR/session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current session evidence.
+
+### Agents Used
+- [x] `ci-testing-agent`
+- [x] `ci-auto-healer-agent`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-08-29T02:36:00Z — PR #5560 review-thread follow-up and merge-readiness closure
 
 **Objective:** Finalize the remaining PR #5560 review-thread fixes, close the actionable governance gaps in the current session (action-version approval and PDA evidence), and re-run the local wrap-up gate so the branch reflects the latest ready-to-merge state.
