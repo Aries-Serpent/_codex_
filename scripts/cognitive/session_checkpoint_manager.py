@@ -459,12 +459,14 @@ class SessionCheckpointManager:
             CheckpointCorruptedError: If corruption detected and not recoverable
         """
         validation_mode = validation_mode or self.validation_mode
-
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
         if session_id is not None:
-            self._resolve_session_dir(session_id)
+            safe_session_id = self._validate_storage_component(session_id, "session_id")
+        else:
+            safe_session_id = None
 
         # Find checkpoint file
-        checkpoint_file = self._find_checkpoint(checkpoint_id, session_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id, safe_session_id)
         if not checkpoint_file:
             raise CheckpointNotFoundError(f"Checkpoint not found: {checkpoint_id}")
 
@@ -488,15 +490,33 @@ class SessionCheckpointManager:
         except Exception as e:
             if fallback_on_corruption:
                 logger.warning(f"Checkpoint read failed: {e}, attempting recovery")
-                checkpoint_doc = self._recover_checkpoint(checkpoint_id)
+                checkpoint_doc = self._recover_checkpoint(safe_checkpoint_id)
                 if checkpoint_doc is None:
-                    raise CheckpointCorruptedError(checkpoint_id, str(e))
+                    raise CheckpointCorruptedError(safe_checkpoint_id, str(e))
             else:
-                raise CheckpointCorruptedError(checkpoint_id, str(e))
+                raise CheckpointCorruptedError(safe_checkpoint_id, str(e))
+
+        if not isinstance(checkpoint_doc, dict):
+            raise CheckpointCorruptedError(safe_checkpoint_id, "Checkpoint payload is not a JSON object")
+        if checkpoint_doc.get("checkpoint_id") not in (None, safe_checkpoint_id):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Checkpoint schema mismatch: payload checkpoint_id={checkpoint_doc.get('checkpoint_id')!r}",
+            )
+        if safe_session_id is not None and checkpoint_doc.get("session_id") not in (None, safe_session_id):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Checkpoint schema mismatch: payload session_id={checkpoint_doc.get('session_id')!r}",
+            )
+        if checkpoint_doc.get("schema_version") not in (None, "v1.0"):
+            raise CheckpointCorruptedError(
+                safe_checkpoint_id,
+                f"Unsupported checkpoint schema version: {checkpoint_doc.get('schema_version')!r}",
+            )
 
         # Validate if requested
         if validation_mode != "lenient":
-            result = self.validate_checkpoint(checkpoint_id, quick_check=False)
+            result = self.validate_checkpoint(safe_checkpoint_id, quick_check=False)
             if not result.is_valid and validation_mode == "strict":
                 raise ValidationFailedError(f"Checkpoint validation failed: {result.errors}")
             elif not result.is_valid:
@@ -506,7 +526,7 @@ class SessionCheckpointManager:
         if self.enable_metrics:
             self.metrics["checkpoints_restored"] += 1
 
-        logger.info(f"Checkpoint restored: {checkpoint_id}")
+        logger.info(f"Checkpoint restored: {safe_checkpoint_id}")
 
         return checkpoint_doc
 
@@ -597,6 +617,7 @@ class SessionCheckpointManager:
         Returns:
             ValidationResult with integrity score
         """
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
         start_time = datetime.utcnow()
         skip_fields = skip_fields or []
         errors = []
@@ -604,7 +625,7 @@ class SessionCheckpointManager:
         checks_passed = 0
         checks_total = 0
 
-        checkpoint_file = self._find_checkpoint(checkpoint_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id)
         if not checkpoint_file:
             return ValidationResult(
                 is_valid=False,
@@ -613,7 +634,7 @@ class SessionCheckpointManager:
                     ValidationError(
                         category="missing",
                         field="checkpoint",
-                        message=f"Checkpoint not found: {checkpoint_id}",
+                        message=f"Checkpoint not found: {safe_checkpoint_id}",
                         severity="critical",
                     )
                 ],
@@ -778,9 +799,10 @@ class SessionCheckpointManager:
         Raises:
             CheckpointNotFoundError: If checkpoint doesn't exist
         """
-        checkpoint_file = self._find_checkpoint(checkpoint_id)
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
+        checkpoint_file = self._find_checkpoint(safe_checkpoint_id)
         if not checkpoint_file:
-            raise CheckpointNotFoundError(f"Checkpoint not found: {checkpoint_id}")
+            raise CheckpointNotFoundError(f"Checkpoint not found: {safe_checkpoint_id}")
 
         bytes_freed = checkpoint_file.stat().st_size
 
@@ -791,13 +813,13 @@ class SessionCheckpointManager:
                 raise StorageError("File deletion verification failed")
 
             # Log deletion
-            self._log_deletion(checkpoint_id, audit_reason)
+            self._log_deletion(safe_checkpoint_id, audit_reason)
 
-            logger.info(f"Checkpoint deleted: {checkpoint_id} ({bytes_freed/1024:.1f} KB)")
+            logger.info(f"Checkpoint deleted: {safe_checkpoint_id} ({bytes_freed/1024:.1f} KB)")
 
             return DeletionResult(
                 success=True,
-                checkpoint_id=checkpoint_id,
+                checkpoint_id=safe_checkpoint_id,
                 reason=audit_reason,
                 bytes_freed=bytes_freed,
             )
@@ -812,6 +834,7 @@ class SessionCheckpointManager:
         self, checkpoint_id: str, session_id: Optional[str] = None
     ) -> Optional[Path]:
         """Find checkpoint file."""
+        safe_checkpoint_id = self._validate_checkpoint_id(checkpoint_id)
         if session_id is not None:
             search_dir = self._resolve_session_dir(session_id)
             if not search_dir.exists():
@@ -821,11 +844,11 @@ class SessionCheckpointManager:
             candidates = list(self.storage_path.glob("v1/*/checkpoint_*"))
 
         for candidate in candidates:
-            if checkpoint_id in candidate.name:
+            if safe_checkpoint_id in candidate.name:
                 return candidate
 
         for candidate in candidates:
-            if self._checkpoint_file_matches_id(candidate, checkpoint_id):
+            if self._checkpoint_file_matches_id(candidate, safe_checkpoint_id):
                 return candidate
 
         return None

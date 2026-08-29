@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5559 main-merge checkpoint hardening
+- Hardened `session_id` and `checkpoint_id` validation in `scripts/cognitive/session_checkpoint_manager.py` so empty, whitespace, absolute-path, and traversal-style values are rejected before filesystem access.
+- Expanded the checkpoint regression coverage to cover traversal attempts and empty/whitespace inputs for create/list/restore flows.
+- Validated the related checkpoint and Chronicle regressions still pass and kept the generated artifact baseline clean for main-branch merge readiness.
+
 ### Fixed — PR #5558 review-thread follow-up
 - Corrected the code-generation button lockout in `cognitive_app/src/components/code/CodeGenerator.tsx` so empty/invalid prompts stay disabled while maintaining the API-error guard.
 - Restored valid Python syntax in the root `a.py` and `b.py` helpers and removed the timestamp-only drift in `.codex/session_startup_packet.json`.
