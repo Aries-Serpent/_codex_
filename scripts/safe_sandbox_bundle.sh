@@ -18,7 +18,7 @@ fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="${1:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
-bundle_root="${2:-$repo_root/.codex/archive/root-consolidation/temp-outputs/sandbox-transfer}"
+bundle_root="${2:-$repo_root/.codex/sandbox-bundles}"
 bundle_name="${3:-sandbox-git-transfer}"
 
 if [[ ! -d "$repo_root/.git" ]]; then

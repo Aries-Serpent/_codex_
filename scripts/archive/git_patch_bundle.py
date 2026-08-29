@@ -7,9 +7,9 @@ compresses the patch, verifies the checksum, and ships a single tar.gz bundle.
 The primary side verifies the checksum and then applies the patch using `git apply`.
 
 Example usage:
-  python scripts/archive/git_patch_bundle.py bundle --repo-root . --output-dir .codex/archive/root-consolidation/temp-outputs/sandbox-transfer
-  python scripts/archive/git_patch_bundle.py apply --bundle .codex/archive/root-consolidation/temp-outputs/sandbox-transfer/example.bundle.tar.gz --repo-root .
-  python scripts/archive/git_patch_bundle.py verify --bundle .codex/archive/root-consolidation/temp-outputs/sandbox-transfer/example.bundle.tar.gz
+ python scripts/archive/git_patch_bundle.py bundle --repo-root . --output-dir .codex/sandbox-bundles
+ python scripts/archive/git_patch_bundle.py apply --bundle .codex/sandbox-bundles/sandbox-git-transfer-20260829T000000Z.bundle.tar.gz --repo-root .
+ python scripts/archive/git_patch_bundle.py verify --bundle .codex/sandbox-bundles/sandbox-git-transfer-20260829T000000Z.bundle.tar.gz
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-DEFAULT_BUNDLE_DIR = Path(".codex/archive/root-consolidation/temp-outputs/sandbox-transfer")
+DEFAULT_BUNDLE_DIR = Path(".codex/sandbox-bundles")
 
 
 def sha256_file(path: Path) -> str:
