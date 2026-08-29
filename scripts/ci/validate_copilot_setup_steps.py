@@ -510,7 +510,7 @@ def test_file_size_regression(workflow_path: str) -> TestResult:
 
         min_lines, max_lines = ACCEPTABLE_LINE_RANGE
 
-        if line_count < 640:
+        if line_count < min_lines:
             return TestResult(
                 "File Size Regression",
                 False,

@@ -8,11 +8,21 @@ on:
     - ready_for_review
     paths:
     - .github/workflows/copilot-setup-steps.yml
+    - .github/workflows/copilot-setup-validation.yml
+    - scripts/ci/validate_copilot_setup_steps.py
+    - scripts/ci/validate_setup_steps_yaml.sh
+    - scripts/ci/validate_copilot_dependencies.py
+    - scripts/ci/validate_copilot_security.py
   push:
     branches:
     - main
     paths:
     - .github/workflows/copilot-setup-steps.yml
+    - .github/workflows/copilot-setup-validation.yml
+    - scripts/ci/validate_copilot_setup_steps.py
+    - scripts/ci/validate_setup_steps_yaml.sh
+    - scripts/ci/validate_copilot_dependencies.py
+    - scripts/ci/validate_copilot_security.py
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
