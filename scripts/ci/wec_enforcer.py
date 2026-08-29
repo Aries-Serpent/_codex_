@@ -48,15 +48,20 @@ try:
 except Exception:
     # Fallback — minimal hard-coded list so the script stays self-contained.
     _WEC_ITEMS = [
-        ("pre-merge-validation.yml",    "Pre-merge checks",                  True),
-        ("comment-review-gate.yml",     "Comment review gate",               True),
-        ("deferral-language-gate.yml",  "Deferral language guard",           True),
-        ("agent-auth-delegation.yml",   "Agent token delegation",            True),
-        ("workflow-execution-gate.yml", "WEC gate",                          True),
-        ("copilot-agent-checkin.yml",   "Agent check-in",                    True),
-        ("copilot-agent-session-done.yml", "Auto-post review",               True),
-        ("copilot-iterative-self-healing.yml", "Iterative self-healing",     True),
-        ("cost-gate.yml",               "Cost governance gate",              True),
+        ("deferral-language-gate.yml",    "Deferral language guard",           True),
+        ("agent-auth-delegation.yml",     "Agent token delegation",            True),
+        ("workflow-execution-gate.yml",   "WEC gate",                          True),
+        ("cost-gate.yml",                 "Cost governance gate",              True),
+        ("auto-approve-workflows",        "Auto-approve pending workflows",    True),
+        ("auth-tests.yml",                "Authentication Tests",              False),
+        ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",       False),
+        ("data-quality-suite.yml",        "Data Quality & Determinism Suite",  False),
+        ("docker-build-push.yml",         "Build & push Docker image (GHCR)", False),
+        ("nox_gates.yml",                 "Nox quality gates",                 False),
+        ("security-scanning-suite.yml",   "Full security audit",               False),
+        ("test-rag.yml",                  "RAG Module Tests",                  False),
+        ("scheduled-archival.yml",        "Scheduled archival",                False),
+        ("scheduled-dependency-audit.yml", "Dependency audit",                   False),
     ]
     _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(  # type: ignore[no-redef]
         fname for fname, _, req in _WEC_ITEMS if req

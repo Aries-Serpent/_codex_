@@ -150,29 +150,22 @@ _WEC_AUTONOMOUS_AUTO_CHECK: frozenset[str] = frozenset({
 # so its disjoint-from-_WEC_NEVER_CHECK invariant can be verified at module-load
 # time and in tests, not only at runtime.
 _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
-    # Always-required (belt-and-suspenders — already set by _WEC_ALWAYS_REQUIRED)
-    "pre-merge-validation.yml",
-    "comment-review-gate.yml",
+    # Always-required gate workflows that are active on the current repo baseline.
     "deferral-language-gate.yml",
     "agent-auth-delegation.yml",
     "workflow-execution-gate.yml",
-    # Always-active (need activation for approval flow; excludes continuation-loop triggers)
-    "unified-copilot-management.yml",
     "cost-gate.yml",
-    # Opt-in: validation & testing (required for passing merge gate)
-    "validate.yml",
-    "resilient_validation.yml",
-    # Opt-in: security (required for security-suite merge gate)
-    # NOTE: codeql-analysis.yml removed — disabled_manually in Actions;
-    # CodeQL coverage is maintained by the active codeql.yml (CodeQL Advanced).
-    "security-scanning-suite.yml",
-    # Opt-in: infrastructure (reference integrity gate)
-    "reference-integrity.yml",
-    # Auto-approve: activated when COPILOT_AGENT_AUTH_ENABLED=true so that all
-    # pending workflow runs are cleared without human interaction (full autonomy).
     "auto-approve-workflows",
-    # NOTE: iterative-self-healing-ci.yml is in _WEC_NEVER_CHECK and must never
-    # be activated automatically — it causes unbounded Copilot continuation loops.
+    # Current active validation/security workflow surface.
+    "auth-tests.yml",
+    "audit-qa-suite.yml",
+    "data-quality-suite.yml",
+    "docker-build-push.yml",
+    "nox_gates.yml",
+    "security-scanning-suite.yml",
+    "test-rag.yml",
+    "scheduled-archival.yml",
+    "scheduled-dependency-audit.yml",
 })
 
 # ── Module-load invariant (S178 hardening) ────────────────────────────────
@@ -524,23 +517,12 @@ def _build_wec_block(
             )
         return _WEC_ITEMS[start_idx:end_idx + 1]
 
-    always_required_items = _get_section_items("pre-merge-validation.yml", "workflow-execution-gate.yml")
-    always_active_items = _get_section_items("unified-copilot-management.yml", "cost-gate.yml")
-    opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
-    opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
-    opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
-    opt_in_infra_items = _get_section_items("reference-integrity.yml", "mcp-health.yml")
-    # Single-item section: start/end intentionally identical.
-    auto_approve_items = _get_section_items("auto-approve-workflows", "auto-approve-workflows")
+    always_required_items = _get_section_items("deferral-language-gate.yml", "auto-approve-workflows")
+    active_workflows_items = _get_section_items("auth-tests.yml", "scheduled-dependency-audit.yml")
 
     grouped_sections = [
         always_required_items,
-        always_active_items,
-        auto_approve_items,
-        opt_in_testing_items,
-        opt_in_security_items,
-        opt_in_docs_items,
-        opt_in_infra_items,
+        active_workflows_items,
     ]
     grouped_filenames = [fname for section in grouped_sections for fname, _, _ in section]
     if len(grouped_filenames) != len(_WEC_ITEMS):
@@ -551,28 +533,8 @@ def _build_wec_block(
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
-    lines += ["", "### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)"]
-    for fname, label, _ in always_active_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### ⚡ Auto-Approve"]
-    for fname, label, _ in auto_approve_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 🧪 Opt-In: Testing & Validation"]
-    for fname, label, _ in opt_in_testing_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 🔒 Opt-In: Security & Quality"]
-    for fname, label, _ in opt_in_security_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 📄 Opt-In: Documentation"]
-    for fname, label, _ in opt_in_docs_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### ⚙️ Opt-In: Infrastructure & Deployment"]
-    for fname, label, _ in opt_in_infra_items:
+    lines += ["", "### 🔄 Active Workflows — currently enabled in the live repo baseline"]
+    for fname, label, _ in active_workflows_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += [
