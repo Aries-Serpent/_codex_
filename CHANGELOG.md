@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5560 live workflow gate contract alignment
+- Corrected the stale WEC contract assumption that kept legacy workflow names in the required checklist while the live repo baseline only permits the current active gates.
+- Preserved the current maintainers' WEC selections and the expression-based CCA auth flow while aligning the canonical PR contract to the active workflow set (`deferral-language-gate.yml`, `agent-auth-delegation.yml`, `workflow-execution-gate.yml`, `cost-gate.yml`, `auto-approve-workflows`, and the active baseline optionals).
+- Re-validated the generated WEC block and the repo governance gate to ensure the live `action_required` / zero-job symptom is eliminated without broadening scope or introducing timestamp churn.
+
+### Hardened — PR #5560 setup-validation contract for future sessions
+- Explicitly fixed the stale setup-step validator drift by aligning the repo contract checks with the path-gated workflow behavior rather than a historical exact snapshot.
+- Kept the canonical CCA safeguards and session-preload guard intact while removing the false action_required mismatch that could trap future Copilot sessions.
+- Re-validated the setup workflow contract and the affected regressions so later agent sessions won't re-hit the same stale workflow assumptions.
+
+### Fixed — PR #5560 review-thread + merge-readiness follow-up
+- Resolved the remaining review-thread regressions in the orchestrator cost gate, the Chronicle lane-cost analysis, and the compressed checkpoint ID normalization path for list/create/restore flows.
+- Preserved explicit zero-cost values, excluded pending tasks from active budget totals, and aligned lane-cost scope semantics with the actual filtered lane set.
+- Cleared the repo-side action-version drift by pinning `actions/upload-artifact` to v5 in `.github/workflows/ml-tests.yml` and kept the required action-version policy green.
+- Refreshed the session governance evidence for the active PR (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/aftermath/pda_iterations.jsonl`, and the wrap-up compliance metadata) so the local PR readiness gate reflects the current sprint state.
+
 ### Fixed — PR #5559 main-merge checkpoint hardening
 - Hardened `session_id` and `checkpoint_id` validation in `scripts/cognitive/session_checkpoint_manager.py` so empty, whitespace, absolute-path, and traversal-style values are rejected before filesystem access.
 - Expanded the checkpoint regression coverage to cover traversal attempts and empty/whitespace inputs for create/list/restore flows.

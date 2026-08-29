@@ -869,10 +869,11 @@ def analyze_costs(
         for bucket, details in lane_summary.items()
     }
 
+    scope_lane = lane_filter if lane is not None else None
     report = {
         "schema_version": "1.0",
         "generated_at": _now(),
-        "scope": {"sessions": len(sessions), "lane": lane_filter if lane else None},
+        "scope": {"sessions": len(sessions), "lane": scope_lane},
         "metrics": {
             "sessions": len(sessions),
             "tool_calls": sum(record.tool_calls for record in sessions),
@@ -900,7 +901,13 @@ def analyze_costs(
     }
     if lane is not None:
         report["lane_focus"] = lane_filter
-        report["lane_pattern"] = "fragmented" if len(sessions) > 1 and sum(r.tool_calls for r in sessions) >= warning_budget / 2 else "batchable"
+        lane_cost_proxy = sum(
+            float(record.credits) if record.credits is not None else float(record.estimated_cost or 0.0)
+            for record in sessions
+        )
+        report["lane_pattern"] = (
+            "fragmented" if lane_cost_proxy >= warning_budget / 2 else "batchable"
+        )
     return report
 
 

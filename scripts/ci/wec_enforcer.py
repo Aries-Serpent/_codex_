@@ -48,15 +48,20 @@ try:
 except Exception:
     # Fallback — minimal hard-coded list so the script stays self-contained.
     _WEC_ITEMS = [
-        ("pre-merge-validation.yml",    "Pre-merge checks",                  True),
-        ("comment-review-gate.yml",     "Comment review gate",               True),
-        ("deferral-language-gate.yml",  "Deferral language guard",           True),
-        ("agent-auth-delegation.yml",   "Agent token delegation",            True),
-        ("workflow-execution-gate.yml", "WEC gate",                          True),
-        ("copilot-agent-checkin.yml",   "Agent check-in",                    True),
-        ("copilot-agent-session-done.yml", "Auto-post review",               True),
-        ("copilot-iterative-self-healing.yml", "Iterative self-healing",     True),
-        ("cost-gate.yml",               "Cost governance gate",              True),
+        ("deferral-language-gate.yml",    "Deferral language guard",           True),
+        ("agent-auth-delegation.yml",     "Agent token delegation",            True),
+        ("workflow-execution-gate.yml",   "WEC gate",                          True),
+        ("cost-gate.yml",                 "Cost governance gate",              True),
+        ("auto-approve-workflows",        "Auto-approve pending workflows",    True),
+        ("auth-tests.yml",                "Authentication Tests",              False),
+        ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",       False),
+        ("data-quality-suite.yml",        "Data Quality & Determinism Suite",  False),
+        ("docker-build-push.yml",         "Build & push Docker image (GHCR)", False),
+        ("nox_gates.yml",                 "Nox quality gates",                 False),
+        ("security-scanning-suite.yml",   "Full security audit",               False),
+        ("test-rag.yml",                  "RAG Module Tests",                  False),
+        ("scheduled-archival.yml",        "Scheduled archival",                False),
+        ("scheduled-dependency-audit.yml", "Dependency audit",                   False),
     ]
     _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(  # type: ignore[no-redef]
         fname for fname, _, req in _WEC_ITEMS if req
@@ -122,6 +127,15 @@ _CHECKBOX_RE = re.compile(
     r"^- \[([ xX])\]\s+((?:[\w\-]+(?:\.[\w\-]+)*\.yml)|auto-approve-workflows)",
     re.MULTILINE,
 )
+
+
+def _workflow_state_name(workflow_name: str) -> str:
+    """Return the GitHub Actions workflow filename used in the API state map."""
+    if workflow_name.endswith(".yml"):
+        return workflow_name
+    if workflow_name == "auto-approve-workflows":
+        return f"{workflow_name}.yml"
+    return workflow_name
 
 
 def _extract_wec_section(body: str) -> str:
@@ -259,20 +273,23 @@ def cmd_validate_body(pr_number: int) -> int:
     # Validate selected and merge-required workflows are active in Actions.
     workflow_states = _list_workflow_states(token, repo)
     if workflow_states:
+        def _state_for(wf: str) -> str:
+            return workflow_states.get(wf, workflow_states.get(_workflow_state_name(wf), "missing"))
+
         checked_workflows = sorted(
             fname for fname, checked in checkboxes.items()
-            if checked and fname.endswith(".yml")
+            if checked and (fname.endswith(".yml") or fname == "auto-approve-workflows")
         )
         checked_non_active = [
-            (wf, workflow_states.get(wf, "missing"))
+            (wf, _state_for(wf))
             for wf in checked_workflows
-            if workflow_states.get(wf) not in ("active",)
+            if _state_for(wf) not in ("active",)
         ]
 
         merge_required_non_active = [
-            (wf, workflow_states.get(wf, "missing"))
+            (wf, _state_for(wf))
             for wf in sorted(_WEC_MERGE_REQUIRED)
-            if wf.endswith(".yml") and workflow_states.get(wf) not in ("active",)
+            if _state_for(wf) not in ("active",)
         ]
 
         if checked_non_active or merge_required_non_active:

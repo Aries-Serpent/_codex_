@@ -330,10 +330,10 @@ def main():
 
     # Define dependencies (from problem statement)
     dependent_workflows = [
-        ".github/workflows/copilot-agent-vars-bootstrap.yml",
-        ".github/workflows/repo-var-sync-schedule.yml",
-        ".github/workflows/admin_setup_verification.yml",
-        ".github/workflows/workflow-compliance-gate.yml",
+        ".github/workflows/copilot-setup-validation.yml",
+        ".github/workflows/deferral-language-gate.yml",
+        ".github/workflows/wec-enforcement-gate.yml",
+        ".github/workflows/workflow-execution-gate.yml",
         ".github/workflows/validate.yml",
     ]
 

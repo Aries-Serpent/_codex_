@@ -94,59 +94,29 @@ _WEC_MARKER = "## 🔄 Workflow Execution Checklist"
 # Legacy marker (old format) — still detected for backward-compat migration
 _WEC_MARKER_LEGACY = "**🔄 Workflow Execution Checklist**:"
 
-# Full ordered list of WEC workflow items: (filename, label, always_required)
+# WEC workflow items are intentionally limited to the active workflow baseline.
+# Disabled/archived workflow names are excluded so the checklist never points to
+# runs that do not exist on the current SHA; otherwise GitHub leaves the required
+# checks in `action_required` with zero jobs even though the branch is otherwise
+# valid.
 _WEC_ITEMS: list[tuple[str, str, bool]] = [
-    # --- Always Required (fire automatically on every push, cannot be skipped) ---
-    ("pre-merge-validation.yml",      "Pre-merge checks (always required)",                         True),
-    ("comment-review-gate.yml",       "Comment review gate (always required)",                      True),
+    # --- Always Required (active gate workflows only) ---
     ("deferral-language-gate.yml",    "Deferral language guard (always required)",                  True),
     ("agent-auth-delegation.yml",     "Agent token delegation (always required)",                   True),
     ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows (always required)", True),
-    # --- Always Active (fire via push/workflow_run) ---
-    ("unified-copilot-management.yml", "Copilot Management Suite (agent-checkin, session-done, self-healing)", True),
-    ("iterative-self-healing-ci.yml", "Iterative self-healing CI loop (fires on workflow_run — needs approval)", False),
     ("cost-gate.yml",                 "Cost governance gate (called by agent-auth-delegation)",      True),
-    # --- Testing & Validation (opt-in — maintainer checks to activate) ---
-    ("validate.yml",                  "Validation Pipeline (detect-secrets, ruff, pre-commit, sync-tracked)", False),
-    ("resilient_validation.yml",      "Resilient Validation Suite (full pytest, 4 shards)",         False),
-    ("test-rag.yml",                  "RAG Module Tests (coverage ≥95%)",                           False),
-    ("nox_gates.yml",                 "Nox quality gates (ruff, mypy, coverage)",                   False),
-    ("mypy-baseline.yml",             "mypy type-check anti-regression gate",                       False),
-    ("coverage-with-timeout.yml",     "Coverage with timeout guards",                               False),
-    ("progressive-validation.yml",    "Progressive Validation Suite",                               False),
-    ("pre-flight-validation.yml",     "Pre-flight CI validation",                                   False),
-    ("ci-checkpoint-validation.yml",  "CI Checkpoint Validation",                                   False),
-    ("data-quality-suite.yml",        "Data Quality & Determinism Suite",                           False),
-    ("auth-tests.yml",                "Authentication Tests",                                       False),
-    ("pr-checks.yml",                 "PR Checks (isolated cache, src/ scope)",                     False),
-    ("html_visual_regression.yml",    "HTML Visual Regression Screenshots",                         False),
-    # --- Security & Quality (opt-in — maintainer checks to activate) ---
-    ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
-    ("codeql-analysis.yml",           "CodeQL SAST analysis",                                       False),
-    ("actionlint-audit.yml",          "Workflow compliance audit (actionlint)",                     False),
-    ("semgrep_sarif.yml",             "Semgrep SAST (SARIF upload)",                                False),
-    ("auto-fix-common-issues.yml",    "Auto-Fix Common CI Issues",                                  False),
-    ("auto-fix-pr-check.yml",         "PR Auto-Fix Check",                                          False),
-    ("code-quality-coverage-suite.yml", "Code Quality & Coverage Suite",                            False),
-    ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
-    ("template_lint.yml",             "PR Template Lint",                                            False),
-    ("codeql-alert-fetcher.yml",      "CodeQL Alert Fetcher (artifact for in-session review)",      False),
-    # --- Documentation ---
-    ("documentation-link-checker.yml", "Documentation link checker",                                False),
-    ("pages-pre-merge-validation.yml", "Pages pre-merge validation",                                False),
-    # --- Infrastructure & Deployment ---
-    ("reference-integrity.yml",       "Reference integrity + agent size gate",                      False),
-    ("dependency-submission.yml",     "Resilient dependency submission",                            False),
-    ("docker-build-push.yml",         "Build & push Docker image (GHCR)",                          False),
-    ("rust_swarm_ci.yml",             "Rust-Python hybrid swarm CI/CD",                             False),
-    ("root-org-validation.yml",       "Root organization validation",                               False),
-    ("agent-registry-validation.yml", "Agent registry validation",                                  False),
-    ("e-to-d-transition-gate.yml",    "E→D transition readiness gate",                              False),
-    ("d-capable-promotion-gate.yml",  "D_CAPABLE agent promotion gate",                             False),
-    ("qa-walkthrough.yml",            "QA walkthrough agent",                                       False),
-    ("mcp-health.yml",                "MCP health & metrics gate (src/mcp/ scope)",                False),
     # --- Auto-Approve ---
-    ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
+    ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", True),
+    # --- Active opt-in workflows still present in the live .github/workflows baseline ---
+    ("auth-tests.yml",                "Authentication Tests",                                       False),
+    ("audit-qa-suite.yml",            "Audit & QA Suite (Unified)",                                 False),
+    ("data-quality-suite.yml",        "Data Quality & Determinism Suite",                           False),
+    ("docker-build-push.yml",         "Build & push Docker image (GHCR)",                          False),
+    ("nox_gates.yml",                 "Nox quality gates (ruff, mypy, coverage)",                   False),
+    ("security-scanning-suite.yml",   "Full security audit (bandit, pip-audit)",                    False),
+    ("test-rag.yml",                  "RAG Module Tests (coverage ≥95%)",                           False),
+    ("scheduled-archival.yml",        "Scheduled archival",                                         False),
+    ("scheduled-dependency-audit.yml", "Dependency audit",                                            False),
 ]
 
 # Derived from _WEC_ITEMS — workflows that are ALWAYS pre-checked (always required gates).
@@ -156,24 +126,14 @@ _WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
 )
 
 # Workflows that must NEVER be auto-checked during WEC generation.
-# Checking these causes the CI rescue system to auto-trigger new Copilot sessions
-# on every push, creating unbounded continuation loops.  Maintainer may check them
-# manually; the agent must never check them automatically.
-#
-# Why each is here:
-#   copilot-agent-session-done.yml  — fires on workflow_run; triggers a new @copilot
-#       review-request comment on every successful run, which the rescue loop then
-#       treats as a new unaddressed comment, firing another Copilot session.
-#   copilot-iterative-self-healing.yml — fires on workflow_run; schedules a new
-#       self-healing CI loop that posts rescue comments and re-triggers Copilot.
-#
-# NOTE: auto-approve-workflows is intentionally NOT in _WEC_NEVER_CHECK.
-# When COPILOT_AGENT_AUTH_ENABLED=true (full maintainer autonomy granted), the
-# system MUST maintain [x] auto-approve-workflows automatically so that ALL
-# pending action_required workflow runs are approved without human interaction.
-# This is controlled by _WEC_AUTONOMOUS_AUTO_CHECK below.
+# Only legacy workflow files that are still disabled in the active baseline are
+# kept here; active workflows like `workflow-execution-gate.yml` and
+# `auto-approve-workflows` remain eligible for the live gate contract.
 _WEC_NEVER_CHECK: frozenset[str] = frozenset({
     "iterative-self-healing-ci.yml",
+    "pre-merge-validation.yml",
+    "comment-review-gate.yml",
+    "unified-copilot-management.yml",
 })
 
 # Workflows that are auto-checked when COPILOT_AGENT_AUTH_ENABLED=true.
@@ -186,33 +146,15 @@ _WEC_AUTONOMOUS_AUTO_CHECK: frozenset[str] = frozenset({
 })
 
 # Workflows that MUST be activated for merge readiness on every Copilot session.
-# Lifted to module scope (was local to update_pr_wec_for_merge_readiness in S178)
-# so its disjoint-from-_WEC_NEVER_CHECK invariant can be verified at module-load
-# time and in tests, not only at runtime.
+# This set is intentionally limited to the always-required gate workflows; the
+# repo baseline opt-in workflows are preserved as maintainer-selected items and
+# must not be auto-checked by session startup logic.
 _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
-    # Always-required (belt-and-suspenders — already set by _WEC_ALWAYS_REQUIRED)
-    "pre-merge-validation.yml",
-    "comment-review-gate.yml",
     "deferral-language-gate.yml",
     "agent-auth-delegation.yml",
     "workflow-execution-gate.yml",
-    # Always-active (need activation for approval flow; excludes continuation-loop triggers)
-    "unified-copilot-management.yml",
     "cost-gate.yml",
-    # Opt-in: validation & testing (required for passing merge gate)
-    "validate.yml",
-    "resilient_validation.yml",
-    # Opt-in: security (required for security-suite merge gate)
-    # NOTE: codeql-analysis.yml removed — disabled_manually in Actions;
-    # CodeQL coverage is maintained by the active codeql.yml (CodeQL Advanced).
-    "security-scanning-suite.yml",
-    # Opt-in: infrastructure (reference integrity gate)
-    "reference-integrity.yml",
-    # Auto-approve: activated when COPILOT_AGENT_AUTH_ENABLED=true so that all
-    # pending workflow runs are cleared without human interaction (full autonomy).
     "auto-approve-workflows",
-    # NOTE: iterative-self-healing-ci.yml is in _WEC_NEVER_CHECK and must never
-    # be activated automatically — it causes unbounded Copilot continuation loops.
 })
 
 # ── Module-load invariant (S178 hardening) ────────────────────────────────
@@ -564,23 +506,12 @@ def _build_wec_block(
             )
         return _WEC_ITEMS[start_idx:end_idx + 1]
 
-    always_required_items = _get_section_items("pre-merge-validation.yml", "workflow-execution-gate.yml")
-    always_active_items = _get_section_items("unified-copilot-management.yml", "cost-gate.yml")
-    opt_in_testing_items = _get_section_items("validate.yml", "html_visual_regression.yml")
-    opt_in_security_items = _get_section_items("security-scanning-suite.yml", "codeql-alert-fetcher.yml")
-    opt_in_docs_items = _get_section_items("documentation-link-checker.yml", "pages-pre-merge-validation.yml")
-    opt_in_infra_items = _get_section_items("reference-integrity.yml", "mcp-health.yml")
-    # Single-item section: start/end intentionally identical.
-    auto_approve_items = _get_section_items("auto-approve-workflows", "auto-approve-workflows")
+    always_required_items = _get_section_items("deferral-language-gate.yml", "auto-approve-workflows")
+    active_workflows_items = _get_section_items("auth-tests.yml", "scheduled-dependency-audit.yml")
 
     grouped_sections = [
         always_required_items,
-        always_active_items,
-        auto_approve_items,
-        opt_in_testing_items,
-        opt_in_security_items,
-        opt_in_docs_items,
-        opt_in_infra_items,
+        active_workflows_items,
     ]
     grouped_filenames = [fname for section in grouped_sections for fname, _, _ in section]
     if len(grouped_filenames) != len(_WEC_ITEMS):
@@ -591,28 +522,8 @@ def _build_wec_block(
     for fname, label, _ in always_required_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
-    lines += ["", "### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)"]
-    for fname, label, _ in always_active_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### ⚡ Auto-Approve"]
-    for fname, label, _ in auto_approve_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 🧪 Opt-In: Testing & Validation"]
-    for fname, label, _ in opt_in_testing_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 🔒 Opt-In: Security & Quality"]
-    for fname, label, _ in opt_in_security_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### 📄 Opt-In: Documentation"]
-    for fname, label, _ in opt_in_docs_items:
-        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
-
-    lines += ["", "### ⚙️ Opt-In: Infrastructure & Deployment"]
-    for fname, label, _ in opt_in_infra_items:
+    lines += ["", "### 🔄 Active Workflows — currently enabled in the live repo baseline"]
+    for fname, label, _ in active_workflows_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += [

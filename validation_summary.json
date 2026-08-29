@@ -1,0 +1,11 @@
+{
+  "mode": "fast",
+  "selectors": [],
+  "pytest_opts": "",
+  "exit_code": 2,
+  "artifacts": {
+    "log": "validation.log",
+    "junit": null,
+    "coverage": null
+  }
+}

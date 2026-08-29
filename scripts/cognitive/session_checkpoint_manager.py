@@ -569,12 +569,20 @@ class SessionCheckpointManager:
         for cp_file in checkpoint_files:
             try:
                 session = cp_file.parent.name
+                candidate_name = cp_file.name
+                for suffix in (".json.zst", ".json.gz", ".json", ".zst", ".gz"):
+                    if candidate_name.endswith(suffix):
+                        candidate_name = candidate_name[: -len(suffix)]
+                        break
+                if candidate_name.startswith("checkpoint_"):
+                    candidate_name = candidate_name[len("checkpoint_") :]
+                checkpoint_id = self._validate_checkpoint_id(candidate_name)
 
                 # Try to read file for more info
                 size = cp_file.stat().st_size
 
                 meta = CheckpointMetadata(
-                    checkpoint_id=cp_file.stem,
+                    checkpoint_id=checkpoint_id,
                     session_id=session,
                     timestamp=datetime.fromtimestamp(cp_file.stat().st_mtime),
                     storage_path=str(cp_file),
@@ -645,6 +653,7 @@ class SessionCheckpointManager:
 
         # Check 1: File exists and readable
         checks_total += 1
+        data = None
         try:
             data = checkpoint_file.read_bytes()
             checks_passed += 1
@@ -658,7 +667,9 @@ class SessionCheckpointManager:
                 )
             )
 
-        if not data:
+        if data is None:
+            pass
+        elif not data:
             checks_total += 1
             errors.append(
                 ValidationError(

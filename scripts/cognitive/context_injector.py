@@ -292,18 +292,20 @@ class ContextInjector:
         try:
             # Encode observation as vector
             obs_vector = self.vector_encoder.encode_observation(observation)
-            
+
             # Search pattern store
             patterns = await asyncio.wait_for(
                 self.pattern_store.search_similar(obs_vector, top_k=top_k),
                 timeout=0.04,  # 40ms max for pattern search
             )
-            
-            return patterns
+
+            if not isinstance(patterns, list):
+                return []
+            return patterns[: max(0, int(top_k))]
         except Exception as e:
             logger.warning(f"Pattern retrieval failed: {e}")
             return []
-    
+
     async def _get_sessions(
         self,
         observation: Dict[str, Any],
@@ -312,7 +314,7 @@ class ContextInjector:
         """Retrieve relevant sessions from checkpoint storage."""
         try:
             task_type = observation.get("task", {}).get("type", "unknown")
-            
+
             sessions = await asyncio.wait_for(
                 self.session_store.get_sessions(
                     task_type=task_type,
@@ -322,8 +324,10 @@ class ContextInjector:
                 ),
                 timeout=0.03,  # 30ms max for session retrieval
             )
-            
-            return sessions
+
+            if not isinstance(sessions, list):
+                return []
+            return sessions[: max(0, int(top_k))]
         except Exception as e:
             logger.warning(f"Session retrieval failed: {e}")
             return []

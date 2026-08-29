@@ -93,9 +93,9 @@ class AgentOrchestrator:
     def _active_cost_total(self) -> float:
         """Total cost of work currently tracked in the workflow."""
         return sum(
-            float(task.estimated_cost or 0)
+            float(task.estimated_cost) if task.estimated_cost is not None else 0.0
             for task in self.tasks.values()
-            if task.status in {TaskStatus.RUNNING, TaskStatus.SUCCESS, TaskStatus.PENDING}
+            if task.status in {TaskStatus.RUNNING, TaskStatus.SUCCESS, TaskStatus.FAILURE}
         )
 
     def _budget_warning_active(self) -> bool:
@@ -162,6 +162,11 @@ class AgentOrchestrator:
         normalized_lane = _normalize_lane(
             lane or parameters.get("lane") or parameters.get("lane_bucket")
         )
+        raw_estimated_cost = (
+            estimated_cost
+            if estimated_cost is not None
+            else parameters.get("estimated_cost", 0)
+        )
         task = AgentTask(
             task_id=task_id,
             agent_name=agent_name,
@@ -170,7 +175,7 @@ class AgentOrchestrator:
             dependencies=dependencies or [],
             priority=priority,
             lane=normalized_lane,
-            estimated_cost=float(estimated_cost or parameters.get("estimated_cost") or 0),
+            estimated_cost=float(raw_estimated_cost if raw_estimated_cost is not None else 0),
             checkpoint_after=bool(checkpoint_after if checkpoint_after is not None else parameters.get("checkpoint_after", False)),
             resume_hint=resume_hint or parameters.get("resume_hint"),
         )
