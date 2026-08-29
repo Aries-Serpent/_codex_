@@ -70,10 +70,10 @@ PROTECTED_SECTIONS = {
 
 # Dependent workflows that must exist
 DEPENDENT_WORKFLOWS = [
-    ".github/workflows/copilot-agent-vars-bootstrap.yml",
-    ".github/workflows/repo-var-sync-schedule.yml",
-    ".github/workflows/admin_setup_verification.yml",
-    ".github/workflows/workflow-compliance-gate.yml",
+    ".github/workflows/copilot-setup-validation.yml",
+    ".github/workflows/deferral-language-gate.yml",
+    ".github/workflows/wec-enforcement-gate.yml",
+    ".github/workflows/workflow-execution-gate.yml",
     ".github/workflows/validate.yml",
 ]
 
@@ -245,8 +245,15 @@ def test_cca_variables(workflow_path: str) -> TestResult:
         missing = []
 
         for var_name, var_value in REQUIRED_CCA_VARIABLES.items():
-            pattern = rf'{var_name}:\s*["\']?{re.escape(var_value)}["\']?'
-            if not re.search(pattern, content):
+            direct_literal = re.search(
+                rf'{re.escape(var_name)}:\s*["\']?{re.escape(var_value)}["\']?',
+                content,
+            )
+            expression_pattern = (
+                rf'{re.escape(var_name)}:\s*\$\{{\{{\s*vars\.{re.escape(var_name)}\s*\|\|\s*["\']'
+                rf'{re.escape(var_value)}["\']\s*\}}\}}'
+            )
+            if not (direct_literal or re.search(expression_pattern, content)):
                 missing.append(var_name)
 
         if missing:
