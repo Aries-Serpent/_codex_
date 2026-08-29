@@ -35,9 +35,11 @@ jobs:
         }}
     steps:
     - name: Mask secrets
-      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-
-        '
+      shell: bash
+      run: |
+        if [ -n "${GH_TOKEN:-}" ]; then
+          echo "::add-mask::${GH_TOKEN}"
+        fi
     - name: Log token fallback tier selection
       run: "set -euo pipefail\nTIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')\n\n# Determine\
         \ which token tier is active\nif [ -n \"${CODEX_MASTER_KEY:-}\" ]; then\n\

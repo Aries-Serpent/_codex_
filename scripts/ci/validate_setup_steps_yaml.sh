@@ -96,6 +96,22 @@ else
   echo "✅ Check 5/5: line count ${LINE_COUNT} (expected ≥${MIN_ALLOWED_LINES}); path-gated no-op runs are expected by repo contract"
 fi
 
+# The workflow intentionally stores the LFS gate with a YAML scalar value of '1';
+# allow both single- and double-quoted values so we do not regress on valid YAML.
+if python3 - "$TARGET" <<'PY'
+import pathlib, re, sys
+path = pathlib.Path(sys.argv[1])
+text = path.read_text(encoding='utf-8')
+if not re.search(r"GIT_LFS_SKIP_SMUDGE:\s*['\"]?1['\"]?", text):
+    raise SystemExit(1)
+PY
+then
+  echo "✅ LFS guard: skip-smudge flag uses a valid scalar form"
+else
+  echo "::error file=${TARGET}::LFS guard missing or malformed; expected GIT_LFS_SKIP_SMUDGE: '1' / \"1\""
+  FAIL=$((FAIL + 1))
+fi
+
 # ── Result ────────────────────────────────────────────────────────────────────
 echo ""
 if [ "${FAIL}" -gt 0 ]; then
