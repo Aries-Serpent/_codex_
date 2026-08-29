@@ -208,6 +208,20 @@ class TestCheckpointCreation:
         assert meta.tags["estimated_cost"] == 0
         assert meta.tags["cost_score"] == 0
 
+    def test_list_checkpoints_normalizes_double_suffix_checkpoint_ids(self, checkpoint_manager, sample_checkpoint_state):
+        """List output should return the canonical cp_* ID, even for .json.zst files."""
+        meta = checkpoint_manager.create_checkpoint(
+            session_id=sample_checkpoint_state["session_id"],
+            agent_state=sample_checkpoint_state["agent_state"],
+            memory_snapshot=sample_checkpoint_state["memory_snapshot"],
+            execution_progress=sample_checkpoint_state["execution_progress"],
+            compress=True,
+        )
+
+        listed = checkpoint_manager.list_checkpoints(session_id=sample_checkpoint_state["session_id"])
+
+        assert [item.checkpoint_id for item in listed] == [meta.checkpoint_id]
+
     def test_checkpoint_with_full_state(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint with all optional fields."""
         meta = checkpoint_manager.create_checkpoint(
