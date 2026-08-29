@@ -43,6 +43,22 @@ Node.js 20 references are historical and archival only; they appear in disabled 
 archived workflow copies and are not active project policy unless a workflow is
 explicitly re-enabled.
 
+## Repository hygiene and archival policy
+
+The repository root is reserved for active repo metadata and current workflow inputs.
+Historical phase summaries, validation dumps, PR reports, and transient artifacts are
+kept in `docs/archive/` instead of the root unless they are still directly referenced
+by an active workflow or release checklist.
+
+Active metadata includes `README.md`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`,
+`CODEX_MANIFEST.json`, `pyproject.toml`, `package.json`, `requirements*.txt`,
+`.codex/`, `.github/workflows/`, and the canonical docs under `docs/`.
+
+Historical file families such as `PHASE_*`, `WEC_*`, `TIMEOUT_*`, `WORKFLOW_*`,
+`VALIDATION_SUMMARY*`, `validation_summary.json`, `workflow-*.json`, `telemetry_report.json`,
+`semgrep-*.json`, and `*_draft.md` should be archived or removed once superseded.
+See `docs/archive/README.md` for the retention and deletion policy.
+
 ---
 ## High-Level Architecture
 ```mermaid
