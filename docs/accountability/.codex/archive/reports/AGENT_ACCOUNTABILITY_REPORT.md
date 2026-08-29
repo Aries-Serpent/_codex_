@@ -1,3 +1,29 @@
+## Session: 2026-08-29T05:42:00Z — PR #5559 merge conflict resolution governance
+
+**Objective:** Resolve the live GitHub merge-conflict state for PR #5559 without widening the scope or reintroducing timestamp-only `.codex` churn.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Reconciled the active branch with `0D_base_` in the exact conflict files that GitHub still reported as blocking the PR.
+2. Kept the generated startup packet on the repo baseline timestamp to avoid unnecessary churn while preserving the intended checkpoint hardening changes.
+3. Refreshed the governance metadata so the final branch state is both mergeable and compliant with the repo wrap-up gate.
+
+**Validation:**
+- `gh pr view 5559 --repo Aries-Serpent/_codex_ --json mergeStateStatus,mergeable` → `mergeable: MERGEABLE` after the conflict resolution commit.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5559` → pass once the final governance files are committed together.
+
+**Governance:**
+- REQ-4: This archive report updated for PR #5559 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same PR.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## Session: 2026-08-29T04:00:00Z — PR #5560 live workflow gate contract alignment
 
 **Objective:** Resolve the live GitHub `action_required` / zero-job gate by aligning the canonical WEC contract with the active workflow baseline and preserving the current maintainer grant selections.
