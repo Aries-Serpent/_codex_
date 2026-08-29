@@ -11,7 +11,7 @@ The repository already encodes a clear hierarchy for transfer and archival safet
 - Operational policy is explicit: `.github/TEMPORARY_FILES_POLICY.md` forbids storing important output under `/tmp`, `/var/tmp`, or any non-repository scratch path, and directs work products to repo-owned directories instead.
 - The archival workflow in `.github/workflows/scheduled-archival.yml` targets stale content and expects archive outputs under `misc/repo-owner-review/archived/` or similar review-managed paths.
 - The root-consolidation index in `.codex/archive/root-consolidation/INDEX.md` treats temporary outputs, phase history, and deprecated reports as archive-managed assets, not root-owned files.
-- The active, canonical transfer location for sandbox patch bundles is `.codex/sandbox-bundles/`; older `temp-outputs/sandbox-transfer` paths are historical and should not be treated as the live handoff contract.
+- The active, canonical transfer location for sandbox patch bundles is `.codex/sandbox-bundles/sandbox-transfer/`; older `temp-outputs/sandbox-transfer` paths are historical and should not be treated as the live handoff contract.
 
 The safe operational rule is simple: keep transfer payloads in repo-owned staging and archive directories; never persist meaningful state in a transient shell temp directory. The canonical helper for this pattern is `scripts/archive/git_patch_bundle.py`, which writes the patch to disk, verifies the archive checksum, and then applies it on the receiving side.
 
@@ -29,7 +29,7 @@ The repo safety pattern is to treat the diff as a file first and only then read 
 
 ## Safe flow
 
-Use the canonical repo-owned bundle directory under `.codex/sandbox-bundles/` (or an approved repo review path such as `misc/repo-owner-review/` when a review-managed archive is required). The flow is:
+Use the canonical repo-owned bundle directory under `.codex/sandbox-bundles/sandbox-transfer/` (or an approved repo review path such as `misc/repo-owner-review/` when a review-managed archive is required). The flow is:
 
 1. Create a bundle directory inside the repository.
 2. Write the work-tree and staged diffs to files in that directory.
@@ -46,7 +46,7 @@ set -Eeuo pipefail
 
 repo_root="$(git rev-parse --show-toplevel)"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-bundle_dir="$repo_root/.codex/sandbox-bundles/$stamp"
+bundle_dir="$repo_root/.codex/sandbox-bundles/sandbox-transfer/$stamp"
 mkdir -p "$bundle_dir"
 
 # Store the raw diffs in files; do not pipe them directly into a consumer.

@@ -21,9 +21,9 @@
 ### Temporary Outputs (historical + active bundle archive)
 - `DAY_3_QA_VALIDATION_READY.txt` — Session marker file
 - Session/temporary artifacts
-- Active sandbox patch bundles live under `.codex/sandbox-bundles/` and are treated as the canonical repo-owned transfer directory
+- Active sandbox patch bundles live under `.codex/sandbox-bundles/sandbox-transfer/` and are treated as the canonical repo-owned transfer directory
 
-**Location**: historical content remains in `temp-outputs/`; active transfer bundles use `.codex/sandbox-bundles/`
+**Location**: historical content remains in `temp-outputs/`; active transfer bundles use `.codex/sandbox-bundles/sandbox-transfer/`
 
 ## Archive Statistics
 - **Total files moved**: 55+
@@ -39,7 +39,7 @@ The first-wave root hygiene pass intentionally preserves canonical repository me
 | Root canonical metadata | Keep at root | `README.md`, `LICENSE`, `SECURITY.md`, `CHANGELOG.md`, `CODEX_MANIFEST.json`, `pyproject*.toml`, `requirements*.txt`, `package.json`, `mkdocs.yml`, `Cargo.toml` | repository root |
 | History / phase artifacts | Archive | `PHASE_*.md`, `*_REPORT.md`, `*_SUMMARY.md`, gate/compliance notes | `.codex/archive/root-consolidation/phase-history/` |
 | Generated validation & security payloads | Archive | `workflow-*.json`, `telemetry_report.json`, `sbom*.json`, `semgrep-*.json`, checksum files | `.codex/reports/` |
-| Temporary / scratch outputs | Archive | `fix_*.py`, `phase_7_*_test*.py`, session markers, draft reports | `.codex/archive/root-consolidation/temp-outputs/` (historical) and `.codex/sandbox-bundles/` (active transfer bundle root) |
+| Temporary / scratch outputs | Archive | `fix_*.py`, `phase_7_*_test*.py`, session markers, draft reports | `.codex/archive/root-consolidation/temp-outputs/` (historical) and `.codex/sandbox-bundles/sandbox-transfer/` (active transfer bundle root) |
 | Structured operational code | Relocate to domain folders | validation runners, metrics scripts, bootstrap scripts | `scripts/validation/`, `scripts/ops/`, `scripts/bootstrap/` |
 | Manual review / deferred | Hold for follow-up | `secrets.txt`, any ad hoc `json/` data, isolated test harnesses that may still be referenced by CI | follow-up migration review |
 
