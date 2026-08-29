@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5560 review-thread + merge-readiness follow-up
+- Resolved the remaining review-thread regressions in the orchestrator cost gate, the Chronicle lane-cost analysis, and the compressed checkpoint ID normalization path for list/create/restore flows.
+- Preserved explicit zero-cost values, excluded pending tasks from active budget totals, and aligned lane-cost scope semantics with the actual filtered lane set.
+- Cleared the repo-side action-version drift by pinning `actions/upload-artifact` to v5 in `.github/workflows/ml-tests.yml` and kept the required action-version policy green.
+- Refreshed the session governance evidence for the active PR (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/aftermath/pda_iterations.jsonl`, and the wrap-up compliance metadata) so the local PR readiness gate reflects the current sprint state.
+
 ### Fixed — PR #5559 main-merge checkpoint hardening
 - Hardened `session_id` and `checkpoint_id` validation in `scripts/cognitive/session_checkpoint_manager.py` so empty, whitespace, absolute-path, and traversal-style values are rejected before filesystem access.
 - Expanded the checkpoint regression coverage to cover traversal attempts and empty/whitespace inputs for create/list/restore flows.

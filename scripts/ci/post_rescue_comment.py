@@ -326,8 +326,15 @@ def _detect_cascading_copilot_errors(
     repo: str,
     pr_number: int,
     threshold: int = 5,
+    comments: list[dict] | None = None,
 ) -> dict:
     """Detect cascading Copilot error comments and already-consolidated cascades.
+
+    When *comments* is provided, the function inspects that already-fetched list
+    instead of making a fresh GitHub API request. This keeps duplicate rescue
+    consolidation logic from hitting the same PR comments endpoint twice while
+    preserving the original network-backed behavior for callers that supply only
+    token/repo/pr_number.
 
     Cascades are identified by:
     - 5+ comments with "comment-generic-error" marker (fresh errors, threshold configurable)
@@ -353,35 +360,41 @@ def _detect_cascading_copilot_errors(
             "action": str - One of "CONSOLIDATE_ERRORS", "ALREADY_CONSOLIDATED", "APPEND_TO_EXISTING", "PROCEED"
         }
     """
-    page = 1
     error_comments = []
     has_consolidated_error = False
 
-    while True:
-        status, comments = _gh(
-            "GET",
-            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
-            token,
-        )
-        if status != 200:
-            break
-        if not isinstance(comments, list) or not comments:
-            break
+    if comments is None:
+        page = 1
+        while True:
+            status, comments = _gh(
+                "GET",
+                f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+                token,
+            )
+            if status != 200:
+                break
+            if not isinstance(comments, list) or not comments:
+                break
 
+            for c in comments:
+                body = c.get("body") or ""
+                if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
+                    if c.get("user", {}).get("login") == "Copilot":
+                        error_comments.append(c)
+                        if CASCADE_CONSOLIDATED_CHECK in body:
+                            has_consolidated_error = True
+
+            if len(comments) < 100:
+                break
+            page += 1
+    else:
         for c in comments:
             body = c.get("body") or ""
-            # Count both fresh error comments ("comment-generic-error") and already-consolidated
-            # errors (marked with "cascade-error-id"). Both indicate Copilot errors on this PR.
             if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
-                    # Track if any comments are already consolidated (have cascade-error-id markers)
                     if CASCADE_CONSOLIDATED_CHECK in body:
                         has_consolidated_error = True
-
-        if len(comments) < 100:
-            break
-        page += 1
 
     if not error_comments:
         return {
@@ -426,21 +439,13 @@ def _consolidate_duplicate_rescue_comments(
     signature: str,
     created_id: int,
 ) -> None:
-    """Collapse same-SHA rescue-comment races into one appended thread."""
-    # CRITICAL: Check for cascading Copilot errors before consolidating (PR #5324)
-    cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number, threshold=5)
+    """Collapse same-SHA rescue-comment races into one appended thread.
 
-    if cascade_info["is_cascading"]:
-        import sys
-        action = cascade_info["action"]
-        count = cascade_info["error_count"]
-        print(
-            f"⚠️  CASCADE DETECTED: {count} Copilot error comments. "
-            f"Action: {action}. Aborting consolidation.",
-            file=sys.stderr,
-        )
-        return
-
+    Cascade detection is intentionally handled by main() before this function is
+    invoked.  Keeping duplicate consolidation focused on the canonical rescue
+    thread avoids redundant PR comment polling and prevents a duplicate GET loop
+    when the same-SHA race is already being resolved.
+    """
     time.sleep(CONSOLIDATION_DELAY_SECONDS)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:

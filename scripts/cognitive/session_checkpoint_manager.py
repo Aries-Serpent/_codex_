@@ -653,7 +653,7 @@ class SessionCheckpointManager:
 
         # Check 1: File exists and readable
         checks_total += 1
-        data = b""
+        data = None
         try:
             data = checkpoint_file.read_bytes()
             checks_passed += 1
@@ -667,7 +667,9 @@ class SessionCheckpointManager:
                 )
             )
 
-        if not data:
+        if data is None:
+            pass
+        elif not data:
             checks_total += 1
             errors.append(
                 ValidationError(
