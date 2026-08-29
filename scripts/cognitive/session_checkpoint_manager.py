@@ -11,6 +11,7 @@ Phase: 10.1 - Session Checkpoint/Resume System
 import hashlib
 import json
 import logging
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -219,7 +220,7 @@ class SessionCheckpointManager:
         (self.storage_path / "archive").mkdir(exist_ok=True)
 
     def _validate_storage_component(self, value: str, field_name: str) -> str:
-        """Return a safe storage component and reject traversal or absolute paths."""
+        """Return a safe storage component and reject traversal or malformed identifiers."""
         if value is None:
             raise StorageError(f"{field_name} is required")
 
@@ -228,9 +229,19 @@ class SessionCheckpointManager:
             raise StorageError(f"Invalid {field_name}: {value!r}")
         if candidate.startswith(("/", "\\")) or candidate.endswith(("/", "\\")):
             raise StorageError(f"Invalid {field_name}: {value!r}")
-        if "/" in candidate or "\\" in candidate:
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", candidate):
             raise StorageError(f"Invalid {field_name}: {value!r}")
 
+        return candidate
+
+    def _validate_checkpoint_id(self, checkpoint_id: str) -> str:
+        """Validate checkpoint IDs before filesystem access or schema checks."""
+        if checkpoint_id is None:
+            raise StorageError("checkpoint_id is required")
+
+        candidate = str(checkpoint_id).strip()
+        if not candidate or not re.fullmatch(r"cp_[A-Za-z0-9_]+", candidate):
+            raise StorageError(f"Invalid checkpoint_id: {checkpoint_id!r}")
         return candidate
 
     def _resolve_session_dir(self, session_id: str) -> Path:
@@ -449,6 +460,9 @@ class SessionCheckpointManager:
         """
         validation_mode = validation_mode or self.validation_mode
 
+        if session_id is not None:
+            self._resolve_session_dir(session_id)
+
         # Find checkpoint file
         checkpoint_file = self._find_checkpoint(checkpoint_id, session_id)
         if not checkpoint_file:
@@ -523,7 +537,7 @@ class SessionCheckpointManager:
         """
         checkpoints = []
 
-        if session_id:
+        if session_id is not None:
             session_dir = self._resolve_session_dir(session_id)
             if not session_dir.exists():
                 return []
@@ -798,7 +812,7 @@ class SessionCheckpointManager:
         self, checkpoint_id: str, session_id: Optional[str] = None
     ) -> Optional[Path]:
         """Find checkpoint file."""
-        if session_id:
+        if session_id is not None:
             search_dir = self._resolve_session_dir(session_id)
             if not search_dir.exists():
                 return None

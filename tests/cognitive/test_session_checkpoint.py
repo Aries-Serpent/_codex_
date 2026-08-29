@@ -241,10 +241,22 @@ class TestCheckpointCreation:
         
         assert meta1.checkpoint_id != meta2.checkpoint_id
 
-    def test_rejects_session_id_path_traversal(self, checkpoint_manager, sample_checkpoint_state):
-        """Traversal attempts must not escape the session checkpoint root."""
-        malicious_session_id = "../../escape"
-
+    @pytest.mark.parametrize(
+        "malicious_session_id",
+        [
+            "../../escape",
+            "..\\..\\escape",
+            "/tmp/escape",
+            "C:\\tmp\\escape",
+            "session/../../escape",
+            "session\\..\\escape",
+            "..",
+            "",
+            "   ",
+        ],
+    )
+    def test_rejects_session_id_path_traversal(self, checkpoint_manager, sample_checkpoint_state, malicious_session_id):
+        """Traversal and absolute-path variants must not escape the session checkpoint root."""
         with pytest.raises(StorageError, match="Invalid session_id"):
             checkpoint_manager.create_checkpoint(
                 session_id=malicious_session_id,
