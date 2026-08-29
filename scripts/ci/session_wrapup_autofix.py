@@ -146,26 +146,15 @@ _WEC_AUTONOMOUS_AUTO_CHECK: frozenset[str] = frozenset({
 })
 
 # Workflows that MUST be activated for merge readiness on every Copilot session.
-# Lifted to module scope (was local to update_pr_wec_for_merge_readiness in S178)
-# so its disjoint-from-_WEC_NEVER_CHECK invariant can be verified at module-load
-# time and in tests, not only at runtime.
+# This set is intentionally limited to the always-required gate workflows; the
+# repo baseline opt-in workflows are preserved as maintainer-selected items and
+# must not be auto-checked by session startup logic.
 _MERGE_REQUIRED_WORKFLOWS: frozenset[str] = frozenset({
-    # Always-required gate workflows that are active on the current repo baseline.
     "deferral-language-gate.yml",
     "agent-auth-delegation.yml",
     "workflow-execution-gate.yml",
     "cost-gate.yml",
     "auto-approve-workflows",
-    # Current active validation/security workflow surface.
-    "auth-tests.yml",
-    "audit-qa-suite.yml",
-    "data-quality-suite.yml",
-    "docker-build-push.yml",
-    "nox_gates.yml",
-    "security-scanning-suite.yml",
-    "test-rag.yml",
-    "scheduled-archival.yml",
-    "scheduled-dependency-audit.yml",
 })
 
 # ── Module-load invariant (S178 hardening) ────────────────────────────────

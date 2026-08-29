@@ -129,6 +129,15 @@ _CHECKBOX_RE = re.compile(
 )
 
 
+def _workflow_state_name(workflow_name: str) -> str:
+    """Return the GitHub Actions workflow filename used in the API state map."""
+    if workflow_name.endswith(".yml"):
+        return workflow_name
+    if workflow_name == "auto-approve-workflows":
+        return f"{workflow_name}.yml"
+    return workflow_name
+
+
 def _extract_wec_section(body: str) -> str:
     """Return the raw WEC section text from a PR body, or empty string.
     
@@ -264,20 +273,23 @@ def cmd_validate_body(pr_number: int) -> int:
     # Validate selected and merge-required workflows are active in Actions.
     workflow_states = _list_workflow_states(token, repo)
     if workflow_states:
+        def _state_for(wf: str) -> str:
+            return workflow_states.get(wf, workflow_states.get(_workflow_state_name(wf), "missing"))
+
         checked_workflows = sorted(
             fname for fname, checked in checkboxes.items()
-            if checked and fname.endswith(".yml")
+            if checked and (fname.endswith(".yml") or fname == "auto-approve-workflows")
         )
         checked_non_active = [
-            (wf, workflow_states.get(wf, "missing"))
+            (wf, _state_for(wf))
             for wf in checked_workflows
-            if workflow_states.get(wf) not in ("active",)
+            if _state_for(wf) not in ("active",)
         ]
 
         merge_required_non_active = [
-            (wf, workflow_states.get(wf, "missing"))
+            (wf, _state_for(wf))
             for wf in sorted(_WEC_MERGE_REQUIRED)
-            if wf.endswith(".yml") and workflow_states.get(wf) not in ("active",)
+            if _state_for(wf) not in ("active",)
         ]
 
         if checked_non_active or merge_required_non_active:
