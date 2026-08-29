@@ -1,3 +1,30 @@
+## Session: 2026-08-29T01:54:00Z — PR #5559 checkpoint validation readiness for main merge
+
+**Objective:** Verify the branch is merge-ready for `main` by closing the remaining validation bypass in the checkpoint path hardening, ensuring the generated artifacts stay on baseline, and re-running the directly affected regression checks.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Confirmed the checkpoint hardening fix was in place and closed the remaining empty/whitespace `session_id` bypass in `scripts/cognitive/session_checkpoint_manager.py` before filesystem access.
+2. Expanded the regression matrix to cover traversal, absolute paths, and empty/whitespace identifiers for create/list/restore operations.
+3. Restored generated `.codex` artifact churn to repo baseline and re-ran the relevant checkpoint and Chronicle tests.
+
+**Validation:**
+- `pytest tests/cognitive/test_session_checkpoint.py -q` → pass.
+- `pytest tests/test_chronicle_cost.py tests/orchestration/test_chronicle_cli_gaps.py -q` → pass.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5559` → pass after governance updates.
+
+**Governance:**
+- REQ-4: This report updated for the current PR.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for PR #5559.
+
+### Agents Used
+- [x] `ci-failure-resolution-agent`
+- [x] `ci-testing-agent`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-08-25T16:10Z — RAG Module Tests dependency fix (Issue #5520)
 
 **Objective:** Resolve the dependency deadlock blocking the `RAG Module Tests` workflow by aligning the package extras with the workflow install path and preserving the security-first `cryptography` policy.
