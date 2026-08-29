@@ -532,11 +532,11 @@ Organization:
 
 ### C. Related Documents
 
-- [.codex/archive/deprecated/AGENTS.md](../agents.md) - Agent operations playbook
+- [.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md) - Agent operations playbook
 - [MATURITY_REMAINING_WORK.md](MATURITY_REMAINING_WORK.md) - Maturity improvement plan
 - [REMAINING_WORK.md](REMAINING_WORK.md) - General remaining work
-- [agents/prompts/ARCHITECTURE.md](../architecture/INDEX.md) - System architecture
-- [reports/stub_analysis.md](../reports/stub_analysis.md) - Detailed stub analysis
+- [agents/prompts/ARCHITECTURE.md](../../agents/prompts/ARCHITECTURE.md) - System architecture
+- [reports/stub_analysis.md](../../.codex/reports/stub_analysis.md) - Detailed stub analysis
 
 ---
 

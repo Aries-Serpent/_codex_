@@ -895,7 +895,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Codex task executor")
     parser.add_argument("--repo-root", default=Path.cwd(), type=Path)
     parser.add_argument("--logs-dir", default=Path("logs/codex_tasks"), type=Path)
-    parser.add_argument("--reports-dir", default=Path("reports/codex_tasks"), type=Path)
+    parser.add_argument("--reports-dir", default=Path(".codex/reports/codex_tasks"), type=Path)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
 

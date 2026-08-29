@@ -23,6 +23,8 @@ Authority: @mbaetiong (D-Tier autonomous)
 import json
 import logging
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Dict, List
 from dataclasses import dataclass
 from datetime import datetime
@@ -342,9 +344,9 @@ def main():
     """Execute Phase 13 Track 13.1 autonomous test healer."""
     
     config = TestHealerConfig(
-        repo_root=Path("/home/runner/work/_codex_/_codex_"),
-        test_dir=Path("/home/runner/work/_codex_/_codex_/tests"),
-        output_dir=Path("/home/runner/work/_codex_/_codex_/.codex"),
+        repo_root=REPO_ROOT,
+        test_dir=REPO_ROOT / "tests",
+        output_dir=REPO_ROOT / ".codex",
         patterns_to_deploy=["P1", "P2", "P3", "P4"],
         confidence_threshold=0.85,
         advisory_mode=True,

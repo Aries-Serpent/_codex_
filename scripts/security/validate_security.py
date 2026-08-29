@@ -1,3 +1,6 @@
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 #!/usr/bin/env python3
 """
 Validate Security
@@ -42,7 +45,7 @@ def run_check(name: str, pattern: str, should_find: bool = False) -> tuple[bool,
         ['grep', '-r', pattern, 'src/', 'agents/', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
 
     count = len([line for line in result.stdout.split('\n') if line.strip()])
@@ -63,7 +66,7 @@ def validate_security() -> dict[str, tuple[bool, str]]:
         ['grep', '-r', r'\beval\(', 'src/', 'agents/', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
     # Filter out safe usages
     unsafe_evals = [line for line in result.stdout.split('\n')
@@ -90,7 +93,7 @@ def validate_security() -> dict[str, tuple[bool, str]]:
         ['grep', '-r', r'hashlib\.md5\(', 'src/', 'agents/', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
     md5_calls = [line for line in result.stdout.split('\n') if 'hashlib.md5(' in line and line.strip()]
     md5_safe = [line for line in md5_calls if 'usedforsecurity=False' in line]
@@ -107,7 +110,7 @@ def validate_security() -> dict[str, tuple[bool, str]]:
         ['grep', '-A 1', r'except.*:', 'src/', '-r', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
 
     lines = result.stdout.split('\n')
@@ -135,7 +138,7 @@ def validate_security() -> dict[str, tuple[bool, str]]:
         ['grep', '-r', r'pickle\.load\(', 'src/', 'agents/', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
 
     pickle_loads = [line for line in result.stdout.split('\n')
@@ -154,7 +157,7 @@ def validate_security() -> dict[str, tuple[bool, str]]:
         ['grep', '-r', r'torch\.load\(', 'src/', 'agents/', '--include=*.py'],
         capture_output=True,
         text=True,
-        cwd='/home/runner/work/_codex_/_codex_'
+        cwd=REPO_ROOT
     )
 
     torch_loads = [line for line in result.stdout.split('\n') if 'torch.load(' in line and line.strip()]

@@ -34,6 +34,8 @@ import re
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 logger = logging.getLogger(__name__)
 
 
@@ -111,7 +113,7 @@ def fix_try_except_pass(file_path: Path) -> int:
 
 def main():
     """Fix all Python files in src/ directory."""
-    base_dir = Path('/home/runner/work/_codex_/_codex_')
+    base_dir = REPO_ROOT
     total_fixes = 0
     files_fixed = 0
 

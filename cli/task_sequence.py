@@ -958,7 +958,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         "--log-dir", type=Path, default=Path("codex_logs"), help="Directory for logs and artefacts."
     )
     parser.add_argument(
-        "--reports-dir", type=Path, default=Path("reports"), help="Directory for generated reports."
+        "--reports-dir", type=Path, default=Path(".codex/reports"), help="Directory for generated reports."
     )
     parser.add_argument("--seed", type=int, default=42, help="Global random seed.")
     parser.add_argument(

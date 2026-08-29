@@ -81,7 +81,7 @@ python scripts/monitor_workflow_performance.py --days 14 --format markdown
 python scripts/monitor_workflow_performance.py --days 14 --compare --format markdown
 
 # Generate JSON report for automation
-python scripts/monitor_workflow_performance.py --days 7 --format json --output .reports/performance.json
+python scripts/monitor_workflow_performance.py --days 7 --format json --output .codex/reports/performance.json
 ```
 
 ### 2. GitHub Actions API

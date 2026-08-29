@@ -10,11 +10,13 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 class PostMergeContinuationTrigger:
     """Manages automatic Phase 2-3 continuation upon merge completion"""
     
-    def __init__(self, repo_root: str = "/home/runner/work/_codex_/_codex_"):
+    def __init__(self, repo_root: str = REPO_ROOT):
         self.repo_root = Path(repo_root)
         self.codex_dir = self.repo_root / ".codex"
         self.timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")

@@ -14,6 +14,8 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from datetime import datetime
 
 def run_command(cmd, description):
@@ -86,7 +88,7 @@ def validate_helper_scripts():
 
     all_exist = True
     for script in scripts:
-        path = Path("/home/runner/work/_codex_/_codex_") / script
+        path = REPO_ROOT / script
         if path.exists():
             size_kb = path.stat().st_size / 1024
             print(f"✅ {script:50} ({size_kb:6.1f} KB)")
@@ -110,7 +112,7 @@ def validate_documentation():
 
     all_exist = True
     for doc in docs:
-        path = Path("/home/runner/work/_codex_/_codex_") / doc
+        path = REPO_ROOT / doc
         if path.exists():
             size_kb = path.stat().st_size / 1024
             print(f"✅ {doc:50} ({size_kb:6.1f} KB)")
@@ -132,7 +134,7 @@ def validate_workflows():
 
     all_exist = True
     for workflow in workflows:
-        path = Path("/home/runner/work/_codex_/_codex_") / workflow
+        path = REPO_ROOT / workflow
         if path.exists():
             size_kb = path.stat().st_size / 1024
             print(f"✅ {workflow:50} ({size_kb:6.1f} KB)")

@@ -78,7 +78,7 @@ jobs:
     - name: Install Semgrep
       run: pip install semgrep
     - name: Run Semgrep
-      run: 'semgrep --config .semgrep/semgrep.yml src --json > semgrep-report.json
+      run: 'semgrep --config semgrep/semgrep.yml src --json > semgrep-report.json
         || true
 
         '

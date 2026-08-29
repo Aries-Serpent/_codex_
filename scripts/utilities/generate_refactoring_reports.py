@@ -5,6 +5,8 @@ import json
 import os
 import re
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from collections import defaultdict
 from typing import Dict, List, Set
 
@@ -146,7 +148,7 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
 
 def main():
     """Execute Phase 4.1 analysis and generate reports."""
-    repo_root = '/home/runner/work/_codex_/_codex_'
+    repo_root = REPO_ROOT
     codex_dir = Path(repo_root) / '.codex'
     
     print("📊 PHASE 4.1: Generating comprehensive refactoring reports...")

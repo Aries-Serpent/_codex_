@@ -8,5 +8,5 @@
     "allow_critical_vulns": 0
   },
   "status_template_version": "v1.2",
-  "report_storage": "reports/daily"
+  "report_storage": ".codex/reports/daily"
 }

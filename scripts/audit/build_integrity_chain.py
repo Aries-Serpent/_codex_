@@ -56,7 +56,7 @@ def sha256_file(path: Path) -> str:
 
 def ensure_dirs():
     (REPO_ROOT / "audit_artifacts").mkdir(parents=True, exist_ok=True)
-    (REPO_ROOT / "reports").mkdir(parents=True, exist_ok=True)
+    (REPO_ROOT / ".codex" / "reports").mkdir(parents=True, exist_ok=True)
 
 
 def main() -> int:
@@ -97,7 +97,7 @@ def main() -> int:
         )
 
     # Hash capability matrix reports if any
-    for md in sorted((REPO_ROOT / "reports").glob("capability_matrix_*.md")):
+    for md in sorted((REPO_ROOT / ".codex" / "reports").glob("capability_matrix_*.md")):
         entries.append(
             {
                 "path": str(md.relative_to(REPO_ROOT)),

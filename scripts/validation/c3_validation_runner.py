@@ -13,6 +13,8 @@ import sys
 import time
 import inspect
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any, Callable, Optional
 import io
 import contextlib
@@ -464,7 +466,7 @@ def main():
     print("METRICS UNIFIED API VALIDATION SUITE", file=sys.stderr)
     print("=" * 80, file=sys.stderr)
 
-    codex_dir = Path("/home/runner/work/_codex_/_codex_/.codex")
+    codex_dir = REPO_ROOT / ".codex"
     codex_dir.mkdir(parents=True, exist_ok=True)
 
     # C3.1: Metrics Inventory

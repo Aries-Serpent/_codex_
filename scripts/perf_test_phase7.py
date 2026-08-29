@@ -31,6 +31,8 @@ import tracemalloc
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
@@ -700,7 +702,7 @@ def main():
     }
     
     # Save results
-    output_file = Path("/home/runner/work/_codex_/_codex_/.codex/PHASE_7_PERFORMANCE_BASELINE.json")
+    output_file = REPO_ROOT / ".codex" / "PHASE_7_PERFORMANCE_BASELINE.json"
     output_file.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_file, "w") as f:

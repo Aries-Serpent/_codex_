@@ -13,7 +13,7 @@ Generates visual trending analysis across multiple audit runs:
 Usage:
     python scripts/space_traversal/trend_dashboard.py \
         --history audit_artifacts/history/ \
-        --output reports/trend_dashboard.html
+        --output .codex/reports/trend_dashboard.html
 
 Dependencies:
     pip install jinja2
@@ -526,7 +526,7 @@ def main():
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("reports/trend_dashboard.html"),
+        default=Path(".codex/reports/trend_dashboard.html"),
         help="Output HTML file path",
     )
 

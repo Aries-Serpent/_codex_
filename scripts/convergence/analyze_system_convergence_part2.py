@@ -13,6 +13,8 @@ Generates reports 6-10:
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any, Dict
 
 class ConvergenceAnalyzer2:
@@ -473,7 +475,7 @@ class ConvergenceAnalyzer2:
         return reports
 
 def main():
-    repo_root = "/home/runner/work/_codex_/_codex_"
+    repo_root = REPO_ROOT
     analyzer = ConvergenceAnalyzer2(repo_root)
     
     # Generate reports

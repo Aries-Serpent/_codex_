@@ -58,9 +58,9 @@ jobs:
           bandit \
           semgrep
     - name: Create metrics directory
-      run: 'mkdir -p .reports/metrics
+      run: 'mkdir -p .codex/reports/metrics
 
-        mkdir -p .reports/logs
+        mkdir -p .codex/reports/logs
 
         '
     - name: Collect Coverage Metrics
@@ -68,92 +68,92 @@ jobs:
       continue-on-error: true
       run: "echo \"Collecting coverage metrics...\"\npython -m pytest \\\n  --cov=src\
         \ \\\n  --cov-report=json \\\n  --cov-report=term-missing \\\n  --cov-report=html\
-        \ \\\n  -v \\\n  --tb=short \\\n  --timeout=600 \\\n  2>&1 | tee .reports/logs/coverage.log\n\
+        \ \\\n  -v \\\n  --tb=short \\\n  --timeout=600 \\\n  2>&1 | tee .codex/reports/logs/coverage.log\n\
         \n# Extract coverage from coverage.json\npython scripts/metrics/extract_coverage.py\
-        \ \\\n  coverage.json \\\n  .reports/metrics/coverage_latest.json\n\necho\
+        \ \\\n  coverage.json \\\n  .codex/reports/metrics/coverage_latest.json\n\necho\
         \ \"Coverage metrics collected\"\n"
     - name: Collect Test Metrics
       id: tests
       continue-on-error: true
       run: "echo \"Collecting test metrics...\"\npython -m pytest \\\n  --collect-only\
-        \ \\\n  --quiet \\\n  --json-report \\\n  --json-report-file=.reports/logs/test_collection.json\n\
-        \npython scripts/metrics/extract_test_metrics.py \\\n  .reports/logs/test_collection.json\
-        \ \\\n  .reports/metrics/test_count_latest.json\n\necho \"Test metrics collected\"\
+        \ \\\n  --quiet \\\n  --json-report \\\n  --json-report-file=.codex/reports/logs/test_collection.json\n\
+        \npython scripts/metrics/extract_test_metrics.py \\\n  .codex/reports/logs/test_collection.json\
+        \ \\\n  .codex/reports/metrics/test_count_latest.json\n\necho \"Test metrics collected\"\
         \n"
     - name: Collect Test Latency Metrics
       id: latency
       continue-on-error: true
       run: "echo \"Collecting test latency metrics...\"\npython -m pytest \\\n  --durations=20\
-        \ \\\n  --tb=short \\\n  --timeout=600 \\\n  -q \\\n  2>&1 | tee .reports/logs/latency.log\n\
-        \npython scripts/metrics/extract_latency.py \\\n  .reports/logs/latency.log\
-        \ \\\n  .reports/metrics/test_latency_latest.json\n\necho \"Latency metrics\
+        \ \\\n  --tb=short \\\n  --timeout=600 \\\n  -q \\\n  2>&1 | tee .codex/reports/logs/latency.log\n\
+        \npython scripts/metrics/extract_latency.py \\\n  .codex/reports/logs/latency.log\
+        \ \\\n  .codex/reports/metrics/test_latency_latest.json\n\necho \"Latency metrics\
         \ collected\"\n"
     - name: Analyze Code Complexity
       id: complexity
       continue-on-error: true
-      run: "echo \"Analyzing code complexity...\"\nradon cc src/ --json > .reports/logs/cyclomatic.json\
-        \ || true\nradon mi src/ --json > .reports/logs/maintainability.json || true\n\
-        \npython scripts/metrics/extract_complexity.py \\\n  .reports/logs/cyclomatic.json\
-        \ \\\n  .reports/logs/maintainability.json \\\n  .reports/metrics/code_complexity_latest.json\n\
+      run: "echo \"Analyzing code complexity...\"\nradon cc src/ --json > .codex/reports/logs/cyclomatic.json\
+        \ || true\nradon mi src/ --json > .codex/reports/logs/maintainability.json || true\n\
+        \npython scripts/metrics/extract_complexity.py \\\n  .codex/reports/logs/cyclomatic.json\
+        \ \\\n  .codex/reports/logs/maintainability.json \\\n  .codex/reports/metrics/code_complexity_latest.json\n\
         \necho \"Complexity metrics collected\"\n"
     - name: Check Docstring Coverage
       id: docstrings
       continue-on-error: true
       run: "echo \"Checking docstring coverage...\"\npydocstyle src/ --match='.*\\\
-        .py' --count > .reports/logs/docstring_missing.txt || true\n\npython scripts/metrics/extract_docstring_coverage.py\
-        \ \\\n  src/ \\\n  .reports/metrics/docstring_coverage_latest.json\n\necho\
+        .py' --count > .codex/reports/logs/docstring_missing.txt || true\n\npython scripts/metrics/extract_docstring_coverage.py\
+        \ \\\n  src/ \\\n  .codex/reports/metrics/docstring_coverage_latest.json\n\necho\
         \ \"Docstring coverage collected\"\n"
     - name: Security Audit
       id: security
       continue-on-error: true
-      run: "echo \"Running security audit...\"\npip-audit --format json > .reports/logs/pip_audit.json\
-        \ || true\nbandit -r src/ -f json > .reports/logs/bandit.json || true\n\n\
-        python scripts/metrics/extract_security.py \\\n  .reports/logs/pip_audit.json\
-        \ \\\n  .reports/logs/bandit.json \\\n  .reports/metrics/security_vulnerabilities_latest.json\
-        \ \\\n  .reports/metrics/dependency_health_latest.json\n\necho \"Security\
+      run: "echo \"Running security audit...\"\npip-audit --format json > .codex/reports/logs/pip_audit.json\
+        \ || true\nbandit -r src/ -f json > .codex/reports/logs/bandit.json || true\n\n\
+        python scripts/metrics/extract_security.py \\\n  .codex/reports/logs/pip_audit.json\
+        \ \\\n  .codex/reports/logs/bandit.json \\\n  .codex/reports/metrics/security_vulnerabilities_latest.json\
+        \ \\\n  .codex/reports/metrics/dependency_health_latest.json\n\necho \"Security\
         \ metrics collected\"\n"
     - name: Collect Build Time Metrics
       id: buildtime
       run: "echo \"Recording build time...\"\n# Get workflow run duration\npython\
         \ scripts/metrics/extract_build_time.py \\\n  ${{ github.run_id }} \\\n  ${{\
-        \ github.event_name }} \\\n  .reports/metrics/build_time_latest.json\n\necho\
+        \ github.event_name }} \\\n  .codex/reports/metrics/build_time_latest.json\n\necho\
         \ \"Build time metrics collected\"\n"
     - name: Calculate Per-Module Coverage
       id: module_coverage
       continue-on-error: true
       run: "echo \"Calculating per-module coverage...\"\npython scripts/metrics/extract_module_coverage.py\
-        \ \\\n  coverage.json \\\n  .codex/PHASE_5_COVERAGE_SLOS.yaml \\\n  .reports/metrics/module_coverage_latest.json\n\
+        \ \\\n  coverage.json \\\n  .codex/PHASE_5_COVERAGE_SLOS.yaml \\\n  .codex/reports/metrics/module_coverage_latest.json\n\
         \necho \"Module coverage calculated\"\n"
     - name: Calculate Coverage Trend
       id: coverage_trend
       continue-on-error: true
       run: "echo \"Calculating 7-day coverage trend...\"\npython scripts/metrics/calculate_coverage_trend.py\
-        \ \\\n  .reports/metrics/coverage_latest.json \\\n  .reports/metrics/coverage_trend_7day.json\n\
+        \ \\\n  .codex/reports/metrics/coverage_latest.json \\\n  .codex/reports/metrics/coverage_trend_7day.json\n\
         \necho \"Coverage trend calculated\"\n"
     - name: Check SLO Compliance
       id: slo_check
       continue-on-error: true
       run: "echo \"Checking SLO compliance...\"\npython scripts/metrics/check_slo_compliance.py\
-        \ \\\n  .codex/PHASE_5_COVERAGE_SLOS.yaml \\\n  .reports/metrics/module_coverage_latest.json\
-        \ \\\n  .reports/metrics/slo_compliance_latest.json\n\necho \"SLO compliance\
+        \ \\\n  .codex/PHASE_5_COVERAGE_SLOS.yaml \\\n  .codex/reports/metrics/module_coverage_latest.json\
+        \ \\\n  .codex/reports/metrics/slo_compliance_latest.json\n\necho \"SLO compliance\
         \ checked\"\n"
     - name: Generate Metrics Index
       id: index
       continue-on-error: true
       run: "echo \"Generating metrics index...\"\npython scripts/metrics/generate_metrics_index.py\
-        \ \\\n  .reports/metrics/ \\\n  .reports/metrics/metrics_index.json\n\necho\
+        \ \\\n  .codex/reports/metrics/ \\\n  .codex/reports/metrics/metrics_index.json\n\necho\
         \ \"Metrics index generated\"\n"
     - name: Generate Quality Dashboard JSON
       id: dashboard
       continue-on-error: true
       run: "echo \"Generating quality dashboard...\"\npython scripts/metrics/generate_dashboard.py\
-        \ \\\n  .reports/metrics/ \\\n  .reports/quality_dashboard.json\n\necho \"\
+        \ \\\n  .codex/reports/metrics/ \\\n  .codex/reports/quality_dashboard.json\n\necho \"\
         Dashboard generated\"\n"
     - name: Generate PR Comment
       id: pr_comment
       if: github.event_name == 'pull_request'
       continue-on-error: true
-      run: "python scripts/metrics/generate_pr_comment.py \\\n  .reports/metrics/\
+      run: "python scripts/metrics/generate_pr_comment.py \\\n  .codex/reports/metrics/\
         \ \\\n  .codex/PHASE_5_COVERAGE_SLOS.yaml \\\n  .codex/PHASE_5_ALERT_POLICY.md\
         \ \\\n  pr_comment.md\n\necho \"PR comment generated\"\n"
     - name: Post Metrics Comment on PR
@@ -179,11 +179,11 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: quality-metrics-${{ github.run_id }}
-        path: '.reports/metrics/
+        path: '.codex/reports/metrics/
 
-          .reports/logs/
+          .codex/reports/logs/
 
-          .reports/quality_dashboard.json
+          .codex/reports/quality_dashboard.json
 
           '
         retention-days: 90
@@ -208,9 +208,9 @@ jobs:
       if: always()
       run: 'echo "Metrics collection completed"
 
-        echo "Artifacts uploaded to: .reports/metrics/"
+        echo "Artifacts uploaded to: .codex/reports/metrics/"
 
-        echo "Dashboard available at: .reports/quality_dashboard.json"
+        echo "Dashboard available at: .codex/reports/quality_dashboard.json"
 
         '
   publish-metrics:
@@ -227,22 +227,22 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: quality-metrics-${{ github.run_id }}
-        path: .reports/
+        path: .codex/reports/
     - name: Commit metrics to repository
       continue-on-error: true
       run: "git config user.name \"Quality Bot\"\ngit config user.email \"quality@codex.dev\"\
-        \n\n# Only commit if changes exist\nif [ -n \"$(git status --porcelain .reports/)\"\
-        \ ]; then\n  git add .reports/metrics/\n  git commit -m \"chore: update quality\
+        \n\n# Only commit if changes exist\nif [ -n \"$(git status --porcelain .codex/reports/)\"\
+        \ ]; then\n  git add .codex/reports/metrics/\n  git commit -m \"chore: update quality\
         \ metrics [skip ci]\"\n  git push\nfi\n"
     - name: Create metric snapshot
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       continue-on-error: true
-      run: 'mkdir -p .reports/metrics/snapshots/$(date +%Y-%m-%d)
+      run: 'mkdir -p .codex/reports/metrics/snapshots/$(date +%Y-%m-%d)
 
-        cp .reports/metrics/*.json .reports/metrics/snapshots/$(date +%Y-%m-%d)/ ||
+        cp .codex/reports/metrics/*.json .codex/reports/metrics/snapshots/$(date +%Y-%m-%d)/ ||
         true
 
-        git add .reports/metrics/snapshots/
+        git add .codex/reports/metrics/snapshots/
 
         git commit -m "chore: snapshot quality metrics for $(date +%Y-%m-%d)" || true
 
@@ -264,20 +264,20 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: quality-metrics-${{ github.run_id }}
-        path: .reports/
+        path: .codex/reports/
     - name: Validate metrics files
       run: "echo \"Validating metrics files...\"\n\n# Check required metrics exist\n\
         required_metrics=(\n  \"coverage_latest.json\"\n  \"test_count_latest.json\"\
         \n  \"test_latency_latest.json\"\n  \"code_complexity_latest.json\"\n  \"\
         security_vulnerabilities_latest.json\"\n  \"docstring_coverage_latest.json\"\
         \n  \"slo_compliance_latest.json\"\n  \"metrics_index.json\"\n)\n\nmissing=0\n\
-        for metric in \"${required_metrics[@]}\"; do\n  if [ ! -f \".reports/metrics/$metric\"\
+        for metric in \"${required_metrics[@]}\"; do\n  if [ ! -f \".codex/reports/metrics/$metric\"\
         \ ]; then\n    echo \"❌ Missing: $metric\"\n    missing=$((missing + 1))\n\
         \  else\n    echo \"✅ Found: $metric\"\n  fi\ndone\n\nif [ $missing -gt 0\
         \ ]; then\n  echo \"⚠️ Warning: $missing metrics files are missing\"\n  exit\
         \ 1\nfi\n"
     - name: Validate metrics JSON
-      run: "echo \"Validating JSON format...\"\nfor file in .reports/metrics/*.json;\
+      run: "echo \"Validating JSON format...\"\nfor file in .codex/reports/metrics/*.json;\
         \ do\n  if ! python -m json.tool \"$file\" > /dev/null; then\n    echo \"\
         ❌ Invalid JSON: $file\"\n    exit 1\n  fi\ndone\necho \"✅ All metrics JSON\
         \ is valid\"\n"

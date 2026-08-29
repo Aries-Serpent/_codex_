@@ -96,7 +96,7 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 **Complete guides available**:
 - P1 Refactoring Tickets
-- [SHIM Inventory](../.github/SHIM_INVENTORY.yaml)
+- [SHIM Inventory](../../.github/SHIM_INVENTORY.yaml)
 
 **Quick links**:
 - Production Ready Summary: `PRODUCTION_READY_SUMMARY.md`

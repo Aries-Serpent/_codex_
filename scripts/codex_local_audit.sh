@@ -16,7 +16,7 @@ export NO_NETWORK=1
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-mkdir -p reports .codex
+mkdir -p .codex .codex/reports
 
 # Optional: create venv if not already active
 if [[ -z "${VIRTUAL_ENV:-}" ]]; then
@@ -62,12 +62,12 @@ fi
 
 # Save a copy of the prompt used
 if [[ -f "AUDIT_PROMPT.md" ]]; then
-  cp AUDIT_PROMPT.md reports/prompt_copy.md
+  cp AUDIT_PROMPT.md .codex/reports/prompt_copy.md
 fi
 
 # Execute the audit CLI
 set +e
-scripts/codex-audit --root . --out reports/audit.json
+scripts/codex-audit --root . --out .codex/reports/audit.json
 EXIT_CODE=$?
 set -e
 
@@ -80,4 +80,4 @@ if [[ $EXIT_CODE -ne 0 ]]; then
   exit $EXIT_CODE
 fi
 
-echo "Audit complete. Artifacts in ./reports"
+echo "Audit complete. Artifacts in ./.codex/reports"

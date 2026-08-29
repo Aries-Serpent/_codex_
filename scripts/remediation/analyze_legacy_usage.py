@@ -108,7 +108,7 @@ def scan_dirs(dirs, include_relative=False):
 
 
 def write_report(results):
-    out_path = ROOT / "reports" / "legacy_import_usage.csv"
+    out_path = ROOT / ".codex" / "reports" / "legacy_import_usage.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["module", "full_import", "file", "line", "relative", "level"]

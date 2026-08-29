@@ -2,7 +2,7 @@
 SLO Canary — D6 exit criteria helper.
 
 Probes key service endpoints and checks SLO compliance (availability, latency).
-Writes a JSON report to reports/observability/slo_canary_latest.json.
+Writes a JSON report to .codex/reports/observability/slo_canary_latest.json.
 
 Usage:
     python scripts/observability/slo_canary.py
@@ -59,7 +59,7 @@ def run_canary() -> dict:
 def main() -> int:
     report = run_canary()
 
-    out_path = Path("reports/observability/slo_canary_latest.json")
+    out_path = Path(".codex/reports/observability/slo_canary_latest.json")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2))
     print(json.dumps(report, indent=2))

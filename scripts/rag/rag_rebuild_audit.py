@@ -30,7 +30,7 @@ def check_freshness() -> dict:
         ".codex/rag_index/.last_rebuilt",
         ".codex/embeddings/codex_index_meta.json",
         "benchmarks/rag/index_meta.json",
-        "reports/rag/last_rebuild.json",
+        ".codex/reports/rag/last_rebuild.json",
     ]
     for marker in markers:
         p = Path(marker)
@@ -144,8 +144,8 @@ def check_quality() -> dict:
 
 def check_audit() -> dict:
     """D4 #4 — log a rebuild audit entry with full audit trail."""
-    audit_path = Path("reports/rag/rebuild_audit_latest.json")
-    audit_log = Path("reports/rag/rebuild_audit_log.ndjson")
+    audit_path = Path(".codex/reports/rag/rebuild_audit_latest.json")
+    audit_log = Path(".codex/reports/rag/rebuild_audit_log.ndjson")
     audit_path.parent.mkdir(parents=True, exist_ok=True)
 
     entry = {

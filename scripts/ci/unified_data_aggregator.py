@@ -18,6 +18,8 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any, Dict
 
 import yaml
@@ -39,7 +41,7 @@ class UnifiedDataAggregator:
 
     def __init__(self, repo_root: Path = None):
         """Initialize aggregator with repository root."""
-        self.repo_root = repo_root or Path("/home/runner/work/_codex_/_codex_")
+        self.repo_root = repo_root or REPO_ROOT
         self.codex_dir = self.repo_root / ".codex"
         self.artifacts_dir = self.repo_root / ".github" / "artifacts"
         self.docs_dir = self.repo_root / "docs"
@@ -354,7 +356,7 @@ def main():
     )
     parser.add_argument(
         "--repo-root",
-        default="/home/runner/work/_codex_/_codex_",
+        default=REPO_ROOT,
         help="Repository root path",
     )
     parser.add_argument(

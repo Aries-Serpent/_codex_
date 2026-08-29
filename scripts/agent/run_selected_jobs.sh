@@ -67,4 +67,4 @@ if [ "${RUN_LORA_TESTS}" = "1" ]; then
   pytest -q tests/modeling/test_lora_minimal.py || true
 fi
 
-echo "[INFO] Agent-run completed. Artifacts: audit_artifacts/ reports/ audit_run_manifest.json"
+echo "[INFO] Agent-run completed. Artifacts: audit_artifacts/ .codex/reports/ audit_run_manifest.json"

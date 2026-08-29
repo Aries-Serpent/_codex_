@@ -27,6 +27,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
@@ -262,7 +264,7 @@ jobs:
             })
 """
     
-    workflow_path = Path("/home/runner/work/_codex_/_codex_/.github/workflows")
+    workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
     
     workflow_file = workflow_path / "13-3-secrets-detection.yml"
@@ -285,7 +287,7 @@ def audit_historical_commits() -> dict:
         # Get last 100 commits
         result = subprocess.run(
             ["git", "log", "--pretty=format:%H", "-100"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             timeout=30

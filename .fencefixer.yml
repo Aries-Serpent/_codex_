@@ -51,8 +51,8 @@ weights:
 
 # Report output paths
 report:
-  out_json: ".reports/fencefix_run.json"
-  pr_summary_md: ".reports/fencefix_summary.md"
+  out_json: ".codex/reports/fencefix_run.json"
+  pr_summary_md: ".codex/reports/fencefix_summary.md"
 
 # ML classifier settings (optional, disabled by default)
 ml:

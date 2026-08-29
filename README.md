@@ -169,7 +169,7 @@ python scripts/ci/auto_fix_common_issues.py
 ### Documentation
 - **System Overview:** [`.codex/docs/CI_AUTO_FIX_SYSTEM.md`](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
 - **Pattern Library:** [`.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md`](.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md)
-- **workflow:** [`.github/workflows/auto-fix-common-issues.yml`](.github/workflows/auto-fix-common-issues.yml)
+- **workflow:** [`.github/workflows/auto-fix-common-issues.yml.disabled`](.github/workflows/auto-fix-common-issues.yml.disabled)
 ### Benefits
 **Before:** Manual detection across 500+ test files, 2-4 hours per PR
 **After:** Automatic detection in <30 seconds, 15-30 minutes per PR
@@ -949,14 +949,14 @@ python3 scripts/catalog_workflows.py
 - [workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
 - [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) - Detailed agent documentation
 ### Monitoring
-- **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.yml)
+- **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.md)
 - **Manual**: Run `bash scripts/validate_ci_health.sh`
 - **Trends**: Check workflow-trends artifacts in Actions
 ### Support
 For issues or questions about workflow management:
 1. Check [FINAL_CONSOLIDATION_REPORT.md](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
 2. Review [CONSOLIDATION_STATUS.md](.github/workflow-archive/CONSOLIDATION_STATUS.md)
-3. Use [workflow Restore Tool](.github/workflows/workflow-restore.yml)
+3. Use [workflow Restore Tool](.github/workflows/workflow-restore.md)
 4. Contact maintainers via issues
 ---
 ---

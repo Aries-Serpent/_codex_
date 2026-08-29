@@ -69,7 +69,7 @@ CATEGORY_MAPPINGS = {
     },
     "deprecated-reports": {
         "offload_dir": "deprecated-reports",
-        "restore_dir": "_codex_reports",
+        "restore_dir": ".codex/reports",
         "description": "Deprecated reports",
     },
 }

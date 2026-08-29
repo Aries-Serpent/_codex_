@@ -67,7 +67,7 @@ EXCLUDE_DIRS = {
 OFFLOAD_PATTERNS = {
     "temp": ["temp/", "tmp/", "output/", ".tmp"],
     "artifacts": ["artifacts/gates/", "artifacts/validate_"],
-    "reports": ["_codex_reports/", "reports/"],
+    "reports": [".codex/reports/", ".codex/archive/"],
     "logs": ["*.log", "logs/"],
     "coverage": ["coverage_", "*.coverage", "htmlcov/"],
 }

@@ -218,7 +218,7 @@ class WorkflowAnalyzer:
                 ]
 
         # Load from iteration1_audit.md
-        audit_path = self.repo_root / "reports" / "iteration1_audit.md"
+        audit_path = self.repo_root / ".codex" / "reports" / "iteration1_audit.md"
         if audit_path.exists():
             with open(audit_path) as f:
                 content = f.read()

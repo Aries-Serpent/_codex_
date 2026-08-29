@@ -34,6 +34,8 @@ import re
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 logger = logging.getLogger(__name__)
 
 
@@ -138,7 +140,7 @@ def comprehensive_fix(file_path: Path) -> int:
 
 def main():
     """Run comprehensive fix on all files."""
-    base_dir = Path('/home/runner/work/_codex_/_codex_')
+    base_dir = REPO_ROOT
     total_fixes = 0
     files_fixed = 0
 

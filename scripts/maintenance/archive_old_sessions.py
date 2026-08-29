@@ -322,7 +322,7 @@ class ArtifactArchiver:
     def process_reports(self) -> Tuple[int, int]:
         """Process campaign and test reports for archival and deletion."""
         report_dirs = [
-            self.repo_root / "reports",
+            self.repo_root / ".codex" / "reports",
             self.repo_root / "artifacts",
         ]
         

@@ -37,7 +37,7 @@ _PLUGIN_CONFLICT_LOGGED: set[str] = set()
 
 
 def _error_log_path() -> Path:
-    base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))
+    base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", ".codex/reports"))
     date_str = datetime.now(timezone.utc).date().isoformat()
     return base_dir / f"errors_{date_str}.md"
 

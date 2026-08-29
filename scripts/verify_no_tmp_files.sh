@@ -37,7 +37,7 @@ if [ -n "$TMP_FILES" ]; then
     echo "1. Move these files to proper repository locations:"
     echo "   - .codex/           → Session data, analysis, reports"
     echo "   - docs/             → Documentation"
-    echo "   - reports/          → Generated reports"
+    echo "   - .codex/reports/    → Generated reports"
     echo "   - artifacts/        → Build artifacts"
     echo ""
     echo "2. Run: mv /tmp/filename .codex/filename"

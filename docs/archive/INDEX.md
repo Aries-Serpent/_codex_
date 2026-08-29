@@ -184,8 +184,8 @@ Historical continuation prompts for various initiatives.
 
 ### Active Documentation
 - [Cognitive Brain Status](../cognitive_brain/INDEX.md) - Current state
-- [Root Organization](../.codex/prompts) - Current work
-- [Main Documentation](../README.md) - Overview
+- [Root Organization](../../.codex/prompts) - Current work
+- [Main Documentation](../../README.md) - Overview
 
 ### Historical Context
 - All phase work preserved here
@@ -221,4 +221,4 @@ Historical continuation prompts for various initiatives.
 **Last Reorganization:** 2026-01-21 (Root Organization Phase 3)
 **Status:** Complete and organized
 
-For current/active documentation, see [Main Documentation](../README.md) or [Cognitive Brain](../cognitive_brain/INDEX.md)
+For current/active documentation, see [Main Documentation](../../README.md) or [Cognitive Brain](../cognitive_brain/INDEX.md)

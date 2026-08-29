@@ -40,7 +40,7 @@ def main() -> int:
     scored = Path("audit_artifacts/capabilities_scored.json")
     gaps = Path("audit_artifacts/gaps.json")
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = Path(f"reports/capability_matrix_{ts}.md")
+    out = Path(f".codex/reports/capability_matrix_{ts}.md")
     out.parent.mkdir(parents=True, exist_ok=True)
 
     caps = []

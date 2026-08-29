@@ -48,7 +48,7 @@ def load_owned_workflows() -> set[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="reports/ci/workflow_owner_audit.json")
+    parser.add_argument("--output", default=".codex/reports/ci/workflow_owner_audit.json")
     parser.add_argument("--threshold", type=float, default=90.0,
                         help="Minimum %% of workflows that must have owners")
     args = parser.parse_args()

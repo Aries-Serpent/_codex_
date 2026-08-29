@@ -743,7 +743,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         default=None,
-        help="Directory for NEW audit artifacts (default: _codex_reports/<date>). Historical reports in misc/repo-owner-review/deprecated-reports/",
+        help="Directory for NEW audit artifacts (default: .codex/reports/offline_audit/<date>). Historical reports remain under docs/archive/ or .codex/archive/.",
     )
     args = parser.parse_args()
 
@@ -754,7 +754,7 @@ def main() -> None:
     if args.output_dir:
         output_dir = Path(args.output_dir).resolve()
     else:
-        output_dir = repo_root / "_codex_reports" / _dt.date.today().isoformat()
+        output_dir = repo_root / ".codex" / "reports" / "offline_audit" / _dt.date.today().isoformat()
 
     output_dir.mkdir(parents=True, exist_ok=True)
 

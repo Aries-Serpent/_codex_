@@ -29,6 +29,8 @@ import os
 import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Dict, List, Optional, Set, Tuple
 
 # Add parent directory to path for CI execution
@@ -153,7 +155,7 @@ class TokenAdoptionValidator:
             logger.setLevel(logging.DEBUG)
 
     def find_python_scripts(
-        self, root_dir: str = "/home/runner/work/_codex_/_codex_"
+        self, root_dir: str = REPO_ROOT
     ) -> List[str]:
         """Find all Python scripts in the repository.
 
@@ -582,7 +584,7 @@ def main():
     parser.add_argument(
         "--dir",
         type=str,
-        default="/home/runner/work/_codex_/_codex_",
+        default=REPO_ROOT,
         help="Root directory to scan",
     )
 

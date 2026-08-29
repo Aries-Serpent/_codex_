@@ -36,7 +36,7 @@ from pathlib import Path
 
 
 def main(argv=None) -> int:
-    tiles_dir = Path("reports/tiles")
+    tiles_dir = Path(".codex/reports/tiles")
     out_dir = Path("public/tiles")
     out_dir.mkdir(parents=True, exist_ok=True)
 
