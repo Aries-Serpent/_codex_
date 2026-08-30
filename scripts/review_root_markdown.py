@@ -400,7 +400,7 @@ def main():
     parser.add_argument(
         "--archive-dir",
         type=Path,
-        default=Path("misc/repo-owner-review/archived"),
+        default=Path(".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review"),
         help="Archive directory",
     )
 

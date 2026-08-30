@@ -10,7 +10,7 @@
 
 ## 📦 Archive Contents
 
-This archive contains all files from `misc/repo-owner-review/` that are pending repository owner review before permanent deletion.
+This archive contains all files from the canonical archive root `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/` that are pending repository owner review before permanent deletion. The legacy `misc/repo-owner-review/` path is retained only for compatibility and should not be treated as the canonical location.
 
 ### Included Directories
 
@@ -96,10 +96,10 @@ tar -tzf repo-owner-review-archive.tar.gz | wc -l
 ```bash
 # Clone repository
 git clone https://github.com/Aries-Serpent/_codex_.git
-cd _codex_/misc
+cd _codex_
 
-# Copy archive to safe location
-cp repo-owner-review-archive.tar.gz ~/backups/codex-archive-$(date +%Y%m%d).tar.gz
+# Copy archive to a safe location from the canonical archive root
+cp .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review-archive.tar.gz ~/backups/codex-archive-$(date +%Y%m%d).tar.gz
 ```
 
 ### Step 2: Verify Archive Integrity (LOCAL ACTION)
@@ -118,22 +118,19 @@ rm -rf /tmp/archive-test  # Clean up test
 ```bash
 # In repository
 cd /home/runner/work/_codex_/_codex_
+CANONICAL_ROOT=".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review"
 
-# Option A: Delete uncompressed files, keep archive
-find misc/repo-owner-review -type f ! -name "*.tar.gz" ! -name "*.sha256" -delete
-find misc/repo-owner-review -type d -empty -delete
+# Option A: Delete uncompressed files, keep the canonical archive bundle
+find "$CANONICAL_ROOT" -type f ! -name "*.tar.gz" ! -name "*.sha256" -delete
+find "$CANONICAL_ROOT" -type d -empty -delete
 
-# Option B: Keep only archive and README
-cd misc
-mv repo-owner-review-archive.tar.gz ../
-mv ARCHIVE_README.md ../
-rm -rf repo-owner-review/
-mkdir -p repo-owner-review
-mv ../repo-owner-review-archive.tar.gz repo-owner-review/
-mv ../ARCHIVE_README.md repo-owner-review/
+# Option B: Keep only the archive bundle and README within the canonical root
+mkdir -p "$CANONICAL_ROOT"
+cp .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review-archive.tar.gz "$CANONICAL_ROOT"/
+cp .codex/archive/root-consolidation/deprecated-reports/misc/ARCHIVE_README.md "$CANONICAL_ROOT"/
 
 # Commit changes
-git add misc/repo-owner-review
+git add "$CANONICAL_ROOT"
 git commit -m "Archive repo-owner-review contents for offloading"
 git push
 ```
@@ -170,10 +167,11 @@ cd repo-owner-review/auto-generated-prompts
 
 **Recommended Minimal Retention**:
 ```
-misc/repo-owner-review/
+.codex/archive/root-consolidation/deprecated-reports/misc/
 ├── repo-owner-review-archive.tar.gz  ← Keep (67KB)
 ├── repo-owner-review-archive.tar.gz.sha256  ← Keep (checksum)
-└── ARCHIVE_README.md  ← Keep (this file)
+├── ARCHIVE_README.md  ← Keep (this file)
+└── repo-owner-review/  ← Canonical unpacked archive payload
 ```
 
 **Space Saved**: ~2.4MB → ~67KB = **~2.33MB freed**
@@ -201,19 +199,21 @@ If you need to restore files:
 ### From Archive (Recommended)
 ```bash
 # Extract specific file
-tar -xzf repo-owner-review-archive.tar.gz repo-owner-review/auto-generated-prompts/PR-2635-followup.md
+tar -xzf .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review-archive.tar.gz \
+  .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md
 
 # Extract specific directory
-tar -xzf repo-owner-review-archive.tar.gz repo-owner-review/auto-generated-prompts/
+tar -xzf .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review-archive.tar.gz \
+  .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/
 ```
 
 ### From Git History (Alternative)
 ```bash
 # Find commit where file existed
-git log --all --full-history -- "misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md"
+git log --all --full-history -- ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md"
 
 # Restore from specific commit
-git checkout <commit-hash> -- misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md
+git checkout <commit-hash> -- ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md"
 ```
 
 ---
@@ -221,7 +221,7 @@ git checkout <commit-hash> -- misc/repo-owner-review/auto-generated-prompts/PR-2
 ## 📝 Maintenance Notes
 
 ### When to Create New Archive
-- When adding significant new content to `misc/repo-owner-review/`
+- When adding significant new content to `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/`
 - Before major repository cleanup operations
 - As part of quarterly maintenance (see `QUARTERLY_AUDIT_CHECKLIST.md`)
 
@@ -269,9 +269,9 @@ tar -xzf repo-owner-review-archive.tar.gz --strip-components=2 \
 ## 📚 Related Documentation
 
 - **Temporary Files Policy**: `.github/TEMPORARY_FILES_POLICY.md`
-- **File Removal Policy**: `misc/repo-owner-review/README.md` (in archive)
+- **File Removal Policy**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/README.md` (in archive)
 - **Archive Guide**: `docs/guides/codex_archive_runbook.md`
-- **Migration Guide**: `misc/repo-owner-review/MIGRATION_GUIDE.md` (in archive)
+- **Migration Guide**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/MIGRATION_GUIDE.md` (in archive)
 
 ---
 

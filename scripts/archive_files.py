@@ -48,6 +48,21 @@ logger = logging.getLogger(__name__)
 # Named tuple for archive verification result
 ArchiveVerificationResult = namedtuple("ArchiveVerificationResult", ["is_safe", "reason"])
 
+CANONICAL_ARCHIVE_ROOT = Path(
+    ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review"
+)
+LEGACY_ARCHIVE_ROOT = Path("misc/repo-owner-review")
+
+
+def resolve_archive_root(repo_root: Path) -> Path:
+    """Return the canonical archive root and fall back to the legacy location if needed."""
+    canonical = repo_root / CANONICAL_ARCHIVE_ROOT
+    legacy = repo_root / LEGACY_ARCHIVE_ROOT
+    if canonical.exists() or not legacy.exists():
+        return canonical
+    return legacy
+
+
 # Files that are candidates for archival
 ARCHIVE_CANDIDATES = {
     # Historical status/report files
@@ -157,7 +172,7 @@ def archive_file(
     file_path: Path, archive_info: dict[str, Any], base_archive_dir: Path, dry_run: bool = False
 ) -> Optional[dict[str, Any]]:
     """
-    Archive a single file to misc/repo-owner-review.
+    Archive a single file to the canonical archive root under .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review.
 
     Returns:
         Metadata dict if successful, None otherwise
@@ -237,11 +252,12 @@ def update_metadata(base_archive_dir: Path, new_files: list[dict[str, Any]]) -> 
         metadata = {
             "metadata_version": "1.0",
             "created_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "purpose": "Track files moved to misc/repo-owner-review for potential deletion",
+            "purpose": "Track files moved to .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review for potential deletion",
             "files_archived": [],
             "notes": [
                 "All files are backed up in git history",
-                "Files can be restored by moving back from misc/ folder",
+                "Files can be restored by moving back from the canonical archive root",
+                "Legacy misc/repo-owner-review paths are retained only as compatibility shims",
                 "Tests passing after archival confirms no broken dependencies",
                 "Repository owner may delete this entire folder when comfortable",
             ],
@@ -264,7 +280,7 @@ def update_metadata(base_archive_dir: Path, new_files: list[dict[str, Any]]) -> 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Archive non-essential files to misc/repo-owner-review"
+        description="Archive non-essential files to .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review"
     )
     parser.add_argument(
         "--dry-run",
@@ -275,9 +291,9 @@ def main():
     args = parser.parse_args()
 
     root = Path.cwd()
-    base_archive_dir = root / "misc" / "repo-owner-review"
+    base_archive_dir = resolve_archive_root(root)
 
-    # Ensure misc directory exists
+    # Ensure canonical archive directory exists.
     base_archive_dir.mkdir(parents=True, exist_ok=True)
 
     if args.dry_run:

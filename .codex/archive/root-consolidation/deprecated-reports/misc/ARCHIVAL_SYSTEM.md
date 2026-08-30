@@ -2,12 +2,12 @@
 
 ## Overview
 
-The `misc/repo-owner-review` folder structure serves as a "codebase graveyard" for files that have been reviewed and deemed non-essential to the repository's core functionality. This system provides a safe way to reduce repository size while preserving files for owner review before permanent deletion.
+The `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review` folder structure serves as the canonical archive root for files that have been reviewed and deemed non-essential to the repository's core functionality. The legacy `misc/repo-owner-review` path is retained only as a compatibility alias and should not be treated as the canonical location. This system provides a safe way to reduce repository size while preserving files for owner review before permanent deletion.
 
 ## Folder Structure
 
 ```
-misc/repo-owner-review/
+.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/
 ├── README.md                    # Main documentation (what you're reading)
 ├── metadata.json                # Complete manifest of archived files
 └── archived-artifacts/
@@ -51,20 +51,20 @@ python scripts/archive_files.py
 
 ```bash
 # View metadata about all archived files
-cat misc/repo-owner-review/metadata.json
+cat .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/metadata.json
 
 # List archived files by category
-ls -lh misc/repo-owner-review/archived-artifacts/*/
+ls -lh .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/*/
 
-# View specific archived file
-cat misc/repo-owner-review/archived-artifacts/historical-docs/FILENAME.md
+# View a specific archived file
+cat .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/FILENAME.md
 ```
 
 ### Restore Files (if needed)
 
 ```bash
-# Move specific file back to original location
-mv misc/repo-owner-review/archived-artifacts/<category>/<file> <original-location>/
+# Move a specific file back to its original location
+mv .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/<category>/<file> <original-location>/
 git add <original-location>/<file>
 git commit -m "restore: Bring back <file> from archive"
 ```
@@ -94,7 +94,7 @@ Each archived file has metadata including:
 ```json
 {
   "original_path": "path/to/original/file",
-  "archived_path": "misc/repo-owner-review/archived-artifacts/category/file",
+  "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/category/file",
   "size": "4.3KB",
   "size_bytes": 4364,
   "sha256": "hash...",

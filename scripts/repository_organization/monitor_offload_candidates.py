@@ -59,7 +59,8 @@ EXCLUDE_DIRS = {
     ".eggs",
     "htmlcov",
     "site",
-    "misc/repo-owner-review",  # Already offloaded
+    ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review",
+    "misc/repo-owner-review",  # Legacy path retained only for compatibility
 }
 
 # File patterns to consider for offload

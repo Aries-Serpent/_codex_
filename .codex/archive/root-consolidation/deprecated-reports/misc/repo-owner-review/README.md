@@ -4,7 +4,11 @@
 **Purpose**: External storage offload, historical files, and materials requiring human review  
 **QA Integration**: Maintains file organization for effective Codebase QA Walkthrough Analysis
 
-This folder contains files that have been reviewed, archived, or offloaded from the main repository for size optimization and governance oversight. As of 2026-01-26, it serves dual purposes:
+This folder contains files that have been reviewed, archived, or offloaded from the main repository for size optimization and governance oversight. The canonical archive location is:
+
+`.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/`
+
+The legacy `misc/repo-owner-review/` path remains only as a compatibility alias; the canonical repo-owned archive root is the `.codex/archive/...` location above. As of 2026-01-26, it serves dual purposes:
 1. **External Storage**: Historical files offloaded to reduce repository size
 2. **Human Review**: Non-essential files subject to owner review and potential removal
 
@@ -50,7 +54,7 @@ Original purpose to reduce repository size from 11.2MB to under 10MB:
 ## Folder Structure
 
 ```
-misc/repo-owner-review/
+.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/
 ├── README.md (this file)
 ├── OFFLOAD_INDEX.md ⭐ (complete inventory of offloaded files)
 ├── metadata.json (tracks moved files)
@@ -149,16 +153,16 @@ For files in `archived-backups/`:
 # Example: README.md_.codex_36462ee8.bak
 
 # View metadata
-cat misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak.meta.md
+cat .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak.meta.md
 
 # Restore to original location (from metadata)
-cp misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak .codex/README.md.bak
+cp .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak .codex/README.md.bak
 ```
 
 For compressed archives:
 ```bash
 # Extract archive
-tar -xzf misc/repo-owner-review/archived-artifacts/<category>/<file>.tar.gz
+tar -xzf .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/<category>/<file>.tar.gz
 
 # Move to drop folder or original location
 mv extracted-file drop-for-restore/
@@ -206,7 +210,7 @@ Leave files here for a grace period (30-90 iterations) before deletion.
 If any file is needed:
 ```bash
 # Move specific file back
-mv misc/repo-owner-review/archived-artifacts/<category>/<file> <original-location>/
+mv .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/<category>/<file> <original-location>/
 git add <original-location>/<file>
 git commit -m "restore: Bring back <file> from archive"
 ```

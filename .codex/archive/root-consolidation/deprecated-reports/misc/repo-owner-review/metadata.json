@@ -1,13 +1,13 @@
 {
   "metadata_version": "1.0",
   "created_date": "2025-12-10T23:51:00Z",
-  "purpose": "Track files moved to misc/repo-owner-review for potential deletion",
+  "purpose": "Track files moved to .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review for potential deletion",
   "repository_size_before": "11.2MB",
   "repository_size_target": "<10MB (CodeQL requirement)",
   "files_archived": [
     {
       "original_path": "artifacts/security/detect-secrets.txt",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/security-reports/detect-secrets.txt",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/security-reports/detect-secrets.txt",
       "size": "4.2MB",
       "date_moved": "2025-12-10",
       "reason": "Large generated security scan report - can be regenerated",
@@ -16,7 +16,7 @@
     },
     {
       "original_path": ".codex/change_log-large.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/changelogs/change_log-large.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/changelogs/change_log-large.md",
       "size": "3.3MB",
       "date_moved": "2025-12-10",
       "reason": "Historical changelog - information preserved in git history",
@@ -25,7 +25,7 @@
     },
     {
       "original_path": "scripts/capabilities_scored_backup.json",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored_backup.json",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored_backup.json",
       "size": "816KB",
       "date_moved": "2025-12-10",
       "reason": "Backup file - duplicate of audit_artifacts version",
@@ -34,7 +34,7 @@
     },
     {
       "original_path": "scripts/capabilities_scored.json",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored.json",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored.json",
       "size": "816KB",
       "date_moved": "2025-12-10",
       "reason": "Duplicate file - duplicate of audit_artifacts version",
@@ -43,7 +43,7 @@
     },
     {
       "original_path": "CODE_REVIEW_FIXES.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/CODE_REVIEW_FIXES.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/CODE_REVIEW_FIXES.md",
       "size": "4.3KB",
       "size_bytes": 4364,
       "sha256": "75d2a709eab7406cb5266f056e714d7261132c577da1536c0384f498549a98af",
@@ -54,7 +54,7 @@
     },
     {
       "original_path": "PR_2460_BUG_FIX_SUMMARY.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/PR_2460_BUG_FIX_SUMMARY.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/PR_2460_BUG_FIX_SUMMARY.md",
       "size": "5.5KB",
       "size_bytes": 5626,
       "sha256": "3d668ae4fcefe3e30019d5b78b35172ecb0a91ad43dbeef64993ef6b112d64c9",
@@ -65,7 +65,7 @@
     },
     {
       "original_path": "PR_2460_FINAL_STATUS.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/PR_2460_FINAL_STATUS.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/PR_2460_FINAL_STATUS.md",
       "size": "9.7KB",
       "size_bytes": 9961,
       "sha256": "e1579cd150efbfd4a15fefb0b4ffe500f3f72d90da25d7928d0240a0ce44fd66",
@@ -76,7 +76,7 @@
     },
     {
       "original_path": "PR_SUMMARY_FINAL.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/PR_SUMMARY_FINAL.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/PR_SUMMARY_FINAL.md",
       "size": "13.6KB",
       "size_bytes": 13930,
       "sha256": "840df5c3a1c467dec021c9147e780f531891076858d9f425460268bef1ed8475",
@@ -87,7 +87,7 @@
     },
     {
       "original_path": "REPOSITORY_ORGANIZATION_SUMMARY.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/REPOSITORY_ORGANIZATION_SUMMARY.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/REPOSITORY_ORGANIZATION_SUMMARY.md",
       "size": "2.1KB",
       "size_bytes": 2131,
       "sha256": "1b1248e1e5a6e8b076ca0528d8ec39267b81b5c991964ccb42990e6278afe8e9",
@@ -98,7 +98,7 @@
     },
     {
       "original_path": "P1_FIX_API_KEY_OPTIONAL.md",
-      "archived_path": "misc/repo-owner-review/archived-artifacts/historical-docs/P1_FIX_API_KEY_OPTIONAL.md",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived-artifacts/historical-docs/P1_FIX_API_KEY_OPTIONAL.md",
       "size": "5.5KB",
       "size_bytes": 5656,
       "sha256": "e4183b3f26ecdfeb81dff70bafe4edd2151f47dcfe202b6c8e66a797ab6869f1",
@@ -109,7 +109,7 @@
     },
     {
       "original_path": ".github/copilot-prompts/active/PR-*-followup.md (21 files)",
-      "archived_path": "misc/repo-owner-review/auto-generated-prompts/",
+      "archived_path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/",
       "size": "~2.4MB",
       "size_bytes": 2516992,
       "date_moved": "2025-12-29",
@@ -130,7 +130,7 @@
   "total_space_freed": "~9.1MB",
   "notes": [
     "All files are backed up in git history",
-    "Files can be restored by moving back from misc/ folder",
+    "Files can be restored by moving back from the canonical archive root",
     "Tests passing after archival confirms no broken dependencies",
     "Repository owner may delete this entire folder when comfortable",
     "21 auto-generated follow-up prompt files restored and archived on 2025-12-29 (~2.4MB)",
@@ -140,13 +140,13 @@
   "total_space_archived": "~2.44MB",
   "compression": {
     "archive_file": "repo-owner-review-archive.tar.gz",
-    "archive_location": "../repo-owner-review-archive.tar.gz",
+    "archive_location": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review-archive.tar.gz",
     "created_date": "2025-12-29T18:52:12.356854Z",
     "original_size": "~2.4MB",
     "compressed_size": "67KB",
     "compression_ratio": "97.2% (35:1)",
     "sha256": "10e3627e69303f9956f46dc49370e4f1aa134768f0bb2d6a2faea89201ae5166",
-    "extraction_guide": "../ARCHIVE_README.md",
+    "extraction_guide": ".codex/archive/root-consolidation/deprecated-reports/misc/ARCHIVE_README.md",
     "purpose": "Enable efficient offloading and repository space management",
     "verification_command": "sha256sum -c repo-owner-review-archive.tar.gz.sha256"
   }
