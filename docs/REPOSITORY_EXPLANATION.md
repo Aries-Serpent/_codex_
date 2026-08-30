@@ -21,6 +21,17 @@ The repository narrative uses these boundaries consistently:
 - `.codex/` and `.github/workflows/` are the operational-intelligence and governance
   layers, supported by `scripts/ci/`.
 
+### Documentation-layer source of truth
+
+The canonical classification for active, historical, and compatibility-only documentation,
+planset, and archive surfaces lives in [`docs/DOCUMENTATION_SOURCE_OF_TRUTH.md`](DOCUMENTATION_SOURCE_OF_TRUTH.md)
+and [`docs/DOCUMENTATION_SOURCE_OF_TRUTH.json`](DOCUMENTATION_SOURCE_OF_TRUTH.json).
+
+In practice, the active documentation layer is the root metadata plus `docs/` and `mkdocs.yml`.
+Archive roots such as `.codex/archive/`, `docs/archive/`, `docs/plans/archive/`,
+`.github/workflows/_archived/`, and `site/archive/` remain historical evidence and retrieval
+surfaces, not the active documentation contract.
+
 ---
 
 ## 1. Status vocabulary

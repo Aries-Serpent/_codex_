@@ -2,7 +2,11 @@
 **Last Updated:** 2026-08-29
 **Version:** v0.3.0
 
-This directory contains archived documentation, historical reports, and superseded validation artifacts. It exists to keep the repository root focused on active project metadata instead of stale execution dumps.
+> Archive-only reference directory. Do not treat these files as the active project plan or current execution state.
+> Canonical active plan: `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`
+> Active backlog: `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`
+>
+> This directory contains historical reports, superseded validation artifacts, and prior execution notes. It exists to keep the repository root and active planning surfaces separate from stale or archival context.
 
 ## Root-level archival policy
 
@@ -67,4 +71,4 @@ Contains one-off notes, drafts, and temporary investigation artifacts that are p
 
 ## Note
 
-These files are kept for historical reference but are no longer actively maintained. For current documentation, refer to the main `docs/` directory and the active metadata files at the repository root.
+These files are kept for historical reference but are no longer actively maintained. For current documentation and repo execution guidance, refer to `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` and `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`. Archived material under `docs/archive/` and `docs/evolution/` is retained for context only.

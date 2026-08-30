@@ -31,6 +31,9 @@ compatibility or bridge surfaces unless `pyproject.toml` explicitly maps them.
 `docs/` is the human guidance layer; `.codex/` and `.github/workflows/` hold
 operational intelligence and governance.
 
+For the canonical classification of active, historical, and compatibility-only
+documentation and archive roots, see [docs/DOCUMENTATION_SOURCE_OF_TRUTH.md](docs/DOCUMENTATION_SOURCE_OF_TRUTH.md).
+
 ## Runtime policy (source of truth)
 
 The active runtime baseline for this repository is Node.js 22. The live package manifests

@@ -1,0 +1,137 @@
+{
+  "name": "documentation_layer_source_of_truth",
+  "version": "2026-08-30",
+  "repo_version": "v0.3.0",
+  "classification": {
+    "active": [
+      {
+        "path": "README.md",
+        "status": "active",
+        "reason": "Repository identity, release metadata, and active runtime policy."
+      },
+      {
+        "path": "docs/",
+        "status": "active",
+        "reason": "Canonical human-facing documentation and onboarding layer."
+      },
+      {
+        "path": "docs/REPOSITORY_EXPLANATION.md",
+        "status": "active",
+        "reason": "Evidence-based repository overview and state vocabulary."
+      },
+      {
+        "path": "docs/REPOSITORY_MAP.md",
+        "status": "active",
+        "reason": "Navigation map for active repo structure."
+      },
+      {
+        "path": "docs/plans/README.md",
+        "status": "active",
+        "reason": "Current plan index for living planning materials."
+      },
+      {
+        "path": "mkdocs.yml",
+        "status": "active",
+        "reason": "Current documentation site configuration."
+      }
+    ],
+    "historical": [
+      {
+        "path": ".github/plans/",
+        "status": "historical",
+        "reason": "Completed branch remediation plansets retained for audit; not active repo planning."
+      },
+      {
+        "path": ".github/workflows/_archived/",
+        "status": "historical",
+        "reason": "Disabled workflow definitions retained for historical review and reactivation analysis."
+      },
+      {
+        "path": ".codex/archive/",
+        "status": "historical",
+        "reason": "Operational archive of sessions, PR resolutions, reports, and root-consolidation evidence."
+      },
+      {
+        "path": ".codex/plans/",
+        "status": "historical",
+        "reason": "Dated operational planset corpus; evidence-bearing but not the active planning index."
+      },
+      {
+        "path": "docs/archive/",
+        "status": "historical",
+        "reason": "Superseded phase reports, validation dumps, and investigation artifacts."
+      },
+      {
+        "path": "docs/plans/archive/",
+        "status": "historical",
+        "reason": "Completed phase plans kept for traceability and audit; archived from the active index."
+      },
+      {
+        "path": "site/archive/",
+        "status": "historical",
+        "reason": "Generated static archive copies; not a live doc source."
+      }
+    ],
+    "compatibility_only": [
+      {
+        "path": "conf/",
+        "status": "compatibility-only",
+        "reason": "Legacy configuration surface; active configuration lives under configs/."
+      },
+      {
+        "path": "config_legacy/",
+        "status": "compatibility-only",
+        "reason": "Legacy config compatibility layer retained for migration support."
+      },
+      {
+        "path": "yaml_legacy/",
+        "status": "compatibility-only",
+        "reason": "Legacy YAML compatibility layer retained for older tooling paths."
+      },
+      {
+        "path": "cli/",
+        "status": "compatibility-only",
+        "reason": "Historical CLI path; current CLIs live under src/ and packaged entry points."
+      },
+      {
+        "path": "training/",
+        "status": "compatibility-only",
+        "reason": "Compatibility mirror for installed package boundaries; implementation lives under src/."
+      },
+      {
+        "path": "tokenization/",
+        "status": "compatibility-only",
+        "reason": "Compatibility mirror retained for import compatibility; canonical implementation remains under src/."
+      }
+    ]
+  },
+  "canonical_source_set": [
+    "README.md",
+    "docs/REPOSITORY_EXPLANATION.md",
+    "docs/REPOSITORY_MAP.md",
+    "docs/WORKFLOW_MAP.md",
+    "docs/ROADMAP.md",
+    "docs/plans/README.md",
+    "docs/archive/README.md",
+    ".codex/archive/ARCHIVE_INDEX.md",
+    ".github/plans/INDEX.md",
+    "mkdocs.yml"
+  ],
+  "stale_reference_patterns": [
+    {
+      "type": "version_drift",
+      "example": "docs/plans/README.md",
+      "issue": "Plan indexes still advertise older version metadata while the repository is on v0.3.0."
+    },
+    {
+      "type": "historical_plan_misclassified_as_active",
+      "example": ".github/plans/INDEX.md",
+      "issue": "Completed branch remediation plansets should be treated as historical evidence, not as the current repo plan-of-record."
+    },
+    {
+      "type": "archive_root_misclassified_as_active",
+      "example": ".codex/archive/",
+      "issue": "Archive roots are preserved for retrieval and audit, not as active documentation entry points."
+    }
+  ]
+}

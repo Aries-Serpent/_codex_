@@ -2,9 +2,12 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
-**Last Updated: 2026-07-11
-**Purpose:** Historical documentation and completed work
-**Organization:** Chronological and categorical
+> Archive-only reference directory. This is not the canonical active project plan.
+> Active plan: `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`
+> Active backlog: `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`
+>
+> **Purpose:** Historical documentation and completed work
+> **Organization:** Chronological and categorical
 
 ---
 
