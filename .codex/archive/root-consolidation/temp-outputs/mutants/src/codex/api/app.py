@@ -234,7 +234,8 @@ def predict(req: PredictRequest) -> PredictResponse:
     try:
         _denylist().ensure_allowed(req.prompt)
     except DenylistViolation as exc:  # pragma: no cover - defensive branch
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        logger.warning("Request rejected by denylist policy.")
+        raise HTTPException(status_code=400, detail="Request rejected by policy.") from exc
 
     # Gap 27: mandatory pre-prompt moderation (fail-closed)
     _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))

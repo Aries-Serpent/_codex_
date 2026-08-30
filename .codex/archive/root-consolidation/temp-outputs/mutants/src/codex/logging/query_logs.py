@@ -313,7 +313,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     except (ValueError, SystemExit) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
-        logger.error(str(exc))
+        logger.exception("Failed to query session logs.")
         return 2
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
         type(exc).__name__

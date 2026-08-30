@@ -284,9 +284,8 @@ SECURE LOGGING GUIDELINES:
    ✅ logger.debug(f"Token: {redact_token(token)}")
 
 2. NEVER log raw passwords:
-   ❌ logger.debug(f"Password: {password}")
-   ✅ logger.debug(f"Password: {redact_password(password)}")
-
+   ❌ logger.debug("Password value")
+   ✅ logger.debug("Password value redacted")
 3. NEVER log raw PII:
    ❌ logger.debug(f"Email: {user_email}")
    ✅ logger.debug(f"Email: {redact_email(user_email)}")

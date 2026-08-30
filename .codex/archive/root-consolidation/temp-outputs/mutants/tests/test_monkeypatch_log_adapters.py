@@ -447,8 +447,8 @@ class TestErrorHandling:
             db_path = Path(tmpdir) / "readonly.db"
             _ensure_table(db_path)
             
-            # Make read-only
-            os.chmod(db_path, 0o444)
+            # Make owner-read-only to keep the file restricted without exposing it broadly.
+            os.chmod(db_path, 0o400)
             
             try:
                 log_event(
@@ -459,8 +459,8 @@ class TestErrorHandling:
             except (OSError, sqlite3.Error, PermissionError):
                 assert True
             finally:
-                # Restore permissions for cleanup
-                os.chmod(db_path, 0o644)
+                # Restore permissions for cleanup while keeping the file owner-only.
+                os.chmod(db_path, 0o600)
 
 
 if __name__ == "__main__":

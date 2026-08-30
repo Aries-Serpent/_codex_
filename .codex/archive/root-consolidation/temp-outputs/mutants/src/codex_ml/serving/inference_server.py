@@ -486,7 +486,8 @@ if FASTAPI_AVAILABLE:
                             auth_manager.verify_jwt(token)
                             return  # JWT valid
                         except AuthenticationError as exc:
-                            raise HTTPException(status_code=401, detail=str(exc)) from exc
+                            logger.warning("Authentication failed for inference API request.")
+                            raise HTTPException(status_code=401, detail="Authentication failed.") from exc
                 # API key path
                 if auth_manager.api_keys is not None:
                     if not auth_manager.verify_api_key(api_key):
@@ -561,12 +562,13 @@ if FASTAPI_AVAILABLE:
             try:
                 preds = server.predict_with_circuit_breaker(request.inputs)
             except RuntimeError as e:
-                raise HTTPException(status_code=500, detail=str(e)) from e
+                logger.exception("Inference prediction failed.")
+                raise HTTPException(status_code=500, detail="Prediction request failed.") from e
             except (ConnectionError, TimeoutError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 if "Circuit breaker" in str(e):
-                    raise HTTPException(status_code=503, detail=str(e)) from e
+                    raise HTTPException(status_code=503, detail="Inference service is unavailable.") from e
                 raise
 
             return PredictionResponse(
@@ -603,7 +605,8 @@ if FASTAPI_AVAILABLE:
                 vecs = server.embed(request.texts)
                 embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
             except (ConnectionError, TimeoutError) as e:
-                raise HTTPException(status_code=500, detail=str(e)) from e
+                logger.exception("Embedding generation failed.")
+                raise HTTPException(status_code=500, detail="Embedding request failed.") from e
             return EmbedResponse(
                 embeddings=embeddings,
                 num_texts=len(request.texts),

@@ -132,14 +132,14 @@ async def get_check_run_logs(
         type(e).__name__
         logger.error("Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
 
-        # Convert GitHub client exceptions to HTTP exceptions
+        # Convert GitHub client exceptions to HTTP exceptions without exposing raw details.
         if "not found" in str(e).lower():
-            raise HTTPException(status_code=404, detail=str(e)) from e
+            raise HTTPException(status_code=404, detail="GitHub check run logs not found.") from e
         if "rate limit" in str(e).lower():
-            raise HTTPException(status_code=429, detail=str(e)) from e
+            raise HTTPException(status_code=429, detail="GitHub API rate limit exceeded.") from e
         if "authentication" in str(e).lower():
-            raise HTTPException(status_code=401, detail=str(e)) from e
-        raise HTTPException(status_code=500, detail=str(e)) from e
+            raise HTTPException(status_code=401, detail="GitHub authentication failed.") from e
+        raise HTTPException(status_code=500, detail="GitHub check run logs request failed.") from e
 
 
 @router.get(
@@ -183,14 +183,14 @@ async def get_job_logs(
         type(e).__name__
         logger.error("Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
 
-        # Convert GitHub client exceptions to HTTP exceptions
+        # Convert GitHub client exceptions to HTTP exceptions without exposing raw details.
         if "not found" in str(e).lower():
-            raise HTTPException(status_code=404, detail=str(e)) from e
+            raise HTTPException(status_code=404, detail="GitHub job logs not found.") from e
         if "rate limit" in str(e).lower():
-            raise HTTPException(status_code=429, detail=str(e)) from e
+            raise HTTPException(status_code=429, detail="GitHub API rate limit exceeded.") from e
         if "authentication" in str(e).lower():
-            raise HTTPException(status_code=401, detail=str(e)) from e
-        raise HTTPException(status_code=500, detail=str(e)) from e
+            raise HTTPException(status_code=401, detail="GitHub authentication failed.") from e
+        raise HTTPException(status_code=500, detail="GitHub job logs request failed.") from e
 
 
 @router.get(
@@ -260,11 +260,11 @@ async def list_check_runs(
         type(e).__name__
         logger.error("Failed to list check runs: <ERROR_TYPE>", exc_info=True)
 
-        # Convert GitHub client exceptions to HTTP exceptions
+        # Convert GitHub client exceptions to HTTP exceptions without exposing raw details.
         if "not found" in str(e).lower():
-            raise HTTPException(status_code=404, detail=str(e)) from e
+            raise HTTPException(status_code=404, detail="GitHub check runs not found.") from e
         if "rate limit" in str(e).lower():
-            raise HTTPException(status_code=429, detail=str(e)) from e
+            raise HTTPException(status_code=429, detail="GitHub API rate limit exceeded.") from e
         if "authentication" in str(e).lower():
-            raise HTTPException(status_code=401, detail=str(e)) from e
-        raise HTTPException(status_code=500, detail=str(e)) from e
+            raise HTTPException(status_code=401, detail="GitHub authentication failed.") from e
+        raise HTTPException(status_code=500, detail="GitHub check runs request failed.") from e

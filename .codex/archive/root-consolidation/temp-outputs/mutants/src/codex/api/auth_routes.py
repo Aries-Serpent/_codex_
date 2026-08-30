@@ -273,7 +273,8 @@ def create_auth_router(
                 display_name=body.display_name,
             )
         except ValueError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
+            logger.warning("User registration rejected: invalid payload.")
+            raise HTTPException(status_code=400, detail="Registration request is invalid.") from exc
 
         ip = request.client.host if request.client else "unknown"
         logger.info(

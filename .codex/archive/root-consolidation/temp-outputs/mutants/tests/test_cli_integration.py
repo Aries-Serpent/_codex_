@@ -301,11 +301,11 @@ class TestCLIErrorRecovery:
         with runner.isolated_filesystem():
             if platform.system() != "Windows":
                 Path("restricted.txt").write_text("content\n")
-                Path("restricted.txt").chmod(0o000)
+                Path("restricted.txt").chmod(0o400)
                 result = runner.invoke(main_cli, ["--help"])
                 # Should not crash
                 assert isinstance(result.exit_code, int)
-                Path("restricted.txt").chmod(0o644)
+                Path("restricted.txt").chmod(0o600)
 
     def test_cli_graceful_error_on_invalid_input(self):
         """Test graceful error on invalid input."""
