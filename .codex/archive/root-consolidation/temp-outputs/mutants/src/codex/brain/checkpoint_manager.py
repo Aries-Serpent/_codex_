@@ -194,8 +194,8 @@ class CheckpointManager:
         checkpoint_file = self.checkpoint_dir / "v1" / f"{checkpoint_id}.json.gz"
         try:
             checkpoint_file.write_bytes(compressed_data)
-            # Make checkpoint immutable
-            os.chmod(checkpoint_file, 0o444)
+            # Restrict the file to the owner to avoid exposing checkpoint payloads to other users.
+            os.chmod(checkpoint_file, 0o600)
             logger.info(
                 f"Checkpoint created: {checkpoint_id} (compressed: {compressed_size}B, "
                 f"original: {uncompressed_size}B, sha256: {sha256_hash[:16]}...)"

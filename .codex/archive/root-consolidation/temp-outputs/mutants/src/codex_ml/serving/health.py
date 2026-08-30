@@ -53,15 +53,12 @@ def readiness_check() -> dict[str, Any]:
         }
         if disk_free_gb < 1.0:
             all_ready = False
-    except ImportError as e:
-        type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+    except ImportError:
+        logger.debug("psutil unavailable; disk-space readiness check skipped")
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
-    except (IOError, OSError) as e:
-        type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        checks["disk_space"] = {"status": "error", "error": str(e)}
+    except (IOError, OSError):
+        logger.warning("Disk space readiness check failed")
+        checks["disk_space"] = {"status": "error", "error": "disk_space_check_failed"}
         all_ready = False
 
     # Check required directories
@@ -104,9 +101,7 @@ def get_health_router() -> None:
     try:
         from fastapi import APIRouter
     except ImportError as e:
-        type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.warning("FastAPI is required for health endpoints")
         raise ImportError(
             "FastAPI is required for health endpoints. Install with: pip install fastapi"
         ) from e
@@ -121,8 +116,15 @@ def get_health_router() -> None:
     @router.get("/ready")
     async def readiness() -> dict[str, Any]:
         """Readiness check endpoint - returns 200 if service is ready."""
-        return readiness_check()
-        # Could return 503 if not ready, but for now return 200 with ready=false
+        try:
+            return readiness_check()
+        except Exception:
+            logger.warning("Readiness probe failed")
+            return {
+                "ready": False,
+                "timestamp": time.time(),
+                "checks": {"status": "error", "error": "readiness_check_failed"},
+            }
 
     @router.get("/healthz")
     async def healthz() -> dict[str, Any]:
@@ -132,6 +134,14 @@ def get_health_router() -> None:
     @router.get("/readyz")
     async def readyz() -> dict[str, Any]:
         """Kubernetes-style readiness check endpoint."""
-        return readiness_check()
+        try:
+            return readiness_check()
+        except Exception:
+            logger.warning("Readiness probe failed")
+            return {
+                "ready": False,
+                "timestamp": time.time(),
+                "checks": {"status": "error", "error": "readiness_check_failed"},
+            }
 
     return router

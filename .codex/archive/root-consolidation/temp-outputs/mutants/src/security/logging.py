@@ -315,20 +315,19 @@ if __name__ == "__main__":
     # Test the utilities
     print("Testing security logging utilities...\n")
 
-    test_token = "******"
-    print(f"Original token: {test_token}")
-    print(f"Redacted token: {redact_token(test_token)}")
+    test_token = "example-token"
+    print(f"Token sample: {redact_token(test_token)}")
     print(f"Token hash: {hash_token(test_token)}")
     print()
 
-    test_password = "MyS3cur3P@ssw0rd!"
+    test_password = "example-password"
 
-    print(f"Original password: {test_password}")  # nosec
-    print(f"Redacted password: {redact_password(test_password)}")
+    print(f"Password sample: {redact_password(test_password)}")
+    print(f"Password sample (masked): {redact_password(test_password)}")
     print()
 
-    test_email = "john.doe@example.com"
-    print(f"Original email: {test_email}")
+    test_email = "example.user@example.com"
+    print(f"Email sample: {test_email}")
     print(f"Redacted email: {redact_email(test_email)}")
     print()
 
