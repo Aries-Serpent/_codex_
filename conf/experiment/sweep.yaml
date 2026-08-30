@@ -1,6 +1,6 @@
 # ============================================================================
 # DEPRECATED: Use configs/experiments/sweep.yaml instead
-# See misc/repo-owner-review/MIGRATION_GUIDE.md for migration instructions
+# See .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/README.md for archive-compatibility guidance
 # Removal scheduled: v2.0.0 (Q2 2026)
 # ============================================================================
 # Example sweep demonstrating override combinations

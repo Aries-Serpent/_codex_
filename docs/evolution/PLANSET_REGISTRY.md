@@ -1,4 +1,9 @@
 # Planset Registry — Historical Archive
+
+> Historical archive only. The active execution source of truth is `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`. Open repo work is tracked in `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`.
+>
+> Plans in this registry remain as evidence of prior work and are not the live operational plan for the repository.
+
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
