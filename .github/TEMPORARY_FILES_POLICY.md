@@ -182,7 +182,7 @@ When creating any content that represents work:
 
 ## 📚 Related Policies
 
-- **File Removal Policy**: `misc/repo-owner-review/README.md`
+- **File Removal Policy**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/README.md` (legacy root alias is compatibility-only)
 - **Archive Management**: `docs/guides/codex_archive_runbook.md`  
 - **Repository Structure**: `.github/AGENTS_FILE_STRUCTURE.md`
 - **Contribution Guidelines**: `CONTRIBUTING.md`

@@ -153,10 +153,10 @@ graph TB
 
 ### 2. External Storage
 
-**Location**: `misc/repo-owner-review/`  
+**Location**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/`  
 **Structure**:
 ```
-misc/repo-owner-review/
+.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/
 ├── OFFLOAD_INDEX.md
 ├── historical-coverage/
 ├── historical-logs/
@@ -165,6 +165,7 @@ misc/repo-owner-review/
 ├── temp-outputs/
 └── deprecated-reports/
 ```
+**Note**: The legacy root-level `misc/repo-owner-review/` path is compatibility-only and not the authoritative live archive contract.
 
 **Purpose**: Organized external storage for offloaded files
 
@@ -209,7 +210,7 @@ misc/repo-owner-review/
 ```
 
 **Expected Output**:
-- Files moved to `misc/repo-owner-review/historical-logs/`
+- Files moved to `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/historical-logs/`
 - Updated `OFFLOAD_INDEX.md` with new files
 - Category README created/updated
 - Git history preserved via renames
@@ -349,7 +350,7 @@ sequenceDiagram
 ### For Users
 
 - **Quick Start**: See activation examples above
-- **Retrieval Guide**: `misc/repo-owner-review/OFFLOAD_INDEX.md`
+- **Retrieval Guide**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/OFFLOAD_INDEX.md`
 - **Dashboard**: `.codex/repository_health/DASHBOARD.md`
 
 ### For Developers
@@ -424,7 +425,7 @@ sequenceDiagram
 
 **Primary Maintainer**: QA Walkthrough Agent  
 **Secondary**: Repository Organization System  
-**Documentation**: `.codex/qa_walkthrough/`, `misc/repo-owner-review/`  
+**Documentation**: `.codex/qa_walkthrough/`, `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/`  
 **Issues**: GitHub Issues with `repository-organization` label
 
 ---
