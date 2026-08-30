@@ -145,7 +145,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument(
         "--out",
-        default="reports/tiles/ratelimit_tile.json",
+        default=".codex/reports/tiles/ratelimit_tile.json",
         help="Destination JSON file for the tile",
     )
     args = parser.parse_args(argv)

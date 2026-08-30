@@ -58,12 +58,14 @@ jobs:
       with:
         persist-credentials: false
         sparse-checkout: |
+          README.md
+          pyproject.toml
+          src/
           scripts/__init__.py
           scripts/ci/__init__.py
           scripts/ci/_token_resolver.py
           scripts/ci/
           .github/actions/setup-python-cached/
-          pyproject.toml
         sparse-checkout-cone-mode: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached

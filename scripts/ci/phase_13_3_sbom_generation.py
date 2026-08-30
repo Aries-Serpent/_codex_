@@ -27,6 +27,8 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
@@ -103,7 +105,7 @@ def generate_javascript_sbom() -> list[Component]:
     
     components = []
     
-    package_json = Path("/home/runner/work/_codex_/_codex_/package.json")
+    package_json = REPO_ROOT / "package.json"
     if not package_json.exists():
         logger.info("   ⏭️  No package.json found")
         return components
@@ -143,7 +145,7 @@ def generate_rust_sbom() -> list[Component]:
     
     components = []
     
-    cargo_toml = Path("/home/runner/work/_codex_/_codex_/Cargo.toml")
+    cargo_toml = REPO_ROOT / "Cargo.toml"
     if not cargo_toml.exists():
         logger.info("   ⏭️  No Cargo.toml found")
         return components
@@ -151,7 +153,7 @@ def generate_rust_sbom() -> list[Component]:
     try:
         result = subprocess.run(
             ["cargo", "tree", "--format", "json"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             timeout=30
@@ -255,7 +257,7 @@ def write_sbom_files(sbom_xml: str) -> bool:
     logger.info("💾 Writing SBOM files...")
     
     try:
-        sbom_dir = Path("/home/runner/work/_codex_/_codex_/sbom")
+        sbom_dir = REPO_ROOT / "sbom"
         sbom_dir.mkdir(parents=True, exist_ok=True)
         
         # Write XML

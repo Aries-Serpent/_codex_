@@ -194,10 +194,14 @@ This document defines the 11 orchestration lanes (A-K) with their responsibiliti
 5. **Security Review** — Ensure T2-level security controls in place
 
 ### Deliverables
-- `src/orchestration/transfer/policy_plane.py` — Trust boundaries
+- `src/orchestration/transfer_fabric/policy_plane.py` — Trust boundaries
+- `src/orchestration/transfer_fabric/tunnel_lifecycle.py` — Tunnel lifecycle & failover
+- `docs/ops/safe_sandbox_bundle.md` — Safe file-backed bundle workflow for sandbox→primary handoff
 - Tunnel configuration schema (JSON)
 - Routing policy template (YAML)
 - Pre-flight checklist
+
+> Transfer handoff must use the repo-owned bundle workflow (`docs/ops/safe_sandbox_bundle.md`, `scripts/archive/git_patch_bundle.py`) rather than raw direct-stream `git diff | ...` forwarding, to avoid SIGPIPE loss and preserve checksum/audit metadata.
 
 ### Success Criteria
 - ✅ Policy plane complete + documented
@@ -224,9 +228,9 @@ This document defines the 11 orchestration lanes (A-K) with their responsibiliti
 5. **Transfer Completion** — Atomic transfer final commit
 
 ### Deliverables
-- `src/orchestration/transfer/data_plane.py` — Chunked transfer
-- `src/orchestration/transfer/observability_plane.py` — Telemetry
-- Rollback instruction schema (JSON)
+- `src/orchestration/transfer_fabric/data_plane.py` — Chunked transfer
+- `src/orchestration/transfer_fabric/observability_plane.py` — Telemetry
+- `src/orchestration/transfer_fabric/rollback_controls.py` — Rollback instructions & checks
 - Transfer verification test suite
 
 ### Success Criteria
@@ -339,7 +343,7 @@ This document defines the 11 orchestration lanes (A-K) with their responsibiliti
 5. **Cross-Lane Dependency** — Respect lane gating
 
 ### Deliverables
-- `src/orchestration/scheduling/transfer_aware_scheduler.py` — Main scheduler
+- `src/orchestration/transfer_fabric/transfer_aware_scheduler.py` — Main scheduler
 - Scheduling decision trace (JSONL)
 - Contention resolution logs
 

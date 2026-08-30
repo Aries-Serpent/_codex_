@@ -39,8 +39,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-# Offload structure configuration
-OFFLOAD_ROOT = Path("misc/repo-owner-review")
+# Canonical archive root after the move; fall back to the legacy root for compatibility.
+CANONICAL_OFFLOAD_ROOT = Path(".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review")
+LEGACY_OFFLOAD_ROOT = Path("misc/repo-owner-review")
+
+
+def resolve_offload_root(repo_root: Path) -> Path:
+    canonical = repo_root / CANONICAL_OFFLOAD_ROOT
+    legacy = repo_root / LEGACY_OFFLOAD_ROOT
+    return canonical if canonical.exists() or not legacy.exists() else legacy
+
+
+OFFLOAD_ROOT = CANONICAL_OFFLOAD_ROOT
 
 # Categories eligible for compression
 COMPRESSIBLE_CATEGORIES = {
@@ -102,7 +112,7 @@ def compress_directory_tarball(
     dry_run: bool = False,
 ) -> Path | None:
     """Compress entire category directory into a tarball."""
-    category_path = repo_root / OFFLOAD_ROOT / category
+    category_path = resolve_offload_root(repo_root) / category
 
     if not category_path.exists():
         return None
@@ -147,7 +157,7 @@ def compress_category(
     dry_run: bool = False,
 ) -> dict[str, Any]:
     """Compress files in a category."""
-    category_path = repo_root / OFFLOAD_ROOT / category
+    category_path = resolve_offload_root(repo_root) / category
 
     if not category_path.exists():
         print(f"❌ Category not found: {category}")

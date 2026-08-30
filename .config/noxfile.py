@@ -426,7 +426,7 @@ def space_audit(session: nox.Session) -> None:
     This session:
     1. Runs the full audit pipeline (index → facets → capabilities → score → gaps → render → manifest)
     2. Validates quality gates if configured
-    3. Produces artifacts in audit_artifacts/ and reports/
+    3. Produces artifacts in audit_artifacts/ and .codex/reports/
 
     Usage:
         nox -s space_audit
@@ -450,7 +450,7 @@ def space_audit(session: nox.Session) -> None:
             success_codes=[0, 4],  # 4 = low maturity (may be acceptable)
         )
 
-    session.log("[space_audit] Audit complete. Check audit_artifacts/ and reports/")
+    session.log("[space_audit] Audit complete. Check audit_artifacts/ and .codex/reports/")
 
 
 @nox.session(name="space_audit_fast", python=PY_VERSIONS)

@@ -1,4 +1,11 @@
 # Planset Registry — Historical Archive
+
+> Historical archive only. Do not use this file as the current execution plan.
+> Canonical active plan: `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`
+> Active backlog: `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`
+>
+> This registry is retained for historical evidence, parity checks, and audit trails. Statuses recorded here reflect the state at the time the plan was logged, not the repository's current operating status.
+
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
@@ -656,7 +663,7 @@ Current Scores (PS-14 Implementation):
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
 - **Latest Completion**: PS-16 (2026-02-12)
-- **Current Active**: PS-17 (Operational Excellence), PS-18 (Continuous Improvement — Planned)
+- **Historical snapshot only**: PS-17 and PS-18 entries reflect a prior review state; active execution is governed by `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md` and `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`, not this archive.
 
 ---
 

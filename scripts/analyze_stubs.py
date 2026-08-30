@@ -143,4 +143,4 @@ def generate_report(stubs, output_path):
 if __name__ == "__main__":
     source_dirs = [Path("src"), Path("training")]
     stubs = scan_for_stubs(source_dirs)
-    generate_report(stubs, Path("reports/stub_analysis.md"))
+    generate_report(stubs, Path(".codex/reports/stub_analysis.md"))

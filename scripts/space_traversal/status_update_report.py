@@ -55,7 +55,7 @@ except Exception as exc:
 ROOT = Path(__file__).resolve().parents[2]
 CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 DEFAULT_ARTIFACTS = ROOT / "audit_artifacts"
-DEFAULT_REPORTS = ROOT / "reports"
+DEFAULT_REPORTS = ROOT / ".codex" / "reports"
 STATUS_TEMPLATE = ROOT / "templates" / "audit" / "status_update_report.md.j2"
 VERSION = "1.1.0"
 
@@ -110,7 +110,7 @@ def main() -> None:
         default="",
     )
     ap.add_argument(
-        "--reports", help="Reports directory (default from workflow.yaml or reports/)", default=""
+        "--reports", help="Reports directory (default from workflow.yaml or .codex/reports/)", default=""
     )
     args = ap.parse_args()
 

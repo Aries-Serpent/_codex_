@@ -128,8 +128,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements/requirements-dev.txt
-        python -m pip install -e .
-        python -m pip install -e ./agents/codex_client
+
+        if [ -f pyproject.toml ]; then
+          python -m pip install -e .
+        else
+          echo "Skipping editable install: repository metadata is intentionally unavailable in this API-only QA runner."
+        fi
+
+        if [ -d agents/codex_client ]; then
+          python -m pip install -e ./agents/codex_client
+        else
+          echo "Skipping codex_client install: directory not present in this runner."
+        fi
     - name: Run Full Audit
       id: analyze
       env:

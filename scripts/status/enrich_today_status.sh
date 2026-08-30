@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DATE=$(date -u +%Y-%m-%d)
-REPORT="reports/daily/${DATE}.json"
+REPORT=".codex/reports/daily/${DATE}.json"
 
 if [ ! -f "$REPORT" ]; then
   echo "[FAIL] Missing ${REPORT}. Generate skeleton first."

@@ -24,7 +24,7 @@
 - All code review feedback addressed
 
 **Key Files**:
-- `src/codex/security_utils.py` (5.5KB)
+- `src/aries_serpent_core/security_utils.py` (5.5KB)
 - `.github/agents/admin-automation-agent/src/agent.py` (line 174)
 
 #### 2. Design Documents (Priority 3)
@@ -230,7 +230,7 @@ python3 scripts/validate_security_utils.py
 ## Files Created (All Sessions)
 
 ### Security & Core
-- `src/codex/security_utils.py` (5.5KB)
+- `src/aries_serpent_core/security_utils.py` (5.5KB)
 - `tests/test_security_utils.py` (11KB)
 - `scripts/validate_security_utils.py` (6KB)
 
@@ -311,7 +311,7 @@ python3 scripts/validate_security_utils.py
 
 ### Documentation
 - [AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)
-- [Security Utils Documentation](../../../src/codex/security_utils.py)
+- [Security Utils Documentation](../../../src/aries_serpent_core/security_utils.py)
 - QA Agent README
 - [Flatten-Repo README](../../../.github/workflows/flatten-repo-download.md)
 

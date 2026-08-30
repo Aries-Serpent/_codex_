@@ -513,7 +513,7 @@ class CopilotSecurityAgentHandoff:
             "2. Identify common anti-pattern across instances",
             "3. Propose PR with pattern-based fix",
             "4. Run semgrep locally to validate fix",
-            "5. For false positives, update .semgrep.yml inline-comments",
+            "5. For false positives, update semgrep.yml inline-comments",
             "6. Consider relaxing rule if too many FP",
         ]
 

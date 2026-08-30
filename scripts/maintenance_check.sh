@@ -17,7 +17,7 @@ if [ ! -f "pyproject.toml" ]; then
 fi
 
 # Create maintenance report directory
-REPORT_DIR="reports/maintenance/$(date +%Y-%m)"
+REPORT_DIR=".codex/reports/maintenance/$(date +%Y-%m)"
 mkdir -p "$REPORT_DIR"
 REPORT_FILE="$REPORT_DIR/dependency_check_$(date +%Y-%m-%d).txt"
 

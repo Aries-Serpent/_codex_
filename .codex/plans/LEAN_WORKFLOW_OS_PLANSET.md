@@ -28,8 +28,15 @@
 4. [Plan D — Safe Pruning & Consolidation Program](#plan-d)
 5. [Plan E — Living-Doc Automation & Auto-Populated Logging System](#plan-e)
 6. [Plan F — Startup Context Optimization](#plan-f)
-7. [Execution Sequencing](#execution-sequencing)
-8. [Definition of Done](#definition-of-done)
+7. [Active Objective Backlog](#active-objective-backlog)
+8. [Execution Sequencing](#execution-sequencing)
+9. [Definition of Done](#definition-of-done)
+
+---
+
+## Active Objective Backlog
+
+The active work stream for this repository is tracked in `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`. Historical plans remain available as evidence but are not the active operating source of truth for current work.
 
 ---
 

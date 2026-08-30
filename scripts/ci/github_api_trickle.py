@@ -70,6 +70,8 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any
 
 # Add parent directory to path for CI execution
@@ -419,7 +421,7 @@ CODEQL_QLPACKS = os.environ.get(
 )
 
 
-def build_codeql_db(source_root: str = "/home/runner/work/_codex_/_codex_") -> bool:
+def build_codeql_db(source_root: str = REPO_ROOT) -> bool:
     """Build local CodeQL Python DB. Returns True if successful."""
     if not Path(CODEQL_CLI).exists():
         logger.warning("CodeQL CLI not found at %s", CODEQL_CLI)  # codeql[py/clear-text-logging-sensitive-data]

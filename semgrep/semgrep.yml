@@ -1,0 +1,15 @@
+rules:
+  - id: python-avoid-eval
+    message: "Avoid eval/exec — risky and unnecessary in most cases."
+    severity: WARNING
+    languages: [python]
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: yaml-unsafe-loader
+    message: "Use safe_load instead of load for PyYAML."
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: yaml.load($X)
+      - pattern-not: yaml.load($X, Loader=yaml.SafeLoader)

@@ -30,6 +30,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
@@ -70,7 +72,7 @@ def run_bandit_security_linting() -> ComplianceReport:
     try:
         result = subprocess.run(
             ["bandit", "-r", "src", "-f", "json", "-c", ".bandit.yaml"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=str(REPO_ROOT),
             capture_output=True,
             text=True,
             timeout=120
@@ -121,7 +123,7 @@ def run_semgrep_scanning() -> ComplianceReport:
     
     findings = []
     
-    semgrep_config = Path("/home/runner/work/_codex_/_codex_/.semgrep/semgrep.yml")
+    semgrep_config = REPO_ROOT / "semgrep" / "semgrep.yml"
     if not semgrep_config.exists():
         logger.info("   ⏭️  Semgrep config not found, skipping")
         return ComplianceReport(
@@ -137,7 +139,7 @@ def run_semgrep_scanning() -> ComplianceReport:
     try:
         result = subprocess.run(
             ["semgrep", "--config", str(semgrep_config), "src", "--json"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=str(REPO_ROOT),
             capture_output=True,
             text=True,
             timeout=180
@@ -252,7 +254,7 @@ jobs:
       
       - name: Run Semgrep
         run: |
-          semgrep --config .semgrep/semgrep.yml src --json > semgrep-report.json || true
+          semgrep --config semgrep/semgrep.yml src --json > semgrep-report.json || true
       
       - name: Upload Semgrep results
         if: always()
@@ -284,7 +286,7 @@ jobs:
           echo "3. Create issues for medium/low severity findings"
 """
     
-    workflow_path = Path("/home/runner/work/_codex_/_codex_/.github/workflows")
+    workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
     
     workflow_file = workflow_path / "13-3-enterprise-compliance.yml"
@@ -425,7 +427,7 @@ def generate_compliance_dashboard() -> str:
 </html>
 """
     
-    dashboard_path = Path("/home/runner/work/_codex_/_codex_/docs/security")
+    dashboard_path = REPO_ROOT / "docs" / "security"
     dashboard_path.mkdir(parents=True, exist_ok=True)
     
     dashboard_file = dashboard_path / "compliance-dashboard.html"

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,7 @@ def _append_error_report(
     """Append an error entry to the daily Codex report."""
 
     timestamp = datetime.now(timezone.utc)
-    reports_dir = Path("_codex_reports")
+    reports_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", ".codex/reports"))
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
     except (IOError, OSError, ModuleNotFoundError, ImportError):

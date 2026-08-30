@@ -12,11 +12,6 @@ echo "🔧 Phase 1: Emergency Filename Fixes"
 echo "=================================="
 
 # Fix 1: Rename files with parentheses (CRITICAL)
-if [[ -f "reports/_codex_status_update-(2025-12-06).md" ]]; then
-    echo "✏️  Renaming: reports/_codex_status_update-(2025-12-06).md"
-    git mv "reports/_codex_status_update-(2025-12-06).md" "reports/_codex_status_update_2025-12-06.md" || true
-fi
-
 if [[ -f ".codex/reports/_codex_status_update-(2025-12-06).md" ]]; then
     echo "✏️  Renaming: .codex/reports/_codex_status_update-(2025-12-06).md"
     git mv ".codex/reports/_codex_status_update-(2025-12-06).md" ".codex/reports/_codex_status_update_2025-12-06.md" || true

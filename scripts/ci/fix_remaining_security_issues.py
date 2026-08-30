@@ -2,6 +2,8 @@
 """Fix remaining security issues in agent.yaml files"""
 
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 import re
 
 def fix_file(filepath: Path):
@@ -48,7 +50,7 @@ def main():
         ".github/agents/security-vulnerability-patcher/agent.yaml",
     ]
 
-    repo_root = Path("/home/runner/work/_codex_/_codex_")
+    repo_root = REPO_ROOT
 
     for file_path in files_to_fix:
         full_path = repo_root / file_path

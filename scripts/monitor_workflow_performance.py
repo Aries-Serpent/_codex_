@@ -14,7 +14,7 @@ Usage:
 
 Options:
     --days DAYS           Number of days to analyze (default: 14)
-    --output PATH         Output path for report (default: .reports/workflow_performance.json)
+    --output PATH         Output path for report (default: .codex/reports/workflow_performance.json)
     --format FORMAT       Output format: json, html, markdown (default: json)
     --compare             Compare consolidated vs original workflows
 """
@@ -28,6 +28,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 try:
     import requests
     from tabulate import tabulate
@@ -429,7 +430,7 @@ def main():
     parser.add_argument(
         '--output',
         type=Path,
-        default=Path('.reports/workflow_performance.json'),
+        default=Path(REPO_ROOT / '.codex' / 'reports' / 'workflow_performance.json'),
         help='Output path for report'
     )
     parser.add_argument(

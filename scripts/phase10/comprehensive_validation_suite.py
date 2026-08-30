@@ -37,6 +37,8 @@ import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -57,7 +59,7 @@ class Phase10Validator:
                 "skipped": 0
             }
         }
-        self.repo_root = Path("/home/runner/work/_codex_/_codex_")
+        self.repo_root = REPO_ROOT
 
     def log_test(self, name: str, status: str, message: str, details: Optional[dict] = None):
         """Log test result."""

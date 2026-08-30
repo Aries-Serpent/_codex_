@@ -1,7 +1,9 @@
 # [Inventory]: Planset Inventory
 > Generated: 2026-02-12T11:45:09Z | Updated: 2026-02-12T21:49:04Z | Author: mbaetiong
 
-Canonical inventory derived from `docs/evolution/PLANSET_REGISTRY.md` for Phase 1 evidence workflows and parity checks.
+> Historical inventory only. The active execution source of truth is `.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md`; open active work is tracked in `.codex/plans/ACTIVE_OBJECTIVE_BACKLOG.md`.
+
+Canonical inventory derived from `docs/evolution/PLANSET_REGISTRY.md` for Phase 1 evidence workflows and parity checks. Historical plans remain in this registry for evidence and parity tracking, but they are not the active operating plan.
 
 | Planset ID | Name | Status | Date | Phase | Category | Source |
 |---|---|---|---|---|---|---|

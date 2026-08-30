@@ -1,3 +1,6 @@
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 #!/usr/bin/env python3
 """
 Phase B Validation Harness - Execute 10+ cycles per workflow
@@ -149,7 +152,7 @@ class ValidationHarness:
                 ["git", "rev-parse", "HEAD"],
                 capture_output=True,
                 text=True,
-                cwd="/home/runner/work/_codex_/_codex_",
+                cwd=REPO_ROOT,
                 timeout=5
             )
             return result.stdout.strip()
@@ -272,7 +275,7 @@ Commit SHA: {self.results[0]['commit_sha'] if self.results else 'unknown'}
         
         return report
     
-    def save_results(self, output_file: str = "/home/runner/work/_codex_/_codex_/.codex/PHASE_B_EXECUTION_REPORT.md"):
+    def save_results(self, output_file: str = str(REPO_ROOT / ".codex"/"PHASE_B_EXECUTION_REPORT.md")):
         """Save results to file"""
         report = self.generate_report()
         

@@ -26,7 +26,7 @@ python scripts/space_traversal/audit_runner.py stage S4
 echo "[S6] Rendering capability matrix..."
 python scripts/space_traversal/audit_runner.py stage S6
 
-echo "Fast audit complete! Check reports/ for output."
+echo "Fast audit complete! Check .codex/reports/ for output."
 
 # Show top 3 lowest scoring capabilities
 echo ""

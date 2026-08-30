@@ -36,8 +36,18 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Offload structure configuration
-OFFLOAD_ROOT = Path("misc/repo-owner-review")
+# Canonical archive root after the move; fall back to the legacy path for compatibility.
+CANONICAL_OFFLOAD_ROOT = Path(".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review")
+LEGACY_OFFLOAD_ROOT = Path("misc/repo-owner-review")
+
+
+def resolve_offload_root(repo_root: Path) -> Path:
+    canonical = repo_root / CANONICAL_OFFLOAD_ROOT
+    legacy = repo_root / LEGACY_OFFLOAD_ROOT
+    return canonical if canonical.exists() or not legacy.exists() else legacy
+
+
+OFFLOAD_ROOT = CANONICAL_OFFLOAD_ROOT
 OFFLOAD_INDEX = OFFLOAD_ROOT / "OFFLOAD_INDEX.md"
 
 # Category mappings to original locations
@@ -69,7 +79,7 @@ CATEGORY_MAPPINGS = {
     },
     "deprecated-reports": {
         "offload_dir": "deprecated-reports",
-        "restore_dir": "_codex_reports",
+        "restore_dir": ".codex/reports",
         "description": "Deprecated reports",
     },
 }
@@ -79,8 +89,9 @@ def list_categories(repo_root: Path) -> None:
     """List all available categories and their files."""
     print("📂 Available Categories:\n")
 
+    offload_root = resolve_offload_root(repo_root)
     for category, config in CATEGORY_MAPPINGS.items():
-        offload_path = repo_root / OFFLOAD_ROOT / config["offload_dir"]
+        offload_path = offload_root / config["offload_dir"]
         if not offload_path.exists():
             continue
 
@@ -101,7 +112,7 @@ def get_files_in_category(category: str, repo_root: Path) -> list[Path]:
     if not config:
         return []
 
-    offload_path = repo_root / OFFLOAD_ROOT / config["offload_dir"]
+    offload_path = resolve_offload_root(repo_root) / config["offload_dir"]
     if not offload_path.exists():
         return []
 
@@ -124,7 +135,7 @@ def restore_file(
     if config is None:
         print(f"  ⚠️  Unknown category: {category!r}")
         return False
-    offload_dir = repo_root / OFFLOAD_ROOT / config["offload_dir"]
+    offload_dir = resolve_offload_root(repo_root) / config["offload_dir"]
 
     # Calculate relative path within category
     rel_path = source_path.relative_to(offload_dir)
@@ -290,7 +301,7 @@ def main() -> int:
             print(f"❌ Error: Invalid category: {category}", file=sys.stderr)
             return 1
 
-        source_path = repo_root / OFFLOAD_ROOT / args.file
+        source_path = resolve_offload_root(repo_root) / args.file
         if not source_path.exists():
             print(f"❌ Error: File not found: {source_path}", file=sys.stderr)
             return 1

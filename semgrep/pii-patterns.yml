@@ -1,0 +1,16 @@
+rules:
+  - id: pii-email
+    message: "Potential email address in source or config."
+    severity: WARNING
+    languages: [python, yaml, generic]
+    pattern-regex: (?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b
+  - id: pii-phone
+    message: "Potential phone number in source or config."
+    severity: WARNING
+    languages: [python, yaml, generic]
+    pattern-regex: (?i)\b(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b
+  - id: pii-social-security
+    message: "Potential SSN pattern detected."
+    severity: WARNING
+    languages: [python, yaml, generic]
+    pattern-regex: \b\d{3}-\d{2}-\d{4}\b

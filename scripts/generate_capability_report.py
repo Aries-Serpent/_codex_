@@ -37,7 +37,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS_DIR = REPO_ROOT / "audit_artifacts"
-OUTPUT_FILE = REPO_ROOT / "reports" / "capability_summary.md"
+OUTPUT_FILE = REPO_ROOT / ".codex" / "reports" / "capability_summary.md"
 
 
 def load_capabilities() -> dict:

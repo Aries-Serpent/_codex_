@@ -57,7 +57,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCK_PATH = ROOT / "requirements/lock.txt"
 REQ_TXT = ROOT / "requirements/base.txt"
 PYPROJECT = ROOT / "pyproject.toml"
-ERROR_DIR = ROOT / "_codex_reports"
+ERROR_DIR = ROOT / ".codex" / "reports"
 
 PYTHON_TARGET = "3.12"
 COMPILE_COMMAND = [

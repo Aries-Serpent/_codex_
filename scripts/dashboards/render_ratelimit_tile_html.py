@@ -147,8 +147,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Render an HTML chart for a rate-limit tile JSON document"
     )
-    parser.add_argument("--tile", default="reports/tiles/ratelimit_tile.json")
-    parser.add_argument("--out", default="reports/tiles/ratelimit_tile.html")
+    parser.add_argument("--tile", default=".codex/reports/tiles/ratelimit_tile.json")
+    parser.add_argument("--out", default=".codex/reports/tiles/ratelimit_tile.html")
     parser.add_argument("--width", type=int, default=800)
     parser.add_argument("--height", type=int, default=240)
     args = parser.parse_args(argv)

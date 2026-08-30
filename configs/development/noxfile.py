@@ -45,7 +45,7 @@ COVERAGE_HTML = ARTIFACTS / "coverage_html"
 COVERAGE_XML = ARTIFACTS / "coverage.xml"
 COVERAGE_JSON_ROOT = ARTIFACTS / "coverage"
 PIP_CACHE = REPO_ROOT / ".cache" / "pip"
-ERROR_REPORTS_ROOT = REPO_ROOT / "_codex_reports"
+ERROR_REPORTS_ROOT = REPO_ROOT / ".codex" / "reports"
 
 TEST_BOOTSTRAP_PKGS = ("pip", "setuptools", "wheel")
 OFFLINE_TEST_TARGETS = (
@@ -120,7 +120,7 @@ def _log_step_error(
     *,
     question: str | None = None,
 ) -> None:
-    """Append a structured error block to the dated _codex_reports markdown log."""
+    """Append a structured error block to the dated .codex/reports markdown log."""
 
     timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
     question_text = question or "Could you clarify how you would like this issue to be resolved?"

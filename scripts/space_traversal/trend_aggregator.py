@@ -324,8 +324,8 @@ def main():
     parser.add_argument(
         "--reports-dir",
         type=Path,
-        default=Path("reports"),
-        help="Directory containing reports (default: reports)",
+        default=Path(".codex/reports"),
+        help="Directory containing reports (default: .codex/reports)",
     )
     parser.add_argument(
         "--lookback-days",

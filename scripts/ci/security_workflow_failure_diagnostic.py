@@ -214,7 +214,7 @@ class FailureDiagnostician:
             steps.append("4. Consider increasing job timeout if scan is legitimate")
 
         if any("config" in str(v).lower() for v in failed_job_details.values()):
-            steps.append("4. Verify scanning tool configuration files (.github/codeql/, .semgrep, etc.)")
+            steps.append("4. Verify scanning tool configuration files (.github/codeql/, semgrep/, etc.)")
 
         steps.extend([
             "5. Check partial findings (if available) for insights",

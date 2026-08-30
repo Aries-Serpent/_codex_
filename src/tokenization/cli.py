@@ -5,6 +5,7 @@ from __future__ import annotations
 import inspect as inspect_module
 import json
 import logging
+import os
 import shutil
 import sys
 import types
@@ -120,7 +121,7 @@ from tokenizer.fast_tokenizer import build_tokenizer  # noqa: E402
 
 app = typer.Typer(help="Tokenizer utilities")
 
-_ERROR_REPORT_DIR = Path("_codex_reports")
+_ERROR_REPORT_DIR = Path(os.getenv("CODEX_ERROR_REPORTS_DIR", ".codex/reports"))
 _ERROR_QUESTION_TEMPLATE = (
     "What adjustments would resolve this issue so the {step} command can succeed?"
 )

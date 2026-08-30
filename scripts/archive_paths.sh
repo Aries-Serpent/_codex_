@@ -8,7 +8,7 @@ if [ ! -d .git ]; then
   [ -n "${root:-}" ] && cd "$root" || { echo "Run from a git repo"; exit 2; }
 fi
 
-dest="archive/removed"
+dest=".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review"
 mkdir -p "$dest"
 
 if [ "$#" -eq 0 ]; then

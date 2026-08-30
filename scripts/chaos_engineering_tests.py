@@ -1,3 +1,6 @@
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 #!/usr/bin/env python3
 """
 Phase 7 Lane 3: Comprehensive Chaos Engineering Tests
@@ -66,7 +69,7 @@ class TestResult:
 class ChaosTestFramework:
     """Main chaos engineering test orchestrator."""
     
-    def __init__(self, repo_root: str = "/home/runner/work/_codex_/_codex_"):
+    def __init__(self, repo_root: str = REPO_ROOT):
         self.repo_root = repo_root
         self.results: List[TestResult] = []
         self.scenarios = self._define_scenarios()
@@ -535,7 +538,7 @@ def main():
     scenarios_md = framework.generate_scenarios_md()
     
     # Output results
-    codex_dir = "/home/runner/work/_codex_/_codex_/.codex"
+    codex_dir = str(REPO_ROOT / ".codex")
     os.makedirs(codex_dir, exist_ok=True)
     
     # Save scenarios

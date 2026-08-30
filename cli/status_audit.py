@@ -49,8 +49,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--output",
         "-o",
-        help="Output directory for reports (default: reports/)",
-        default="reports",
+        help="Output directory for reports (default: .codex/reports/)",
+        default=".codex/reports",
     )
     parser.add_argument(
         "--generate",

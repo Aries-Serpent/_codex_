@@ -25,6 +25,8 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Dict, List, Set
 
 # Configure logging
@@ -277,7 +279,7 @@ def main():
 
     # Get list of non-compliant scripts
     non_compliant_scripts = [
-        Path("/home/runner/work/_codex_/_codex_") / script["file_path"]
+        REPO_ROOT / script["file_path"]
         for script in analysis_data.get("script_analyses", [])
         if not script["is_compliant"]
     ]

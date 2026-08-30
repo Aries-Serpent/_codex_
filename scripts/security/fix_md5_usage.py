@@ -36,6 +36,8 @@ logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 def fix_md5_in_file(file_path: Path) -> bool:
     """Fix MD5 usage in a single file."""
@@ -81,7 +83,7 @@ def fix_md5_in_file(file_path: Path) -> bool:
 
 def main():
     """Fix all Python files."""
-    base_dir = Path('/home/runner/work/_codex_/_codex_')
+    base_dir = REPO_ROOT
     fixed_count = 0
 
     # Search in specific directories

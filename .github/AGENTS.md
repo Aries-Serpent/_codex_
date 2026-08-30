@@ -40,7 +40,7 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 - **Location:** `configs/` directory (NOT `conf/` - deprecated, removal scheduled Phase 2 (Current Cycle))
 - **Format:** Hydra-compatible YAML
 - **Purpose:** Runtime configuration management
-- **Migration Guide:** `misc/repo-owner-review/MIGRATION_GUIDE.md`
+- **Migration Guide:** `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/README.md` (legacy root alias kept only for compatibility)
 
 ### Language Composition
 | Language | Percentage | Focus Area |

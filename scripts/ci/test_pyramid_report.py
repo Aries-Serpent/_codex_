@@ -63,7 +63,7 @@ def classify_tests(tests_root: Path) -> dict[str, int]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tests-root", default="tests")
-    parser.add_argument("--output", default="reports/test_pyramid_latest.json")
+    parser.add_argument("--output", default=".codex/reports/test_pyramid_latest.json")
     args = parser.parse_args()
 
     root = Path(args.tests_root)

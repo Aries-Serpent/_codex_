@@ -175,7 +175,7 @@ python scripts/security/validate_security.py
 
 After all alerts are resolved:
 
-1. Update `.semgrep/semgrep.yml` with baseline configuration
+1. Update `semgrep/semgrep.yml` with baseline configuration
 2. Document any remaining suppressions in `.security-exceptions.md`
 3. Enable baseline mode to catch only new alerts
 

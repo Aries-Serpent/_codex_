@@ -668,9 +668,9 @@ def main() -> int:
 
     # Scan directories
     audit_artifacts_path = repo_root / "audit_artifacts"
-    reports_path = repo_root / "reports"
+    reports_path = repo_root / ".codex" / "reports"
     manifest_path = repo_root / "audit_run_manifest.json"
-    output_path = repo_root / "index.html"
+    output_path = repo_root / ".codex" / "reports" / "audit_dashboard.html"
 
     print("🔍 Scanning audit artifacts...")
     audit_artifacts = scan_directory(audit_artifacts_path)

@@ -1,3 +1,6 @@
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 #!/usr/bin/env python3
 """
 Verify secrets baseline - ensures no real secrets are committed to repository.
@@ -12,7 +15,7 @@ def verify_secrets():
         result = subprocess.run(
             ["git", "grep", "-E", r"(password|secret|token|key)\s*=\s*['\"]", "HEAD",
              "--", ":(exclude)*.md", ":(exclude)docs/", ":(exclude).codex/"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True
         )

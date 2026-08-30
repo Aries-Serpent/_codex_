@@ -8,7 +8,7 @@ set -euo pipefail
 
 OUTPUT_FILE="full_context.txt"
 # Detect repository root dynamically, fallback to GitHub Actions path
-REPO_ROOT="${1:-$(git rev-parse --show-toplevel 2>/dev/null || echo "/home/runner/work/_codex_/_codex_")}"
+REPO_ROOT="${1:-$(git -C "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)" rev-parse --show-toplevel 2>/dev/null || (cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd))}"
 
 echo "🚀 Preparing NotebookLM Context for Aries-Serpent/_codex_"
 echo "=================================================="

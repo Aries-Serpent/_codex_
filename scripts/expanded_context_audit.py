@@ -279,12 +279,12 @@ def main():
     )
     parser.add_argument(
         "--out",
-        default="reports/expanded_context_report.json",
+        default=".codex/reports/expanded_context_report.json",
         help="Output JSON file path",
     )
     parser.add_argument(
         "--summary",
-        default="reports/expanded_context_summary.md",
+        default=".codex/reports/expanded_context_summary.md",
         help="Output summary markdown file path",
     )
 

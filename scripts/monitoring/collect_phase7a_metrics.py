@@ -11,6 +11,8 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 @dataclass
 class LaneMetrics:
@@ -59,7 +61,7 @@ class WaveMetrics:
 class MetricsCollector:
     """Collects daily metrics for Phase 7A Wave 2"""
 
-    def __init__(self, repo_root: str = "/home/runner/work/_codex_/_codex_"):
+    def __init__(self, repo_root: str = REPO_ROOT):
         self.repo_root = Path(repo_root)
         self.codex_dir = self.repo_root / ".codex"
         self.metrics_file = self.codex_dir / "PHASE_7A_WAVE2_DAILY_METRICS.md"

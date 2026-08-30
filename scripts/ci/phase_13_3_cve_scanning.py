@@ -28,6 +28,8 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 from enum import Enum
 
 logger = logging.getLogger(__name__)
@@ -78,7 +80,7 @@ def scan_python_dependencies() -> CVEScanResult:
         # Try pip-audit
         result = subprocess.run(
             ["pip-audit", "--desc", "--format", "json"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             timeout=120
@@ -133,7 +135,7 @@ def scan_javascript_dependencies() -> CVEScanResult:
     findings = []
     
     # Check if package.json exists
-    package_json = Path("/home/runner/work/_codex_/_codex_/package.json")
+    package_json = REPO_ROOT / "package.json"
     if not package_json.exists():
         logger.info("   ⏭️  No package.json found, skipping npm audit")
         return CVEScanResult(0, 0, 0, {}, [], "success")
@@ -141,7 +143,7 @@ def scan_javascript_dependencies() -> CVEScanResult:
     try:
         result = subprocess.run(
             ["npm", "audit", "--json"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             timeout=120
@@ -193,7 +195,7 @@ def scan_rust_dependencies() -> CVEScanResult:
     findings = []
     
     # Check if Cargo.toml exists
-    cargo_toml = Path("/home/runner/work/_codex_/_codex_/Cargo.toml")
+    cargo_toml = REPO_ROOT / "Cargo.toml"
     if not cargo_toml.exists():
         logger.info("   ⏭️  No Cargo.toml found, skipping cargo audit")
         return CVEScanResult(0, 0, 0, {}, [], "success")
@@ -201,7 +203,7 @@ def scan_rust_dependencies() -> CVEScanResult:
     try:
         result = subprocess.run(
             ["cargo", "audit", "--json"],
-            cwd="/home/runner/work/_codex_/_codex_",
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             timeout=120
@@ -334,7 +336,7 @@ jobs:
             })
 """
     
-    workflow_path = Path("/home/runner/work/_codex_/_codex_/.github/workflows")
+    workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
     
     workflow_file = workflow_path / "13-3-cve-scanning.yml"

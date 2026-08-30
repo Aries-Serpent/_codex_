@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 env:
   COMPLIANCE_REPORT_DIR: .codex/reports/compliance
-  PII_PATTERNS_FILE: .semgrep/pii-patterns.yml
+  PII_PATTERNS_FILE: semgrep/pii-patterns.yml
   SECRET_PATTERNS_FILE: .gitleaks.toml
 jobs:
   pii_detection:

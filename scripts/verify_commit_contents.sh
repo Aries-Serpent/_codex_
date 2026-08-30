@@ -47,10 +47,10 @@ echo ""
 echo "🗂️  Verifying file locations..."
 WRONG_LOCATION=false
 while IFS= read -r file; do
-    # Check if important files are in temporary-like locations
-    if [[ "$file" =~ ^(tmp/|temp/|/tmp/|/var/tmp/) ]]; then
+    # Check if important files are in temporary-like or legacy root-report locations
+    if [[ "$file" =~ ^(tmp/|temp/|/tmp/|/var/tmp/|\.reports/|reports/|_codex_reports/) ]]; then
         echo "❌ WRONG LOCATION: $file"
-        echo "   → Should be in: .codex/, docs/, reports/, or artifacts/"
+        echo "   → Should be in: .codex/, docs/, docs/archive/, or artifacts/"
         WRONG_LOCATION=true
     fi
 done <<< "$STAGED_FILES"

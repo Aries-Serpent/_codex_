@@ -47,13 +47,15 @@ def main(argv=None) -> int:
         description="Merge rate-limit snapshot into today's status report under automation.connectors"
     )
     ap.add_argument(
-        "--report", default=f"reports/daily/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
+        "--report",
+        default=f".codex/reports/daily/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json",
     )
     ap.add_argument("--snapshot", default="connectors/ratelimit_snapshot.json")
     args = ap.parse_args(argv)
 
     report_p = Path(args.report)
     snap_p = Path(args.snapshot)
+    report_p.parent.mkdir(parents=True, exist_ok=True)
     if not report_p.exists():
         print(f"[WARN] Report missing: {report_p}")
         return 0

@@ -37,7 +37,7 @@ All work products MUST be stored in the repository proper locations:
 ✅ CORRECT Locations:
 - .github/copilot-prompts/active/     → Follow-up prompts
 - docs/                               → Documentation
-- misc/repo-owner-review/             → Files pending owner review
+- .codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/ → Canonical owner-review archive location (legacy root alias kept only for compatibility)
 - artifacts/                          → Generated artifacts
 - reports/                            → Analysis reports
 - patches/                            → Patches and fixes
@@ -182,7 +182,7 @@ When creating any content that represents work:
 
 ## 📚 Related Policies
 
-- **File Removal Policy**: `misc/repo-owner-review/README.md`
+- **File Removal Policy**: `.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/README.md` (legacy root alias is compatibility-only)
 - **Archive Management**: `docs/guides/codex_archive_runbook.md`  
 - **Repository Structure**: `.github/AGENTS_FILE_STRUCTURE.md`
 - **Contribution Guidelines**: `CONTRIBUTING.md`

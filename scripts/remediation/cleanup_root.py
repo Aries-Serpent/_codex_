@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 # Anchor to repo root based on script location
 ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_DIR = ROOT / "reports" / "archive"
+ARCHIVE_DIR = ROOT / ".codex" / "reports" / "archive"
 
 
 def find_root_matches(patterns):

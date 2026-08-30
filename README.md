@@ -31,6 +31,9 @@ compatibility or bridge surfaces unless `pyproject.toml` explicitly maps them.
 `docs/` is the human guidance layer; `.codex/` and `.github/workflows/` hold
 operational intelligence and governance.
 
+For the canonical classification of active, historical, and compatibility-only
+documentation and archive roots, see [docs/DOCUMENTATION_SOURCE_OF_TRUTH.md](docs/DOCUMENTATION_SOURCE_OF_TRUTH.md).
+
 ## Runtime policy (source of truth)
 
 The active runtime baseline for this repository is Node.js 22. The live package manifests
@@ -42,6 +45,22 @@ that resolves to 22.
 Node.js 20 references are historical and archival only; they appear in disabled or
 archived workflow copies and are not active project policy unless a workflow is
 explicitly re-enabled.
+
+## Repository hygiene and archival policy
+
+The repository root is reserved for active repo metadata and current workflow inputs.
+Historical phase summaries, validation dumps, PR reports, and transient artifacts are
+kept in `docs/archive/` instead of the root unless they are still directly referenced
+by an active workflow or release checklist.
+
+Active metadata includes `README.md`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`,
+`CODEX_MANIFEST.json`, `pyproject.toml`, `package.json`, `requirements*.txt`,
+`.codex/`, `.github/workflows/`, and the canonical docs under `docs/`.
+
+Historical file families such as `PHASE_*`, `WEC_*`, `TIMEOUT_*`, `WORKFLOW_*`,
+`VALIDATION_SUMMARY*`, `validation_summary.json`, `workflow-*.json`, `telemetry_report.json`,
+`semgrep-*.json`, and `*_draft.md` should be archived or removed once superseded.
+See `docs/archive/README.md` for the retention and deletion policy.
 
 ---
 ## High-Level Architecture
@@ -153,7 +172,7 @@ python scripts/ci/auto_fix_common_issues.py
 ### Documentation
 - **System Overview:** [`.codex/docs/CI_AUTO_FIX_SYSTEM.md`](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
 - **Pattern Library:** [`.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md`](.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md)
-- **workflow:** [`.github/workflows/auto-fix-common-issues.yml`](.github/workflows/auto-fix-common-issues.yml)
+- **workflow:** [`.github/workflows/auto-fix-common-issues.yml.disabled`](.github/workflows/auto-fix-common-issues.yml.disabled)
 ### Benefits
 **Before:** Manual detection across 500+ test files, 2-4 hours per PR
 **After:** Automatic detection in <30 seconds, 15-30 minutes per PR
@@ -933,14 +952,14 @@ python3 scripts/catalog_workflows.py
 - [workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
 - [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) - Detailed agent documentation
 ### Monitoring
-- **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.yml)
+- **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.md)
 - **Manual**: Run `bash scripts/validate_ci_health.sh`
 - **Trends**: Check workflow-trends artifacts in Actions
 ### Support
 For issues or questions about workflow management:
 1. Check [FINAL_CONSOLIDATION_REPORT.md](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
 2. Review [CONSOLIDATION_STATUS.md](.github/workflow-archive/CONSOLIDATION_STATUS.md)
-3. Use [workflow Restore Tool](.github/workflows/workflow-restore.yml)
+3. Use [workflow Restore Tool](.github/workflows/workflow-restore.md)
 4. Contact maintainers via issues
 ---
 ---
