@@ -17,7 +17,7 @@ registries:
     type: git
     url: https://github.com
     username: x-access-token
-    token: ${{ secrets.GITHUB_TOKEN }}
+    password: ${{ secrets.GITHUB_TOKEN }}
 updates:
   # GitHub Actions - Monitor workflow dependencies
   - package-ecosystem: "github-actions"
