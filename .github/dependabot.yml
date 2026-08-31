@@ -6,6 +6,10 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+    ignore:
+      - dependency-name: "github/codeql-action/upload-sarif"
+        versions:
+          - ">= 4.0.0"
     groups:
       all-dependencies:
         patterns:
