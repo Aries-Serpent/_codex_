@@ -36,7 +36,7 @@ pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 # Async Runtime & Parallelism
 tokio = { version = "1.36", features = ["full", "tracing"] }
 rayon = "1.8.1"  # For CPU-bound data preprocessing
-dashmap = "5.5.3"  # Concurrent hash map for swarm state aggregation
+dashmap = "6.2.1"  # Concurrent hash map for swarm state aggregation
 
 # Data Serialization & Compression
 serde = { version = "1.0.197", features = ["derive"] }
@@ -53,10 +53,10 @@ tracing = "0.1.40"  # High-performance instrumentation
 tracing-subscriber = "0.3.18"
 
 [build-dependencies]
-pyo3-build-config = "0.24.1"
+pyo3-build-config = "0.29.2"
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 
 [[bench]]
 name = "swarm_benchmarks"
