@@ -1,31 +1,31 @@
-typer>=0.12
-cryptography>=50.0.0,<51.0.0  # Security: Phase 5 Track 2 - Updated to fix GHSA-537c-gmf6-5ccf (OpenSSL vulnerability in wheels <48.0.1)
+typer>=0.27.1
+cryptography>=50.0.1,<51.0.0  # Security: Phase 5 Track 2 - Updated to fix GHSA-537c-gmf6-5ccf (OpenSSL vulnerability in wheels <48.0.1)
 PyJWT>=2.14.0,<3.0.0  # Security: Phase 14 WS1 - Updated to fix PYSEC-2026-120 (PyJWT <2.12.0 has JWT validation bypass)
-wheel>=0.46.2  # Security: Phase 9 Lane 2 - Updated to fix CVE-2026-24049 (path traversal in wheel.cli.unpack)
-PyNaCl>=1.5.0,<2.0.0  # Security: Cryptographic library
-pyOpenSSL>=26.0.0,<27.0.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-27448/27459 (pyOpenSSL <26.0.0 has vulnerabilities)
+wheel>=0.48.0  # Security: Phase 9 Lane 2 - Updated to fix CVE-2026-24049 (path traversal in wheel.cli.unpack)
+PyNaCl>=1.6.2,<2.0.0  # Security: Cryptographic library
+pyOpenSSL>=26.4.0,<27.0.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-27448/27459 (pyOpenSSL <26.0.0 has vulnerabilities)
 jsonschema>=4.26.0
-psutil>=5.9; platform_system != "Windows"  # optional sys-metrics
+psutil>=7.2.2; platform_system != "Windows"  # optional sys-metrics
 tomli>=2.0; python_version < "3.11"
 pytest>=9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required
 pytest-cov==7.1.0
 pytest-xdist>=3.5.0,<4.0.0
-nox>=2026.4.10,<2027  # Pinned for reproducibility
-numpy>=2.4.6,<3
+nox>=2026.8.17,<2027  # Pinned for reproducibility
+numpy>=2.5.2,<3
 # Pin torch to stable CPU-only versions to avoid pulling CUDA/NVIDIA stacks during P0.
 # - torchvision/torchaudio compatibility matrix
 # - Dependabot update failures on bleeding edge versions
 # Security: Updated to >=2.6.1 to fix CVE-2024-XXXXX (RCE in torch.load with weights_only=True)
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch>=2.6.1,<3.0.0; sys_platform == "linux" or sys_platform == "darwin"  # CPU-only for Linux/macOS
-transformers>=5.12.1,<6  # Security: Updated from 4.41 to fix deserialization vulnerabilities
+transformers>=5.16.1,<6  # Security: Updated from 4.41 to fix deserialization vulnerabilities
 # Security: XML parsing protection against XXE attacks
 defusedxml>=0.7.1,<1.0.0
 pyyaml>=6.0
 # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
 jinja2>=3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201, CVE-2024-XXXXX, CVE-2024-YYYYY (RCE via sandbox escape, template injection)
-certifi>=2026.6.17  # Security: Fixes CVE-2024-39689 (root cert trust issue)
-filelock>=3.29.0  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
-idna>=3.18  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
+certifi>=2026.7.22  # Security: Fixes CVE-2024-39689 (root cert trust issue)
+filelock>=3.32.4  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
+idna>=3.19  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
 urllib3>=2.7.0  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
 requests>=2.33.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-25645 (requests <2.33.0 has TLS bypass vulnerability)

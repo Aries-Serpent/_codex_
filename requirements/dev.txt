@@ -1,30 +1,30 @@
 # BEGIN: CODEX_DEV_REQUIREMENTS
 black==26.5.1  # Code formatter (pinned for consistency)
-isort==5.13.2  # Import sorting (pinned for consistency)
+isort==9.0.1  # Import sorting (pinned for consistency)
 flake8==7.3.0  # Linting (pinned for consistency)
 mypy==2.3.1  # Type checking (pinned for strictness)
 pytest>=9.0.3,<10.0.0  # CVE-2025-71176 fix
 pytest-randomly>=4.0
 pytest-cov==7.1.0
 tensorboard>=2.14
-bandit==1.7.5  # Security scanning (pinned for consistency)
+bandit==1.9.4  # Security scanning (pinned for consistency)
 defusedxml==0.7.1  # XML parsing hardening (pinned)
 semgrep==1.175.0  # SAST (pinned for rule consistency)
-detect-secrets==1.4.0  # Secrets detection (pinned)
+detect-secrets==1.5.0  # Secrets detection (pinned)
 pre-commit==4.6.2
-nox==2026.7.11  # Pinned for reproducibility
-yamllint==1.26.3  # YAML validation (pinned)
-jsonschema>=4.25.1,<4.26.0
+nox==2026.8.17  # Pinned for reproducibility
+yamllint==1.38.0  # YAML validation (pinned)
+jsonschema>=4.26.0,<4.27.0
 shellcheck-py==0.11.0.1  # Shell script linting (pinned)
 pip-audit==2.10.1  # Dependency audit (pinned)
 cyclonedx-bom>=7.3.0
-pandas>=2.2.3,<3.0.0  # Pinned within MLflow-compatible range
-pyarrow==16.1.0  # Data science (pinned)
-zstandard==0.23.0  # Compression (pinned)
+pandas>=3.0.5,<4.0.0  # Pinned within MLflow-compatible range
+pyarrow==25.0.1  # Data science (pinned)
+zstandard==0.25.0  # Compression (pinned)
 mlflow>=3.15.2  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal) fixed in 3.11.0
-slowapi>=0.1.9
-types-PyYAML==6.0.12.20260724  # Type stub (pinned)
-types-requests==2.31.0.10  # Type stub (pinned)
+slowapi>=0.1.10
+types-PyYAML==6.0.12.20260815  # Type stub (pinned)
+types-requests==2.33.0.20260712  # Type stub (pinned)
 tenacity>=9.1.4,<10
 # END: CODEX_DEV_REQUIREMENTS
 # Optional: Playwright for browser-based alert scraping (scripts/security/playwright_scraper.py)

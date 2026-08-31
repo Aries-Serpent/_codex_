@@ -3,19 +3,19 @@
 # Used by: .github/workflows/pages-mkdocs.yml
 
 # Core MkDocs and theme
-mkdocs>=1.5.0
-mkdocs-material>=9.4.14
+mkdocs>=1.6.1
+mkdocs-material>=9.7.7
 
 # Extensions for enhanced markdown processing
-pymdown-extensions>=11.0.1
+pymdown-extensions>=11.0.2
 python-markdown-math>=0.9
 
 # Mermaid diagram support
-mkdocs-mermaid2-plugin>=0.6.0
+mkdocs-mermaid2-plugin>=1.2.3
 
 # Code syntax highlighting
-Pygments>=2.15.1
+Pygments>=2.21.0
 
 # Additional features
 mkdocs-macros-plugin>=1.5.0
-mkdocs-include-markdown-plugin>=6.0.0
+mkdocs-include-markdown-plugin>=7.3.0

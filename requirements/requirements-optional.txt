@@ -7,20 +7,20 @@
 # Or selectively: pip install nltk rouge-score sacrebleu
 
 # Generative metrics (BLEU, ROUGE)
-nltk>=3.9.3  # Security: Fixes CVE-2025-14009 (ZIP extraction RCE), path traversal in corpus readers
+nltk>=3.10.3  # Security: Fixes CVE-2025-14009 (ZIP extraction RCE), path traversal in corpus readers
 rouge-score>=0.1.2
 sacrebleu>=2.6.0
 
 # LoRA/PEFT adapters
-peft>=0.19.1,<1
+peft>=0.20.0,<1
 accelerate>=1.14.0,<2
 
 # Distributed training
 torch-distributed>=2.0.0  # Usually bundled with pytorch
 
 # Advanced model features
-transformers>=5.12.1,<6  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
-sentencepiece>=0.1.99
+transformers>=5.16.1,<6  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
+sentencepiece>=0.2.2
 
 # Vector stores (stubbed - see docs/data/VectorStores.md)
 # pgvector  # Uncomment if using PostgreSQL vector store
@@ -28,7 +28,7 @@ sentencepiece>=0.1.99
 
 # Monitoring and tracking
 tensorboard>=2.13.0
-wandb>=0.15.0
+wandb>=0.29.0
 opentelemetry-sdk>=1.44.0
 
 # Security: IP-005 dependency updates

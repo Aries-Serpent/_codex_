@@ -24,15 +24,15 @@ playwright>=1.62.0
 
 # Security: Critical build tools updates
 setuptools>=78.1.1  # CVE-2024-ZZZZZ, CVE-2024-WWWWW path traversal/injection fixes
-wheel>=0.46.2  # CVE-2024-UUUUU path traversal fix
+wheel>=0.48.0  # CVE-2024-UUUUU path traversal fix
 PyJWT>=2.13.0,<3.0.0  # CVE header validation fix
 urllib3>=2.7.0  # CVE-2024-37891, CVE-2025-50181 proxy/redirect fixes
-idna>=3.18  # CVE-2024-3651 DoS fix
+idna>=3.19  # CVE-2024-3651 DoS fix
 pyasn1>=0.6.3  # CVE recursion DoS fix
-certifi>=2026.6.17  # CVE-2024-39689 cert trust fix
+certifi>=2026.7.22  # CVE-2024-39689 cert trust fix
 jinja2>=3.1.6  # CVE-2024-56326, CVE-2024-56201 RCE fixes
 requests>=2.34.2  # CVE-2024-35195, CVE-2024-47081 TLS/credential fixes
-filelock>=3.29.0  # CVE-2025-68146, CVE-2026-22701 TOCTOU fixes
-nltk>=3.9.3  # CVE-2025-14009 path traversal fix
+filelock>=3.32.4  # CVE-2025-68146, CVE-2026-22701 TOCTOU fixes
+nltk>=3.10.3  # CVE-2025-14009 path traversal fix
 twisted>=24.7.0  # CVE-2024-41810, CVE-2024-41671 XSS fixes
 configobj>=5.0.9  # CVE-2023-26112 ReDoS fix
