@@ -1,3 +1,30 @@
+## Session: 2026-08-31T04:13:48Z — PR #5567 workflow governance + wrap-up compliance follow-up
+
+**Objective:** Close the remaining branch-level governance drift for PR #5567 by refreshing the active session accountability metadata and ensuring the final wrap-up evidence reflects the current PR, PDA log, and changelog state.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Verified the WEC block in the live PR body matches the canonical repository contract and preserves the currently selected maintainer checks.
+2. Re-ran the self-healing session-wrapup gate and refreshed the active PR's accountability metadata so the latest branch state is captured in the final session evidence.
+3. Synced the day-stamped PDA log and current governance metadata with the final branch state so the active session shows the correct PR #5567 evidence trail.
+
+**Validation:**
+- `python3 scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number 5567` → emits the canonical active workflow block with sticky maintainer-state handling preserved.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5567` → passes after the final governance metadata refresh is in place.
+
+**Governance:**
+- REQ-4: This report refreshed for PR #5567 in the active session.
+- REQ-5: Root `CHANGELOG.md` refreshed under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current entry for 2026-08-31.
+
+### Agents Used
+- [x] `ci-testing-agent`
+- [x] `ci-auto-healer-agent`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-08-29T04:00:00Z — PR #5560 live workflow gate contract alignment
 
 **Objective:** Resolve the live GitHub `action_required` / zero-job gate by aligning the canonical WEC contract with the active workflow baseline and preserving the current maintainer grant selections.

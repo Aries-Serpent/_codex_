@@ -1,66 +1,23 @@
-# Dependabot configuration for automated dependency updates
-# Consolidation enforcement: see .github/workflows/dependabot-consolidation.yml
-#
-# Corrected to reduce update_graph unknown_error risk and keep behavior stable.
-#
-# Remediation context (run 31061088340):
-# - Dependabot CLI/proxy must authenticate to github.com for metadata.
-# - The registry below supplies a token so public/private action refs resolve.
-# - If a CI step invokes Dependabot and tries to sign commits, ensure the
-#   signing binary exists OR disable commit signing for that step.
-# - Long-running Node agents should set NODE_OPTIONS="--max-old-space-size=8192"
-#   to reduce SIGABRT risk from heap exhaustion.
-
 version: 2
-registries:
-  github-actions:
-    type: git
-    url: https://github.com
-    username: x-access-token
-    password: ${{ secrets.GITHUB_TOKEN }}
 updates:
-  # GitHub Actions - Monitor workflow dependencies
   - package-ecosystem: "github-actions"
-    directories:
-      - "/"
-    # Ignore generated/archive content; only active project manifests should trigger updates.
-    exclude-paths:
-      - "/.codex/**"
-    registries:
-      - github-actions
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "github-actions"
-    commit-message:
-      prefix: "ci"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
-    directories:
-      - "/"
-    exclude-paths:
-      - "/.codex/**"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "python"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    # Keep ignore rules that are clearly intentional and low-risk
     ignore:
       - dependency-name: "nbconvert"
         versions:
@@ -68,103 +25,54 @@ updates:
       - dependency-name: "torch"
         versions:
           - ">= 2.3.0"
-    # Consolidate every Python dependency into a single grouped PR
     groups:
       python-all:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # Docker - Monitor base images (if using Dockerfile)
   - package-ecosystem: "docker"
-    directories:
-      - "/"
-    exclude-paths:
-      - "/.codex/**"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "tuesday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "docker"
-    commit-message:
-      prefix: "docker"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # npm - Monitor JavaScript/TypeScript dependencies in app workspaces.
-  # Keep each ecosystem's directory set non-overlapping; Dependabot rejects
-  # same-ecosystem entries whose paths overlap (for example "/" and "/foo").
-
-  # npm - Monitor cognitive_app JavaScript/TypeScript dependencies
-  # (consolidated here; cognitive_app/.github/dependabot.yml was not
-  # discovered by GitHub Dependabot since only the repo-root
-  # .github/dependabot.yml is read for a single, non-submodule repo)
   - package-ecosystem: "npm"
-    directories:
-      - "/cognitive_app"
-    exclude-paths:
-      - "/.codex/**"
+    directory: "/cognitive_app"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "javascript"
-      - "cognitive-app"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # npm - Monitor copilot/extension JavaScript/TypeScript dependencies
   - package-ecosystem: "npm"
-    directories:
-      - "/copilot/extension"
-    exclude-paths:
-      - "/.codex/**"
+    directory: "/copilot/extension"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "javascript"
-      - "copilot-extension"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # Cargo - Monitor Rust workspace dependencies
   - package-ecosystem: "cargo"
-    directories:
-      - "/"
-    exclude-paths:
-      - "/.codex/**"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "rust"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:

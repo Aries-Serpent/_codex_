@@ -158,6 +158,13 @@ repos:
         always_run: true
         stages: [commit]
 
+      - id: validate-dependabot-config
+        name: Validate Dependabot config
+        entry: python scripts/ci/validate_dependabot_config.py
+        language: system
+        files: ^\.github/dependabot\.yml$
+        pass_filenames: false
+
       # AST Code Smell Detection
       - id: ast-smell-check
         name: AST Code Smell Check (error-level only)
