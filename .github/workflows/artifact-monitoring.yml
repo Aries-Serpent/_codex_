@@ -36,7 +36,7 @@ jobs:
 
         '
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: "RL-3b \u2014 Rate-limit pre-check"
@@ -73,7 +73,7 @@ jobs:
     - name: Download previous state
       if: env.RATE_LIMIT_OK != 'false'
       id: download_state
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         path: .codex/monitoring/state/
         name: monitor-state
@@ -99,7 +99,7 @@ jobs:
         \n"
     - name: Upload monitoring state
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: .codex/monitoring/state/
         retention-days: 90
@@ -128,7 +128,7 @@ jobs:
         \"))\"' >> $GITHUB_STEP_SUMMARY || true\n"
     - name: Notify on failure
       if: failure()
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         script: "const issue_body = `## \u26A0\uFE0F Artifact Monitoring Workflow\
           \ Failed\n\nThe automated artifact monitoring workflow has failed.\n\n**Run**:\

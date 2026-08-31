@@ -116,7 +116,7 @@ jobs:
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -157,7 +157,7 @@ jobs:
         \  echo \"gap_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload audit results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/audit/*.json
 
@@ -323,7 +323,7 @@ jobs:
         \  --run-url    \"${RUN_URL}\"\n"
     - name: Upload QA results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/qa/*.json
 
@@ -362,7 +362,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Generate improvement PR
@@ -425,7 +425,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

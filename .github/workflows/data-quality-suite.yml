@@ -64,7 +64,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Python
@@ -106,7 +106,7 @@ jobs:
         \nfi\n"
     - name: Upload validation results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'reports/validation/*.json
 
@@ -131,7 +131,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Free disk space for CI
@@ -291,7 +291,7 @@ jobs:
         \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'determinism_pass1.log
 
@@ -318,7 +318,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Python
@@ -348,7 +348,7 @@ jobs:
         '
     - name: Upload DVC status artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: workbench/evidence/dvc_status.json
         if-no-files-found: ignore
@@ -427,7 +427,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

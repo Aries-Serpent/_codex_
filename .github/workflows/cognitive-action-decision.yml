@@ -56,7 +56,7 @@ jobs:
       task_file: ${{ steps.decide.outputs.task_file }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -90,7 +90,7 @@ jobs:
         fi\n"
     - name: Upload decision artifacts
       if: steps.decide.outputs.has_decisions == 'true'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'cognitive/decisions/*.json
 
@@ -115,7 +115,7 @@ jobs:
       \ == 'true')\n"
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -127,7 +127,7 @@ jobs:
         cache-tier: common
     - name: Download decision artifacts (if from decision job)
       if: needs.decision_engine.outputs.has_decisions == 'true'
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         path: cognitive/decisions/
         name: cognitive-decisions-${{ github.run_number }}
@@ -146,7 +146,7 @@ jobs:
         \  echo \"Action executor script not found\"\n  exit 0\nfi\n"
     - name: Upload execution results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'cognitive/execution/*.json
 

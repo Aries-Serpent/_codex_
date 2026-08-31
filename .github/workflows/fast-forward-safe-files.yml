@@ -58,7 +58,7 @@ jobs:
       plan_json: ${{ steps.classify.outputs.plan_json }}
     steps:
     - name: Checkout (scripts + allowlist only)
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
@@ -124,7 +124,7 @@ jobs:
     if: needs.preflight.outputs.allowed_count != '0'
     steps:
     - name: Checkout (scripts + allowlist only)
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
@@ -159,7 +159,7 @@ jobs:
         \ \"${MSG_FLAG[@]}\"\n"
     - name: Upload result artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: /tmp/ff_result.json
         retention-days: 30

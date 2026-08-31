@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow api-documentation

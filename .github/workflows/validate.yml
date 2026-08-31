@@ -62,7 +62,7 @@ jobs:
         }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -104,7 +104,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: failure()
       with:
         path: hook_failures.json
@@ -112,7 +112,7 @@ jobs:
         if-no-files-found: warn
         name: hook-failures-fast-${{ github.run_id }}
     - name: Upload validation log (fast)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation.log
@@ -120,7 +120,7 @@ jobs:
         if-no-files-found: warn
         name: validation-log-fast-${{ github.run_id }}
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation-junit.xml
@@ -128,7 +128,7 @@ jobs:
         if-no-files-found: warn
         name: validation-junit-fast-${{ github.run_id }}
     - name: Upload JSON summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation_summary.json
@@ -157,7 +157,7 @@ jobs:
         }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -199,7 +199,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -220,7 +220,7 @@ jobs:
       run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{
         github.run_id }}"
     - name: Upload hook failures JSON (OBJ-001-F)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: failure()
       with:
         path: hook_failures.json
@@ -228,7 +228,7 @@ jobs:
         if-no-files-found: warn
         name: hook-failures-full-${{ github.run_id }}
     - name: Upload validation log (full)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation.log
@@ -236,7 +236,7 @@ jobs:
         if-no-files-found: warn
         name: validation-log-full-${{ github.run_id }}
     - name: Upload JUnit XML
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation-junit.xml
@@ -244,7 +244,7 @@ jobs:
         if-no-files-found: warn
         name: validation-junit-full-${{ github.run_id }}
     - name: Upload coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: coverage.xml
@@ -265,7 +265,7 @@ jobs:
 
         '
     - name: Upload JSON summary
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: validation_summary.json
@@ -273,7 +273,7 @@ jobs:
         if-no-files-found: warn
         name: validation-summary-full-${{ github.run_id }}
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       if: always()
       with:
         files: ./coverage.xml

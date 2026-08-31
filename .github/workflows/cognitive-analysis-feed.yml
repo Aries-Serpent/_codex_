@@ -63,7 +63,7 @@ jobs:
       evaluation_complete: ${{ steps.evaluate.outputs.complete }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -120,7 +120,7 @@ jobs:
           }}
     - name: Upload evaluation results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'cognitive/evaluations/*.json
 
@@ -148,7 +148,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -204,7 +204,7 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
     - name: Upload pattern artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/cognitive_brain/patterns/*.json
 
@@ -227,7 +227,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 1

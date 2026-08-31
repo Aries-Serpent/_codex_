@@ -36,7 +36,7 @@ jobs:
         - 3.12.13
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Initialize with repository variables
@@ -87,7 +87,7 @@ jobs:
         \ not found at $(dirname \"$VENV_PYTHON\")\"\n  exit 1\nfi\necho \"[SETUP]\
         \ \u2713 venv directory verified at $(dirname \"$VENV_PYTHON\")\"\n"
     - name: Cache sentence-transformers models
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: ~/.cache/torch/sentence_transformers
         key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{
@@ -309,7 +309,7 @@ jobs:
         fi\n \necho \"[TEST-RUN] Final disk space:\"\ndf -h / | tail -1 | awk '{print\
         \ \"  Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n \nexit $TEST_EXIT\n"
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       if: always()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -318,7 +318,7 @@ jobs:
         fail_ci_if_error: false
         name: rag-coverage-${{ matrix.python-version }}
     - name: Upload HTML coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: htmlcov/
@@ -421,7 +421,7 @@ jobs:
         \ \u26A0\uFE0F  generate_cache_keys.py not found (skipping detailed check)\"\
         \nfi\n \necho \"[CACHE-HEALTH] \u2705 Cache health report complete\"\n"
     - name: Upload security report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: bandit-report.txt
@@ -447,7 +447,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
