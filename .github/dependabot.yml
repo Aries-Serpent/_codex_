@@ -49,6 +49,13 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+    ignore:
+      - dependency-name: "vite"
+        versions:
+          - ">= 8.0.0"
+      - dependency-name: "typescript"
+        versions:
+          - ">= 6.0.0"
     groups:
       all-dependencies:
         patterns:
