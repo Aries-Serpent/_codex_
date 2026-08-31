@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5567)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5567 (SHA `687b059080adc7387f74ded623447d8225d1a476`) at 2026-08-31T04:13:48Z [auto-generated]
+- Refresh: session-wrapup governance metadata for the active PR #5567 branch finalized at 2026-08-31T04:13:48Z, including the accountability report, root changelog, and session evidence refresh tied to the current workflow gate state. [auto-generated]
 
 ### Fixed (auto-update — PR #5559)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5559 (SHA `5830a83d73`) at 2026-08-29T05:42:00Z [auto-generated]
