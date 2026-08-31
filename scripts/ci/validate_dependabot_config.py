@@ -95,8 +95,14 @@ def validate_dependabot_config(document: Any) -> list[str]:
             parsed_limit = int(limit)
         except (TypeError, ValueError):
             parsed_limit = -1
-        if parsed_limit != 1:
-            errors.append(f"Update entry for {ecosystem} must set open-pull-requests-limit: 1.")
+
+        if parsed_limit not in {0, 1}:
+            errors.append(f"Update entry for {ecosystem} must set open-pull-requests-limit to either 0 or 1.")
+        elif parsed_limit == 0 and not isinstance(update.get("ignore"), list):
+            errors.append(
+                f"Update entry for {ecosystem} uses open-pull-requests-limit: 0 without an ignore block; "
+                "this is reserved for intentionally suppressing unnecessary update PRs."
+            )
 
         raw_directories: list[str] = []
         if "directories" in update:
