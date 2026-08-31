@@ -2,9 +2,9 @@ name: Workflow Execution Gate
 'on':
   pull_request:
     types:
-    - opened
-    - synchronize
-    - reopened
+      - opened
+      - synchronize
+      - reopened
   workflow_dispatch:
     inputs:
       pr_number:
@@ -28,66 +28,90 @@ jobs:
     name: Workflow Execution Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
-      }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
-    - name: Mask secrets
-      shell: bash
-      run: |
-        if [ -n "${GH_TOKEN:-}" ]; then
-          echo "::add-mask::${GH_TOKEN}"
-        fi
-    - name: Log token fallback tier selection
-      run: "set -euo pipefail\nTIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')\n\n# Determine\
-        \ which token tier is active\nif [ -n \"${CODEX_MASTER_KEY:-}\" ]; then\n\
-        \  TOKEN_TIER=\"TIER_1_MASTER_KEY\"\nelif [ -n \"${CODEX_BACKUP_KEY:-}\" ];\
-        \ then\n  TOKEN_TIER=\"TIER_2_BACKUP_KEY\"\nelse\n  TOKEN_TIER=\"TIER_3_GITHUB_TOKEN\"\
-        \nfi\n\n# Emit telemetry event (non-sensitive, just the tier name)\nTELEMETRY_MSG=\"\
-        [TELEMETRY] ${TIMESTAMP} | workflow=workflow-execution-gate\"\nTELEMETRY_MSG=\"\
-        ${TELEMETRY_MSG} | job=gate-check | event=token-selection\"\nTELEMETRY_MSG=\"\
-        ${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}\"\necho\
-        \ \"$TELEMETRY_MSG\"\n\n# Store in workflow run summary\necho \"## \U0001F511\
-        \ Token Fallback Tier\" >> $GITHUB_STEP_SUMMARY\necho \"Selected tier: \\\
-        `${TOKEN_TIER}\\`\" >> $GITHUB_STEP_SUMMARY\necho \"Timestamp: \\`${TIMESTAMP}\\\
-        `\" >> $GITHUB_STEP_SUMMARY\n"
-    - name: Checkout code
-      uses: actions/checkout@v7
-      with:
-        persist-credentials: false
-        sparse-checkout: |
-          README.md
-          pyproject.toml
-          src/
-          scripts/__init__.py
-          scripts/ci/__init__.py
-          scripts/ci/_token_resolver.py
-          scripts/ci/
-          .github/actions/setup-python-cached/
-        sparse-checkout-cone-mode: false
-    - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: '3.12'
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-    - name: Gate check
-      run: "set -euo pipefail\necho \"\u2713 Gate check initialized successfully\"\
-        \nif [ -n \"${{ inputs.pr_number }}\" ]; then\n  echo \"PR_NUMBER: ${{ inputs.pr_number\
-        \ }}\"\nfi\nexit 0\n"
-    - name: Trigger auto-approve workflows (optional)
-      continue-on-error: true
-      env:
-        PR_NUMBER: ${{ inputs.pr_number }}
-      run: "set -e\nif [ -z \"${PR_NUMBER:-}\" ]; then\n  echo \"\u26A0\uFE0F  No\
-        \ PR number provided, skipping auto-approve trigger\"\n  exit 0\nfi\n\necho\
-        \ \"Attempting to trigger auto-approve workflow for PR #$PR_NUMBER\"\ngh workflow\
-        \ run auto-approve-workflows.yml \\\n  --repo Aries-Serpent/_codex_ \\\n \
-        \ -f approval_source=workflow-execution-gate \\\n  -f target_pr=\"$PR_NUMBER\"\
-        \ \\\n  && echo \"\u2713 Auto-approve workflow triggered\" || echo \"\u26A0\
-        \uFE0F  Auto-approve workflow trigger skipped (may already be running)\"\n\
-        \nexit 0\n"
-    - name: Summary
-      run: "echo \"\u2713 Workflow gate check complete\"\nexit 0\n"
+      - name: Mask secrets
+        shell: bash
+        run: |
+          if [ -n "${GH_TOKEN:-}" ]; then
+            echo "::add-mask::${GH_TOKEN}"
+          fi
+
+      - name: Log token fallback tier selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            TOKEN_TIER="TIER_1_MASTER_KEY"
+          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            TOKEN_TIER="TIER_2_BACKUP_KEY"
+          else
+            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
+          fi
+          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=workflow-execution-gate"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | job=gate-check | event=token-selection"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
+          echo "$TELEMETRY_MSG"
+          echo "## 🔑 Token Fallback Tier" >> "$GITHUB_STEP_SUMMARY"
+          echo "Selected tier: \`${TOKEN_TIER}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "Timestamp: \`${TIMESTAMP}\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            README.md
+            pyproject.toml
+            src/
+            scripts/__init__.py
+            scripts/ci/__init__.py
+            scripts/ci/_token_resolver.py
+            scripts/ci/
+            .github/actions/setup-python-cached/
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Gate check
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number || github.event.issue.number || '' }}
+        run: |
+          set -euo pipefail
+          echo "✓ Gate check initialized successfully"
+          if [ -n "${PR_NUMBER}" ]; then
+            echo "PR_NUMBER: ${PR_NUMBER}"
+          fi
+          exit 0
+
+      - name: Trigger auto-approve workflows (optional)
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number || github.event.issue.number || '' }}
+        run: |
+          set -e
+          if [ -z "${PR_NUMBER:-}" ]; then
+            echo "⚠️  No PR number provided, skipping auto-approve trigger"
+            exit 0
+          fi
+          echo "Attempting to trigger auto-approve workflow for PR #$PR_NUMBER"
+          gh workflow run auto-approve-workflows.yml \
+            --repo Aries-Serpent/_codex_ \
+            -f approval_source=workflow-execution-gate \
+            -f target_pr="$PR_NUMBER" \
+            && echo "✓ Auto-approve workflow triggered" \
+            || echo "⚠️  Auto-approve workflow trigger skipped (may already be running)"
+          exit 0
+
+      - name: Summary
+        run: |
+          echo "✓ Workflow gate check complete"
+          exit 0

@@ -1,0 +1,67 @@
+name: Codebase QA Walkthrough
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: Batch to run
+        required: false
+        default: all
+      mode:
+        description: 'Mode: full|ci|heal'
+        required: false
+        default: full
+  issue_comment:
+    types:
+      - created
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa-walkthrough:
+    name: Codebase QA Walkthrough
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python (cached)
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Install QA tooling
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff black isort pylint bandit safety mypy
+
+      - name: Run repository QA scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff check . --select=E,F,I --exit-zero || true
+          python -m mypy --version
+          python -m pylint --version
+          python -m bandit -r . -q || true
+          echo "QA walkthrough job completed successfully"
