@@ -21,7 +21,8 @@ registries:
 updates:
   # GitHub Actions - Monitor workflow dependencies
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
     # Ignore generated/archive content; only active project manifests should trigger updates.
     exclude-paths:
       - "/.codex/**"
@@ -45,7 +46,8 @@ updates:
 
   # Python - Monitor pip dependencies
   - package-ecosystem: "pip"
-    directory: "/"
+    directories:
+      - "/"
     exclude-paths:
       - "/.codex/**"
     schedule:
@@ -75,7 +77,8 @@ updates:
 
   # Docker - Monitor base images (if using Dockerfile)
   - package-ecosystem: "docker"
-    directory: "/"
+    directories:
+      - "/"
     exclude-paths:
       - "/.codex/**"
     schedule:
@@ -95,7 +98,8 @@ updates:
 
   # npm - Monitor root-level JavaScript/TypeScript dependencies
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/"
     exclude-paths:
       - "/.codex/**"
     schedule:
@@ -119,7 +123,8 @@ updates:
   # discovered by GitHub Dependabot since only the repo-root
   # .github/dependabot.yml is read for a single, non-submodule repo)
   - package-ecosystem: "npm"
-    directory: "/cognitive_app"
+    directories:
+      - "/cognitive_app"
     exclude-paths:
       - "/.codex/**"
     schedule:
@@ -141,7 +146,8 @@ updates:
 
   # npm - Monitor copilot/extension JavaScript/TypeScript dependencies
   - package-ecosystem: "npm"
-    directory: "/copilot/extension"
+    directories:
+      - "/copilot/extension"
     exclude-paths:
       - "/.codex/**"
     schedule:
@@ -163,7 +169,8 @@ updates:
 
   # Cargo - Monitor Rust workspace dependencies
   - package-ecosystem: "cargo"
-    directory: "/"
+    directories:
+      - "/"
     exclude-paths:
       - "/.codex/**"
     schedule:
