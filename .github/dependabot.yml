@@ -1,49 +1,23 @@
-# Dependabot configuration for automated dependency updates.
-# Keep the root config minimal and schema-safe: no custom registries and no
-# overlapping directories for the same package ecosystem.
-#
-# GitHub only reads the repo-root .github/dependabot.yml for a single repos
-# checkout. Keep update scopes limited to active workspace roots instead of
-# broad root-level overlap that triggers validation failures.
-
 version: 2
 updates:
-  # GitHub Actions - Monitor workflow dependencies.
   - package-ecosystem: "github-actions"
     directory: "/"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "github-actions"
-    commit-message:
-      prefix: "ci"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # Python - Monitor pip dependencies.
   - package-ecosystem: "pip"
     directory: "/"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "python"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     ignore:
       - dependency-name: "nbconvert"
         versions:
@@ -57,85 +31,48 @@ updates:
           - "*"
     open-pull-requests-limit: 1
 
-  # Docker - Monitor base images.
   - package-ecosystem: "docker"
     directory: "/"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "tuesday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "docker"
-    commit-message:
-      prefix: "docker"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # npm - Monitor cognitive_app workspace dependencies.
   - package-ecosystem: "npm"
     directory: "/cognitive_app"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "javascript"
-      - "cognitive-app"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # npm - Monitor copilot/extension workspace dependencies.
   - package-ecosystem: "npm"
     directory: "/copilot/extension"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "javascript"
-      - "copilot-extension"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:
           - "*"
     open-pull-requests-limit: 1
 
-  # Cargo - Monitor Rust workspace dependencies.
   - package-ecosystem: "cargo"
     directory: "/"
-    exclude-paths:
-      - "/.codex/**"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "rust"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
     groups:
       all-dependencies:
         patterns:

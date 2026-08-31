@@ -1,0 +1,67 @@
+name: Dependabot PR Consolidation
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: Base branch to consolidate against
+        required: false
+        default: main
+        type: string
+      dry_run:
+        description: Preview only; do not push or close PRs
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependabot-consolidation
+  cancel-in-progress: false
+
+jobs:
+  consolidate:
+    name: Consolidate open Dependabot PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Consolidate Dependabot PRs
+        env:
+          BASE_BRANCH: ${{ github.event.inputs.base_branch || 'main' }}
+        run: |
+          set -euo pipefail
+
+          DRY_FLAG=""
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            DRY_FLAG="--dry-run"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            DRY_FLAG="--dry-run"
+          fi
+
+          echo "Base branch: ${BASE_BRANCH}"
+          if [ -n "${DRY_FLAG}" ]; then
+            echo "Running in dry-run mode"
+          fi
+
+          python scripts/ci/dependabot_consolidator.py --base-branch "${BASE_BRANCH}" ${DRY_FLAG}
