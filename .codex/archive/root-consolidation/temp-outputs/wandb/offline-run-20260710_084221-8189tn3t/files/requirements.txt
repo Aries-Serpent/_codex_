@@ -25,7 +25,7 @@ nvidia-cusparselt-cu13==0.8.1
 tree-sitter-yaml==0.7.2
 evidently==0.7.21
 tree-sitter-python==0.25.0
-mlflow==3.15.0
+mlflow==3.15.2
 typing-inspection==0.4.2
 lm_eval==0.4.12
 nvidia-cusolver==12.0.4.66
@@ -263,7 +263,7 @@ mmh3==5.2.1
 smmap==5.0.3
 prometheus_client==0.25.0
 opencensus==0.11.4
-GitPython==3.1.58
+GitPython==3.1.61
 transformers==5.13.0
 humanize==4.16.0
 ujson==5.13.0
@@ -403,7 +403,7 @@ ubuntu-pro-client==8001
 urllib3==2.0.7
 cloud-init==26.1
 wheel==0.48.0
-pip==26.1.2
+pip==26.2.1
 WALinuxAgent==2.15.0.1
 ptyprocess==0.7.0
 ufw==0.36.2
