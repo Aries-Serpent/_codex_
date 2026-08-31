@@ -51,7 +51,7 @@ jobs:
     name: Semgrep Security Analysis
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Set up Python with caching
@@ -278,7 +278,7 @@ jobs:
         fi
 
     - name: Upload SARIF to GitHub Security
-      uses: github/codeql-action/upload-sarif@5ba2889ada762081db2c4f32a729827dce632c7b
+      uses: github/codeql-action/upload-sarif@6f5948dfacef28e207b48d0905cf90c03365536d
       if: always() && hashFiles('semgrep.sarif') != ''
       with:
         sarif_file: semgrep.sarif

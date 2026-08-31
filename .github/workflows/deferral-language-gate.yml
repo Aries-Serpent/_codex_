@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
     - name: "\U0001F4E5 Checkout"
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: "\U0001F5C2\uFE0F Pre-create pip cache dir"
@@ -138,7 +138,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN

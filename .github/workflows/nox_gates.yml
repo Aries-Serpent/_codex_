@@ -36,7 +36,7 @@ jobs:
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Python
@@ -87,7 +87,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Trigger auto-approve-workflows
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REF_NAME: ${{ github.head_ref || github.ref }}

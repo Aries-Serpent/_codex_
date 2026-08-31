@@ -61,7 +61,7 @@ jobs:
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Set up Python
@@ -105,7 +105,7 @@ jobs:
         \n"
     - name: Post cost proposal to PR (grouped)
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       env:
         PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
         WORKFLOW_NAME: ${{ inputs.workflow_name }}
@@ -205,7 +205,7 @@ jobs:
     - name: "RED \u2014 poll PR for stakeholder checkbox approval"
       id: red_poll
       if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         script: "// Guard: ensure we have a valid PR number before polling.\n// context.issue.number\
           \ is undefined on push events; cost-gate already\n// short-circuits those\
@@ -269,7 +269,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.GH_TOKEN || github.token }}

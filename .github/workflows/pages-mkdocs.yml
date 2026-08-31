@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -40,13 +40,13 @@ jobs:
         python-version: 3.12.13
         cache-tier: common
     - name: Set up Node.js 22
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v7
       with:
         node-version: '22'
         cache: npm
         cache-dependency-path: cognitive_app/package-lock.json
     - name: Cache MkDocs plugins
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: '~/.cache/pip
 
@@ -59,7 +59,7 @@ jobs:
 
           '
     - name: Cache built site
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: site/
         key: ${{ runner.os }}-site-${{ github.sha }}
@@ -199,7 +199,7 @@ jobs:
 
         '
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+      uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
       with:
         path: site/
     env:

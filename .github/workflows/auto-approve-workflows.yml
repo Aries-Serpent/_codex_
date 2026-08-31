@@ -106,7 +106,7 @@ jobs:
 
         '
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -163,7 +163,7 @@ jobs:
       should_proceed: ${{ steps.evaluate.outputs.should_proceed }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -360,7 +360,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Resolve token chain (Tier 1-4 with fallbacks)
@@ -517,7 +517,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Publish metrics to artifact
@@ -564,7 +564,7 @@ jobs:
     steps:
     - name: Generate Cognitive Brain App token
       id: app-token
-      uses: actions/create-github-app-token@v1
+      uses: actions/create-github-app-token@v3
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
@@ -670,7 +670,7 @@ jobs:
       id: approve
       if: steps.resolve.outputs.skip != 'true'
       continue-on-error: true
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       env:
         MODE: ${{ steps.resolve.outputs.mode }}
         PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}

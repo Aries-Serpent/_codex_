@@ -54,7 +54,7 @@ jobs:
         `${TOKEN_TIER}\\`\" >> $GITHUB_STEP_SUMMARY\necho \"Timestamp: \\`${TIMESTAMP}\\\
         `\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         sparse-checkout: |

@@ -46,7 +46,7 @@ jobs:
       run_coverage: ${{ steps.filter.outputs.run_coverage }}
       run_quality: ${{ steps.filter.outputs.run_quality }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -100,7 +100,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Python
@@ -164,7 +164,7 @@ jobs:
         else\n  echo '{}' > coverage_modules.json\nfi\n"
     - name: Upload coverage artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.coverage.json
 
@@ -196,7 +196,7 @@ jobs:
       '
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -223,7 +223,7 @@ jobs:
         '
     - name: Upload ruff report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: ruff-output.txt
         if-no-files-found: ignore
@@ -249,7 +249,7 @@ jobs:
       '
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -284,7 +284,7 @@ jobs:
         '
     - name: Upload mypy report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: mypy-output.txt
         if-no-files-found: ignore
@@ -310,7 +310,7 @@ jobs:
       '
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -348,7 +348,7 @@ jobs:
         \ issues \u2014 review required\"\nfi\n"
     - name: Upload bandit reports
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: 'bandit-report.json
 
@@ -378,7 +378,7 @@ jobs:
       '
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -410,7 +410,7 @@ jobs:
         '
     - name: Upload radon report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: radon-output.txt
         if-no-files-found: ignore
@@ -432,7 +432,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout for cache health
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         sparse-checkout: scripts/ci
@@ -479,7 +479,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

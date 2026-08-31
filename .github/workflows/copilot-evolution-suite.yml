@@ -50,7 +50,7 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -59,7 +59,7 @@ jobs:
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: Setup Node.js 22
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v7
       with:
         node-version: '22'
         cache: npm
@@ -91,7 +91,7 @@ jobs:
         \  echo \"Review mode: Cascade PR analysis\" >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload review results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/reviews/*.json
 
@@ -119,7 +119,7 @@ jobs:
       test_results: ${{ steps.test.outputs.results }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -163,7 +163,7 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\nfi\n"
     - name: Upload evolution artifacts
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.github/copilot-evolution/data/*.json
 
@@ -238,7 +238,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

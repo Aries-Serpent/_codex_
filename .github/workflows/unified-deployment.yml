@@ -46,7 +46,7 @@ jobs:
       validation_passed: ${{ steps.validation.outputs.passed }}
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -98,11 +98,11 @@ jobs:
       '
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Node.js
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v7
       with:
         node-version: '22'
         cache: npm
@@ -116,7 +116,7 @@ jobs:
         GITHUB_ACTIONS: true
       run: npm run build
     - name: Upload cognitive_app build artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: cognitive_app/dist
         retention-days: 14
@@ -135,7 +135,7 @@ jobs:
       '
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Setup Python
@@ -150,7 +150,7 @@ jobs:
 
         '
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: dist/
         retention-days: 90
@@ -165,11 +165,11 @@ jobs:
     if: needs.pre_release_build.result == 'success'
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: Download build artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         path: dist/
         name: pre-release-build-${{ inputs.version || github.sha }}

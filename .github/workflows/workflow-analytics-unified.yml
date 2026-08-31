@@ -70,7 +70,7 @@ jobs:
       == 'quantum-analysis'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
     - name: CacheManager health check
@@ -102,7 +102,7 @@ jobs:
         \nfi\n"
     - name: Upload health report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/reports/workflow-health-*.json
 
@@ -120,7 +120,7 @@ jobs:
       inputs.mode == 'full-analytics'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -158,7 +158,7 @@ jobs:
         \ \\\n    --body-file .codex/reports/findings.md \\\n    --label \"automated,analytics\"\
         \nfi\n"
     - name: Upload analytics reports
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/reports/workflow-*.json
 
@@ -177,7 +177,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full-analytics'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -217,7 +217,7 @@ jobs:
         \ .codex/reports/analytics-report.md\n  echo \"- Success rate: ${success_rate}%\"\
         \ >> .codex/reports/analytics-report.md\nfi\n"
     - name: Upload manual analytics
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         path: '.codex/reports/manual-analytics.json
 

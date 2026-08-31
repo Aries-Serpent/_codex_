@@ -28,7 +28,7 @@ jobs:
       approved: ${{ steps.guard.outputs.approved }}
     steps:
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       if: always()
       with:
         path: .pytest_cache/
@@ -37,7 +37,7 @@ jobs:
 
           '
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         sparse-checkout: '.github
 
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
