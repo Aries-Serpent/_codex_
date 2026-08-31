@@ -62,18 +62,6 @@ updates:
           - "*"
     open-pull-requests-limit: 1
 
-  - package-ecosystem: "npm"
-    directory: "/copilot/extension"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
-    open-pull-requests-limit: 1
-
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
