@@ -64,10 +64,10 @@ updates:
     ignore:
       - dependency-name: "nbconvert"
         versions:
-          - ">=7.0.0"
+          - ">= 7.0.0"
       - dependency-name: "torch"
         versions:
-          - ">=2.3.0"
+          - ">= 2.3.0"
     # Consolidate every Python dependency into a single grouped PR
     groups:
       python-all:
@@ -96,27 +96,9 @@ updates:
           - "*"
     open-pull-requests-limit: 1
 
-  # npm - Monitor root-level JavaScript/TypeScript dependencies
-  - package-ecosystem: "npm"
-    directories:
-      - "/"
-    exclude-paths:
-      - "/.codex/**"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    labels:
-      - "dependencies"
-      - "javascript"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
-    open-pull-requests-limit: 1
+  # npm - Monitor JavaScript/TypeScript dependencies in app workspaces.
+  # Keep each ecosystem's directory set non-overlapping; Dependabot rejects
+  # same-ecosystem entries whose paths overlap (for example "/" and "/foo").
 
   # npm - Monitor cognitive_app JavaScript/TypeScript dependencies
   # (consolidated here; cognitive_app/.github/dependabot.yml was not
