@@ -100,9 +100,17 @@ def validate_dependabot_config(document: Any) -> list[str]:
 
         raw_directories: list[str] = []
         if "directories" in update:
-            raw_directories = [str(item) for item in update.get("directories", [])]
+            candidate = update.get("directories")
+            if isinstance(candidate, str):
+                raw_directories = [candidate]
+            elif isinstance(candidate, list):
+                raw_directories = [str(item) for item in candidate if isinstance(item, str) and item.strip()]
         elif "directory" in update:
-            raw_directories = [str(update.get("directory"))]
+            candidate = update.get("directory")
+            if isinstance(candidate, str):
+                raw_directories = [candidate]
+            elif isinstance(candidate, list):
+                raw_directories = [str(item) for item in candidate if isinstance(item, str) and item.strip()]
         if not raw_directories:
             errors.append(f"Update entry for {ecosystem} is missing a valid directory or directories list.")
 

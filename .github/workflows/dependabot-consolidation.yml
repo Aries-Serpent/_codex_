@@ -1,8 +1,6 @@
 name: Dependabot PR Consolidation
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
       base_branch:
@@ -34,7 +32,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -49,13 +47,13 @@ jobs:
       - name: Consolidate Dependabot PRs
         env:
           BASE_BRANCH: ${{ github.event.inputs.base_branch || 'main' }}
+          DRY_RUN_INPUT: ${{ github.event.inputs.dry_run || 'false' }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
 
           DRY_FLAG=""
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            DRY_FLAG="--dry-run"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ] && [ "${DRY_RUN_INPUT}" = "true" ]; then
             DRY_FLAG="--dry-run"
           fi
 
