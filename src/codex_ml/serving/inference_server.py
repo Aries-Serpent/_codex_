@@ -9,28 +9,54 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional, cast
+from typing import TYPE_CHECKING, Any, Optional
 
-try:
+FASTAPI_AVAILABLE: bool = False
+
+if TYPE_CHECKING:
     from fastapi import FastAPI, Header, HTTPException, Request, Security
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from pydantic import BaseModel, Field
     from starlette.middleware.trustedhost import TrustedHostMiddleware
+else:
+    try:
+        from fastapi import (
+            FastAPI as _FastAPI,
+            Header as _Header,
+            HTTPException as _HTTPException,
+            Request as _Request,
+            Security as _Security,
+        )
+        from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
+        from fastapi.security import APIKeyHeader as _APIKeyHeader
+        from pydantic import BaseModel as _BaseModel, Field as _Field
+        from starlette.middleware.trustedhost import TrustedHostMiddleware as _TrustedHostMiddleware
 
-    FASTAPI_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    FASTAPI_AVAILABLE = False
-    FastAPI = cast(Any, None)
-    Header = cast(Any, None)
-    HTTPException = cast(Any, Exception)
-    Request = cast(Any, object)
-    Security = cast(Any, None)
-    CORSMiddleware = cast(Any, None)
-    APIKeyHeader = cast(Any, None)
-    BaseModel = cast(Any, object)
-    Field = cast(Any, lambda *a, **k: None)
-    TrustedHostMiddleware = cast(Any, None)
+        FASTAPI_AVAILABLE = True
+    except ImportError:  # pragma: no cover
+        FASTAPI_AVAILABLE = False
+        _FastAPI = Any
+        _Header = Any
+        _HTTPException = Exception
+        _Request = object
+        _Security = Any
+        _CORSMiddleware = Any
+        _APIKeyHeader = Any
+        _BaseModel = object
+        _Field = lambda *a, **k: None
+        _TrustedHostMiddleware = Any
+
+    FastAPI = _FastAPI
+    Header = _Header
+    HTTPException = _HTTPException
+    Request = _Request
+    Security = _Security
+    CORSMiddleware = _CORSMiddleware
+    APIKeyHeader = _APIKeyHeader
+    BaseModel = _BaseModel
+    Field = _Field
+    TrustedHostMiddleware = _TrustedHostMiddleware
 
 logger = logging.getLogger(__name__)
 
