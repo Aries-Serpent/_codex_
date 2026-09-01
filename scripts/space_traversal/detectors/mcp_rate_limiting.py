@@ -52,7 +52,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
         files = files[:MAX_FILES]
 
     evidence = []
-    found = set()  # Use set for deduplication during collection, converted to sorted list at end (line 122)
+    found: set[str] = set()  # Use set for deduplication during collection, converted to sorted list at end (line 122)
 
     # Rate limiting patterns to detect
     patterns = [
@@ -120,12 +120,12 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
     # Deterministic sorting (safeguard - reproducibility)
     evidence = sorted(set(evidence))
-    found = sorted(found)  # found is already a set
+    found_values = sorted(found)
 
     return {
         "id": "mcp-rate-limiting",
         "evidence_files": evidence,
-        "found_patterns": found,
+        "found_patterns": found_values,
         "required_patterns": required,
         "docs_keywords": [
             "rate-limiting",

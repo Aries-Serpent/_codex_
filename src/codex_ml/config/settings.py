@@ -29,11 +29,12 @@ from typing import Any  # noqa: E402
 from pydantic import BaseModel, ConfigDict, Field  # noqa: E402
 
 try:  # pragma: no cover - optional dependency shim
-    from pydantic_settings import BaseSettings, SettingsConfigDict
+    from pydantic_settings import BaseSettings as PydanticBaseSettings
+    from pydantic_settings import SettingsConfigDict as PydanticSettingsConfigDict
 except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
-    BaseSettings = BaseModel
+    PydanticBaseSettings = BaseModel
 
-    def SettingsConfigDict(**config: Any) -> ConfigDict:
+    def PydanticSettingsConfigDict(**config: Any) -> ConfigDict:
         """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """
@@ -54,6 +55,9 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
                 stacklevel=2,
             )
             return ConfigDict(**filtered)  # type: ignore[typeddict-item]
+
+BaseSettings = PydanticBaseSettings
+SettingsConfigDict = PydanticSettingsConfigDict
 
 
 __all__ = ["AppSettings", "EvalRow", "eval_row_schema", "get_settings"]

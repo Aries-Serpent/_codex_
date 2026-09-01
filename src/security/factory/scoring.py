@@ -136,7 +136,7 @@ class RiskScorer:
         return severity_scores.get(severity, 0.5)
 
     @staticmethod
-    def _estimate_exploitability(cwe: str = None) -> Exploitability:
+    def _estimate_exploitability(cwe: str | None = None) -> Exploitability:
         """Estimate exploitability based on CWE."""
         if not cwe:
             return Exploitability.NOT_KNOWN
@@ -192,7 +192,7 @@ class RiskScorer:
 
     def plan_waves(
         self,
-        scored_families: List[ScoredFamily] = None,
+        scored_families: List[ScoredFamily] | None = None,
     ) -> WavePlan:
         """Plan remediation waves."""
         if scored_families is None:

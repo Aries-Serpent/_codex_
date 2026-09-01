@@ -256,8 +256,11 @@ class GitHubTokenProvider(TokenProvider):
                 # requests not available — fall back to format-only validation
                 logger.warning("requests library unavailable; using format-only auth validation")
                 return True
+            requests_module = _requests
+            if requests_module is None:
+                raise RuntimeError("requests module is unavailable")
             try:
-                resp = _requests.get(
+                resp = requests_module.get(
                     "https://api.github.com/user",
                     headers={
                         "Authorization": f"token {token}",
@@ -436,7 +439,10 @@ class GitHubTokenProvider(TokenProvider):
             body["permissions"] = permissions
 
         try:
-            resp = _requests.post(url, json=body, headers=headers, timeout=15)
+            requests_module = _requests
+            if requests_module is None:
+                raise RuntimeError("requests module is unavailable")
+            resp = requests_module.post(url, json=body, headers=headers, timeout=15)
             if resp.status_code == 201:
                 data = resp.json()
                 new_token = data.get("token", "")
@@ -531,7 +537,10 @@ class GitHubTokenProvider(TokenProvider):
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
             }
-            resp = _requests.patch(
+            requests_module = _requests
+            if requests_module is None:
+                raise RuntimeError("requests module is unavailable")
+            resp = requests_module.patch(
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):
@@ -572,7 +581,10 @@ class GitHubTokenProvider(TokenProvider):
             # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)  # noqa: E501
             # We attempt the installation token revoke path first (works for ghs_ tokens)
             if token.startswith("ghs_"):
-                resp = _requests.delete(
+                requests_module = _requests
+                if requests_module is None:
+                    raise RuntimeError("requests module is unavailable")
+                resp = requests_module.delete(
                     "https://api.github.com/installation/token",
                     headers={
                         "Authorization": f"Bearer {token}",
@@ -623,7 +635,10 @@ class GitHubTokenProvider(TokenProvider):
             logger.warning("GitHub listing API unavailable: requests library missing.")
             return []
         try:
-            resp = _requests.get(
+            requests_module = _requests
+            if requests_module is None:
+                raise RuntimeError("requests module is unavailable")
+            resp = requests_module.get(
                 "https://api.github.com/user",
                 headers={
                     "Authorization": f"Bearer {token}",

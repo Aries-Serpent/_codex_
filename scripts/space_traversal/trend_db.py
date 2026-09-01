@@ -353,8 +353,8 @@ class TrendDatabase:
         if not rows:
             # Create empty file with headers
             with open(output_path, "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                writer.writerow(
+                simple_writer = csv.writer(f)
+                simple_writer.writerow(
                     [
                         "timestamp",
                         "git_commit",
@@ -372,9 +372,9 @@ class TrendDatabase:
             return
 
         with open(output_path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=rows[0].keys())
-            writer.writeheader()
-            writer.writerows([dict(row) for row in rows])
+            dict_writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+            dict_writer.writeheader()
+            dict_writer.writerows([dict(row) for row in rows])
 
     def cleanup_old_runs(self, max_runs: int = 1000, max_age_days: int = 365) -> int:
         """

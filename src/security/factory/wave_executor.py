@@ -53,6 +53,8 @@ class ExecutionResult:
 
     def _compute_duration(self) -> float:
         """Compute duration in seconds."""
+        if self.end_time is None:
+            return 0.0
         start = datetime.fromisoformat(self.start_time)
         end = datetime.fromisoformat(self.end_time)
         return (end - start).total_seconds()

@@ -12,7 +12,7 @@ from collections.abc import Iterable, Mapping  # noqa: E402
 try:  # pragma: no cover - torch optional in tests
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch optional in tests
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 def _safe_float(value: object) -> float:

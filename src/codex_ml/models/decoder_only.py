@@ -85,7 +85,7 @@ class MultiHeadAttention(nn.Module):
             v = torch.cat([pv, v], dim=2)
         att = (q @ k.transpose(-2, -1)) / math.sqrt(head_dim)
         att = att.masked_fill(mask == 0, float("-inf"))
-        probs = F.softmax(att, dim=-1)  # type: ignore[misc]
+        probs = F.softmax(att, dim=-1)
         probs = self.dropout(probs)
         out = probs @ v
         out = out.transpose(1, 2).contiguous().view(bsz, seq, h * head_dim)
@@ -225,7 +225,7 @@ class DecoderOnlyLM(nn.Module):
         logits = self.head(x)
         loss = None
         if labels is not None:
-            loss = F.cross_entropy(  # type: ignore[misc]
+            loss = F.cross_entropy(
                 logits[:, :-1].contiguous().view(-1, logits.size(-1)),
                 labels[:, 1:].contiguous().view(-1),
             )
