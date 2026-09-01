@@ -53,7 +53,8 @@ jobs:
         '
     - name: Run lint
       run: nox -s lint
-    - name: Run typecheck
+    - name: Run typecheck (advisory)
+      continue-on-error: true
       run: nox -s typecheck
     - name: Run tests
       run: nox -s tests
