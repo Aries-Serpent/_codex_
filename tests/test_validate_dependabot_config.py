@@ -32,3 +32,22 @@ def test_dependabot_config_validator_rejects_null_directory_values():
 
     errors = validate_dependabot_config(document)
     assert any("missing a valid directory" in error for error in errors)
+
+
+def test_dependabot_config_validator_allows_suppressed_prs_for_ignored_updates():
+    document = {
+        "version": 2,
+        "updates": [
+            {
+                "package-ecosystem": "pip",
+                "directory": "/",
+                "schedule": {"interval": "weekly"},
+                "ignore": [{"dependency-name": "torch", "versions": [">= 2.3.0"]}],
+                "groups": {"python-all": {"patterns": ["*"]}},
+                "open-pull-requests-limit": 0,
+            }
+        ],
+    }
+
+    errors = validate_dependabot_config(document)
+    assert not errors, "\n".join(errors)
