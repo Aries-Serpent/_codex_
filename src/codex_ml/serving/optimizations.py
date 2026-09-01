@@ -14,7 +14,7 @@ import time  # noqa: E402
 from collections import deque  # noqa: E402
 from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import Any, Literal, Optional  # noqa: E402
 
 
 @dataclass
@@ -46,7 +46,7 @@ class RequestBatcher:
 
     def __init__(self, config: Optional[BatchConfig] = None):
         self.config = config or BatchConfig()
-        self.queue: deque = deque()
+        self.queue: deque[tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]] = deque()
         self.lock = threading.Lock()
         self.batch_ready = threading.Event()
         self.results: dict[str, Any] = {}
@@ -86,7 +86,7 @@ class RequestBatcher:
             await asyncio.sleep(self.config.max_wait_ms / 1000.0)
 
             # Extract batch
-            batch_items = []
+            batch_items: list[tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]] = []
             with self.lock:
                 batch_size = min(len(self.queue), self.config.max_batch_size)
                 for _ in range(batch_size):
@@ -105,18 +105,21 @@ class RequestBatcher:
             if process_fn is None:
                 continue
             try:
-                results: Any = await asyncio.get_running_loop().run_in_executor(
-                    None, process_fn, list(data_items)
+                batch_payload: list[Any] = list(data_items)
+                results_payload: Any = await asyncio.get_running_loop().run_in_executor(
+                    None, process_fn, batch_payload
                 )
-
+                if not isinstance(results_payload, list):
+                    results_payload = [results_payload] * len(futures)
+                if len(results_payload) != len(futures):
+                    raise ValueError("Batch processor returned an unexpected number of results")
                 # Distribute results
-                for future, result in zip(futures, results, strict=False):
+                for future, result in zip(futures, results_payload, strict=False):
                     future.set_result(result)
-            except (ValueError, TypeError, RuntimeError) as e:
-                type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                logger.debug("Batch processing failed: %s", type(exc).__name__)
                 for future in futures:
-                    future.set_exception(e)
+                    future.set_exception(exc)
 
     def start(self) -> None:
         """Start background batch processor."""
@@ -177,8 +180,8 @@ class MemoryPool:
     def __enter__(self) -> bytearray:
         return self.get_buffer()
 
-    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
-        return None
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> Literal[False]:
+        return False
 
 
 class ModelWarmer:

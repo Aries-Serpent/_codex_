@@ -7,11 +7,7 @@ Usage:
     from schedulers.registry import ...
 
 Classes:
-    [To be documented]
-
 Functions:
-    [To be documented]
-
 Author: Codex Team
 """
 
@@ -20,7 +16,8 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from types import ModuleType
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +32,6 @@ except (ImportError, AttributeError) as e:
     logger.debug("Failed to import or verify torch: <ERROR_TYPE>")
     logger.warning("Failed to import or verify torch: <ERROR_TYPE>", exc_info=True)
     TORCH_AVAILABLE = False
-    from types import ModuleType
 
     # Create placeholder types so consumer code can import the registry
     # without torch installed. These stubs intentionally expose only the
@@ -46,7 +42,7 @@ except (ImportError, AttributeError) as e:
     class _DummyScheduler:
         pass
 
-    torch = ModuleType("torch")
+    torch = cast(Any, ModuleType("torch"))
     torch.optim = ModuleType("optim")
     torch.optim.Optimizer = _DummyOptimizer
     torch.optim.lr_scheduler = ModuleType("lr_scheduler")

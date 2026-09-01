@@ -6,11 +6,7 @@ Usage:
     from cli.entrypoints import ...
 
 Classes:
-    [To be documented]
-
 Functions:
-    [To be documented]
-
 Author: Codex Team
 """
 

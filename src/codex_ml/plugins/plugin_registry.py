@@ -111,7 +111,7 @@ class PluginRegistry:
         >>> result = plugin.execute()
     """
 
-    _instance = None
+    _instance: "PluginRegistry | None" = None
 
     def __new__(cls) -> "PluginRegistry":
         if cls._instance is None:
@@ -120,7 +120,7 @@ class PluginRegistry:
         return cls._instance
 
     def __init__(self) -> None:
-        if self._initialized:
+        if getattr(self, "_initialized", False):
             return
 
         self._plugins: dict[str, type[Plugin]] = {}

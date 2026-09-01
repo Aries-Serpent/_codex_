@@ -9,7 +9,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 try:
     from fastapi import FastAPI, Header, HTTPException, Request, Security
@@ -21,17 +21,16 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore[misc,assignment]
-    HTTPException = Exception  # type: ignore[misc,assignment]
-    BaseModel = object  # type: ignore[misc,assignment]
-    APIKeyHeader = None  # type: ignore[misc,assignment]
-    Security = None  # type: ignore[assignment]
-    TrustedHostMiddleware = None  # type: ignore[misc,assignment]
-
-    def Field(*a: Any, **k: Any) -> None:  # type: ignore[no-redef]
-        return None
-
-    Request = object  # type: ignore[misc,assignment]
+    FastAPI = cast(Any, None)
+    Header = cast(Any, None)
+    HTTPException = cast(Any, Exception)
+    Request = cast(Any, object)
+    Security = cast(Any, None)
+    CORSMiddleware = cast(Any, None)
+    APIKeyHeader = cast(Any, None)
+    BaseModel = cast(Any, object)
+    Field = cast(Any, lambda *a, **k: None)
+    TrustedHostMiddleware = cast(Any, None)
 
 logger = logging.getLogger(__name__)
 
@@ -544,9 +543,8 @@ if FASTAPI_AVAILABLE:
             dependencies=auth_dependencies,
         )
         def predict(request: PredictionRequest, http_request: Request):
-            client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
-            )
+            client = getattr(http_request, "client", None)
+            client_key = client.host if client is not None else "global"
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 

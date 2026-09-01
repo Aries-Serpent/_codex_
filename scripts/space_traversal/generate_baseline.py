@@ -54,8 +54,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+stable_manifest: Any | None
 if importlib.util.find_spec("scripts.space_traversal.stable_manifest"):
-    from scripts.space_traversal import stable_manifest
+    from scripts.space_traversal import stable_manifest as stable_manifest_module
+    stable_manifest = stable_manifest_module
 else:
     stable_manifest = None
 

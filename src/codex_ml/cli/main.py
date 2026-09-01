@@ -58,16 +58,14 @@ if typer is not None:
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
-            from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
-
+            from codex_ml.cli import tokenizer as tokenizer_cli
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
 
-    from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
-
+    from codex_ml.cli import _load_training_config
     def _value_from_config(
         cli_value: Any,
         default_value: Any,
@@ -367,8 +365,7 @@ if typer is not None:
         ),
     ) -> None:
         """Run evaluation using available evaluation modules."""
-        from codex_ml.cli import entrypoints as entry  # type: ignore[attr-defined]
-
+        from codex_ml.cli import entrypoints as entry
         eval_args: list[str] = []
         if dry_run:
             eval_args.append("--dry-run")
@@ -520,14 +517,13 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except (ImportError, AttributeError):  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore[misc,assignment]
-        OmegaConf = None  # type: ignore[misc,assignment]
-
+        DictConfig = Any
+        OmegaConf = None
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
     except (ImportError, AttributeError):  # pragma: no cover
 
-        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore
+        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  
             return None
 
     # Module-level variable to cache functional training main for testing/mocking
@@ -548,7 +544,7 @@ else:
                 _functional_training_main = _functional_training
         return _functional_training_main
 
-    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:  # type: ignore
+    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:  
         main_fn = _load_functional_training_main()
         if main_fn is None:  # pragma: no cover - safety fallback
             raise RuntimeError("codex.training.main is unavailable")
@@ -624,7 +620,7 @@ else:
                         # Lazy import: only load heavy pipeline module if this step is actually used
                         try:
                             from codex_ml.pipeline import (
-                                run_codex_pipeline_from_config,  # type: ignore[attr-defined]
+                                run_codex_pipeline_from_config,
                             )
                         except (ImportError, ModuleNotFoundError) as e:
                             error_msg = textwrap.dedent(
@@ -670,7 +666,7 @@ else:
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: Optional[list[str]] = None) -> int:  # type: ignore[misc]
+    def cli(argv: Optional[list[str]] = None) -> int:
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 
