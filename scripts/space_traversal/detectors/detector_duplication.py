@@ -80,10 +80,10 @@ def _find_duplicate_groups(files: list[dict[str, Any]], counts: Counter) -> dict
     Returns:
         Dictionary mapping stems to lists of duplicate file paths
     """
-    duplicate_groups = {}
+    duplicate_groups: dict[str, list[str]] = {}
 
     # Group files by stem (deterministic ordering)
-    stem_to_files = {}
+    stem_to_files: dict[str, list[str]] = {}
     for f in files:
         stem = Path(f["path"]).stem.lower()
         if stem not in stem_to_files:

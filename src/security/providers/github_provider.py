@@ -95,6 +95,13 @@ _KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset(
 )
 
 
+def _require_requests() -> ModuleType:
+    """Return the configured requests module or raise if unavailable."""
+    if _requests is None:
+        raise RuntimeError("requests library is not installed")
+    return _requests
+
+
 def _redact_identifier(identifier: str) -> str:
     """Return a non-sensitive token/secret identifier for logs."""
     if not identifier:
@@ -257,7 +264,8 @@ class GitHubTokenProvider(TokenProvider):
                 logger.warning("requests library unavailable; using format-only auth validation")
                 return True
             try:
-                resp = _requests.get(
+                requests_module = _require_requests()
+                resp = requests_module.get(
                     "https://api.github.com/user",
                     headers={
                         "Authorization": f"token {token}",
@@ -436,7 +444,8 @@ class GitHubTokenProvider(TokenProvider):
             body["permissions"] = permissions
 
         try:
-            resp = _requests.post(url, json=body, headers=headers, timeout=15)
+            requests_module = _require_requests()
+            resp = requests_module.post(url, json=body, headers=headers, timeout=15)
             if resp.status_code == 201:
                 data = resp.json()
                 new_token = data.get("token", "")
@@ -531,7 +540,8 @@ class GitHubTokenProvider(TokenProvider):
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
             }
-            resp = _requests.patch(
+            requests_module = _require_requests()
+            resp = requests_module.patch(
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):

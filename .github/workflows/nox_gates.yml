@@ -54,6 +54,13 @@ jobs:
     - name: Run lint
       run: nox -s lint
     - name: Run typecheck (advisory)
+      # Temporary informational gate: keep mypy output visible without blocking
+      # the main nox_gates job while the repo-wide baseline remains broad. This
+      # is intentionally isolated from the CodeQL/security gates, which remain
+      # separate and policy-enforced.
+      # This is intentionally reversible — remove `continue-on-error` once the
+      # baseline is narrowed and restore a blocking gate if desired.
+      # Backlog note: see `workbench/evidence/gap33_mypy_precommit.md`.
       continue-on-error: true
       run: nox -s typecheck
     - name: Run tests

@@ -102,7 +102,7 @@ def bar_chart(
     max_label = max(len(k) for k in data)
     max_val = max(data.values()) if data.values() else 1
 
-    items = data.items()
+    items: list[tuple[str, float]] = list(data.items())
     if sort_by_value:
         items = sorted(items, key=lambda x: -x[1])
 

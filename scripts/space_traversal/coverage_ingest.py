@@ -90,7 +90,7 @@ def parse_coverage_xml_to_map(
         return {}
 
     xml_root = tree.getroot()
-    cov = {}
+    cov: dict[str, dict[str, Any]] = {}
 
     # Try Cobertura format first (class elements)
     for cls in xml_root.findall(".//class"):
@@ -128,18 +128,18 @@ def parse_coverage_xml_to_map(
             if full_path.exists() and full_path.stat().st_size < MAX_READ_BYTES:
                 with open(full_path, encoding="utf-8", errors="ignore") as file:
                     total_lines = sum(1 for _ in file)
-                data["total_lines"] = total_lines  # type: ignore[assignment]
+                data["total_lines"] = total_lines
                 covered_count = len(data["covered_lines"])
-                data["percent"] = round(covered_count / max(1, total_lines), 6)  # type: ignore[assignment,arg-type]
+                data["percent"] = round(covered_count / max(1, total_lines), 6)
             else:
                 # File too large or missing, estimate from covered lines
                 covered_count = len(data["covered_lines"])
                 max_line = max(data["covered_lines"]) if data["covered_lines"] else 1
-                data["total_lines"] = max_line  # type: ignore[assignment]
-                data["percent"] = round(covered_count / max(1, max_line), 6)  # type: ignore[assignment,arg-type]
+                data["total_lines"] = max_line
+                data["percent"] = round(covered_count / max(1, max_line), 6)
         except Exception:
-            data["total_lines"] = len(data.get("covered_lines", []))  # type: ignore[assignment]
-            data["percent"] = 0.0  # type: ignore[assignment]
+            data["total_lines"] = len(data.get("covered_lines", []))
+            data["percent"] = 0.0
 
     # Return a deterministically ordered mapping for stable downstream manifests
     return {path: cov[path] for path in sorted(cov)}
