@@ -100,9 +100,12 @@ class RequestBatcher:
             batch_items.sort(reverse=True, key=lambda x: x[0])
 
             # Process batch
-            _, _ids, data_items, futures, process_fn = zip(*batch_items, strict=False)
+            _, _ids, data_items, futures, process_fns = zip(*batch_items, strict=False)
+            process_fn = process_fns[0] if process_fns else None
+            if process_fn is None:
+                continue
             try:
-                results = await asyncio.get_event_loop().run_in_executor(
+                results: Any = await asyncio.get_running_loop().run_in_executor(
                     None, process_fn, list(data_items)
                 )
 
@@ -160,7 +163,7 @@ class MemoryPool:
             self.in_use.add(id(buf))
             return buf
 
-    def return_buffer(self, buf: bytearray):
+    def return_buffer(self, buf: bytearray) -> None:
         """Return buffer to pool."""
         with self.lock:
             buf_id = id(buf)
@@ -171,11 +174,11 @@ class MemoryPool:
                     buf[:] = b"\x00" * len(buf)
                     self.available.append(buf)
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> bytearray:
         return self.get_buffer()
 
-    def __exit__(self, *args) -> None:
-        pass
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        return None
 
 
 class ModelWarmer:

@@ -87,8 +87,10 @@ if _vuln_spec:
 else:
     VulnerabilityDatabase = None
 
+yaml: Any | None
 if importlib.util.find_spec("yaml"):
-    import yaml
+    import yaml as yaml_module
+    yaml = yaml_module
 else:
     yaml = None
 
@@ -140,45 +142,47 @@ class AuditRunner:
             Dictionary containing audit results
         """
         logger.info("Starting full audit of %s", target_path)  # codeql[py/clear-text-logging-sensitive-data]
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "target": str(target_path),
             "audits": {},
         }
+        audits: dict[str, Any] = {}
 
         if self.auditor:
             try:
                 logger.info("Running security audit...")  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["security"] = self.auditor.scan(target_path)
+                audits["security"] = self.auditor.scan(target_path)
             except Exception as e:
                 logger.error("Security audit failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["security"] = {"error": str(e)}
+                audits["security"] = {"error": str(e)}
 
         if self.dep_scanner:
             try:
                 logger.info("Scanning dependencies...")  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["dependencies"] = self.dep_scanner.scan(target_path)
+                audits["dependencies"] = self.dep_scanner.scan(target_path)
             except Exception as e:
                 logger.error("Dependency scan failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["dependencies"] = {"error": str(e)}
+                audits["dependencies"] = {"error": str(e)}
 
         if self.quality_checker:
             try:
                 logger.info("Checking code quality...")  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["quality"] = self.quality_checker.check(target_path)
+                audits["quality"] = self.quality_checker.check(target_path)
             except Exception as e:
                 logger.error("Quality check failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["quality"] = {"error": str(e)}
+                audits["quality"] = {"error": str(e)}
 
         if self.vuln_db:
             try:
                 logger.info("Checking vulnerability database...")  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["vulnerabilities"] = self.vuln_db.check(target_path)
+                audits["vulnerabilities"] = self.vuln_db.check(target_path)
             except Exception as e:
                 logger.error("Vulnerability check failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
-                results["audits"]["vulnerabilities"] = {"error": str(e)}
+                audits["vulnerabilities"] = {"error": str(e)}
 
-        results["summary"] = self._generate_summary(results["audits"])
+        results["audits"] = audits
+        results["summary"] = self._generate_summary(audits)
 
         logger.info("Audit complete")  # codeql[py/clear-text-logging-sensitive-data]
         return results
@@ -813,8 +817,8 @@ def apply_overrides(capabilities: list[dict[str, Any]], cfg: dict[str, Any]) -> 
             alias_to_canonical[alias] = canonical_id
 
     # Group capabilities by their canonical ID
-    canonical_groups = {}
-    unaffected_caps = []
+    canonical_groups: dict[str, list[dict[str, Any]]] = {}
+    unaffected_caps: list[dict[str, Any]] = []
 
     for cap in capabilities:
         cap_id = cap["id"]
@@ -831,10 +835,10 @@ def apply_overrides(capabilities: list[dict[str, Any]], cfg: dict[str, Any]) -> 
             unaffected_caps.append(cap)
 
     # Merge capabilities in each canonical group
-    merged_caps = []
+    merged_caps: list[dict[str, Any]] = []
     for canonical_id, caps_to_merge in canonical_groups.items():
         # Merge all capabilities into one
-        merged = {
+        merged: dict[str, Any] = {
             "id": canonical_id,
             "evidence_files": [],
             "found_patterns": [],
@@ -843,9 +847,9 @@ def apply_overrides(capabilities: list[dict[str, Any]], cfg: dict[str, Any]) -> 
         }
 
         # Collect unique values from all capabilities
-        all_evidence_files = set()
-        all_found_patterns = set()
-        all_required_patterns = set()
+        all_evidence_files: set[str] = set()
+        all_found_patterns: set[str] = set()
+        all_required_patterns: set[str] = set()
 
         for cap in caps_to_merge:
             all_evidence_files.update(cap.get("evidence_files", []))
@@ -1085,28 +1089,29 @@ def main() -> None:
         # Run specific stage - create minimal artifacts for test compatibility
         artifacts_dir = Path("audit_artifacts")
         artifacts_dir.mkdir(exist_ok=True)
+        stage_result: dict[str, Any] = {}
 
         if args.stage_name == "S1":
             # Stage 1: Index - create file index
-            result = {"files": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+            stage_result = {"files": [], "timestamp": datetime.now(timezone.utc).isoformat()}
             output_file = artifacts_dir / "file_index.json"
-            output_file.write_text(json.dumps(result, indent=2))
+            output_file.write_text(json.dumps(stage_result, indent=2))
             print(f"Stage S1 complete: {output_file}")  # codeql[py/clear-text-logging-sensitive-data]
         elif args.stage_name == "S2":
             # Stage 2: Facets - create facets
-            result = {"facets": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+            stage_result = {"facets": [], "timestamp": datetime.now(timezone.utc).isoformat()}
             output_file = artifacts_dir / "facets.json"
-            output_file.write_text(json.dumps(result, indent=2))
+            output_file.write_text(json.dumps(stage_result, indent=2))
             print(f"Stage S2 complete: {output_file}")  # codeql[py/clear-text-logging-sensitive-data]
         elif args.stage_name == "S3":
             # Stage 3: Capabilities - detect capabilities
-            result = {"capabilities": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+            stage_result = {"capabilities": [], "timestamp": datetime.now(timezone.utc).isoformat()}
             output_file = artifacts_dir / "capabilities.json"
-            output_file.write_text(json.dumps(result, indent=2))
+            output_file.write_text(json.dumps(stage_result, indent=2))
             print(f"Stage S3 complete: {output_file}")  # codeql[py/clear-text-logging-sensitive-data]
         elif args.stage_name == "S4":
             # Stage 4: Scoring - score capabilities
-            result = {
+            stage_result = {
                 "capabilities": [
                     {
                         "id": "test_cap_1",
@@ -1124,12 +1129,12 @@ def main() -> None:
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
             output_file = artifacts_dir / "capabilities_scored.json"
-            output_file.write_text(json.dumps(result, indent=2))
+            output_file.write_text(json.dumps(stage_result, indent=2))
             print(f"Stage S4 complete: {output_file}")  # codeql[py/clear-text-logging-sensitive-data]
         elif args.stage_name == "S5":
             # Stage 5: Gap analysis — identify low-maturity capabilities
             scored_file = artifacts_dir / "capabilities_scored.json"
-            scored_caps = []
+            scored_caps: list[dict[str, Any]] = []
             if scored_file.exists():
                 try:
                     data = json.loads(scored_file.read_text())
@@ -1243,17 +1248,18 @@ def main() -> None:
         try:
             # Run all stages sequentially
             for stage in ["S1", "S2", "S3", "S4"]:
+                run_result: dict[str, Any] = {}
                 if stage == "S1":
-                    result = {"files": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+                    run_result = {"files": [], "timestamp": datetime.now(timezone.utc).isoformat()}
                     output_file = artifacts_dir / "file_index.json"
                 elif stage == "S2":
-                    result = {"facets": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+                    run_result = {"facets": [], "timestamp": datetime.now(timezone.utc).isoformat()}
                     output_file = artifacts_dir / "facets.json"
                 elif stage == "S3":
-                    result = {"capabilities": [], "timestamp": datetime.now(timezone.utc).isoformat()}
+                    run_result = {"capabilities": [], "timestamp": datetime.now(timezone.utc).isoformat()}
                     output_file = artifacts_dir / "capabilities.json"
                 elif stage == "S4":
-                    result = {
+                    run_result = {
                         "capabilities": [
                             {
                                 "id": "test_cap_1",
@@ -1272,7 +1278,7 @@ def main() -> None:
                     }
                     output_file = artifacts_dir / "capabilities_scored.json"
 
-                output_file.write_text(json.dumps(result, indent=2))
+                output_file.write_text(json.dumps(run_result, indent=2))
                 logger.info(f"Stage {stage} complete: {output_file}")  # codeql[py/clear-text-logging-sensitive-data]
 
             print("✅ Full audit pipeline complete")  # codeql[py/clear-text-logging-sensitive-data]

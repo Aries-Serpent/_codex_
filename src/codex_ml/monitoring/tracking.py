@@ -85,9 +85,9 @@ class Tracker:
             project = os.getenv("WANDB_PROJECT", "codex")
             wandb_dir = Path(os.getenv("WANDB_DIR", "artifacts/wandb"))
             wandb_dir.mkdir(parents=True, exist_ok=True)
-            wandb.init(project=project, dir=str(wandb_dir), name=run_name, reinit=True)  # type: ignore[attr-defined]
+            wandb.init(project=project, dir=str(wandb_dir), name=run_name, reinit=True)
             if params:
-                wandb.config.update(params, allow_val_change=True)  # type: ignore[attr-defined]
+                wandb.config.update(params, allow_val_change=True)
             self.wandb_active = True
 
     def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None) -> None:
@@ -104,7 +104,7 @@ class Tracker:
             payload = dict(metrics)
             if step is not None:
                 payload["step"] = step
-            wandb.log(payload)  # type: ignore[attr-defined]
+            wandb.log(payload)
 
     def log_artifact(self, path: str | Path) -> None:
         """Log a file artifact to all active tracking backends.
@@ -115,7 +115,7 @@ class Tracker:
         if self.mlflow_active and mlflow is not None:
             mlflow.log_artifact(str(path))
         if self.wandb_active and wandb is not None:
-            wandb.save(str(path))  # type: ignore[attr-defined]
+            wandb.save(str(path))
 
     def end(self) -> None:
         """Finalise and close all active tracking runs.
@@ -128,7 +128,7 @@ class Tracker:
             mlflow.end_run()
             self.mlflow_active = False
         if self.wandb_active and wandb is not None:
-            wandb.finish()  # type: ignore[attr-defined]
+            wandb.finish()
             self.wandb_active = False
 
 

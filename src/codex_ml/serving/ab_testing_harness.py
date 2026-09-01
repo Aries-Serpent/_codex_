@@ -195,13 +195,15 @@ class ABTestingHarness:
         self.status = TestStatus.ANALYZING
         
         # Group metrics by variant and metric name
-        variant_data = defaultdict(lambda: defaultdict(list))
+        variant_data: Dict[str, Dict[str, List[float]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
         for point in self.metrics:
             variant_data[point.variant][point.metric_name].append(point.value)
-        
+
         # Calculate metrics for each variant
-        baseline_data = variant_data.get("baseline", {})
-        treatment_data = variant_data.get("treatment", {})
+        baseline_data: Dict[str, List[float]] = variant_data.get("baseline", {})
+        treatment_data: Dict[str, List[float]] = variant_data.get("treatment", {})
         
         self.baseline_metrics = self._calculate_metrics(
             "baseline", baseline_data
@@ -268,7 +270,11 @@ class ABTestingHarness:
         """Perform statistical significance test."""
         if not self.baseline_metrics or not self.treatment_metrics:
             return {"error": "Metrics not available"}
-        
+
+        config = self.config
+        if config is None:
+            return {"error": "Test not initialized"}
+
         # T-test for latency
         baseline_latencies = [
             p.value for p in self.metrics
@@ -278,34 +284,37 @@ class ABTestingHarness:
             p.value for p in self.metrics
             if p.variant == "treatment" and p.metric_name == "latency"
         ]
-        
+
         from scipy import stats
-        
+
         if baseline_latencies and treatment_latencies:
             t_stat, p_value = stats.ttest_ind(baseline_latencies, treatment_latencies)
-            is_significant = p_value < (1 - self.config.confidence_level)
+            is_significant = p_value < (1 - config.confidence_level)
         else:
             t_stat, p_value, is_significant = 0, 1.0, False
-        
+
         return {
             "test_type": "t-test",
             "metric": "latency",
             "t_statistic": float(t_stat),
             "p_value": float(p_value),
             "is_significant": is_significant,
-            "confidence_level": self.config.confidence_level,
+            "confidence_level": config.confidence_level,
             "baseline_mean": self.baseline_metrics.latency_mean,
             "treatment_mean": self.treatment_metrics.latency_mean,
             "improvement_percent": self.treatment_metrics.latency_improvement,
         }
-    
+
     def _generate_report(self) -> Dict[str, Any]:
         """Generate test report."""
         stats_test = self.perform_statistical_test()
-        
+        config = self.config
+        if config is None:
+            return {"error": "Test not initialized"}
+
         return {
             "test_id": self.test_id,
-            "config": self.config.to_dict(),
+            "config": config.to_dict(),
             "status": self.status.value,
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "end_time": self.end_time.isoformat() if self.end_time else None,
