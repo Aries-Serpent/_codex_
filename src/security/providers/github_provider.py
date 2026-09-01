@@ -582,7 +582,8 @@ class GitHubTokenProvider(TokenProvider):
             # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)  # noqa: E501
             # We attempt the installation token revoke path first (works for ghs_ tokens)
             if token.startswith("ghs_"):
-                resp = _requests.delete(
+                requests_module = _require_requests()
+                resp = requests_module.delete(
                     "https://api.github.com/installation/token",
                     headers={
                         "Authorization": f"Bearer {token}",
@@ -633,7 +634,8 @@ class GitHubTokenProvider(TokenProvider):
             logger.warning("GitHub listing API unavailable: requests library missing.")
             return []
         try:
-            resp = _requests.get(
+            requests_module = _require_requests()
+            resp = requests_module.get(
                 "https://api.github.com/user",
                 headers={
                     "Authorization": f"Bearer {token}",
