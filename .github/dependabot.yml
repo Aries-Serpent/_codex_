@@ -54,7 +54,10 @@ updates:
           - ">= 8.0.0"
       - dependency-name: "typescript"
         versions:
-          - ">= 6.0.0"
+          - ">= 5.9.3"
+      - dependency-name: "lucide-react"
+        versions:
+          - ">= 1.35.0"
     groups:
       all-dependencies:
         patterns:
