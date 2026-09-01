@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from codex.logging.adapter import get_default_logger
-
 """
 Toy trainer loop for `_codex_`.
 
@@ -18,6 +16,8 @@ import argparse
 import random
 import time
 from pathlib import Path
+
+from codex.logging.adapter import get_default_logger
 
 
 def train(epochs: int, batch_size: int, log_path: Path) -> None:
