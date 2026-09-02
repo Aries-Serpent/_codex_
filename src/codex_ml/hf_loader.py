@@ -347,7 +347,7 @@ def _load_peft_adapter(model: Any, adapter_path: str | os.PathLike[str]) -> None
         return
     
     try:
-        model = PeftModel.from_pretrained(model, resolved_path)
+        PeftModel.from_pretrained(model, resolved_path)
         logger.info(
             "load_causal_lm: PEFT adapter loaded from %s",
             resolved_path,
