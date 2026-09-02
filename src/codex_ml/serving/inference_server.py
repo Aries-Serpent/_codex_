@@ -23,14 +23,23 @@ else:
     try:
         from fastapi import (
             FastAPI as _FastAPI,
+        )
+        from fastapi import (
             Header as _Header,
+        )
+        from fastapi import (
             HTTPException as _HTTPException,
+        )
+        from fastapi import (
             Request as _Request,
+        )
+        from fastapi import (
             Security as _Security,
         )
         from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
         from fastapi.security import APIKeyHeader as _APIKeyHeader
-        from pydantic import BaseModel as _BaseModel, Field as _Field
+        from pydantic import BaseModel as _BaseModel
+        from pydantic import Field as _Field
         from starlette.middleware.trustedhost import TrustedHostMiddleware as _TrustedHostMiddleware
 
         FASTAPI_AVAILABLE = True

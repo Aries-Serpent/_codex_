@@ -18,6 +18,7 @@ from codex.logging.causal_event_logger import (
     Event,
 )
 from codex.logging.db_manager import DatabaseManager
+
 from codex.logging.session_logger import SessionLogger
 
 # ============================================================================

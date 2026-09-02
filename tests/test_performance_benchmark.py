@@ -3,10 +3,10 @@
 import pytest
 
 pytest.importorskip("torch")
-from torch.optim import Adam
-
 import torch
 import torch.nn as nn
+from torch.optim import Adam
+
 from codex_ml.utils.performance_benchmark import (
     BenchmarkResult,
     BenchmarkSuite,

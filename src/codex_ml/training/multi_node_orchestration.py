@@ -16,9 +16,9 @@ import socket
 from dataclasses import dataclass
 from typing import Any, Optional
 
+import torch
 import torch.distributed as dist
 
-import torch
 from codex_ml.training.distributed_setup import (
     cleanup_distributed,
     get_rank,

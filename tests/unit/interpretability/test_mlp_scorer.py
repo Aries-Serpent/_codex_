@@ -13,7 +13,6 @@ pytest.importorskip("torch")
 # Graceful import handling for optional dependencies
 try:
     import numpy as np
-
     import torch
 
     HAS_DEPS = True

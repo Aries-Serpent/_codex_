@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5582)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5582 (SHA `a89985d5c90c9c5d184d4bfdf21e8ab19baa1c1a`) at 2026-09-02T06:56:36Z [auto-generated]
+
 ### Fixed — PR #5581 review-thread follow-up
 - Addressed the remaining PR #5581 review-thread concerns without widening scope: restored the repo-base `.codex/session_startup_packet.json` timestamp, made the `nox_gates.yml` typecheck gate blocking again, removed the stray `Temp.md` file, and cleaned the unused import / unused local variable warnings in `src/codex_ml/codex_model.py` and `src/codex_ml/hf_loader.py`.
 - Kept the generated startup-packet baseline stable and preserved the current workflow logic while fixing the exact issues called out in the review thread.

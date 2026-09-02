@@ -18,10 +18,9 @@ pytest.importorskip("torch")
 
 # Import with graceful fallback for torch
 try:
-    from torch.optim import Adam
-
     import torch
     import torch.nn as nn
+    from torch.optim import Adam
     from torch.utils.data import DataLoader, Dataset
 
     HAS_TORCH = True

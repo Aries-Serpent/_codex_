@@ -195,8 +195,8 @@ class TestRuntimeProfileInstallation:
             import pandas
             import ray
             import sklearn
-
             import torch
+
             import transformers
         except ImportError as e:
             pytest.fail(f"Runtime profile not fully installed: {e}")
@@ -480,7 +480,6 @@ class TestDependencyConflictDetection:
     def test_numpy_torch_compatibility(self):
         """Test compatibility between numpy and torch."""
         import numpy as np
-
         import torch
         
         # Create numpy array and convert to torch

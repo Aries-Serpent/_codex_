@@ -27,10 +27,10 @@ from functools import lru_cache  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
+import torch  # noqa: E402
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
-import torch  # noqa: E402
 from codex_ml.safety.moderation import (  # noqa: E402
     ModerationAdapter,
     ModerationRejection,

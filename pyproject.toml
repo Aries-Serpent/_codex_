@@ -296,20 +296,9 @@ functional = "codex_ml.registry.trainers:load_functional_trainer"
 
 [tool.setuptools.package-dir]
 "" = "src"
-# Root-level packages with explicit mappings
-codex = "src/codex"
-codex_utils = "codex_utils"
-training = "training"
-services = "services"
-tools = "tools"
-agents = "agents"
-tokenization = "tokenization"
-interfaces = "interfaces"
-# Note: Packages not listed here but found in include[] will be searched in src/ by default
 
 [tool.setuptools.packages.find]
 where = [
-    ".",
     "src",
 ]
 # Bundled packages (production code and AI subsystems)

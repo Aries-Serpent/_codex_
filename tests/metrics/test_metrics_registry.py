@@ -8,6 +8,7 @@ np = pytest.importorskip("numpy")
 
 # Skip entire module if torch is not available or unloadable
 import torch
+
 from codex_ml.metrics.base import BaseMetric
 from codex_ml.metrics.classification import (
     StreamingAccuracy,

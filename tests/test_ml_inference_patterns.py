@@ -62,6 +62,7 @@ class TestMLInferenceEntryPoints:
         """Test transformer model inference setup."""
         try:
             import torch
+
             from transformers import AutoModel, AutoTokenizer
             
             # We'll just test the import and basic setup

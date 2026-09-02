@@ -423,7 +423,6 @@ def setup_dataset_and_loader(
     try:
         from codex_ml.training.collate import _make_casting_collate
         from codex_ml.training.toy_dataset import ToyDataset
-
         from torch.utils.data import DataLoader
     except ImportError:
         logger.debug("PyTorch or dataset utilities not available")

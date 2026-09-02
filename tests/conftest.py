@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
+import importlib.abc
+import importlib.util
+
 # ============================================================================
 # IMPORT HOOK (Phase 3 Blocker Fix - S228)
 # ============================================================================
 # Install custom import hook IMMEDIATELY to resolve codex.* imports
-
 import sys
-import importlib.abc
-import importlib.util
 from pathlib import Path as _ImportHookPath
 
 
@@ -94,9 +94,9 @@ try:
 except Exception:
     pass
 
+import asyncio
 import importlib.util
 import os as _os
-import asyncio
 import pathlib
 import re as _re
 import sys as _sys
@@ -593,8 +593,8 @@ def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: p
 # ============================================================================
 # Map codex.* imports to src/* modules to resolve 455 collection errors
 
-import sys as _sys
 import importlib as _imp
+import sys as _sys
 from pathlib import Path as _Path
 
 _src = _Path(__file__).parent / "src"

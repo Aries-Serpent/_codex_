@@ -6,12 +6,6 @@ Tests for the scope validator library and decorators.
 
 import pytest
 
-from security.scope_validator import (
-    InsufficientScopeError,
-    InvalidScopeError,
-    ScopeValidator,
-    TokenScope,
-)
 from security.decorators import (
     clear_scope_validator,
     optional_scope,
@@ -19,6 +13,12 @@ from security.decorators import (
     require_scope,
     scope_metadata,
     set_scope_validator,
+)
+from security.scope_validator import (
+    InsufficientScopeError,
+    InvalidScopeError,
+    ScopeValidator,
+    TokenScope,
 )
 
 

@@ -31,8 +31,8 @@ pytest.importorskip("torch", reason="PyTorch required for tests")
 from unittest.mock import patch
 
 import numpy as np
-
 import torch
+
 from codex_ml.utils.safe_pickle import safe_pickle_load
 
 

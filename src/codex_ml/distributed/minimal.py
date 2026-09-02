@@ -27,9 +27,8 @@ import warnings  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 
 try:  # pragma: no cover - torch is optional
-    import torch.distributed as dist
-
     import torch
+    import torch.distributed as dist
 except (ImportError, AttributeError):  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
     dist = None

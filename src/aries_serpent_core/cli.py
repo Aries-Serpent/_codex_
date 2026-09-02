@@ -3190,7 +3190,7 @@ def _load_cached_credentials() -> dict | None:
         logger.debug(
             "keyring not installed — fall through to file-based lookup"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring read error
+    except (IOError, OSError, ModuleNotFoundError):  # pragma: no cover — runtime keyring read error
         logger.debug(
             "keyring read error — falling back to file-based lookup: %s",
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -3216,7 +3216,7 @@ def _clear_cached_credentials() -> None:
         logger.debug(
             "keyring not installed — nothing to clear"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring delete error
+    except (IOError, OSError, ModuleNotFoundError):  # pragma: no cover — runtime keyring delete error
         logger.debug(
             "keyring delete error — entry may not exist or backend unavailable: %s",
         )  # codeql[py/clear-text-logging-sensitive-data]

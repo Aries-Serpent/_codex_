@@ -9,10 +9,9 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("opacus")
 
-from codex.training import TrainCfg, run_custom_trainer
-
 import torch
 import torch.nn.functional as F
+from codex.training import TrainCfg, run_custom_trainer
 
 
 def test_dp_training_runs(monkeypatch, tmp_path):

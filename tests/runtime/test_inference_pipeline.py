@@ -109,6 +109,7 @@ class TestInferenceExecution:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -144,6 +145,7 @@ class TestInferenceExecution:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -183,6 +185,7 @@ class TestOutputValidation:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -220,6 +223,7 @@ class TestOutputValidation:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -257,6 +261,7 @@ class TestPerformanceProfiling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -298,6 +303,7 @@ class TestPerformanceProfiling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -368,8 +374,8 @@ class TestMemoryProfiling:
         pytest.importorskip("torch")
         pytest.importorskip("psutil")
         import psutil
-
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -412,6 +418,7 @@ class TestErrorHandling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -443,6 +450,7 @@ class TestErrorHandling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -482,6 +490,7 @@ class TestDeviceManagement:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
@@ -514,6 +523,7 @@ class TestDeviceManagement:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         import torch
+
         from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])

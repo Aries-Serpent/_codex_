@@ -4,7 +4,6 @@ Test Audit Logging
 Test module for audit logging.
 """
 
-import pytest
 
 from security import SecurityEventType, get_audit_logger, log_security_event
 

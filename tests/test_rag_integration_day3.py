@@ -307,9 +307,8 @@ class TestMetaTensorSafety:
     def test_rag_embeddings_not_meta(self):
         """RAG embeddings should not be on meta device."""
         try:
-            from codex_ml.rag import RAGIndexer
-
             import torch
+            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -328,9 +327,8 @@ class TestMetaTensorSafety:
     def test_rag_model_parameters_device(self):
         """RAG model parameters should be on valid device."""
         try:
-            from codex_ml.rag import RAGRetriever
-
             import torch
+            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
