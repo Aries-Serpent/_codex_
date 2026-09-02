@@ -149,6 +149,7 @@ class MemoryPool:
         self.available: deque = deque()
         self.in_use: set[Any] = set()
         self.lock = threading.Lock()
+        self._active_buffer: bytearray | None = None
 
         # Pre-allocate buffers
         for _ in range(pool_size):
@@ -178,9 +179,13 @@ class MemoryPool:
                     self.available.append(buf)
 
     def __enter__(self) -> bytearray:
-        return self.get_buffer()
+        self._active_buffer = self.get_buffer()
+        return self._active_buffer
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> Literal[False]:
+        if self._active_buffer is not None:
+            self.return_buffer(self._active_buffer)
+            self._active_buffer = None
         return False
 
 

@@ -289,8 +289,15 @@ class GitHubTokenProvider(TokenProvider):
                     resp.status_code,
                 )
                 return True
+            except requests_module.exceptions.RequestException as network_err:
+                # Real network failures: connection timeout, DNS errors, etc.
+                logger.warning(
+                    "GitHub API unreachable (%s); using format-only token validation",
+                    _safe_error(network_err),
+                )
+                return True
             except (ValueError, TypeError, RuntimeError) as network_err:
-                # Network unreachable, DNS failure, timeout — degrade gracefully
+                # Unexpected local validation/runtime issues — still degrade gracefully
                 logger.warning(
                     "GitHub API unreachable (%s); using format-only token validation",
                     _safe_error(network_err),
