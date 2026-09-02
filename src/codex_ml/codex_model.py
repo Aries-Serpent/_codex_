@@ -17,16 +17,12 @@ from typing import Any
 
 
 def _require_torch() -> Any:
-    import importlib
-
     if importlib.util.find_spec("torch") is None:
         raise ImportError("torch is required to build Codex models in offline mode")
     return importlib.import_module("torch")
 
 
 def _optional_peft() -> Any | None:
-    import importlib
-
     if importlib.util.find_spec("peft") is None:
         return None
     return importlib.import_module("peft")
