@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5581 review-thread follow-up
+- Addressed the remaining PR #5581 review-thread concerns without widening scope: restored the repo-base `.codex/session_startup_packet.json` timestamp, made the `nox_gates.yml` typecheck gate blocking again, removed the stray `Temp.md` file, and cleaned the unused import / unused local variable warnings in `src/codex_ml/codex_model.py` and `src/codex_ml/hf_loader.py`.
+- Kept the generated startup-packet baseline stable and preserved the current workflow logic while fixing the exact issues called out in the review thread.
+
 ### Fixed (auto-update — PR #5567)
 - Refresh: session-wrapup governance metadata for the active PR #5567 branch finalized at 2026-08-31T04:13:48Z, including the accountability report, root changelog, and session evidence refresh tied to the current workflow gate state. [auto-generated]
 

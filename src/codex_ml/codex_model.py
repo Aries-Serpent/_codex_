@@ -8,7 +8,6 @@ available.
 
 from __future__ import annotations
 
-import importlib.util
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
