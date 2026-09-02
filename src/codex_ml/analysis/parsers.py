@@ -20,20 +20,28 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 import ast  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 
+cst: Any | None
 try:
-    import libcst as cst  # optional
+    import libcst as libcst_module  # optional
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     cst = None
+else:
+    cst = libcst_module
+
+parso: Any | None
 try:
-    import parso  # optional
+    import parso as parso_module  # optional
 except (ValueError, TypeError):  # pragma: no cover - optional dependency
     parso = None
+else:
+    parso = parso_module
 
 
 @dataclass

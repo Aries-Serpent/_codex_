@@ -7,10 +7,9 @@ import pytest
 pytest.importorskip("torch")
 
 
-from codex.rag.utils import safe_model_to_device
-
 import torch
 import torch.nn as nn
+from codex.rag.utils import safe_model_to_device
 
 # PyTorch 2.x (<2.2.0) has an isinstance bug with Python 3.12 union types
 # that triggers when creating nn.LayerNorm or similar modules.

@@ -23,7 +23,6 @@ from collections.abc import Iterable, Iterator, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
-
 import torch  # noqa: E402
 
 try:  # optional dependency

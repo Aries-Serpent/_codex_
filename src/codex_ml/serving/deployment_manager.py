@@ -153,6 +153,8 @@ class DeploymentManager:
         
         try:
             # Verify model file exists
+            if version.model_path is None:
+                raise FileNotFoundError("Model file path is missing")
             if not Path(version.model_path).exists():
                 raise FileNotFoundError(f"Model file not found at {version.model_path}")
             
@@ -188,6 +190,8 @@ class DeploymentManager:
         
         try:
             # Verify model file exists
+            if version.model_path is None:
+                raise FileNotFoundError("Model file path is missing")
             if not Path(version.model_path).exists():
                 raise FileNotFoundError(f"Model file not found at {version.model_path}")
             

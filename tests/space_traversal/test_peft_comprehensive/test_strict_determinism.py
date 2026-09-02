@@ -14,9 +14,9 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
+import torch
 from codex.training import TrainCfg, run_custom_trainer
 
-import torch
 from codex_ml.models import MiniLM, MiniLMConfig
 from training.data_utils import TextDataset
 from training.engine_hf_trainer import run_hf_trainer

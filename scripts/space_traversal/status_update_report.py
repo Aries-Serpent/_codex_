@@ -44,8 +44,8 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import yaml  # type: ignore
-    from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
+    import yaml
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
 except Exception as exc:
     logger.debug(f"Exception: {exc}")
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
@@ -142,7 +142,7 @@ def main() -> None:
     thresholds = (cfg.get("scoring", {}) or {}).get("thresholds", {}) or {"low": 0.70}
     low_threshold = float(thresholds.get("low", 0.70))
 
-    caps: list[dict[str, Any]] = scored.get("capabilities", [])  # type: ignore[assignment]
+    caps: list[dict[str, Any]] = scored.get("capabilities", [])
     total_caps = len(caps)
     avg_score = (
         round(sum(float(c.get("score", 0.0)) for c in caps) / total_caps, 4) if total_caps else 0.0
@@ -150,7 +150,7 @@ def main() -> None:
 
     low_list: list[dict[str, Any]] = []
     if isinstance(gaps, dict) and "low_maturity" in gaps:
-        low_list = list(gaps["low_maturity"])  # type: ignore[assignment]
+        low_list = list(gaps["low_maturity"])
     else:
         # compute low maturity set if gaps.json missing
         low_list = [c for c in caps if float(c.get("score", 0.0)) < low_threshold]

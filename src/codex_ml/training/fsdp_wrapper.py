@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, Any, Optional
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
+    from torch import nn
     from torch.distributed.fsdp import (
         BackwardPrefetch,
         CPUOffload,
@@ -32,8 +33,6 @@ if TYPE_CHECKING:
         StateDictType,
     )
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
-
-    from torch import nn
 else:
     nn = None
     BackwardPrefetch = None
@@ -46,11 +45,10 @@ else:
     FSDP = None
 
 try:
+    import torch
     import torch.distributed.algorithms._checkpoint.checkpoint_wrapper as _ckpt_wrap
     import torch.distributed.fsdp as _fsdp
     import torch.distributed.fsdp.wrap as _fsdp_wrap
-
-    import torch
 
     nn = torch.nn
     CheckpointImpl = _ckpt_wrap.CheckpointImpl

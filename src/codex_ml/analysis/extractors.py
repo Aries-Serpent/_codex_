@@ -26,10 +26,13 @@ import ast  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 from typing import Any  # noqa: E402
 
+cst: Any | None
 try:
-    import libcst as cst  # optional
+    import libcst as libcst_module  # optional
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     cst = None
+else:
+    cst = libcst_module
 
 
 @dataclass
@@ -128,7 +131,7 @@ def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
     try:
         for n in module.body:
             if cst and isinstance(n, cst.SimpleStatementLine):
-                code = n.code
+                code = "".join(str(stmt) for stmt in n.body)
                 if "import " in code:
                     out.imports.append({"raw": code})
     except (ValueError, TypeError) as e:

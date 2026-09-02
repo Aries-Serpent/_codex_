@@ -76,7 +76,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch is optional at import time
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 _CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -331,11 +331,12 @@ def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
         logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
 
 
-def _load_peft_adapter(model: Any, adapter_path: str) -> None:
+def _load_peft_adapter(model: Any, adapter_path: str | os.PathLike[str]) -> None:
     """Load PEFT adapter from path.
     
     Reduces complexity by extracting adapter loading (2 nested try-except blocks → 1).
     """
+    resolved_path = str(adapter_path)
     try:
         from peft import PeftModel
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
@@ -346,10 +347,10 @@ def _load_peft_adapter(model: Any, adapter_path: str) -> None:
         return
     
     try:
-        model = PeftModel.from_pretrained(model, adapter_path)
+        PeftModel.from_pretrained(model, resolved_path)
         logger.info(
             "load_causal_lm: PEFT adapter loaded from %s",
-            adapter_path,
+            resolved_path,
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)

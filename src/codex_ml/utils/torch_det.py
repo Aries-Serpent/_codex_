@@ -25,7 +25,6 @@ def seed_worker(worker_id):
         import random
 
         import numpy as np
-
         import torch
 
         worker_seed = torch.initial_seed() % 2**32

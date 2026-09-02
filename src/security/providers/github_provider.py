@@ -95,6 +95,13 @@ _KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset(
 )
 
 
+def _require_requests() -> ModuleType:
+    """Return the configured requests module or raise if unavailable."""
+    if _requests is None:
+        raise RuntimeError("requests library is not installed")
+    return _requests
+
+
 def _redact_identifier(identifier: str) -> str:
     """Return a non-sensitive token/secret identifier for logs."""
     if not identifier:
@@ -257,7 +264,8 @@ class GitHubTokenProvider(TokenProvider):
                 logger.warning("requests library unavailable; using format-only auth validation")
                 return True
             try:
-                resp = _requests.get(
+                requests_module = _require_requests()
+                resp = requests_module.get(
                     "https://api.github.com/user",
                     headers={
                         "Authorization": f"token {token}",
@@ -281,8 +289,15 @@ class GitHubTokenProvider(TokenProvider):
                     resp.status_code,
                 )
                 return True
+            except requests_module.exceptions.RequestException as network_err:
+                # Real network failures: connection timeout, DNS errors, etc.
+                logger.warning(
+                    "GitHub API unreachable (%s); using format-only token validation",
+                    _safe_error(network_err),
+                )
+                return True
             except (ValueError, TypeError, RuntimeError) as network_err:
-                # Network unreachable, DNS failure, timeout — degrade gracefully
+                # Unexpected local validation/runtime issues — still degrade gracefully
                 logger.warning(
                     "GitHub API unreachable (%s); using format-only token validation",
                     _safe_error(network_err),
@@ -436,7 +451,8 @@ class GitHubTokenProvider(TokenProvider):
             body["permissions"] = permissions
 
         try:
-            resp = _requests.post(url, json=body, headers=headers, timeout=15)
+            requests_module = _require_requests()
+            resp = requests_module.post(url, json=body, headers=headers, timeout=15)
             if resp.status_code == 201:
                 data = resp.json()
                 new_token = data.get("token", "")
@@ -531,7 +547,8 @@ class GitHubTokenProvider(TokenProvider):
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
             }
-            resp = _requests.patch(
+            requests_module = _require_requests()
+            resp = requests_module.patch(
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):
@@ -572,7 +589,8 @@ class GitHubTokenProvider(TokenProvider):
             # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)  # noqa: E501
             # We attempt the installation token revoke path first (works for ghs_ tokens)
             if token.startswith("ghs_"):
-                resp = _requests.delete(
+                requests_module = _require_requests()
+                resp = requests_module.delete(
                     "https://api.github.com/installation/token",
                     headers={
                         "Authorization": f"Bearer {token}",
@@ -623,7 +641,8 @@ class GitHubTokenProvider(TokenProvider):
             logger.warning("GitHub listing API unavailable: requests library missing.")
             return []
         try:
-            resp = _requests.get(
+            requests_module = _require_requests()
+            resp = requests_module.get(
                 "https://api.github.com/user",
                 headers={
                     "Authorization": f"Bearer {token}",

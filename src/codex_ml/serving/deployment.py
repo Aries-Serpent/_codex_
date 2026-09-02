@@ -271,7 +271,7 @@ class BlueGreenDeployment:
         get_default_logger().info(
             f"Rollout complete: {self.current_green_version} promoted to blue"
         )
-        self.current_blue_version = self.current_green_version
+        self.current_blue_version = self.current_green_version or self.current_blue_version
         self.current_green_version = None
         self.rollout_active = False
         self.splitter.set_weights(blue=100, green=0)

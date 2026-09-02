@@ -321,8 +321,8 @@ def get_regression_summary(results: list[ComparisonResult]) -> dict[str, Any]:
             if delta < 0:
                 component_impacts[comp].append(delta)
 
-    most_affected = None
-    max_impact = 0
+    most_affected: str | None = None
+    max_impact = 0.0
     for comp, deltas in component_impacts.items():
         if deltas:
             avg_impact = abs(sum(deltas) / len(deltas))

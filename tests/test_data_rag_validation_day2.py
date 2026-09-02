@@ -207,9 +207,8 @@ class TestRAGIndexHealth:
     def test_rag_tensor_materialization(self):
         """RAG tensors should not be on meta device."""
         try:
-            from codex_ml.rag import get_rag_index
-
             import torch
+            from codex_ml.rag import get_rag_index
         except (ImportError, AttributeError):
             pytest.skip("PyTorch or RAG module not available")
 

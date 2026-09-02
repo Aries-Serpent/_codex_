@@ -233,9 +233,8 @@ class TestLearningRateScheduling:
         """Fixture providing optimizer with simple model."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
-        import torch.optim as optim
-
         import torch.nn as nn
+        import torch.optim as optim
 
         model = nn.Linear(10, 2)
         return optim.Adam(model.parameters(), lr=0.1)
@@ -361,9 +360,8 @@ class TestTrainingLoopIntegration:
         """Fixture providing complete training setup."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
-        import torch.optim as optim
-
         import torch.nn as nn
+        import torch.optim as optim
         from torch.utils.data import DataLoader, TensorDataset
 
         # Model

@@ -393,7 +393,6 @@ class TestRuntimeProfileComputeCapabilities:
         """Test torch tensor operations."""
         try:
             import numpy as np
-
             import torch
             
             # Test tensor creation and operations

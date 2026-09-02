@@ -11,9 +11,9 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 
+import torch
 from torch.optim import SGD
 
-import torch
 from training.checkpoint_manager import CheckpointManager
 from transformers import TrainerControl, TrainerState
 

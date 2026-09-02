@@ -92,6 +92,7 @@ def _split_smoke_impl(seed: int) -> None:
 def _checkpoint_smoke_impl(out_dir: Path) -> None:
     try:
         import torch
+
         from training.checkpointing import save_checkpoint
 
         if not hasattr(torch, "nn"):

@@ -51,8 +51,8 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
         logger.warning(f"File count exceeds limit: {len(files)} > {MAX_FILES}")
         files = files[:MAX_FILES]
 
-    evidence = []
-    found = set()  # Use set for deduplication during collection, converted to sorted list at end (line 122)
+    evidence: list[str] = []
+    found_set: set[str] = set()
 
     # Rate limiting patterns to detect
     patterns = [
@@ -110,7 +110,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
         file_has_evidence = False
         for pattern in patterns:
             if pattern in text:
-                found.add(pattern)
+                found_set.add(pattern)
                 file_has_evidence = True
 
         if file_has_evidence:
@@ -120,7 +120,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
     # Deterministic sorting (safeguard - reproducibility)
     evidence = sorted(set(evidence))
-    found = sorted(found)  # found is already a set
+    found = sorted(found_set)
 
     return {
         "id": "mcp-rate-limiting",

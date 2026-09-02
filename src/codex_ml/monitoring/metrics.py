@@ -27,10 +27,10 @@ class MetricsCollector:
     def __init__(self) -> None:
         """Initialize metrics collector."""
         self._prometheus_available = False
-        self._request_counter = None
-        self._latency_histogram = None
-        self._error_counter = None
-        self._active_requests = None
+        self._request_counter: Any | None = None
+        self._latency_histogram: Any | None = None
+        self._error_counter: Any | None = None
+        self._active_requests: Any | None = None
 
         try:
             from prometheus_client import Counter, Gauge, Histogram
@@ -83,7 +83,7 @@ class MetricsCollector:
             endpoint: Request endpoint/path
             status: HTTP status code
         """
-        if not self._prometheus_available:
+        if not self._prometheus_available or self._request_counter is None:
             return
 
         try:

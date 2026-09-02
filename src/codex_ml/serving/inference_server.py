@@ -9,29 +9,63 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
-try:
+FASTAPI_AVAILABLE: bool = False
+
+if TYPE_CHECKING:
     from fastapi import FastAPI, Header, HTTPException, Request, Security
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from pydantic import BaseModel, Field
     from starlette.middleware.trustedhost import TrustedHostMiddleware
+else:
+    try:
+        from fastapi import (
+            FastAPI as _FastAPI,
+        )
+        from fastapi import (
+            Header as _Header,
+        )
+        from fastapi import (
+            HTTPException as _HTTPException,
+        )
+        from fastapi import (
+            Request as _Request,
+        )
+        from fastapi import (
+            Security as _Security,
+        )
+        from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
+        from fastapi.security import APIKeyHeader as _APIKeyHeader
+        from pydantic import BaseModel as _BaseModel
+        from pydantic import Field as _Field
+        from starlette.middleware.trustedhost import TrustedHostMiddleware as _TrustedHostMiddleware
 
-    FASTAPI_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore[misc,assignment]
-    HTTPException = Exception  # type: ignore[misc,assignment]
-    BaseModel = object  # type: ignore[misc,assignment]
-    APIKeyHeader = None  # type: ignore[misc,assignment]
-    Security = None  # type: ignore[assignment]
-    TrustedHostMiddleware = None  # type: ignore[misc,assignment]
+        FASTAPI_AVAILABLE = True
+    except ImportError:  # pragma: no cover
+        FASTAPI_AVAILABLE = False
+        _FastAPI = Any
+        _Header = Any
+        _HTTPException = Exception
+        _Request = object
+        _Security = Any
+        _CORSMiddleware = Any
+        _APIKeyHeader = Any
+        _BaseModel = object
+        _Field = lambda *a, **k: None
+        _TrustedHostMiddleware = Any
 
-    def Field(*a: Any, **k: Any) -> None:  # type: ignore[no-redef]
-        return None
-
-    Request = object  # type: ignore[misc,assignment]
+    FastAPI = _FastAPI
+    Header = _Header
+    HTTPException = _HTTPException
+    Request = _Request
+    Security = _Security
+    CORSMiddleware = _CORSMiddleware
+    APIKeyHeader = _APIKeyHeader
+    BaseModel = _BaseModel
+    Field = _Field
+    TrustedHostMiddleware = _TrustedHostMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -544,9 +578,8 @@ if FASTAPI_AVAILABLE:
             dependencies=auth_dependencies,
         )
         def predict(request: PredictionRequest, http_request: Request):
-            client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
-            )
+            client = getattr(http_request, "client", None)
+            client_key = client.host if client is not None else "global"
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 

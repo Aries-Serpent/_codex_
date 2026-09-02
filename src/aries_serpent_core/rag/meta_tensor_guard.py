@@ -336,7 +336,6 @@ class MetaTensorGuardRail:
 
         try:
             import psutil
-
             import torch
 
             # Check system memory
