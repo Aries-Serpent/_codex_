@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
-  security-events: read
+  security-events: write
   pull-requests: write
   checks: write
   statuses: write
@@ -62,6 +62,7 @@ jobs:
     - name: Autobuild
       uses: github/codeql-action/autobuild@v4
     - name: Perform CodeQL Analysis
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
       uses: github/codeql-action/analyze@v4
       with:
         category: /language:python
@@ -88,8 +89,7 @@ jobs:
     - name: Gate Decision & Policy Enforcement
       id: gate-decision
       shell: bash
-      run: "CRITICAL=${{ steps.analyze.outputs.critical_count }}\nHIGH=${{ steps.analyze.outputs.high_count\
-        \ }}\nDRY_RUN=${{ github.event.inputs.dry_run }}\n\nBLOCKED=false\nSTATUS=\"\
+      run: "CRITICAL=${{ steps.analyze.outputs.critical_count || 0 }}\nHIGH=${{ steps.analyze.outputs.high_count || 0 }}\nMEDIUM=${{ steps.analyze.outputs.medium_count || 0 }}\nDRY_RUN=${{ github.event.inputs.dry_run || 'false' }}\n\nBLOCKED=false\nSTATUS=\"\
         PASS\"\nREASON=\"\"\n\n# Check for critical alerts (always blocking)\nif [\
         \ \"$CRITICAL\" -gt 0 ]; then\n  BLOCKED=true\n  STATUS=\"FAIL\"\n  REASON=\"\
         Critical vulnerabilities detected ($CRITICAL)\"\nfi\n\n# Check for high alerts\
@@ -104,7 +104,7 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\n\nif [ \"$BLOCKED\" = \"true\" ] && [ \"$DRY_RUN\"\
         \ != \"true\" ]; then\n  exit 1\nfi\n"
     - name: Create PR Comment with Gate Status
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       uses: actions/github-script@v9
       with:
         script: "const critical = '${{ steps.analyze.outputs.critical_count }}';\n\
