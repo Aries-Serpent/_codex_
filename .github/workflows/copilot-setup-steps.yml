@@ -89,7 +89,7 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
     - name: "📦 Checkout Repository (baseline: no LFS content)"
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
