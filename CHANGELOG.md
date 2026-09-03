@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5587)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5587 (SHA `0f914e35`) at 2026-09-03T16:57:29Z [auto-generated]
+
 ### Fixed — Workflow governance and branch compliance (2026-09-03)
 - Repaired branch-scoped workflow concurrency and explicit timeout coverage in the active workflow set so the repository matches the WEC contract before opening a PR to main.
 - Standardized the remaining non-compliant workflow jobs (`data-quality-suite.yml`, `scheduled-archival.yml`, `docker-build-push.yml`, and `dependabot-consolidation.yml`) and refreshed the branch-level governance evidence to satisfy REQ-4/REQ-5 expectations.

@@ -40,7 +40,6 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
-    timeout-minutes: 30
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
