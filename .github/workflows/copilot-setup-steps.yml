@@ -516,20 +516,52 @@ jobs:
         \  if git lfs fetch --all origin; then\n    echo \"git lfs fetch --all succeeded\"\
         \n    break\n  else\n    echo \"git lfs fetch --all failed on attempt $i (non-blocking)\"\
         \n    sleep $((i * 5))\n  fi\ndone\n\ngit lfs checkout || true\n"
-    - name: "\U0001F50D Detect Environment Type"
+    - name: "\U0001F9E0 ML/RAG environment preflight gate"
+      id: env_preflight
+      continue-on-error: true
+      env:
+        HEAD_REF: ${{ github.head_ref || github.ref_name || github.ref }}
+        TASK_CONTEXT: ${{ github.event.pull_request.title || github.event.head_commit.message || github.ref }}
+        CI_JOB_NAME: ${{ github.workflow }} / ${{ github.job }}
+      run: |
+        python3 scripts/ci/environment_preflight.py \
+          --repo-root "$GITHUB_WORKSPACE" \
+          --task-context "$TASK_CONTEXT" \
+          --head-ref "$HEAD_REF" \
+          --ci-job "$CI_JOB_NAME"
+    - name: "🔍 Detect Environment Type"
       id: detect_env
       continue-on-error: true
       env:
-        HEAD_REF: ${{ github.head_ref }}
-        INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
-      run: "ENV_TYPE=\"${INPUT_ENV_TYPE}\"\nif [[ \"$ENV_TYPE\" == \"standard\" ]];\
-        \ then\n  if [[ \"${HEAD_REF}\" == *\"ml\"* ]] || [[ \"${HEAD_REF}\" == *\"\
-        rag\"* ]]; then\n    ENV_TYPE=\"ml-heavy\"\n  elif [[ \"${HEAD_REF}\" == *\"\
-        security\"* ]] || [[ \"${HEAD_REF}\" == *\"sec\"* ]]; then\n    ENV_TYPE=\"\
-        security-scan\"\n  elif [[ \"${HEAD_REF}\" == *\"docs\"* ]] || [[ \"${HEAD_REF}\"\
-        \ == *\"documentation\"* ]]; then\n    ENV_TYPE=\"documentation\"\n  fi\n\
-        fi\necho \"environment_type=$ENV_TYPE\" >> \"$GITHUB_OUTPUT\"\necho \"\u2705\
-        \ Detected environment type: $ENV_TYPE\"\n"
+        HEAD_REF: ${{ github.head_ref || github.ref_name || github.ref }}
+        INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || steps.env_preflight.outputs.environment_type || 'standard' }}
+        LFS_MODE: ${{ steps.env_preflight.outputs.lfs_mode || github.event.inputs.lfs_mode || 'none' }}
+      run: |
+        ENV_TYPE="${INPUT_ENV_TYPE:-standard}"
+        LFS_MODE="${LFS_MODE:-none}"
+
+        if [[ "$ENV_TYPE" == "standard" ]]; then
+          if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
+            ENV_TYPE="ml-heavy"
+          elif [[ "${HEAD_REF}" == *"security"* ]] || [[ "${HEAD_REF}" == *"sec"* ]]; then
+            ENV_TYPE="security-scan"
+          elif [[ "${HEAD_REF}" == *"docs"* ]] || [[ "${HEAD_REF}" == *"documentation"* ]]; then
+            ENV_TYPE="documentation"
+          fi
+        fi
+
+        if [[ "$ENV_TYPE" == "ml-heavy" && "$LFS_MODE" == "none" ]]; then
+          LFS_MODE="targeted"
+        fi
+
+        if [[ "$ENV_TYPE" == "ml-heavy" ]]; then
+          echo "LFS_MODE=${LFS_MODE}" >> "$GITHUB_ENV"
+          echo "LFS_INCLUDE_PATHS=data/models/*,artifacts/*" >> "$GITHUB_ENV"
+        fi
+
+        echo "environment_type=$ENV_TYPE" >> "$GITHUB_OUTPUT"
+        echo "lfs_mode=$LFS_MODE" >> "$GITHUB_OUTPUT"
+        echo "✅ Detected environment type: $ENV_TYPE (LFS=${LFS_MODE})"
     - name: "\u2705 Validate Environment Setup"
       continue-on-error: true
       run: "trap '' PIPE\nset +o pipefail\n\necho \"==================== Environment\

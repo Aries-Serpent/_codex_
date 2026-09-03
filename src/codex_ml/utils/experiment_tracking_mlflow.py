@@ -15,10 +15,11 @@ from codex_ml.tracking.mlflow_guard import (
     last_decision,
 )
 
+mlflow = None
 if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
-    import mlflow
-else:  # pragma: no cover - exercised when MLflow is absent
-    mlflow = None
+    import mlflow as _mlflow
+    if not getattr(_mlflow, "__codex_stub__", False):
+        mlflow = _mlflow
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
     if effective.startswith("file:"):
         os.environ["CODEX_MLFLOW_LOCAL_DIR"] = effective[len("file:") :]
 
-    if mlflow is not None:
+    if mlflow is not None and not getattr(mlflow, "__codex_stub__", False):
         mlflow.set_tracking_uri(effective)
         LOGGER.info("Using MLflow tracking URI: %s", effective)
     else:
@@ -124,7 +125,7 @@ def maybe_mlflow(
                 return uri
             return DEFAULT_LITERAL_LOCAL_URI
 
-    if not enable or mlflow is None:
+    if not enable or mlflow is None or getattr(mlflow, "__codex_stub__", False):
         yield _NoOpLogger()
         return
 

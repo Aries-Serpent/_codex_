@@ -3,6 +3,7 @@
 Ensure local tracking defaults are applied early while keeping import-order linters calm.
 """
 
+import importlib.machinery
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -51,6 +52,10 @@ def _install_optional_stub(module_name: str, *, attrs: dict[str, object] | None 
         __import__(module_name)
     except (ImportError, ModuleNotFoundError):  # only stub genuinely missing modules
         stub = ModuleType(module_name)
+        stub.__spec__ = importlib.machinery.ModuleSpec(module_name, loader=None)
+        stub.__loader__ = None
+        stub.__package__ = module_name.rpartition(".")[0]
+        stub.__codex_stub__ = True
         if attrs:
             for key, value in attrs.items():
                 setattr(stub, key, value)
