@@ -43,3 +43,16 @@ def test_detect_missing_runtime_dependencies_uses_runtime_package_names(monkeypa
         "torch>=2.6.1,<3.0.0; platform_system != 'Windows'",
         "faiss-cpu>=1.15.0,<2.0.0",
     ]
+
+
+def test_detect_missing_runtime_dependencies_rejects_stub_specs(monkeypatch) -> None:
+    class StubSpec:
+        loader = None
+        origin = "unknown"
+
+    monkeypatch.setitem(mod.sys.modules, "torch", type("StubModule", (), {"__codex_stub__": True})())
+    monkeypatch.setattr(mod.importlib.util, "find_spec", lambda name: StubSpec() if name == "torch" else object())
+
+    missing = mod._detect_missing_runtime_dependencies(["torch>=2.6.1,<3.0.0"])
+
+    assert missing == ["torch>=2.6.1,<3.0.0"]

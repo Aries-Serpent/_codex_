@@ -17,6 +17,7 @@ import argparse
 import importlib.util
 import os
 import re
+import sys
 from pathlib import Path
 from typing import Sequence
 
@@ -102,6 +103,21 @@ def _detect_environment_type(task_inputs: Sequence[str | None]) -> tuple[str, st
     return "standard", "No ML/RAG/security/docs signal detected; defaulting to standard environment."
 
 
+def _is_stubbed_dependency(module_name: str, spec: object | None) -> bool:
+    if spec is None:
+        return True
+    loader = getattr(spec, "loader", None)
+    if loader is not None:
+        return False
+    if getattr(spec, "origin", None) in {"built-in", "frozen"}:
+        return False
+    if getattr(sys.modules.get(module_name), "__codex_stub__", False):
+        return True
+    # sitecustomize installs empty placeholder modules with a ModuleSpec whose
+    # loader is intentionally unset. Those should not count as actually installed.
+    return True
+
+
 def _detect_missing_runtime_dependencies(required_deps: Sequence[str]) -> list[str]:
     missing: list[str] = []
     for dep in required_deps:
@@ -115,7 +131,8 @@ def _detect_missing_runtime_dependencies(required_deps: Sequence[str]) -> list[s
         module_name = module_name.replace("-", "_")
         if module_name in {"pyyaml", "yaml"}:
             module_name = "yaml"
-        if importlib.util.find_spec(module_name) is None:
+        spec = importlib.util.find_spec(module_name)
+        if spec is None or _is_stubbed_dependency(module_name, spec):
             missing.append(dep)
     return missing
 
