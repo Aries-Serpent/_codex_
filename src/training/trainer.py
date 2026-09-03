@@ -799,11 +799,10 @@ class Trainer:
         self._save_checkpoint(epoch, epoch_metrics)
 
     def close(self) -> None:
-        shutdown_logging(self._logging_session)
-
-    def __del__(self) -> None:  # pragma: no cover - defensive cleanup
-        with contextlib.suppress(Exception):
-            self.close()
+        session = getattr(self, "_logging_session", None)
+        if session is not None:
+            shutdown_logging(session)
+            self._logging_session = None
 
 
 ExtendedTrainer = Trainer
