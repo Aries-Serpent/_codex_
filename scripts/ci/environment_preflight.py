@@ -18,7 +18,7 @@ import importlib.util
 import os
 import re
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
 try:
     import tomllib
@@ -81,11 +81,18 @@ def _load_runtime_dependencies(repo_root: Path) -> list[str]:
     return [str(dep).strip() for dep in runtime if str(dep).strip()]
 
 
+def _contains_keyword(haystack: str, keyword: str) -> bool:
+    if not keyword:
+        return False
+    pattern = rf"(?<![A-Za-z0-9]){re.escape(keyword)}(?![A-Za-z0-9])"
+    return re.search(pattern, haystack) is not None
+
+
 def _detect_environment_type(task_inputs: Sequence[str | None]) -> tuple[str, str]:
     haystack = " ".join(_coalesce(task_inputs)).lower()
     for keywords in (ML_RAG_KEYWORDS, SECURITY_KEYWORDS, DOCS_KEYWORDS):
         for keyword in keywords:
-            if keyword in haystack:
+            if _contains_keyword(haystack, keyword):
                 if keywords is ML_RAG_KEYWORDS:
                     return "ml-heavy", f"Detected ML/RAG signal: '{keyword}'"
                 if keywords is SECURITY_KEYWORDS:

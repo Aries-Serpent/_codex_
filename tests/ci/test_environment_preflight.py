@@ -13,6 +13,17 @@ def test_detect_environment_type_flags_ml_rag_signals() -> None:
     assert "ML/RAG signal" in reason
 
 
+def test_detect_environment_type_ignores_ml_substring_in_yaml() -> None:
+    environment_type, reason = mod._detect_environment_type([
+        "yaml config",
+        "ci workflow",
+        "deployment pipeline",
+    ])
+
+    assert environment_type == "standard"
+    assert "No ML/RAG" in reason
+
+
 def test_detect_missing_runtime_dependencies_uses_runtime_package_names(monkeypatch) -> None:
     def fake_find_spec(name: str):
         if name in {"numpy", "torch", "faiss"}:
