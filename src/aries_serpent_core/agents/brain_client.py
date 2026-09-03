@@ -87,7 +87,7 @@ import urllib.parse
 import urllib.request
 from typing import Any, Optional
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # ── Default server URL ────────────────────────────────────────────────────────
 _DEFAULT_URL = "http://localhost:8765"
@@ -142,8 +142,9 @@ class BrainClient:
             scheme = parsed.scheme.lower()
             if scheme not in ("http", "https"):
                 raise BrainClientError(
-                    f"Invalid URL scheme '{scheme}' (only http:// or https:// permitted). "
-                    f"Check the 'base_url' argument or CODEX_CLI_API_URL / COPILOT_CLI_BASE_URL."
+                    f"Invalid base URL for BrainClient ('{raw}'); expected an http:// or "
+                    "https:// URL with a host.  Check the 'base_url' argument or the "
+                    "CODEX_CLI_API_URL / COPILOT_CLI_BASE_URL environment variables."
                 )
         else:
             # Bare host, host:port, or host/path — convert to http://
