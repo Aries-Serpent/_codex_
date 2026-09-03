@@ -5,6 +5,7 @@ Provides embeddings using llama.cpp inference engine.
 """
 
 import logging
+import weakref
 from typing import Optional, Union
 
 import numpy as np
@@ -93,6 +94,7 @@ class LlamaCppEmbeddingProvider:
                 embedding=embedding,
                 verbose=False,
             )
+            self._finalizer = weakref.finalize(self, _finalize_model, self.model)
             logger.info(f"Loaded llama.cpp model from {model_path}")
 
             # Auto-detect dimension
@@ -155,6 +157,9 @@ class LlamaCppEmbeddingProvider:
 
     def close(self) -> None:
         """Close the optional model resource without relying on __del__."""
+        finalizer = getattr(self, "_finalizer", None)
+        if finalizer is not None and finalizer.alive:
+            finalizer.detach()
         model = getattr(self, "model", None)
         try:
             if model is not None:
@@ -165,6 +170,7 @@ class LlamaCppEmbeddingProvider:
             logger.debug("Failed to close llama.cpp model", exc_info=True)
         finally:
             self.model = None
+            self._finalizer = None
 
     def __enter__(self):
         return self
