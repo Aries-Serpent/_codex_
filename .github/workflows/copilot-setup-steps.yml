@@ -706,7 +706,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
