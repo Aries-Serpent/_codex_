@@ -1,0 +1,61 @@
+environment_type: ml-heavy
+reason: Detected ML/RAG signal: 'ml'
+lfs_mode: targeted
+lfs_include_paths:
+  - data/models/*
+  - artifacts/*
+local_sandbox_policy:
+  sandbox_is_staging_only: True
+  prefer_prepared_primary_environment: True
+  transfer_via_repo_bundle: True
+
+runtime:
+  python: 3.12
+  runner_profile: ubuntu-8-core
+  required_dependencies:
+    - pandas>=3.0.5,<4
+    - numpy>=2.5.2,<3
+    - scikit-learn>=1.9.0,<2
+    - sentencepiece>=0.2.2
+    - torch>=2.6.1,<3.0.0; platform_system != 'Windows'
+    - transformers>=5.16.1,<6
+    - datasets>=5.0.0,<6
+    - accelerate>=1.14.0,<2
+    - peft>=0.20.0,<1
+    - fastapi>=0.141.1,<1
+    - litestar>=2.24.0,<3
+    - starlette>=1.6.0,<2
+    - slowapi>=0.1.10
+    - httpx>=0.26,<1
+    - ray[serve]>=2.58.0,<3
+    - prometheus-client>=0.26.0
+    - psutil>=7.2.2
+    - evidently>=0.7.21,<1
+    - duckdb>=1.5.5
+    - sentence-transformers>=6.0.0,<7.0.0
+    - chromadb>=1.5.9
+    - faiss-cpu>=1.15.0,<2.0.0
+  missing_dependencies:
+    - pandas>=3.0.5,<4
+    - numpy>=2.5.2,<3
+    - scikit-learn>=1.9.0,<2
+    - sentencepiece>=0.2.2
+    - torch>=2.6.1,<3.0.0; platform_system != 'Windows'
+    - transformers>=5.16.1,<6
+    - datasets>=5.0.0,<6
+    - accelerate>=1.14.0,<2
+    - peft>=0.20.0,<1
+    - litestar>=2.24.0,<3
+    - slowapi>=0.1.10
+    - ray[serve]>=2.58.0,<3
+    - prometheus-client>=0.26.0
+    - psutil>=7.2.2
+    - evidently>=0.7.21,<1
+    - duckdb>=1.5.5
+    - sentence-transformers>=6.0.0,<7.0.0
+    - chromadb>=1.5.9
+    - faiss-cpu>=1.15.0,<2.0.0
+
+notes:
+  - The sandbox is a staging environment for diagnosis and diff creation, not the canonical validator for the ML/RAG dependency matrix.
+  - When the environment type is ml-heavy, prefer the GitHub-hosted setup workflow or a prepared primary Copilot session before running the full ML/RAG suite.

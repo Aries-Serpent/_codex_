@@ -17,10 +17,15 @@ except PackageNotFoundError:
 
 __all__ = ["__version__"]
 
-# Set __path__ to include the codex package directory so submodules can be found
-__path__ = [str(Path(__file__).parent)]
+# Include both the live `codex` package directory and the migrated
+# `aries_serpent_core` namespace so legacy `codex.*` imports continue to work
+# while the codebase is being transitioned.
+_src_root = Path(__file__).resolve().parent.parent
+_legacy_root = _src_root / "aries_serpent_core"
+__path__ = [str(Path(__file__).resolve().parent)]
+if _legacy_root.is_dir():
+    __path__.append(str(_legacy_root))
 
 # Ensure src/ is in sys.path so relative imports work
-_src = Path(__file__).parent.parent
-if str(_src) not in sys.path:
-    sys.path.insert(0, str(_src))
+if str(_src_root) not in sys.path:
+    sys.path.insert(0, str(_src_root))

@@ -5,11 +5,28 @@ Provides embeddings using GPT4All local runtime.
 """
 
 import logging
+import weakref
 from typing import Optional
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+def _finalize_embedder(embedder: object | None) -> None:
+    """Best-effort cleanup for optional GPT4All resources.
+
+    Explicit cleanup is preferred to destructor-based finalization because
+    interpreter shutdown can leave global state partially torn down.
+    """
+    if embedder is None:
+        return
+    try:
+        close = getattr(embedder, "close", None)
+        if callable(close):
+            close()
+    except Exception:
+        logger.debug("Failed to finalize GPT4All embedder", exc_info=True)
 
 try:
     from gpt4all import Embed4All
@@ -59,6 +76,7 @@ class GPT4AllEmbeddingProvider:
         try:
             self.embedder = Embed4All()
             logger.info("Initialized GPT4All embedder")
+            self._finalizer = weakref.finalize(self, _finalize_embedder, self.embedder)
 
             # Auto-detect dimension
             if dimension is None:
@@ -112,7 +130,25 @@ class GPT4AllEmbeddingProvider:
     def __repr__(self) -> str:
         return f"GPT4AllEmbeddingProvider(model={self.model_name}, dim={self.dimension})"
 
-    def __del__(self) -> None:
-        """Cleanup embedder on deletion."""
-        if hasattr(self, "embedder"):
-            del self.embedder
+    def close(self) -> None:
+        """Close the optional embedder resource without relying on __del__."""
+        finalizer = getattr(self, "_finalizer", None)
+        if finalizer is not None and finalizer.alive:
+            finalizer.detach()
+        embedder = getattr(self, "embedder", None)
+        try:
+            if embedder is not None:
+                close = getattr(embedder, "close", None)
+                if callable(close):
+                    close()
+        except Exception:
+            logger.debug("Failed to close GPT4All embedder", exc_info=True)
+        finally:
+            self.embedder = None
+            self._finalizer = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()

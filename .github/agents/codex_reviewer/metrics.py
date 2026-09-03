@@ -162,12 +162,9 @@ class MetricsCollector:
         self._flush_metrics()
         self._flush_feedback()
 
-    def __del__(self):
-        """Ensure buffers are flushed on cleanup."""
-        try:
-            self.flush_all()
-        except Exception:
-            pass  # Ignore errors during cleanup
+    def close(self):
+        """Explicit lifecycle hook for buffered metrics cleanup."""
+        self.flush_all()
 
     def get_recent_metrics(self, days: int = 30) -> list[ReviewMetrics]:
         """

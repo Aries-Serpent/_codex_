@@ -8,12 +8,25 @@ import json
 import logging
 import os
 import time
+import weakref
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 logger = logging.getLogger(__name__)
+
+
+def _shutdown_logging_session(session: LoggingSession | None) -> None:
+    """Best-effort shutdown for optional logging resources."""
+    if session is None:
+        return
+    try:
+        shutdown_logging(session)
+    except Exception:
+        logger.debug("Failed to shut down logging session during finalization", exc_info=True)
+
+
 try:  # pragma: no cover - optional torch guard for import-time failures
     import torch
     from torch import nn
@@ -356,6 +369,7 @@ class Trainer:
         self.history: list[Mapping[str, float]] = []
         self._checkpoints: list[tuple[float, Path, Path]] = []
         self._logging_session: LoggingSession = setup_logging(cfg.logging)
+        self._finalizer = weakref.finalize(self, _shutdown_logging_session, self._logging_session)
         metrics_path = cfg.metrics_ndjson_path
         self._metrics_path: Path | None = Path(metrics_path) if metrics_path else None
         self._resume_metadata: Mapping[str, Any] | None = None
@@ -799,11 +813,14 @@ class Trainer:
         self._save_checkpoint(epoch, epoch_metrics)
 
     def close(self) -> None:
-        shutdown_logging(self._logging_session)
-
-    def __del__(self) -> None:  # pragma: no cover - defensive cleanup
-        with contextlib.suppress(Exception):
-            self.close()
+        finalizer = getattr(self, "_finalizer", None)
+        if finalizer is not None and finalizer.alive:
+            finalizer.detach()
+        session = getattr(self, "_logging_session", None)
+        if session is not None:
+            shutdown_logging(session)
+            self._logging_session = None
+            self._finalizer = None
 
 
 ExtendedTrainer = Trainer
