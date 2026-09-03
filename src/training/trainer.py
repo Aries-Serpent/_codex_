@@ -35,7 +35,7 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
-except (ValueError, TypeError, AttributeError):  # pragma: no cover - propagate a consistent runtime error lazily
+except (ImportError, ModuleNotFoundError, ValueError, TypeError, AttributeError):  # pragma: no cover - degrade to a safe torch stub when absent
     _HAS_REAL_TORCH = False
 
     class _NoOpScaler:

@@ -1,8 +1,18 @@
-#             assert "requires a real torch" not in str(, "Condition must be true"
-#                 exc
-#             ), "Trainer should not raise torch-guard error with CODEX_ALLOW_TORCH_STUB=1"
-#         except Exception as _err:
-#             pass  # Other errors from incomplete mock setup are acceptable
+import importlib
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+
+def _import_trainer():
+    return importlib.import_module("training.trainer")
 
 
 # ---------------------------------------------------------------------------

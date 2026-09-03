@@ -85,8 +85,18 @@ def _load_runtime_dependencies(repo_root: Path) -> list[str]:
 def _contains_keyword(haystack: str, keyword: str) -> bool:
     if not keyword:
         return False
-    pattern = rf"(?<![A-Za-z0-9]){re.escape(keyword)}(?![A-Za-z0-9])"
-    return re.search(pattern, haystack) is not None
+    normalized_haystack = re.sub(r"[^a-z0-9]+", " ", (haystack or "").lower()).strip()
+    normalized_keyword = re.sub(r"[^a-z0-9]+", " ", keyword.lower()).strip()
+    if not normalized_keyword:
+        return False
+
+    tokens = normalized_haystack.split()
+    keyword_tokens = normalized_keyword.split()
+    if len(keyword_tokens) == 1:
+        return keyword_tokens[0] in tokens
+
+    keyword_phrase = " ".join(keyword_tokens)
+    return keyword_phrase in normalized_haystack or keyword_phrase.replace(" ", "-") in (haystack or "").lower() or keyword_phrase.replace(" ", "_") in (haystack or "").lower()
 
 
 def _detect_environment_type(task_inputs: Sequence[str | None]) -> tuple[str, str]:
@@ -237,13 +247,19 @@ def main() -> int:
     environment_type, reason = _detect_environment_type(task_context)
     config = _build_config(environment_type, reason, repo_root)
     output = args.output or (repo_root / ".codex" / "agent_environment_config.yaml")
-    _write_config(output, config)
-    _write_github_output(environment_type, reason, config["lfs_mode"], output)
+    output_path = output.resolve(strict=False)
+    try:
+        output_path.relative_to(repo_root)
+    except ValueError as exc:
+        raise ValueError(f"--output path must stay inside repo root: {output}") from exc
+
+    _write_config(output_path, config)
+    _write_github_output(environment_type, reason, config["lfs_mode"], output_path)
 
     print(f"environment_type={environment_type}")
     print(f"lfs_mode={config['lfs_mode']}")
     print(f"reason={reason}")
-    print(f"config_path={output}")
+    print(f"config_path={output_path}")
     print(f"local_sandbox_policy={config['local_sandbox_policy']}")
     return 0
 
