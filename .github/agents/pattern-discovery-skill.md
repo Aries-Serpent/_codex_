@@ -1,6 +1,7 @@
 ---
-id: pattern.discovery.brain
+id: pattern-discovery-skill
 name: Pattern Discovery Skill
+description: Discover, classify, and score recurring patterns in memory for promotion to long-term storage. Supports decision, error, performance, success, and risk pattern analysis with improvement area tagging and promotion scoring.
 version: 1.0.0
 category: cognitive_brain
 subcategory: memory_management
