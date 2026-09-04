@@ -1,9 +1,11 @@
 ---
 name: Policy Coach Agent
-description: Coach contributors on repository policies, coding standards, and compliance requirements
+description: Coach contributors on repository policies, coding standards, and compliance
+  requirements
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — contributor policy coaching and compliance guidance
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: policy-coach
 ---
 
 # Policy Coach Agent

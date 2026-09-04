@@ -1,11 +1,13 @@
 ---
 name: Security Audit Agent
-description: Perform comprehensive security audits covering SAST, dependency vulnerabilities, and compliance checks
+description: Perform comprehensive security audits covering SAST, dependency vulnerabilities,
+  and compliance checks
 deprecated: true
 superseded_by: unified-security-scanner.md
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — SAST, dependency audits, compliance
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: security-audit
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).

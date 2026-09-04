@@ -1,6 +1,7 @@
 ---
-name: owner-approval-guard
-description: Enforce owner approval requirements for sensitive autonomous operations and deployments
+name: Owner Approval Guard
+description: Enforce owner approval requirements for sensitive autonomous operations
+  and deployments
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
@@ -8,7 +9,7 @@ aais_contribution: +1.0 points
 batch: pr-10
 deprecated: true
 superseded_by: unified-governance-gate.md (v1.0.0-m05, 2026-02-22)
-
+id: owner-approval-guard
 ---
 
 > ⚠️ **DEPRECATED** — Owner approval enforcement has been merged into **[Unified Governance Gate v1.0](unified-governance-gate.md)** (M-05 merge). Use `unified-governance-gate` for all approval enforcement.

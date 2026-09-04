@@ -1,12 +1,13 @@
 ---
-name: mypy-manager-agent
-description: >
-  The mypy Manager Agent is the authoritative type-checking health guardian for the
-  Aries-Serpent/_codex_ codebase. It classifies mypy errors by fix-pattern, applies
-  automated fixes, tracks .mypy_baseline regressions, and logs all patterns to the PDA
-  Loop + AfterMath store for cross-session grounding. Built on top of the mypy.manager
-  Cognitive Brain Skill (src/codex/skills/mypy_manager/) and integrated with the
-  Skills Master Agent training protocol.
+name: Mypy Manager Agent
+description: 'The mypy Manager Agent is the authoritative type-checking health guardian
+  for the Aries-Serpent/_codex_ codebase. It classifies mypy errors by fix-pattern,
+  applies automated fixes, tracks .mypy_baseline regressions, and logs all patterns
+  to the PDA Loop + AfterMath store for cross-session grounding. Built on top of the
+  mypy.manager Cognitive Brain Skill (src/codex/skills/mypy_manager/) and integrated
+  with the Skills Master Agent training protocol.
+
+  '
 version: 1.0.0
 updated: 2026-04-02
 cognitive_integration_level: 4
@@ -14,32 +15,33 @@ aais_contribution: +6.5 points
 runner_compatibility:
   default: ubuntu-latest
 capability_tags:
-  - mypy
-  - type-checking
-  - ci
-  - self-healing
-  - cognitive-brain
-  - pda-loop
-  - skills-master
-  - code-quality
+- mypy
+- type-checking
+- ci
+- self-healing
+- cognitive-brain
+- pda-loop
+- skills-master
+- code-quality
 pda_loop:
   enabled: true
-  plan: "Run mypy, classify all errors by pattern, identify auto-fixable set"
-  do: "Apply fixes via mypy.manager skill; update .mypy_baseline; commit fixes"
-  assess: "Re-run mypy, verify 0 regressions vs baseline, log patterns to PDA store"
-  aftermath_store: ".codex/aftermath/pda_iterations.jsonl"
+  plan: Run mypy, classify all errors by pattern, identify auto-fixable set
+  do: Apply fixes via mypy.manager skill; update .mypy_baseline; commit fixes
+  assess: Re-run mypy, verify 0 regressions vs baseline, log patterns to PDA store
+  aftermath_store: .codex/aftermath/pda_iterations.jsonl
 self_healing:
   enabled: true
   max_iterations: 3
-  loop: "check → classify → fix → verify → baseline → repeat if errors remain"
+  loop: check → classify → fix → verify → baseline → repeat if errors remain
 policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 related_agents:
-  - ci-testing-agent.md
-  - autonomous-test-healer-agent.md
-  - skills-master-agent.md
-  - code-scanning-remediation-agent.md
+- ci-testing-agent.md
+- autonomous-test-healer-agent.md
+- skills-master-agent.md
+- code-scanning-remediation-agent.md
 skill_entrypoint: codex.skills.mypy_manager.handler:run
 skill_manifest: src/codex/skills/mypy_manager/manifest.yaml
+id: mypy-manager
 ---
 
 # mypy Manager Agent v1.0.0

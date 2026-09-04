@@ -1,14 +1,14 @@
 {
   "metadata": {
-    "generated_at": "2026-09-04T04:01:35Z",
+    "generated_at": "2026-09-04T04:03:15Z",
     "registry_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/agent_spec.schema.json",
     "frontmatter_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
-    "total_records": 261
+    "total_records": 262
   },
   "summary": {
-    "compliant": 166,
-    "non_compliant": 95,
-    "compliance_rate": "63.6%"
+    "compliant": 218,
+    "non_compliant": 44,
+    "compliance_rate": "83.2%"
   },
   "compliant_agents": [
     ".github/agents/artifact-monitor-agent.md",
@@ -31,6 +31,7 @@
     ".github/agents/codebase-qa-walkthrough-agent.agent.yml",
     ".github/agents/codeql-alert-resolution-agent.md",
     ".github/agents/cognitive-brain-cli-agent.md",
+    ".github/agents/cognitive-brain-manager.md",
     ".github/agents/cognitive-ooda-loop-agent.md",
     ".github/agents/config-migration-assistant.agent.md",
     ".github/agents/config-validator.agent.md",
@@ -133,28 +134,75 @@
     ".github/agents/AGENT_REGISTRY.yaml#test-pattern-guardian",
     ".github/agents/AGENT_REGISTRY.yaml#unified-security-scanner",
     ".github/agents/AGENT_REGISTRY.yaml#cross-agent-knowledge-graph",
+    ".github/agents/AGENT_REGISTRY.yaml#codeql-alert-resolution-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-triage-pipeline-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#recon-scout-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#policy-coach-agent",
     ".github/agents/AGENT_REGISTRY.yaml#python-architect-agent",
     ".github/agents/AGENT_REGISTRY.yaml#agent-iq-scoring-gate",
     ".github/agents/AGENT_REGISTRY.yaml#agent-orchestrator",
+    ".github/agents/AGENT_REGISTRY.yaml#artifact-monitor-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#autonomous-test-healer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cache-management-agent",
     ".github/agents/AGENT_REGISTRY.yaml#cache-manager-integration",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-emergency-response-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-failure-resolution-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-log-retrieval-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-optimization-agent",
     ".github/agents/AGENT_REGISTRY.yaml#ci-parameter-mismatch-healer",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-resilience-emergency-response-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#claim-verification-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#code-analysis-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#code-scanning-remediation-agent",
     ".github/agents/AGENT_REGISTRY.yaml#codebase-health-guardian",
     ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-manager",
+    ".github/agents/AGENT_REGISTRY.yaml#coverage-gapfill-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cpu-only-ci-config-agent",
     ".github/agents/AGENT_REGISTRY.yaml#cross-platform-filename-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#dependency-conflict-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#dependency-security-review-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#doc-refactor-test-agent",
     ".github/agents/AGENT_REGISTRY.yaml#documentation-consolidator",
     ".github/agents/AGENT_REGISTRY.yaml#fragile-test-guardian",
     ".github/agents/AGENT_REGISTRY.yaml#github-pages-manager",
     ".github/agents/AGENT_REGISTRY.yaml#json-serialization-expert",
     ".github/agents/AGENT_REGISTRY.yaml#meta-tensor-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#ml-validation-suite-agent",
     ".github/agents/AGENT_REGISTRY.yaml#msv-dashboard-monitor",
+    ".github/agents/AGENT_REGISTRY.yaml#mutation-testing-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#pr-check-remediation-agent",
     ".github/agents/AGENT_REGISTRY.yaml#pr-test-infrastructure-fixer",
+    ".github/agents/AGENT_REGISTRY.yaml#pypi-publishing-operations-agent",
     ".github/agents/AGENT_REGISTRY.yaml#python-312-type-fixer",
+    ".github/agents/AGENT_REGISTRY.yaml#rag-freshness-loop-agent",
     ".github/agents/AGENT_REGISTRY.yaml#rag-meta-tensor-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#rag-module-management-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#reference-updater-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repository-hygiene-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repository-organization-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#root-organizer-agent",
     ".github/agents/AGENT_REGISTRY.yaml#rust-config-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#secret-detection-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#security-alert-verification-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#security-audit-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#session-analysis-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#session-log-retrieval-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#terminology-consistency-agent",
     ".github/agents/AGENT_REGISTRY.yaml#test-alignment-fixer-enhanced",
     ".github/agents/AGENT_REGISTRY.yaml#test-coverage-monitor",
+    ".github/agents/AGENT_REGISTRY.yaml#test-failure-analyzer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#tokenization-coverage-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#tracking-document-qa-agent",
     ".github/agents/AGENT_REGISTRY.yaml#unified-governance-gate",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-analytics-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-management-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-optimization-agent",
     ".github/agents/AGENT_REGISTRY.yaml#workflow-compliance-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-health-alert-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repo-var-sync-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cognitive-ooda-loop-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#memory-sync-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#telemetry-classifier-agent",
     ".github/agents/AGENT_REGISTRY.yaml#admin-automation-agent",
     ".github/agents/AGENT_REGISTRY.yaml#batch-triage-agent",
     ".github/agents/AGENT_REGISTRY.yaml#ci-diagnostic-agent",
@@ -175,6 +223,10 @@
     ".github/agents/AGENT_REGISTRY.yaml#security-vulnerability-patcher",
     ".github/agents/AGENT_REGISTRY.yaml#service-integration-tester",
     ".github/agents/AGENT_REGISTRY.yaml#test-coverage-enforcer",
+    ".github/agents/AGENT_REGISTRY.yaml#orchestrator-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#packaging-validation-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#energy-conversion-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent",
     ".github/agents/AGENT_REGISTRY.yaml#pattern-discovery-skill",
     ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill"
   ],
@@ -183,6 +235,7 @@
       "path": ".github/agents/ci-testing-agent.md",
       "kind": "github_profile",
       "errors": [
+        "duplicate definition identifier: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md",
         "duplicate definition name: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md"
       ]
     },
@@ -190,6 +243,7 @@
       "path": ".github/agents/ci-testing-agent/ci-testing-agent.md",
       "kind": "github_profile",
       "errors": [
+        "duplicate definition identifier: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md",
         "duplicate definition name: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md"
       ]
     },
@@ -218,39 +272,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#codeql-alert-resolution-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'codeql-alert-resolution-agent' != 'codeql-alert-resolution'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#rag-meta-tensor-regression-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'rag-meta-tensor-regression-agent' != 'rag-meta-tensor-regression'",
         "registry/file name mismatch: 'RAG Meta-Tensor Regression Agent' != 'RAG Meta Tensor Regression Agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-triage-pipeline-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-triage-pipeline-agent' != 'ci-triage-pipeline'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#recon-scout-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'recon-scout-agent' != 'recon-scout'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#policy-coach-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'policy-coach-agent' != 'policy-coach'"
       ]
     },
     {
@@ -262,31 +287,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#artifact-monitor-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'artifact-monitor-agent' != 'artifact-monitor'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#autonomous-test-healer-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'autonomous-test-healer-agent' != 'autonomous-test-healer'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#bridge-security-monitor",
       "kind": "registry_entry",
       "errors": [
         "registry/file name mismatch: 'Bridge Security Monitor' != 'bridge-security-monitor'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#cache-management-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'cache-management-agent' != 'cache-management'"
       ]
     },
     {
@@ -299,67 +303,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-emergency-response-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-emergency-response-agent' != 'ci-emergency-response'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-failure-resolution-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-failure-resolution-agent' != 'ci-failure-resolution'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#ci-importerror-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'ci-importerror-agent' != 'ci-importerror'",
         "registry/file name mismatch: 'CI ImportError Agent' != 'CI ImportError Fixer Agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-log-retrieval-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-log-retrieval-agent' != 'ci-log-retrieval'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-optimization-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-optimization-agent' != 'ci-optimization'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-resilience-emergency-response-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-resilience-emergency-response-agent' != 'ci-resilience-emergency-response'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#claim-verification-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'claim-verification-agent' != 'claim-verification'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#code-analysis-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'code-analysis-agent' != 'code-analysis'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#code-scanning-remediation-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'code-scanning-remediation-agent' != 'code-scanning-remediation'"
       ]
     },
     {
@@ -378,17 +325,9 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#coverage-gapfill-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'coverage-gapfill-agent' != 'coverage-gapfill'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#coverage-maintenance-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'coverage-maintenance-agent' != 'coverage-maintenance'",
         "registry/file name mismatch: 'Coverage Maintenance Agent' != 'Coverage-maintenance Agent'"
       ]
     },
@@ -396,15 +335,7 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#coverage-roadmap-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'coverage-roadmap-agent' != 'coverage-roadmap'",
         "registry/file name mismatch: 'Coverage Roadmap Agent' != 'Coverage-roadmap Agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#cpu-only-ci-config-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'cpu-only-ci-config-agent' != 'cpu-only-ci-config'"
       ]
     },
     {
@@ -412,20 +343,6 @@
       "kind": "registry_entry",
       "errors": [
         "registry/file name mismatch: 'Datetime Modernizer' != 'datetime-modernizer'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#dependency-conflict-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'dependency-conflict-agent' != 'dependency-conflict'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#dependency-security-review-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'dependency-security-review-agent' != 'dependency-security-review'"
       ]
     },
     {
@@ -443,17 +360,9 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#doc-refactor-test-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'doc-refactor-test-agent' != 'doc-refactor-test'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#documentation-quality-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'documentation-quality-agent' != 'documentation-quality'",
         "registry/file name mismatch: 'Documentation Quality Agent' != 'documentation-quality-agent'"
       ]
     },
@@ -468,22 +377,7 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#link-validator-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'link-validator-agent' != 'link-validator'",
         "registry/file name mismatch: 'Link Validator Agent' != 'link-validator-agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ml-validation-suite-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ml-validation-suite-agent' != 'ml-validation-suite'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#mutation-testing-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'mutation-testing-agent' != 'mutation-testing'"
       ]
     },
     {
@@ -511,29 +405,13 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#pr-3095-verification-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'pr-3095-verification-agent' != 'pr-3095-verification'",
         "registry/file name mismatch: 'PR-3095 Verification Agent' != 'PR 3095 Verification Agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#pr-check-remediation-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'pr-check-remediation-agent' != 'pr-check-remediation'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#pypi-publishing-operations-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'pypi-publishing-operations-agent' != 'pypi-publishing-operations'"
       ]
     },
     {
       "path": ".github/agents/AGENT_REGISTRY.yaml#qa-walkthrough-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'qa-walkthrough-agent' != 'qa-walkthrough'",
         "registry/file name mismatch: 'QA Walkthrough Agent' != 'qa-walkthrough-agent'"
       ]
     },
@@ -541,15 +419,7 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#quantum-compliance-tuning-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'quantum-compliance-tuning-agent' != 'quantum-compliance-tuning'",
         "registry/file name mismatch: 'Quantum Compliance Tuning Agent' != 'quantum-compliance-tuning-agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#rag-freshness-loop-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'rag-freshness-loop-agent' != 'rag-freshness-loop'"
       ]
     },
     {
@@ -560,87 +430,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#rag-module-management-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'rag-module-management-agent' != 'rag-module-management'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#reference-updater-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'reference-updater-agent' != 'reference-updater'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#repository-hygiene-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'repository-hygiene-agent' != 'repository-hygiene'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#repository-organization-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'repository-organization-agent' != 'repository-organization'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#root-organizer-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'root-organizer-agent' != 'root-organizer'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#secret-detection-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'secret-detection-agent' != 'secret-detection'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#security-alert-verification-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'security-alert-verification-agent' != 'security-alert-verification'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#security-audit-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'security-audit-agent' != 'security-audit'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#semantic-search",
       "kind": "registry_entry",
       "errors": [
         "registry/file name mismatch: 'Semantic Search Agent' != 'semantic-search'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#session-analysis-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'session-analysis-agent' != 'session-analysis'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#session-log-retrieval-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'session-log-retrieval-agent' != 'session-log-retrieval'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#terminology-consistency-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'terminology-consistency-agent' != 'terminology-consistency'"
       ]
     },
     {
@@ -654,7 +447,6 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#test-coverage-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'test-coverage-agent' != 'test-coverage'",
         "registry/file name mismatch: 'Test Coverage Agent' != 'Test-coverage Agent'"
       ]
     },
@@ -662,43 +454,14 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#unified-coverage-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'unified-coverage-agent' != 'test-enhancement'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#test-failure-analyzer-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'test-failure-analyzer-agent' != 'test-failure-analyzer'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#tokenization-coverage-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'tokenization-coverage-agent' != 'tokenization-coverage'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#tracking-document-qa-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'tracking-document-qa-agent' != 'tracking-document-qa'"
+        "registry/file id mismatch: 'unified-coverage-agent' != 'test-enhancement-agent'"
       ]
     },
     {
       "path": ".github/agents/AGENT_REGISTRY.yaml#unified-doc-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'unified-doc-agent' != 'unified-doc'",
         "registry/file name mismatch: 'Unified Doc Agent' != 'Unified Documentation Agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-analytics-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'workflow-analytics-agent' != 'workflow-analytics'"
       ]
     },
     {
@@ -716,60 +479,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-management-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'workflow-management-agent' != 'workflow-management'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-optimization-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'workflow-optimization-agent' != 'workflow-optimization'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-cli-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'cognitive-brain-cli-agent' != 'cognitive-brain-cli'",
         "registry/file name mismatch: 'Cognitive Brain CLI Agent' != 'cognitive-brain-cli-agent'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-health-alert-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'ci-health-alert-agent' != 'ci-health-alert'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#repo-var-sync-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'repo-var-sync-agent' != 'repo-var-sync'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#cognitive-ooda-loop-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'cognitive-ooda-loop-agent' != 'cognitive-ooda-loop'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#memory-sync-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'memory-sync-agent' != 'memory-sync'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#telemetry-classifier-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'telemetry-classifier-agent' != 'telemetry-classifier'"
       ]
     },
     {
@@ -794,31 +507,10 @@
       ]
     },
     {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#orchestrator-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'orchestrator-agent' != 'orchestrator'"
-      ]
-    },
-    {
       "path": ".github/agents/AGENT_REGISTRY.yaml#copilot-session-chain",
       "kind": "registry_entry",
       "errors": [
         "referenced agent file does not exist: copilot-session-chain.yml"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#packaging-validation-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'packaging-validation-agent' != 'packaging-validation'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#energy-conversion-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'energy-conversion-agent' != 'energy-conversion'"
       ]
     },
     {
@@ -840,7 +532,6 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#self-healing-orchestrator-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'self-healing-orchestrator-agent' != 'self-healing-orchestrator'",
         "registry/file name mismatch: 'Self-Healing Orchestrator Agent' != 'self-healing-orchestrator-agent'"
       ]
     },
@@ -848,7 +539,6 @@
       "path": ".github/agents/AGENT_REGISTRY.yaml#branch-divergence-resolution-agent",
       "kind": "registry_entry",
       "errors": [
-        "registry/file id mismatch: 'branch-divergence-resolution-agent' != 'branch-divergence-resolution'",
         "registry/file name mismatch: 'Branch Divergence Resolution Agent' != 'branch-divergence-resolution-agent'"
       ]
     },
@@ -857,13 +547,6 @@
       "kind": "registry_entry",
       "errors": [
         "referenced agent file does not exist: .github/workflows/post-accountability-to-discussion.yml"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'google-home-script-agent' != 'google-home-script'"
       ]
     }
   ]

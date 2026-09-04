@@ -1,11 +1,13 @@
 ---
 name: CI Resilience Emergency Response Agent
-description: Provide emergency resilience fixes for fragile CI/CD configurations and transient failures
+description: Provide emergency resilience fixes for fragile CI/CD configurations and
+  transient failures
 deprecated: true
 superseded_by: ci-emergency-response-agent.md
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — emergency resilience fixes for fragile CI configurations
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: ci-resilience-emergency-response
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`ci-emergency-response-agent`](./ci-emergency-response-agent.md).

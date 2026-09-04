@@ -1,9 +1,11 @@
 ---
 name: Code Analysis Agent
-description: Perform static code analysis to identify quality issues, anti-patterns, and improvement opportunities
+description: Perform static code analysis to identify quality issues, anti-patterns,
+  and improvement opportunities
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — static code analysis, anti-pattern detection
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: code-analysis
 ---
 
 # Code Analysis Agent

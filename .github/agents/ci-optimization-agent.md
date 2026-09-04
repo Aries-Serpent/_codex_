@@ -1,9 +1,11 @@
 ---
 name: CI Optimization Agent
-description: Analyze and optimize CI/CD pipeline performance, reducing build times and resource usage
+description: Analyze and optimize CI/CD pipeline performance, reducing build times
+  and resource usage
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — CI pipeline performance optimization and resource usage reduction
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: ci-optimization
 ---
 
 # CI Optimization Agent

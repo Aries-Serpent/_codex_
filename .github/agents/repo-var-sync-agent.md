@@ -1,6 +1,8 @@
 ---
 name: Repo Var Sync Agent
-description: Keeps `.codex/agent_context.json` bidirectionally in sync with GitHub Actions repository variables (COPILOT_* / CODEX_* / COGNITIVE_BRAIN_* / AGENT_* / EMBEDDING_*)
+description: Keeps `.codex/agent_context.json` bidirectionally in sync with GitHub
+  Actions repository variables (COPILOT_* / CODEX_* / COGNITIVE_BRAIN_* / AGENT_*
+  / EMBEDDING_*)
 version: 1.1.0
 updated: 2026-03-03
 cognitive_integration_level: 3
@@ -8,8 +10,9 @@ aais_contribution: +2.5 points
 batch: pr-3483
 sprint: Sprint 4 (updated)
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — GitHub Actions repo variable synchronization
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: repo-var-sync
 ---
 
 # Repo Var Sync Agent v1.1

@@ -1,26 +1,27 @@
 ---
-name: self-healing-orchestrator-agent
-description: >
-  Orchestrates autonomous self-healing loops across all CI failure patterns
-  (RP-001 through RP-004+). Coordinates pattern recognition, fix application,
-  verification, and escalation across agents. Integrates with
-  iterative-self-healing-ci.yml, check_pr_comments.py, and
-  workflow-execution-gate.yml.
+name: Self Healing Orchestrator Agent
+description: 'Orchestrates autonomous self-healing loops across all CI failure patterns
+  (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification,
+  and escalation across agents. Integrates with iterative-self-healing-ci.yml, check_pr_comments.py,
+  and workflow-execution-gate.yml.
+
+  '
 version: 1.0.0
 created: 2026-05-09
 policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 cognitive_integration_level: 4
 activation_commands:
-  - "@copilot heal"
-  - "@copilot fix ci"
-  - "@copilot self-heal"
-  - "@copilot use self-healing-orchestrator-agent"
+- '@copilot heal'
+- '@copilot fix ci'
+- '@copilot self-heal'
+- '@copilot use self-healing-orchestrator-agent'
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — sequential pattern matching and fix dispatch
-  large:   ubuntu-latest-large  # 4-core — parallel pattern matching across batches
-cooldown_minutes: 15            # minimum gap between consecutive self-heal triggers on same PR
-max_iterations: 5               # hard stop before mandatory human escalation
-dedup_window_hours: 2           # suppress duplicate heal attempts within window
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+cooldown_minutes: 15
+max_iterations: 5
+dedup_window_hours: 2
+id: self-healing-orchestrator
 ---
 
 # Self-Healing Orchestrator Agent v1.0.0

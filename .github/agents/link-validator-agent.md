@@ -1,14 +1,16 @@
 ---
-name: link-validator-agent
-description: Validate internal and external links in documentation files and fix broken references
+name: Link Validator Agent
+description: Validate internal and external links in documentation files and fix broken
+  references
 version: 3.2.0-cognitive
 updated: 2026-02-25
 cognitive_integration_level: 1
 aais_contribution: +1.5 points
 batch: pr-8
-pr: "#3365"
+pr: '#3365'
 deprecated: true
 superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
+id: link-validator
 ---
 
 > ⚠️ **DEPRECATED** — Link validation capabilities have been merged into

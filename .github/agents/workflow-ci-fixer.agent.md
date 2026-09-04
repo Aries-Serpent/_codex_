@@ -1,6 +1,7 @@
 ---
 name: Workflow CI Fixer Agent
-description: Fix GitHub Actions workflow syntax errors, job failures, and configuration issues
+description: Fix GitHub Actions workflow syntax errors, job failures, and configuration
+  issues
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
@@ -8,6 +9,7 @@ aais_contribution: +2.5 points
 batch: pr-4
 deprecated: true
 superseded_by: codebase-health-guardian.md (v2.0.0, 2026-02-20)
+id: workflow-ci-fixer
 ---
 
 # Workflow CI Fixer Agent

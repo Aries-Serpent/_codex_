@@ -1,25 +1,27 @@
 ---
-name: cognitive-brain-cli-agent
-description: >
-  Production-ready Copilot custom agent for operating the Cognitive Brain CLI console.
-  Executes shell commands, runs API requests (GET/POST/PUT/PATCH/DELETE), reads and writes
-  repository variables, and drives the cognitive_app dev server — all from within a
-  Copilot coding session.
+name: Cognitive Brain Cli Agent
+description: 'Production-ready Copilot custom agent for operating the Cognitive Brain
+  CLI console. Executes shell commands, runs API requests (GET/POST/PUT/PATCH/DELETE),
+  reads and writes repository variables, and drives the cognitive_app dev server —
+  all from within a Copilot coding session.
+
+  '
 version: 1.0.0
 updated: 2026-03-01
 cognitive_integration_level: 4
 scope:
-  - cognitive_app/src/server/cli_api_server.py
-  - cognitive_app/src/components/cli/
-  - .codex/pending_var_updates.json
-  - .codex/agent_context.json
+- cognitive_app/src/server/cli_api_server.py
+- cognitive_app/src/components/cli/
+- .codex/pending_var_updates.json
+- .codex/agent_context.json
 activation_commands:
-  - "@copilot use cognitive-brain-cli-agent"
-  - "@copilot run CLI command: <cmd>"
-  - "@copilot API: <METHOD> <url>"
+- '@copilot use cognitive-brain-cli-agent'
+- '@copilot run CLI command: <cmd>'
+- '@copilot API: <METHOD> <url>'
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — Cognitive Brain CLI console operations, API calls, dev server
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: cognitive-brain-cli
 ---
 
 # Cognitive Brain CLI Agent

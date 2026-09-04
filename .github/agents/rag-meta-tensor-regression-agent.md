@@ -1,14 +1,16 @@
 ---
 name: RAG Meta Tensor Regression Agent
-description: Prevent regressions in RAG meta-tensor handling across model updates and refactors
+description: Prevent regressions in RAG meta-tensor handling across model updates
+  and refactors
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +1.8 points
 batch: pr-9
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — RAG meta-tensor regression prevention
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: rag-meta-tensor-regression
 ---
 
 # RAG Meta Tensor Regression Agent

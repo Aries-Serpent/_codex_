@@ -1,6 +1,7 @@
 ---
 name: Recon Scout Agent
-description: Perform reconnaissance on the codebase to discover undocumented APIs, patterns, and gaps
+description: Perform reconnaissance on the codebase to discover undocumented APIs,
+  patterns, and gaps
 version: 1.0.0
 updated: 2026-02-23
 agent_id: recon-scout-agent
@@ -12,8 +13,9 @@ status: active
 maturity: production
 author: mbaetiong
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — codebase reconnaissance, undocumented API discovery
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: recon-scout
 ---
 
 # [Agent]: Recon Scout — Codebase Blocker Discovery & DRQ Tagging

@@ -2,8 +2,9 @@
 name: Performance Monitor Agent
 description: Monitor real-time performance metrics and detect regressions or bottlenecks
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — real-time performance metrics, threshold monitoring
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: performance-monitor
 ---
 
 # Performance Monitor Agent

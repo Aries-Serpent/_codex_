@@ -1,6 +1,7 @@
 ---
-name: doc-freshness-checker
-description: Check documentation freshness by validating links, timestamps, and accuracy against current code
+name: Doc Freshness Checker
+description: Check documentation freshness by validating links, timestamps, and accuracy
+  against current code
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
@@ -8,6 +9,7 @@ aais_contribution: +1.5 points
 batch: pr-8
 deprecated: true
 superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
+id: doc-freshness-checker
 ---
 
 > ⚠️ **DEPRECATED** — Freshness-checking capabilities have been merged into

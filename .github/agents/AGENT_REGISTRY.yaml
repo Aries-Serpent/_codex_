@@ -1,8 +1,8 @@
 version: 2.0.0
-last_updated: '2026-07-01T15:26:30Z'
+last_updated: '2026-09-04T04:00:14Z'
 total_agents: 164
-active_agents: 150
-archived_agents: 15
+active_agents: 148
+archived_agents: 16
 enforcement_tier: MIXED
 agents:
 - id: github-app-manager
@@ -1825,7 +1825,7 @@ agents:
   batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
   file: dependency-vulnerability-scanner.agent.md
-  status: active
+  status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
@@ -2477,7 +2477,7 @@ agents:
 - id: secret-detection-agent
   name: Secret Detection Agent
   file: secret-detection-agent.md
-  status: active
+  status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
@@ -3706,7 +3706,8 @@ agents:
   has_src: false
   created: '2026-03-02T00:00:00Z'
   updated: '2026-03-02T00:00:00Z'
-  description: orchestrator
+  purpose: Routes high-level task requests to the best-matching specialist agent using semantic-search routing, capability-tag matching, and AGENT_REGISTRY-aware delegation.
+  description: Multi-agent orchestrator for Aries-Serpent/_codex_. Routes tasks to specialist agents via semantic search over the FAISS corpus and AGENT_REGISTRY capability tags. Operates in E model (advisory); D_CAPABLE when transition gate passes.
   capability_tags:
   - operations
 - id: copilot-session-chain
@@ -3892,7 +3893,7 @@ agents:
 - id: self-healing-orchestrator-agent
   name: Self-Healing Orchestrator Agent
   version: 1.0.0
-  file: .github/agents/self-healing-orchestrator-agent.md
+  file: self-healing-orchestrator-agent.md
   status: active
   maturity: production
   has_prompts: false
@@ -3901,8 +3902,8 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: healing_orchestration
-  description: Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates
-    pattern recognition, fix application, verification, and escalation across agents.
+  purpose: Orchestrates autonomous self-healing loops across CI failure patterns, coordinating pattern recognition, fix dispatch, verification, and escalation across agents.
+  description: Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification, and escalation across agents.
   added_in_pr: Phase9
   sprint: Sprint 6
   physics_model:

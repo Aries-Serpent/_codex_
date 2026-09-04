@@ -1,9 +1,11 @@
 ---
-name: GitHub Guru Agent
-description: Provide expert guidance on GitHub features, workflows, Actions, and best practices
+name: Github Guru Agent
+description: Provide expert guidance on GitHub features, workflows, Actions, and best
+  practices
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — GitHub features, workflows, Actions guidance
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: github-guru-agent
 ---
 
 # Agent: GitHub Guru Agent

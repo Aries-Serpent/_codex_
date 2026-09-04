@@ -1,12 +1,14 @@
 ---
 name: Secret Detection Agent
-description: Detect accidentally committed secrets, tokens, and credentials and provide remediation guidance
+description: Detect accidentally committed secrets, tokens, and credentials and provide
+  remediation guidance
 version: 2.0.0-e09
 updated: 2026-02-21
 entropy_patterns: true
 cognitive_integration_level: 3
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
+id: secret-detection
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).

@@ -4,9 +4,9 @@
 > **Branch:** `copilot/analyze-test-coverage-and-documentation`
 > **Hand-off agent:** `agent-orchestrator` (supporting: `skills-master-agent`, `cross-agent-knowledge-graph`, `agent-iq-scoring-gate`).
 > **ADA citation:** [../.codex/CODEBASE_AGENCY_POLICY.md](../.codex/CODEBASE_AGENCY_POLICY.md)
-> **Source of truth:** `.github/agents/AGENT_REGISTRY.yaml` (registry total 159; 145 active after Phase-5 consolidation; 14 archived).
-> **Applied:** 2026-06-11 (Phase 6 sweep: 14 deprecations applied)
-> **Phase 6 complete:** 14 agents deprecated/archived. Active count: 145 → 131.
+> **Source of truth:** `.github/agents/AGENT_REGISTRY.yaml` (registry total 164; 148 active after final security-family consolidation; 16 archived).
+> **Applied:** 2026-09-04 (final dedupe sweep: active count 150 → 148)
+> **Security sweep complete:** 2 remaining duplicate family entries archived; unified-security-scanner remains the canonical entry point.
 
 This matrix captures the Keep / Merge-into / Archive decisions for each agent family identified in the implementation plan. The orchestrator must apply these to `AGENT_REGISTRY.yaml` and add a deprecation note in each archived agent's prompt file (the file itself remains for backward compatibility until the next sweep).
 
@@ -67,7 +67,7 @@ This matrix captures the Keep / Merge-into / Archive decisions for each agent fa
 | `dependency-conflict-agent` | **Keep** | Solves pip-resolver conflicts, not security. |
 | `bridge-security-monitor` | **Keep** | IPC bridge surface. |
 
-**Action:** Merge four; keep five specialists where the *action verb* (fix/verify/remediate) is distinct from scanning.
+**Action:** Merge the two remaining active duplicates (`dependency-vulnerability-scanner`, `secret-detection-agent`) into `unified-security-scanner`; keep the remaining specialist surfaces where the *action verb* (fix/verify/remediate) is distinct from scanning.
 
 ---
 
@@ -146,13 +146,13 @@ No merges proposed; the meta-tensor surface is high-risk enough to warrant separ
 |---|---:|---:|---:|
 | Coverage | 5 (already in flight) | 0 | confirmed |
 | Docs | 2 | 0 | −2 |
-| Security | 4 | 0 | −4 |
+| Security | 2 | 0 | −2 |
 | CI healing | 2 | 0 | −2 |
 | Governance | 0 | 0 | 0 |
 | Workflow/cache | 1 | 1 | −2 |
-| **Total this sweep** | **9 merges** | **1 archive** | **−10 (153 → 143)** |
+| **Total this sweep** | **2 merges** | **0 archives** | **−2 (150 → 148)** |
 
-After applying this matrix and confirming the 5 already-in-flight coverage merges, the active agent count moves from **153 → 143**.
+After the final active-family dedupe pass, the active agent count moves from **150 → 148** while archived entries increase to **16** in the canonical registry.
 
 ---
 

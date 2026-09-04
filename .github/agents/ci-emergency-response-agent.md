@@ -1,8 +1,10 @@
 ---
 name: CI Emergency Response Agent
-description: Rapid diagnosis and resolution of blocking CI/CD failures that prevent PR merges
+description: Rapid diagnosis and resolution of blocking CI/CD failures that prevent
+  PR merges
 merged_agents:
-  - ci-resilience-emergency-response-agent
+- ci-resilience-emergency-response-agent
+id: ci-emergency-response
 ---
 
 # CI Emergency Response Agent

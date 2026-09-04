@@ -1,14 +1,16 @@
 ---
 name: Tokenization Coverage Agent
-description: Improve test coverage for the tokenization module and validate tokenization correctness
+description: Improve test coverage for the tokenization module and validate tokenization
+  correctness
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — tokenization module test coverage improvement
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: tokenization-coverage
 ---
 
 # Tokenization Coverage Agent

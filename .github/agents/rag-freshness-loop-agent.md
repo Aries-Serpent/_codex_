@@ -1,14 +1,16 @@
 ---
 name: RAG Freshness Loop Agent
-description: Maintain RAG index freshness through incremental updates and stale-entry eviction loops
+description: Maintain RAG index freshness through incremental updates and stale-entry
+  eviction loops
 version: 1.0.0-e08
 updated: 2026-02-22
 enhancement: E-08
 cognitive_integration_level: 4
 aais_contribution: +5.5 points
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — RAG index freshness, stale-entry eviction
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: rag-freshness-loop
 ---
 
 # RAG Freshness Loop Agent v1.0 (E-08)

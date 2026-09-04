@@ -1,6 +1,7 @@
 ---
 name: CI Auto-Healer Agent
-description: Automatically detect and heal CI/CD failures using embedded fix patterns and validation loops
+description: Automatically detect and heal CI/CD failures using embedded fix patterns
+  and validation loops
 id: ci-auto-healer
 version: 1.0.0
 updated: 2026-02-24
@@ -10,8 +11,8 @@ cognitive_integration_level: 3
 aais_contribution: +3.5 points
 session_introduced: S85
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — auto-detect and heal CI failures with embedded fix patterns
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 ---
 
 # CI Auto-Healer Agent v1.0.0

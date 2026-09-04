@@ -1,7 +1,9 @@
 ---
 id: pattern-discovery-skill
 name: Pattern Discovery Skill
-description: Discover, classify, and score recurring patterns in memory for promotion to long-term storage. Supports decision, error, performance, success, and risk pattern analysis with improvement area tagging and promotion scoring.
+description: Discover, classify, and score recurring patterns in memory for promotion
+  to long-term storage. Supports decision, error, performance, success, and risk pattern
+  analysis with improvement area tagging and promotion scoring.
 version: 1.0.0
 category: cognitive_brain
 subcategory: memory_management
@@ -13,18 +15,18 @@ author: skills-master-agent
 pda_loop:
   enabled: true
   phases:
-    - plan
-    - execute
-    - assess
+  - plan
+  - execute
+  - assess
 self_healing:
   enabled: true
   max_iterations: 3
 capability_tags:
-  - pattern_discovery
-  - memory_management
-  - cognitive_brain
-  - ml_pattern_feeding
-  - improvement_tracking
+- pattern_discovery
+- memory_management
+- cognitive_brain
+- ml_pattern_feeding
+- improvement_tracking
 autonomy_model: D
 enforcement_tier: STANDARD
 ---

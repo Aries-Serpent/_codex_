@@ -1,14 +1,16 @@
 ---
 id: session-wrapup-autofix-agent
 name: Session Wrap-Up Auto-Fix Agent
-description: Auto-heal cognitive-preflight governance failures by updating the accountability report and changelog after a session, then commit the minimal documentation fix without triggering CI loops.
+description: Auto-heal cognitive-preflight governance failures by updating the accountability
+  report and changelog after a session, then commit the minimal documentation fix
+  without triggering CI loops.
 version: 1.0.0
 status: active
 maturity: production
 tools:
-  - bash
-  - python
-  - git
+- bash
+- python
+- git
 ---
 
 # Session Wrap-Up Auto-Fix Agent

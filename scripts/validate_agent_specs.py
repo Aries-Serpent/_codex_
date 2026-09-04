@@ -57,6 +57,9 @@ _IGNORED_MARKDOWN_NAMES = {
     "agent_registry_generated.md",
     "agent_consolidation.md",
     "readme.md",
+    ".template_cognitive_agent.md",
+    ".template",
+    "template.md",
 }
 
 
@@ -74,23 +77,65 @@ def load_schema(path: Path = SCHEMA_PATH) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def _looks_like_agent_frontmatter(path: Path) -> bool:
+    """Heuristic: treat generic markdown files as agent specs only with frontmatter."""
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    stripped = content.lstrip("\ufeff")
+    if not stripped.startswith("---"):
+        return False
+    match = _FRONTMATTER_RE.match(stripped)
+    if match is None:
+        return False
+    if not HAS_YAML:
+        return False
+    try:
+        data = yaml.safe_load(match.group("yaml"))
+    except yaml.YAMLError:
+        return False
+    if not isinstance(data, dict):
+        return False
+    return (
+        isinstance(data.get("id"), str)
+        and isinstance(data.get("name"), str)
+        and isinstance(data.get("description"), str)
+    )
+
+
 def _is_markdown_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in _IGNORED_MARKDOWN_NAMES:
         return False
-    return (
-        name == "agent.md"
-        or name.endswith(".agent.md")
-        or name.endswith("-agent.md")
-        or name.endswith("-skill.md")
-    )
+    if name == "agent.md":
+        return False
+    if name.endswith(".agent.md") or name.endswith("-agent.md") or name.endswith("-skill.md"):
+        return _looks_like_agent_frontmatter(path)
+    return _looks_like_agent_frontmatter(path)
 
 
 def _is_yaml_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in {"agent_registry.yaml", "agent_registry.yml"}:
         return False
-    return name.endswith(".agent.yaml") or name.endswith(".agent.yml")
+    if name.endswith(".agent.yaml") or name.endswith(".agent.yml"):
+        return True
+    if any(part in {"config", "manifest", "settings"} for part in path.parts):
+        return False
+    if name in {"config.yaml", "config.yml", "manifest.yaml", "manifest.yml"}:
+        return False
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) if HAS_YAML else None
+    except (OSError, yaml.YAMLError):
+        return False
+    if not isinstance(data, dict):
+        return False
+    return (
+        isinstance(data.get("id"), str)
+        and isinstance(data.get("name"), str)
+        and isinstance(data.get("description"), str)
+    )
 
 
 def _is_agent_definition(path: Path) -> bool:
@@ -221,17 +266,12 @@ def _result(path: str, kind: str, errors: list[str]) -> dict[str, Any]:
 
 def _profile_id(path: Path) -> str:
     name = path.name.lower()
-    for suffix in (
+    suffixes = (
         ".agent.md",
-        "-agent.md",
-        "-skill.md",
         ".agent.yaml",
         ".agent.yml",
-        "-agent.yaml",
-        "-agent.yml",
-        "-skill.yaml",
-        "-skill.yml",
-    ):
+    )
+    for suffix in suffixes:
         if name.endswith(suffix):
             return path.name[: -len(suffix)]
     return path.stem

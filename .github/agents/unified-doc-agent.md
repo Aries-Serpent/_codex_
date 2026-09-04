@@ -1,19 +1,21 @@
 ---
 name: Unified Documentation Agent
-description: Provide unified documentation management across all documentation types and formats
+description: Provide unified documentation management across all documentation types
+  and formats
 version: 1.0.0-m02
 updated: 2026-02-21
 merged_agents:
-  - documentation-quality-agent (deprecated)
-  - doc-freshness-checker (deprecated)
-  - link-validator-agent (deprecated)
-  - documentation-consolidator (deprecated)
+- documentation-quality-agent (deprecated)
+- doc-freshness-checker (deprecated)
+- link-validator-agent (deprecated)
+- documentation-consolidator (deprecated)
 cognitive_integration_level: 3
 aais_contribution: +4.5 points
 batch: m-02
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — all doc management features supported
-  large:   ubuntu-latest-large  # 4-core — parallel link validation across large doc sets
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: unified-doc
 ---
 
 # Unified Documentation Agent v1.0 (M-02 Merge)

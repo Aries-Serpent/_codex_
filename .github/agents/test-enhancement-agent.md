@@ -1,9 +1,11 @@
 ---
 name: Test Enhancement Agent
-description: Enhance test quality by adding edge cases, improving assertions, and increasing coverage depth
+description: Enhance test quality by adding edge cases, improving assertions, and
+  increasing coverage depth
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — test quality improvements, edge case generation
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: test-enhancement
 ---
 
 # Test Enhancement Agent

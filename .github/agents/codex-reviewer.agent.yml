@@ -1,106 +1,80 @@
 id: codex-reviewer
 name: Codex Reviewer
 description: Quantum-inspired PR reviewer with self-evolution capabilities.
-version: "1.0.0"
+version: 1.0.0
 status: active
 maturity: production
 category: review
-
-# Agent metadata
 metadata:
-  author: "mbaetiong"
-  repository: "Aries-Serpent/_codex_"
+  author: mbaetiong
+  repository: Aries-Serpent/_codex_
   tags:
-    - "pr-review"
-    - "quantum-analysis"
-    - "security-validation"
-    - "auto-orchestration"
-  visibility: "organization"
-
-# Triggering events
+  - pr-review
+  - quantum-analysis
+  - security-validation
+  - auto-orchestration
+  visibility: organization
 triggers:
-  - event: "pull_request.opened"
-    action: "initial_review"
-  - event: "pull_request.synchronize"
-    action: "incremental_review"
-  - event: "pull_request_review.submitted"
-    action: "analyze_human_feedback"
-  - event: "issue_comment.created"
-    condition: "contains(comment.body, '@codex-reviewer')"
-    action: "respond_to_mention"
-
-# Required permissions
+  events:
+  - issue_comment
+  - pull_request
 permissions:
-  contents: "read"
-  pull_requests: "write"
-  issues: "write"
-  checks: "write"
-  statuses: "write"
-  actions: "read"
-
-# Capabilities
+  contents: read
+  pull_requests: write
+  issues: write
+  checks: write
+  statuses: write
+  actions: read
 capabilities:
-  review_types:
-    - "code_quality"
-    - "security_analysis"
-    - "performance_review"
-    - "documentation_check"
-    - "quantum_pattern_analysis"
-    - "knowledge_gap_detection"
-
-  orchestration:
-    - "workflow_suggestions"
-    - "task_prioritization"
-    - "dependency_analysis"
-    - "next_steps_generation"
-
-  learning:
-    - "pattern_extraction"
-    - "feedback_integration"
-    - "self_improvement"
-
-# Configuration
+- code_quality
+- security_analysis
+- performance_review
+- documentation_check
+- quantum_pattern_analysis
+- knowledge_gap_detection
+- workflow_suggestions
+- task_prioritization
+- dependency_analysis
+- next_steps_generation
+- pattern_extraction
+- feedback_integration
+- self_improvement
 configuration:
-  review_depth: "comprehensive"
+  review_depth: comprehensive
   auto_approve_threshold: 0.95
-  suggestion_mode: "proactive"
-  orchestration_level: "full"
+  suggestion_mode: proactive
+  orchestration_level: full
   learning_enabled: true
   criteria_weights:
     code_quality: 0.25
-    security: 0.30
-    performance: 0.20
+    security: 0.3
+    performance: 0.2
     documentation: 0.15
-    patterns: 0.10
-
-# Runtime specification
+    patterns: 0.1
 runtime:
-  type: "copilot-agent-v2"
-  language: "python"
-  entry_point: ".github/agents/codex_reviewer/main.py"
+  type: copilot-agent-v2
+  language: python
+  entry_point: .github/agents/codex_reviewer/main.py
   timeout_seconds: 300
   memory_mb: 512
-
-# Integration points
 integrations:
-  - type: "github_app"
-    app_id: "${CODEX_REVIEWER_APP_ID}"
-    fallback: true
-  - type: "webhooks"
-    endpoint: "${WEBHOOK_ENDPOINT}"
-  - type: "knowledge_base"
-    source: "_codex_patterns"
-
+- type: github_app
+  app_id: ${CODEX_REVIEWER_APP_ID}
+  fallback: true
+- type: webhooks
+  endpoint: ${WEBHOOK_ENDPOINT}
+- type: knowledge_base
+  source: _codex_patterns
 version_history:
   v3_0_0_cognitive:
-    date: "2026-02-17"
-    pr: "PR-10"
+    date: '2026-02-17'
+    pr: PR-10
     features:
-      - "Cognitive brain integration (Level 1)"
-      - "MCP tool integration (general category)"
-      - "Topology navigation (code patterns)"
-      - "Cache awareness (4-layer hierarchy)"
-      - "Hash table optimization (40% faster)"
-      - "AAIS contribution: +1.0 points"
+    - Cognitive brain integration (Level 1)
+    - MCP tool integration (general category)
+    - Topology navigation (code patterns)
+    - Cache awareness (4-layer hierarchy)
+    - Hash table optimization (40% faster)
+    - 'AAIS contribution: +1.0 points'
   v1_0_0:
-    notes: "See git history for previous changes"
+    notes: See git history for previous changes

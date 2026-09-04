@@ -1,6 +1,7 @@
 ---
 name: Memory Sync Agent
-description: Consolidates SQLiteMemory STM→LTM at 80% capacity; prunes stale LTM; tags patterns with ImprovementArea; drives MemoryManagementDashboard health metrics
+description: Consolidates SQLiteMemory STM→LTM at 80% capacity; prunes stale LTM;
+  tags patterns with ImprovementArea; drives MemoryManagementDashboard health metrics
 version: 2.0.0
 updated: 2026-03-01
 cognitive_integration_level: 4
@@ -10,11 +11,12 @@ sprint: Sprint 6
 improvement_area: ML_PATTERN_FEEDING
 pattern_id: P-048
 endpoints:
-  read:  "GET  http://localhost:8765/api/memory/state"
-  search: "GET  http://localhost:8765/api/memory/search"
+  read: GET  http://localhost:8765/api/memory/state
+  search: GET  http://localhost:8765/api/memory/search
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — SQLiteMemory STM→LTM consolidation, stale eviction
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: memory-sync
 ---
 
 # Memory Sync Agent v2.0

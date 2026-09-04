@@ -1,6 +1,7 @@
 ---
 name: Security Alert Verification Agent
-description: Verify GitHub security alerts and propose targeted code fixes for each identified vulnerability
+description: Verify GitHub security alerts and propose targeted code fixes for each
+  identified vulnerability
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
@@ -8,6 +9,7 @@ aais_contribution: +2.0 points
 batch: pr-7
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
+id: security-alert-verification
 ---
 
 > ⚠️ **DEPRECATED** — Alert verification capabilities have been merged into

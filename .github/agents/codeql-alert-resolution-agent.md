@@ -1,9 +1,11 @@
 ---
 name: CodeQL Alert Resolution Agent
-description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements. Includes Playwright scraping and automated resolution pipeline.
+description: Resolve CodeQL security alerts by implementing targeted code fixes and
+  security improvements. Includes Playwright scraping and automated resolution pipeline.
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — CodeQL fixes, self-healing pipeline
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: codeql-alert-resolution
 ---
 
 # CodeQL Alert Resolution Agent

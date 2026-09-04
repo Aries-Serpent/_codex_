@@ -1,20 +1,23 @@
 ---
 name: Cognitive OODA Loop Agent
-description: Full OODA loop execution from PR comment or React frontend — wires OODAOrchestrator through FastAPI :8765; Phase 4 adds SQLiteMemory persistence and GitHub API auth forwarding
+description: Full OODA loop execution from PR comment or React frontend — wires OODAOrchestrator
+  through FastAPI :8765; Phase 4 adds SQLiteMemory persistence and GitHub API auth
+  forwarding
 version: 2.0.0
 updated: 2026-03-01
 cognitive_integration_level: 5
 aais_contribution: +5.0 points
 batch: pr-3422
 sprint: Sprint 3+4 (v1) → Phase 4 (v2)
-ooda_endpoint: "POST /api/ooda/process"
-metrics_endpoint: "GET /api/ooda/metrics"
-memory_endpoint: "GET /api/memory/state"
+ooda_endpoint: POST /api/ooda/process
+metrics_endpoint: GET /api/ooda/metrics
+memory_endpoint: GET /api/memory/state
 improvement_area: CI_SELF_HEALING
 pattern_id: P-047
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — OODA loop execution, OODAOrchestrator FastAPI wiring
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: cognitive-ooda-loop
 ---
 
 # Cognitive OODA Loop Agent v2.0

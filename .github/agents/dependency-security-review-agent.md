@@ -1,8 +1,10 @@
 ---
 name: Dependency Security Review Agent
-description: Review dependencies for security vulnerabilities and recommend safe upgrades or patches
+description: Review dependencies for security vulnerabilities and recommend safe upgrades
+  or patches
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
+id: dependency-security-review
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).
