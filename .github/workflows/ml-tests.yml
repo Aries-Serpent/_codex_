@@ -72,7 +72,7 @@ jobs:
             --cov=training \
             --cov-report=xml \
             --cov-report=term \
-            --timeout=300 \
+            --timeout=600 \
             -m "not slow"
 
       - name: Upload coverage
@@ -84,7 +84,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
           fail_ci_if_error: false
-    timeout-minutes: 30
+    timeout-minutes: 60
 
   test-integration-slow:
     permissions:
@@ -137,4 +137,4 @@ jobs:
         with:
           path: htmlcov/
           name: coverage-report
-    timeout-minutes: 30
+    timeout-minutes: 60

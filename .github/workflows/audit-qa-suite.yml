@@ -116,7 +116,7 @@ jobs:
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -157,7 +157,7 @@ jobs:
         \  echo \"gap_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload audit results
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         path: '.codex/audit/*.json
 
@@ -258,6 +258,13 @@ jobs:
         \ 'unknown error')\n  echo \"\u26A0\uFE0F Failed to fetch codebase_walkthrough.py\
         \ from origin/main ($ERROR_MSG...) \u2014 will use fallback\"\nfi\n\necho\
         \ \"\u2705 Trusted code fetch complete (API-based, no git operations)\"\n"
+    - name: Checkout repository for local project metadata
+      if: github.event_name != 'issue_comment'
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -323,7 +330,7 @@ jobs:
         \  --run-url    \"${RUN_URL}\"\n"
     - name: Upload QA results
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         path: '.codex/qa/*.json
 
@@ -362,7 +369,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         persist-credentials: false
     - name: Generate improvement PR

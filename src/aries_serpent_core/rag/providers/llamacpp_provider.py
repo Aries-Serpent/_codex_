@@ -5,11 +5,24 @@ Provides embeddings using llama.cpp inference engine.
 """
 
 import logging
+import weakref
 from typing import Optional, Union
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+def _finalize_model(model: object | None) -> None:
+    """Best-effort cleanup for llama.cpp model resources."""
+    if model is None:
+        return
+    try:
+        close = getattr(model, "close", None)
+        if callable(close):
+            close()
+    except Exception:
+        logger.debug("Failed to finalize llama.cpp model", exc_info=True)
 
 try:
     from llama_cpp import Llama
@@ -81,6 +94,7 @@ class LlamaCppEmbeddingProvider:
                 embedding=embedding,
                 verbose=False,
             )
+            self._finalizer = weakref.finalize(self, _finalize_model, self.model)
             logger.info(f"Loaded llama.cpp model from {model_path}")
 
             # Auto-detect dimension
@@ -141,7 +155,25 @@ class LlamaCppEmbeddingProvider:
     def __repr__(self) -> str:
         return f"LlamaCppEmbeddingProvider(model={self.model_path}, gpu_layers={self.n_gpu_layers})"
 
-    def __del__(self) -> None:
-        """Cleanup model on deletion."""
-        if hasattr(self, "model"):
-            del self.model
+    def close(self) -> None:
+        """Close the optional model resource without relying on __del__."""
+        finalizer = getattr(self, "_finalizer", None)
+        if finalizer is not None and finalizer.alive:
+            finalizer.detach()
+        model = getattr(self, "model", None)
+        try:
+            if model is not None:
+                close = getattr(model, "close", None)
+                if callable(close):
+                    close()
+        except Exception:
+            logger.debug("Failed to close llama.cpp model", exc_info=True)
+        finally:
+            self.model = None
+            self._finalizer = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()

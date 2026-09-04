@@ -818,17 +818,10 @@ class NDJSONMetricsWriter:
 
     def close(self) -> None:
         if self._async is not None:
-            self._async.close()
-
-    def __del__(self) -> None:  # pragma: no cover - best effort
-        try:
-            self.close()
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-            type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning(
-                f"Exception: {e}", exc_info=True
-            )  # Best effort cleanup; __del__ cannot raise exceptions
+            try:
+                self._async.close()
+            finally:
+                self._async = None
 
 
 class CSVMetricsWriter:

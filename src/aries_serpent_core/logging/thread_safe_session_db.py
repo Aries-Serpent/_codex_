@@ -15,6 +15,7 @@ import logging
 import sqlite3
 import threading
 import time
+import weakref
 from contextlib import contextmanager
 from typing import Any, Generator, Optional
 
@@ -27,6 +28,18 @@ from .concurrency import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _cleanup_connection_pool(pool: Any | None) -> None:
+    """Best-effort cleanup for optional SQLite pool resources."""
+    if pool is None:
+        return
+    try:
+        cleanup = getattr(pool, "cleanup_all", None)
+        if callable(cleanup):
+            cleanup()
+    except Exception:
+        logger.debug("Failed to finalize SQLite connection pool", exc_info=True)
 
 
 class ThreadSafeSessionDB:
@@ -63,6 +76,7 @@ class ThreadSafeSessionDB:
             timeout=timeout,
             wal_mode=True,
         )
+        self._finalizer = weakref.finalize(self, _cleanup_connection_pool, self._connection_pool)
         self._write_lock = threading.RLock()
         self._metrics = LockMetrics()
 
@@ -398,14 +412,26 @@ class ThreadSafeSessionDB:
         save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
 
     def cleanup(self) -> None:
-        """Clean up connection pool."""
+        """Clean up connection pool without relying on __del__."""
+        finalizer = getattr(self, "_finalizer", None)
+        if finalizer is not None and finalizer.alive:
+            finalizer.detach()
+        pool = getattr(self, "_connection_pool", None)
+        if pool is None:
+            return
         try:
-            self._connection_pool.cleanup_all()
+            pool.cleanup_all()
             logger.info("Connection pool cleaned up")
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
+        finally:
+            self._finalizer = None
+
+    def close(self) -> None:
+        """Explicit lifecycle hook for responsible cleanup."""
+        self.cleanup()
 
     def __enter__(self) -> "ThreadSafeSessionDB":
         """Context manager entry."""
@@ -414,11 +440,3 @@ class ThreadSafeSessionDB:
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.cleanup()
-
-    def __del__(self) -> None:
-        """Cleanup on deletion."""
-        try:
-            self.cleanup()
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:  # codeql[py/catch-all-except]
-            logger.error(f"OSError during cleanup on deletion: {type(e).__name__}: {e}")
-            log_error(e, "__del__", getattr(self, "errors_path", ".codex/errors.log"))

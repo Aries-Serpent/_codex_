@@ -1,0 +1,74 @@
+name: Status Gate (.statusrc)
+on:
+  pull_request:
+    branches:
+    - 0D_base_
+    - copilot/integrate-codex-status-template
+    - main
+    - master
+  workflow_dispatch: null
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions: {}
+jobs:
+  status-gate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Setup Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+    - name: Cache health report
+      if: always()
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow status_gate
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 30
+  rescue-comment:
+    name: Post rescue comment on failure
+    runs-on: ubuntu-latest
+    needs: status-gate
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
+      github.event.pull_request.head.repo.full_name == github.repository
+
+      '
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Status Gate
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

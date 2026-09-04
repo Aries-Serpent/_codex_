@@ -189,7 +189,11 @@ runs:
           pytest-randomly>=3.15 \
           pytest-rerunfailures>=12.0
         # Project extras (always includes core deps)
-        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+        if [ -f pyproject.toml ]; then
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+        else
+          echo "::warning::Skipping editable install: pyproject.toml not present in this workspace"
+        fi
         echo "::endgroup::"
 
     - name: 'Venv: refresh on exact cache hit (pyproject changed)'
@@ -220,10 +224,18 @@ runs:
             pytest-mock==3.15.1 \
             "pytest-randomly>=3.15" \
             "pytest-rerunfailures>=12.0"
-          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+          if [ -f pyproject.toml ]; then
+            "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+          else
+            echo "::warning::Skipping editable install: pyproject.toml not present in this workspace"
+          fi
         fi
         "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -U pip "setuptools>=78.1.1,<82" wheel --quiet
-        "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
+        if [ -f pyproject.toml ]; then
+          "$PYTHON_BIN" -m pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
+        else
+          echo "::warning::Skipping editable install: pyproject.toml not present in this workspace"
+        fi
         echo "::endgroup::"
 
     # ─────────────────────────────────────────────────────────────────
