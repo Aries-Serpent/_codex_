@@ -11,7 +11,7 @@ inputs:
     required: false
     default: '80'
   auto-generate:
-    description: Automatically generate resolution strategys for conflicting dependencies
+    description: Automatically generate resolution strategies for conflicting dependencies
     required: false
     default: 'false'
   fail-below-threshold:

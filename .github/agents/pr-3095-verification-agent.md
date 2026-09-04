@@ -1,6 +1,6 @@
 ---
 name: PR 3095 Verification Agent
-description: Verify fixes related to PR
+description: Verify fixes related to PR #3095, including code quality, tests, and CI health.
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large

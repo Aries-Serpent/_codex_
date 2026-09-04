@@ -1,5 +1,5 @@
 ---
-name: Github Guru Agent
+name: GitHub Guru Agent
 description: Provide expert guidance on GitHub features, workflows, Actions, and best
   practices
 runner_compatibility:

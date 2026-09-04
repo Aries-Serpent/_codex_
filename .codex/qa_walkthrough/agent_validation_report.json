@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "generated_at": "2026-09-04T08:27:31Z",
+    "generated_at": "2026-09-04T09:09:36Z",
     "registry_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/agent_spec.schema.json",
     "frontmatter_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
-    "total_records": 190
+    "total_records": 193
   },
   "summary": {
-    "compliant": 190,
+    "compliant": 193,
     "non_compliant": 0,
     "compliance_rate": "100.0%"
   },
@@ -135,6 +135,7 @@
     ".github/agents/AGENT_REGISTRY.yaml#code-scanning-remediation-agent",
     ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-manager",
     ".github/agents/AGENT_REGISTRY.yaml#config-migration-assistant",
+    ".github/agents/AGENT_REGISTRY.yaml#unified-coverage-agent",
     ".github/agents/AGENT_REGISTRY.yaml#coverage-gapfill-agent",
     ".github/agents/AGENT_REGISTRY.yaml#coverage-maintenance-agent",
     ".github/agents/AGENT_REGISTRY.yaml#coverage-roadmap-agent",
@@ -165,6 +166,7 @@
     ".github/agents/AGENT_REGISTRY.yaml#repository-hygiene-agent",
     ".github/agents/AGENT_REGISTRY.yaml#repository-organization-agent",
     ".github/agents/AGENT_REGISTRY.yaml#root-organizer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#unified-security-scanner",
     ".github/agents/AGENT_REGISTRY.yaml#secret-detection-agent",
     ".github/agents/AGENT_REGISTRY.yaml#security-alert-verification-agent",
     ".github/agents/AGENT_REGISTRY.yaml#security-audit-agent",
@@ -180,6 +182,7 @@
     ".github/agents/AGENT_REGISTRY.yaml#tokenization-coverage-agent",
     ".github/agents/AGENT_REGISTRY.yaml#tracking-document-qa-agent",
     ".github/agents/AGENT_REGISTRY.yaml#unified-doc-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#unified-governance-gate",
     ".github/agents/AGENT_REGISTRY.yaml#workflow-compliance-guardian",
     ".github/agents/AGENT_REGISTRY.yaml#workflow-analytics-agent",
     ".github/agents/AGENT_REGISTRY.yaml#workflow-ci-fixer",
