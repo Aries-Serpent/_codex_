@@ -1,82 +1,34 @@
-# Security Advisory Resolver Agent Configuration
-# Version: 1.0.0
-# Status: Active
-
 name: security-advisory-resolver
 version: 1.0.0
-description: >
-  Automatically investigate and resolve security advisories from
-  cargo audit, pip-audit, and other security scanning tools.
-  Tests compatibility of updates and creates fix PRs.
+description: 'Automatically investigate and resolve security advisories from cargo
+  audit, pip-audit, and other security scanning tools. Tests compatibility of updates
+  and creates fix PRs.
 
+  '
 metadata:
   author: copilot
   created: 2026-01-11
   category: security
   priority: medium
   estimated_effort: 3-4 days
-
 triggers:
-  - type: security_scan
-    tools:
-      - cargo audit
-      - pip-audit
-      - npm audit
-    severity:
-      - critical
-      - high
-
-  - type: dependabot_alert
-    severity:
-      - critical
-      - high
-
-  - type: manual
-    command: "@copilot resolve security advisory"
-
-  - type: scheduled
-    cron: "0 6 * * *"  # Daily at 6 AM
-
+  events:
+  - security_scan
+  - dependabot_alert
+  - manual
+  - scheduled
 capabilities:
-  scan_advisories:
-    enabled: true
-    tools:
-      - cargo_audit
-      - pip_audit
-      - npm_audit
-      - safety
-    sources:
-      - rustsec
-      - nvd
-      - github_advisory
-      - osv
-
-  analyze_impact:
-    enabled: true
-    include_dependency_tree: true
-    check_breaking_changes: true
-
-  generate_fixes:
-    enabled: true
-    strategies:
-      - version_bump
-      - version_pin
-      - dependency_replacement
-    auto_test: true
-
-  create_pr:
-    enabled: true
-    template: security_fix_pr.md
-    require_approval: true
-
+- scan_advisories
+- analyze_impact
+- generate_fixes
+- create_pr
 input:
   required:
-    - advisory_id: string  # e.g., RUSTSEC-2025-0020
+  - advisory_id: string
   optional:
-    - ecosystem: string  # rust, python, npm
-    - auto_fix: boolean
-    - dry_run: boolean
-
+  - ecosystem: string
+  - auto_fix: boolean
+  - dry_run: boolean
 output:
   success:
     advisory_resolved: boolean
@@ -88,27 +40,27 @@ output:
     no_patch_available: boolean
     recommended_mitigation: string
     tracking_issue: string
-
 integrations:
   cognitive_brain:
     pattern_storage: true
     security_patterns_category: true
-
   github:
     pr_creation: true
     issue_creation: true
     security_alerts: true
-
 constraints:
   max_advisory_age_days: 30
   require_tests_pass: true
   require_human_approval_for:
-    - major_version_bumps
-    - dependency_replacement
-    - transitive_only_advisories
-
+  - major_version_bumps
+  - dependency_replacement
+  - transitive_only_advisories
 security:
   code_execution: sandboxed
   file_access: dependency_files_only
   network_access: advisory_databases_only
   secret_handling: never_access
+id: security-advisory-resolver
+status: active
+maturity: beta
+dependencies: []

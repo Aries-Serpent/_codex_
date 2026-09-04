@@ -2,65 +2,59 @@ name: documentation-agent
 version: 1.0.0
 description: Auto-generate API docs, tutorials, changelogs, and architecture diagrams
 author: Cognitive Brain V10 Team
-created: 2026-01-03
-
+created: '2026-01-03'
 capabilities:
-  - API documentation from code (docstrings + type hints)
-  - Tutorial generation from usage patterns
-  - Changelog automation (from git commits)
-  - Architecture diagram updates (mermaid)
-  - Documentation versioning
-
+- API documentation from code (docstrings + type hints)
+- Tutorial generation from usage patterns
+- Changelog automation (from git commits)
+- Architecture diagram updates (mermaid)
+- Documentation versioning
 integration:
   cognitive_brain: true
   pda_loop: true
   aftermath: true
-
   phase8_10:
-    - DocumentationPortal
-
+  - DocumentationPortal
   phase8_11:
-    - ExplainableAI
-
+  - ExplainableAI
   external:
-    - AST analysis
-    - Git history
-    - Mermaid diagrams
-
+  - AST analysis
+  - Git history
+  - Mermaid diagrams
 triggers:
+  events:
   - pull_request
   - push
   - workflow_dispatch
   - release
-
 config:
-  random_seed: 48  # DOC_AGENT_SEED
+  random_seed: 48
   validation_seed: 42
   wandb_mode: offline
-
   formats:
     api_docs: markdown
     changelog: keepachangelog
     diagrams: mermaid
-
   standards:
     docstring_style: google
     commit_convention: conventional
-
 metrics:
+  values:
   - docs_generated
   - tutorials_created
   - changelogs_created
   - diagrams_generated
   - functions_documented
-
 performance_targets:
-  doc_generation_time: "<10s"
-  accuracy: ">95%"
-  coverage: ">90%"
-
+  doc_generation_time: <10s
+  accuracy: '>95%'
+  coverage: '>90%'
 test_requirements:
   min_tests: 15
-  coverage: ">90%"
+  coverage: '>90%'
   deterministic: true
   seed: 48
+id: documentation-agent
+status: active
+maturity: beta
+dependencies: []

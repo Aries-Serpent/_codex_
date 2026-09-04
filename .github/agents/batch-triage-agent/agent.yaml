@@ -1,62 +1,56 @@
 name: batch-triage-agent
 version: 1.1.0
-description: Intelligent batch CI failure triage with cognitive brain integration and enhanced security
+description: Intelligent batch CI failure triage with cognitive brain integration
+  and enhanced security
 status: active
 maturity: beta
-created: 2026-01-19
-updated: 2026-01-19
-
+created: '2026-01-19'
+updated: '2026-01-19'
 capabilities:
-  - batch_failure_analysis
-  - pattern_recognition
-  - automated_remediation
-  - stakeholder_notifications
-  - metrics_tracking
-  - cognitive_learning
-  - command_validation
-  - secure_subprocess_execution
-
+- batch_failure_analysis
+- pattern_recognition
+- automated_remediation
+- stakeholder_notifications
+- metrics_tracking
+- cognitive_learning
+- command_validation
+- secure_subprocess_execution
 security:
   command_execution:
     whitelist_enabled: true
     allowed_commands:
-      - gh
-      - pip
-      - python
-      - pytest
-      - ruff
-      - black
-      - mypy
-      - git
-      - cargo
-      - npm
+    - gh
+    - pip
+    - python
+    - pytest
+    - ruff
+    - black
+    - mypy
+    - git
+    - cargo
+    - npm
     shell_injection_protection: true
     command_validation_method: shlex_split
     subprocess_shell_disabled: true
-
   remediation_safeguards:
     risk_based_approval: true
     dry_run_mode_available: true
     command_timeout_seconds: 300
     execution_logging: true
-
 integration:
   cognitive_brain:
     enabled: true
     pattern_storage: .codex/cognitive_brain/patterns/ci_failures/
     metrics_storage: .codex/metrics/batch_triage_metrics.yaml
-
   pda_loop:
     perception: true
     decision: true
     action: true
     aftermath: true
-
   external_systems:
-    - github_actions
-    - self_healing_engine
-    - owner_approval_guard
-
+  - github_actions
+  - self_healing_engine
+  - owner_approval_guard
 configuration:
   risk_thresholds:
     low:
@@ -73,35 +67,34 @@ configuration:
       impact_max: significant
       auto_apply: false
       requires_escalation: true
-
   notifications:
     slack:
       enabled: true
       channels:
-        critical: "#eng-oncall"
-        high: "#ci-failures"
-        medium: "#ci-alerts"
+        critical: '#eng-oncall'
+        high: '#ci-failures'
+        medium: '#ci-alerts'
     email:
       enabled: true
       recipients:
-        engineering_lead: ["lead@example.com"]
-        team_leads: ["team1@example.com", "team2@example.com"]
+        engineering_lead:
+        - lead@example.com
+        team_leads:
+        - team1@example.com
+        - team2@example.com
     github:
       enabled: true
       comment_on_issues: true
       create_tracking_issue: true
-
   learning:
     pattern_expiry_days: 90
     min_pattern_occurrences: 3
     success_rate_threshold: 0.7
     enable_ml_clustering: true
-
   performance:
     triage_timeout_seconds: 300
     max_concurrent_analyses: 5
     cache_ttl_seconds: 86400
-
 kpis:
   triage_time_target_seconds: 300
   pattern_detection_accuracy_target: 0.8
@@ -109,40 +102,32 @@ kpis:
   auto_resolution_rate_target: 0.5
   stakeholder_satisfaction_target: 4.0
   security_validation_pass_rate_target: 1.0
-
 dependencies:
-  python_modules:
-    - scripts.ci.batch_triage
-    - agents.self_healing
-    - scripts.cognitive.cognitive_brain_core
-
-  external_tools:
-    - github_cli
-    - pytest
-    - ruff
-
+- python_modules
+- external_tools
 prompts:
   analyze_batch: prompts/analyze_batch.md
   extract_patterns: prompts/extract_patterns.md
   generate_remediations: prompts/generate_remediations.md
   escalation: prompts/escalation.md
-
 testing:
   test_directory: tests/
   min_coverage: 0.8
   test_count_target: 20
-
 maintainer:
   type: automated
   primary: batch-triage-integration-agent
   fallback: community
-
 changelog:
-  - version: 1.1.0
-    date: 2026-01-19
-    changes:
-      - Added command whitelist validation for remediation engine
-      - Implemented secure subprocess execution without shell=True
-      - Added shlex.split() for safe command parsing
-      - Enhanced security section with execution safeguards
-      - Added security_validation_pass_rate_target KPI
+- version: 1.1.0
+  date: 2026-01-19
+  changes:
+  - Added command whitelist validation for remediation engine
+  - Implemented secure subprocess execution without shell=True
+  - Added shlex.split() for safe command parsing
+  - Enhanced security section with execution safeguards
+  - Added security_validation_pass_rate_target KPI
+id: batch-triage-agent
+triggers:
+  events:
+  - manual

@@ -32,7 +32,7 @@ lessons_learned_s228:
   src/, not site-packages'
 - 'Fix: pip install --force-reinstall -e . inside correct venv before pytest'
 - '@pytest.mark.flaky(reruns=2) masking root-cause failures — detect and escalate'
-id: ci-testing
+id: ci-testing-agent
 ---
 
 # CI Testing Agent v4.2.0-S228 (Unified CI Failure Resolver)

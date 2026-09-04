@@ -77,7 +77,7 @@ agents:
 - id: ci-testing-agent
   batch_scan_enabled: true
   name: CI Testing Agent
-  directory: .github/agents/ci-testing-agent
+  directory: .github/agents
   status: active
   maturity: production
   has_prompts: false
@@ -115,8 +115,8 @@ agents:
   - build_problem_resolution
   - log_analysis
   category: testing
-  file: .github/agents/ci-testing-agent/ci-testing-agent.md
-- id: performance-monitor
+  file: .github/agents/ci-testing-agent.md
+- id: performance-monitor-agent
   name: Performance Monitor Agent
   directory: .github/agents
   status: active
@@ -140,7 +140,7 @@ agents:
   - performance_monitor_agent
   category: monitoring
   file: .github/agents/performance-monitor-agent.md
-- id: artifact-monitor
+- id: artifact-monitor-agent
   batch_scan_enabled: true
   name: Artifact Monitor Agent
   directory: .github/agents
@@ -226,7 +226,7 @@ agents:
   - schema_compliance
   - hydra_integration
   category: configuration
-- id: codeql-alert-resolution
+- id: codeql-alert-resolution-agent
   batch_scan_enabled: true
   name: CodeQL Alert Resolution Agent
   directory: .github/agents
@@ -238,8 +238,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE categories,\
-    \ applies fix patterns, dismisses false positives, and contributes to AAIS scoring"
+  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories,
+    applies fix patterns, dismisses false positives, and contributes to AAIS scoring
   capabilities:
   - codeql_alert_ingestion
   - cwe_classification
@@ -262,9 +262,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE\
-    \ categories, applies fix patterns, dismisses false positives, and contributes\
-    \ to AAIS scoring"
+  description: Autonomous CodeQL alert triage and resolution — classifies CWE categories,
+    applies fix patterns, dismisses false positives, and contributes to AAIS scoring
   capability_tags:
   - codeql_alert_ingestion
   - cwe_classification
@@ -283,7 +282,7 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
   category: security
-- id: rag-meta-tensor-regression
+- id: rag-meta-tensor-regression-agent
   name: RAG Meta Tensor Regression Agent
   directory: .github/agents
   file: .github/agents/rag-meta-tensor-regression-agent.md
@@ -294,9 +293,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: "Prevents and resolves meta-tensor initialization regressions in the RAG\
-    \ pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors before\
-    \ isinstance)"
+  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG
+    pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
   capabilities:
   - meta_tensor_detection
   - device_placement_validation
@@ -317,9 +315,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "Prevents and resolves meta-tensor initialization regressions in the\
-    \ RAG pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors\
-    \ before isinstance)"
+  description: Prevents and resolves meta-tensor initialization regressions in the
+    RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before
+    isinstance)
   capability_tags:
   - meta_tensor_detection
   - device_placement_validation
@@ -327,7 +325,7 @@ agents:
   - canonical_fix_application
   - cognitive_brain_pattern_storage
   category: ml
-- id: ci-triage-pipeline
+- id: ci-triage-pipeline-agent
   batch_scan_enabled: true
   name: CI Triage Pipeline Agent
   directory: .github/agents
@@ -339,8 +337,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads logs,\
-    \ classifies failures by pattern, applies fix patterns from DRQ library"
+  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies
+    failures by pattern, applies fix patterns from DRQ library
   capabilities:
   - ci_log_retrieval
   - failure_classification
@@ -359,8 +357,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads\
-    \ logs, classifies failures by pattern, applies fix patterns from DRQ library"
+  description: Systematic CI failure triage using GitHub MCP tools — downloads logs,
+    classifies failures by pattern, applies fix patterns from DRQ library
   capability_tags:
   - ci_log_retrieval
   - failure_classification
@@ -368,7 +366,7 @@ agents:
   - drq_integration
   - cognitive_brain_learning
   category: ci_cd
-- id: recon-scout
+- id: recon-scout-agent
   batch_scan_enabled: true
   name: Recon Scout Agent
   directory: .github/agents
@@ -380,9 +378,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: "Read-only codebase reconnaissance \u2014 walks all files to surface CI\
-    \ blockers, security risks, quality issues, and architecture drift, tagging each\
-    \ as DRQ entries for deep research"
+  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers,
+    security risks, quality issues, and architecture drift, tagging each as DRQ entries
+    for deep research
   capabilities:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -410,9 +408,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "Read-only codebase reconnaissance \u2014 walks all files to surface\
-    \ CI blockers, security risks, quality issues, and architecture drift, tagging\
-    \ each as DRQ entries for deep research"
+  description: Read-only codebase reconnaissance — walks all files to surface CI blockers,
+    security risks, quality issues, and architecture drift, tagging each as DRQ entries
+    for deep research
   capability_tags:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -423,7 +421,7 @@ agents:
   - quick_fix_application
   - drq_filing
   category: operations
-- id: policy-coach
+- id: policy-coach-agent
   name: Policy Coach Agent
   directory: .github/agents
   file: .github/agents/policy-coach-agent.md
@@ -488,9 +486,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: "Advanced Python architecture design and review \u2014 enforces patterns,\
-    \ refactoring strategies, and module structure compliance for the cognitive brain\
-    \ and ML pipeline"
+  purpose: Advanced Python architecture design and review — enforces patterns, refactoring
+    strategies, and module structure compliance for the cognitive brain and ML pipeline
   capabilities:
   - architecture_review
   - refactoring_guidance
@@ -508,16 +505,16 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "Advanced Python architecture design and review \u2014 enforces patterns,\
-    \ refactoring strategies, and module structure compliance for the cognitive brain\
-    \ and ML pipeline"
+  description: Advanced Python architecture design and review — enforces patterns,
+    refactoring strategies, and module structure compliance for the cognitive brain
+    and ML pipeline
   capability_tags:
   - architecture_review
   - refactoring_guidance
   - pattern_enforcement
   - module_structure_validation
   category: quality
-- id: ci-auto-healer
+- id: ci-auto-healer-agent
   name: CI Auto-Healer Agent
   version: 1.0.0
   file: .github/agents/ci-auto-healer-agent.md
@@ -564,7 +561,7 @@ agents:
   - autonomous_ci_failure_detection
   - pattern_library_management
   directory: .github/agents
-- id: autonomous-test-healer
+- id: autonomous-test-healer-agent
   batch_scan_enabled: true
   name: Autonomous Test Healer Agent
   file: .github/agents/autonomous-test-healer-agent.md
@@ -605,7 +602,7 @@ agents:
   capability_tags:
   - security
   directory: .github/agents
-- id: cache-management
+- id: cache-management-agent
   name: Cache Management Agent
   file: .github/agents/cache-management-agent.md
   status: active
@@ -625,7 +622,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: ci-emergency-response
+- id: ci-emergency-response-agent
   batch_scan_enabled: true
   name: CI Emergency Response Agent
   file: .github/agents/ci-emergency-response-agent.md
@@ -657,7 +654,7 @@ agents:
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: ci-failure-resolution
+- id: ci-failure-resolution-agent
   batch_scan_enabled: true
   name: CI Failure Resolution Agent
   file: .github/agents/ci-failure-resolution-agent.md
@@ -680,7 +677,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: ci-importerror
+- id: ci-importerror-agent
   batch_scan_enabled: true
   name: CI ImportError Fixer Agent
   file: .github/agents/ci-importerror-agent.md
@@ -709,7 +706,7 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: ci-log-retrieval
+- id: ci-log-retrieval-agent
   name: CI Log Retrieval Agent
   file: .github/agents/ci-log-retrieval-agent.md
   status: active
@@ -727,7 +724,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: ci-optimization
+- id: ci-optimization-agent
   batch_scan_enabled: true
   name: CI Optimization Agent
   file: .github/agents/ci-optimization-agent.md
@@ -746,7 +743,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: ci-resilience-emergency-response
+- id: ci-resilience-emergency-response-agent
   batch_scan_enabled: true
   name: CI Resilience Emergency Response Agent
   file: .github/agents/ci-resilience-emergency-response-agent.md
@@ -768,7 +765,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: claim-verification
+- id: claim-verification-agent
   name: Claim Verification Agent
   file: .github/agents/claim-verification-agent.md
   status: active
@@ -786,7 +783,7 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
-- id: code-analysis
+- id: code-analysis-agent
   batch_scan_enabled: true
   name: Code Analysis Agent
   file: .github/agents/code-analysis-agent.md
@@ -805,7 +802,7 @@ agents:
   capability_tags:
   - quality
   directory: .github/agents
-- id: code-scanning-remediation
+- id: code-scanning-remediation-agent
   batch_scan_enabled: true
   name: Code Scanning Remediation Agent
   file: .github/agents/code-scanning-remediation-agent.md
@@ -862,7 +859,7 @@ agents:
   capability_tags:
   - configuration
   directory: .github/agents
-- id: coverage-gapfill
+- id: coverage-gapfill-agent
   batch_scan_enabled: true
   name: Coverage Gapfill Agent
   file: .github/agents/coverage-gapfill-agent.md
@@ -885,7 +882,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: coverage-maintenance
+- id: coverage-maintenance-agent
   batch_scan_enabled: true
   name: Coverage-maintenance Agent
   file: .github/agents/coverage-maintenance-agent.md
@@ -908,7 +905,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: coverage-roadmap
+- id: coverage-roadmap-agent
   batch_scan_enabled: true
   name: Coverage-roadmap Agent
   file: .github/agents/coverage-roadmap-agent.md
@@ -931,7 +928,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: cpu-only-ci-config
+- id: cpu-only-ci-config-agent
   name: CPU-Only CI Config Agent
   file: .github/agents/cpu-only-ci-config-agent.md
   status: active
@@ -969,7 +966,7 @@ agents:
   capability_tags:
   - quality
   directory: .github/agents
-- id: dependency-conflict
+- id: dependency-conflict-agent
   name: Dependency Conflict Agent
   file: .github/agents/dependency-conflict-agent.md
   status: active
@@ -987,7 +984,7 @@ agents:
   capability_tags:
   - dependencies
   directory: .github/agents
-- id: dependency-security-review
+- id: dependency-security-review-agent
   name: Dependency Security Review Agent
   file: .github/agents/dependency-security-review-agent.md
   status: archived
@@ -1067,7 +1064,7 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
-- id: doc-refactor-test
+- id: doc-refactor-test-agent
   name: Doc Refactor Test Agent
   file: .github/agents/doc-refactor-test-agent.md
   status: active
@@ -1085,7 +1082,7 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
-- id: documentation-quality
+- id: documentation-quality-agent
   name: Documentation Quality Agent
   file: .github/agents/documentation-quality-agent.md
   status: archived
@@ -1133,7 +1130,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: link-validator
+- id: link-validator-agent
   name: Link Validator Agent
   file: .github/agents/link-validator-agent.md
   status: active
@@ -1156,7 +1153,7 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
-- id: ml-validation-suite
+- id: ml-validation-suite-agent
   batch_scan_enabled: true
   name: ML Validation Suite Agent
   file: .github/agents/ml-validation-suite-agent.md
@@ -1177,7 +1174,7 @@ agents:
   capability_tags:
   - machine_learning
   directory: .github/agents
-- id: mutation-testing
+- id: mutation-testing-agent
   batch_scan_enabled: true
   name: Mutation Testing Agent
   file: .github/agents/mutation-testing-agent.md
@@ -1256,7 +1253,7 @@ agents:
   capability_tags:
   - security
   directory: .github/agents
-- id: pr-3095-verification
+- id: pr-3095-verification-agent
   name: PR 3095 Verification Agent
   file: .github/agents/pr-3095-verification-agent.md
   status: active
@@ -1275,7 +1272,7 @@ agents:
   capability_tags:
   - governance
   directory: .github/agents
-- id: pr-check-remediation
+- id: pr-check-remediation-agent
   batch_scan_enabled: true
   name: PR Check Remediation Agent
   file: .github/agents/pr-check-remediation-agent.md
@@ -1296,7 +1293,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: pypi-publishing-operations
+- id: pypi-publishing-operations-agent
   name: PyPI Publishing Operations Agent
   file: .github/agents/pypi-publishing-operations-agent.md
   status: active
@@ -1314,7 +1311,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: qa-walkthrough
+- id: qa-walkthrough-agent
   batch_scan_enabled: true
   name: QA Walkthrough Agent
   file: .github/agents/qa-walkthrough-agent.md
@@ -1336,7 +1333,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: quantum-compliance-tuning
+- id: quantum-compliance-tuning-agent
   name: Quantum Compliance Tuning Agent
   file: .github/agents/quantum-compliance-tuning-agent.md
   status: active
@@ -1358,7 +1355,7 @@ agents:
   integration_notes: Core executor of QI_TESTING improvement area. 10+ deep references.
     27 tests. Integration verified. See QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md
   directory: .github/agents
-- id: rag-freshness-loop
+- id: rag-freshness-loop-agent
   name: RAG Freshness Loop Agent
   file: .github/agents/rag-freshness-loop-agent.md
   status: active
@@ -1399,7 +1396,7 @@ agents:
   capability_tags:
   - machine_learning
   directory: .github/agents
-- id: rag-module-management
+- id: rag-module-management-agent
   name: RAG Module Management Agent
   file: .github/agents/rag-module-management-agent.md
   status: active
@@ -1418,9 +1415,9 @@ agents:
   - machine_learning
   integration_confirmed: true
   integration_date: '2026-07-19'
-  integration_notes: "Lane 2 Phase 2 B2-B5 validation completed with offline index\
-    \ build/query fallback, embedding TTL/eviction checks, security scan remediation,\
-    \ and zero detected RAG\u2194Cognitive Brain circular imports."
+  integration_notes: Lane 2 Phase 2 B2-B5 validation completed with offline index
+    build/query fallback, embedding TTL/eviction checks, security scan remediation,
+    and zero detected RAG↔Cognitive Brain circular imports.
   production_certified: true
   production_certified_date: '2026-07-19T22:00:00Z'
   certification_phase: Lane 2 Phase 2 (B1-B5 Gates)
@@ -1437,7 +1434,7 @@ agents:
   circular_imports: 0
   cognitive_brain_compatible: true
   directory: .github/agents
-- id: reference-updater
+- id: reference-updater-agent
   name: Reference Updater Agent
   file: .github/agents/reference-updater-agent.md
   status: active
@@ -1456,7 +1453,7 @@ agents:
   capability_tags:
   - quality
   directory: .github/agents
-- id: repository-hygiene
+- id: repository-hygiene-agent
   name: Repository Hygiene Agent
   file: .github/agents/repository-hygiene-agent.md
   status: active
@@ -1474,7 +1471,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: repository-organization
+- id: repository-organization-agent
   name: Repository Organization Agent
   file: .github/agents/repository-organization-agent.md
   status: active
@@ -1492,7 +1489,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: root-organizer
+- id: root-organizer-agent
   name: Root Organizer Agent
   file: .github/agents/root-organizer-agent.md
   status: active
@@ -1510,7 +1507,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: secret-detection
+- id: secret-detection-agent
   name: Secret Detection Agent
   file: .github/agents/secret-detection-agent.md
   status: archived
@@ -1542,7 +1539,7 @@ agents:
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: security-alert-verification
+- id: security-alert-verification-agent
   name: Security Alert Verification Agent
   file: .github/agents/security-alert-verification-agent.md
   status: active
@@ -1571,7 +1568,7 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: security-audit
+- id: security-audit-agent
   batch_scan_enabled: true
   name: Security Audit Agent
   file: .github/agents/security-audit-agent.md
@@ -1614,7 +1611,7 @@ agents:
   capability_tags:
   - machine_learning
   directory: .github/agents
-- id: session-analysis
+- id: session-analysis-agent
   name: Session Analysis Agent
   file: .github/agents/session-analysis-agent.md
   status: active
@@ -1633,7 +1630,7 @@ agents:
   capability_tags:
   - cognitive
   directory: .github/agents
-- id: session-log-retrieval
+- id: session-log-retrieval-agent
   name: Session Log Retrieval Agent
   file: .github/agents/session-log-retrieval-agent.md
   status: active
@@ -1653,7 +1650,7 @@ agents:
   capability_tags:
   - cognitive
   directory: .github/agents
-- id: terminology-consistency
+- id: terminology-consistency-agent
   name: Terminology Consistency Agent
   file: .github/agents/terminology-consistency-agent.md
   status: active
@@ -1694,7 +1691,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: test-coverage
+- id: test-coverage-agent
   batch_scan_enabled: true
   name: Test-coverage Agent
   file: .github/agents/test-coverage-agent.md
@@ -1744,7 +1741,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: test-enhancement
+- id: test-enhancement-agent
   name: Test Enhancement Agent
   file: .github/agents/test-enhancement-agent.md
   status: active
@@ -1767,7 +1764,7 @@ agents:
   - testing
   batch_scan_enabled: true
   directory: .github/agents
-- id: test-failure-analyzer
+- id: test-failure-analyzer-agent
   batch_scan_enabled: true
   name: Test Failure Analyzer Agent
   file: .github/agents/test-failure-analyzer-agent.md
@@ -1786,7 +1783,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: tokenization-coverage
+- id: tokenization-coverage-agent
   batch_scan_enabled: true
   name: Tokenization Coverage Agent
   file: .github/agents/tokenization-coverage-agent.md
@@ -1806,7 +1803,7 @@ agents:
   capability_tags:
   - testing
   directory: .github/agents
-- id: tracking-document-qa
+- id: tracking-document-qa-agent
   name: Tracking Document QA Agent
   file: .github/agents/tracking-document-qa-agent.md
   status: active
@@ -1825,7 +1822,7 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
-- id: unified-doc
+- id: unified-doc-agent
   name: Unified Documentation Agent
   file: .github/agents/unified-doc-agent.md
   status: active
@@ -1845,24 +1842,26 @@ agents:
   - documentation
   directory: .github/agents
 - id: workflow-compliance-guardian
-  name: Workflow Compliance Guardian Agent
+  name: workflow-compliance-guardian
   file: .github/agents/workflow-compliance-guardian.md
   status: active
   maturity: production
   category: ci_cd
   priority: high
-  purpose: Enforces and auto-heals workflow compliance, concurrency, and timeout rules across GitHub Actions workflows.
+  purpose: Enforces and auto-heals workflow compliance, concurrency, and timeout rules
+    across GitHub Actions workflows.
   enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
   accepts_handoff_from: []
   consolidation_priority: false
   role: utility
-  description: Enforces and auto-heals workflow compliance, concurrency, and timeout rules across GitHub Actions workflows.
+  description: Enforces and auto-heals workflow compliance, concurrency, and timeout
+    rules across GitHub Actions workflows.
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: workflow-analytics
+- id: workflow-analytics-agent
   name: Workflow Analytics Agent
   file: .github/agents/workflow-analytics-agent.md
   status: archived
@@ -1945,7 +1944,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: workflow-management
+- id: workflow-management-agent
   name: Workflow Management Agent
   file: .github/agents/workflow-management-agent.md
   status: archived
@@ -1966,7 +1965,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: workflow-optimization
+- id: workflow-optimization-agent
   name: Workflow Optimization Agent
   file: .github/agents/workflow-optimization-agent.md
   status: archived
@@ -1986,7 +1985,7 @@ agents:
   capability_tags:
   - ci_cd
   directory: .github/agents
-- id: cognitive-brain-cli
+- id: cognitive-brain-cli-agent
   name: Cognitive Brain Cli Agent
   version: 1.0.0
   file: .github/agents/cognitive-brain-cli-agent.md
@@ -2016,7 +2015,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: ci-health-alert
+- id: ci-health-alert-agent
   name: CI Health Alert Agent
   version: 1.1.0
   file: .github/agents/ci-health-alert-agent.md
@@ -2050,7 +2049,7 @@ agents:
   - packaging_validation
   - self_healing_cascade_detection
   directory: .github/agents
-- id: repo-var-sync
+- id: repo-var-sync-agent
   name: Repo Var Sync Agent
   version: 1.0.0
   file: .github/agents/repo-var-sync-agent.md
@@ -2062,9 +2061,11 @@ agents:
   has_src: false
   category: infrastructure
   subcategory: configuration
-  description: "Keeps .codex/agent_context.json bidirectionally in sync with GitHub\
-    \ Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap\
-    \ sync (vars\u2192file) and propagation (file\u2192vars) with drift detection.\n"
+  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub
+    Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap sync
+    (vars→file) and propagation (file→vars) with drift detection.
+
+    '
   added_in_pr: 3421
   sprint: Sprint 4
   physics_model:
@@ -2079,7 +2080,7 @@ agents:
   capability_tags:
   - infrastructure
   directory: .github/agents
-- id: cognitive-ooda-loop
+- id: cognitive-ooda-loop-agent
   name: Cognitive OODA Loop Agent
   version: 1.0.0
   file: .github/agents/cognitive-ooda-loop-agent.md
@@ -2111,7 +2112,7 @@ agents:
   capability_tags:
   - cognitive
   directory: .github/agents
-- id: memory-sync
+- id: memory-sync-agent
   name: Memory Sync Agent
   version: 2.1.0
   file: .github/agents/memory-sync-agent.md
@@ -2144,7 +2145,7 @@ agents:
   capability_tags:
   - cognitive
   directory: .github/agents
-- id: telemetry-classifier
+- id: telemetry-classifier-agent
   name: Telemetry Classifier Agent
   version: 2.1.0
   file: .github/agents/telemetry-classifier-agent.md
@@ -2200,7 +2201,7 @@ agents:
   description: specialist
   capability_tags:
   - quality
-- id: orchestrator
+- id: orchestrator-agent
   name: Orchestrator Agent
   version: 1.0.0
   file: .github/agents/orchestrator-agent.md
@@ -2231,7 +2232,7 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
-- id: packaging-validation
+- id: packaging-validation-agent
   name: Packaging Validation Agent
   version: 1.0.0
   file: .github/agents/packaging-validation-agent.md
@@ -2267,7 +2268,7 @@ agents:
   - pep621_compliance
   - dependabot_remediation
   directory: .github/agents
-- id: energy-conversion
+- id: energy-conversion-agent
   name: Energy Conversion Agent
   version: 1.0.0
   file: .github/agents/energy-conversion-agent.md
@@ -2308,7 +2309,7 @@ agents:
   deprecation_reason: Out-of-scope domain (G2E energy conversion). Minimal integration
     (4 refs, IQ=0.6558). Zero active use. See ENERGY_CONVERSION_AGENT_DEPRECATION.md
   directory: .github/agents
-- id: self-healing-orchestrator
+- id: self-healing-orchestrator-agent
   name: Self Healing Orchestrator Agent
   version: 1.0.0
   file: .github/agents/self-healing-orchestrator-agent.md
@@ -2354,7 +2355,7 @@ agents:
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: branch-divergence-resolution
+- id: branch-divergence-resolution-agent
   name: Branch Divergence Resolution Agent
   version: 1.1.0
   file: .github/agents/branch-divergence-resolution-agent.md
@@ -2395,7 +2396,7 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
   directory: .github/agents
-- id: google-home-script
+- id: google-home-script-agent
   name: Google Home Script Agent
   version: 1.0.0
   file: .github/agents/google-home-script-agent.md

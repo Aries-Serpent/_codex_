@@ -170,6 +170,11 @@ def test_profile_id_handles_agent_yaml_suffix() -> None:
     assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
 
 
+def test_profile_id_preserves_agent_and_skill_slugs() -> None:
+    assert validator._profile_id(Path("nested/example-agent.md")) == "example-agent"
+    assert validator._profile_id(Path("nested/example-skill.md")) == "example-skill"
+
+
 def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict]) -> None:
     registry_schema, _ = schemas
     entry = _registry_entry("example-agent", "Example Agent", "example-agent.md")

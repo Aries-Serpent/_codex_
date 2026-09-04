@@ -1,63 +1,31 @@
-# Cache Logic Validator Agent Configuration
-# Version: 1.0.0
-# Status: Active
-
 name: cache-logic-validator
 version: 1.0.0
-description: >
-  Validate cache implementations using property-based testing.
-  Ensures mathematical properties hold (hits + misses = queries),
-  concurrency safety, and expiration logic correctness.
+description: 'Validate cache implementations using property-based testing. Ensures
+  mathematical properties hold (hits + misses = queries), concurrency safety, and
+  expiration logic correctness.
 
+  '
 metadata:
   author: copilot
   created: 2026-01-11
   category: test-automation
   priority: high
   estimated_effort: 2-3 days
-
 triggers:
-  - type: file_change
-    patterns:
-      - "**/cache*.py"
-      - "**/retriever*.py"
-
-  - type: manual
-    command: "@copilot validate cache logic"
-
-  - type: scheduled
-    cron: "0 4 * * 0"  # Weekly on Sunday at 4 AM
-
+  events:
+  - file_change
+  - manual
+  - scheduled
 capabilities:
-  property_generation:
-    enabled: true
-    framework: hypothesis
-    properties:
-      - hit_miss_total_equality
-      - expiration_behavior
-      - lru_ordering
-      - concurrent_access_safety
-      - key_collision_handling
-
-  test_execution:
-    enabled: true
-    max_examples: 1000
-    timeout_seconds: 300
-
-  report_generation:
-    enabled: true
-    formats:
-      - markdown
-      - json
-    include_coverage_map: true
-
+- property_generation
+- test_execution
+- report_generation
 input:
   required:
-    - cache_module: path
+  - cache_module: path
   optional:
-    - max_examples: integer
-    - specific_properties: list[string]
-
+  - max_examples: integer
+  - specific_properties: list[string]
 output:
   success:
     properties_tested: integer
@@ -68,22 +36,22 @@ output:
     failed_properties: list[string]
     counterexamples: list[object]
     suggested_fixes: list[string]
-
 integrations:
   cognitive_brain:
     pattern_storage: true
     cache_patterns_category: true
-
   github:
     pr_comments: true
     status_checks: true
-
 constraints:
   max_runtime_seconds: 600
   memory_limit_mb: 1024
   require_isolation: true
-
 security:
   code_execution: sandboxed
   file_access: cache_files_only
   network_access: none
+id: cache-logic-validator
+status: active
+maturity: beta
+dependencies: []

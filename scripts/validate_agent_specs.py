@@ -78,7 +78,12 @@ def load_schema(path: Path = SCHEMA_PATH) -> dict[str, Any]:
 
 
 def _looks_like_agent_frontmatter(path: Path) -> bool:
-    """Heuristic: treat generic markdown files as agent specs only with frontmatter."""
+    """Heuristic: treat generic markdown files as agent specs only with valid frontmatter.
+
+    GitHub Markdown agent profiles are schema-valid when they include a non-empty
+    ``description`` field; ``id`` and ``name`` are optional in the frontmatter
+    contract and may be inferred from the filename or registry metadata.
+    """
     try:
         content = path.read_text(encoding="utf-8")
     except OSError:
@@ -97,11 +102,14 @@ def _looks_like_agent_frontmatter(path: Path) -> bool:
         return False
     if not isinstance(data, dict):
         return False
-    return (
-        isinstance(data.get("id"), str)
-        and isinstance(data.get("name"), str)
-        and isinstance(data.get("description"), str)
-    )
+    description = data.get("description")
+    if not isinstance(description, str) or not description.strip():
+        return False
+    for key in ("id", "name"):
+        value = data.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            return False
+    return True
 
 
 def _is_markdown_agent(path: Path) -> bool:
@@ -111,7 +119,7 @@ def _is_markdown_agent(path: Path) -> bool:
     if name == "agent.md":
         return False
     if name.endswith(".agent.md") or name.endswith("-agent.md") or name.endswith("-skill.md"):
-        return _looks_like_agent_frontmatter(path)
+        return True
     return _looks_like_agent_frontmatter(path)
 
 
@@ -131,11 +139,14 @@ def _is_yaml_agent(path: Path) -> bool:
         return False
     if not isinstance(data, dict):
         return False
-    return (
-        isinstance(data.get("id"), str)
-        and isinstance(data.get("name"), str)
-        and isinstance(data.get("description"), str)
-    )
+    description = data.get("description")
+    if not isinstance(description, str) or not description.strip():
+        return False
+    for key in ("id", "name"):
+        value = data.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            return False
+    return True
 
 
 def _is_agent_definition(path: Path) -> bool:
@@ -265,6 +276,13 @@ def _result(path: str, kind: str, errors: list[str]) -> dict[str, Any]:
 
 
 def _profile_id(path: Path) -> str:
+    """Return the canonical identifier implied by the spec filename.
+
+    Files named ``*.agent.md`` or ``*.agent.yml`` encode a schema marker that is
+    not part of the canonical identifier. Files named ``*-agent.md`` and
+    ``*-skill.md`` are already canonical slugs, so their suffixes should remain
+    intact.
+    """
     name = path.name.lower()
     suffixes = (
         ".agent.md",
