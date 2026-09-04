@@ -2129,18 +2129,8 @@
       "has_concurrency": true
     },
     {
-      "name": "wec-enforcement-gate",
-      "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
       "name": "workflow-analytics-unified",
       "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
-      "name": "workflow-compliance-gate",
-      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {

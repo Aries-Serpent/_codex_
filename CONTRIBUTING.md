@@ -189,7 +189,7 @@ except ValueError as e:
 - **Code Comments:** Use lowercase and snake_case for identifiers
 - **Docstrings:** Use lowercase, capitalize as normal for sentences
 - **Markdown Headers:** Use Title Case (capitalize major words)
-- **URLs/Identifiers:** Use kebab-case (e.g., `workflow-compliance-gate.yml`)
+- **URLs/Identifiers:** Use kebab-case (e.g., `workflow-execution-gate.yml`)
 
 ### Examples
 

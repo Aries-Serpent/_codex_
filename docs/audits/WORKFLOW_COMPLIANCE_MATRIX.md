@@ -214,7 +214,6 @@
 | `validate` | | | | N/A | SOFT | Cross-branch diff without explicit base-ref fetch |
 | `vars-guide-sync` | | | | N/A | GROUNDED | — |
 | `workflow-analytics-unified` | | | | N/A | SOFT | — |
-| `workflow-compliance-gate` | | | | N/A | GROUNDED | — |
 | `workflow-execution-gate` | | | | N/A | GROUNDED | — |
 | `workflow-expiry-enforcer` | | | | N/A | SOFT | — |
 | `workflow-link-validation` | | | | N/A | PARTIAL | — |

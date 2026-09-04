@@ -116,7 +116,7 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 3. `.github/workflows/workflow-execution-gate.yml`
 4. `.github/workflows/validate.yml`
 
-> Historical duplicates such as `wec-enforcement-gate.yml` and `workflow-compliance-gate.yml` are archived-only reference files; the active canonical gate is `workflow-execution-gate.yml`.
+> Historical duplicates such as `wec-enforcement-gate.yml` and `workflow-compliance-gate.yml` are archived under `.github/workflow-archive/disabled/`; the active canonical gate is `workflow-execution-gate.yml`.
 
 **Supporting scripts (must exist and have valid Python syntax):**
 1. `.github/scripts/session_preload.py`

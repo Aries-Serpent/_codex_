@@ -8,7 +8,7 @@ Only the repo's current baseline workflows remain enabled in the live `.github/w
 
 The reusable workflow `cost-gate.yml` is part of the active baseline and is still invoked by several active jobs; it is not a historical artifact and should remain enabled.
 
-The canonical gate for workflow execution checks is `workflow-execution-gate.yml`; the legacy `wec-enforcement-gate.yml` duplicate has been archived and is no longer part of the active runtime baseline. The historical `workflow-compliance-gate.yml.disabled` file remains available only for reference and should not be treated as the current gate.
+The canonical gate for workflow execution checks is `workflow-execution-gate.yml`; the legacy `wec-enforcement-gate.yml` duplicate has been archived and is no longer part of the active runtime baseline. The historical `workflow-compliance-gate.yml` duplicate has been moved to `.github/workflow-archive/disabled/` for reference and should not be treated as the current gate.
 
 ## 📑 Quick Navigation
 

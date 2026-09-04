@@ -112,41 +112,36 @@ def _looks_like_agent_frontmatter(path: Path) -> bool:
     return True
 
 
+def _matches_spec_filename(name: str) -> bool:
+    """Return True only for repository custom-agent definition filenames."""
+    lowered = name.lower()
+    return (
+        lowered.endswith(".agent.md")
+        or lowered.endswith("-agent.md")
+        or lowered.endswith("-skill.md")
+        or lowered.endswith(".agent.yml")
+        or lowered.endswith(".agent.yaml")
+    )
+
+
 def _is_markdown_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in _IGNORED_MARKDOWN_NAMES:
         return False
     if name == "agent.md":
         return False
-    if name.endswith(".agent.md") or name.endswith("-agent.md") or name.endswith("-skill.md"):
-        return True
-    return _looks_like_agent_frontmatter(path)
+    return _matches_spec_filename(name)
 
 
 def _is_yaml_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in {"agent_registry.yaml", "agent_registry.yml"}:
         return False
-    if name.endswith(".agent.yaml") or name.endswith(".agent.yml"):
-        return True
     if any(part in {"config", "manifest", "settings"} for part in path.parts):
         return False
     if name in {"config.yaml", "config.yml", "manifest.yaml", "manifest.yml"}:
         return False
-    try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) if HAS_YAML else None
-    except (OSError, yaml.YAMLError):
-        return False
-    if not isinstance(data, dict):
-        return False
-    description = data.get("description")
-    if not isinstance(description, str) or not description.strip():
-        return False
-    for key in ("id", "name"):
-        value = data.get(key)
-        if value is not None and (not isinstance(value, str) or not value.strip()):
-            return False
-    return True
+    return _matches_spec_filename(name)
 
 
 def _is_agent_definition(path: Path) -> bool:

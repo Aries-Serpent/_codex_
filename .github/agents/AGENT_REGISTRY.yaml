@@ -824,7 +824,7 @@ agents:
   directory: .github/agents
 - id: cognitive-brain-manager
   name: Cognitive Brain Manager
-  file: .github/agents/cognitive-brain-manager.md
+  file: .github/agents/cognitive-brain-manager.agent.md
   status: active
   maturity: production
   category: cognitive
@@ -858,6 +858,27 @@ agents:
   description: Migrates legacy configurations to Hydra-based format with validation.
   capability_tags:
   - configuration
+  directory: .github/agents
+- id: unified-coverage-agent
+  name: Unified Coverage Agent
+  file: .github/agents/unified-coverage-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: critical
+  purpose: 'Single entry-point for all test-coverage work: monitor thresholds, fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap.'
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  role: specialist
+  description: 'Single entry-point for all test-coverage work: monitor thresholds, fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap. Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent, and test-coverage-monitor into one cohesive agent.'
+  capability_tags:
+  - testing
   directory: .github/agents
 - id: coverage-gapfill-agent
   batch_scan_enabled: true
@@ -1507,6 +1528,26 @@ agents:
   capability_tags:
   - operations
   directory: .github/agents
+- id: unified-security-scanner
+  name: Unified Security Scanner
+  file: .github/agents/unified-security-scanner.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Perform comprehensive security scanning combining SAST, dependency checks, and secrets detection.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  role: specialist
+  description: Perform comprehensive security scanning combining SAST, dependency checks, and secrets detection.
+  capability_tags:
+  - security
+  directory: .github/agents
 - id: secret-detection-agent
   name: Secret Detection Agent
   file: .github/agents/secret-detection-agent.md
@@ -1841,9 +1882,29 @@ agents:
   capability_tags:
   - documentation
   directory: .github/agents
+- id: unified-governance-gate
+  name: Unified Governance Gate Agent
+  file: .github/agents/unified-governance-gate.md
+  status: active
+  maturity: production
+  category: governance
+  priority: critical
+  purpose: Enforce unified governance policies across PRs, deployments, and automated operations.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  role: utility
+  description: Enforce unified governance policies across PRs, deployments, and automated operations.
+  capability_tags:
+  - governance
+  directory: .github/agents
 - id: workflow-compliance-guardian
-  name: workflow-compliance-guardian
-  file: .github/agents/workflow-compliance-guardian.md
+  name: Workflow Compliance Guardian
+  file: .github/agents/workflow-compliance-guardian.agent.md
   status: active
   maturity: production
   category: ci_cd
