@@ -116,7 +116,7 @@ jobs:
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -260,7 +260,7 @@ jobs:
         \ \"\u2705 Trusted code fetch complete (API-based, no git operations)\"\n"
     - name: Checkout repository for local project metadata
       if: github.event_name != 'issue_comment'
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         fetch-depth: 1
         persist-credentials: false
@@ -369,7 +369,7 @@ jobs:
       '
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       with:
         persist-credentials: false
     - name: Generate improvement PR
