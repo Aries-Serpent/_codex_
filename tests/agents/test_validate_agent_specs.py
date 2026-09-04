@@ -79,6 +79,24 @@ def test_discovers_root_and_nested_markdown_agents(tmp_path: Path) -> None:
     }
 
 
+def test_discovers_only_strict_custom_agent_filenames(tmp_path: Path) -> None:
+    agents_dir = tmp_path / ".github" / "agents"
+    _write_profile(agents_dir / "real.agent.md", name="Real Agent")
+    _write_profile(agents_dir / "nested" / "reviewer-agent.md", name="Reviewer Agent")
+    _write_profile(agents_dir / "agent-orchestrator.md", name="Agent Orchestrator")
+    _write_profile(agents_dir / "INFRA_LINTER_AGENT_PROMPT.md", name="Infra Stub")
+    _write_profile(agents_dir / "archive" / "README.md", name="Archive")
+
+    discovered = {
+        path.relative_to(agents_dir).as_posix() for path in validator.find_agent_specs(agents_dir)
+    }
+
+    assert discovered == {
+        "nested/reviewer-agent.md",
+        "real.agent.md",
+    }
+
+
 @pytest.mark.parametrize(
     ("content", "expected_error"),
     [
@@ -137,6 +155,44 @@ def test_parse_failure_is_reported_in_repository_results(
     assert broken["errors"] == ["missing YAML frontmatter"]
 
 
+def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[dict, dict]) -> None:
+    registry_schema, frontmatter_schema = schemas
+    agents_dir = tmp_path / ".github" / "agents"
+    legacy_readme = agents_dir / "legacy" / "README.md"
+    legacy_readme.parent.mkdir(parents=True, exist_ok=True)
+    legacy_readme.write_text("# Legacy docs only\n", encoding="utf-8")
+    profile = agents_dir / "actual-agent.md"
+    _write_profile(profile, name="Actual Agent", extra={"id": "actual-agent"})
+    _write_registry(
+        agents_dir / "AGENT_REGISTRY.yaml",
+        [
+            _registry_entry("legacy-agent", "Legacy Agent", "legacy/README.md"),
+            _registry_entry("actual-agent", "Actual Agent", "actual-agent.md"),
+        ],
+    )
+
+    results = validator.validate_repository(
+        repo_root=tmp_path,
+        agents_dir=agents_dir,
+        registry_schema=registry_schema,
+        frontmatter_schema=frontmatter_schema,
+    )
+
+    messages = "\n".join(error for result in results for error in result["errors"])
+    assert "referenced Markdown file is not a valid agent profile" not in messages
+    assert all(result["valid"] for result in results), results
+
+
+def test_profile_id_handles_agent_yaml_suffix() -> None:
+    assert validator._profile_id(Path("nested/example.agent.yml")) == "example"
+    assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
+
+
+def test_profile_id_preserves_agent_and_skill_slugs() -> None:
+    assert validator._profile_id(Path("nested/example-agent.md")) == "example-agent"
+    assert validator._profile_id(Path("nested/example-skill.md")) == "example-skill"
+
+
 def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict]) -> None:
     registry_schema, _ = schemas
     entry = _registry_entry("example-agent", "Example Agent", "example-agent.md")
@@ -180,17 +236,17 @@ def test_registry_file_and_identity_mismatches_fail(
     assert "referenced agent file does not exist" in messages
 
 
-def test_registry_discovers_profile_with_generic_filename(
+def test_registry_discovers_profile_with_valid_agent_filename(
     tmp_path: Path,
     schemas: tuple[dict, dict],
 ) -> None:
     registry_schema, frontmatter_schema = schemas
     agents_dir = tmp_path / ".github" / "agents"
-    profile = agents_dir / "nested" / "reviewer.md"
+    profile = agents_dir / "nested" / "reviewer.agent.md"
     _write_profile(profile, name="Reviewer")
     _write_registry(
         agents_dir / "AGENT_REGISTRY.yaml",
-        [_registry_entry("reviewer", "Reviewer", "nested/reviewer.md")],
+        [_registry_entry("reviewer", "Reviewer", "nested/reviewer.agent.md")],
     )
 
     results = validator.validate_repository(
@@ -200,7 +256,7 @@ def test_registry_discovers_profile_with_generic_filename(
         frontmatter_schema=frontmatter_schema,
     )
 
-    assert any(result["path"].endswith("nested/reviewer.md") for result in results)
+    assert any(result["path"].endswith("nested/reviewer.agent.md") for result in results)
     assert all(result["valid"] for result in results), results
 
 

@@ -1,5 +1,6 @@
 name: test-alignment-fixer
 description: Fix test alignment issues that arise after API changes, refactors, or function signature updates
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Detect removed or renamed attributes in tests

@@ -1,10 +1,12 @@
 ---
 name: Test-coverage Agent
-description: "DEPRECATED — use unified-coverage-agent instead. Monitors and improves test coverage across the codebase."
+description: DEPRECATED — use unified-coverage-agent instead. Monitors and improves
+  test coverage across the codebase.
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent
 deprecated_in: S174 (2026-03-21)
+id: test-coverage-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-coverage-agent`](./unified-coverage-agent.md).

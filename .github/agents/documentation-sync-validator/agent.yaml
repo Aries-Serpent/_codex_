@@ -1,147 +1,110 @@
 name: documentation-sync-validator
-description: Validates documentation synchronization with codebase, detects semantic drift, and ensures schema compliance
+description: Validates documentation synchronization with codebase, detects semantic
+  drift, and ensures schema compliance
 author: Copilot Autonomous Agent System
 version: 1.0.0
-
 branding:
-  icon: 'file-text'
-  color: 'blue'
-
+  icon: file-text
+  color: blue
 inputs:
   check-freshness:
-    description: 'Enable freshness checking'
+    description: Enable freshness checking
     required: false
     default: 'true'
-
   validate-links:
-    description: 'Enable link validation'
+    description: Enable link validation
     required: false
     default: 'true'
-
   semantic-drift-threshold:
-    description: 'Similarity threshold for semantic drift (0.0-1.0)'
+    description: Similarity threshold for semantic drift (0.0-1.0)
     required: false
     default: '0.7'
-
   freshness-threshold-days:
-    description: 'Days threshold for stale documentation'
+    description: Days threshold for stale documentation
     required: false
     default: '90'
-
   fail-on-issues:
-    description: 'Fail the workflow if issues are found'
+    description: Fail the workflow if issues are found
     required: false
     default: 'false'
-
   output-format:
-    description: 'Report output format (text|json|markdown)'
+    description: Report output format (text|json|markdown)
     required: false
-    default: 'markdown'
-
+    default: markdown
   docs-path:
-    description: 'Path to documentation directory'
+    description: Path to documentation directory
     required: false
-    default: 'docs/'
-
+    default: docs/
   code-path:
-    description: 'Path to source code directory for semantic drift detection'
+    description: Path to source code directory for semantic drift detection
     required: false
-    default: 'src/'
-
+    default: src/
 outputs:
   issues-found:
-    description: 'Number of issues found'
+    description: Number of issues found
     value: ${{ steps.validate.outputs.issues }}
-
   report-path:
-    description: 'Path to generated report file'
+    description: Path to generated report file
     value: ${{ steps.validate.outputs.report }}
-
   severity-high:
-    description: 'Number of high severity issues'
+    description: Number of high severity issues
     value: ${{ steps.validate.outputs.high }}
-
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+  - name: Set up Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.11'
+  - name: Install dependencies
+    shell: bash
+    run: 'pip install pyyaml
 
-    - name: Install dependencies
-      shell: bash
-      run: |
-        pip install pyyaml
-
-    - name: Run Documentation Sync Validator
-      id: validate
-      shell: bash
-      run: |
-        PYTHONPATH="${GITHUB_ACTION_PATH}/src:$PYTHONPATH" \
-        python -m agent validate ${{ inputs.docs-path }} \
-          --code-dir ${{ inputs.code-path }} \
-          --output-format ${{ inputs.output-format }} \
-          > validation_report.${{ inputs.output-format }}
-
-        # Count issues
-        if [ "${{ inputs.output-format }}" = "json" ]; then
-          ISSUES=$(jq 'length' validation_report.json)
-          HIGH=$(jq '[.[] | select(.severity=="high" or .severity=="critical")] | length' validation_report.json)
-        else
-          ISSUES=$(grep -c "^\[" validation_report.* || echo "0")
-          HIGH=$(grep -c "^\[HIGH\|^\[CRITICAL" validation_report.* || echo "0")
-        fi
-
-        echo "issues=$ISSUES" >> $GITHUB_OUTPUT
-        echo "high=$HIGH" >> $GITHUB_OUTPUT
-        echo "report=validation_report.${{ inputs.output-format }}" >> $GITHUB_OUTPUT
-
-        # Fail if requested and issues found
-        if [ "${{ inputs.fail-on-issues }}" = "true" ] && [ "$ISSUES" -gt "0" ]; then
-          exit 1
-        fi
-
-    - name: Upload report artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: documentation-validation-report
-        path: validation_report.*
-
-    - name: Comment on PR (if applicable)
-      if: github.event_name == 'pull_request' && always()
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const reportPath = '${{ steps.validate.outputs.report }}';
-
-          if (!fs.existsSync(reportPath)) {
-            return;
-          }
-
-          const issues = parseInt('${{ steps.validate.outputs.issues }}');
-          const high = parseInt('${{ steps.validate.outputs.high }}');
-
-          let comment = '## 📚 Documentation Sync Validation Results\n\n';
-
-          if (issues === 0) {
-            comment += '✅ **All checks passed!** Documentation is up-to-date and synchronized.\n';
-          } else {
-            comment += `⚠️ **Found ${issues} issue(s)** in documentation:\n`;
-            comment += `- High/Critical severity: ${high}\n`;
-            comment += `- Other issues: ${issues - high}\n\n`;
-            comment += '📄 See the artifacts for the detailed report.\n';
-          }
-
-          try {
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-          } catch (error) {
-            console.log('Could not post comment:', error.message);
-          }
+      '
+  - name: Run Documentation Sync Validator
+    id: validate
+    shell: bash
+    run: "PYTHONPATH=\"${GITHUB_ACTION_PATH}/src:$PYTHONPATH\" \\\npython -m agent\
+      \ validate ${{ inputs.docs-path }} \\\n  --code-dir ${{ inputs.code-path }}\
+      \ \\\n  --output-format ${{ inputs.output-format }} \\\n  > validation_report.${{\
+      \ inputs.output-format }}\n\n# Count issues\nif [ \"${{ inputs.output-format\
+      \ }}\" = \"json\" ]; then\n  ISSUES=$(jq 'length' validation_report.json)\n\
+      \  HIGH=$(jq '[.[] | select(.severity==\"high\" or .severity==\"critical\")]\
+      \ | length' validation_report.json)\nelse\n  ISSUES=$(grep -c \"^\\[\" validation_report.*\
+      \ || echo \"0\")\n  HIGH=$(grep -c \"^\\[HIGH\\|^\\[CRITICAL\" validation_report.*\
+      \ || echo \"0\")\nfi\n\necho \"issues=$ISSUES\" >> $GITHUB_OUTPUT\necho \"high=$HIGH\"\
+      \ >> $GITHUB_OUTPUT\necho \"report=validation_report.${{ inputs.output-format\
+      \ }}\" >> $GITHUB_OUTPUT\n\n# Fail if requested and issues found\nif [ \"${{\
+      \ inputs.fail-on-issues }}\" = \"true\" ] && [ \"$ISSUES\" -gt \"0\" ]; then\n\
+      \  exit 1\nfi\n"
+  - name: Upload report artifact
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+      name: documentation-validation-report
+      path: validation_report.*
+  - name: Comment on PR (if applicable)
+    if: github.event_name == 'pull_request' && always()
+    uses: actions/github-script@v7
+    with:
+      script: "const fs = require('fs');\nconst reportPath = '${{ steps.validate.outputs.report\
+        \ }}';\n\nif (!fs.existsSync(reportPath)) {\n  return;\n}\n\nconst issues\
+        \ = parseInt('${{ steps.validate.outputs.issues }}');\nconst high = parseInt('${{\
+        \ steps.validate.outputs.high }}');\n\nlet comment = '## \U0001F4DA Documentation\
+        \ Sync Validation Results\\n\\n';\n\nif (issues === 0) {\n  comment += '\u2705\
+        \ **All checks passed!** Documentation is up-to-date and synchronized.\\n';\n\
+        } else {\n  comment += `\u26A0\uFE0F **Found ${issues} issue(s)** in documentation:\\\
+        n`;\n  comment += `- High/Critical severity: ${high}\\n`;\n  comment += `-\
+        \ Other issues: ${issues - high}\\n\\n`;\n  comment += '\U0001F4C4 See the\
+        \ artifacts for the detailed report.\\n';\n}\n\ntry {\n  await github.rest.issues.createComment({\n\
+        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    body: comment\n  });\n} catch (error) {\n\
+        \  console.log('Could not post comment:', error.message);\n}\n"
+id: documentation-sync-validator
+status: active
+maturity: beta
+capabilities: []
+triggers:
+  events:
+  - manual
+dependencies: []

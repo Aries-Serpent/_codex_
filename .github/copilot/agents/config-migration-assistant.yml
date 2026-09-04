@@ -1,5 +1,6 @@
 name: config-migration-assistant
 description: Migrate legacy configurations to Hydra format with backward compatibility and validation
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Configuration analysis

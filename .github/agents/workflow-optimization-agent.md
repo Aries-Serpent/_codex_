@@ -1,9 +1,11 @@
 ---
 name: Workflow Optimization Agent
-description: Analyze and optimize GitHub Actions workflows for parallelism, caching, and execution efficiency
+description: Analyze and optimize GitHub Actions workflows for parallelism, caching,
+  and execution efficiency
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — analysis and optimization recommendations
-  large:   ubuntu-latest-large  # 4-core — faster workflow performance benchmarking
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: workflow-optimization-agent
 ---
 
 # GitHub Actions Workflow Optimization Agent

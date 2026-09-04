@@ -1,6 +1,8 @@
 ---
 name: CI Health Alert Agent
-description: Auto-responds to GitHub issues tagged `ci-health-alert`; classifies failure patterns (including self-healing cascades), proposes targeted fixes, and updates CODEX_CI_FAILURE_RATE repo variable
+description: Auto-responds to GitHub issues tagged `ci-health-alert`; classifies failure
+  patterns (including self-healing cascades), proposes targeted fixes, and updates
+  CODEX_CI_FAILURE_RATE repo variable
 version: 1.1.0
 updated: 2026-03-21
 cognitive_integration_level: 3
@@ -8,15 +10,18 @@ aais_contribution: +3.5 points
 batch: pr-3421
 sprint: Sprint 4
 pattern_ids:
-  - P-047  # CI health monitoring (CI_SELF_HEALING)
-  - SELF_HEALING_001  # Self-healing cascade detection (S172)
+- P-047
+- SELF_HEALING_001
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — CI health alert classification and CODEX_CI_FAILURE_RATE updates
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 lessons_learned:
-  - "S172: self-healing cascade is the #1 failure pattern (~94% of failures); root cause = .venv_ci/bin/pip absent on cache miss"
-  - "CODEX_CI_FAILURE_THRESHOLD lowered from 20% to 10% in P2.3 — existing cascade rate now triggers alerts"
-  - "analyze_multi_job_cascade() in collect_telemetry.py detects cascade automatically"
+- 'S172: self-healing cascade is the #1 failure pattern (~94% of failures); root cause
+  = .venv_ci/bin/pip absent on cache miss'
+- CODEX_CI_FAILURE_THRESHOLD lowered from 20% to 10% in P2.3 — existing cascade rate
+  now triggers alerts
+- analyze_multi_job_cascade() in collect_telemetry.py detects cascade automatically
+id: ci-health-alert-agent
 ---
 
 # CI Health Alert Agent v1.1

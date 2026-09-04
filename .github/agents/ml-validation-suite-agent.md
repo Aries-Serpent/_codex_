@@ -1,17 +1,19 @@
 ---
 name: ML Validation Suite Agent
-description: Run the ML validation suite to verify model accuracy, data integrity, and pipeline correctness
+description: Run the ML validation suite to verify model accuracy, data integrity,
+  and pipeline correctness
 version: 1.0.0-m04
 updated: 2026-02-22
 merged_agents:
-  - meta-tensor-validator (deprecated)
-  - tokenization-coverage-agent (deprecated)
+- meta-tensor-validator (deprecated)
+- tokenization-coverage-agent (deprecated)
 cognitive_integration_level: 4
 aais_contribution: +4.0 points
 batch: m-04
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — ML model accuracy and pipeline validation
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: ml-validation-suite-agent
 ---
 
 # ML Validation Suite Agent v1.0 (M-04 Merge)

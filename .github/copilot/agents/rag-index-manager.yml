@@ -7,6 +7,7 @@ description: |
   Autonomous agent for managing FAISS indices in the RAG system.
   Handles index lifecycle operations including building, rebuilding, monitoring,
   and optimization for expanded context workflows.
+model: "MAI-Code-1.1-Flash"
 
 # Agent Capabilities
 capabilities:

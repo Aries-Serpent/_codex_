@@ -1,17 +1,15 @@
-environment_type: ml-heavy
-reason: Detected ML/RAG signal: 'ml'
-lfs_mode: targeted
-lfs_include_paths:
-  - data/models/*
-  - artifacts/*
+environment_type: standard
+reason: No ML/RAG/security/docs signal detected; defaulting to standard environment.
+lfs_mode: none
+lfs_include_paths: []
 local_sandbox_policy:
   sandbox_is_staging_only: True
-  prefer_prepared_primary_environment: True
+  prefer_prepared_primary_environment: False
   transfer_via_repo_bundle: True
 
 runtime:
   python: 3.12
-  runner_profile: ubuntu-8-core
+  runner_profile: ubuntu-latest-m
   required_dependencies:
     - pandas>=3.0.5,<4
     - numpy>=2.5.2,<3
@@ -45,8 +43,11 @@ runtime:
     - datasets>=5.0.0,<6
     - accelerate>=1.14.0,<2
     - peft>=0.20.0,<1
+    - fastapi>=0.141.1,<1
     - litestar>=2.24.0,<3
+    - starlette>=1.6.0,<2
     - slowapi>=0.1.10
+    - httpx>=0.26,<1
     - ray[serve]>=2.58.0,<3
     - prometheus-client>=0.26.0
     - psutil>=7.2.2

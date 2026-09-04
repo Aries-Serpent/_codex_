@@ -1,45 +1,43 @@
+id: codebase-qa-walkthrough-agent
 name: Codebase QA Walkthrough Agent
-description: Performs comprehensive QA walkthroughs of code changes, architecture reviews, and quality assurance testing
+description: >
+  Performs comprehensive QA walkthroughs of code changes, architecture reviews,
+  and quality assurance testing.
+model: "MAI-Code-1.1-Flash"
+status: active
+maturity: production
 version: 1.1.0
 agent_type: quality_assurance
 category: testing
-updated: 2026-03-25
-
-# Agent capabilities
+updated: '2026-03-25'
 capabilities:
-  - code_review
-  - architecture_analysis
-  - test_coverage_analysis
-  - security_review
-  - performance_analysis
-  - documentation_review
-  - best_practices_validation
-
-# Trigger patterns
+- code_review
+- architecture_analysis
+- test_coverage_analysis
+- security_review
+- performance_analysis
+- documentation_review
+- best_practices_validation
 triggers:
   commands:
-    - "@copilot qa walkthrough"
-    - "@copilot qa review"
-    - "@copilot quality assurance"
-    - "@copilot qa check"
-
+  - '@copilot qa walkthrough'
+  - '@copilot qa review'
+  - '@copilot quality assurance'
+  - '@copilot qa check'
   labels:
-    - qa-review-requested
-    - needs-qa
-    - quality-check
-
+  - qa-review-requested
+  - needs-qa
+  - quality-check
   files:
     patterns:
-      - "**/*.py"
-      - "**/*.rs"
-      - "**/*.js"
-      - "**/*.ts"
-      - "**/*.java"
-      - "**/*.go"
-      - "**/*.yml"
-      - "**/*.yaml"
-
-# Configuration
+    - '**/*.py'
+    - '**/*.rs'
+    - '**/*.js'
+    - '**/*.ts'
+    - '**/*.java'
+    - '**/*.go'
+    - '**/*.yml'
+    - '**/*.yaml'
 config:
   review_depth: comprehensive
   include_tests: true
@@ -48,148 +46,123 @@ config:
   check_documentation: true
   fail_on_critical: true
   generate_report: true
-
-# Quality criteria
 quality_criteria:
   code_quality:
-    - proper_error_handling
-    - type_safety
-    - null_safety
-    - resource_management
-    - code_organization
-
+  - proper_error_handling
+  - type_safety
+  - null_safety
+  - resource_management
+  - code_organization
   security:
-    - no_hardcoded_secrets
-    - input_validation
-    - sql_injection_prevention
-    - xss_prevention
-    - secure_dependencies
-
+  - no_hardcoded_secrets
+  - input_validation
+  - sql_injection_prevention
+  - xss_prevention
+  - secure_dependencies
   performance:
-    - algorithmic_efficiency
-    - memory_management
-    - database_query_optimization
-    - caching_strategy
-    - concurrent_execution
-
+  - algorithmic_efficiency
+  - memory_management
+  - database_query_optimization
+  - caching_strategy
+  - concurrent_execution
   testing:
-    - unit_test_coverage
-    - integration_test_coverage
-    - edge_case_handling
-    - error_scenario_testing
-    - mock_usage
-
+  - unit_test_coverage
+  - integration_test_coverage
+  - edge_case_handling
+  - error_scenario_testing
+  - mock_usage
   documentation:
-    - function_docstrings
-    - class_documentation
-    - readme_completeness
-    - api_documentation
-    - inline_comments
-
-# Output format
+  - function_docstrings
+  - class_documentation
+  - readme_completeness
+  - api_documentation
+  - inline_comments
 output:
   format: markdown
   sections:
-    - executive_summary
-    - critical_issues
-    - warnings
-    - recommendations
-    - test_results
-    - coverage_report
-    - action_items
-
+  - executive_summary
+  - critical_issues
+  - warnings
+  - recommendations
+  - test_results
+  - coverage_report
+  - action_items
   include_code_snippets: true
   include_metrics: true
   include_diagrams: true
-
-# Integration
 integrations:
   github:
     create_review_comments: true
     update_pr_description: false
     add_labels: true
     request_changes_on_critical: true
-
   tools:
-    - pylint
-    - mypy
-    - ruff
-    - bandit
-    - safety
-    - pytest
-    - coverage
-
-# Permissions
+  - pylint
+  - mypy
+  - ruff
+  - bandit
+  - safety
+  - pytest
+  - coverage
 permissions:
   read:
-    - contents
-    - pull_requests
-    - issues
-
+  - contents
+  - pull_requests
+  - issues
   write:
-    - pull_requests  # For review comments
-    - issues  # For creating issues
-
-# Metadata
+  - pull_requests
+  - issues
 metadata:
   author: admin-automation-agent
   maintainer: mbaetiong
   documentation: .github/agents/codebase-qa-walkthrough-agent/README.md
   examples: .github/agents/codebase-qa-walkthrough-agent/examples/
-
-# QA Pipeline Flow Diagram (mermaid)
-# Rendered in GitHub Copilot and compatible markdown viewers
-pipeline_diagram: |
-  ```mermaid
-  flowchart TD
-      TRIGGER[PR Push / Manual Dispatch]
-
-      TRIGGER --> BATCH1["Batch 1: src/codex_ml/ + src/codex/\nCore library scan"]
-      TRIGGER --> BATCH2["Batch 2: src/security/ + src/mcp/ + src/workers/\nSecurity / infrastructure scan"]
-      TRIGGER --> BATCH3["Batch 3: src/rag/ + src/retrieval/ + src/cli/\nRetrieval / CLI scan"]
-      TRIGGER --> BATCH4["Batch 4: tests/\nTest quality scan"]
-      TRIGGER --> BATCH5["Batch 5: .github/workflows/ + docs/ + requirements*.txt\nCI / docs / deps scan"]
-
-      BATCH1 & BATCH2 & BATCH3 & BATCH4 & BATCH5 --> CLASSIFY["classify_issues()\nauto_fix vs manual_review"]
-
-      CLASSIFY --> AUTOFIX["Auto-fix pass\nruff / bare-except / unused imports\n→ .codex/qa_walkthrough/patches/"]
-      CLASSIFY --> MANUAL["Manual review templates\n→ .codex/qa_walkthrough/issues/"]
-
-      AUTOFIX & MANUAL --> REPORT["WALKTHROUGH_SUMMARY.md\n+ qa_report_{timestamp}.json\n+ action_log.ndjson"]
-
-      REPORT --> TOPOLOGY["TopologyManager.register_scan_result()\nCognitive brain update"]
-      REPORT --> CIARTIFACTS["CI Artifact cross-reference\nlast 5 workflow runs"]
-  ```
-
-# Known QA Findings (current as of S228)
+pipeline_diagram: "```mermaid\nflowchart TD\n    TRIGGER[PR Push / Manual Dispatch]\n\
+  \n    TRIGGER --> BATCH1[\"Batch 1: src/codex_ml/ + src/codex/\\nCore library scan\"\
+  ]\n    TRIGGER --> BATCH2[\"Batch 2: src/security/ + src/mcp/ + src/workers/\\nSecurity\
+  \ / infrastructure scan\"]\n    TRIGGER --> BATCH3[\"Batch 3: src/rag/ + src/retrieval/\
+  \ + src/cli/\\nRetrieval / CLI scan\"]\n    TRIGGER --> BATCH4[\"Batch 4: tests/\\\
+  nTest quality scan\"]\n    TRIGGER --> BATCH5[\"Batch 5: .github/workflows/ + docs/\
+  \ + requirements*.txt\\nCI / docs / deps scan\"]\n\n    BATCH1 & BATCH2 & BATCH3\
+  \ & BATCH4 & BATCH5 --> CLASSIFY[\"classify_issues()\\nauto_fix vs manual_review\"\
+  ]\n\n    CLASSIFY --> AUTOFIX[\"Auto-fix pass\\nruff / bare-except / unused imports\\\
+  n→ .codex/qa_walkthrough/patches/\"]\n    CLASSIFY --> MANUAL[\"Manual review templates\\\
+  n→ .codex/qa_walkthrough/issues/\"]\n\n    AUTOFIX & MANUAL --> REPORT[\"WALKTHROUGH_SUMMARY.md\\\
+  n+ qa_report_{timestamp}.json\\n+ action_log.ndjson\"]\n\n    REPORT --> TOPOLOGY[\"\
+  TopologyManager.register_scan_result()\\nCognitive brain update\"]\n    REPORT -->\
+  \ CIARTIFACTS[\"CI Artifact cross-reference\\nlast 5 workflow runs\"]\n```\n"
 qa_findings:
   session: S228
   branch: copilot/update-qa-walkthrough-agent
-  date: "2026-03-25"
+  date: '2026-03-25'
   findings:
-    - id: QA-S228-001
-      severity: high
-      component: iterative-self-healing-ci.yml
-      title: "CI self-healing cascade rate at 87%"
-      root_cause: "venv rebuild triggered on every cache miss — cascade across dependent jobs"
-      tracked_issue: 3791
-      status: open
-      mitigation: "race-condition hardening + CODEX_CACHE_VERSION alignment applied in S228"
+  - id: QA-S228-001
+    severity: high
+    component: iterative-self-healing-ci.yml
+    title: CI self-healing cascade rate at 87%
+    root_cause: venv rebuild triggered on every cache miss — cascade across dependent
+      jobs
+    tracked_issue: 3791
+    status: open
+    mitigation: race-condition hardening + CODEX_CACHE_VERSION alignment applied in
+      S228
+  - id: QA-S228-002
+    severity: medium_high
+    component: src/config/openai_client.py, src/services/github/client.py
+    title: P19 shadow imports — 40 test ImportErrors in Resilient/Pre-Merge Validation
+    root_cause: legacy config_legacy/ and services/ trees shadow src/ layout modules
+    status: open
+    remediation: 'Move openai_client → src/codex/config/openai_client.py
 
-    - id: QA-S228-002
-      severity: medium_high
-      component: "src/config/openai_client.py, src/services/github/client.py"
-      title: "P19 shadow imports — 40 test ImportErrors in Resilient/Pre-Merge Validation"
-      root_cause: "legacy config_legacy/ and services/ trees shadow src/ layout modules"
-      status: open
-      remediation: |
-        Move openai_client → src/codex/config/openai_client.py
-        Move github/client  → src/codex/services/github/client.py
-        Add backwards-compat re-export shims
+      Move github/client  → src/codex/services/github/client.py
 
-    - id: QA-S228-003
-      severity: low
-      component: "check_pr_comments.py, agent-auth-delegation.yml, copilot-agent-checkin.yml, iterative-self-healing-ci.yml"
-      title: "6 unresolved PR #3790 review comments"
-      status: fixed
-      fix_session: S228
+      Add backwards-compat re-export shims
+
+      '
+  - id: QA-S228-003
+    severity: low
+    component: check_pr_comments.py, agent-auth-delegation.yml, copilot-agent-checkin.yml,
+      iterative-self-healing-ci.yml
+    title: '6 unresolved PR #3790 review comments'
+    status: fixed
+    fix_session: S228

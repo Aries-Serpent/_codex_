@@ -1,49 +1,49 @@
 name: repo-health-guardian
 version: 1.0.0
 description: Autonomous repository structure maintenance and self-healing agent
-author: "@copilot"
-created: "2026-01-17"
-
+author: '@copilot'
+created: '2026-01-17'
 capabilities:
-  - structure_analysis
-  - issue_detection
-  - self_healing
-  - reporting_alerts
-
+- structure_analysis
+- issue_detection
+- self_healing
+- reporting_alerts
 triggers:
+  events:
   - push_to_main
   - pull_request
   - scheduled_daily
   - manual_invoke
-
 configuration:
   auto_fix: false
   severity_threshold: 7
   scan_paths:
-    - src
-    - tests
-    - docs
-    - .codex
-    - .github/agents
-
+  - src
+  - tests
+  - docs
+  - .codex
+  - .github/agents
   ignore_patterns:
-    - "*.pyc"
-    - "__pycache__"
-    - ".DS_Store"
-    - "*.swp"
-    - "*.tmp"
-    - "node_modules"
-    - "dist"
-    - "build"
-
+  - '*.pyc'
+  - __pycache__
+  - .DS_Store
+  - '*.swp'
+  - '*.tmp'
+  - node_modules
+  - dist
+  - build
 integrations:
   quantum_tokenizer: true
   rag_retriever: true
   deep_thinking: true
   cognitive_brain: true
-
 outputs:
+  values:
   - health_report_json
   - pr_comments
   - slack_alerts
   - issue_tracking
+id: repo-health-guardian
+status: active
+maturity: beta
+dependencies: []

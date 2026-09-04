@@ -763,7 +763,7 @@
     "validate-code-examples.yml",
     "validate-token-health.yml",
     "validate.yml",
-    "workflow-compliance-gate.yml"
+    "workflow-execution-gate.yml"
   ],
   "files_recommended_for_conversion": [
     ".docs/SECURE_API_KEY_CONFIGURATION.md",

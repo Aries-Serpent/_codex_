@@ -1,23 +1,25 @@
 ---
 name: Unified Coverage Agent
-description: >
-  Single entry-point for all test-coverage work: monitor thresholds, fill gaps, maintain
-  CI enforcement, and drive the incremental coverage roadmap. Consolidates
-  coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent,
-  test-coverage-agent, and test-coverage-monitor into one cohesive agent.
+description: 'Single entry-point for all test-coverage work: monitor thresholds, fill
+  gaps, maintain CI enforcement, and drive the incremental coverage roadmap. Consolidates
+  coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent,
+  and test-coverage-monitor into one cohesive agent.
+
+  '
 version: 1.0.0
 created: 2026-03-11
 cognitive_integration_level: 2
 aais_contribution: +3.0 points
 merged_agents:
-  - coverage-gapfill-agent (deprecated)
-  - coverage-maintenance-agent (deprecated)
-  - coverage-roadmap-agent (deprecated)
-  - test-coverage-agent (deprecated)
-  - test-coverage-monitor (deprecated)
+- coverage-gapfill-agent (deprecated)
+- coverage-maintenance-agent (deprecated)
+- coverage-roadmap-agent (deprecated)
+- test-coverage-agent (deprecated)
+- test-coverage-monitor (deprecated)
 runner_compatibility:
-  default: ubuntu-latest   # 2-core GitHub-hosted runner — all features supported
-  large:   ubuntu-latest-large  # 4-core large runner — parallel workers enabled
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: unified-coverage-agent
 ---
 
 # Unified Coverage Agent v1.0

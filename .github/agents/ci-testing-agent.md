@@ -1,6 +1,8 @@
 ---
 name: CI Testing Agent
-description: Debug CI/CD pipeline failures, fix test collection errors, resolve import and build issues, detect self-healing cascades, and diagnose P19 shadow import failures with build-awareness
+description: Debug CI/CD pipeline failures, fix test collection errors, resolve import
+  and build issues, detect self-healing cascades, and diagnose P19 shadow import failures
+  with build-awareness
 version: 4.2.0-s228
 updated: 2026-05-09
 cognitive_integration_level: 3
@@ -8,22 +10,29 @@ aais_contribution: +4.5 points
 batch: pr-6
 policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 merged_agents:
-  - ci-failure-resolution-agent (deprecated)
-  - ci-emergency-response-agent (deprecated)
+- ci-failure-resolution-agent (deprecated)
+- ci-emergency-response-agent (deprecated)
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-1
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — all 17 fix patterns, sequential self-healing loop
-  large:   ubuntu-latest-large  # 4-core — parallel log retrieval and faster fix validation
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 lessons_learned_s172:
-  - "self-healing cascade is #1 failure pattern; always call analyze_multi_job_cascade() first"
-  - ".venv_ci/bin/pip direct calls fail on cache miss; always use resilient fallback pattern"
-  - "CODEX_CI_FAILURE_THRESHOLD=10% means ~120 self-healing retries/week now trigger alerts"
-  - "Security alerts (CodeQL/Dependabot) must be counted and fed to AAIS V4 scorer env vars"
+- 'self-healing cascade is #1 failure pattern; always call analyze_multi_job_cascade()
+  first'
+- .venv_ci/bin/pip direct calls fail on cache miss; always use resilient fallback
+  pattern
+- CODEX_CI_FAILURE_THRESHOLD=10% means ~120 self-healing retries/week now trigger
+  alerts
+- Security alerts (CodeQL/Dependabot) must be counted and fed to AAIS V4 scorer env
+  vars
 lessons_learned_s228:
-  - "P19 shadow import: src/ layout + editable install causes old .egg-link to shadow fresh build"
-  - "Diagnose with: python -c 'import <pkg>; print(__file__)' — path must be under src/, not site-packages"
-  - "Fix: pip install --force-reinstall -e . inside correct venv before pytest"
-  - "@pytest.mark.flaky(reruns=2) masking root-cause failures — detect and escalate"
+- 'P19 shadow import: src/ layout + editable install causes old .egg-link to shadow
+  fresh build'
+- 'Diagnose with: python -c ''import <pkg>; print(__file__)'' — path must be under
+  src/, not site-packages'
+- 'Fix: pip install --force-reinstall -e . inside correct venv before pytest'
+- '@pytest.mark.flaky(reruns=2) masking root-cause failures — detect and escalate'
+id: ci-testing-agent
 ---
 
 # CI Testing Agent v4.2.0-S228 (Unified CI Failure Resolver)

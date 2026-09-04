@@ -1,0 +1,43 @@
+/* Theme stylesheet for status report templates */
+:root {
+  color-scheme: light;
+  --bg: #f7f9fc;
+  --fg: #111827;
+  --muted: #4b5563;
+  --panel: #ffffff;
+  --border: #dfe3e8;
+  --accent: #2563eb;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  color: var(--fg);
+}
+
+.small {
+  color: var(--muted);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  background: #e5e7eb;
+}

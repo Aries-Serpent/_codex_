@@ -1,11 +1,12 @@
 ---
-name: workflow-compliance-guardian
+name: Workflow Compliance Guardian
 description: >
   Production-ready Copilot custom agent that enforces and auto-heals the
   branch-scoped concurrency + timeout rules across all GitHub Actions workflows
   in this repository. Runs a compliance audit on every PR push, self-heals
   any non-compliant workflow files, and gates PRs via the Workflow Execution
   Checklist wired in workflow-execution-gate.yml.
+model: "MAI-Code-1.1-Flash"
 version: 2.0.0
 updated: 2026-05-09
 cognitive_integration_level: 4

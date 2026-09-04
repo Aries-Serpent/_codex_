@@ -1,11 +1,13 @@
 ---
 name: Cache Management Agent
-description: Manage caching strategies across the 4-layer cache hierarchy to optimize build and runtime performance
+description: Manage caching strategies across the 4-layer cache hierarchy to optimize
+  build and runtime performance
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — 4-layer cache hierarchy management, build and runtime optimization
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 merged_agents:
-  - cache-manager-integration
+- cache-manager-integration
+id: cache-management-agent
 ---
 
 # Cache Management Agent

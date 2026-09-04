@@ -1,18 +1,20 @@
 ---
 name: CI Triage Pipeline Agent
-description: Triage CI/CD pipeline failures by severity and route them to appropriate resolution agents
+description: Triage CI/CD pipeline failures by severity and route them to appropriate
+  resolution agents
 version: 1.0.0-m03
 updated: 2026-02-21
 merged_agents:
-  - ci-testing-agent (sub-agent retained)
-  - ci-log-retrieval-agent (deprecated)
-  - ci-importerror-agent (deprecated)
+- ci-testing-agent (sub-agent retained)
+- ci-log-retrieval-agent (deprecated)
+- ci-importerror-agent (deprecated)
 cognitive_integration_level: 4
 aais_contribution: +5.0 points
 batch: m-03
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — full triage pipeline, sequential routing
-  large:   ubuntu-latest-large  # 4-core — parallel triage and concurrent agent dispatch
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: ci-triage-pipeline-agent
 ---
 
 # CI Triage Pipeline Agent v1.0 (M-03 Merge)

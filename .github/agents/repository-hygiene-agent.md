@@ -1,14 +1,16 @@
 ---
 name: Repository Hygiene Agent
-description: Clean up stale files, unused artifacts, and maintain overall repository hygiene
+description: Clean up stale files, unused artifacts, and maintain overall repository
+  hygiene
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — stale file cleanup, artifact hygiene
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: repository-hygiene-agent
 ---
 
 # Repository Hygiene Agent

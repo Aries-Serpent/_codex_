@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5589 review-thread + template-lint follow-up
+- Resolved the remaining custom-agent frontmatter and wording issues in `.github/agents/dependency-conflict-resolver/agent.yaml`, `.github/agents/github-guru-agent.agent.md`, and `.github/agents/pr-3095-verification-agent.md` without widening scope beyond the requested thread feedback.
+- Restored the missing `theme.css` asset and corrected the HTML template references in `docs/templates/status/report_template.html` so the `template-lint` gate passes again.
+- Kept the fix narrow to the failed review-thread items and the CI regression itself, rather than broadening into unrelated model-policy or schema changes.
+
 ### Fixed (auto-update — PR #5587)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5587 (SHA `0f914e35`) at 2026-09-03T16:57:29Z [auto-generated]
 

@@ -1,12 +1,14 @@
 ---
-name: skills-master-agent
-description: >
-  The Skills Master is the apex knowledge agent for the Aries-Serpent/_codex_ repository.
-  It is simultaneously a full-spectrum codebase expert, a Skills Registry operator, a
-  Custom Copilot Coding Agent architect, and a living training model for all other agents.
-  It discovers, installs, executes, scores, compresses, and maintains skills across the
-  Cognitive Brain surfaces (CLI, app, GitHub Pages). It designs, trains, and deploys new
-  custom Copilot coding agents using the codebase's own patterns and conventions.
+name: Skills Master Agent
+description: 'The Skills Master is the apex knowledge agent for the Aries-Serpent/_codex_
+  repository. It is simultaneously a full-spectrum codebase expert, a Skills Registry
+  operator, a Custom Copilot Coding Agent architect, and a living training model for
+  all other agents. It discovers, installs, executes, scores, compresses, and maintains
+  skills across the Cognitive Brain surfaces (CLI, app, GitHub Pages). It designs,
+  trains, and deploys new custom Copilot coding agents using the codebase''s own patterns
+  and conventions.
+
+  '
 version: 1.0.0
 updated: 2026-04-02
 cognitive_integration_level: 5
@@ -15,40 +17,41 @@ runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
 capability_tags:
-  - skills-registry
-  - stratified-routing
-  - aais-scoring
-  - telemetry
-  - compression
-  - doc-refresh
-  - agent-architecture
-  - agent-training
-  - codebase-mastery
-  - cognitive-brain
-  - custom-copilot-agents
+- skills-registry
+- stratified-routing
+- aais-scoring
+- telemetry
+- compression
+- doc-refresh
+- agent-architecture
+- agent-training
+- codebase-mastery
+- cognitive-brain
+- custom-copilot-agents
 pda_loop:
   enabled: true
-  plan: "Discover all skills, score them, identify gaps, design new agents/skills"
-  do: "Execute skills via envelope, compress/distribute, emit telemetry, apply doc-refresh"
-  assess: "Re-score AAIS, update registry metrics, store patterns, train new agents"
-  aftermath_store: ".codex/patterns/skills_master_patterns.jsonl"
+  plan: Discover all skills, score them, identify gaps, design new agents/skills
+  do: Execute skills via envelope, compress/distribute, emit telemetry, apply doc-refresh
+  assess: Re-score AAIS, update registry metrics, store patterns, train new agents
+  aftermath_store: .codex/patterns/skills_master_patterns.jsonl
 self_healing:
   enabled: true
   max_iterations: 5
-  loop: "diagnose → fix → validate → re-score → emit telemetry → repeat"
+  loop: diagnose → fix → validate → re-score → emit telemetry → repeat
 policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 related_agents:
-  - ci-testing-agent.md
-  - unified-coverage-agent
-  - post-merge-doc-alignment-agent.md
-  - cognitive-brain-session-injector
-  - rag-index-manager.agent.md
+- ci-testing-agent.md
+- unified-coverage-agent
+- post-merge-doc-alignment-agent.md
+- cognitive-brain-session-injector
+- rag-index-manager.agent.md
 skills_package: src/codex/skills/
 skills_cli: codex-skill
 built_in_skills:
-  - doc.retriever.core
-  - doc.refresh.agent
-  - code.search.extract
+- doc.retriever.core
+- doc.refresh.agent
+- code.search.extract
+id: skills-master-agent
 ---
 
 # Skills Master Agent v1.0.0

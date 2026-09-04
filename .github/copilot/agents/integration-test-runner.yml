@@ -1,5 +1,6 @@
 name: integration-test-runner
 description: Orchestrates parallel integration test execution with intelligent retry
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Parallel test execution

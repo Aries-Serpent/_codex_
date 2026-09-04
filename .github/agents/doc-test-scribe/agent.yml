@@ -1,87 +1,81 @@
 name: doc-test-scribe
 version: 1.0.0
-description: |
-  AI-powered documentation and test generator using TF-IDF semantic analysis.
+description: 'AI-powered documentation and test generator using TF-IDF semantic analysis.
+
   Analyzes codebase via tokenization, generates comprehensive docs and tests.
+
   Enables "do more with less" - minimal prompts, maximum output.
 
+  '
 capabilities:
-  - analyze_code: Parse and understand code structure via tokenization
-  - generate_docs: Create comprehensive documentation from code
-  - generate_tests: Generate test suites with high coverage
-  - semantic_search: Find similar patterns using TF-IDF
-  - extract_patterns: Identify reusable patterns in codebase
-
+- analyze_code: Parse and understand code structure via tokenization
+- generate_docs: Create comprehensive documentation from code
+- generate_tests: Generate test suites with high coverage
+- semantic_search: Find similar patterns using TF-IDF
+- extract_patterns: Identify reusable patterns in codebase
 triggers:
   paths:
-    - "src/**/*.py"
-    - "tests/**/*.py"
-    - "docs/**/*.md"
+  - src/**/*.py
+  - tests/**/*.py
+  - docs/**/*.md
   commands:
-    - "@doc-test-scribe"
-    - "/generate-docs"
-    - "/generate-tests"
-    - "/analyze-code"
-
+  - '@doc-test-scribe'
+  - /generate-docs
+  - /generate-tests
+  - /analyze-code
 tools:
-  - name: tfidf_analyze
-    description: Analyze code using TF-IDF embeddings
-    command: python -m codex.agents.doc_test_scribe.analyzer --tfidf {file}
-
-  - name: tokenize_code
-    description: Tokenize code for semantic analysis
-    command: python -m codex.agents.doc_test_scribe.tokenizer {file}
-
-  - name: generate_docs
-    description: Generate documentation from code
-    command: python -m codex.agents.doc_test_scribe.doc_generator {file}
-
-  - name: generate_tests
-    description: Generate tests with coverage analysis
-    command: python -m codex.agents.doc_test_scribe.test_generator {file}
-
-  - name: semantic_search
-    description: Search codebase semantically
-    command: python -m codex.agents.doc_test_scribe.search --query "{query}"
-
+- name: tfidf_analyze
+  description: Analyze code using TF-IDF embeddings
+  command: python -m codex.agents.doc_test_scribe.analyzer --tfidf {file}
+- name: tokenize_code
+  description: Tokenize code for semantic analysis
+  command: python -m codex.agents.doc_test_scribe.tokenizer {file}
+- name: generate_docs
+  description: Generate documentation from code
+  command: python -m codex.agents.doc_test_scribe.doc_generator {file}
+- name: generate_tests
+  description: Generate tests with coverage analysis
+  command: python -m codex.agents.doc_test_scribe.test_generator {file}
+- name: semantic_search
+  description: Search codebase semantically
+  command: python -m codex.agents.doc_test_scribe.search --query "{query}"
 parameters:
   tfidf_dimensions: 384
   coverage_target: 90
-  doc_style: "google"  # google, numpy, sphinx
-  test_framework: "pytest"
-
+  doc_style: google
+  test_framework: pytest
 integration:
   rag_provider: tfidf
   tokenizer: codex.tokenization
   cache_dir: .codex/agents/doc_test_scribe_cache
-
 workflows:
   auto_document:
     trigger: file_change
     steps:
-      - tokenize_code
-      - tfidf_analyze
-      - generate_docs
-      - validate_docs
-
+    - tokenize_code
+    - tfidf_analyze
+    - generate_docs
+    - validate_docs
   auto_test:
     trigger: new_function
     steps:
-      - analyze_signature
-      - find_similar_tests
-      - generate_tests
-      - validate_coverage
-
+    - analyze_signature
+    - find_similar_tests
+    - generate_tests
+    - validate_coverage
   semantic_refactor:
     trigger: manual
     steps:
-      - semantic_search
-      - identify_duplicates
-      - suggest_refactoring
-      - generate_unified_code
-
+    - semantic_search
+    - identify_duplicates
+    - suggest_refactoring
+    - generate_unified_code
 efficiency:
   minimal_prompts: true
-  auto_context: true  # Automatically gather context
-  smart_inference: true  # Infer intent from minimal input
-  batch_processing: true  # Process multiple files at once
+  auto_context: true
+  smart_inference: true
+  batch_processing: true
+id: doc-test-scribe
+status: active
+maturity: beta
+dependencies: []

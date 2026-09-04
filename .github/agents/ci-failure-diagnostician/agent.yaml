@@ -1,83 +1,33 @@
-# CI Failure Diagnostician Agent Configuration
-# Version: 1.0.0
-# Status: Active
-
 name: ci-failure-diagnostician
 version: 1.0.0
-description: >
-  Automatically diagnose and categorize CI failures.
-  Classifies failures as flaky, real bugs, or infrastructure issues.
-  Suggests fixes and auto-retries flaky tests with backoff.
+description: 'Automatically diagnose and categorize CI failures. Classifies failures
+  as flaky, real bugs, or infrastructure issues. Suggests fixes and auto-retries flaky
+  tests with backoff.
 
+  '
 metadata:
   author: copilot
   created: 2026-01-11
   category: ci-automation
   priority: medium
   estimated_effort: 3-4 days
-
 triggers:
-  - type: workflow_failure
-    workflows:
-      - "*"
-    exclude_jobs:
-      - "dependabot-*"
-
-  - type: manual
-    command: "@copilot diagnose ci failure"
-
+  events:
+  - workflow_failure
+  - manual
 capabilities:
-  parse_logs:
-    enabled: true
-    sources:
-      - github_actions
-      - circleci
-      - jenkins
-    max_log_size_mb: 10
-
-  classify_failures:
-    enabled: true
-    categories:
-      - flaky_test
-      - real_bug
-      - infrastructure_issue
-      - dependency_failure
-      - timeout
-      - resource_exhaustion
-    confidence_threshold: 0.8
-
-  extract_root_cause:
-    enabled: true
-    patterns:
-      - error_message_patterns
-      - stack_trace_analysis
-      - timing_correlation
-    max_depth: 5
-
-  suggest_fixes:
-    enabled: true
-    strategies:
-      - pattern_matching
-      - similar_issue_search
-      - cognitive_brain_lookup
-
-  auto_retry:
-    enabled: true
-    max_retries: 3
-    backoff_strategy: exponential
-    only_for:
-      - flaky_test
-      - infrastructure_issue
-      - timeout
-
+- parse_logs
+- classify_failures
+- extract_root_cause
+- suggest_fixes
+- auto_retry
 input:
   required:
-    - run_id: string
+  - run_id: string
   optional:
-    - job_name: string
-    - detailed_logs: boolean
-    - auto_retry: boolean
-
+  - job_name: string
+  - detailed_logs: boolean
+  - auto_retry: boolean
 output:
   success:
     classification: string
@@ -90,37 +40,35 @@ output:
     reason: string
     requires_human_review: boolean
     log_snippet: string
-
 integrations:
   cognitive_brain:
     pattern_storage: true
     failure_patterns_category: true
     learning_enabled: true
-
   github:
     pr_comments: true
     workflow_dispatch: true
     issue_linking: true
-
 constraints:
   max_analysis_time_seconds: 120
   log_retention_days: 7
   require_classification_confidence: 0.7
-
 monitoring:
   metrics:
-    - failures_analyzed
-    - classifications_accurate
-    - auto_retries_successful
-    - mean_time_to_diagnosis
-
+  - failures_analyzed
+  - classifications_accurate
+  - auto_retries_successful
+  - mean_time_to_diagnosis
   alerts:
-    - condition: auto_retry_success_rate < 0.5
-      action: reduce_auto_retry
-      notify: maintainers
-
+  - condition: auto_retry_success_rate < 0.5
+    action: reduce_auto_retry
+    notify: maintainers
 security:
   code_execution: none
   file_access: log_files_only
   network_access: github_api_only
   secret_handling: never_access
+id: ci-failure-diagnostician
+status: active
+maturity: beta
+dependencies: []

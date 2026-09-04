@@ -57,6 +57,9 @@ _IGNORED_MARKDOWN_NAMES = {
     "agent_registry_generated.md",
     "agent_consolidation.md",
     "readme.md",
+    ".template_cognitive_agent.md",
+    ".template",
+    "template.md",
 }
 
 
@@ -74,23 +77,83 @@ def load_schema(path: Path = SCHEMA_PATH) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def _looks_like_agent_frontmatter(path: Path) -> bool:
+    """Heuristic: treat generic markdown files as agent specs only with valid frontmatter.
+
+    GitHub Markdown agent profiles are schema-valid when they include a non-empty
+    ``description`` field; ``id`` and ``name`` are optional in the frontmatter
+    contract and may be inferred from the filename or registry metadata.
+    """
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    stripped = content.lstrip("\ufeff")
+    if not stripped.startswith("---"):
+        return False
+    match = _FRONTMATTER_RE.match(stripped)
+    if match is None:
+        return False
+    if not HAS_YAML:
+        return False
+    try:
+        data = yaml.safe_load(match.group("yaml"))
+    except yaml.YAMLError:
+        return False
+    if not isinstance(data, dict):
+        return False
+    description = data.get("description")
+    if not isinstance(description, str) or not description.strip():
+        return False
+    for key in ("id", "name"):
+        value = data.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            return False
+    return True
+
+
+def _matches_spec_filename(name: str) -> bool:
+    """Return True only for repository custom-agent definition filenames."""
+    lowered = name.lower()
+    return (
+        lowered.endswith(".agent.md")
+        or lowered.endswith("-agent.md")
+        or lowered.endswith("-skill.md")
+        or lowered.endswith(".agent.yml")
+        or lowered.endswith(".agent.yaml")
+    )
+
+
 def _is_markdown_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in _IGNORED_MARKDOWN_NAMES:
         return False
-    return (
-        name == "agent.md"
-        or name.endswith(".agent.md")
-        or name.endswith("-agent.md")
-        or name.endswith("-skill.md")
-    )
+    if name == "agent.md":
+        return False
+    return _matches_spec_filename(name)
 
 
 def _is_yaml_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in {"agent_registry.yaml", "agent_registry.yml"}:
         return False
-    return name.endswith(".agent.yaml") or name.endswith(".agent.yml")
+    if any(part in {"config", "manifest", "settings"} for part in path.parts):
+        return False
+    if name in {"config.yaml", "config.yml", "manifest.yaml", "manifest.yml"}:
+        return False
+    return _matches_spec_filename(name)
+
+
+def _is_agent_definition(path: Path) -> bool:
+    """Return True only for recognized custom-agent spec paths."""
+    if not path.is_file():
+        return False
+    suffix = path.suffix.lower()
+    if suffix == ".md":
+        return _is_markdown_agent(path)
+    if suffix in {".yaml", ".yml"}:
+        return _is_yaml_agent(path)
+    return False
 
 
 def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
@@ -102,11 +165,7 @@ def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
     specs = [
         path
         for path in agents_dir.rglob("*")
-        if path.is_file()
-        and (
-            (path.suffix.lower() == ".md" and _is_markdown_agent(path))
-            or (path.suffix.lower() in {".yaml", ".yml"} and _is_yaml_agent(path))
-        )
+        if path.is_file() and _is_agent_definition(path)
     ]
     return sorted(specs, key=lambda path: path.as_posix().casefold())
 
@@ -212,9 +271,22 @@ def _result(path: str, kind: str, errors: list[str]) -> dict[str, Any]:
 
 
 def _profile_id(path: Path) -> str:
-    name = path.name
-    if name.lower().endswith(".agent.md"):
-        return name[: -len(".agent.md")]
+    """Return the canonical identifier implied by the spec filename.
+
+    Files named ``*.agent.md`` or ``*.agent.yml`` encode a schema marker that is
+    not part of the canonical identifier. Files named ``*-agent.md`` and
+    ``*-skill.md`` are already canonical slugs, so their suffixes should remain
+    intact.
+    """
+    name = path.name.lower()
+    suffixes = (
+        ".agent.md",
+        ".agent.yaml",
+        ".agent.yml",
+    )
+    for suffix in suffixes:
+        if name.endswith(suffix):
+            return path.name[: -len(suffix)]
     return path.stem
 
 
@@ -347,7 +419,7 @@ def validate_repository(
             repo_root=repo_root,
             agents_dir=agents_dir,
         )
-        if resolved is not None and resolved.suffix.lower() in {".md", ".yaml", ".yml"}:
+        if resolved is not None and _is_agent_definition(resolved):
             spec_paths.add(resolved)
             registry_spec_paths.add(resolved)
 
@@ -405,6 +477,8 @@ def validate_repository(
             )
             if resolved is None:
                 errors.append(f"referenced agent file does not exist: {file_reference}")
+            elif not _is_agent_definition(resolved):
+                continue
             else:
                 profile = parsed_profiles.get(resolved)
                 if resolved.suffix.lower() == ".md" and profile is None:

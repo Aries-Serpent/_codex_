@@ -1,14 +1,16 @@
 ---
-name: test-alignment-fixer
-description: Fix test alignment issues that arise after API changes, refactors, or function signature updates
+name: Test Alignment Fixer
+description: Fix test alignment issues that arise after API changes, refactors, or
+  function signature updates
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-5
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — test alignment fixes, signature validation
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: test-alignment-fixer
 ---
 
 # Test Alignment Fixer Agent
