@@ -76,42 +76,6 @@ def load_schema(path: Path = SCHEMA_PATH) -> dict[str, Any]:
         return {}
     return data if isinstance(data, dict) else {}
 
-
-def _looks_like_agent_frontmatter(path: Path) -> bool:
-    """Heuristic: treat generic markdown files as agent specs only with valid frontmatter.
-
-    GitHub Markdown agent profiles are schema-valid when they include a non-empty
-    ``description`` field; ``id`` and ``name`` are optional in the frontmatter
-    contract and may be inferred from the filename or registry metadata.
-    """
-    try:
-        content = path.read_text(encoding="utf-8")
-    except OSError:
-        return False
-    stripped = content.lstrip("\ufeff")
-    if not stripped.startswith("---"):
-        return False
-    match = _FRONTMATTER_RE.match(stripped)
-    if match is None:
-        return False
-    if not HAS_YAML:
-        return False
-    try:
-        data = yaml.safe_load(match.group("yaml"))
-    except yaml.YAMLError:
-        return False
-    if not isinstance(data, dict):
-        return False
-    description = data.get("description")
-    if not isinstance(description, str) or not description.strip():
-        return False
-    for key in ("id", "name"):
-        value = data.get(key)
-        if value is not None and (not isinstance(value, str) or not value.strip()):
-            return False
-    return True
-
-
 def _matches_spec_filename(name: str) -> bool:
     """Return True only for repository custom-agent definition filenames."""
     lowered = name.lower()

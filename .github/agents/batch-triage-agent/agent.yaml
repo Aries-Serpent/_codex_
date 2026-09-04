@@ -103,8 +103,8 @@ kpis:
   stakeholder_satisfaction_target: 4.0
   security_validation_pass_rate_target: 1.0
 dependencies:
-- python_modules
-- external_tools
+- python-modules
+- external-tools
 prompts:
   analyze_batch: prompts/analyze_batch.md
   extract_patterns: prompts/extract_patterns.md
