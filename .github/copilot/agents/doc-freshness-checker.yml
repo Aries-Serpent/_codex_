@@ -1,5 +1,6 @@
 name: doc-freshness-checker
 description: Documentation validation and freshness checking agent
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Broken link detection

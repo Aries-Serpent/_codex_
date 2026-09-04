@@ -7,6 +7,7 @@ description: |
   Autonomous agent for semantic search across code and documentation.
   Uses RAG embeddings to find similar code patterns, relevant docs,
   and generate usage examples from the codebase.
+model: "MAI-Code-1.1-Flash"
 
 # Agent Capabilities
 capabilities:

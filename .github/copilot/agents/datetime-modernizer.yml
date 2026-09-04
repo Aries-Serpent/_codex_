@@ -1,5 +1,6 @@
 name: datetime-modernizer
 description: Modernize datetime handling to use timezone-aware objects and deprecate naive datetime usage in Python code
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Detect deprecated datetime.utcnow() usage
