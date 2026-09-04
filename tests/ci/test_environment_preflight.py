@@ -61,10 +61,9 @@ def test_main_rejects_output_path_outside_repo(monkeypatch, tmp_path) -> None:
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
     outside = tmp_path / "outside.yaml"
-    monkeypatch.setattr(
-        mod,
-        "parse_args",
-        lambda: type(
+
+    def _fake_parse_args():
+        return type(
             "Args",
             (),
             {
@@ -74,8 +73,9 @@ def test_main_rejects_output_path_outside_repo(monkeypatch, tmp_path) -> None:
                 "ci_job": "",
                 "output": outside,
             },
-        )(),
-    )
+        )()
+
+    monkeypatch.setattr(mod, "parse_args", _fake_parse_args)
 
     with pytest.raises(ValueError, match="must stay inside repo root"):
         mod.main()
