@@ -1,8 +1,8 @@
 version: 2.0.0
-last_updated: '2026-09-04T04:00:14Z'
-total_agents: 91
-active_agents: 77
-archived_agents: 14
+last_updated: '2026-09-04T18:00:00Z'
+total_agents: 100
+active_agents: 81
+archived_agents: 19
 enforcement_tier: MIXED
 agents:
 - id: github-guru-agent
@@ -238,8 +238,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories,
-    applies fix patterns, dismisses false positives, and contributes to AAIS scoring
+  purpose: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE categories,\
+    \ applies fix patterns, dismisses false positives, and contributes to AAIS scoring"
   capabilities:
   - codeql_alert_ingestion
   - cwe_classification
@@ -262,8 +262,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Autonomous CodeQL alert triage and resolution — classifies CWE categories,
-    applies fix patterns, dismisses false positives, and contributes to AAIS scoring
+  description: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE\
+    \ categories, applies fix patterns, dismisses false positives, and contributes\
+    \ to AAIS scoring"
   capability_tags:
   - codeql_alert_ingestion
   - cwe_classification
@@ -293,8 +294,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG
-    pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
+  purpose: "Prevents and resolves meta-tensor initialization regressions in the RAG\
+    \ pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors before\
+    \ isinstance)"
   capabilities:
   - meta_tensor_detection
   - device_placement_validation
@@ -315,9 +317,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Prevents and resolves meta-tensor initialization regressions in the
-    RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before
-    isinstance)
+  description: "Prevents and resolves meta-tensor initialization regressions in the\
+    \ RAG pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors\
+    \ before isinstance)"
   capability_tags:
   - meta_tensor_detection
   - device_placement_validation
@@ -337,8 +339,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies
-    failures by pattern, applies fix patterns from DRQ library
+  purpose: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads logs,\
+    \ classifies failures by pattern, applies fix patterns from DRQ library"
   capabilities:
   - ci_log_retrieval
   - failure_classification
@@ -357,8 +359,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Systematic CI failure triage using GitHub MCP tools — downloads logs,
-    classifies failures by pattern, applies fix patterns from DRQ library
+  description: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads\
+    \ logs, classifies failures by pattern, applies fix patterns from DRQ library"
   capability_tags:
   - ci_log_retrieval
   - failure_classification
@@ -378,9 +380,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers,
-    security risks, quality issues, and architecture drift, tagging each as DRQ entries
-    for deep research
+  purpose: "Read-only codebase reconnaissance \u2014 walks all files to surface CI\
+    \ blockers, security risks, quality issues, and architecture drift, tagging each\
+    \ as DRQ entries for deep research"
   capabilities:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -408,9 +410,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Read-only codebase reconnaissance — walks all files to surface CI blockers,
-    security risks, quality issues, and architecture drift, tagging each as DRQ entries
-    for deep research
+  description: "Read-only codebase reconnaissance \u2014 walks all files to surface\
+    \ CI blockers, security risks, quality issues, and architecture drift, tagging\
+    \ each as DRQ entries for deep research"
   capability_tags:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -486,8 +488,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Advanced Python architecture design and review — enforces patterns, refactoring
-    strategies, and module structure compliance for the cognitive brain and ML pipeline
+  purpose: "Advanced Python architecture design and review \u2014 enforces patterns,\
+    \ refactoring strategies, and module structure compliance for the cognitive brain\
+    \ and ML pipeline"
   capabilities:
   - architecture_review
   - refactoring_guidance
@@ -505,9 +508,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Advanced Python architecture design and review — enforces patterns,
-    refactoring strategies, and module structure compliance for the cognitive brain
-    and ML pipeline
+  description: "Advanced Python architecture design and review \u2014 enforces patterns,\
+    \ refactoring strategies, and module structure compliance for the cognitive brain\
+    \ and ML pipeline"
   capability_tags:
   - architecture_review
   - refactoring_guidance
@@ -866,7 +869,8 @@ agents:
   maturity: production
   category: testing
   priority: critical
-  purpose: 'Single entry-point for all test-coverage work: monitor thresholds, fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap.'
+  purpose: 'Single entry-point for all test-coverage work: monitor thresholds, fill
+    gaps, maintain CI enforcement, and drive the incremental coverage roadmap.'
   enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
@@ -876,7 +880,10 @@ agents:
   - agent-orchestrator
   consolidation_priority: true
   role: specialist
-  description: 'Single entry-point for all test-coverage work: monitor thresholds, fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap. Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent, and test-coverage-monitor into one cohesive agent.'
+  description: 'Single entry-point for all test-coverage work: monitor thresholds,
+    fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap.
+    Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent,
+    test-coverage-agent, and test-coverage-monitor into one cohesive agent.'
   capability_tags:
   - testing
   directory: .github/agents
@@ -1436,9 +1443,9 @@ agents:
   - machine_learning
   integration_confirmed: true
   integration_date: '2026-07-19'
-  integration_notes: Lane 2 Phase 2 B2-B5 validation completed with offline index
-    build/query fallback, embedding TTL/eviction checks, security scan remediation,
-    and zero detected RAG↔Cognitive Brain circular imports.
+  integration_notes: "Lane 2 Phase 2 B2-B5 validation completed with offline index\
+    \ build/query fallback, embedding TTL/eviction checks, security scan remediation,\
+    \ and zero detected RAG\u2194Cognitive Brain circular imports."
   production_certified: true
   production_certified_date: '2026-07-19T22:00:00Z'
   certification_phase: Lane 2 Phase 2 (B1-B5 Gates)
@@ -1535,7 +1542,8 @@ agents:
   maturity: production
   category: security
   priority: critical
-  purpose: Perform comprehensive security scanning combining SAST, dependency checks, and secrets detection.
+  purpose: Perform comprehensive security scanning combining SAST, dependency checks,
+    and secrets detection.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: structured
@@ -1544,7 +1552,8 @@ agents:
   - agent-orchestrator
   consolidation_priority: true
   role: specialist
-  description: Perform comprehensive security scanning combining SAST, dependency checks, and secrets detection.
+  description: Perform comprehensive security scanning combining SAST, dependency
+    checks, and secrets detection.
   capability_tags:
   - security
   directory: .github/agents
@@ -1889,7 +1898,8 @@ agents:
   maturity: production
   category: governance
   priority: critical
-  purpose: Enforce unified governance policies across PRs, deployments, and automated operations.
+  purpose: Enforce unified governance policies across PRs, deployments, and automated
+    operations.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: structured
@@ -1898,7 +1908,8 @@ agents:
   - agent-orchestrator
   consolidation_priority: true
   role: utility
-  description: Enforce unified governance policies across PRs, deployments, and automated operations.
+  description: Enforce unified governance policies across PRs, deployments, and automated
+    operations.
   capability_tags:
   - governance
   directory: .github/agents
@@ -2122,11 +2133,9 @@ agents:
   has_src: false
   category: infrastructure
   subcategory: configuration
-  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub
-    Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap sync
-    (vars→file) and propagation (file→vars) with drift detection.
-
-    '
+  description: "Keeps .codex/agent_context.json bidirectionally in sync with GitHub\
+    \ Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap\
+    \ sync (vars\u2192file) and propagation (file\u2192vars) with drift detection.\n"
   added_in_pr: 3421
   sprint: Sprint 4
   physics_model:
@@ -2531,6 +2540,69 @@ agents:
   description: Consolidate short-term memory (STM) to long-term memory (LTM) with
     pattern discovery, duplicate detection, and retention policy application.
   directory: .github/agents
+- id: codex-reviewer
+  name: Codex Reviewer
+  description: Quantum-inspired PR reviewer with self-evolution capabilities.
+  file: .github/agents/codex-reviewer.agent.yml
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: mypy-manager-agent
+  name: Mypy Manager Agent
+  description: 'The mypy Manager Agent is the authoritative type-checking health guardian
+    for the Aries-Serpent/_codex_ codebase. It classifies mypy errors by fix-pattern,
+    applies automated fixes, tracks .mypy_baseline regressions, and logs all patterns
+    to the PDA Loop + AfterMath store for cross-session grounding. Built on top of
+    the mypy.manager Cognitive Brain Skill (src/codex/skills/mypy_manager/) and integrated
+    with the Skills Master Agent training protocol.
+
+    '
+  file: .github/agents/mypy-manager-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: post-merge-doc-alignment-agent
+  name: Post Merge Doc Alignment Agent
+  description: "After merging a promotion branch into main, traverse https://aries-serpent.github.io/_codex_/\
+    \ and update all documentation to align with the current state of the codebase.\
+    \ Detects stale content, broken nav entries, missing pages, and code examples\
+    \ that no longer match source. Produces a structured alignment report and applies\
+    \ fixes. Implements iterative self-review loop: fix \u2192 build \u2192 verify\
+    \ \u2192 repeat until clean. Integrates PDA Loop + AfterMath tracking for continuous\
+    \ improvement.\n"
+  file: .github/agents/post-merge-doc-alignment-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.1.0
+- id: session-wrapup-autofix-agent
+  name: Session Wrap-Up Auto-Fix Agent
+  description: Auto-heal cognitive-preflight governance failures by updating the accountability
+    report and changelog after a session, then commit the minimal documentation fix
+    without triggering CI loops.
+  file: .github/agents/session-wrapup-autofix-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: skills-master-agent
+  name: Skills Master Agent
+  description: 'The Skills Master is the apex knowledge agent for the Aries-Serpent/_codex_
+    repository. It is simultaneously a full-spectrum codebase expert, a Skills Registry
+    operator, a Custom Copilot Coding Agent architect, and a living training model
+    for all other agents. It discovers, installs, executes, scores, compresses, and
+    maintains skills across the Cognitive Brain surfaces (CLI, app, GitHub Pages).
+    It designs, trains, and deploys new custom Copilot coding agents using the codebase''s
+    own patterns and conventions.
+
+    '
+  file: .github/agents/skills-master-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

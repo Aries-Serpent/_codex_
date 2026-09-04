@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "generated_at": "2026-09-04T09:09:36Z",
+    "generated_at": "2026-09-04T18:42:39Z",
     "registry_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/agent_spec.schema.json",
     "frontmatter_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
-    "total_records": 193
+    "total_records": 198
   },
   "summary": {
-    "compliant": 193,
+    "compliant": 198,
     "non_compliant": 0,
     "compliance_rate": "100.0%"
   },
@@ -203,7 +203,12 @@
     ".github/agents/AGENT_REGISTRY.yaml#branch-divergence-resolution-agent",
     ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent",
     ".github/agents/AGENT_REGISTRY.yaml#pattern-discovery-skill",
-    ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill"
+    ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill",
+    ".github/agents/AGENT_REGISTRY.yaml#codex-reviewer",
+    ".github/agents/AGENT_REGISTRY.yaml#mypy-manager-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#post-merge-doc-alignment-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#session-wrapup-autofix-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#skills-master-agent"
   ],
   "non_compliant_agents": []
 }

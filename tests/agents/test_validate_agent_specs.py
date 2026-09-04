@@ -183,6 +183,65 @@ def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[
     assert all(result["valid"] for result in results), results
 
 
+def test_registry_summary_and_coverage_are_enforced(tmp_path: Path, schemas: tuple[dict, dict]) -> None:
+    registry_schema, frontmatter_schema = schemas
+    agents_dir = tmp_path / ".github" / "agents"
+    agents_dir.mkdir(parents=True, exist_ok=True)
+    registry_path = agents_dir / "AGENT_REGISTRY.yaml"
+    profile_a = agents_dir / "alpha-agent.md"
+    profile_b = agents_dir / "beta-agent.md"
+    _write_profile(profile_a, name="Alpha Agent", extra={"id": "alpha-agent"})
+    _write_profile(profile_b, name="Beta Agent", extra={"id": "beta-agent"})
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "total_agents": 99,
+                "active_agents": 99,
+                "archived_agents": 0,
+                "agents": [
+                    {
+                        "id": "alpha-agent",
+                        "name": "Alpha Agent",
+                        "description": "Valid file",
+                        "file": "alpha-agent.md",
+                        "status": "active",
+                        "maturity": "production",
+                    }
+                ],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    results = validator.validate_repository(
+        repo_root=tmp_path,
+        agents_dir=agents_dir,
+        registry_schema=registry_schema,
+        frontmatter_schema=frontmatter_schema,
+    )
+
+    messages = "\n".join(error for result in results for error in result["errors"])
+    assert "registry total_agents mismatch" in messages
+    assert "registry is missing agent spec: .github/agents/beta-agent.md" in messages
+
+
+def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path) -> None:
+    agents_dir = tmp_path / ".github" / "agents"
+    agents_dir.mkdir(parents=True, exist_ok=True)
+
+    assert validator._resolve_file_reference("/etc/passwd", repo_root=tmp_path, agents_dir=agents_dir) is None
+    assert (
+        validator._resolve_file_reference(
+            "C:\\Windows\\System32\\drivers\\etc\\hosts",
+            repo_root=tmp_path,
+            agents_dir=agents_dir,
+        )
+        is None
+    )
+    assert validator._resolve_code_reference("C:\\temp\\evil.py", repo_root=tmp_path) is None
+
+
 def test_profile_id_handles_agent_yaml_suffix() -> None:
     assert validator._profile_id(Path("nested/example.agent.yml")) == "example"
     assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
