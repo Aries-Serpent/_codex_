@@ -12,7 +12,7 @@ activation_commands:
 - '@copilot use autonomous-test-healer-agent'
 - '@copilot fix failing tests'
 - '@copilot detect flaky tests'
-id: autonomous-test-healer
+id: autonomous-test-healer-agent
 ---
 
 # GitHub Copilot Custom Agent: Autonomous Test Healer

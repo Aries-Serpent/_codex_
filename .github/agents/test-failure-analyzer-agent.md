@@ -5,7 +5,7 @@ description: Analyze test failures to identify root causes and recommend targete
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: test-failure-analyzer
+id: test-failure-analyzer-agent
 ---
 
 # GitHub Copilot Custom Agent: Test Failure Analyzer

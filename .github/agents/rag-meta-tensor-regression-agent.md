@@ -10,7 +10,7 @@ batch: pr-9
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: rag-meta-tensor-regression
+id: rag-meta-tensor-regression-agent
 ---
 
 # RAG Meta Tensor Regression Agent

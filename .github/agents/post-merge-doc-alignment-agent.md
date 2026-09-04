@@ -51,7 +51,7 @@ iteration_history:
   date: 2026-03-31
   result: v1.1 applied cleanly; PDA Loop + AfterMath section added; all S252 changes
     landed
-id: post-merge-doc-alignment
+id: post-merge-doc-alignment-agent
 ---
 
 # Post-Merge Documentation Alignment Agent

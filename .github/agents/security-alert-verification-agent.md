@@ -9,7 +9,7 @@ aais_contribution: +2.0 points
 batch: pr-7
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
-id: security-alert-verification
+id: security-alert-verification-agent
 ---
 
 > ⚠️ **DEPRECATED** — Alert verification capabilities have been merged into

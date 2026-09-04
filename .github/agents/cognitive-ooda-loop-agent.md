@@ -17,7 +17,7 @@ pattern_id: P-047
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: cognitive-ooda-loop
+id: cognitive-ooda-loop-agent
 ---
 
 # Cognitive OODA Loop Agent v2.0

@@ -5,7 +5,7 @@ description: Analyze and optimize GitHub Actions workflows for parallelism, cach
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: workflow-optimization
+id: workflow-optimization-agent
 ---
 
 # GitHub Actions Workflow Optimization Agent

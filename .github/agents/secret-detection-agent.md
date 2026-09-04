@@ -8,7 +8,7 @@ entropy_patterns: true
 cognitive_integration_level: 3
 deprecated: true
 superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
-id: secret-detection
+id: secret-detection-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).

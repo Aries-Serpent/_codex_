@@ -9,7 +9,7 @@ aais_contribution: +1.5 points
 batch: pr-8
 deprecated: true
 superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
-id: documentation-quality
+id: documentation-quality-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-doc-agent`](./unified-doc-agent.md).

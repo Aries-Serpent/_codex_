@@ -15,7 +15,7 @@ trigger_label: ci-health-alert
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: telemetry-classifier
+id: telemetry-classifier-agent
 ---
 
 # Telemetry Classifier Agent v2.0

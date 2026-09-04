@@ -21,7 +21,7 @@ runner_compatibility:
 cooldown_minutes: 15
 max_iterations: 5
 dedup_window_hours: 2
-id: self-healing-orchestrator
+id: self-healing-orchestrator-agent
 ---
 
 # Self-Healing Orchestrator Agent v1.0.0

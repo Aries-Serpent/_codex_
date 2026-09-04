@@ -10,7 +10,7 @@ aais_contribution: +5.5 points
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: rag-freshness-loop
+id: rag-freshness-loop-agent
 ---
 
 # RAG Freshness Loop Agent v1.0 (E-08)

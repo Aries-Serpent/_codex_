@@ -5,7 +5,7 @@ description: Coach contributors on repository policies, coding standards, and co
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: policy-coach
+id: policy-coach-agent
 ---
 
 # Policy Coach Agent

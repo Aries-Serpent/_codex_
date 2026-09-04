@@ -5,7 +5,7 @@ description: Remediate failing PR checks by applying automated fixes and validat
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: pr-check-remediation
+id: pr-check-remediation-agent
 ---
 
 # Custom Copilot Agent: PR Check Remediation Specialist

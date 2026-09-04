@@ -4,7 +4,7 @@ description: Rapid diagnosis and resolution of blocking CI/CD failures that prev
   PR merges
 merged_agents:
 - ci-resilience-emergency-response-agent
-id: ci-emergency-response
+id: ci-emergency-response-agent
 ---
 
 # CI Emergency Response Agent

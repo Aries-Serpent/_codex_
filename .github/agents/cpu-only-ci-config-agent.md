@@ -5,7 +5,7 @@ description: Configure CI pipelines for CPU-only execution, avoiding GPU-depende
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: cpu-only-ci-config
+id: cpu-only-ci-config-agent
 ---
 
 # CPU-Only CI Configuration Agent

@@ -5,7 +5,7 @@ description: Enforce consistent use of terminology across documentation, code co
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: terminology-consistency
+id: terminology-consistency-agent
 ---
 
 # Terminology Consistency Agent

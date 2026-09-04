@@ -5,7 +5,7 @@ description: Refactor and test documentation for accuracy, clarity, and structur
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: doc-refactor-test
+id: doc-refactor-test-agent
 ---
 
 # Custom GitHub Copilot Agent: Documentation Refactoring Test Compatibility Agent

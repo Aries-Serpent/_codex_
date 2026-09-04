@@ -5,7 +5,7 @@ description: Monitor CI/CD artifact health, track workflow outputs, and provide 
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: artifact-monitor
+id: artifact-monitor-agent
 ---
 
 # Artifact Monitor Agent

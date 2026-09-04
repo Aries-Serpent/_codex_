@@ -5,7 +5,7 @@ description: Organize and restructure repository layout for improved navigation 
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: repository-organization
+id: repository-organization-agent
 ---
 
 # Repository Organization Agent

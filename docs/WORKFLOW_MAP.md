@@ -18,7 +18,7 @@ re-enabled.
 | Coverage | `coverage-ratchet.yml`, `coverage-with-timeout.yml`, `code-quality-coverage-suite.yml` | `scripts/ci/generate_coverage_dashboard.py`, `scripts/ci/generate_coverage_map.py`, [testing index](testing/INDEX.md) |
 | Self-healing | `iterative-self-healing-ci.yml`, `ci-pattern-healer.yml`, `self-healing.yml`, `unified-copilot-management.yml` | `scripts/ci/autonomous_test_healer_orchestrator.py`, [.codex prevention guide](../.codex/CI_PATTERN_PREVENTION_GUIDE.md) |
 | Policy and governance | `comment-review-gate.yml`, `deferral-language-gate.yml`, `workflow-execution-gate.yml`, `unified-governance-check.yml` | `.codex/CODEBASE_AGENCY_POLICY.md`, `.codex/WEC_CANONICAL_ITEMS.md`, `scripts/ci/session_wrapup_autofix.py` |
-| Workflow health | `workflow-compliance-gate.yml`, `actionlint-audit.yml`, `proactive-ci-monitor.yml` | `scripts/ci/workflow_compliance_scan.py`, `scripts/ci/workflow_health_collector.py` |
+| Workflow health | `workflow-execution-gate.yml`, `actionlint-audit.yml`, `proactive-ci-monitor.yml` | `scripts/ci/workflow_compliance_scan.py`, `scripts/ci/workflow_health_collector.py` |
 
 ## How the layers fit
 

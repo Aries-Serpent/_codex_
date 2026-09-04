@@ -15,7 +15,7 @@ batch: m-02
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: unified-doc
+id: unified-doc-agent
 ---
 
 # Unified Documentation Agent v1.0 (M-02 Merge)

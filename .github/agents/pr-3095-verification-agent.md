@@ -4,7 +4,7 @@ description: Verify fixes related to PR
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: pr-3095-verification
+id: pr-3095-verification-agent
 ---
 
 # PR #3095 Verification Agent

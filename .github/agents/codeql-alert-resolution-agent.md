@@ -5,7 +5,7 @@ description: Resolve CodeQL security alerts by implementing targeted code fixes 
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: codeql-alert-resolution
+id: codeql-alert-resolution-agent
 ---
 
 # CodeQL Alert Resolution Agent

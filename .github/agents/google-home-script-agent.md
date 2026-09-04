@@ -16,7 +16,7 @@ aais_contribution: +1.5 points
 batch: s201
 runner_compatibility:
   default: ubuntu-latest
-id: google-home-script
+id: google-home-script-agent
 ---
 
 # ⚠️ DEPRECATED: Google Home Script Agent v1.0

@@ -12,7 +12,7 @@ sprint: Sprint 4 (updated)
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: repo-var-sync
+id: repo-var-sync-agent
 ---
 
 # Repo Var Sync Agent v1.1

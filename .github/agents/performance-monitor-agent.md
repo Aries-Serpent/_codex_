@@ -4,7 +4,7 @@ description: Monitor real-time performance metrics and detect regressions or bot
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: performance-monitor
+id: performance-monitor-agent
 ---
 
 # Performance Monitor Agent

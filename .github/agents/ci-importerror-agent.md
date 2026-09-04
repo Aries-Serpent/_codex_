@@ -6,7 +6,7 @@ version: 2.1.0
 last_updated: 2026-02-15
 deprecated: true
 superseded_by: ci-triage-pipeline-agent.md (v1.0.0-m03, 2026-02-21)
-id: ci-importerror
+id: ci-importerror-agent
 ---
 
 > ⚠️ **DEPRECATED** — ImportError/ModuleNotFoundError triage has been merged into

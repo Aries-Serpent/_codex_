@@ -13,7 +13,7 @@ batch: m-04
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: ml-validation-suite
+id: ml-validation-suite-agent
 ---
 
 # ML Validation Suite Agent v1.0 (M-04 Merge)

@@ -5,7 +5,7 @@ description: Manage GitHub Actions workflow operations including creation, updat
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: workflow-management
+id: workflow-management-agent
 ---
 
 # Workflow Management Agent

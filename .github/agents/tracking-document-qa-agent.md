@@ -5,7 +5,7 @@ description: QA tracking documents for accuracy, completeness, and consistency w
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: tracking-document-qa
+id: tracking-document-qa-agent
 ---
 
 # Tracking Document QA Agent

@@ -16,7 +16,7 @@ endpoints:
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: memory-sync
+id: memory-sync-agent
 ---
 
 # Memory Sync Agent v2.0

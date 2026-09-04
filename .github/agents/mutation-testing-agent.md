@@ -5,7 +5,7 @@ description: Perform mutation testing to assess test suite effectiveness and ide
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: mutation-testing
+id: mutation-testing-agent
 ---
 
 # Mutation Testing Agent

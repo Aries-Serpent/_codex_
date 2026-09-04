@@ -7,7 +7,7 @@ superseded_by: unified-security-scanner.md
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: security-audit
+id: security-audit-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-security-scanner`](./unified-security-scanner.md).

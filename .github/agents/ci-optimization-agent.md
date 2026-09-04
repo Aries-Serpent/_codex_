@@ -5,7 +5,7 @@ description: Analyze and optimize CI/CD pipeline performance, reducing build tim
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: ci-optimization
+id: ci-optimization-agent
 ---
 
 # CI Optimization Agent

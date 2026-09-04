@@ -21,7 +21,7 @@ activation_commands:
 - '@copilot resolve 0D_base_ divergence'
 runner_compatibility:
   default: ubuntu-latest
-id: branch-divergence-resolution
+id: branch-divergence-resolution-agent
 ---
 
 # Branch Divergence Resolution Agent

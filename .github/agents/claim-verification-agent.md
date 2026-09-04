@@ -5,7 +5,7 @@ description: Verify claims in commit messages, PRs, and documentation against ac
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: claim-verification
+id: claim-verification-agent
 ---
 
 # Claim Verification Agent

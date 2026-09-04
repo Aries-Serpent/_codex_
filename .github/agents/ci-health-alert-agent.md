@@ -21,7 +21,7 @@ lessons_learned:
 - CODEX_CI_FAILURE_THRESHOLD lowered from 20% to 10% in P2.3 — existing cascade rate
   now triggers alerts
 - analyze_multi_job_cascade() in collect_telemetry.py detects cascade automatically
-id: ci-health-alert
+id: ci-health-alert-agent
 ---
 
 # CI Health Alert Agent v1.1

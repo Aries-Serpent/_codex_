@@ -9,7 +9,7 @@ aais_contribution: +2.5 points
 batch: pr-4
 deprecated: true
 superseded_by: ci-triage-pipeline-agent.md (v1.0.0-m03, 2026-02-21)
-id: ci-log-retrieval
+id: ci-log-retrieval-agent
 ---
 
 > ⚠️ **DEPRECATED** — Log retrieval capabilities have been merged into

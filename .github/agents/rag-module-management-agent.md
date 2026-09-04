@@ -5,7 +5,7 @@ description: Manage RAG module lifecycle including indexing, retrieval, and modu
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: rag-module-management
+id: rag-module-management-agent
 ---
 
 # RAG Module Management Agent

@@ -5,7 +5,7 @@ description: Perform static code analysis to identify quality issues, anti-patte
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: code-analysis
+id: code-analysis-agent
 ---
 
 # Code Analysis Agent

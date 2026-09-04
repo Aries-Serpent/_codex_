@@ -7,7 +7,7 @@ runner_compatibility:
   large: ubuntu-latest-large
 merged_agents:
 - cache-manager-integration
-id: cache-management
+id: cache-management-agent
 ---
 
 # Cache Management Agent

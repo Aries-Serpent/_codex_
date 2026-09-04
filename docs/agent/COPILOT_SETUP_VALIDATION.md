@@ -111,11 +111,12 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Verify dependent workflows and scripts are accessible and valid.
 
 **Dependent workflows (must exist and be valid YAML):**
-1. `.github/workflows/copilot-agent-vars-bootstrap.yml`
-2. `.github/workflows/repo-var-sync-schedule.yml`
-3. `.github/workflows/admin_setup_verification.yml`
-4. `.github/workflows/workflow-compliance-gate.yml`
-5. `.github/workflows/validate.yml`
+1. `.github/workflows/copilot-setup-validation.yml`
+2. `.github/workflows/deferral-language-gate.yml`
+3. `.github/workflows/workflow-execution-gate.yml`
+4. `.github/workflows/validate.yml`
+
+> Historical duplicates such as `wec-enforcement-gate.yml` and `workflow-compliance-gate.yml` are archived-only reference files; the active canonical gate is `workflow-execution-gate.yml`.
 
 **Supporting scripts (must exist and have valid Python syntax):**
 1. `.github/scripts/session_preload.py`

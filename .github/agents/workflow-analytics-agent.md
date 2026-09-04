@@ -5,7 +5,7 @@ description: Analyze GitHub Actions workflow performance, trends, and optimizati
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: workflow-analytics
+id: workflow-analytics-agent
 ---
 
 # Workflow Analytics Agent

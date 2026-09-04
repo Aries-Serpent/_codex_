@@ -41,7 +41,7 @@ related_agents:
 - code-scanning-remediation-agent.md
 skill_entrypoint: codex.skills.mypy_manager.handler:run
 skill_manifest: src/codex/skills/mypy_manager/manifest.yaml
-id: mypy-manager
+id: mypy-manager-agent
 ---
 
 # mypy Manager Agent v1.0.0

@@ -21,7 +21,7 @@ capability_tags:
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: packaging-validation
+id: packaging-validation-agent
 ---
 
 # Packaging Validation Agent v1.0

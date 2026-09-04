@@ -19,7 +19,7 @@ merged_agents:
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: unified-coverage
+id: unified-coverage-agent
 ---
 
 # Unified Coverage Agent v1.0

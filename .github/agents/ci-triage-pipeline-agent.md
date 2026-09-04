@@ -14,7 +14,7 @@ batch: m-03
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: ci-triage-pipeline
+id: ci-triage-pipeline-agent
 ---
 
 # CI Triage Pipeline Agent v1.0 (M-03 Merge)

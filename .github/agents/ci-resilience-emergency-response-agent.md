@@ -7,7 +7,7 @@ superseded_by: ci-emergency-response-agent.md
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: ci-resilience-emergency-response
+id: ci-resilience-emergency-response-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`ci-emergency-response-agent`](./ci-emergency-response-agent.md).

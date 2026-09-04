@@ -9,7 +9,7 @@ description: 'Multi-agent orchestrator for Aries-Serpent/_codex_. Routes tasks t
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: orchestrator
+id: orchestrator-agent
 ---
 
 # Agent: Orchestrator Agent

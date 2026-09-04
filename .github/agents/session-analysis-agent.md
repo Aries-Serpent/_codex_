@@ -5,7 +5,7 @@ description: Analyze Copilot sessions, verify committed changes, track objective
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: session-analysis
+id: session-analysis-agent
 ---
 
 # Session Analysis Agent

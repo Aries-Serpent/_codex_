@@ -51,7 +51,7 @@ built_in_skills:
 - doc.retriever.core
 - doc.refresh.agent
 - code.search.extract
-id: skills-master
+id: skills-master-agent
 ---
 
 # Skills Master Agent v1.0.0

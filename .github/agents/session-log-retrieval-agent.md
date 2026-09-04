@@ -5,7 +5,7 @@ description: Retrieve and search previous Copilot session logs to recover contex
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: session-log-retrieval
+id: session-log-retrieval-agent
 ---
 
 # Session Log Retrieval Agent

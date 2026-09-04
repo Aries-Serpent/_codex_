@@ -10,7 +10,7 @@ batch: pr-10
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: repository-hygiene
+id: repository-hygiene-agent
 ---
 
 # Repository Hygiene Agent

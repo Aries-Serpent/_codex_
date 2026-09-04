@@ -5,7 +5,7 @@ description: Manage PyPI package publishing operations including versioning and 
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: pypi-publishing-operations
+id: pypi-publishing-operations-agent
 ---
 
 # PyPI Publishing Operations Agent

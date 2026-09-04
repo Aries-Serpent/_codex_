@@ -5,7 +5,7 @@ description: Enhance test quality by adding edge cases, improving assertions, an
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: test-enhancement
+id: test-enhancement-agent
 ---
 
 # Test Enhancement Agent

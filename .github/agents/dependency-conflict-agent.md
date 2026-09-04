@@ -10,7 +10,7 @@ batch: pr-10
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: dependency-conflict
+id: dependency-conflict-agent
 ---
 
 # Dependency Conflict Agent

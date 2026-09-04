@@ -17,7 +17,7 @@ batch: pr-energy
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: energy-conversion
+id: energy-conversion-agent
 ---
 
 # ⚠️ DEPRECATED: Energy Conversion Agent

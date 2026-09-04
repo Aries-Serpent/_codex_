@@ -10,7 +10,7 @@ batch: pr-8
 pr: '#3365'
 deprecated: true
 superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
-id: link-validator
+id: link-validator-agent
 ---
 
 > ⚠️ **DEPRECATED** — Link validation capabilities have been merged into

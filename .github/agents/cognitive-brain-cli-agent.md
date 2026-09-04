@@ -21,7 +21,7 @@ activation_commands:
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: cognitive-brain-cli
+id: cognitive-brain-cli-agent
 ---
 
 # Cognitive Brain CLI Agent

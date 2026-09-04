@@ -15,7 +15,7 @@ author: mbaetiong
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: recon-scout
+id: recon-scout-agent
 ---
 
 # [Agent]: Recon Scout — Codebase Blocker Discovery & DRQ Tagging

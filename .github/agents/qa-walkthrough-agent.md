@@ -10,7 +10,7 @@ batch: pr-5
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: qa-walkthrough
+id: qa-walkthrough-agent
 ---
 
 # QA Walkthrough Agent

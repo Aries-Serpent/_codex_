@@ -4,7 +4,7 @@ description: Diagnose and resolve CI/CD pipeline failures using embedded fix pat
   and self-healing loops
 deprecated: true
 superseded_by: ci-auto-healer-agent.md
-id: ci-failure-resolution
+id: ci-failure-resolution-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`ci-auto-healer-agent`](./ci-auto-healer-agent.md).

@@ -18,7 +18,7 @@ aais_contribution: 1.5
 runner_compatibility:
   default: ubuntu-latest
   large: ubuntu-latest-large
-id: quantum-compliance-tuning
+id: quantum-compliance-tuning-agent
 ---
 
 # Quantum Compliance Tuning Agent (CONFIRMED ACTIVE)
