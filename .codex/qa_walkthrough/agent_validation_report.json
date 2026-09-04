@@ -1,0 +1,932 @@
+{
+  "metadata": {
+    "generated_at": "2026-09-04T03:05:28Z",
+    "registry_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/agent_spec.schema.json",
+    "frontmatter_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
+    "total_records": 305
+  },
+  "summary": {
+    "compliant": 205,
+    "non_compliant": 100,
+    "compliance_rate": "67.2%"
+  },
+  "compliant_agents": [
+    ".github/agents/agent-iq-scoring-gate.md",
+    ".github/agents/agent-orchestrator.md",
+    ".github/agents/artifact-monitor-agent.md",
+    ".github/agents/autonomous-test-healer-agent.md",
+    ".github/agents/branch-divergence-resolution-agent.md",
+    ".github/agents/bridge-security-monitor.agent.md",
+    ".github/agents/cache-management-agent.md",
+    ".github/agents/cache-manager-integration.md",
+    ".github/agents/ci-auto-healer-agent.md",
+    ".github/agents/ci-emergency-response-agent.md",
+    ".github/agents/ci-failure-resolution-agent.md",
+    ".github/agents/ci-health-alert-agent.md",
+    ".github/agents/ci-importerror-agent.md",
+    ".github/agents/ci-log-retrieval-agent.md",
+    ".github/agents/ci-optimization-agent.md",
+    ".github/agents/ci-parameter-mismatch-healer.md",
+    ".github/agents/ci-resilience-emergency-response-agent.md",
+    ".github/agents/ci-testing-agent.md",
+    ".github/agents/ci-triage-pipeline-agent.md",
+    ".github/agents/claim-verification-agent.md",
+    ".github/agents/code-analysis-agent.md",
+    ".github/agents/code-scanning-remediation-agent.md",
+    ".github/agents/codebase-health-guardian.md",
+    ".github/agents/codeql-alert-resolution-agent.md",
+    ".github/agents/cognitive-brain-cli-agent.md",
+    ".github/agents/cognitive-brain-session-injector.md",
+    ".github/agents/cognitive-ooda-loop-agent.md",
+    ".github/agents/config-migration-assistant.agent.md",
+    ".github/agents/config-validator.agent.md",
+    ".github/agents/coverage-gapfill-agent.md",
+    ".github/agents/coverage-maintenance-agent.md",
+    ".github/agents/coverage-roadmap-agent.md",
+    ".github/agents/cpu-only-ci-config-agent.md",
+    ".github/agents/cross-agent-knowledge-graph.md",
+    ".github/agents/cross-platform-filename-validator.md",
+    ".github/agents/datetime-modernizer.agent.md",
+    ".github/agents/dependency-conflict-agent.md",
+    ".github/agents/dependency-security-review-agent.md",
+    ".github/agents/dependency-vulnerability-scanner.agent.md",
+    ".github/agents/doc-freshness-checker.agent.md",
+    ".github/agents/doc-refactor-test-agent.md",
+    ".github/agents/documentation-consolidator.md",
+    ".github/agents/documentation-quality-agent.md",
+    ".github/agents/energy-conversion-agent.md",
+    ".github/agents/fragile-test-guardian.md",
+    ".github/agents/github-guru-agent.agent.md",
+    ".github/agents/github-pages-manager.md",
+    ".github/agents/google-home-script-agent.md",
+    ".github/agents/integration-test-runner.agent.md",
+    ".github/agents/json-serialization-expert.md",
+    ".github/agents/link-validator-agent.md",
+    ".github/agents/memory-sync-agent.md",
+    ".github/agents/meta-tensor-validator.md",
+    ".github/agents/ml-validation-suite-agent.md",
+    ".github/agents/msv-dashboard-monitor.md",
+    ".github/agents/mutation-testing-agent.md",
+    ".github/agents/mypy-manager-agent.md",
+    ".github/agents/orchestrator-agent.md",
+    ".github/agents/owner-approval-guard.agent.md",
+    ".github/agents/packaging-validation-agent.md",
+    ".github/agents/performance-monitor-agent.md",
+    ".github/agents/performance-regression-detector.agent.md",
+    ".github/agents/pii-scrubber.agent.md",
+    ".github/agents/policy-coach-agent.md",
+    ".github/agents/post-merge-doc-alignment-agent.md",
+    ".github/agents/pr-3095-verification-agent.md",
+    ".github/agents/pr-check-remediation-agent.md",
+    ".github/agents/pr-test-infrastructure-fixer.md",
+    ".github/agents/pypi-publishing-operations-agent.md",
+    ".github/agents/python-312-type-fixer.md",
+    ".github/agents/python-architect-agent.agent.md",
+    ".github/agents/qa-walkthrough-agent.md",
+    ".github/agents/quantum-compliance-tuning-agent.md",
+    ".github/agents/rag-freshness-loop-agent.md",
+    ".github/agents/rag-index-manager.agent.md",
+    ".github/agents/rag-meta-tensor-guardian.md",
+    ".github/agents/rag-meta-tensor-regression-agent.md",
+    ".github/agents/rag-module-management-agent.md",
+    ".github/agents/recon-scout-agent.md",
+    ".github/agents/reference-updater-agent.md",
+    ".github/agents/repo-var-sync-agent.md",
+    ".github/agents/repository-hygiene-agent.md",
+    ".github/agents/repository-organization-agent.md",
+    ".github/agents/root-organizer-agent.md",
+    ".github/agents/rust-config-validator.md",
+    ".github/agents/secret-detection-agent.md",
+    ".github/agents/security-alert-verification-agent.md",
+    ".github/agents/security-audit-agent.md",
+    ".github/agents/self-healing-orchestrator-agent.md",
+    ".github/agents/semantic-search.agent.md",
+    ".github/agents/session-analysis-agent.md",
+    ".github/agents/session-log-retrieval-agent.md",
+    ".github/agents/skills-master-agent.md",
+    ".github/agents/telemetry-classifier-agent.md",
+    ".github/agents/terminology-consistency-agent.md",
+    ".github/agents/test-alignment-fixer-enhanced.md",
+    ".github/agents/test-alignment-fixer.agent.md",
+    ".github/agents/test-coverage-agent.md",
+    ".github/agents/test-coverage-monitor.agent.md",
+    ".github/agents/test-enhancement-agent.md",
+    ".github/agents/test-failure-analyzer-agent.md",
+    ".github/agents/test-pattern-guardian.md",
+    ".github/agents/tokenization-coverage-agent.md",
+    ".github/agents/tracking-document-qa-agent.md",
+    ".github/agents/unified-coverage-agent.md",
+    ".github/agents/unified-doc-agent.md",
+    ".github/agents/unified-governance-gate.md",
+    ".github/agents/unified-security-scanner.md",
+    ".github/agents/workflow-analytics-agent.md",
+    ".github/agents/workflow-ci-fixer.agent.md",
+    ".github/agents/workflow-compliance-guardian.md",
+    ".github/agents/workflow-health-monitor.agent.md",
+    ".github/agents/workflow-management-agent.md",
+    ".github/agents/workflow-optimization-agent.md",
+    ".github/agents/AGENT_REGISTRY.yaml#github-guru-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ast-analysis-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cache-logic-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-failure-diagnostician",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-optimizer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-testing-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#compliance-checker-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#dep-upgrade-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#documentation-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ecosystem-coordinator-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#emergent-intelligence-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#flaky-triage-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#infra-linter-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#performance-monitor-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#project-architect-researcher",
+    ".github/agents/AGENT_REGISTRY.yaml#pyo3-integration-tester",
+    ".github/agents/AGENT_REGISTRY.yaml#reasoning-advisor-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#release-gate-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#rust-error-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#security-advisory-resolver",
+    ".github/agents/AGENT_REGISTRY.yaml#security-scan-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#test-assertion-updater",
+    ".github/agents/AGENT_REGISTRY.yaml#utf8-safety-linter",
+    ".github/agents/AGENT_REGISTRY.yaml#test-pattern-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#unified-security-scanner",
+    ".github/agents/AGENT_REGISTRY.yaml#codeql-alert-resolution-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-triage-pipeline-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#recon-scout-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#policy-coach-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#python-architect-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#agent-orchestrator",
+    ".github/agents/AGENT_REGISTRY.yaml#artifact-monitor-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#autonomous-test-healer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cache-management-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-emergency-response-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-failure-resolution-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-log-retrieval-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-optimization-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-parameter-mismatch-healer",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-resilience-emergency-response-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#claim-verification-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#code-analysis-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#code-scanning-remediation-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#codebase-health-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#coverage-gapfill-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cpu-only-ci-config-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cross-platform-filename-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#dependency-conflict-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#dependency-security-review-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#doc-refactor-test-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#fragile-test-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#meta-tensor-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#ml-validation-suite-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#msv-dashboard-monitor",
+    ".github/agents/AGENT_REGISTRY.yaml#mutation-testing-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#pr-check-remediation-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#pr-test-infrastructure-fixer",
+    ".github/agents/AGENT_REGISTRY.yaml#pypi-publishing-operations-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#python-312-type-fixer",
+    ".github/agents/AGENT_REGISTRY.yaml#rag-freshness-loop-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#rag-meta-tensor-guardian",
+    ".github/agents/AGENT_REGISTRY.yaml#rag-module-management-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#reference-updater-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repository-hygiene-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repository-organization-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#root-organizer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#rust-config-validator",
+    ".github/agents/AGENT_REGISTRY.yaml#secret-detection-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#security-alert-verification-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#security-audit-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#session-analysis-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#session-log-retrieval-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#terminology-consistency-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#test-alignment-fixer-enhanced",
+    ".github/agents/AGENT_REGISTRY.yaml#test-coverage-monitor",
+    ".github/agents/AGENT_REGISTRY.yaml#test-failure-analyzer-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#tokenization-coverage-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#tracking-document-qa-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-analytics-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-management-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#workflow-optimization-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#ci-health-alert-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#repo-var-sync-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#cognitive-ooda-loop-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#memory-sync-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#telemetry-classifier-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#orchestrator-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#packaging-validation-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#energy-conversion-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent"
+  ],
+  "non_compliant_agents": [
+    {
+      "path": ".github/agents/admin-automation-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/batch-triage-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/ci-diagnostic-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/ci-testing-agent/ci-testing-agent.md",
+      "kind": "github_profile",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/codebase-qa-walkthrough-agent.agent.yml",
+      "kind": "github_profile",
+      "errors": [
+        "Field 'updated' should be string, got date",
+        "Missing required field: id",
+        "Missing required field: maturity",
+        "Missing required field: status"
+      ]
+    },
+    {
+      "path": ".github/agents/codebase-qa-walkthrough-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/codex-reviewer.agent.yml",
+      "kind": "github_profile",
+      "errors": [
+        "ComposerError: expected a single document in the stream\n  in \"<unicode string>\", line 2, column 1:\n    name: \"codex-quantum-reviewer\"\n    ^\nbut found another document\n  in \"<unicode string>\", line 93, column 1:\n    ---\n    ^"
+      ]
+    },
+    {
+      "path": ".github/agents/cognitive-brain-manager.md",
+      "kind": "registry",
+      "errors": [
+        "malformed YAML frontmatter: while scanning an alias\n  in \"<unicode string>\", line 33, column 1:\n    **Version**: 4.5.2 (Updated PR # ... \n    ^\nexpected alphabetic or numeric character, but found '*'\n  in \"<unicode string>\", line 33, column 2:\n    **Version**: 4.5.2 (Updated PR #3 ... \n     ^"
+      ]
+    },
+    {
+      "path": ".github/agents/dependency-conflict-resolver/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/doc-test-scribe/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/documentation-sync-validator/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-app-manager.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-auth-manager/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-code-reviewer/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-deployment-gatekeeper/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-security-enforcer/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-security-validator-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-test-orchestrator/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-testing-orchestrator-agent/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/github-workflow-optimizer/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/memory-sync-consolidation-skill.md",
+      "kind": "registry",
+      "errors": [
+        "Missing required field: description"
+      ]
+    },
+    {
+      "path": ".github/agents/ml-threat-detector/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/pattern-discovery-skill.md",
+      "kind": "registry",
+      "errors": [
+        "Missing required field: description"
+      ]
+    },
+    {
+      "path": ".github/agents/security-vulnerability-patcher/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/service-integration-tester/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/session-wrapup-autofix-agent.md",
+      "kind": "github_profile",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/test-coverage-enforcer/README.md",
+      "kind": "registry",
+      "errors": [
+        "missing YAML frontmatter"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-app-manager",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-app-manager.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#codex_reviewer",
+      "kind": "registry_entry",
+      "errors": [
+        "Field 'id' does not match '^[a-z][a-z0-9-]*[a-z0-9]$'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#config-validator-enhanced",
+      "kind": "registry_entry",
+      "errors": [
+        "duplicate registry file reference: .github/agents/AGENT_REGISTRY.yaml#config-validator-enhanced, .github/agents/AGENT_REGISTRY.yaml#config-validator",
+        "registry/file id mismatch: 'config-validator-enhanced' != 'config-validator'",
+        "registry/file name mismatch: 'Config Validator (Enhanced)' != 'config-validator'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#cross-agent-knowledge-graph",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Cross-Agent Knowledge Graph' != 'Cross-Agent Knowledge Graph Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#rag-meta-tensor-regression-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'RAG Meta-Tensor Regression Agent' != 'RAG Meta Tensor Regression Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-auto-healer",
+      "kind": "registry_entry",
+      "errors": [
+        "duplicate registry file reference: .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer, .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer-agent",
+        "duplicate registry name: .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer, .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer-agent"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#agent-iq-scoring-gate",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Agent IQ Scoring Gate' != 'Agent IQ Scoring CI Gate'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#bridge-security-monitor",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Bridge Security Monitor' != 'bridge-security-monitor'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#cache-manager-integration",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Cache Manager Integration' != 'Cache Manager Integration Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-auto-healer-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "duplicate registry file reference: .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer, .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer-agent",
+        "duplicate registry name: .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer, .github/agents/AGENT_REGISTRY.yaml#ci-auto-healer-agent",
+        "registry/file id mismatch: 'ci-auto-healer-agent' != 'ci-auto-healer'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-importerror-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'CI ImportError Agent' != 'CI ImportError Fixer Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-manager",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: cognitive-brain-manager.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#config-migration-assistant",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Config Migration Assistant' != 'config-migration-assistant'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#config-validator",
+      "kind": "registry_entry",
+      "errors": [
+        "duplicate registry file reference: .github/agents/AGENT_REGISTRY.yaml#config-validator-enhanced, .github/agents/AGENT_REGISTRY.yaml#config-validator",
+        "registry/file name mismatch: 'Config Validator' != 'config-validator'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#coverage-maintenance-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Coverage Maintenance Agent' != 'Coverage-maintenance Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#coverage-roadmap-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Coverage Roadmap Agent' != 'Coverage-roadmap Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#datetime-modernizer",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Datetime Modernizer' != 'datetime-modernizer'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#dependency-vulnerability-scanner",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Dependency Vulnerability Scanner' != 'dependency-vulnerability-scanner'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#doc-freshness-checker",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Doc Freshness Checker' != 'doc-freshness-checker'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#documentation-consolidator",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Documentation Consolidator' != 'Documentation Consolidator Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#documentation-quality-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Documentation Quality Agent' != 'documentation-quality-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-pages-manager",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'GitHub Pages Manager' != 'GitHub Pages Manager Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#integration-test-runner",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Integration Test Runner' != 'integration-test-runner'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#json-serialization-expert",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'JSON Serialization Expert' != 'JSON Serialization Expert Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#link-validator-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Link Validator Agent' != 'link-validator-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#owner-approval-guard",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Owner Approval Guard' != 'owner-approval-guard'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#performance-regression-detector",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Performance Regression Detector' != 'performance-regression-detector'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#pii-scrubber",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'PII Scrubber' != 'pii-scrubber'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#pr-3095-verification-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'PR-3095 Verification Agent' != 'PR 3095 Verification Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#qa-walkthrough-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'QA Walkthrough Agent' != 'qa-walkthrough-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#quantum-compliance-tuning-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Quantum Compliance Tuning Agent' != 'quantum-compliance-tuning-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#rag-index-manager",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'RAG Index Manager' != 'rag-index-manager'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#semantic-search",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Semantic Search Agent' != 'semantic-search'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#test-alignment-fixer",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Test Alignment Fixer' != 'test-alignment-fixer'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#test-coverage-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Test Coverage Agent' != 'Test-coverage Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#unified-coverage-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file id mismatch: 'unified-coverage-agent' != 'test-enhancement-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#unified-doc-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Unified Doc Agent' != 'Unified Documentation Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#unified-governance-gate",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Unified Governance Gate' != 'Unified Governance Gate Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-ci-fixer",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Workflow CI Fixer' != 'Workflow CI Fixer Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-health-monitor",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Workflow Health Monitor' != 'Workflow Health Monitor Agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-cli-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Cognitive Brain CLI Agent' != 'cognitive-brain-cli-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#workflow-compliance-guardian",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Workflow Compliance Guardian' != 'workflow-compliance-guardian'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#admin-automation-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: admin-automation-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#batch-triage-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: batch-triage-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#ci-diagnostic-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: ci-diagnostic-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#codebase-qa-walkthrough-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: codebase-qa-walkthrough-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#cognitive-brain-session-injector",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Cognitive Brain Session Injector' != 'cognitive-brain-session-injector'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#dependency-conflict-resolver",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: dependency-conflict-resolver/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#doc-test-scribe",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: doc-test-scribe/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#documentation-sync-validator",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: documentation-sync-validator/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#dynamics365-powerplatform-architect-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: dynamics365-powerplatform-architect-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-auth-manager",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-auth-manager/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-code-reviewer",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-code-reviewer/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-deployment-gatekeeper",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-deployment-gatekeeper/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-security-enforcer",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-security-enforcer/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-security-validator-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-security-validator-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-test-orchestrator",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-test-orchestrator/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-testing-orchestrator-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-testing-orchestrator-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#github-workflow-optimizer",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: github-workflow-optimizer/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#ml-threat-detector",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: ml-threat-detector/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#repo-health-guardian",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: repo-health-guardian/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#security-vulnerability-patcher",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: security-vulnerability-patcher/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#service-integration-tester",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: service-integration-tester/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#test-coverage-enforcer",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced Markdown file is not a valid agent profile: test-coverage-enforcer/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#zendesk-architect-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: zendesk-architect-agent/README.md"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#copilot-session-chain",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: copilot-session-chain.yml"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#promote-integration-branch",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: .github/workflows/promote-integration-branch.yml"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#create-sub-pr-to-0D_base_",
+      "kind": "registry_entry",
+      "errors": [
+        "Field 'id' does not match '^[a-z][a-z0-9-]*[a-z0-9]$'",
+        "referenced agent file does not exist: .github/workflows/create-sub-pr-to-0D_base_.yml"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#self-healing-orchestrator-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Self-Healing Orchestrator Agent' != 'self-healing-orchestrator-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#branch-divergence-resolution-agent",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file name mismatch: 'Branch Divergence Resolution Agent' != 'branch-divergence-resolution-agent'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#post-accountability-to-discussion",
+      "kind": "registry_entry",
+      "errors": [
+        "referenced agent file does not exist: .github/workflows/post-accountability-to-discussion.yml"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#pattern-discovery-skill",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file id mismatch: 'pattern-discovery-skill' != 'pattern.discovery.brain'"
+      ]
+    },
+    {
+      "path": ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill",
+      "kind": "registry_entry",
+      "errors": [
+        "registry/file id mismatch: 'memory-sync-consolidation-skill' != 'memory.sync.consolidation'"
+      ]
+    }
+  ]
+}
