@@ -1,7 +1,10 @@
-# Copilot Agent Manifest for PR Review
-name: "codex-quantum-reviewer"
+id: codex-reviewer
+name: Codex Reviewer
+description: Quantum-inspired PR reviewer with self-evolution capabilities.
 version: "1.0.0"
-description: "Quantum-inspired PR reviewer with self-evolution capabilities"
+status: active
+maturity: production
+category: review
 
 # Agent metadata
 metadata:
@@ -12,7 +15,7 @@ metadata:
     - "quantum-analysis"
     - "security-validation"
     - "auto-orchestration"
-  visibility: "organization"  # Options: organization, public, private
+  visibility: "organization"
 
 # Triggering events
 triggers:
@@ -58,13 +61,11 @@ capabilities:
 
 # Configuration
 configuration:
-  review_depth: "comprehensive"  # Options: minimal, standard, comprehensive
-  auto_approve_threshold: 0.95  # Confidence level for auto-approval (0.0-1.0)
-  suggestion_mode: "proactive"  # Options: reactive, proactive, aggressive
-  orchestration_level: "full"  # Options: basic, standard, full
+  review_depth: "comprehensive"
+  auto_approve_threshold: 0.95
+  suggestion_mode: "proactive"
+  orchestration_level: "full"
   learning_enabled: true
-
-  # Review criteria weights (must sum to 1.0)
   criteria_weights:
     code_quality: 0.25
     security: 0.30
@@ -90,7 +91,6 @@ integrations:
   - type: "knowledge_base"
     source: "_codex_patterns"
 
----
 version_history:
   v3_0_0_cognitive:
     date: "2026-02-17"

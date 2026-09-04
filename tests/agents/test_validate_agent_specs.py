@@ -137,6 +137,39 @@ def test_parse_failure_is_reported_in_repository_results(
     assert broken["errors"] == ["missing YAML frontmatter"]
 
 
+def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[dict, dict]) -> None:
+    registry_schema, frontmatter_schema = schemas
+    agents_dir = tmp_path / ".github" / "agents"
+    legacy_readme = agents_dir / "legacy" / "README.md"
+    legacy_readme.parent.mkdir(parents=True, exist_ok=True)
+    legacy_readme.write_text("# Legacy docs only\n", encoding="utf-8")
+    profile = agents_dir / "actual-agent.md"
+    _write_profile(profile, name="Actual Agent", extra={"id": "actual-agent"})
+    _write_registry(
+        agents_dir / "AGENT_REGISTRY.yaml",
+        [
+            _registry_entry("legacy-agent", "Legacy Agent", "legacy/README.md"),
+            _registry_entry("actual-agent", "Actual Agent", "actual-agent.md"),
+        ],
+    )
+
+    results = validator.validate_repository(
+        repo_root=tmp_path,
+        agents_dir=agents_dir,
+        registry_schema=registry_schema,
+        frontmatter_schema=frontmatter_schema,
+    )
+
+    messages = "\n".join(error for result in results for error in result["errors"])
+    assert "referenced Markdown file is not a valid agent profile" not in messages
+    assert all(result["valid"] for result in results), results
+
+
+def test_profile_id_handles_agent_yaml_suffix() -> None:
+    assert validator._profile_id(Path("nested/example.agent.yml")) == "example"
+    assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
+
+
 def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict]) -> None:
     registry_schema, _ = schemas
     entry = _registry_entry("example-agent", "Example Agent", "example-agent.md")

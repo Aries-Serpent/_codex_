@@ -1,9 +1,12 @@
+id: codebase-qa-walkthrough-agent
 name: Codebase QA Walkthrough Agent
-description: Performs comprehensive QA walkthroughs of code changes, architecture reviews, and quality assurance testing
+description: Performs comprehensive QA walkthroughs of code changes, architecture reviews, and quality assurance testing.
+status: active
+maturity: production
 version: 1.1.0
 agent_type: quality_assurance
 category: testing
-updated: 2026-03-25
+updated: "2026-03-25"
 
 # Agent capabilities
 capabilities:

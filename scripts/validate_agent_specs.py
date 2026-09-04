@@ -93,6 +93,18 @@ def _is_yaml_agent(path: Path) -> bool:
     return name.endswith(".agent.yaml") or name.endswith(".agent.yml")
 
 
+def _is_agent_definition(path: Path) -> bool:
+    """Return True only for recognized custom-agent spec paths."""
+    if not path.is_file():
+        return False
+    suffix = path.suffix.lower()
+    if suffix == ".md":
+        return _is_markdown_agent(path)
+    if suffix in {".yaml", ".yml"}:
+        return _is_yaml_agent(path)
+    return False
+
+
 def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
     """Find root-level and nested agent definitions deterministically."""
     if not agents_dir.is_dir():
@@ -102,11 +114,7 @@ def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
     specs = [
         path
         for path in agents_dir.rglob("*")
-        if path.is_file()
-        and (
-            (path.suffix.lower() == ".md" and _is_markdown_agent(path))
-            or (path.suffix.lower() in {".yaml", ".yml"} and _is_yaml_agent(path))
-        )
+        if path.is_file() and _is_agent_definition(path)
     ]
     return sorted(specs, key=lambda path: path.as_posix().casefold())
 
@@ -212,9 +220,20 @@ def _result(path: str, kind: str, errors: list[str]) -> dict[str, Any]:
 
 
 def _profile_id(path: Path) -> str:
-    name = path.name
-    if name.lower().endswith(".agent.md"):
-        return name[: -len(".agent.md")]
+    name = path.name.lower()
+    for suffix in (
+        ".agent.md",
+        "-agent.md",
+        "-skill.md",
+        ".agent.yaml",
+        ".agent.yml",
+        "-agent.yaml",
+        "-agent.yml",
+        "-skill.yaml",
+        "-skill.yml",
+    ):
+        if name.endswith(suffix):
+            return path.name[: -len(suffix)]
     return path.stem
 
 
@@ -347,7 +366,7 @@ def validate_repository(
             repo_root=repo_root,
             agents_dir=agents_dir,
         )
-        if resolved is not None and resolved.suffix.lower() in {".md", ".yaml", ".yml"}:
+        if resolved is not None and _is_agent_definition(resolved):
             spec_paths.add(resolved)
             registry_spec_paths.add(resolved)
 
@@ -405,6 +424,8 @@ def validate_repository(
             )
             if resolved is None:
                 errors.append(f"referenced agent file does not exist: {file_reference}")
+            elif not _is_agent_definition(resolved):
+                continue
             else:
                 profile = parsed_profiles.get(resolved)
                 if resolved.suffix.lower() == ".md" and profile is None:
