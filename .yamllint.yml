@@ -5,7 +5,8 @@ rules:
     max: 140
     level: warning
   truthy:
-    level: warning
+    allowed-values: ['true', 'false']
+    check-keys: false
   document-start:
     present: false
   # Allow aligned env variable blocks in GitHub Actions workflows (e.g., padded colon spacing)

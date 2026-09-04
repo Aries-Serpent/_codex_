@@ -80,11 +80,16 @@ def _matches_spec_filename(name: str) -> bool:
     """Return True only for repository custom-agent definition filenames."""
     lowered = name.lower()
     return (
-        lowered.endswith(".agent.md")
+        lowered in {"agent.md", "agent.yml", "agent.yaml"}
+        or lowered.endswith(".agent.md")
         or lowered.endswith("-agent.md")
         or lowered.endswith("-skill.md")
         or lowered.endswith(".agent.yml")
         or lowered.endswith(".agent.yaml")
+        or lowered.endswith("-agent.yml")
+        or lowered.endswith("-agent.yaml")
+        or lowered.endswith("-skill.yml")
+        or lowered.endswith("-skill.yaml")
     )
 
 
@@ -240,17 +245,27 @@ def _profile_id(path: Path) -> str:
     Files named ``*.agent.md`` or ``*.agent.yml`` encode a schema marker that is
     not part of the canonical identifier. Files named ``*-agent.md`` and
     ``*-skill.md`` are already canonical slugs, so their suffixes should remain
-    intact.
+    intact. Directory-local ``agent.yaml``/``agent.yml`` files use the parent
+    directory name as their canonical identifier.
     """
     name = path.name.lower()
-    suffixes = (
-        ".agent.md",
-        ".agent.yaml",
-        ".agent.yml",
-    )
-    for suffix in suffixes:
-        if name.endswith(suffix):
-            return path.name[: -len(suffix)]
+    if name in {"agent.md", "agent.yaml", "agent.yml"}:
+        parent = path.parent.name.strip()
+        if parent and parent.lower() not in {".github", "agents", "config", "manifest", "settings"}:
+            return parent
+        return path.stem
+    if name.endswith(".agent.md"):
+        return name[: -len(".agent.md")]
+    if name.endswith(".agent.yaml"):
+        return name[: -len(".agent.yaml")]
+    if name.endswith(".agent.yml"):
+        return name[: -len(".agent.yml")]
+    if name.endswith("-agent.md") or name.endswith("-skill.md"):
+        return name[: -len(".md")]
+    if name.endswith("-agent.yaml") or name.endswith("-skill.yaml"):
+        return name[: -len(".yaml")]
+    if name.endswith("-agent.yml") or name.endswith("-skill.yml"):
+        return name[: -len(".yml")]
     return path.stem
 
 

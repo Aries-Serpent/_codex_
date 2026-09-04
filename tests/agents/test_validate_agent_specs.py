@@ -245,11 +245,36 @@ def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path)
 def test_profile_id_handles_agent_yaml_suffix() -> None:
     assert validator._profile_id(Path("nested/example.agent.yml")) == "example"
     assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
+    assert validator._profile_id(Path("nested/example/agent.yml")) == "example"
+    assert validator._profile_id(Path("nested/example/agent.yaml")) == "example"
 
 
 def test_profile_id_preserves_agent_and_skill_slugs() -> None:
     assert validator._profile_id(Path("nested/example-agent.md")) == "example-agent"
     assert validator._profile_id(Path("nested/example-skill.md")) == "example-skill"
+
+
+def test_discovers_directory_level_agent_yaml_specs(tmp_path: Path) -> None:
+    agents_dir = tmp_path / ".github" / "agents"
+    profile_dir = agents_dir / "reviewer"
+    profile_dir.mkdir(parents=True)
+    (profile_dir / "agent.yaml").write_text(
+        yaml.safe_dump({
+            "id": "reviewer",
+            "name": "Reviewer",
+            "description": "Valid reviewer agent",
+            "status": "active",
+            "maturity": "production",
+        }, sort_keys=False),
+        encoding="utf-8",
+    )
+    (agents_dir / "README.md").write_text("# Readme\n", encoding="utf-8")
+
+    discovered = {
+        path.relative_to(agents_dir).as_posix() for path in validator.find_agent_specs(agents_dir)
+    }
+
+    assert discovered == {"reviewer/agent.yaml"}
 
 
 def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict]) -> None:
