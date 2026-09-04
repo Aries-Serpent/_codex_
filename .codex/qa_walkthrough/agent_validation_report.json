@@ -1,14 +1,14 @@
 {
   "metadata": {
-    "generated_at": "2026-09-04T03:06:22Z",
+    "generated_at": "2026-09-04T03:58:04Z",
     "registry_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/agent_spec.schema.json",
     "frontmatter_schema_path": "/home/runner/work/_codex_/_codex_/configs/schemas/github_agent_frontmatter.schema.json",
     "total_records": 305
   },
   "summary": {
-    "compliant": 205,
-    "non_compliant": 100,
-    "compliance_rate": "67.2%"
+    "compliant": 209,
+    "non_compliant": 96,
+    "compliance_rate": "68.5%"
   },
   "compliant_agents": [
     ".github/agents/agent-iq-scoring-gate.md",
@@ -28,7 +28,6 @@
     ".github/agents/ci-optimization-agent.md",
     ".github/agents/ci-parameter-mismatch-healer.md",
     ".github/agents/ci-resilience-emergency-response-agent.md",
-    ".github/agents/ci-testing-agent.md",
     ".github/agents/ci-triage-pipeline-agent.md",
     ".github/agents/claim-verification-agent.md",
     ".github/agents/code-analysis-agent.md",
@@ -63,6 +62,7 @@
     ".github/agents/json-serialization-expert.md",
     ".github/agents/link-validator-agent.md",
     ".github/agents/memory-sync-agent.md",
+    ".github/agents/memory-sync-consolidation-skill.md",
     ".github/agents/meta-tensor-validator.md",
     ".github/agents/ml-validation-suite-agent.md",
     ".github/agents/msv-dashboard-monitor.md",
@@ -71,6 +71,7 @@
     ".github/agents/orchestrator-agent.md",
     ".github/agents/owner-approval-guard.agent.md",
     ".github/agents/packaging-validation-agent.md",
+    ".github/agents/pattern-discovery-skill.md",
     ".github/agents/performance-monitor-agent.md",
     ".github/agents/performance-regression-detector.agent.md",
     ".github/agents/pii-scrubber.agent.md",
@@ -103,6 +104,7 @@
     ".github/agents/semantic-search.agent.md",
     ".github/agents/session-analysis-agent.md",
     ".github/agents/session-log-retrieval-agent.md",
+    ".github/agents/session-wrapup-autofix-agent.md",
     ".github/agents/skills-master-agent.md",
     ".github/agents/telemetry-classifier-agent.md",
     ".github/agents/terminology-consistency-agent.md",
@@ -215,7 +217,9 @@
     ".github/agents/AGENT_REGISTRY.yaml#orchestrator-agent",
     ".github/agents/AGENT_REGISTRY.yaml#packaging-validation-agent",
     ".github/agents/AGENT_REGISTRY.yaml#energy-conversion-agent",
-    ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent"
+    ".github/agents/AGENT_REGISTRY.yaml#google-home-script-agent",
+    ".github/agents/AGENT_REGISTRY.yaml#pattern-discovery-skill",
+    ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill"
   ],
   "non_compliant_agents": [
     {
@@ -240,10 +244,19 @@
       ]
     },
     {
+      "path": ".github/agents/ci-testing-agent.md",
+      "kind": "github_profile",
+      "errors": [
+        "duplicate definition identifier: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md",
+        "duplicate definition name: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md"
+      ]
+    },
+    {
       "path": ".github/agents/ci-testing-agent/ci-testing-agent.md",
       "kind": "github_profile",
       "errors": [
-        "missing YAML frontmatter"
+        "duplicate definition identifier: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md",
+        "duplicate definition name: .github/agents/ci-testing-agent.md, .github/agents/ci-testing-agent/ci-testing-agent.md"
       ]
     },
     {
@@ -362,24 +375,10 @@
       ]
     },
     {
-      "path": ".github/agents/memory-sync-consolidation-skill.md",
-      "kind": "registry",
-      "errors": [
-        "Missing required field: description"
-      ]
-    },
-    {
       "path": ".github/agents/ml-threat-detector/README.md",
       "kind": "registry",
       "errors": [
         "missing YAML frontmatter"
-      ]
-    },
-    {
-      "path": ".github/agents/pattern-discovery-skill.md",
-      "kind": "registry",
-      "errors": [
-        "Missing required field: description"
       ]
     },
     {
@@ -392,13 +391,6 @@
     {
       "path": ".github/agents/service-integration-tester/README.md",
       "kind": "registry",
-      "errors": [
-        "missing YAML frontmatter"
-      ]
-    },
-    {
-      "path": ".github/agents/session-wrapup-autofix-agent.md",
-      "kind": "github_profile",
       "errors": [
         "missing YAML frontmatter"
       ]
@@ -912,20 +904,6 @@
       "kind": "registry_entry",
       "errors": [
         "referenced agent file does not exist: .github/workflows/post-accountability-to-discussion.yml"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#pattern-discovery-skill",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'pattern-discovery-skill' != 'pattern.discovery.brain'"
-      ]
-    },
-    {
-      "path": ".github/agents/AGENT_REGISTRY.yaml#memory-sync-consolidation-skill",
-      "kind": "registry_entry",
-      "errors": [
-        "registry/file id mismatch: 'memory-sync-consolidation-skill' != 'memory.sync.consolidation'"
       ]
     }
   ]
