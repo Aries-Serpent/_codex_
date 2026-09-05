@@ -174,15 +174,18 @@ def _collate_text_batch(
             return_tensors="pt",
         )
     except (ValueError, TypeError, RuntimeError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.exception("tokenizer failed while collation a batch")
         append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
         raise
     input_ids = encodings.get("input_ids")
     if input_ids is None:
         raise KeyError("tokenizer output is missing 'input_ids'")
+    attention_mask = encodings.get("attention_mask")
     labels_tensor = torch.tensor(labels, dtype=torch.long)
-    return input_ids, labels_tensor
+    batch = {"input_ids": input_ids, "labels": labels_tensor}
+    if attention_mask is not None:
+        batch["attention_mask"] = attention_mask
+    return batch
 
 
 def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:

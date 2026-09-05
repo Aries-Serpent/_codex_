@@ -3,9 +3,9 @@ reason: No ML/RAG/security/docs signal detected; defaulting to standard environm
 lfs_mode: none
 lfs_include_paths: []
 local_sandbox_policy:
-  sandbox_is_staging_only: True
-  prefer_prepared_primary_environment: False
-  transfer_via_repo_bundle: True
+  sandbox_is_staging_only: true
+  prefer_prepared_primary_environment: false
+  transfer_via_repo_bundle: true
 
 runtime:
   python: 3.12

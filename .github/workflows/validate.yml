@@ -97,9 +97,15 @@ jobs:
          HEAD_SHA="$(git rev-parse HEAD)"
         fi
         echo "Validating YAML changes from ${BASE_SHA} to ${HEAD_SHA}"
-        yamllint -c .yamllint.yml --strict -f parsable \
-         $(git diff --name-only --diff-filter=d ${BASE_SHA}...${HEAD_SHA} \
-           | grep -E '\.ya?ml$' | grep -v node_modules || true)
+        mapfile -t yaml_files < <(
+          git diff --name-only --diff-filter=d "${BASE_SHA}...${HEAD_SHA}" \
+            | grep -E '\.ya?ml$' | grep -v node_modules || true
+        )
+        if [ "${#yaml_files[@]}" -eq 0 ]; then
+          echo "No YAML files changed between ${BASE_SHA} and ${HEAD_SHA}; skipping yamllint."
+          exit 0
+        fi
+        yamllint -c .yamllint.yml --strict -f parsable "${yaml_files[@]}"
     - name: Run fast validation
       run: "set -e\nchmod +x scripts/run_validation.sh\npython tools/validate.py --mode\
         \ fast || {\n  echo \"\u26A0\uFE0F Validation script failed, but continuing\
