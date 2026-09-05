@@ -51,7 +51,7 @@ runs:
   using: composite
   steps:
   - name: Set up Python
-    uses: actions/setup-python@v4
+    uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c
     with:
       python-version: '3.11'
   - name: Install dependencies
@@ -73,37 +73,60 @@ runs:
   - name: Run coverage analysis
     shell: bash
     id: analyze
-    run: "python -m pytest \\\n  --cov=${{ inputs.source-path }} \\\n  --cov-report=json:coverage.json\
-      \ \\\n  --cov-report=term \\\n  -v || true\n\necho \"Coverage analysis completed\"\
-      \n"
+    env:
+      SOURCE_PATH: ${{ inputs.source-path }}
+    run: |
+      python -m pytest         --cov="$SOURCE_PATH"         --cov-report=json:coverage.json         --cov-report=term         -v || true
+      echo "Coverage analysis completed"
   - name: Enforce coverage thresholds
     shell: bash
     id: enforce
-    run: "cd $GITHUB_WORKSPACE/.github/agents/test-coverage-enforcer\n\n# Run enforcement\n\
-      if [ \"${{ inputs.check-coverage }}\" == \"true\" ]; then\n  python -m src.agent\
-      \ enforce \\\n    --path \"${{ inputs.source-path }}\" \\\n    --threshold ${{\
-      \ inputs.threshold }} \\\n    --format ${{ inputs.output-format }} \\\n    --output\
-      \ \"${{ inputs.output-file }}\" > enforcement_output.txt\n\n  ENFORCEMENT_EXIT_CODE=$?\n\
-      \n  # Parse output\n  COVERAGE=$(grep -oP 'Current coverage: \\K[\\d.]+' enforcement_output.txt\
-      \ || echo \"0\")\n  PASSED=$(grep -q \"PASSED\" enforcement_output.txt && echo\
-      \ \"true\" || echo \"false\")\n\n  echo \"coverage=${COVERAGE}\" >> $GITHUB_OUTPUT\n\
-      \  echo \"passed=${PASSED}\" >> $GITHUB_OUTPUT\n  echo \"issues=0\" >> $GITHUB_OUTPUT\n\
-      \  echo \"suggestions=0\" >> $GITHUB_OUTPUT\n\n  # Display output\n  cat enforcement_output.txt\n\
-      \n  # Exit with enforcement result if fail-below-threshold is true\n  if [ \"\
-      ${{ inputs.fail-below-threshold }}\" == \"true\" ] && [ \"${PASSED}\" == \"\
-      false\" ]; then\n    echo \"::error::Coverage ${COVERAGE}% is below threshold\
-      \ ${{ inputs.threshold }}%\"\n    exit 1\n  fi\nelse\n  echo \"Coverage checking\
-      \ disabled\"\n  echo \"coverage=0\" >> $GITHUB_OUTPUT\n  echo \"passed=true\"\
-      \ >> $GITHUB_OUTPUT\n  echo \"issues=0\" >> $GITHUB_OUTPUT\n  echo \"suggestions=0\"\
-      \ >> $GITHUB_OUTPUT\nfi\n"
+    env:
+      SOURCE_PATH: ${{ inputs.source-path }}
+      CHECK_COVERAGE: ${{ inputs.check-coverage }}
+      THRESHOLD: ${{ inputs.threshold }}
+      OUTPUT_FORMAT: ${{ inputs.output-format }}
+      OUTPUT_FILE: ${{ inputs.output-file }}
+      FAIL_BELOW_THRESHOLD: ${{ inputs.fail-below-threshold }}
+    run: |
+      cd "$GITHUB_WORKSPACE/.github/agents/test-coverage-enforcer"
+
+      if [ "$CHECK_COVERAGE" = "true" ]; then
+        python -m src.agent enforce           --path "$SOURCE_PATH"           --threshold "$THRESHOLD"           --format "$OUTPUT_FORMAT"           --output "$OUTPUT_FILE" > enforcement_output.txt
+
+        COVERAGE=$(grep -oP 'Current coverage: \K[\d.]+' enforcement_output.txt || echo "0")
+        PASSED=$(grep -q "PASSED" enforcement_output.txt && echo "true" || echo "false")
+
+        echo "coverage=${COVERAGE}" >> "$GITHUB_OUTPUT"
+        echo "passed=${PASSED}" >> "$GITHUB_OUTPUT"
+        echo "issues=0" >> "$GITHUB_OUTPUT"
+        echo "suggestions=0" >> "$GITHUB_OUTPUT"
+
+        cat enforcement_output.txt
+
+        if [ "$FAIL_BELOW_THRESHOLD" = "true" ] && [ "$PASSED" = "false" ]; then
+          echo "::error::Coverage ${COVERAGE}% is below threshold ${THRESHOLD}%"
+          exit 1
+        fi
+      else
+        echo "Coverage checking disabled"
+        echo "coverage=0" >> "$GITHUB_OUTPUT"
+        echo "passed=true" >> "$GITHUB_OUTPUT"
+        echo "issues=0" >> "$GITHUB_OUTPUT"
+        echo "suggestions=0" >> "$GITHUB_OUTPUT"
+      fi
   - name: Generate test suggestions
     shell: bash
     if: inputs.auto-generate == 'true'
-    run: "cd $GITHUB_WORKSPACE/.github/agents/test-coverage-enforcer\n\npython -m\
-      \ src.agent generate-tests \\\n  --path \"${{ inputs.source-path }}\" \\\n \
-      \ > test_suggestions.txt\n\necho \"Test suggestions generated:\"\ncat test_suggestions.txt\n"
+    env:
+      SOURCE_PATH: ${{ inputs.source-path }}
+    run: |
+      cd "$GITHUB_WORKSPACE/.github/agents/test-coverage-enforcer"
+      python -m src.agent generate-tests         --path "$SOURCE_PATH"         > test_suggestions.txt
+      echo "Test suggestions generated:"
+      cat test_suggestions.txt
   - name: Upload coverage report
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5
     if: always()
     with:
       name: coverage-report
@@ -116,22 +139,67 @@ runs:
         '
       retention-days: 30
   - name: Comment on PR
-    uses: actions/github-script@v6
-    if: github.event_name == 'pull_request' && always()
+    uses: actions/github-script@00f12e3e20659f42342b1c0226afda7f7c042325
+    if: always()
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+      REPOSITORY_OWNER: ${{ github.repository_owner }}
+      REPOSITORY_NAME: ${{ github.event.repository.name }}
+      COVERAGE: ${{ steps.enforce.outputs.coverage }}
+      PASSED: ${{ steps.enforce.outputs.passed }}
+      THRESHOLD: ${{ inputs.threshold }}
+      OUTPUT_FILE: ${{ inputs.output-file }}
     with:
-      script: "const fs = require('fs');\nconst coverage = '${{ steps.enforce.outputs.coverage\
-        \ }}';\nconst passed = '${{ steps.enforce.outputs.passed }}';\nconst threshold\
-        \ = '${{ inputs.threshold }}';\n\nconst status = passed === 'true' ? '\u2705\
-        \ PASS' : '\u274C FAIL';\nconst icon = passed === 'true' ? '\u2705' : '\u274C\
-        ';\n\nlet reportContent = '';\ntry {\n  reportContent = fs.readFileSync('${{\
-        \ inputs.output-file }}', 'utf8');\n} catch (e) {\n  reportContent = 'Report\
-        \ not available';\n}\n\nconst body = `## ${icon} Test Coverage Report\n\n\
-        **Status:** ${status}\n**Current Coverage:** ${coverage}%\n**Threshold:**\
-        \ ${threshold}%\n\n<details>\n<summary>View Full Report</summary>\n\n\\`\\\
-        `\\`\n${reportContent}\n\\`\\`\\`\n\n</details>\n\n---\n*Generated by Test\
-        \ Coverage Enforcer Agent*`;\n\ngithub.rest.issues.createComment({\n  issue_number:\
-        \ context.issue.number,\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n\
-        \  body: body\n});\n"
+      script: |
+        const fs = require('fs');
+        if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
+          return;
+        }
+
+        const coverage = process.env.COVERAGE;
+        const passed = process.env.PASSED;
+        const threshold = process.env.THRESHOLD;
+        const issueNumber = Number(process.env.ISSUE_NUMBER || '0');
+        const owner = process.env.REPOSITORY_OWNER;
+        const repo = process.env.REPOSITORY_NAME;
+
+        const status = passed === 'true' ? '✅ PASS' : '❌ FAIL';
+        const icon = passed === 'true' ? '✅' : '❌';
+
+        let reportContent = '';
+        try {
+          reportContent = fs.readFileSync(process.env.OUTPUT_FILE, 'utf8');
+        } catch (e) {
+          reportContent = 'Report not available';
+        }
+
+        const body = [
+          `## ${icon} Test Coverage Report`,
+          '',
+          `**Status:** ${status}`,
+          `**Current Coverage:** ${coverage}%`,
+          `**Threshold:** ${threshold}%`,
+          '',
+          '<details>',
+          '<summary>View Full Report</summary>',
+          '',
+          '```',
+          reportContent,
+          '```',
+          '',
+          '</details>',
+          '',
+          '---',
+          '*Generated by Test Coverage Enforcer Agent*'
+        ].join('\n');
+
+        await github.rest.issues.createComment({
+          issue_number: issueNumber,
+          owner,
+          repo,
+          body
+        });
 id: test-coverage-enforcer
 status: active
 maturity: beta

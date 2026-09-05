@@ -53,7 +53,7 @@ runs:
   using: composite
   steps:
   - name: Set up Python
-    uses: actions/setup-python@v4
+    uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c
     with:
       python-version: '3.11'
   - name: Install dependencies
@@ -64,42 +64,88 @@ runs:
   - name: Run Documentation Sync Validator
     id: validate
     shell: bash
-    run: "PYTHONPATH=\"${GITHUB_ACTION_PATH}/src:$PYTHONPATH\" \\\npython -m agent\
-      \ validate ${{ inputs.docs-path }} \\\n  --code-dir ${{ inputs.code-path }}\
-      \ \\\n  --output-format ${{ inputs.output-format }} \\\n  > validation_report.${{\
-      \ inputs.output-format }}\n\n# Count issues\nif [ \"${{ inputs.output-format\
-      \ }}\" = \"json\" ]; then\n  ISSUES=$(jq 'length' validation_report.json)\n\
-      \  HIGH=$(jq '[.[] | select(.severity==\"high\" or .severity==\"critical\")]\
-      \ | length' validation_report.json)\nelse\n  ISSUES=$(grep -c \"^\\[\" validation_report.*\
-      \ || echo \"0\")\n  HIGH=$(grep -c \"^\\[HIGH\\|^\\[CRITICAL\" validation_report.*\
-      \ || echo \"0\")\nfi\n\necho \"issues=$ISSUES\" >> $GITHUB_OUTPUT\necho \"high=$HIGH\"\
-      \ >> $GITHUB_OUTPUT\necho \"report=validation_report.${{ inputs.output-format\
-      \ }}\" >> $GITHUB_OUTPUT\n\n# Fail if requested and issues found\nif [ \"${{\
-      \ inputs.fail-on-issues }}\" = \"true\" ] && [ \"$ISSUES\" -gt \"0\" ]; then\n\
-      \  exit 1\nfi\n"
+    env:
+      DOCS_PATH: ${{ inputs.docs-path }}
+      CODE_PATH: ${{ inputs.code-path }}
+      OUTPUT_FORMAT: ${{ inputs.output-format }}
+      FAIL_ON_ISSUES: ${{ inputs.fail-on-issues }}
+    run: |
+      PYTHONPATH="${GITHUB_ACTION_PATH}/src:$PYTHONPATH"       python -m agent validate "$DOCS_PATH"         --code-dir "$CODE_PATH"         --output-format "$OUTPUT_FORMAT"         > "validation_report.${OUTPUT_FORMAT}"
+
+      if [ "$OUTPUT_FORMAT" = "json" ]; then
+        ISSUES=$(jq 'length' validation_report.json)
+        HIGH=$(jq '[.[] | select(.severity=="high" or .severity=="critical")] | length' validation_report.json)
+      else
+        ISSUES=$(grep -c '^\[' validation_report.* || echo "0")
+        HIGH=$(grep -c '^\[HIGH\|^\[CRITICAL' validation_report.* || echo "0")
+      fi
+
+      echo "issues=$ISSUES" >> "$GITHUB_OUTPUT"
+      echo "high=$HIGH" >> "$GITHUB_OUTPUT"
+      echo "report=validation_report.${OUTPUT_FORMAT}" >> "$GITHUB_OUTPUT"
+
+      if [ "$FAIL_ON_ISSUES" = "true" ] && [ "$ISSUES" -gt "0" ]; then
+        exit 1
+      fi
   - name: Upload report artifact
     if: always()
-    uses: actions/upload-artifact@v4
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
     with:
       name: documentation-validation-report
       path: validation_report.*
   - name: Comment on PR (if applicable)
-    if: github.event_name == 'pull_request' && always()
-    uses: actions/github-script@v7
+    if: always()
+    uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+      REPOSITORY_OWNER: ${{ github.repository_owner }}
+      REPOSITORY_NAME: ${{ github.event.repository.name }}
+      REPORT_PATH: ${{ steps.validate.outputs.report }}
+      ISSUES: ${{ steps.validate.outputs.issues }}
+      HIGH: ${{ steps.validate.outputs.high }}
     with:
-      script: "const fs = require('fs');\nconst reportPath = '${{ steps.validate.outputs.report\
-        \ }}';\n\nif (!fs.existsSync(reportPath)) {\n  return;\n}\n\nconst issues\
-        \ = parseInt('${{ steps.validate.outputs.issues }}');\nconst high = parseInt('${{\
-        \ steps.validate.outputs.high }}');\n\nlet comment = '## \U0001F4DA Documentation\
-        \ Sync Validation Results\\n\\n';\n\nif (issues === 0) {\n  comment += '\u2705\
-        \ **All checks passed!** Documentation is up-to-date and synchronized.\\n';\n\
-        } else {\n  comment += `\u26A0\uFE0F **Found ${issues} issue(s)** in documentation:\\\
-        n`;\n  comment += `- High/Critical severity: ${high}\\n`;\n  comment += `-\
-        \ Other issues: ${issues - high}\\n\\n`;\n  comment += '\U0001F4C4 See the\
-        \ artifacts for the detailed report.\\n';\n}\n\ntry {\n  await github.rest.issues.createComment({\n\
-        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\n\
-        \    repo: context.repo.repo,\n    body: comment\n  });\n} catch (error) {\n\
-        \  console.log('Could not post comment:', error.message);\n}\n"
+      script: |
+        const fs = require('fs');
+        if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
+          return;
+        }
+
+        const reportPath = process.env.REPORT_PATH;
+        const issues = Number(process.env.ISSUES || '0');
+        const high = Number(process.env.HIGH || '0');
+        const issueNumber = Number(process.env.ISSUE_NUMBER || '0');
+        const owner = process.env.REPOSITORY_OWNER;
+        const repo = process.env.REPOSITORY_NAME;
+
+        if (!fs.existsSync(reportPath)) {
+          return;
+        }
+
+        const lines = ['## 📚 Documentation Sync Validation Results', ''];
+
+        if (issues === 0) {
+          lines.push('✅ **All checks passed!** Documentation is up-to-date and synchronized.');
+        } else {
+          lines.push(`⚠️ **Found ${issues} issue(s)** in documentation:`);
+          lines.push(`- High/Critical severity: ${high}`);
+          lines.push(`- Other issues: ${issues - high}`);
+          lines.push('');
+          lines.push('📄 See the artifacts for the detailed report.');
+        }
+
+        const comment = lines.join('\n');
+
+        try {
+          await github.rest.issues.createComment({
+            issue_number: issueNumber,
+            owner,
+            repo,
+            body: comment
+          });
+        } catch (error) {
+          console.log('Could not post comment:', error.message);
+        }
 id: documentation-sync-validator
 status: active
 maturity: beta
