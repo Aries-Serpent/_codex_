@@ -107,23 +107,42 @@ def _hash_output(output: str) -> str:
     return hashlib.sha256(output.encode("utf-8")).hexdigest()
 
 
+def _coerce_mode(mode: ComparisonMode | str) -> ComparisonMode:
+    """Normalize a comparison mode to the enum form expected by the comparator."""
+    if isinstance(mode, ComparisonMode):
+        return mode
+    if isinstance(mode, str):
+        normalized = mode.strip().casefold()
+        try:
+            return ComparisonMode(normalized)
+        except ValueError as exc:
+            valid = ", ".join(item.value for item in ComparisonMode)
+            raise ValueError(f"Unsupported comparison mode {mode!r}; expected one of: {valid}") from exc
+    raise TypeError(f"Expected ComparisonMode or str, got {type(mode).__name__}")
+
+
 def _normalize_output(output: str, mode: ComparisonMode) -> str:
     """Normalize output based on comparison mode."""
+    import re
+
+    normalized = re.sub(
+        r'File ".*?(?:/|\\)(?:baseline|patched)(?:/|\\)[^"]+"',
+        'File "<snapshot>/__entry__.py"',
+        output,
+    )
+
     if mode == ComparisonMode.STRICT:
-        return output
+        return normalized
 
     if mode == ComparisonMode.FUZZY:
         # Normalize whitespace
-        lines = output.strip().split("\n")
+        lines = normalized.strip().split("\n")
         lines = [line.strip() for line in lines if line.strip()]
         return "\n".join(sorted(lines))
 
     if mode == ComparisonMode.SEMANTIC:
         # More aggressive normalization
-        import re
-
-        # Remove timestamps, UUIDs, etc.
-        normalized = re.sub(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}", "<TIMESTAMP>", output)
+        normalized = re.sub(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}", "<TIMESTAMP>", normalized)
         normalized = re.sub(
             r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
             "<UUID>",
@@ -132,7 +151,7 @@ def _normalize_output(output: str, mode: ComparisonMode) -> str:
         normalized = re.sub(r"0x[0-9a-f]+", "<ADDR>", normalized)
         return normalized.strip()
 
-    return output
+    return normalized
 
 
 def _run_script(
@@ -224,7 +243,7 @@ def compare(
     baseline_dir: Path,
     patched_dir: Path,
     sample_inputs: Optional[list[Path]] = None,
-    mode: ComparisonMode = ComparisonMode.STRICT,
+    mode: ComparisonMode | str = ComparisonMode.STRICT,
     timeout: int = DEFAULT_TIMEOUT,
     flakiness_runs: int = DEFAULT_FLAKINESS_RUNS,
 ) -> ComparisonResult:
@@ -247,6 +266,8 @@ def compare(
         >>> result = compare(Path("baseline/"), Path("patched/"))
         >>> logger.info(f"Result: {result.result}")
     """
+    mode = _coerce_mode(mode)
+
     comparisons: list[ComparisonDetail] = []
     all_baseline_output = ""
     all_patched_output = ""

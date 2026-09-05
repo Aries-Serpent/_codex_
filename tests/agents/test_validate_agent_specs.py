@@ -179,8 +179,8 @@ def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[
     )
 
     messages = "\n".join(error for result in results for error in result["errors"])
-    assert "referenced Markdown file is not a valid agent profile" not in messages
-    assert all(result["valid"] for result in results), results
+    assert "referenced Markdown file is not a valid agent profile" in messages
+    assert not all(result["valid"] for result in results), results
 
 
 def test_registry_summary_and_coverage_are_enforced(tmp_path: Path, schemas: tuple[dict, dict]) -> None:

@@ -526,6 +526,11 @@ def validate_repository(
             if resolved is None:
                 errors.append(f"referenced agent file does not exist: {file_reference}")
             elif not _is_agent_definition(resolved):
+                status = str(entry.get("status", "")).casefold()
+                if status == "active":
+                    errors.append(
+                        f"referenced Markdown file is not a valid agent profile: {file_reference}"
+                    )
                 continue
             else:
                 profile = parsed_profiles.get(resolved)

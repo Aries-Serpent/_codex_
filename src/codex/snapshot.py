@@ -40,8 +40,19 @@ def list_snapshots(root: str | Path | None = None, *, status: str | None = None)
 def get_snapshot(snapshot_id: str, root: str | Path | None = None) -> dict[str, Any]:
     """Return snapshot metadata for the given snapshot ID."""
     base = _snapshot_root(root)
-    snapshot_dir = base / snapshot_id
-    meta_file = snapshot_dir / "snapshot-meta.json"
+    base_dir = base.resolve()
+    snapshot_dir = (base / snapshot_id).resolve()
+    try:
+        snapshot_dir.relative_to(base_dir)
+    except ValueError as exc:
+        raise FileNotFoundError(f"Snapshot '{snapshot_id}' not found") from exc
+    if not snapshot_dir.is_dir():
+        raise FileNotFoundError(f"Snapshot '{snapshot_id}' not found")
+    meta_file = (snapshot_dir / "snapshot-meta.json").resolve()
+    try:
+        meta_file.relative_to(base_dir)
+    except ValueError as exc:
+        raise FileNotFoundError(f"Snapshot '{snapshot_id}' not found") from exc
     if not meta_file.exists():
         raise FileNotFoundError(f"Snapshot '{snapshot_id}' not found")
     with meta_file.open("r", encoding="utf-8") as handle:

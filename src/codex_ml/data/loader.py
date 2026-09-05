@@ -83,30 +83,39 @@ class CacheManifest:
             return None
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                raise TypeError("Cache manifest must be a JSON object")
+            shard = data.get("shard", {})
+            if not isinstance(shard, dict):
+                raise TypeError("Cache manifest shard must be an object")
+            splits = data.get("splits", {})
+            if not isinstance(splits, dict):
+                raise TypeError("Cache manifest splits must be an object")
+            return cls(
+                version=str(data.get("version", "1")),
+                source=str(data.get("source", "")),
+                checksum=str(data.get("checksum", "")),
+                encoding=str(data.get("encoding", "utf-8")),
+                newline=str(data.get("newline", "unix")),
+                num_records=int(data.get("num_records", 0)),
+                shard_index=int(shard.get("index", 0)),
+                shard_total=int(shard.get("total", 1)),
+                created_at=float(data.get("created_at", time.time())),
+                params=dict(data.get("params", {})),
+                splits={k: dict(v) for k, v in splits.items()},
+            )
         except (
             IOError,
             OSError,
             ValueError,
             TypeError,
+            AttributeError,
             json.JSONDecodeError,
             ModuleNotFoundError,
             ImportError,
         ):
             logger.warning("Exception occurred", exc_info=True)
             return None
-        return cls(
-            version=str(data.get("version", "1")),
-            source=str(data.get("source", "")),
-            checksum=str(data.get("checksum", "")),
-            encoding=str(data.get("encoding", "utf-8")),
-            newline=str(data.get("newline", "unix")),
-            num_records=int(data.get("num_records", 0)),
-            shard_index=int(data.get("shard", {}).get("index", 0)),
-            shard_total=int(data.get("shard", {}).get("total", 1)),
-            created_at=float(data.get("created_at", time.time())),
-            params=dict(data.get("params", {})),
-            splits={k: dict(v) for k, v in data.get("splits", {}).items()},
-        )
 
 
 def normalize_newlines(text: str, mode: str) -> str:
