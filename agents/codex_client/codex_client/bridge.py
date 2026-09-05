@@ -45,13 +45,11 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for lean/test envs
             @functools.wraps(func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 attempts = 0
-                last_exception: Optional[BaseException] = None
                 while True:
                     attempts += 1
                     try:
                         return func(*args, **kwargs)
                     except Exception as exc:  # pragma: no cover - compatibility fallback only
-                        last_exception = exc
                         if retry is not None and not retry(exc):
                             raise
                         if stop is not None and attempts >= stop:
