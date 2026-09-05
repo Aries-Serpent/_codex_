@@ -59,4 +59,6 @@ runtime:
 
 notes:
   - The sandbox is a staging environment for diagnosis and diff creation, not the canonical validator for the ML/RAG dependency matrix.
-  - When the environment type is ml-heavy, prefer the GitHub-hosted setup workflow or a prepared primary Copilot session before running the full ML/RAG suite.
+  - When the environment type is ml-heavy, prefer the GitHub-hosted setup
+    workflow or a prepared primary Copilot session before running the full
+    ML/RAG suite.
