@@ -83,7 +83,15 @@ class CacheManifest:
             return None
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except (IOError, OSError, ModuleNotFoundError, ImportError):
+        except (
+            IOError,
+            OSError,
+            ValueError,
+            TypeError,
+            json.JSONDecodeError,
+            ModuleNotFoundError,
+            ImportError,
+        ):
             logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(

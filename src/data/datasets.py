@@ -181,14 +181,8 @@ def _collate_text_batch(
     input_ids = encodings.get("input_ids")
     if input_ids is None:
         raise KeyError("tokenizer output is missing 'input_ids'")
-    result: dict[str, Any] = {
-        "input_ids": input_ids,
-        "labels": torch.tensor(labels, dtype=torch.long),
-    }
-    attention_mask = encodings.get("attention_mask")
-    if attention_mask is not None:
-        result["attention_mask"] = attention_mask
-    return result
+    labels_tensor = torch.tensor(labels, dtype=torch.long)
+    return input_ids, labels_tensor
 
 
 def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:

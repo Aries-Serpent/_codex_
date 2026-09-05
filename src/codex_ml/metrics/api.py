@@ -111,8 +111,12 @@ def get_metric(name: str) -> Callable[..., object]:
         KeyError: If metric not found
     """
     from codex_ml.metrics.registry import metric_registry
+    from codex_ml.registry.base import RegistryNotFoundError
 
-    return metric_registry.get(name)
+    try:
+        return metric_registry.get(name)
+    except RegistryNotFoundError as exc:
+        raise KeyError(name) from exc
 
 
 def list_metrics() -> list[str]:

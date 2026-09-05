@@ -144,7 +144,7 @@ if not _xdist_requested:
 # Make PyTorch 2.6+ behave like pre-2.6 for our test suite:
 # https://pytorch.org/docs/stable/serialization.html#troubleshooting
 
-_PROJECT_ROOT = _Path(__file__).resolve().parent
+_PROJECT_ROOT = _Path(__file__).resolve().parents[1]
 _SRC_DIR = _PROJECT_ROOT / "src"
 if _os.getcwd() != str(_PROJECT_ROOT):
     _os.chdir(_PROJECT_ROOT)
