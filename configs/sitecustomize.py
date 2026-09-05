@@ -28,7 +28,8 @@ class _StubObject:
         )
 
 
-src_str = str(Path(__file__).parent / "src")
+repo_root = Path(__file__).resolve().parents[1]
+src_str = str(repo_root / "src")
 if src_str not in sys.path:
     sys.path.insert(0, src_str)
 
