@@ -8,7 +8,13 @@ import os
 
 import pytest
 
+import codex_bridge
 from codex_bridge.github_client import list_branches
+
+
+def test_bridge_package_uses_repo_local_implementation():
+    """Bridge re-exports must stay pinned to the in-repo module, not a shadowed package."""
+    assert codex_bridge.list_branches.__module__ == "codex_bridge.github_client"
 
 
 @pytest.mark.network
