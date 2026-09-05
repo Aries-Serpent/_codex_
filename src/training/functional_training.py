@@ -27,10 +27,17 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-import numpy as np
+try:  # pragma: no cover - optional ML dependency for minimal training environments
+    import numpy as np
+except ModuleNotFoundError:  # pragma: no cover
+    np = None  # type: ignore[assignment]
 
-import torch
-import torch.nn.functional as F
+try:  # pragma: no cover - optional torch dependency for lightweight import paths
+    import torch
+    import torch.nn.functional as F
+except (ImportError, ModuleNotFoundError):  # pragma: no cover
+    torch = None  # type: ignore[assignment]
+    F = None  # type: ignore[assignment]
 
 # Lazy imports to break circular dependencies with codex_ml
 # These are deferred to avoid circular import at module load time
