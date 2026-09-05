@@ -60403,15 +60403,6 @@
       "classification": "workflow_file",
       "confidence": 1.0,
       "exception": false,
-      "extension": ".yml",
-      "path": ".github/workflows/wec-enforcement-gate.yml",
-      "requires_ingestion": false,
-      "size_bytes": 582
-    },
-    {
-      "classification": "workflow_file",
-      "confidence": 1.0,
-      "exception": false,
       "extension": ".md",
       "path": ".github/workflows/wiki-assemble.md",
       "requires_ingestion": false,
@@ -60425,15 +60416,6 @@
       "path": ".github/workflows/workflow-analytics-unified.yml",
       "requires_ingestion": false,
       "size_bytes": 9886
-    },
-    {
-      "classification": "workflow_file",
-      "confidence": 1.0,
-      "exception": false,
-      "extension": ".yml",
-      "path": ".github/workflows/workflow-compliance-gate.yml",
-      "requires_ingestion": false,
-      "size_bytes": 7120
     },
     {
       "classification": "workflow_file",

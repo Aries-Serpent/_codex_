@@ -1,44 +1,15 @@
 version: 2.0.0
-last_updated: '2026-07-01T15:26:30Z'
-total_agents: 164
-active_agents: 150
-archived_agents: 15
+last_updated: '2026-09-04T18:00:00Z'
+total_agents: 117
+active_agents: 98
+archived_agents: 19
 enforcement_tier: MIXED
 agents:
-- id: github-app-manager
-  name: GitHub App Manager
-  version: 1.0.0
-  directory: .github/agents/github-app-manager
-  file: github-app-manager.md
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  category: operations
-  subcategory: integrations
-  autonomy_model: E
-  enforcement_tier: PARTIAL
-  violations_30d: 0
-  capability_tags:
-  - github_app_jwt
-  - installation_tokens
-  - webhook_verification
-  - pat_token_fallback
-  - codex_master_key
-  - codex_backup_key
-  - app_manifest
-  - codespace_config
-  physics_model:
-    primary: bayesian
-  handoff_protocol: none
-  description: GitHub App Manager agent
 - id: github-guru-agent
-  name: GitHub Guru Agent
+  name: Github Guru Agent
   version: 1.1.0
-  directory: .github/agents/github-guru-agent
-  file: github-guru-agent.agent.md
+  directory: .github/agents
+  file: .github/agents/github-guru-agent.agent.md
   status: active
   maturity: production
   has_prompts: false
@@ -51,10 +22,12 @@ agents:
     primary: balance
     secondary: path
     energy: 5
-  primary_skill: GitHub repository intelligence, PR analysis, issue triage, workflow health
+  primary_skill: GitHub repository intelligence, PR analysis, issue triage, workflow
+    health
   secondary_skill: Pattern synthesis, cross-repo knowledge surfacing, developer guidance
-  purpose: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance,
-    dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
+  purpose: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage,
+    workflow health monitoring, branch governance, dependency drift detection, repository
+    hygiene reporting, and label taxonomy enforcement.
 
     '
   capabilities:
@@ -87,8 +60,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch
-    governance, dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
+  description: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage,
+    workflow health monitoring, branch governance, dependency drift detection, repository
+    hygiene reporting, and label taxonomy enforcement.
 
     '
   capability_tags:
@@ -100,109 +74,18 @@ agents:
   - repository_hygiene_reporting
   - codebase_navigation_guidance
   - dependency_drift_detection
-- id: ast-analysis-agent
-  name: Ast Analysis Agent
-  directory: .github/agents/ast-analysis-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - ast_analysis_agent
-  category: quality
-- id: cache-logic-validator
-  name: Cache Logic Validator
-  directory: .github/agents/cache-logic-validator
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - cache_logic_validator
-  category: performance
-- id: ci-failure-diagnostician
-  name: Ci Failure Diagnostician
-  directory: .github/agents/ci-failure-diagnostician
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - ci_failure_diagnostician
-  category: ci_cd
-- id: ci-optimizer-agent
-  name: Ci Optimizer Agent
-  directory: .github/agents/ci-optimizer-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - ci_optimizer_agent
-  category: ci
 - id: ci-testing-agent
   batch_scan_enabled: true
-  name: Ci Testing Agent
-  directory: .github/agents/ci-testing-agent
+  name: CI Testing Agent
+  directory: .github/agents
   status: active
   maturity: production
   has_prompts: false
   has_tests: true
   has_docs: true
   has_src: true
-  purpose: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
+  purpose: Specialized agent for debugging and fixing CI/CD pipeline issues, test
+    failures, and build problems
   capabilities:
   - ci_failure_diagnosis
   - test_failure_analysis
@@ -224,223 +107,18 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 1
   role: specialist
-  description: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
+  description: Specialized agent for debugging and fixing CI/CD pipeline issues, test
+    failures, and build problems
   capability_tags:
   - ci_failure_diagnosis
   - test_failure_analysis
   - build_problem_resolution
   - log_analysis
   category: testing
-- id: codex_reviewer
-  name: Codex_Reviewer
-  directory: .github/agents/codex_reviewer
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: false
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - codex_reviewer
-  category: quality
-- id: cognitive-brain-agent
-  name: Cognitive Brain Agent
-  directory: .github/agents/cognitive-brain-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - cognitive_brain_agent
-  category: cognitive
-- id: compliance-checker-agent
-  name: Compliance Checker Agent
-  directory: .github/agents/compliance-checker-agent
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: false
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: utility
-  capability_tags:
-  - compliance_checker_agent
-  category: governance
-- id: dep-upgrade-agent
-  name: Dep Upgrade Agent
-  directory: .github/agents/dep-upgrade-agent
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: false
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - dep_upgrade_agent
-  category: dependencies
-- id: documentation-agent
-  name: Documentation Agent
-  directory: .github/agents/documentation-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - documentation_agent
-  category: documentation
-- id: ecosystem-coordinator-agent
-  name: Ecosystem Coordinator Agent
-  directory: .github/agents/ecosystem-coordinator-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - ecosystem_coordinator_agent
-  category: orchestration
-- id: emergent-intelligence-agent
-  name: Emergent Intelligence Agent
-  directory: .github/agents/emergent-intelligence-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - emergent_intelligence_agent
-  category: cognitive
-- id: flaky-triage-agent
-  name: Flaky Triage Agent
-  directory: .github/agents/flaky-triage-agent
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: false
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - flaky_triage_agent
-  category: testing
-- id: infra-linter-agent
-  name: Infra Linter Agent
-  directory: .github/agents/infra-linter-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - infra_linter_agent
-  category: infrastructure
+  file: .github/agents/ci-testing-agent.md
 - id: performance-monitor-agent
   name: Performance Monitor Agent
-  directory: .github/agents/performance-monitor-agent
+  directory: .github/agents
   status: active
   maturity: beta
   has_prompts: false
@@ -461,270 +139,20 @@ agents:
   capability_tags:
   - performance_monitor_agent
   category: monitoring
-- id: project-architect-researcher
-  name: Project Architect Researcher
-  directory: .github/agents/project-architect-researcher
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: true
-  purpose: NotebookLM API integration for project research and architecture analysis
-  capabilities:
-  - api_integration
-  - research_synthesis
-  - architecture_design
-  - documentation_analysis
-  integration_points:
-  - notebooklm_api
-  - cognitive_brain
-  priority: high
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: NotebookLM API integration for project research and architecture analysis
-  capability_tags:
-  - api_integration
-  - research_synthesis
-  - architecture_design
-  - documentation_analysis
-  category: operations
-- id: pyo3-integration-tester
-  name: Pyo3 Integration Tester
-  directory: .github/agents/pyo3-integration-tester
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: true
-  purpose: Tests PyO3 Rust-Python integration and validates bindings
-  capabilities:
-  - pyo3_testing
-  - rust_python_bindings
-  - integration_validation
-  integration_points:
-  - pyo3
-  - pytest
-  - cargo
-  priority: high
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Tests PyO3 Rust-Python integration and validates bindings
-  capability_tags:
-  - pyo3_testing
-  - rust_python_bindings
-  - integration_validation
-  category: testing
-- id: reasoning-advisor-agent
-  name: Reasoning Advisor Agent
-  directory: .github/agents/reasoning-advisor-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - reasoning_advisor_agent
-  category: cognitive
-- id: release-gate-agent
-  name: Release Gate Agent
-  directory: .github/agents/release-gate-agent
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: utility
-  capability_tags:
-  - release_gate_agent
-  category: ci_cd
-- id: rust-error-validator
-  name: Rust Error Validator
-  directory: .github/agents/rust-error-validator
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  purpose: Scans Rust code for error handling issues and validates PyResult usage
-  capabilities:
-  - rust_error_detection
-  - unwrap_validation
-  - pyresult_checking
-  integration_points:
-  - cargo
-  - clippy
-  - cognitive_brain
-  priority: high
-  enforcement_tier: GROUNDED
-  autonomy_model: D_CAPABLE
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - agent-orchestrator
-  consolidation_priority: true
-  activation_frequency_rank: 20
-  violations_30d: 0
-  observation_started: '2026-03-04'
-  observation_window_days: 30
-  observation_baseline: docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md
-  role: specialist
-  description: Scans Rust code for error handling issues and validates PyResult usage
-  capability_tags:
-  - rust_error_detection
-  - unwrap_validation
-  - pyresult_checking
-  category: quality
-- id: security-advisory-resolver
-  name: Security Advisory Resolver
-  directory: .github/agents/security-advisory-resolver
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - security_advisory_resolver
-  category: security
-- id: security-scan-agent
-  name: Security Scan Agent
-  directory: .github/agents/security-scan-agent
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: true
-  has_docs: false
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - security_scan_agent
-  category: security
-- id: test-assertion-updater
-  name: Test Assertion Updater
-  directory: .github/agents/test-assertion-updater
-  status: active
-  maturity: production
-  has_prompts: true
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are correct
-  capabilities:
-  - test_alignment
-  - assertion_updates
-  - api_change_tracking
-  integration_points:
-  - pytest
-  - unittest
-  - cognitive_brain
-  priority: high
-  enforcement_tier: PARTIAL
-  autonomy_model: D_CAPABLE
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - ci-testing-agent
-  - agent-orchestrator
-  consolidation_priority: true
-  activation_frequency_rank: 3
-  role: specialist
-  description: Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are correct
-  capability_tags:
-  - test_alignment
-  - assertion_updates
-  - api_change_tracking
-  category: testing
-- id: utf8-safety-linter
-  name: Utf8 Safety Linter
-  directory: .github/agents/utf8-safety-linter
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: true
-  purpose: ''
-  capabilities: []
-  integration_points: []
-  priority: medium
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: specialist
-  capability_tags:
-  - utf8_safety_linter
-  category: quality
-- id: test-pattern-guardian
+  file: .github/agents/performance-monitor-agent.md
+- id: artifact-monitor-agent
   batch_scan_enabled: true
-  name: Test Pattern Guardian
+  name: Artifact Monitor Agent
   directory: .github/agents
-  file: test-pattern-guardian.md
+  file: .github/agents/artifact-monitor-agent.md
   status: active
   maturity: production
   has_prompts: false
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues,
-    and fixture independence
+  purpose: Proactive test quality enforcement through AST-based pattern detection
+    for mock exhaustion, serialization issues, and fixture independence
   capabilities:
   - ast_pattern_detection
   - mock_exhaustion_prevention
@@ -748,8 +176,8 @@ agents:
   - agent-orchestrator
   consolidation_priority: false
   role: utility
-  description: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues,
-    and fixture independence
+  description: Proactive test quality enforcement through AST-based pattern detection
+    for mock exhaustion, serialization issues, and fixture independence
   capability_tags:
   - ast_pattern_detection
   - mock_exhaustion_prevention
@@ -757,18 +185,18 @@ agents:
   - fixture_independence_checking
   - test_quality_enforcement
   category: testing
-- id: config-validator-enhanced
-  name: Config Validator (Enhanced)
+- id: config-validator
+  name: Config Validator
   directory: .github/agents
-  file: config-validator.agent.md
+  file: .github/agents/config-validator.agent.md
   status: active
   maturity: production
   has_prompts: false
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are
-    schema-compliant
+  purpose: Hydra config integrity and coverage validation, ensures all experiment
+    configs referenced in tests exist and are schema-compliant
   capabilities:
   - config_existence_validation
   - cross_reference_checking
@@ -790,122 +218,19 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and
-    are schema-compliant
+  description: Hydra config integrity and coverage validation, ensures all experiment
+    configs referenced in tests exist and are schema-compliant
   capability_tags:
   - config_existence_validation
   - cross_reference_checking
   - schema_compliance
   - hydra_integration
   category: configuration
-- id: unified-security-scanner
-  batch_scan_enabled: true
-  name: Unified Security Scanner
-  directory: .github/agents
-  file: unified-security-scanner.md
-  status: active
-  maturity: production
-  session_introduced: S67
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk scoring
-  capabilities:
-  - cve_scanning
-  - secret_detection
-  - ghas_alert_triage
-  - sbom_generation
-  - auto_remediation
-  - risk_scoring
-  integration_points:
-  - github_security_alerts
-  - dependency_files
-  - cognitive_brain
-  - cross_agent_knowledge_graph
-  priority: critical
-  created: '2026-02-05T00:00:00Z'
-  batch: M-01
-  aais_contribution: 6.0
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk
-    scoring
-  capability_tags:
-  - cve_scanning
-  - secret_detection
-  - ghas_alert_triage
-  - sbom_generation
-  - auto_remediation
-  - risk_scoring
-  token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
-  scopes_required:
-  - repo
-  - security_events
-  - contents:read
-  implementation_guide: scripts/ci/_token_resolver.py
-  documentation:
-  - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#unified-security-scanner
-  - .codex/TOKEN_HIERARCHY_GUIDE.md
-  last_updated: '2026-06-29T12:00:00Z'
-  category: security
-- id: cross-agent-knowledge-graph
-  name: Cross-Agent Knowledge Graph
-  directory: .github/agents
-  file: cross-agent-knowledge-graph.md
-  status: active
-  maturity: production
-  session_introduced: S61
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic
-    blocker querying between agents
-  capabilities:
-  - node_registration
-  - edge_creation
-  - semantic_query
-  - conflict_detection
-  - staleness_pruning
-  - snapshot_export
-  - drq_pattern_sync
-  integration_points:
-  - cognitive_brain
-  - ci_triage_pipeline
-  - unified_security_scanner
-  - governance_gate
-  priority: high
-  created: '2026-02-05T00:00:00Z'
-  batch: E-10
-  fix_patterns_registered: 11
-  aais_contribution: 2.5
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic
-    blocker querying between agents
-  capability_tags:
-  - node_registration
-  - edge_creation
-  - semantic_query
-  - conflict_detection
-  - staleness_pruning
-  - snapshot_export
-  - drq_pattern_sync
-  category: cognitive
 - id: codeql-alert-resolution-agent
   batch_scan_enabled: true
   name: CodeQL Alert Resolution Agent
   directory: .github/agents
-  file: codeql-alert-resolution-agent.md
+  file: .github/agents/codeql-alert-resolution-agent.md
   status: active
   maturity: production
   session_introduced: S67
@@ -913,8 +238,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false
-    positives, and contributes to AAIS scoring
+  purpose: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE categories,\
+    \ applies fix patterns, dismisses false positives, and contributes to AAIS scoring"
   capabilities:
   - codeql_alert_ingestion
   - cwe_classification
@@ -937,8 +262,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses
-    false positives, and contributes to AAIS scoring
+  description: "Autonomous CodeQL alert triage and resolution \u2014 classifies CWE\
+    \ categories, applies fix patterns, dismisses false positives, and contributes\
+    \ to AAIS scoring"
   capability_tags:
   - codeql_alert_ingestion
   - cwe_classification
@@ -958,9 +284,9 @@ agents:
   last_updated: '2026-06-29T12:00:00Z'
   category: security
 - id: rag-meta-tensor-regression-agent
-  name: RAG Meta-Tensor Regression Agent
+  name: RAG Meta Tensor Regression Agent
   directory: .github/agents
-  file: rag-meta-tensor-regression-agent.md
+  file: .github/agents/rag-meta-tensor-regression-agent.md
   status: active
   maturity: production
   session_introduced: S69
@@ -968,8 +294,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device()
-    call order (has_meta_tensors before isinstance)
+  purpose: "Prevents and resolves meta-tensor initialization regressions in the RAG\
+    \ pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors before\
+    \ isinstance)"
   capabilities:
   - meta_tensor_detection
   - device_placement_validation
@@ -990,8 +317,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device()
-    call order (has_meta_tensors before isinstance)
+  description: "Prevents and resolves meta-tensor initialization regressions in the\
+    \ RAG pipeline \u2014 guards safe_model_to_device() call order (has_meta_tensors\
+    \ before isinstance)"
   capability_tags:
   - meta_tensor_detection
   - device_placement_validation
@@ -1003,7 +331,7 @@ agents:
   batch_scan_enabled: true
   name: CI Triage Pipeline Agent
   directory: .github/agents
-  file: ci-triage-pipeline-agent.md
+  file: .github/agents/ci-triage-pipeline-agent.md
   status: active
   maturity: production
   session_introduced: S67
@@ -1011,8 +339,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix
-    patterns from DRQ library
+  purpose: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads logs,\
+    \ classifies failures by pattern, applies fix patterns from DRQ library"
   capabilities:
   - ci_log_retrieval
   - failure_classification
@@ -1031,8 +359,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies
-    fix patterns from DRQ library
+  description: "Systematic CI failure triage using GitHub MCP tools \u2014 downloads\
+    \ logs, classifies failures by pattern, applies fix patterns from DRQ library"
   capability_tags:
   - ci_log_retrieval
   - failure_classification
@@ -1044,7 +372,7 @@ agents:
   batch_scan_enabled: true
   name: Recon Scout Agent
   directory: .github/agents
-  file: recon-scout-agent.md
+  file: .github/agents/recon-scout-agent.md
   status: active
   maturity: production
   session_introduced: S70
@@ -1052,8 +380,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and
-    architecture drift, tagging each as DRQ entries for deep research
+  purpose: "Read-only codebase reconnaissance \u2014 walks all files to surface CI\
+    \ blockers, security risks, quality issues, and architecture drift, tagging each\
+    \ as DRQ entries for deep research"
   capabilities:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -1081,8 +410,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues,
-    and architecture drift, tagging each as DRQ entries for deep research
+  description: "Read-only codebase reconnaissance \u2014 walks all files to surface\
+    \ CI blockers, security risks, quality issues, and architecture drift, tagging\
+    \ each as DRQ entries for deep research"
   capability_tags:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -1096,7 +426,7 @@ agents:
 - id: policy-coach-agent
   name: Policy Coach Agent
   directory: .github/agents
-  file: policy-coach-agent.md
+  file: .github/agents/policy-coach-agent.md
   status: active
   maturity: production
   session_introduced: S78
@@ -1104,9 +434,10 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints:
-    plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
-    (P-01..P-14) with verbatim re-alignment prompts.
+  purpose: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns
+    behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session violation
+    detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns (P-01..P-14)
+    with verbatim re-alignment prompts.
 
     '
   capabilities:
@@ -1133,8 +464,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints:
-    plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
+  description: 'Monitors Copilot Agent sessions for codebase policy violations and
+    re-aligns behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session
+    violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
     (P-01..P-14) with verbatim re-alignment prompts.
 
     '
@@ -1148,7 +480,7 @@ agents:
 - id: python-architect-agent
   name: Python Architect Agent
   directory: .github/agents
-  file: python-architect-agent.agent.md
+  file: .github/agents/python-architect-agent.agent.md
   status: active
   maturity: production
   session_introduced: S68
@@ -1156,8 +488,9 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure
-    compliance for the cognitive brain and ML pipeline
+  purpose: "Advanced Python architecture design and review \u2014 enforces patterns,\
+    \ refactoring strategies, and module structure compliance for the cognitive brain\
+    \ and ML pipeline"
   capabilities:
   - architecture_review
   - refactoring_guidance
@@ -1175,25 +508,26 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure
-    compliance for the cognitive brain and ML pipeline
+  description: "Advanced Python architecture design and review \u2014 enforces patterns,\
+    \ refactoring strategies, and module structure compliance for the cognitive brain\
+    \ and ML pipeline"
   capability_tags:
   - architecture_review
   - refactoring_guidance
   - pattern_enforcement
   - module_structure_validation
   category: quality
-- id: ci-auto-healer
+- id: ci-auto-healer-agent
   name: CI Auto-Healer Agent
   version: 1.0.0
-  file: ci-auto-healer-agent.md
+  file: .github/agents/ci-auto-healer-agent.md
   status: active
   maturity: production
   category: ci_cd
   primary_skill: Autonomous CI failure detection, pattern-matching, and self-healing
   secondary_skill: Pattern library management, DRQ filing, cognitive brain integration
-  purpose: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates
-    unrecognized patterns as DRQ entries.
+  purpose: 'Detects CI failures, matches them to a known pattern library (P-001 to
+    P-029), applies validated fixes, and escalates unrecognized patterns as DRQ entries.
 
     '
   capabilities:
@@ -1215,8 +549,9 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and
-    escalates unrecognized patterns as DRQ entries.
+  description: 'Detects CI failures, matches them to a known pattern library (P-001
+    to P-029), applies validated fixes, and escalates unrecognized patterns as DRQ
+    entries.
 
     '
   capability_tags:
@@ -1228,174 +563,86 @@ agents:
   - cognitive_brain_update
   - autonomous_ci_failure_detection
   - pattern_library_management
-- id: agent-iq-scoring-gate
-  name: Agent IQ Scoring Gate
-  file: agent-iq-scoring-gate.md
-  status: active
-  maturity: beta
-  category: governance
-  priority: medium
-  purpose: Evaluates agent IQ and gates deployments based on scoring thresholds.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Evaluates agent IQ and gates deployments based on scoring thresholds.
-  capability_tags:
-  - governance
-- id: agent-orchestrator
-  name: Agent Orchestrator
-  file: agent-orchestrator.md
-  status: active
-  maturity: production
-  category: orchestration
-  priority: high
-  purpose: Coordinates multi-agent workflows, routing tasks to specialist agents.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: orchestrator
-  description: Coordinates multi-agent workflows, routing tasks to specialist agents.
-  capability_tags:
-  - orchestration
-- id: artifact-monitor-agent
-  batch_scan_enabled: true
-  name: Artifact Monitor Agent
-  file: artifact-monitor-agent.md
-  status: active
-  maturity: production
-  category: ci_cd
-  priority: high
-  purpose: Monitors CI/CD artifact health, detects stale or missing artifacts.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Monitors CI/CD artifact health, detects stale or missing artifacts.
-  capability_tags:
-  - ci_cd
+  directory: .github/agents
 - id: autonomous-test-healer-agent
   batch_scan_enabled: true
   name: Autonomous Test Healer Agent
-  file: autonomous-test-healer-agent.md
+  file: .github/agents/autonomous-test-healer-agent.md
   status: active
   maturity: beta
   category: testing
   priority: high
-  purpose: Auto-heals failing tests by identifying root causes and applying targeted fixes.
+  purpose: Auto-heals failing tests by identifying root causes and applying targeted
+    fixes.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Auto-heals failing tests by identifying root causes and applying targeted fixes.
+  description: Auto-heals failing tests by identifying root causes and applying targeted
+    fixes.
   capability_tags:
   - testing
+  directory: .github/agents
 - id: bridge-security-monitor
   name: Bridge Security Monitor
-  file: bridge-security-monitor.agent.md
+  file: .github/agents/bridge-security-monitor.agent.md
   status: active
   maturity: production
   category: security
   priority: critical
-  purpose: Monitors IPC bridge security, detects unauthorized access, validates message integrity.
+  purpose: Monitors IPC bridge security, detects unauthorized access, validates message
+    integrity.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: utility
-  description: Monitors IPC bridge security, detects unauthorized access, validates message integrity.
+  description: Monitors IPC bridge security, detects unauthorized access, validates
+    message integrity.
   capability_tags:
   - security
+  directory: .github/agents
 - id: cache-management-agent
   name: Cache Management Agent
-  file: cache-management-agent.md
+  file: .github/agents/cache-management-agent.md
   status: active
   maturity: beta
   category: ci_cd
   priority: medium
-  purpose: Manages CI/CD caching strategies; prunes stale caches, validates cache keys.
+  purpose: Manages CI/CD caching strategies; prunes stale caches, validates cache
+    keys.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Manages CI/CD caching strategies; prunes stale caches, validates cache keys.
+  description: Manages CI/CD caching strategies; prunes stale caches, validates cache
+    keys.
   capability_tags:
   - ci_cd
-- id: cache-manager-integration
-  name: Cache Manager Integration
-  file: cache-manager-integration.md
-  status: archived
-  deprecated: true
-  deprecation_date: '2026-06-11'
-  superseded_by: cache-management-agent
-  maturity: beta
-  category: ci_cd
-  priority: medium
-  purpose: Integration layer for cache management across workflow and composite actions.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Integration layer for cache management across workflow and composite actions.
-  capability_tags:
-  - ci_cd
-- id: ci-auto-healer-agent
-  batch_scan_enabled: true
-  name: CI Auto-Healer Agent
-  file: ci-auto-healer-agent.md
-  status: active
-  maturity: production
-  category: ci_cd
-  priority: critical
-  purpose: Detects and repairs CI failures using P-001-P-035 pattern library.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Detects and repairs CI failures using P-001-P-035 pattern library.
-  capability_tags:
-  - ci_cd
-  token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
-  scopes_required:
-  - repo
-  - workflow
-  - contents:write
-  implementation_guide: scripts/ci/_token_resolver.py
-  documentation:
-  - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#ci-auto-healer-agent
-  - .codex/TOKEN_HIERARCHY_GUIDE.md
-  last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: ci-emergency-response-agent
   batch_scan_enabled: true
   name: CI Emergency Response Agent
-  file: ci-emergency-response-agent.md
+  file: .github/agents/ci-emergency-response-agent.md
   status: active
   maturity: production
   category: ci_cd
   priority: critical
-  purpose: Emergency response for critical CI pipeline failures requiring immediate action.
+  purpose: Emergency response for critical CI pipeline failures requiring immediate
+    action.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Emergency response for critical CI pipeline failures requiring immediate action.
+  description: Emergency response for critical CI pipeline failures requiring immediate
+    action.
   capability_tags:
   - ci_cd
   token_requirement: Level 3 (CODEX_MASTER_KEY)
@@ -1409,10 +656,11 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: ci-failure-resolution-agent
   batch_scan_enabled: true
   name: CI Failure Resolution Agent
-  file: ci-failure-resolution-agent.md
+  file: .github/agents/ci-failure-resolution-agent.md
   status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
@@ -1427,13 +675,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Resolves CI failures by diagnosing logs and applying structured fix patterns.
+  description: Resolves CI failures by diagnosing logs and applying structured fix
+    patterns.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: ci-importerror-agent
   batch_scan_enabled: true
-  name: CI ImportError Agent
-  file: ci-importerror-agent.md
+  name: CI ImportError Fixer Agent
+  file: .github/agents/ci-importerror-agent.md
   status: active
   maturity: production
   category: ci_cd
@@ -1458,9 +708,10 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#ci-importerror-agent
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: ci-log-retrieval-agent
   name: CI Log Retrieval Agent
-  file: ci-log-retrieval-agent.md
+  file: .github/agents/ci-log-retrieval-agent.md
   status: active
   maturity: production
   category: ci_cd
@@ -1475,10 +726,11 @@ agents:
   description: Retrieves authenticated GitHub Actions logs and summarizes failures.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: ci-optimization-agent
   batch_scan_enabled: true
   name: CI Optimization Agent
-  file: ci-optimization-agent.md
+  file: .github/agents/ci-optimization-agent.md
   status: active
   maturity: beta
   category: ci_cd
@@ -1493,38 +745,11 @@ agents:
   description: Identifies and applies optimizations to reduce CI pipeline runtime.
   capability_tags:
   - ci_cd
-- id: ci-parameter-mismatch-healer
-  batch_scan_enabled: true
-  name: CI Parameter Mismatch Healer
-  file: ci-parameter-mismatch-healer.md
-  status: active
-  maturity: beta
-  category: ci_cd
-  priority: medium
-  purpose: Detects and corrects parameter/argument mismatches in CI workflow calls.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Detects and corrects parameter/argument mismatches in CI workflow calls.
-  capability_tags:
-  - ci_cd
-  token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
-  scopes_required:
-  - repo
-  - workflow
-  - contents:write
-  implementation_guide: scripts/ci/_token_resolver.py
-  documentation:
-  - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#ci-parameter-mismatch-healer
-  - .codex/TOKEN_HIERARCHY_GUIDE.md
-  last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: ci-resilience-emergency-response-agent
   batch_scan_enabled: true
   name: CI Resilience Emergency Response Agent
-  file: ci-resilience-emergency-response-agent.md
+  file: .github/agents/ci-resilience-emergency-response-agent.md
   status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
@@ -1542,9 +767,10 @@ agents:
   description: Resilience-focused emergency CI recovery with retry and fallback strategies.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: claim-verification-agent
   name: Claim Verification Agent
-  file: claim-verification-agent.md
+  file: .github/agents/claim-verification-agent.md
   status: active
   maturity: beta
   category: documentation
@@ -1559,10 +785,11 @@ agents:
   description: Verifies factual claims in commit messages and documentation.
   capability_tags:
   - documentation
+  directory: .github/agents
 - id: code-analysis-agent
   batch_scan_enabled: true
   name: Code Analysis Agent
-  file: code-analysis-agent.md
+  file: .github/agents/code-analysis-agent.md
   status: active
   maturity: production
   category: quality
@@ -1577,10 +804,11 @@ agents:
   description: Static code quality analysis with actionable improvement recommendations.
   capability_tags:
   - quality
+  directory: .github/agents
 - id: code-scanning-remediation-agent
   batch_scan_enabled: true
   name: Code Scanning Remediation Agent
-  file: code-scanning-remediation-agent.md
+  file: .github/agents/code-scanning-remediation-agent.md
   status: active
   maturity: production
   category: security
@@ -1592,30 +820,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change fixes.
+  description: Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change
+    fixes.
   capability_tags:
   - security
-- id: codebase-health-guardian
-  batch_scan_enabled: true
-  name: Codebase Health Guardian
-  file: codebase-health-guardian.md
-  status: active
-  maturity: beta
-  category: quality
-  priority: high
-  purpose: Continuous monitoring of overall codebase health metrics and trends.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Continuous monitoring of overall codebase health metrics and trends.
-  capability_tags:
-  - quality
+  directory: .github/agents
 - id: cognitive-brain-manager
   name: Cognitive Brain Manager
-  file: cognitive-brain-manager.md
+  file: .github/agents/cognitive-brain-manager.agent.md
   status: active
   maturity: production
   category: cognitive
@@ -1627,12 +839,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Manages cognitive brain system state, phase transitions, and health scoring.
+  description: Manages cognitive brain system state, phase transitions, and health
+    scoring.
   capability_tags:
   - cognitive
+  directory: .github/agents
 - id: config-migration-assistant
   name: Config Migration Assistant
-  file: config-migration-assistant.agent.md
+  file: .github/agents/config-migration-assistant.agent.md
   status: active
   maturity: beta
   category: configuration
@@ -1647,30 +861,36 @@ agents:
   description: Migrates legacy configurations to Hydra-based format with validation.
   capability_tags:
   - configuration
-- id: config-validator
-  name: Config Validator
-  file: config-validator.agent.md
+  directory: .github/agents
+- id: unified-coverage-agent
+  name: Unified Coverage Agent
+  file: .github/agents/unified-coverage-agent.md
   status: active
   maturity: production
-  category: configuration
-  priority: high
-  purpose: Validates Hydra configuration files for schema compliance and type safety.
-  enforcement_tier: PARTIAL
+  category: testing
+  priority: critical
+  purpose: 'Single entry-point for all test-coverage work: monitor thresholds, fill
+    gaps, maintain CI enforcement, and drive the incremental coverage roadmap.'
+  enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
   accepts_handoff_from:
   - orchestrator
+  - ci-testing-agent
   - agent-orchestrator
   consolidation_priority: true
-  activation_frequency_rank: 15
   role: specialist
-  description: Validates Hydra configuration files for schema compliance and type safety.
+  description: 'Single entry-point for all test-coverage work: monitor thresholds,
+    fill gaps, maintain CI enforcement, and drive the incremental coverage roadmap.
+    Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent,
+    test-coverage-agent, and test-coverage-monitor into one cohesive agent.'
   capability_tags:
-  - configuration
+  - testing
+  directory: .github/agents
 - id: coverage-gapfill-agent
   batch_scan_enabled: true
   name: Coverage Gapfill Agent
-  file: coverage-gapfill-agent.md
+  file: .github/agents/coverage-gapfill-agent.md
   status: archived
   superseded_by: unified-coverage-agent
   deprecated: true
@@ -1685,14 +905,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests
-    to close coverage gaps.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage
+    modules and generates tests to close coverage gaps.'
   capability_tags:
   - testing
+  directory: .github/agents
 - id: coverage-maintenance-agent
   batch_scan_enabled: true
-  name: Coverage Maintenance Agent
-  file: coverage-maintenance-agent.md
+  name: Coverage-maintenance Agent
+  file: .github/agents/coverage-maintenance-agent.md
   status: archived
   superseded_by: unified-coverage-agent
   deprecated: true
@@ -1707,13 +928,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains test coverage over time; alerts on regressions.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains
+    test coverage over time; alerts on regressions.'
   capability_tags:
   - testing
+  directory: .github/agents
 - id: coverage-roadmap-agent
   batch_scan_enabled: true
-  name: Coverage Roadmap Agent
-  file: coverage-roadmap-agent.md
+  name: Coverage-roadmap Agent
+  file: .github/agents/coverage-roadmap-agent.md
   status: archived
   superseded_by: unified-coverage-agent
   deprecated: true
@@ -1728,13 +951,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion,
-    validates thresholds.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage
+    threshold roadmap, tracks phase completion, validates thresholds.'
   capability_tags:
   - testing
+  directory: .github/agents
 - id: cpu-only-ci-config-agent
   name: CPU-Only CI Config Agent
-  file: cpu-only-ci-config-agent.md
+  file: .github/agents/cpu-only-ci-config-agent.md
   status: active
   maturity: beta
   category: ci_cd
@@ -1749,27 +973,11 @@ agents:
   description: Configures CI workflows for CPU-only environments (no GPU dependencies).
   capability_tags:
   - ci_cd
-- id: cross-platform-filename-validator
-  name: Cross-Platform Filename Validator
-  file: cross-platform-filename-validator.md
-  status: active
-  maturity: production
-  category: quality
-  priority: medium
-  purpose: Validates filenames for cross-platform compatibility; blocks illegal characters.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Validates filenames for cross-platform compatibility; blocks illegal characters.
-  capability_tags:
-  - quality
+  directory: .github/agents
 - id: datetime-modernizer
   batch_scan_enabled: true
   name: Datetime Modernizer
-  file: datetime-modernizer.agent.md
+  file: .github/agents/datetime-modernizer.agent.md
   status: active
   maturity: production
   category: quality
@@ -1781,12 +989,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Migrates datetime.utcnow() to datetime.now(tz=timezone.utc) across codebase.
+  description: Migrates datetime.utcnow() to datetime.now(tz=timezone.utc) across
+    codebase.
   capability_tags:
   - quality
+  directory: .github/agents
 - id: dependency-conflict-agent
   name: Dependency Conflict Agent
-  file: dependency-conflict-agent.md
+  file: .github/agents/dependency-conflict-agent.md
   status: active
   maturity: production
   category: dependencies
@@ -1801,9 +1011,10 @@ agents:
   description: Diagnoses pip resolver conflicts; recommends compatible version ranges.
   capability_tags:
   - dependencies
+  directory: .github/agents
 - id: dependency-security-review-agent
   name: Dependency Security Review Agent
-  file: dependency-security-review-agent.md
+  file: .github/agents/dependency-security-review-agent.md
   status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
@@ -1821,18 +1032,20 @@ agents:
   description: Reviews dependency security posture; flags CVEs and outdated packages.
   capability_tags:
   - security
+  directory: .github/agents
 - id: dependency-vulnerability-scanner
   batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
-  file: dependency-vulnerability-scanner.agent.md
-  status: active
+  file: .github/agents/dependency-vulnerability-scanner.agent.md
+  status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
   maturity: production
   category: security
   priority: critical
-  purpose: Scans dependencies against multiple CVE databases; generates remediation plans.
+  purpose: Scans dependencies against multiple CVE databases; generates remediation
+    plans.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: structured
@@ -1843,7 +1056,8 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 14
   role: specialist
-  description: Scans dependencies against multiple CVE databases; generates remediation plans.
+  description: Scans dependencies against multiple CVE databases; generates remediation
+    plans.
   capability_tags:
   - security
   token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
@@ -1855,9 +1069,10 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#dependency-vulnerability-scanner
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: doc-freshness-checker
   name: Doc Freshness Checker
-  file: doc-freshness-checker.agent.md
+  file: .github/agents/doc-freshness-checker.agent.md
   status: active
   maturity: production
   category: documentation
@@ -1872,12 +1087,14 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 6
   role: specialist
-  description: Validates documentation freshness; identifies stale docs and broken links.
+  description: Validates documentation freshness; identifies stale docs and broken
+    links.
   capability_tags:
   - documentation
+  directory: .github/agents
 - id: doc-refactor-test-agent
   name: Doc Refactor Test Agent
-  file: doc-refactor-test-agent.md
+  file: .github/agents/doc-refactor-test-agent.md
   status: active
   maturity: beta
   category: documentation
@@ -1892,33 +1109,10 @@ agents:
   description: Refactors documentation tests and validates documentation test infrastructure.
   capability_tags:
   - documentation
-- id: documentation-consolidator
-  name: Documentation Consolidator
-  file: documentation-consolidator.md
-  status: archived
-  deprecated: true
-  deprecation_date: '2026-06-11'
-  superseded_by: unified-doc-agent
-  maturity: production
-  category: documentation
-  priority: medium
-  purpose: Consolidates fragmented documentation with semantic analysis and content preservation.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - documentation-quality-agent
-  - agent-orchestrator
-  consolidation_priority: true
-  activation_frequency_rank: 17
-  role: specialist
-  description: Consolidates fragmented documentation with semantic analysis and content preservation.
-  capability_tags:
-  - documentation
+  directory: .github/agents
 - id: documentation-quality-agent
   name: Documentation Quality Agent
-  file: documentation-quality-agent.md
+  file: .github/agents/documentation-quality-agent.md
   status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
@@ -1936,55 +1130,15 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 11
   role: specialist
-  description: Automated documentation quality assessment; MkDocs validation; link checking.
+  description: Automated documentation quality assessment; MkDocs validation; link
+    checking.
   capability_tags:
   - documentation
-- id: fragile-test-guardian
-  batch_scan_enabled: true
-  name: Fragile Test Guardian
-  file: fragile-test-guardian.md
-  status: active
-  maturity: beta
-  category: testing
-  priority: high
-  purpose: Identifies and stabilizes fragile/flaky tests before they cause CI failures.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Identifies and stabilizes fragile/flaky tests before they cause CI failures.
-  capability_tags:
-  - testing
-- id: github-pages-manager
-  name: GitHub Pages Manager
-  file: github-pages-manager.md
-  status: active
-  maturity: production
-  category: documentation
-  priority: high
-  version: 4.0.0-production
-  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live
-    site validation. Resolves all scheduled GitHub Pages validation issues.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - documentation-consolidator
-  - agent-orchestrator
-  consolidation_priority: true
-  activation_frequency_rank: 18
-  role: specialist
-  description: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live
-    site validation. Resolves all scheduled GitHub Pages validation issues.
-  capability_tags:
-  - documentation
+  directory: .github/agents
 - id: integration-test-runner
   batch_scan_enabled: true
   name: Integration Test Runner
-  file: integration-test-runner.agent.md
+  file: .github/agents/integration-test-runner.agent.md
   status: active
   maturity: production
   category: testing
@@ -2003,26 +1157,10 @@ agents:
   description: Runs integration tests across services; validates cross-component interactions.
   capability_tags:
   - testing
-- id: json-serialization-expert
-  name: JSON Serialization Expert
-  file: json-serialization-expert.md
-  status: active
-  maturity: beta
-  category: quality
-  priority: medium
-  purpose: Diagnoses and fixes JSON serialization issues in API responses and data pipelines.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Diagnoses and fixes JSON serialization issues in API responses and data pipelines.
-  capability_tags:
-  - quality
+  directory: .github/agents
 - id: link-validator-agent
   name: Link Validator Agent
-  file: link-validator-agent.md
+  file: .github/agents/link-validator-agent.md
   status: active
   maturity: production
   category: documentation
@@ -2038,65 +1176,36 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 12
   role: specialist
-  description: Cross-reference and link validation for documentation; detects broken links.
+  description: Cross-reference and link validation for documentation; detects broken
+    links.
   capability_tags:
   - documentation
-- id: meta-tensor-validator
-  name: Meta Tensor Validator
-  file: meta-tensor-validator.md
-  status: active
-  maturity: production
-  category: ml
-  priority: high
-  purpose: Validates PyTorch model initialization patterns to prevent meta tensor issues.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Validates PyTorch model initialization patterns to prevent meta tensor issues.
-  capability_tags:
-  - machine_learning
+  directory: .github/agents
 - id: ml-validation-suite-agent
   batch_scan_enabled: true
   name: ML Validation Suite Agent
-  file: ml-validation-suite-agent.md
+  file: .github/agents/ml-validation-suite-agent.md
   status: active
   maturity: beta
   category: ml
   priority: medium
-  purpose: Comprehensive ML model validation including determinism and reproducibility checks.
+  purpose: Comprehensive ML model validation including determinism and reproducibility
+    checks.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Comprehensive ML model validation including determinism and reproducibility checks.
+  description: Comprehensive ML model validation including determinism and reproducibility
+    checks.
   capability_tags:
   - machine_learning
-- id: msv-dashboard-monitor
-  name: MSV Dashboard Monitor
-  file: msv-dashboard-monitor.md
-  status: active
-  maturity: beta
-  category: monitoring
-  priority: medium
-  purpose: Monitors MSV dashboard metrics and alerts on regressions.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Monitors MSV dashboard metrics and alerts on regressions.
-  capability_tags:
-  - monitoring
+  directory: .github/agents
 - id: mutation-testing-agent
   batch_scan_enabled: true
   name: Mutation Testing Agent
-  file: mutation-testing-agent.md
+  file: .github/agents/mutation-testing-agent.md
   status: active
   maturity: beta
   category: testing
@@ -2113,9 +1222,10 @@ agents:
   description: Performs mutation testing to evaluate test suite effectiveness.
   capability_tags:
   - testing
+  directory: .github/agents
 - id: owner-approval-guard
   name: Owner Approval Guard
-  file: owner-approval-guard.agent.md
+  file: .github/agents/owner-approval-guard.agent.md
   status: active
   maturity: production
   category: governance
@@ -2134,9 +1244,10 @@ agents:
   description: Enforces owner approval requirements for autonomous operations.
   capability_tags:
   - governance
+  directory: .github/agents
 - id: performance-regression-detector
   name: Performance Regression Detector
-  file: performance-regression-detector.agent.md
+  file: .github/agents/performance-regression-detector.agent.md
   status: active
   maturity: production
   category: performance
@@ -2151,9 +1262,10 @@ agents:
   description: Detects performance regressions by comparing metrics against baselines.
   capability_tags:
   - performance
+  directory: .github/agents
 - id: pii-scrubber
-  name: PII Scrubber
-  file: pii-scrubber.agent.md
+  name: Pii Scrubber
+  file: .github/agents/pii-scrubber.agent.md
   status: active
   maturity: production
   category: security
@@ -2168,9 +1280,10 @@ agents:
   description: Scrubs PII from text content before processing; ensures GDPR/CCPA compliance.
   capability_tags:
   - security
+  directory: .github/agents
 - id: pr-3095-verification-agent
-  name: PR-3095 Verification Agent
-  file: pr-3095-verification-agent.md
+  name: PR 3095 Verification Agent
+  file: .github/agents/pr-3095-verification-agent.md
   status: active
   maturity: beta
   category: governance
@@ -2182,48 +1295,35 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Verifies that PR 3095 fixes have been correctly applied across the codebase.
+  description: Verifies that PR 3095 fixes have been correctly applied across the
+    codebase.
   capability_tags:
   - governance
+  directory: .github/agents
 - id: pr-check-remediation-agent
   batch_scan_enabled: true
   name: PR Check Remediation Agent
-  file: pr-check-remediation-agent.md
+  file: .github/agents/pr-check-remediation-agent.md
   status: active
   maturity: beta
   category: ci_cd
   priority: medium
-  purpose: Remediates failed PR checks by analyzing failure patterns and applying fixes.
+  purpose: Remediates failed PR checks by analyzing failure patterns and applying
+    fixes.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Remediates failed PR checks by analyzing failure patterns and applying fixes.
+  description: Remediates failed PR checks by analyzing failure patterns and applying
+    fixes.
   capability_tags:
   - ci_cd
-- id: pr-test-infrastructure-fixer
-  batch_scan_enabled: true
-  name: PR Test Infrastructure Fixer
-  file: pr-test-infrastructure-fixer.md
-  status: active
-  maturity: beta
-  category: testing
-  priority: medium
-  purpose: Fixes test infrastructure issues introduced by PR changes.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Fixes test infrastructure issues introduced by PR changes.
-  capability_tags:
-  - testing
+  directory: .github/agents
 - id: pypi-publishing-operations-agent
   name: PyPI Publishing Operations Agent
-  file: pypi-publishing-operations-agent.md
+  file: .github/agents/pypi-publishing-operations-agent.md
   status: active
   maturity: beta
   category: operations
@@ -2238,28 +1338,11 @@ agents:
   description: Manages PyPI package publishing operations and release workflows.
   capability_tags:
   - operations
-- id: python-312-type-fixer
-  batch_scan_enabled: true
-  name: Python 3.12 Type Fixer
-  file: python-312-type-fixer.md
-  status: active
-  maturity: beta
-  category: quality
-  priority: medium
-  purpose: Fixes Python 3.12 type annotation incompatibilities across the codebase.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Fixes Python 3.12 type annotation incompatibilities across the codebase.
-  capability_tags:
-  - quality
+  directory: .github/agents
 - id: qa-walkthrough-agent
   batch_scan_enabled: true
   name: QA Walkthrough Agent
-  file: qa-walkthrough-agent.md
+  file: .github/agents/qa-walkthrough-agent.md
   status: active
   maturity: production
   category: testing
@@ -2277,9 +1360,10 @@ agents:
   description: Executes repository-wide QA walkthrough with evidence-based audit steps.
   capability_tags:
   - testing
+  directory: .github/agents
 - id: quantum-compliance-tuning-agent
   name: Quantum Compliance Tuning Agent
-  file: quantum-compliance-tuning-agent.md
+  file: .github/agents/quantum-compliance-tuning-agent.md
   status: active
   maturity: production
   category: cognitive
@@ -2296,28 +1380,32 @@ agents:
   - cognitive
   integration_confirmed: true
   integration_date: '2026-07-01'
-  integration_notes: Core executor of QI_TESTING improvement area. 10+ deep references. 27 tests. Integration verified. See
-    QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md
+  integration_notes: Core executor of QI_TESTING improvement area. 10+ deep references.
+    27 tests. Integration verified. See QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md
+  directory: .github/agents
 - id: rag-freshness-loop-agent
   name: RAG Freshness Loop Agent
-  file: rag-freshness-loop-agent.md
+  file: .github/agents/rag-freshness-loop-agent.md
   status: active
   maturity: beta
   category: ml
   priority: medium
-  purpose: Maintains RAG index freshness through continuous update and validation loops.
+  purpose: Maintains RAG index freshness through continuous update and validation
+    loops.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Maintains RAG index freshness through continuous update and validation loops.
+  description: Maintains RAG index freshness through continuous update and validation
+    loops.
   capability_tags:
   - machine_learning
+  directory: .github/agents
 - id: rag-index-manager
   name: RAG Index Manager
-  file: rag-index-manager.agent.md
+  file: .github/agents/rag-index-manager.agent.md
   status: active
   maturity: production
   category: ml
@@ -2335,26 +1423,10 @@ agents:
   description: Manages RAG index operations including building, updating, and querying.
   capability_tags:
   - machine_learning
-- id: rag-meta-tensor-guardian
-  name: RAG Meta Tensor Guardian
-  file: rag-meta-tensor-guardian.md
-  status: active
-  maturity: production
-  category: ml
-  priority: high
-  purpose: Guards RAG tensor operations against meta tensor initialization errors.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  description: Guards RAG tensor operations against meta tensor initialization errors.
-  capability_tags:
-  - machine_learning
+  directory: .github/agents
 - id: rag-module-management-agent
   name: RAG Module Management Agent
-  file: rag-module-management-agent.md
+  file: .github/agents/rag-module-management-agent.md
   status: active
   maturity: production
   category: ml
@@ -2371,27 +1443,28 @@ agents:
   - machine_learning
   integration_confirmed: true
   integration_date: '2026-07-19'
-  integration_notes: Lane 2 Phase 2 B2-B5 validation completed with offline index build/query fallback, embedding TTL/eviction checks,
-    security scan remediation, and zero detected RAG↔Cognitive Brain circular imports.
-  # Lane 2 Production Certification (Phase 2 — 2026-07-19T22:00Z)
+  integration_notes: "Lane 2 Phase 2 B2-B5 validation completed with offline index\
+    \ build/query fallback, embedding TTL/eviction checks, security scan remediation,\
+    \ and zero detected RAG\u2194Cognitive Brain circular imports."
   production_certified: true
   production_certified_date: '2026-07-19T22:00:00Z'
-  certification_phase: "Lane 2 Phase 2 (B1-B5 Gates)"
-  b1_meta_tensor_validation: "PASS (6/6 subtasks approved)"
-  b2_rag_index_validation: "PASS (100% precision/recall, 0.523ms p99 latency)"
-  b3_embedding_lifecycle: "PASS (TTL/eviction/cache all passing)"
-  b4_integration_validation: "PASS (0 circular imports, Cognitive Brain compatible)"
-  b5_compliance: "PASS (Bandit=0 findings, registry metadata complete)"
+  certification_phase: Lane 2 Phase 2 (B1-B5 Gates)
+  b1_meta_tensor_validation: PASS (6/6 subtasks approved)
+  b2_rag_index_validation: PASS (100% precision/recall, 0.523ms p99 latency)
+  b3_embedding_lifecycle: PASS (TTL/eviction/cache all passing)
+  b4_integration_validation: PASS (0 circular imports, Cognitive Brain compatible)
+  b5_compliance: PASS (Bandit=0 findings, registry metadata complete)
   test_coverage_percent: 75.2
-  test_results: "288+ tests 100% passing (zero regressions, zero flaky tests)"
+  test_results: 288+ tests 100% passing (zero regressions, zero flaky tests)
   test_count: 288
   test_pass_rate_percent: 100.0
   bandit_findings: 0
   circular_imports: 0
   cognitive_brain_compatible: true
+  directory: .github/agents
 - id: reference-updater-agent
   name: Reference Updater Agent
-  file: reference-updater-agent.md
+  file: .github/agents/reference-updater-agent.md
   status: active
   maturity: production
   category: quality
@@ -2403,12 +1476,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Atomic reference updates across entire codebase with transaction-like behavior.
+  description: Atomic reference updates across entire codebase with transaction-like
+    behavior.
   capability_tags:
   - quality
+  directory: .github/agents
 - id: repository-hygiene-agent
   name: Repository Hygiene Agent
-  file: repository-hygiene-agent.md
+  file: .github/agents/repository-hygiene-agent.md
   status: active
   maturity: production
   category: operations
@@ -2423,9 +1498,10 @@ agents:
   description: Autonomous repository cleanup, maintenance, and codebase hygiene specialist.
   capability_tags:
   - operations
+  directory: .github/agents
 - id: repository-organization-agent
   name: Repository Organization Agent
-  file: repository-organization-agent.md
+  file: .github/agents/repository-organization-agent.md
   status: active
   maturity: beta
   category: operations
@@ -2440,9 +1516,10 @@ agents:
   description: Organizes repository structure per LFS policy and directory conventions.
   capability_tags:
   - operations
+  directory: .github/agents
 - id: root-organizer-agent
   name: Root Organizer Agent
-  file: root-organizer-agent.md
+  file: .github/agents/root-organizer-agent.md
   status: active
   maturity: production
   category: operations
@@ -2457,27 +1534,33 @@ agents:
   description: Safe incremental root folder reorganization; zero-break guarantee.
   capability_tags:
   - operations
-- id: rust-config-validator
-  name: Rust Config Validator
-  file: rust-config-validator.md
+  directory: .github/agents
+- id: unified-security-scanner
+  name: Unified Security Scanner
+  file: .github/agents/unified-security-scanner.md
   status: active
-  maturity: beta
-  category: configuration
-  priority: medium
-  purpose: Validates Rust configurations in hybrid Python/Rust swarm components.
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Perform comprehensive security scanning combining SAST, dependency checks,
+    and secrets detection.
   enforcement_tier: PARTIAL
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
   role: specialist
-  description: Validates Rust configurations in hybrid Python/Rust swarm components.
+  description: Perform comprehensive security scanning combining SAST, dependency
+    checks, and secrets detection.
   capability_tags:
-  - configuration
+  - security
+  directory: .github/agents
 - id: secret-detection-agent
   name: Secret Detection Agent
-  file: secret-detection-agent.md
-  status: active
+  file: .github/agents/secret-detection-agent.md
+  status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
   superseded_by: unified-security-scanner
@@ -2505,9 +1588,10 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: security-alert-verification-agent
   name: Security Alert Verification Agent
-  file: security-alert-verification-agent.md
+  file: .github/agents/security-alert-verification-agent.md
   status: active
   maturity: production
   category: security
@@ -2519,7 +1603,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Validates GitHub security alerts, triage, and generates remediation plans.
+  description: Validates GitHub security alerts, triage, and generates remediation
+    plans.
   capability_tags:
   - security
   token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
@@ -2532,10 +1617,11 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#security-alert-verification-agent
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: security-audit-agent
   batch_scan_enabled: true
   name: Security Audit Agent
-  file: security-audit-agent.md
+  file: .github/agents/security-audit-agent.md
   status: archived
   deprecated: true
   deprecation_date: '2026-06-11'
@@ -2553,9 +1639,10 @@ agents:
   description: Comprehensive security audits across code, dependencies, and workflows.
   capability_tags:
   - security
+  directory: .github/agents
 - id: semantic-search
-  name: Semantic Search Agent
-  file: semantic-search.agent.md
+  name: Semantic Search
+  file: .github/agents/semantic-search.agent.md
   status: active
   maturity: production
   category: ml
@@ -2573,9 +1660,10 @@ agents:
   description: Semantic search over codebase and documentation using vector embeddings.
   capability_tags:
   - machine_learning
+  directory: .github/agents
 - id: session-analysis-agent
   name: Session Analysis Agent
-  file: session-analysis-agent.md
+  file: .github/agents/session-analysis-agent.md
   status: active
   maturity: production
   category: cognitive
@@ -2587,29 +1675,34 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Analyzes Copilot sessions, verifies commits, extracts patterns for learning.
+  description: Analyzes Copilot sessions, verifies commits, extracts patterns for
+    learning.
   capability_tags:
   - cognitive
+  directory: .github/agents
 - id: session-log-retrieval-agent
   name: Session Log Retrieval Agent
-  file: session-log-retrieval-agent.md
+  file: .github/agents/session-log-retrieval-agent.md
   status: active
   maturity: production
   category: cognitive
   priority: high
-  purpose: Recalls previous Copilot sessions, extracts uncommitted work, searches history.
+  purpose: Recalls previous Copilot sessions, extracts uncommitted work, searches
+    history.
   enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Recalls previous Copilot sessions, extracts uncommitted work, searches history.
+  description: Recalls previous Copilot sessions, extracts uncommitted work, searches
+    history.
   capability_tags:
   - cognitive
+  directory: .github/agents
 - id: terminology-consistency-agent
   name: Terminology Consistency Agent
-  file: terminology-consistency-agent.md
+  file: .github/agents/terminology-consistency-agent.md
   status: active
   maturity: beta
   category: documentation
@@ -2624,10 +1717,11 @@ agents:
   description: Enforces consistent terminology across documentation and code comments.
   capability_tags:
   - documentation
+  directory: .github/agents
 - id: test-alignment-fixer
   batch_scan_enabled: true
   name: Test Alignment Fixer
-  file: test-alignment-fixer.agent.md
+  file: .github/agents/test-alignment-fixer.agent.md
   status: active
   maturity: production
   category: testing
@@ -2646,28 +1740,11 @@ agents:
   description: Fixes test alignment issues by updating tests to match API changes.
   capability_tags:
   - testing
-- id: test-alignment-fixer-enhanced
-  batch_scan_enabled: true
-  name: Test Alignment Fixer Enhanced
-  file: test-alignment-fixer-enhanced.md
-  status: active
-  maturity: production
-  category: testing
-  priority: high
-  purpose: Enhanced test alignment fixer with broader coverage and smarter detection.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: specialist
-  description: Enhanced test alignment fixer with broader coverage and smarter detection.
-  capability_tags:
-  - testing
+  directory: .github/agents
 - id: test-coverage-agent
   batch_scan_enabled: true
-  name: Test Coverage Agent
-  file: test-coverage-agent.md
+  name: Test-coverage Agent
+  file: .github/agents/test-coverage-agent.md
   status: archived
   superseded_by: unified-coverage-agent
   deprecated: true
@@ -2682,14 +1759,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered
-    code paths.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test
+    coverage improvements; identifies uncovered code paths.'
   capability_tags:
   - testing
+  directory: .github/agents
 - id: test-coverage-monitor
   batch_scan_enabled: true
   name: Test Coverage Monitor
-  file: test-coverage-monitor.agent.md
+  file: .github/agents/test-coverage-monitor.agent.md
   status: archived
   superseded_by: unified-coverage-agent
   deprecated: true
@@ -2708,18 +1786,20 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 5
   role: utility
-  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates
-    documentation quality.'
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors
+    test coverage, enforces thresholds, validates documentation quality.'
   capability_tags:
   - testing
-- id: unified-coverage-agent
+  directory: .github/agents
+- id: test-enhancement-agent
   name: Test Enhancement Agent
-  file: test-enhancement-agent.md
+  file: .github/agents/test-enhancement-agent.md
   status: active
   maturity: beta
   category: testing
   priority: medium
-  purpose: Improves test quality through refactoring, edge case coverage, assertion hardening.
+  purpose: Improves test quality through refactoring, edge case coverage, assertion
+    hardening.
   enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
@@ -2728,14 +1808,16 @@ agents:
   - agent-orchestrator
   consolidation_priority: false
   role: specialist
-  description: Improves test quality through refactoring, edge case coverage, assertion hardening.
+  description: Improves test quality through refactoring, edge case coverage, assertion
+    hardening.
   capability_tags:
   - testing
   batch_scan_enabled: true
+  directory: .github/agents
 - id: test-failure-analyzer-agent
   batch_scan_enabled: true
   name: Test Failure Analyzer Agent
-  file: test-failure-analyzer-agent.md
+  file: .github/agents/test-failure-analyzer-agent.md
   status: active
   maturity: production
   category: testing
@@ -2750,10 +1832,11 @@ agents:
   description: Analyzes and diagnoses test failures with root cause classification.
   capability_tags:
   - testing
+  directory: .github/agents
 - id: tokenization-coverage-agent
   batch_scan_enabled: true
   name: Tokenization Coverage Agent
-  file: tokenization-coverage-agent.md
+  file: .github/agents/tokenization-coverage-agent.md
   status: active
   maturity: production
   category: testing
@@ -2765,12 +1848,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Improves src/tokenization test coverage, CLI validation, and coverage reporting.
+  description: Improves src/tokenization test coverage, CLI validation, and coverage
+    reporting.
   capability_tags:
   - testing
+  directory: .github/agents
 - id: tracking-document-qa-agent
   name: Tracking Document QA Agent
-  file: tracking-document-qa-agent.md
+  file: .github/agents/tracking-document-qa-agent.md
   status: active
   maturity: beta
   category: documentation
@@ -2782,12 +1867,14 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: QA validation of tracking documents, completion reports, and session summaries.
+  description: QA validation of tracking documents, completion reports, and session
+    summaries.
   capability_tags:
   - documentation
+  directory: .github/agents
 - id: unified-doc-agent
-  name: Unified Doc Agent
-  file: unified-doc-agent.md
+  name: Unified Documentation Agent
+  file: .github/agents/unified-doc-agent.md
   status: active
   maturity: beta
   category: documentation
@@ -2799,30 +1886,59 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Unified documentation management combining freshness, quality, and consolidation.
+  description: Unified documentation management combining freshness, quality, and
+    consolidation.
   capability_tags:
   - documentation
+  directory: .github/agents
 - id: unified-governance-gate
-  name: Unified Governance Gate
-  file: unified-governance-gate.md
+  name: Unified Governance Gate Agent
+  file: .github/agents/unified-governance-gate.md
   status: active
   maturity: production
   category: governance
   priority: critical
-  purpose: Unified governance enforcement across all operations, merges, and deployments.
+  purpose: Enforce unified governance policies across PRs, deployments, and automated
+    operations.
   enforcement_tier: PARTIAL
   autonomy_model: E
-  handoff_protocol: none
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  role: utility
+  description: Enforce unified governance policies across PRs, deployments, and automated
+    operations.
+  capability_tags:
+  - governance
+  directory: .github/agents
+- id: workflow-compliance-guardian
+  name: Workflow Compliance Guardian
+  file: .github/agents/workflow-compliance-guardian.agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Enforces and auto-heals workflow compliance, concurrency, and timeout rules
+    across GitHub Actions workflows.
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: structured
   accepts_handoff_from: []
   consolidation_priority: false
   role: utility
-  description: Unified governance enforcement across all operations, merges, and deployments.
+  description: Enforces and auto-heals workflow compliance, concurrency, and timeout
+    rules across GitHub Actions workflows.
   capability_tags:
-  - governance
+  - ci_cd
+  directory: .github/agents
 - id: workflow-analytics-agent
   name: Workflow Analytics Agent
-  file: workflow-analytics-agent.md
-  status: active
+  file: .github/agents/workflow-analytics-agent.md
+  status: archived
+  deprecated: true
+  superseded_by: workflow-compliance-guardian
   maturity: production
   category: ci_cd
   priority: medium
@@ -2836,15 +1952,19 @@ agents:
   description: Analyzes workflow performance, detects patterns, and recommends optimizations.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: workflow-ci-fixer
   batch_scan_enabled: true
-  name: Workflow CI Fixer
-  file: workflow-ci-fixer.agent.md
-  status: active
+  name: Workflow CI Fixer Agent
+  file: .github/agents/workflow-ci-fixer.agent.md
+  status: archived
+  deprecated: true
+  superseded_by: codebase-health-guardian
   maturity: production
   category: ci_cd
   priority: high
-  purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
+  purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI
+    failures.
   enforcement_tier: GROUNDED
   autonomy_model: D_CAPABLE
   handoff_protocol: structured
@@ -2858,14 +1978,18 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 13
   role: specialist
-  description: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
+  description: Fixes GitHub Actions workflow syntax errors, permission issues, and
+    CI failures.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: workflow-health-monitor
   batch_scan_enabled: true
-  name: Workflow Health Monitor
-  file: workflow-health-monitor.agent.md
-  status: active
+  name: Workflow Health Monitor Agent
+  file: .github/agents/workflow-health-monitor.agent.md
+  status: archived
+  deprecated: true
+  superseded_by: workflow-compliance-guardian
   maturity: production
   category: ci_cd
   priority: high
@@ -2891,10 +2015,13 @@ agents:
   description: Real-time workflow health monitoring with alerting and trend analysis.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: workflow-management-agent
   name: Workflow Management Agent
-  file: workflow-management-agent.md
-  status: active
+  file: .github/agents/workflow-management-agent.md
+  status: archived
+  deprecated: true
+  superseded_by: workflow-compliance-guardian
   maturity: production
   category: ci_cd
   priority: high
@@ -2905,13 +2032,17 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Orchestrates workflow operations including scheduling, triggers, and lifecycle.
+  description: Orchestrates workflow operations including scheduling, triggers, and
+    lifecycle.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: workflow-optimization-agent
   name: Workflow Optimization Agent
-  file: workflow-optimization-agent.md
-  status: active
+  file: .github/agents/workflow-optimization-agent.md
+  status: archived
+  deprecated: true
+  superseded_by: workflow-compliance-guardian
   maturity: beta
   category: ci_cd
   priority: medium
@@ -2925,8 +2056,9 @@ agents:
   description: Identifies and applies workflow optimizations for speed and cost reduction.
   capability_tags:
   - ci_cd
+  directory: .github/agents
 - id: cognitive-brain-cli-agent
-  name: Cognitive Brain CLI Agent
+  name: Cognitive Brain Cli Agent
   version: 1.0.0
   file: .github/agents/cognitive-brain-cli-agent.md
   status: active
@@ -2937,8 +2069,9 @@ agents:
   has_src: false
   category: operations
   subcategory: cli
-  description: 'Production agent for operating the Cognitive Brain CLI console. Executes shell commands, HTTP requests, and
-    drives the cognitive_app dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
+  description: 'Production agent for operating the Cognitive Brain CLI console. Executes
+    shell commands, HTTP requests, and drives the cognitive_app dev server. Backend:
+    FastAPI :8765 with PTY WebSocket and HTTP proxy.
 
     '
   added_in_pr: 3421
@@ -2953,46 +2086,7 @@ agents:
   role: specialist
   capability_tags:
   - operations
-- id: workflow-compliance-guardian
-  name: Workflow Compliance Guardian
-  version: 1.0.0
-  file: .github/agents/workflow-compliance-guardian.md
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci
-  subcategory: enforcement
-  description: 'Enforces and auto-heals branch-scoped concurrency + timeout rules across all 91 GitHub Actions workflows.
-    Runs compliance audit on every PR push and self-heals non-compliant files within the session.
-
-    '
-  added_in_pr: 3421
-  physics_model:
-    primary: balance
-    secondary: constraint
-  enforcement_tier: GROUNDED
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - agent-orchestrator
-  consolidation_priority: false
-  role: utility
-  capability_tags:
-  - continuous_integration
-  token_requirement: Level 2 (CODEX_BACKUP_TOKEN)
-  scopes_required:
-  - repo
-  - workflow
-  - actions:write
-  implementation_guide: scripts/ci/_token_resolver.py
-  documentation:
-  - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#workflow-compliance-guardian
-  - .codex/TOKEN_HIERARCHY_GUIDE.md
-  last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: ci-health-alert-agent
   name: CI Health Alert Agent
   version: 1.1.0
@@ -3005,9 +2099,10 @@ agents:
   has_src: false
   category: ci
   subcategory: health
-  description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies failure patterns (including SELF_HEALING_001
-    cascade) via ci_failure_patterns.yaml, proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS repo
-    variables after remediation.
+  description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies
+    failure patterns (including SELF_HEALING_001 cascade) via ci_failure_patterns.yaml,
+    proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS
+    repo variables after remediation.
 
     '
   added_in_pr: 3421
@@ -3025,6 +2120,7 @@ agents:
   - continuous_integration
   - packaging_validation
   - self_healing_cascade_detection
+  directory: .github/agents
 - id: repo-var-sync-agent
   name: Repo Var Sync Agent
   version: 1.0.0
@@ -3037,10 +2133,9 @@ agents:
   has_src: false
   category: infrastructure
   subcategory: configuration
-  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub Actions repository variables (COPILOT_*
-    / CODEX_*). Supports both bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
-
-    '
+  description: "Keeps .codex/agent_context.json bidirectionally in sync with GitHub\
+    \ Actions repository variables (COPILOT_* / CODEX_*). Supports both bootstrap\
+    \ sync (vars\u2192file) and propagation (file\u2192vars) with drift detection.\n"
   added_in_pr: 3421
   sprint: Sprint 4
   physics_model:
@@ -3054,6 +2149,7 @@ agents:
   role: specialist
   capability_tags:
   - infrastructure
+  directory: .github/agents
 - id: cognitive-ooda-loop-agent
   name: Cognitive OODA Loop Agent
   version: 1.0.0
@@ -3066,9 +2162,10 @@ agents:
   has_src: false
   category: cognitive
   subcategory: orchestration
-  description: 'Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator via POST /api/ooda/process on
-    the CLI API server (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for
-    MetricsDashboard K1 factor display.
+  description: 'Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator
+    via POST /api/ooda/process on the CLI API server (:8765). Replaces mock-api-client
+    in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for MetricsDashboard
+    K1 factor display.
 
     '
   added_in_pr: 3421
@@ -3084,6 +2181,7 @@ agents:
   role: orchestrator
   capability_tags:
   - cognitive
+  directory: .github/agents
 - id: memory-sync-agent
   name: Memory Sync Agent
   version: 2.1.0
@@ -3096,8 +2194,9 @@ agents:
   has_src: false
   category: cognitive
   subcategory: memory
-  description: 'Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries into LTM
-    when capacity exceeds 80%, tags patterns with ImprovementArea, and prunes stale LTM entries.
+  description: 'Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library.
+    Consolidates hot STM entries into LTM when capacity exceeds 80%, tags patterns
+    with ImprovementArea, and prunes stale LTM entries.
 
     '
   added_in_pr: 3422
@@ -3115,6 +2214,7 @@ agents:
   role: specialist
   capability_tags:
   - cognitive
+  directory: .github/agents
 - id: telemetry-classifier-agent
   name: Telemetry Classifier Agent
   version: 2.1.0
@@ -3127,8 +2227,9 @@ agents:
   has_src: false
   category: ci
   subcategory: telemetry
-  description: 'Reads CI telemetry artifacts, identifies top-N unknown failure patterns, and generates new classifier entries
-    for collect_telemetry.py. Drives the unknown pattern bucket from ~60% toward <20%.
+  description: 'Reads CI telemetry artifacts, identifies top-N unknown failure patterns,
+    and generates new classifier entries for collect_telemetry.py. Drives the unknown
+    pattern bucket from ~60% toward <20%.
 
     '
   added_in_pr: 3422
@@ -3146,81 +2247,11 @@ agents:
   role: specialist
   capability_tags:
   - continuous_integration
-- id: admin-automation-agent
-  name: Admin Automation Agent
-  directory: .github/agents/admin-automation-agent
-  file: admin-automation-agent/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: true
-  category: operations
-  subcategory: automation
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  role: specialist
-  consolidation_priority: true
-  activation_frequency_rank: 4
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - operations
-- id: batch-triage-agent
-  name: Batch Triage Agent
-  directory: .github/agents/batch-triage-agent
-  file: batch-triage-agent/README.md
-  status: active
-  maturity: beta
-  has_prompts: true
-  has_tests: true
-  has_docs: true
-  has_src: true
-  category: ci
-  subcategory: triage
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - continuous_integration
-- id: ci-diagnostic-agent
-  name: CI Diagnostic Agent
-  directory: .github/agents/ci-diagnostic-agent
-  file: ci-diagnostic-agent/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci
-  subcategory: diagnostics
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - continuous_integration
+  directory: .github/agents
 - id: codebase-qa-walkthrough-agent
   name: Codebase QA Walkthrough Agent
-  directory: .github/agents/codebase-qa-walkthrough-agent
-  file: codebase-qa-walkthrough-agent/README.md
+  directory: .github/agents
+  file: .github/agents/codebase-qa-walkthrough-agent.agent.yml
   status: active
   maturity: beta
   has_prompts: true
@@ -3240,454 +2271,10 @@ agents:
   description: specialist
   capability_tags:
   - quality
-- id: cognitive-brain-session-injector
-  name: Cognitive Brain Session Injector
-  file: cognitive-brain-session-injector.md
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: cognitive
-  subcategory: session_management
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - cognitive
-- id: dependency-conflict-resolver
-  name: Dependency Conflict Resolver
-  directory: .github/agents/dependency-conflict-resolver
-  file: dependency-conflict-resolver/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: dependencies
-  subcategory: conflict_resolution
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - dependencies
-- id: doc-test-scribe
-  name: Doc Test Scribe
-  directory: .github/agents/doc-test-scribe
-  file: doc-test-scribe/README.md
-  status: active
-  maturity: beta
-  has_prompts: true
-  has_tests: false
-  has_docs: true
-  has_src: true
-  category: documentation
-  subcategory: test_docs
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - documentation-quality-agent
-  - agent-orchestrator
-  role: specialist
-  consolidation_priority: true
-  activation_frequency_rank: 16
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - documentation
-- id: documentation-sync-validator
-  name: Documentation Sync Validator
-  directory: .github/agents/documentation-sync-validator
-  file: documentation-sync-validator/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: true
-  has_docs: true
-  has_src: true
-  category: documentation
-  subcategory: validation
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - documentation-consolidator
-  - agent-orchestrator
-  role: specialist
-  consolidation_priority: true
-  activation_frequency_rank: 19
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - documentation
-- id: dynamics365-powerplatform-architect-agent
-  name: Dynamics365 PowerPlatform Architect Agent
-  directory: .github/agents/dynamics365-powerplatform-architect-agent
-  file: dynamics365-powerplatform-architect-agent/README.md
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: integration
-  subcategory: platform
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - integration
-- id: github-auth-manager
-  name: GitHub Auth Manager
-  directory: .github/agents/github-auth-manager
-  file: github-auth-manager/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: security
-  subcategory: auth
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - security
-- id: github-code-reviewer
-  name: GitHub Code Reviewer
-  directory: .github/agents/github-code-reviewer
-  file: github-code-reviewer/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: quality
-  subcategory: code_review
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - quality
-- id: github-deployment-gatekeeper
-  name: GitHub Deployment Gatekeeper
-  directory: .github/agents/github-deployment-gatekeeper
-  file: github-deployment-gatekeeper/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: operations
-  subcategory: deployment
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: utility
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: utility
-  capability_tags:
-  - operations
-- id: github-security-enforcer
-  name: GitHub Security Enforcer
-  directory: .github/agents/github-security-enforcer
-  file: github-security-enforcer/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: security
-  subcategory: enforcement
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - security
-- id: github-security-validator-agent
-  name: GitHub Security Validator Agent
-  directory: .github/agents/github-security-validator-agent
-  file: github-security-validator-agent/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: security
-  subcategory: validation
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - security
-- id: github-test-orchestrator
-  name: GitHub Test Orchestrator
-  directory: .github/agents/github-test-orchestrator
-  file: github-test-orchestrator/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: testing
-  subcategory: orchestration
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: orchestrator
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: orchestrator
-  capability_tags:
-  - testing
-- id: github-testing-orchestrator-agent
-  name: GitHub Testing Orchestrator Agent
-  directory: .github/agents/github-testing-orchestrator-agent
-  file: github-testing-orchestrator-agent/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: testing
-  subcategory: orchestration
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: orchestrator
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: orchestrator
-  capability_tags:
-  - testing
-- id: github-workflow-optimizer
-  name: GitHub Workflow Optimizer
-  directory: .github/agents/github-workflow-optimizer
-  file: github-workflow-optimizer/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: operations
-  subcategory: optimization
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - operations
-- id: ml-threat-detector
-  name: ML Threat Detector
-  directory: .github/agents/ml-threat-detector
-  file: ml-threat-detector/README.md
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: security
-  subcategory: ml_security
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - security
-- id: repo-health-guardian
-  name: Repo Health Guardian
-  directory: .github/agents/repo-health-guardian
-  file: repo-health-guardian/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: operations
-  subcategory: health
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: utility
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: utility
-  capability_tags:
-  - operations
-- id: security-vulnerability-patcher
-  name: Security Vulnerability Patcher
-  directory: .github/agents/security-vulnerability-patcher
-  file: security-vulnerability-patcher/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: security
-  subcategory: patching
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - security
-- id: service-integration-tester
-  name: Service Integration Tester
-  directory: .github/agents/service-integration-tester
-  file: service-integration-tester/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: testing
-  subcategory: integration
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - testing
-- id: test-coverage-enforcer
-  name: Test Coverage Enforcer
-  directory: .github/agents/test-coverage-enforcer
-  file: test-coverage-enforcer/README.md
-  status: active
-  maturity: beta
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: testing
-  subcategory: coverage
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - testing
-- id: zendesk-architect-agent
-  name: Zendesk Architect Agent
-  directory: .github/agents/zendesk-architect-agent
-  file: zendesk-architect-agent/README.md
-  status: active
-  maturity: experimental
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: integration
-  subcategory: platform
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  role: specialist
-  consolidation_priority: false
-  created: '2026-03-02T00:00:00Z'
-  updated: '2026-03-02T00:00:00Z'
-  description: specialist
-  capability_tags:
-  - integration
 - id: orchestrator-agent
   name: Orchestrator Agent
   version: 1.0.0
-  file: orchestrator-agent.md
+  file: .github/agents/orchestrator-agent.md
   status: active
   maturity: beta
   role: orchestrator
@@ -3706,51 +2293,15 @@ agents:
   has_src: false
   created: '2026-03-02T00:00:00Z'
   updated: '2026-03-02T00:00:00Z'
-  description: orchestrator
+  purpose: Routes high-level task requests to the best-matching specialist agent using
+    semantic-search routing, capability-tag matching, and AGENT_REGISTRY-aware delegation.
+  description: Multi-agent orchestrator for Aries-Serpent/_codex_. Routes tasks to
+    specialist agents via semantic search over the FAISS corpus and AGENT_REGISTRY
+    capability tags. Operates in E model (advisory); D_CAPABLE when transition gate
+    passes.
   capability_tags:
   - operations
-- id: copilot-session-chain
-  name: Copilot Session Chain
-  version: 1.0.0
-  file: copilot-session-chain.yml
-  directory: .github/workflows
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci_cd
-  subcategory: session_management
-  autonomy_model: D_CAPABLE
-  enforcement_tier: GROUNDED
-  violations_30d: 0
-  priority: critical
-  created: '2026-03-20T01:36:00Z'
-  updated: '2026-03-20T01:36:00Z'
-  maintainer: mbaetiong
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - agent-auth-delegation
-  role: orchestrator
-  description: 'Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_ (the staging integration branch).  Enforces
-    the sub-PR model: sessions always run on copilot/session-* branches, never on 0D_base_ directly. Triggers on workflow_dispatch
-    or automatically when a sub-PR merges into 0D_base_.
-
-    '
-  capability_tags:
-  - session_chaining
-  - integration_branch_enforcement
-  - sub_pr_creation
-  - copilot_trigger
-  - base_staging_integration
-  integration_points:
-  - .github/workflows/copilot-session-chain.yml
-  - .github/workflows/agent-auth-delegation.yml
-  - .codex/docs/INTEGRATION_BRANCH_MODEL.md
-  cognitive_brain_layer: orchestration
-  safe_mode: false
-  network_access: false
+  directory: .github/agents
 - id: packaging-validation-agent
   name: Packaging Validation Agent
   version: 1.0.0
@@ -3763,8 +2314,9 @@ agents:
   has_src: false
   category: security
   subcategory: dependency_management
-  description: 'Validates Python packaging configuration (pyproject.toml, lock files), detects Dependabot vulnerabilities,
-    applies safe upgrades, enforces PEP 621 compliance, and updates AAIS security posture repo variables after remediation.
+  description: 'Validates Python packaging configuration (pyproject.toml, lock files),
+    detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621 compliance,
+    and updates AAIS security posture repo variables after remediation.
 
     '
   added_in_pr: 3661
@@ -3785,6 +2337,7 @@ agents:
   - security_scanning
   - pep621_compliance
   - dependabot_remediation
+  directory: .github/agents
 - id: energy-conversion-agent
   name: Energy Conversion Agent
   version: 1.0.0
@@ -3797,8 +2350,9 @@ agents:
   has_src: false
   category: simulation
   subcategory: energy_systems
-  description: AI-enhanced agent skilled in developing programmatic systems for simulating and calculating gas-to-electric
-    energy conversion. Provides compute-regulated power distribution modeling, thermodynamic conversion analysis, grid stability
+  description: AI-enhanced agent skilled in developing programmatic systems for simulating
+    and calculating gas-to-electric energy conversion. Provides compute-regulated
+    power distribution modeling, thermodynamic conversion analysis, grid stability
     simulation, and AI-driven optimization for integrated energy systems.
   added_in_pr: energy-conversion
   sprint: Sprint 5
@@ -3822,75 +2376,11 @@ agents:
   - demand_forecasting
   - anomaly_detection
   deprecation_date: '2026-07-01'
-  deprecation_reason: Out-of-scope domain (G2E energy conversion). Minimal integration (4 refs, IQ=0.6558). Zero active use.
-    See ENERGY_CONVERSION_AGENT_DEPRECATION.md
-- id: promote-integration-branch
-  name: Promote Integration Branch Workflow
-  version: 1.0.0
-  file: .github/workflows/promote-integration-branch.yml
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci_cd
-  subcategory: branch_management
-  description: 'Autonomously creates the 0D_base_ staging integration branch from a given SHA using GitHubMCPPoster.create_ref()
-    and opens the 0D_base_ → main promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
-
-    '
-  added_in_pr: S174
-  sprint: Sprint 5
-  physics_model:
-    primary: automation
-    secondary: integration
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  capability_tags:
-  - branch_creation
-  - pr_lifecycle
-  - integration_branch_management
-  - promotion_workflow
-  - codex_master_key_ops
-- id: create-sub-pr-to-0D_base_
-  name: Create Sub-PR to 0D_base_ Workflow
-  version: 1.0.0
-  file: .github/workflows/create-sub-pr-to-0D_base_.yml
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci_cd
-  subcategory: pr_management
-  description: 'Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies 0D_base_
-    exists, idempotent (skips if PR already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
-
-    '
-  added_in_pr: S174
-  sprint: Sprint 5
-  physics_model:
-    primary: automation
-    secondary: integration
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  capability_tags:
-  - sub_pr_creation
-  - session_branch_management
-  - zero_d_base_routing
-  - integration_branch_management
+  deprecation_reason: Out-of-scope domain (G2E energy conversion). Minimal integration
+    (4 refs, IQ=0.6558). Zero active use. See ENERGY_CONVERSION_AGENT_DEPRECATION.md
+  directory: .github/agents
 - id: self-healing-orchestrator-agent
-  name: Self-Healing Orchestrator Agent
+  name: Self Healing Orchestrator Agent
   version: 1.0.0
   file: .github/agents/self-healing-orchestrator-agent.md
   status: active
@@ -3901,8 +2391,12 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: healing_orchestration
-  description: Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates
-    pattern recognition, fix application, verification, and escalation across agents.
+  purpose: Orchestrates autonomous self-healing loops across CI failure patterns,
+    coordinating pattern recognition, fix dispatch, verification, and escalation across
+    agents.
+  description: Orchestrates autonomous self-healing loops across CI failure patterns
+    (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification,
+    and escalation across agents.
   added_in_pr: Phase9
   sprint: Sprint 6
   physics_model:
@@ -3930,6 +2424,7 @@ agents:
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   - .codex/HIDDEN_SCRIPTS_SECURITY.md
   last_updated: '2026-06-29T12:00:00Z'
+  directory: .github/agents
 - id: branch-divergence-resolution-agent
   name: Branch Divergence Resolution Agent
   version: 1.1.0
@@ -3942,8 +2437,8 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: branch_management
-  description: Production-ready Copilot custom agent that detects, classifies, and resolves branch divergence between staging
-    (0D_base_) and default (main) branches.
+  description: Production-ready Copilot custom agent that detects, classifies, and
+    resolves branch divergence between staging (0D_base_) and default (main) branches.
   added_in_pr: Phase9
   sprint: Sprint 6
   physics_model:
@@ -3970,39 +2465,7 @@ agents:
   - docs/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md#branch-divergence-resolution-agent
   - .codex/TOKEN_HIERARCHY_GUIDE.md
   last_updated: '2026-06-29T12:00:00Z'
-- id: post-accountability-to-discussion
-  name: Post Accountability to Discussion Workflow
-  version: 1.0.0
-  file: .github/workflows/post-accountability-to-discussion.yml
-  status: active
-  maturity: production
-  has_prompts: false
-  has_tests: false
-  has_docs: true
-  has_src: false
-  category: ci_cd
-  subcategory: governance
-  description: 'Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot
-    Coding Agent Accountability Report). Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe
-    comment on the discussion thread. Priority 0 hardened process replacing direct file logging.
-
-    '
-  added_in_pr: S175
-  sprint: Sprint 5
-  physics_model:
-    primary: automation
-    secondary: governance
-  enforcement_tier: PARTIAL
-  autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
-  consolidation_priority: false
-  role: utility
-  capability_tags:
-  - accountability_reporting
-  - discussion_posting
-  - governance_automation
-  - session_documentation
+  directory: .github/agents
 - id: google-home-script-agent
   name: Google Home Script Agent
   version: 1.0.0
@@ -4018,14 +2481,16 @@ agents:
   autonomy_model: E
   enforcement_tier: ARCHIVED
   deprecation_date: '2026-07-01'
-  deprecation_reason: Zero ecosystem integration. Aspirational design only (not in agent_brain_api, not in structural_policy_manager).
-    Domain orthogonal to software engineering. See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
-  description: 'DEPRECATED: Smart-home automation agent for Google Home script generation. Archived 2026-07-01 due to zero
-    ecosystem integration and out-of-scope domain.'
+  deprecation_reason: Zero ecosystem integration. Aspirational design only (not in
+    agent_brain_api, not in structural_policy_manager). Domain orthogonal to software
+    engineering. See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
+  description: 'DEPRECATED: Smart-home automation agent for Google Home script generation.
+    Archived 2026-07-01 due to zero ecosystem integration and out-of-scope domain.'
   handoff_protocol: none
   capability_tags:
   - smart_home_automation
   - google_home_integration
+  directory: .github/agents
 - id: pattern-discovery-skill
   name: Pattern Discovery Skill
   version: 1.0.0
@@ -4047,8 +2512,10 @@ agents:
   - cognitive_brain
   - ml_pattern_feeding
   - improvement_tracking
-  description: Discover, classify, and score recurring patterns in memory for promotion to long-term storage. Supports decision,
-    error, performance, success, and risk patterns with improvement area tagging.
+  description: Discover, classify, and score recurring patterns in memory for promotion
+    to long-term storage. Supports decision, error, performance, success, and risk
+    patterns with improvement area tagging.
+  directory: .github/agents
 - id: memory-sync-consolidation-skill
   name: Memory Sync Consolidation Skill
   version: 1.0.0
@@ -4070,8 +2537,220 @@ agents:
   - cognitive_brain
   - pattern_deduplication
   - data_management
-  description: Consolidate short-term memory (STM) to long-term memory (LTM) with pattern discovery, duplicate detection,
-    and retention policy application.
+  description: Consolidate short-term memory (STM) to long-term memory (LTM) with
+    pattern discovery, duplicate detection, and retention policy application.
+  directory: .github/agents
+- id: codex-reviewer
+  name: Codex Reviewer
+  description: Quantum-inspired PR reviewer with self-evolution capabilities.
+  file: .github/agents/codex-reviewer.agent.yml
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: mypy-manager-agent
+  name: Mypy Manager Agent
+  description: 'The mypy Manager Agent is the authoritative type-checking health guardian
+    for the Aries-Serpent/_codex_ codebase. It classifies mypy errors by fix-pattern,
+    applies automated fixes, tracks .mypy_baseline regressions, and logs all patterns
+    to the PDA Loop + AfterMath store for cross-session grounding. Built on top of
+    the mypy.manager Cognitive Brain Skill (src/codex/skills/mypy_manager/) and integrated
+    with the Skills Master Agent training protocol.
+
+    '
+  file: .github/agents/mypy-manager-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: post-merge-doc-alignment-agent
+  name: Post Merge Doc Alignment Agent
+  description: "After merging a promotion branch into main, traverse https://aries-serpent.github.io/_codex_/\
+    \ and update all documentation to align with the current state of the codebase.\
+    \ Detects stale content, broken nav entries, missing pages, and code examples\
+    \ that no longer match source. Produces a structured alignment report and applies\
+    \ fixes. Implements iterative self-review loop: fix \u2192 build \u2192 verify\
+    \ \u2192 repeat until clean. Integrates PDA Loop + AfterMath tracking for continuous\
+    \ improvement.\n"
+  file: .github/agents/post-merge-doc-alignment-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.1.0
+- id: session-wrapup-autofix-agent
+  name: Session Wrap-Up Auto-Fix Agent
+  description: Auto-heal cognitive-preflight governance failures by updating the accountability
+    report and changelog after a session, then commit the minimal documentation fix
+    without triggering CI loops.
+  file: .github/agents/session-wrapup-autofix-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: skills-master-agent
+  name: Skills Master Agent
+  description: 'The Skills Master is the apex knowledge agent for the Aries-Serpent/_codex_
+    repository. It is simultaneously a full-spectrum codebase expert, a Skills Registry
+    operator, a Custom Copilot Coding Agent architect, and a living training model
+    for all other agents. It discovers, installs, executes, scores, compresses, and
+    maintains skills across the Cognitive Brain surfaces (CLI, app, GitHub Pages).
+    It designs, trains, and deploys new custom Copilot coding agents using the codebase''s
+    own patterns and conventions.
+
+    '
+  file: .github/agents/skills-master-agent.md
+  directory: .github/agents
+  status: active
+  maturity: production
+  version: 1.0.0
+- id: batch-triage-agent
+  name: batch-triage-agent
+  description: Intelligent batch CI failure triage with cognitive brain integration and enhanced security
+  file: .github/agents/batch-triage-agent/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.1.0
+- id: cache-logic-validator
+  name: cache-logic-validator
+  description: >-
+    Validate cache implementations using property-based testing. Ensures
+    mathematical properties hold (hits + misses = queries), concurrency safety,
+    and expiration logic correctness.
+  file: .github/agents/cache-logic-validator/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: ci-failure-diagnostician
+  name: ci-failure-diagnostician
+  description: >-
+    Automatically diagnose and categorize CI failures. Classifies failures as
+    flaky, real bugs, or infrastructure issues. Suggests fixes and auto-retries
+    flaky tests with backoff.
+  file: .github/agents/ci-failure-diagnostician/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: ci-optimizer-agent
+  name: ci-optimizer-agent
+  description: Self-optimizing CI with test prioritization
+  file: .github/agents/ci-optimizer-agent/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: dependency-conflict-resolver
+  name: Dependency Conflict Resolver
+  description: Enforce dependency conflict thresholds and generate missing tests
+  file: .github/agents/dependency-conflict-resolver/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+- id: doc-test-scribe
+  name: doc-test-scribe
+  description: >-
+    AI-powered documentation and test generator using TF-IDF semantic analysis.
+    Analyzes codebase via tokenization, generates comprehensive docs and tests.
+    Enables "do more with less" - minimal prompts, maximum output.
+  file: .github/agents/doc-test-scribe/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: documentation-agent
+  name: documentation-agent
+  description: Auto-generate API docs, tutorials, changelogs, and architecture diagrams
+  file: .github/agents/documentation-agent/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: documentation-sync-validator
+  name: documentation-sync-validator
+  description: >-
+    Validates documentation synchronization with codebase, detects semantic drift,
+    and ensures schema compliance
+  file: .github/agents/documentation-sync-validator/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: ecosystem-coordinator-agent
+  name: ecosystem-coordinator-agent
+  description: Multi-agent task decomposition and coordination
+  file: .github/agents/ecosystem-coordinator-agent/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: emergent-intelligence-agent
+  name: emergent-intelligence-agent
+  description: >-
+    Specialized emergent behavior analysis across repositories. Detects patterns,
+    predicts behavior, and provides self-improving pattern recognition.
+  file: .github/agents/emergent-intelligence-agent/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: reasoning-advisor-agent
+  name: reasoning-advisor-agent
+  description: Causal analysis and explainable AI recommendations
+  file: .github/agents/reasoning-advisor-agent/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: repo-health-guardian
+  name: repo-health-guardian
+  description: Autonomous repository structure maintenance and self-healing agent
+  file: .github/agents/repo-health-guardian/agent.yml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: security-advisory-resolver
+  name: security-advisory-resolver
+  description: >-
+    Automatically investigate and resolve security advisories from cargo audit,
+    pip-audit, and other security scanning tools. Tests compatibility of updates
+    and creates fix PRs.
+  file: .github/agents/security-advisory-resolver/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: security-vulnerability-patcher
+  name: Security Vulnerability Patcher
+  description: Enforce security vulnerability thresholds and generate missing tests
+  file: .github/agents/security-vulnerability-patcher/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+- id: service-integration-tester
+  name: Service Integration Tester
+  description: Enforce service integration thresholds and generate missing tests
+  file: .github/agents/service-integration-tester/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+- id: test-assertion-updater
+  name: test-assertion-updater
+  description: Automatically detect and fix test assertion mismatches when implementation evolves while preserving test intent and coverage.
+  file: .github/agents/test-assertion-updater/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
+  version: 1.0.0
+- id: test-coverage-enforcer
+  name: Test Coverage Enforcer
+  description: Enforce test coverage thresholds and generate missing tests
+  file: .github/agents/test-coverage-enforcer/agent.yaml
+  directory: .github/agents
+  status: active
+  maturity: beta
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

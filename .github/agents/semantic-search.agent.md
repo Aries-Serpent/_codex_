@@ -1,14 +1,16 @@
 ---
-name: semantic-search
-description: Perform semantic search over the codebase and documentation using embedding-based retrieval
+name: Semantic Search
+description: Perform semantic search over the codebase and documentation using embedding-based
+  retrieval
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — embedding-based code and doc search
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: semantic-search
 ---
 
 # Semantic Search Agent

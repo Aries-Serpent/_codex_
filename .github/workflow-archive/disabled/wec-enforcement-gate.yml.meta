@@ -1,0 +1,5 @@
+backed_up_to: .github/workflow-archive/disabled/wec-enforcement-gate.yml
+backup_sha256: null
+disabled_at: '2026-09-04T00:00:00Z'
+reason: Superseded by workflow-execution-gate.yml as the canonical workflow execution gate.
+canonical_replacement: .github/workflows/workflow-execution-gate.yml

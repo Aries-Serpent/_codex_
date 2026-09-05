@@ -2,6 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import builtins
+import importlib
+import sys
+import tomllib
+from pathlib import Path
+
 import httpx
 import pytest
 
@@ -10,6 +16,46 @@ from agents.codex_client.codex_client.bridge import CodexBridgeClient
 from agents.codex_client.codex_client.config import ClientConfig
 
 pytest.importorskip("tenacity")
+
+
+def test_codex_bridge_declares_tenacity_dependency() -> None:
+    pyproject = Path(__file__).resolve().parents[2] / "agents" / "codex_client" / "pyproject.toml"
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+    dependencies = data["project"]["dependencies"]
+    assert any(dep.startswith("tenacity") for dep in dependencies)
+
+
+def test_bridge_module_falls_back_when_tenacity_is_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+    real_import = builtins.__import__
+
+    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "tenacity" or name.startswith("tenacity."):
+            raise ModuleNotFoundError("No module named 'tenacity'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    for name in list(sys.modules):
+        if name == "tenacity" or name.startswith("tenacity."):
+            sys.modules.pop(name, None)
+    sys.modules.pop("agents.codex_client.codex_client.bridge", None)
+    module = importlib.import_module("agents.codex_client.codex_client.bridge")
+
+    attempts = {"count": 0}
+
+    @module.retry(
+        reraise=True,
+        retry=lambda exc: isinstance(exc, ValueError),
+        stop=3,
+        wait=lambda *_: 0,
+    )
+    def flaky() -> str:
+        attempts["count"] += 1
+        if attempts["count"] < 3:
+            raise ValueError("retry me")
+        return "ok"
+
+    assert flaky() == "ok"
+    assert attempts["count"] == 3
 
 
 @dataclass

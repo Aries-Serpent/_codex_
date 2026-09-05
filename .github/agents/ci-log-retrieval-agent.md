@@ -1,6 +1,7 @@
 ---
 name: CI Log Retrieval Agent
-description: Retrieve and parse GitHub Actions workflow logs for failure analysis and pattern extraction
+description: Retrieve and parse GitHub Actions workflow logs for failure analysis
+  and pattern extraction
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
@@ -8,6 +9,7 @@ aais_contribution: +2.5 points
 batch: pr-4
 deprecated: true
 superseded_by: ci-triage-pipeline-agent.md (v1.0.0-m03, 2026-02-21)
+id: ci-log-retrieval-agent
 ---
 
 > ⚠️ **DEPRECATED** — Log retrieval capabilities have been merged into

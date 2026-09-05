@@ -463,8 +463,10 @@ def perplexity(nll_or_sum, n_tokens: Optional[int] = None) -> float:
     - perplexity([nll_i...]) -> exp(mean(nll))
     - perplexity(nll_sum, n_tokens) -> exp(nll_sum / n_tokens)
     """
-    # Variant A: list/sequence of NLL
-    if n_tokens is None:
+    # Variant A: list/sequence of NLL values. The public metric API passes
+    # ``(preds, targets)`` where ``targets`` is an ignored sequence, so accept
+    # either a raw sequence or a scalar total-plus-count pair.
+    if n_tokens is None or not isinstance(n_tokens, (int, float)):
         seq = list(nll_or_sum)
         if not seq:
             return float("inf")

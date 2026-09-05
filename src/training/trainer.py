@@ -158,9 +158,16 @@ def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, A
     try:
         result = _TORCH_LOAD_FN(path, **kwargs)
     except TypeError as exc:
-        type(exc).__name__
-        logger.debug("TypeError: <ERROR_TYPE>")
-        raise
+        if "weights_only" in kwargs:
+            kwargs.pop("weights_only")
+            try:
+                result = _TORCH_LOAD_FN(path, **kwargs)
+            except TypeError:
+                logger.debug("TypeError: %s", exc)
+                raise
+        else:
+            logger.debug("TypeError: %s", exc)
+            raise
     if not isinstance(result, Mapping):
         return {}
     return result
@@ -452,7 +459,13 @@ class Trainer:
             return
         try:
             epoch, metric = load_checkpoint(latest, self.simple.model, self.simple.optimizer)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robustness guard
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            RuntimeError,
+        ) as exc:  # pragma: no cover - robustness guard
             LOGGER.warning("Failed to auto-resume from %s: %s", latest, exc)
             return
         self.state.epoch = int(epoch)

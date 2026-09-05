@@ -1,5 +1,6 @@
 name: bridge-security-monitor
 description: Monitor IPC bridge security and detect unauthorized access or security policy violations
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Real-time audit log monitoring

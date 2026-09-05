@@ -1,9 +1,11 @@
 ---
 name: Packaging Validation Agent
-description: >
-  Validates Python packaging configuration (pyproject.toml, setup.cfg, MANIFEST.in),
-  dependency lock files, and security posture across all requirements files.
-  Detects Dependabot vulnerabilities, version pin drift, and PEP 621 compliance gaps.
+description: 'Validates Python packaging configuration (pyproject.toml, setup.cfg,
+  MANIFEST.in), dependency lock files, and security posture across all requirements
+  files. Detects Dependabot vulnerabilities, version pin drift, and PEP 621 compliance
+  gaps.
+
+  '
 version: 1.0.0
 created: 2026-03-21
 updated: 2026-03-21
@@ -11,14 +13,15 @@ cognitive_integration_level: 3
 aais_contribution: +2.0 points
 sprint: Sprint 4 (S172)
 capability_tags:
-  - packaging
-  - dependency_management
-  - security_scanning
-  - pep621_compliance
-  - dependabot_remediation
+- packaging
+- dependency_management
+- security_scanning
+- pep621_compliance
+- dependabot_remediation
 runner_compatibility:
-  default: ubuntu-latest    # 2-core — pip-audit, safety, pip-check
-  large:   ubuntu-latest-large  # 4-core — parallel multi-file lock validation
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: packaging-validation-agent
 ---
 
 # Packaging Validation Agent v1.0

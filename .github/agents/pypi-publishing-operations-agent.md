@@ -1,9 +1,11 @@
 ---
 name: PyPI Publishing Operations Agent
-description: Manage PyPI package publishing operations including versioning and release automation
+description: Manage PyPI package publishing operations including versioning and release
+  automation
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — PyPI package publishing and release automation
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: pypi-publishing-operations-agent
 ---
 
 # PyPI Publishing Operations Agent

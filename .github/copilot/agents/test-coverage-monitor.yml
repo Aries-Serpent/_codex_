@@ -1,5 +1,6 @@
 name: test-coverage-monitor
 description: Monitor test coverage across the codebase, alert on coverage drops, and suggest areas for improvement
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - Coverage trend analysis

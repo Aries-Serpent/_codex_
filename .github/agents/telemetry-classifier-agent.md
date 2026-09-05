@@ -1,6 +1,8 @@
 ---
 name: Telemetry Classifier Agent
-description: Reads CI telemetry artifacts, identifies unknown failure patterns, generates collect_telemetry.py classifier patches, and creates PRs — drives unknown bucket from ~60% toward <20%
+description: Reads CI telemetry artifacts, identifies unknown failure patterns, generates
+  collect_telemetry.py classifier patches, and creates PRs — drives unknown bucket
+  from ~60% toward <20%
 version: 2.0.0
 updated: 2026-03-01
 cognitive_integration_level: 4
@@ -11,8 +13,9 @@ improvement_area: CI_SELF_HEALING
 pattern_id: P-047
 trigger_label: ci-health-alert
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — CI telemetry classification, failure pattern tagging
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: telemetry-classifier-agent
 ---
 
 # Telemetry Classifier Agent v2.0

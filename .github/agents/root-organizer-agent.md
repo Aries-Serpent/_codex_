@@ -1,14 +1,16 @@
 ---
 name: Root Organizer Agent
-description: Safely reorganize root directory structure in incremental steps with rollback capability
+description: Safely reorganize root directory structure in incremental steps with
+  rollback capability
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — root dir reorganization, incremental steps
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: root-organizer-agent
 ---
 
 # Root Organizer Agent

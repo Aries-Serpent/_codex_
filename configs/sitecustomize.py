@@ -28,9 +28,14 @@ class _StubObject:
         )
 
 
-src_str = str(Path(__file__).parent / "src")
+repo_root = Path(__file__).resolve().parents[1]
+src_str = str(repo_root / "src")
 if src_str not in sys.path:
     sys.path.insert(0, src_str)
+
+codex_bridge_client_str = str(repo_root / "agents" / "codex_client")
+if codex_bridge_client_str not in sys.path:
+    sys.path.insert(0, codex_bridge_client_str)
 
 
 def _install_optional_stub(module_name: str, *, attrs: dict[str, object] | None = None) -> None:

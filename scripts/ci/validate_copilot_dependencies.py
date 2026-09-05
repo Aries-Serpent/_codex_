@@ -332,7 +332,6 @@ def main():
     dependent_workflows = [
         ".github/workflows/copilot-setup-validation.yml",
         ".github/workflows/deferral-language-gate.yml",
-        ".github/workflows/wec-enforcement-gate.yml",
         ".github/workflows/workflow-execution-gate.yml",
         ".github/workflows/validate.yml",
     ]

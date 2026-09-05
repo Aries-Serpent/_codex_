@@ -1,6 +1,7 @@
 ---
-name: config-validator
-description: Validate Hydra and project configuration files for correctness, schema compliance, and best practices
+name: Config Validator
+description: Validate Hydra and project configuration files for correctness, schema
+  compliance, and best practices
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
@@ -8,7 +9,7 @@ aais_contribution: +1.8 points
 batch: pr-9
 deprecated: true
 superseded_by: unified-governance-gate.md (v1.0.0-m05, 2026-02-22)
-
+id: config-validator
 ---
 
 > ⚠️ **DEPRECATED** — Config validation capabilities have been merged into **[Unified Governance Gate v1.0](unified-governance-gate.md)** (M-05 merge). Use `unified-governance-gate` for all config validation work.

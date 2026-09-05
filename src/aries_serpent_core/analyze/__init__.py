@@ -11,5 +11,6 @@ Components:
 from __future__ import annotations
 
 from . import runtime, static
+from .static import analyze
 
-__all__ = ["runtime", "static"]
+__all__ = ["analyze", "runtime", "static"]

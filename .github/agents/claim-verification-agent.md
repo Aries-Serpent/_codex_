@@ -1,9 +1,11 @@
 ---
 name: Claim Verification Agent
-description: Verify claims in commit messages, PRs, and documentation against actual code changes
+description: Verify claims in commit messages, PRs, and documentation against actual
+  code changes
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — verify commit/PR claims against code changes
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: claim-verification-agent
 ---
 
 # Claim Verification Agent

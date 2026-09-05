@@ -1,25 +1,26 @@
 ---
-name: post-merge-doc-alignment-agent
-description: >
-  After merging a promotion branch into main, traverse https://aries-serpent.github.io/_codex_/
-  and update all documentation to align with the current state of the codebase.
-  Detects stale content, broken nav entries, missing pages, and code examples that
-  no longer match source. Produces a structured alignment report and applies fixes.
-  Implements iterative self-review loop: fix → build → verify → repeat until clean.
-  Integrates PDA Loop + AfterMath tracking for continuous improvement.
+name: Post Merge Doc Alignment Agent
+description: 'After merging a promotion branch into main, traverse https://aries-serpent.github.io/_codex_/
+  and update all documentation to align with the current state of the codebase. Detects
+  stale content, broken nav entries, missing pages, and code examples that no longer
+  match source. Produces a structured alignment report and applies fixes. Implements
+  iterative self-review loop: fix → build → verify → repeat until clean. Integrates
+  PDA Loop + AfterMath tracking for continuous improvement.
+
+  '
 version: 1.1.0
 updated: 2026-03-31
 trigger: manual — invoke immediately after a promotion branch merges to main
-activation: "@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md"
+activation: '@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md'
 runner_compatibility:
   default: ubuntu-latest
 cognitive_integration_level: 3
 aais_contribution: +1.5 points
 related_agents:
-  - unified-doc-agent.md
-  - github-pages-manager.md
-  - link-validator-agent.md
-  - cognitive-brain-manager.md
+- unified-doc-agent.md
+- github-pages-manager.md
+- link-validator-agent.md
+- cognitive-brain-manager.md
 scope:
   site_url: https://aries-serpent.github.io/_codex_/
   source_dir: docs/
@@ -30,25 +31,27 @@ self_healing:
   loop: fix → mkdocs build --strict → verify live site → re-scan → repeat
 pda_loop:
   enabled: true
-  plan: "Traverse live site, diff against source, fix all drift"
-  do: "Apply fixes, update CHANGELOG + accountability, push commit"
-  assess: "Re-run mkdocs --strict + re-verify live pages; store aftermath patterns"
-  aftermath_store: ".codex/patterns/doc_alignment_patterns.jsonl"
+  plan: Traverse live site, diff against source, fix all drift
+  do: Apply fixes, update CHANGELOG + accountability, push commit
+  assess: Re-run mkdocs --strict + re-verify live pages; store aftermath patterns
+  aftermath_store: .codex/patterns/doc_alignment_patterns.jsonl
 iteration_history:
-  - session: S244-doc-align
-    date: 2026-03-30
-    commit: 93a7201
-    result: "S244 entry added, cognitive-brain-manager S242→S244, index.md date fixed"
-  - session: S251
-    date: 2026-03-31
-    commit: 73b7d74
-    result: "Re-verify: 0 new drift, index.md date refreshed, S251 entry added"
-  - session: S252
-    date: 2026-03-31
-    result: "Agent definition upgraded v1.0→v1.1 — push blocked by TTY credential loss"
-  - session: S253
-    date: 2026-03-31
-    result: "v1.1 applied cleanly; PDA Loop + AfterMath section added; all S252 changes landed"
+- session: S244-doc-align
+  date: 2026-03-30
+  commit: 93a7201
+  result: S244 entry added, cognitive-brain-manager S242→S244, index.md date fixed
+- session: S251
+  date: 2026-03-31
+  commit: 73b7d74
+  result: 'Re-verify: 0 new drift, index.md date refreshed, S251 entry added'
+- session: S252
+  date: 2026-03-31
+  result: Agent definition upgraded v1.0→v1.1 — push blocked by TTY credential loss
+- session: S253
+  date: 2026-03-31
+  result: v1.1 applied cleanly; PDA Loop + AfterMath section added; all S252 changes
+    landed
+id: post-merge-doc-alignment-agent
 ---
 
 # Post-Merge Documentation Alignment Agent

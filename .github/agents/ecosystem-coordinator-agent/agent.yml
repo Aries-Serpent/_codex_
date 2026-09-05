@@ -2,4 +2,14 @@ name: ecosystem-coordinator-agent
 version: 1.0.0
 description: Multi-agent task decomposition and coordination
 seed: 51
-capabilities: [task_decomposition, coalition_formation, load_balancing]
+capabilities:
+- task_decomposition
+- coalition_formation
+- load_balancing
+id: ecosystem-coordinator-agent
+status: active
+maturity: beta
+triggers:
+  events:
+  - manual
+dependencies: []

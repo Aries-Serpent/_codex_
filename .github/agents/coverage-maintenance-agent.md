@@ -1,10 +1,12 @@
 ---
 name: Coverage-maintenance Agent
-description: "DEPRECATED — use unified-coverage-agent instead. Maintains test coverage over time and prevents regressions."
+description: DEPRECATED — use unified-coverage-agent instead. Maintains test coverage
+  over time and prevents regressions.
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent
 deprecated_in: S174 (2026-03-21)
+id: coverage-maintenance-agent
 ---
 
 > ⚠️ **DEPRECATED** — This agent has been merged into [`unified-coverage-agent`](./unified-coverage-agent.md).

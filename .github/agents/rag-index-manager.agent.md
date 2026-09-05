@@ -1,14 +1,16 @@
 ---
-name: rag-index-manager
-description: Manage RAG index operations including building, updating, querying, and maintaining embeddings
+name: RAG Index Manager
+description: Manage RAG index operations including building, updating, querying, and
+  maintaining embeddings
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +1.8 points
 batch: pr-9
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — RAG index build, update, query, maintenance
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: rag-index-manager
 ---
 
 # RAG Index Manager Agent

@@ -1,14 +1,16 @@
 ---
-name: datetime-modernizer
-description: Modernize datetime handling to use timezone-aware objects and deprecate naive datetime usage
+name: Datetime Modernizer
+description: Modernize datetime handling to use timezone-aware objects and deprecate
+  naive datetime usage
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +1.8 points
 batch: pr-9
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — timezone-aware datetime modernization
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: datetime-modernizer
 ---
 
 # DateTime Modernizer Agent

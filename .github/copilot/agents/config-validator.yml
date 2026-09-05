@@ -1,5 +1,6 @@
 name: config-validator
 description: Validate Hydra and project configuration files for correctness, schema compliance, and best practices
+model: "MAI-Code-1.1-Flash"
 
 capabilities:
   - YAML syntax validation

@@ -1,0 +1,1 @@
+{"capabilities": [{"id": "alpha", "evidence_files": ["audit_artifacts/a1.txt", "audit_artifacts/a2.txt"]}, {"id": "beta", "evidence_files": ["audit_artifacts/b1.txt"]}]}

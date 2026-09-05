@@ -3,3 +3,11 @@ version: 1.0.0
 description: Self-optimizing CI with test prioritization
 seed: 49
 test_count: 20
+id: ci-optimizer-agent
+status: active
+maturity: beta
+capabilities: []
+triggers:
+  events:
+  - manual
+dependencies: []

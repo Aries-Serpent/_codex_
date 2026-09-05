@@ -1,6 +1,9 @@
 ---
-id: memory.sync.consolidation
+id: memory-sync-consolidation-skill
 name: Memory Sync Consolidation Skill
+description: Consolidate short-term memory (STM) to long-term memory (LTM) with pattern
+  discovery, duplicate detection, retention policy application, and promotion reporting
+  for cross-session learning.
 version: 1.0.0
 category: cognitive_brain
 subcategory: memory_management
@@ -12,18 +15,18 @@ author: skills-master-agent
 pda_loop:
   enabled: true
   phases:
-    - plan
-    - execute
-    - assess
+  - plan
+  - execute
+  - assess
 self_healing:
   enabled: true
   max_iterations: 3
 capability_tags:
-  - memory_consolidation
-  - stm_ltm_sync
-  - cognitive_brain
-  - pattern_deduplication
-  - data_management
+- memory_consolidation
+- stm_ltm_sync
+- cognitive_brain
+- pattern_deduplication
+- data_management
 autonomy_model: D
 enforcement_tier: STANDARD
 ---

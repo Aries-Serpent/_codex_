@@ -1,33 +1,12 @@
 ---
+id: cognitive-brain-manager
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3835 (Session S258 — comment audit, Agent File Size Gate fix, merge readiness 97%, research branch proposal for dual-package shadow).
+description: Manages the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs.
+status: active
+maturity: production
 version: 4.5.3
-updated: 2026-03-31
-cognitive_integration_level: 5
-aais_contribution: +5.3 points
-batch: pr-3835
-sprint: Sprint 13 (Post S248–S258 — session-chain opt-in, CI threshold fixes, post-merge doc alignment, config module path fix, iterative self-healing loop, PDA Loop + AfterMath, gemini review resolutions, Auto-Post pre-flight wiring, S256 REQ-4 compliance, S257 dual-package shadow fix, S258 comment audit + file size gate + merge readiness)
-runner_compatibility:
-  default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
-pda_loop:
-  enabled: true
-  phase: ASSESS
-  last_plan: "S257 — fix 5 Resilient Validation Suite failures, clear 5 copilot-pull-request-reviewer threads, assess merge readiness of 0D_base_→main"
-  last_do: "S257 — tokenization/cli.py fallbacks exported unconditionally; hf_pinning ValueError caught in safety test; PR-3834/3835 prompts populated; accountability report header + separators fixed; cognitive brain v4.5.2"
-  last_assess: "S258: Agent File Size Gate fixed (cognitive-brain-manager.md 31,983→≤29,900 chars, S128 archived). All 22 PR comments audited; 3 cascaded Comment Review Gate failures traced to single root cause (file size gate). Merge confidence: 97% (CodeQL green, PyPI green, clean mergeable_state). Research branch proposal for RP-S257-004 dual-package shadow queued."
-  aftermath_patterns:
-    - "pytest-split path ordering → belt-and-suspenders sys.path guard in sub-package conftest"
-    - "report_progress push requires valid credential at call time; TTY loss = push failure; session ends with unpushed commit"
-    - "agent-auth-delegation auto-fix bot provides REQ-4/REQ-5 safety net but does NOT apply code fixes"
-    - "contextlib.contextmanager generator: never place yield inside try/except that would catch re-raised caller exceptions — use init-before-yield pattern instead"
-    - "gemini review threads marked is_resolved=true may be dismissed WITHOUT fixing the underlying code — always verify actual source before treating as addressed"
-    - "Auto-Post pre-flight wiring: copilot-agent-session-done.yml preflight-autofix job uses actions/checkout@v4 + CODEX_MASTER_KEY + session_wrapup_autofix.py; any workflow_run-triggered workflow needing pre-flight auto-fix should follow the same checkout+autofix+commit+push pattern"
-    - "tokenization/cli.py _FallbackTyper/_fallback_echo/_fallback_option must be defined unconditionally (outside if _typer is None) so they are importable when typer IS installed — tests always import them directly"
-    - "hf_pinning.require_revision() raises ValueError (not HFModelUnavailableError) for missing commit hash — tests must catch ValueError with 'commit hash' or 'hf_revision' in message as an offline-skip condition"
-    - "session_wrapup_autofix.py auto-generated entries produce double '---' separators — fix is to ensure the appended entry starts with exactly one '---' not two; or strip trailing '---' before appending"
-    - "copilot-pull-request-reviewer review threads: check_pr_comments.py marks them as addressed only via in_reply_to_id Copilot reply OR global timestamp heuristic — code fixes alone do NOT resolve threads; must also reply_to_comment"
-    - "Comment Review Gate blocker: copilot-review-responder.yml posts @copilot apply but that comment is NOT counted as addressing individual review threads — each thread needs an explicit reply_to_comment call"
+updated: "2026-03-31"
+---
 
 # Cognitive Brain Manager v4.5.2
 

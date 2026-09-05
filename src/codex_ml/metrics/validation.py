@@ -58,10 +58,11 @@ def validate_metric_exists(metric_name: str) -> bool:
     """
     try:
         from codex_ml.metrics.registry import get_metric
+        from codex_ml.registry.base import RegistryNotFoundError
 
         metric_fn = get_metric(metric_name)
         return callable(metric_fn)
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError, RegistryNotFoundError, KeyError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 

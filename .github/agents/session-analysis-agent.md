@@ -1,9 +1,11 @@
 ---
 name: Session Analysis Agent
-description: Analyze Copilot sessions, verify committed changes, track objective completion patterns, and force-archive stale/cached sessions
+description: Analyze Copilot sessions, verify committed changes, track objective completion
+  patterns, and force-archive stale/cached sessions
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — session analysis, commit verification, pattern learning
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
+id: session-analysis-agent
 ---
 
 # Session Analysis Agent

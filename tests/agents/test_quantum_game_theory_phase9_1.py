@@ -19,8 +19,9 @@ Targets previously uncovered code paths:
 
 from __future__ import annotations
 
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy")
 
 from agents.quantum_game_theory import (
     BlueRedTeamSimulator,

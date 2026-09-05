@@ -57,6 +57,9 @@ _IGNORED_MARKDOWN_NAMES = {
     "agent_registry_generated.md",
     "agent_consolidation.md",
     "readme.md",
+    ".template_cognitive_agent.md",
+    ".template",
+    "template.md",
 }
 
 
@@ -73,24 +76,53 @@ def load_schema(path: Path = SCHEMA_PATH) -> dict[str, Any]:
         return {}
     return data if isinstance(data, dict) else {}
 
+def _matches_spec_filename(name: str) -> bool:
+    """Return True only for repository custom-agent definition filenames."""
+    lowered = name.lower()
+    return (
+        lowered in {"agent.md", "agent.yml", "agent.yaml"}
+        or lowered.endswith(".agent.md")
+        or lowered.endswith("-agent.md")
+        or lowered.endswith("-skill.md")
+        or lowered.endswith(".agent.yml")
+        or lowered.endswith(".agent.yaml")
+        or lowered.endswith("-agent.yml")
+        or lowered.endswith("-agent.yaml")
+        or lowered.endswith("-skill.yml")
+        or lowered.endswith("-skill.yaml")
+    )
+
 
 def _is_markdown_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in _IGNORED_MARKDOWN_NAMES:
         return False
-    return (
-        name == "agent.md"
-        or name.endswith(".agent.md")
-        or name.endswith("-agent.md")
-        or name.endswith("-skill.md")
-    )
+    if name == "agent.md":
+        return False
+    return _matches_spec_filename(name)
 
 
 def _is_yaml_agent(path: Path) -> bool:
     name = path.name.lower()
     if name in {"agent_registry.yaml", "agent_registry.yml"}:
         return False
-    return name.endswith(".agent.yaml") or name.endswith(".agent.yml")
+    if any(part in {"config", "manifest", "settings"} for part in path.parts):
+        return False
+    if name in {"config.yaml", "config.yml", "manifest.yaml", "manifest.yml"}:
+        return False
+    return _matches_spec_filename(name)
+
+
+def _is_agent_definition(path: Path) -> bool:
+    """Return True only for recognized custom-agent spec paths."""
+    if not path.is_file():
+        return False
+    suffix = path.suffix.lower()
+    if suffix == ".md":
+        return _is_markdown_agent(path)
+    if suffix in {".yaml", ".yml"}:
+        return _is_yaml_agent(path)
+    return False
 
 
 def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
@@ -102,11 +134,7 @@ def find_agent_specs(agents_dir: Path = AGENTS_DIR) -> list[Path]:
     specs = [
         path
         for path in agents_dir.rglob("*")
-        if path.is_file()
-        and (
-            (path.suffix.lower() == ".md" and _is_markdown_agent(path))
-            or (path.suffix.lower() in {".yaml", ".yml"} and _is_yaml_agent(path))
-        )
+        if path.is_file() and _is_agent_definition(path)
     ]
     return sorted(specs, key=lambda path: path.as_posix().casefold())
 
@@ -212,10 +240,52 @@ def _result(path: str, kind: str, errors: list[str]) -> dict[str, Any]:
 
 
 def _profile_id(path: Path) -> str:
-    name = path.name
-    if name.lower().endswith(".agent.md"):
+    """Return the canonical identifier implied by the spec filename.
+
+    Files named ``*.agent.md`` or ``*.agent.yml`` encode a schema marker that is
+    not part of the canonical identifier. Files named ``*-agent.md`` and
+    ``*-skill.md`` are already canonical slugs, so their suffixes should remain
+    intact. Directory-local ``agent.yaml``/``agent.yml`` files use the parent
+    directory name as their canonical identifier.
+    """
+    name = path.name.lower()
+    if name in {"agent.md", "agent.yaml", "agent.yml"}:
+        parent = path.parent.name.strip()
+        if parent and parent.lower() not in {".github", "agents", "config", "manifest", "settings"}:
+            return parent
+        return path.stem
+    if name.endswith(".agent.md"):
         return name[: -len(".agent.md")]
+    if name.endswith(".agent.yaml"):
+        return name[: -len(".agent.yaml")]
+    if name.endswith(".agent.yml"):
+        return name[: -len(".agent.yml")]
+    if name.endswith("-agent.md") or name.endswith("-skill.md"):
+        return name[: -len(".md")]
+    if name.endswith("-agent.yaml") or name.endswith("-skill.yaml"):
+        return name[: -len(".yaml")]
+    if name.endswith("-agent.yml") or name.endswith("-skill.yml"):
+        return name[: -len(".yml")]
     return path.stem
+
+
+def _is_suspicious_reference(reference: str) -> bool:
+    """Reject absolute, drive-qualified, or ambiguous file references.
+
+    The registry and `handler`/`entrypoint` references come from YAML/Markdown
+    metadata and should be restricted to repo-local paths, not arbitrary file
+    system locations.
+    """
+    value = reference.strip()
+    if not value or "\x00" in value:
+        return True
+    if value.startswith(("/", "\\", "~", "file://")):
+        return True
+    if value.startswith(("http://", "https://")):
+        return True
+    if re.match(r"^[A-Za-z]:[\\/]", value):
+        return True
+    return False
 
 
 def _relative(path: Path, repo_root: Path) -> str:
@@ -231,6 +301,8 @@ def _resolve_file_reference(
     repo_root: Path,
     agents_dir: Path,
 ) -> Path | None:
+    if _is_suspicious_reference(reference):
+        return None
     candidate = Path(reference)
     if candidate.is_absolute():
         return None
@@ -249,6 +321,8 @@ def _resolve_file_reference(
 
 
 def _resolve_code_reference(reference: str, *, repo_root: Path) -> Path | None:
+    if _is_suspicious_reference(reference):
+        return None
     target = reference.split(":", 1)[0]
     direct = Path(target)
     if direct.is_absolute():
@@ -274,24 +348,24 @@ def _resolve_code_reference(reference: str, *, repo_root: Path) -> Path | None:
     return None
 
 
-def _load_registry(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def _load_registry(path: Path) -> tuple[list[dict[str, Any]], dict[str, Any], list[str]]:
     if not path.exists():
-        return [], [f"registry not found: {path}"]
+        return [], {}, [f"registry not found: {path}"]
     if not HAS_YAML:
-        return [], ["PyYAML is required to parse the agent registry"]
+        return [], {}, ["PyYAML is required to parse the agent registry"]
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError) as exc:
-        return [], [f"{type(exc).__name__}: {exc}"]
+        return [], {}, [f"{type(exc).__name__}: {exc}"]
     if not isinstance(data, dict):
-        return [], ["registry root must be a mapping"]
+        return [], {}, ["registry root must be a mapping"]
     agents = data.get("agents")
     if not isinstance(agents, list):
-        return [], ["registry field 'agents' must be a list"]
+        return [], data, ["registry field 'agents' must be a list"]
     malformed = [index for index, entry in enumerate(agents) if not isinstance(entry, dict)]
     if malformed:
-        return [], [f"registry entries must be mappings (invalid indexes: {malformed})"]
-    return agents, []
+        return [], data, [f"registry entries must be mappings (invalid indexes: {malformed})"]
+    return agents, data, []
 
 
 def _append_duplicate_errors(
@@ -335,7 +409,7 @@ def validate_repository(
     definition_ids: list[tuple[str, str, str]] = []
     definition_names: list[tuple[str, str, str]] = []
 
-    entries, registry_errors = _load_registry(registry_path)
+    entries, registry_data, registry_errors = _load_registry(registry_path)
     spec_paths = set(find_agent_specs(agents_dir))
     registry_spec_paths: set[Path] = set()
     for entry in entries:
@@ -347,9 +421,55 @@ def validate_repository(
             repo_root=repo_root,
             agents_dir=agents_dir,
         )
-        if resolved is not None and resolved.suffix.lower() in {".md", ".yaml", ".yml"}:
+        if resolved is not None and _is_agent_definition(resolved):
             spec_paths.add(resolved)
             registry_spec_paths.add(resolved)
+
+    registry_file = _relative(registry_path, repo_root)
+    registry_result = _result(registry_file, "registry", [])
+    registry_result_key = f"registry:{registry_file}"
+
+    if isinstance(registry_data, dict):
+        for field_name, expected_key in (
+            ("total_agents", "total_agents"),
+            ("active_agents", "active_agents"),
+            ("archived_agents", "archived_agents"),
+        ):
+            summary_value = registry_data.get(expected_key)
+            if not isinstance(summary_value, int) or isinstance(summary_value, bool):
+                continue
+            actual_value = {
+                "total_agents": len(entries),
+                "active_agents": sum(
+                    1
+                    for entry in entries
+                    if isinstance(entry, dict)
+                    and str(entry.get("status", "")).casefold() == "active"
+                ),
+                "archived_agents": sum(
+                    1
+                    for entry in entries
+                    if isinstance(entry, dict)
+                    and str(entry.get("status", "")).casefold() == "archived"
+                ),
+            }[field_name]
+            if summary_value != actual_value:
+                registry_result["errors"].append(
+                    f"registry {expected_key} mismatch: expected {actual_value}, got {summary_value}"
+                )
+
+    missing_registry_specs = sorted(
+        spec_paths - registry_spec_paths,
+        key=lambda path: path.as_posix().casefold(),
+    )
+    for missing_path in missing_registry_specs:
+        registry_result["errors"].append(
+            f"registry is missing agent spec: {_relative(missing_path, repo_root)}"
+        )
+
+    if registry_result["errors"]:
+        results.append(registry_result)
+        results_by_key[registry_result_key] = registry_result
 
     for spec_path in sorted(spec_paths, key=lambda path: path.as_posix().casefold()):
         relative_path = _relative(spec_path, repo_root)
@@ -405,6 +525,13 @@ def validate_repository(
             )
             if resolved is None:
                 errors.append(f"referenced agent file does not exist: {file_reference}")
+            elif not _is_agent_definition(resolved):
+                status = str(entry.get("status", "")).casefold()
+                if status == "active":
+                    errors.append(
+                        f"referenced Markdown file is not a valid agent profile: {file_reference}"
+                    )
+                continue
             else:
                 profile = parsed_profiles.get(resolved)
                 if resolved.suffix.lower() == ".md" and profile is None:

@@ -1,11 +1,12 @@
 ---
 name: Google Home Script Agent
-description: >
-  DEPRECATED (2026-07-01): AI-enhanced agent for generating and validating
-  Google Home automation scripts and smart-home device routines.
-  This agent has been archived due to zero ecosystem integration,
-  purely aspirational design, and out-of-scope domain (smart-home automation).
-  See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md for details.
+description: 'DEPRECATED (2026-07-01): AI-enhanced agent for generating and validating
+  Google Home automation scripts and smart-home device routines. This agent has been
+  archived due to zero ecosystem integration, purely aspirational design, and out-of-scope
+  domain (smart-home automation). See GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md for
+  details.
+
+  '
 version: 1.0.0
 updated: 2026-03-25
 status: archived
@@ -15,6 +16,7 @@ aais_contribution: +1.5 points
 batch: s201
 runner_compatibility:
   default: ubuntu-latest
+id: google-home-script-agent
 ---
 
 # ⚠️ DEPRECATED: Google Home Script Agent v1.0

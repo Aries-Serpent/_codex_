@@ -1,25 +1,27 @@
 ---
-name: branch-divergence-resolution-agent
-description: >
-  Production-ready Copilot custom agent that detects, classifies, and resolves
-  branch divergence between the staging integration branch (0D_base_) and the
-  default branch (main). Implements the PIPELINE-MERGE fast-forward protocol
-  (S146), distinguishing normal staging-gate merge commits from true code-leaks.
+name: Branch Divergence Resolution Agent
+description: 'Production-ready Copilot custom agent that detects, classifies, and
+  resolves branch divergence between the staging integration branch (0D_base_) and
+  the default branch (main). Implements the PIPELINE-MERGE fast-forward protocol (S146),
+  distinguishing normal staging-gate merge commits from true code-leaks.
+
+  '
 version: 1.1.0
 created: 2026-03-29
 updated: 2026-03-29
 cognitive_integration_level: 4
 scope:
-  - .github/workflows/branch-divergence-monitor.yml
-  - .github/workflows/forward-sync-autogen.yml
-  - .codex/docs/BRANCH_DIVERGENCE_PREVENTION.md
-  - CODEX_MANIFEST.json
+- .github/workflows/branch-divergence-monitor.yml
+- .github/workflows/forward-sync-autogen.yml
+- .codex/docs/BRANCH_DIVERGENCE_PREVENTION.md
+- CODEX_MANIFEST.json
 activation_commands:
-  - "@copilot use branch-divergence-resolution-agent"
-  - "@copilot fix branch divergence"
-  - "@copilot resolve 0D_base_ divergence"
+- '@copilot use branch-divergence-resolution-agent'
+- '@copilot fix branch divergence'
+- '@copilot resolve 0D_base_ divergence'
 runner_compatibility:
   default: ubuntu-latest
+id: branch-divergence-resolution-agent
 ---
 
 # Branch Divergence Resolution Agent

@@ -2,18 +2,68 @@
 
 from __future__ import annotations
 
+import functools
 import logging
+import time
 import uuid
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 import httpx
-from tenacity import (
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential,
-)
+
+try:
+    from tenacity import (
+        retry,
+        retry_if_exception_type,
+        stop_after_attempt,
+        wait_exponential,
+    )
+except ModuleNotFoundError:  # pragma: no cover - fallback for lean/test envs
+    def retry_if_exception_type(exception_types: type[Exception] | tuple[type[Exception], ...]):
+        exc_types = (exception_types,) if isinstance(exception_types, type) else exception_types
+
+        def _matches(exc: BaseException) -> bool:
+            return isinstance(exc, exc_types)
+
+        return _matches
+
+    def stop_after_attempt(max_attempts: int) -> int:
+        return max_attempts
+
+    def wait_exponential(multiplier: float = 1.0, min: float = 0.0, max: Optional[float] = None):
+        def _wait(retry_state: Any) -> float:
+            attempt = max(getattr(retry_state, "attempt_number", 1), 1)
+            wait_time = min * (multiplier ** (attempt - 1))
+            if max is not None:
+                return min(wait_time, max)
+            return wait_time
+
+        return _wait
+
+    def retry(*, reraise: bool = True, retry: Optional[Callable[[BaseException], bool]] = None, stop: Optional[int] = None, wait: Optional[Callable[[Any], float]] = None, **_: Any):
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            @functools.wraps(func)
+            def wrapper(*args: Any, **kwargs: Any) -> Any:
+                attempts = 0
+                while True:
+                    attempts += 1
+                    try:
+                        return func(*args, **kwargs)
+                    except Exception as exc:  # pragma: no cover - compatibility fallback only
+                        if retry is not None and not retry(exc):
+                            raise
+                        if stop is not None and attempts >= stop:
+                            if reraise:
+                                raise
+                            return None
+                        sleep_for = 0.0 if wait is None else wait(type("RetryState", (), {"attempt_number": attempts})())
+                        if sleep_for > 0:
+                            time.sleep(sleep_for)
+                        continue
+
+            return wrapper
+
+        return decorator
 
 from .config import ClientConfig
 from .models import (

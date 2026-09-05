@@ -18,8 +18,9 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy")
 
 from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType, get_timestamp
 from agents.quantum_game_theory import (

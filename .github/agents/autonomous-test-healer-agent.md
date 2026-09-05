@@ -1,16 +1,18 @@
 ---
 name: Autonomous Test Healer Agent
-description: Automatically detect, diagnose, and fix failing tests. Includes P19 shadow import awareness, @pytest.mark.flaky detection, and mermaid test-cycle diagrams.
+description: Automatically detect, diagnose, and fix failing tests. Includes P19 shadow
+  import awareness, @pytest.mark.flaky detection, and mermaid test-cycle diagrams.
 version: 2.0.0-s228
 updated: 2026-05-09
 policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — auto-fix failing tests, self-healing loop
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
+  default: ubuntu-latest
+  large: ubuntu-latest-large
 activation_commands:
-  - "@copilot use autonomous-test-healer-agent"
-  - "@copilot fix failing tests"
-  - "@copilot detect flaky tests"
+- '@copilot use autonomous-test-healer-agent'
+- '@copilot fix failing tests'
+- '@copilot detect flaky tests'
+id: autonomous-test-healer-agent
 ---
 
 # GitHub Copilot Custom Agent: Autonomous Test Healer
