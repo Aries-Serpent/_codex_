@@ -2613,7 +2613,10 @@ agents:
   version: 1.1.0
 - id: cache-logic-validator
   name: cache-logic-validator
-  description: Validate cache implementations using property-based testing. Ensures mathematical properties hold (hits + misses = queries), concurrency safety, and expiration logic correctness.
+  description: >-
+    Validate cache implementations using property-based testing. Ensures
+    mathematical properties hold (hits + misses = queries), concurrency safety,
+    and expiration logic correctness.
   file: .github/agents/cache-logic-validator/agent.yaml
   directory: .github/agents
   status: active
@@ -2621,7 +2624,10 @@ agents:
   version: 1.0.0
 - id: ci-failure-diagnostician
   name: ci-failure-diagnostician
-  description: Automatically diagnose and categorize CI failures. Classifies failures as flaky, real bugs, or infrastructure issues. Suggests fixes and auto-retries flaky tests with backoff.
+  description: >-
+    Automatically diagnose and categorize CI failures. Classifies failures as
+    flaky, real bugs, or infrastructure issues. Suggests fixes and auto-retries
+    flaky tests with backoff.
   file: .github/agents/ci-failure-diagnostician/agent.yaml
   directory: .github/agents
   status: active
@@ -2644,7 +2650,10 @@ agents:
   maturity: beta
 - id: doc-test-scribe
   name: doc-test-scribe
-  description: AI-powered documentation and test generator using TF-IDF semantic analysis. Analyzes codebase via tokenization, generates comprehensive docs and tests. Enables "do more with less" - minimal prompts, maximum output.
+  description: >-
+    AI-powered documentation and test generator using TF-IDF semantic analysis.
+    Analyzes codebase via tokenization, generates comprehensive docs and tests.
+    Enables "do more with less" - minimal prompts, maximum output.
   file: .github/agents/doc-test-scribe/agent.yml
   directory: .github/agents
   status: active
@@ -2660,7 +2669,9 @@ agents:
   version: 1.0.0
 - id: documentation-sync-validator
   name: documentation-sync-validator
-  description: Validates documentation synchronization with codebase, detects semantic drift, and ensures schema compliance
+  description: >-
+    Validates documentation synchronization with codebase, detects semantic drift,
+    and ensures schema compliance
   file: .github/agents/documentation-sync-validator/agent.yaml
   directory: .github/agents
   status: active
@@ -2676,7 +2687,9 @@ agents:
   version: 1.0.0
 - id: emergent-intelligence-agent
   name: emergent-intelligence-agent
-  description: Specialized emergent behavior analysis across repositories. Detects patterns, predicts behavior, and provides self-improving pattern recognition.
+  description: >-
+    Specialized emergent behavior analysis across repositories. Detects patterns,
+    predicts behavior, and provides self-improving pattern recognition.
   file: .github/agents/emergent-intelligence-agent/agent.yml
   directory: .github/agents
   status: active
@@ -2700,7 +2713,10 @@ agents:
   version: 1.0.0
 - id: security-advisory-resolver
   name: security-advisory-resolver
-  description: Automatically investigate and resolve security advisories from cargo audit, pip-audit, and other security scanning tools. Tests compatibility of updates and creates fix PRs.
+  description: >-
+    Automatically investigate and resolve security advisories from cargo audit,
+    pip-audit, and other security scanning tools. Tests compatibility of updates
+    and creates fix PRs.
   file: .github/agents/security-advisory-resolver/agent.yaml
   directory: .github/agents
   status: active
