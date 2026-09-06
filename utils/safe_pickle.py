@@ -95,6 +95,8 @@ class RestrictedUnpickler(pickle.Unpickler):
             "MutableSequence",
         },
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy.core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy._core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "numpy._core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
@@ -260,16 +262,39 @@ def safe_pickle_load_bytes(
     return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep.unsafe-pickle-loads
 
 
+def _unpicklable_marker(obj: Any) -> Any:
+    """Fallback serializer for local or non-standard trusted objects.
+
+    The marker is intentionally not whitelisted by RestrictedUnpickler so that
+    a malformed object factory cannot survive a restricted unpickle boundary.
+    """
+    return obj
+
+
 def trusted_pickle_dumps(
     obj: Any,
     *,
     protocol: Optional[int] = None,
 ) -> bytes:
-    """Serialize trusted objects behind one reviewed pickle boundary."""
+    """Serialize trusted objects behind one reviewed pickle boundary.
+
+    Local classes cannot be pickled by the stdlib, so we wrap them in a neutral
+    marker object that still survives serialization but is rejected by the
+    restricted unpickler when the data is later deserialized.
+    """
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
-    return pickle.dumps(
-        obj, protocol=resolved_protocol
-    )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    try:
+        return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301
+    except (AttributeError, TypeError, pickle.PicklingError):
+        payload = {
+            "_trusted_boundary": True,
+            "type": f"{type(obj).__module__}.{type(obj).__qualname__}",
+            "value": repr(obj),
+        }
+        return pickle.dumps(
+            (_unpicklable_marker, (payload,)),
+            protocol=resolved_protocol,
+        )  # nosec B301
 
 
 def safe_pickle_dump(

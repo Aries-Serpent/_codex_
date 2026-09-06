@@ -1,0 +1,36 @@
+{
+  "counts": {
+    "high": 1,
+    "medium": 1,
+    "low": 1,
+    "total": 3
+  },
+  "weights": {
+    "high": 0.05,
+    "medium": 0.02,
+    "low": 0.01
+  },
+  "findings": [
+    {
+      "file": "f1.txt",
+      "span": "AKIAABCDEFGHIJKLMNOP",
+      "entropy": 4.2,
+      "length": 20,
+      "severity": "high"
+    },
+    {
+      "file": "f2.txt",
+      "span": "123e4567-e89b-12d3-a456-426614174000",
+      "entropy": 3.9,
+      "length": 36,
+      "severity": "medium"
+    },
+    {
+      "file": "f3.txt",
+      "span": "moderateEntropyTokenXYZ",
+      "entropy": 3.6,
+      "length": 23,
+      "severity": "low"
+    }
+  ]
+}

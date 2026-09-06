@@ -48,9 +48,13 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     text = _ensure_str(value)
     # Remove newlines and control characters that could be used for log injection
     sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
-    # Truncate to reasonable length
+    # Keep the final string within the requested maximum length.
+    if max_length <= 0:
+        return ""
     if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length] + "...[truncated]"
+        suffix = "...[truncated]"
+        keep = max(0, max_length - len(suffix))
+        sanitized = sanitized[:keep] + suffix
     return sanitized
 
 
@@ -215,43 +219,42 @@ def enforce_absolute_path(path: str) -> Path:
         raise SecurityError(f"Failed to resolve path: {path}") from err
 
 
-def sanitize_path(path: Path, base_dir: Path) -> Path:
-    """Sanitize and validate a path within a base directory.
+def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str:
+    """Sanitize and normalize a filesystem path.
 
-    Uses pathlib.Path.resolve() with parent directory containment checks
-    to prevent directory traversal attacks (CWE-22).
-
-    Args:
-        path: Path to sanitize
-        base_dir: Base directory to constrain path within
-
-    Returns:
-        Sanitized absolute Path object
-
-    Raises:
-        ValueError: If path escapes base_dir or contains traversal
-
-    Security:
-        - Resolves symlinks to prevent symlink escape attacks
-        - Validates path containment via relative_to() check
-        - Ensures all paths are constrained within base_dir
+    This is intentionally permissive when no base_dir is supplied so callers can
+    safely normalize user-controlled strings without crashing. When base_dir is
+    provided, the resolved path is constrained to remain beneath that directory.
     """
+    if path is None:
+        return ""
+
+    raw = str(path)
+    if raw == "":
+        return ""
+
+    sanitized = raw.replace("\\", "/")
+    sanitized = sanitized.replace("//", "/")
+    sanitized = sanitized.replace("\x00", "")
+    sanitized = "".join(ch for ch in sanitized if ch.isprintable() or ch in {"\n", "\r", "\t"})
+    sanitized = re.sub(r"[\r\n\t]", " ", sanitized)
+
+    if base_dir is None:
+        return sanitized
+
+    base = Path(base_dir).expanduser().resolve(strict=False)
+    candidate = Path(sanitized)
+    resolved = (base / candidate) if not candidate.is_absolute() else candidate
+
     try:
-        # Resolve both paths to absolute, handling symlinks
-        abs_path = path.resolve()
-        abs_base = base_dir.resolve()
-
-        # Check if path is within base_dir
-        # This will raise ValueError if abs_path is outside abs_base
-        abs_path.relative_to(abs_base)
-
-        return abs_path
+        resolved = resolved.expanduser().resolve(strict=False)
+        resolved.relative_to(base)
     except ValueError as err:
-        msg = f"Path {path} is outside base directory {base_dir}"
-        raise ValueError(msg) from err
+        raise ValueError(f"Path {path} is outside base directory {base_dir}") from err
     except (RuntimeError, OSError) as err:
-        msg = f"Failed to resolve path {path} within base directory {base_dir}"
-        raise ValueError(msg) from err
+        raise ValueError(f"Failed to resolve path {path} within base directory {base_dir}") from err
+
+    return str(resolved)
 
 
 def check_permissions(path: Path, mode: str) -> bool:
