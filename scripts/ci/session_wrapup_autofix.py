@@ -1737,27 +1737,28 @@ def select_merge_required_workflows(
     Copilot coding agent session is active on a PR:
 
     Always-Required (already pre-checked by _WEC_ALWAYS_REQUIRED):
-      - pre-merge-validation.yml        Pre-merge checks
-      - comment-review-gate.yml         Comment review gate
       - deferral-language-gate.yml      Deferral language guard
-      - agent-auth-delegation.yml       Agent token delegation / cognitive preflight
-      - workflow-execution-gate.yml     WEC gate — arms all checked workflows
+      - agent-auth-delegation.yml        Agent token delegation / cognitive preflight
+      - workflow-execution-gate.yml      WEC gate — arms all checked workflows
+      - cost-gate.yml                    Cost governance gate
+      - auto-approve-workflows           Auto-Approve pending workflow runs
 
-    Always-Active at repository level (fire on push — may need approval in Actions tab):
-      - unified-copilot-management.yml    Copilot Management Suite (agent-checkin, session-done, self-healing)
-      - cost-gate.yml                     Cost governance gate
+    Active opt-in workflows still present in the live baseline:
+      - auth-tests.yml                   Authentication Tests
+      - audit-qa-suite.yml               Audit & QA Suite (Unified)
+      - data-quality-suite.yml           Data Quality & Determinism Suite
+      - docker-build-push.yml            Build & push Docker image (GHCR)
+      - nox_gates.yml                    Nox quality gates (ruff, mypy, coverage)
+      - security-scanning-suite.yml      Full security audit (bandit, pip-audit)
+      - test-rag.yml                     RAG Module Tests (coverage ≥95%)
+      - scheduled-archival.yml           Scheduled archival
+      - scheduled-dependency-audit.yml   Dependency audit
 
     Not auto-checked by this function (_WEC_NEVER_CHECK; skipped at runtime):
       - iterative-self-healing-ci.yml    Iterative self-healing CI loop (manual activation only)
-
-    Opt-In: Selected by this function for merge readiness:
-      - validate.yml                    Validation Pipeline (detect-secrets, ruff, pre-commit)
-      - resilient_validation.yml        Resilient Validation Suite (full pytest, 4 shards)
-      - codeql-analysis.yml             CodeQL SAST analysis
-      - security-scanning-suite.yml     Full security audit (bandit, pip-audit)
-      - reference-integrity.yml         Reference integrity + agent size gate
-      - nox_gates.yml                   Nox quality gates (ruff, mypy, coverage)
-      - auto-approve-workflows          Auto-Approve pending workflow runs
+      - pre-merge-validation.yml         Legacy disabled gate (not on the active baseline)
+      - comment-review-gate.yml          Legacy disabled gate (not on the active baseline)
+      - unified-copilot-management.yml   Legacy disabled gate (not on the active baseline)
 
     Cognitive Brain Pattern
     -----------------------
@@ -1792,6 +1793,19 @@ def select_merge_required_workflows(
 
     activated: list[str] = []
     skipped_never_check: list[str] = []
+    seen_never_check: set[str] = set()
+
+    def _record_skipped_never_check(items: list[str]) -> None:
+        for item in items:
+            if item in seen_never_check:
+                continue
+            seen_never_check.add(item)
+            skipped_never_check.append(item)
+
+    # Guardrail: even if a future edit adds one of the never-check workflows to
+    # the merge-required set, we must still log the skip and never auto-enable it.
+    _record_skipped_never_check(sorted(_MERGE_REQUIRED_WORKFLOWS & _WEC_NEVER_CHECK))
+
     for fname, _label, _always in _WEC_ITEMS:
         if fname in _MERGE_REQUIRED_WORKFLOWS:
             # S178 hardening: a never-check item must NEVER be auto-activated
@@ -1801,7 +1815,7 @@ def select_merge_required_workflows(
             # below also prevents this at import time, but we double-check at
             # the activation site for runtime safety.
             if fname in _WEC_NEVER_CHECK:
-                skipped_never_check.append(fname)
+                _record_skipped_never_check([fname])
                 continue
             if not updated_state.get(fname, False):
                 updated_state[fname] = True
@@ -1817,6 +1831,9 @@ def select_merge_required_workflows(
         # in the GitHub Actions UI (not just buried in stderr).
         _summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
         if _summary_path:
+            summary_dir = os.path.dirname(_summary_path)
+            if summary_dir:
+                os.makedirs(summary_dir, exist_ok=True)
             try:
                 with open(_summary_path, "a", encoding="utf-8") as _sf:
                     _sf.write(
@@ -2029,17 +2046,11 @@ def validate_wec_compliance(
 
     wec_state = _extract_wec_state(pr_body)
 
-    # Step 2: Define required workflows by merge target
-    # (Map from WEC_CANONICAL_ITEMS.md)
-    is_agent_pr = head_ref.startswith(("copilot/", "feature/"))
-    required_workflows = {
-        "pre-merge-validation.yml",
-        "comment-review-gate.yml",
-        "deferral-language-gate.yml",
-        "workflow-execution-gate.yml",
-    }
-    if is_agent_pr:
-        required_workflows.add("agent-auth-delegation.yml")
+    # Step 2: Define required workflows by merge target.
+    # These are the live, active gate entries from the canonical WEC contract.
+    # Legacy names like pre-merge-validation.yml and comment-review-gate.yml are
+    # intentionally excluded because they are not part of the current automation surface.
+    required_workflows = set(_MERGE_REQUIRED_WORKFLOWS)
 
     if merge_target == "main":
         pass

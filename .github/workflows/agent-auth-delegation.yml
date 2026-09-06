@@ -335,12 +335,12 @@ jobs:
           \ violations must be self-corrected',\n  '- [ ] **7. REQ-13 (HARD STOP):**\
           \ Address ALL comments from `@mbaetiong` and ALL bot-posted comments (copilot-pull-request-reviewer,\
           \ github-actions, github-advanced-security, github-code-quality) **before**\
-          \ committing any new changes. CI gate `comment-review-gate.yml` enforces\
+          \ committing any new changes. CI gate `workflow-execution-gate.yml` enforces\
           \ this.',\n  '',\n  '### \u2699\uFE0F Policy Quick Reference',\n  '',\n\
           \  '| Rule | Requirement |',\n  '|------|-------------|',\n  '| **Pre-session**\
           \ | Review ALL bot comments + fix ALL failing CI checks FIRST |',\n  '|\
           \ **REQ-13** | Reply to ALL `mbaetiong` + critical-bot comments before new\
-          \ commits (enforced by `comment-review-gate.yml`) |',\n  '| Execution trigger\
+          \ commits (enforced by `workflow-execution-gate.yml`) |',\n  '| Execution trigger\
           \ | Within 60 seconds of reading a clear task |',\n  '| Self-review | Minimum\
           \ 5 passes before session close |',\n  '| Deferral | NEVER without: documented\
           \ blocker + 5 attempts + follow-up `@copilot` comment |',\n  '| Terminology\
@@ -664,73 +664,23 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}    - name: Ensure canonical WEC block is present
+      id: inject-wec
+      if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
+
+        '
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: "BODY=$(gh pr view \"${PR_NUMBER}\" --repo \"${{ github.repository }}\"\
-        \ --json body --jq '.body // \"\"')\n\n# Detect new canonical heading format\n\
-        if echo \"$BODY\" | grep -qF '## \U0001F504 Workflow Execution Checklist';\
-        \ then\n  echo \"\u2705 Canonical Workflow Execution Checklist (heading format)\
-        \ already present in PR  #${PR_NUMBER} \u2014 no injection needed\"\n  printf\
-        \ '### \u2705 Workflow Execution Checklist\\n\\nAlready present (canonical\
-        \ format) \u2014 no injection required.\\n' >> \"$GITHUB_STEP_SUMMARY\"\n\
-        \  exit 0\nfi\n\n# Also accept legacy bold-text marker to avoid double-injection\
-        \ during migration\nif echo \"$BODY\" | grep -qF '**\U0001F504 Workflow Execution\
-        \ Checklist**:'; then\n  echo \"\u26A0\uFE0F  Legacy WEC format detected in\
-        \ PR  #${PR_NUMBER} \u2014 migrating to canonical heading format\"\nfi\n\n\
-        # Extract existing checkbox state so maintainer selections are preserved.\n\
-        # Lines of form:  - [x] some-workflow.yml \u2014 description\n_WEC_NEVER_CHECK_ITEMS='copilot-agent-session-done.yml\
-        \ copilot-iterative-self-healing.yml auto-approve-workflows'\n_wec_is_never_check()\
-        \ {\n  case \" ${_WEC_NEVER_CHECK_ITEMS} \" in\n    *\" $1 \"*) return 0 ;;\n\
-        \    *) return 1 ;;\n  esac\n}\n_checked() {\n  local fname=\"$1\" always=\"\
-        $2\"\n  if [ \"$always\" = \"true\" ]; then printf 'x'; return; fi\n  if printf\
-        \ '%s\\n' \"$BODY\" | awk -v fname=\"$fname\" 'index($0, \"- [x] \" fname)\
-        \ == 1 { found = 1; exit } END { exit !found }'; then printf 'x'; return;\
-        \ fi\n  if _wec_is_never_check \"$fname\"; then printf ' '; return; fi\n \
-        \ printf ' '\n}\n\n# Strip ALL existing WEC variants to avoid duplication\n\
-        STRIPPED_BODY=$(printf '%s' \"$BODY\" \\\n  | sed '/^## \U0001F504 Workflow\
-        \ Execution Checklist/,$d' \\\n  | sed '/^\\*\\*\U0001F504 Workflow Execution\
-        \ Checklist\\*\\*:/,$d' \\\n  | sed '/^### \U0001F4B0 Cost Governance/,$d'\
-        \ \\\n  | sed '/^### \U0001F510 Agent Token Delegation/,$d')\n\n# Build new\
-        \ canonical WEC block preserving maintainer checkbox state\nWEC=$(printf '%s\\\
-        n' \\\n  '' \\\n  '---' \\\n  '' \\\n  '## \U0001F504 Workflow Execution Checklist'\
-        \ \\\n  '' \\\n  '### \u2705 Always Required \u2014 fire automatically on\
-        \ every push (cannot be skipped)' \\\n  \"- [x] pre-merge-validation.yml \u2014\
-        \ Pre-merge checks (always required)\" \\\n  \"- [x] comment-review-gate.yml\
-        \ \u2014 Comment review gate (always required)\" \\\n  \"- [x] deferral-language-gate.yml\
-        \ \u2014 Deferral language guard (always required)\" \\\n  \"- [x] agent-auth-delegation.yml\
-        \ \u2014 Agent token delegation (always required)\" \\\n  \"- [x] workflow-execution-gate.yml\
-        \ \u2014 WEC gate \u2014 parse checklist & arm allowed workflows (always required)\"\
-        \ \\\n  '' \\\n  '### \U0001F504 Always Active \u2014 fire via push/workflow_run\
-        \ (need approval in Actions tab)' \\\n  \"- [x] copilot-agent-checkin.yml\
-        \ \u2014 Agent check-in / S221 guard (fires on push)\" \\\n  \"- [$(_checked\
-        \ copilot-agent-session-done.yml false)] copilot-agent-session-done.yml \u2014\
-        \ Auto-post @copilot review after agent session (fires on workflow_run)\"\
-        \ \\\n  \"- [$(_checked copilot-iterative-self-healing.yml false)] copilot-iterative-self-healing.yml\
-        \ \u2014 Iterative self-healing CI loop (fires on workflow_run \u2014 needs\
-        \ approval)\" \\\n  \"- [x] cost-gate.yml \u2014 Cost governance gate (called\
-        \ by agent-auth-delegation)\" \\\n  '' \\\n  '### \u26A1 Auto-Approve' \\\n\
-        \  \"- [$(_checked auto-approve-workflows false)] auto-approve-workflows \u2014\
-        \ Auto-Approve workflow to run (approves all pending runs on last commit SHA)\"\
-        \ \\\n  '' \\\n  '### \U0001F9EA Opt-In: Testing & Validation' \\\n  \"- [$(_checked\
-        \ validate.yml false)] validate.yml \u2014 Validation Pipeline (detect-secrets,\
-        \ ruff, pre-commit, sync-tracked)\" \\\n  \"- [$(_checked resilient_validation.yml\
-        \ false)] resilient_validation.yml \u2014 Resilient Validation Suite (full\
-        \ pytest, 4 shards)\" \\\n  \"- [$(_checked test-rag.yml false)] test-rag.yml\
-        \ \u2014 RAG Module Tests (coverage \u226595%)\" \\\n  \"- [$(_checked nox_gates.yml\
-        \ false)] nox_gates.yml \u2014 Nox quality gates (ruff, mypy, coverage)\"\
-        \ \\\n  '' \\\n  '### \U0001F512 Opt-In: Security & Quality' \\\n  \"- [$(_checked\
-        \ security-scanning-suite.yml false)] security-scanning-suite.yml \u2014 Full\
-        \ security audit (bandit, pip-audit)\" \\\n  '' \\\n  '### \U0001F4C4 Opt-In:\
-        \ Documentation' \\\n  \"- [$(_checked documentation-link-checker.yml false)]\
-        \ documentation-link-checker.yml \u2014 Documentation link checker\" \\\n\
-        \  '' \\\n  '> Instructions for Copilot Agent: During wrap-up, check ONLY\
-        \ the workflows needed for' \\\n  '> this session. Unchecked workflows will\
-        \ be SKIPPED by the gate.' \\\n  \"> Never auto-enable: ${_WEC_NEVER_CHECK_ITEMS}\"\
-        )\n\nUPDATED_BODY=\"${STRIPPED_BODY}${WEC}\"\ngh pr edit \"${PR_NUMBER}\"\
-        \ --repo \"${{ github.repository }}\" --body \"${UPDATED_BODY}\"\necho \"\u2705\
-        \ Canonical Workflow Execution Checklist (heading format) injected into PR\
-        \  #${PR_NUMBER}\"\nprintf '### \u2705 Workflow Execution Checklist\\n\\nCanonical\
-        \ format injected \u2014 approval gates are now armed.\\n' >> \"$GITHUB_STEP_SUMMARY\"\
-        \n"
+      run: |
+        set -euo pipefail
+        python3 scripts/ci/session_wrapup_autofix.py --fix-pr-body --pr-number "${PR_NUMBER}"
+        echo "✅ Canonical Workflow Execution Checklist restored for PR #${PR_NUMBER}"
+        printf '### ✅ Workflow Execution Checklist
+
+Canonical WEC block regenerated and maintainer selections preserved.
+' >> "$GITHUB_STEP_SUMMARY"
     - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
       id: timebox_ack_check
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
