@@ -387,7 +387,7 @@ def tests_trainer(session: nox.Session) -> None:
     """Run the focused trainer stack tests."""
 
     _ensure_pip_cache(session)
-    _install(session, "-e", ".[test]")
+    _install(session, "-e", ".[full]")
     _export_env(session)
     session.run(
         "pytest",
@@ -504,7 +504,7 @@ def cli_smoke(session: nox.Session) -> None:
     """Exercise the Typer CLI locally without network services."""
 
     _ensure_pip_cache(session)
-    _install(session, "-e", ".[test]")
+    _install(session, "-e", ".[full]")
     _export_env(session)
     session.run("python", "-m", "codex_cli.app", "--help")
     session.run("python", "-m", "codex_cli.app", "version")

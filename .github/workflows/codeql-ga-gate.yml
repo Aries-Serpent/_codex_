@@ -70,22 +70,35 @@ jobs:
     - name: Parse CodeQL Results
       id: analyze
       shell: bash
-      run: "set +e\n\n# Initialize counters\nCRITICAL=0\nHIGH=0\nMEDIUM=0\n\n# Try\
-        \ to find SARIF results\nSARIF_FILES=$(find . -name \"*.sarif\" -type f 2>/dev/null)\n\
-        \nif [ -n \"$SARIF_FILES\" ]; then\n  # Use first SARIF file found\n  SARIF_FILE=$(echo\
-        \ \"$SARIF_FILES\" | head -1)\n  \n  echo \"Processing SARIF file: $SARIF_FILE\"\
-        \n  \n  # Count alerts by severity using jq\n  CRITICAL=$(jq '[.runs[].results[]\
-        \ | select(.level == \"error\" or .level == \"warning\")] | length' \"$SARIF_FILE\"\
-        \ 2>/dev/null || echo \"0\")\n  HIGH=$(jq '[.runs[].results[] | select(.level\
-        \ == \"warning\")] | length' \"$SARIF_FILE\" 2>/dev/null || echo \"0\")\n\
-        \  MEDIUM=$(jq '[.runs[].results[] | select(.level == \"note\")] | length'\
-        \ \"$SARIF_FILE\" 2>/dev/null || echo \"0\")\nfi\n\necho \"critical_count=$CRITICAL\"\
-        \ >> $GITHUB_OUTPUT\necho \"high_count=$HIGH\" >> $GITHUB_OUTPUT\necho \"\
-        medium_count=$MEDIUM\" >> $GITHUB_OUTPUT\n\n# Report to summary\necho \"##\
-        \ CodeQL Alert Analysis\" >> $GITHUB_STEP_SUMMARY\necho \"| Severity | Count\
-        \ |\" >> $GITHUB_STEP_SUMMARY\necho \"|----------|-------|\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"| Critical | $CRITICAL |\" >> $GITHUB_STEP_SUMMARY\necho \"| High |\
-        \ $HIGH |\" >> $GITHUB_STEP_SUMMARY\necho \"| Medium | $MEDIUM |\" >> $GITHUB_STEP_SUMMARY\n"
+      run: |
+        set +e
+
+        CRITICAL=0
+        HIGH=0
+        MEDIUM=0
+
+        SARIF_FILES=$(find . -name "*.sarif" -type f 2>/dev/null | sort)
+        if [ -z "$SARIF_FILES" ]; then
+          echo "No SARIF files were produced; treating this as a zero-alert configuration result."
+        else
+          SARIF_FILE=$(printf '%s\n' "$SARIF_FILES" | head -n 1)
+          echo "Processing SARIF file: $SARIF_FILE"
+
+          CRITICAL=$(jq '[.runs[].results[] | select(.level == "error" or .level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+          HIGH=$(jq '[.runs[].results[] | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+          MEDIUM=$(jq '[.runs[].results[] | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+        fi
+
+        echo "critical_count=$CRITICAL" >> "$GITHUB_OUTPUT"
+        echo "high_count=$HIGH" >> "$GITHUB_OUTPUT"
+        echo "medium_count=$MEDIUM" >> "$GITHUB_OUTPUT"
+
+        echo "## CodeQL Alert Analysis" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Severity | Count |" >> "$GITHUB_STEP_SUMMARY"
+        echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Critical | $CRITICAL |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| High | $HIGH |" >> "$GITHUB_STEP_SUMMARY"
+        echo "| Medium | $MEDIUM |" >> "$GITHUB_STEP_SUMMARY"
     - name: Upload CodeQL results artifact
       if: always()
       uses: actions/upload-artifact@v5

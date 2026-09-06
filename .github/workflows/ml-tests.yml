@@ -55,17 +55,32 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
-      - name: Install dependencies
+      - name: Install project and ML runtime dependencies
         run: |
-          set -e
+          set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -r requirements.txt
-          python -m pip install pytest==8.4.2 pytest-cov==7.0.0 pytest-mock==3.14.0 pytest-timeout==2.4.0
+          python -m pip install -e ".[full]"
+          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          python - <<'PY'
+          import importlib
+          for name in [
+              "numpy",
+              "torch",
+              "transformers",
+              "sentencepiece",
+              "datasets",
+              "accelerate",
+              "peft",
+              "pytest",
+          ]:
+              importlib.import_module(name)
+          print("ML dependency preflight OK")
+          PY
 
       - name: Run ${{ matrix.test-suite }} tests
         run: |
-          set -e
+          set -euo pipefail
+          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           pytest tests/${{ matrix.test-suite }}/ \
             -v \
             --cov=src \
@@ -103,17 +118,32 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
-      - name: Install dependencies
+      - name: Install project and ML runtime dependencies
         run: |
-          set -e
+          set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -r requirements.txt
-          python -m pip install pytest==8.4.2 pytest-timeout==2.4.0
+          python -m pip install -e ".[full]"
+          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          python - <<'PY'
+          import importlib
+          for name in [
+              "numpy",
+              "torch",
+              "transformers",
+              "sentencepiece",
+              "datasets",
+              "accelerate",
+              "peft",
+              "pytest",
+          ]:
+              importlib.import_module(name)
+          print("ML dependency preflight OK")
+          PY
 
       - name: Run integration tests
         run: |
-          set -e
+          set -euo pipefail
+          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           pytest tests/integration/ \
             -v \
             -m "integration" \

@@ -146,10 +146,6 @@ query-filters:
       id: js/workflow/untrusted-checkout
       path: .github/workflows/app-package-download.yml
 
-# Python-specific configuration
-python:
-  version: "3.12"
-
-# Go-specific configuration
-go:
-  version: "1.21"
+# Keep this file limited to CodeQL-supported top-level keys.
+# Language-specific blocks such as `python:` and `go:` are not supported here
+# and cause the analysis configuration to be rejected.

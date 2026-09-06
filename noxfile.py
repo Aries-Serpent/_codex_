@@ -6,6 +6,7 @@ All session definitions are maintained in configs/development/noxfile.py.
 
 from __future__ import annotations
 
+import os
 import shutil
 import sys
 from importlib.util import module_from_spec, spec_from_file_location
@@ -44,7 +45,19 @@ def gates(session: nox.Session) -> None:
 @nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
 def tests(session: nox.Session) -> None:
     """Run the project test suite with coverage enabled."""
-    session.chdir(str(Path(__file__).resolve().parent))
+    repo_root = Path(__file__).resolve().parent
+    session.chdir(str(repo_root))
+    session.env.setdefault("PYTHONUTF8", "1")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.env["PYTHONPATH"] = os.pathsep.join(
+        [
+            str(repo_root / "src"),
+            str(repo_root / "agents" / "codex_client"),
+            session.env.get("PYTHONPATH", ""),
+        ]
+    )
+    session.install("-e", ".[full]")
+    session.install("pytest", "pytest-cov", "pytest-randomly", "pytest-timeout")
     session.run(
         "pytest",
         "-p",
