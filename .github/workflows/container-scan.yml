@@ -1,4 +1,4 @@
-name: Container Security Scan
+name: Art_Container Security Scan
 
 'on':
   push:

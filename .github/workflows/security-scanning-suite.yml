@@ -1,4 +1,4 @@
-name: Security Scanning Suite
+name: Art_Security Scanning Suite
 'on':
   push:
     branches:
