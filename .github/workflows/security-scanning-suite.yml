@@ -136,7 +136,7 @@ jobs:
       scan_type: ${{ steps.meta.outputs.scan_type }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v4
       with:
         persist-credentials: false
     - name: Resolve lane metadata defaults safely
@@ -186,7 +186,7 @@ jobs:
         ,\n  \"sha\": \"${GITHUB_SHA}\"\n}\nEOF\n\necho \"input_lock_sha256=${SHA}\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
     - name: Upload lane contract artifact
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-lane-contract
         path: '.codex/contracts/lane-manifest.json
@@ -229,7 +229,7 @@ jobs:
         - python
         - javascript
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - uses: github/codeql-action/init@v4
@@ -280,7 +280,7 @@ jobs:
         \  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload CodeQL artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-codeql-${{ matrix.language }}
         path: 'codeql-sarif/${{ matrix.language }}/
@@ -316,7 +316,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - name: Set up Python
@@ -385,7 +385,7 @@ jobs:
         ${{ job.status }}\"\n}\nEOF\n"
     - name: Upload Semgrep results artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-semgrep
         path: 'semgrep-results.sarif
@@ -438,7 +438,7 @@ jobs:
         - docker/Dockerfile.cpu
         - docker/Dockerfile.gpu
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - name: Validate Dockerfile exists
@@ -495,7 +495,7 @@ jobs:
         status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload container scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-container-${{ strategy.job-index }}
         path: 'trivy-fs-results-${{ strategy.job-index }}.sarif
@@ -539,7 +539,7 @@ jobs:
         - javascript
         - rust
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - name: Cache Python dependencies (Layer 1)
@@ -602,7 +602,7 @@ jobs:
         \ }}\",\n  \"status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload CVE scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-cve-${{ matrix.ecosystem }}
         path: '*-cve-audit.json
@@ -629,7 +629,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -681,7 +681,7 @@ jobs:
         \ }}\"\n}\nEOF\n"
     - name: Upload dependency artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-dependency
         path: 'pip-audit.json
@@ -722,7 +722,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -770,7 +770,7 @@ jobs:
         \n}\nEOF\n"
     - name: Upload secret scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-secrets
         path: '.secrets.baseline
@@ -802,7 +802,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -847,7 +847,7 @@ jobs:
         \    \"sbom-summary.md\"\n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload SBOM artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-sbom
         path: 'sbom.json
@@ -921,7 +921,7 @@ jobs:
         \n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload consolidated summary
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-summary
         path: 'security-suite-summary/
@@ -943,7 +943,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v4
       with:
         persist-credentials: false
     - name: Download all security-suite artifacts
@@ -1024,7 +1024,7 @@ jobs:
         \n"
     - name: Upload comprehensive findings artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-comprehensive-findings
         path: '.codex/security-findings-comprehensive.json
@@ -1118,7 +1118,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload contract report
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-suite-artifact-contract-report
         path: security-artifact-contract-report.md
@@ -1134,7 +1134,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -1159,7 +1159,7 @@ jobs:
         \n"
     - name: Upload Cache Artifacts
       if: success()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-cache
         path: .codex/security-cache/
@@ -1167,7 +1167,7 @@ jobs:
         retention-days: 90
     - name: Upload Trend Report
       if: success()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: security-findings-trend-report
         path: .codex/security-findings-trend-report.md
@@ -1195,7 +1195,7 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
