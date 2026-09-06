@@ -49,7 +49,7 @@ jobs:
       gate_status: ${{ steps.gate-decision.outputs.status }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -174,7 +174,7 @@ jobs:
       security-events: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Create Security Alert Issue
       uses: actions/github-script@v9
       with:

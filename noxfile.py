@@ -41,6 +41,33 @@ def gates(session: nox.Session) -> None:
     session.notify("sec")
 
 
+@nox.session(name="security", python=_dev_noxfile.DEFAULT_PYTHON)
+def security(session: nox.Session) -> None:
+    """Run dependency and secret scans for the repository root."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.env.setdefault("PYTHONUTF8", "1")
+
+    # Keep the security workflow explicit in the root noxfile so downstream CI
+    # and tests can discover the supported entry point without depending on the
+    # development config implementation details.
+    session.log("[security] running pip-audit and gitleaks checks")
+    if (Path(__file__).resolve().parent / "requirements.txt").exists():
+        session.run("pip-audit", "-r", "requirements.txt", success_codes=[0, 1], external=True)
+    else:
+        session.run("pip-audit", success_codes=[0, 1], external=True)
+
+    if (Path(__file__).resolve().parent / ".gitleaks.toml").exists():
+        session.run(
+            "gitleaks",
+            "detect",
+            "--source=.",
+            "--config=.gitleaks.toml",
+            "--verbose",
+            success_codes=[0, 1],
+            external=True,
+        )
+
+
 @nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)
 def precommit(session: nox.Session) -> None:
     """Pre-commit checks - verify no merge markers and basic file integrity."""

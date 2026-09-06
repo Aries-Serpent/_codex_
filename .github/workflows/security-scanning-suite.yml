@@ -136,7 +136,7 @@ jobs:
       scan_type: ${{ steps.meta.outputs.scan_type }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Resolve lane metadata defaults safely
@@ -229,7 +229,7 @@ jobs:
         - python
         - javascript
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: github/codeql-action/init@v4
@@ -316,7 +316,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Python
@@ -476,7 +476,7 @@ jobs:
         - docker/Dockerfile.cpu
         - docker/Dockerfile.gpu
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Validate Dockerfile exists
@@ -577,7 +577,7 @@ jobs:
         - javascript
         - rust
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Cache Python dependencies (Layer 1)
@@ -667,7 +667,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -760,7 +760,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -840,7 +840,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -981,7 +981,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Download all security-suite artifacts
@@ -1172,7 +1172,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -1233,7 +1233,7 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

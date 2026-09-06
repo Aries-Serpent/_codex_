@@ -691,6 +691,13 @@ def sec(session: nox.Session) -> None:
             session.run("pip-audit")
 
 
+@nox.session(name="security", python=DEFAULT_PYTHON)
+def security(session: nox.Session) -> None:
+    """Compatibility alias for the repo-level security gate."""
+
+    session.notify("sec")
+
+
 @nox.session(python=DEFAULT_PYTHON)
 def sec_scan(session: nox.Session) -> None:
     """Run Bandit using the repository configuration."""

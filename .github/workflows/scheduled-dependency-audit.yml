@@ -47,7 +47,7 @@ jobs:
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -118,7 +118,7 @@ jobs:
         - cpu
         - gpu
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -189,7 +189,7 @@ jobs:
         - '3.12'
         - '3.13'
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -225,7 +225,7 @@ jobs:
       contents: read
       issues: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Download current baseline (amd64)
@@ -278,7 +278,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Python

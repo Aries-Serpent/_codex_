@@ -292,7 +292,6 @@ jobs:
         name: semgrep-sarif-${{ github.run_id }}
         path: |
           semgrep.sarif
-          semgrep-results.json
           semgrep-scan.log
           semgrep-scan-fallback.log
         if-no-files-found: warn
