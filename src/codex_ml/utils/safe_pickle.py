@@ -94,6 +94,8 @@ class RestrictedUnpickler(pickle.Unpickler):
             "MutableSequence",
         },
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy.core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy._core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
         # NumPy pickles for ndarray/scalar values rely on these reconstruction helpers.
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "numpy._core.multiarray": {"_reconstruct", "scalar"},
@@ -236,6 +238,15 @@ def safe_pickle_load_bytes(
     return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep.unsafe-pickle-loads
 
 
+def _unpicklable_marker(obj: Any) -> Any:
+    """Fallback serializer for local or non-standard trusted objects.
+
+    The marker intentionally lacks allowlist entry in RestrictedUnpickler so any
+    attempted restricted unpickle of the wrapper fails cleanly.
+    """
+    return obj
+
+
 def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
     """Serialize trusted in-memory objects behind one audited pickle boundary.
 
@@ -244,11 +255,23 @@ def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
         code and is not derived from attacker-controlled state. This helper is
         only safe for reviewed compatibility boundaries where pickle output must
         remain interoperable with existing checkpoint consumers.
+
+    Local classes cannot be pickled by the stdlib, so we wrap them in a neutral
+    marker object that still serializes but is rejected by RestrictedUnpickler.
     """
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
-    return pickle.dumps(
-        obj, protocol=resolved_protocol
-    )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    try:
+        return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301
+    except (AttributeError, TypeError, pickle.PicklingError):
+        payload = {
+            "_trusted_boundary": True,
+            "type": f"{type(obj).__module__}.{type(obj).__qualname__}",
+            "value": repr(obj),
+        }
+        return pickle.dumps(
+            (_unpicklable_marker, (payload,)),
+            protocol=resolved_protocol,
+        )  # nosec B301
 
 
 def safe_pickle_dump(

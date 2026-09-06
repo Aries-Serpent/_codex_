@@ -219,7 +219,7 @@ def enforce_absolute_path(path: str) -> Path:
         raise SecurityError(f"Failed to resolve path: {path}") from err
 
 
-def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str:
+def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str | Path:
     """Sanitize and normalize a filesystem path.
 
     This is intentionally permissive when no base_dir is supplied so callers can
@@ -231,7 +231,7 @@ def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str:
 
     raw = str(path)
     if raw == "":
-        return ""
+        return path if isinstance(path, Path) else ""
 
     sanitized = raw.replace("\\", "/")
     sanitized = sanitized.replace("//", "/")
@@ -240,7 +240,7 @@ def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str:
     sanitized = re.sub(r"[\r\n\t]", " ", sanitized)
 
     if base_dir is None:
-        return sanitized
+        return Path(sanitized) if isinstance(path, Path) else sanitized
 
     base = Path(base_dir).expanduser().resolve(strict=False)
     candidate = Path(sanitized)
@@ -254,7 +254,7 @@ def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str:
     except (RuntimeError, OSError) as err:
         raise ValueError(f"Failed to resolve path {path} within base directory {base_dir}") from err
 
-    return str(resolved)
+    return resolved if isinstance(path, Path) else str(resolved)
 
 
 def check_permissions(path: Path, mode: str) -> bool:
