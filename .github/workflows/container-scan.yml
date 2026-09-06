@@ -1,0 +1,95 @@
+name: Container Security Scan
+
+'on':
+  push:
+    branches:
+      - main
+      - 0D_base_
+      - develop
+      - "copilot/**"
+    paths:
+      - ".config/Dockerfile*"
+      - "docker/**"
+  pull_request:
+    branches:
+      - main
+      - 0D_base_
+      - develop
+    paths:
+      - ".config/Dockerfile*"
+      - "docker/**"
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  trivy-scan:
+    name: Trivy Scan — ${{ matrix.dockerfile }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - ".config/Dockerfile"
+          - "docker/Dockerfile.cpu"
+          - "docker/Dockerfile.gpu"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Validate Dockerfile exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f "${{ matrix.dockerfile }}" ]; then
+            echo "Skipping scan for missing Dockerfile: ${{ matrix.dockerfile }}"
+            exit 0
+          fi
+
+      - name: Build image for scanning
+        id: build
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f "${{ matrix.dockerfile }}" ]; then
+            echo "Dockerfile not found: ${{ matrix.dockerfile }}"
+            exit 0
+          fi
+          docker build -f "${{ matrix.dockerfile }}" -t "codex-scan:${{ strategy.job-index }}" .
+
+      - name: Run Trivy filesystem scan
+        if: always()
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd341e2811a1b3a3d15dc3e3c1e5df2b2f7
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results-${{ strategy.job-index }}.sarif
+          severity: CRITICAL,HIGH
+          exit-code: "0"
+
+      - name: Upload SARIF to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-results-${{ strategy.job-index }}.sarif
+
+      - name: Upload scan artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
+          path: |
+            trivy-results-${{ strategy.job-index }}.sarif
+          if-no-files-found: ignore
+          retention-days: 30
