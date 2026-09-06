@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/configs/schemas/security_allowlist.schema.json",
+  "allowlisted_vulnerabilities": []
+}

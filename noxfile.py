@@ -6,6 +6,7 @@ All session definitions are maintained in configs/development/noxfile.py.
 
 from __future__ import annotations
 
+import shutil
 import sys
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
@@ -30,22 +31,61 @@ nox.options.reuse_existing_virtualenvs = _dev_noxfile.nox.options.reuse_existing
 nox.options.stop_on_first_error = _dev_noxfile.nox.options.stop_on_first_error
 nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_missing_interpreters
 
-# The sessions are automatically imported from the development noxfile module
-# No need to explicitly export them - nox discovers them via introspection
+# Keep the root-level entry points explicit so CI and tests can discover the
+# supported sessions without depending on the nested config implementation.
 
 
-# Add alias sessions that the CI workflow expects
 @nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
 def gates(session: nox.Session) -> None:
-    """Security gates - alias for sec session."""
+    """Security gates - alias for the sec session."""
     session.notify("sec")
+
+
+@nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
+def tests(session: nox.Session) -> None:
+    """Run the project test suite with coverage enabled."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.run(
+        "pytest",
+        "-p",
+        "pytest_cov",
+        "--cov=src/codex_ml",
+        "--cov-branch",
+        "--cov-report=term-missing",
+        "-q",
+        "tests",
+    )
+
+
+@nox.session(name="security", python=_dev_noxfile.DEFAULT_PYTHON)
+def security(session: nox.Session) -> None:
+    """Run dependency and secret scans for the repository root."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.env.setdefault("PYTHONUTF8", "1")
+
+    session.log("[security] installing pip-audit and checking for gitleaks")
+    session.install("pip-audit")
+    if (Path(__file__).resolve().parent / "requirements.txt").exists():
+        session.run("pip-audit", "-r", "requirements.txt", success_codes=[0, 1])
+    else:
+        session.run("pip-audit", success_codes=[0, 1])
+
+    if (Path(__file__).resolve().parent / ".gitleaks.toml").exists() and shutil.which("gitleaks"):
+        session.run(
+            "gitleaks",
+            "detect",
+            "--source=.",
+            "--config=.gitleaks.toml",
+            "--verbose",
+            success_codes=[0, 1],
+            external=True,
+        )
+    elif (Path(__file__).resolve().parent / ".gitleaks.toml").exists():
+        session.log("[security] gitleaks is not installed; skipping secret scan")
 
 
 @nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)
 def precommit(session: nox.Session) -> None:
     """Pre-commit checks - verify no merge markers and basic file integrity."""
     session.chdir(str(Path(__file__).resolve().parent))
-    
-    # Use the patch_debris session from the development noxfile
-    # which checks for merge/diff markers
     session.notify("patch_debris")

@@ -31,3 +31,14 @@
 {"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-5/test_stream_paths_mixed_source0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-05T00:31:15.614584+00:00"}
 {"component": "connectors.remote", "details": {"count": 1, "path": "datasets/remote.jsonl"}, "event": "listed", "timestamp": "2026-09-05T00:31:15.615533+00:00"}
 {"component": "connectors.remote", "details": {"path": "datasets/remote.jsonl", "size": 39}, "event": "read", "timestamp": "2026-09-05T00:31:15.616508+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-0/test_stream_paths_connector_ur0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-06T07:47:22.299077+00:00"}
+{"component": "connectors.remote", "details": {"file_count": 1, "path": "datasets/sample.jsonl", "size": 36}, "event": "write", "timestamp": "2026-09-06T07:47:22.300767+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-0/test_stream_paths_connector_ur0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-06T07:47:22.301462+00:00"}
+{"component": "connectors.remote", "details": {"count": 1, "path": "datasets/sample.jsonl"}, "event": "listed", "timestamp": "2026-09-06T07:47:22.302619+00:00"}
+{"component": "connectors.remote", "details": {"path": "datasets/sample.jsonl", "size": 36}, "event": "read", "timestamp": "2026-09-06T07:47:22.303848+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/home/runner/.codex/remote_cache", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-06T07:47:22.307121+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-0/test_stream_paths_mixed_source0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-06T07:47:22.313760+00:00"}
+{"component": "connectors.remote", "details": {"file_count": 1, "path": "datasets/remote.jsonl", "size": 39}, "event": "write", "timestamp": "2026-09-06T07:47:22.315005+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-0/test_stream_paths_mixed_source0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-09-06T07:47:22.315622+00:00"}
+{"component": "connectors.remote", "details": {"count": 1, "path": "datasets/remote.jsonl"}, "event": "listed", "timestamp": "2026-09-06T07:47:22.316543+00:00"}
+{"component": "connectors.remote", "details": {"path": "datasets/remote.jsonl", "size": 39}, "event": "read", "timestamp": "2026-09-06T07:47:22.317782+00:00"}

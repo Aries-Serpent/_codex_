@@ -1,4 +1,4 @@
-name: CodeQL GA Security Gate
+name: Art_CodeQL GA Security Gate
 'on':
   push:
     branches:
@@ -49,7 +49,7 @@ jobs:
       gate_status: ${{ steps.gate-decision.outputs.status }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -86,6 +86,15 @@ jobs:
         \ |\" >> $GITHUB_STEP_SUMMARY\necho \"|----------|-------|\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"| Critical | $CRITICAL |\" >> $GITHUB_STEP_SUMMARY\necho \"| High |\
         \ $HIGH |\" >> $GITHUB_STEP_SUMMARY\necho \"| Medium | $MEDIUM |\" >> $GITHUB_STEP_SUMMARY\n"
+    - name: Upload CodeQL results artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: codeql-ga-sarif-${{ github.run_id }}
+        path: |
+          **/*.sarif
+        if-no-files-found: warn
+        retention-days: 30
     - name: Gate Decision & Policy Enforcement
       id: gate-decision
       shell: bash
@@ -148,7 +157,7 @@ jobs:
         \ \"Audit trail recorded: $AUDIT_LOG\"\n"
     - name: Upload Gate Audit Logs
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: codeql-ga-gate-audit-${{ github.run_id }}
         path: .codex/security/gate_audit/
@@ -165,7 +174,7 @@ jobs:
       security-events: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
     - name: Create Security Alert Issue
       uses: actions/github-script@v9
       with:

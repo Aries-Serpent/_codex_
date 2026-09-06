@@ -1,4 +1,4 @@
-name: Generate SBOM
+name: Art_Generate SBOM
 on:
   workflow_call:
     secrets:

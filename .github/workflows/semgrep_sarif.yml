@@ -1,4 +1,4 @@
-name: Semgrep SAST (SARIF Upload)
+name: Art_Semgrep SAST (SARIF Upload)
 on:
   push:
     branches:
@@ -284,6 +284,18 @@ jobs:
         sarif_file: semgrep.sarif
         category: semgrep
         wait-for-processing: false
+
+    - name: Upload Semgrep SARIF artifact
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: semgrep-sarif-${{ github.run_id }}
+        path: |
+          semgrep.sarif
+          semgrep-scan.log
+          semgrep-scan-fallback.log
+        if-no-files-found: warn
+        retention-days: 30
 
     - name: Parse Semgrep results for blocking
       if: always()

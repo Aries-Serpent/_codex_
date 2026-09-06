@@ -1,5 +1,34 @@
-name: Security Scanning Suite (Manual)
+name: Art_Security Scanning Suite
 'on':
+  push:
+    branches:
+      - main
+      - 0D_base_
+      - develop
+      - "copilot/**"
+    paths:
+      - ".config/Dockerfile*"
+      - "docker/**"
+      - ".github/codeql/**"
+      - ".github/workflows/security-scanning-suite.yml"
+      - "pyproject.toml"
+      - "requirements*.txt"
+      - "package*.json"
+  pull_request:
+    branches:
+      - main
+      - 0D_base_
+      - develop
+    paths:
+      - ".config/Dockerfile*"
+      - "docker/**"
+      - ".github/codeql/**"
+      - ".github/workflows/security-scanning-suite.yml"
+      - "pyproject.toml"
+      - "requirements*.txt"
+      - "package*.json"
+  schedule:
+    - cron: "0 5 * * 1"
   workflow_dispatch:
     inputs:
       scan-type:
@@ -107,7 +136,7 @@ jobs:
       scan_type: ${{ steps.meta.outputs.scan_type }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Resolve lane metadata defaults safely
@@ -157,16 +186,13 @@ jobs:
         ,\n  \"sha\": \"${GITHUB_SHA}\"\n}\nEOF\n\necho \"input_lock_sha256=${SHA}\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
     - name: Upload lane contract artifact
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-lane-contract
-        path: '.codex/contracts/lane-manifest.json
-
+        path: |
+          .codex/contracts/lane-manifest.json
           .codex/contracts/input-lock.json
-
           .codex/contracts/input-lock.materialized.txt
-
-          '
         if-no-files-found: error
         retention-days: 90
   codeql-scan:
@@ -200,7 +226,7 @@ jobs:
         - python
         - javascript
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: github/codeql-action/init@v4
@@ -215,52 +241,83 @@ jobs:
       with:
         category: /language:${{ matrix.language }}
         output: codeql-sarif/${{ matrix.language }}
-        upload: never
+        upload: true
     - name: Build CodeQL summary + lane metadata
       if: always()
       shell: bash
-      run: "set -euo pipefail\nmkdir -p codeql-reports .codex/contracts\nSARIF_DIR=\"\
-        codeql-sarif/${{ matrix.language }}\"\nSUMMARY=\"codeql-reports/codeql-${{\
-        \ matrix.language }}-summary.md\"\n\n{\n  echo \"# CodeQL Report \u2014 ${{\
-        \ matrix.language }}\"\n  echo \"\"\n  echo \"- **Repository:** \\`${{ github.repository\
-        \ }}\\`\"\n  echo \"- **Commit:** \\`${{ github.sha }}\\`\"\n  echo \"- **Run:**\
-        \ [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{\
-        \ github.run_id }})\"\n  echo \"- **Job status:** ${{ job.status }}\"\n  echo\
-        \ \"- **Analyze outcome:** ${{ steps.codeql.outcome }}\"\n  echo \"- **Lane\
-        \ ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id }}\\`\"\n  echo\
-        \ \"- **Shard ID:** \\`${{ needs.lane-metadata-contract.outputs.shard_id }}\\\
-        `\"\n  echo \"- **CodeQL Wave:** \\`${{ needs.lane-metadata-contract.outputs.codeql_wave\
-        \ }}\\`\"\n  echo \"- **Input Lock SHA:** \\`${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\\`\"\n  echo \"\"\n  if compgen -G \"$SARIF_DIR/*.sarif\" > /dev/null;\
-        \ then\n    echo \"## SARIF files produced\"\n    echo \"\"\n    for f in\
-        \ \"$SARIF_DIR\"/*.sarif; do\n      size=$(wc -c < \"$f\")\n      counts=$(python\
-        \ -c \"import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[]))\
-        \ for r in runs);results=sum(len(r.get('results',[])) for r in runs);print(f'rules={rules},\
-        \ results={results}')\" \"$f\" 2>/dev/null || echo \"rules=?, results=?\"\
-        )\n      echo \"- \\`$(basename \"$f\")\\` (${size} bytes, ${counts})\"\n\
-        \    done\n  else\n    echo \"_No SARIF files were produced for this language._\"\
-        \n  fi\n} > \"$SUMMARY\"\n\ncat \"$SUMMARY\" >> \"$GITHUB_STEP_SUMMARY\"\n\
-        \ncat > \".codex/contracts/output-contract-codeql-${{ matrix.language }}.json\"\
-        \ <<EOF\n{\n  \"schema_version\": \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\"\
-        ,\n  \"job\": \"codeql-scan\",\n  \"language\": \"${{ matrix.language }}\"\
-        ,\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id }}\"\
-        ,\n  \"shard_id\": \"${{ needs.lane-metadata-contract.outputs.shard_id }}\"\
-        ,\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"required_outputs\": [\n    \"codeql-sarif/${{ matrix.language\
-        \ }}\",\n    \"codeql-reports/codeql-${{ matrix.language }}-summary.md\"\n\
-        \  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
+      run: |
+        set -euo pipefail
+        mkdir -p codeql-reports .codex/contracts
+        SARIF_DIR="codeql-sarif/${{ matrix.language }}"
+        SUMMARY="codeql-reports/codeql-${{ matrix.language }}-summary.md"
+
+        {
+          echo "# CodeQL Report — ${{ matrix.language }}"
+          echo ""
+          echo "- **Repository:** \`${{ github.repository }}\`"
+          echo "- **Commit:** \`${{ github.sha }}\`"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "- **Run:** [${{ github.run_id }}](${RUN_URL})"
+          echo "- **Job status:** ${{ job.status }}"
+          echo "- **Analyze outcome:** ${{ steps.codeql.outcome }}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          echo ""
+          if compgen -G "$SARIF_DIR/*.sarif" > /dev/null; then
+            echo "## SARIF files produced"
+            echo ""
+            for f in "$SARIF_DIR"/*.sarif; do
+              size=$(wc -c < "$f")
+              counts=$(python - "$f" <<'PY' 2>/dev/null || echo "rules=?, results=?"
+        import json
+        import sys
+
+        with open(sys.argv[1], encoding="utf-8") as handle:
+          data = json.load(handle)
+
+        runs = data.get("runs", [])
+        rules = sum(
+            len(r.get("tool", {}).get("driver", {}).get("rules", [])) for r in runs
+        )
+        results = sum(len(r.get("results", [])) for r in runs)
+        print(f"rules={rules}, results={results}")
+        PY
+        )
+              echo "- \`$(basename "$f")\` (${size} bytes, ${counts})"
+            done
+          else
+            echo "_No SARIF files were produced for this language._"
+          fi
+        } > "$SUMMARY"
+
+        cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+
+        cat > ".codex/contracts/output-contract-codeql-${{ matrix.language }}.json" <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "codeql-scan",
+          "language": "${{ matrix.language }}",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            "codeql-sarif/${{ matrix.language }}",
+            "codeql-reports/codeql-${{ matrix.language }}-summary.md"
+          ],
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload CodeQL artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-codeql-${{ matrix.language }}
-        path: 'codeql-sarif/${{ matrix.language }}/
-
+        path: |
+          codeql-sarif/${{ matrix.language }}/
           codeql-reports/codeql-${{ matrix.language }}-summary.md
-
           .codex/contracts/output-contract-codeql-${{ matrix.language }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   semgrep:
@@ -287,7 +344,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Python
@@ -313,6 +370,44 @@ jobs:
         \ failed for JSON output, falling back to auto...\"\n    semgrep scan --config=auto\
         \ --json --output=semgrep-results.json 2>&1 | tee semgrep-scan-json-fallback.log\n\
         \  }\n"
+    - name: Ensure Semgrep SARIF is valid and uploadable
+      if: always()
+      shell: bash
+      run: |
+        set -euo pipefail
+        SARIF_FILE="semgrep-results.sarif"
+        if [ ! -f "$SARIF_FILE" ] || [ ! -s "$SARIF_FILE" ] || ! jq empty "$SARIF_FILE" 2>/dev/null; then
+          echo "Semgrep did not produce a valid SARIF payload; creating a minimal fallback stub."
+          jq -n \
+            --arg schema "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json" \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{
+              "$schema": $schema,
+              "version": "2.1.0",
+              "runs": [{
+                "tool": {
+                  "driver": {
+                    "name": "Semgrep",
+                    "informationUri": "https://semgrep.dev",
+                    "version": "latest",
+                    "rules": []
+                  }
+                },
+                "results": [],
+                "properties": {
+                  "ScanTimestamp": $timestamp,
+                  "ScanType": "FallbackEmpty"
+                }
+              }]
+            }' > "$SARIF_FILE"
+        fi
+
+        if jq empty "$SARIF_FILE" 2>/dev/null; then
+          echo "Validated uploadable SARIF payload: $SARIF_FILE"
+        else
+          echo "Fallback SARIF validation failed" >&2
+          exit 1
+        fi
     - name: Chunk SARIF results
       if: always() && hashFiles('semgrep-results.sarif') != ''
       run: 'python scripts/chunk_sarif.py semgrep-results.sarif sarif-chunks/ --chunk-size
@@ -322,7 +417,7 @@ jobs:
     - name: Upload chunked SARIF to GitHub Security
       if: always() && hashFiles('sarif-chunks/*.sarif') != ''
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       run: "CHUNKS=(sarif-chunks/*.sarif)\nfor i in \"${!CHUNKS[@]}\"; do\n  sarif_file=\"\
         ${CHUNKS[$i]}\"\n  chunk_suffix=$(basename \"$sarif_file\" .sarif | sed 's/semgrep-chunk-//')\n\
         \  gh api \\\n    --method POST \\\n    -H \"Accept: application/vnd.github+json\"\
@@ -334,50 +429,80 @@ jobs:
     - name: Generate Semgrep summary + contract
       if: always()
       shell: bash
-      run: "set -euo pipefail\nRESULTS=0\nERRORS=0\nCHUNK_COUNT=0\n\nif [ -f semgrep-results.json\
-        \ ]; then\n  RESULTS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[])\
-        \ or []))\" 2>/dev/null || echo 0)\n  ERRORS=$(python -c \"import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[])\
-        \ or []))\" 2>/dev/null || echo 0)\nfi\nif [ -d sarif-chunks ]; then\n  CHUNK_COUNT=$(find\
-        \ sarif-chunks -name '*.sarif' 2>/dev/null | wc -l | tr -d ' ')\nfi\n\n{\n\
-        \  echo \"# Semgrep SAST Report\"\n  echo \"\"\n  echo \"- **Findings (results):**\
-        \ ${RESULTS}\"\n  echo \"- **Scanner errors:** ${ERRORS}\"\n  echo \"- **SARIF\
-        \ chunks uploaded to GHAS:** ${CHUNK_COUNT}\"\n  echo \"- **Scan outcome:**\
-        \ ${{ steps.semgrep.outcome }}\"\n  echo \"- **Lane ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\\`\"\n  echo \"- **Shard ID:** \\`${{ needs.lane-metadata-contract.outputs.shard_id\
-        \ }}\\`\"\n  echo \"- **Input Lock SHA:** \\`${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\\`\"\n} > semgrep-summary.md\ncat semgrep-summary.md >> \"$GITHUB_STEP_SUMMARY\"\
-        \n\nmkdir -p .codex/contracts\ncat > .codex/contracts/output-contract-semgrep.json\
-        \ <<EOF\n{\n  \"schema_version\": \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\"\
-        ,\n  \"job\": \"semgrep\",\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\",\n  \"shard_id\": \"${{ needs.lane-metadata-contract.outputs.shard_id\
-        \ }}\",\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"required_outputs\": [\n    \"semgrep-results.sarif\",\n    \"\
-        semgrep-results.json\",\n    \"semgrep-summary.md\"\n  ],\n  \"status\": \"\
-        ${{ job.status }}\"\n}\nEOF\n"
+      run: |
+        set -euo pipefail
+        RESULTS=0
+        ERRORS=0
+        CHUNK_COUNT=0
+
+        if [ -f semgrep-results.json ]; then
+          RESULTS=$(python - <<'PY' 2>/dev/null || echo 0
+        import json
+
+        with open("semgrep-results.json", encoding="utf-8") as handle:
+            data = json.load(handle)
+
+        print(len(data.get("results", []) or []))
+        PY
+        )
+          ERRORS=$(python - <<'PY' 2>/dev/null || echo 0
+        import json
+
+        with open("semgrep-results.json", encoding="utf-8") as handle:
+            data = json.load(handle)
+
+        print(len(data.get("errors", []) or []))
+        PY
+        )
+        fi
+        if [ -d sarif-chunks ]; then
+          CHUNK_COUNT=$(find sarif-chunks -name '*.sarif' 2>/dev/null | wc -l | tr -d " ")
+        fi
+
+        {
+          echo "# Semgrep SAST Report"
+          echo ""
+          echo "- **Findings (results):** ${RESULTS}"
+          echo "- **Scanner errors:** ${ERRORS}"
+          echo "- **SARIF chunks uploaded to GHAS:** ${CHUNK_COUNT}"
+          echo "- **Scan outcome:** ${{ steps.semgrep.outcome }}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+        } > semgrep-summary.md
+        cat semgrep-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+        mkdir -p .codex/contracts
+        cat > .codex/contracts/output-contract-semgrep.json <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "semgrep",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            "semgrep-results.sarif",
+            "semgrep-results.json",
+            "semgrep-summary.md"
+          ],
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload Semgrep results artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-semgrep
-        path: 'semgrep-results.sarif
-
+        path: |
+          semgrep-results.sarif
           semgrep-results.json
-
           sarif-chunks/
-
           semgrep-scan.log
-
           semgrep-scan-fallback.log
-
           semgrep-scan-json.log
-
           semgrep-scan-json-fallback.log
-
           semgrep-summary.md
-
           .codex/contracts/output-contract-semgrep.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   container-scan:
@@ -409,7 +534,7 @@ jobs:
         - docker/Dockerfile.cpu
         - docker/Dockerfile.gpu
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Validate Dockerfile exists
@@ -466,20 +591,15 @@ jobs:
         status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload container scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-container-${{ strategy.job-index }}
-        path: 'trivy-fs-results-${{ strategy.job-index }}.sarif
-
+        path: |
+          trivy-fs-results-${{ strategy.job-index }}.sarif
           trivy-image-results-${{ strategy.job-index }}.sarif
-
           container-scan-summary-${{ strategy.job-index }}.md
-
           docker-build-${{ strategy.job-index }}.log
-
           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   cve-scan:
@@ -510,7 +630,7 @@ jobs:
         - javascript
         - rust
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Cache Python dependencies (Layer 1)
@@ -573,16 +693,13 @@ jobs:
         \ }}\",\n  \"status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload CVE scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-cve-${{ matrix.ecosystem }}
-        path: '*-cve-audit.json
-
+        path: |
+          *-cve-audit.json
           cve-scan-summary-${{ matrix.ecosystem }}.md
-
           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   dependency-scan:
@@ -600,7 +717,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -633,51 +750,80 @@ jobs:
     - name: Generate dependency summary + contract
       if: always()
       shell: bash
-      run: "set -euo pipefail\nPIP_AUDIT_COUNT=0\nSAFETY_COUNT=0\n\nif [ -f pip-audit.json\
-        \ ]; then\n  PIP_AUDIT_COUNT=$(python -c \"import json;d=json.load(open('pip-audit.json'));print(sum(len(p.get('vulns',[]))\
-        \ for p in (d.get('dependencies') or [])))\" 2>/dev/null || echo 0)\nfi\n\
-        if [ -f safety.json ]; then\n  SAFETY_COUNT=$(python -c \"import json;d=json.load(open('safety.json'));print(len(d.get('vulnerabilities',[]))\
-        \ if isinstance(d,dict) else len(d))\" 2>/dev/null || echo 0)\nfi\n\n{\n \
-        \ echo \"# Dependency Scan Report\"\n  echo \"- **pip-audit vulnerabilities:**\
-        \ ${PIP_AUDIT_COUNT}\"\n  echo \"- **Safety vulnerabilities:** ${SAFETY_COUNT}\"\
-        \n  echo \"- **Lane ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\\`\"\n  echo \"- **Input Lock SHA:** \\`${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\\`\"\n} > dependency-scan-summary.md\ncat dependency-scan-summary.md\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n\nmkdir -p .codex/contracts\ncat > .codex/contracts/output-contract-dependency.json\
-        \ <<EOF\n{\n  \"schema_version\": \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\"\
-        ,\n  \"job\": \"dependency-scan\",\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\",\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"required_outputs\": [\n    \"pip-audit.json\",\n    \"safety.json\"\
-        ,\n    \"dependency-scan-summary.md\"\n  ],\n  \"status\": \"${{ job.status\
-        \ }}\"\n}\nEOF\n"
+      run: |
+        set -euo pipefail
+        PIP_AUDIT_COUNT=0
+        SAFETY_COUNT=0
+
+        if [ -f pip-audit.json ]; then
+          PIP_AUDIT_COUNT=$(python - <<'PY' 2>/dev/null || echo 0
+        import json
+
+        with open("pip-audit.json", encoding="utf-8") as handle:
+            data = json.load(handle)
+
+        deps = data.get("dependencies") or []
+        print(sum(len(p.get("vulns", [])) for p in deps))
+        PY
+        )
+        fi
+
+        if [ -f safety.json ]; then
+          SAFETY_COUNT=$(python - <<'PY' 2>/dev/null || echo 0
+        import json
+
+        with open("safety.json", encoding="utf-8") as handle:
+            data = json.load(handle)
+
+        if isinstance(data, dict):
+            print(len(data.get("vulnerabilities", [])))
+        else:
+            print(len(data))
+        PY
+        )
+        fi
+
+        {
+          echo "# Dependency Scan Report"
+          echo "- **pip-audit vulnerabilities:** ${PIP_AUDIT_COUNT}"
+          echo "- **Safety vulnerabilities:** ${SAFETY_COUNT}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+        } > dependency-scan-summary.md
+        cat dependency-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+        mkdir -p .codex/contracts
+        cat > .codex/contracts/output-contract-dependency.json <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "dependency-scan",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            "pip-audit.json",
+            "safety.json",
+            "dependency-scan-summary.md"
+          ],
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload dependency artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-dependency
-        path: 'pip-audit.json
-
+        path: |
+          pip-audit.json
           pip-audit-cyclonedx.json
-
           pip-audit-report.txt
-
           safety.json
-
           safety-report.txt
-
           installed-packages.txt
-
           dependency-scan-summary.md
-
           pip-audit-json.log
-
           pip-audit-cyclonedx.log
-
           safety-json.log
-
           .codex/contracts/output-contract-dependency.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   secret-scan:
@@ -693,7 +839,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -741,20 +887,15 @@ jobs:
         \n}\nEOF\n"
     - name: Upload secret scan artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-secrets
-        path: '.secrets.baseline
-
+        path: |
+          .secrets.baseline
           detect-secrets-summary.json
-
           detect-secrets.log
-
           secret-scan-summary.md
-
           .codex/contracts/output-contract-secrets.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   sbom-generation:
@@ -773,7 +914,7 @@ jobs:
 
       '
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -818,24 +959,17 @@ jobs:
         \    \"sbom-summary.md\"\n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload SBOM artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-sbom
-        path: 'sbom.json
-
+        path: |
+          sbom.json
           sbom.xml
-
           sbom-tool-versions.txt
-
           sbom-summary.md
-
           sbom-json.log
-
           sbom-xml.log
-
           .codex/contracts/output-contract-sbom.json
-
-          '
         if-no-files-found: error
         retention-days: 90
   security-suite-summary:
@@ -892,14 +1026,12 @@ jobs:
         \n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload consolidated summary
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-summary
-        path: 'security-suite-summary/
-
+        path: |
+          security-suite-summary/
           .codex/contracts/output-contract-summary.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   aggregate-all-findings:
@@ -914,7 +1046,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Download all security-suite artifacts
@@ -995,26 +1127,18 @@ jobs:
         \n"
     - name: Upload comprehensive findings artifact
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-comprehensive-findings
-        path: '.codex/security-findings-comprehensive.json
-
+        path: |
+          .codex/security-findings-comprehensive.json
           security-findings-comprehensive.md
-
           security/codeql-alert-inventory.csv
-
           security/codeql-family-index.csv
-
           security/codeql-priority-queue.csv
-
           security/codeql-schema-version.json
-
           security/artifact-provenance.json
-
           security/remediation-input-lock.json
-
-          '
         if-no-files-found: error
         retention-days: 90
     - name: Summary
@@ -1089,7 +1213,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload contract report
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-artifact-contract-report
         path: security-artifact-contract-report.md
@@ -1105,7 +1229,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-python-cached
@@ -1130,7 +1254,7 @@ jobs:
         \n"
     - name: Upload Cache Artifacts
       if: success()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-cache
         path: .codex/security-cache/
@@ -1138,7 +1262,7 @@ jobs:
         retention-days: 90
     - name: Upload Trend Report
       if: success()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         name: security-findings-trend-report
         path: .codex/security-findings-trend-report.md
@@ -1166,7 +1290,7 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

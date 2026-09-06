@@ -1,0 +1,1 @@
+{"timestamp": "2026-09-06T07:47:21.501864Z", "session_id": "a9811118-a2eb-4ea1-a0c3-45219b1588ef", "role": "system", "event_type": "training_start", "data": {"epochs": 2, "grad_accum": 1, "steps_per_epoch": 4, "telemetry_enabled": false, "dp": {"enabled": false}, "dataset_files": 0}}

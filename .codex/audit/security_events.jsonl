@@ -1,1 +1,2 @@
 {"event_type": "rbac_violation", "timestamp": "2026-08-05T06:42:25.732199+00:00", "severity": "info", "source": "", "actor": null, "action": "user blocked", "resource": null, "status": "success", "error_code": null, "details": {}}
+{"event_type": "rbac_violation", "timestamp": "2026-09-06T07:46:54.886040+00:00", "severity": "info", "source": "", "actor": null, "action": "user blocked", "resource": null, "status": "success", "error_code": null, "details": {}}
