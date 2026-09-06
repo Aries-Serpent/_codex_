@@ -92,3 +92,15 @@ def test_detect_missing_runtime_dependencies_rejects_stub_specs(monkeypatch) -> 
     missing = mod._detect_missing_runtime_dependencies(["torch>=2.6.1,<3.0.0"])
 
     assert missing == ["torch>=2.6.1,<3.0.0"]
+
+
+def test_render_yaml_quotes_reason_with_colon_and_normalizes_bool() -> None:
+    rendered = mod._render_yaml(
+        {
+            "reason": "Detected security signal: 'security'",
+            "local_sandbox_policy": {"sandbox_is_staging_only": True},
+        }
+    )
+
+    assert 'reason: "Detected security signal: \'security\'"' in rendered
+    assert "sandbox_is_staging_only: true" in rendered

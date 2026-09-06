@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
 import re
 import sys
@@ -184,14 +185,35 @@ def _build_config(environment_type: str, reason: str, repo_root: Path) -> dict:
             "missing_dependencies": _detect_missing_runtime_dependencies(ml_runtime),
         },
         "notes": [
-            "The sandbox is a staging environment for diagnosis and diff creation, not the canonical validator for the ML/RAG dependency matrix.",
-            "When the environment type is ml-heavy, prefer the GitHub-hosted setup workflow or a prepared primary Copilot session before running the full ML/RAG suite.",
+            "The local sandbox is for diagnosis and patch prep, not full ML/RAG matrix validation.",
+            "For ml-heavy tasks, prefer the GitHub-hosted prepared environment before full suite runs.",
         ],
     }
     return config
 
 
 def _render_yaml(data: dict, indent: int = 0) -> str:
+    def _format_scalar(value: object) -> str:
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if value is None:
+            return "null"
+        if isinstance(value, (int, float)):
+            return str(value)
+
+        scalar = str(value)
+        needs_quotes = (
+            scalar == ""
+            or scalar.strip() != scalar
+            or ":" in scalar
+            or "#" in scalar
+            or scalar.lower() in {"true", "false", "null", "~", "yes", "no", "on", "off"}
+            or scalar[0] in {"-", "?", "!", "&", "*", "{", "}", "[", "]", ",", "|", ">", "@", "`", "%", "'", '"'}
+        )
+        if needs_quotes:
+            return json.dumps(scalar)
+        return scalar
+
     prefix = " " * indent
     lines: list[str] = []
     for key, value in data.items():
@@ -205,17 +227,12 @@ def _render_yaml(data: dict, indent: int = 0) -> str:
                 lines.append(f"{prefix}{key}:")
                 for item in value:
                     if isinstance(item, str):
-                        lines.append(f"{prefix}  - {item}")
+                        lines.append(f"{prefix}  - {_format_scalar(item)}")
                     elif isinstance(item, dict):
                         lines.append(f"{prefix}  -")
                         lines.append(_render_yaml(item, indent + 4).rstrip())
         else:
-            scalar = str(value).strip()
-            if "\n" in scalar:
-                escaped = scalar.replace("\\", "\\\\").replace('"', '\\"')
-                lines.append(f'{prefix}{key}: "{escaped}"')
-            else:
-                lines.append(f"{prefix}{key}: {scalar}")
+            lines.append(f"{prefix}{key}: {_format_scalar(value)}")
     return "\n".join(lines) + "\n"
 
 

@@ -1,6 +1,6 @@
 typer>=0.27.1
 cryptography>=50.0.1,<51.0.0  # Security: Phase 5 Track 2 - Updated to fix GHSA-537c-gmf6-5ccf (OpenSSL vulnerability in wheels <48.0.1)
-PyJWT>=2.14.0,<3.0.0  # Security: Phase 14 WS1 - Updated to fix PYSEC-2026-120 (PyJWT <2.12.0 has JWT validation bypass)
+PyJWT>=2.13.0,<3.0.0  # Security: Phase 14 WS1 - Updated to fix PYSEC-2026-120 (PyJWT <2.12.0 has JWT validation bypass)
 wheel>=0.48.0  # Security: Phase 9 Lane 2 - Updated to fix CVE-2026-24049 (path traversal in wheel.cli.unpack)
 PyNaCl>=1.6.2,<2.0.0  # Security: Cryptographic library
 pyOpenSSL>=26.4.0,<27.0.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-27448/27459 (pyOpenSSL <26.0.0 has vulnerabilities)
