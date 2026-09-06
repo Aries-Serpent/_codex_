@@ -189,13 +189,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-lane-contract
-        path: '.codex/contracts/lane-manifest.json
-
+        path: |
+          .codex/contracts/lane-manifest.json
           .codex/contracts/input-lock.json
-
           .codex/contracts/input-lock.materialized.txt
-
-          '
         if-no-files-found: error
         retention-days: 90
   codeql-scan:
@@ -283,13 +280,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-codeql-${{ matrix.language }}
-        path: 'codeql-sarif/${{ matrix.language }}/
-
+        path: |
+          codeql-sarif/${{ matrix.language }}/
           codeql-reports/codeql-${{ matrix.language }}-summary.md
-
           .codex/contracts/output-contract-codeql-${{ matrix.language }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   semgrep:
@@ -426,25 +420,16 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-semgrep
-        path: 'semgrep-results.sarif
-
+        path: |
+          semgrep-results.sarif
           semgrep-results.json
-
           sarif-chunks/
-
           semgrep-scan.log
-
           semgrep-scan-fallback.log
-
           semgrep-scan-json.log
-
           semgrep-scan-json-fallback.log
-
           semgrep-summary.md
-
           .codex/contracts/output-contract-semgrep.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   container-scan:
@@ -536,17 +521,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-container-${{ strategy.job-index }}
-        path: 'trivy-fs-results-${{ strategy.job-index }}.sarif
-
+        path: |
+          trivy-fs-results-${{ strategy.job-index }}.sarif
           trivy-image-results-${{ strategy.job-index }}.sarif
-
           container-scan-summary-${{ strategy.job-index }}.md
-
           docker-build-${{ strategy.job-index }}.log
-
           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   cve-scan:
@@ -643,13 +623,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-cve-${{ matrix.ecosystem }}
-        path: '*-cve-audit.json
-
+        path: |
+          *-cve-audit.json
           cve-scan-summary-${{ matrix.ecosystem }}.md
-
           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   dependency-scan:
@@ -722,29 +699,18 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-dependency
-        path: 'pip-audit.json
-
+        path: |
+          pip-audit.json
           pip-audit-cyclonedx.json
-
           pip-audit-report.txt
-
           safety.json
-
           safety-report.txt
-
           installed-packages.txt
-
           dependency-scan-summary.md
-
           pip-audit-json.log
-
           pip-audit-cyclonedx.log
-
           safety-json.log
-
           .codex/contracts/output-contract-dependency.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   secret-scan:
@@ -811,17 +777,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-secrets
-        path: '.secrets.baseline
-
+        path: |
+          .secrets.baseline
           detect-secrets-summary.json
-
           detect-secrets.log
-
           secret-scan-summary.md
-
           .codex/contracts/output-contract-secrets.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   sbom-generation:
@@ -888,21 +849,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-sbom
-        path: 'sbom.json
-
+        path: |
+          sbom.json
           sbom.xml
-
           sbom-tool-versions.txt
-
           sbom-summary.md
-
           sbom-json.log
-
           sbom-xml.log
-
           .codex/contracts/output-contract-sbom.json
-
-          '
         if-no-files-found: error
         retention-days: 90
   security-suite-summary:
@@ -962,11 +916,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-summary
-        path: 'security-suite-summary/
-
+        path: |
+          security-suite-summary/
           .codex/contracts/output-contract-summary.json
-
-          '
         if-no-files-found: error
         retention-days: 30
   aggregate-all-findings:
@@ -1065,23 +1017,15 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: security-suite-comprehensive-findings
-        path: '.codex/security-findings-comprehensive.json
-
+        path: |
+          .codex/security-findings-comprehensive.json
           security-findings-comprehensive.md
-
           security/codeql-alert-inventory.csv
-
           security/codeql-family-index.csv
-
           security/codeql-priority-queue.csv
-
           security/codeql-schema-version.json
-
           security/artifact-provenance.json
-
           security/remediation-input-lock.json
-
-          '
         if-no-files-found: error
         retention-days: 90
     - name: Summary

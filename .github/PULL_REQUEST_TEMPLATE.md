@@ -66,10 +66,6 @@ git diff --name-only --diff-filter=U                      # must be EMPTY
 - [ ] test-rag.yml — RAG Module Tests (coverage ≥95%)
 - [ ] scheduled-archival.yml — Scheduled archival
 - [ ] scheduled-dependency-audit.yml — Dependency audit
-- [ ] pre-merge-validation.yml — Pre-merge validation (manual activation only)
-- [ ] comment-review-gate.yml — Comment review gate (manual activation only)
-- [ ] iterative-self-healing-ci.yml — Iterative self-healing CI loop (manual activation only)
-- [ ] unified-copilot-management.yml — Copilot management suite (manual activation only)
 
 ## 📋 Change Summary
 
