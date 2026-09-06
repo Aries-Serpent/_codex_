@@ -6,8 +6,6 @@ All session definitions are maintained in configs/development/noxfile.py.
 
 from __future__ import annotations
 
-import os
-import shutil
 import sys
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
@@ -34,63 +32,15 @@ nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_mi
 
 # Keep the root-level entry points explicit so CI and tests can discover the
 # supported sessions without depending on the nested config implementation.
+# The canonical `tests` and `security` registrations live in
+# `configs/development/noxfile.py`; re-defining them here causes duplicate nox
+# session registration warnings and future-version breakage.
 
 
 @nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
 def gates(session: nox.Session) -> None:
     """Security gates - alias for the sec session."""
     session.notify("sec")
-
-
-@nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
-def tests(session: nox.Session) -> None:
-    """Run the project test suite with coverage enabled."""
-    repo_root = Path(__file__).resolve().parent
-    session.chdir(str(repo_root))
-    session.env.setdefault("PYTHONUTF8", "1")
-    session.env["PYTHONPATH"] = os.pathsep.join(
-        [
-            str(repo_root / "src"),
-            str(repo_root / "agents" / "codex_client"),
-            session.env.get("PYTHONPATH", ""),
-        ]
-    )
-    session.install("-e", ".[full]")
-    session.run(
-        "pytest",
-        "--cov=src/codex_ml",
-        "--cov-branch",
-        "--cov-report=term-missing",
-        "-q",
-        "tests",
-    )
-
-
-@nox.session(name="security", python=_dev_noxfile.DEFAULT_PYTHON)
-def security(session: nox.Session) -> None:
-    """Run dependency and secret scans for the repository root."""
-    session.chdir(str(Path(__file__).resolve().parent))
-    session.env.setdefault("PYTHONUTF8", "1")
-
-    session.log("[security] installing pip-audit and checking for gitleaks")
-    session.install("pip-audit")
-    if (Path(__file__).resolve().parent / "requirements.txt").exists():
-        session.run("pip-audit", "-r", "requirements.txt", success_codes=[0, 1])
-    else:
-        session.run("pip-audit", success_codes=[0, 1])
-
-    if (Path(__file__).resolve().parent / ".gitleaks.toml").exists() and shutil.which("gitleaks"):
-        session.run(
-            "gitleaks",
-            "detect",
-            "--source=.",
-            "--config=.gitleaks.toml",
-            "--verbose",
-            success_codes=[0, 1],
-            external=True,
-        )
-    elif (Path(__file__).resolve().parent / ".gitleaks.toml").exists():
-        session.log("[security] gitleaks is not installed; skipping secret scan")
 
 
 @nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)

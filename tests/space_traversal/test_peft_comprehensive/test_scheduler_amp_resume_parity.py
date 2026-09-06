@@ -1,6 +1,3 @@
-import pytest
-
-pytest.importorskip("mlflow")
 """
 Test Scheduler Amp Resume Parity
 
@@ -12,6 +9,10 @@ from __future__ import annotations
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+pytest.importorskip("mlflow")
 
 from codex_ml.training import strategies, unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from src.codex.utils.path_extended import get_repo_root
 """Batch Processor for Phase 1B Refactoring - Process 674 monolithic files.
 
 This tool processes multiple files in batches with:
@@ -13,10 +12,12 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
-import sys
+
+from src.codex.utils.path_extended import get_repo_root
 
 logging.basicConfig(
     level=logging.INFO,

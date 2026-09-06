@@ -1,6 +1,3 @@
-import pytest
-
-pytest.importorskip("mlflow")
 """
 Test Unified Training Resume
 
@@ -8,6 +5,10 @@ Test module for unified training resume.
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("mlflow")
 
 from codex_ml.training.unified_training import (
     UnifiedTrainingConfig,
