@@ -1,5 +1,6 @@
 """GitHub API type definitions using Pydantic."""
 
+import sys
 from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
@@ -317,3 +318,9 @@ class PullRequest(BaseModel):
 
     class Config:
         extra = "ignore"
+
+
+if __name__.startswith("src."):
+    sys.modules.setdefault("services.github.types", sys.modules[__name__])
+else:
+    sys.modules.setdefault("src.services.github.types", sys.modules[__name__])

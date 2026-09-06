@@ -20,12 +20,15 @@ try:
         if _src_services not in sys.path:
             sys.path.insert(0, _src_services)
     from src.services.github.client import GitHubClient as _CanonicalGitHubClient
+    from src.services.github.client import GitHubClientSync as _CanonicalGitHubClientSync
 except Exception:
     _CanonicalGitHubClient = None
+    _CanonicalGitHubClientSync = None
 
 if _CanonicalGitHubClient is not None:
     GitHubClient = _CanonicalGitHubClient
-    __all__ = ["GitHubClient"]
+    GitHubClientSync = _CanonicalGitHubClientSync
+    __all__ = ["GitHubClient", "GitHubClientSync"]
 else:
     from typing import Any, Dict, List, Optional
 
@@ -64,4 +67,13 @@ else:
                 raise GitHubServiceException("Authentication token required")
             return []
 
-    __all__ = ["GitHubClient"]
+    class GitHubClientSync:
+        """Compatibility sync wrapper for the canonical client."""
+
+        def __init__(self, *args: Any, **kwargs: Any):
+            self._client = GitHubClient(*args, **kwargs)
+
+        def __getattr__(self, name: str) -> Any:
+            return getattr(self._client, name)
+
+    __all__ = ["GitHubClient", "GitHubClientSync"]

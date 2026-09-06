@@ -18,13 +18,11 @@ logger = logging.getLogger(__name__)
 def _get_github_client() -> object:
     """Get GitHub client instance."""
     try:
+        from src.services.github.client import GitHubClientSync
+    except ImportError:
         from services.github.client import GitHubClientSync
 
-        return GitHubClientSync()
-    except ImportError as e:
-        raise click.ClickException(
-            f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
-        ) from e
+    return GitHubClientSync()
 
 
 @click.group(name="github-logs")

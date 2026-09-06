@@ -44,7 +44,10 @@ class ListCheckRunsInput(BaseModel):
 
 def _get_github_client():
     """Get GitHub client instance."""
-    from services.github.client import GitHubClientSync
+    try:
+        from src.services.github.client import GitHubClientSync
+    except ImportError:
+        from services.github.client import GitHubClientSync
 
     return GitHubClientSync()
 
@@ -105,7 +108,7 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
             "logs": logs,
         }
 
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         logger.error("Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
         return {
@@ -157,7 +160,7 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
             "logs": logs,
         }
 
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         logger.error("Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
         return {
@@ -234,7 +237,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             "check_runs": check_runs_list,
         }
 
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         logger.error("Failed to list check runs: <ERROR_TYPE>", exc_info=True)
         return {
@@ -265,3 +268,12 @@ GITHUB_LOGS_TOOLS = {
         "name": "list_check_runs",
     },
 }
+
+if __name__.startswith("src."):
+    import sys
+
+    sys.modules.setdefault("mcp.tools.github_logs", sys.modules[__name__])
+else:
+    import sys
+
+    sys.modules.setdefault("src.mcp.tools.github_logs", sys.modules[__name__])
