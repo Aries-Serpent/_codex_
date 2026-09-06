@@ -8,12 +8,6 @@
 #
 # Reference: https://codeql.github.com/docs/codeql-cli/creating-codeql-databases/
 
-name: "Codex CodeQL Configuration"
-
-# Disable default queries and use only specified ones
-disable-default-queries: false
-
-# Paths to analyze (include all source, tests, scripts, and automation)
 paths:
   - src/
   - tests/
@@ -24,128 +18,56 @@ paths:
   - cognitive_app/
   - utils/
 
-# Paths to exclude from analysis
 paths-ignore:
-  # Generated files
   - "**/__pycache__/"
   - "**/*.pyc"
   - "**/*.pyo"
   - "site/**"
-
-  # Documentation (no security analysis needed)
   - "docs/"
   - ".codex/**"
   - ".github/workflows/archive/**"
   - ".github/workflow-archive/**"
   - ".github/misc/**"
   - ".github/workflows.backup*"
-
-  # Virtual environments
   - ".venv/"
   - "venv/"
   - "env/"
-
-  # Build artifacts
   - "build/"
   - "dist/"
   - "*.egg-info/"
-
-  # Coverage and cache
   - ".coverage"
   - "coverage/"
   - ".pytest_cache/"
   - ".mypy_cache/"
   - ".ruff_cache/"
 
-# Query suites to use
 queries:
   - uses: security-extended
   - uses: security-and-quality
 
-# Query filters to suppress known false positives and low-priority alerts
 query-filters:
-  - include:
-      kind: problem
-  - include:
-      kind: path-problem
-  
-  # Suppress low-priority patterns that clutter results
   - exclude:
       id: py/redundant-comparison
   - exclude:
       id: py/similar-function
-  
-  # Suppress false positives: data is masked with fingerprints (first 8 chars + '…')
-  # Rules affected: Scripts, agents, tests that log diagnostic fingerprints
-  # Impact: Suppresses 11+ alerts that already have proper masking
-  # Files: scripts/analyze_workflows.py, decode_workflow_secrets.py, ops/codex_repo_admin_bootstrap.py,
-  #        .github/scripts/ci_failure_crossref.py, .github/agents/admin-automation-agent/src/agent.py,
-  #        .github/agents/github-security-validator-agent/src/agent.py, tests/integration/test_admin_automation_agent.py
   - exclude:
       id: py/clear-text-logging-sensitive-data
-  
-  # Suppress false positives: metadata is stored, not actual secrets
-  # Rules affected: Files storing workflow metadata (names, counts)
   - exclude:
       id: py/clear-text-storage-sensitive-data
-  
-  # Suppress false positives: test file checking URL sanitization validation
-  # File: tests/security/test_logging_security.py:97
   - exclude:
       id: py/incomplete-url-substring-sanitization
-   
-  # MEDIUM severity suppressions for known false positives and test-related issues
-  # Impact: Suppresses 30 MEDIUM level CodeQL alerts from analysis
-   
-  # Log injection: print statements with f-strings in diagnostic/analysis scripts
-  # These are safe as they don't execute user input
-  # Files: .github/scripts/ci_failure_crossref.py, scripts/catalog_workflows.py,
-  #        scripts/analyze_workflows.py, scripts/security/verify_token_scope.py,
-  #        cognitive_app/src/server/cli_api_server.py, services/msp_gateway/security.py
   - exclude:
       id: py/log-injection
-   
-  # Code quality: uninitialized variables, unused globals in tests
-  # Most are false positives due to test setup patterns and outdated line numbers
-  # Files: Multiple test files and utility modules
   - exclude:
       id: py/uninitialized-local-variable
-   
-  # Code quality: overwritten inherited attributes (false positives in __init__)
-  # Files: .github/agents/**/src/agent.py, src/security/core.py
   - exclude:
       id: py/overwritten-inherited-attribute
-   
-  # Code quality: unused global variables in test fixtures and guards
-  # Files: scripts/github_secrets_sync.py, tests/codex/test_cli_maps.py
   - exclude:
       id: py/unused-global-variable
-   
-  # Code quality: cyclic import false positives from namespace packages
-  # File: src/codex/__init__.py
   - exclude:
       id: py/cyclic-import
-   
-  # Code quality: pythagorean theorem expression checks (false positives)
-  # Files: scripts/ci/auto_fix_common_issues.py, src/codex/utils/math_helpers.py, tests/codex/test_math.py
   - exclude:
       id: py/pythagorean
-  
-  # WORKFLOW SECURITY SUPPRESSIONS
-  # ============================
-  # These suppressions address CodeQL workflow analysis alerts that are false positives
-  # due to legitimate security patterns and validation mechanisms in place.
-  
-  # Suppress: "Checkout of untrusted code in a non-privileged context"
-  # File: .github/workflows/app-package-download.yml
-  # Context: workflow_dispatch (non-privileged, user-initiated)
-  # Safety: Branch parameter is validated against allowlist (main, 0D_base_) via GitHub Actions UI
-  # The workflow uses explicit input constraints that prevent arbitrary branch checkout
-  # Classification: False positive - runtime validation is sufficient
   - exclude:
       id: js/workflow/untrusted-checkout
       path: .github/workflows/app-package-download.yml
-
-# Keep this file limited to CodeQL-supported top-level keys.
-# Language-specific blocks such as `python:` and `go:` are not supported here
-# and cause the analysis configuration to be rejected.

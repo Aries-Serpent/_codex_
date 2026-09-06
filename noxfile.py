@@ -48,7 +48,6 @@ def tests(session: nox.Session) -> None:
     repo_root = Path(__file__).resolve().parent
     session.chdir(str(repo_root))
     session.env.setdefault("PYTHONUTF8", "1")
-    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.env["PYTHONPATH"] = os.pathsep.join(
         [
             str(repo_root / "src"),
@@ -57,11 +56,8 @@ def tests(session: nox.Session) -> None:
         ]
     )
     session.install("-e", ".[full]")
-    session.install("pytest", "pytest-cov", "pytest-randomly", "pytest-timeout")
     session.run(
         "pytest",
-        "-p",
-        "pytest_cov",
         "--cov=src/codex_ml",
         "--cov-branch",
         "--cov-report=term-missing",

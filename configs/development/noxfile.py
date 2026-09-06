@@ -73,9 +73,8 @@ def _install(session: nox.Session, *packages: str) -> None:
 
 
 def _pytest_hermetic(session: nox.Session) -> None:
-    """Force pytest to avoid host-specific plugins and ensure hash determinism."""
+    """Ensure pytest uses the repo's src-first import layout and stable hash seed."""
 
-    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.env.setdefault("PYTHONHASHSEED", "0")
 
 
@@ -278,21 +277,7 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
-    _install(session, *TEST_BOOTSTRAP_PKGS)
-    _install(session, "--no-deps", "-e", ".")
-    _install(
-        session,
-        "hydra-core>=1.3",
-        "omegaconf>=2.3",
-        "PyYAML>=6.0",
-        "pydantic>=2.4",
-        "pydantic-settings>=2.2",
-        "pytest",
-        "pytest-cov",
-        "pytest-randomly",
-        "hypothesis>=6.100",
-    )
-    _install(session, "pytest", "pytest-cov")
+    session.install("-e", ".[full]")
     _pytest_hermetic(session)
     COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
     COVERAGE_JSON_ROOT.mkdir(parents=True, exist_ok=True)
@@ -325,20 +310,7 @@ def tests(session: nox.Session) -> None:
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
-    _install(session, *TEST_BOOTSTRAP_PKGS)
-    _install(session, "--no-deps", "-e", ".")
-    _install(
-        session,
-        "hydra-core>=1.3",
-        "omegaconf>=2.3",
-        "PyYAML>=6.0",
-        "pydantic>=2.4",
-        "pydantic-settings>=2.2",
-        "pytest",
-        "pytest-cov",
-        "pytest-randomly",
-        "hypothesis>=6.100",
-    )
+    session.install("-e", ".[full]")
     _export_env(session)
     # Enforce coverage gate via pytest.ini (--cov-fail-under=3.5).
     session.run("pytest", "-q", "tests")
@@ -350,20 +322,7 @@ def offline_check(session: nox.Session) -> None:
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
-    _install(session, *TEST_BOOTSTRAP_PKGS)
-    _install(session, "--no-deps", "-e", ".")
-    _install(
-        session,
-        "hydra-core>=1.3",
-        "omegaconf>=2.3",
-        "PyYAML>=6.0",
-        "pydantic>=2.4",
-        "pydantic-settings>=2.2",
-        "pytest",
-        "pytest-cov",
-        "pytest-randomly",
-        "hypothesis>=6.100",
-    )
+    session.install("-e", ".[full]")
     _export_env(session)
     cmd = [session.bin_path("python"), "-m", "pytest", "-q", "tests"]
     result = subprocess.run(
@@ -406,14 +365,9 @@ def tests_offline(session: nox.Session) -> None:
     _ensure_pip_cache(session)
     with _error_logging_step(
         "tests_offline.install_project",
-        "session.install('--no-deps', '-e', '.')",
+        "session.install('-e', '.[full]')",
     ):
-        _install(session, "--no-deps", "-e", ".")
-    with _error_logging_step(
-        "tests_offline.install_extras",
-        "session.install('pytest', 'pytest-cov', 'pytest-randomly', 'pydantic')",
-    ):
-        _install(session, "pytest", "pytest-cov", "pytest-randomly", "pydantic")
+        session.install("-e", ".[full]")
     with _error_logging_step("tests_offline.set_env", "HF_DATASETS_OFFLINE=1"):
         session.env.setdefault("HF_DATASETS_OFFLINE", "1")
     with _error_logging_step("tests_offline.set_env", "WANDB_MODE=offline"):
@@ -427,10 +381,6 @@ def tests_offline(session: nox.Session) -> None:
     targets = OFFLINE_TEST_TARGETS
     cmd = [
         "pytest",
-        "-p",
-        "pytest_cov",
-        "-p",
-        "pytest_randomly",
         "-q",
         *extra_args,
         *targets,
@@ -448,7 +398,7 @@ def tests_gpu(session: nox.Session) -> None:
     """Run GPU-marked tests when CUDA devices are available."""
 
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-randomly", "torch")
+    _install(session, "-e", ".[full]")
 
     try:
         import torch  # type: ignore
@@ -464,8 +414,6 @@ def tests_gpu(session: nox.Session) -> None:
     _export_env(session)
     session.run(
         "pytest",
-        "-p",
-        "pytest_randomly",
         "-q",
         "-m",
         "gpu",
@@ -628,12 +576,10 @@ def test(session: nox.Session) -> None:
     """Fast pytest run with deterministic randomness."""
 
     _ensure_pip_cache(session)
-    _install(session, "pytest", "pytest-randomly")
+    session.install("-e", ".[full]")
     _export_env(session)
     session.run(
         "pytest",
-        "-p",
-        "pytest_randomly",
         "-q",
     )
 

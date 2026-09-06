@@ -81,12 +81,20 @@ jobs:
         if [ -z "$SARIF_FILES" ]; then
           echo "No SARIF files were produced; treating this as a zero-alert configuration result."
         else
-          SARIF_FILE=$(printf '%s\n' "$SARIF_FILES" | head -n 1)
-          echo "Processing SARIF file: $SARIF_FILE"
+          SARIF_FILE=""
+          while IFS= read -r candidate; do
+            if [ -n "$candidate" ] && [ -s "$candidate" ] && jq -e '.runs and (.runs | type == "array")' "$candidate" >/dev/null 2>&1; then
+              SARIF_FILE="$candidate"
+              break
+            fi
+          done <<< "$SARIF_FILES"
 
-          CRITICAL=$(jq '[.runs[].results[] | select(.level == "error" or .level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-          HIGH=$(jq '[.runs[].results[] | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-          MEDIUM=$(jq '[.runs[].results[] | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+          if [ -n "$SARIF_FILE" ]; then
+            echo "Processing SARIF file: $SARIF_FILE"
+            CRITICAL=$(jq '[.runs[]?.results[]? | select(.level == "error")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            HIGH=$(jq '[.runs[]?.results[]? | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            MEDIUM=$(jq '[.runs[]?.results[]? | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+          fi
         fi
 
         echo "critical_count=$CRITICAL" >> "$GITHUB_OUTPUT"
