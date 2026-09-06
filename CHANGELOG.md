@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5591)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5591 (SHA `188ddb29`) at 2026-09-06T03:32:15Z [auto-generated]
+
 ### Fixed — PR #5589 review-thread + template-lint follow-up
 - Resolved the remaining custom-agent frontmatter and wording issues in `.github/agents/dependency-conflict-resolver/agent.yaml`, `.github/agents/github-guru-agent.agent.md`, and `.github/agents/pr-3095-verification-agent.md` without widening scope beyond the requested thread feedback.
 - Restored the missing `theme.css` asset and corrected the HTML template references in `docs/templates/status/report_template.html` so the `template-lint` gate passes again.
