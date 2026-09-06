@@ -2033,13 +2033,12 @@ def validate_wec_compliance(
                 "view",
                 pr_number,
                 "--json",
-                "body,headRefName",
+                "body",
             ],
             capture_output=True, text=True, check=True,
         )
         pr_data = json.loads(result.stdout)
         pr_body = (pr_data.get("body") or "").strip()
-        head_ref = pr_data.get("headRefName") or ""
     except subprocess.CalledProcessError:
         issues.append(f"❌ Could not fetch PR #{pr_number} body")
         return False, issues, True

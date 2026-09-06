@@ -664,23 +664,12 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}    - name: Ensure canonical WEC block is present
-      id: inject-wec
-      if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
-        '
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         set -euo pipefail
         python3 scripts/ci/session_wrapup_autofix.py --fix-pr-body --pr-number "${PR_NUMBER}"
         echo "✅ Canonical Workflow Execution Checklist restored for PR #${PR_NUMBER}"
-        printf '### ✅ Workflow Execution Checklist
-
-Canonical WEC block regenerated and maintainer selections preserved.
-' >> "$GITHUB_STEP_SUMMARY"
+        printf '### ✅ Workflow Execution Checklist\n\nCanonical WEC block regenerated and maintainer selections preserved.\n' >> "$GITHUB_STEP_SUMMARY"
     - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
       id: timebox_ack_check
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
