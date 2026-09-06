@@ -97,7 +97,7 @@ jobs:
       run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
     - name: Upload wheelhouse with manifest
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: ./wheelhouse
         retention-days: 30
@@ -157,7 +157,7 @@ jobs:
         \ grype-${{ matrix.variant }}.sarif \\\n  --fail-on critical\n"
       continue-on-error: true
     - name: Upload SBOM artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'sbom-${{ matrix.variant }}.*.json
 
@@ -319,7 +319,7 @@ jobs:
         \ \"::warning::safety found HIGH issues\"\nfi\n"
     - name: Upload audit artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: 'workbench/security/ci_pip_audit.json
 

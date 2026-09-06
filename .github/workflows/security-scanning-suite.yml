@@ -186,7 +186,7 @@ jobs:
         ,\n  \"sha\": \"${GITHUB_SHA}\"\n}\nEOF\n\necho \"input_lock_sha256=${SHA}\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
     - name: Upload lane contract artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-lane-contract
         path: |
@@ -311,7 +311,7 @@ jobs:
         EOF
     - name: Upload CodeQL artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-codeql-${{ matrix.language }}
         path: |
@@ -490,7 +490,7 @@ jobs:
         EOF
     - name: Upload Semgrep results artifact
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-semgrep
         path: |
@@ -591,7 +591,7 @@ jobs:
         status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload container scan artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-container-${{ strategy.job-index }}
         path: |
@@ -693,7 +693,7 @@ jobs:
         \ }}\",\n  \"status\": \"${{ job.status }}\"\n}\nEOFJ\n"
     - name: Upload CVE scan artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-cve-${{ matrix.ecosystem }}
         path: |
@@ -809,7 +809,7 @@ jobs:
         EOF
     - name: Upload dependency artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-dependency
         path: |
@@ -887,7 +887,7 @@ jobs:
         \n}\nEOF\n"
     - name: Upload secret scan artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-secrets
         path: |
@@ -959,7 +959,7 @@ jobs:
         \    \"sbom-summary.md\"\n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload SBOM artifact
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-sbom
         path: |
@@ -1026,7 +1026,7 @@ jobs:
         \n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload consolidated summary
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-summary
         path: |
@@ -1127,7 +1127,7 @@ jobs:
         \n"
     - name: Upload comprehensive findings artifact
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-comprehensive-findings
         path: |
@@ -1213,7 +1213,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload contract report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-suite-artifact-contract-report
         path: security-artifact-contract-report.md
@@ -1254,7 +1254,7 @@ jobs:
         \n"
     - name: Upload Cache Artifacts
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-cache
         path: .codex/security-cache/
@@ -1262,7 +1262,7 @@ jobs:
         retention-days: 90
     - name: Upload Trend Report
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-findings-trend-report
         path: .codex/security-findings-trend-report.md
