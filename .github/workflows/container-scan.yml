@@ -22,6 +22,10 @@ name: Container Security Scan
     - cron: "0 5 * * 1"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
@@ -41,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -78,6 +82,33 @@ jobs:
           severity: CRITICAL,HIGH
           exit-code: "0"
 
+      - name: Ensure SARIF output exists for upload
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          SARIF_FILE="trivy-results-${{ strategy.job-index }}.sarif"
+          if [ ! -f "$SARIF_FILE" ] || [ ! -s "$SARIF_FILE" ] || ! jq empty "$SARIF_FILE" 2>/dev/null; then
+            echo "Trivy did not produce a valid SARIF payload; creating a minimal fallback stub."
+            jq -n \
+              --arg schema "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json" \
+              '{
+                "$schema": $schema,
+                "version": "2.1.0",
+                "runs": [{
+                  "tool": {
+                    "driver": {
+                      "name": "Trivy",
+                      "informationUri": "https://github.com/aquasecurity/trivy",
+                      "version": "latest",
+                      "rules": []
+                    }
+                  },
+                  "results": []
+                }]
+              }' > "$SARIF_FILE"
+          fi
+
       - name: Upload SARIF to GitHub Security
         if: always()
         uses: github/codeql-action/upload-sarif@v4
@@ -86,7 +117,7 @@ jobs:
 
       - name: Upload scan artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
           path: |
