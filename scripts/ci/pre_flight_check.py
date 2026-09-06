@@ -41,12 +41,12 @@ class PreFlightValidator:
         print(f"{symbol} {result.name}: {result.message}")
 
     def check_pytest_plugins_in_workflow(self) -> CheckResult:
-        """Check that workflows pin plugin versions and DON'T use explicit -p flags.
+        """Check that workflows install compatible plugin ranges and DON'T use explicit -p flags.
 
         Per PR #3248 root cause analysis:
         - Explicit `-p` flags cause "Plugin already registered" errors
         - Plugins should auto-discover via setuptools entry points
-        - Workflows MUST pin exact plugin versions before package install
+        - Workflows must align with the repo's canonical plugin ranges before package install
         """
         workflow_files = list(self.repo_root.glob(".github/workflows/*.yml"))
         issues = []
@@ -88,13 +88,17 @@ class PreFlightValidator:
                     for af in action_files:
                         composite_content += "\n" + af.read_text()
 
-                has_pinning = bool(re.search(r"pytest-xdist==\d+\.\d+\.\d+", composite_content))
-                has_timeout_pinning = bool(re.search(r"pytest-timeout==\d+\.\d+\.\d+", composite_content))
+                has_pinning = bool(
+                    re.search(r'pytest-xdist(?:==|>=)[^\s"\']+', composite_content)
+                )
+                has_timeout_pinning = bool(
+                    re.search(r'pytest-timeout(?:==|>=)[^\s"\']+', composite_content)
+                )
 
                 if uses_xdist and not has_pinning:
-                    issues.append(f"{workflow_file.name}: ⚠️ Uses -n flag but doesn't pin pytest-xdist version")
+                    issues.append(f"{workflow_file.name}: ⚠️ Uses -n flag but doesn't declare a pytest-xdist version/range")
                 if uses_timeout and not has_timeout_pinning:
-                    issues.append(f"{workflow_file.name}: ⚠️ Uses --timeout flag but doesn't pin pytest-timeout version")
+                    issues.append(f"{workflow_file.name}: ⚠️ Uses --timeout flag but doesn't declare a pytest-timeout version/range")
 
         if issues:
             return CheckResult(
@@ -102,10 +106,10 @@ class PreFlightValidator:
                 False,
                 f"Found {len(issues)} workflow(s) with plugin configuration issues:\n  " + "\n  ".join(issues) +
                 "\n\nCorrect approach:\n" +
-                "  1. Pin exact versions: pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0\n" +
+                "  1. Install the repo's compatible plugin ranges from pyproject.toml, e.g. \"pytest>=9.0.3,<10.0.0\" \"pytest-xdist>=3.5.0,<4.0.0\" \"pytest-timeout>=2.2.0,<3.0.0\"\n" +
                 "  2. NO -p flags needed (plugins auto-discover)\n" +
-                "  3. Install package AFTER pinning plugins\n" +
-                "  See: .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md",
+                "  3. Install package AFTER the plugin bootstrap\n" +
+                "  See: pyproject.toml and the cached setup action",
                 fixable=True
             )
 
