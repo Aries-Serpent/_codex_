@@ -4,6 +4,7 @@
 
 ### Fixed (auto-update — PR #5591)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5591 (SHA `188ddb29`) at 2026-09-06T03:32:15Z [auto-generated]
+- Follow-up: final WEC guard hardening and workflow-injection cleanup for PR #5591 were revalidated at 2026-09-06T03:39:00Z to keep the active workflow baseline and session-wrapup contract green.
 
 ### Fixed — PR #5589 review-thread + template-lint follow-up
 - Resolved the remaining custom-agent frontmatter and wording issues in `.github/agents/dependency-conflict-resolver/agent.yaml`, `.github/agents/github-guru-agent.agent.md`, and `.github/agents/pr-3095-verification-agent.md` without widening scope beyond the requested thread feedback.

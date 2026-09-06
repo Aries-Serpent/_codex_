@@ -23143,8 +23143,11 @@ and the CI gate requirement.
 2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
-3. **Run URL** — N/A
-4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+3. **Follow-up** — The final WEC guard hardening and workflow injection cleanup for PR #5591
+   were revalidated at 2026-09-06T03:39:00Z to keep the active workflow baseline and
+   session-wrapup contract aligned with the repo's enforcement rules.
+4. **Run URL** — N/A
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 
 ### Root-Cause Note
