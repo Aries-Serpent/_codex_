@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (SN)
+- PR #5597 CI rescue follow-up: removed trailing whitespace in `.github/workflows/pages-mkdocs.yml` so `Fast Validation` yamllint checks pass while keeping the prior minimal `actions/deploy-pages` patch bump intact.
+
 ### Fixed (auto-update — PR #5591)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5591 (SHA `188ddb29`) at 2026-09-06T03:32:15Z [auto-generated]
 - Follow-up: final WEC guard hardening and workflow-injection cleanup for PR #5591 were revalidated at 2026-09-06T03:39:00Z to keep the active workflow baseline and session-wrapup contract green.
