@@ -16,6 +16,8 @@ _target = importlib.import_module("aries_serpent_core.rag")
 # implementation so monkeypatching `codex.rag.*` affects the live runtime.
 sys.modules[__name__] = _target
 __doc__ = _target.__doc__
+__package__ = getattr(_target, "__package__", __name__.split(".")[0])
+__spec__ = getattr(_target, "__spec__", None)
 __all__ = list(getattr(_target, "__all__", []))
 __path__ = list(getattr(_target, "__path__", []))
 

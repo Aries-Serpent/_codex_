@@ -135,9 +135,8 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                     return True
 
         return False
-    except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
-        logger.warning("Error checking for meta tensors: <ERROR_TYPE>")
+    except (AttributeError, ValueError, TypeError, RuntimeError) as e:
+        logger.warning("Error checking for meta tensors: %s", type(e).__name__)
         return None
 
 
@@ -190,10 +189,9 @@ def safe_model_to_device(
             )
 
             if not hasattr(model, "to_empty"):
-                logger.error(
-                    "PyTorch version does not support to_empty(). Upgrade to PyTorch >= 2.0"
-                )
-                raise AttributeError("Model does not support to_empty()")
+                message = "Model with meta tensors requires to_empty() for safe device transfer"
+                logger.error(message)
+                raise AttributeError(message)
 
             logger.info(f"Moving model with meta tensors to {device} using to_empty()")
 
@@ -209,16 +207,18 @@ def safe_model_to_device(
                         try:
                             module.reset_parameters()
                             logger.debug(f"Reset parameters for {module.__class__.__name__}")
-                        except (ImportError, AttributeError) as e:
-                            type(e).__name__
-                            logger.debug(f"Could not reset parameters for {module}: <ERROR_TYPE>")
+                        except (ImportError, AttributeError, TypeError, RuntimeError):
+                            logger.debug("Could not reset parameters for module", exc_info=True)
             else:
                 logger.debug("Model doesn't support modules(), skipping parameter reset")
 
             # Apply dtype conversion if specified
-            if dtype is not None:
-                model = model.to(dtype=dtype)
-                logger.debug(f"Converted model to dtype: {dtype}")
+            if dtype is not None and hasattr(model, "to"):
+                try:
+                    model = model.to(dtype=dtype)
+                    logger.debug(f"Converted model to dtype: {dtype}")
+                except (TypeError, ValueError, RuntimeError):
+                    logger.debug("Could not convert model dtype after to_empty()", exc_info=True)
 
             # Log completion time for production monitoring
             duration = time.time() - start_time
@@ -268,14 +268,13 @@ def safe_model_to_device(
         return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
     except AttributeError as e:
         # Re-raise if this is about missing to_empty() (critical error)
-        if "to_empty" in str(e):
+        if "to_empty" in str(e).lower():
             raise
         # Otherwise, model doesn't support .to() method - return as-is
-        logger.warning("Model does not support device transfer: <ERROR_TYPE>")
+        logger.warning("Model does not support device transfer: %s", type(e).__name__)
         return model
     except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
-        logger.error(f"Error moving model to device {device}: <ERROR_TYPE>")
+        logger.error("Error moving model to device %s: %s", device, type(e).__name__)
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
 
 
