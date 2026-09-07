@@ -1,6 +1,10 @@
 """Compatibility wrapper for the legacy ``codex.ingest.adapter`` module."""
 
 from aries_serpent_core.ingest.adapter import (  # noqa: F401
+    ARTIFACTS_DIR,
+    MAX_FILE_SIZE_MB,
+    MAX_FILES_COUNT,
+    MAX_TOTAL_SIZE_MB,
     IngestManifest,
     Snapshot,
     _check_size_bounds,
@@ -14,6 +18,10 @@ from aries_serpent_core.ingest.adapter import (  # noqa: F401
 )
 
 __all__ = [
+    "ARTIFACTS_DIR",
+    "MAX_FILE_SIZE_MB",
+    "MAX_FILES_COUNT",
+    "MAX_TOTAL_SIZE_MB",
     "IngestManifest",
     "Snapshot",
     "_check_size_bounds",

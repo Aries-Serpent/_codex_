@@ -2,6 +2,7 @@
 
 from aries_serpent_core.transform.transformer import (  # noqa: F401
     Patch,
+    Tier,
     TransformResult,
     _apply_pathlib_migration,
     _create_diff,
@@ -13,6 +14,7 @@ from aries_serpent_core.transform.transformer import (  # noqa: F401
 
 __all__ = [
     "Patch",
+    "Tier",
     "TransformResult",
     "_apply_pathlib_migration",
     "_create_diff",
