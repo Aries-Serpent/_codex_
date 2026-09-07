@@ -44,7 +44,7 @@ jobs:
           - checkpointing
           - integration
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           persist-credentials: false
 
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test-ml-components
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           persist-credentials: false
 
