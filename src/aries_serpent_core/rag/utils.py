@@ -171,9 +171,15 @@ def safe_model_to_device(
 
     start_time = time.time()
 
+    torch = None
     try:
-        import torch
+        import torch as _torch
 
+        torch = _torch
+    except ImportError:
+        torch = None
+
+    try:
         # Check for meta tensors BEFORE type-validation so that models with meta
         # tensors (which legitimately lack .to()) reach the to_empty() path.
         meta_status = has_meta_tensors(model)
@@ -233,6 +239,11 @@ def safe_model_to_device(
 
             return model
 
+        if torch is None:
+            # PyTorch not available - try fallback .to() method if model has it
+            logger.warning("PyTorch not available, attempting fallback .to() method")
+            return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
+
         # Standard device transfer for normal tensors
         logger.debug(f"Moving model to {device} using standard .to()")
         nn_mod = getattr(torch, "nn", None)
@@ -262,10 +273,6 @@ def safe_model_to_device(
         # For SentenceTransformer or other models with .to() method
         return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
 
-    except ImportError:
-        # PyTorch not available - try fallback .to() method if model has it
-        logger.warning("PyTorch not available, attempting fallback .to() method")
-        return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
     except AttributeError as e:
         # Re-raise if this is about missing to_empty() (critical error)
         if "to_empty" in str(e).lower():

@@ -68,5 +68,3 @@ query-filters:
       id: py/cyclic-import
   - exclude:
       id: py/pythagorean
-  - exclude:
-      id: js/workflow/untrusted-checkout
