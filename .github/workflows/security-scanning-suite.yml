@@ -202,19 +202,14 @@ jobs:
     timeout-minutes: 60
     continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]'
       }}
-    if: '(github.event_name == ''push'') ||
-
-      (github.event_name == ''pull_request'') ||
-
-      (github.event_name == ''schedule'') ||
-
-      (github.event_name == ''workflow_dispatch'' && (github.event.inputs.scan-type
-      == ''all'' || github.event.inputs.scan-type == ''codeql'')) ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all'' || inputs.scan-type == ''codeql''))
-
-      '
+    # Keep CodeQL in the dedicated GA gate workflow for push/PR enforcement.
+    # The general security suite can still run CodeQL for manual/reusable scans,
+    # but it must not duplicate the automatic CodeQL gate uploads.
+    if: >
+      (github.event_name == 'workflow_dispatch' &&
+        (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'codeql')) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'codeql'))
     permissions:
       actions: read
       contents: read
