@@ -29,7 +29,12 @@ class DashboardGenerator:
     def __init__(self, metrics_file: str):
         self.metrics_file = metrics_file
         self.metrics = self._load_metrics()
-        self.critical_workflows = ["codeql.yml", "test-comprehensive.yml", "security.yml"]
+        self.critical_workflows = [
+            "codeql.yml",
+            "test-comprehensive.yml",
+            "security-scanning-suite.yml",
+            "container-scan.yml",
+        ]
 
     def _load_metrics(self) -> Dict:
         """Load metrics from JSON file"""

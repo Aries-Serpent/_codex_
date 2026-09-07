@@ -326,7 +326,7 @@ Fix:
 Security scanning is integrated into CI/CD:
 
 ```yaml
-# .github/workflows/security.yml
+# .github/workflows/security-scanning-suite.yml
 - name: Run CodeQL
   uses: github/codeql-action/analyze@v2
 
