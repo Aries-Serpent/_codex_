@@ -304,10 +304,10 @@ We run the following automated security scans in CI:
 - **GitHub Dependency Graph**: Automatic vulnerability alerts
 - **CodeQL**: Semantic code analysis (if enabled)
 
-**CI Workflow**: `.github/workflows/security-scanning-suite.yml`
-- Runs on every push and pull request
-- Generates security reports as artifacts
-- Currently informational (warnings only), can be configured to fail CI
+- **CI Workflow**: `.github/workflows/security-scanning-suite.yml`
+  - Runs on every push and pull request
+  - Generates security reports as artifacts
+  - Currently informational (warnings only), can be configured to fail CI
 
 **Prompt Sanitization**:
 - Default sanitization enabled for all inference endpoints

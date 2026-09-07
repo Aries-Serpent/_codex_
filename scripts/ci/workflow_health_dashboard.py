@@ -30,8 +30,8 @@ class DashboardGenerator:
         self.metrics_file = metrics_file
         self.metrics = self._load_metrics()
         self.critical_workflows = [
-            "codeql.yml",
-            "test-comprehensive.yml",
+            "codeql-ga-gate.yml",
+            "test-rag.yml",
             "security-scanning-suite.yml",
             "container-scan.yml",
         ]
@@ -87,7 +87,7 @@ class DashboardGenerator:
         # Sort: critical first, then by success rate (lowest first)
         def sort_key(item):
             name, data, success_rate = item
-            is_critical = any(crit in name for crit in self.critical_workflows)
+            is_critical = any(crit.lower() in name.lower() for crit in self.critical_workflows)
             return (not is_critical, success_rate)
 
         sorted_items = sorted(items, key=sort_key)
