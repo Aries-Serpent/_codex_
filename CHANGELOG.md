@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (SN)
+- PR #5597 CI rescue follow-up: removed trailing whitespace in `.github/workflows/pages-mkdocs.yml` so `Fast Validation` yamllint checks pass while keeping the prior minimal `actions/deploy-pages` patch bump intact.
+
 ### Fixed — PR #5596 review-thread + merge-readiness follow-up
 - Fixed the `tests/conftest.py` `PYTHONPATH` regression by guarding the `src` path insertion when `src/` is absent during test collection.
 - Hardened `src/mcp/tools/github_logs.py` error handling so GitHub log fetch failures log the real traceback and exception type instead of a stale placeholder message.

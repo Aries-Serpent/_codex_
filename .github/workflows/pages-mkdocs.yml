@@ -184,7 +184,7 @@ jobs:
         echo ""
         echo "Build artifacts (manifest.json + first 20 files):"
         ls -lah ../site/cognitive_app/ | head -25
-        
+
         # Save asset manifest for verification
         if [ -f ../site/cognitive_app/manifest.json ]; then
           echo ""
@@ -232,7 +232,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+      uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
     - name: Verify deployed site (comprehensive health check)
       id: health_check
       run: |
@@ -241,10 +241,10 @@ jobs:
          echo "⚠ No page_url output - skipping health check"
          exit 0
         fi
-        
+
         echo "🔍 Comprehensive site verification: ${PAGE_URL}"
         echo ""
-        
+
         # Phase 1: Root page accessibility
         echo "Phase 1: Root page accessibility check..."
         for i in 1 2 3 4 5; do
@@ -258,21 +258,21 @@ jobs:
            sleep 10
          fi
         done
-        
+
         if [ "${HTTP_CODE}" != "200" ]; then
          echo "❌ Root page returned HTTP ${HTTP_CODE}"
          echo "health_status=root_page_failed:${HTTP_CODE}" >> "$GITHUB_OUTPUT"
          exit 1
         fi
-        
+
         echo ""
-        
+
         # Phase 2: Verify cognitive_app deployment
         echo "Phase 2: Cognitive app deployment verification..."
         COGNITIVE_APP_URL="${PAGE_URL%/}/cognitive_app/"
         python scripts/ci/verify_cognitive_app_deployment.py --url "${COGNITIVE_APP_URL}"
         VERIFY_RESULT=$?
-        
+
         if [ ${VERIFY_RESULT} -eq 0 ]; then
          echo "✅ Cognitive app deployment verified"
          echo "health_status=ok" >> "$GITHUB_OUTPUT"
