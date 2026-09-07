@@ -3,7 +3,9 @@
 Ensure local tracking defaults are applied early while keeping import-order linters calm.
 """
 
+import importlib.abc
 import importlib.machinery
+import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -29,6 +31,77 @@ class _StubObject:
 
 
 repo_root = Path(__file__).resolve().parents[1]
+
+
+class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
+    """Prefer repo src packages over stray script/test namespaces that shadow them."""
+
+    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils", "zendesk"}
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in self._CANONICAL_NAMES:
+            return None
+
+        package_dir = repo_root / "src" / fullname
+        if not package_dir.exists():
+            return None
+
+        init_file = package_dir / "__init__.py"
+        if not init_file.exists():
+            return None
+
+        return importlib.util.spec_from_file_location(
+            fullname,
+            init_file,
+            submodule_search_locations=[str(package_dir)],
+        )
+
+
+
+def _strip_shadow_roots() -> None:
+    """Keep project subtrees like ``scripts``/``tests`` from masking canonical src packages."""
+
+    shadow_roots = {
+        (repo_root / "scripts").resolve(),
+        (repo_root / "tests").resolve(),
+    }
+    filtered = []
+    for entry in list(sys.path):
+        if not entry:
+            continue
+        try:
+            resolved = Path(entry).resolve()
+        except (OSError, RuntimeError):
+            filtered.append(entry)
+            continue
+        if any(resolved == root or resolved.is_relative_to(root) for root in shadow_roots):
+            continue
+        filtered.append(entry)
+    sys.path[:] = filtered
+
+    for legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+        module = sys.modules.get(legacy_name)
+        if module is None:
+            continue
+        origin = getattr(module, "__file__", "") or ""
+        if not origin:
+            continue
+        try:
+            origin_path = Path(origin).resolve()
+        except (OSError, RuntimeError):
+            continue
+        if any(origin_path.is_relative_to(root) for root in shadow_roots):
+            sys.modules.pop(legacy_name, None)
+            for key in list(sys.modules):
+                if key == legacy_name or key.startswith(f"{legacy_name}."):
+                    sys.modules.pop(key, None)
+
+
+if not any(isinstance(finder, _CanonicalPackageFinder) for finder in sys.meta_path):
+    sys.meta_path.insert(0, _CanonicalPackageFinder())
+
+_strip_shadow_roots()
+
 src_str = str(repo_root / "src")
 if src_str not in sys.path:
     sys.path.insert(0, src_str)

@@ -3,6 +3,10 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 pytest.importorskip("tensorboard")
+
+_id_list_strategy = st.lists(st.text(min_size=1, max_size=32), min_size=1, max_size=50, unique=True)
+_text_strategy = st.text(min_size=0, max_size=256)
+
 #     assert set(train) | set(eval_) == set(ids) or (, "Condition must be true"
 #         # Duplicated IDs: combined count must equal original
 #         len(train) + len(eval_)
