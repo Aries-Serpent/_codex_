@@ -83,7 +83,10 @@ def _validate_files(files: list[str]) -> list[Path]:
         matches = glob(pattern, recursive=True)
         if not matches:
             console.print(
-                f"[yellow]⚠️  No files found matching: {pattern}[/yellow]"
+                "[yellow]No valid files found matching the provided patterns[/yellow]"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            console.print(
+                f"[dim]Pattern: {pattern}[/dim]"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
             resolved.extend(Path(m) for m in matches)
@@ -165,7 +168,7 @@ def build(
         codex rag build --files "docs/**/*.md" --tenant-id customer_a --index-name docs
     """
     try:
-        from aries_serpent_core.rag import build_index_from_files
+        from codex.rag import build_index_from_files
 
         # Validate inputs
         if overlap >= chunk_size:
@@ -214,20 +217,24 @@ def build(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except ImportError as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
+            f"[red]❌ Missing dependencies: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[yellow]Install with: pip install sentence-transformers faiss-cpu[/yellow]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Failed to build index: <ERROR_TYPE>[/red]"
+            f"[red]❌ Failed to build index: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         logger.exception("Error building index")  # codeql[py/clear-text-logging-sensitive-data]
+        raise typer.Exit(1) from e
+    except Exception as e:  # pragma: no cover - defensive fallback
+        console.print(
+            f"[red]❌ Failed to build index: {type(e).__name__}[/red]"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception("Unexpected error building index")  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -329,9 +336,7 @@ def query(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         if output_format == "json":
-            logger.info(
-                json.dumps(results, indent=2, default=str)
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            print(json.dumps(results, indent=2, default=str))
         else:
             table = Table(show_header=True, header_style="bold cyan")
             table.add_column("Score", style="green", width=8)
@@ -369,11 +374,16 @@ def query(
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Query failed: <ERROR_TYPE>[/red]"
+            f"[red]❌ Query failed: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         logger.exception("Error querying index")  # codeql[py/clear-text-logging-sensitive-data]
+        raise typer.Exit(1) from e
+    except Exception as e:  # pragma: no cover - defensive fallback
+        console.print(
+            f"[red]❌ Query failed: {type(e).__name__}[/red]"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception("Unexpected error querying index")  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -585,7 +595,7 @@ def merge(
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
     try:
-        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
+        from codex.rag import IndexOperation, manage_tenant_indices
 
         if not source_indices or len(source_indices) < 2:
             console.print(
@@ -631,17 +641,21 @@ def merge(
             raise typer.Exit(1)
 
     except ImportError as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
+            f"[red]❌ Missing dependencies: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Merge failed: <ERROR_TYPE>[/red]"
+            f"[red]❌ Merge failed: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         logger.exception("Error merging indices")  # codeql[py/clear-text-logging-sensitive-data]
+        raise typer.Exit(1) from e
+    except Exception as e:  # pragma: no cover - defensive fallback
+        console.print(
+            f"[red]❌ Merge failed: {type(e).__name__}[/red]"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception("Unexpected error merging indices")  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -765,7 +779,7 @@ def metrics(
         codex rag metrics --format json --output metrics.json
     """
     try:
-        from aries_serpent_core.rag import get_metrics
+        from codex.rag import get_metrics
 
         metrics_obj = get_metrics()
 
@@ -786,20 +800,24 @@ def metrics(
                 f"[green]✅ Metrics exported to {output_file}[/green]"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            logger.info(content)
+            print(content, end="")
 
     except ImportError as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Missing dependencies: <ERROR_TYPE>[/red]"
+            f"[red]❌ Missing dependencies: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
     except (ValueError, TypeError, RuntimeError) as e:
-        type(e).__name__
         console.print(
-            "[red]❌ Failed to export metrics: <ERROR_TYPE>[/red]"
+            f"[red]❌ Failed to export metrics: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
         logger.exception("Error exporting metrics")  # codeql[py/clear-text-logging-sensitive-data]
+        raise typer.Exit(1) from e
+    except Exception as e:  # pragma: no cover - defensive fallback
+        console.print(
+            f"[red]❌ Failed to export metrics: {type(e).__name__}[/red]"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception("Unexpected error exporting metrics")  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 

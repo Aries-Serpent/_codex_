@@ -1,27 +1,27 @@
-"""Compatibility wrapper for the legacy ``codex.rag`` namespace.
+"""Compatibility shim for the legacy `codex.rag` import path.
 
-The canonical RAG implementation lives under ``src/aries_serpent_core/rag`` and
-``src/rag``. The branch's generated tests import ``codex.rag.*`` directly, so
-we expose that namespace without changing the real implementations.
+This module re-exports the active `aries_serpent_core.rag` implementation so
+legacy imports remain stable while the runtime continues using the modern
+package layout.
 """
 
 from __future__ import annotations
 
-from pathlib import Path
+import importlib
+import sys
 
-_src_root = Path(__file__).resolve().parents[2]
-_legacy_rag = _src_root / "aries_serpent_core" / "rag"
-_root_rag = _src_root / "rag"
+_target = importlib.import_module("aries_serpent_core.rag")
 
-# Allow Python to resolve ``codex.rag.<module>`` to the real RAG package.
-__path__ = [str(Path(__file__).resolve().parent), str(_legacy_rag), str(_root_rag)]
+# Ensure legacy imports resolve to the same module object as the active
+# implementation so monkeypatching `codex.rag.*` affects the live runtime.
+sys.modules[__name__] = _target
+__doc__ = _target.__doc__
+__package__ = getattr(_target, "__package__", __name__.split(".")[0])
+__spec__ = getattr(_target, "__spec__", None)
+__all__ = list(getattr(_target, "__all__", []))
+__path__ = list(getattr(_target, "__path__", []))
 
-try:
-    from aries_serpent_core.rag import *  # noqa: F401,F403
-except Exception:
-    try:
-        from rag import *  # noqa: F401,F403
-    except Exception:  # pragma: no cover - compatibility fallback
-        pass
-
-__all__ = []
+for _name in dir(_target):
+    if _name.startswith("__") and _name.endswith("__"):
+        continue
+    globals()[_name] = getattr(_target, _name)
