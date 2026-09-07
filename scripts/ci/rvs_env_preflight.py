@@ -48,14 +48,14 @@ logger = logging.getLogger(__name__)
 PACKAGE_GROUPS: dict[str, list[tuple[str, str]]] = {
     # (import_name, pypi_name) pairs
     "pytest_plugins": [
-        ("pytest", "pytest>=8.2.0"),
-        ("pytest_timeout", "pytest-timeout>=2.2.0"),
-        ("pytest_xdist", "pytest-xdist>=3.5.0"),
-        ("pytest_cov", "pytest-cov>=4.1.0"),
-        ("pytest_asyncio", "pytest-asyncio>=0.23.0"),
-        ("pytest_mock", "pytest-mock>=3.12.0"),
+        ("pytest", "pytest>=9.0.3,<10.0.0"),
+        ("pytest_timeout", "pytest-timeout>=2.2.0,<3.0.0"),
+        ("pytest_xdist", "pytest-xdist>=3.5.0,<4.0.0"),
+        ("pytest_cov", "pytest-cov>=4.1.0,<8.0.0"),
+        ("pytest_asyncio", "pytest-asyncio>=1.4.0,<2.0.0"),
+        ("pytest_mock", "pytest-mock>=3.15.1,<4.0.0"),
         ("pytest_randomly", "pytest-randomly>=3.15"),
-        ("pytest_rerunfailures", "pytest-rerunfailures>=12.0"),
+        ("pytest_rerunfailures", "pytest-rerunfailures>=16.6"),
     ],
     "core": [
         ("pydantic", "pydantic>=2.4"),
@@ -66,19 +66,19 @@ PACKAGE_GROUPS: dict[str, list[tuple[str, str]]] = {
     ],
     "ml": [
         ("torch", "torch>=2.6.0"),
-        ("transformers", "transformers>=4.48.0"),
-        ("datasets", "datasets>=2.19"),
-        ("peft", "peft>=0.11"),
-        ("accelerate", "accelerate>=0.31"),
-        ("sentencepiece", "sentencepiece>=0.1.99"),
+        ("transformers", "transformers>=5.16.1,<6"),
+        ("datasets", "datasets>=5.0.0,<6"),
+        ("peft", "peft>=0.20.0,<1"),
+        ("accelerate", "accelerate>=1.14.0,<2"),
+        ("sentencepiece", "sentencepiece>=0.2.2"),
     ],
     "analysis": [
         ("libcst", "libcst>=1.0"),
         ("sqlparse", "sqlparse>=0.5.0"),
     ],
     "numeric": [
-        ("numpy", "numpy>=1.24"),
-        ("scipy", "scipy>=1.11"),
+        ("numpy", "numpy>=2.5.2,<3"),
+        ("scipy", "scipy>=1.18.1,<2"),
         ("mlflow", "mlflow>=2.22.4"),
     ],
     "infra": [

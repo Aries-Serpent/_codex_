@@ -5,6 +5,11 @@
 ### Fixed (SN)
 - PR #5597 CI rescue follow-up: removed trailing whitespace in `.github/workflows/pages-mkdocs.yml` so `Fast Validation` yamllint checks pass while keeping the prior minimal `actions/deploy-pages` patch bump intact.
 
+### Fixed — PR #5596 review-thread + merge-readiness follow-up
+- Fixed the `tests/conftest.py` `PYTHONPATH` regression by guarding the `src` path insertion when `src/` is absent during test collection.
+- Hardened `src/mcp/tools/github_logs.py` error handling so GitHub log fetch failures log the real traceback and exception type instead of a stale placeholder message.
+- Refreshed the active session governance artifacts for PR #5596 (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, and `.codex/aftermath/pda_iterations.jsonl`) so the branch stays aligned with the wrap-up gate.
+
 ### Fixed (auto-update — PR #5591)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5591 (SHA `188ddb29`) at 2026-09-06T03:32:15Z [auto-generated]
 - Follow-up: final WEC guard hardening and workflow-injection cleanup for PR #5591 were revalidated at 2026-09-06T03:39:00Z to keep the active workflow baseline and session-wrapup contract green.

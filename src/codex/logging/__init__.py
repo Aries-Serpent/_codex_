@@ -17,13 +17,21 @@ if _migrated_root.is_dir():
     __path__.append(str(_migrated_root))
 
 from aries_serpent_core.logging import *  # noqa: F401, F403
-from aries_serpent_core.logging.adapter import get_default_logger
+from aries_serpent_core.logging.adapter import (
+    LoggerAdapter,
+    NullLogger,
+    get_default_logger,
+    set_default_logger,
+)
 
 from . import session_logger as session_logger
 from . import structured_logger as structured_logger
 
 __all__ = [
+    "LoggerAdapter",
+    "NullLogger",
     "get_default_logger",
+    "set_default_logger",
     "session_logger",
     "structured_logger",
 ]

@@ -45,7 +45,7 @@ def _list_models_safe() -> list[str]:
         return []
     try:
         return sorted({str(model) for model in list_models()})
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError, RuntimeError, TypeError, ValueError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         return []
 
@@ -58,7 +58,7 @@ def _list_tokenizers_safe() -> list[str]:
         return []
     try:
         return sorted({str(tokenizer) for tokenizer in list_tokenizers()})
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError, RuntimeError, TypeError, ValueError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         return []
 

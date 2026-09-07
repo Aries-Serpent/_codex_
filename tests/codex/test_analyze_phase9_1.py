@@ -14,7 +14,9 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import os
 import tempfile
+import textwrap
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -170,7 +172,7 @@ class TestImportExtraction:
         import sys
         from pathlib import Path
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         imports = _extract_imports(tree)
 
         assert "os" in imports, "Condition must be true"
@@ -185,7 +187,7 @@ class TestImportExtraction:
         from typing import Dict, List
         from collections import defaultdict
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         imports = _extract_imports(tree)
 
         assert "typing" in imports, "Condition must be true"
@@ -200,7 +202,7 @@ class TestImportExtraction:
         import os
         from os import path
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         imports = _extract_imports(tree)
 
         assert imports.count("os") == 1, "Count must be greater than zero"
@@ -214,7 +216,7 @@ class TestImportExtraction:
         import os
         import ast
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         imports = _extract_imports(tree)
 
         assert imports == sorted(imports), "imports is not valid"
@@ -234,7 +236,7 @@ def public_func():
 def _private_func():
     pass
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         exports = _extract_exports(tree)
 
         assert "public_func" in exports, "Condition must be true"
@@ -251,7 +253,7 @@ class PublicClass:
 class _PrivateClass:
     pass
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         exports = _extract_exports(tree)
 
         assert "PublicClass" in exports, "Condition must be true"
@@ -273,7 +275,7 @@ def func2():
 class Class1:
     pass
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         exports = _extract_exports(tree)
 
         assert "func1" in exports, "Condition must be true"
@@ -294,7 +296,7 @@ def alpha():
 def beta():
     pass
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         exports = _extract_exports(tree)
 
         assert exports == sorted(exports), "exports is not valid"
@@ -311,7 +313,7 @@ class TestComplexityCalculation:
 def simple():
     return 42
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         metrics = _calculate_complexity(tree)
 
         assert metrics.cyclomatic == 1.0, "cyclomatic is not valid"
@@ -326,7 +328,7 @@ def func(x):
         return True
     return False
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         metrics = _calculate_complexity(tree)
 
         assert metrics.cyclomatic == 2.0, "cyclomatic is not valid"
@@ -342,7 +344,7 @@ def func(x, y):
             return x + y
     return 0
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         metrics = _calculate_complexity(tree)
 
         assert metrics.cyclomatic == 3.0, "cyclomatic is not valid"
@@ -358,7 +360,7 @@ def func(items):
             return item
     return None
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         metrics = _calculate_complexity(tree)
 
         assert metrics.cyclomatic >= 3.0, "cyclomatic must be greater than zero"
@@ -373,7 +375,7 @@ def func(x):
         return True
     return False
 """
-        tree = ast.parse(code)
+        tree = ast.parse(textwrap.dedent(code))
         metrics = _calculate_complexity(tree)
 
         assert metrics.cognitive > 0, "cognitive must be greater than zero"
@@ -419,12 +421,7 @@ class TestFileAnalysis:
     def test_analyze_simple_file(self, tmp_path: Path) -> None:
         """Test analyzing a simple Python file."""
         test_file = tmp_path / "test.py"
-        test_file.write_text("""
-        import os
-
-def hello():
-    return "world"
-""")
+        test_file.write_text("import os\n\ndef hello():\n    return \"world\"\n")
 
         analysis = analyze_file(test_file, tmp_path)
 

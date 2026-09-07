@@ -8,9 +8,17 @@ The workflow module provides GitHub Actions workflow inventory and management.
 The github module provides GitHub API client functionality.
 """
 
-# Import workflow services (lightweight, no external deps beyond PyYAML/Pydantic)
-import logging
+from __future__ import annotations
 
+import logging
+from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parents[2]
+_ROOT_SERVICES = _ROOT / "services"
+if _ROOT_SERVICES.exists():
+    __path__ = [str(Path(__file__).resolve().parent), str(_ROOT_SERVICES)]
+
+# Import workflow services (lightweight, no external deps beyond PyYAML/Pydantic)
 from .workflow import WorkflowInventory, WorkflowParser
 
 logger = logging.getLogger(__name__)

@@ -1,8 +1,3 @@
-import tempfile
-
-import pytest
-
-pytest.importorskip("mlflow")
 """
 Test Unified Training Parity And Resume
 
@@ -11,11 +6,16 @@ Test module for unified training parity and resume.
 
 from __future__ import annotations
 
+import tempfile
 import types
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+pytest.importorskip("mlflow")
 
 from codex_ml.training import unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult

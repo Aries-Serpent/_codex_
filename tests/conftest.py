@@ -13,6 +13,35 @@ import sys
 from pathlib import Path as _ImportHookPath
 
 
+class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
+    """Prefer repo src packages even when test files inject scripts/tests onto sys.path."""
+
+    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils", "zendesk"}
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in self._CANONICAL_NAMES:
+            return None
+
+        project_root = _ImportHookPath(__file__).resolve().parents[1]
+        package_dir = project_root / "src" / fullname
+        if not package_dir.exists():
+            return None
+
+        init_file = package_dir / "__init__.py"
+        if not init_file.exists():
+            return None
+
+        return importlib.util.spec_from_file_location(
+            fullname,
+            init_file,
+            submodule_search_locations=[str(package_dir)],
+        )
+
+
+if not any(isinstance(finder, _CanonicalPackageFinder) for finder in sys.meta_path):
+    sys.meta_path.insert(0, _CanonicalPackageFinder())
+
+
 class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
     """Import hook that resolves codex.* imports to modules in src/."""
 
@@ -146,26 +175,80 @@ if not _xdist_requested:
 
 _PROJECT_ROOT = _Path(__file__).resolve().parents[1]
 _SRC_DIR = _PROJECT_ROOT / "src"
+
+
+def _strip_shadow_roots() -> None:
+    """Remove test/script workspace roots that shadow the canonical src packages."""
+
+    _shadow_roots = {
+        (_PROJECT_ROOT / "scripts").resolve(),
+        (_PROJECT_ROOT / "tests").resolve(),
+    }
+    _filtered: list[str] = []
+    for _entry in list(_sys.path):
+        if not _entry:
+            continue
+        try:
+            _resolved = _Path(_entry).resolve()
+        except (OSError, RuntimeError):
+            _filtered.append(_entry)
+            continue
+        if any(_resolved == _root or _resolved.is_relative_to(_root) for _root in _shadow_roots):
+            continue
+        _filtered.append(_entry)
+    _sys.path[:] = _filtered
+
+    for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+        _mod = _sys.modules.get(_legacy_name)
+        if _mod is None:
+            continue
+        _origin = getattr(_mod, "__file__", "") or ""
+        if not _origin:
+            continue
+        _origin_path = _Path(_origin).resolve()
+        if any(_origin_path.is_relative_to(_root) for _root in _shadow_roots):
+            for _key in list(_sys.modules):
+                if _key == _legacy_name or _key.startswith(f"{_legacy_name}."):
+                    _sys.modules.pop(_key, None)
+
+
 if _os.getcwd() != str(_PROJECT_ROOT):
     _os.chdir(_PROJECT_ROOT)
+_strip_shadow_roots()
 if _SRC_DIR.exists():
     # Ensure in-process imports see ``src`` modules without installing the package.
     _src = str(_SRC_DIR)
     if _src not in _sys.path:
         _sys.path.insert(0, _src)
-    # Propagate to subprocesses invoked by tests (e.g., ``python -m tokenization.cli``).
-    existing = _os.environ.get("PYTHONPATH")
-    existing_paths = existing.split(_os.pathsep) if existing else []
-    new_paths: list[str] = []
-    for candidate in (_src, str(_PROJECT_ROOT)):
-        if candidate not in existing_paths:
-            new_paths.append(candidate)
-            existing_paths.append(candidate)
-    if new_paths:
-        if existing:
-            _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths + [existing])
-        else:
-            _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths)
+if str(_PROJECT_ROOT) not in _sys.path:
+    _sys.path.append(str(_PROJECT_ROOT))
+
+# Keep stale alias modules from earlier imports or shadow packages from
+# site-packages from freezing the wrong import path during collection.
+for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+    _mod = _sys.modules.get(_legacy_name)
+    if _mod is None:
+        continue
+    _origin = getattr(_mod, "__file__", "") or ""
+    if _origin and not _origin.startswith(str(_SRC_DIR)) and not _origin.startswith(str(_PROJECT_ROOT)):
+        for _key in list(_sys.modules):
+            if _key == _legacy_name or _key.startswith(f"{_legacy_name}."):
+                _sys.modules.pop(_key, None)
+
+# Propagate to subprocesses invoked by tests (e.g., ``python -m tokenization.cli``).
+existing = _os.environ.get("PYTHONPATH")
+existing_paths = existing.split(_os.pathsep) if existing else []
+new_paths: list[str] = []
+src_candidates = [str(_SRC_DIR)] if _SRC_DIR.exists() else []
+for candidate in (*src_candidates, str(_PROJECT_ROOT)):
+    if candidate not in existing_paths:
+        new_paths.append(candidate)
+        existing_paths.append(candidate)
+if new_paths:
+    if existing:
+        _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths + [existing])
+    else:
+        _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths)
 
 _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
 

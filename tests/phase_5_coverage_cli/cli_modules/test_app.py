@@ -6,8 +6,6 @@ from pathlib import Path
 
 import pytest
 
-pytest_plugins = ["tests.phase_5_coverage_cli.conftest"]
-
 try:
     from codex_cli import app
 except ImportError:
