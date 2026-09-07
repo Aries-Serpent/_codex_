@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 
-pytest_plugins = ["tests.phase_5_coverage_cli.conftest"]
 
 try:
     from codex_ml.cli import feature_store

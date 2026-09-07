@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
-import json
-import os
+from aries_serpent_core.config.env_vars import (
+    EnvVarConfig,
+    EnvironmentManager,
+    env_manager,
+)
 
 
 def load_env_config():
-    config = {}
+    """Return the active environment variables in a JSON-friendly dict."""
+    import json
+    import os
+
+    config: dict[str, str] = {}
     for key, value in os.environ.items():
         if value and key == "CONFIG_JSON":
             try:
@@ -19,4 +26,4 @@ def load_env_config():
     return config
 
 
-__all__ = ["load_env_config"]
+__all__ = ["EnvVarConfig", "EnvironmentManager", "env_manager", "load_env_config"]

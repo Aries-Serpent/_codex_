@@ -2,29 +2,26 @@
 
 from __future__ import annotations
 
-import argparse
+from pathlib import Path
 
+_pkg_root = Path(__file__).resolve().parent
+_migrated_root = _pkg_root.parent.parent / "aries_serpent_core"
 
-class CLI:
-    """Very small compatibility CLI wrapper used by legacy tests."""
+__path__ = [str(_pkg_root)]
+if _migrated_root.is_dir():
+    __path__.append(str(_migrated_root))
 
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
+from aries_serpent_core.cli import ALLOWED_TASKS, cli, logs  # noqa: F401
+from aries_serpent_core.cli import _fix_pool  # noqa: F401
 
-    def execute(self, command=None, **kwargs):
-        if command is None:
-            raise ValueError("command is required")
-        return {"status": "ok", "command": str(command)}
+try:
+    from aries_serpent_core.cli import app  # noqa: F401
+except Exception:  # pragma: no cover - optional Typer app
+    app = cli
 
+try:
+    from aries_serpent_core.cli import main  # noqa: F401
+except Exception:  # pragma: no cover - legacy alias
+    main = cli
 
-def parse_arguments(argv=None):
-    if argv is None:
-        raise TypeError("argv cannot be None")
-    parser = argparse.ArgumentParser(add_help=True)
-    parser.add_argument("--value", default=None)
-    args, _ = parser.parse_known_args(list(argv))
-    return args
-
-
-__all__ = ["CLI", "parse_arguments"]
+__all__ = ["ALLOWED_TASKS", "app", "cli", "logs", "main", "_fix_pool"]
