@@ -250,9 +250,9 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Tab' && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
-                  e.preventDefault();
                   const generateButton = document.getElementById('generate-code-button');
-                  if (generateButton instanceof HTMLButtonElement) {
+                  if (generateButton instanceof HTMLButtonElement && !generateButton.disabled) {
+                    e.preventDefault();
                     generateButton.focus();
                   }
                 }

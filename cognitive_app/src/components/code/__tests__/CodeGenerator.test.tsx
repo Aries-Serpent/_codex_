@@ -429,11 +429,11 @@ describe('CodeGenerator - Accessibility', () => {
     });
 
     const textarea = screen.getByPlaceholderText(/Example: Create a FastAPI/i);
-    textarea.focus();
-    expect(document.activeElement).toBe(textarea);
+    fireEvent.change(textarea, { target: { value: 'Create a simple hello world function' } });
+    fireEvent.keyDown(textarea, { key: 'Tab' });
 
     const button = screen.getByRole('button', { name: /Generate Code/i });
-    button.focus();
+    expect(button).not.toBeDisabled();
     expect(document.activeElement).toBe(button);
   });
 });
