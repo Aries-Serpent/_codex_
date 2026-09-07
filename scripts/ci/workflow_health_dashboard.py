@@ -29,7 +29,12 @@ class DashboardGenerator:
     def __init__(self, metrics_file: str):
         self.metrics_file = metrics_file
         self.metrics = self._load_metrics()
-        self.critical_workflows = ["codeql.yml", "test-comprehensive.yml", "security.yml"]
+        self.critical_workflows = [
+            "codeql-ga-gate.yml",
+            "test-rag.yml",
+            "security-scanning-suite.yml",
+            "container-scan.yml",
+        ]
 
     def _load_metrics(self) -> Dict:
         """Load metrics from JSON file"""
@@ -82,7 +87,7 @@ class DashboardGenerator:
         # Sort: critical first, then by success rate (lowest first)
         def sort_key(item):
             name, data, success_rate = item
-            is_critical = any(crit in name for crit in self.critical_workflows)
+            is_critical = any(crit.lower() in name.lower() for crit in self.critical_workflows)
             return (not is_critical, success_rate)
 
         sorted_items = sorted(items, key=sort_key)
