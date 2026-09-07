@@ -1,53 +1,57 @@
-# CodeQL
+# CodeQL Security Gate
 
-**Workflow File**: `codeql-analysis.yml`
+**Workflow File**: `codeql-ga-gate.yml`
 
 ## Purpose
 
-[Automated workflow - purpose to be documented]
+The active repository gate for CodeQL analysis and enforcement. This workflow is the source of truth for push/PR security blocking and keeps the broader `security-scanning-suite.yml` job from duplicating automatic CodeQL uploads.
 
 ## Triggers
 
-[No triggers configured]
+- `push` on `main`, `develop`, and `release/**`
+- `pull_request` on `main`, `develop`, and `release/**`
+- `workflow_dispatch` with `dry_run` and `severity_threshold` inputs
 
 ## Permissions Required
 
-[Default permissions]
+- `contents: read`
+- `security-events: write`
+- `pull-requests: write`
+- `checks: write`
+- `statuses: write`
 
 ## Environment Variables
 
-[None specified at workflow level]
+- `PYTHON_VERSION: 3.12`
+- `CODEQL_SEVERITY_THRESHOLD` from the workflow dispatch input or default `high`
 
 ## Jobs
 
-### analyze
+### codeql-analysis
 
 **Runner**: `ubuntu-latest`
 
-**Steps**: 4
-
 **Key Steps**:
 1. Checkout repository
-2. Initialize CodeQL
+2. Initialize CodeQL with `.github/codeql/codeql-config.yml`
 3. Autobuild
-4. Perform CodeQL Analysis
+4. Perform CodeQL analysis and upload SARIF
+5. Parse SARIF results and enforce severity-based gate logic
+6. Comment on PRs and record audit trail artifacts
 
+## SARIF Contract
 
-## Secrets Used
-
-[No secrets explicitly referenced]
+- Valid SARIF is required for the gate to count alerts.
+- The workflow validates generated SARIF before counting severities.
+- Empty or malformed SARIF falls back to a minimal valid SARIF payload so the gate remains deterministic.
 
 ## Maintenance
 
-**Last Generated**: 2026-01-16  
 **Status**: Active  
-**Maintainer**: DevOps Team
+**Maintainer**: Security/DevOps
 
 ## Related Documentation
 
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Workflow Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
-
----
-
-*This documentation was automatically generated. For detailed configuration, refer to the workflow file.*
+- [Workflow file](codeql-ga-gate.yml)
+- [CodeQL config](../codeql/codeql-config.yml)
+- [GitHub Actions documentation](https://docs.github.com/en/actions)

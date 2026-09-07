@@ -497,7 +497,7 @@ class TenantOperationResult:
 
 def manage_tenant_indices(
     tenant_id: str,
-    operation: str,
+    operation: str | IndexOperation,
     index_names: list[str],
     index_dir: str = ".codex/tenants",
     **kwargs,
@@ -546,8 +546,13 @@ def manage_tenant_indices(
         ... )
     """
     try:
-        op_enum = IndexOperation(operation.lower())
-    except ValueError:
+        if isinstance(operation, IndexOperation):
+            op_enum = operation
+        elif isinstance(operation, str):
+            op_enum = IndexOperation(operation.strip().lower())
+        else:
+            op_enum = IndexOperation(str(operation).strip().lower())
+    except (TypeError, ValueError):
         return TenantOperationResult(
             success=False,
             operation=IndexOperation.LIST,  # Default for invalid

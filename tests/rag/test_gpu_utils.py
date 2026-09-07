@@ -10,6 +10,14 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
+from codex.rag.gpu_utils import (
+    check_cuda_available,
+    get_gpu_memory,
+    get_optimal_batch_size,
+    select_device,
+    try_gpu_index,
+)
+
 
 @pytest.fixture(autouse=True)
 def cleanup_mocks():

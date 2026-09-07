@@ -7,8 +7,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-pytest_plugins = ["tests.phase_5_coverage_cli.conftest"]
-
 try:
     import cli
 except ImportError:

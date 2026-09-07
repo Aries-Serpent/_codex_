@@ -7,6 +7,7 @@ Includes retry logic, rate limit handling, and typed responses.
 import asyncio
 import logging
 import os
+import sys
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -737,7 +738,24 @@ class GitHubClientSync:
 
     def _run(self, coro: Any) -> Any:
         """Run coroutine synchronously."""
-        return asyncio.get_event_loop().run_until_complete(coro)
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop is not None and loop.is_running():
+            raise RuntimeError("GitHubClientSync cannot be used from a running event loop.")
+
+        try:
+            current_loop = asyncio.get_event_loop()
+        except RuntimeError:
+            current_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(current_loop)
+
+        if current_loop.is_running():
+            raise RuntimeError("GitHubClientSync cannot be used from a running event loop.")
+
+        return current_loop.run_until_complete(coro)
 
     def list_workflows(self, *args: Any, **kwargs: Any) -> list[WorkflowInfo]:
         return self._run(self._async_client.list_workflows(*args, **kwargs))
@@ -777,3 +795,9 @@ class GitHubClientSync:
 
     def get_rate_limit(self, *args: Any, **kwargs: Any) -> RateLimitInfo:
         return self._run(self._async_client.get_rate_limit(*args, **kwargs))
+
+
+if __name__.startswith("src."):
+    sys.modules.setdefault("services.github.client", sys.modules[__name__])
+else:
+    sys.modules.setdefault("src.services.github.client", sys.modules[__name__])
