@@ -255,3 +255,20 @@ class EnvironmentManager:
 
 # Global instance
 env_manager = EnvironmentManager()
+
+
+def load_env_config() -> dict[str, str]:
+    """Return the active environment variables in a JSON-friendly dict."""
+    import json
+    import os
+
+    config: dict[str, str] = {}
+    for key, value in os.environ.items():
+        if value and key == "CONFIG_JSON":
+            try:
+                config = json.loads(value)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"Invalid JSON in CONFIG_JSON: {value!r}") from exc
+        elif key.startswith("CODEX_") or key.startswith("TEST_"):
+            config[key] = value
+    return config

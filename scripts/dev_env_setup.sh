@@ -180,19 +180,22 @@ info "Upgrading pip, setuptools, wheel ..."
 # package's looser constraints — causing subtle CI/local divergence.
 # Source: resilient_validation.yml (install order is explicit there).
 # ---------------------------------------------------------------------------
-header "Step 1: Install pytest plugins (CI exact versions)"
+header "Step 1: Install pytest plugins aligned with project constraints"
 
-info "Installing plugins from resilient_validation.yml ..."
+info "Installing pytest plugin set from pyproject.toml-compatible ranges ..."
 "$PIP" install --quiet $PIP_CACHE_ARGS \
-  pytest==8.4.2 \
-  pytest-timeout==2.4.0 \
-  pytest-xdist==3.8.0 \
-  pytest-cov==5.0.0 \
-  pytest-asyncio==1.3.0 \
-  pytest-mock==3.15.1
+  "pytest>=9.0.3,<10.0.0" \
+  "pytest-timeout>=2.2.0,<3.0.0" \
+  "pytest-xdist>=3.5.0,<4.0.0" \
+  "pytest-cov>=4.1.0,<8.0.0" \
+  "pytest-asyncio>=1.4.0,<2.0.0" \
+  "pytest-mock>=3.15.1,<4.0.0" \
+  "pytest-randomly>=3.15" \
+  "pytest-rerunfailures>=16.6"
 
 # Also install the pre-commit / typer / validate-pipeline deps from validate.yml
-# These use slightly different pytest pin; we keep the newer one (8.4.2) already above.
+# The project bootstrap remains version-range-based instead of re-freezing older
+# exact pins that drift from the canonical dependency metadata.
 info "Installing validate.yml extra deps ..."
 "$PIP" install --quiet $PIP_CACHE_ARGS \
   pre-commit==4.0.1 \

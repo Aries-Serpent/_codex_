@@ -125,14 +125,25 @@ def _set_seed(seed: int) -> None:
             pass
 
 
-from ..logging_utils import (  # noqa: E402
-    LoggingConfig,
-    LoggingSession,
-    log_metrics,
-    setup_logging,
-    shutdown_logging,
-)
-from ..metrics import append_ndjson  # noqa: E402
+try:  # `training` may be imported as a top-level package via `src/` in pytest.
+    from ..logging_utils import (  # noqa: E402
+        LoggingConfig,
+        LoggingSession,
+        log_metrics,
+        setup_logging,
+        shutdown_logging,
+    )
+    from ..metrics import append_ndjson  # noqa: E402
+except ImportError:  # pragma: no cover - fallback for top-level import path
+    from logging_utils import (  # type: ignore[no-redef]
+        LoggingConfig,
+        LoggingSession,
+        log_metrics,
+        setup_logging,
+        shutdown_logging,
+    )
+    from metrics import append_ndjson  # type: ignore[no-redef]
+
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402
 

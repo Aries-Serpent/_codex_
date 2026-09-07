@@ -10,8 +10,21 @@ dependencies, enabling independent packaging and distribution.
 
 from __future__ import annotations
 
+import sys
 from abc import ABC, abstractmethod
 from typing import Any
+
+
+def _render_message(msg: Any, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
+    """Render a logger message with basic %-style formatting while preserving input order."""
+    if not args:
+        return str(msg)
+    if isinstance(msg, str):
+        try:
+            return msg % args
+        except (TypeError, ValueError):
+            return " ".join(part for part in (str(msg), *(str(arg) for arg in args)))
+    return " ".join(part for part in (str(msg), *(str(arg) for arg in args)))
 
 
 class LoggerAdapter(ABC):
@@ -85,23 +98,23 @@ class NullLogger(LoggerAdapter):
 
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """No-op debug logging."""
-        pass
+        return None
 
     def info(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """No-op info logging."""
-        pass
+        """Emit info-level messages to stdout when no real logger is configured."""
+        print(_render_message(msg, args, kwargs), file=sys.stdout)
 
     def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """No-op warning logging."""
-        pass
+        """Emit warning-level messages to stderr when no real logger is configured."""
+        print(_render_message(msg, args, kwargs), file=sys.stderr)
 
     def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """No-op error logging."""
-        pass
+        """Emit error-level messages to stderr when no real logger is configured."""
+        print(_render_message(msg, args, kwargs), file=sys.stderr)
 
     def exception(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """No-op exception logging."""
-        pass
+        """Emit exception-level output to stderr when no real logger is configured."""
+        print(_render_message(msg, args, kwargs), file=sys.stderr)
 
 
 # Global default null logger instance

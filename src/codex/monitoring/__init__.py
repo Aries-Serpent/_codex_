@@ -1,5 +1,16 @@
 """Monitoring module - re-exports from aries_serpent_core."""
+
+from __future__ import annotations
+
+from pathlib import Path
 from typing import TYPE_CHECKING
+
+_pkg_root = Path(__file__).resolve().parent
+_migrated_root = _pkg_root.parent.parent / "aries_serpent_core" / "monitoring"
+
+__path__ = [str(_pkg_root)]
+if _migrated_root.is_dir():
+    __path__.append(str(_migrated_root))
 
 if TYPE_CHECKING:
     from aries_serpent_core.monitoring import (
