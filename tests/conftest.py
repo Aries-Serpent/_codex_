@@ -239,7 +239,8 @@ for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils
 existing = _os.environ.get("PYTHONPATH")
 existing_paths = existing.split(_os.pathsep) if existing else []
 new_paths: list[str] = []
-for candidate in (_src, str(_PROJECT_ROOT)):
+src_candidates = [str(_SRC_DIR)] if _SRC_DIR.exists() else []
+for candidate in (*src_candidates, str(_PROJECT_ROOT)):
     if candidate not in existing_paths:
         new_paths.append(candidate)
         existing_paths.append(candidate)

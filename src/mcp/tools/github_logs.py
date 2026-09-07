@@ -76,9 +76,15 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
         print(result["logs"])
         ```
     """
+    owner = params.get("owner")
+    repo = params.get("repo")
+    check_run_id = params.get("check_run_id")
     try:
         # Validate input
         input_data = FetchCheckRunLogsInput(**params)
+        owner = input_data.owner
+        repo = input_data.repo
+        check_run_id = input_data.check_run_id
 
         # Get client
         client = _get_github_client()
@@ -108,13 +114,17 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
             "logs": logs,
         }
 
-    except Exception as e:
-        type(e).__name__
-        logger.error("Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
+    except Exception as exc:
+        logger.exception(
+            "Failed to fetch check run logs for %s/%s check run %s",
+            owner,
+            repo,
+            check_run_id,
+        )
         return {
             "success": False,
-            "error": str(e),
-            "error_type": type(e).__name__,
+            "error": str(exc),
+            "error_type": type(exc).__name__,
         }
 
 
@@ -142,9 +152,15 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
         print(result["logs"])
         ```
     """
+    owner = params.get("owner")
+    repo = params.get("repo")
+    job_id = params.get("job_id")
     try:
         # Validate input
         input_data = FetchJobLogsInput(**params)
+        owner = input_data.owner
+        repo = input_data.repo
+        job_id = input_data.job_id
 
         # Get client
         client = _get_github_client()
@@ -160,13 +176,17 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
             "logs": logs,
         }
 
-    except Exception as e:
-        type(e).__name__
-        logger.error("Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
+    except Exception as exc:
+        logger.exception(
+            "Failed to fetch job logs for %s/%s job %s",
+            owner,
+            repo,
+            job_id,
+        )
         return {
             "success": False,
-            "error": str(e),
-            "error_type": type(e).__name__,
+            "error": str(exc),
+            "error_type": type(exc).__name__,
         }
 
 
