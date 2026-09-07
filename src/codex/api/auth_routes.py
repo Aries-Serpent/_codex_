@@ -1,20 +1,10 @@
-"""Compatibility shim for `codex.api.auth_routes`."""
+"""Compatibility wrapper for the legacy ``codex.api.auth_routes`` import path."""
 
 from __future__ import annotations
 
+from aries_serpent_core.api.auth_routes import create_auth_router
 
-class AuthRouter:
-    """Lightweight compatibility router used by legacy tests."""
+# Preserve the historical simple-type name used by older import sites.
+AuthRouter = object
 
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
-
-    def add_api_route(self, *args, **kwargs):
-        return None
-
-    def include_router(self, *args, **kwargs):
-        return self
-
-
-__all__ = ["AuthRouter"]
+__all__ = ["AuthRouter", "create_auth_router"]

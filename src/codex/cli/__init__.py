@@ -11,8 +11,14 @@ __path__ = [str(_pkg_root)]
 if _migrated_root.is_dir():
     __path__.append(str(_migrated_root))
 
-from aries_serpent_core.cli import ALLOWED_TASKS, cli, logs  # noqa: F401
-from aries_serpent_core.cli import _fix_pool  # noqa: F401
+from aries_serpent_core.cli import (  # noqa: F401
+    ALLOWED_TASKS,
+    _emit_group_help,
+    _fix_pool,
+    _missing_command,
+    cli,
+    logs,
+)
 
 try:
     from aries_serpent_core.cli import app  # noqa: F401
@@ -24,4 +30,12 @@ try:
 except Exception:  # pragma: no cover - legacy alias
     main = cli
 
-__all__ = ["ALLOWED_TASKS", "app", "cli", "logs", "main", "_fix_pool"]
+__all__ = [
+    "ALLOWED_TASKS",
+    "_emit_group_help",
+    "_fix_pool",
+    "app",
+    "cli",
+    "logs",
+    "main",
+]

@@ -1,11 +1,33 @@
-"""Compatibility helpers for legacy `codex.archive.util` imports."""
+"""Compatibility wrapper for the legacy ``codex.archive.util`` import path."""
 
 from __future__ import annotations
 
 import json
 
+from aries_serpent_core.archive.util import (  # noqa: F401
+    ISO_FORMAT,
+    append_evidence,
+    chunked,
+    compression_codec,
+    decompress_payload,
+    ensure_directory,
+    evidence_file,
+    json_dumps_sorted,
+    redact_text_credentials,
+    redact_url_credentials,
+    sha256_bytes,
+    sha256_file,
+    sha256_hex,
+    utcnow,
+    utcnow_iso,
+    zlib_compress,
+    zstd_compress,
+    zstd_decompress,
+)
+
 
 def parse_value(value):
+    """Normalize a value for compatibility use in legacy archive helpers."""
     if value is None:
         return None
     if isinstance(value, str):
@@ -14,7 +36,8 @@ def parse_value(value):
 
 
 def format_data(data):
-    seen = set()
+    """Render JSON-like data while guarding against recursive structures."""
+    seen: set[int] = set()
 
     def _detect(obj):
         obj_id = id(obj)
@@ -35,4 +58,25 @@ def format_data(data):
     return json.dumps(data, sort_keys=True, default=str)
 
 
-__all__ = ["parse_value", "format_data"]
+__all__ = [
+    "ISO_FORMAT",
+    "append_evidence",
+    "chunked",
+    "compression_codec",
+    "decompress_payload",
+    "ensure_directory",
+    "evidence_file",
+    "format_data",
+    "json_dumps_sorted",
+    "parse_value",
+    "redact_text_credentials",
+    "redact_url_credentials",
+    "sha256_bytes",
+    "sha256_file",
+    "sha256_hex",
+    "utcnow",
+    "utcnow_iso",
+    "zlib_compress",
+    "zstd_compress",
+    "zstd_decompress",
+]

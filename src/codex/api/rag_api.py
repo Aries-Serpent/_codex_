@@ -1,6 +1,21 @@
-"""Compatibility shim for `codex.api.rag_api`."""
+"""Compatibility wrapper for the legacy ``codex.api.rag_api`` import path."""
 
 from __future__ import annotations
+
+from aries_serpent_core.api.rag_api import (  # noqa: F401
+    BuildIndexRequest,
+    BuildIndexResponse,
+    QueryRequest,
+    QueryResult,
+    MergeIndicesRequest,
+    _ensure_subpath,
+    _safe_join_under_base,
+    _validate_path_segment,
+    app,
+    build_index,
+    merge_indices,
+    query_index,
+)
 
 
 class RAGAPI:
@@ -23,4 +38,18 @@ class RAGAPI:
         return False
 
 
-__all__ = ["RAGAPI"]
+__all__ = [
+    "BuildIndexRequest",
+    "BuildIndexResponse",
+    "MergeIndicesRequest",
+    "QueryRequest",
+    "QueryResult",
+    "RAGAPI",
+    "_ensure_subpath",
+    "_safe_join_under_base",
+    "_validate_path_segment",
+    "app",
+    "build_index",
+    "merge_indices",
+    "query_index",
+]

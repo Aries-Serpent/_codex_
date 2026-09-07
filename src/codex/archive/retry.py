@@ -1,12 +1,16 @@
-"""Compatibility shim for legacy `codex.archive.retry` imports."""
+"""Compatibility wrapper for the legacy ``codex.archive.retry`` import path."""
 
 from __future__ import annotations
 
-import time
+from aries_serpent_core.archive.retry import (  # noqa: F401
+    RetryConfig,
+    calculate_backoff,
+    retry_with_backoff,
+)
 
 
 class RetryPolicy:
-    """A tiny retry policy implementation for compatibility tests."""
+    """Compatibility adapter matching the legacy retry-policy API."""
 
     def __init__(self, max_retries=3, backoff_factor=1.0, timeout=None):
         self.max_retries = max_retries
@@ -17,6 +21,8 @@ class RetryPolicy:
         return self.backoff_factor * (2 ** max(0, attempt))
 
     def execute(self, func, *args, **kwargs):
+        import time
+
         last_error = None
         for attempt in range(self.max_retries + 1):
             try:
@@ -32,7 +38,7 @@ class RetryPolicy:
 
 
 class CircuitBreaker:
-    """Simple circuit-breaker stub for compatibility tests."""
+    """Legacy circuit-breaker compatibility stub."""
 
     def __init__(self, failure_threshold=3, timeout=1.0, *args, **kwargs):
         self.failure_threshold = failure_threshold
@@ -52,4 +58,10 @@ class CircuitBreaker:
             raise
 
 
-__all__ = ["RetryPolicy", "CircuitBreaker"]
+__all__ = [
+    "CircuitBreaker",
+    "RetryConfig",
+    "RetryPolicy",
+    "calculate_backoff",
+    "retry_with_backoff",
+]
