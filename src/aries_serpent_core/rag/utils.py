@@ -171,118 +171,87 @@ def safe_model_to_device(
 
     start_time = time.time()
 
-    torch = None
+    try:
+        meta_status = has_meta_tensors(model)
+    except (AttributeError, ValueError, TypeError, RuntimeError):
+        logger.debug("Unable to inspect meta tensor state", exc_info=True)
+        meta_status = None
+
+    if meta_status is None:
+        logger.debug("Model doesn't support parameter inspection, returning as-is")
+        return model
+
+    if meta_status:
+        logger.warning(
+            f"Meta tensor detected in model. Using to_empty() for device transfer to {device}."
+        )
+
+        to_empty = getattr(model, "to_empty", None)
+        if not callable(to_empty):
+            message = "Model with meta tensors requires to_empty() for safe device transfer"
+            logger.error(message)
+            raise AttributeError(message)
+
+        logger.info(f"Moving model with meta tensors to {device} using to_empty()")
+
+        try:
+            model = to_empty(device=device)
+        except (AttributeError, TypeError, ValueError, RuntimeError, NotImplementedError) as exc:
+            message = "Model with meta tensors requires to_empty() for safe device transfer"
+            logger.error(message)
+            raise AttributeError(message) from exc
+
+        if hasattr(model, "modules"):
+            for module in model.modules():
+                if hasattr(module, "reset_parameters"):
+                    try:
+                        module.reset_parameters()
+                        logger.debug(f"Reset parameters for {module.__class__.__name__}")
+                    except (ImportError, AttributeError, TypeError, RuntimeError):
+                        logger.debug("Could not reset parameters for module", exc_info=True)
+        else:
+            logger.debug("Model doesn't support modules(), skipping parameter reset")
+
+        if dtype is not None and hasattr(model, "to"):
+            try:
+                model = model.to(dtype=dtype)
+                logger.debug(f"Converted model to dtype: {dtype}")
+            except (TypeError, ValueError, RuntimeError):
+                logger.debug("Could not convert model dtype after to_empty()", exc_info=True)
+
+        duration = time.time() - start_time
+        logger.info(
+            f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}"
+        )
+        return model
+
     try:
         import torch as _torch
-
-        torch = _torch
     except ImportError:
-        torch = None
-
-    try:
-        # Check for meta tensors BEFORE type-validation so that models with meta
-        # tensors (which legitimately lack .to()) reach the to_empty() path.
-        meta_status = has_meta_tensors(model)
-        if meta_status is None:
-            # Model doesn't support parameter inspection
-            logger.debug("Model doesn't support parameter inspection, returning as-is")
-            return model
-
-        if meta_status:
-            # Model has meta tensors - must use to_empty()
-            logger.warning(
-                f"Meta tensor detected in model. Using to_empty() for device transfer to {device}."
-            )
-
-            if not hasattr(model, "to_empty"):
-                message = "Model with meta tensors requires to_empty() for safe device transfer"
-                logger.error(message)
-                raise AttributeError(message)
-
-            logger.info(f"Moving model with meta tensors to {device} using to_empty()")
-
-            # First, move to the target device with to_empty()
-            model = model.to_empty(device=device)
-
-            # Then reinitialize parameters (if needed)
-            # This ensures all parameters have actual data
-            # Skip if model doesn't support modules() (e.g., mock objects in tests)
-            if hasattr(model, "modules"):
-                for module in model.modules():
-                    if hasattr(module, "reset_parameters"):
-                        try:
-                            module.reset_parameters()
-                            logger.debug(f"Reset parameters for {module.__class__.__name__}")
-                        except (ImportError, AttributeError, TypeError, RuntimeError):
-                            logger.debug("Could not reset parameters for module", exc_info=True)
-            else:
-                logger.debug("Model doesn't support modules(), skipping parameter reset")
-
-            # Apply dtype conversion if specified
-            if dtype is not None and hasattr(model, "to"):
-                try:
-                    model = model.to(dtype=dtype)
-                    logger.debug(f"Converted model to dtype: {dtype}")
-                except (TypeError, ValueError, RuntimeError):
-                    logger.debug("Could not convert model dtype after to_empty()", exc_info=True)
-
-            # Log completion time for production monitoring
-            duration = time.time() - start_time
-            logger.info(
-                f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}"
-            )
-
-            # Optional: Add metrics if you have a metrics system
-            # Example integration points:
-            # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
-            # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
-
-            return model
-
-        if torch is None:
-            # PyTorch not available - try fallback .to() method if model has it
-            logger.warning("PyTorch not available, attempting fallback .to() method")
-            return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
-
-        # Standard device transfer for normal tensors
-        logger.debug(f"Moving model to {device} using standard .to()")
-        nn_mod = getattr(torch, "nn", None)
-        torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
-        # Validate model type only for the standard (non-meta) path
-        if torch_module_type is not None and not isinstance(model, torch_module_type):
-            if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
-                raise TypeError(
-                    f"Expected torch.nn.Module or model with .to() method, "
-                    f"got {type(model).__name__}"
-                )
-        if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
-            # Build .to() kwargs
-            to_kwargs = {"device": device, "non_blocking": non_blocking}
-            if dtype is not None:
-                to_kwargs["dtype"] = dtype
-
-            result = model.to(**to_kwargs)  # type: ignore[attr-defined]  # safe-device-placement: internal implementation
-
-            # Log standard transfer timing
-            duration = time.time() - start_time
-            if duration > 1.0:  # Only log if takes more than 1 second
-                logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
-
-            return result
-
-        # For SentenceTransformer or other models with .to() method
+        logger.warning("PyTorch not available, attempting fallback .to() method")
         return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
 
-    except AttributeError as e:
-        # Re-raise if this is about missing to_empty() (critical error)
-        if "to_empty" in str(e).lower():
-            raise
-        # Otherwise, model doesn't support .to() method - return as-is
-        logger.warning("Model does not support device transfer: %s", type(e).__name__)
-        return model
-    except (ValueError, TypeError, RuntimeError) as e:
-        logger.error("Error moving model to device %s: %s", device, type(e).__name__)
-        raise RuntimeError(f"Failed to move model to {device}: {e}") from e
+    logger.debug(f"Moving model to {device} using standard .to()")
+    nn_mod = getattr(_torch, "nn", None)
+    torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
+    if torch_module_type is not None and not isinstance(model, torch_module_type):
+        if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
+            raise TypeError(
+                f"Expected torch.nn.Module or model with .to() method, "
+                f"got {type(model).__name__}"
+            )
+    if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
+        to_kwargs = {"device": device, "non_blocking": non_blocking}
+        if dtype is not None:
+            to_kwargs["dtype"] = dtype
+
+        result = model.to(**to_kwargs)  # type: ignore[attr-defined]
+        duration = time.time() - start_time
+        if duration > 1.0:
+            logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
+        return result
+
+    return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
 
 
 def _try_model_to(
