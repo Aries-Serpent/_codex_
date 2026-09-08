@@ -195,7 +195,7 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
             on_value = parsed.get("on")
             if isinstance(on_value, dict):
                 for trigger in stale_trigger_names:
-                    if on_value.get(trigger) is None:
+                    if trigger in on_value and on_value.get(trigger) is None:
                         errors.append(
                             f"{path}: stale trigger key '{trigger}' detected; define it as '{trigger}: {{}}' or with explicit inputs."
                         )
