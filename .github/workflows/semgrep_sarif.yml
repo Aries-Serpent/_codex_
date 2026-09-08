@@ -1,5 +1,5 @@
 name: Art_Semgrep SAST (SARIF Upload)
-on:
+'on':
   push:
     branches:
     - main

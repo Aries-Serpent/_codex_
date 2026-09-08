@@ -1,5 +1,5 @@
 name: API Documentation
-on:
+'on':
   push:
     branches:
     - main
@@ -7,7 +7,7 @@ on:
     - src/**/*.py
     - agents/**/*.py
     - docs/api/**
-  workflow_dispatch: null
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

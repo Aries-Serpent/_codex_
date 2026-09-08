@@ -1,6 +1,6 @@
 name: "CI \u2014 Optimized with Caching"
-on:
-  workflow_dispatch: null
+'on':
+  workflow_dispatch: {}
   push:
     branches:
     - main

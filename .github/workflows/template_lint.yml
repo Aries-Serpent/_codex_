@@ -1,12 +1,12 @@
 name: Template Lint (HTML includes)
-on:
+'on':
   pull_request:
     branches:
     - 0D_base_
     - copilot/integrate-codex-status-template
     - main
     - master
-  workflow_dispatch: null
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

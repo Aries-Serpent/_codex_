@@ -1,5 +1,5 @@
 name: Art_Generate SBOM
-on:
+'on':
   workflow_call:
     secrets:
       GH_TOKEN:
