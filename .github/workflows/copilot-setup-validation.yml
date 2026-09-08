@@ -1,5 +1,5 @@
 name: Copilot Setup Steps Validation
-on:
+'on':
   pull_request:
     types:
     - opened
@@ -23,7 +23,7 @@ on:
     - scripts/ci/validate_setup_steps_yaml.sh
     - scripts/ci/validate_copilot_dependencies.py
     - scripts/ci/validate_copilot_security.py
-  workflow_dispatch: null
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

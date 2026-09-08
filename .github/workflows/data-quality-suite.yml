@@ -1,5 +1,5 @@
 name: Data Quality & Determinism Suite
-on:
+'on':
   pull_request:
     types:
     - opened

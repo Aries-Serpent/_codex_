@@ -32,19 +32,49 @@ nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_mi
 
 # Keep the root-level entry points explicit so CI and tests can discover the
 # supported sessions without depending on the nested config implementation.
-# The canonical `tests` and `security` registrations live in
-# `configs/development/noxfile.py`; re-defining them here causes duplicate nox
-# session registration warnings and future-version breakage.
+# The canonical registry remains in `configs/development/noxfile.py`; the root
+# file mirrors the commonly-used sessions that workflow automation invokes
+# directly and makes the contract visible to static checks.
+
+
+@nox.session(name="lint", python=_dev_noxfile.DEFAULT_PYTHON)
+def lint(session: nox.Session) -> None:
+    """Forward to the canonical repo lint session without reimplementing tool setup."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.notify("lint")
+
+
+@nox.session(name="typecheck", python=_dev_noxfile.DEFAULT_PYTHON)
+def typecheck(session: nox.Session) -> None:
+    """Forward to the canonical repo typecheck session without reimplementing tool setup."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.notify("typecheck")
+
+
+@nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
+def tests(session: nox.Session) -> None:
+    """Forward to the canonical repo test session without reimplementing tool setup."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.notify("test")
+
+
+@nox.session(name="workflow_policy", python=_dev_noxfile.DEFAULT_PYTHON)
+def workflow_policy(session: nox.Session) -> None:
+    """Validate workflow YAML, action versions, and the repo's nox/session contracts."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.run("python", "scripts/ci/check_workflow_yaml.py", ".github/workflows")
+    session.run("python", "scripts/ci/enforce_actions_versions.py")
 
 
 @nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
 def gates(session: nox.Session) -> None:
-    """Security gates - alias for the sec session."""
+    """Security gates - alias for the canonical sec session."""
+    session.chdir(str(Path(__file__).resolve().parent))
     session.notify("sec")
 
 
 @nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)
 def precommit(session: nox.Session) -> None:
-    """Pre-commit checks - verify no merge markers and basic file integrity."""
+    """Pre-commit checks - delegate to the canonical patch_debris guard."""
     session.chdir(str(Path(__file__).resolve().parent))
     session.notify("patch_debris")
