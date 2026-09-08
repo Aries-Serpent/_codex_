@@ -179,11 +179,39 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
                 f"{path}: unquoted GitHub Actions trigger key 'on' detected; quote it as 'on' to avoid YAML 1.1 bool parsing."
             )
 
+        stale_trigger_names = [
+            "push",
+            "pull_request",
+            "pull_request_target",
+            "workflow_dispatch",
+            "workflow_call",
+            "schedule",
+        ]
+        for trigger in stale_trigger_names:
+            if re.search(rf"(?m)^\s*{trigger}\s*:\s*null\s*$", text):
+                errors.append(
+                    f"{path}: stale trigger key '{trigger}: null' detected; define it as '{trigger}: {{}}' or with explicit inputs."
+                )
+
         for session in sorted(set(re.findall(r"nox\s+-s\s+([A-Za-z0-9_.-]+)", text))):
             if session not in registry:
                 errors.append(
                     f"{path}: nox session '{session}' is not registered in {NOXFILE_PATH.name}."
                 )
+
+        codeql_config_paths = re.findall(r"(?m)^\s*config-file\s*:\s*(.+?)\s*$", text)
+        if codeql_config_paths:
+            canonical = ".github/codeql/codeql-config.yml"
+            for raw_path in codeql_config_paths:
+                normalized = raw_path.strip().strip("\"'")
+                if normalized not in {canonical, f"./{canonical}"}:
+                    errors.append(
+                        f"{path}: CodeQL config drift detected: '{normalized}' does not match the repo-standard '{canonical}'."
+                    )
+                elif not (REPO_ROOT / canonical).exists():
+                    errors.append(
+                        f"{path}: CodeQL config file '{canonical}' is missing from the repository root."
+                    )
 
         category_counts: dict[str, int] = {}
         for category in re.findall(r"(?m)^\s*category\s*:\s*(.+?)\s*$", text):

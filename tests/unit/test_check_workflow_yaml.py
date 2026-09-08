@@ -142,6 +142,22 @@ class TestMain:
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("not-a-real-session" in err for err in errors)
 
+    def test_validate_workflow_contract_rejects_null_trigger(self, tmp_path: Path) -> None:
+        f = tmp_path / "null-trigger.yml"
+        f.write_text(
+            "name: stale\n'on':\n  workflow_dispatch: null\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert any("stale trigger key 'workflow_dispatch: null'" in err for err in errors)
+
+    def test_validate_workflow_contract_rejects_codeql_config_drift(self, tmp_path: Path) -> None:
+        f = tmp_path / "codeql-drift.yml"
+        f.write_text(
+            "name: stale\n'on': [push]\njobs:\n  codeql:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: github/codeql-action/init@v3\n        with:\n          config-file: ./.codeql/codeql-config.yml\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert any("CodeQL config drift detected" in err for err in errors)
+
     def test_validate_workflow_contract_accepts_repo_standard(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yml"
         f.write_text(
