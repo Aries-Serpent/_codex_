@@ -216,8 +216,7 @@ jobs:
           \n---\n*Automated by CodeQL GA Security Gate (Phase 6 Lane 1)*`;\n\nconst\
           \ issue = await github.rest.issues.create({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  title: issueTitle,\n  body: issueBody,\n\
-          \  labels: ['\U0001F510 security', 'codeql', 'blocking'],\n  assignees:\
-          \ ['security-team']\n});\n\nconsole.log(`Created issue: ${issue.data.html_url}`);\n"
+          \  labels: ['\U0001F510 security', 'codeql', 'blocking'],\n  });\n\nconsole.log(`Created issue: ${issue.data.html_url}`);\n"
     timeout-minutes: 30
   report-summary:
     name: Summary Report
