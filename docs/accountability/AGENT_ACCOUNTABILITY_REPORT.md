@@ -1,3 +1,30 @@
+## Session: 2026-09-08T22:30:10Z — PR #5603 Dependabot `morgan` bump governance follow-up
+
+**Objective:** Resolve the current wrap-up governance gap on the active Dependabot `morgan` bump by refreshing the required accountability/PDA evidence without broadening the dependency change scope.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Confirmed the active branch was only missing the required session-wrapup evidence for the current PR and did not require additional dependency-scope changes beyond the `morgan` bump itself.
+2. Refreshed the active accountability record and re-validated the current-day PDA evidence so the branch reflects the latest state of the PR and the repo’s session-close gate.
+3. Re-ran the wrap-up compliance check to confirm the branch is ready for the current PR state with the governance artifacts in sync.
+
+**Validation:**
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5603` → pass after the session-close evidence refresh.
+- `python3 scripts/ci/session_wrapup_autofix.py --fix-accountability --fix-all --pr-number 5603` → applied the repo’s canonical wrap-up fix path for the current branch state.
+
+**Governance:**
+- REQ-4: This report updated for PR #5603 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current day-stamped entry.
+
+### Agents Used
+- [x] `ci-testing-agent` (session-wrapup compliance validation)
+- [x] `workflow-compliance-guardian` (PR governance evidence refresh)
+- [x] `general-purpose` (branch readiness review)
+
+---
+
 ## Session: 2026-09-07T11:29:39Z — PR #5597 fast-validation whitespace fix
 
 **Objective:** Resolve the remaining `Fast Validation` failure on commit `8e7a2798` with the smallest possible change while preserving the narrowed dependency-bump scope.

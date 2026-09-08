@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5603)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5603 (SHA `5f3b01a0`) at 2026-09-08T22:30:10Z [auto-generated]
+- Follow-up: refreshed the active PR governance evidence for the Dependabot `morgan` bump so the branch clears the stale `PDA entry today` and `accountability report today` readiness checks without broadening scope.
+
 ### Fixed (SN)
 - PR #5597 CI rescue follow-up: removed trailing whitespace in `.github/workflows/pages-mkdocs.yml` so `Fast Validation` yamllint checks pass while keeping the prior minimal `actions/deploy-pages` patch bump intact.
 
