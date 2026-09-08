@@ -20,7 +20,7 @@ name: Art_Container Security Scan
       - "docker/**"
   schedule:
     - cron: "0 5 * * 1"
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

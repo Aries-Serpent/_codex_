@@ -45,10 +45,12 @@ jobs:
         python-version: 3.12.13
         cache-tier: live
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install nox and deps
+    - name: Install project and nox
       run: 'python -m pip install --upgrade pip
 
-        pip install nox
+        python -m pip install -e .
+
+        python -m pip install nox
 
         '
     - name: Validate workflow contracts

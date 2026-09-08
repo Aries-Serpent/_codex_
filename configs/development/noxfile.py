@@ -637,13 +637,6 @@ def sec(session: nox.Session) -> None:
             session.run("pip-audit")
 
 
-@nox.session(name="security", python=DEFAULT_PYTHON)
-def security(session: nox.Session) -> None:
-    """Compatibility alias for the repo-level security gate."""
-
-    session.notify("sec")
-
-
 @nox.session(python=DEFAULT_PYTHON)
 def sec_scan(session: nox.Session) -> None:
     """Run Bandit using the repository configuration."""
@@ -789,6 +782,31 @@ def archive_pr_gate(session: nox.Session) -> None:
         "--check-codeowners",
         *session.posargs,
     )
+
+
+@nox.session(name="workflow_policy", python=DEFAULT_PYTHON)
+def workflow_policy(session: nox.Session) -> None:
+    """Validate workflow YAML, action versions, and nox session contracts."""
+
+    _ensure_pip_cache(session)
+    _install(session, "pyyaml", "check-jsonschema")
+    _export_env(session)
+    session.run("python", "scripts/ci/check_workflow_yaml.py", ".github/workflows")
+    session.run("python", "scripts/ci/enforce_actions_versions.py")
+
+
+@nox.session(name="gates", python=DEFAULT_PYTHON)
+def gates(session: nox.Session) -> None:
+    """Compatibility alias for the repo-level security gate."""
+
+    session.notify("sec")
+
+
+@nox.session(name="precommit", python=DEFAULT_PYTHON)
+def precommit(session: nox.Session) -> None:
+    """Compatibility alias for the repo-level patch-debris guard."""
+
+    session.notify("patch_debris")
 
 
 @nox.session(name="dockerlint")

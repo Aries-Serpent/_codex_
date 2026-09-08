@@ -7,7 +7,7 @@ name: API Documentation
     - src/**/*.py
     - agents/**/*.py
     - docs/api/**
-  workflow_dispatch:
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

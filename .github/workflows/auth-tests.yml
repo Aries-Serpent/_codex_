@@ -16,7 +16,7 @@ name: Authentication Tests
     paths:
     - src/codex/auth/**
     - tests/auth/**
-  workflow_dispatch:
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

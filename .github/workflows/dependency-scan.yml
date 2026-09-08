@@ -2,7 +2,7 @@ name: Dependency Scan (template)
 'on':
   schedule:
   - cron: 0 3 * * *
-  workflow_dispatch:
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
