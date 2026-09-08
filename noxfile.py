@@ -39,38 +39,23 @@ nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_mi
 
 @nox.session(name="lint", python=_dev_noxfile.DEFAULT_PYTHON)
 def lint(session: nox.Session) -> None:
-    """Run the repo lint checks from the root entry point."""
+    """Forward to the canonical repo lint session without reimplementing tool setup."""
     session.chdir(str(Path(__file__).resolve().parent))
-    session.env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
-    session.run("ruff", "check", "src", "tests", "scripts", "tools", success_codes=[0, 1])
-    session.run("isort", "--check-only", "src", "tests", "scripts", "tools", success_codes=[0, 1])
-    session.run("black", "--check", "src", "tests", "scripts", "tools", success_codes=[0, 1])
+    session.notify("lint")
 
 
 @nox.session(name="typecheck", python=_dev_noxfile.DEFAULT_PYTHON)
 def typecheck(session: nox.Session) -> None:
-    """Run the repo's targeted mypy checks from the root entry point."""
+    """Forward to the canonical repo typecheck session without reimplementing tool setup."""
     session.chdir(str(Path(__file__).resolve().parent))
-    session.env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
-    targets = ["src/security", "scripts/space_traversal", "src/codex_ml"]
-    repo_root = Path(__file__).resolve().parent
-    existing = [target for target in targets if (repo_root / target).exists()]
-    if not existing:
-        session.log("No mypy targets found; skipping root typecheck alias.")
-        return
-    session.run("mypy", *existing, success_codes=[0, 1])
+    session.notify("typecheck")
 
 
 @nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
 def tests(session: nox.Session) -> None:
-    """Run the repo test suite with the standard pytest guard enabled."""
+    """Forward to the canonical repo test session without reimplementing tool setup."""
     session.chdir(str(Path(__file__).resolve().parent))
-    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    session.run("python", "tools/validate_fences.py", external=True, success_codes=[0, 1])
-    session.run("python", "tools/codex_evaluator.py", external=True, success_codes=[0, 1])
-    session.run("python", "tools/selection_guard.py", external=True, success_codes=[0, 1])
-    session.run("python", "tools/schema_validate.py", external=True, success_codes=[0, 1])
-    session.run("pytest", "-q", "tests")
+    session.notify("test")
 
 
 @nox.session(name="workflow_policy", python=_dev_noxfile.DEFAULT_PYTHON)
@@ -83,13 +68,13 @@ def workflow_policy(session: nox.Session) -> None:
 
 @nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
 def gates(session: nox.Session) -> None:
-    """Security gates - alias for the sec session."""
+    """Security gates - alias for the canonical sec session."""
     session.chdir(str(Path(__file__).resolve().parent))
-    session.run("python", "-m", "nox", "-s", "sec")
+    session.notify("sec")
 
 
 @nox.session(name="precommit", python=_dev_noxfile.DEFAULT_PYTHON)
 def precommit(session: nox.Session) -> None:
-    """Pre-commit checks - verify no merge markers and basic file integrity."""
+    """Pre-commit checks - delegate to the canonical patch_debris guard."""
     session.chdir(str(Path(__file__).resolve().parent))
-    session.run("python", "-m", "nox", "-s", "patch_debris")
+    session.notify("patch_debris")

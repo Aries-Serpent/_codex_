@@ -187,11 +187,18 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
             "workflow_call",
             "schedule",
         ]
-        for trigger in stale_trigger_names:
-            if re.search(rf"(?m)^\s*{trigger}\s*:\s*null\s*$", text):
-                errors.append(
-                    f"{path}: stale trigger key '{trigger}: null' detected; define it as '{trigger}: {{}}' or with explicit inputs."
-                )
+        try:
+            parsed = yaml.safe_load(text) or {}
+        except yaml.YAMLError:
+            parsed = {}
+        if isinstance(parsed, dict):
+            on_value = parsed.get("on")
+            if isinstance(on_value, dict):
+                for trigger in stale_trigger_names:
+                    if on_value.get(trigger) is None:
+                        errors.append(
+                            f"{path}: stale trigger key '{trigger}' detected; define it as '{trigger}: {{}}' or with explicit inputs."
+                        )
 
         for session in sorted(set(re.findall(r"nox\s+-s\s+([A-Za-z0-9_.-]+)", text))):
             if session not in registry:

@@ -20,7 +20,7 @@ name: Nox Quality Gates
     - docs/**
     - .codex/**
     - LICENSE
-  workflow_dispatch:
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
