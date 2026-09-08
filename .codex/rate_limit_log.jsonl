@@ -1,0 +1,6 @@
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-09-08T09:22Z", "minutes": 380, "ts": "2026-09-08T03:02:26.505703+00:00"}
+{"event": "429_hit", "session": "rl-202609080302", "hit_count": 1, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-09-08T03:02:26.752417+00:00"}
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-09-08T09:22Z", "minutes": 380, "ts": "2026-09-08T03:02:28.539506+00:00"}
+{"event": "429_hit", "session": "rl-202609080302", "hit_count": 2, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-09-08T03:02:28.752631+00:00"}
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-09-08T09:22Z", "minutes": 380, "ts": "2026-09-08T03:02:30.407730+00:00"}
+{"event": "429_hit", "session": "S923", "hit_count": 3, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-09-08T03:02:30.616935+00:00"}
