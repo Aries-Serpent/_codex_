@@ -119,9 +119,33 @@ class TestMain:
 
     def test_main_exits_zero_on_valid_yaml_without_jsonschema(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yml"
-        f.write_text("name: CI\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n")
+        f.write_text("name: CI\n'on': [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n")
         with patch.object(sys, "argv", ["check_workflow_yaml.py", str(f)]):
             with patch("check_workflow_yaml._check_jsonschema_available", return_value=False):
                 with pytest.raises(SystemExit) as exc_info:
                     cwv.main()
         assert exc_info.value.code == 0, "Value must be initialized"
+
+    def test_validate_workflow_contract_rejects_unquoted_on(self, tmp_path: Path) -> None:
+        f = tmp_path / "unquoted.yml"
+        f.write_text(
+            "name: CI\non:\n  push:\n    branches: [main]\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert any("unquoted GitHub Actions trigger key 'on'" in err for err in errors)
+
+    def test_validate_workflow_contract_rejects_unknown_nox_session(self, tmp_path: Path) -> None:
+        f = tmp_path / "stale.yml"
+        f.write_text(
+            "name: stale\n'on': [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - run: nox -s not-a-real-session\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert any("not-a-real-session" in err for err in errors)
+
+    def test_validate_workflow_contract_accepts_repo_standard(self, tmp_path: Path) -> None:
+        f = tmp_path / "ok.yml"
+        f.write_text(
+            "name: CI\n'on': [push]\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: nox -s lint-3.12\n      - run: nox -s tests-3.12\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert errors == []

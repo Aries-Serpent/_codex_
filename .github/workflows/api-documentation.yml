@@ -1,5 +1,5 @@
 name: API Documentation
-on:
+'on':
   push:
     branches:
     - main

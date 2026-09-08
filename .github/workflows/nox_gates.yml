@@ -51,6 +51,8 @@ jobs:
         pip install nox
 
         '
+    - name: Validate workflow contracts
+      run: nox -s workflow_policy
     - name: Run lint
       run: nox -s lint-3.12
     - name: Run typecheck

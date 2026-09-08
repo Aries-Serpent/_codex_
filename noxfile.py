@@ -37,6 +37,13 @@ nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_mi
 # session registration warnings and future-version breakage.
 
 
+@nox.session(name="workflow_policy", python=_dev_noxfile.DEFAULT_PYTHON)
+def workflow_policy(session: nox.Session) -> None:
+    """Validate workflow YAML and the repo's nox/session contracts."""
+    session.chdir(str(Path(__file__).resolve().parent))
+    session.run("python", "scripts/ci/check_workflow_yaml.py", ".github/workflows")
+
+
 @nox.session(name="gates", python=_dev_noxfile.DEFAULT_PYTHON)
 def gates(session: nox.Session) -> None:
     """Security gates - alias for the sec session."""

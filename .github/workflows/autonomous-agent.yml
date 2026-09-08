@@ -1,5 +1,5 @@
 name: Autonomous Codebase Management
-on:
+'on':
   schedule:
   - cron: '0 4 * * 0'
   workflow_dispatch:

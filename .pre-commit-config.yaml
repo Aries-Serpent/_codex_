@@ -63,6 +63,13 @@ repos:
         pass_filenames: false
         files: ^\.github/workflows/.*\.(yml|yaml)$
 
+      - id: workflow-policy
+        name: Workflow contract validation
+        entry: python scripts/ci/check_workflow_yaml.py .github/workflows
+        language: system
+        pass_filenames: false
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+
       # Security checks - Command injection prevention
       - id: check-shell-true
         name: Check for subprocess shell=True (command injection risk)

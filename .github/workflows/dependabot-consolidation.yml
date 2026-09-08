@@ -1,6 +1,6 @@
 name: Dependabot PR Consolidation
 
-on:
+'on':
   workflow_dispatch:
     inputs:
       base_branch:
