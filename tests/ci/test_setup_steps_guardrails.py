@@ -105,3 +105,12 @@ def test_complexity_analysis_ignores_reasonable_step_count(tmp_path: Path) -> No
     result = test_complexity_analysis(str(workflow))
 
     assert result.passed is True
+
+
+def test_validate_workflow_ignores_empty_yaml_diffs() -> None:
+    workflow = Path(__file__).resolve().parents[2] / ".github" / "workflows" / "validate.yml"
+    text = workflow.read_text(encoding="utf-8")
+
+    assert "yaml_files=()" in text
+    assert "if [ \"${#yaml_files[@]}\" -eq 0 ] || [ -z \"${yaml_files[*]}\" ]; then" in text
+    assert "yamllint -c .yamllint.yml --strict -f parsable \"${yaml_files[@]}\"" in text

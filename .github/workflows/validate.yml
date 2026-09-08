@@ -97,11 +97,15 @@ jobs:
          HEAD_SHA="$(git rev-parse HEAD)"
         fi
         echo "Validating YAML changes from ${BASE_SHA} to ${HEAD_SHA}"
-        mapfile -t yaml_files < <(
+        yaml_files=()
+        while IFS= read -r changed_file; do
+          [ -n "${changed_file}" ] || continue
+          yaml_files+=("${changed_file}")
+        done < <(
           git diff --name-only --diff-filter=d "${BASE_SHA}...${HEAD_SHA}" \
             | grep -E '\.ya?ml$' | grep -v node_modules || true
         )
-        if [ "${#yaml_files[@]}" -eq 0 ]; then
+        if [ "${#yaml_files[@]}" -eq 0 ] || [ -z "${yaml_files[*]}" ]; then
           echo "No YAML files changed between ${BASE_SHA} and ${HEAD_SHA}; skipping yamllint."
           exit 0
         fi
