@@ -20,7 +20,7 @@ name: Nox Quality Gates
     - docs/**
     - .codex/**
     - LICENSE
-  workflow_dispatch: null
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -54,11 +54,11 @@ jobs:
     - name: Validate workflow contracts
       run: nox -s workflow_policy
     - name: Run lint
-      run: nox -s lint-3.12
+      run: nox -s lint
     - name: Run typecheck
       run: nox -s typecheck
     - name: Run tests
-      run: nox -s tests-3.12
+      run: nox -s tests
     - name: Security gates
       run: nox -s gates
     - name: Pre-commit (informational)
