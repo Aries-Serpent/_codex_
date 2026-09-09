@@ -6,6 +6,8 @@ Test module for run metadata.
 
 from __future__ import annotations
 
+import os
+import tempfile
 from types import SimpleNamespace
 
 from codex_ml.logging.run_metadata import build_run_metadata, log_run_metadata

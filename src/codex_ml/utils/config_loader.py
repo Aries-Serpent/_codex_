@@ -156,7 +156,7 @@ class _AttrDictConfig(DictConfig):
     """
 
     def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
-        super().__init__()
+        super().__init__(content=initial or {})
         if initial:
             for key, value in initial.items():
                 dict.__setitem__(self, key, self._wrap(value))

@@ -48,6 +48,6 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
         items = config_store.list("")
         # Check if name.yaml is in the list
         return f"{name}.yaml" in items
-    except (ValueError, TypeError, RuntimeError):
+    except (ValueError, TypeError, RuntimeError, OSError, IOError):
         logger.debug("safe_exists: ConfigStore.list() raised", exc_info=True)
         return False
