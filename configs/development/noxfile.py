@@ -52,6 +52,12 @@ OFFLINE_TEST_TARGETS = (
     "tests/unit/test_zendesk_models.py",
     "tests/e2e_offline/test_diff_and_apply.py",
 )
+REPO_TEST_TOOLS = (
+    "tools/validate_fences.py",
+    "tools/codex_evaluator.py",
+    "tools/selection_guard.py",
+    "tools/schema_validate.py",
+)
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
@@ -76,6 +82,16 @@ def _pytest_hermetic(session: nox.Session) -> None:
     """Ensure pytest uses the repo's src-first import layout and stable hash seed."""
 
     session.env.setdefault("PYTHONHASHSEED", "0")
+    session.env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+
+
+def _run_repo_health_prechecks(session: nox.Session) -> None:
+    """Run the repo-level validation helpers before the full pytest contract."""
+
+    for script in REPO_TEST_TOOLS:
+        script_path = REPO_ROOT / script
+        if script_path.exists():
+            session.run("python", str(script_path), external=True)
 
 
 def _export_env(session: nox.Session) -> None:
@@ -279,6 +295,7 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
     _ensure_pip_cache(session)
     session.install("-e", ".[full]")
     _pytest_hermetic(session)
+    _run_repo_health_prechecks(session)
     COVERAGE_HTML.mkdir(parents=True, exist_ok=True)
     COVERAGE_JSON_ROOT.mkdir(parents=True, exist_ok=True)
     COVERAGE_XML.parent.mkdir(parents=True, exist_ok=True)
@@ -287,7 +304,8 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
         "pytest",
         "-p",
         "pytest_cov",
-        "--cov=src/codex_ml",
+        "--cov=src",
+        "--cov=training",
         "--cov-branch",
         "--cov-report=term-missing",
         f"--cov-report=html:{COVERAGE_HTML.as_posix()}",

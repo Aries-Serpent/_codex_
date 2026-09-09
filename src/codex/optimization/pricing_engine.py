@@ -11,6 +11,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+from codex.optimization.sla_optimizer import ResourceAllocation
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +83,7 @@ class DynamicPricingModel:
         self.demand_history: Dict[str, List[float]] = {}
         self.price_history: Dict[str, List[Tuple[str, float]]] = {}
 
-    def update_price(self, resource_type: str, demand_level: float, 
+    def update_price(self, resource_type: str, demand_level: float,
                     supply_utilization: float) -> float:
         """
         Update price dynamically based on demand and supply.
@@ -112,7 +113,7 @@ class DynamicPricingModel:
 
         return new_price
 
-    def forecast_cost(self, resource_type: str, quantity: float, 
+    def forecast_cost(self, resource_type: str, quantity: float,
                      forecast_demand: List[float], days: int = 30) -> CostForecast:
         """
         Forecast cost based on demand patterns.
@@ -169,7 +170,7 @@ class DynamicPricingModel:
         else:
             return resource_price.calculate_on_demand_price(quantity, hours)
 
-    def get_price_history(self, resource_type: str, 
+    def get_price_history(self, resource_type: str,
                          lookback_hours: int = 168) -> List[Tuple[str, float]]:
         """Get price history for a resource type."""
         if resource_type not in self.price_history:
@@ -192,7 +193,7 @@ class CostPredictor:
         self.historical_costs: Dict[str, List[float]] = {}
         self.accuracy_errors: List[float] = []
 
-    def predict_monthly_cost(self, resource_allocation: 'ResourceAllocation') -> float:
+    def predict_monthly_cost(self, resource_allocation: ResourceAllocation) -> float:
         """
         Predict monthly cost with ±10% accuracy target.
         Returns predicted cost in dollars.
@@ -341,7 +342,7 @@ class ReservedCapacityPlanner:
 
         return optimal_reservations
 
-    def commit_reservation(self, resource_type: str, quantity: float, 
+    def commit_reservation(self, resource_type: str, quantity: float,
                           commitment_term_months: int = 12):
         """Commit to reserved capacity."""
         self.reserved_commitments[resource_type] = quantity

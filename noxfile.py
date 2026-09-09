@@ -28,6 +28,14 @@ nox.options.stop_on_first_error = _dev_noxfile.nox.options.stop_on_first_error
 nox.options.error_on_missing_interpreters = _dev_noxfile.nox.options.error_on_missing_interpreters
 
 REPO_ROOT = Path(__file__).resolve().parent
+LEGACY_TEST_ENV_GUARD = "PYTEST_DISABLE_PLUGIN_AUTOLOAD"
+LEGACY_REPO_TEST_TOOLS = (
+    "tools/validate_fences.py",
+    "tools/codex_evaluator.py",
+    "tools/selection_guard.py",
+    "tools/schema_validate.py",
+)
+LEGACY_TEST_COVERAGE_TARGETS = ("--cov=src", "--cov=training")
 
 
 def _run_dev_session(session: nox.Session, name: str) -> None:
@@ -92,12 +100,13 @@ def precommit(session: nox.Session) -> None:
     _run_dev_session(session, "precommit")
 
 
+@nox.session(name="security", python=_dev_noxfile.DEFAULT_PYTHON)
 def security(session: nox.Session) -> None:
     """Compatibility adapter for the canonical security gate session."""
     session.chdir(str(REPO_ROOT))
     session.log(
-        "security adapter delegates to the canonical sec session; no duplicate "
-        "session registration occurs here."
+        "security adapter delegates to the canonical sec session; it still runs "
+        "bandit, semgrep, detect-secrets, pip-audit, and gitleaks."
     )
     _run_dev_session(session, "sec")
 

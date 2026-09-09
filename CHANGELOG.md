@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5606 nox contract + workflow gate follow-up
+- Restored the effective `nox -s tests` repo-health contract by reinstating the precheck helper tools, the `PYTEST_DISABLE_PLUGIN_AUTOLOAD` guard, and repo-wide coverage targets in `configs/development/noxfile.py` while keeping the root `noxfile.py` compatibility shim non-duplicative.
+- Reverted the fence-validator directory skip drift so Markdown fence validation still scans the live documentation, source, test, and tooling trees, and refreshed the sample fixtures to match the validator's expected pass/fail semantics.
+- Fixed the current Audit QA critical Ruff failures (`session_embeddings.py`, `pricing_engine.py`, `cached_retrieval.py`) and expanded `workflow-execution-gate.yml` sparse checkout so editable installs succeed with the root package mappings declared in `pyproject.toml`.
+
 ### Fixed (auto-update — PR #5605)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5605 (SHA `8351c6ac`) at 2026-09-09T09:11:19Z [auto-generated]
 

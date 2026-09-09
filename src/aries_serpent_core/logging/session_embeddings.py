@@ -198,8 +198,6 @@ class SessionEmbeddings:
             self._embeddings = []  # type: ignore[assignment]
             if self.embeddings_path.exists():
                 # Try to load embeddings as JSON for safe deserialization (CWE-502 remediation)
-                import json
-
                 try:
                     with open(self.embeddings_path, "r") as f:
                         data = json.load(f)
