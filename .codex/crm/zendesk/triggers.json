@@ -1,0 +1,20 @@
+[
+  {
+    "actions": [
+      {
+        "field": "group_id",
+        "value": "Relocation_Counselors"
+      }
+    ],
+    "conditions": {
+      "all": [
+        {
+          "field": "ticket_form_id",
+          "operator": "is",
+          "value": "Assignment"
+        }
+      ]
+    },
+    "title": "codex_assignment_auto_route"
+  }
+]
