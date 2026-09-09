@@ -1,0 +1,2 @@
+name,target,pause_conditions
+cdx_assignment_standard,first_response,status:paused

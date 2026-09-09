@@ -350,7 +350,7 @@ The Cognitive Brain is a quantum-inspired decision-making system featuring super
 - **Complex Scenario Validation** - 110 scenarios across 8 pattern types
 - **k₁ Optimization** - 2.86x quantum advantage over classical
 ### Phase 8 Progress (40% Complete)
-```
+```text
 Phase 8.0: 100% (k₁=0.35) Phase 8.1: 100% (Memory+Reviews) Phase 8.2: 0% (Multi-agent GHZ) Phase 8.3: 0% (Adaptive Learning) Phase 8.4: 0% (Transfer Learning) Test Coverage: 275/320 (86%)
 ```
 ### Phase 8 Roadmap
@@ -588,22 +588,25 @@ bash scripts/docs_build.sh
 SKIP_OPTIONAL=1 nox -s docs_build
 # Strict mode (fail if any modules missing - for CI)
 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
-```text
+```
+
 **Build Modes:**
 - **Default**: Includes all available modules (core + optional ML when installed)
 - **Skip Optional** (`SKIP_OPTIONAL=1`): Only core modules, no ML dependencies needed
 - **Strict** (`FAIL_ON_MISSING=1`): Fail build if any requested modules are unavailable
+
 **Note:** The API documentation script automatically includes optional packages like `codex_ml` when their dependencies are installed. For complete API documentation including the ML framework:
 ```bash
 # Install optional ML dependencies
 pip install -e .[ml]
 # Build full documentation
 nox -s docs_build
-```text
+```
+
 View the generated docs at `artifacts/docs/api/index.html` or serve locally:
 ```bash
 python -m http.server -d artifacts/docs/api 8000
-```text
+```
 ### New to `_codex_`? **Start here**: [Role-based onboarding](docs/onboarding/README.md)
 ### Quick Links - Status & Validation
 - **Status Update Generator**: [tools/generate_status_update.py](tools/generate_status_update.py) - Automated JSON status report generator
@@ -661,7 +664,8 @@ This repository ships **local-only** quality gates (no CI) and a local status re
 Quick start:
 ```bash
 python tools/status_report.py --summary samples/assistant_message_summary.sample.json --selected 3 --out STATUS_REPORT.md
-```text
+```
+
 ### repository Status Audit
 Generate a comprehensive status update audit report for the Codex repository:
 ```bash
@@ -676,7 +680,8 @@ codex-status-audit
 codex-status-audit --skip-audit
 # Compare against baseline
 codex-status-audit --baseline audit_artifacts/capabilities_scored.json.baseline
-```text
+```
+
 The new JSON-based status update generator provides:
 - Automated repository analysis
 - 8 capability checks with gap analysis
@@ -684,33 +689,47 @@ The new JSON-based status update generator provides:
 - Test infrastructure status
 - Security assessment
 - Schema validation (v1.2)
+
 See **[tools/README_status_update.md](tools/README_status_update.md)** for the new generator documentation.
 See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for legacy audit tool usage.
+
 ## Candidate Selection (local-only)
 You can generate a local selection recommendation across 1–4 assistant variants:
 ```bash
-python tools/selection_report.py \ --summary samples/assistant_message_summary.sample.json \ --out SELECTION_REPORT.md
-```text
+python tools/selection_report.py \
+  --summary samples/assistant_message_summary.sample.json \
+  --out SELECTION_REPORT.md
+```
+
 This runs the evaluator and enforces required selection-guard signals, then explains the tie-break.
+
 ## Optional Components
 ### GitHub workflow Monitoring
 For monitoring GitHub Actions workflows and artifacts:
 ```bash
 pip install -e ".[github]"
 ```
+
 This installs PyGithub for automated workflow monitoring and failure detection. See [`scripts/monitoring/README.md`](scripts/monitoring/README.md) for setup and usage.
+
 ### All Monitoring Tools
 For comprehensive monitoring including Prometheus metrics:
 ```bash
 pip install -e ".[monitoring]"
 ```
+
 ## Quickstart
 ```bash
-codex-train experiment=debug training.max_epochs=1 training.batch_size=2 \ data.train_path=data/train.jsonl data.eval_path=data/eval.jsonl \ logging.tensorboard=false logging.mlflow_enable=false \ training.output_dir=artifacts/runs/quickstart
+codex-train experiment=debug training.max_epochs=1 training.batch_size=2 \
+  data.train_path=data/train.jsonl data.eval_path=data/eval.jsonl \
+  logging.tensorboard=false logging.mlflow_enable=false \
+  training.output_dir=artifacts/runs/quickstart
 codex reasoning-templates list
-codex-train +reasoning=baseline curriculum.phase_schedule=starter \ logging.reasoning_trace=true training.output_dir=artifacts/runs/reasoning-starter
+codex-train +reasoning=baseline curriculum.phase_schedule=starter \
+  logging.reasoning_trace=true training.output_dir=artifacts/runs/reasoning-starter
 codex evaluate --config configs/evaluation/reasoning.yaml --metrics-only
-```text
+```
+
 ### Offline-first environment bootstrap
 ```bash
 # 1) Create and activate a virtualenv (any tool)
@@ -722,11 +741,15 @@ if [ -f requirements/lock.txt ]; then pip install -r requirements/lock.txt
 fi
 # 4) Sanity gates
 python tools/validate_fences.py
-python tools/schema_validate.py \ --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \ --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
+python tools/schema_validate.py \
+  --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
+  --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
 # Optional: selection and status one-liners
 python tools/selection_report.py --summary samples/assistant_message_summary.sample.json --out SELECTION_REPORT.md
-python tools/status_report.py --summary samples/assistant_message_summary.sample.json --selected 3 \ --template docs/templates/status_update.md \ --branch my/branch --pr 1234 --verbose --save-logs --out STATUS_REPORT.md
-```text
+python tools/status_report.py --summary samples/assistant_message_summary.sample.json --selected 3 \
+  --template docs/templates/status_update.md \
+  --branch my/branch --pr 1234 --verbose --save-logs --out STATUS_REPORT.md
+```
 ---
 ## Search Index
 Quick access to key repository areas via GitHub search. Click any link or use the search patterns with ChatGPT/Copilot.
@@ -791,7 +814,7 @@ path:src/ ("logging.info" OR "logger.error") language:Python
 filename:README.md
 # Find Mermaid diagrams
 path:docs/ "mermaid" in:file
-```text
+```
 ### Quick Navigation
 - **Getting Started**: Start with [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md)
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)

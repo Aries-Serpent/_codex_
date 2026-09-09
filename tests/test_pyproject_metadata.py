@@ -42,3 +42,16 @@ def test_build_system_is_setuptools() -> None:
     data = _load_pyproject()
     build_system = data.get("build-system", {})
     assert build_system.get("build-backend") == "setuptools.build_meta", "Condition must be true"
+
+
+def test_compatibility_aliases_are_explicit_profiles() -> None:
+    data = _load_pyproject()
+    optional = data.get("project", {}).get("optional-dependencies", {})
+    for alias in ("all", "dev", "ml", "train", "test-core", "rag"):
+        deps = optional.get(alias, [])
+        assert deps, f"{alias} optional dependency alias must be defined"
+        for requirement in deps:
+            assert not requirement.startswith("codex-ml["), (
+                f"{alias} must not self-reference codex-ml extras; "
+                f"got {requirement!r}"
+            )

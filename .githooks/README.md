@@ -21,6 +21,6 @@ git commit --no-verify
 ```
 
 For help:
-```
+```text
 @copilot Use the Rust Configuration Validator agent
 ```

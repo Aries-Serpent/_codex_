@@ -194,3 +194,19 @@
 {"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-1/test_search_missing_index_retu0/missing.json", "query": "test", "state": "empty", "timestamp": "2026-08-29T03:11:20Z"}
 {"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-1/test_search_no_query_returns_e0/missing.json", "query": "", "state": "empty", "timestamp": "2026-08-29T03:11:20Z"}
 {"event": "search_requested", "hits": 2, "index": "/tmp/pytest-of-runner/pytest-1/test_search_returns_matching_h0/chronicle_search_index.json", "query": "lane docs", "state": "available", "timestamp": "2026-08-29T03:11:21Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "reindex_requested", "output": ".codex/chronicle_search_index.json", "sessions": 0, "timestamp": "2026-09-09T16:28:36Z"}
+{"event": "search_requested", "hits": 0, "index": ".codex/chronicle_search_index.json", "query": "CodeQL Security gate auth authentication nox quality gate ML training workflow failure", "state": "empty", "timestamp": "2026-09-09T16:28:36Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "reindex_requested", "output": ".codex/chronicle_search_index.json", "sessions": 0, "timestamp": "2026-09-09T16:28:40Z"}
+{"event": "search_requested", "hits": 0, "index": ".codex/chronicle_search_index.json", "query": "CodeQL Security gate auth authentication nox quality gate ML training workflow failure", "state": "empty", "timestamp": "2026-09-09T16:28:41Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "standup_requested", "format": "json", "task_id": null, "timestamp": "2026-09-09T16:28:53Z"}
+{"agent": "direct-cli", "category": "exploration", "event": "task_route_recommended", "runner": "bash", "timestamp": "2026-09-09T16:28:54Z"}
+{"event": "agent_chain_requested", "focus": "ci", "steps": 2, "timestamp": "2026-09-09T16:28:54Z"}
+{"event": "agent_chain_requested", "focus": "security", "steps": 2, "timestamp": "2026-09-09T16:28:55Z"}
+{"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-9/test_search_no_query_returns_e0/missing.json", "query": "", "state": "empty", "timestamp": "2026-09-09T21:09:48Z"}
+{"event": "search_requested", "hits": 2, "index": "/tmp/pytest-of-runner/pytest-9/test_search_returns_matching_h0/chronicle_search_index.json", "query": "lane docs", "state": "available", "timestamp": "2026-09-09T21:09:48Z"}
+{"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-9/test_search_missing_index_retu0/missing.json", "query": "test", "state": "empty", "timestamp": "2026-09-09T21:09:48Z"}
+{"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-9/test_search_empty_index_return0/chronicle_search_index.json", "query": "test", "state": "empty", "timestamp": "2026-09-09T21:09:48Z"}
+{"database": "/tmp/pytest-of-runner/pytest-9/test_improve_missing_database_0/missing.sqlite", "event": "improve_roadmap_requested", "has_cost_report": false, "has_patterns": false, "state": "empty", "timestamp": "2026-09-09T21:09:48Z"}
+{"database": "/tmp/pytest-of-runner/pytest-9/test_improve_with_valid_databa0/chronicle.sqlite", "event": "improve_roadmap_requested", "has_cost_report": true, "has_patterns": true, "state": "available", "timestamp": "2026-09-09T21:09:48Z"}
+{"database": "/tmp/pytest-of-runner/pytest-9/test_standup_accepts_lane_filt0/chronicle.sqlite", "event": "standup_requested", "format": "json", "task_id": null, "timestamp": "2026-09-09T21:09:48Z"}
+{"database": "/tmp/pytest-of-runner/pytest-9/test_cost_tips_accepts_lane_fi0/chronicle.sqlite", "event": "cost_tips_requested", "format": "json", "session_id": null, "task_id": null, "timestamp": "2026-09-09T21:09:48Z"}

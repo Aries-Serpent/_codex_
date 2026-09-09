@@ -45,9 +45,7 @@ runtime:
     - peft>=0.20.0,<1
     - fastapi>=0.141.1,<1
     - litestar>=2.24.0,<3
-    - starlette>=1.6.0,<2
     - slowapi>=0.1.10
-    - httpx>=0.26,<1
     - ray[serve]>=2.58.0,<3
     - prometheus-client>=0.26.0
     - psutil>=7.2.2

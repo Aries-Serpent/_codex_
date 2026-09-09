@@ -53,7 +53,7 @@ class TestEventType:
 class TestOptionalEventPublishers:
     """Tests for optional cloud event publisher exports."""
 
-    def test_returns_provider_map_with_current_values(self) -> None:
+    def test_returns_provider_map_with_current_values(self, monkeypatch: pytest.MonkeyPatch) -> None:
         publishers = events_module.get_optional_event_publishers()
 
         monkeypatch.setattr(events_module, "AzureEventPublisher", None)

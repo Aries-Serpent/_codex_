@@ -1,0 +1,12 @@
+{
+  "assignment_d365": {
+    "codex_assignment_policy_id": "cdx_policy_id",
+    "codex_assignment_type": "cdx_assignment_type",
+    "codex_vendor": "cdx_vendor"
+  },
+  "assignment_zendesk": {
+    "codex_assignment_policy_id": "codex_assignment_policy_id",
+    "codex_assignment_type": "codex_assignment_type",
+    "codex_vendor": "codex_vendor"
+  }
+}

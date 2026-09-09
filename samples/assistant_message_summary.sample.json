@@ -5,11 +5,13 @@
         "worklog": {
           "messages": [
             {
+              "id": "task_e_DEMO~assttrn_e_DEMO_1",
               "role": "assistant",
               "text": "DEMO assistant variant 1 message body for sample gating."
             }
           ]
-        }
+        },
+        "pr_message": "This patch updates docs/ops/local_gates.md and keeps the local validation surface documented."
       }
     },
     "task_e_DEMO~assttrn_e_DEMO_2": {
@@ -17,11 +19,13 @@
         "worklog": {
           "messages": [
             {
+              "id": "task_e_DEMO~assttrn_e_DEMO_2",
               "role": "assistant",
               "text": "DEMO assistant variant 2 message body for sample gating."
             }
           ]
-        }
+        },
+        "pr_message": "This patch adds docs/checklists/approval_gate_checklist.md and validates the repo gate flow."
       }
     },
     "task_e_DEMO~assttrn_e_DEMO_3": {
@@ -29,11 +33,13 @@
         "worklog": {
           "messages": [
             {
+              "id": "task_e_DEMO~assttrn_e_DEMO_3",
               "role": "assistant",
               "text": "DEMO assistant variant 3 message body for sample gating."
             }
           ]
-        }
+        },
+        "pr_message": "This patch references docs/rubrics/codex_eval_rubric_v3.md and docs/samples/intent_validation_example.md for the validation workflow."
       }
     },
     "task_e_DEMO~assttrn_e_DEMO_4": {
@@ -41,11 +47,13 @@
         "worklog": {
           "messages": [
             {
+              "id": "task_e_DEMO~assttrn_e_DEMO_4",
               "role": "assistant",
               "text": "DEMO assistant variant 4 message body for sample gating."
             }
           ]
-        }
+        },
+        "pr_message": "docs/rubrics/codex_eval_rubric_v3.md docs/ops/local_gates.md docs/checklists/approval_gate_checklist.md docs/samples/intent_validation_example.md samples/broken_fence.sample.md tests/evaluators/test_validate_fences_sample.py tests/samples/test_samples_exist.py"
       }
     },
     "task_e_DEMO~usertrn_demo": {

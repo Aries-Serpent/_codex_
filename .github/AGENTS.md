@@ -295,7 +295,7 @@ CTEP Compliance: ✅ PASS
 
 ### Directory Structure
 
-```
+```text
 .codex/
 ├── sessions/          # Session logs (rotated)
 ├── logs.db            # SQLite database

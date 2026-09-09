@@ -1,0 +1,11 @@
+{
+  "epoch": 1,
+  "git_commit": "2db203f38cff0fd00975ceb11b4fba979166b211",
+  "system": {
+    "cuda_version": "13.0",
+    "git_commit": "2db203f38cff0fd00975ceb11b4fba979166b211",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]"
+  }
+}

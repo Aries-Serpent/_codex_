@@ -238,6 +238,7 @@ class FeastCompatibleStore:
 
     def materialize(
         self,
+        start_date: datetime,
         end_date: datetime,
         feature_views: Optional[list[str]] = None,
     ) -> dict[str, Path]:
@@ -270,6 +271,7 @@ class FeastCompatibleStore:
             stub_data = {f: None for f in view.features}
             stub_data["__materialized_at"] = end_date.isoformat()  # type: ignore[assignment]
             stub_data["__source"] = view.source or "stub"  # type: ignore[assignment]
+            stub_data["__start_date"] = start_date.isoformat()  # type: ignore[assignment]
 
             try:
                 path = self._native.materialize_feature_group(

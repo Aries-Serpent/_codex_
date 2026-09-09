@@ -62,3 +62,27 @@ state, its root cause, and the remediation that preserves intended behaviour.
 - **Context**: Sample scripts raised `cannot import name 'DataLoader' from 'torch.utils.data'`.
 - **Cause**: Partial Torch installations omitted the `torch.utils.data` module.
 - **Resolution**: Install full Torch wheels or skip DataLoader-dependent paths when running without the full stack.
+> Question from ChatGPT @codex 2026-09-09T21:55:20.949182+00:00:
+> While performing [5.1:format test], encountered the following error: test message. Context: test context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+> Question from ChatGPT @codex 2026-09-09T21:55:20.987868+00:00:
+> While performing [3.1:nested test], encountered the following error: error msg. Context: context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+> Question from ChatGPT @codex 2026-09-09T21:55:20.996140+00:00:
+> While performing [4.1:failing op], encountered the following error: error. Context: context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+> Question from ChatGPT @codex 2026-09-09T21:55:21.001820+00:00:
+> While performing [1.1:first op], encountered the following error: first error. Context: first context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+> Question from ChatGPT @codex 2026-09-09T21:55:21.001887+00:00:
+> While performing [2.2:second op], encountered the following error: second error. Context: second context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
+> Question from ChatGPT @codex 2026-09-09T21:55:21.039045+00:00:
+> While performing [1.1:test operation], encountered the following error: test error message. Context: test context.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+

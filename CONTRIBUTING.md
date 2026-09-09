@@ -383,6 +383,7 @@ def load_model_safely(model_name: str, cache_dir: str = "./cache"):
             f"This is a bug. Please report to: "
             f"https://github.com/Aries-Serpent/_codex_/issues"
         )
+```
 
 ## Profile-Aware Development
 
@@ -450,13 +451,15 @@ try:
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
-    
+
+
 def feature_requiring_torch():
     if not HAS_TORCH:
-       raise ImportError("This feature requires the runtime or full profile. Install with: pip install codex-ml[runtime]")
-    # ... feature implementation
-```
-
+        raise ImportError(
+            "This feature requires the runtime or full profile. "
+            "Install with: pip install codex-ml[runtime]"
+        )
+    model = SomeModel()
     model.eval()
     return model
 ```
@@ -836,7 +839,7 @@ Closes #ISSUE_NUMBER
 
 Write clear, concise commit messages following this format:
 
-```
+```text
 <type>: <subject>
 
 <body>
@@ -861,7 +864,7 @@ Write clear, concise commit messages following this format:
 **Footer** (optional) should reference any issues: `Closes #123`
 
 **Examples**:
-```
+```text
 feat: add model validation endpoint
 
 Implement POST /api/validate that accepts a model config and returns
@@ -870,7 +873,7 @@ validation results. This enables client-side validation before submission.
 Closes #456
 ```
 
-```
+```text
 fix: handle None values in config parser
 
 The config parser was crashing when encountering None values in YAML.
@@ -1093,7 +1096,7 @@ Please use the bug report template. Include:
 6. **Screenshots**: If applicable
 
 **Example**:
-```
+```text
 Title: Model loading fails with ValueError when config path contains spaces
 
 Description:
@@ -1130,7 +1133,7 @@ Use the feature request template. Include:
 5. **Additional Context**: Examples, use cases, etc.
 
 **Example**:
-```
+```text
 Title: Add support for remote model loading from HuggingFace Hub
 
 Motivation:

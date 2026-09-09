@@ -12537,6 +12537,37 @@ and the CI gate requirement.
 
 ---
 
+## Session: 2026-09-09T22:39Z — PR #5606 nox contract + workflow gate follow-up
+
+**Objective:** Close the remaining PR #5606 review and CI rescue gaps by restoring the live nox repo-health contract, fixing the workflow-execution-gate sparse checkout install failure, and clearing the Audit QA critical findings without widening scope.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Restored the effective `nox -s tests` contract in `configs/development/noxfile.py` by re-adding the repo-health precheck helpers, reinstating `PYTEST_DISABLE_PLUGIN_AUTOLOAD`, and returning coverage enforcement to `--cov=src` plus `--cov=training`.
+2. Kept the repository-root `noxfile.py` as a compatibility shim while restoring the explicit `security` session registration and preserving the legacy nox-contract markers that existing regression tests assert against.
+3. Reverted the broad `tools/validate_fences.py` skip-list expansion so the validator still scans the live repo trees, then updated the fence sample fixtures to keep the validator’s pass/fail expectations stable.
+4. Fixed the three critical Audit QA Ruff blockers by removing the shadowing `json` import in `src/aries_serpent_core/logging/session_embeddings.py`, importing `ResourceAllocation` in `src/codex/optimization/pricing_engine.py`, and removing the conflicting `Retrieval` import in `src/rag/cached_retrieval.py`.
+5. Expanded `.github/workflows/workflow-execution-gate.yml` sparse checkout to include the root package directories referenced by `pyproject.toml`, which restores editable-install success in the workflow’s setup step.
+
+**Validation:**
+- `pytest -q tests/self_mgmt/test_noxfile_parse.py tests/security/test_security_gating.py --maxfail=1` → pass.
+- `pytest -q tests/test_validate_fences.py tests/test_validate_fences_md.py tests/test_fences_tool.py --maxfail=1` → pass.
+- `pytest -q tests/test_pyproject_metadata.py tests/hooks/test_pre_commit_verify.py --maxfail=1` → pass.
+- `python -m ruff check src/aries_serpent_core/logging/session_embeddings.py src/codex/optimization/pricing_engine.py src/rag/cached_retrieval.py --select F821,F823,F811` → pass.
+- `python -m nox -s workflow_policy` → pass.
+- Sparse-checkout editable install repro with the added root package paths (`pip install -e '.[dev]'`) → pass.
+- `python -m compileall noxfile.py configs/development/noxfile.py tools/validate_fences.py src/aries_serpent_core/logging/session_embeddings.py src/codex/optimization/pricing_engine.py src/rag/cached_retrieval.py` → pass.
+- `python - <<'PY' ... CodebaseQAWalker().run_full_walkthrough() ... PY` → 0 critical issues.
+
+**Governance:**
+- REQ-4: This report updated for PR #5606 in the active session.
+- REQ-5: `CHANGELOG.md` updated for the same session.
+
+### Agents Used
+- `code-review`
+- `ci-testing-agent`
+
 ### Agents Used
 - `session-analysis-agent` (session wrap-up)
 - `memory-sync-agent` (PDA/accountability update)
