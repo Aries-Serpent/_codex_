@@ -112,40 +112,27 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: 'python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
-
-        '
-      continue-on-error: true
+      run: |
+        set -euo pipefail
+        python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
     - name: Run comprehensive CODEX_MASTER_KEY tests
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: 'pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci
-        --cov-report=term -k "codex_master" || true
-
-        pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append
-        --cov-report=term -k "codex_master" || true
-
-        pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci
-        --cov-append --cov-report=term -k "codex_master" || true
-
+      run: |
+        set -euo pipefail
+        pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master"
+        pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
+        pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
         pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term
-        || true
-
-        pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci
-        --cov-append --cov-report=term -k "codex_master" || true
-
-        '
-      continue-on-error: true
+        pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
     - name: Generate CODEX_MASTER_KEY coverage report
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: 'pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json
-        --cov-report=term || true
-
-        '
-      continue-on-error: true
+      run: |
+        set -euo pipefail
+        pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term
     - name: Upload scope report
       uses: actions/upload-artifact@v7
       if: always()
@@ -163,15 +150,11 @@ jobs:
         if-no-files-found: warn
         name: codex-master-key-coverage-${{ matrix.python-version }}
     - name: Test examples
-      run: '# Test that examples run without errors (in demo mode)
-
-        python examples/authentication/02_mfa_setup.py || true
-
+      run: |
+        set -euo pipefail
+        python examples/authentication/02_mfa_setup.py
         python examples/authentication/03_token_management.py
-
         python examples/authentication/04_complete_flow.py
-
-        '
     - name: Security scan
       run: "# Install specific bandit version for consistency\npip install bandit>=1.7.5\n\
         \n# Verify bandit installation\npython -c \"import bandit; print(f'\u2713\

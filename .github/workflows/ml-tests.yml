@@ -37,11 +37,11 @@ jobs:
         python-version:
           - '3.12'
         test-suite:
+          - checkpointing
           - training
           - data
           - metrics
           - callbacks
-          - checkpointing
           - integration
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
@@ -52,9 +52,9 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
-          extras: full
+          extras: runtime
           install-torch: true
-          install-preflight-extras: true
+          install-preflight-extras: false
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
@@ -62,8 +62,11 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install -e ".[full]"
-          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          python -m pip install -e '.[runtime]'
+          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          if [ -d "$PWD/agents/codex_client" ]; then
+            export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          fi
           python - <<'PY'
           import importlib
           for name in [
@@ -83,7 +86,10 @@ jobs:
       - name: Run ${{ matrix.test-suite }} tests
         run: |
           set -euo pipefail
-          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          if [ -d "$PWD/agents/codex_client" ]; then
+            export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          fi
           pytest tests/${{ matrix.test-suite }}/ \
             -v \
             --cov=src \
@@ -118,9 +124,9 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          extras: full
+          extras: runtime
           install-torch: true
-          install-preflight-extras: true
+          install-preflight-extras: false
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
@@ -128,8 +134,11 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install -e ".[full]"
-          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          python -m pip install -e '.[runtime]'
+          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          if [ -d "$PWD/agents/codex_client" ]; then
+            export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          fi
           python - <<'PY'
           import importlib
           for name in [
@@ -149,7 +158,10 @@ jobs:
       - name: Run integration tests
         run: |
           set -euo pipefail
-          export PYTHONPATH="$PWD/src:$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          if [ -d "$PWD/agents/codex_client" ]; then
+            export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
+          fi
           pytest tests/integration/ \
             -v \
             -m "integration" \

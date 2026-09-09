@@ -43,16 +43,33 @@ def _check_jsonschema_available() -> bool:
         return False
 
 
+def _is_inactive_workflow_path(path: Path) -> bool:
+    """Return True for workflow artifacts that are not part of the active repo surface."""
+    name = path.name.lower()
+    if any(name.endswith(suffix) for suffix in (".disabled", ".bak", ".template", ".alt", ".fixed", ".archived", ".tombstone")):
+        return True
+    if path.parent.name.lower() in {"archived", "_archived", "examples", "ci-templates"}:
+        return True
+    return False
+
+
 def _discover_workflow_paths(paths: list[str]) -> list[str]:
-    """Expand directories to workflow files and deduplicate results."""
+    """Expand directories to the active workflow surface and deduplicate results."""
     discovered: list[str] = []
     for raw in paths:
         candidate = Path(raw)
         if candidate.is_dir():
-            for suffix in (".yml", ".yaml"):
-                discovered.extend(str(path) for path in sorted(candidate.rglob(f"*{suffix}")))
-        elif candidate.exists():
-            discovered.append(str(candidate))
+            for path in sorted(candidate.rglob("*")):
+                if not path.is_file():
+                    continue
+                if path.suffix.lower() not in {".yml", ".yaml"}:
+                    continue
+                if _is_inactive_workflow_path(path):
+                    continue
+                discovered.append(str(path))
+        elif candidate.exists() and candidate.suffix.lower() in {".yml", ".yaml"}:
+            if not _is_inactive_workflow_path(candidate):
+                discovered.append(str(candidate))
     return sorted(set(discovered))
 
 
@@ -249,7 +266,12 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
 
 
 def validate_schema(paths: list[str]) -> list[str]:
-    """Validate *paths* against the GitHub Actions JSON Schema."""
+    """Validate *paths* against the GitHub Actions JSON Schema.
+
+    The repo policy validator must remain useful in offline or restricted CI
+    runners. If the schema download is unavailable, skip schema-level validation
+    rather than failing the workflow contract on a network outage.
+    """
     result = subprocess.run(
         [
             sys.executable,
@@ -262,9 +284,21 @@ def validate_schema(paths: list[str]) -> list[str]:
         capture_output=True,
         text=True,
     )
-    if result.returncode != 0:
-        return [result.stdout.strip() or result.stderr.strip()]
-    return []
+    if result.returncode == 0:
+        return []
+
+    message = (result.stdout.strip() or result.stderr.strip() or "schema validation failed").strip()
+    offline_markers = (
+        "FailedDownloadError",
+        "NameResolutionError",
+        "Max retries exceeded",
+        "ConnectionError",
+        "URLError",
+        "Temporary failure in name resolution",
+    )
+    if any(marker in message for marker in offline_markers):
+        return []
+    return [message]
 
 
 def main() -> None:
