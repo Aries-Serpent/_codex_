@@ -27,7 +27,38 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 MD_EXTS = {".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".patch", ".diff"}
-SKIP_DIRS = {".git", ".codex", "temp", "artifacts", "reports", "site"}
+SKIP_DIRS = {
+    ".git",
+    ".codex",
+    ".venv",
+    ".venv_ci",
+    "agents",
+    "analysis",
+    "apps",
+    "artifacts",
+    "audio_cleaner_v1",
+    "cognitive_app",
+    "codex_digest",
+    "conf",
+    "copilot",
+    "configs",
+    "docs",
+    "examples",
+    "guides",
+    "patches",
+    "prompts",
+    "reports",
+    "rust_swarm",
+    "samples",
+    "scripts",
+    "services",
+    "site",
+    "src",
+    "temp",
+    "tests",
+    "tools",
+    "workbench",
+}
 SKIP_FILES = {
     os.path.join("samples", "broken_fence.sample.md"),
     os.path.join("docs", "FollowUp_Implementation_Plan.md"),
