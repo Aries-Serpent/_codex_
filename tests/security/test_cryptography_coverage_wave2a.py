@@ -312,8 +312,7 @@ class TestCryptographyEncryption:
         # Deserialize
         from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
-        restored_key = load_pem_private_key(private_pem, backend=default_backend())
-
+        restored_key = load_pem_private_key(private_pem, None)
         # Verify the key works
         test_data = b"test"
         signature = restored_key.sign(

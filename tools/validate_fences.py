@@ -32,6 +32,7 @@ SKIP_DIRS = {
     ".codex",
     ".githooks",
     ".github",
+    ".nox",
     ".venv",
     ".venv_ci",
     "agents",
