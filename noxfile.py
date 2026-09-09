@@ -38,6 +38,17 @@ def _run_dev_session(session: nox.Session, name: str) -> None:
     func(session)
 
 
+def _run_repo_tool(
+    session: nox.Session,
+    script: str,
+    *args: str,
+) -> None:
+    """Execute an in-repo validation helper with the arguments it expects."""
+    script_path = REPO_ROOT / script
+    if script_path.exists():
+        session.run("python", str(script_path), *args, external=True)
+
+
 # Keep direct-call compatibility for repo tests while allowing the canonical
 # registry in configs/development/noxfile.py to remain the single source of
 # session registration for `nox -l` / `nox -s ...`.
@@ -46,15 +57,41 @@ def tests(session: nox.Session) -> None:
     """Repository-level test gate used by the live workflow surface."""
     session.chdir(str(REPO_ROOT))
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    for script in (
-        "tools/validate_fences.py",
+
+    rules_path = REPO_ROOT / "manifests" / "codex_eval_rules.v3.json"
+    sample_path = REPO_ROOT / "samples" / "assistant_message_summary.sample.json"
+    selection_rules_path = REPO_ROOT / "manifests" / "selection_guard_rules.json"
+    schema_validate_pairs = (
+        (selection_rules_path, REPO_ROOT / "schemas" / "selection_guard_rules.schema.json"),
+        (rules_path, REPO_ROOT / "schemas" / "codex_eval_rules.v3.schema.json"),
+    )
+
+    _run_repo_tool(session, "tools/validate_fences.py")
+    _run_repo_tool(
+        session,
         "tools/codex_evaluator.py",
+        "--rules",
+        str(rules_path),
+        "--input",
+        str(sample_path),
+    )
+    _run_repo_tool(
+        session,
         "tools/selection_guard.py",
+        "--rules",
+        str(selection_rules_path),
+        "--input",
+        str(sample_path),
+    )
+    _run_repo_tool(
+        session,
         "tools/schema_validate.py",
-    ):
-        script_path = REPO_ROOT / script
-        if script_path.exists():
-            session.run("python", str(script_path), external=True)
+        *(
+            arg
+            for pair in schema_validate_pairs
+            for arg in ("--data", str(pair[0]), "--schema", str(pair[1]))
+        ),
+    )
     session.install("-e", ".[full]")
     session.run(
         "pytest",
