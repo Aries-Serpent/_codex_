@@ -72,41 +72,64 @@ jobs:
       shell: bash
       run: |
         set +e
+        python - <<'PY'
+        import json
+        import os
+        from pathlib import Path
 
-        CRITICAL=0
-        HIGH=0
-        MEDIUM=0
+        root = Path('.')
+        sarif_files = sorted(p for p in root.rglob('*.sarif') if p.is_file() and p.stat().st_size > 0)
+        critical = 0
+        high = 0
+        medium = 0
 
-        SARIF_FILES=$(find . -name "*.sarif" -type f 2>/dev/null | sort)
-        if [ -z "$SARIF_FILES" ]; then
-          echo "No SARIF files were produced; treating this as a zero-alert configuration result."
-        else
-          SARIF_FILE=""
-          while IFS= read -r candidate; do
-            if [ -n "$candidate" ] && [ -s "$candidate" ] && jq -e '.runs and (.runs | type == "array")' "$candidate" >/dev/null 2>&1; then
-              SARIF_FILE="$candidate"
-              break
-            fi
-          done <<< "$SARIF_FILES"
+        def normalize(value: object) -> str:
+            return str(value or '').strip().lower()
 
-          if [ -n "$SARIF_FILE" ]; then
-            echo "Processing SARIF file: $SARIF_FILE"
-            CRITICAL=$(jq '[.runs[]?.results[]? | select(.level == "error")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-            HIGH=$(jq '[.runs[]?.results[]? | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-            MEDIUM=$(jq '[.runs[]?.results[]? | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-          fi
-        fi
+        if not sarif_files:
+            print('No SARIF files were produced; treating this as an explicit no-alert result.')
+        else:
+            for sarif_path in sarif_files:
+                try:
+                    data = json.loads(sarif_path.read_text(encoding='utf-8'))
+                except Exception:
+                    continue
+                if not isinstance(data, dict):
+                    continue
+                for run in data.get('runs') or []:
+                    if not isinstance(run, dict):
+                        continue
+                    for result in run.get('results') or []:
+                        if not isinstance(result, dict):
+                            continue
+                        level = normalize(result.get('level'))
+                        severity = normalize((result.get('properties') or {}).get('severity'))
+                        if level in {'error', 'fatal', 'fatal-error'} or severity in {'error', 'fatal', 'critical'}:
+                            critical += 1
+                        elif level == 'warning' or severity in {'warning', 'high'}:
+                            high += 1
+                        elif level == 'note' or severity in {'note', 'medium'}:
+                            medium += 1
 
-        echo "critical_count=$CRITICAL" >> "$GITHUB_OUTPUT"
-        echo "high_count=$HIGH" >> "$GITHUB_OUTPUT"
-        echo "medium_count=$MEDIUM" >> "$GITHUB_OUTPUT"
+        with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
+            fh.write(f'critical_count={critical}\n')
+            fh.write(f'high_count={high}\n')
+            fh.write(f'medium_count={medium}\n')
 
-        echo "## CodeQL Alert Analysis" >> "$GITHUB_STEP_SUMMARY"
-        echo "| Severity | Count |" >> "$GITHUB_STEP_SUMMARY"
-        echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
-        echo "| Critical | $CRITICAL |" >> "$GITHUB_STEP_SUMMARY"
-        echo "| High | $HIGH |" >> "$GITHUB_STEP_SUMMARY"
-        echo "| Medium | $MEDIUM |" >> "$GITHUB_STEP_SUMMARY"
+        summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary_path:
+            lines = [
+                '## CodeQL Alert Analysis',
+                '| Severity | Count |',
+                '|----------|-------|',
+                f'| Critical | {critical} |',
+                f'| High | {high} |',
+                f'| Medium | {medium} |',
+            ]
+            with open(summary_path, 'a', encoding='utf-8') as fh:
+                fh.write('\n'.join(lines) + '\n')
+        print(f'critical={critical} high={high} medium={medium}')
+        PY
     - name: Upload CodeQL results artifact
       if: always()
       uses: actions/upload-artifact@v5
@@ -208,7 +231,7 @@ jobs:
           - **High Alerts**: ${high}\n- **Timestamp**: ${new Date().toISOString()}\n\
           \n### Required Actions\n1. Fix or suppress all critical/high alerts\n2.\
           \ Run local CodeQL scan to verify\n3. Update PR with remediation\n4. Request\
-          \ approval from @security-team if suppression needed\n\n### Resources\n\
+          \ approval from @${{ github.repository_owner }} if suppression needed\n\n### Resources\n\
           - [Deployment Report](.codex/PHASE_6_CODEQL_GA_DEPLOYMENT_REPORT.md)\n-\
           \ [Remediation Patterns](.codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml)\n-\
           \ [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)\n\

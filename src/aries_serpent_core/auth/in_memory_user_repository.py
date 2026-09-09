@@ -101,6 +101,8 @@ class InMemoryUserRepository(UserRepository):
         Raises:
             UserNotFoundError: If *user_id* is not found.
         """
+        if user_id is None:
+            raise TypeError("user_id must not be None")
         with self._lock:
             if user_id not in self._users:
                 raise UserNotFoundError(f"User '{user_id}' not found")
@@ -111,6 +113,8 @@ class InMemoryUserRepository(UserRepository):
     # ------------------------------------------------------------------ #
 
     def get_by_id(self, user_id: str) -> Optional[User]:
+        if user_id is None:
+            raise TypeError("user_id must not be None")
         with self._lock:
             return self._users.get(user_id)
 
@@ -145,8 +149,18 @@ class InMemoryUserRepository(UserRepository):
         return self.get_by_id(user_id)
 
     def delete_user(self, user_id: str) -> None:
-        """Backward-compatible alias for :meth:`delete`."""
-        return self.delete(user_id)
+        """Backward-compatible alias for :meth:`delete`.
+
+        The repository-level compatibility name is intentionally idempotent so
+        callers using the legacy ``delete_user`` API can clean up without a
+        spurious exception when the user is already absent.
+        """
+        if user_id is None:
+            raise TypeError("user_id must not be None")
+        try:
+            self.delete(user_id)
+        except UserNotFoundError:
+            return
 
     def update_user(self, user: User) -> User:
         """Backward-compatible alias for :meth:`update`."""

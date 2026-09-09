@@ -129,7 +129,13 @@ class TestMain:
     def test_validate_workflow_contract_rejects_unquoted_on(self, tmp_path: Path) -> None:
         f = tmp_path / "unquoted.yml"
         f.write_text(
-            "name: CI\non:\n  push:\n    branches: [main]\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+            "name: CI\n"
+            "on:\n"
+            "  push:\n"
+            "    branches: [main]\n"
+            "jobs:\n"
+            "  build:\n"
+            "    runs-on: ubuntu-latest\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("unquoted GitHub Actions trigger key 'on'" in err for err in errors)
@@ -137,7 +143,13 @@ class TestMain:
     def test_validate_workflow_contract_rejects_unknown_nox_session(self, tmp_path: Path) -> None:
         f = tmp_path / "stale.yml"
         f.write_text(
-            "name: stale\n'on': [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - run: nox -s not-a-real-session\n"
+            "name: stale\n"
+            "'on': [push]\n"
+            "jobs:\n"
+            "  build:\n"
+            "    runs-on: ubuntu-latest\n"
+            "    steps:\n"
+            "      - run: nox -s not-a-real-session\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("not-a-real-session" in err for err in errors)
@@ -145,7 +157,12 @@ class TestMain:
     def test_validate_workflow_contract_rejects_null_trigger(self, tmp_path: Path) -> None:
         f = tmp_path / "null-trigger.yml"
         f.write_text(
-            "name: stale\n'on':\n  workflow_dispatch: null\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+            "name: stale\n"
+            "'on':\n"
+            "  workflow_dispatch: null\n"
+            "jobs:\n"
+            "  build:\n"
+            "    runs-on: ubuntu-latest\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("stale trigger key 'workflow_dispatch'" in err for err in errors)
@@ -153,7 +170,12 @@ class TestMain:
     def test_validate_workflow_contract_rejects_implicit_null_trigger(self, tmp_path: Path) -> None:
         f = tmp_path / "implicit-null-trigger.yml"
         f.write_text(
-            "name: stale\n'on':\n  workflow_dispatch:\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+            "name: stale\n"
+            "'on':\n"
+            "  workflow_dispatch:\n"
+            "jobs:\n"
+            "  build:\n"
+            "    runs-on: ubuntu-latest\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("stale trigger key 'workflow_dispatch'" in err for err in errors)
@@ -161,7 +183,15 @@ class TestMain:
     def test_validate_workflow_contract_rejects_codeql_config_drift(self, tmp_path: Path) -> None:
         f = tmp_path / "codeql-drift.yml"
         f.write_text(
-            "name: stale\n'on': [push]\njobs:\n  codeql:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: github/codeql-action/init@v3\n        with:\n          config-file: ./.codeql/codeql-config.yml\n"
+            "name: stale\n"
+            "'on': [push]\n"
+            "jobs:\n"
+            "  codeql:\n"
+            "    runs-on: ubuntu-latest\n"
+            "    steps:\n"
+            "      - uses: github/codeql-action/init@v3\n"
+            "        with:\n"
+            "          config-file: ./.codeql/codeql-config.yml\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert any("CodeQL config drift detected" in err for err in errors)
@@ -169,7 +199,29 @@ class TestMain:
     def test_validate_workflow_contract_accepts_repo_standard(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yml"
         f.write_text(
-            "name: CI\n'on': [push]\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: nox -s lint-3.12\n      - run: nox -s tests-3.12\n"
+            "name: CI\n"
+            "'on': [push]\n"
+            "jobs:\n"
+            "  check:\n"
+            "    runs-on: ubuntu-latest\n"
+            "    steps:\n"
+            "      - run: nox -s lint-3.12\n"
+            "      - run: nox -s tests-3.12\n"
         )
         errors = cwv.validate_workflow_contract([str(f)])
         assert errors == []
+
+    def test_validate_workflow_contract_rejects_timeout_on_reusable_workflow_job(
+        self, tmp_path: Path
+    ) -> None:
+        f = tmp_path / "reusable-timeout.yml"
+        f.write_text(
+            "name: CI\n"
+            "'on': [push]\n"
+            "jobs:\n"
+            "  cost-gate:\n"
+            "    uses: ./.github/workflows/cost-gate.yml\n"
+            "    timeout-minutes: 30\n"
+        )
+        errors = cwv.validate_workflow_contract([str(f)])
+        assert any("must not set 'timeout-minutes'" in err for err in errors)

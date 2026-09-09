@@ -304,7 +304,7 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
     session.log(f"[coverage] JSON report: {json_path}")
 
 
-@nox.session(python=list(PY_VERSIONS))
+@nox.session(name="tests", python=list(PY_VERSIONS))
 def tests(session: nox.Session) -> None:
     """Run the full unit test suite against all discovered interpreters."""
 
@@ -493,7 +493,7 @@ def bootstrap(session: nox.Session) -> None:
     session.run(UV, "pip", "sync", "requirements/base.txt")
 
 
-@nox.session(python=list(PY_VERSIONS))
+@nox.session(name="lint", python=list(PY_VERSIONS))
 def lint(session: nox.Session) -> None:
     """Run formatters and linters on the repo's maintained Python code paths."""
 

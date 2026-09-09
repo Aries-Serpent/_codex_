@@ -59,6 +59,11 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+try:
+    import requests
+except ImportError:  # pragma: no cover - compatibility fallback when requests is absent
+    requests = None  # type: ignore[assignment]
+
 from .exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
@@ -212,6 +217,13 @@ class GitHubApp:
                 "app_id keyword argument is required. When both are "
                 "supplied, config takes precedence."
             )
+        if config is None and app_id and private_key is not None:
+            config = GitHubAppConfig(
+                app_id=int(app_id),
+                private_key_pem=private_key,
+                webhook_secret=webhook_secret,
+                api_base_url=_GITHUB_API_URL,
+            )
         if private_key is not None and "PRIVATE KEY" not in private_key:
             raise ValueError("private_key must be a valid PEM-encoded RSA private key")
         self._config = config
@@ -288,6 +300,90 @@ class GitHubApp:
         return _AwaitableDict(
             {"access_token": "", "installation_id": "", "code": code}, loader=_load
         )
+
+    def get_installation_id(self, repo: str) -> int:
+        """Compatibility helper used by the auth test suite.
+
+        The method resolves the installation ID for a repository using the GitHub
+        REST API. Tests typically patch ``codex.auth.github_app.requests`` to a
+        mock response and assert that the return value is a usable integer.
+        """
+        if not repo:
+            raise ValueError("repo must not be empty")
+        if requests is None:
+            raise RuntimeError("requests library is not installed")
+
+        api_base = (self._config.api_base_url if self._config else _GITHUB_API_URL).rstrip("/")
+        try:
+            response = requests.get(
+                f"{api_base}/repos/{repo}/installation",
+                headers={
+                    "Accept": "application/vnd.github+json",
+                    "User-Agent": "codex-github-app/compat",
+                },
+                timeout=30,
+            )
+        except requests.exceptions.Timeout as exc:  # type: ignore[attr-defined]
+            raise TimeoutError("Timed out while fetching installation metadata") from exc
+
+        if response.status_code == 404:
+            raise ValueError(f"Repository not found: {repo}")
+        if response.status_code == 403:
+            raise PermissionError(f"Permission denied while resolving installation for {repo}")
+        if response.status_code >= 400:
+            raise RuntimeError(f"GitHub lookup failed for {repo}: HTTP {response.status_code}")
+
+        data = response.json()
+        installation_id = data.get("id")
+        if installation_id is None:
+            raise ValueError(f"No installation ID returned for repository {repo}")
+        return int(installation_id)
+
+    def get_installation_access_token(
+        self,
+        installation_id: int | str,
+        permissions: Optional[dict[str, str]] = None,
+        repositories: Optional[list[str]] = None,
+    ) -> dict[str, Any]:
+        """Compatibility wrapper for installation-access-token exchange."""
+        if requests is None:
+            raise RuntimeError("requests library is not installed")
+
+        api_base = (self._config.api_base_url if self._config else _GITHUB_API_URL).rstrip("/")
+        url = f"{api_base}/app/installations/{installation_id}/access_tokens"
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json",
+            "User-Agent": "codex-github-app/compat",
+        }
+        if self._config is not None:
+            headers["Authorization"] = f"******"
+        else:
+            headers["Authorization"] = "******"
+
+        payload: dict[str, Any] = {}
+        if permissions:
+            payload["permissions"] = permissions
+        if repositories:
+            payload["repositories"] = repositories
+
+        try:
+            response = requests.post(url, headers=headers, json=payload or {}, timeout=30)
+        except requests.exceptions.Timeout as exc:  # type: ignore[attr-defined]
+            raise TimeoutError("Timed out while exchanging installation token") from exc
+
+        if response.status_code == 403:
+            raise PermissionError("Permission denied when exchanging installation token")
+        if response.status_code >= 400:
+            raise RuntimeError(
+                f"Installation token exchange failed for installation {installation_id}: "
+                f"HTTP {response.status_code}"
+            )
+
+        data = response.json()
+        if not isinstance(data, dict):
+            raise RuntimeError("GitHub installation token response was not a JSON object")
+        return data
 
     def verify_webhook_signature(self, payload: bytes, signature_header: str) -> bool:
         """Verify a webhook signature using the configured secret."""

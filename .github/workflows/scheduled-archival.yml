@@ -20,7 +20,6 @@ jobs:
   cost-gate:
     name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
-    timeout-minutes: 30
     with:
       workflow_name: Scheduled Archival
       runner: ubuntu-latest
@@ -93,7 +92,7 @@ jobs:
           \ candidates for archival:\n\n\\`\\`\\`\n${candidates}\n\\`\\`\\`\n\n###\
           \ Approval Required\n\n- [ ] Review each candidate file\n- [ ] Confirm no\
           \ active references exist\n- [ ] Approve archival by commenting \\`/approve-archival\\\
-          `\n\n### Archival Process\n\n1. Files will be moved to \\`.codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/archived/\\\
+          `\n\n### Archival Process\n\n1. Files will be moved under \\`.codex/archive/root-consolidation/deprecated-reports/.../archived/\\\
           `\n2. A redirect/reference will be added to original location\n3. Documentation\
           \ index will be updated\n\n---\n\nThis issue was automatically created by\
           \ the Scheduled Archival workflow.\n`;\n\nawait github.rest.issues.create({\n\
