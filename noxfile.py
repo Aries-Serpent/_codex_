@@ -84,14 +84,20 @@ def workflow_policy(session: nox.Session) -> None:
 def gates(session: nox.Session) -> None:
     """Compatibility alias for the repo-level security gate."""
     session.chdir(str(REPO_ROOT))
-    session.log("gates alias delegates to sec; the canonical stack runs bandit, semgrep, detect-secrets, pip-audit, and gitleaks.")
+    session.log(
+        "gates alias delegates to sec; the canonical stack runs bandit, "
+        "semgrep, detect-secrets, pip-audit, and gitleaks."
+    )
     _run_dev_session(session, "gates")
 
 
 def precommit(session: nox.Session) -> None:
     """Compatibility alias for the repo-level patch-debris guard."""
     session.chdir(str(REPO_ROOT))
-    session.log("precommit alias delegates to patch_debris to prevent merge markers and patch debris.")
+    session.log(
+        "precommit alias delegates to patch_debris to prevent merge markers "
+        "and patch debris."
+    )
     _run_dev_session(session, "precommit")
 
 
@@ -99,7 +105,10 @@ def precommit(session: nox.Session) -> None:
 def security(session: nox.Session) -> None:
     """Compatibility alias for the repo-level security gate."""
     session.chdir(str(REPO_ROOT))
-    session.log("security alias delegates to sec; the canonical stack runs bandit, semgrep, detect-secrets, pip-audit, and gitleaks.")
+    session.log(
+        "security alias delegates to sec; the canonical stack runs bandit, "
+        "semgrep, detect-secrets, pip-audit, and gitleaks."
+    )
     _run_dev_session(session, "sec")
 
 

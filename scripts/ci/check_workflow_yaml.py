@@ -46,7 +46,16 @@ def _check_jsonschema_available() -> bool:
 def _is_inactive_workflow_path(path: Path) -> bool:
     """Return True for workflow artifacts that are not part of the active repo surface."""
     name = path.name.lower()
-    if any(name.endswith(suffix) for suffix in (".disabled", ".bak", ".template", ".alt", ".fixed", ".archived", ".tombstone")):
+    inactive_suffixes = (
+        ".disabled",
+        ".bak",
+        ".template",
+        ".alt",
+        ".fixed",
+        ".archived",
+        ".tombstone",
+    )
+    if any(name.endswith(suffix) for suffix in inactive_suffixes):
         return True
     if path.parent.name.lower() in {"archived", "_archived", "examples", "ci-templates"}:
         return True
@@ -201,7 +210,8 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
 
         if re.search(r"(?m)^on\s*:", text) and not re.search(r"(?m)^['\"]on['\"]\s*:", text):
             errors.append(
-                f"{path}: unquoted GitHub Actions trigger key 'on' detected; quote it as 'on' to avoid YAML 1.1 bool parsing."
+                f"{path}: unquoted GitHub Actions trigger key 'on' detected; "
+                "quote it as 'on' to avoid YAML 1.1 bool parsing."
             )
 
         stale_trigger_names = [
@@ -222,13 +232,26 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
                 for trigger in stale_trigger_names:
                     if trigger in on_value and on_value.get(trigger) is None:
                         errors.append(
-                            f"{path}: stale trigger key '{trigger}' detected; define it as '{trigger}: {{}}' or with explicit inputs."
+                            f"{path}: stale trigger key '{trigger}' detected; "
+                            f"define it as '{trigger}: {{}}' or with explicit inputs."
+                        )
+            jobs = parsed.get("jobs")
+            if isinstance(jobs, dict):
+                for job_name, job_config in jobs.items():
+                    if not isinstance(job_config, dict):
+                        continue
+                    if "uses" in job_config and "timeout-minutes" in job_config:
+                        errors.append(
+                            f"{path}: reusable workflow job '{job_name}' must not set "
+                            "'timeout-minutes'; move the timeout into workflow_call "
+                            "inputs or a normal job."
                         )
 
         for session in sorted(set(re.findall(r"nox\s+-s\s+([A-Za-z0-9_.-]+)", text))):
             if session not in registry:
                 errors.append(
-                    f"{path}: nox session '{session}' is not registered in {NOXFILE_PATH.name}."
+                    f"{path}: nox session '{session}' is not registered in "
+                    f"{NOXFILE_PATH.name}."
                 )
 
         codeql_config_paths = re.findall(r"(?m)^\s*config-file\s*:\s*(.+?)\s*$", text)
@@ -238,11 +261,13 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
                 normalized = raw_path.strip().strip("\"'")
                 if normalized not in {canonical, f"./{canonical}"}:
                     errors.append(
-                        f"{path}: CodeQL config drift detected: '{normalized}' does not match the repo-standard '{canonical}'."
+                        f"{path}: CodeQL config drift detected: '{normalized}' "
+                        f"does not match the repo-standard '{canonical}'."
                     )
                 elif not (REPO_ROOT / canonical).exists():
                     errors.append(
-                        f"{path}: CodeQL config file '{canonical}' is missing from the repository root."
+                        f"{path}: CodeQL config file '{canonical}' is missing "
+                        "from the repository root."
                     )
 
         category_counts: dict[str, int] = {}
@@ -253,13 +278,15 @@ def validate_workflow_contract(paths: list[str]) -> list[str]:
         for category, count in sorted(category_counts.items()):
             if count > 1:
                 errors.append(
-                    f"{path}: duplicate CodeQL category '{category}' detected; use a unique category per run/attempt."
+                    f"{path}: duplicate CodeQL category '{category}' detected; "
+                    "use a unique category per run/attempt."
                 )
 
         if re.search(r"assignees\s*:\s*\[|assignees\s*:\s*\n", text, re.IGNORECASE):
             if re.search(r"security-team|@security-team|security-team\b", text, re.IGNORECASE):
                 errors.append(
-                    f"{path}: stale assignee reference 'security-team' detected; use a valid repository username instead."
+                    f"{path}: stale assignee reference 'security-team' "
+                    "detected; use a valid repository username instead."
                 )
 
     return errors
@@ -330,7 +357,10 @@ def main() -> None:
             for err in schema_errors:
                 print(f"  ❌ {err}", file=sys.stderr)
             sys.exit(1)
-        print(f"  ✅ {len(paths)} workflow file(s) passed YAML syntax, repo contract, and schema validation.")
+        print(
+            f"  ✅ {len(paths)} workflow file(s) passed YAML syntax, "
+            "repo contract, and schema validation."
+        )
     else:
         print(
             f"  ✔  {len(paths)} workflow file(s) passed YAML syntax and repo contract validation.  "

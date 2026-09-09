@@ -14,7 +14,7 @@ import time
 
 import pytest
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
-from codex.auth.user_model import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.user_model import (  # pragma: allowlist secret
     PasswordHasher,
     User,
 )
@@ -32,13 +32,13 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
         )
         user2 = User(
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
         )
         assert user1.user_id == user2.user_id, "user_id is not valid"
 
@@ -47,7 +47,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
         )
         # Should not be able to modify
         user.email = "new@example.com"
@@ -58,7 +58,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
         )
         str_repr = str(user)
         assert "alice" in str_repr or "123" in str_repr, "Condition must be true"
@@ -68,7 +68,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
             roles=[],
         )
         # Should have default roles or empty
@@ -79,7 +79,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
         )
         assert user.user_id, "Condition must be true"
         assert user.created_at, "Condition must be true"
@@ -91,7 +91,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
             roles=roles,
         )
         assert len(user.roles) == 100 or len(user.roles) > 0, "Collection must not be empty"
@@ -101,7 +101,7 @@ class TestUserModelExtended:
             user_id="123",
             username="alice",
             email="alice@example.com",
-            password_hash="hash123",
+            password_hash="hash123",  # pragma: allowlist secret
             roles=["admin", "admin", "user"],
         )
         # Should deduplicate or allow duplicates
@@ -119,7 +119,7 @@ class TestPasswordHasherExtended:
         hasher1 = PasswordHasher(iterations=1)
         hasher2 = PasswordHasher(iterations=1)
 
-        password = "Str0ngPass!"
+        password = "Str0ngPass!"  # pragma: allowlist secret
         hash1 = hasher1.hash_password(password)
         hash2 = hasher2.hash_password(password)
 
@@ -132,26 +132,26 @@ class TestPasswordHasherExtended:
 
     def test_password_with_newlines(self):
         hasher = PasswordHasher(iterations=1)
-        password = "Pass\n\nword123!"
+        password = "Pass\n\nword123!"  # pragma: allowlist secret
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_password_with_tabs(self):
         hasher = PasswordHasher(iterations=1)
-        password = "Pass\t\tword123!"
+        password = "Pass\t\tword123!"  # pragma: allowlist secret
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_password_with_mixed_unicode(self):
         hasher = PasswordHasher(iterations=1)
-        password = "Pässwörd123!中文"
+        password = "Pässwörd123!中文"  # pragma: allowlist secret
         hashed = hasher.hash_password(password)
         assert hasher.verify(password, hashed)
 
     def test_similar_passwords_different_hashes(self):
         hasher = PasswordHasher(iterations=1)
-        password1 = "Pass123!"
-        password2 = "Pass124!"  # One character different
+        password1 = "Pass123!"  # pragma: allowlist secret
+        password2 = "Pass124!"  # pragma: allowlist secret
 
         hash1 = hasher.hash_password(password1)
         hash2 = hasher.hash_password(password2)
@@ -340,11 +340,12 @@ class TestConcurrentRepositoryOperations:
 
         def mixed_ops():
             hasher = PasswordHasher(iterations=1)
-            user_id = f"concurrent_{threading.current_thread().name}"
+            worker_name = threading.current_thread().name
+            user_id = f"concurrent_{worker_name}"
             user = User(
                 user_id=user_id,
-                username=f"user_{threading.current_thread().ident}",
-                email=f"{threading.current_thread().ident}@example.com",
+                username=f"user_{worker_name}",
+                email=f"{worker_name}@example.com",
                 password_hash=hasher.hash_password("Str0ngPass!"),
             )
             repo.create_user(user)

@@ -16,6 +16,11 @@ from urllib.parse import urlencode
 
 import httpx
 
+try:
+    import requests
+except ImportError:  # pragma: no cover - compatibility fallback when requests is absent
+    requests = None  # type: ignore[assignment]
+
 from ..security_utils import sanitize_log_message
 
 
@@ -169,19 +174,24 @@ class OAuthManager:
         return f"{base}?{urlencode(params)}"
 
     def exchange_code_for_token(
-        self, code: str, config: Optional["OAuthConfig"] = None
+        self,
+        code: str,
+        config: Optional["OAuthConfig"] = None,
+        redirect_uri: Optional[str] = None,
     ) -> "OAuthToken":
         """Exchange an authorization code for an access token (uses requests)."""
-        import requests
-
         cfg = config or self.config
         if cfg is None:
             raise ValueError("OAuth configuration is required")
+        if requests is None:
+            raise RuntimeError("requests library is not installed")
+        if redirect_uri is not None and redirect_uri != cfg.redirect_uri:
+            raise ValueError("redirect_uri does not match configured redirect URI")
         data = {
             "client_id": cfg.client_id,
             "client_secret": cfg.client_secret or "",
             "code": code,
-            "redirect_uri": cfg.redirect_uri,
+            "redirect_uri": redirect_uri or cfg.redirect_uri,
         }
         headers = {"Accept": "application/json"}
         response = requests.post(cfg.token_url, data=data, headers=headers, timeout=30)
@@ -205,6 +215,42 @@ class OAuthManager:
         """Validate that the provided scopes are non-empty and allowed."""
         if not scopes:
             raise OAuthException("At least one scope is required")
+        allowed_scopes = {
+            "repo",
+            "repo:status",
+            "repo_deployment",
+            "public_repo",
+            "repo:invite",
+            "security_events",
+            "admin:repo_hook",
+            "write:repo_hook",
+            "read:repo_hook",
+            "admin:org",
+            "write:org",
+            "read:org",
+            "admin:public_key",
+            "write:public_key",
+            "read:public_key",
+            "admin:org_hook",
+            "gist",
+            "notifications",
+            "user",
+            "read:user",
+            "user:email",
+            "user:follow",
+            "delete_repo",
+            "write:discussion",
+            "read:discussion",
+            "write:packages",
+            "read:packages",
+            "delete:packages",
+            "workflow",
+        }
+        invalid = [scope for scope in scopes if scope not in allowed_scopes]
+        if invalid:
+            raise ValueError(
+                f"Unsupported OAuth scope(s): {', '.join(sorted(invalid))}"
+            )
         return True
 
     def create_github_config(
@@ -578,3 +624,43 @@ class OAuthManager:
                 return True
 
         return False
+
+
+def _refresh_access_token_compat(
+    self: OAuthManager,
+    refresh_token: str,
+    config: Optional[OAuthConfig] = None,
+) -> dict[str, Any]:
+    """Compatibility wrapper that refreshes an OAuth access token via requests."""
+    cfg = config or self.config
+    if cfg is None:
+        raise ValueError("OAuth configuration is required")
+    if requests is None:
+        raise RuntimeError("requests library is not installed")
+    if not refresh_token or not refresh_token.strip():
+        raise ValueError("Refresh token is required")
+
+    response = requests.post(
+        cfg.token_url,
+        data={
+            "client_id": cfg.client_id,
+            "client_secret": cfg.client_secret or "",
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
+        },
+        headers={"Accept": "application/json"},
+        timeout=30,
+    )
+    data = response.json()
+    if response.status_code == 401:
+        raise PermissionError(data.get("error_description") or "Client authentication failed")
+    if response.status_code >= 400:
+        raise ValueError(
+            data.get("error_description") or data.get("error") or "Token refresh failed"
+        )
+    if not isinstance(data, dict):
+        raise ValueError("Token refresh response must be a JSON object")
+    return data
+
+
+OAuthManager.refresh_access_token = _refresh_access_token_compat

@@ -32,7 +32,10 @@ class TestSubprocessTimingEvent:
    @pytest.mark.timeout(10)
    @pytest.mark.flaky(
        reruns=2,
-       reason="CI scheduling can delay child-process stdout; this test is validating startup timing rather than a product regression.",
+       reason=(
+           "CI scheduling can delay child-process stdout; this test is validating "
+           "startup timing rather than a product regression."
+       ),
    )
    def test_subprocess_timing(self):
        """Verify the child emits READY and DONE within the bounded timeout."""

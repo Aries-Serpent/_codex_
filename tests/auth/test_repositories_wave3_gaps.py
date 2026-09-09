@@ -30,7 +30,7 @@ class TestRepositoriesConcurrentAccess:
         """Test multiple threads creating users simultaneously."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
+
         def create_user(user_id):
             user = User(
                 user_id=f"user_{user_id}",
@@ -40,11 +40,11 @@ class TestRepositoriesConcurrentAccess:
             )
             repo.create_user(user)
             return f"user_{user_id}"
-        
+
         with ThreadPoolExecutor(max_workers=5) as executor:
             futures = [executor.submit(create_user, i) for i in range(10)]
             results = [f.result() for f in as_completed(futures)]
-        
+
         assert len(results) == 10, "All concurrent creates should succeed"
         for i in range(10):
             user = repo.get_by_username(f"user_{i}")
@@ -61,18 +61,18 @@ class TestRepositoriesConcurrentAccess:
             password_hash=hasher.hash_password("Password123!"),
         )
         repo.create_user(user)
-        
+
         def update_user_email(new_email):
             user_copy = repo.get_by_user_id("concurrent_user")
             user_copy.email = new_email
             repo.update_user(user_copy)
             return new_email
-        
+
         emails = [f"email_{i}@example.com" for i in range(5)]
         with ThreadPoolExecutor(max_workers=3) as executor:
             futures = [executor.submit(update_user_email, email) for email in emails]
             results = [f.result() for f in as_completed(futures)]
-        
+
         assert len(results) == 5, "All concurrent updates should complete"
         final_user = repo.get_by_user_id("concurrent_user")
         assert final_user.email in emails, "Final email should be one of the updated values"
@@ -85,7 +85,7 @@ class TestRepositoriesTransactionIsolation:
         """Test that transaction rolls back on constraint violation."""
         repo = SQLiteUserRepository(":memory:")
         hasher = PasswordHasher()
-        
+
         user1 = User(
             user_id="user1",
             username="alice",
@@ -93,7 +93,7 @@ class TestRepositoriesTransactionIsolation:
             password_hash=hasher.hash_password("Password123!"),
         )
         repo.create_user(user1)
-        
+
         # Try to create user with duplicate username (should violate constraint)
         user2 = User(
             user_id="user2",
@@ -101,20 +101,19 @@ class TestRepositoriesTransactionIsolation:
             email="bob@example.com",
             password_hash=hasher.hash_password("Password123!"),
         )
-        
+
         with pytest.raises(Exception):  # Should raise constraint violation
             repo.create_user(user2)
-        
+
         # Verify first user still exists and second wasn't partially inserted
         assert repo.get_by_user_id("user1") is not None
-        with pytest.raises(Exception):
-            repo.get_by_user_id("user2")
+        assert repo.get_by_user_id("user2") is None
 
     def test_transaction_consistency_after_error(self):
         """Test that repository state remains consistent after errors."""
         repo = SQLiteUserRepository(":memory:")
         hasher = PasswordHasher()
-        
+
         user = User(
             user_id="user1",
             username="alice",
@@ -122,11 +121,11 @@ class TestRepositoriesTransactionIsolation:
             password_hash=hasher.hash_password("Password123!"),
         )
         repo.create_user(user)
-        
+
         # Verify user exists
         retrieved = repo.get_by_user_id("user1")
         assert retrieved is not None, "User should exist"
-        
+
         # Attempt invalid operation
         try:
             invalid_user = User(
@@ -138,7 +137,7 @@ class TestRepositoriesTransactionIsolation:
             repo.create_user(invalid_user)
         except ValueError:
             pass
-        
+
         # Verify original user still intact
         retrieved = repo.get_by_user_id("user1")
         assert retrieved.username == "alice"
@@ -150,7 +149,7 @@ class TestRepositoriesEdgeCases:
     def test_get_user_by_id_with_none(self):
         """Test repository behavior with None user ID."""
         repo = InMemoryUserRepository()
-        
+
         with pytest.raises((TypeError, ValueError)):
             repo.get_by_user_id(None)
 
@@ -158,7 +157,7 @@ class TestRepositoriesEdgeCases:
         """Test username lookup case sensitivity."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
+
         user = User(
             user_id="user1",
             username="Alice",
@@ -166,11 +165,11 @@ class TestRepositoriesEdgeCases:
             password_hash=hasher.hash_password("Password123!"),
         )
         repo.create_user(user)
-        
+
         # Same username different case
         retrieved_lower = repo.get_by_username("alice")
         retrieved_upper = repo.get_by_username("ALICE")
-        
+
         # Document case sensitivity behavior
         # (either both should work or both should fail, not inconsistent)
         if retrieved_lower is not None:
@@ -181,19 +180,18 @@ class TestRepositoriesEdgeCases:
     def test_delete_nonexistent_user(self):
         """Test deleting a user that doesn't exist."""
         repo = InMemoryUserRepository()
-        
+
         # Should not raise; should be idempotent
         repo.delete_user("nonexistent_id")
-        
+
         # Verify nothing broke
-        with pytest.raises(Exception):
-            repo.get_by_user_id("nonexistent_id")
+        assert repo.get_by_user_id("nonexistent_id") is None
 
     def test_update_user_partial_fields(self):
         """Test updating specific user fields without overwriting others."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
+
         user = User(
             user_id="user1",
             username="alice",
@@ -201,11 +199,11 @@ class TestRepositoriesEdgeCases:
             password_hash=hasher.hash_password("Password123!"),
         )
         repo.create_user(user)
-        
+
         # Update only email
         user.email = "newemail@example.com"
         repo.update_user(user)
-        
+
         retrieved = repo.get_by_user_id("user1")
         assert retrieved.email == "newemail@example.com"
         assert retrieved.username == "alice", "Username should be unchanged"
@@ -218,10 +216,10 @@ class TestRepositoriesMigration:
         """Test that SQLite repository initializes schema correctly."""
         with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             db_path = f.name
-        
+
         try:
             repo = SQLiteUserRepository(db_path)
-            
+
             # Verify schema exists by creating a user
             hasher = PasswordHasher()
             user = User(
@@ -231,7 +229,7 @@ class TestRepositoriesMigration:
                 password_hash=hasher.hash_password("Password123!"),
             )
             repo.create_user(user)
-            
+
             # Verify persistence (create new instance, same DB)
             repo2 = SQLiteUserRepository(db_path)
             retrieved = repo2.get_by_user_id("user1")
@@ -245,7 +243,7 @@ class TestRepositoriesMigration:
         """Test handling of database file creation and permissions."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = os.path.join(tmpdir, "test.db")
-            
+
             # Create repository (should create DB file)
             repo = SQLiteUserRepository(db_path)
             assert os.path.exists(db_path), "Database file should be created"
@@ -257,7 +255,7 @@ class TestRepositoriesListOperations:
     def test_list_all_users_empty_repo(self):
         """Test listing users in empty repository."""
         repo = InMemoryUserRepository()
-        
+
         users = repo.list_all_users() if hasattr(repo, 'list_all_users') else []
         assert len(users) == 0, "Empty repo should return no users"
 
@@ -265,7 +263,7 @@ class TestRepositoriesListOperations:
         """Test listing multiple users."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
+
         for i in range(5):
             user = User(
                 user_id=f"user{i}",
@@ -274,7 +272,7 @@ class TestRepositoriesListOperations:
                 password_hash=hasher.hash_password("Password123!"),
             )
             repo.create_user(user)
-        
+
         if hasattr(repo, 'list_all_users'):
             users = repo.list_all_users()
             assert len(users) == 5, "Should return all 5 users"
@@ -287,14 +285,14 @@ class TestRepositoriesErrorHandling:
         """Test creating user with invalid email format."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
+
         user = User(
             user_id="user1",
             username="alice",
             email="invalid_email_format",  # Missing @domain
             password_hash=hasher.hash_password("Password123!"),
         )
-        
+
         # May succeed or fail depending on validation level
         try:
             repo.create_user(user)
@@ -309,10 +307,10 @@ class TestRepositoriesErrorHandling:
         """Test that password hashes are stored and retrieved correctly."""
         repo = InMemoryUserRepository()
         hasher = PasswordHasher()
-        
-        original_password = "SecurePassword123!"
+
+        original_password = "SecurePassword123!"  # pragma: allowlist secret
         password_hash = hasher.hash_password(original_password)
-        
+
         user = User(
             user_id="user1",
             username="alice",
@@ -320,7 +318,7 @@ class TestRepositoriesErrorHandling:
             password_hash=password_hash,
         )
         repo.create_user(user)
-        
+
         retrieved = repo.get_by_user_id("user1")
         assert retrieved.password_hash == password_hash, "Password hash should be unchanged"
 
