@@ -17,7 +17,15 @@ from types import ModuleType
 def _load_real_module() -> ModuleType | None:
     current_path = Path(__file__).resolve()
     current_dir = current_path.parent
-    search_paths = [p for p in sys.path if Path(p).resolve() != current_dir]
+    excluded_paths = {current_dir, current_dir.parent}
+    search_paths = []
+    for p in sys.path:
+        try:
+            resolved = Path(p).resolve()
+        except (OSError, RuntimeError, TypeError, ValueError):
+            continue
+        if resolved not in excluded_paths:
+            search_paths.append(p)
     spec = importlib.machinery.PathFinder().find_spec("sentencepiece", search_paths)
     if spec is None or spec.loader is None:
         return None
