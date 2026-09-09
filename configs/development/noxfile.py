@@ -306,14 +306,9 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
 
 @nox.session(name="tests", python=list(PY_VERSIONS))
 def tests(session: nox.Session) -> None:
-    """Run the full unit test suite against all discovered interpreters."""
+    """Run the full unit test suite with the repo's required coverage gate."""
 
-    session.chdir(str(REPO_ROOT))
-    _ensure_pip_cache(session)
-    session.install("-e", ".[full]")
-    _export_env(session)
-    # Enforce coverage gate via pytest.ini (--cov-fail-under=3.5).
-    session.run("pytest", "-q", "tests")
+    _run_pytest_coverage(session, extra_args=list(session.posargs))
 
 
 @nox.session(name="offline_check", python=DEFAULT_PYTHON)
