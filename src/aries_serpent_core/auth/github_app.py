@@ -316,7 +316,7 @@ class GitHubApp:
         api_base = (self._config.api_base_url if self._config else _GITHUB_API_URL).rstrip("/")
         try:
             response = requests.get(
-                f"{api_base}/repos/{repo}",
+                f"{api_base}/repos/{repo}/installation",
                 headers={
                     "Accept": "application/vnd.github+json",
                     "User-Agent": "codex-github-app/compat",

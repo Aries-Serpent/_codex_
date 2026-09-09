@@ -41,6 +41,7 @@ def _run_dev_session(session: nox.Session, name: str) -> None:
 # Keep direct-call compatibility for repo tests while allowing the canonical
 # registry in configs/development/noxfile.py to remain the single source of
 # session registration for `nox -l` / `nox -s ...`.
+@nox.session(name="tests", python=_dev_noxfile.DEFAULT_PYTHON)
 def tests(session: nox.Session) -> None:
     """Repository-level test gate used by the live workflow surface."""
     session.chdir(str(REPO_ROOT))
@@ -66,11 +67,13 @@ def tests(session: nox.Session) -> None:
     )
 
 
+@nox.session(name="lint", python=_dev_noxfile.DEFAULT_PYTHON)
 def lint(session: nox.Session) -> None:
     """Compatibility alias for the canonical lint session."""
     _run_dev_session(session, "lint")
 
 
+@nox.session(name="typecheck", python=_dev_noxfile.DEFAULT_PYTHON)
 def typecheck(session: nox.Session) -> None:
     """Compatibility alias for the canonical typecheck session."""
     _run_dev_session(session, "typecheck")

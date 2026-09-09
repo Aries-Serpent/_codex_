@@ -19,6 +19,7 @@ Usage:
 import hashlib
 import logging
 import os
+import secrets
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -319,10 +320,19 @@ class AuthMiddleware:
         compatibility path ``AuthMiddleware()`` used by the auth suite.
         """
         self.app = app
-        self.token_manager = token_manager or TokenManager(
-            secret_key=os.environ.get("AUTH_SECRET_KEY") or os.environ.get("CODEX_AUTH_SECRET_KEY")
-            or "development-only-secret-key"
+        secret_key = (
+            os.environ.get("AUTH_SECRET_KEY") or os.environ.get("CODEX_AUTH_SECRET_KEY")
         )
+        if token_manager is None:
+            if not secret_key:
+                secret_key = secrets.token_urlsafe(32)
+                logger.warning(
+                    "No AUTH_SECRET_KEY/CODEX_AUTH_SECRET_KEY configured; using a generated "
+                    "development-only secret for this process."
+                )
+            self.token_manager = TokenManager(secret_key=secret_key)
+        else:
+            self.token_manager = token_manager
         self.config = config or AuthConfig()
         self.api_key_validator = api_key_validator or APIKeyValidator()
         self.rate_limiter = RateLimiter(
