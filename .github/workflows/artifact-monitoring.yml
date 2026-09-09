@@ -1,5 +1,5 @@
 name: Artifact Monitoring
-on:
+'on':
   workflow_dispatch:
     inputs:
       dry_run:

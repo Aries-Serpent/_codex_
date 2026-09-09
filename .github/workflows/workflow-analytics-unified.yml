@@ -1,5 +1,5 @@
 name: Workflow Analytics & Health (Unified)
-on:
+'on':
   workflow_dispatch:
     inputs:
       mode:

@@ -1,5 +1,5 @@
 name: Data Quality & Determinism Suite
-on:
+'on':
   pull_request:
     types:
     - opened
@@ -47,6 +47,7 @@ jobs:
   cost-gate:
     name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
+    timeout-minutes: 30
     with:
       workflow_name: Data Quality & Determinism Suite
       runner: ubuntu-latest

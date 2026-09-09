@@ -1,5 +1,5 @@
 name: Batch CI Failure Triage
-on:
+'on':
   workflow_dispatch:
     inputs:
       group_by:

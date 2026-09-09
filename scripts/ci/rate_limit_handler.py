@@ -53,17 +53,22 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from scripts.ci._token_resolver import get_token
 
 
+def _resolve_gh_token() -> str:
+    for required_elevated in (True, False):
+        try:
+            token, _ = get_token(required_elevated=required_elevated)
+        except Exception:
+            continue
+        if token:
+            return token
+    return os.environ.get("GITHUB_TOKEN", "")
+
+
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 CHECKPOINT_FILE = Path(".codex/rate_limit_checkpoint.json")
 REPO = os.environ.get("GITHUB_REPOSITORY", "")
-GH_TOKEN = (
-    get_token(required_elevated=True)[0]
-    or get_token(required_elevated=True)[0]
-    or os.environ.get("GITHUB_TOKEN")
-    or get_token(required_elevated=False)[0]
-    or ""
-)
+GH_TOKEN = _resolve_gh_token()
 
 # Error codes / messages that indicate a weekly rate-limit (not per-minute)
 _RATE_LIMIT_CODES: frozenset[str] = frozenset({
