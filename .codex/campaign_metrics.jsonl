@@ -194,3 +194,11 @@
 {"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-1/test_search_missing_index_retu0/missing.json", "query": "test", "state": "empty", "timestamp": "2026-08-29T03:11:20Z"}
 {"event": "search_requested", "hits": 0, "index": "/tmp/pytest-of-runner/pytest-1/test_search_no_query_returns_e0/missing.json", "query": "", "state": "empty", "timestamp": "2026-08-29T03:11:20Z"}
 {"event": "search_requested", "hits": 2, "index": "/tmp/pytest-of-runner/pytest-1/test_search_returns_matching_h0/chronicle_search_index.json", "query": "lane docs", "state": "available", "timestamp": "2026-08-29T03:11:21Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "reindex_requested", "output": ".codex/chronicle_search_index.json", "sessions": 0, "timestamp": "2026-09-09T16:28:36Z"}
+{"event": "search_requested", "hits": 0, "index": ".codex/chronicle_search_index.json", "query": "CodeQL Security gate auth authentication nox quality gate ML training workflow failure", "state": "empty", "timestamp": "2026-09-09T16:28:36Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "reindex_requested", "output": ".codex/chronicle_search_index.json", "sessions": 0, "timestamp": "2026-09-09T16:28:40Z"}
+{"event": "search_requested", "hits": 0, "index": ".codex/chronicle_search_index.json", "query": "CodeQL Security gate auth authentication nox quality gate ML training workflow failure", "state": "empty", "timestamp": "2026-09-09T16:28:41Z"}
+{"database": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db", "event": "standup_requested", "format": "json", "task_id": null, "timestamp": "2026-09-09T16:28:53Z"}
+{"agent": "direct-cli", "category": "exploration", "event": "task_route_recommended", "runner": "bash", "timestamp": "2026-09-09T16:28:54Z"}
+{"event": "agent_chain_requested", "focus": "ci", "steps": 2, "timestamp": "2026-09-09T16:28:54Z"}
+{"event": "agent_chain_requested", "focus": "security", "steps": 2, "timestamp": "2026-09-09T16:28:55Z"}
