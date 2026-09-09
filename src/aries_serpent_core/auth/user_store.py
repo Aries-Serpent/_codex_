@@ -220,6 +220,8 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
+        if user_id is None:
+            raise TypeError("user_id must not be None")
         try:
             self._repository.delete(user_id)
         except (UserNotFoundError, KeyError) as exc:  # pragma: no cover - compatibility shim

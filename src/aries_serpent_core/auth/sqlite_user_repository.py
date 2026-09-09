@@ -189,19 +189,40 @@ class SQLiteUserRepository(UserRepository):
         Raises:
             KeyError: If *user_id* is not found.
         """
+        if user_id is None:
+            raise TypeError("user_id must not be None")
         with self._lock, self._get_conn() as conn:
             cursor = conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
             if cursor.rowcount == 0:
                 raise KeyError(f"User '{user_id}' not found")
+
+    def delete_user(self, user_id: str) -> None:
+        """Backward-compatible alias for :meth:`delete`.
+
+        The helper mirrors the in-memory repository and treats a missing user as a
+        trivial cleanup no-op.
+        """
+        if user_id is None:
+            raise TypeError("user_id must not be None")
+        try:
+            self.delete(user_id)
+        except KeyError:
+            return
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
     # ------------------------------------------------------------------ #
 
     def get_by_id(self, user_id: str) -> Optional[User]:
+        if user_id is None:
+            raise TypeError("user_id must not be None")
         with self._lock, self._get_conn() as conn:
             row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
         return _row_to_user(row) if row else None
+
+    def get_by_user_id(self, user_id: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`get_by_id`."""
+        return self.get_by_id(user_id)
 
     def get_by_username(self, username: str) -> Optional[User]:
         username = username.strip()
