@@ -30,6 +30,8 @@ MD_EXTS = {".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".patch", ".diff"}
 SKIP_DIRS = {
     ".git",
     ".codex",
+    ".githooks",
+    ".github",
     ".venv",
     ".venv_ci",
     "agents",
