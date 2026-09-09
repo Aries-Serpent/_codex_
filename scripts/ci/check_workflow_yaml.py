@@ -50,7 +50,7 @@ def _discover_workflow_paths(paths: list[str]) -> list[str]:
         candidate = Path(raw)
         if candidate.is_dir():
             for suffix in (".yml", ".yaml"):
-                discovered.extend(str(path) for path in sorted(candidate.glob(f"*{suffix}")))
+                discovered.extend(str(path) for path in sorted(candidate.rglob(f"*{suffix}")))
         elif candidate.exists():
             discovered.append(str(candidate))
     return sorted(set(discovered))
@@ -58,6 +58,14 @@ def _discover_workflow_paths(paths: list[str]) -> list[str]:
 
 def _extract_python_versions(tree: ast.AST) -> list[str]:
     versions: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id == "_CANDIDATE_PYTHONS":
+                    versions = _literal_string_list(node.value)
+                    if versions:
+                        return versions
+
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign):
             for target in node.targets:
