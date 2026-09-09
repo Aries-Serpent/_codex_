@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "phase": "epoch_end",
+    "epoch": 1,
+    "synthetic_loss": null,
+    "optimizer_steps": 0,
+    "total_steps": 2,
+    "lr": null
+  },
+  {
+    "phase": "epoch_end",
+    "epoch": 2,
+    "synthetic_loss": null,
+    "optimizer_steps": 0,
+    "total_steps": 2,
+    "lr": null
+  },
+  {
+    "phase": "best_checkpoint",
+    "epoch": 2,
+    "path": "epoch-0002",
+    "created_at": "2026-09-09T04:28:24.313925Z",
+    "model_params": null,
+    "optimizer_steps_total": 0,
+    "scheduler_type": null,
+    "checkpoint_sha256": null
+  }
+]

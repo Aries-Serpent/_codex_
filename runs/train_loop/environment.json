@@ -1,0 +1,19 @@
+{
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "seed": 1234,
+  "deterministic_cudnn": false,
+  "amp": {
+    "enabled": false,
+    "dtype": null
+  },
+  "mlflow": {
+    "enabled": false,
+    "uri": null,
+    "experiment": null
+  },
+  "telemetry": {
+    "enabled": false,
+    "port": null
+  },
+  "torch_version": "2.14.0+cu130"
+}
