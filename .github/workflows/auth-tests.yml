@@ -6,7 +6,7 @@ name: Authentication Tests
     - develop
     - copilot/**
     paths:
-    - src/codex/auth/**
+    - src/aries_serpent_core/auth/**
     - tests/auth/**
     - .github/workflows/auth-tests.yml
   pull_request:
@@ -14,7 +14,7 @@ name: Authentication Tests
     - main
     - develop
     paths:
-    - src/codex/auth/**
+    - src/aries_serpent_core/auth/**
     - tests/auth/**
   workflow_dispatch: {}
 concurrency:
@@ -86,12 +86,19 @@ jobs:
 
           '
     - name: Run authentication tests
-      run: "# Run pytest with verbose output and proper error reporting\npytest tests/auth/\
-        \ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300\
-        \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\
-        \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\
-        \  exit $TEST_EXIT_CODE\nfi\n\necho \"\u2713 Authentication tests passed\"\
-        \n"
+      run: |
+        pytest tests/auth/ \
+         -v --cov=codex.auth --cov-report=xml --cov-report=term --timeout=300 \
+         --tb=short
+        TEST_EXIT_CODE=$?
+
+        if [ $TEST_EXIT_CODE -ne 0 ]; then
+         echo "ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE" >&2
+         exit $TEST_EXIT_CODE
+        fi
+
+        echo "✓ Authentication tests passed"
+
     - name: Upload coverage reports
       uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       if: always()
@@ -171,7 +178,7 @@ jobs:
         \ bandit {bandit.__version__}')\"\n\n# Run bandit with explicit error handling\
         \ and verbose output\n# Use set -o pipefail to catch errors in piped commands\n\
         set -o pipefail\n\n# Create output directory if needed\nmkdir -p security-reports\n\
-        \n# Run bandit with full error reporting\nbandit -r src/codex/auth/ -ll -f\
+        \n# Run bandit with full error reporting\nbandit -r src/aries_serpent_core/auth/ -ll -f\
         \ json -o auth-security-report.json -v 2>&1 | tee bandit-output.log\nBANDIT_EXIT_CODE=$?\n\
         \nif [ $BANDIT_EXIT_CODE -ne 0 ]; then\n  echo \"ERROR: bandit exited with\
         \ code $BANDIT_EXIT_CODE\" >&2\n  echo \"Bandit output:\" >&2\n  cat bandit-output.log\
@@ -236,18 +243,18 @@ jobs:
         \ >&2\n  exit $INTEGRATION_EXIT_CODE\nfi\n\necho \"\u2713 Integration tests\
         \ passed\"\n"
     - name: Test OAuth flow components
-      run: "python -c \"\nfrom src.codex.auth import OAuthManager, MFAProvider, TokenManager\n\
+      run: "python -c \"\nfrom codex.auth import OAuthManager, MFAProvider, TokenManager\n\
         # Verify all components initialize correctly\noauth = OAuthManager()\nmfa\
         \ = MFAProvider()\ntokens = TokenManager()\nprint('\u2713 All authentication\
         \ components initialized successfully')\n\"\n"
     - name: Test MFA functionality
-      run: "python -c \"\nfrom src.codex.auth.mfa_provider import MFAProvider\nmfa\
+      run: "python -c \"\nfrom codex.auth.mfa_provider import MFAProvider\nmfa\
         \ = MFAProvider()\nsecret = mfa.generate_totp_secret('test_user')\ncode =\
         \ mfa.generate_totp(secret.secret)\nvalid = mfa.verify_totp(secret.secret,\
         \ code, 'test_user')\nassert valid, 'MFA verification failed'\nprint('\u2713\
         \ MFA functionality verified')\n\"\n"
     - name: Test token management
-      run: "python -c \"\nfrom src.codex.auth.token_manager import TokenManager, TokenType\n\
+      run: "python -c \"\nfrom codex.auth.token_manager import TokenManager, TokenType\n\
         tokens = TokenManager()\naccess_token = tokens.generate_access_token('test_user')\n\
         claims = tokens.validate_token(access_token, TokenType.ACCESS)\nassert claims.sub\
         \ == 'test_user', 'Token validation failed'\nprint('\u2713 Token management\
