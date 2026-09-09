@@ -4,6 +4,8 @@
 
 **Status:** ✅ COMPLETE
 
+**Final Baseline Audit:** Active workflow files were rechecked for branch-scoped concurrency and explicit `timeout-minutes`; the remaining `cost-gate` drift was corrected and the final wrap-up gate is green for PR #5604.
+
 **Actions:**
 1. Corrected the `tests/conftest.py` `PYTHONPATH` setup so the `src` directory is only added when it exists, preventing the undefined `_src`/`NameError` during collection when the repo layout is absent or incomplete.
 2. Hardened `src/mcp/tools/github_logs.py` exception handling to log the actual failure context with `logger.exception(...)` and include the real exception type instead of the stale `<ERROR_TYPE>` placeholder.

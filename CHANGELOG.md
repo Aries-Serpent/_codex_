@@ -4,6 +4,7 @@
 
 ### Fixed (auto-update — PR #5604)
 - Final PR #5604 readiness cleanup: removed stale workflow/session-wrapup pending markers from the active accountability artifacts and revalidated the repo's WEC baseline and wrap-up gate so the branch is ready to close without compliance drift.
+- Final workflow baseline audit: all active `.github/workflows/*.yml` entries were verified to use branch-scoped concurrency and explicit `timeout-minutes` values, and the remaining `cost-gate` drift was fixed before closure.
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5604 (SHA `9042c9a6367ba70a1964eb1990ea303036c922d5`) at 2026-09-08T22:30:10Z [auto-generated]
 - Follow-up: refreshed the active PR governance evidence for the current review-thread remediation so the branch clears the stale `PDA entry today` and `accountability report today` readiness checks without broadening scope.
 - Final readiness fix: synced the archived accountability report and the active PR evidence for PR #5604 so the current session passes the repo’s merge-readiness gate at 2026-09-09T00:28:00Z.
