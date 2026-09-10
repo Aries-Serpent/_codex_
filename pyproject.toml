@@ -661,6 +661,8 @@ include = [
 # Excluded packages (development-only, test, or temporary code)
 exclude = [
     "tests*",                       # Test suites (development only)
+    "torch*",                       # Local PyTorch stub (not part of runtime package)
+    "torch.*",                      # Local PyTorch stub modules
     "torch_stub*",                  # Stub implementations
     ".stubs*",                      # Type stub files
     "*__pycache__*",                # Python cache (all variants)
