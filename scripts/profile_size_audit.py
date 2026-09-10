@@ -56,7 +56,7 @@ def get_profile_dependencies() -> Dict[str, List[str]]:
             "torch>=2.6.1,<3.0.0",
             "transformers>=5.12.1,<6",
             "datasets>=5.0.0,<6",
-            "accelerate>=1.14.0,<2",
+            "accelerate>=1.15.0,<2",
             "peft>=0.19.1,<1",
             "fastapi>=0.135.3,<1",
             "litestar>=2.22.0,<3",
