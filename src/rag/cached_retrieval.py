@@ -17,7 +17,7 @@ import logging
 from typing import Optional
 
 from rag.pipelines.embedding import EmbeddingPipeline
-from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval
+from rag.pipelines.retrieval import InMemoryVectorStore
 from rag.security import (
     sanitize_query,
     validate_document_id,
@@ -80,7 +80,7 @@ class CachedRetrieval:
         except ValueError as e:
             logger.warning(f"Input validation failed: {e}")
             return []
-        
+
         # Check cache first
         cached_results = self.cache.get_query_result(query, top_k, filters)
         if cached_results:
@@ -118,7 +118,7 @@ class CachedRetrieval:
         except ValueError as e:
             logger.warning(f"Document validation failed: {e}")
             return
-        
+
         self.retrieval.add_document(doc_id, content, metadata)
         logger.debug(f"Added document: {doc_id}")
 

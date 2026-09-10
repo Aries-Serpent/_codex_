@@ -12,6 +12,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
+from codex.optimization.sla_optimizer import ResourceAllocation
+
 logger = logging.getLogger(__name__)
 
 
@@ -82,7 +84,7 @@ class DynamicPricingModel:
         self.demand_history: Dict[str, List[float]] = {}
         self.price_history: Dict[str, List[Tuple[str, float]]] = {}
 
-    def update_price(self, resource_type: str, demand_level: float, 
+    def update_price(self, resource_type: str, demand_level: float,
                     supply_utilization: float) -> float:
         """
         Update price dynamically based on demand and supply.
@@ -112,7 +114,7 @@ class DynamicPricingModel:
 
         return new_price
 
-    def forecast_cost(self, resource_type: str, quantity: float, 
+    def forecast_cost(self, resource_type: str, quantity: float,
                      forecast_demand: List[float], days: int = 30) -> CostForecast:
         """
         Forecast cost based on demand patterns.
@@ -169,7 +171,7 @@ class DynamicPricingModel:
         else:
             return resource_price.calculate_on_demand_price(quantity, hours)
 
-    def get_price_history(self, resource_type: str, 
+    def get_price_history(self, resource_type: str,
                          lookback_hours: int = 168) -> List[Tuple[str, float]]:
         """Get price history for a resource type."""
         if resource_type not in self.price_history:
@@ -192,7 +194,7 @@ class CostPredictor:
         self.historical_costs: Dict[str, List[float]] = {}
         self.accuracy_errors: List[float] = []
 
-    def predict_monthly_cost(self, resource_allocation: 'ResourceAllocation') -> float:
+    def predict_monthly_cost(self, resource_allocation: ResourceAllocation) -> float:
         """
         Predict monthly cost with ±10% accuracy target.
         Returns predicted cost in dollars.
@@ -201,13 +203,32 @@ class CostPredictor:
         monthly_hours = 730
 
         # Calculate costs by resource type
-        cpu_cost = resource_allocation.cpu_cores * self.pricing_model.resource_prices["cpu"].base_price * monthly_hours
-        memory_cost = resource_allocation.memory_gb * self.pricing_model.resource_prices["memory"].base_price * monthly_hours
-        disk_cost = resource_allocation.disk_gb * self.pricing_model.resource_prices["disk"].base_price * 30 * 24
-        network_cost = resource_allocation.network_mbps * self.pricing_model.resource_prices["network"].base_price * monthly_hours
+        cpu_cost = (
+            resource_allocation.cpu_cores
+            * self.pricing_model.resource_prices["cpu"].base_price
+            * monthly_hours
+        )
+        memory_cost = (
+            resource_allocation.memory_gb
+            * self.pricing_model.resource_prices["memory"].base_price
+            * monthly_hours
+        )
+        disk_cost = (
+            resource_allocation.disk_gb
+            * self.pricing_model.resource_prices["disk"].base_price
+            * 30
+            * 24
+        )
+        network_cost = (
+            resource_allocation.network_mbps
+            * self.pricing_model.resource_prices["network"].base_price
+            * monthly_hours
+        )
 
         # Apply tier multiplier
-        subtotal = (cpu_cost + memory_cost + disk_cost + network_cost) * resource_allocation.tier.cost_multiplier
+        subtotal = (
+            cpu_cost + memory_cost + disk_cost + network_cost
+        ) * resource_allocation.tier.cost_multiplier
 
         # Apply reserved discount
         reserved_discount = subtotal * self.pricing_model.resource_prices["cpu"].reserved_discount
@@ -230,7 +251,13 @@ class CostPredictor:
             error_percent = abs(actual_cost - predicted_cost) / predicted_cost * 100
 
         self.accuracy_errors.append(error_percent)
-        logger.info(f"Cost prediction for {tenant_id}: predicted ${predicted_cost:.2f}, actual ${actual_cost:.2f}, error {error_percent:.1f}%")
+        logger.info(
+            "Cost prediction for %s: predicted $%.2f, actual $%.2f, error %.1f%%",
+            tenant_id,
+            predicted_cost,
+            actual_cost,
+            error_percent,
+        )
 
     def get_prediction_accuracy(self) -> Dict:
         """Get prediction accuracy statistics."""
@@ -277,7 +304,12 @@ class BurstCapacityManager:
         # Check if within reasonable burst limits (5x base capacity)
         available_burst = self.base_capacity[resource_type] * 4  # 5x - 1x base
         if quantity > available_burst:
-            logger.warning(f"Burst request {quantity} exceeds max {available_burst} for {resource_type}")
+            logger.warning(
+                "Burst request %s exceeds max %s for %s",
+                quantity,
+                available_burst,
+                resource_type,
+            )
             return False
 
         self.burst_usage[resource_type] += quantity
@@ -331,17 +363,33 @@ class ReservedCapacityPlanner:
 
             # Calculate savings vs on-demand
             hours_per_month = 730
-            reserved_cost = reserve_amount * pricing_model.resource_prices[resource_type].base_price * hours_per_month * 0.7
-            ondemand_cost = peak * pricing_model.resource_prices[resource_type].base_price * hours_per_month
+            reserved_cost = (
+                reserve_amount
+                * pricing_model.resource_prices[resource_type].base_price
+                * hours_per_month
+                * 0.7
+            )
+            ondemand_cost = (
+                peak * pricing_model.resource_prices[resource_type].base_price * hours_per_month
+            )
 
-            savings_percent = ((ondemand_cost - reserved_cost) / ondemand_cost * 100) if ondemand_cost > 0 else 0
-            logger.info(f"Reservation recommendation for {resource_type}: {reserve_amount:.1f} units, {savings_percent:.1f}% savings")
+            savings_percent = (
+                ((ondemand_cost - reserved_cost) / ondemand_cost * 100)
+                if ondemand_cost > 0
+                else 0
+            )
+            logger.info(
+                "Reservation recommendation for %s: %.1f units, %.1f%% savings",
+                resource_type,
+                reserve_amount,
+                savings_percent,
+            )
 
             optimal_reservations[resource_type] = reserve_amount
 
         return optimal_reservations
 
-    def commit_reservation(self, resource_type: str, quantity: float, 
+    def commit_reservation(self, resource_type: str, quantity: float,
                           commitment_term_months: int = 12):
         """Commit to reserved capacity."""
         self.reserved_commitments[resource_type] = quantity

@@ -69,7 +69,7 @@ PACKAGE_GROUPS: dict[str, list[tuple[str, str]]] = {
         ("transformers", "transformers>=5.16.1,<6"),
         ("datasets", "datasets>=5.0.0,<6"),
         ("peft", "peft>=0.20.0,<1"),
-        ("accelerate", "accelerate>=1.14.0,<2"),
+        ("accelerate", "accelerate>=1.15.0,<2"),
         ("sentencepiece", "sentencepiece>=0.2.2"),
     ],
     "analysis": [

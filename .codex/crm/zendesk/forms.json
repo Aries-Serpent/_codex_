@@ -1,0 +1,22 @@
+[
+  {
+    "fields": [
+      {
+        "id": "codex_assignment_policy_id",
+        "required": true,
+        "type": "integer"
+      },
+      {
+        "id": "codex_assignment_type",
+        "required": true,
+        "type": "choice"
+      },
+      {
+        "id": "codex_vendor",
+        "required": false,
+        "type": "lookup"
+      }
+    ],
+    "title": "Assignment"
+  }
+]

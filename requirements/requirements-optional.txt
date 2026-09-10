@@ -13,7 +13,7 @@ sacrebleu>=2.6.0
 
 # LoRA/PEFT adapters
 peft>=0.20.0,<1
-accelerate>=1.14.0,<2
+accelerate>=1.15.0,<2
 
 # Distributed training
 torch-distributed>=2.0.0  # Usually bundled with pytorch

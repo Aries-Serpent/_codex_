@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  app:
+    image: codex:latest
+    volumes:
+      - ./data:/app/data
+      - ./artifacts:/app/artifacts

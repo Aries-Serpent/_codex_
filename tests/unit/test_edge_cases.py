@@ -12,6 +12,15 @@ from unittest.mock import Mock, patch
 import pytest
 
 
+def _torch_available() -> bool:
+    """Guard optional PyTorch discovery against malformed namespace stubs."""
+
+    try:
+        return importlib.util.find_spec("torch") is not None
+    except (AttributeError, ImportError, OSError, TypeError, ValueError):
+        return False
+
+
 class TestPathUtilsEdgeCases:
     """Test path_utils edge cases."""
 

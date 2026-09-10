@@ -1,0 +1,4 @@
+table,logical_name,display_name,type,required,optionset
+cdx_assignment,cdx_assignment_policy_id,Policy ID,Integer,Yes,
+cdx_assignment,cdx_assignment_type,Assignment Type,Choice,Yes,Relocation;LumpSum
+cdx_assignment,cdx_vendor,Vendor,Lookup,No,

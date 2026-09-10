@@ -60,7 +60,14 @@ jobs:
         sparse-checkout: |
           README.md
           pyproject.toml
+          agents/
+          codex_utils/
+          interfaces/
+          services/
           src/
+          tokenization/
+          tools/
+          training/
           scripts/__init__.py
           scripts/ci/__init__.py
           scripts/ci/_token_resolver.py

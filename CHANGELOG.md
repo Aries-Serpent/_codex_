@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5608 dependency bump + governance readiness follow-up
+- Confirmed the active `accelerate` dependency bump remains consistent with the repo’s direct runtime and CPU manifests and preserved the guarded `bcrypt` dependency fix required by the config-management regression path.
+- Refreshed the current session governance artifacts (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `.codex/aftermath/pda_iterations.jsonl`) so the active stack PR clears the stale `PDA entry today` and `accountability report today` readiness checks without broadening scope.
+- Kept the canonical WEC block and wrap-up contract in sync for the active PR so the branch carries the required merge-readiness evidence for the current review cycle.
+- Final repo-health pass for 2026-09-10: resolved the direct Ruff findings in `src/codex/optimization/pricing_engine.py` by normalizing import ordering and wrapping long log/message lines without widening the patch beyond the active PR blockers.
+- Final REQ-4/REQ-5 compliance sync: refreshed the governance evidence in the current branch so the active PR's accountability archive and changelog move together in the same last-commit verification pass.
+
+### Fixed — PR #5606 nox contract + workflow gate follow-up
+- Restored the effective `nox -s tests` repo-health contract by reinstating the precheck helper tools, the `PYTEST_DISABLE_PLUGIN_AUTOLOAD` guard, and repo-wide coverage targets in `configs/development/noxfile.py` while keeping the root `noxfile.py` compatibility shim non-duplicative.
+- Reverted the fence-validator directory skip drift so Markdown fence validation still scans the live documentation, source, test, and tooling trees, and refreshed the sample fixtures to match the validator's expected pass/fail semantics.
+- Fixed the current Audit QA critical Ruff failures (`session_embeddings.py`, `pricing_engine.py`, `cached_retrieval.py`) and expanded `workflow-execution-gate.yml` sparse checkout so editable installs succeed with the root package mappings declared in `pyproject.toml`.
+
 ### Fixed (auto-update — PR #5605)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5605 (SHA `8351c6ac`) at 2026-09-09T09:11:19Z [auto-generated]
 

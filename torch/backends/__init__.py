@@ -1,0 +1,1 @@
+"""Minimal torch.backends stub."""

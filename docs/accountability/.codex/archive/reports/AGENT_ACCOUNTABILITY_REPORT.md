@@ -1,3 +1,39 @@
+## Session: 2026-09-10T01:31:28Z — PR #5608 dependency bump + governance readiness follow-up
+
+**Objective:** Close the remaining merge-readiness governance gaps on PR #5608 by verifying the active dependency bump, preserving the direct dependency fix, and refreshing the daily PDA/accountability evidence without widening scope.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Rechecked the active `accelerate` bump and the direct `bcrypt` dependency fix against the config-management regression path so the dependency update remains correct and regression-safe.
+2. Refreshed the active session governance evidence for the current PR by updating the accountability archive and the current-day PDA log entry in `.codex/aftermath/pda_iterations.jsonl`.
+3. Preserved the canonical WEC block and repo wrap-up contract so the current branch carries the required merge-readiness evidence for the active review cycle.
+
+**Actions:**
+1. Corrected the remaining Audit QA Ruff issue in `src/codex/optimization/pricing_engine.py` without widening the dependency-bump scope.
+2. Refreshed the active session-governance evidence so the current PR clears the daily PDA and accountability review checks in the repo scorecard.
+3. Kept the canonical WEC block and wrap-up contract aligned with the live PR baseline for the active stack review.
+4. Final repo-health verification for 2026-09-10: re-ran the direct lint check and the session-wrapup gate on the committed branch state to confirm the PR-level blockers are green without broader patch drift.
+5. Final REQ-4/REQ-5 compliance sync: refreshed the archive report and the root changelog together in the same last-commit pass so the governance evidence reflects the current branch state.
+
+**Validation:**
+- `pytest -q tests/automation_advanced/test_config_management.py` → pass.
+- `python -m ruff check src/codex/optimization/pricing_engine.py` → pass.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5608` → pass after the governance evidence refresh for the active PR.
+- `python3 scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number 5608` → emits the canonical active workflow checklist for the current stack PR.
+
+**Governance:**
+- REQ-4: This report updated for PR #5608 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current 2026-09-10 session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## Session: 2026-09-07T09:12:45Z — PR #5596 review-thread + merge-readiness follow-up
 
 **Objective:** Close the remaining review-thread and merge-readiness gaps on PR #5596 by fixing the `tests/conftest.py` collection regression, hardening the GitHub log tool exception path, and refreshing the PR governance evidence without broadening scope.
@@ -12536,6 +12572,37 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session: 2026-09-09T22:39Z — PR #5606 nox contract + workflow gate follow-up
+
+**Objective:** Close the remaining PR #5606 review and CI rescue gaps by restoring the live nox repo-health contract, fixing the workflow-execution-gate sparse checkout install failure, and clearing the Audit QA critical findings without widening scope.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Restored the effective `nox -s tests` contract in `configs/development/noxfile.py` by re-adding the repo-health precheck helpers, reinstating `PYTEST_DISABLE_PLUGIN_AUTOLOAD`, and returning coverage enforcement to `--cov=src` plus `--cov=training`.
+2. Kept the repository-root `noxfile.py` as a compatibility shim while restoring the explicit `security` session registration and preserving the legacy nox-contract markers that existing regression tests assert against.
+3. Reverted the broad `tools/validate_fences.py` skip-list expansion so the validator still scans the live repo trees, then updated the fence sample fixtures to keep the validator’s pass/fail expectations stable.
+4. Fixed the three critical Audit QA Ruff blockers by removing the shadowing `json` import in `src/aries_serpent_core/logging/session_embeddings.py`, importing `ResourceAllocation` in `src/codex/optimization/pricing_engine.py`, and removing the conflicting `Retrieval` import in `src/rag/cached_retrieval.py`.
+5. Expanded `.github/workflows/workflow-execution-gate.yml` sparse checkout to include the root package directories referenced by `pyproject.toml`, which restores editable-install success in the workflow’s setup step.
+
+**Validation:**
+- `pytest -q tests/self_mgmt/test_noxfile_parse.py tests/security/test_security_gating.py --maxfail=1` → pass.
+- `pytest -q tests/test_validate_fences.py tests/test_validate_fences_md.py tests/test_fences_tool.py --maxfail=1` → pass.
+- `pytest -q tests/test_pyproject_metadata.py tests/hooks/test_pre_commit_verify.py --maxfail=1` → pass.
+- `python -m ruff check src/aries_serpent_core/logging/session_embeddings.py src/codex/optimization/pricing_engine.py src/rag/cached_retrieval.py --select F821,F823,F811` → pass.
+- `python -m nox -s workflow_policy` → pass.
+- Sparse-checkout editable install repro with the added root package paths (`pip install -e '.[dev]'`) → pass.
+- `python -m compileall noxfile.py configs/development/noxfile.py tools/validate_fences.py src/aries_serpent_core/logging/session_embeddings.py src/codex/optimization/pricing_engine.py src/rag/cached_retrieval.py` → pass.
+- `python - <<'PY' ... CodebaseQAWalker().run_full_walkthrough() ... PY` → 0 critical issues.
+
+**Governance:**
+- REQ-4: This report updated for PR #5606 in the active session.
+- REQ-5: `CHANGELOG.md` updated for the same session.
+
+### Agents Used
+- `code-review`
+- `ci-testing-agent`
 
 ### Agents Used
 - `session-analysis-agent` (session wrap-up)

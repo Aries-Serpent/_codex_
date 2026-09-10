@@ -136,7 +136,12 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
     _ = _TEST_CFG.training
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # AttributeError when attribute access unsupported
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # AttributeError when attribute access unsupported
     _DICTCONFIG_SUPPORTS_ATTR = False
 else:
     _DICTCONFIG_SUPPORTS_ATTR = True
@@ -156,10 +161,7 @@ class _AttrDictConfig(DictConfig):
     """
 
     def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
-        super().__init__()
-        if initial:
-            for key, value in initial.items():
-                dict.__setitem__(self, key, self._wrap(value))
+        super().__init__(content=initial or {})
 
     @staticmethod
     def _wrap(value: Any) -> Any:
@@ -173,9 +175,9 @@ class _AttrDictConfig(DictConfig):
 
     def __getattr__(self, name: str) -> Any:
         if name in self:
-            value = dict.__getitem__(self, name)
+            value = super().__getitem__(name)
             wrapped = self._wrap(value)
-            dict.__setitem__(self, name, wrapped)
+            super().__setitem__(name, wrapped)
             return wrapped
         raise AttributeError(name)
 
@@ -183,10 +185,10 @@ class _AttrDictConfig(DictConfig):
         if name.startswith("_"):
             super().__setattr__(name, value)
         else:
-            dict.__setitem__(self, name, self._wrap(value))
+            super().__setitem__(name, self._wrap(value))
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        dict.__setitem__(self, key, self._wrap(value))
+        super().__setitem__(key, self._wrap(value))
 
 
 def _to_config_object(mapping: Mapping[str, Any]) -> DictConfig:

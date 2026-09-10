@@ -6,6 +6,7 @@ all expected files from the action log are staged for commit.
 """
 
 import json
+import os
 import sys
 import tempfile
 from datetime import datetime, timezone

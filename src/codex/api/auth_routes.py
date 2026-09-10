@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from aries_serpent_core.api.auth_routes import create_auth_router
+from aries_serpent_core.auth.authenticator import Authenticator
 
-# Preserve the historical simple-type name used by older import sites.
+# Preserve historical names used by older import sites.
 AuthRouter = object
 
-__all__ = ["AuthRouter", "create_auth_router"]
+__all__ = ["AuthRouter", "Authenticator", "create_auth_router"]

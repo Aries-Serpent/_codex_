@@ -1,0 +1,13 @@
+[
+  {
+    "policy": {
+      "priority_targets": {
+        "normal": {
+          "resolution": 28800,
+          "response": 3600
+        }
+      }
+    },
+    "title": "codex_assignment_standard"
+  }
+]

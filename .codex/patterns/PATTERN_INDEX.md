@@ -108,6 +108,36 @@ Focus: Pipeline efficiency and reliability
 
 ---
 
+#### Category 5: ML Deployment (P-041 to P-060)
+Focus: ML delivery, deployment safety, release controls, and operational observability.
+
+| Pattern | Title | Confidence | Use When |
+|---------|-------|-----------|----------|
+| **P-041** | Model Versioning & Rollback | 0.92 | Model releases need traceable version control |
+| **P-042** | A/B Testing Infrastructure | 0.93 | Need safe model comparison in production |
+| **P-043** | Model Quantization Optimization | 0.91 | Need smaller, faster inference artifacts |
+| **P-044** | ML Pipeline Monitoring | 0.90 | Need visibility into ML pipeline health |
+| **P-045** | Federated ML Updates | 0.89 | Need distributed model improvement with guardrails |
+| **P-046** | Blue/Green Deployment | 0.93 | Need low-risk production cutover |
+| **P-047** | Canary Release Rollout | 0.92 | Need staged rollout with automatic rollback |
+| **P-048** | Stability Monitoring | 0.91 | Need drift/failure alerting during operations |
+| **P-049** | Automated Rollback | 0.90 | Need rapid recovery from bad deployments |
+| **P-050** | Incident Response Automation | 0.89 | Need fast triage and reset for ML incidents |
+| **P-051** | DAG Workflow Orchestration | 0.91 | Need dependable pipeline scheduling |
+| **P-052** | Config Drift Detection | 0.90 | Need to detect model/config mismatches |
+| **P-053** | Self-Service Automation | 0.88 | Need low-friction operational runbooks |
+| **P-054** | Multi-Environment Deployment | 0.90 | Need environment parity for releases |
+| **P-055** | Health Check Integration | 0.91 | Need service readiness probes |
+| **P-056** | Trace Correlation | 0.89 | Need end-to-end debugging across systems |
+| **P-057** | Log Aggregation | 0.88 | Need centralized operational logs |
+| **P-058** | Metrics Aggregation | 0.89 | Need consistent KPI collection |
+| **P-059** | Anomaly Detection | 0.90 | Need alerting on unusual model/service behavior |
+| **P-060** | Critical Path Analysis | 0.91 | Need to prioritize operational bottlenecks |
+
+**When to use**: ML deployment, release safety, operational monitoring, and production rollout readiness.
+
+---
+
 ### By Problem Type
 
 #### Flaky Tests (All categories need attention)

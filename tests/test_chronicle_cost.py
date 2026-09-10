@@ -422,6 +422,18 @@ def test_build_chronicle_index_preserves_session_evidence(tmp_path: Path) -> Non
     assert index["sessions"][0]["session_id"] == "S-open"
 
 
+def test_build_chronicle_index_redacts_machine_specific_diagnostics() -> None:
+    index = build_chronicle_index(
+        [],
+        ["database not found: /home/runner/work/_codex_/_codex_/.codex/session_logs.db"],
+        scope="/home/runner/work/_codex_/_codex_/.codex/session_logs.db",
+    )
+
+    assert index["scope"] == ".codex/session_logs.db"
+    assert index["source_diagnostics"] == ["database not found"]
+    assert "/home/runner/work" not in json.dumps(index)
+
+
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
     database = tmp_path / "chronicle.sqlite"
     task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"

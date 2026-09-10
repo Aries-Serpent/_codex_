@@ -40,16 +40,16 @@ class SparkAdapter(BaseGenerationProvider):
         if self._client is None:
             self._client = {"chat": {"completions": {"create": self._simulate_response}}}
 
+        messages: list[dict[str, str]] = [{"role": "user", "content": request.prompt}]
+        if request.system_prompt:
+            messages.insert(0, {"role": "system", "content": request.system_prompt})
+
         payload = {
             "model": request.model or self.model,
-            "messages": [
-                {"role": "user", "content": request.prompt},
-            ],
+            "messages": messages,
             "max_tokens": request.max_tokens,
             "temperature": request.temperature,
         }
-        if request.system_prompt:
-            payload["messages"].insert(0, {"role": "system", "content": request.system_prompt})
 
         response = self._client["chat"]["completions"]["create"](payload)
         usage = {
