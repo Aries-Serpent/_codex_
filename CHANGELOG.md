@@ -7,6 +7,7 @@
 - Refreshed the current session governance artifacts (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `.codex/aftermath/pda_iterations.jsonl`) so the active stack PR clears the stale `PDA entry today` and `accountability report today` readiness checks without broadening scope.
 - Kept the canonical WEC block and wrap-up contract in sync for the active PR so the branch carries the required merge-readiness evidence for the current review cycle.
 - Final repo-health pass for 2026-09-10: resolved the direct Ruff findings in `src/codex/optimization/pricing_engine.py` by normalizing import ordering and wrapping long log/message lines without widening the patch beyond the active PR blockers.
+- Final REQ-4/REQ-5 compliance sync: refreshed the governance evidence in the current branch so the active PR's accountability archive and changelog move together in the same last-commit verification pass.
 
 ### Fixed — PR #5606 nox contract + workflow gate follow-up
 - Restored the effective `nox -s tests` repo-health contract by reinstating the precheck helper tools, the `PYTEST_DISABLE_PLUGIN_AUTOLOAD` guard, and repo-wide coverage targets in `configs/development/noxfile.py` while keeping the root `noxfile.py` compatibility shim non-duplicative.

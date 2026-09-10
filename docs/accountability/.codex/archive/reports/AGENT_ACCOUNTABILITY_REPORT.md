@@ -14,6 +14,7 @@
 2. Refreshed the active session-governance evidence so the current PR clears the daily PDA and accountability review checks in the repo scorecard.
 3. Kept the canonical WEC block and wrap-up contract aligned with the live PR baseline for the active stack review.
 4. Final repo-health verification for 2026-09-10: re-ran the direct lint check and the session-wrapup gate on the committed branch state to confirm the PR-level blockers are green without broader patch drift.
+5. Final REQ-4/REQ-5 compliance sync: refreshed the archive report and the root changelog together in the same last-commit pass so the governance evidence reflects the current branch state.
 
 **Validation:**
 - `pytest -q tests/automation_advanced/test_config_management.py` → pass.
