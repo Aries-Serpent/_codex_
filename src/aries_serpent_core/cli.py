@@ -141,6 +141,20 @@ def _resolve_chronicle_database(explicit_db: str | None = None) -> str:
     return str(repo_root / ".codex" / "session_logs.db")
 
 
+def _canonicalize_chronicle_scope(database: str | None) -> str:
+    """Keep generated index metadata portable across machines."""
+
+    if not database:
+        return "local Chronicle session store"
+    path = Path(database)
+    if path.is_absolute():
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return path.name or "local Chronicle session store"
+    return str(path)
+
+
 def _run_git_capture(args: list[str]) -> str:
     """Run a small git command and return stdout, degrading to 'unknown'."""
 
@@ -813,7 +827,9 @@ def chronicle_reindex(database: str | None, output: str) -> None:
         store = ChronicleStore(resolved_database)
         records = store.load_sessions()
         index = build_chronicle_index(
-            records, store.diagnostics, scope=str(resolved_database)
+            records,
+            store.diagnostics,
+            scope=_canonicalize_chronicle_scope(resolved_database),
         )
         output_path = Path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)

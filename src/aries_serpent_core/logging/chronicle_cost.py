@@ -32,6 +32,34 @@ def _now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _sanitize_chronicle_scope(scope: str | Path | None) -> str:
+    """Normalise scope strings so generated indexes stay portable."""
+
+    if scope is None:
+        return "local Chronicle session store"
+    value = str(scope).strip()
+    if not value:
+        return "local Chronicle session store"
+    path = Path(value)
+    if path.is_absolute():
+        try:
+            return str(path.relative_to(Path.cwd()))
+        except ValueError:
+            return path.name or "local Chronicle session store"
+    return value
+
+
+def _sanitize_diagnostic(message: str) -> str:
+    """Strip machine-specific paths from generated diagnostics."""
+
+    text = str(message).strip()
+    if text.lower().startswith("database not found:"):
+        return "database not found"
+    if text.lower().startswith("database unavailable:"):
+        return "database unavailable"
+    return text
+
+
 def _as_number(value: Any) -> int | float | None:
     if value is None or value == "":
         return None
@@ -131,14 +159,14 @@ class ChronicleStore:
 
     def _connect(self) -> sqlite3.Connection | None:
         if not self.db_path.exists():
-            self.diagnostics.append(f"database not found: {self.db_path}")
+            self.diagnostics.append(_sanitize_diagnostic(f"database not found: {self.db_path}"))
             return None
         try:
             connection = sqlite3.connect(self.db_path)
             connection.row_factory = sqlite3.Row
             return connection
         except sqlite3.Error as exc:
-            self.diagnostics.append(f"database unavailable: {exc}")
+            self.diagnostics.append(_sanitize_diagnostic(f"database unavailable: {exc}"))
             return None
 
     @staticmethod
@@ -805,7 +833,7 @@ def analyze_costs(
 ) -> dict[str, Any]:
     """Return evidence-backed cost tips without inventing unavailable credits."""
 
-    diagnostics = list(diagnostics)
+    diagnostics = [_sanitize_diagnostic(str(item)) for item in diagnostics]
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
     lane_filter = _normalize_lane(lane)
     if lane is not None:
@@ -958,7 +986,7 @@ def build_standup_report(
 ) -> dict[str, Any]:
     """Build a task-scoped completion and gap report."""
 
-    diagnostics = list(diagnostics)
+    diagnostics = [_sanitize_diagnostic(str(item)) for item in diagnostics]
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
     if lane is not None:
         lane_filter = _normalize_lane(lane)
@@ -1049,11 +1077,12 @@ def build_chronicle_index(
     for record in sessions:
         status_counts[record.status or "unknown"] += 1
         branch_counts[record.branch or "unknown"] += 1
+    sanitized_diagnostics = [_sanitize_diagnostic(str(item)) for item in diagnostics]
 
     return {
         "schema_version": "1.0",
         "generated_at": _now(),
-        "scope": scope,
+        "scope": _sanitize_chronicle_scope(scope),
         "summary": {
             "total_sessions": len(sessions),
             "commits": sum(record.commits for record in sessions),
@@ -1063,7 +1092,7 @@ def build_chronicle_index(
             "branch_distribution": dict(sorted(branch_counts.items())),
         },
         "sessions": [asdict(record) for record in sessions],
-        "source_diagnostics": list(diagnostics),
+        "source_diagnostics": sorted(set(sanitized_diagnostics)),
     }
 
 

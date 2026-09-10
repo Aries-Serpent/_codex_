@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-09T16:28:40Z",
+  "generated_at": "2026-09-10T00:00:00Z",
   "schema_version": "1.0",
-  "scope": "/home/runner/work/_codex_/_codex_/.codex/session_logs.db",
+  "scope": ".codex/session_logs.db",
   "sessions": [],
   "source_diagnostics": [
-    "database not found: /home/runner/work/_codex_/_codex_/.codex/session_logs.db"
+    "database not found"
   ],
   "summary": {
     "branch_distribution": {},
