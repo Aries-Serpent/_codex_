@@ -11,6 +11,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+
 from codex.optimization.sla_optimizer import ResourceAllocation
 
 logger = logging.getLogger(__name__)
@@ -202,13 +203,32 @@ class CostPredictor:
         monthly_hours = 730
 
         # Calculate costs by resource type
-        cpu_cost = resource_allocation.cpu_cores * self.pricing_model.resource_prices["cpu"].base_price * monthly_hours
-        memory_cost = resource_allocation.memory_gb * self.pricing_model.resource_prices["memory"].base_price * monthly_hours
-        disk_cost = resource_allocation.disk_gb * self.pricing_model.resource_prices["disk"].base_price * 30 * 24
-        network_cost = resource_allocation.network_mbps * self.pricing_model.resource_prices["network"].base_price * monthly_hours
+        cpu_cost = (
+            resource_allocation.cpu_cores
+            * self.pricing_model.resource_prices["cpu"].base_price
+            * monthly_hours
+        )
+        memory_cost = (
+            resource_allocation.memory_gb
+            * self.pricing_model.resource_prices["memory"].base_price
+            * monthly_hours
+        )
+        disk_cost = (
+            resource_allocation.disk_gb
+            * self.pricing_model.resource_prices["disk"].base_price
+            * 30
+            * 24
+        )
+        network_cost = (
+            resource_allocation.network_mbps
+            * self.pricing_model.resource_prices["network"].base_price
+            * monthly_hours
+        )
 
         # Apply tier multiplier
-        subtotal = (cpu_cost + memory_cost + disk_cost + network_cost) * resource_allocation.tier.cost_multiplier
+        subtotal = (
+            cpu_cost + memory_cost + disk_cost + network_cost
+        ) * resource_allocation.tier.cost_multiplier
 
         # Apply reserved discount
         reserved_discount = subtotal * self.pricing_model.resource_prices["cpu"].reserved_discount
@@ -231,7 +251,13 @@ class CostPredictor:
             error_percent = abs(actual_cost - predicted_cost) / predicted_cost * 100
 
         self.accuracy_errors.append(error_percent)
-        logger.info(f"Cost prediction for {tenant_id}: predicted ${predicted_cost:.2f}, actual ${actual_cost:.2f}, error {error_percent:.1f}%")
+        logger.info(
+            "Cost prediction for %s: predicted $%.2f, actual $%.2f, error %.1f%%",
+            tenant_id,
+            predicted_cost,
+            actual_cost,
+            error_percent,
+        )
 
     def get_prediction_accuracy(self) -> Dict:
         """Get prediction accuracy statistics."""
@@ -278,7 +304,12 @@ class BurstCapacityManager:
         # Check if within reasonable burst limits (5x base capacity)
         available_burst = self.base_capacity[resource_type] * 4  # 5x - 1x base
         if quantity > available_burst:
-            logger.warning(f"Burst request {quantity} exceeds max {available_burst} for {resource_type}")
+            logger.warning(
+                "Burst request %s exceeds max %s for %s",
+                quantity,
+                available_burst,
+                resource_type,
+            )
             return False
 
         self.burst_usage[resource_type] += quantity
@@ -332,11 +363,27 @@ class ReservedCapacityPlanner:
 
             # Calculate savings vs on-demand
             hours_per_month = 730
-            reserved_cost = reserve_amount * pricing_model.resource_prices[resource_type].base_price * hours_per_month * 0.7
-            ondemand_cost = peak * pricing_model.resource_prices[resource_type].base_price * hours_per_month
+            reserved_cost = (
+                reserve_amount
+                * pricing_model.resource_prices[resource_type].base_price
+                * hours_per_month
+                * 0.7
+            )
+            ondemand_cost = (
+                peak * pricing_model.resource_prices[resource_type].base_price * hours_per_month
+            )
 
-            savings_percent = ((ondemand_cost - reserved_cost) / ondemand_cost * 100) if ondemand_cost > 0 else 0
-            logger.info(f"Reservation recommendation for {resource_type}: {reserve_amount:.1f} units, {savings_percent:.1f}% savings")
+            savings_percent = (
+                ((ondemand_cost - reserved_cost) / ondemand_cost * 100)
+                if ondemand_cost > 0
+                else 0
+            )
+            logger.info(
+                "Reservation recommendation for %s: %.1f units, %.1f%% savings",
+                resource_type,
+                reserve_amount,
+                savings_percent,
+            )
 
             optimal_reservations[resource_type] = reserve_amount
 

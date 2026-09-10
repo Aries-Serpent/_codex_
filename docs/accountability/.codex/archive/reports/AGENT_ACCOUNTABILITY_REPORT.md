@@ -9,8 +9,15 @@
 2. Refreshed the active session governance evidence for the current PR by updating the accountability archive and the current-day PDA log entry in `.codex/aftermath/pda_iterations.jsonl`.
 3. Preserved the canonical WEC block and repo wrap-up contract so the current branch carries the required merge-readiness evidence for the active review cycle.
 
+**Actions:**
+1. Corrected the remaining Audit QA Ruff issue in `src/codex/optimization/pricing_engine.py` without widening the dependency-bump scope.
+2. Refreshed the active session-governance evidence so the current PR clears the daily PDA and accountability review checks in the repo scorecard.
+3. Kept the canonical WEC block and wrap-up contract aligned with the live PR baseline for the active stack review.
+
 **Validation:**
 - `pytest -q tests/automation_advanced/test_config_management.py` → pass.
+- `python -m ruff check src/codex/optimization/pricing_engine.py` → pass.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5608` → pass after the governance evidence refresh for the active PR.
 - `python3 scripts/ci/session_wrapup_autofix.py --print-wec-block --pr-number 5608` → emits the canonical active workflow checklist for the current stack PR.
 
 **Governance:**
