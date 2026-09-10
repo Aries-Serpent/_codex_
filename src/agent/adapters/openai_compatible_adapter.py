@@ -19,9 +19,18 @@ class OpenAICompatibleAdapter(BaseGenerationProvider):
         model: str | None = None,
         client: Any | None = None,
     ) -> None:
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_COMPATIBLE_API_KEY")
-        self.base_url = base_url or os.getenv("OPENAI_BASE_URL") or os.getenv("OPENAI_COMPATIBLE_BASE_URL")
-        self.model = model or os.getenv("OPENAI_MODEL") or os.getenv("OPENAI_COMPATIBLE_MODEL") or "gpt-4o-mini"
+        self.api_key = (
+            api_key or os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_COMPATIBLE_API_KEY")
+        )
+        self.base_url = (
+            base_url or os.getenv("OPENAI_BASE_URL") or os.getenv("OPENAI_COMPATIBLE_BASE_URL")
+        )
+        self.model = (
+            model
+            or os.getenv("OPENAI_MODEL")
+            or os.getenv("OPENAI_COMPATIBLE_MODEL")
+            or "gpt-4o-mini"
+        )
         self._client = client
 
     @property

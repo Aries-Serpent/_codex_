@@ -85,9 +85,9 @@
     "21:.github/workflows/comment-review-gate.yml": 1,
     "35:.codex/CI_FAILURE_FIX_COORDINATION_PLAN_2026_07_16.md": 2,
     "35:.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md": 3,
-    "10:src/aries_serpent_core/archive/archive_utils.py": 1,
-    "10:src/aries_serpent_core/brain/memory_consolidation.py": 2,
-    "10:src/aries_serpent_core/brain/memory_sync.py": 2,
+    "10:src/aries_serpent_core/archive/archive_utils.py": 2,
+    "10:src/aries_serpent_core/brain/memory_consolidation.py": 4,
+    "10:src/aries_serpent_core/brain/memory_sync.py": 4,
     "35:.codex/CI_MONITORING_OPERATING_GUIDE_194F6AF0.md": 1,
     "35:.codex/CI_REMEDIATION_194F6AF0.md": 2,
     "35:.codex/SECURITY_SCAN_194F6AF0.md": 2,
@@ -102,7 +102,9 @@
     "31:src/aries_serpent_core/archive/util.py": 4,
     "31:src/utils/trackers.py": 4,
     "31:src/utils/logging_factory.py": 4,
-    "31:src/codex_ml/utils/logging_wandb.py": 4
+    "31:src/codex_ml/utils/logging_wandb.py": 4,
+    "34:Would fix missing newline in tests/a.py": 1,
+    "34:Would fix missing newline in tests/b.py": 1
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -124,6 +126,7 @@
     "19": "BROKEN",
     "21": "BROKEN",
     "20": "BROKEN",
-    "31": "BROKEN"
+    "31": "BROKEN",
+    "10": "OPEN"
   }
 }

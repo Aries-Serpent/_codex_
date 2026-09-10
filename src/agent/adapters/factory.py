@@ -61,7 +61,10 @@ def get_generation_provider(
     return GenerationProviderFactory(list(providers) if providers is not None else None)
 
 
-def get_provider(*, providers: Iterable[BaseGenerationProvider] | None = None) -> GenerationProviderFactory:
+def get_provider(
+    *,
+    providers: Iterable[BaseGenerationProvider] | None = None,
+) -> GenerationProviderFactory:
     return get_generation_provider(providers=providers)
 
 
