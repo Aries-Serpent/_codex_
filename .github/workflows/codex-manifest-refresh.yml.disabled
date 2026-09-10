@@ -23,7 +23,7 @@ jobs:
     - name: Checkout PR branch (or main on schedule)
       uses: actions/checkout@v5
       with:
-        persist-credentials: true
+        persist-credentials: false
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
@@ -63,7 +63,7 @@ jobs:
       env:
         HEAD_REF: ${{ github.head_ref || 'main' }}
         EVENT_NAME: ${{ github.event_name }}
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       run: |
         # sync_tracked_files.py atomically:
         #   1. Recomputes CODEX_MANIFEST.json integrity_sha256 after generate_manifest.py
@@ -112,7 +112,11 @@ jobs:
           if [ "${PR_SKIP}" = "true" ]; then
             echo "⛔ Push skipped — active PR(s) detected on ${TARGET_REF}."
           else
-            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            if [ -n "${GH_TOKEN:-}" ]; then
+              git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            else
+              echo "::warning::GH_TOKEN unavailable; continuing without reconfiguring remote"
+            fi
             if ! git pull --rebase --autostash origin "${TARGET_REF}"; then
               git rebase --abort || true
               echo "::error::Unable to rebase ${TARGET_REF}; resolve conflicts before pushing"
