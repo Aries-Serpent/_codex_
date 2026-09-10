@@ -2,7 +2,7 @@
 #    uv export --extra eval --format requirements-txt --no-hashes --no-emit-project -o requirements/lock-eval.txt
 absl-py==2.4.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via rouge-score
-accelerate==1.14.0 ; python_full_version < '3.13' and sys_platform == 'linux'
+accelerate==1.15.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via
     #   codex-ml
     #   peft
