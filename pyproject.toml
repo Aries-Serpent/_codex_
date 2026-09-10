@@ -46,6 +46,7 @@ dependencies = [
     "jinja2>=3.1.6",  # Security: Phase 5.4.1 - PYSEC-2026-1473/1471/1474/1475/1472 (template injection fixes)
     # Security (CVE fixes)
     "cryptography>=50.0.1,<51.0.0",  # Security: CVE fixes (46.0.5+ required for CVE-2026-26007)
+    "bcrypt>=5.0.0,<6.0.0",  # Security: password hashing and secure secret management
     "PyJWT>=2.13.0,<3.0.0",  # Security: CVE-2026-48524 (PyJWKClient JWKS DoS fix)
     "PyNaCl>=1.6.2,<2.0.0",  # Security: Cryptographic library
     "pyotp>=2.10.0",  # MFA/TOTP support for auth flows
@@ -230,7 +231,7 @@ full = [
     "tokenizers>=0.23.1",
     "openai>=3.5.0; python_version >= '3.8'",
 ]
- 
+
 eval = [
    "lm-eval>=0.4.2,<1",
    "datasets>=5.0.0,<6",
@@ -239,7 +240,7 @@ eval = [
    "numpy>=2.5.2,<3",
    "pandas>=3.0.5,<4",
 ]
- 
+
 dataops = [
    "dvc==3.67.1",
    "duckdb>=1.5.5",
@@ -247,7 +248,7 @@ dataops = [
    "pandas>=3.0.5,<4",
    "numpy>=2.5.2,<3",
 ]
- 
+
 # BACKWARDS COMPATIBILITY ALIASES (for existing scripts)
 # These are deprecated and will be removed in v1.0.0.
 # Keep the values as explicit dependency lists instead of self-references to the
