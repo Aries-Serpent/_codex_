@@ -26,7 +26,11 @@ if _np_spec is not None:
 else:  # pragma: no cover
     _np = None
 
-_torch_spec = importlib.util.find_spec("torch")
+try:
+    _torch_spec = importlib.util.find_spec("torch")
+except (AttributeError, ImportError, OSError, TypeError, ValueError):
+    _torch_spec = None
+
 if _torch_spec is not None:
     import torch as _torch
 else:  # pragma: no cover

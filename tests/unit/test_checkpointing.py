@@ -16,7 +16,10 @@ import pytest
 # Helper function
 def _torch_available():
     """Check if PyTorch is available."""
-    return importlib.util.find_spec("torch") is not None
+    try:
+        return importlib.util.find_spec("torch") is not None
+    except (AttributeError, ImportError, OSError, TypeError, ValueError):
+        return False
 
 
 class TestCheckpointCore:

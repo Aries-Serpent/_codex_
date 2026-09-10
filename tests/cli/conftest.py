@@ -28,6 +28,15 @@ if (repo_str := str(REPO_ROOT)) in sys.path:
     sys.path.append(repo_str)
 
 
+def _safe_find_spec(name: str) -> importlib.machinery.ModuleSpec | None:
+    """Return a spec when the import system is healthy or treat malformed stubs as absent."""
+
+    try:
+        return importlib.util.find_spec(name)
+    except (AttributeError, ImportError, OSError, TypeError, ValueError):
+        return None
+
+
 def _is_stub_spec(spec: importlib.machinery.ModuleSpec | None, name: str) -> bool:
     if spec is None:
         return False
@@ -43,9 +52,7 @@ def _is_stub_spec(spec: importlib.machinery.ModuleSpec | None, name: str) -> boo
 if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
     required = ("yaml", "omegaconf", "hydra")
     missing = [
-        name
-        for name in required
-        if (spec := importlib.util.find_spec(name)) is None or _is_stub_spec(spec, name)
+        name for name in required if (spec := _safe_find_spec(name)) is None or _is_stub_spec(spec, name)
     ]
     if missing:
         pytest.skip(
@@ -56,10 +63,10 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
     # Check if torch is actually importable (not just present)
     try:
         importlib.import_module("torch")
-        spec = importlib.util.find_spec("torch")
+        spec = _safe_find_spec("torch")
         if spec is None or _is_stub_spec(spec, "torch"):
             raise ImportError("torch stubbed")
-    except (ImportError, OSError) as e:
+    except (ImportError, OSError, ValueError) as e:
         # OSError can occur if torch libraries (libtorch_global_deps.so) are missing
         pytest.skip(
             f"Skipping CLI tests: torch unavailable or unloadable ({e})",

@@ -22,6 +22,16 @@ from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
+
+def _safe_find_spec(name: str) -> object | None:
+    """Return a spec or None when the import system contains a malformed optional stub."""
+
+    try:
+        return importlib.util.find_spec(name)
+    except (AttributeError, ImportError, OSError, TypeError, ValueError):
+        return None
+
+
 __all__ = [
     "OFFICIAL_CPU_INDEX_URL",
     "REINSTALL_COMMAND",
@@ -60,7 +70,7 @@ class TorchStatus:
 def _load_torch(module: Optional[ModuleType] = None) -> ModuleType:
     if module is not None:
         return module
-    spec = importlib.util.find_spec("torch")
+    spec = _safe_find_spec("torch")
     if spec is None:
         raise ModuleNotFoundError("torch module not importable")
     return importlib.import_module("torch")

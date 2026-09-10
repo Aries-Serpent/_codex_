@@ -16,7 +16,11 @@ from typing import Any
 
 
 def _require_torch() -> Any:
-    if importlib.util.find_spec("torch") is None:
+    try:
+        spec = importlib.util.find_spec("torch")
+    except (AttributeError, ImportError, OSError, TypeError, ValueError):
+        spec = None
+    if spec is None:
         raise ImportError("torch is required to build Codex models in offline mode")
     return importlib.import_module("torch")
 
