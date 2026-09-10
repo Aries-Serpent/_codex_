@@ -67,12 +67,12 @@ name: Art_Security Scanning Suite
         required: false
         type: choice
         options:
-        - false
+        - "false"
         - wave0
         - wave1
         - wave2
         - wave3
-        default: false
+        default: "false"
       deterministic-seed:
         description: Deterministic seed for reproducible planning
         required: false
@@ -104,7 +104,7 @@ name: Art_Security Scanning Suite
         description: Remediation wave marker
         required: false
         type: string
-        default: false
+        default: "false"
       deterministic-seed:
         description: Deterministic seed for reproducible planning
         required: false
