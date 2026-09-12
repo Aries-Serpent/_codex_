@@ -43,7 +43,13 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
         for entry in build_entries
     )
 
-    for job_name in ("publish-testpypi", "publish-pypi", "verify-installation"):
+    for job_name in (
+        "attest",
+        "validate",
+        "publish-testpypi",
+        "publish-pypi",
+        "verify-installation",
+    ):
         entries = _distribution_entries(workflow["jobs"][job_name])
         assert any(entry["name"] == "codex-cognitive-sdk" for entry in entries)
 
@@ -59,11 +65,16 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
     build_job = workflow["jobs"]["build"]
     step_names = _step_names(build_job)
 
-    assert build_job["permissions"]["attestations"] == "write"
+    assert "id-token" not in build_job["permissions"]
+    assert "attestations" not in build_job["permissions"]
     assert "Validate release artifacts" in step_names
     assert "Install built wheel in isolated virtualenv" in step_names
-    assert "Attest release artifacts" in step_names
-    assert "Verify build provenance" in step_names
+    assert "Attest release artifacts" not in step_names
+    assert "Verify build provenance" not in step_names
+    assert "--require-hashes -r requirements/lock-release.txt" in _step(
+        build_job, "Install build dependencies"
+    )["run"]
+    assert "python -m build --no-isolation" in _step(build_job, "Build package")["run"]
     install_command = _step(
         build_job,
         "Install built wheel in isolated virtualenv",
@@ -74,22 +85,24 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
 def test_publish_jobs_validate_tag_and_provenance_before_upload() -> None:
     workflow = _load_workflow()
 
+    attest_job = workflow["jobs"]["attest"]
+    validation_job = workflow["jobs"]["validate"]
     testpypi_job = workflow["jobs"]["publish-testpypi"]
     pypi_job = workflow["jobs"]["publish-pypi"]
 
-    assert testpypi_job["permissions"]["attestations"] == "read"
-    assert pypi_job["permissions"]["attestations"] == "read"
-    assert "Validate downloaded artifacts" in _step_names(testpypi_job)
-    assert "Verify artifact provenance" in _step_names(testpypi_job)
-    assert "Validate downloaded artifacts" in _step_names(pypi_job)
-    assert "Verify release tag matches built version" in _step_names(pypi_job)
-    assert "Verify artifact provenance" in _step_names(pypi_job)
+    assert attest_job["permissions"]["id-token"] == "write"
+    assert attest_job["permissions"]["attestations"] == "write"
+    assert all("run" not in step for step in attest_job["steps"])
+
+    assert "id-token" not in validation_job["permissions"]
+    assert validation_job["permissions"]["attestations"] == "read"
+    assert "Validate downloaded artifacts" in _step_names(validation_job)
+    assert "Verify release tag matches built version" in _step_names(validation_job)
+    assert "Verify artifact provenance" in _step_names(validation_job)
+
     for job in (testpypi_job, pypi_job):
-        checkout_index = next(
-            index
-            for index, step in enumerate(job["steps"])
-            if step.get("uses") == "actions/checkout@v7"
-        )
-        validation_index = _step_names(job).index("Validate downloaded artifacts")
-        assert checkout_index < validation_index
-        assert job["env"]["GH_TOKEN"] == "${{ github.token }}"
+        assert job["permissions"]["id-token"] == "write"
+        assert "attestations" not in job["permissions"]
+        assert all("run" not in step for step in job["steps"])
+        assert all(step.get("uses") != "actions/checkout@v7" for step in job["steps"])
+        assert len(job["steps"]) == 2

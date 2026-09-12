@@ -5,8 +5,10 @@ from __future__ import annotations
 import base64
 import csv
 import hashlib
+import io
 import json
 import subprocess
+import tarfile
 import zipfile
 from io import StringIO
 from pathlib import Path
@@ -36,6 +38,7 @@ def _create_minimal_wheel(
     distribution: str,
     version: str,
     import_name: str,
+    extra_files: dict[str, bytes] | None = None,
 ) -> Path:
     normalized_distribution = distribution.replace("-", "_")
     wheel_path = dist_dir / f"{normalized_distribution}-{version}-py3-none-any.whl"
@@ -55,6 +58,7 @@ def _create_minimal_wheel(
             "Tag: py3-none-any\n"
         ).encode("utf-8"),
     }
+    files.update(extra_files or {})
 
     records: list[tuple[str, str, str]] = []
     for file_name, payload in files.items():
@@ -72,9 +76,21 @@ def _create_minimal_wheel(
     return wheel_path
 
 
-def _create_minimal_sdist(dist_dir: Path, *, distribution: str, version: str) -> Path:
+def _create_minimal_sdist(
+    dist_dir: Path,
+    *,
+    distribution: str,
+    version: str,
+    extra_files: dict[str, bytes] | None = None,
+) -> Path:
     sdist_path = dist_dir / f"{distribution}-{version}.tar.gz"
-    sdist_path.write_bytes(b"placeholder sdist contents\n")
+    files = {f"{distribution}-{version}/pyproject.toml": b"[build-system]\n"}
+    files.update(extra_files or {})
+    with tarfile.open(sdist_path, "w:gz") as archive:
+        for file_name, payload in files.items():
+            info = tarfile.TarInfo(file_name)
+            info.size = len(payload)
+            archive.addfile(info, io.BytesIO(payload))
     return sdist_path
 
 
@@ -127,6 +143,42 @@ def test_collect_distribution_artifacts_rejects_duplicate_wheels(tmp_path: Path)
 
     with pytest.raises(ValueError, match="duplicate wheel path"):
         collect_distribution_artifacts(dist_dir, "codex-cognitive-sdk")
+
+
+@pytest.mark.parametrize(
+    ("archive_kind", "forbidden_name"),
+    [
+        ("wheel", "codex_ml/__pycache__/marker.txt"),
+        ("wheel", "codex_ml/module.pyc"),
+        ("sdist", "codex-ml-0.3.0/codex_ml/module.pyo"),
+        ("sdist", "codex-ml-0.3.0/codex_ml/native.pyd"),
+    ],
+)
+def test_collect_distribution_artifacts_rejects_python_cache_entries(
+    tmp_path: Path,
+    archive_kind: str,
+    forbidden_name: str,
+) -> None:
+    dist_dir = tmp_path / "dist"
+    dist_dir.mkdir()
+    wheel_extra = {forbidden_name: b"cache"} if archive_kind == "wheel" else None
+    sdist_extra = {forbidden_name: b"cache"} if archive_kind == "sdist" else None
+    _create_minimal_wheel(
+        dist_dir,
+        distribution="codex-ml",
+        version="0.3.0",
+        import_name="codex_ml",
+        extra_files=wheel_extra,
+    )
+    _create_minimal_sdist(
+        dist_dir,
+        distribution="codex-ml",
+        version="0.3.0",
+        extra_files=sdist_extra,
+    )
+
+    with pytest.raises(ValueError, match="forbidden Python cache entries"):
+        collect_distribution_artifacts(dist_dir, "codex-ml")
 
 
 @pytest.mark.parametrize(

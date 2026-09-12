@@ -8,17 +8,19 @@ import json
 import os
 import re
 import subprocess
+import tarfile
 import tempfile
 import venv
 import zipfile
 from collections import Counter
 from dataclasses import asdict, dataclass
 from email.parser import Parser
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 _DIST_NAME_RE = re.compile(r"[-_.]+")
 _SDIST_SUFFIXES = (".tar.gz", ".zip")
+_BYTECODE_SUFFIXES = (".pyc", ".pyo", ".pyd")
 
 
 @dataclass(frozen=True)
@@ -94,6 +96,24 @@ def _parse_sdist_name(path: Path, version: str) -> str:
     return stem[: -len(version_suffix)]
 
 
+def _validate_archive_hygiene(path: Path) -> None:
+    if path.suffix == ".whl" or path.suffix == ".zip":
+        with zipfile.ZipFile(path) as archive:
+            member_names = archive.namelist()
+    else:
+        with tarfile.open(path, "r:*") as archive:
+            member_names = archive.getnames()
+
+    forbidden = sorted(
+        name
+        for name in member_names
+        if "__pycache__" in PurePosixPath(name).parts
+        or PurePosixPath(name).name.endswith(_BYTECODE_SUFFIXES)
+    )
+    if forbidden:
+        raise ValueError(f"forbidden Python cache entries in {path.name}: {forbidden}")
+
+
 def collect_distribution_artifacts(dist_dir: Path, distribution: str) -> DistributionArtifacts:
     """Resolve and validate the wheel/sdist pair for one distribution."""
 
@@ -131,6 +151,9 @@ def collect_distribution_artifacts(dist_dir: Path, distribution: str) -> Distrib
         raise ValueError(
             f"source distribution name mismatch: expected {distribution}, found {sdist_name}"
         )
+
+    _validate_archive_hygiene(wheel_path)
+    _validate_archive_hygiene(sdist_path)
 
     return DistributionArtifacts(
         distribution=distribution,

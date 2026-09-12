@@ -725,6 +725,10 @@ codex_crm = [
 common = []
 
 [tool.setuptools.exclude-package-data]
+"*" = [
+    "**/__pycache__/*",
+    "**/*.py[cod]",
+]
 codex_ml = [
     "**/tests/*",
     "torch_stub/*",
