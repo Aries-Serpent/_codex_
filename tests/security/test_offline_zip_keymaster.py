@@ -74,6 +74,28 @@ def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(sample_dir:
     assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
+def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(sample_dir: Path, tmp_path: Path):
+    key_file = tmp_path / "recursive.key"
+    generate_local_key(key_file)
+
+    inner_encrypted = tmp_path / "inner_encrypted.zip"
+    encrypt_directory(sample_dir, inner_encrypted, key_file)
+
+    middle_zip = tmp_path / "middle.zip"
+    with zipfile.ZipFile(middle_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.write(inner_encrypted, arcname="payloads/inner_encrypted.zip")
+
+    outer_zip = tmp_path / "outer_container.zip"
+    with zipfile.ZipFile(outer_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.write(middle_zip, arcname="nested/middle.zip")
+
+    extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "recursive_output")
+
+    assert extracted.name == "outer_container"
+    assert (extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert (extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+
+
 def test_unpack_rejects_zip_traversal(tmp_path: Path):
     key_path = tmp_path / "archive.key"
     generate_local_key(key_path)

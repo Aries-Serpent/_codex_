@@ -26,7 +26,7 @@ import zipfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 SRC_DIR = ROOT_DIR / "src"
@@ -35,11 +35,18 @@ if str(SRC_DIR) not in sys.path:
 
 try:
     from aries_serpent_core.security import mask_token, sanitize_log
-    from aries_serpent_core.security.storage import SecureStorage, generate_key as storage_generate_key
+    from aries_serpent_core.security.storage import (
+        SecureStorage,
+    )
+    from aries_serpent_core.security.storage import (
+        generate_key as storage_generate_key,
+    )
 except ImportError:  # pragma: no cover - fallback for lightweight runtime
-    from utils.sensitive_data import mask_token
     from utils.log_sanitizer import sanitize_log_input as sanitize_log
+    from utils.sensitive_data import mask_token
+
     SecureStorage = None  # type: ignore[assignment]
+
     def storage_generate_key() -> str:  # type: ignore[no-redef]
         raise ImportError("aries_serpent_core.security.storage is unavailable")
 
@@ -49,7 +56,18 @@ except ImportError:  # pragma: no cover - optional structured serialization
     serpent = None
 
 try:
-    from security.encryption import EncryptionError, decrypt as crypto_decrypt, encrypt as crypto_encrypt, generate_key as crypto_generate_key
+    from security.encryption import (
+        EncryptionError,
+    )
+    from security.encryption import (
+        decrypt as crypto_decrypt,
+    )
+    from security.encryption import (
+        encrypt as crypto_encrypt,
+    )
+    from security.encryption import (
+        generate_key as crypto_generate_key,
+    )
 except ImportError:  # pragma: no cover - optional crypto fallback
     crypto_generate_key = None  # type: ignore[assignment]
     crypto_encrypt = None  # type: ignore[assignment]
@@ -510,6 +528,28 @@ def _looks_like_encrypted_archive(zf: zipfile.ZipFile) -> bool:
     return "manifest.json" in lower_names and "encrypted_payload.bin" in lower_names
 
 
+def _recurse_nested_archives(
+    directory: Path,
+    key_file: str | Path,
+    *,
+    depth: int = 0,
+    max_depth: int = 8,
+) -> Path:
+    if depth >= max_depth:
+        raise ValueError("Archive recursion depth exceeded while processing nested ZIP bundles")
+
+    for file_path in sorted(directory.rglob("*")):
+        if file_path.is_dir() or file_path.is_symlink() or not file_path.name.lower().endswith(".zip"):
+            continue
+        relative_name = file_path.relative_to(directory).as_posix()
+        _process_nested_archive_bytes(file_path.read_bytes(), relative_name, directory, key_file, depth=depth + 1, max_depth=max_depth)
+        try:
+            file_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+    return directory
+
+
 def _process_nested_archive_bytes(
     nested_zip_bytes: bytes,
     member_name: str,
@@ -542,10 +582,10 @@ def _process_nested_archive_bytes(
                         else:
                             nested_target.unlink()
                     shutil.move(str(result_dir), str(nested_target))
-                    return nested_target
-                return result_dir
+                    result_dir = nested_target
+                return _recurse_nested_archives(result_dir, key_file, depth=depth + 1, max_depth=max_depth)
             _safe_extract_members(nested_zip_bytes, nested_target)
-            return nested_target
+            return _recurse_nested_archives(nested_target, key_file, depth=depth + 1, max_depth=max_depth)
     finally:
         try:
             temp_path.unlink(missing_ok=True)
