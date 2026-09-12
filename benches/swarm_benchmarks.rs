@@ -17,23 +17,40 @@ const QUEUE_BATCH_SIZES: [usize; 3] = [64, 512, 4_096];
 const SWARM_BATCH_SIZES: [usize; 2] = [256, 2_048];
 const TASK_PAYLOAD: &[u8] = br#"{"kind":"phase4","payload":"fixed"}"#;
 
-/// Benchmark 1: Task Latency
-/// Tests latency for various batch sizes (1, 10, 100, 1000 tasks)
+/// Benchmark 1: synchronous task queue round-trip latency.
+///
+/// A fresh manager is used for each iteration and every submitted result is
+/// consumed. This prevents retained results from filling the bounded queue and
+/// making later samples measure backpressure (or block indefinitely).
 fn bench_task_latency(c: &mut Criterion) {
-    let mut group = c.benchmark_group("task_latency");
-    group.measurement_time(Duration::from_secs(10));
+    let mut group = c.benchmark_group("phase4/task_queue_round_trip");
+    group
+        .warm_up_time(PHASE4_WARM_UP)
+        .measurement_time(PHASE4_MEASUREMENT)
+        .sample_size(PHASE4_SAMPLE_SIZE)
+        .noise_threshold(PHASE4_NOISE_THRESHOLD)
+        .significance_level(PHASE4_SIGNIFICANCE_LEVEL);
 
-    for size in [1, 10, 100, 1000].iter() {
+    for size in [1_usize, 10, 100, 1_000] {
+        group.throughput(Throughput::Elements(size as u64));
         group.bench_with_input(
             BenchmarkId::from_parameter(size),
-            size,
+            &size,
             |b: &mut criterion::Bencher, &size| {
-                let task_manager = TaskManager::new();
-                b.iter(|| {
-                    for i in 0..size {
-                        task_manager.submit_task(black_box(&format!("task_{}", i)));
-                    }
-                });
+                b.iter_batched_ref(
+                    TaskManager::new,
+                    |manager| {
+                        for _ in 0..size {
+                            manager.submit(black_box(TASK_PAYLOAD.to_vec()));
+                        }
+                        for _ in 0..size {
+                            black_box(manager.get_result(0.0).expect(
+                                "synchronous identity transport must make each result available",
+                            ));
+                        }
+                    },
+                    BatchSize::PerIteration,
+                );
             },
         );
     }
@@ -41,13 +58,14 @@ fn bench_task_latency(c: &mut Criterion) {
     group.finish();
 }
 
-/// Benchmark 2: bounded end-to-end swarm throughput.
+/// Benchmark 2: bounded experimental identity-transport throughput.
 ///
 /// A small, fixed worker count limits host contention. Every batch is below the
-/// queue capacity and is fully drained by `process_batch`, so iterations cannot
-/// leak work into later samples.
+/// result-queue capacity and is fully drained by `process_batch`, so iterations
+/// cannot leak work into later samples. The workers currently return their
+/// input unchanged; this measures transport and scheduling, not agent work.
 fn bench_throughput(c: &mut Criterion) {
-    let mut group = c.benchmark_group("phase4/swarm_throughput");
+    let mut group = c.benchmark_group("phase4/experimental_identity_transport_throughput");
     group
         .warm_up_time(PHASE4_WARM_UP)
         .measurement_time(PHASE4_MEASUREMENT)
@@ -59,7 +77,7 @@ fn bench_throughput(c: &mut Criterion) {
     for batch_size in SWARM_BATCH_SIZES {
         group.throughput(Throughput::Elements(batch_size as u64));
         group.bench_with_input(
-            BenchmarkId::new("process_and_drain", batch_size),
+            BenchmarkId::new("schedule_and_drain", batch_size),
             &batch_size,
             |b, &batch_size| {
                 b.iter(|| {
@@ -101,8 +119,8 @@ fn bench_queue_throughput(c: &mut Criterion) {
                         for _ in 0..batch_size {
                             manager.submit(black_box(TASK_PAYLOAD.to_vec()));
                         }
-                        assert_eq!(manager.pending_count(), batch_size);
-                        black_box(manager.pending_count())
+                        assert_eq!(manager.result_count(), batch_size);
+                        black_box(manager.result_count())
                     },
                     BatchSize::PerIteration,
                 );
@@ -124,7 +142,7 @@ fn bench_queue_throughput(c: &mut Criterion) {
                     |manager| {
                         let mut received = 0;
                         for _ in 0..batch_size {
-                            received += usize::from(manager.get_result(1.0).is_some());
+                            received += usize::from(manager.get_result(0.0).is_some());
                         }
                         assert_eq!(received, batch_size);
                         black_box(received)
@@ -210,17 +228,34 @@ fn bench_concurrent_agents(c: &mut Criterion) {
 fn bench_task_manager_ops(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_manager_ops");
 
-    let manager = TaskManager::new();
-
     group.bench_function("submit_single_task", |b: &mut criterion::Bencher| {
-        b.iter(|| manager.submit_task(black_box("benchmark_task")));
+        b.iter_batched_ref(
+            TaskManager::new,
+            |manager| {
+                manager.submit_task(black_box("benchmark_task"));
+                black_box(
+                    manager
+                        .get_result(0.0)
+                        .expect("synchronous identity transport must return one result"),
+                )
+            },
+            BatchSize::PerIteration,
+        );
     });
 
     group.bench_function("submit_retrieve_cycle", |b: &mut criterion::Bencher| {
-        b.iter(|| {
-            let _id = manager.submit_task(black_box("test"));
-            manager.get_result(1.0)
-        });
+        b.iter_batched_ref(
+            TaskManager::new,
+            |manager| {
+                manager.submit_task(black_box("test"));
+                black_box(
+                    manager
+                        .get_result(0.0)
+                        .expect("synchronous identity transport must return one result"),
+                )
+            },
+            BatchSize::PerIteration,
+        );
     });
 
     group.finish();
