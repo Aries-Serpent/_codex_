@@ -231,14 +231,18 @@ def _ensure_target_within_root(target: Path, root: Path) -> Path:
 
 
 def _safe_member_name(name: str) -> str:
-    if not name:
+    if not isinstance(name, str) or not name:
         raise ValueError("Archive member name is empty")
-    candidate = PurePosixPath(name)
-    if candidate.is_absolute() or name.startswith(("/", "\\")):
-        raise ValueError(f"Archive member uses an absolute path: {name!r}")
-    if ".." in candidate.parts:
-        raise ValueError(f"Archive member attempts traversal: {name!r}")
     normalized = name.replace("\\", "/")
+    candidate = PurePosixPath(normalized)
+    if candidate.is_absolute() or normalized.startswith(("/", "\\")):
+        raise ValueError(f"Archive member uses an absolute path: {name!r}")
+    if candidate.drive or any(part in {"..", ""} for part in candidate.parts):
+        raise ValueError(f"Archive member attempts traversal: {name!r}")
+    if ".." in normalized.split("/"):
+        raise ValueError(f"Archive member attempts traversal: {name!r}")
+    if candidate.parts and candidate.parts[0].endswith(":"):
+        raise ValueError(f"Archive member uses a Windows drive path: {name!r}")
     return normalized
 
 
@@ -420,9 +424,25 @@ def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
     try:
         manifest = json.loads(manifest_data.decode("utf-8"))
     except json.JSONDecodeError:
-        manifest = ast.literal_eval(manifest_data.decode("utf-8"))
+        try:
+            manifest = ast.literal_eval(manifest_data.decode("utf-8"))
+        except (ValueError, SyntaxError) as exc:
+            raise ValueError("Archive manifest is not valid JSON or literal data") from exc
     if not isinstance(manifest, dict):
         raise ValueError("Archive manifest must decode to a dictionary")
+    if not isinstance(manifest.get("archive_name"), str) or not manifest["archive_name"]:
+        raise ValueError("Archive manifest is missing a valid archive name")
+    if not isinstance(manifest.get("payload_name"), str) or not manifest["payload_name"]:
+        raise ValueError("Archive manifest is missing a valid payload name")
+    _safe_member_name(str(manifest["payload_name"]))
+    _safe_member_name(str(manifest["archive_name"]))
+    members = manifest.get("member_names")
+    if not isinstance(members, list) or not members:
+        raise ValueError("Archive manifest is missing valid member names")
+    for member in members:
+        if not isinstance(member, str):
+            raise ValueError("Archive manifest member names must be strings")
+        _safe_member_name(member)
     _literal_safe(manifest)
     return manifest
 
@@ -495,11 +515,7 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
             for info in zf.infolist():
                 if info.is_dir():
                     continue
-                member_name = info.filename
-                if not member_name or member_name.startswith(("/", "\\")):
-                    raise ValueError(f"Unsafe archive member path: {member_name!r}")
-                if ".." in PurePosixPath(member_name).parts:
-                    raise ValueError(f"ZIP traversal attempt detected: {member_name!r}")
+                member_name = _safe_member_name(info.filename)
                 target = (destination_root / member_name).resolve()
                 try:
                     target.relative_to(destination_root)

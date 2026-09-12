@@ -16,6 +16,9 @@ from scripts.security.offline_zip_keymaster import (  # noqa: E402
     encrypt_directory,
     generate_local_key,
     main,
+    normalize_directory,
+    reconstruct_normalized_directory,
+    rezip_clean_directory,
     unpack_archive,
 )
 
@@ -130,6 +133,106 @@ def test_unpack_rejects_zip_traversal(tmp_path: Path):
 
     with pytest.raises(ValueError, match="traversal|escapes destination|Unsafe archive"):
         unpack_archive(tmp_path / "encrypted-malicious.zip", key_path, output_dir=tmp_path / "out")
+
+
+def test_unpack_rejects_malformed_manifest_fields(tmp_path: Path):
+    key_path = tmp_path / "manifest.key"
+    generate_local_key(key_path)
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    (source_dir / "payload.txt").write_text("still valid\n", encoding="utf-8")
+    archive_path = tmp_path / "tampered.zip"
+    encrypt_directory(source_dir, archive_path, key_path)
+
+    with zipfile.ZipFile(archive_path, "r") as zf:
+        manifest = json.loads(zf.read("manifest.json").decode("utf-8"))
+    manifest["hmac"] = "deadbeef"
+    manifest["member_names"] = ["../../escape.txt"]
+    with zipfile.ZipFile(tmp_path / "tampered-bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
+        with zipfile.ZipFile(archive_path, "r") as src:
+            zf.writestr("encrypted_payload.bin", src.read("encrypted_payload.bin"))
+
+    with pytest.raises(ValueError, match="traversal|member names|manifest"):
+        unpack_archive(tmp_path / "tampered-bad.zip", key_path, output_dir=tmp_path / "tampered_out")
+
+
+def test_unpack_rejects_windows_path_variants(tmp_path: Path):
+    key_path = tmp_path / "windows.key"
+    generate_local_key(key_path)
+    source_dir = tmp_path / "windows_source"
+    source_dir.mkdir()
+    (source_dir / "safe.txt").write_text("safe\n", encoding="utf-8")
+    archive_path = tmp_path / "windows.zip"
+    encrypt_directory(source_dir, archive_path, key_path)
+
+    with zipfile.ZipFile(archive_path, "r") as zf:
+        manifest = json.loads(zf.read("manifest.json").decode("utf-8"))
+    manifest["member_names"] = ["nested\\..\\escape.txt", "C:/Windows/System32/drivers/etc/hosts"]
+    with zipfile.ZipFile(tmp_path / "windows_bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
+        with zipfile.ZipFile(archive_path, "r") as src:
+            zf.writestr("encrypted_payload.bin", src.read("encrypted_payload.bin"))
+
+    with pytest.raises(ValueError, match="traversal|absolute path|Windows drive"):
+        unpack_archive(tmp_path / "windows_bad.zip", key_path, output_dir=tmp_path / "windows_out")
+
+
+def test_normalize_and_reconstruct_preserves_directory_fidelity(tmp_path: Path):
+    source_dir = tmp_path / "normalized_source"
+    nested = source_dir / "nested"
+    nested.mkdir(parents=True)
+    (source_dir / "top.txt").write_text("first\n", encoding="utf-8")
+    (nested / "deep.bin").write_bytes(b"\x00\x01\x02\x03")
+
+    manifest = normalize_directory(source_dir, include_content=True)
+    assert manifest["root_name"] == source_dir.name
+    paths = [entry["relative_path"] for entry in manifest["entries"]]
+    assert paths == ["nested/deep.bin", "top.txt"] or paths == ["top.txt", "nested/deep.bin"]
+
+    output_dir = tmp_path / "reconstructed"
+    reconstruct_normalized_directory(manifest, output_dir)
+    assert (output_dir / "top.txt").read_text(encoding="utf-8") == "first\n"
+    assert (output_dir / "nested" / "deep.bin").read_bytes() == b"\x00\x01\x02\x03"
+
+
+def test_rezip_clean_directory_keeps_members_relative_and_safe(tmp_path: Path):
+    source_dir = tmp_path / "rezip_source"
+    nested = source_dir / "nested"
+    nested.mkdir(parents=True)
+    (nested / "keep.txt").write_text("clean\n", encoding="utf-8")
+
+    archive_path = tmp_path / "clean.zip"
+    rezip_clean_directory(source_dir, archive_path)
+
+    with zipfile.ZipFile(archive_path, "r") as zf:
+        names = zf.namelist()
+        assert names == ["rezip_source/nested/keep.txt"]
+        assert not any(name.startswith("/") for name in names)
+        assert not any(".." in Path(name).parts for name in names)
+
+
+def test_unpack_raises_when_nested_zip_recursion_exceeds_limit(tmp_path: Path):
+    key_path = tmp_path / "depth.key"
+    generate_local_key(key_path)
+    source_dir = tmp_path / "depth_source"
+    source_dir.mkdir()
+    (source_dir / "leaf.txt").write_text("depth\n", encoding="utf-8")
+
+    inner_zip = tmp_path / "inner.zip"
+    encrypt_directory(source_dir, inner_zip, key_path)
+    for idx in range(9):
+        payload_zip = tmp_path / f"layer_{idx}.zip"
+        if idx == 0:
+            payload = inner_zip.read_bytes()
+        else:
+            payload = previous.read_bytes()
+        with zipfile.ZipFile(payload_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr(f"layer_{idx}.zip", payload)
+        previous = payload_zip
+
+    with pytest.raises(ValueError, match="recursion depth exceeded"):
+        unpack_archive(previous, key_path, output_dir=tmp_path / "depth_output")
 
 
 def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
