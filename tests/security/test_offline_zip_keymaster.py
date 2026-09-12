@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from scripts.security.offline_zip_keymaster import (  # noqa: E402
+    MAX_MEMBER_BYTES,
     encrypt_directory,
     generate_local_key,
     main,
@@ -176,6 +177,21 @@ def test_unpack_rejects_windows_path_variants(tmp_path: Path):
 
     with pytest.raises(ValueError, match="traversal|absolute path|Windows drive"):
         unpack_archive(tmp_path / "windows_bad.zip", key_path, output_dir=tmp_path / "windows_out")
+
+
+def test_unpack_rejects_oversized_archive_member(tmp_path: Path):
+    key_path = tmp_path / "oversize.key"
+    generate_local_key(key_path)
+    source_dir = tmp_path / "oversize_source"
+    source_dir.mkdir()
+    oversized = source_dir / "too_big.bin"
+    oversized.write_bytes(b"x" * (MAX_MEMBER_BYTES + 1))
+
+    archive_path = tmp_path / "oversize.zip"
+    encrypt_directory(source_dir, archive_path, key_path)
+
+    with pytest.raises(ValueError, match="size cap|oversize|per-file size cap"):
+        unpack_archive(archive_path, key_path, output_dir=tmp_path / "oversize_out")
 
 
 def test_normalize_and_reconstruct_preserves_directory_fidelity(tmp_path: Path):

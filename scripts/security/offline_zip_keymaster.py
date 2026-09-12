@@ -18,6 +18,8 @@ import hashlib
 import hmac
 import json
 import os
+import posixpath
+import re
 import shutil
 import stat
 import sys
@@ -76,6 +78,12 @@ except ImportError:  # pragma: no cover - optional crypto fallback
 
 DEFAULT_MANIFEST_NAME = "manifest.json"
 DEFAULT_PAYLOAD_NAME = "encrypted_payload.bin"
+MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
+MAX_EXTRACTION_BYTES = 512 * 1024 * 1024
+MAX_EXTRACTION_FILES = 2048
+MAX_RECURSION_DEPTH = 8
+MAX_MEMBER_BYTES = 128 * 1024 * 1024
+MAX_NESTED_ARCHIVES = 32
 
 
 def _utc_now() -> str:
@@ -222,34 +230,89 @@ def _iter_source_files(source: str | Path) -> list[Path]:
 
 
 def _ensure_target_within_root(target: Path, root: Path) -> Path:
-    resolved_target = target.resolve()
+    resolved_root = root.resolve(strict=True)
+    resolved_target = target.resolve(strict=False)
     try:
-        resolved_target.relative_to(root)
+        resolved_target.relative_to(resolved_root)
     except ValueError as exc:
         raise ValueError(f"ZIP path escapes destination: {target!s}") from exc
     return resolved_target
 
 
+def _apply_safe_permissions(path: Path, *, is_dir: bool = False) -> None:
+    mode = 0o700 if is_dir else 0o600
+    try:
+        os.chmod(path, mode)
+    except OSError:
+        pass
+
+
+def _validate_archive_member_count(infolist: list[zipfile.ZipInfo], *, total_limit: int = MAX_EXTRACTION_FILES) -> int:
+    if len(infolist) > total_limit:
+        raise ValueError(f"Archive exceeds maximum member count: {len(infolist)} > {total_limit}")
+    total_size = 0
+    seen_names: set[str] = set()
+    nested_archives = 0
+    for info in infolist:
+        if info.filename in {"", None}:
+            raise ValueError("Archive member name is empty")
+        member_name = _safe_member_name(info.filename)
+        mode = info.external_attr >> 16
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"ZIP contains a symbolic link entry: {info.filename!r}")
+        if info.file_size < 0:
+            raise ValueError(f"Archive member has invalid size: {info.filename!r}")
+        if info.file_size > MAX_MEMBER_BYTES:
+            raise ValueError(f"Archive member exceeds per-file size cap: {info.filename!r}")
+        if member_name in seen_names:
+            raise ValueError(f"Archive contains duplicate extracted targets: {member_name!r}")
+        seen_names.add(member_name)
+        if not info.is_dir():
+            total_size += info.file_size
+            if member_name.lower().endswith(".zip"):
+                nested_archives += 1
+    if nested_archives > MAX_NESTED_ARCHIVES:
+        raise ValueError(f"Archive exceeds nested archive cap: {nested_archives} > {MAX_NESTED_ARCHIVES}")
+    if total_size > MAX_EXTRACTION_BYTES:
+        raise ValueError(f"Archive exceeds extraction size cap: {total_size} > {MAX_EXTRACTION_BYTES}")
+    return total_size
+
+
 def _safe_member_name(name: str) -> str:
     if not isinstance(name, str) or not name:
         raise ValueError("Archive member name is empty")
-    normalized = name.replace("\\", "/")
-    candidate = PurePosixPath(normalized)
-    if candidate.is_absolute() or normalized.startswith(("/", "\\")):
+    normalized = name.replace("\\", "/").strip()
+    if normalized.startswith("//") or normalized.startswith("\\\\"):
+        raise ValueError(f"Archive member uses an absolute UNC path: {name!r}")
+    if normalized.startswith(("/", "\\")):
         raise ValueError(f"Archive member uses an absolute path: {name!r}")
-    if candidate.drive or any(part in {"..", ""} for part in candidate.parts):
-        raise ValueError(f"Archive member attempts traversal: {name!r}")
-    if ".." in normalized.split("/"):
-        raise ValueError(f"Archive member attempts traversal: {name!r}")
-    if candidate.parts and candidate.parts[0].endswith(":"):
+    if normalized.endswith("/") and normalized != "/":
+        normalized = normalized.rstrip("/")
+    if not normalized or normalized in {".", "./"}:
+        raise ValueError("Archive member name is empty")
+    drive_prefix = normalized.split("/", 1)[0]
+    if len(drive_prefix) >= 2 and drive_prefix[1] == ":":
         raise ValueError(f"Archive member uses a Windows drive path: {name!r}")
-    return normalized
+    if re.match(r"^[A-Za-z]:", normalized):
+        raise ValueError(f"Archive member uses a Windows drive path: {name!r}")
+    if any(segment in {"..", ""} for segment in normalized.split("/")):
+        raise ValueError(f"Archive member attempts traversal: {name!r}")
+    if any(segment == "." for segment in normalized.split("/")):
+        raise ValueError(f"Archive member contains dot path segments: {name!r}")
+    candidate = PurePosixPath(normalized)
+    if candidate.is_absolute() or candidate.drive:
+        raise ValueError(f"Archive member uses an absolute path: {name!r}")
+    canonical = posixpath.normpath(normalized)
+    if canonical in {".", ".."} or canonical.startswith("../") or canonical.startswith("./") or canonical.startswith("/"):
+        raise ValueError(f"Archive member attempts traversal: {name!r}")
+    return canonical
 
 
 def _build_plain_zip(source: str | Path, zip_out: str | Path) -> list[str]:
     source_path = Path(source).resolve()
     zip_path = Path(zip_out)
     zip_path.parent.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(zip_path.parent, is_dir=True)
     members: list[str] = []
     with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         for file_path in _iter_source_files(source_path):
@@ -313,7 +376,9 @@ def normalize_directory(directory: str | Path, *, output_manifest: str | Path | 
     if output_manifest is not None:
         target = Path(output_manifest)
         target.parent.mkdir(parents=True, exist_ok=True)
+        _apply_safe_permissions(target.parent, is_dir=True)
         target.write_text(json.dumps(manifest, sort_keys=True, indent=2), encoding="utf-8")
+        _apply_safe_permissions(target)
     return manifest
 
 
@@ -323,6 +388,7 @@ def reconstruct_normalized_directory(normalized_manifest: dict[str, Any], output
         raise ValueError("Normalized manifest must decode to a dictionary")
     destination = Path(output_dir).resolve()
     destination.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(destination, is_dir=True)
     for entry in normalized_manifest.get("entries", []):
         if not isinstance(entry, dict):
             continue
@@ -331,10 +397,12 @@ def reconstruct_normalized_directory(normalized_manifest: dict[str, Any], output
             continue
         target = _ensure_target_within_root(destination / relative_name, destination)
         target.parent.mkdir(parents=True, exist_ok=True)
+        _apply_safe_permissions(target.parent, is_dir=True)
         content_b64 = entry.get("content_base64")
         if isinstance(content_b64, str) and content_b64:
             raw = base64.b64decode(content_b64.encode("ascii"))
             target.write_bytes(raw)
+            _apply_safe_permissions(target)
     return destination
 
 
@@ -345,6 +413,7 @@ def rezip_clean_directory(source_dir: str | Path, zip_out: str | Path) -> str:
         raise ValueError(f"Source directory for clean rezip does not exist: {source_path}")
     zip_path = Path(zip_out)
     zip_path.parent.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(zip_path.parent, is_dir=True)
     archive_name = source_path.name
     with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         for file_path in sorted(source_path.rglob("*")):
@@ -380,6 +449,7 @@ def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str 
     key_bytes = base64.urlsafe_b64decode(key.encode("ascii"))
     zip_output = Path(zip_out)
     zip_output.parent.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(zip_output.parent, is_dir=True)
     archive_name = zip_output.name
     source_path = Path(input_dir).resolve()
     plain_zip = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
@@ -452,85 +522,104 @@ def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path, output_dir: s
     archive_path = Path(zip_path)
     if not archive_path.exists():
         raise FileNotFoundError(f"Encrypted ZIP archive not found: {archive_path}")
+    if archive_path.stat().st_size > MAX_ARCHIVE_BYTES:
+        raise ValueError(f"Archive exceeds maximum size cap: {archive_path}")
 
     destination_root = Path(output_dir).resolve() if output_dir is not None else archive_path.parent.resolve()
     destination_root.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(destination_root, is_dir=True)
 
-    with zipfile.ZipFile(archive_path, "r") as zf:
-        if _looks_like_encrypted_archive(zf):
-            key_state = KeyState.from_file(key_file)
-            manifest = _read_encrypted_manifest(archive_path)
-            expected_fingerprint = manifest.get("key_fingerprint")
-            if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
-                raise ValueError("Key fingerprint does not match the encrypted archive")
-            _validate_manifest_signature(manifest, key_state.key)
-
-            try:
-                payload_text = zf.read(DEFAULT_PAYLOAD_NAME).decode("utf-8")
-            except KeyError as exc:
-                raise ValueError("Encrypted archive payload is missing") from exc
-
-            key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
-            decrypted_zip = crypto_decrypt(payload_text.encode("ascii"), key_bytes)
-            extracted_dir = destination_root / archive_path.stem
-            _safe_extract_members(decrypted_zip, extracted_dir)
-            return extracted_dir
-
-        extracted_dir = destination_root / archive_path.stem
-        extracted_dir.mkdir(parents=True, exist_ok=True)
-        for info in zf.infolist():
-            if info.is_dir():
-                continue
-            member_name = _safe_member_name(info.filename)
-            if member_name.lower().endswith(".zip"):
-                nested_bytes = zf.read(info.filename)
-                _process_nested_archive_bytes(nested_bytes, member_name, extracted_dir, key_file)
-                continue
-            target = (extracted_dir / member_name).resolve()
-            try:
-                target.relative_to(extracted_dir)
-            except ValueError as exc:
-                raise ValueError(f"ZIP path escapes destination: {member_name!r}") from exc
-            mode = info.external_attr >> 16
-            if stat.S_ISLNK(mode):
-                raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            with zf.open(info, "r") as src, open(target, "wb") as dest:
-                while True:
-                    chunk = src.read(65536)
-                    if not chunk:
-                        break
-                    dest.write(chunk)
-        return extracted_dir
-
-
-def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
-    destination_root = destination_dir.resolve()
-    destination_root.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
-        tmp_file.write(zip_bytes)
-        temp_path = Path(tmp_file.name)
     try:
-        with zipfile.ZipFile(temp_path, "r") as zf:
-            for info in zf.infolist():
+        with zipfile.ZipFile(archive_path, "r") as zf:
+            infos = zf.infolist()
+            _validate_archive_member_count(infos)
+            if _looks_like_encrypted_archive(zf):
+                key_state = KeyState.from_file(key_file)
+                manifest = _read_encrypted_manifest(archive_path)
+                expected_fingerprint = manifest.get("key_fingerprint")
+                if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
+                    raise ValueError("Key fingerprint does not match the encrypted archive")
+                _validate_manifest_signature(manifest, key_state.key)
+
+                try:
+                    payload_text = zf.read(DEFAULT_PAYLOAD_NAME).decode("utf-8")
+                except KeyError as exc:
+                    raise ValueError("Encrypted archive payload is missing") from exc
+
+                key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
+                decrypted_zip = crypto_decrypt(payload_text.encode("ascii"), key_bytes)
+                if len(decrypted_zip) > MAX_ARCHIVE_BYTES:
+                    raise ValueError("Decrypted archive exceeds maximum size cap")
+                extracted_dir = destination_root / archive_path.stem
+                _safe_extract_members(decrypted_zip, extracted_dir)
+                return extracted_dir
+
+            extracted_dir = destination_root / archive_path.stem
+            extracted_dir.mkdir(parents=True, exist_ok=True)
+            _apply_safe_permissions(extracted_dir, is_dir=True)
+            for info in infos:
                 if info.is_dir():
                     continue
                 member_name = _safe_member_name(info.filename)
-                target = (destination_root / member_name).resolve()
-                try:
-                    target.relative_to(destination_root)
-                except ValueError as exc:
-                    raise ValueError(f"ZIP path escapes destination: {member_name!r}") from exc
+                if member_name.lower().endswith(".zip"):
+                    nested_bytes = zf.read(info.filename)
+                    _process_nested_archive_bytes(nested_bytes, member_name, extracted_dir, key_file)
+                    continue
+                target = _ensure_target_within_root(extracted_dir / member_name, extracted_dir)
                 mode = info.external_attr >> 16
                 if stat.S_ISLNK(mode):
                     raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
                 target.parent.mkdir(parents=True, exist_ok=True)
+                _apply_safe_permissions(target.parent, is_dir=True)
                 with zf.open(info, "r") as src, open(target, "wb") as dest:
                     while True:
                         chunk = src.read(65536)
                         if not chunk:
                             break
                         dest.write(chunk)
+                _apply_safe_permissions(target)
+            return extracted_dir
+    except ValueError:
+        raise
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
+        raise ValueError(f"Archive is malformed or exceeds safety limits: {archive_path}") from exc
+
+
+def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
+    if len(zip_bytes) > MAX_ARCHIVE_BYTES:
+        raise ValueError("Archive exceeds maximum size cap")
+    destination_root = destination_dir.resolve()
+    destination_root.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(destination_root, is_dir=True)
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
+        tmp_file.write(zip_bytes)
+        temp_path = Path(tmp_file.name)
+    try:
+        try:
+            with zipfile.ZipFile(temp_path, "r") as zf:
+                infos = zf.infolist()
+                _validate_archive_member_count(infos)
+                for info in infos:
+                    if info.is_dir():
+                        continue
+                    member_name = _safe_member_name(info.filename)
+                    target = _ensure_target_within_root(destination_root / member_name, destination_root)
+                    mode = info.external_attr >> 16
+                    if stat.S_ISLNK(mode):
+                        raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    _apply_safe_permissions(target.parent, is_dir=True)
+                    with zf.open(info, "r") as src, open(target, "wb") as dest:
+                        while True:
+                            chunk = src.read(65536)
+                            if not chunk:
+                                break
+                            dest.write(chunk)
+                    _apply_safe_permissions(target)
+        except ValueError:
+            raise
+        except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
+            raise ValueError("Archive is malformed or exceeds safety limits") from exc
     finally:
         try:
             temp_path.unlink(missing_ok=True)
@@ -549,7 +638,7 @@ def _recurse_nested_archives(
     key_file: str | Path,
     *,
     depth: int = 0,
-    max_depth: int = 8,
+    max_depth: int = MAX_RECURSION_DEPTH,
 ) -> Path:
     if depth >= max_depth:
         raise ValueError("Archive recursion depth exceeded while processing nested ZIP bundles")
@@ -573,35 +662,45 @@ def _process_nested_archive_bytes(
     key_file: str | Path,
     *,
     depth: int = 0,
-    max_depth: int = 8,
+    max_depth: int = MAX_RECURSION_DEPTH,
 ) -> Path:
     if depth >= max_depth:
         raise ValueError("Archive recursion depth exceeded while processing nested ZIP bundles")
+    if len(nested_zip_bytes) > MAX_ARCHIVE_BYTES:
+        raise ValueError("Nested archive exceeds maximum size cap")
 
     member_path = PurePosixPath(_safe_member_name(member_name))
-    nested_parent = destination_root / member_path.parent
+    nested_parent = _ensure_target_within_root(destination_root / member_path.parent, destination_root)
     nested_stem = member_path.stem or member_path.name
     nested_target = nested_parent / nested_stem
     nested_parent.mkdir(parents=True, exist_ok=True)
+    _apply_safe_permissions(nested_parent, is_dir=True)
 
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
         tmp_file.write(nested_zip_bytes)
         temp_path = Path(tmp_file.name)
     try:
-        with zipfile.ZipFile(temp_path, "r") as zf:
-            if _looks_like_encrypted_archive(zf):
-                result_dir = decrypt_and_unpack(temp_path, key_file, output_dir=nested_parent)
-                if result_dir.name != nested_stem:
-                    if nested_target.exists():
-                        if nested_target.is_dir():
-                            shutil.rmtree(nested_target)
-                        else:
-                            nested_target.unlink()
-                    shutil.move(str(result_dir), str(nested_target))
-                    result_dir = nested_target
-                return _recurse_nested_archives(result_dir, key_file, depth=depth + 1, max_depth=max_depth)
-            _safe_extract_members(nested_zip_bytes, nested_target)
-            return _recurse_nested_archives(nested_target, key_file, depth=depth + 1, max_depth=max_depth)
+        try:
+            with zipfile.ZipFile(temp_path, "r") as zf:
+                infos = zf.infolist()
+                _validate_archive_member_count(infos)
+                if _looks_like_encrypted_archive(zf):
+                    result_dir = decrypt_and_unpack(temp_path, key_file, output_dir=nested_parent)
+                    if result_dir.name != nested_stem:
+                        if nested_target.exists():
+                            if nested_target.is_dir():
+                                shutil.rmtree(nested_target)
+                            else:
+                                nested_target.unlink()
+                        shutil.move(str(result_dir), str(nested_target))
+                        result_dir = nested_target
+                    return _recurse_nested_archives(result_dir, key_file, depth=depth + 1, max_depth=max_depth)
+                _safe_extract_members(nested_zip_bytes, nested_target)
+                return _recurse_nested_archives(nested_target, key_file, depth=depth + 1, max_depth=max_depth)
+        except ValueError:
+            raise
+        except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
+            raise ValueError(f"Nested archive is malformed or exceeds safety limits: {member_name!r}") from exc
     finally:
         try:
             temp_path.unlink(missing_ok=True)
