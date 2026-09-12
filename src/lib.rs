@@ -36,9 +36,16 @@ pub mod metrics;
 #[path = "../rust_swarm/telemetry.rs"]
 pub mod telemetry;
 
+pub mod queue;
+pub mod runtime;
+pub mod state;
+
 // Re-export main types
 pub use compression::Compression;
 pub use metrics::Metrics;
+pub use queue::{Task as QueueTask, TaskQueue};
+pub use runtime::Orchestrator;
+pub use state::{AgentStatus, SwarmState};
 pub use swarm_engine::SwarmEngine;
 pub use task_manager::{Task, TaskManager, TaskResult};
 pub use telemetry::{HealthStatus, Telemetry, TelemetryMetrics};
@@ -54,6 +61,10 @@ fn codex_swarm(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<swarm_engine::PySwarmEngine>()?;
     m.add_class::<task_manager::PyTaskManager>()?;
     m.add_class::<compression::PyCompression>()?;
+    m.add_class::<state::SwarmState>()?;
+    m.add_class::<runtime::Orchestrator>()?;
+    m.add_class::<queue::Task>()?;
+    m.add_class::<queue::TaskQueue>()?;
     Ok(())
 }
 

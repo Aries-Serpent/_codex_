@@ -33,6 +33,7 @@ pub struct TaskManager {
     result_sender: Sender<TaskResult>,
     result_receiver: Receiver<TaskResult>,
     next_id: AtomicUsize,
+    pending_tasks: AtomicUsize,
     running: AtomicBool,
 }
 
@@ -44,6 +45,7 @@ impl TaskManager {
             result_sender,
             result_receiver,
             next_id: AtomicUsize::new(0),
+            pending_tasks: AtomicUsize::new(0),
             running: AtomicBool::new(true),
         }
     }
@@ -65,6 +67,7 @@ impl TaskManager {
             data: task.data,
             latency_us: task.submitted_at.elapsed().as_micros() as u64,
         };
+        self.pending_tasks.fetch_add(1, Ordering::AcqRel);
         loop {
             if !self.running.load(Ordering::Acquire) {
                 break;
@@ -75,6 +78,7 @@ impl TaskManager {
                 Err(SendTimeoutError::Disconnected(_)) => break,
             }
         }
+        self.pending_tasks.fetch_sub(1, Ordering::AcqRel);
 
         id
     }
@@ -99,7 +103,7 @@ impl TaskManager {
 
     /// Get pending task count
     pub fn pending_count(&self) -> usize {
-        0
+        self.pending_tasks.load(Ordering::Acquire)
     }
 
     /// Get result count

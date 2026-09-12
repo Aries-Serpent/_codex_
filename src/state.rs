@@ -4,18 +4,18 @@
 // agents can access simultaneously without GIL contention. Uses DashMap for
 // lock-free reads and minimal lock contention on writes.
 
-use pyo3::prelude::*;
 use dashmap::DashMap;
+use pyo3::prelude::*;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use serde::{Serialize, Deserialize};
 
 /// Status of an individual agent in the swarm
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum AgentStatus {
     Idle,
-    Working(String),  // Contains task description
+    Working(String), // Contains task description
     Complete,
-    Failed(String),   // Contains error message
+    Failed(String), // Contains error message
 }
 
 /// Thread-safe shared state accessible from both Rust and Python
@@ -59,15 +59,23 @@ impl SwarmState {
     /// * `status` - New status as string ("idle", "working", "complete", "failed")
     /// * `message` - Optional message (required for "working" and "failed")
     #[pyo3(signature = (agent_id, status, message=None))]
-    fn set_agent_status(&self, agent_id: String, status: String, message: Option<String>) -> PyResult<()> {
+    fn set_agent_status(
+        &self,
+        agent_id: String,
+        status: String,
+        message: Option<String>,
+    ) -> PyResult<()> {
         let new_status = match status.as_str() {
             "idle" => AgentStatus::Idle,
             "working" => AgentStatus::Working(message.unwrap_or_default()),
             "complete" => AgentStatus::Complete,
             "failed" => AgentStatus::Failed(message.unwrap_or_default()),
-            _ => return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                format!("Invalid status: {}", status)
-            )),
+            _ => {
+                return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                    "Invalid status: {}",
+                    status
+                )))
+            }
         };
 
         self.agents.insert(agent_id, new_status);
@@ -89,9 +97,10 @@ impl SwarmState {
                 };
                 Ok((status_str, message))
             }
-            None => Err(PyErr::new::<pyo3::exceptions::PyKeyError, _>(
-                format!("Agent not found: {}", agent_id)
-            )),
+            None => Err(PyErr::new::<pyo3::exceptions::PyKeyError, _>(format!(
+                "Agent not found: {}",
+                agent_id
+            ))),
         }
     }
 
@@ -103,7 +112,10 @@ impl SwarmState {
 
     /// Get all agent IDs currently registered
     fn list_agents(&self) -> Vec<String> {
-        self.agents.iter().map(|entry| entry.key().clone()).collect()
+        self.agents
+            .iter()
+            .map(|entry| entry.key().clone())
+            .collect()
     }
 }
 
