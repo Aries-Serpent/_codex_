@@ -18,6 +18,7 @@ import hashlib
 import hmac
 import json
 import os
+import shutil
 import stat
 import sys
 import tempfile
@@ -409,31 +410,60 @@ def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
 
 
 def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path, output_dir: str | Path | None = None) -> Path:
-    """Validate an encrypted payload, decrypt it locally, and extract it into a self-titled folder."""
+    """Validate, decrypt, and extract an archive into a self-titled folder, including nested plain ZIP bundles."""
     archive_path = Path(zip_path)
     if not archive_path.exists():
         raise FileNotFoundError(f"Encrypted ZIP archive not found: {archive_path}")
 
-    key_state = KeyState.from_file(key_file)
-    manifest = _read_encrypted_manifest(archive_path)
-    expected_fingerprint = manifest.get("key_fingerprint")
-    if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
-        raise ValueError("Key fingerprint does not match the encrypted archive")
-    _validate_manifest_signature(manifest, key_state.key)
-
-    with zipfile.ZipFile(archive_path, "r") as zf:
-        try:
-            payload_text = zf.read(DEFAULT_PAYLOAD_NAME).decode("utf-8")
-        except KeyError as exc:
-            raise ValueError("Encrypted archive payload is missing") from exc
-
-    key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
-    decrypted_zip = crypto_decrypt(payload_text.encode("ascii"), key_bytes)
     destination_root = Path(output_dir).resolve() if output_dir is not None else archive_path.parent.resolve()
     destination_root.mkdir(parents=True, exist_ok=True)
-    extracted_dir = destination_root / archive_path.stem
-    _safe_extract_members(decrypted_zip, extracted_dir)
-    return extracted_dir
+
+    with zipfile.ZipFile(archive_path, "r") as zf:
+        if _looks_like_encrypted_archive(zf):
+            key_state = KeyState.from_file(key_file)
+            manifest = _read_encrypted_manifest(archive_path)
+            expected_fingerprint = manifest.get("key_fingerprint")
+            if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
+                raise ValueError("Key fingerprint does not match the encrypted archive")
+            _validate_manifest_signature(manifest, key_state.key)
+
+            try:
+                payload_text = zf.read(DEFAULT_PAYLOAD_NAME).decode("utf-8")
+            except KeyError as exc:
+                raise ValueError("Encrypted archive payload is missing") from exc
+
+            key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
+            decrypted_zip = crypto_decrypt(payload_text.encode("ascii"), key_bytes)
+            extracted_dir = destination_root / archive_path.stem
+            _safe_extract_members(decrypted_zip, extracted_dir)
+            return extracted_dir
+
+        extracted_dir = destination_root / archive_path.stem
+        extracted_dir.mkdir(parents=True, exist_ok=True)
+        for info in zf.infolist():
+            if info.is_dir():
+                continue
+            member_name = _safe_member_name(info.filename)
+            if member_name.lower().endswith(".zip"):
+                nested_bytes = zf.read(info.filename)
+                _process_nested_archive_bytes(nested_bytes, member_name, extracted_dir, key_file)
+                continue
+            target = (extracted_dir / member_name).resolve()
+            try:
+                target.relative_to(extracted_dir)
+            except ValueError as exc:
+                raise ValueError(f"ZIP path escapes destination: {member_name!r}") from exc
+            mode = info.external_attr >> 16
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with zf.open(info, "r") as src, open(target, "wb") as dest:
+                while True:
+                    chunk = src.read(65536)
+                    if not chunk:
+                        break
+                    dest.write(chunk)
+        return extracted_dir
 
 
 def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
@@ -467,6 +497,55 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
                         if not chunk:
                             break
                         dest.write(chunk)
+    finally:
+        try:
+            temp_path.unlink(missing_ok=True)
+        except TypeError:
+            if temp_path.exists():
+                temp_path.unlink()
+
+
+def _looks_like_encrypted_archive(zf: zipfile.ZipFile) -> bool:
+    lower_names = {PurePosixPath(info.filename).name.lower() for info in zf.infolist()}
+    return "manifest.json" in lower_names and "encrypted_payload.bin" in lower_names
+
+
+def _process_nested_archive_bytes(
+    nested_zip_bytes: bytes,
+    member_name: str,
+    destination_root: Path,
+    key_file: str | Path,
+    *,
+    depth: int = 0,
+    max_depth: int = 8,
+) -> Path:
+    if depth >= max_depth:
+        raise ValueError("Archive recursion depth exceeded while processing nested ZIP bundles")
+
+    member_path = PurePosixPath(_safe_member_name(member_name))
+    nested_parent = destination_root / member_path.parent
+    nested_stem = member_path.stem or member_path.name
+    nested_target = nested_parent / nested_stem
+    nested_parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
+        tmp_file.write(nested_zip_bytes)
+        temp_path = Path(tmp_file.name)
+    try:
+        with zipfile.ZipFile(temp_path, "r") as zf:
+            if _looks_like_encrypted_archive(zf):
+                result_dir = decrypt_and_unpack(temp_path, key_file, output_dir=nested_parent)
+                if result_dir.name != nested_stem:
+                    if nested_target.exists():
+                        if nested_target.is_dir():
+                            shutil.rmtree(nested_target)
+                        else:
+                            nested_target.unlink()
+                    shutil.move(str(result_dir), str(nested_target))
+                    return nested_target
+                return result_dir
+            _safe_extract_members(nested_zip_bytes, nested_target)
+            return nested_target
     finally:
         try:
             temp_path.unlink(missing_ok=True)

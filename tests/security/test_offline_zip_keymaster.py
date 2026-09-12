@@ -58,6 +58,22 @@ def test_encrypt_and_unpack_round_trip(sample_dir: Path, tmp_path: Path):
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
+def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(sample_dir: Path, tmp_path: Path):
+    key_file = tmp_path / "nested.key"
+    generate_local_key(key_file)
+    encrypted_bundle = tmp_path / "nested_bundle.zip"
+    encrypt_directory(sample_dir, encrypted_bundle, key_file)
+
+    outer_zip = tmp_path / "outer_container.zip"
+    with zipfile.ZipFile(outer_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.write(encrypted_bundle, arcname="packets/nested_bundle.zip")
+
+    extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "outer_output")
+    assert extracted.name == "outer_container"
+    assert (extracted / "packets" / "nested_bundle" / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+
+
 def test_unpack_rejects_zip_traversal(tmp_path: Path):
     key_path = tmp_path / "archive.key"
     generate_local_key(key_path)
