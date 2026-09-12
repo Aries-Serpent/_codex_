@@ -1,0 +1,157 @@
+name: Offline ZIP Artifact Unpacker
+
+'on':
+  workflow_dispatch:
+    inputs:
+      zip_url:
+        description: Optional URL for a ZIP file to download and unpack
+        required: false
+        default: ''
+        type: string
+      zip_path:
+        description: Optional repo-relative path to a ZIP file to unpack
+        required: false
+        default: ''
+        type: string
+      output_dir:
+        description: Parent directory to create for the extracted self-titled folder
+        required: false
+        default: output
+        type: string
+      artifact_name:
+        description: Downloadable artifact name for the extracted archive contents
+        required: false
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      zip_url:
+        description: Optional URL for a ZIP file to download and unpack
+        required: false
+        type: string
+      zip_path:
+        description: Optional repo-relative path to a ZIP file to unpack
+        required: false
+        type: string
+      output_dir:
+        description: Parent directory to create for the extracted self-titled folder
+        required: false
+        default: output
+        type: string
+      artifact_name:
+        description: Downloadable artifact name for the extracted archive contents
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  unpack-zip:
+    name: Unpack provided ZIP into a self-titled folder
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12.13
+          cache-tier: common
+
+      - name: Resolve ZIP source
+        id: resolve
+        shell: bash
+        env:
+          ZIP_URL: ${{ inputs.zip_url }}
+          ZIP_PATH: ${{ inputs.zip_path }}
+        run: |
+          set -euo pipefail
+
+          ZIP_SOURCE=""
+          if [ -n "${ZIP_URL}" ]; then
+            mkdir -p "$RUNNER_TEMP/zip-input"
+            curl -L --fail --retry 3 --show-error \
+              -o "$RUNNER_TEMP/zip-input/source.zip" "${ZIP_URL}"
+            ZIP_SOURCE="$RUNNER_TEMP/zip-input/source.zip"
+          elif [ -n "${ZIP_PATH}" ]; then
+            if [ ! -f "${ZIP_PATH}" ]; then
+              echo "ZIP path is missing from the repository workspace: ${ZIP_PATH}" >&2
+              exit 1
+            fi
+            ZIP_SOURCE="${ZIP_PATH}"
+          else
+            echo "No zip_url or zip_path input was supplied." >&2
+            exit 1
+          fi
+
+          ARCHIVE_STEM="$(basename "${ZIP_SOURCE}" .zip)"
+          ARCHIVE_STEM="${ARCHIVE_STEM%.zip}"
+          if [ -z "${ARCHIVE_STEM}" ]; then
+            echo "Unable to determine the archive stem for ${ZIP_SOURCE}" >&2
+            exit 1
+          fi
+
+          echo "zip_source=${ZIP_SOURCE}" >> "$GITHUB_OUTPUT"
+          echo "archive_stem=${ARCHIVE_STEM}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract ZIP into a self-titled folder
+        shell: bash
+        env:
+          ZIP_SOURCE: ${{ steps.resolve.outputs.zip_source }}
+          ARCHIVE_STEM: ${{ steps.resolve.outputs.archive_stem }}
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          from scripts.security.offline_zip_keymaster import _safe_extract_members, _safe_log
+
+          source = Path(os.environ["ZIP_SOURCE"]).resolve()
+          output_root = Path(os.environ.get("OUTPUT_DIR", "output")).resolve()
+          archive_stem = os.environ["ARCHIVE_STEM"].strip()
+          if not archive_stem:
+              raise ValueError("Archive stem is empty")
+
+          if not source.exists():
+              raise FileNotFoundError(f"ZIP source not found: {source}")
+
+          try:
+              with zipfile.ZipFile(source, "r") as zf:
+                  zf.testzip()
+          except zipfile.BadZipFile as exc:
+              raise ValueError(f"Provided archive is not a readable ZIP file: {source.name}") from exc
+
+          output_root.mkdir(parents=True, exist_ok=True)
+          destination = output_root / archive_stem
+          if destination.exists():
+              for child in sorted(destination.iterdir(), reverse=True):
+                  if child.is_dir():
+                      shutil.rmtree(child)
+                  else:
+                      child.unlink()
+          else:
+              destination.mkdir(parents=True, exist_ok=True)
+
+          archive_bytes = source.read_bytes()
+          _safe_extract_members(archive_bytes, destination)
+          print(_safe_log(f"ZIP unpacked into self-titled output directory: {destination}"))
+          PY
+
+      - name: Upload extracted archive contents
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.artifact_name || steps.resolve.outputs.archive_stem }}
+          path: ${{ inputs.output_dir }}/${{ steps.resolve.outputs.archive_stem }}
+          if-no-files-found: error
+          retention-days: 30
