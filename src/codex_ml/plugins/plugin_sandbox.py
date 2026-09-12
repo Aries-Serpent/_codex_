@@ -168,6 +168,44 @@ def _validate_execution_timeout(value: Any) -> float:
     return timeout
 
 
+def _coerce_plugin_result(value: Any, *, _seen: set[int] | None = None) -> Any:
+    """Return a JSON-safe representation for inter-process plugin results."""
+
+    if value is None or isinstance(value, (str, bool, int)):
+        return value
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise TypeError("Non-finite floats are not allowed in plugin results")
+        return value
+    if isinstance(value, (list, tuple)):
+        seen = _seen or set()
+        marker = id(value)
+        if marker in seen:
+            raise TypeError("Recursive plugin results are not allowed")
+        seen.add(marker)
+        return [_coerce_plugin_result(item, _seen=seen) for item in value]
+    if isinstance(value, set):
+        seen = _seen or set()
+        marker = id(value)
+        if marker in seen:
+            raise TypeError("Recursive plugin results are not allowed")
+        seen.add(marker)
+        return [_coerce_plugin_result(item, _seen=seen) for item in sorted(value, key=repr)]
+    if isinstance(value, dict):
+        seen = _seen or set()
+        marker = id(value)
+        if marker in seen:
+            raise TypeError("Recursive plugin results are not allowed")
+        seen.add(marker)
+        safe: dict[str, Any] = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise TypeError("Plugin result dict keys must be strings")
+            safe[key] = _coerce_plugin_result(item, _seen=seen)
+        return safe
+    raise TypeError(f"Unsupported plugin result type: {type(value).__name__}")
+
+
 def _run_plugin_method(
     connection: Connection,
     plugin: Plugin,
@@ -179,13 +217,69 @@ def _run_plugin_method(
     try:
         method = getattr(plugin, method_name)
         try:
-            connection.send(("success", method(*args, **kwargs)))
+            result = method(*args, **kwargs)
+            connection.send(("success", _coerce_plugin_result(result)))
         except Exception as exc:
             connection.send(("failure", type(exc).__name__))
     except Exception:
         # Parent-side process-exit handling contains failures that cannot be
         # represented over the pipe (including serialization failures).
         pass
+    finally:
+        connection.close()
+
+
+def _resolve_plugin_contract(plugin: Plugin) -> PluginContract:
+    """Resolve a plugin contract without running it in the parent process."""
+
+    cached = getattr(plugin, "_contract", None)
+    if cached is not None:
+        return cached
+
+    if type(plugin).get_contract is Plugin.get_contract:
+        return Plugin.get_contract(plugin)
+
+    context = (
+        multiprocessing.get_context("fork")
+        if "fork" in multiprocessing.get_all_start_methods()
+        else multiprocessing.get_context()
+    )
+    receiving_connection, sending_connection = context.Pipe(duplex=False)
+    process = context.Process(target=_read_plugin_contract_in_child, args=(sending_connection, plugin), daemon=True)
+
+    try:
+        process.start()
+        sending_connection.close()
+        ready = wait((receiving_connection, process.sentinel), timeout=5.0)
+        if receiving_connection not in ready:
+            if process.sentinel in ready:
+                raise _PluginExecutionError("PluginProcessError")
+            raise TimeoutError("Plugin contract resolution timed out")
+
+        outcome, payload = receiving_connection.recv()
+        if outcome == "failure":
+            raise _PluginExecutionError(payload)
+        if not isinstance(payload, PluginContract):
+            raise TypeError("Plugin contract resolution returned an invalid contract")
+        plugin._contract = payload
+        return payload
+    except EOFError as exc:
+        raise _PluginExecutionError("PluginProcessError") from exc
+    finally:
+        receiving_connection.close()
+        _stop_process(process)
+
+
+def _read_plugin_contract_in_child(connection: Connection, plugin: Plugin) -> None:
+    """Resolve a plugin contract inside a child process to contain side effects."""
+
+    try:
+        contract = plugin.get_contract()
+        if not isinstance(contract, PluginContract):
+            raise TypeError("Plugin contract must be a PluginContract instance")
+        connection.send(("success", contract))
+    except Exception as exc:
+        connection.send(("failure", type(exc).__name__))
     finally:
         connection.close()
 
@@ -213,14 +307,22 @@ class Plugin(ABC):
     that use multiprocessing ``spawn`` so execution deadlines remain enforceable.
     """
 
-    def __init__(self, config: Optional[dict[str, Any]] = None):
+    def __init__(
+        self,
+        config: Optional[dict[str, Any]] = None,
+        *,
+        contract: Optional[PluginContract] = None,
+    ):
         """Initialize plugin.
 
         Args:
             config: Plugin configuration
+            contract: Trusted contract used by the sandbox when the plugin is
+                registered or executed in a parent process.
         """
         self.config = config or {}
         self.name = self.__class__.__name__
+        self._contract: PluginContract | None = contract
 
     @abstractmethod
     def initialize(self) -> bool:
@@ -247,12 +349,17 @@ class Plugin(ABC):
         """Clean up plugin resources."""
 
     def get_contract(self) -> PluginContract:
-        """Get plugin contract specification.
+        """Get the trusted plugin contract specification.
 
-        Returns:
-            PluginContract object
+        The sandbox calls this method on the base implementation to avoid
+        invoking subclass overrides in the parent process, where untrusted code
+        could perform work before the child execution boundary is enforced.
         """
-        return PluginContract(required_methods=["initialize", "execute", "cleanup"])
+        contract = getattr(self, "_contract", None)
+        if contract is None:
+            contract = PluginContract(required_methods=["initialize", "execute", "cleanup"])
+            self._contract = contract
+        return contract
 
 
 class PluginSandbox:
@@ -357,7 +464,7 @@ class PluginSandbox:
             outcome, payload = receiving_connection.recv()
             if outcome == "failure":
                 raise _PluginExecutionError(payload)
-            return payload
+            return _coerce_plugin_result(payload)
         except EOFError as exc:
             raise _PluginExecutionError("PluginProcessError") from exc
         finally:
@@ -470,7 +577,7 @@ class PluginSandbox:
             if not hasattr(plugin, method_name):
                 raise AttributeError(f"Plugin {plugin_name} has no method {method_name}")
 
-            timeout = _validate_execution_timeout(plugin.get_contract().max_execution_time)
+            timeout = _validate_execution_timeout(_resolve_plugin_contract(plugin).max_execution_time)
 
             # Execute in sandbox
             logger.debug(f"Executing {plugin_name}.{method_name}()")
@@ -576,7 +683,7 @@ class PluginManager:
 
         # Validate contract if enabled
         if self.validate_contracts:
-            contract = plugin.get_contract()
+            contract = _resolve_plugin_contract(plugin)
             if not self.sandbox.validate_contract(plugin, contract):
                 logger.error(f"Plugin {plugin_name} failed contract validation")
                 return False

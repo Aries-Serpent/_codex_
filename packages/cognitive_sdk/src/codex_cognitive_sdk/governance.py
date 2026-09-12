@@ -3,7 +3,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import Mapping, Protocol, runtime_checkable
+
+
+def _freeze_mapping(value: Mapping[str, object] | None) -> Mapping[str, object]:
+    """Return an immutable mapping snapshot for a frozen dataclass field."""
+
+    if value is None:
+        return MappingProxyType({})
+    if isinstance(value, MappingProxyType):
+        return value
+    return MappingProxyType(dict(value))
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,6 +25,9 @@ class GovernanceRequest:
     action: str
     resource: str
     context: Mapping[str, object] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "context", _freeze_mapping(self.context))
 
 
 @dataclass(frozen=True, slots=True)

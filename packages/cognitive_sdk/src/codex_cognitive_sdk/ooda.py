@@ -4,7 +4,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from types import MappingProxyType
 from typing import Mapping, Protocol, runtime_checkable
+
+
+def _freeze_mapping(value: Mapping[str, object] | None) -> Mapping[str, object]:
+    """Return an immutable mapping snapshot for a frozen dataclass field."""
+
+    if value is None:
+        return MappingProxyType({})
+    if isinstance(value, MappingProxyType):
+        return value
+    return MappingProxyType(dict(value))
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,6 +27,10 @@ class Observation:
     observed_at: datetime
     metadata: Mapping[str, object] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "data", _freeze_mapping(self.data))
+        object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
+
 
 @dataclass(frozen=True, slots=True)
 class Orientation:
@@ -24,6 +39,9 @@ class Orientation:
     context: Mapping[str, object]
     analysis: str
     confidence: float
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "context", _freeze_mapping(self.context))
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,6 +53,9 @@ class Decision:
     reason: str = ""
     confidence: float = 0.0
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "parameters", _freeze_mapping(self.parameters))
+
 
 @dataclass(frozen=True, slots=True)
 class ActionResult:
@@ -44,6 +65,9 @@ class ActionResult:
     output: object = None
     errors: tuple[str, ...] = ()
     metrics: Mapping[str, float] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "metrics", _freeze_mapping(self.metrics))
 
 
 @dataclass(frozen=True, slots=True)

@@ -4,7 +4,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from types import MappingProxyType
 from typing import Mapping, Protocol, Sequence, runtime_checkable
+
+
+def _freeze_mapping(value: Mapping[str, object] | None) -> Mapping[str, object]:
+    """Return an immutable mapping snapshot for a frozen dataclass field."""
+
+    if value is None:
+        return MappingProxyType({})
+    if isinstance(value, MappingProxyType):
+        return value
+    return MappingProxyType(dict(value))
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,6 +27,9 @@ class MemoryRecord:
     created_at: datetime
     metadata: Mapping[str, object] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
+
 
 @dataclass(frozen=True, slots=True)
 class MemoryQuery:
@@ -25,6 +39,9 @@ class MemoryQuery:
     limit: int = 10
     metadata: Mapping[str, object] = field(default_factory=dict)
     since: datetime | None = None
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "metadata", _freeze_mapping(self.metadata))
 
 
 @runtime_checkable
