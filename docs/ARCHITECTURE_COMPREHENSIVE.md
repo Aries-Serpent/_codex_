@@ -12,7 +12,7 @@
 
 ## Executive Summary
 
-The Codex ML Platform is a comprehensive, production-grade machine learning framework built on a **5-layer architecture** designed for autonomy, reproducibility, and scalability. This document provides a complete architectural overview including system design, component interactions, data flows, and key design patterns.
+The Codex ML Platform is a comprehensive machine learning and repository-automation framework built on a **5-layer architecture** designed for policy-scoped autonomy, reproducibility, and scalability. This document provides an architectural overview including system design, component interactions, data flows, and key design patterns; production readiness depends on the deployment profile and current validation evidence.
 
 **Core Principles:**
 - **Offline-First:** All components operate without internet connectivity

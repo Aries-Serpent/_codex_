@@ -70,6 +70,10 @@ nav:
   - Quick Reference: tokens/QUICK_REFERENCE.md
 - Architecture:
   - Overview: architecture.md
+  - Ecosystem Index: ECOSYSTEM_INDEX.md
+  - Federated Package Boundaries: architecture/federated_package_boundaries.md
+  - ADR-009 Federated Package Boundaries: adr/ADR-009-federated-package-boundaries.md
+  - Next-session Plan: plans/ARCHITECTURE_NEXT_SESSION.md
   - Codex Pipeline: architecture/codex_pipeline.md
   - Runtime Logic Map: system/mermaid_logic_map.md
 - Training:
@@ -163,8 +167,8 @@ nav:
 repo_name: Aries-Serpent/_codex_
 repo_url: https://github.com/Aries-Serpent/_codex_
 site_url: https://aries-serpent.github.io/_codex_/
-site_description: "Project documentation - v0.2.0 (MkDocs Material)"
-site_name: Codex Docs v0.2.0
+site_description: "Codex ML architecture and operations documentation - v0.3.0"
+site_name: Codex Docs v0.3.0
 strict: false
 theme:
   name: material

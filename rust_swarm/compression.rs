@@ -2,10 +2,14 @@
 //!
 //! Provides 10x compression ratio for task data.
 
-use flate2::write::{GzDecoder, GzEncoder};
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
 use flate2::Compression as FlateCompression;
 use pyo3::prelude::*;
-use std::io::prelude::*;
+use std::io::{Read, Write};
+
+/// Conservative default for data expanded across the Python/Rust boundary.
+pub const DEFAULT_MAX_DECOMPRESSED_BYTES: usize = 64 * 1024 * 1024;
 
 /// Compression engine with 10x ratio target
 pub struct Compression;
@@ -27,19 +31,24 @@ impl Compression {
 
     /// Decompress data
     pub fn decompress(data: &[u8]) -> PyResult<Vec<u8>> {
-        let mut decoder = GzDecoder::new(Vec::new());
-        decoder.write_all(data).map_err(|e| {
-            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
-                "Decompression write failed: {}",
-                e
-            ))
+        Self::decompress_with_limit(data, DEFAULT_MAX_DECOMPRESSED_BYTES)
+    }
+
+    /// Decompress data while refusing output larger than `max_output_bytes`.
+    pub fn decompress_with_limit(data: &[u8], max_output_bytes: usize) -> PyResult<Vec<u8>> {
+        let read_limit = max_output_bytes.saturating_add(1) as u64;
+        let mut decoder = GzDecoder::new(data).take(read_limit);
+        let mut output = Vec::with_capacity(data.len().min(max_output_bytes));
+        decoder.read_to_end(&mut output).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Decompression failed: {}", e))
         })?;
-        decoder.finish().map_err(|e| {
-            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
-                "Decompression finish failed: {}",
-                e
-            ))
-        })
+        if output.len() > max_output_bytes {
+            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                "Decompressed payload exceeds {} byte limit",
+                max_output_bytes
+            )));
+        }
+        Ok(output)
     }
 
     /// Calculate compression ratio
@@ -65,23 +74,35 @@ pub struct PyCompression;
 #[pymethods]
 impl PyCompression {
     #[staticmethod]
-    fn compress(data: Vec<u8>) -> PyResult<Vec<u8>> {
-        Compression::compress(&data)
+    fn compress(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
+        // `Vec<u8>` owns the copied Python buffer, so it remains valid after
+        // releasing the GIL for the blocking compression operation.
+        py.allow_threads(move || Compression::compress(&data))
     }
 
     #[staticmethod]
-    fn decompress(data: Vec<u8>) -> PyResult<Vec<u8>> {
-        Compression::decompress(&data)
+    fn decompress(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
+        py.allow_threads(move || Compression::decompress(&data))
     }
 
     #[staticmethod]
-    fn compress_tasks(tasks_json: Vec<u8>) -> PyResult<Vec<u8>> {
-        Compression::compress_tasks(&tasks_json)
+    #[pyo3(signature = (data, max_output_bytes))]
+    fn decompress_with_limit(
+        py: Python<'_>,
+        data: Vec<u8>,
+        max_output_bytes: usize,
+    ) -> PyResult<Vec<u8>> {
+        py.allow_threads(move || Compression::decompress_with_limit(&data, max_output_bytes))
     }
 
     #[staticmethod]
-    fn decompress_tasks(data: Vec<u8>) -> PyResult<Vec<u8>> {
-        Compression::decompress_tasks(&data)
+    fn compress_tasks(py: Python<'_>, tasks_json: Vec<u8>) -> PyResult<Vec<u8>> {
+        py.allow_threads(move || Compression::compress_tasks(&tasks_json))
+    }
+
+    #[staticmethod]
+    fn decompress_tasks(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
+        py.allow_threads(move || Compression::decompress_tasks(&data))
     }
 
     #[staticmethod]
@@ -159,6 +180,14 @@ mod tests {
             let decompressed = Compression::decompress(&compressed).unwrap();
             assert_eq!(data, decompressed, "Roundtrip failed for data");
         }
+    }
+
+    #[test]
+    fn test_decompression_limit() {
+        pyo3::prepare_freethreaded_python();
+        let compressed = Compression::compress(&vec![b'x'; 1024]).unwrap();
+        let error = Compression::decompress_with_limit(&compressed, 128).unwrap_err();
+        assert!(error.to_string().contains("exceeds 128 byte limit"));
     }
 
     #[test]

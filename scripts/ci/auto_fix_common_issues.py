@@ -224,7 +224,9 @@ class CascadeDetector:
     MAX_RETRIES = 3
     STATE_FILE = Path(".codex/cascade_detector_state.json")
 
-    def __init__(self):
+    def __init__(self, state_file: Path | None = None, persist: bool = True):
+        self.state_file = state_file or self.STATE_FILE
+        self.persist = persist
         # Track (pattern_id, file_path) → attempt_count
         self.pattern_attempts: dict[tuple[int, str], int] = {}
         # Track (pattern_id, file_path) → list of hashes of modifications
@@ -237,11 +239,11 @@ class CascadeDetector:
 
     def _load_state(self) -> None:
         """Load cascade detector state from persistent storage."""
-        if not self.STATE_FILE.exists():
+        if not self.state_file.exists():
             return
 
         try:
-            with open(self.STATE_FILE) as f:
+            with open(self.state_file) as f:
                 data = json.load(f)
             # Convert string keys back to tuples for pattern_attempts
             for key_str, value in data.get("pattern_attempts", {}).items():
@@ -255,14 +257,16 @@ class CascadeDetector:
             # Convert string keys to int for circuit_state
             circuit_state_data = data.get("circuit_state", {})
             self.circuit_state = {int(k): v for k, v in circuit_state_data.items()}
-            logger.info(f"✓ Loaded cascade detector state from {self.STATE_FILE}")
+            logger.info(f"✓ Loaded cascade detector state from {self.state_file}")
         except Exception as e:
             logger.warning(f"Could not load cascade detector state: {e}")
 
     def _save_state(self) -> None:
         """Persist cascade detector state to storage for cross-run detection."""
+        if not self.persist:
+            return
         try:
-            self.STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+            self.state_file.parent.mkdir(parents=True, exist_ok=True)
             # Convert tuple keys to strings for JSON serialization
             pattern_attempts_serialized = {
                 f"{pattern_id}:{file_path}": value
@@ -277,7 +281,7 @@ class CascadeDetector:
                 "pattern_attempts": pattern_attempts_serialized,
                 "circuit_state": circuit_state_serialized,
             }
-            with open(self.STATE_FILE, "w") as f:
+            with open(self.state_file, "w") as f:
                 json.dump(data, f, indent=2)
         except Exception as e:
             logger.warning(f"Could not save cascade detector state: {e}")
@@ -357,7 +361,10 @@ class CommonIssueFixer:
         self.fixes_applied: dict[str, int] = {}
 
         # Initialize cascade detector (S85 pattern prevention)
-        self.cascade_detector = CascadeDetector()
+        self.cascade_detector = CascadeDetector(
+            state_file=repo_root / CascadeDetector.STATE_FILE,
+            persist=not self.dry_run,
+        )
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {

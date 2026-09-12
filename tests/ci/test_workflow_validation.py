@@ -10,6 +10,7 @@ Test module for workflow validation.
 
 from __future__ import annotations
 
+from fnmatch import fnmatchcase
 from pathlib import Path
 
 import pytest
@@ -111,3 +112,29 @@ def test_workflow_top_level_permissions_is_empty_dict(filename: str) -> None:
         f"got {top_perms!r}. "
         "Set 'permissions: {}' at workflow level and use per-job permissions."
     )
+
+
+@pytest.mark.parametrize("event", ["push", "pull_request"])
+def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
+    """Metadata-only .codex updates must not consume the Rust CI matrix."""
+
+    workflow = _load_workflow("rust_swarm_ci.yml")
+    event_config = workflow["on"][event]
+    ignored_paths = event_config["paths-ignore"]
+
+    assert ".codex/**" in ignored_paths
+    for metadata_path in (
+        ".codex/campaign_metrics.jsonl",
+        ".codex/cascade_detector_state.json",
+        ".codex/evidence/archive_ops.jsonl",
+    ):
+        assert any(fnmatchcase(metadata_path, pattern) for pattern in ignored_paths)
+
+    for trigger_path in (
+        "Cargo.toml",
+        "Cargo.lock",
+        "rust_swarm/src/lib.rs",
+        "src/aries_serpent_core/cli.py",
+        ".github/workflows/rust_swarm_ci.yml",
+    ):
+        assert not any(fnmatchcase(trigger_path, pattern) for pattern in ignored_paths)

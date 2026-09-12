@@ -4,7 +4,27 @@
 
 use parking_lot::RwLock;
 use pyo3::prelude::*;
+use pyo3::types::PyString;
 use std::sync::Arc;
+
+pub const MAX_MESSAGEPACK_VALUE_BYTES: usize = 16 * 1024 * 1024;
+pub const MAX_MESSAGEPACK_BYTES: usize = MAX_MESSAGEPACK_VALUE_BYTES + 5;
+
+fn msgpack_string_length(data: &[u8]) -> Result<(usize, usize), String> {
+    let Some(&marker) = data.first() else {
+        return Err("MessagePack payload is empty".to_string());
+    };
+    match marker {
+        0xa0..=0xbf => Ok((1, (marker & 0x1f) as usize)),
+        0xd9 if data.len() >= 2 => Ok((2, data[1] as usize)),
+        0xda if data.len() >= 3 => Ok((3, u16::from_be_bytes([data[1], data[2]]) as usize)),
+        0xdb if data.len() >= 5 => Ok((
+            5,
+            u32::from_be_bytes([data[1], data[2], data[3], data[4]]) as usize,
+        )),
+        _ => Err("MessagePack bridge payload must contain one string".to_string()),
+    }
+}
 
 /// FFI bridge for safe Python-Rust communication
 pub struct FFIBridge {
@@ -21,18 +41,52 @@ impl FFIBridge {
         }
     }
 
+    fn value_error(&self, message: String) -> PyErr {
+        *self.error_count.write() += 1;
+        PyErr::new::<pyo3::exceptions::PyValueError, _>(message)
+    }
+
     /// Convert Python object to Rust bytes
-    pub fn from_python(&self, _py_obj: &PyAny) -> Result<Vec<u8>, String> {
+    pub fn from_python(&self, py_obj: &Bound<'_, PyAny>) -> Result<Vec<u8>, String> {
         *self.message_count.write() += 1;
-        // Placeholder implementation
-        Ok(vec![])
+        let value = py_obj.extract::<String>().map_err(|_| {
+            *self.error_count.write() += 1;
+            "FFI bridge currently accepts strings only".to_string()
+        })?;
+        if value.len() > MAX_MESSAGEPACK_VALUE_BYTES {
+            *self.error_count.write() += 1;
+            return Err(format!(
+                "MessagePack value exceeds {} byte limit",
+                MAX_MESSAGEPACK_VALUE_BYTES
+            ));
+        }
+        rmp_serde::to_vec(&value).map_err(|error| {
+            *self.error_count.write() += 1;
+            format!("MessagePack encoding failed: {error}")
+        })
     }
 
     /// Convert Rust bytes to Python object
-    pub fn to_python(&self, _data: &[u8], _py: Python) -> PyResult<PyObject> {
+    pub fn to_python(&self, data: &[u8], py: Python<'_>) -> PyResult<PyObject> {
         *self.message_count.write() += 1;
-        // Placeholder implementation
-        Ok(_py.None())
+        if data.len() > MAX_MESSAGEPACK_BYTES {
+            return Err(self.value_error(format!(
+                "MessagePack payload exceeds {} byte limit",
+                MAX_MESSAGEPACK_BYTES
+            )));
+        }
+        let (header_len, decoded_len) =
+            msgpack_string_length(data).map_err(|message| self.value_error(message))?;
+        if decoded_len > MAX_MESSAGEPACK_VALUE_BYTES
+            || header_len.checked_add(decoded_len) != Some(data.len())
+        {
+            return Err(self.value_error(
+                "MessagePack string length is invalid or exceeds the decoded limit".to_string(),
+            ));
+        }
+        let value: String = rmp_serde::from_slice(data)
+            .map_err(|error| self.value_error(format!("MessagePack decoding failed: {error}")))?;
+        Ok(PyString::new(py, &value).into_any().unbind())
     }
 
     /// Get message count
@@ -55,6 +109,7 @@ impl Default for FFIBridge {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pyo3::exceptions::PyValueError;
 
     #[test]
     fn test_ffi_bridge_creation() {
@@ -97,5 +152,63 @@ mod tests {
         }
 
         assert_eq!(bridge.message_count(), 1000);
+    }
+
+    #[test]
+    fn test_msgpack_length_validation_rejects_oversized_declaration() {
+        let payload = [0xdb, 0xff, 0xff, 0xff, 0xff];
+        let (_, decoded_len) = msgpack_string_length(&payload).unwrap();
+        assert!(decoded_len > MAX_MESSAGEPACK_VALUE_BYTES);
+    }
+
+    #[test]
+    fn test_msgpack_string_roundtrip_shape() {
+        let encoded = rmp_serde::to_vec(&"experimental").unwrap();
+        let (header_len, decoded_len) = msgpack_string_length(&encoded).unwrap();
+        assert_eq!(header_len + decoded_len, encoded.len());
+        let decoded: String = rmp_serde::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, "experimental");
+    }
+
+    #[test]
+    fn test_msgpack_rejects_payload_over_encoded_limit() {
+        let bridge = FFIBridge::new();
+        let payload = vec![0_u8; MAX_MESSAGEPACK_BYTES + 1];
+
+        Python::with_gil(|py| {
+            let error = bridge.to_python(&payload, py).unwrap_err();
+            assert!(error.is_instance_of::<PyValueError>(py));
+            assert!(error.to_string().contains("payload exceeds"));
+        });
+        assert_eq!(bridge.error_count(), 1);
+    }
+
+    #[test]
+    fn test_msgpack_rejects_declared_value_over_decoded_limit() {
+        let bridge = FFIBridge::new();
+        let declared_length = u32::try_from(MAX_MESSAGEPACK_VALUE_BYTES + 1).unwrap();
+        let mut payload = vec![0xdb];
+        payload.extend_from_slice(&declared_length.to_be_bytes());
+
+        Python::with_gil(|py| {
+            let error = bridge.to_python(&payload, py).unwrap_err();
+            assert!(error.is_instance_of::<PyValueError>(py));
+            assert!(error.to_string().contains("decoded limit"));
+        });
+        assert_eq!(bridge.error_count(), 1);
+    }
+
+    #[test]
+    fn test_msgpack_encoding_owns_data_beyond_python_lifetime() {
+        let bridge = FFIBridge::new();
+        let encoded = Python::with_gil(|py| {
+            let source = PyString::new(py, "owned across the boundary");
+            bridge.from_python(source.as_any()).unwrap()
+        });
+
+        let decoded: String = rmp_serde::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, "owned across the boundary");
+        assert_eq!(bridge.message_count(), 1);
+        assert_eq!(bridge.error_count(), 0);
     }
 }

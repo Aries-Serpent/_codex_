@@ -34,6 +34,7 @@ Usage:
 
 from __future__ import annotations
 
+import io
 import json
 import logging
 from dataclasses import asdict, dataclass, field
@@ -121,6 +122,9 @@ class SessionSerializer:
 
     SCHEMA_VERSION = 1
     SERIALIZER_VERSION = "1.0.0"
+    MAX_BINARY_BYTES = 64 * 1024 * 1024
+    MAX_CONTAINER_ITEMS = 100_000
+    MAX_DECOMPRESSED_BYTES = 256 * 1024 * 1024
 
     def __init__(self) -> None:
         """Initialize SessionSerializer."""
@@ -213,7 +217,9 @@ class SessionSerializer:
             logger.error(f"Failed to deserialize from JSON: {e}")
             raise
 
-    def deserialize_from_binary(self, binary_data: bytes) -> dict[str, Any]:
+    def deserialize_from_binary(
+        self, binary_data: bytes, *, max_bytes: int = MAX_BINARY_BYTES
+    ) -> dict[str, Any]:
         """Deserialize state from binary (msgpack) format.
 
         Args:
@@ -222,8 +228,31 @@ class SessionSerializer:
         Returns:
             State dictionary
         """
+        if not isinstance(binary_data, bytes):
+            raise TypeError("binary_data must be bytes")
+        if max_bytes <= 0:
+            raise ValueError("max_bytes must be positive")
+        if len(binary_data) > max_bytes:
+            raise ValueError("MessagePack payload exceeds maximum encoded size")
+
+        def reject_extension(code: int, data: bytes) -> None:
+            del code, data
+            raise ValueError("MessagePack extension values are not supported")
+
         try:
-            state_dict = msgpack.unpackb(binary_data, raw=False)
+            state_dict = msgpack.unpackb(
+                binary_data,
+                raw=False,
+                strict_map_key=True,
+                ext_hook=reject_extension,
+                max_str_len=max_bytes,
+                max_bin_len=max_bytes,
+                max_array_len=self.MAX_CONTAINER_ITEMS,
+                max_map_len=self.MAX_CONTAINER_ITEMS,
+                max_ext_len=0,
+            )
+            if not isinstance(state_dict, dict):
+                raise ValueError("MessagePack session state must be a mapping")
             logger.debug(f"Deserialized from binary: {len(binary_data)} bytes")
             return state_dict
         except Exception as e:
@@ -253,7 +282,13 @@ class SessionSerializer:
             logger.error(f"Failed to compress payload: {e}")
             raise
 
-    def decompress_payload(self, compressed_data: bytes) -> bytes:
+    def decompress_payload(
+        self,
+        compressed_data: bytes,
+        *,
+        max_output_bytes: int = MAX_DECOMPRESSED_BYTES,
+        max_compressed_bytes: int = MAX_BINARY_BYTES,
+    ) -> bytes:
         """Decompress gzip payload.
 
         Args:
@@ -264,8 +299,17 @@ class SessionSerializer:
         """
         import gzip
 
+        if not isinstance(compressed_data, bytes):
+            raise TypeError("compressed_data must be bytes")
+        if max_output_bytes <= 0 or max_compressed_bytes <= 0:
+            raise ValueError("decompression limits must be positive")
+        if len(compressed_data) > max_compressed_bytes:
+            raise ValueError("compressed payload exceeds maximum encoded size")
         try:
-            decompressed = gzip.decompress(compressed_data)
+            with gzip.GzipFile(fileobj=io.BytesIO(compressed_data)) as stream:
+                decompressed = stream.read(max_output_bytes + 1)
+            if len(decompressed) > max_output_bytes:
+                raise ValueError("decompressed payload exceeds maximum output size")
             logger.debug(
                 f"Decompressed payload: {len(compressed_data)} -> {len(decompressed)} bytes"
             )
