@@ -1,6 +1,6 @@
 # PyPI Trusted Publishing Setup for GitHub Actions
 
-**Version**: v0.3.0
+**Version**: v0.4.0
 **Last Updated:** 2026-09-12
 
 > **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong
@@ -21,6 +21,7 @@ versioned distribution:
 | Distribution | Source | Import |
 |---|---|---|
 | `codex-ml` | repository root | `codex_ml` |
+| `codex-cognitive-sdk` | `packages/cognitive_sdk` | `codex_cognitive_sdk` |
 | `codex-contracts` | `packages/contracts` | `codex_contracts` |
 | `codex-ml-evaluation` | `packages/evaluation` | `codex_evaluation` |
 | `codex-ml-lora` | `packages/lora` | `codex_lora` |
@@ -29,13 +30,16 @@ versioned distribution:
 Each PyPI and TestPyPI project must register the same trusted-publisher identity:
 owner `Aries-Serpent`, repository `_codex_`, workflow `pypi-publish.yml`, and the
 matching `pypi` or `testpypi` GitHub environment. A manual dispatch can publish one
-distribution or all distributions. Release tags select one distribution: `vX.Y.Z`
-publishes `codex-ml`, while `<distribution>-vX.Y.Z` publishes the named standalone
-distribution.
+distribution or all distributions. Release tags select one distribution and must match
+the built package version exactly: `vX.Y.Z` publishes `codex-ml`, while
+`<distribution>-vX.Y.Z` publishes the named standalone distribution.
 
 The publish jobs request `id-token: write`, generate attestations, and do not accept API
 token passwords. Project creation remains a one-time owner operation because an OIDC
-identity cannot create a new PyPI project.
+identity cannot create a new PyPI project. Before upload, the workflow validates that
+each artifact bundle contains exactly one wheel and one source distribution, checks for
+duplicate wheel paths, installs the built wheel in an isolated virtual environment, and
+verifies GitHub build provenance with `gh attestation verify`.
 
 ### Context
 
@@ -306,6 +310,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 3. **Select environment:**
  - **Branch:** `main` (or your default branch)
  - **Target environment:** `testpypi` (for testing) or `pypi` (for production)
+ - **Distribution:** `all` or one of the standalone packages, including
+   `codex-cognitive-sdk`
 
 4. **Click:** **"Run workflow"** (green button)
 
@@ -319,7 +325,11 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 ```
  Build Distribution
  Build package
+ Validate release artifacts
  Check distribution
+ Install built wheel in isolated virtualenv
+ Attest release artifacts
+ Verify build provenance
 
  Publish to PyPI
 Requesting OIDC token from GitHub # pragma: allowlist secret
@@ -344,7 +354,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 **Actions:**
 
-1. **Create clean test environment:**
+1. **Create clean isolated test environment:**
  ```bash
  python -m venv /tmp/test-codex-ml
  source /tmp/test-codex-ml/bin/activate # On Windows: test-codex-ml\Scripts\activate
@@ -364,6 +374,16 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
  ```
  version: 0.1.0
  ```
+
+  For standalone distributions, replace the project and import names accordingly:
+
+  | Distribution | Install command | Import |
+  |---|---|---|
+  | `codex-cognitive-sdk` | `pip install codex-cognitive-sdk` | `codex_cognitive_sdk` |
+  | `codex-contracts` | `pip install codex-contracts` | `codex_contracts` |
+  | `codex-ml-evaluation` | `pip install codex-ml-evaluation` | `codex_evaluation` |
+  | `codex-ml-lora` | `pip install codex-ml-lora` | `codex_lora` |
+  | `codex-ml-telemetry` | `pip install codex-ml-telemetry` | `codex_ml_telemetry` |
 
 5. **Clean up:**
  ```bash
@@ -410,6 +430,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 **Configuration Summary:**
 
 - **Project:** codex-ml
+- **Standalone Projects:** codex-cognitive-sdk, codex-contracts, codex-ml-evaluation, codex-ml-lora, codex-ml-telemetry
 - **Publisher:** GitHub Actions
 - **Workflow:** `.github/workflows/pypi-publish.yml`
 - **Environment:** `pypi`
@@ -437,6 +458,86 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
+## Phase 5: Publishing Assurance
+
+### Step 10: Validate release artifact layout and tag/version matching
+
+**Objective:** Ensure the workflow only publishes a single, correctly versioned wheel/sdist
+pair for the selected distribution.
+
+**Actions:**
+
+1. **Build the distribution locally:**
+   ```bash
+   python -m build packages/cognitive_sdk --outdir /tmp/codex-cognitive-sdk-dist
+   ```
+
+2. **Validate the artifact pair and duplicate wheel protection:**
+   ```bash
+   python -m scripts.release.publishing_assurance validate-dist \
+     --distribution codex-cognitive-sdk \
+     --dist-dir /tmp/codex-cognitive-sdk-dist
+   ```
+
+3. **Verify release tags against the built version before publishing to PyPI:**
+   ```bash
+   python -m scripts.release.publishing_assurance validate-tag \
+     --distribution codex-cognitive-sdk \
+     --dist-dir /tmp/codex-cognitive-sdk-dist \
+     --tag codex-cognitive-sdk-v0.1.0a1
+   ```
+
+4. **Install the wheel in a clean virtual environment to avoid source-tree shadowing:**
+   ```bash
+   python -m scripts.release.publishing_assurance install-wheel \
+     --distribution codex-cognitive-sdk \
+     --dist-dir /tmp/codex-cognitive-sdk-dist
+   ```
+
+**Validation:**
+- [ ] Exactly one wheel found
+- [ ] Exactly one source distribution found
+- [ ] No duplicate wheel basenames or nested duplicates
+- [ ] Release tag matches built version exactly
+- [ ] Wheel installs successfully in an isolated virtual environment
+
+---
+
+### Step 11: Verify provenance attestations before upload
+
+**Objective:** Confirm each wheel and source distribution has GitHub build provenance before
+publishing.
+
+**Actions:**
+
+1. **Generate build provenance in the workflow using `actions/attest-build-provenance`.**
+
+2. **Verify the attestation for the wheel and sdist using GitHub CLI:**
+   ```bash
+   gh attestation verify /tmp/codex-cognitive-sdk-dist/codex_cognitive_sdk-0.1.0a1-py3-none-any.whl \
+     --repo Aries-Serpent/_codex_ \
+     --signer-workflow Aries-Serpent/_codex_/.github/workflows/pypi-publish.yml \
+     --source-ref refs/tags/codex-cognitive-sdk-v0.1.0a1
+   ```
+
+3. **Repeat for the source distribution or use the workflow helper:**
+   ```bash
+   python -m scripts.release.publishing_assurance verify-attestation \
+     --distribution codex-cognitive-sdk \
+     --dist-dir /tmp/codex-cognitive-sdk-dist \
+     --repo Aries-Serpent/_codex_ \
+     --signer-workflow Aries-Serpent/_codex_/.github/workflows/pypi-publish.yml \
+     --source-ref refs/tags/codex-cognitive-sdk-v0.1.0a1
+   ```
+
+**Validation:**
+- [ ] GitHub attestation exists for the wheel
+- [ ] GitHub attestation exists for the source distribution
+- [ ] Signer workflow matches `.github/workflows/pypi-publish.yml`
+- [ ] Source ref matches the branch or release tag used to build the artifacts
+
+---
+
 ## Additional Resources
 
 ### Official Documentation
@@ -444,6 +545,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 - [PyPI Trusted Publishing Guide](https://docs.pypi.org/trusted-publishers/)
 - [GitHub Actions OIDC Documentation](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect)
 - [PyPA Publish Action](https://github.com/pypa/gh-action-pypi-publish)
+- [GitHub Artifact Attestations](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)
 
 ### Related Repository Documentation
 
@@ -470,6 +572,8 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 - [x] Configuration documented
 - [x] No API tokens stored in repository
 - [x] Security: OIDC-only authentication
+- [x] Release tag matches the published artifact version
+- [x] Wheel and sdist provenance verified before upload
 
 ---
 
