@@ -1,0 +1,25 @@
+{
+  "overall_score": 79.21596202754993,
+  "module_coverage": 97.60554505356018,
+  "function_coverage": 59.330024813895776,
+  "class_coverage": 89.62400578452639,
+  "method_coverage": 74.77313974591652,
+  "public_api_coverage": 82.54663113818043,
+  "total_files": 1587,
+  "total_lines": 339263,
+  "markdown_stats": {
+    "total_md_files": 2119,
+    "total_md_lines": 617554,
+    "files_with_links": 836,
+    "total_internal_links": 11959,
+    "api_reference_files": 65,
+    "tutorial_files": 10,
+    "guide_files": 151,
+    "architecture_files": 44
+  },
+  "cli_stats": {
+    "cli_files_found": 573,
+    "cli_commands_with_help": 754,
+    "cli_commands_without_help": 218
+  }
+}
