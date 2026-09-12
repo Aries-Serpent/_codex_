@@ -1,7 +1,7 @@
 # PyPI Trusted Publishing Setup for GitHub Actions
 
-**Version**: v0.2.0
-**Last Updated:** 2026-07-11
+**Version**: v0.3.0
+**Last Updated:** 2026-09-12
 
 > **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong
 > **Type:** Operations Guide
@@ -12,6 +12,30 @@
 ## Overview
 
 This guide provides **end-to-end, click-by-click instructions** for configuring PyPI Trusted Publishing (OIDC) to allow GitHub Actions workflows to publish Python packages without API tokens.
+
+### Current multi-distribution workflow
+
+The active `.github/workflows/pypi-publish.yml` builds and validates each independently
+versioned distribution:
+
+| Distribution | Source | Import |
+|---|---|---|
+| `codex-ml` | repository root | `codex_ml` |
+| `codex-contracts` | `packages/contracts` | `codex_contracts` |
+| `codex-ml-evaluation` | `packages/evaluation` | `codex_evaluation` |
+| `codex-ml-lora` | `packages/lora` | `codex_lora` |
+| `codex-ml-telemetry` | `packages/telemetry` | `codex_ml_telemetry` |
+
+Each PyPI and TestPyPI project must register the same trusted-publisher identity:
+owner `Aries-Serpent`, repository `_codex_`, workflow `pypi-publish.yml`, and the
+matching `pypi` or `testpypi` GitHub environment. A manual dispatch can publish one
+distribution or all distributions. Release tags select one distribution: `vX.Y.Z`
+publishes `codex-ml`, while `<distribution>-vX.Y.Z` publishes the named standalone
+distribution.
+
+The publish jobs request `id-token: write`, generate attestations, and do not accept API
+token passwords. Project creation remains a one-time owner operation because an OIDC
+identity cannot create a new PyPI project.
 
 ### Context
 

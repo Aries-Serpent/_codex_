@@ -15,8 +15,10 @@ to expose metrics over HTTP.
 
 ## Public API
 
-- `MetricsRegistry` exposes model accuracy, HTTP request/error, and active-model metrics.
+- `MetricsRegistry` exposes model accuracy, HTTP request/error/latency, active-request,
+  and active-model metrics.
 - `HealthReport` and `HealthStatus` are immutable, JSON-compatible health contracts.
+- `render_prometheus` renders a registry without coupling to a web framework.
 - `start_metrics_server` starts a localhost-bound Prometheus endpoint.
 - `track_time` and the three legacy metric constants preserve the initial compatibility
   surface used by `codex_ml.telemetry`.

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-ml-lora"
+dynamic = ["version"]
+description = "Import-light LoRA contracts and optional PEFT adapters for Codex ML"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+authors = [{ name = "Aries Serpent" }]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[project.optional-dependencies]
+peft = ["peft>=0.20.0,<1"]
+test = ["pytest>=9.0.3,<10"]
+
+[tool.hatch.version]
+path = "src/codex_lora/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_lora"]
+
+[tool.coverage.run]
+source_pkgs = ["codex_lora", "tests"]
+branch = true

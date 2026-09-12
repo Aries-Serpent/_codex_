@@ -5,6 +5,7 @@ from codex_ml_telemetry import (
     HealthReport,
     HealthStatus,
     MetricsRegistry,
+    render_prometheus,
     track_time,
 )
 
@@ -31,7 +32,17 @@ def test_registry_exposes_stable_metrics() -> None:
     metrics.model_accuracy.labels(model="stub").set(1.0)
     metrics.http_requests.labels(method="GET", endpoint="/health", status="200").inc()
     metrics.http_errors.labels(method="GET", endpoint="/health", error_type="none").inc(0)
+    metrics.http_latency.labels(method="GET", endpoint="/health").observe(0.01)
+    metrics.active_requests.set(0)
     metrics.active_models.set(1)
+
+
+def test_prometheus_rendering_is_text() -> None:
+    metrics = MetricsRegistry(namespace="render_test")
+    rendered = render_prometheus(metrics.registry)
+
+    assert isinstance(rendered, str)
+    assert rendered
 
 
 def test_track_time_preserves_return_value() -> None:

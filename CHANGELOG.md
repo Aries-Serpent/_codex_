@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #unknown)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #unknown (SHA `3570874349c4928678bc690dbcc00ac72ff20432`) at 2026-09-12T07:10:15Z [auto-generated]
+
 ### Fixed — PR #5608 dependency bump + governance readiness follow-up
 - Confirmed the active `accelerate` dependency bump remains consistent with the repo’s direct runtime and CPU manifests and preserved the guarded `bcrypt` dependency fix required by the config-management regression path.
 - Refreshed the current session governance artifacts (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `.codex/aftermath/pda_iterations.jsonl`) so the active stack PR clears the stale `PDA entry today` and `accountability report today` readiness checks without broadening scope.

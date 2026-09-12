@@ -106,6 +106,8 @@ and planset routing in
 ## Navigation
 
 - [Architecture overview](architecture.md)
+- [Federated package boundaries](architecture/federated_package_boundaries.md)
+- [ADR-009: Federated Package Boundaries](adr/ADR-009-federated-package-boundaries.md)
 - [Evidence-based repository explanation](REPOSITORY_EXPLANATION.md)
 - [Repository map](REPOSITORY_MAP.md)
 - [Workflow and governance map](WORKFLOW_MAP.md)

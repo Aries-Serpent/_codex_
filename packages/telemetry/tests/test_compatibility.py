@@ -8,6 +8,7 @@ def test_legacy_telemetry_surface_is_available() -> None:
         "EXAMPLES_PROCESSED",
         "REQUEST_LATENCY",
         "TRAIN_STEP_DURATION",
+        "render_prometheus",
         "start_metrics_server",
         "track_time",
     }

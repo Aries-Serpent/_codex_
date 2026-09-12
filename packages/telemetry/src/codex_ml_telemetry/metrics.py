@@ -98,6 +98,19 @@ class MetricsRegistry:
             ["method", "endpoint", "error_type"],
             **common,
         )
+        self.http_latency = _metric(
+            Histogram,
+            f"{namespace}_http_request_duration_seconds",
+            "HTTP request duration in seconds",
+            ["method", "endpoint"],
+            **common,
+        )
+        self.active_requests = _metric(
+            Gauge,
+            f"{namespace}_active_requests",
+            "HTTP requests currently being processed",
+            **common,
+        )
         self.active_models = _metric(
             Gauge,
             f"{namespace}_active_models",

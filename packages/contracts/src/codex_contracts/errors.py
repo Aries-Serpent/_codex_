@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Mapping
 
-from ._validation import JsonValue, freeze_json_mapping
+from ._validation import FrozenJsonValue, JsonValue, freeze_json_mapping, thaw_json_mapping
 
 
 class ContractValidationError(ValueError):
@@ -19,7 +19,7 @@ class ErrorEnvelope:
     category: str
     message: str
     retryable: bool = False
-    details: Mapping[str, Any] = field(default_factory=dict)
+    details: Mapping[str, FrozenJsonValue] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.category:
@@ -37,5 +37,5 @@ class ErrorEnvelope:
             "category": self.category,
             "message": self.message,
             "retryable": self.retryable,
-            "details": dict(self.details),
+            "details": thaw_json_mapping(self.details),
         }

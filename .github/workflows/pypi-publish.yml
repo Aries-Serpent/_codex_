@@ -13,6 +13,18 @@ name: Publish Python Package to PyPI
         - testpypi
         - pypi
         default: testpypi
+      package:
+        description: Distribution to publish
+        required: true
+        type: choice
+        options:
+        - all
+        - codex-ml
+        - codex-contracts
+        - codex-ml-evaluation
+        - codex-ml-lora
+        - codex-ml-telemetry
+        default: all
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
@@ -20,9 +32,23 @@ permissions:
   contents: read
 jobs:
   build:
-    name: Build Distribution
+    name: Build ${{ matrix.distribution.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+        - name: codex-ml
+          path: .
+        - name: codex-contracts
+          path: packages/contracts
+        - name: codex-ml-evaluation
+          path: packages/evaluation
+        - name: codex-ml-lora
+          path: packages/lora
+        - name: codex-ml-telemetry
+          path: packages/telemetry
     steps:
     - uses: actions/checkout@v7
       with:
@@ -45,19 +71,24 @@ jobs:
 
         '
     - name: Build package
-      run: python -m build
+      env:
+        DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+        DISTRIBUTION_PATH: ${{ matrix.distribution.path }}
+      run: python -m build "$DISTRIBUTION_PATH" --outdir "dist/$DISTRIBUTION_NAME"
     - name: Check distribution
-      run: twine check dist/*
+      env:
+        DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+      run: twine check "dist/$DISTRIBUTION_NAME"/*
     - name: Upload artifacts
       uses: actions/upload-artifact@v7
       with:
-        path: dist/
-        name: python-package-distributions
+        path: dist/${{ matrix.distribution.name }}/
+        name: python-package-${{ matrix.distribution.name }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   publish-testpypi:
-    name: Publish to TestPyPI
+    name: Publish ${{ matrix.distribution }} to TestPyPI
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment
       == 'testpypi'
     needs:
@@ -66,16 +97,26 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+        - codex-ml
+        - codex-contracts
+        - codex-ml-evaluation
+        - codex-ml-lora
+        - codex-ml-telemetry
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/codex-ml
+      url: https://test.pypi.org/p/${{ matrix.distribution }}
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v8
       with:
         path: dist/
-        name: python-package-distributions
+        name: python-package-${{ matrix.distribution }}
     - name: Publish to TestPyPI
+      if: inputs.package == 'all' || inputs.package == matrix.distribution
       uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
@@ -83,7 +124,7 @@ jobs:
         skip-existing: true
     timeout-minutes: 30
   publish-pypi:
-    name: Publish to PyPI
+    name: Publish ${{ matrix.distribution }} to PyPI
     if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch'
       && github.event.inputs.environment == 'pypi')
     needs:
@@ -92,51 +133,112 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+        - codex-ml
+        - codex-contracts
+        - codex-ml-evaluation
+        - codex-ml-lora
+        - codex-ml-telemetry
     environment:
       name: pypi
-      url: https://pypi.org/p/codex-ml
+      url: https://pypi.org/p/${{ matrix.distribution }}
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v8
       with:
         path: dist/
-        name: python-package-distributions
+        name: python-package-${{ matrix.distribution }}
     - name: Publish to PyPI
+      if: >-
+        (github.event_name == 'release' &&
+        ((matrix.distribution == 'codex-ml' &&
+        startsWith(github.event.release.tag_name, 'v')) ||
+        startsWith(github.event.release.tag_name,
+        format('{0}-v', matrix.distribution)))) ||
+        (github.event_name == 'workflow_dispatch' &&
+        (inputs.package == 'all' || inputs.package == matrix.distribution))
       uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
       with:
         attestations: true
         skip-existing: false
     timeout-minutes: 45
   verify-installation:
-    name: Verify Installation (Python 3.12)
+    name: Verify ${{ matrix.distribution.name }} (Python 3.12)
     needs:
     - publish-testpypi
     - publish-pypi
     if: always() && (needs.publish-testpypi.result == 'success' || needs.publish-pypi.result
       == 'success')
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+        - name: codex-ml
+          import: codex_ml
+        - name: codex-contracts
+          import: codex_contracts
+        - name: codex-ml-evaluation
+          import: codex_evaluation
+        - name: codex-ml-lora
+          import: codex_lora
+        - name: codex-ml-telemetry
+          import: codex_ml_telemetry
     steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
     - name: Install from TestPyPI
-      if: needs.publish-testpypi.result == 'success'
+      if: >-
+        needs.publish-testpypi.result == 'success' &&
+        (inputs.package == 'all' || inputs.package == matrix.distribution.name)
+      env:
+        DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
       run: "pip install --index-url https://test.pypi.org/simple/ \\\n           \
-        \ --extra-index-url https://pypi.org/simple/ \\\n            codex-ml\n"
+        \ --extra-index-url https://pypi.org/simple/ \\\n            \"$DISTRIBUTION_NAME\"\n"
     - name: Install from PyPI
-      if: needs.publish-pypi.result == 'success'
-      run: pip install codex-ml
+      if: >-
+        needs.publish-pypi.result == 'success' &&
+        ((github.event_name == 'release' &&
+        ((matrix.distribution.name == 'codex-ml' &&
+        startsWith(github.event.release.tag_name, 'v')) ||
+        startsWith(github.event.release.tag_name,
+        format('{0}-v', matrix.distribution.name)))) ||
+        (github.event_name == 'workflow_dispatch' &&
+        (inputs.package == 'all' ||
+        inputs.package == matrix.distribution.name)))
+      env:
+        DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+      run: pip install "$DISTRIBUTION_NAME"
     - name: Test import
-      run: 'python -c "import codex_ml; print(f''Version: {codex_ml.__version__}'')"
+      if: >-
+        (github.event_name == 'release' &&
+        ((matrix.distribution.name == 'codex-ml' &&
+        startsWith(github.event.release.tag_name, 'v')) ||
+        startsWith(github.event.release.tag_name,
+        format('{0}-v', matrix.distribution.name)))) ||
+        (github.event_name == 'workflow_dispatch' &&
+        (inputs.package == 'all' ||
+        inputs.package == matrix.distribution.name))
+      env:
+        IMPORT_NAME: ${{ matrix.distribution.import }}
+      run: |
+        python - <<'PY'
+        import importlib
+        import os
 
-        '
-    - name: Run basic tests
-      run: 'python -c "from codex_ml import __version__; assert __version__ is not
-        None"
-
-        '
+        module = importlib.import_module(os.environ["IMPORT_NAME"])
+        print(f"Version: {module.__version__}")
+        assert module.__version__
+        PY
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
