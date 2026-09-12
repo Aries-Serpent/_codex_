@@ -7,7 +7,7 @@ description = "Rust orchestration layer for Codex AI Agent Swarm"
 license = "MIT"
 
 [lib]
-name = "codex_engine"
+name = "codex_swarm"
 crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 
 [dependencies]
