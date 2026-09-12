@@ -10,9 +10,18 @@ from __future__ import annotations
 import hashlib
 import json
 import time
+from collections.abc import Collection
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from codex_contracts import ContractValidationError, EventEnvelope
+
+ACCEPTED_EVENT_SCHEMA_VERSIONS = frozenset({"1.0"})
+_AUDIT_EVENT_KIND = "security.audit"
+_AUDIT_EVENT_SOURCE = "security.audit_logger"
+_ENVELOPE_MARKER_FIELDS = frozenset({"schema_version", "kind", "source", "payload"})
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -23,13 +32,23 @@ def _sha256_bytes(data: bytes) -> str:
 class AuditLogger:
     path: Path
 
-    def __init__(self, path: Path | None = None, log_dir: Path | None = None):
+    def __init__(
+        self,
+        path: Path | None = None,
+        log_dir: Path | None = None,
+        *,
+        accepted_event_versions: Collection[str] = ACCEPTED_EVENT_SCHEMA_VERSIONS,
+    ):
         """Initialize audit logger with path or log_dir.
 
         Args:
             path: Direct path to log file (takes precedence)
             log_dir: Directory for audit logs (creates audit.log inside)
+            accepted_event_versions: Envelope schema versions this reader accepts.
         """
+        if isinstance(accepted_event_versions, (str, bytes)) or not accepted_event_versions:
+            raise ValueError("accepted_event_versions must be a non-empty collection")
+        self.accepted_event_versions = frozenset(accepted_event_versions)
         if path is not None:
             self.path = path
         elif log_dir is not None:
@@ -46,8 +65,6 @@ class AuditLogger:
             action: Action performed
             user: User performing action
         """
-        from datetime import datetime, timezone
-
         log_entry = {
             "timestamp": datetime.now(tz=timezone.utc).isoformat(),
             "event_type": event_type,
@@ -69,9 +86,18 @@ class AuditLogger:
 
     def append(self, event: dict[str, Any], *, ts: float | None = None) -> dict[str, Any]:
         prev = self._last_hash()
+        event_ts = float(ts if ts is not None else time.time())
+        envelope = EventEnvelope(
+            kind=_AUDIT_EVENT_KIND,
+            source=_AUDIT_EVENT_SOURCE,
+            payload=event,
+            emitted_at=datetime.fromtimestamp(event_ts, tz=timezone.utc).isoformat().replace(
+                "+00:00", "Z"
+            ),
+        )
         payload: dict[str, Any] = {
-            "ts": float(ts if ts is not None else time.time()),
-            "event": event,
+            "ts": event_ts,
+            "event": json.loads(envelope.to_json()),
             "prev_hash": prev,
         }
         record_bytes = json.dumps(payload, sort_keys=True).encode("utf-8")
@@ -101,6 +127,20 @@ class AuditLogger:
             hash_value = rec.get("hash")
             if not isinstance(hash_value, str) or hash_value != computed:
                 return False
+            event = rec.get("event")
+            if not isinstance(event, dict):
+                return False
+            # A legacy payload may itself contain a ``schema_version`` key. Treat
+            # the record as an envelope only when the contract framing fields
+            # are present, then let EventEnvelope enforce its closed field set.
+            if _ENVELOPE_MARKER_FIELDS.issubset(event):
+                try:
+                    EventEnvelope.from_json(
+                        json.dumps(event),
+                        accepted_versions=self.accepted_event_versions,
+                    )
+                except (ContractValidationError, TypeError, ValueError):
+                    return False
             prev = hash_value
         return True
 

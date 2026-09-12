@@ -18,6 +18,7 @@ Author: Codex Team
 from __future__ import annotations
 
 import hashlib
+import hmac
 import io
 import json
 import logging
@@ -922,18 +923,30 @@ def load_checkpoint(
     *,
     restore_rng: bool = False,
     map_location: str | torch.device | None = "cpu",
+    expected_file_sha256: str | None = None,
 ) -> tuple[dict[str, Any], CheckpointMeta]:
     """
     Load a checkpoint file and optionally restore RNG state from metadata.
+
+    Pass an independently trusted ``expected_file_sha256`` for checkpoints
+    crossing a trust boundary. The digest is checked before deserialization.
     """
     p = Path(path)
     if p.is_dir():
-        state, meta, _actual = load_best(p)
+        state, meta, _actual = load_best(p, expected_file_sha256=expected_file_sha256)
         if restore_rng and meta.rng:
             _rng_restore(meta.rng)
         return state, meta
 
     raw = _read_bytes(p)
+    if expected_file_sha256 is not None:
+        if not isinstance(expected_file_sha256, str) or not re.fullmatch(
+            r"[0-9a-f]{64}", expected_file_sha256
+        ):
+            raise ValueError("expected_file_sha256 must be a lowercase SHA-256 digest")
+        actual_file_sha256 = hashlib.sha256(raw).hexdigest()
+        if not hmac.compare_digest(actual_file_sha256, expected_file_sha256):
+            raise CheckpointIntegrityError(f"Provenance digest mismatch for {p.name}")
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
     except (
@@ -951,6 +964,13 @@ def load_checkpoint(
     if not isinstance(obj, dict):
         raise CheckpointIntegrityError(f"Checkpoint payload for {p.name} is not a mapping")
     meta_dict = obj.get("meta", {})
+    if not isinstance(meta_dict, dict):
+        raise CheckpointIntegrityError(f"Checkpoint metadata for {p.name} is not a mapping")
+    if str(meta_dict.get("schema_version", "")) != SCHEMA_VERSION:
+        raise CheckpointIntegrityError(
+            f"Unsupported checkpoint schema_version={meta_dict.get('schema_version')}; "
+            f"expected {SCHEMA_VERSION}"
+        )
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__})
     # Integrity verification
@@ -959,7 +979,9 @@ def load_checkpoint(
     calc_digest = hashlib.sha256(
         _serialize_payload({"state": state, "meta": digest_meta})
     ).hexdigest()
-    if expected_digest and calc_digest != expected_digest:
+    if not isinstance(expected_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_digest):
+        raise CheckpointIntegrityError("Missing or invalid sha256 in checkpoint metadata")
+    if not hmac.compare_digest(calc_digest, expected_digest):
         raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}")
     if restore_rng and meta.rng:
         _rng_restore(meta.rng)
@@ -968,6 +990,8 @@ def load_checkpoint(
 
 def load_best(
     checkpoint_dir: str | Path,
+    *,
+    expected_file_sha256: str | None = None,
 ) -> tuple[dict[str, Any], CheckpointMeta, Path]:
     """
     Load the best checkpoint according to index.json (by metric and mode).
@@ -985,6 +1009,16 @@ def load_best(
         reverse=reverse,
     )
     best = entries_sorted[0]
-    path = root / best["path"]
-    state, meta = load_checkpoint(path)
+    entry_path = best.get("path")
+    if not isinstance(entry_path, str) or not entry_path:
+        raise CheckpointIntegrityError("Checkpoint index entry has an invalid path")
+    resolved_root = root.resolve()
+    path = (resolved_root / entry_path).resolve()
+    try:
+        path.relative_to(resolved_root)
+    except ValueError as exc:
+        raise CheckpointIntegrityError("Checkpoint index path escapes its directory") from exc
+    if path == resolved_root:
+        raise CheckpointIntegrityError("Checkpoint index path must identify a child entry")
+    state, meta = load_checkpoint(path, expected_file_sha256=expected_file_sha256)
     return state, meta, path

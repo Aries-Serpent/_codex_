@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-cognitive-sdk"
+dynamic = ["version"]
+description = "Dependency-light governance, memory, and OODA contracts for Codex"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+keywords = ["cognitive", "governance", "memory", "ooda", "protocols"]
+authors = [{ name = "Aries Serpent" }]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=9.0.3,<10"]
+
+[project.urls]
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+Source = "https://github.com/Aries-Serpent/_codex_"
+
+[tool.hatch.version]
+path = "src/codex_cognitive_sdk/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_cognitive_sdk"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

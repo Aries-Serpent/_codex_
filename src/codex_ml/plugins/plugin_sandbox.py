@@ -7,7 +7,6 @@ contract testing, health monitoring, and automatic failure handling.
 from __future__ import annotations
 
 import logging
-import traceback
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -250,6 +249,8 @@ class PluginSandbox:
             Execution result or None on failure
         """
         plugin_name = plugin.name
+        if method_name != "execute":
+            raise ValueError("sandboxed plugin execution is limited to execute()")
 
         # Initialize health tracking
         if plugin_name not in self.health:
@@ -306,18 +307,19 @@ class PluginSandbox:
 
             return result
 
-        except (ValueError, TypeError, RuntimeError) as e:
-            type(e).__name__
+        except Exception as e:
             logger.debug("Exception: <ERROR_TYPE>")
             # Record failure
-            error_msg = f"{type(e).__name__}: {e!s}"
+            # Exception text is plugin-controlled and may itself raise from
+            # __str__; keep failure accounting inside the trust boundary.
+            error_msg = type(e).__name__
             health.record_failure(error_msg)
 
             logger.error(
                 f"Plugin {plugin_name}.{method_name}() failed "
                 f"(failures: {health.failure_count}/{self.max_failures}): {error_msg}"
             )
-            logger.debug(traceback.format_exc())
+            logger.debug("Plugin raised %s", type(e).__name__)
 
             # Quarantine if threshold reached (before auto-disable)
             if (
@@ -420,8 +422,7 @@ class PluginManager:
             if not plugin.initialize():
                 logger.error(f"Plugin {plugin_name} initialization failed")
                 return False
-        except (ValueError, TypeError, RuntimeError) as e:
-            type(e).__name__
+        except Exception:
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Plugin {plugin_name} initialization raised exception: <ERROR_TYPE>")
             return False
@@ -473,8 +474,7 @@ class PluginManager:
             try:
                 plugin.cleanup()
                 logger.info(f"Plugin {plugin_name} cleanup complete")
-            except (ValueError, TypeError, RuntimeError) as e:
-                type(e).__name__
+            except Exception:
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Plugin {plugin_name} cleanup failed: <ERROR_TYPE>")
 

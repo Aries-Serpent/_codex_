@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
 from security.audit_logger import AuditLogger, log_audit_event
+
+
+def _rehash(record: dict[str, object]) -> None:
+    encoded = json.dumps(
+        {key: value for key, value in record.items() if key != "hash"}, sort_keys=True
+    ).encode("utf-8")
+    record["hash"] = hashlib.sha256(encoded).hexdigest()
 
 # ---------------------------------------------------------------------------
 # AuditLogger construction
@@ -42,6 +50,73 @@ def test_audit_logger_appends_and_verifies(tmp_path: Path) -> None:
 
     assert first["hash"] != second["hash"], "Condition must be true"
     assert al.verify_chain() is True, "Condition must be true"
+
+
+def test_audit_logger_emits_canonical_envelope_with_extensions_in_payload(
+    tmp_path: Path,
+) -> None:
+    al = AuditLogger(tmp_path / "audit.log")
+
+    record = al.append({"action": "create", "tenant": "example"}, ts=0)
+
+    event = record["event"]
+    assert set(event) == {
+        "schema_version",
+        "event_id",
+        "emitted_at",
+        "kind",
+        "source",
+        "source_version",
+        "correlation_id",
+        "payload",
+    }
+    assert event["schema_version"] == "1.0"
+    assert event["kind"] == "security.audit"
+    assert event["payload"] == {"action": "create", "tenant": "example"}
+    assert "tenant" not in event
+
+
+def test_verify_chain_accepts_legacy_event_dictionary(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    record: dict[str, object] = {
+        "ts": 0.0,
+        "event": {"action": "legacy"},
+        "prev_hash": "0" * 64,
+    }
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+def test_verify_chain_accepts_legacy_payload_schema_version(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    record: dict[str, object] = {
+        "ts": 0.0,
+        "event": {"action": "legacy", "schema_version": "legacy-v2"},
+        "prev_hash": "0" * 64,
+    }
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+def test_verify_chain_negotiates_versions_and_rejects_envelope_extensions(
+    tmp_path: Path,
+) -> None:
+    log_path = tmp_path / "audit.log"
+    logger = AuditLogger(log_path)
+    logger.append({"action": "create"}, ts=0)
+
+    assert AuditLogger(log_path, accepted_event_versions={"2.0"}).verify_chain() is False
+
+    record = json.loads(log_path.read_text(encoding="utf-8"))
+    record["event"]["tenant"] = "not-allowed-at-envelope-level"
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert logger.verify_chain() is False
 
 
 def test_audit_logger_detects_tampering(tmp_path: Path) -> None:
@@ -138,10 +213,11 @@ def test_log_event_writes_structured_entry(tmp_path: Path) -> None:
     )
     assert log_path.exists(), "Condition must be true"
     data = json.loads(log_path.read_text(encoding="utf-8").strip())
-    assert data["event"]["event_type"] == "authentication", "Data must not be empty"
-    assert data["event"]["user"] == "testuser", "Data must not be empty"
-    assert data["event"]["action"] == "login", "Data must not be empty"
-    assert data["event"]["resource"] == "/api/login", "Data must not be empty"
+    payload = data["event"]["payload"]
+    assert payload["event_type"] == "authentication", "Data must not be empty"
+    assert payload["user"] == "testuser", "Data must not be empty"
+    assert payload["action"] == "login", "Data must not be empty"
+    assert payload["resource"] == "/api/login", "Data must not be empty"
 
 
 def test_log_event_chain_is_valid(tmp_path: Path) -> None:
@@ -168,24 +244,25 @@ def test_log_audit_event_records_content(tmp_path: Path) -> None:
     log_file = tmp_path / "audit.log"
     content = log_file.read_text(encoding="utf-8")
     data = json.loads(content.strip())
-    assert data["event"]["user"] == "alice", "Data must not be empty"
-    assert data["event"]["action"] == "login", "Data must not be empty"
-    assert data["event"]["type"] == "authentication", "Data must not be empty"
-    assert data["event"]["success"] is True, "Data must not be empty"
+    payload = data["event"]["payload"]
+    assert payload["user"] == "alice", "Data must not be empty"
+    assert payload["action"] == "login", "Data must not be empty"
+    assert payload["type"] == "authentication", "Data must not be empty"
+    assert payload["success"] is True, "Data must not be empty"
 
 
 def test_log_audit_event_failure_recorded(tmp_path: Path) -> None:
     log_audit_event("authentication", "bob", "login", success=False, log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is False, "Data must not be empty"
+    assert data["event"]["payload"]["success"] is False, "Data must not be empty"
 
 
 def test_log_audit_event_default_success(tmp_path: Path) -> None:
     log_audit_event("access", "user1", "read", log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is True, "Data must not be empty"
+    assert data["event"]["payload"]["success"] is True, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
