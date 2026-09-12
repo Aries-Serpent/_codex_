@@ -9,6 +9,7 @@ description = "Dependency-light governance, memory, and OODA contracts for Codex
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = "MIT"
+license-files = ["LICENSE.txt"]
 keywords = ["cognitive", "governance", "memory", "ooda", "protocols"]
 authors = [{ name = "Aries Serpent" }]
 classifiers = [
@@ -37,4 +38,3 @@ packages = ["src/codex_cognitive_sdk"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-

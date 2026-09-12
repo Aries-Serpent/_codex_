@@ -9,11 +9,15 @@ description = "Import-light evaluation contracts and adapters for Codex ML"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = "MIT"
+license-files = ["LICENSE.txt"]
+keywords = ["adapters", "contracts", "evaluation", "metrics"]
 authors = [{ name = "Aries Serpent" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Typing :: Typed",
 ]
 dependencies = []
 
@@ -25,6 +29,11 @@ hf = [
 ]
 framework = ["evaluate>=0.4.6,<1"]
 test = ["pytest>=9.0.3,<10"]
+
+[project.urls]
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+Source = "https://github.com/Aries-Serpent/_codex_"
 
 [tool.hatch.version]
 path = "src/codex_evaluation/__about__.py"

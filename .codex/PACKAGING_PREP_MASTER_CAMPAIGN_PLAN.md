@@ -78,7 +78,13 @@ Technology Stack:
 
 ---
 
-## 🎯 FOUR-PACKAGE DISTRIBUTION STRATEGY
+## 🎯 HISTORICAL FOUR-PACKAGE DISTRIBUTION STRATEGY (SUPERSEDED BY ADR-009)
+
+> **ADR-009 supersession note (2026-09-12):** The `aries-serpent-*` distribution
+> names retained below are historical planning placeholders. The accepted federated
+> package names are `codex-contracts`, `codex-ml-telemetry`, `codex-ml-evaluation`,
+> `codex-ml-lora`, and `codex-cognitive-sdk`; treat remaining `aries-serpent-*`
+> references in this document as obsolete and superseded by ADR-009.
 
 ### Package 1: aries-serpent-core (3-4 MB)
 **Status:** Ready for immediate release  

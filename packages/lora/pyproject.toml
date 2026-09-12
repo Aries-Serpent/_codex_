@@ -9,17 +9,26 @@ description = "Import-light LoRA contracts and optional PEFT adapters for Codex 
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = "MIT"
+license-files = ["LICENSE.txt"]
+keywords = ["adapters", "contracts", "lora", "peft"]
 authors = [{ name = "Aries Serpent" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Typing :: Typed",
 ]
 dependencies = []
 
 [project.optional-dependencies]
 peft = ["peft>=0.20.0,<1"]
 test = ["pytest>=9.0.3,<10"]
+
+[project.urls]
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+Source = "https://github.com/Aries-Serpent/_codex_"
 
 [tool.hatch.version]
 path = "src/codex_lora/__about__.py"
