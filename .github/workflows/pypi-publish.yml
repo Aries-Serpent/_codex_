@@ -278,12 +278,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    env:
-      SELECTED_DISTRIBUTION: >-
-        ${{
-          github.event.inputs.package == 'all' ||
-          github.event.inputs.package == matrix.distribution.name
-        }}
     strategy:
       fail-fast: false
       matrix:
@@ -311,14 +305,18 @@ jobs:
       url: https://test.pypi.org/p/${{ matrix.distribution.name }}
     steps:
       - name: Download artifacts
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name
         uses: actions/download-artifact@v8
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/
 
       - name: Publish to TestPyPI
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
@@ -340,16 +338,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    env:
-      SELECTED_DISTRIBUTION: >-
-        ${{
-          (github.event_name == 'release' &&
-          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
-          (github.event_name == 'workflow_dispatch' &&
-          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
-          (github.event.inputs.package == 'all' ||
-          github.event.inputs.package == matrix.distribution.name))
-        }}
     strategy:
       fail-fast: false
       matrix:
@@ -377,14 +365,26 @@ jobs:
       url: https://pypi.org/p/${{ matrix.distribution.name }}
     steps:
       - name: Download artifacts
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         uses: actions/download-artifact@v8
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/
 
       - name: Publish to PyPI
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
         with:
           packages-dir: dist/
@@ -408,21 +408,6 @@ jobs:
       github.ref_type == 'tag'))))
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      SELECTED_DISTRIBUTION: >-
-        ${{
-          (github.event_name == 'release' &&
-          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
-          (github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.environment == 'testpypi' &&
-          (github.event.inputs.package == 'all' ||
-          github.event.inputs.package == matrix.distribution.name)) ||
-          (github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.environment == 'pypi' &&
-          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
-          (github.event.inputs.package == 'all' ||
-          github.event.inputs.package == matrix.distribution.name))
-        }}
     strategy:
       fail-fast: false
       matrix:
@@ -447,12 +432,34 @@ jobs:
             release_tag_prefix: codex-ml-telemetry-v
     steps:
       - uses: actions/checkout@v7
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         with:
           persist-credentials: false
 
       - name: Set up Python 3.12 with tiered cache
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
@@ -460,7 +467,18 @@ jobs:
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Create isolated verification environment
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
@@ -469,10 +487,11 @@ jobs:
 
       - name: Install from TestPyPI
         if: >-
-          env.SELECTED_DISTRIBUTION == 'true' &&
           needs.publish-testpypi.result == 'success' &&
           github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.environment == 'testpypi'
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
@@ -483,18 +502,32 @@ jobs:
 
       - name: Install from PyPI
         if: >-
-          env.SELECTED_DISTRIBUTION == 'true' &&
           needs.publish-pypi.result == 'success' &&
-          (github.event_name == 'release' ||
+          ((github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
           (github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.environment == 'pypi'))
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)))
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
           "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -m pip install "$DISTRIBUTION_NAME"
 
       - name: Test installed import
-        if: env.SELECTED_DISTRIBUTION == 'true'
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           IMPORT_NAME: ${{ matrix.distribution.import }}

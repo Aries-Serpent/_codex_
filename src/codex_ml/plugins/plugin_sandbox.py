@@ -7,13 +7,28 @@ contract testing, health monitoring, and automatic failure handling.
 from __future__ import annotations
 
 import logging
+import math
+import multiprocessing
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
+from multiprocessing.connection import Connection, wait
+from numbers import Real
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+_PROCESS_STOP_GRACE_SECONDS = 0.1
+
+
+class _PluginExecutionError(Exception):
+    """Represent a child-process failure without retaining plugin exception data."""
+
+    def __init__(self, error_name: str) -> None:
+        super().__init__()
+        self.error_name = error_name
+
 
 __all__ = [
     "Plugin",
@@ -121,6 +136,58 @@ class PluginContract:
     output_schema: Optional[dict[str, type]] = None
     max_execution_time: float = 30.0
     required_config_keys: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        """Validate execution limits when the contract is created."""
+        self.max_execution_time = _validate_execution_timeout(self.max_execution_time)
+
+
+def _validate_execution_timeout(value: Any) -> float:
+    """Return a finite, positive plugin execution timeout."""
+    if isinstance(value, bool) or not isinstance(value, Real):
+        raise ValueError("max_execution_time must be a finite positive number")
+
+    timeout = float(value)
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise ValueError("max_execution_time must be a finite positive number")
+    return timeout
+
+
+def _run_plugin_method(
+    connection: Connection,
+    plugin: Plugin,
+    method_name: str,
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> None:
+    """Execute untrusted plugin code and return only a result or error type."""
+    try:
+        method = getattr(plugin, method_name)
+        try:
+            connection.send(("success", method(*args, **kwargs)))
+        except Exception as exc:
+            connection.send(("failure", type(exc).__name__))
+    except Exception:
+        # Parent-side process-exit handling contains failures that cannot be
+        # represented over the pipe (including serialization failures).
+        pass
+    finally:
+        connection.close()
+
+
+def _stop_process(process: multiprocessing.Process) -> None:
+    """Stop a plugin process without leaving timed-out code running."""
+    if process.pid is None:
+        return
+    if not process.is_alive():
+        process.join()
+        return
+
+    process.terminate()
+    process.join(_PROCESS_STOP_GRACE_SECONDS)
+    if process.is_alive():
+        process.kill()
+        process.join()
 
 
 class Plugin(ABC):
@@ -231,8 +298,100 @@ class PluginSandbox:
                 logger.error(f"Plugin {plugin.name} missing required config key: {key}")
                 return False
 
+        try:
+            _validate_execution_timeout(contract.max_execution_time)
+        except ValueError:
+            logger.error("Plugin %s has an invalid max_execution_time", plugin.name)
+            return False
+
         logger.info(f"Plugin {plugin.name} contract validation passed")
         return True
+
+    def _execute_with_timeout(
+        self,
+        plugin: Plugin,
+        method_name: str,
+        timeout: float,
+        args: tuple[Any, ...],
+        kwargs: dict[str, Any],
+    ) -> Any:
+        """Execute a plugin in a terminable child process."""
+        context = (
+            multiprocessing.get_context("fork")
+            if "fork" in multiprocessing.get_all_start_methods()
+            else multiprocessing.get_context()
+        )
+        receiving_connection, sending_connection = context.Pipe(duplex=False)
+        process = context.Process(
+            target=_run_plugin_method,
+            args=(sending_connection, plugin, method_name, args, kwargs),
+            daemon=True,
+        )
+
+        try:
+            process.start()
+            sending_connection.close()
+            ready = wait((receiving_connection, process.sentinel), timeout=timeout)
+            if receiving_connection not in ready:
+                if process.sentinel in ready:
+                    raise _PluginExecutionError("PluginProcessError")
+                raise TimeoutError
+
+            outcome, payload = receiving_connection.recv()
+            if outcome == "failure":
+                raise _PluginExecutionError(payload)
+            return payload
+        except EOFError as exc:
+            raise _PluginExecutionError("PluginProcessError") from exc
+        finally:
+            receiving_connection.close()
+            sending_connection.close()
+            _stop_process(process)
+
+    def _record_failure(
+        self,
+        plugin_name: str,
+        method_name: str,
+        health: PluginHealth,
+        error_name: str,
+        *,
+        quarantine_immediately: bool = False,
+    ) -> None:
+        """Record a contained plugin failure and apply configured isolation."""
+        health.record_failure(error_name)
+        logger.error(
+            "Plugin %s.%s() failed (failures: %s/%s): %s",
+            plugin_name,
+            method_name,
+            health.failure_count,
+            self.max_failures,
+            error_name,
+        )
+
+        should_quarantine = (
+            self.enable_quarantine
+            and health.status != PluginStatus.QUARANTINED
+            and health.failure_count < self.max_failures
+            and (
+                quarantine_immediately
+                or health.failure_count >= self.quarantine_threshold
+            )
+        )
+        if should_quarantine:
+            health.set_quarantined()
+            logger.warning(
+                "Plugin %s quarantined for %ss after %s consecutive failures",
+                plugin_name,
+                self.quarantine_duration,
+                health.failure_count,
+            )
+        elif self.enable_auto_disable and health.failure_count >= self.max_failures:
+            health.status = PluginStatus.DISABLED
+            logger.error(
+                "Plugin %s auto-disabled after %s consecutive failures",
+                plugin_name,
+                health.failure_count,
+            )
 
     def execute_sandboxed(
         self, plugin: Plugin, method_name: str = "execute", *args, **kwargs
@@ -295,11 +454,17 @@ class PluginSandbox:
             if not hasattr(plugin, method_name):
                 raise AttributeError(f"Plugin {plugin_name} has no method {method_name}")
 
-            method = getattr(plugin, method_name)
+            timeout = _validate_execution_timeout(plugin.get_contract().max_execution_time)
 
             # Execute in sandbox
             logger.debug(f"Executing {plugin_name}.{method_name}()")
-            result = method(*args, **kwargs)
+            result = self._execute_with_timeout(
+                plugin,
+                method_name,
+                timeout,
+                args,
+                kwargs,
+            )
 
             # Record success
             health.record_success()
@@ -309,38 +474,19 @@ class PluginSandbox:
 
         except Exception as e:
             logger.debug("Exception: <ERROR_TYPE>")
-            # Record failure
             # Exception text is plugin-controlled and may itself raise from
             # __str__; keep failure accounting inside the trust boundary.
-            error_msg = type(e).__name__
-            health.record_failure(error_msg)
-
-            logger.error(
-                f"Plugin {plugin_name}.{method_name}() failed "
-                f"(failures: {health.failure_count}/{self.max_failures}): {error_msg}"
+            error_msg = (
+                e.error_name if isinstance(e, _PluginExecutionError) else type(e).__name__
+            )
+            self._record_failure(
+                plugin_name,
+                method_name,
+                health,
+                error_msg,
+                quarantine_immediately=isinstance(e, TimeoutError),
             )
             logger.debug("Plugin raised %s", type(e).__name__)
-
-            # Quarantine if threshold reached (before auto-disable)
-            if (
-                self.enable_quarantine
-                and health.status != PluginStatus.QUARANTINED
-                and health.failure_count >= self.quarantine_threshold
-                and health.failure_count < self.max_failures
-            ):
-                health.set_quarantined()
-                logger.warning(
-                    f"Plugin {plugin_name} quarantined for {self.quarantine_duration}s "
-                    f"after {health.failure_count} consecutive failures"
-                )
-
-            # Auto-disable if too many failures
-            elif self.enable_auto_disable and health.failure_count >= self.max_failures:
-                health.status = PluginStatus.DISABLED
-                logger.error(
-                    f"Plugin {plugin_name} auto-disabled after "
-                    f"{health.failure_count} consecutive failures"
-                )
 
             return None
 
@@ -372,6 +518,7 @@ class PluginSandbox:
         if plugin_name in self.health:
             self.health[plugin_name].status = PluginStatus.ENABLED
             self.health[plugin_name].failure_count = 0
+            self.health[plugin_name].quarantined_at = None
             logger.info(f"Plugin {plugin_name} manually enabled")
 
     def disable_plugin(self, plugin_name: str):
@@ -382,6 +529,7 @@ class PluginSandbox:
         """
         if plugin_name in self.health:
             self.health[plugin_name].status = PluginStatus.DISABLED
+            self.health[plugin_name].quarantined_at = None
             logger.info(f"Plugin {plugin_name} manually disabled")
 
 
@@ -491,6 +639,7 @@ class PluginManager:
             "enabled": 0,
             "disabled": 0,
             "failed": 0,
+            "quarantined": 0,
             "plugins": {},
         }
 
@@ -501,6 +650,8 @@ class PluginManager:
                 report["disabled"] += 1
             elif health.status == PluginStatus.FAILED:
                 report["failed"] += 1
+            elif health.status == PluginStatus.QUARANTINED:
+                report["quarantined"] += 1
 
             report["plugins"][plugin_name] = {
                 "status": health.status.value,

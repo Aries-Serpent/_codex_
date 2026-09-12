@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+import pytest
 
 from security.audit_logger import AuditLogger, log_audit_event
 
@@ -188,6 +191,44 @@ def test_audit_logger_multiple_records_chain(tmp_path: Path) -> None:
 
     assert al.verify_chain() is True, "Condition must be true"
     assert log_path.exists(), "Condition must be true"
+
+
+def test_concurrent_appends_preserve_every_record_and_chain(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    event_count = 40
+
+    def append_event(sequence: int) -> None:
+        AuditLogger(log_path).append({"sequence": sequence}, ts=float(sequence))
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        list(executor.map(append_event, range(event_count)))
+
+    records = [
+        json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(records) == event_count
+    assert {record["event"]["payload"]["sequence"] for record in records} == set(
+        range(event_count)
+    )
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+@pytest.mark.parametrize(
+    "corrupt_content",
+    [
+        b'{"event": ',
+        b"\xff\xfe\n",
+        b"null\n",
+    ],
+    ids=["truncated-json", "invalid-utf8", "non-object"],
+)
+def test_verify_chain_returns_false_for_corrupt_content(
+    tmp_path: Path, corrupt_content: bytes
+) -> None:
+    log_path = tmp_path / "audit.log"
+    log_path.write_bytes(corrupt_content)
+
+    assert AuditLogger(log_path).verify_chain() is False
 
 
 def test_append_uses_current_time_when_ts_not_provided(tmp_path: Path) -> None:
