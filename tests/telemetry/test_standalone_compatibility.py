@@ -36,6 +36,18 @@ def test_monolith_delegates_to_installed_standalone_package(tmp_path: Path) -> N
 
             def render_prometheus(registry=None):
                 return f"standalone-render:{registry}"
+
+            def start_metrics_server(port=8000, addr="127.0.0.1"):
+                return ("standalone-server", port, addr)
+
+            def track_time(histogram):
+                def decorator(function):
+                    def wrapper(*args, **kwargs):
+                        result = function(*args, **kwargs)
+                        histogram.observe(1.0)
+                        return result
+                    return wrapper
+                return decorator
             """
         ),
         encoding="utf-8",
@@ -66,14 +78,52 @@ def test_monolith_delegates_to_installed_standalone_package(tmp_path: Path) -> N
         assert operation() is marker
         assert len(observed) == 1
 
-        calls = []
-        server._HAS_PROM = True
-        server.start_http_server = lambda port, addr: calls.append((port, addr))
-        assert server.start_metrics_server(9123, "0.0.0.0") is True
-        assert calls == [(9123, "0.0.0.0")]
+        assert server.start_metrics_server(9123, "0.0.0.0") == (
+            "standalone-server",
+            9123,
+            "0.0.0.0",
+        )
         assert metrics_export.get_metrics_text("registry") == "standalone-render:registry"
         """,
         pythonpath=str(tmp_path),
+    )
+
+    assert result.returncode == 0, result.stderr
+
+
+def test_health_report_adapters_are_explicit_and_lossless() -> None:
+    package_src = _ROOT / "packages" / "telemetry" / "src"
+    result = _run_python(
+        """
+        from codex_ml.monitoring.health import (
+            HealthReport as LegacyHealthReport,
+            HealthStatus as LegacyHealthStatus,
+            from_standalone_health_report,
+            to_standalone_health_report,
+        )
+        from codex_ml_telemetry import HealthReport, HealthStatus
+
+        legacy = LegacyHealthReport(
+            status=LegacyHealthStatus.DEGRADED,
+            timestamp="2026-09-12T08:00:00Z",
+            checks={"gpu": "unavailable", "host": "ok"},
+            message="System is degraded",
+        )
+        standalone = to_standalone_health_report(legacy)
+        assert type(standalone) is HealthReport
+        assert standalone.status is HealthStatus.DEGRADED
+        assert standalone.to_dict() == {
+            "status": "degraded",
+            "timestamp": "2026-09-12T08:00:00Z",
+            "checks": {"gpu": "unavailable", "host": "ok"},
+            "message": "System is degraded",
+        }
+
+        restored = from_standalone_health_report(standalone)
+        assert type(restored) is LegacyHealthReport
+        assert restored == legacy
+        """,
+        pythonpath=str(package_src),
     )
 
     assert result.returncode == 0, result.stderr

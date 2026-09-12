@@ -7,6 +7,80 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Protocol, runtime_checkable
 
+MAX_ARTIFACT_METADATA_ENTRIES = 32
+MAX_ARTIFACT_METADATA_KEY_LENGTH = 64
+MAX_ARTIFACT_METADATA_VALUE_LENGTH = 256
+
+
+@dataclass(frozen=True, slots=True)
+class LoraArtifactMetadata:
+    """Small, portable metadata recorded alongside a saved adapter.
+
+    The limits deliberately keep artifact manifests suitable for source-control
+    and prevent arbitrary caller metadata from turning adapter saves into an
+    unbounded data channel.
+    """
+
+    adapter_name: str | None = None
+    metadata: Mapping[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        name = self.adapter_name
+        if name is not None:
+            if not isinstance(name, str) or not (normalized := name.strip()):
+                raise ValueError("adapter_name must be a non-empty string when provided")
+            if len(normalized) > MAX_ARTIFACT_METADATA_VALUE_LENGTH:
+                raise ValueError("adapter_name exceeds the metadata value limit")
+            object.__setattr__(self, "adapter_name", normalized)
+
+        values = dict(self.metadata)
+        if len(values) > MAX_ARTIFACT_METADATA_ENTRIES:
+            raise ValueError(
+                f"metadata may contain at most {MAX_ARTIFACT_METADATA_ENTRIES} entries"
+            )
+        for key, value in values.items():
+            if not isinstance(key, str) or not key or len(key) > MAX_ARTIFACT_METADATA_KEY_LENGTH:
+                raise ValueError("metadata keys must be non-empty strings within the size limit")
+            if not isinstance(value, str) or len(value) > MAX_ARTIFACT_METADATA_VALUE_LENGTH:
+                raise ValueError("metadata values must be strings within the size limit")
+        object.__setattr__(self, "metadata", MappingProxyType(values))
+
+    def as_dict(self) -> dict[str, object]:
+        """Return the stable JSON representation used in adapter artifacts."""
+
+        return {
+            "format_version": 1,
+            "adapter_name": self.adapter_name,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, values: Mapping[str, object]) -> "LoraArtifactMetadata":
+        """Validate and restore metadata loaded from an adapter artifact."""
+
+        if values.get("format_version") != 1:
+            raise ValueError("unsupported LoRA artifact metadata format")
+        adapter_name = values.get("adapter_name")
+        metadata = values.get("metadata", {})
+        if adapter_name is not None and not isinstance(adapter_name, str):
+            raise ValueError("artifact adapter_name must be a string or null")
+        if not isinstance(metadata, Mapping):
+            raise ValueError("artifact metadata must be an object")
+        return cls(adapter_name=adapter_name, metadata=metadata)
+
+
+@dataclass(frozen=True, slots=True)
+class LoraArtifact:
+    """Location and bounded metadata for a persisted LoRA adapter."""
+
+    path: str
+    metadata: LoraArtifactMetadata = field(default_factory=LoraArtifactMetadata)
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.path, str) or not (normalized := self.path.strip()):
+            raise ValueError("artifact path must be a non-empty string")
+        object.__setattr__(self, "path", normalized)
+
 
 @dataclass(frozen=True, slots=True)
 class LoraConfig:
@@ -73,4 +147,45 @@ class LoraBackend(Protocol):
         """Load a persisted adapter for inference."""
 
 
-__all__ = ["LoraBackend", "LoraConfig"]
+@runtime_checkable
+class LoraLifecycleBackend(Protocol):
+    """Optional backend operations for a named adapter's lifecycle."""
+
+    def save(self, model: object, path: str, *, adapter_name: str | None = None) -> object:
+        """Persist an adapter."""
+
+    def activate(self, model: object, adapter_name: str) -> object:
+        """Make a named adapter active."""
+
+    def disable(self, model: object) -> object:
+        """Disable active adapter layers without deleting them."""
+
+    def delete(self, model: object, adapter_name: str) -> object:
+        """Remove a named adapter."""
+
+
+@runtime_checkable
+class LoraTrainingBackend(Protocol):
+    """Optional backend hook for preparing a model for LoRA training."""
+
+    def prepare_for_training(
+        self,
+        model: object,
+        *,
+        gradient_checkpointing: bool = False,
+        gradient_checkpointing_kwargs: Mapping[str, object] | None = None,
+    ) -> object:
+        """Prepare a quantized model before a LoRA training run."""
+
+
+__all__ = [
+    "LoraArtifact",
+    "LoraArtifactMetadata",
+    "LoraBackend",
+    "LoraConfig",
+    "LoraLifecycleBackend",
+    "LoraTrainingBackend",
+    "MAX_ARTIFACT_METADATA_ENTRIES",
+    "MAX_ARTIFACT_METADATA_KEY_LENGTH",
+    "MAX_ARTIFACT_METADATA_VALUE_LENGTH",
+]

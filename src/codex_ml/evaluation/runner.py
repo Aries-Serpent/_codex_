@@ -33,6 +33,7 @@ from __future__ import annotations
 import logging
 
 from aries_serpent_core.logging.adapter import get_default_logger
+from codex_ml._compat import warn_deprecated_facade
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +132,12 @@ class EvaluationRunner:
         tracking_writer: Optional[Any] = None,
         output_dir: Optional[str] = None,
     ):
+        warn_deprecated_facade(
+            "evaluation-runner",
+            "codex_ml.evaluation.EvaluationRunner",
+            "codex_evaluation.EvaluationRunner",
+            removal="0.5.0",
+        )
         self.model = model
         self.dataset = dataset
         self.metrics = [self._wrap_metric(m) for m in metrics]

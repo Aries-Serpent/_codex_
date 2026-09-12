@@ -59,6 +59,40 @@ The owner names above are exact custom-agent names listed in
 `agents/AGENT_MASTER_REFERENCE.md`.
 They identify review responsibility, not autonomous deployment authority.
 
+### Monolith domain dependency policy
+
+The compatibility host retains internal domains while extraction proceeds. The
+current allowed directed graph is:
+
+```mermaid
+flowchart TD
+    EVAL["evaluation + eval"]
+    TRAIN["training"]
+    CONFIG["configuration"]
+    LOG["logging"]
+    METRICS["metrics"]
+    MONITOR["monitoring"]
+    CHECKPOINT["checkpointing"]
+    LORA_DOMAIN["LoRA / PEFT"]
+    TELEMETRY_DOMAIN["telemetry"]
+
+    EVAL --> CONFIG
+    EVAL --> LOG
+    EVAL --> METRICS
+    EVAL --> TRAIN
+    TRAIN --> CONFIG
+    TRAIN --> LOG
+    TRAIN --> METRICS
+    TRAIN --> MONITOR
+    TRAIN --> TELEMETRY_DOMAIN
+```
+
+Checkpointing, LoRA/PEFT, and telemetry currently have no allowed outgoing
+domain edges. New edges require an architecture decision; reverse edges and
+cycles are rejected by `tests/architecture/test_federated_package_boundaries.py`.
+The standalone distributions remain below this graph and cannot import the
+compatibility host.
+
 ## Public API inventory
 
 Only package-root exports are public. A new public name requires tests, documentation,
@@ -88,9 +122,11 @@ the package roots are not public API.
 | Direct `peft` configuration/application | `codex_lora.PeftBackend` through `apply_lora` / `load_lora` | `peft` remains optional and is imported only when invoked | Test with the `peft` extra installed and absent; preserve `OptionalDependencyError` semantics |
 | Ad hoc cross-package dictionaries and exceptions | `EventEnvelope`, `ArtifactReference`, `ErrorEnvelope` | Additive API; no blanket legacy alias | Define a producer/consumer schema test before replacing each payload |
 
-`codex-contracts` and `codex-ml-telemetry` are version `0.1.0a1`;
-`codex-ml-evaluation` and `codex-ml-lora` are version `0.1.0`. Compatibility claims
-apply only to the inventory above; they do not stabilize private modules.
+All four standalone distributions are version `0.1.0a1` and have alpha maturity.
+The evaluation distribution name is frozen as `codex-ml-evaluation`; `codex-ml-eval`
+is not a release alias. Compatibility claims apply only to the inventory above; they
+do not stabilize private modules. During migration, `codex-ml` remains the `0.3.0`
+implementation and compatibility host rather than a metapackage.
 
 ## Extraction-ready telemetry design
 

@@ -36,6 +36,9 @@ Source = "https://github.com/Aries-Serpent/_codex_"
 [tool.hatch.version]
 path = "src/codex_ml_telemetry/__about__.py"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_ml_telemetry"]
+
 [tool.coverage.run]
 source_pkgs = ["codex_ml_telemetry", "tests"]
 branch = true

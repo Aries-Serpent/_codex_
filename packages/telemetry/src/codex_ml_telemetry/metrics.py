@@ -47,8 +47,13 @@ class Metric(Protocol):
 
     def labels(self, **labels: str) -> Metric: ...
 
+    def collect(self) -> tuple[()]: ...
+
 
 class _NoopMetric:
+    def __bool__(self) -> bool:
+        return False
+
     def inc(self, amount: float = 1.0) -> None:
         return None
 
@@ -60,6 +65,11 @@ class _NoopMetric:
 
     def labels(self, **labels: str) -> _NoopMetric:
         return self
+
+    def collect(self) -> tuple[()]:
+        """Mirror the Prometheus collector API with no metric families."""
+
+        return ()
 
 
 def _metric(factory: Any, *args: Any, **kwargs: Any) -> Metric:

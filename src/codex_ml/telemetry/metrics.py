@@ -36,10 +36,12 @@ try:
     from codex_ml_telemetry import (
         TRAIN_STEP_DURATION as _standalone_train_step_duration,
     )
+    from codex_ml_telemetry import track_time as _standalone_track_time
 except ImportError:  # pragma: no cover - standalone package is optional during migration
     _standalone_examples_processed = None
     _standalone_request_latency = None
     _standalone_train_step_duration = None
+    _standalone_track_time = None
 
 try:  # optional dependency
     from prometheus_client import Counter, Histogram
@@ -68,6 +70,9 @@ else:
 
 def track_time(histogram: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Decorator recording execution time in ``histogram`` if available."""
+
+    if _standalone_track_time is not None:
+        return _standalone_track_time(histogram)
 
     def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(fn)

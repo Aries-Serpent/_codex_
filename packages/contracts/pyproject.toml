@@ -32,6 +32,9 @@ Source = "https://github.com/Aries-Serpent/_codex_"
 [tool.hatch.version]
 path = "src/codex_contracts/__about__.py"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_contracts"]
+
 [tool.coverage.run]
 source_pkgs = ["codex_contracts", "tests"]
 branch = true

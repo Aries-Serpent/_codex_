@@ -1,24 +1,9 @@
-"""Prometheus text export without framework coupling."""
+"""Compatibility import for Prometheus rendering.
 
-from __future__ import annotations
+The implementation lives with the HTTP exporter so optional Prometheus
+discovery and rendering behavior have one owner.
+"""
 
-from typing import Any
-
-try:
-    from prometheus_client import REGISTRY, generate_latest
-except ImportError:  # pragma: no cover - exercised in minimal installations
-    REGISTRY = None
-    generate_latest = None
-
-
-def render_prometheus(registry: Any = None) -> str:
-    """Render a registry using the Prometheus text exposition format."""
-
-    if generate_latest is None:
-        return "# prometheus_client not installed\n"
-
-    payload = generate_latest(registry or REGISTRY)
-    return payload.decode("utf-8")
-
+from .server import render_prometheus
 
 __all__ = ["render_prometheus"]

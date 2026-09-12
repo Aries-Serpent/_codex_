@@ -55,6 +55,22 @@ The roadmap names multi-repository support, distributed agents, knowledge sharin
 unified orchestration as future work
 ([`ROADMAP.md`](ROADMAP.md#phase-3-current-cycle-objectives)).
 
+### Package maturity and compatibility
+
+| Distribution | Version | Release status | Maturity | Compatibility guarantee |
+|---|---:|---|---|---|
+| `codex-ml` | `0.3.0` | Current implementation distribution | Stable core; profile-dependent features | Existing public imports remain the compatibility host during extraction |
+| `codex-contracts` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root immutable contracts only |
+| `codex-ml-telemetry` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root health, metrics, export, and server helpers |
+| `codex-ml-evaluation` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root contracts, registry, runner, and documented adapters |
+| `codex-ml-lora` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root configuration, lifecycle, and documented adapters |
+| `codex-swarm` | — | Target only | Experimental concept | No standalone distribution guarantee |
+| `codex-cognitive-sdk` | — | Target only | Planned | No standalone distribution guarantee |
+
+`codex-ml-evaluation` is the frozen evaluation distribution name;
+`codex-ml-eval` is not an alias. The standalone packages use pre-release
+versioning and do not imply that `codex-ml` is already a metapackage.
+
 ```mermaid
 flowchart LR
     subgraph N1["Federation node A"]

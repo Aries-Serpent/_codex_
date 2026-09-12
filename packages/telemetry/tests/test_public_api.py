@@ -8,6 +8,8 @@ from codex_ml_telemetry import (
     render_prometheus,
     track_time,
 )
+from codex_ml_telemetry.export import render_prometheus as compatibility_render_prometheus
+from codex_ml_telemetry.server import render_prometheus as server_render_prometheus
 
 
 def test_health_report_is_json_compatible() -> None:
@@ -43,6 +45,8 @@ def test_prometheus_rendering_is_text() -> None:
 
     assert isinstance(rendered, str)
     assert rendered
+    assert render_prometheus is server_render_prometheus
+    assert compatibility_render_prometheus is server_render_prometheus
 
 
 def test_track_time_preserves_return_value() -> None:

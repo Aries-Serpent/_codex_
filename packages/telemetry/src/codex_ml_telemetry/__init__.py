@@ -1,7 +1,6 @@
 """Public API for the standalone Codex ML telemetry distribution."""
 
 from .__about__ import __version__
-from .export import render_prometheus
 from .health import HealthReport, HealthStatus
 from .metrics import (
     EXAMPLES_PROCESSED,
@@ -10,7 +9,7 @@ from .metrics import (
     MetricsRegistry,
     track_time,
 )
-from .server import start_metrics_server
+from .server import render_prometheus, start_metrics_server
 
 __all__ = [
     "EXAMPLES_PROCESSED",
