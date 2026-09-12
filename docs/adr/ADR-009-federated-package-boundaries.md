@@ -19,7 +19,9 @@ The current federated packages are:
 - `codex-ml-evaluation` (`codex_evaluation`), containing dependency-free evaluation
   contracts, a scalar runner, and lazy legacy metric adapters; and
 - `codex-ml-lora` (`codex_lora`), containing backend-neutral LoRA contracts and lazy
-  PEFT and legacy adapters.
+  PEFT and legacy adapters; and
+- `codex-cognitive-sdk` (`codex_cognitive_sdk`), containing dependency-free
+  governance, memory, and OODA contracts.
 
 ## Decision
 
@@ -27,9 +29,9 @@ The current federated packages are:
    runtime dependencies and must not import `codex_ml`, `codex`,
    `cognitive_brain`, or `aries_serpent_core`.
 2. **Keep feature boundaries import-light.** The base installs of
-   `codex_ml_telemetry`, `codex_evaluation`, and `codex_lora` have no runtime
-   dependencies. Heavy or legacy implementations are resolved only through optional
-   extras or lazy adapters.
+   `codex_ml_telemetry`, `codex_evaluation`, `codex_lora`, and
+   `codex_cognitive_sdk` have no runtime dependencies. Heavy or legacy
+   implementations are resolved only through optional extras or lazy adapters.
 3. **Keep telemetry framework-neutral.** The base `codex_ml_telemetry` install has no
    runtime dependencies. Prometheus support remains an optional extra; HTTP framework
    response adaptation stays in consumers.

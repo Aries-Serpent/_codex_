@@ -40,6 +40,9 @@ The diagram above emphasizes execution planes without replacing those canonical 
 | Distribution and runtime | [`pyproject.toml`](../pyproject.toml) declares `codex-ml` 0.3.0, Python 3.12, dependencies, extras, and package mappings. | Implemented package contract |
 | ML and retrieval | [`src/codex_ml/`](../src/codex_ml/) and [`src/rag/`](../src/rag/) contain training, evaluation, inference, serving, indexing, and retrieval implementations. | Implemented; features vary by dependency profile |
 | Cognitive orchestration | [`src/aries_serpent_core/cognitive/planset_orchestrator.py`](../src/aries_serpent_core/cognitive/planset_orchestrator.py) maps repository plans to ranked prompt sets. | Repository-local planning engine |
+| Cognitive SDK | [`packages/cognitive_sdk/`](../packages/cognitive_sdk/) defines `codex-cognitive-sdk` 0.1.0a1 and the `codex_cognitive_sdk` governance, memory, and OODA contracts. | Implemented, unpublished alpha package boundary; not a deployed cognitive service |
+| Rust swarm crate | [`Cargo.toml`](../Cargo.toml) defines the Rust crate `codex-swarm-engine` 0.1.0 and builds the `codex_swarm` library/Python extension module. | Implemented source/build target; publication is not established |
+| Rust core crate | [`src/codex_core/Cargo.toml`](../src/codex_core/Cargo.toml) separately defines the `codex_core` 0.1.0 PyO3 extension crate. | Separate implemented source/build target |
 | Ecosystem observation | [`src/aries_serpent_core/brain/ooda_observer.py`](../src/aries_serpent_core/brain/ooda_observer.py) returns explicitly labelled representative agent data. | Scaffold/sample, not live federation telemetry |
 | Authorization | [`src/aries_serpent_core/governance/rbac.py`](../src/aries_serpent_core/governance/rbac.py) defines roles and an action/resource permission matrix. | Implemented local policy surface |
 | Autonomy enforcement | [`src/aries_serpent_core/autonomy/registry.py`](../src/aries_serpent_core/autonomy/registry.py) applies kill-switch, surface, mode, approval, and dry-run checks. | Guarded, policy-scoped actuation |
@@ -64,12 +67,16 @@ unified orchestration as future work
 | `codex-ml-telemetry` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root health, metrics, export, and server helpers |
 | `codex-ml-evaluation` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root contracts, registry, runner, and documented adapters |
 | `codex-ml-lora` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root configuration, lifecycle, and documented adapters |
-| `codex-swarm` | — | Target only | Experimental concept | No standalone distribution guarantee |
-| `codex-cognitive-sdk` | — | Target only | Planned | No standalone distribution guarantee |
+| `codex-swarm-engine` (Rust crate) | `0.1.0` | Current source crate; builds module `codex_swarm` | Experimental | No crates.io or wheel publication claim |
+| `codex_core` (Rust crate/module) | `0.1.0` | Current separate source crate and extension target | Experimental | No publication claim |
+| `codex-swarm` (distribution name) | — | Target only | Experimental concept | No standalone distribution guarantee |
+| `codex-cognitive-sdk` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root governance, memory, and OODA contracts |
 
 `codex-ml-evaluation` is the frozen evaluation distribution name;
 `codex-ml-eval` is not an alias. The standalone packages use pre-release
 versioning and do not imply that `codex-ml` is already a metapackage.
+Rust crate names, Python module names, and proposed distribution names are
+listed separately above and must not be treated as aliases.
 
 ```mermaid
 flowchart LR

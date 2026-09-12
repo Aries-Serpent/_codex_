@@ -7,8 +7,8 @@
 > **Last verified:** 2026-09-12
 
 This artifact defines the extraction-safe boundary for the standalone
-`codex-contracts`, `codex-ml-telemetry`, `codex-ml-evaluation`, and `codex-ml-lora`
-distributions. It documents the current checkout, not a claim that external
+`codex-contracts`, `codex-ml-telemetry`, `codex-ml-evaluation`, `codex-ml-lora`,
+and `codex-cognitive-sdk` distributions. It documents the current checkout, not a claim that external
 publication or deployment has occurred.
 
 ## Dependency and ownership graph
@@ -20,6 +20,7 @@ flowchart TD
     TELEMETRY["codex-ml-telemetry<br/>owner: performance-monitor-agent"]
     EVALUATION["codex-ml-evaluation<br/>owner: ml-validation-suite-agent"]
     LORA["codex-ml-lora<br/>owner: ml-validation-suite-agent"]
+    COGNITIVE["codex-cognitive-sdk<br/>owner: orchestrator-agent"]
     CONTRACTS["codex-contracts<br/>owner: orchestrator-agent"]
     PROM["prometheus-client<br/>optional extra"]
     HF["datasets · torch · transformers<br/>optional hf extra"]
@@ -32,6 +33,7 @@ flowchart TD
     APPS --> TELEMETRY
     APPS --> EVALUATION
     APPS --> LORA
+    APPS --> COGNITIVE
     APPS --> CONTRACTS
     ADAPTER --> TELEMETRY
     ADAPTER --> EVALUATION
@@ -45,12 +47,13 @@ flowchart TD
     DOCS -. governs .-> TELEMETRY
     DOCS -. governs .-> EVALUATION
     DOCS -. governs .-> LORA
+    DOCS -. governs .-> COGNITIVE
     DOCS -. governs .-> CONTRACTS
     SECURITY -. reviews payload changes .-> CONTRACTS
     SECURITY -. reviews exposure changes .-> TELEMETRY
 ```
 
-Allowed dependency direction is downward in the diagram. All four distributions have
+Allowed dependency direction is downward in the diagram. All five distributions have
 dependency-free base installs. Optional extras and lazy, call-time adapters may cross
 to third-party or legacy implementations; importing a package root must not. Consumers
 may depend on any boundary, but the boundaries must never import consumers.
@@ -102,8 +105,9 @@ and compatibility review.
 |---|---|---|
 | `codex-contracts` / `codex_contracts` | `ArtifactReference`, `CodexPlugin`, `ContractValidationError`, `ErrorEnvelope`, `EventEnvelope`, `__version__` | Immutable or structural interoperability primitives; `EventEnvelope` uses bounded, versioned JSON |
 | `codex-ml-telemetry` / `codex_ml_telemetry` | `EXAMPLES_PROCESSED`, `REQUEST_LATENCY`, `TRAIN_STEP_DURATION`, `HealthReport`, `HealthStatus`, `MetricsRegistry`, `render_prometheus`, `start_metrics_server`, `track_time`, `__version__` | Framework-neutral health and metrics surface with no-op behavior when Prometheus is absent |
-| `codex-ml-evaluation` / `codex_evaluation` | `CodexMetricAdapter`, `EvaluationBatch`, `EvaluationError`, `EvaluationReport`, `EvaluationRunner`, `Evaluator`, `Metric`, `MetricInput`, `MetricLoader`, `MetricRegistrationError`, `MetricRegistry`, `__version__` | Scalar evaluation contracts and runner; the Codex metric adapter resolves the monolith only when called |
-| `codex-ml-lora` / `codex_lora` | `CodexMlLoraAdapter`, `LoraBackend`, `LoraConfig`, `OptionalDependencyError`, `PeftBackend`, `apply_lora`, `load_lora`, `__version__` | Backend-neutral LoRA surface; PEFT and legacy Codex ML implementations are lazy adapters |
+| `codex-ml-evaluation` / `codex_evaluation` | `CodexMetricAdapter`, `DatasetLoader`, `DistributionValue`, `DriftBatch`, `DriftEvaluator`, `DriftReport`, `EvaluateMetricAdapter`, `EvaluationBatch`, `EvaluationError`, `EvaluationReport`, `EvaluationRunner`, `Evaluator`, `FrameworkMetricLoader`, `HuggingFaceDatasetAdapter`, `KullbackLeiblerDivergence`, `Metric`, `MetricInput`, `MetricLoader`, `MetricRegistrationError`, `MetricRegistry`, `OptionalDependencyError`, `PopulationStabilityIndex`, `__version__` | Scalar and drift evaluation contracts, runners, and optional framework/Hugging Face adapters |
+| `codex-ml-lora` / `codex_lora` | `CodexMlLoraAdapter`, `LoraArtifact`, `LoraArtifactMetadata`, `LoraBackend`, `LoraConfig`, `LoraLifecycleBackend`, `LoraTrainingBackend`, `OptionalDependencyError`, `PeftBackend`, `activate_lora`, `apply_lora`, `delete_lora`, `disable_lora`, `load_lora`, `prepare_lora_training`, `read_lora_artifact`, `save_lora`, `__version__` | Backend-neutral LoRA application, training, artifact, and lifecycle surface; PEFT and legacy Codex ML implementations are lazy adapters |
+| `codex-cognitive-sdk` / `codex_cognitive_sdk` | `ActionResult`, `Decision`, `GovernanceDecision`, `GovernanceProtocol`, `GovernanceRequest`, `MemoryProtocol`, `MemoryQuery`, `MemoryRecord`, `Observation`, `OODACycle`, `OODAProtocol`, `Orientation`, `__version__` | Dependency-free governance, memory, and OODA contracts, lazily exposed at the package root |
 
 Internal validation helpers, Prometheus implementation objects, and module paths below
 the package roots are not public API.
@@ -122,7 +126,7 @@ the package roots are not public API.
 | Direct `peft` configuration/application | `codex_lora.PeftBackend` through `apply_lora` / `load_lora` | `peft` remains optional and is imported only when invoked | Test with the `peft` extra installed and absent; preserve `OptionalDependencyError` semantics |
 | Ad hoc cross-package dictionaries and exceptions | `EventEnvelope`, `ArtifactReference`, `ErrorEnvelope` | Additive API; no blanket legacy alias | Define a producer/consumer schema test before replacing each payload |
 
-All four standalone distributions are version `0.1.0a1` and have alpha maturity.
+All five standalone distributions are version `0.1.0a1` and have alpha maturity.
 The evaluation distribution name is frozen as `codex-ml-evaluation`; `codex-ml-eval`
 is not a release alias. Compatibility claims apply only to the inventory above; they
 do not stabilize private modules. During migration, `codex-ml` remains the `0.3.0`

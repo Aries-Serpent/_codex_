@@ -59,10 +59,10 @@
 
 **Last Updated: 2026-06-22
 
-**Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
+**Purpose**: Historical planning baseline for `_codex_` with capability claims, iteration plans, and future targets.
 
 **Roadmap Baseline Date 2026-07-13
-> **Note**: Dates in this roadmap (including 2026 entries) are planning projections/targets and may not reflect externally verified historical events.
+> **Evidence boundary**: “Complete,” percentages, dates, and performance figures below are historical planning claims from this baseline unless a current repository path is cited. They are not current operational attestations. Use [`REPOSITORY_EXPLANATION.md`](REPOSITORY_EXPLANATION.md) and current test/CI artifacts for verified present state.
 
 ---
 
@@ -78,7 +78,7 @@
 
 | Icon | Status | Description |
 |------|--------|-------------|
-| | **Complete** | Production ready, fully operational |
+| | **Complete** | Marked complete in this historical roadmap; not independently attested here |
 | | **Active** | In development, on track |
 | | **Planning** | Designed, ready to start |
 | | **Blocked** | Waiting on dependencies |
@@ -87,7 +87,7 @@
 
 ---
 
-## Current State (2026-04-28)
+## Historical State Snapshot (dated 2026-04-28)
 
 ### Core Capabilities Status
 

@@ -9,10 +9,11 @@ authors:
 repository-code: "https://github.com/Aries-Serpent/_codex_"
 url: "https://github.com/Aries-Serpent/_codex_"
 abstract: >
-  _codex_ is a comprehensive ML training, evaluation, and plugin framework
-  built with PyTorch, Hugging Face Transformers, Hydra, and MLflow. It provides
-  LoRA/QLoRA fine-tuning, distributed training with Ray, model serving, and
-  extensive configuration management for reproducible ML experiments.
+  _codex_ is an ML training, evaluation, plugin, and repository-automation
+  framework. The repository contains PyTorch, Hugging Face Transformers, Hydra,
+  MLflow, LoRA/QLoRA, Ray, model-serving, and dependency-light standalone
+  contract surfaces; availability varies by installation profile and optional
+  dependencies.
 keywords:
   - machine-learning
   - pytorch
@@ -26,7 +27,5 @@ keywords:
   - model-serving
   - python
 license: MIT
-# Uncomment and update when you have a version release
-# version: "0.1.0"
-# date-released: "2024-11-02"
+version: "0.3.0"
 # doi: "10.5281/zenodo.XXXXXXX"

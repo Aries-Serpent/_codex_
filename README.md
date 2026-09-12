@@ -1,7 +1,7 @@
 # `_codex_` (codex-ml)
 > **v0.3.0** - ML platform with repository automation and a persistent decision-and-learning layer. See [`docs/REPOSITORY_EXPLANATION.md`](docs/REPOSITORY_EXPLANATION.md) for an evidence-based repository overview.
 **Release Status**: v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists. Selected autonomous operations are enabled in the checked-in configuration but remain policy-scoped, approval-gated, and dependent on environment credentials.
-**Latest Release**: [v0.3.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.3.0) | **Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.3.0/_codex_.v0.3.0.zip)
+**Repository Version**: v0.3.0 (`pyproject.toml`); this checkout does not itself establish external release or artifact availability.
 ![Version](https://img.shields.io/badge/version-0.3.0-brightgreen)
 ![Python](https://img.shields.io/badge/python-%3E%3D3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -10,7 +10,7 @@
 End-to-End Automation | Auto-Retraining | Observability
 Production Engineering | Cross-Functional | Governance
 **Gap Analysis Status:** In progress; see `.codex/COVERAGE_GAP_REPORT.md`
-**Latest Milestone:** v0.3.0 Release (2026-07-11)
+**Historical Milestone Claim:** v0.3.0 release (2026-07-11); verify external release availability separately.
 **Release Quality:** Stable core functionality; coverage baseline is 34% (locked 2026-07-02); see `pytest.ini`, `pyproject.toml`, and CI artifacts for current test/coverage results.
 **Phase 3 Improvements:** Workflow compliance, SBOM updates, production deployment verification
 **Phase 4 Security:** CodeQL blocker resolved with API-only workflow validation (2026-07-14)
@@ -73,7 +73,7 @@ graph TB subgraph "codex-ml v0.3.0" subgraph "Core ML Platform" CLI[CLI Interfac
 - **Coverage**: Coverage baseline is 34% (locked 2026-07-02); 80%+ is an aspirational target. See `.codex/COVERAGE_GAP_REPORT.md`.
 - **Security**: Dependencies are audited; see `SECURITY.md`, current security alerts, and `pyproject.toml` for the active dependency policy.
 - **Agents**: Specialist and unified agents support repository operations; use the generated registry and consolidation matrix for current status.
-- **Cognitive Brain**: Quantum-inspired decision engine with memory and agent orchestration.
+- **Cognitive Brain**: Repository-local decision, memory, and orchestration implementations; the dependency-free `codex-cognitive-sdk` 0.1.0a1 contract package is present in `packages/cognitive_sdk/` but is not evidence of a published service.
 - **MCP System**: Model Context Protocol surfaces (repository `src/mcp/` and Copilot runtime aggregator).
 - **CI/CD**: Automated validation, auto-fix, and self-healing workflows.
 ---
@@ -102,7 +102,10 @@ python -c "import codex; print(codex.__version__)"
 ### Offline Installation
 For air-gapped environments, use the bootstrap script:
 ```bash
-bash OFFLINE_BOOTSTRAP.sh \ --wheelhouse ./wheelhouse \ --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
+CODEX_ML_VERSION="<version>"
+bash OFFLINE_BOOTSTRAP.sh \
+  --wheelhouse ./wheelhouse \
+  --artifact "./dist/codex_ml-${CODEX_ML_VERSION}-py3-none-any.whl"
 ```
 **Getting Started Guides:**
 - [Installation Guide](docs/INSTALLATION.md) - **Complete installation guide** START HERE
