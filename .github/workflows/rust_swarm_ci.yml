@@ -49,19 +49,13 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Free disk space
-      run: 'echo "=== Before cleanup ==="
-
+      run: |
+        echo "=== Before cleanup ==="
         df -h
-
         sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-
         sudo docker rmi $(docker images -q) || true
-
         echo "=== After cleanup ==="
-
         df -h
-
-        '
     - uses: actions/checkout@v7
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
@@ -137,32 +131,37 @@ jobs:
     needs: rust_tests
     steps:
     - name: Free disk space
-      run: 'echo "=== Before cleanup ==="
-
+      run: |
+        echo "=== Before cleanup ==="
         df -h
-
         sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-
         sudo docker rmi $(docker images -q) || true
-
         echo "=== After cleanup ==="
-
         df -h
-
-        '
     - uses: actions/checkout@v7
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Install tarpaulin
       run: cargo install cargo-tarpaulin
     - name: Generate coverage
-      run: "mkdir -p coverage\ncargo tarpaulin --out Lcov --out Xml --output-dir coverage\
-        \ --release --timeout 600\n\n# Verify coverage files were created\nif [ -f\
-        \ coverage/lcov.info ]; then\n  echo \"\u2705 Coverage generated:  lcov.info\"\
-        \n  ls -lh coverage/lcov.info\nelse\n  echo \"\u26A0\uFE0F Warning: lcov.info\
-        \ not generated\"\nfi\n\nif [ -f coverage/cobertura.xml ]; then\n  echo \"\
-        \u2705 Coverage generated: cobertura.xml\"\n  ls -lh coverage/cobertura.xml\n\
-        else\n  echo \"\u26A0\uFE0F Warning: cobertura.xml not generated\"\nfi\n"
+      run: |
+        mkdir -p coverage
+        cargo tarpaulin --out Lcov --out Xml --output-dir coverage --release --timeout 600
+
+        # Verify coverage files were created
+        if [ -f coverage/lcov.info ]; then
+          echo "✅ Coverage generated: lcov.info"
+          ls -lh coverage/lcov.info
+        else
+          echo "⚠️ Warning: lcov.info not generated"
+        fi
+
+        if [ -f coverage/cobertura.xml ]; then
+          echo "✅ Coverage generated: cobertura.xml"
+          ls -lh coverage/cobertura.xml
+        else
+          echo "⚠️ Warning: cobertura.xml not generated"
+        fi
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       if: always()
@@ -185,19 +184,13 @@ jobs:
     needs: rust_tests
     steps:
     - name: Free disk space
-      run: 'echo "=== Before cleanup ==="
-
+      run: |
+        echo "=== Before cleanup ==="
         df -h
-
         sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-
         sudo docker rmi $(docker images -q) || true
-
         echo "=== After cleanup ==="
-
         df -h
-
-        '
     - uses: actions/checkout@v7
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
@@ -207,11 +200,9 @@ jobs:
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Install maturin and dependencies
-      run: 'python -m pip install --upgrade pip
-
+      run: |
+        python -m pip install --upgrade pip
         pip install maturin pytest pytest-cov setuptools wheel virtualenv
-
-        '
     - name: Build Python extension with maturin
       run: |
         maturin build --release --features extension-module
@@ -281,8 +272,11 @@ jobs:
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Run cargo deny (if available)
-      run: "if ! command -v cargo-deny &> /dev/null; then\n  cargo install cargo-deny\
-        \ --locked\nfi\ncargo deny check advisories\n"
+      run: |
+        if ! command -v cargo-deny &> /dev/null; then
+          cargo install cargo-deny --locked
+        fi
+        cargo deny check advisories
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
@@ -294,9 +288,8 @@ jobs:
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Build Rust docs
-      run: 'cargo doc --no-deps --document-private-items --all-features
-
-        '
+      run: |
+        cargo doc --no-deps --document-private-items --all-features
     - name: Upload documentation
       uses: actions/upload-artifact@v7
       with:
@@ -361,12 +354,9 @@ jobs:
         sparse-checkout: scripts/ci
     - name: Cache health report
       continue-on-error: true
-      run: 'pip install -q pip 2>/dev/null
-
-        python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci
-        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
-
-        '
+      run: |
+        pip install -q pip 2>/dev/null
+        python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
     - name: Check all jobs
       env:
         RUST_TESTS_RESULT: ${{ needs.rust_tests.result }}

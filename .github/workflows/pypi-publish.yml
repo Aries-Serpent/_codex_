@@ -126,7 +126,7 @@ jobs:
             --import-name "$IMPORT_NAME"
 
       - name: Attest release artifacts
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be  # v2
         with:
           subject-path: |
             dist/${{ matrix.distribution.name }}/*.whl
@@ -237,6 +237,8 @@ jobs:
       startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'pypi' &&
+      github.ref_type == 'tag' &&
+      startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
       (github.event.inputs.package == 'all' ||
       github.event.inputs.package == matrix.distribution.name))
     needs:
@@ -294,15 +296,33 @@ jobs:
             --dist-dir dist
 
       - name: Verify release tag matches built version
-        if: github.event_name == 'release'
+        if: >-
+          github.event_name == 'release' ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          github.ref_type == 'tag')
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref_name }}
         run: |
           python -m scripts.release.publishing_assurance validate-tag \
             --distribution "$DISTRIBUTION_NAME" \
             --dist-dir dist \
             --tag "$RELEASE_TAG"
+
+      - name: Enforce tag-only PyPI dispatch
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi'
+        env:
+          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+        run: |
+          if [ "${{ github.ref_type }}" != "tag" ]; then
+            echo "::error::Production PyPI dispatch is forbidden on branches. Use a protected release tag ref only."
+            exit 1
+          fi
+          if [[ "${{ github.ref_name }}" != "${{ matrix.distribution.release_tag_prefix }}"* ]]; then
+            echo "::error::Ref '${{ github.ref_name }}' is not a valid release tag for ${DISTRIBUTION_NAME}. Expected prefix '${{ matrix.distribution.release_tag_prefix }}'."
+            exit 1
+          fi
 
       - name: Verify artifact provenance
         env:
@@ -339,6 +359,8 @@ jobs:
       startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'pypi' &&
+      github.ref_type == 'tag' &&
+      startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
       (github.event.inputs.package == 'all' ||
       github.event.inputs.package == matrix.distribution.name)))))
     runs-on: ubuntu-latest
@@ -366,10 +388,16 @@ jobs:
             import: codex_ml_telemetry
             release_tag_prefix: codex-ml-telemetry-v
     steps:
-      - name: Set up Python 3.12 with tiered cache
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
         with:
-          python-version: 3.12.13
+          persist-credentials: false
+
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
       - name: Create isolated verification environment
         env:
