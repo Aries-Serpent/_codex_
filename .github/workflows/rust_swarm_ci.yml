@@ -8,8 +8,7 @@ name: Rust-Python Hybrid Swarm CI/CD
     paths-ignore:
     - docs/**
     - '**.md'
-    - .codex/notes/**
-    - .codex/sessions/**
+    - .codex/**
     - .github/copilot-prompts/**
   pull_request:
     branches:
@@ -17,8 +16,7 @@ name: Rust-Python Hybrid Swarm CI/CD
     paths-ignore:
     - docs/**
     - '**.md'
-    - .codex/notes/**
-    - .codex/sessions/**
+    - .codex/**
     - .github/copilot-prompts/**
 env:
   CARGO_TERM_COLOR: always
