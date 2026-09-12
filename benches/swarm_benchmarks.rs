@@ -1,6 +1,6 @@
 // Swarm Benchmarks - Comprehensive Performance Testing
 
-use codex_engine::{Compression, SwarmEngine, TaskManager};
+use codex_swarm::{Compression, SwarmEngine, TaskManager};
 use criterion::{criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion, Throughput};
 use std::hint::black_box;
 use std::time::Duration;

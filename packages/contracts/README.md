@@ -6,8 +6,11 @@ references, structured errors, and the minimum event-plugin protocol.
 
 ## Installation
 
+This alpha package is not published on public PyPI. From the repository root,
+install it from the checked-out source tree:
+
 ```console
-pip install codex-contracts
+python -m pip install ./packages/contracts
 ```
 
 The package deliberately has no runtime dependencies and does not import the

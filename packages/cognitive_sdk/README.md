@@ -10,8 +10,11 @@ structural protocols for:
 
 ## Installation
 
+This alpha package is not published on public PyPI. From the repository root,
+install it from the checked-out source tree:
+
 ```console
-pip install codex-cognitive-sdk
+python -m pip install ./packages/cognitive_sdk
 ```
 
 The base package has no runtime dependencies. Implementations are supplied by
@@ -28,4 +31,3 @@ from codex_cognitive_sdk import GovernanceProtocol, MemoryProtocol, OODAProtocol
 
 Root exports are loaded lazily. The package never imports `codex`, `codex_ml`,
 `cognitive_brain`, or `aries_serpent_core`.
-

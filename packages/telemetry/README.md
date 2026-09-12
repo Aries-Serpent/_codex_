@@ -6,8 +6,11 @@ existing `codex_ml.telemetry` API remains supported during migration.
 
 ## Installation
 
+This alpha package is not published on public PyPI. From the repository root,
+install it from the checked-out source tree:
+
 ```console
-pip install "codex-ml-telemetry[prometheus]"
+python -m pip install "./packages/telemetry[prometheus]"
 ```
 
 The base installation has no runtime dependencies. Install the `prometheus` extra

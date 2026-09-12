@@ -23447,9 +23447,9 @@ and the CI gate requirement.
 **Validation:**
 - Standalone packages: 74 passed, 1 skipped.
 - Compatibility facades: 7 passed; architecture boundaries: 25 passed.
-- Rust library and Python boundary: 45 passed, 1 ignored.
+- Native Rust: 39 passed, 1 ignored; Python boundary: 6 passed when the extension was built.
 - Focused audit, plugin, and workflow regressions: 42 passed with Ruff clean.
-- Release suite: 16 passed; archive assurance suite: 19 passed, 1 skipped.
+- Release suite: 20 passed, 1 skipped, including the archive-assurance coverage.
 
 **Governance:**
 - Generated `.codex/session_startup_packet.json` timestamp churn was restored to the tracked baseline.
