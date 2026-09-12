@@ -81,9 +81,6 @@ jobs:
         repository-url: https://test.pypi.org/legacy/
         attestations: true
         skip-existing: true
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
     timeout-minutes: 30
   publish-pypi:
     name: Publish to PyPI
@@ -109,9 +106,6 @@ jobs:
       with:
         attestations: true
         skip-existing: false
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
     timeout-minutes: 45
   verify-installation:
     name: Verify Installation (Python 3.12)

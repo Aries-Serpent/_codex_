@@ -25,6 +25,7 @@ Production Engineering | Cross-Functional | Governance
 | Choose dependencies | [Quick start by profile](docs/QUICKSTART_BY_PROFILE.md) |
 | Maintain CI or governance | [Workflow and governance map](docs/WORKFLOW_MAP.md) |
 | Operate agents or sessions | [Session and agent-state guide](docs/SESSION_STATE_GUIDE.md) |
+| Compare today's architecture with the federated target | [Ecosystem index](docs/ECOSYSTEM_INDEX.md) |
 
 New Python implementation belongs under `src/`. Root-level package mirrors are
 compatibility or bridge surfaces unless `pyproject.toml` explicitly maps them.
@@ -115,30 +116,44 @@ bash OFFLINE_BOOTSTRAP.sh \ --wheelhouse ./wheelhouse \ --artifact ./dist/codex_
 - [Comprehensive Integration Guide](docs/INTEGRATION_GUIDE_COMPREHENSIVE.md) - 5+ integration examples with RAG, Cognitive Brain, Memory Systems
 - [Optional Dependencies](docs/optional_dependencies.md) - Detailed dependency information
 ---
-## Genesis Protocol - Pre-token Setup
-**Status:** Template files added, **awaiting human admin secret injection**
-This repository includes Genesis Protocol templates for establishing autonomous agent operations. The setup is currently in **pre-token state** with all workflows disabled by default.
-### Quick Start for Human Admin
-1. **Review Templates**: All files in this PR are templates with placeholders
-2. **Inject Secrets**: Follow [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
-3. **Enable Workflows**: Remove safety guards after secret injection
-4. **Validate**: Run genesis-bootstrap workflow manually
-5. **Enable agent**: Set `autonomous_actions_enabled: true`
+## Genesis and autonomy status
+**Status:** Configuration is enabled, but repository evidence does not prove a completed
+Genesis ceremony or unrestricted autonomy.
+
+The checked-in agent configuration currently sets
+`agent.autonomous_actions_enabled: true`, and the bootstrap template has an enabled job.
+However, the bootstrap still describes itself as a template and the expected
+`.codex/genesis_validation.json` completion record is not tracked. Autonomy is therefore
+best described as **policy-scoped and environment-dependent**, not pre-token, disabled,
+sovereign, or zero-touch. The runtime policy also retains approval and escalation gates.
+
+### Before relying on autonomous actuation
+1. Review the checked-in configuration and guardrails.
+2. Verify repository variables, the kill switch, and the configured autonomy ceiling.
+3. Run the bootstrap validation manually if Genesis attestation is required.
+4. Confirm the resulting artifact and audit record outside the repository.
+5. Keep security, configuration, dependency, and refactoring operations behind their
+   documented approval or escalation gates.
+
 ### Key Files
 | File | Purpose | Status |
 |------|---------|--------|
-| [`.github/misc/genesis-bootstrap.yml`](.github/misc/genesis-bootstrap.yml) | Genesis validation workflow | Disabled (if: false) |
-| [`.codex/autonomous_agent.yaml`](.codex/autonomous_agent.yaml) | agent configuration | Safe defaults |
-| [`.codex/guardrails.md`](.codex/guardrails.md) | Operational policies | Template |
-| [`scripts/autonomous_agent.py`](scripts/autonomous_agent.py) | agent orchestrator | SAFE_MODE = True |
-| [`docs/admin/GENESIS_SETUP_GUIDE.md`](docs/admin/GENESIS_SETUP_GUIDE.md) | Admin documentation | Complete guide |
+| [`.github/misc/genesis-bootstrap.yml`](.github/misc/genesis-bootstrap.yml) | Genesis validation workflow | Dispatch-only template; job guard is enabled |
+| [`.codex/autonomous_agent.yaml`](.codex/autonomous_agent.yaml) | Agent configuration | Enabled switch with scoped operations and approval gates |
+| [`.codex/guardrails.md`](.codex/guardrails.md) | Operational policies | Policy input |
+| [`scripts/autonomous_agent.py`](scripts/autonomous_agent.py) | Agent orchestrator | D-capable default; only `AUTONOMOUS` decisions execute |
+| [`docs/admin/GENESIS_SETUP_GUIDE.md`](docs/admin/GENESIS_SETUP_GUIDE.md) | Admin documentation | Procedure and evidence caveats |
 | [`docs/agent/OPERATIONAL_GUIDELINES.md`](docs/agent/OPERATIONAL_GUIDELINES.md) | agent guidelines | Operational reference |
 ### Security Notes
 - No secrets committed to repository
-- All workflows disabled by default
-- Explicit placeholder comments for human injection
-- Multiple safety guards (if: false, SAFE_MODE, autonomous_actions_enabled: false)
-** DO NOT enable workflows until secrets are injected and validated**
+- Secret placeholders are configuration instructions, not evidence that secrets exist.
+- Agent actions remain subject to operation allowlists, approval gates, escalation policy,
+  kill switches, and environment-level permissions.
+- `D_CAPABLE` is a capability ceiling, not proof that every action is authorized.
+
+Canonical evidence: [agent configuration](.codex/autonomous_agent.yaml),
+[runtime decision levels](scripts/autonomous_agent.py), and
+[agent variable expectations](agents/VARIABLE_EXPECTATIONS.md).
 For detailed instructions, see: [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
 ## CI/CD Automation System
 **Status:** Production Ready | **Coverage:** 37.5% Auto-Fix (3/8 patterns)

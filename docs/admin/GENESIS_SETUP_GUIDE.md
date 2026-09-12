@@ -1,6 +1,6 @@
 # [Guide]: The Genesis Protocol - Sovereign Admin Initialization
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-09-12
+**Version:** v0.3.0
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
 > **repository:** `Aries-Serpent/_codex_` (ID: 1040037790)
@@ -8,7 +8,27 @@
 
 ## Executive Overview
 
-**The Genesis Protocol** is the authoritative initialization sequence that grants the Copilot agent (`ai_org_repo_admin`) sovereign operational authority within the `Aries-Serpent/_codex_` repository.
+**The Genesis Protocol** is a human-administered bootstrap and validation procedure. It
+does not grant sovereign or unrestricted authority: effective permissions are the
+intersection of repository/environment permissions, kill switches, configured autonomy
+ceilings, operation allowlists, and approval/escalation policy.
+
+### Evidence status (2026-09-12)
+
+- [`.codex/autonomous_agent.yaml`](../../.codex/autonomous_agent.yaml) has its checked-in
+  autonomy switch set to `true`, while dependency and refactoring changes still require
+  approval and security/configuration changes escalate.
+- [The bootstrap workflow](../../.github/misc/genesis-bootstrap.yml) is dispatch-only and
+  its job guard is `if: true`, but it still emits a record labelled as template validation.
+- The expected `.codex/genesis_validation.json` is not tracked in this checkout. Absence
+  does not prove that no external run occurred, but it means this repository cannot attest
+  completion from committed evidence alone.
+- [`scripts/autonomous_agent.py`](../../scripts/autonomous_agent.py) defaults to
+  `D_CAPABLE` and executes only actions classified `AUTONOMOUS`; this is bounded
+  decision authority, not zero-touch administration.
+
+Accordingly, do not describe the repository as pre-token/fully disabled or as sovereign/
+zero-touch. Verify live settings and artifacts before making either claim.
 
 ## Table of Contents
 
@@ -172,10 +192,10 @@ Create `codex-production` environment:
 
 ---
 
-## Phase 1: Post-Genesis agent Autonomy
+## Phase 1: Post-Genesis guarded operation
 
-> **Zero-Touch Operations Enabled**
-> After Genesis completion, the Copilot agent operates autonomously within defined guardrails.
+> **Guarded operations only**
+> Genesis validation does not bypass approval, escalation, RBAC, or environment controls.
 
 ### agent Capabilities Matrix
 
