@@ -5,6 +5,12 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.maturin]
+bindings = "pyo3"
+manifest-path = "Cargo.toml"
+module-name = "codex_swarm"
+features = ["python"]
+
 [project]
 name = "codex-ml"
 description = "Codex ML training, evaluation, plugin, and repository automation framework"
