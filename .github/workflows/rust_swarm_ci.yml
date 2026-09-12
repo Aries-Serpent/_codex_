@@ -205,7 +205,7 @@ jobs:
         pip install maturin pytest pytest-cov setuptools wheel virtualenv
     - name: Build Python extension with maturin
       run: |
-        maturin build --release --features extension-module
+        maturin build --release --features python
         pip install target/wheels/*.whl
         python -c "import codex_swarm; print('✅ codex_swarm extension imported successfully')"
     - name: Run integration tests
