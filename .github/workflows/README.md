@@ -69,59 +69,57 @@ Then check debug output in workflow logs.
 
 ---
 
-### Application Distribution Workflows
+### Application Distribution & Offline Packaging
 
-#### `app-package-download.yml`
+#### `offline-zip-unpack.yml`
 **Status**: ✅ Active  
-**Last Updated**: 2026-02-13  
-**Trigger**: Manual (`workflow_dispatch`)
+**Last Updated**: 2026-09-12  
+**Trigger**: Manual (`workflow_dispatch`) and reusable (`workflow_call`)
 
-**Purpose**: Package and distribute applications from the `apps/` directory as ready-to-use ZIP or TAR.GZ archives for end users.
+**Purpose**: Download or resolve a ZIP archive and unpack it into a self-titled folder under the repository workspace. This is the active workflow used for archive intake and offline extraction.
 
 **Inputs**:
-- `app_name` (default: zd_voice_lines) - Application to package: zd_voice_lines, all
-- `branch` (default: copilot/add-zd-voice-lines-console-app) - Source branch: main, 0D_base_, copilot/add-zd-voice-lines-console-app
-- `custom_branch` (optional) - Custom branch name (overrides dropdown selection)
-- `include_dependencies` (default: true) - Include requirements.txt with dependencies
-- `package_format` (default: zip) - Archive format: zip, tar.gz
+- `zip_url` (optional) - URL for a ZIP artifact to download
+- `zip_path` (optional) - Repo-relative path to a ZIP to unpack
+- `output_dir` (default: `output`) - Output directory parent for the extracted folder
+- `artifact_name` (optional) - Name for the uploaded workflow artifact
 
 **Permissions**:
-- `contents: read` - Read repository contents
-- `actions: read` - Read workflow information
+- `contents: read` - Read repository files
 
 **Outputs**:
-- Package artifact (ZIP or TAR.GZ) - Complete application bundle with code, docs, tests
-- Package manifest (JSON) - Metadata about package creation
-- Retention: 30 days for packages, 90 days for manifests
+- Extracted self-titled archive folder in `output_dir`
+- Uploaded artifact matching the archive stem or custom `artifact_name`
 
 **Usage**:
 ```bash
-# Trigger manually via UI
-# 1. Go to Actions > App Package Download
-# 2. Click "Run workflow"
-# 3. Select application, branch, and options
-# 4. Download from Artifacts section
-
 # Trigger via GitHub CLI
-gh workflow run app-package-download.yml \
-  --field app_name=zd_voice_lines \
-  --field branch=copilot/add-zd-voice-lines-console-app \
-  --field include_dependencies=true \
-  --field package_format=zip
+gh workflow run offline-zip-unpack.yml \
+  --field zip_url=https://example.com/release.zip \
+  --field output_dir=output \
+  --field artifact_name=release-archive
 
-# Download artifact after run completes
-gh run download <run-id> --name <package-name>
+# Or unpack a local zip from the repo
+gh workflow run offline-zip-unpack.yml \
+  --field zip_path=dist/release.zip \
+  --field output_dir=output \
+  --field artifact_name=release-archive
 ```
 
-**Package Contents** (Zendesk Voice Lines):
-- `zd_voice_lines.py` - Main GUI application (950 LOC)
-- `test_api_client.py` - Component tests (7 tests)
-- `requirements.txt` - Python dependencies
-- `PACKAGE_INFO.md` - Quick start and installation guide
-- `docs/` - Complete documentation (USER_GUIDE.md, DEVELOPMENT.md)
-- Supporting files: README, CHANGELOG, specs, mockups
+**Security**:
+- Rejects empty and absolute/escaping ZIP paths
+- Validates archive readability and maximum size limits
+- Uses `scripts.security.offline_zip_keymaster._safe_extract_members` to prevent traversal and symlink extraction
 
-**Documentation**: See [app-package-download.md](./app-package-download.md) for complete guide.
+**Documentation**: See [app-package-download.md](./app-package-download.md) for legacy context and the current offline ZIP contract summary.
+
+#### `app-package-download.yml.disabled`
+**Status**: ⚠️ Legacy / Disabled  
+**Trigger**: Historical (`workflow_dispatch` only)
+
+**Purpose**: Earlier app packaging workflow that produced bundles from the `apps/` directory. It remains disabled and is not part of the active baseline.
+
+**Documentation**: Historical reference only; use the active offline ZIP workflow and keymaster contract instead.
 
 ---
 

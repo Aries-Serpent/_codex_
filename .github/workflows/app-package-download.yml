@@ -1,0 +1,244 @@
+name: App Package Download
+
+'on':
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: Application to package
+        required: true
+        type: choice
+        options:
+          - offline_zip_keymaster
+          - offline-zip-keymaster
+          - all
+        default: offline_zip_keymaster
+      branch:
+        description: Branch to package from (must be a predefined safe branch)
+        required: true
+        type: choice
+        options:
+          - main
+          - 0D_base_
+        default: main
+      package_format:
+        description: Package format
+        required: true
+        type: choice
+        options:
+          - zip
+          - tar.gz
+        default: zip
+      include_dependencies:
+        description: Include dependency metadata in the packaged archive
+        required: false
+        type: boolean
+        default: true
+      include_build_bundle:
+        description: Include the minimal source bundle used to build the package
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  package-app:
+    name: Package offline ZIP keymaster app
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Validate target app and branch
+        id: validate
+        shell: bash
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          set -euo pipefail
+          case "$APP_NAME" in
+            offline_zip_keymaster|offline-zip-keymaster|all)
+              ;;
+            *)
+              echo "Unsupported app target: $APP_NAME"
+              exit 1
+              ;;
+          esac
+          case "$BRANCH" in
+            main|0D_base_)
+              ;;
+            *)
+              echo "Unsupported branch: $BRANCH"
+              exit 1
+              ;;
+          esac
+          echo "app_name=$APP_NAME" >> "$GITHUB_OUTPUT"
+          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.12
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12.13
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Prepare repo-local app bundle
+        shell: bash
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          INCLUDE_DEPS: ${{ github.event.inputs.include_dependencies }}
+        run: |
+          set -euo pipefail
+          mkdir -p package_staging build_bundle release
+          rm -rf package_staging/* build_bundle/* release/*
+
+          if [[ "$APP_NAME" == "offline_zip_keymaster" || "$APP_NAME" == "offline-zip-keymaster" || "$APP_NAME" == "all" ]]; then
+            mkdir -p package_staging/offline_zip_keymaster
+            cp -R src/offline_zip_keymaster package_staging/
+            cp scripts/security/offline_zip_keymaster.py package_staging/
+            cp src/offline_zip_keymaster/README.md package_staging/README.md
+            cp pyproject.toml package_staging/pyproject.toml
+
+            cat > package_staging/run_offline_zip_keymaster.py <<'PY'
+          #!/usr/bin/env python3
+          from offline_zip_keymaster.cli import main
+
+          if __name__ == "__main__":
+              raise SystemExit(main())
+          PY
+            chmod +x package_staging/run_offline_zip_keymaster.py
+
+            cat > package_staging/run_offline_zip_keymaster.sh <<'SH'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          python3 -m offline_zip_keymaster "$@"
+          SH
+            chmod +x package_staging/run_offline_zip_keymaster.sh
+
+            if [[ "$INCLUDE_DEPS" == "true" ]]; then
+              cp requirements/*.txt package_staging/ 2>/dev/null || true
+              cp requirements*.txt package_staging/ 2>/dev/null || true
+            fi
+
+            mkdir -p build_bundle/offline_zip_keymaster
+            cp -R src/offline_zip_keymaster build_bundle/
+            cp scripts/security/offline_zip_keymaster.py build_bundle/offline_zip_keymaster/
+            cp src/offline_zip_keymaster/README.md build_bundle/offline_zip_keymaster/README.md
+            cp pyproject.toml build_bundle/offline_zip_keymaster/pyproject.toml
+          fi
+
+          if [[ ! -d package_staging/offline_zip_keymaster ]]; then
+            echo "Package staging missing offline_zip_keymaster sources"
+            exit 1
+          fi
+
+      - name: Generate package manifest
+        shell: bash
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          BRANCH: ${{ github.event.inputs.branch }}
+          FORMAT: ${{ github.event.inputs.package_format }}
+          INCLUDE_DEPS: ${{ github.event.inputs.include_dependencies }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          app_name = Path("${{ env.APP_NAME }}")
+          branch = "${{ env.BRANCH }}"
+          fmt = "${{ env.FORMAT }}"
+          include_deps = "${{ env.INCLUDE_DEPS }}" == "true"
+          root = Path("package_staging")
+          files = sorted(str(p.relative_to(root)) for p in root.rglob("*") if p.is_file())
+          manifest = {
+              "package_name": "offline_zip_keymaster",
+              "app_name": str(app_name),
+              "source_branch": branch,
+              "repository": "Aries-Serpent/_codex_",
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+              "format": fmt,
+              "include_dependencies": include_deps,
+              "files": files,
+              "workspace": "repo-local",
+              "artifact_type": "app-package",
+          }
+          Path("package_staging/package_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({"files": len(files), "package_name": manifest["package_name"]}, indent=2))
+          PY
+
+      - name: Create ZIP package
+        if: ${{ github.event.inputs.package_format == 'zip' }}
+        shell: bash
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          set -euo pipefail
+          archive_name="offline_zip_keymaster_${BRANCH}_${GITHUB_RUN_ID}.zip"
+          cd package_staging
+          zip -r "../release/${archive_name}" .
+          echo "archive_name=${archive_name}" >> "$GITHUB_ENV"
+          echo "## 📦 Package Created" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Format**: ZIP" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Filename**: \\`${archive_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create TAR.GZ package
+        if: ${{ github.event.inputs.package_format == 'tar.gz' }}
+        shell: bash
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          set -euo pipefail
+          archive_name="offline_zip_keymaster_${BRANCH}_${GITHUB_RUN_ID}.tar.gz"
+          cd package_staging
+          tar -czf "../release/${archive_name}" .
+          echo "archive_name=${archive_name}" >> "$GITHUB_ENV"
+          echo "## 📦 Package Created" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Format**: TAR.GZ" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Filename**: \\`${archive_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create minimal source bundle
+        if: ${{ github.event.inputs.include_build_bundle == 'true' }}
+        shell: bash
+        env:
+          BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          set -euo pipefail
+          bundle_name="offline_zip_keymaster_source_${BRANCH}_${GITHUB_RUN_ID}.zip"
+          cd build_bundle
+          zip -r "../release/${bundle_name}" offline_zip_keymaster
+          echo "## 🧩 Source Bundle Created" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Filename**: \\`${bundle_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload packaged artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-zip-keymaster-${{ github.run_id }}
+          path: |
+            release/*.zip
+            release/*.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report artifact summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## ✅ Artifact Delivery" >> "$GITHUB_STEP_SUMMARY"
+          echo "The repository-local package and minimal source bundle are now available in the workflow artifact download for this run." >> "$GITHUB_STEP_SUMMARY"
+          ls -l release
