@@ -47,6 +47,10 @@ name: Offline ZIP Artifact Unpacker
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unpack-zip:
     name: Unpack provided ZIP into a self-titled folder
