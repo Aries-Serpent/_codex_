@@ -1,37 +1,41 @@
-# Offline ZIP packaging quick reference
+# App package download quick reference
 
 ## Active workflow
 
-Use the restored active workflow: `.github/workflows/offline-zip-unpack.yml`
+Use the active workflow: `.github/workflows/app-package-download.yml`
 
-This workflow downloads or resolves a ZIP and extracts it into a self-titled folder without trusting unsafe member paths.
+This workflow packages the offline ZIP keymaster as a native Windows GUI app and uploads a downloadable zip artifact that contains the bundled `run_offline_zip_keymaster.exe`.
 
 ### Trigger inputs
 
-- `zip_url`: remote ZIP URL
-- `zip_path`: repo-relative ZIP path
-- `output_dir`: output parent directory (default: `output`)
-- `artifact_name`: workflow artifact name
+- `app_name`: `offline_zip_keymaster`, `offline-zip-keymaster`, or `all`
+- `branch`: `main` or `0D_base_`
+- `package_format`: `zip` (the self-contained GUI runtime is shipped as a ZIP archive)
+- `include_dependencies`: include dependency metadata
+- `include_build_bundle`: include the minimal build-support bundle
+- `offline_wheelhouse`: generate a local wheelhouse for offline support
 
-### Examples
+### Primary artifact
 
-```bash
-# Download a remote ZIP and unpack it
-gh workflow run offline-zip-unpack.yml \
-  --field zip_url=https://example.com/release.zip \
-  --field output_dir=output \
-  --field artifact_name=release-artifact
-
-# Unpack a repo-local ZIP
-gh workflow run offline-zip-unpack.yml \
-  --field zip_path=dist/release.zip \
-  --field output_dir=output \
-  --field artifact_name=release-artifact
+```text
+release/run_offline_zip_keymaster_self_contained.zip
 ```
 
-## Offline ZIP keymaster contract
+This zip is the user-facing download and contains:
 
-The packaging contract used for secure ZIP handling is defined by the offline ZIP keymaster package.
+- `run_offline_zip_keymaster.exe`
+- `README.txt`
+- `manifest.json`
+
+### Secondary artifact
+
+```text
+release/offline_zip_keymaster_build_bundle.zip
+```
+
+This build bundle contains the source files and packaging metadata used to construct the runtime app bundle.
+
+## Local app usage
 
 ```bash
 python -m offline_zip_keymaster generate-key --key-out ./offline_key.key
@@ -39,8 +43,10 @@ python -m offline_zip_keymaster encrypt --input-dir ./source_data --zip-out ./pa
 python -m offline_zip_keymaster unpack --zip-path ./payloads/archive.zip --key-file ./offline_key.key --output-dir ./output
 ```
 
-The archive includes a `manifest.json` and `encrypted_payload.bin` pair, and the unpack path validates the key fingerprint, HMAC, and safe member paths before extraction.
+To open the GUI directly:
 
-## Legacy note
+```bash
+python -m offline_zip_keymaster.gui
+```
 
-`app-package-download.yml.disabled` is a historical workflow kept only for audit purposes. It is not active and does not represent the current packaging contract.
+After extraction, the packaged Windows app should be launched by double-clicking `run_offline_zip_keymaster.exe`.

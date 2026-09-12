@@ -6,7 +6,16 @@ import sys
 import tkinter as tk
 from pathlib import Path
 
-from .cli import DEFAULT_APP_WORKSPACE
+try:
+    from .cli import DEFAULT_APP_WORKSPACE
+except ImportError:  # pragma: no cover - fallback for PyInstaller single-file packaging
+    for candidate in (str(Path(__file__).resolve().parent.parent), str(Path(__file__).resolve().parent), str(Path.cwd())):
+        if candidate and candidate not in sys.path:
+            sys.path.insert(0, candidate)
+    try:
+        from offline_zip_keymaster.cli import DEFAULT_APP_WORKSPACE
+    except ImportError:  # pragma: no cover - fallback for direct script execution
+        from cli import DEFAULT_APP_WORKSPACE
 
 
 class OfflineZipKeymasterGUI:

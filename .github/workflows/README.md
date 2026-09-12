@@ -71,53 +71,47 @@ Then check debug output in workflow logs.
 
 ### Application Distribution & Offline Packaging
 
-#### `offline-zip-unpack.yml`
+#### `app-package-download.yml`
 **Status**: ✅ Active  
 **Last Updated**: 2026-09-12  
-**Trigger**: Manual (`workflow_dispatch`) and reusable (`workflow_call`)
+**Trigger**: Manual (`workflow_dispatch`)
 
-**Purpose**: Download or resolve a ZIP archive and unpack it into a self-titled folder under the repository workspace. This is the active workflow used for archive intake and offline extraction.
+**Purpose**: Build a native Windows GUI executable for the offline ZIP keymaster app, package it as a self-contained zip bundle, and upload the runtime bundle plus the minimal build-support bundle as workflow artifacts.
 
 **Inputs**:
-- `zip_url` (optional) - URL for a ZIP artifact to download
-- `zip_path` (optional) - Repo-relative path to a ZIP to unpack
-- `output_dir` (default: `output`) - Output directory parent for the extracted folder
-- `artifact_name` (optional) - Name for the uploaded workflow artifact
+- `app_name` - `offline_zip_keymaster`, `offline-zip-keymaster`, or `all`
+- `branch` - `main` or `0D_base_`
+- `package_format` - `zip` (the runtime bundle is a self-contained Windows GUI EXE zip)
+- `include_dependencies` - include dependency metadata in the bundle
+- `include_build_bundle` - include the minimal source bundle
+- `offline_wheelhouse` - generate a local wheelhouse for offline support
 
 **Permissions**:
 - `contents: read` - Read repository files
+- `actions: read` - Read workflow metadata
 
 **Outputs**:
-- Extracted self-titled archive folder in `output_dir`
-- Uploaded artifact matching the archive stem or custom `artifact_name`
+- `run_offline_zip_keymaster_self_contained.zip` - primary self-contained GUI runtime bundle
+- `offline_zip_keymaster_build_bundle.zip` - minimal source/build bundle used to recreate the package
 
 **Usage**:
 ```bash
-# Trigger via GitHub CLI
-gh workflow run offline-zip-unpack.yml \
-  --field zip_url=https://example.com/release.zip \
-  --field output_dir=output \
-  --field artifact_name=release-archive
-
-# Or unpack a local zip from the repo
-gh workflow run offline-zip-unpack.yml \
-  --field zip_path=dist/release.zip \
-  --field output_dir=output \
-  --field artifact_name=release-archive
+# Trigger the app packaging workflow
+gh workflow run app-package-download.yml \
+  --field app_name=offline_zip_keymaster \
+  --field branch=main \
+  --field package_format=zip \
+  --field include_dependencies=true \
+  --field include_build_bundle=true \
+  --field offline_wheelhouse=false
 ```
 
 **Security**:
-- Rejects empty and absolute/escaping ZIP paths
-- Validates archive readability and maximum size limits
-- Uses `scripts.security.offline_zip_keymaster._safe_extract_members` to prevent traversal and symlink extraction
+- Packages only repo-local files under `dist/`, `.artifacts/`, `release/`, and `packages/`
+- Builds the runtime app using a Windows GUI entrypoint instead of a console fallback
+- Produces a self-contained EXE bundle that does not require repo checkout, GitHub variables, or network access
 
-**Documentation**: See [app-package-download.md](./app-package-download.md) for legacy context and the current offline ZIP contract summary.
-
-#### `app-package-download.yml.disabled`
-**Status**: ⚠️ Legacy / Disabled  
-**Trigger**: Historical (`workflow_dispatch` only)
-
-**Purpose**: Earlier app packaging workflow that produced bundles from the `apps/` directory. It remains disabled and is not part of the active baseline.
+**Documentation**: See [app-package-download.md](./app-package-download.md) and [app-package-download-quick-ref.md](./app-package-download-quick-ref.md) for the live packaging contract and artifact layout.
 
 **Documentation**: Historical reference only; use the active offline ZIP workflow and keymaster contract instead.
 

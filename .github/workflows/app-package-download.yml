@@ -26,7 +26,6 @@ name: App Package Download
         type: choice
         options:
           - zip
-          - tar.gz
         default: zip
       include_dependencies:
         description: Include dependency metadata in the packaged archive
@@ -38,6 +37,11 @@ name: App Package Download
         required: false
         type: boolean
         default: true
+      offline_wheelhouse:
+        description: Produce a local wheelhouse bundle for offline installation support
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -48,19 +52,22 @@ permissions:
   actions: read
 
 jobs:
-  package-app:
-    name: Package offline ZIP keymaster app
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  build-windows-gui-exe:
+    name: Build Windows GUI EXE bundle
+    runs-on: windows-latest
+    timeout-minutes: 30
     permissions:
       contents: read
+    env:
+      APP_NAME: ${{ github.event.inputs.app_name }}
+      BRANCH: ${{ github.event.inputs.branch }}
+      PACKAGE_FORMAT: ${{ github.event.inputs.package_format }}
+      INCLUDE_DEPS: ${{ github.event.inputs.include_dependencies }}
+      INCLUDE_BUILD_BUNDLE: ${{ github.event.inputs.include_build_bundle }}
+      OFFLINE_WHEELHOUSE: ${{ github.event.inputs.offline_wheelhouse }}
     steps:
       - name: Validate target app and branch
-        id: validate
         shell: bash
-        env:
-          APP_NAME: ${{ github.event.inputs.app_name }}
-          BRANCH: ${{ github.event.inputs.branch }}
         run: |
           set -euo pipefail
           case "$APP_NAME" in
@@ -79,12 +86,11 @@ jobs:
               exit 1
               ;;
           esac
-          echo "app_name=$APP_NAME" >> "$GITHUB_OUTPUT"
-          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Check out repository
         uses: actions/checkout@v5
         with:
+          ref: ${{ github.event.inputs.branch }}
           fetch-depth: 1
 
       - name: Set up Python 3.12
@@ -94,151 +100,238 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
-      - name: Prepare repo-local app bundle
+      - name: Prepare repo-local packaging directories
         shell: bash
-        env:
-          APP_NAME: ${{ github.event.inputs.app_name }}
-          INCLUDE_DEPS: ${{ github.event.inputs.include_dependencies }}
         run: |
           set -euo pipefail
-          mkdir -p package_staging build_bundle release
-          rm -rf package_staging/* build_bundle/* release/*
+          mkdir -p .artifacts/pyinstaller dist/windows-app release packages/offline_zip_keymaster
+          rm -rf .artifacts/pyinstaller/* dist/windows-app/* release/* packages/offline_zip_keymaster/*
 
           if [[ "$APP_NAME" == "offline_zip_keymaster" || "$APP_NAME" == "offline-zip-keymaster" || "$APP_NAME" == "all" ]]; then
-            mkdir -p package_staging/offline_zip_keymaster
-            cp -R src/offline_zip_keymaster package_staging/
-            cp scripts/security/offline_zip_keymaster.py package_staging/
-            cp src/offline_zip_keymaster/README.md package_staging/README.md
-            cp pyproject.toml package_staging/pyproject.toml
-
-            cat > package_staging/run_offline_zip_keymaster.py <<'PY'
-          #!/usr/bin/env python3
-          from offline_zip_keymaster.cli import main
-
-          if __name__ == "__main__":
-              raise SystemExit(main())
-          PY
-            chmod +x package_staging/run_offline_zip_keymaster.py
-
-            cat > package_staging/run_offline_zip_keymaster.sh <<'SH'
-          #!/usr/bin/env bash
-          set -euo pipefail
-          python3 -m offline_zip_keymaster "$@"
-          SH
-            chmod +x package_staging/run_offline_zip_keymaster.sh
-
-            if [[ "$INCLUDE_DEPS" == "true" ]]; then
-              cp requirements/*.txt package_staging/ 2>/dev/null || true
-              cp requirements*.txt package_staging/ 2>/dev/null || true
-            fi
-
-            mkdir -p build_bundle/offline_zip_keymaster
-            cp -R src/offline_zip_keymaster build_bundle/
-            cp scripts/security/offline_zip_keymaster.py build_bundle/offline_zip_keymaster/
-            cp src/offline_zip_keymaster/README.md build_bundle/offline_zip_keymaster/README.md
-            cp pyproject.toml build_bundle/offline_zip_keymaster/pyproject.toml
+            cp -R src/offline_zip_keymaster packages/offline_zip_keymaster/
+            cp -R scripts packages/offline_zip_keymaster/
+            cp pyproject.toml packages/offline_zip_keymaster/pyproject.toml
+            cp src/offline_zip_keymaster/README.md packages/offline_zip_keymaster/README.md
           fi
 
-          if [[ ! -d package_staging/offline_zip_keymaster ]]; then
-            echo "Package staging missing offline_zip_keymaster sources"
-            exit 1
-          fi
-
-      - name: Generate package manifest
+      - name: Install PyInstaller
         shell: bash
-        env:
-          APP_NAME: ${{ github.event.inputs.app_name }}
-          BRANCH: ${{ github.event.inputs.branch }}
-          FORMAT: ${{ github.event.inputs.package_format }}
-          INCLUDE_DEPS: ${{ github.event.inputs.include_dependencies }}
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller
+
+      - name: Build Windows GUI executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m PyInstaller \
+            --onefile \
+            --windowed \
+            --noconfirm \
+            --clean \
+            --name run_offline_zip_keymaster \
+            --distpath dist/windows-app \
+            --workpath .artifacts/pyinstaller \
+            --specpath .artifacts/pyinstaller \
+            --paths src \
+            --paths . \
+            --collect-submodules offline_zip_keymaster \
+            --collect-submodules scripts \
+            src/offline_zip_keymaster/gui.py
+          test -f dist/windows-app/run_offline_zip_keymaster.exe
+
+      - name: Generate GUI bundle metadata
+        shell: python
+        run: |
+          import hashlib
           import json
+          import os
           from datetime import datetime, timezone
           from pathlib import Path
 
-          app_name = Path("${{ env.APP_NAME }}")
-          branch = "${{ env.BRANCH }}"
-          fmt = "${{ env.FORMAT }}"
-          include_deps = "${{ env.INCLUDE_DEPS }}" == "true"
-          root = Path("package_staging")
-          files = sorted(str(p.relative_to(root)) for p in root.rglob("*") if p.is_file())
+          root = Path("dist/windows-app")
+          exe = root / "run_offline_zip_keymaster.exe"
+          if not exe.exists():
+              raise FileNotFoundError(f"Missing EXE: {exe}")
+          digest = hashlib.sha256(exe.read_bytes()).hexdigest()
+          readme = root / "README.txt"
+          readme.write_text(
+              "Double-click run_offline_zip_keymaster.exe to launch the GUI.\n"
+              "This bundle is self-contained and does not require the repository, GitHub variables, "
+              "or network access.\n",
+              encoding="utf-8",
+          )
           manifest = {
-              "package_name": "offline_zip_keymaster",
-              "app_name": str(app_name),
-              "source_branch": branch,
-              "repository": "Aries-Serpent/_codex_",
+              "app_name": "offline_zip_keymaster",
+              "entry_point": "run_offline_zip_keymaster.exe",
+              "launch_mode": "GUI",
+              "source_branch": os.environ.get("BRANCH", "main"),
               "generated_at": datetime.now(timezone.utc).isoformat(),
-              "format": fmt,
-              "include_dependencies": include_deps,
-              "files": files,
-              "workspace": "repo-local",
-              "artifact_type": "app-package",
+              "sha256": digest,
+              "artifact_type": "self-contained-gui-exe",
+              "requires_repo": False,
+              "requires_network": False,
+              "files": ["run_offline_zip_keymaster.exe", "README.txt", "manifest.json"],
           }
-          Path("package_staging/package_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-          print(json.dumps({"files": len(files), "package_name": manifest["package_name"]}, indent=2))
-          PY
+          (root / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
-      - name: Create ZIP package
-        if: ${{ github.event.inputs.package_format == 'zip' }}
-        shell: bash
-        env:
-          APP_NAME: ${{ github.event.inputs.app_name }}
-          BRANCH: ${{ github.event.inputs.branch }}
+      - name: Validate self-contained bundle contract
+        shell: python
         run: |
-          set -euo pipefail
-          archive_name="offline_zip_keymaster_${BRANCH}_${GITHUB_RUN_ID}.zip"
-          cd package_staging
-          zip -r "../release/${archive_name}" .
-          echo "archive_name=${archive_name}" >> "$GITHUB_ENV"
-          echo "## 📦 Package Created" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Format**: ZIP" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Filename**: \\`${archive_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
 
-      - name: Create TAR.GZ package
-        if: ${{ github.event.inputs.package_format == 'tar.gz' }}
-        shell: bash
-        env:
-          APP_NAME: ${{ github.event.inputs.app_name }}
-          BRANCH: ${{ github.event.inputs.branch }}
+          bundle_dir = Path("dist/windows-app")
+          exe = bundle_dir / "run_offline_zip_keymaster.exe"
+          readme = bundle_dir / "README.txt"
+          manifest_path = bundle_dir / "manifest.json"
+
+          if not exe.exists():
+              raise FileNotFoundError(f"Missing packaged EXE: {exe}")
+          if not readme.exists():
+              raise FileNotFoundError(f"Missing README: {readme}")
+          if not manifest_path.exists():
+              raise FileNotFoundError(f"Missing manifest: {manifest_path}")
+
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          assert manifest["artifact_type"] == "self-contained-gui-exe", manifest
+          assert manifest["launch_mode"] == "GUI", manifest
+          assert manifest["requires_repo"] is False, manifest
+          assert manifest["requires_network"] is False, manifest
+          assert "run_offline_zip_keymaster.exe" in manifest["files"], manifest
+          assert "self-contained" in readme.read_text(encoding="utf-8").lower(), readme.read_text(encoding="utf-8")
+
+      - name: Create self-contained runtime ZIP
+        shell: pwsh
         run: |
-          set -euo pipefail
-          archive_name="offline_zip_keymaster_${BRANCH}_${GITHUB_RUN_ID}.tar.gz"
-          cd package_staging
-          tar -czf "../release/${archive_name}" .
-          echo "archive_name=${archive_name}" >> "$GITHUB_ENV"
-          echo "## 📦 Package Created" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Format**: TAR.GZ" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Filename**: \\`${archive_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+          $artifactDir = Join-Path $env:GITHUB_WORKSPACE "release"
+          $bundleDir = Join-Path $env:GITHUB_WORKSPACE "dist/windows-app"
+          New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
 
-      - name: Create minimal source bundle
-        if: ${{ github.event.inputs.include_build_bundle == 'true' }}
-        shell: bash
-        env:
-          BRANCH: ${{ github.event.inputs.branch }}
+          $exe = Join-Path $bundleDir "run_offline_zip_keymaster.exe"
+          $readme = Join-Path $bundleDir "README.txt"
+          $manifest = Join-Path $bundleDir "manifest.json"
+
+          Copy-Item $exe $artifactDir -Force
+          Copy-Item $readme $artifactDir -Force
+          Copy-Item $manifest $artifactDir -Force
+
+          $zipPath = Join-Path $artifactDir "run_offline_zip_keymaster_self_contained.zip"
+          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+          Compress-Archive -Path $exe, $readme, $manifest -DestinationPath $zipPath -Force
+          Write-Host "Created $zipPath"
+
+      - name: Verify runtime ZIP
+        shell: pwsh
         run: |
-          set -euo pipefail
-          bundle_name="offline_zip_keymaster_source_${BRANCH}_${GITHUB_RUN_ID}.zip"
-          cd build_bundle
-          zip -r "../release/${bundle_name}" offline_zip_keymaster
-          echo "## 🧩 Source Bundle Created" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Filename**: \\`${bundle_name}\\`" >> "$GITHUB_STEP_SUMMARY"
+          $zipPath = Join-Path $env:GITHUB_WORKSPACE "release/run_offline_zip_keymaster_self_contained.zip"
+          if (-not (Test-Path $zipPath)) { throw "Missing runtime zip: $zipPath" }
+          $verifyDir = Join-Path $env:GITHUB_WORKSPACE ".artifacts/zip_verify"
+          if (Test-Path $verifyDir) { Remove-Item $verifyDir -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path $verifyDir | Out-Null
+          Expand-Archive -Path $zipPath -DestinationPath $verifyDir -Force
+          $exePath = Join-Path $verifyDir "run_offline_zip_keymaster.exe"
+          if (-not (Test-Path $exePath)) { throw "Zip bundle does not contain a GUI exe payload" }
+          Write-Host "Verified bundle includes GUI executable"
 
-      - name: Upload packaged artifacts
+      - name: Upload runtime ZIP artifact
         uses: actions/upload-artifact@v4
         with:
-          name: offline-zip-keymaster-${{ github.run_id }}
-          path: |
-            release/*.zip
-            release/*.tar.gz
+          name: offline-zip-keymaster-gui-${{ github.run_id }}
+          path: release/run_offline_zip_keymaster_self_contained.zip
           if-no-files-found: error
           retention-days: 30
 
-      - name: Report artifact summary
+      - name: Summarize runtime bundle
         shell: bash
         run: |
           set -euo pipefail
-          echo "## ✅ Artifact Delivery" >> "$GITHUB_STEP_SUMMARY"
-          echo "The repository-local package and minimal source bundle are now available in the workflow artifact download for this run." >> "$GITHUB_STEP_SUMMARY"
+          echo "## ✅ GUI runtime bundle" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Primary artifact**: run_offline_zip_keymaster_self_contained.zip" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Launch mode**: GUI, double-click the bundled EXE" >> "$GITHUB_STEP_SUMMARY"
+          ls -l release
+
+  prepare-build-bundle:
+    name: Build support bundle
+    runs-on: ubuntu-latest
+    needs: build-windows-gui-exe
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      APP_NAME: ${{ github.event.inputs.app_name }}
+      BRANCH: ${{ github.event.inputs.branch }}
+      OFFLINE_WHEELHOUSE: ${{ github.event.inputs.offline_wheelhouse }}
+      INCLUDE_BUILD_BUNDLE: ${{ github.event.inputs.include_build_bundle }}
+    if: ${{ github.event.inputs.include_build_bundle }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 1
+
+      - name: Prepare minimal build bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build_bundle/offline_zip_keymaster release .artifacts/wheelhouse
+          rm -rf build_bundle/offline_zip_keymaster/* release/* .artifacts/wheelhouse/*
+
+          cp -R src/offline_zip_keymaster build_bundle/
+          cp scripts/security/offline_zip_keymaster.py build_bundle/offline_zip_keymaster/offline_zip_keymaster.py
+          cp src/offline_zip_keymaster/README.md build_bundle/offline_zip_keymaster/README.md
+          cp pyproject.toml build_bundle/offline_zip_keymaster/pyproject.toml
+
+          if [[ "$OFFLINE_WHEELHOUSE" == "true" ]]; then
+            python -m pip install --upgrade pip wheel
+            python -m pip wheel . --wheel-dir .artifacts/wheelhouse
+            cp .artifacts/wheelhouse/*.whl build_bundle/offline_zip_keymaster/ 2>/dev/null || true
+          fi
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          root = Path('build_bundle')
+          entries = []
+          for path in sorted(root.rglob('*')):
+              if path.is_file():
+                  digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                  entries.append({
+                      'path': str(path.relative_to(root)),
+                      'sha256': digest,
+                  })
+          manifest = {
+              'package_name': 'offline_zip_keymaster_build_bundle',
+              'app_name': 'offline_zip_keymaster',
+              'source_branch': os.environ.get('BRANCH', 'main'),
+              'generated_at': datetime.now(timezone.utc).isoformat(),
+              'artifact_type': 'build-support',
+              'files': entries,
+          }
+          (root / 'build_bundle_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+          PY
+
+          cd build_bundle
+          zip -r ../release/offline_zip_keymaster_build_bundle.zip offline_zip_keymaster build_bundle_manifest.json
+
+      - name: Upload build bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-zip-keymaster-build-${{ github.run_id }}
+          path: release/offline_zip_keymaster_build_bundle.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Summarize build bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## 🧩 Build support bundle" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Artifact**: offline_zip_keymaster_build_bundle.zip" >> "$GITHUB_STEP_SUMMARY"
           ls -l release

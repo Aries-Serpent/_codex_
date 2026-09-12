@@ -1,55 +1,69 @@
-# Legacy app-package download workflow
+# App package download workflow
 
-This page is intentionally kept as a historical reference only.
+This document describes the live app packaging flow for the offline ZIP keymaster distribution. The workflow must produce a ready-to-run Windows GUI application archive that can be downloaded and executed locally without the repository, GitHub variables, or network access.
 
-The repository's restored active workflow is `.github/workflows/offline-zip-unpack.yml`, and the live packaging contract is defined by `scripts/security/offline_zip_keymaster.py` plus `src/offline_zip_keymaster/cli.py`.
+## Live workflow
 
-The file `.github/workflows/app-package-download.yml.disabled` is not part of the active workflow baseline and should not be treated as the live user-facing workflow path.
+The active workflow path is `.github/workflows/app-package-download.yml`.
 
-## Current active workflow
+### Purpose
 
-### `offline-zip-unpack.yml`
+- build a native Windows GUI executable for the offline ZIP keymaster app
+- create a self-contained runtime ZIP bundle containing `run_offline_zip_keymaster.exe`
+- generate a minimal source/build-support bundle for packaging metadata and rebuild support
+- keep all staging and release output in repo-local directories under `dist/`, `.artifacts/`, `release/`, and `packages/`
 
-This workflow is the active packaging/unpack workflow in the repository baseline.
+### Trigger
 
-- Trigger: `workflow_dispatch` or `workflow_call`
-- Inputs:
-  - `zip_url`: optional URL to download and unpack
-  - `zip_path`: repo-relative path to a ZIP to unpack
-  - `output_dir`: parent directory for the extracted self-titled output folder
-  - `artifact_name`: artifact name to upload after extraction
-- Behavior:
-  1. resolves either a URL or a repo-local ZIP path
-  2. validates archive readability and safety
-  3. extracts into a self-titled folder under `output_dir`
-  4. uploads the extracted directory as a workflow artifact
-- Security controls:
-  - rejects empty / absolute / escaping zip paths
-  - validates the ZIP before extraction
-  - calls `scripts.security.offline_zip_keymaster._safe_extract_members` for safe member extraction
-  - prevents path traversal and symlink extraction
-
-### Example usage
-
-```bash
-# Trigger via GitHub CLI
-gh workflow run offline-zip-unpack.yml \
-  --field zip_url=https://example.com/archive.zip \
-  --field output_dir=output \
-  --field artifact_name=release-archive
-
-# Or unpack a repo-local archive
-gh workflow run offline-zip-unpack.yml \
-  --field zip_path=dist/release.zip \
-  --field output_dir=output \
-  --field artifact_name=release-archive
+```yaml
+workflow_dispatch
 ```
 
-## Offline ZIP keymaster contract
+### Inputs
 
-The active packaging contract is the offline ZIP keymaster package.
+- `app_name` — `offline_zip_keymaster`, `offline-zip-keymaster`, or `all`
+- `branch` — `main` or `0D_base_`
+- `package_format` — `zip` only for the user-facing runtime bundle (self-contained GUI requirement)
+- `include_dependencies` — include dependency metadata in the bundle
+- `include_build_bundle` — include the minimal source build bundle
+- `offline_wheelhouse` — build a local wheelhouse for offline installation support
 
-### CLI contract
+### Runtime artifact contract
+
+The primary downloadable artifact is:
+
+- `release/run_offline_zip_keymaster_self_contained.zip`
+
+The zip must contain:
+
+- `run_offline_zip_keymaster.exe`
+- `README.txt`
+- `manifest.json`
+
+The bundled executable is built from the GUI entrypoint:
+
+- `src/offline_zip_keymaster/gui.py`
+
+This is the default launch path for the packaged app, and the GUI is the canonical user experience.
+
+### Build-support artifact contract
+
+The second artifact is:
+
+- `release/offline_zip_keymaster_build_bundle.zip`
+
+It contains the minimal source package used to construct the downloadable app, plus metadata and checksums. It is intentionally smaller than the runtime bundle and excludes transient `.codex` session metadata.
+
+## Packaging pipeline
+
+1. Validate the selected app and safe target branch.
+2. Prepare repo-local staging directories (`dist/`, `.artifacts/`, `release/`, `packages/`).
+3. Build the Windows GUI app with PyInstaller on `windows-latest`.
+4. Create a self-contained zip archive from the finished `run_offline_zip_keymaster.exe` plus support files.
+5. Generate a manifest with SHA-256 metadata, launch mode, and offline-only flags.
+6. Upload the runtime bundle and the build-support bundle as GitHub Actions artifacts.
+
+## Local offline usage
 
 ```bash
 python -m offline_zip_keymaster generate-key --key-out ./offline_key.key
@@ -57,22 +71,22 @@ python -m offline_zip_keymaster encrypt --input-dir ./source_data --zip-out ./pa
 python -m offline_zip_keymaster unpack --zip-path ./payloads/archive.zip --key-file ./offline_key.key --output-dir ./output
 ```
 
-The implementation encrypts a directory into a ZIP archive containing:
+The GUI entrypoint also supports the equivalent local actions:
 
-- `manifest.json` — archive metadata including the payload name, member names, and key fingerprint
-- `encrypted_payload.bin` — the encrypted archive payload
+```bash
+python -m offline_zip_keymaster.gui
+```
 
-The unpack path validates:
+Double-click the packaged `run_offline_zip_keymaster.exe` to open the GUI directly after extraction.
 
-- key fingerprint matches the manifest
-- archive HMAC matches the key
-- member names are safe and remain inside the target directory
-- nested archive recursion and file counts remain within safety caps
+## Security and offline requirements
 
-This is the documented local-only packaging workflow; it is not the disabled `app-package-download` workflow.
+- no GitHub variables or secrets are required at runtime
+- no network access is required for the packaged GUI runtime
+- workflow staging must remain repo-local only
+- archive contents are restricted to the app runtime + minimal support files
+- `.codex` session metadata and transient build artifacts are excluded from the runtime zip
 
-## Legacy note
+## Build note
 
-The old app package download flow built downloadable bundles from `apps/` but it was intentionally disabled from the live workflow baseline. Its docs are preserved for audit history only and should not be used as the live operational path.
-
-Use the offline ZIP workflow and keymaster contract when the user-facing requirement is to package or unpack a ZIP securely and locally in a repository-controlled environment.
+The packaged runtime artifact must be a native Windows executable; the Python source-only staging path does not satisfy the user-facing requirement. The active workflow therefore builds on `windows-latest` and targets the GUI entrypoint instead of the console CLI.
