@@ -125,13 +125,21 @@ DOMAIN_ALIASES = {
     "training": "training",
     "train_loop": "training",
 }
+NESTED_DOMAIN_ALIASES = {
+    "models.utils.peft": "lora",
+    "utils.checkpoint": "checkpointing",
+    "utils.checkpoint_core": "checkpointing",
+    "utils.checkpointing": "checkpointing",
+}
 ALLOWED_DOMAIN_EDGES = {
     ("evaluation", "configuration"),
     ("evaluation", "logging"),
     ("evaluation", "metrics"),
     ("evaluation", "training"),
     ("training", "configuration"),
+    ("training", "checkpointing"),
     ("training", "logging"),
+    ("training", "lora"),
     ("training", "metrics"),
     ("training", "monitoring"),
     ("training", "telemetry"),
@@ -175,16 +183,30 @@ def _codex_ml_imports(path: Path, source_root: Path | None = None) -> set[str]:
             continue
         for name in names:
             if name.startswith("codex_ml."):
-                imported.add(name.split(".", 2)[1])
+                suffix = name.removeprefix("codex_ml.")
+                if any(
+                    suffix == prefix or suffix.startswith(f"{prefix}.")
+                    for prefix in NESTED_DOMAIN_ALIASES
+                ):
+                    imported.add(suffix)
+                else:
+                    imported.add(suffix.partition(".")[0])
     return imported
+
+
+def _domain_alias(module: str) -> str | None:
+    for prefix, domain in NESTED_DOMAIN_ALIASES.items():
+        if module == prefix or module.startswith(f"{prefix}."):
+            return domain
+    return DOMAIN_ALIASES.get(module.partition(".")[0])
 
 
 def _source_domain(path: Path) -> str | None:
     relative = path.relative_to(REPOSITORY_ROOT / "src" / "codex_ml")
-    component = relative.parts[0]
-    if component.endswith(".py"):
-        component = component.removesuffix(".py")
-    return DOMAIN_ALIASES.get(component)
+    module = relative.with_suffix("").as_posix().replace("/", ".")
+    if module.endswith(".__init__"):
+        module = module.removesuffix(".__init__")
+    return _domain_alias(module)
 
 
 def _domain_edges() -> set[tuple[str, str]]:
@@ -195,7 +217,7 @@ def _domain_edges() -> set[tuple[str, str]]:
         if source is None:
             continue
         for imported in _codex_ml_imports(path):
-            target = DOMAIN_ALIASES.get(imported)
+            target = _domain_alias(imported)
             if target is not None and target != source:
                 edges.add((source, target))
     return edges
@@ -306,6 +328,17 @@ def test_standalone_package_root_public_api_snapshot(
         ("from codex_ml import metrics\n", {"metrics"}),
         ("from .. import metrics\n", {"metrics"}),
         ("from ..metrics import accuracy\n", {"metrics"}),
+        (
+            "from codex_ml.models.utils.peft import apply_lora_if_available\n",
+            {
+                "models.utils.peft",
+                "models.utils.peft.apply_lora_if_available",
+            },
+        ),
+        (
+            "from codex_ml.utils.checkpointing import save_checkpoint\n",
+            {"utils.checkpointing", "utils.checkpointing.save_checkpoint"},
+        ),
     ],
 )
 def test_codex_ml_import_detection_covers_supported_import_forms(
@@ -317,6 +350,17 @@ def test_codex_ml_import_detection_covers_supported_import_forms(
     path.write_text(source, encoding="utf-8")
 
     assert _codex_ml_imports(path, source_root) == expected
+
+
+def test_nested_compatibility_namespaces_have_domain_aliases() -> None:
+    expected = {
+        "models.utils.peft": "lora",
+        "models.utils.peft.backend": "lora",
+        "utils.checkpoint": "checkpointing",
+        "utils.checkpoint_core": "checkpointing",
+        "utils.checkpointing": "checkpointing",
+    }
+    assert {module: _domain_alias(module) for module in expected} == expected
 
 
 def test_domain_dependencies_follow_the_allowed_dag() -> None:

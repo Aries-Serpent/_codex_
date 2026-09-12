@@ -13,16 +13,22 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+EXECUTABLE_CONFIG_ROOT_NAMES = ("conf", "config", "configs")
 
 # Ordered from the most specific names to compatibility/legacy namespaces.
 DOMAIN_PREFIXES: tuple[tuple[str, str], ...] = (
+    ("codex_ml.models.utils.peft", "lora"),
     ("codex_ml_telemetry", "telemetry"),
     ("codex_evaluation", "evaluation"),
     ("codex_lora", "lora"),
     ("aries_serpent_core.monitoring", "monitoring"),
     ("aries_serpent_core.logging", "logging"),
     ("codex_ml.checkpointing", "checkpointing"),
+    ("codex_ml.utils.checkpointing", "checkpointing"),
+    ("codex_ml.utils.checkpoint_core", "checkpointing"),
     ("codex_ml.utils.checkpoint", "checkpointing"),
+    ("utils.checkpointing", "checkpointing"),
+    ("utils.checkpoint", "checkpointing"),
     ("codex_ml.evaluation", "evaluation"),
     ("codex_ml.eval", "evaluation"),
     ("codex_ml.metrics", "metrics"),
@@ -36,6 +42,9 @@ DOMAIN_PREFIXES: tuple[tuple[str, str], ...] = (
     ("codex_ml.config", "configuration"),
     ("codex_ml.training", "training"),
     ("codex_ml.train_loop", "training"),
+    ("configs", "configuration"),
+    ("config", "configuration"),
+    ("conf", "configuration"),
     ("monitoring", "monitoring"),
     ("training", "training"),
 )
@@ -73,14 +82,34 @@ DOMAIN_EDGE_BASELINE: frozenset[tuple[str, str]] = frozenset(
     {
         ("codex_ml.evaluation.loop", "codex_ml.training.engine"),
         ("codex_ml.peft.peft_adapter", "codex.logging.adapter"),
+        ("utils.checkpoint", "training.checkpoint_manager"),
     }
 )
 
 STATIC_SCC_BASELINE: frozenset[frozenset[str]] = frozenset(
     {
         frozenset(
+            {
+                "aries_serpent_core.archive",
+                "aries_serpent_core.archive.archive_database",
+                "aries_serpent_core.archive.backend",
+                "aries_serpent_core.archive.config",
+                "aries_serpent_core.archive.logging_config",
+                "aries_serpent_core.archive.service",
+            }
+        ),
+        frozenset(
             {"codex_ml.utils", "codex_ml.utils.checkpointing", "codex_ml.utils.repro"}
         ),
+        frozenset({"codex_ml.features", "codex_ml.features.monitoring"}),
+        frozenset(
+            {
+                "codex_ml.interfaces.tokenizer",
+                "codex_ml.interfaces.tokenizer_hf",
+                "codex_ml.tokenization.hf_adapter",
+            }
+        ),
+        frozenset({"codex_ml.tracking", "codex_ml.tracking.mlflow_utils"}),
         frozenset({"codex_ml.training", "codex_ml.training.unified_training"}),
         frozenset({"codex_ml.callbacks", "codex_ml.callbacks.system_metrics"}),
     }
@@ -119,11 +148,24 @@ SYS_PATH_MUTATION_BASELINE: frozenset[tuple[str, str]] = frozenset(
         ("src/common/validate.py", "insert"),
         ("src/common/validate.py", "remove"),
         ("src/services/crawler/zendesk_sync.py", "insert"),
+        ("configs/sitecustomize.py", "insert"),
     }
 )
 
 PACKAGE_MODULE_COLLISION_BASELINE = frozenset(
-    {"src/codex_ml/metrics", "src/codex_ml/training"}
+    {
+        "src/aries_serpent_core/cli",
+        "src/aries_serpent_core/evidence",
+        "src/cli",
+        "src/codex/cli",
+        "src/codex/ingest",
+        "src/codex/transform",
+        "src/codex_ml/data/loaders",
+        "src/codex_ml/metrics",
+        "src/codex_ml/registry",
+        "src/codex_ml/training",
+        "src/mcp/observability",
+    }
 )
 
 
@@ -137,6 +179,7 @@ class ImportEdge:
 
 def _production_source_roots() -> tuple[Path, ...]:
     roots = [ROOT / "src", ROOT / "training", ROOT / "monitoring"]
+    roots.extend(ROOT / name for name in EXECUTABLE_CONFIG_ROOT_NAMES)
     roots.extend(sorted((ROOT / "packages").glob("*/src")))
     return tuple(path for path in roots if path.is_dir())
 
@@ -146,6 +189,8 @@ def _module_name(path: Path, source_root: Path) -> str:
     parts = list(relative.with_suffix("").parts)
     if parts[-1] == "__init__":
         parts.pop()
+    if source_root.parent == ROOT and source_root.name in EXECUTABLE_CONFIG_ROOT_NAMES:
+        parts.insert(0, source_root.name)
     return ".".join(parts)
 
 
@@ -261,20 +306,14 @@ def _domain(module: str) -> str | None:
 
 
 def _static_graph(modules: dict[str, Path], imports: list[ImportEdge]) -> dict[str, set[str]]:
-    relevant = {
-        module
-        for module in modules
-        if _domain(module) is not None
-        or module.startswith(("codex_ml.callbacks", "codex_ml.utils"))
-    }
-    graph = {module: set() for module in relevant}
+    graph = {module: set() for module in modules}
     for edge in imports:
-        if edge.phase != "static" or edge.source not in relevant:
+        if edge.phase != "static" or edge.source not in graph:
             continue
         graph[edge.source].update(
             target
             for target in _local_targets(edge.target, modules)
-            if target in relevant and target != edge.source
+            if target != edge.source
         )
     return graph
 
@@ -325,7 +364,7 @@ def _format_items(items: object) -> str:
 
 
 def test_no_new_or_expanded_static_import_cycles() -> None:
-    """Only the three explicitly baselined static SCCs may remain."""
+    """Existing static SCC debt may shrink, but cannot grow or expand."""
     modules = _production_modules()
     actual = _strongly_connected_components(_static_graph(modules, _all_imports(modules)))
     assert actual <= STATIC_SCC_BASELINE, (
@@ -359,6 +398,37 @@ def test_imports_follow_domain_direction() -> None:
         f"  - {source} -> {target} at {', '.join(details[(source, target)])}"
         for source, target in sorted(unexpected)
     )
+
+
+def test_compatibility_namespaces_are_classified() -> None:
+    """Nested PEFT and checkpoint compatibility modules retain their domains."""
+    expected = {
+        "codex_ml.models.utils.peft": "lora",
+        "codex_ml.models.utils.peft.backend": "lora",
+        "codex_ml.utils.checkpoint": "checkpointing",
+        "codex_ml.utils.checkpoint_core": "checkpointing",
+        "codex_ml.utils.checkpointing": "checkpointing",
+        "utils.checkpoint": "checkpointing",
+        "utils.checkpointing": "checkpointing",
+    }
+    assert {module: _domain(module) for module in expected} == expected
+
+
+def test_executable_configuration_roots_are_scanned() -> None:
+    """Python files in repository configuration roots are production inputs."""
+    modules = _production_modules()
+    expected = {
+        path.relative_to(ROOT).as_posix()
+        for root_name in EXECUTABLE_CONFIG_ROOT_NAMES
+        for path in (ROOT / root_name).rglob("*.py")
+        if (ROOT / root_name).is_dir()
+    }
+    actual = {
+        path.relative_to(ROOT).as_posix()
+        for module, path in modules.items()
+        if _domain(module) == "configuration"
+    }
+    assert expected <= actual
 
 
 def test_evaluation_does_not_gain_concrete_training_imports() -> None:
@@ -453,8 +523,7 @@ def test_no_new_package_module_name_collisions() -> None:
             if module_file.name == "__init__.py":
                 continue
             package_init = module_file.with_suffix("") / "__init__.py"
-            module = _module_name(module_file, source_root)
-            if package_init.is_file() and _domain(module) is not None:
+            if package_init.is_file():
                 actual.add(module_file.with_suffix("").relative_to(ROOT).as_posix())
     assert actual <= PACKAGE_MODULE_COLLISION_BASELINE, (
         "New package/module name collisions detected:\n"
