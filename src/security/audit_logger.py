@@ -206,7 +206,6 @@ class AuditLogger:
             ContractValidationError,
             json.JSONDecodeError,
             KeyError,
-            OSError,
             TypeError,
             UnicodeError,
             ValueError,

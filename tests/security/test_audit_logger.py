@@ -231,6 +231,19 @@ def test_verify_chain_returns_false_for_corrupt_content(
     assert AuditLogger(log_path).verify_chain() is False
 
 
+def test_verify_chain_propagates_io_errors(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log_path = tmp_path / "audit.log"
+    log_path.write_text("{}\n", encoding="utf-8")
+
+    def fail_read(*args: object, **kwargs: object) -> str:
+        raise OSError("storage unavailable")
+
+    monkeypatch.setattr(Path, "read_text", fail_read)
+
+    with pytest.raises(OSError, match="storage unavailable"):
+        AuditLogger(log_path).verify_chain()
+
+
 def test_append_uses_current_time_when_ts_not_provided(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(log_path)

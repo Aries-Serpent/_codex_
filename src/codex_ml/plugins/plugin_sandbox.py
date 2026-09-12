@@ -15,7 +15,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from multiprocessing.connection import Connection, wait
 from numbers import Real
-from typing import Any, Optional
+from typing import Any, Optional, Protocol
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +28,21 @@ class _PluginExecutionError(Exception):
     def __init__(self, error_name: str) -> None:
         super().__init__()
         self.error_name = error_name
+
+
+class _TerminableProcess(Protocol):
+    """Structural type for multiprocessing processes controlled by the sandbox."""
+
+    @property
+    def pid(self) -> Optional[int]: ...
+
+    def is_alive(self) -> bool: ...
+
+    def join(self, timeout: Optional[float] = None) -> None: ...
+
+    def terminate(self) -> None: ...
+
+    def kill(self) -> None: ...
 
 
 __all__ = [
@@ -175,7 +190,7 @@ def _run_plugin_method(
         connection.close()
 
 
-def _stop_process(process: multiprocessing.Process) -> None:
+def _stop_process(process: _TerminableProcess) -> None:
     """Stop a plugin process without leaving timed-out code running."""
     if process.pid is None:
         return
@@ -194,6 +209,8 @@ class Plugin(ABC):
     """Base class for plugins.
 
     All plugins must inherit from this class and implement required methods.
+    Plugin instances and execution arguments must be picklable on platforms
+    that use multiprocessing ``spawn`` so execution deadlines remain enforceable.
     """
 
     def __init__(self, config: Optional[dict[str, Any]] = None):
@@ -396,10 +413,10 @@ class PluginSandbox:
     def execute_sandboxed(
         self, plugin: Plugin, method_name: str = "execute", *args, **kwargs
     ) -> Optional[Any]:
-        """Execute plugin method in sandbox.
+        """Execute plugin method in a deadline-enforcing child process.
 
         Args:
-            plugin: Plugin instance
+            plugin: Plugin instance. It must be picklable on non-fork platforms.
             method_name: Method to execute
             *args: Positional arguments
             **kwargs: Keyword arguments
@@ -437,7 +454,6 @@ class PluginSandbox:
                         quarantined_time = datetime.fromisoformat(health.quarantined_at)
                         elapsed = int((datetime.now(UTC) - quarantined_time).total_seconds())
                     except (ValueError, TypeError):
-                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.  # noqa: E501
                         # If quarantine timestamp is invalid or missing, default to zero elapsed time.  # noqa: E501
                         # Security note: This keeps the plugin quarantined for the full duration,
                         # which is the safe default behavior when timestamp parsing fails.

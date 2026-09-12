@@ -23433,3 +23433,35 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+## Session: 2026-09-12T18:32:15Z — Federation hardening finalization
+
+**Objective:** Complete the remaining release, audit-integrity, and plugin-isolation controls in the federated package roadmap.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Corrected PyPI matrix evaluation and separated artifact validation from OIDC-enabled publication while preserving provenance and package-selection guarantees.
+2. Locked the release toolchain and added archive-content checks that reject generated Python bytecode.
+3. Serialized audit-log appends across processes, made corrupted records fail verification safely, and enforced plugin execution deadlines through terminable worker processes and quarantine.
+
+**Validation:**
+- Standalone packages: 74 passed, 1 skipped.
+- Compatibility facades: 7 passed; architecture boundaries: 25 passed.
+- Rust library and Python boundary: 45 passed, 1 ignored.
+- Focused audit, plugin, and workflow regressions: 42 passed with Ruff clean.
+- Release suite: 16 passed; archive assurance suite: 19 passed, 1 skipped.
+
+**Governance:**
+- Generated `.codex/session_startup_packet.json` timestamp churn was restored to the tracked baseline.
+- Canonical WEC entries were preserved.
+
+### Agents Used
+- [x] `security-audit-agent`
+- [x] `integration-test-runner`
+- [x] `packaging-validation-agent`
+- [x] `workflow-ci-fixer`
+- [x] `code-analysis-agent`
+- [x] `rubber-duck`
+- [x] `task`
+
+---
