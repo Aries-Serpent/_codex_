@@ -7,10 +7,31 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, Protocol, TypeVar, cast
 
+CollectorRegistry: Any
+Counter: Any
+Gauge: Any
+Histogram: Any
+
 try:
-    from prometheus_client import CollectorRegistry, Counter, Gauge, Histogram
+    from prometheus_client import (
+        CollectorRegistry as _CollectorRegistry,
+    )
+    from prometheus_client import (
+        Counter as _Counter,
+    )
+    from prometheus_client import (
+        Gauge as _Gauge,
+    )
+    from prometheus_client import (
+        Histogram as _Histogram,
+    )
+
+    CollectorRegistry = _CollectorRegistry
+    Counter = _Counter
+    Gauge = _Gauge
+    Histogram = _Histogram
 except ImportError:  # pragma: no cover - exercised in minimal installations
-    CollectorRegistry = Counter = Gauge = Histogram = None  # type: ignore[assignment]
+    CollectorRegistry = Counter = Gauge = Histogram = None
 
 _F = TypeVar("_F", bound=Callable[..., Any])
 

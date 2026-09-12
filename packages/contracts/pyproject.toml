@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-contracts"
+dynamic = ["version"]
+description = "Versioned, dependency-free interoperability contracts for Codex packages"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+keywords = ["contracts", "events", "interoperability", "schemas"]
+authors = [
+  { name = "Aries Serpent" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=9.0.3,<10"]
+
+[project.urls]
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+Source = "https://github.com/Aries-Serpent/_codex_"
+
+[tool.hatch.version]
+path = "src/codex_contracts/__about__.py"
+
+[tool.coverage.run]
+source_pkgs = ["codex_contracts", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/codex_contracts/__about__.py",
+]
+
+[tool.coverage.paths]
+codex_contracts = ["src/codex_contracts", "*/codex-contracts/src/codex_contracts"]
+tests = ["tests", "*/codex-contracts/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
