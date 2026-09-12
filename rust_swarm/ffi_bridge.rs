@@ -109,6 +109,7 @@ impl Default for FFIBridge {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pyo3::exceptions::PyValueError;
 
     #[test]
     fn test_ffi_bridge_creation() {
@@ -167,5 +168,47 @@ mod tests {
         assert_eq!(header_len + decoded_len, encoded.len());
         let decoded: String = rmp_serde::from_slice(&encoded).unwrap();
         assert_eq!(decoded, "experimental");
+    }
+
+    #[test]
+    fn test_msgpack_rejects_payload_over_encoded_limit() {
+        let bridge = FFIBridge::new();
+        let payload = vec![0_u8; MAX_MESSAGEPACK_BYTES + 1];
+
+        Python::with_gil(|py| {
+            let error = bridge.to_python(&payload, py).unwrap_err();
+            assert!(error.is_instance_of::<PyValueError>(py));
+            assert!(error.to_string().contains("payload exceeds"));
+        });
+        assert_eq!(bridge.error_count(), 1);
+    }
+
+    #[test]
+    fn test_msgpack_rejects_declared_value_over_decoded_limit() {
+        let bridge = FFIBridge::new();
+        let declared_length = u32::try_from(MAX_MESSAGEPACK_VALUE_BYTES + 1).unwrap();
+        let mut payload = vec![0xdb];
+        payload.extend_from_slice(&declared_length.to_be_bytes());
+
+        Python::with_gil(|py| {
+            let error = bridge.to_python(&payload, py).unwrap_err();
+            assert!(error.is_instance_of::<PyValueError>(py));
+            assert!(error.to_string().contains("decoded limit"));
+        });
+        assert_eq!(bridge.error_count(), 1);
+    }
+
+    #[test]
+    fn test_msgpack_encoding_owns_data_beyond_python_lifetime() {
+        let bridge = FFIBridge::new();
+        let encoded = Python::with_gil(|py| {
+            let source = PyString::new(py, "owned across the boundary");
+            bridge.from_python(source.as_any()).unwrap()
+        });
+
+        let decoded: String = rmp_serde::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, "owned across the boundary");
+        assert_eq!(bridge.message_count(), 1);
+        assert_eq!(bridge.error_count(), 0);
     }
 }
