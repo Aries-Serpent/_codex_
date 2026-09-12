@@ -571,6 +571,8 @@ codex-smoke = "codex_cli.app:app"
 codex-train = "codex_ml.cli.entrypoints:train_main"
 codex-eval = "codex_ml.cli.entrypoints:eval_main"
 codex-list-plugins = "codex_ml.cli.list_plugins:main"
+offline-zip-keymaster = "offline_zip_keymaster.cli:main"
+offline-zip-keymaster-gui = "offline_zip_keymaster.gui:main"
 # Removed: codex-import-ndjson (aries_serpent_core not in setuptools include list - external dependency)
 
 # Extended entry points (require additional dependencies, marked for future profiles)
@@ -623,6 +625,7 @@ functional = "codex_ml.registry.trainers:load_functional_trainer"
 "" = "src"
 agents = "agents"
 services = "services"
+scripts = "scripts"
 tools = "tools"
 training = "training"
 tokenization = "tokenization"
@@ -649,6 +652,10 @@ include = [
     "interfaces*",          # Public interfaces
     "hhg_logistics*",       # HHG logistics subsystem
     "hydra_extra*",         # Hydra configuration extensions
+    "offline_zip_keymaster*", # Standalone ZIP key generation package
+    "offline_zip_keymaster.*",
+    "scripts*",             # Repo-local scripts package for packaged tooling
+    "scripts.*",            # Scripts submodules
     "security",             # Security infrastructure (core package)
     "security.*",           # Security submodules
     "tools*",               # Tools and utilities
