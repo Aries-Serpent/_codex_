@@ -1,0 +1,9 @@
+{
+  "app_name": "offline_zip_keymaster",
+  "entry_point": "run_offline_zip_keymaster.exe",
+  "launch_mode": "GUI",
+  "requires_repo": false,
+  "requires_network": false,
+  "artifact_type": "self-contained-gui-exe",
+  "files": ["run_offline_zip_keymaster.exe", "README.txt", "manifest.json"]
+}
