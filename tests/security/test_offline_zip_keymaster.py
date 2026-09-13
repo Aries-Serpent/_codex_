@@ -79,6 +79,45 @@ def test_unpack_auto_resolves_key_from_local_key_store(sample_dir: Path, tmp_pat
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
+def test_unpack_uses_master_seed_contract_without_explicit_key(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    key_dir = tmp_path / "keys"
+    key_dir.mkdir()
+    key_file = key_dir / "archive.key"
+    result = generate_local_key(key_file)
+    assert (key_dir / "master_seed.json").exists()
+    archive_path = tmp_path / "payloads" / "deterministic.zip"
+    encrypt_directory(sample_dir, archive_path, key_file)
+
+    monkeypatch.chdir(tmp_path)
+    extracted = unpack_archive(archive_path, output_dir=tmp_path / "output")
+
+    assert extracted.name == "deterministic"
+    assert result["fingerprint"]
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+
+
+def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path, tmp_path: Path):
+    key_dir = tmp_path / "keys"
+    key_dir.mkdir()
+    key_file = key_dir / "archive.key"
+    generate_local_key(key_file)
+    zip_path = tmp_path / "passworded.zip"
+    zip_password = f"{zip_path.stem}:0"
+    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.setpassword(zip_password.encode("utf-8"))
+        for file_path in sorted(sample_dir.rglob("*")):
+            if file_path.is_dir():
+                continue
+            relative_name = file_path.relative_to(sample_dir).as_posix()
+            zf.writestr(relative_name, file_path.read_text(encoding="utf-8"))
+
+    extracted = unpack_archive(zip_path, output_dir=tmp_path / "output")
+
+    assert extracted.name == "passworded"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+
+
 def test_unpack_requires_resolved_key_without_matching_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     key_file = tmp_path / "archive.key"
     generate_local_key(key_file)

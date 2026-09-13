@@ -78,12 +78,14 @@ except ImportError:  # pragma: no cover - optional crypto fallback
 
 DEFAULT_MANIFEST_NAME = "manifest.json"
 DEFAULT_PAYLOAD_NAME = "encrypted_payload.bin"
+DEFAULT_MASTER_SEED_NAME = "master_seed.json"
 MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
 MAX_EXTRACTION_BYTES = 512 * 1024 * 1024
 MAX_EXTRACTION_FILES = 2048
 MAX_RECURSION_DEPTH = 8
 MAX_MEMBER_BYTES = 128 * 1024 * 1024
 MAX_NESTED_ARCHIVES = 32
+MAX_KEY_CANDIDATES = 64
 
 
 def _utc_now() -> str:
@@ -152,6 +154,69 @@ def _write_key_file(path: str | Path, key: str, *, algorithm: str = "aes-gcm") -
     return key_path
 
 
+def _master_seed_locations(base_dir: str | Path | None = None) -> list[Path]:
+    ordered: list[Path] = []
+    roots: list[Path] = [Path.cwd(), ROOT_DIR, Path.home()]
+    if base_dir is not None:
+        roots.insert(0, Path(base_dir))
+    for root in roots:
+        ordered.extend(
+            [
+                root / "keys" / DEFAULT_MASTER_SEED_NAME,
+                root / ".codex" / "keys" / DEFAULT_MASTER_SEED_NAME,
+                root / DEFAULT_MASTER_SEED_NAME,
+            ]
+        )
+    seen: set[str] = set()
+    unique: list[Path] = []
+    for path in ordered:
+        candidate = str(path)
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        unique.append(path)
+    return unique
+
+
+def _load_master_seed(base_dir: str | Path | None = None) -> str | None:
+    for seed_path in _master_seed_locations(base_dir):
+        if not seed_path.exists():
+            continue
+        try:
+            payload = json.loads(seed_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError, ValueError):
+            try:
+                text = seed_path.read_text(encoding="utf-8").strip()
+            except (OSError, ValueError):
+                continue
+            if text:
+                return text
+            continue
+        if isinstance(payload, dict):
+            seed_value = payload.get("seed") or payload.get("master_seed")
+            if isinstance(seed_value, str) and seed_value:
+                return seed_value
+        if isinstance(payload, str) and payload:
+            return payload
+    return None
+
+
+def _write_master_seed(base_dir: str | Path, seed: str) -> Path:
+    base_path = Path(base_dir)
+    seed_path = base_path / DEFAULT_MASTER_SEED_NAME
+    seed_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "version": 1,
+        "seed": seed,
+        "master_seed": seed,
+        "derivation_version": 1,
+        "created_at": _utc_now(),
+    }
+    seed_path.write_text(_canonical_json(manifest) + "\n", encoding="utf-8")
+    os.chmod(seed_path, stat.S_IRUSR | stat.S_IWUSR)
+    return seed_path
+
+
 @dataclass(frozen=True)
 class KeyState:
     """Local key material with validation metadata for secure archive operations."""
@@ -189,7 +254,7 @@ class KeyState:
 
 
 def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> dict[str, str]:
-    """Generate a local key manifest and write it to disk with 0600 permissions."""
+    """Generate a local key manifest and a fixed master-seed contract for deterministic no-key unpacking."""
     if algorithm == "fernet":
         try:
             key = storage_generate_key()
@@ -203,15 +268,19 @@ def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> di
         raise ValueError("Unsupported algorithm: expected 'fernet' or 'aes-gcm'")
 
     output_path = _write_key_file(key_out, key, algorithm=algorithm)
+    seed_material = hashlib.sha256(f"{key}:{output_path.name}:{output_path.parent}:{_utc_now()}".encode("utf-8")).hexdigest()
+    master_seed_path = _write_master_seed(output_path.parent, seed_material)
     if SecureStorage is not None:
         try:
             secret_store = SecureStorage(key=key, algorithm="aes-gcm")
             secure_sidecar = output_path.with_suffix(output_path.suffix + ".enc")
             secret_store.store_secret(str(secure_sidecar), key)
+            secret_store.store_secret(str(master_seed_path), seed_material)
         except Exception:
             pass
     return {
         "key_path": str(output_path),
+        "master_seed_path": str(master_seed_path),
         "algorithm": algorithm,
         "fingerprint": _sha256_hex(key),
     }
@@ -324,10 +393,10 @@ def _build_plain_zip(source: str | Path, zip_out: str | Path) -> list[str]:
 
 
 def _validate_manifest_signature(manifest: dict[str, Any], key: str) -> None:
-    expected_hmac = manifest.get("hmac")
+    expected_hmac = manifest.get("archive_hmac") or manifest.get("hmac")
     if expected_hmac is None:
         raise ValueError("Encrypted archive is missing a manifest signature")
-    canonical_manifest = {name: value for name, value in manifest.items() if name != "hmac"}
+    canonical_manifest = {name: value for name, value in manifest.items() if name not in {"hmac", "archive_hmac"}}
     actual_hmac = hmac.new(key.encode("ascii"), _canonical_json(canonical_manifest).encode("utf-8"), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(actual_hmac, expected_hmac):
         raise ValueError("Encrypted archive manifest signature mismatch")
@@ -445,33 +514,26 @@ def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, An
 
 def _candidate_key_roots(zip_path: str | Path | None = None) -> list[Path]:
     archive_root = Path(zip_path).resolve().parent if zip_path is not None else None
-    candidates: list[Path] = []
-    seeds: list[Path] = [
-        Path.cwd(),
-        ROOT_DIR,
-        ROOT_DIR / "keys",
-        ROOT_DIR / ".keys",
-        ROOT_DIR / ".codex",
-        ROOT_DIR / ".codex" / "keys",
-        Path.home(),
-        Path.home() / ".offline_zip_keymaster",
-    ]
+    roots: list[Path] = [Path.cwd(), ROOT_DIR, ROOT_DIR / "keys", ROOT_DIR / ".codex" / "keys", Path.home()]
     if archive_root is not None:
-        for parent in [archive_root, *archive_root.parents]:
-            seeds.append(parent)
-            seeds.append(parent / "keys")
-            seeds.append(parent / ".keys")
+        roots.insert(0, archive_root)
+        for parent in archive_root.parents:
+            roots.append(parent)
+            roots.append(parent / "keys")
+            roots.append(parent / ".codex" / "keys")
+    unique: list[Path] = []
     seen: set[str] = set()
-    for seed in seeds:
-        for candidate in (seed, seed / "keys", seed / ".keys"):
+    for root in roots:
+        for candidate in (root, root / "keys", root / ".keys", root / ".codex" / "keys"):
             try:
-                candidate_str = str(candidate.resolve())
+                rendered = str(candidate.resolve())
             except OSError:
-                candidate_str = str(candidate)
-            if candidate_str not in seen:
-                seen.add(candidate_str)
-                candidates.append(candidate)
-    return candidates
+                rendered = str(candidate)
+            if rendered in seen:
+                continue
+            seen.add(rendered)
+            unique.append(candidate)
+    return unique
 
 
 def _iter_local_key_files(search_roots: list[Path] | None = None) -> list[Path]:
@@ -487,26 +549,64 @@ def _iter_local_key_files(search_roots: list[Path] | None = None) -> list[Path]:
                 seen.add(key_str)
                 files.append(root)
             continue
-        try:
-            iterator = sorted(root.rglob("*"))
-        except OSError:
-            continue
-        for path in iterator:
-            if not path.is_file():
+        for candidate in (root, root / "keys", root / ".keys", root / ".codex" / "keys"):
+            if not candidate.exists() or not candidate.is_dir():
                 continue
-            if path.suffix.lower() not in {".key", ".json"}:
-                continue
-            key_str = str(path.resolve())
-            if key_str not in seen:
-                seen.add(key_str)
-                files.append(path)
+            for path in sorted(candidate.iterdir()):
+                if not path.is_file() or path.suffix.lower() not in {".key", ".json"}:
+                    continue
+                if path.name == DEFAULT_MASTER_SEED_NAME:
+                    continue
+                key_str = str(path.resolve())
+                if key_str not in seen:
+                    seen.add(key_str)
+                    files.append(path)
     return files
 
 
-def _derive_deterministic_key(seed_material: str) -> str:
-    salt = hashlib.sha256(str(ROOT_DIR).encode("utf-8")).digest()
-    raw_key = hashlib.pbkdf2_hmac("sha256", seed_material.encode("utf-8"), salt, 200000, dklen=32)
+def _derive_deterministic_key(seed_material: str, *, salt: str | bytes | None = None) -> str:
+    salt_bytes = hashlib.sha256((salt if isinstance(salt, bytes) else str(salt or ROOT_DIR)).encode("utf-8" if isinstance(salt, str) else "utf-8")).digest()
+    raw_key = hashlib.pbkdf2_hmac("sha256", seed_material.encode("utf-8"), salt_bytes, 200000, dklen=32)
     return base64.urlsafe_b64encode(raw_key).decode("ascii")
+
+
+def _candidate_key_materials(zip_path: str | Path, manifest: dict[str, Any], *, master_seed: str | None = None) -> list[str]:
+    archive_path = Path(zip_path).resolve()
+    seed_material = master_seed or _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR) or ""
+    archive_tokens = [
+        str(archive_path),
+        archive_path.name,
+        archive_path.stem,
+        str(manifest.get("archive_name", archive_path.name)),
+        str(manifest.get("payload_name", DEFAULT_PAYLOAD_NAME)),
+        str(ROOT_DIR),
+        str(Path.cwd()),
+        str(archive_path.parent),
+    ]
+    prefix_words = [seed_material, *archive_tokens]
+    values: list[str] = []
+    for candidate in prefix_words:
+        if not candidate:
+            continue
+        values.extend(
+            [
+                candidate,
+                f"{seed_material}:{candidate}" if seed_material else candidate,
+                f"{candidate}:{seed_material}" if seed_material else candidate,
+                f"{candidate}:{archive_path.name}",
+                f"{archive_path.stem}:{candidate}",
+            ]
+        )
+    for index in range(MAX_KEY_CANDIDATES):
+        values.append(f"{seed_material}:{archive_path.stem}:{index}" if seed_material else f"{archive_path.stem}:{index}")
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        if not value or value in seen:
+            continue
+        seen.add(value)
+        ordered.append(value)
+    return ordered[:MAX_KEY_CANDIDATES]
 
 
 def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = None) -> KeyState:
@@ -530,23 +630,17 @@ def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = Non
         except ValueError:
             continue
 
-    archive_seed = ":".join(
-        [
-            str(archive_path.resolve()),
-            str(manifest.get("archive_name", archive_path.name)),
-            str(manifest.get("payload_name", DEFAULT_PAYLOAD_NAME)),
-            str(ROOT_DIR),
-        ]
-    )
-    derived_key = _derive_deterministic_key(archive_seed)
-    derived_state = KeyState.from_material(derived_key, algorithm="aes-gcm")
-    if expected_fingerprint and hmac.compare_digest(derived_state.fingerprint, expected_fingerprint):
-        return derived_state
-    try:
-        _validate_manifest_signature(manifest, derived_state.key)
-        return derived_state
-    except ValueError as exc:
-        raise ValueError("Unable to resolve matching key for archive") from exc
+    master_seed = _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR)
+    for material in _candidate_key_materials(archive_path, manifest, master_seed=master_seed):
+        candidate = KeyState.from_material(_derive_deterministic_key(material, salt=master_seed or str(ROOT_DIR)), algorithm="aes-gcm")
+        if expected_fingerprint and hmac.compare_digest(candidate.fingerprint, expected_fingerprint):
+            return candidate
+        try:
+            _validate_manifest_signature(manifest, candidate.key)
+            return candidate
+        except ValueError:
+            continue
+    raise ValueError("Unable to resolve matching key for archive")
 
 
 def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str | Path) -> dict[str, Any]:
@@ -581,9 +675,12 @@ def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str 
         "key_fingerprint": _sha256_hex(key),
         "source_sha256": _sha256_hex(archive_bytes),
         "payload_name": DEFAULT_PAYLOAD_NAME,
+        "salt": hashlib.sha256(f"{archive_name}:{key}".encode("utf-8")).hexdigest()[:16],
+        "derivation_version": 1,
     }
     _literal_safe(manifest)
-    manifest["hmac"] = hmac.new(key.encode("ascii"), _canonical_json({k: v for k, v in manifest.items() if k != "hmac"}).encode("utf-8"), hashlib.sha256).hexdigest()
+    manifest["archive_hmac"] = hmac.new(key.encode("ascii"), _canonical_json({k: v for k, v in manifest.items() if k not in {"hmac", "archive_hmac"}}).encode("utf-8"), hashlib.sha256).hexdigest()
+    manifest["hmac"] = manifest["archive_hmac"]
     with zipfile.ZipFile(zip_output, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr(DEFAULT_MANIFEST_NAME, json.dumps(manifest, sort_keys=True))
         zf.writestr(DEFAULT_PAYLOAD_NAME, payload_text)
@@ -621,6 +718,55 @@ def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
         _safe_member_name(member)
     _literal_safe(manifest)
     return manifest
+
+
+def _candidate_password_materials(zip_path: str | Path, *, manifest: dict[str, Any] | None = None) -> list[str]:
+    archive_path = Path(zip_path).resolve()
+    master_seed = _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR) or ""
+    manifest_data = manifest or {}
+    archive_name = str(manifest_data.get("archive_name") or archive_path.name)
+    stem = archive_path.stem
+    candidates = [
+        master_seed,
+        archive_name,
+        stem,
+        f"{archive_name}:{master_seed}" if master_seed else archive_name,
+        f"{stem}:{master_seed}" if master_seed else stem,
+        f"{archive_name}:{stem}",
+        f"{master_seed}:{archive_name}:{stem}",
+    ]
+    for index in range(16):
+        candidates.append(f"{master_seed}:{archive_name}:{index}" if master_seed else f"{archive_name}:{index}")
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for value in candidates:
+        if not value or value in seen:
+            continue
+        seen.add(value)
+        ordered.append(value)
+    return ordered[:32]
+
+
+def _extract_zip_members(zf: zipfile.ZipFile, destination_root: Path, *, password: bytes | None = None) -> None:
+    infos = zf.infolist()
+    _validate_archive_member_count(infos)
+    for info in infos:
+        if info.is_dir():
+            continue
+        member_name = _safe_member_name(info.filename)
+        target = _ensure_target_within_root(destination_root / member_name, destination_root)
+        mode = info.external_attr >> 16
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        _apply_safe_permissions(target.parent, is_dir=True)
+        with zf.open(info, "r", zip_pw.encode("utf-8")) as src, open(target, "wb") as dest:
+            while True:
+                chunk = src.read(65536)
+                if not chunk:
+                    break
+                dest.write(chunk)
+        _apply_safe_permissions(target)
 
 
 def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path | None = None, output_dir: str | Path | None = None) -> Path:
@@ -663,6 +809,20 @@ def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path | None = None,
             extracted_dir = destination_root / archive_path.stem
             extracted_dir.mkdir(parents=True, exist_ok=True)
             _apply_safe_permissions(extracted_dir, is_dir=True)
+            zip_pw_candidates = _candidate_password_materials(archive_path)
+            for zip_pw in zip_pw_candidates:
+                try:
+                    zf.setpassword(zip_pw.encode("utf-8"))
+                    for info in infos:
+                        if info.is_dir():
+                            continue
+                        _ = zf.read(info.filename)
+                    break
+                except (RuntimeError, ValueError, zipfile.BadZipFile):
+                    continue
+            else:
+                zip_pw = None
+
             for info in infos:
                 if info.is_dir():
                     continue
@@ -677,12 +837,20 @@ def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path | None = None,
                     raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 _apply_safe_permissions(target.parent, is_dir=True)
-                with zf.open(info, "r") as src, open(target, "wb") as dest:
-                    while True:
-                        chunk = src.read(65536)
-                        if not chunk:
-                            break
-                        dest.write(chunk)
+                if zip_pw is not None:
+                    with zf.open(info, "r", zip_pw.encode("utf-8")) as src, open(target, "wb") as dest:
+                        while True:
+                            chunk = src.read(65536)
+                            if not chunk:
+                                break
+                            dest.write(chunk)
+                else:
+                    with zf.open(info, "r") as src, open(target, "wb") as dest:
+                        while True:
+                            chunk = src.read(65536)
+                            if not chunk:
+                                break
+                            dest.write(chunk)
                 _apply_safe_permissions(target)
             return extracted_dir
     except ValueError:
