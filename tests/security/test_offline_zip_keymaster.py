@@ -17,8 +17,10 @@ from scripts.security.offline_zip_keymaster import (  # noqa: E402
     MAX_MEMBER_BYTES,
     encrypt_directory,
     generate_local_key,
+    generate_password_candidates,
     main,
     normalize_directory,
+    recover_archive_password,
     reconstruct_normalized_directory,
     rezip_clean_directory,
     unpack_archive,
@@ -318,6 +320,56 @@ def test_unpack_raises_when_nested_zip_recursion_exceeds_limit(tmp_path: Path):
 
     with pytest.raises(ValueError, match="recursion depth exceeded"):
         unpack_archive(previous, key_path, output_dir=tmp_path / "depth_output")
+
+
+def test_generate_password_candidates_supports_dictionary_mask_and_seed():
+    wordlist = Path("/tmp/test_wordlist.txt")
+    wordlist.write_text("alpha\nBeta\n", encoding="utf-8")
+    candidates = generate_password_candidates(
+        wordlist=wordlist,
+        mask="?d?d",
+        seed="seed",
+        archive_name="audit_logs.zip",
+        rules=["upper"],
+        max_candidates=64,
+    )
+
+    assert "alpha" in candidates
+    assert "Beta" in candidates
+    assert "seed" in candidates
+    assert "audit_logs" in candidates
+    assert "00" in candidates
+
+
+def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
+    zip_path = tmp_path / "recovery.zip"
+    password = "winter2026!"
+    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.setpassword(password.encode("utf-8"))
+        zf.writestr("payload.txt", "encrypted content")
+
+    wordlist = tmp_path / "passwords.txt"
+    wordlist.write_text("spring123\nwinter2026!\n", encoding="utf-8")
+    recovered = recover_archive_password(zip_path, wordlist=wordlist)
+
+    assert recovered == password
+
+
+def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
+    zip_path = tmp_path / "cli_recover.zip"
+    password = "mask42"
+    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.setpassword(password.encode("utf-8"))
+        zf.writestr("secret.txt", "value")
+
+    wordlist = tmp_path / "candidate.txt"
+    wordlist.write_text("fallback\nmask42\n", encoding="utf-8")
+    code = main(["recover", "--zip-path", str(zip_path), "--wordlist", str(wordlist)])
+    captured = capsys.readouterr()
+
+    assert code == 0
+    assert "Recovered ZIP password" in captured.out
+    assert "mask42" in captured.out
 
 
 def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
