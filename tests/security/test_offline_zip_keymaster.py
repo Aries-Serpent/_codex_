@@ -63,6 +63,35 @@ def test_encrypt_and_unpack_round_trip(sample_dir: Path, tmp_path: Path):
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
+def test_unpack_auto_resolves_key_from_local_key_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    key_dir = tmp_path / "keys"
+    key_dir.mkdir()
+    key_file = key_dir / "archive.key"
+    generate_local_key(key_file)
+    archive_path = tmp_path / "payloads" / "audit_logs.zip"
+    encrypt_directory(sample_dir, archive_path, key_file)
+
+    monkeypatch.chdir(tmp_path)
+    extracted = unpack_archive(archive_path, output_dir=tmp_path / "output")
+
+    assert extracted.name == "audit_logs"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+
+
+def test_unpack_requires_resolved_key_without_matching_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    key_file = tmp_path / "archive.key"
+    generate_local_key(key_file)
+    archive_path = tmp_path / "payloads" / "audit_logs.zip"
+    encrypt_directory(sample_dir, archive_path, key_file)
+    monkeypatch.chdir(tmp_path)
+    key_file.unlink()
+    generate_local_key(tmp_path / "other.key")
+
+    with pytest.raises(ValueError, match="Unable to resolve matching key for archive"):
+        unpack_archive(archive_path, output_dir=tmp_path / "output")
+
+
 def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(sample_dir: Path, tmp_path: Path):
     key_file = tmp_path / "nested.key"
     generate_local_key(key_file)

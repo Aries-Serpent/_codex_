@@ -443,6 +443,102 @@ def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, An
     }
 
 
+def _candidate_key_roots() -> list[Path]:
+    seeds = [
+        Path.cwd(),
+        ROOT_DIR,
+        ROOT_DIR / "keys",
+        ROOT_DIR / ".keys",
+        ROOT_DIR / ".codex",
+        ROOT_DIR / ".codex" / "keys",
+        Path.home(),
+        Path.home() / ".offline_zip_keymaster",
+    ]
+    roots: list[Path] = []
+    seen: set[str] = set()
+    for seed in seeds:
+        for candidate in (seed, seed / "keys", seed / ".keys"):
+            candidate_str = str(candidate.resolve())
+            if candidate_str not in seen:
+                seen.add(candidate_str)
+                roots.append(candidate)
+    return roots
+
+
+def _iter_local_key_files(search_roots: list[Path] | None = None) -> list[Path]:
+    roots = search_roots or _candidate_key_roots()
+    files: list[Path] = []
+    seen: set[str] = set()
+    for root in roots:
+        if not root.exists():
+            continue
+        if root.is_file() and root.suffix.lower() in {".key", ".json"}:
+            key_str = str(root.resolve())
+            if key_str not in seen:
+                seen.add(key_str)
+                files.append(root)
+            continue
+        try:
+            iterator = sorted(root.rglob("*"))
+        except OSError:
+            continue
+        for path in iterator:
+            if not path.is_file():
+                continue
+            if path.suffix.lower() not in {".key", ".json"}:
+                continue
+            key_str = str(path.resolve())
+            if key_str not in seen:
+                seen.add(key_str)
+                files.append(path)
+    return files
+
+
+def _derive_deterministic_key(seed_material: str) -> str:
+    salt = hashlib.sha256(str(ROOT_DIR).encode("utf-8")).digest()
+    raw_key = hashlib.pbkdf2_hmac("sha256", seed_material.encode("utf-8"), salt, 200000, dklen=32)
+    return base64.urlsafe_b64encode(raw_key).decode("ascii")
+
+
+def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = None) -> KeyState:
+    archive_path = Path(zip_path).resolve()
+    if key_file is not None:
+        return KeyState.from_file(key_file)
+
+    manifest = _read_encrypted_manifest(archive_path)
+    expected_fingerprint = str(manifest.get("key_fingerprint") or "")
+    for candidate_path in _iter_local_key_files():
+        try:
+            candidate = KeyState.from_file(candidate_path)
+        except (FileNotFoundError, ValueError, OSError, json.JSONDecodeError):
+            continue
+        if expected_fingerprint and hmac.compare_digest(candidate.fingerprint, expected_fingerprint):
+            return candidate
+        try:
+            _validate_manifest_signature(manifest, candidate.key)
+            return candidate
+        except ValueError:
+            continue
+
+    archive_seed = ":".join(
+        [
+            str(archive_path.resolve()),
+            str(manifest.get("archive_name", archive_path.name)),
+            str(manifest.get("payload_name", DEFAULT_PAYLOAD_NAME)),
+            str(ROOT_DIR),
+        ]
+    )
+    derived_key = _derive_deterministic_key(archive_seed)
+    derived_state = KeyState.from_material(derived_key, algorithm="aes-gcm")
+    if expected_fingerprint and hmac.compare_digest(derived_state.fingerprint, expected_fingerprint):
+        return derived_state
+    try:
+        _validate_manifest_signature(manifest, derived_state.key)
+        return derived_state
+    except ValueError as exc:
+        raise ValueError("Unable to resolve matching key for archive") from exc
+
+
 def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str | Path) -> dict[str, Any]:
     """Package a directory into an encrypted ZIP archive."""
     key = _load_key_material(key_file)
@@ -517,7 +613,7 @@ def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
     return manifest
 
 
-def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path, output_dir: str | Path | None = None) -> Path:
+def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path | None = None, output_dir: str | Path | None = None) -> Path:
     """Validate, decrypt, and extract an archive into a self-titled folder, including nested plain ZIP bundles."""
     archive_path = Path(zip_path)
     if not archive_path.exists():
@@ -534,7 +630,7 @@ def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path, output_dir: s
             infos = zf.infolist()
             _validate_archive_member_count(infos)
             if _looks_like_encrypted_archive(zf):
-                key_state = KeyState.from_file(key_file)
+                key_state = _resolve_archive_key(archive_path, key_file)
                 manifest = _read_encrypted_manifest(archive_path)
                 expected_fingerprint = manifest.get("key_fingerprint")
                 if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
@@ -659,7 +755,7 @@ def _process_nested_archive_bytes(
     nested_zip_bytes: bytes,
     member_name: str,
     destination_root: Path,
-    key_file: str | Path,
+    key_file: str | Path | None,
     *,
     depth: int = 0,
     max_depth: int = MAX_RECURSION_DEPTH,
@@ -709,7 +805,7 @@ def _process_nested_archive_bytes(
                 temp_path.unlink()
 
 
-def unpack_archive(zip_path: str | Path, key_file: str | Path, output_dir: str | Path | None = None) -> Path:
+def unpack_archive(zip_path: str | Path, key_file: str | Path | None = None, output_dir: str | Path | None = None) -> Path:
     """Decrypt an encrypted ZIP archive and extract it into a self-titled folder."""
     return decrypt_and_unpack(zip_path, key_file, output_dir=output_dir)
 
@@ -729,17 +825,17 @@ def _build_parser() -> argparse.ArgumentParser:
 
     unpack_cmd = subparsers.add_parser("unpack", help="Decrypt a protected ZIP archive into a self-titled output folder")
     unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    unpack_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
+    unpack_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
     unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
 
     unpack_only_cmd = subparsers.add_parser("unpack-only", help="Alias for local decrypt-and-unpack behavior")
     unpack_only_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    unpack_only_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
+    unpack_only_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
     unpack_only_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
 
     decrypt_and_unpack_cmd = subparsers.add_parser("decrypt-and-unpack", help="Validate, decrypt, and extract an encrypted ZIP into a self-titled folder")
     decrypt_and_unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    decrypt_and_unpack_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
+    decrypt_and_unpack_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
     decrypt_and_unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
 
     normalize_cmd = subparsers.add_parser("normalize", help="Create a deterministic normalized manifest for an extracted directory")

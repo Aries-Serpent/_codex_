@@ -107,32 +107,18 @@ jobs:
             cp src/offline_zip_keymaster/README.md packages/offline_zip_keymaster/README.md
           fi
 
-      - name: Set up Docker Buildx cache
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Restore Docker layer cache
-        uses: actions/cache@v4
+      - name: Build and Cache Wine Builder
+        uses: docker/build-push-action@v5
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-wine-builder-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-wine-builder-${{ github.ref_name }}-
-            ${{ runner.os }}-wine-builder-
-
-      - name: Build Wine Windows GUI container
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/.buildx-cache
-          docker buildx build \
-            --pull \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            -f Dockerfile.windows-pyinstaller \
-            -t offline-zip-keymaster-wine-builder \
-            .
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          context: .
+          file: Dockerfile.windows-pyinstaller
+          load: true
+          tags: wine-pyinstaller:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build Windows GUI executable in Wine container
         shell: bash
@@ -143,7 +129,7 @@ jobs:
             -v "$GITHUB_WORKSPACE/dist:/src/dist" \
             -v "$GITHUB_WORKSPACE/.artifacts/pyinstaller:/src/.artifacts/pyinstaller" \
             -w /src \
-            offline-zip-keymaster-wine-builder
+            wine-pyinstaller:latest
           test -f dist/windows-app/run_offline_zip_keymaster.exe
           file dist/windows-app/run_offline_zip_keymaster.exe | grep -E 'PE32\+|PE32|PE/'
 
