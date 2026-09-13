@@ -1,15 +1,22 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+
 from PyInstaller.utils.hooks import collect_submodules
+
+ROOT = os.getcwd()
 
 block_cipher = None
 
 hiddenimports = collect_submodules("offline_zip_keymaster")
+hiddenimports.extend(["offline_zip_keymaster", "offline_zip_keymaster.cli", "offline_zip_keymaster.gui"])
 
 analysis = Analysis(
-    ["src/offline_zip_keymaster/gui.py"],
-    pathex=["/src", "/src/src"],
+    [os.path.join(ROOT, "src", "offline_zip_keymaster", "gui.py")],
+    pathex=[ROOT, os.path.join(ROOT, "src")],
     binaries=[],
-    datas=[],
+    datas=[
+        (os.path.join(ROOT, "src", "offline_zip_keymaster"), "offline_zip_keymaster"),
+    ],
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},

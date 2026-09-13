@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import os
 import subprocess
 import sys
@@ -8,7 +9,7 @@ from pathlib import Path
 
 try:
     from .cli import DEFAULT_APP_WORKSPACE
-except ImportError:  # pragma: no cover - fallback for PyInstaller single-file packaging
+except ImportError:  # pragma: no cover - fallback for PyInstaller and direct script execution
     base_dir = Path(__file__).resolve()
     search_roots: list[Path] = []
     for parent in (base_dir.parent, base_dir.parents[1], base_dir.parents[2], Path.cwd()):
@@ -21,10 +22,16 @@ except ImportError:  # pragma: no cover - fallback for PyInstaller single-file p
         if root_str and root.exists() and root_str not in seen:
             seen.add(root_str)
             sys.path.insert(0, root_str)
-    try:
-        from offline_zip_keymaster.cli import DEFAULT_APP_WORKSPACE
-    except ImportError:  # pragma: no cover - fallback for direct script execution
-        from cli import DEFAULT_APP_WORKSPACE
+
+    DEFAULT_APP_WORKSPACE = None
+    for module_name in ("offline_zip_keymaster.cli", "cli"):
+        try:
+            DEFAULT_APP_WORKSPACE = importlib.import_module(module_name).DEFAULT_APP_WORKSPACE
+            break
+        except ModuleNotFoundError:
+            continue
+    if DEFAULT_APP_WORKSPACE is None:
+        raise
 
 
 class OfflineZipKeymasterGUI:
@@ -33,11 +40,12 @@ class OfflineZipKeymasterGUI:
         self.root.title("Offline ZIP Keymaster")
         self.root.geometry("520x360")
 
+        workspace = Path(DEFAULT_APP_WORKSPACE).expanduser().resolve()
         self.action_var = tk.StringVar(value="generate-key")
-        self.key_var = tk.StringVar(value=str(Path.cwd() / "offline_key.key"))
-        self.input_var = tk.StringVar(value=str(Path.cwd() / "source_data"))
-        self.output_var = tk.StringVar(value=str(Path.cwd() / "offline_zip_keymaster_app"))
-        self.zip_var = tk.StringVar(value=str(Path.cwd() / "payloads" / "archive.zip"))
+        self.key_var = tk.StringVar(value=str(workspace / "offline_key.key"))
+        self.input_var = tk.StringVar(value=str(workspace / "source_data"))
+        self.output_var = tk.StringVar(value=str(workspace))
+        self.zip_var = tk.StringVar(value=str(workspace / "payloads" / "archive.zip"))
 
         frame = tk.Frame(root, padx=12, pady=12)
         frame.pack(fill="both", expand=True)

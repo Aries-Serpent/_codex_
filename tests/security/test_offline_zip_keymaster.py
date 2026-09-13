@@ -11,6 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
 from scripts.security.offline_zip_keymaster import (  # noqa: E402
     MAX_MEMBER_BYTES,
@@ -262,3 +263,12 @@ def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: py
     assert key_path.exists()
     assert "eyJ" not in captured.out
     assert "key" not in captured.out.lower() or "manifest" in captured.out.lower()
+
+
+def test_default_workspace_uses_env_override_for_packaged_runtime(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    from offline_zip_keymaster import cli
+
+    workspace = tmp_path / "runtime_workspace"
+    monkeypatch.setenv("OFFLINE_ZIP_KEYMASTER_WORKSPACE", str(workspace))
+
+    assert cli._default_app_workspace() == workspace.resolve()

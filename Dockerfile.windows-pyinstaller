@@ -17,6 +17,6 @@ RUN wget -O /tmp/python311.exe https://www.python.org/ftp/python/3.11.8/python-3
 COPY . /src
 
 RUN xvfb-run wine C:\\Python311\\python.exe -m pip install --upgrade pip setuptools wheel && \
-    xvfb-run wine C:\\Python311\\python.exe -m pip install pyinstaller cryptography
+    xvfb-run wine C:\\Python311\\python.exe -m pip install --only-binary=:all: --no-cache-dir "pyinstaller>=6.0,<7.0" "cryptography>=50.0.0,<51.0.0"
 
-CMD ["bash", "-lc", "mkdir -p /src/dist/windows-app /src/.artifacts/pyinstaller && xvfb-run wine C:\\Python311\\python.exe -m PyInstaller --noconfirm --clean --distpath /src/dist/windows-app --workpath /src/.artifacts/pyinstaller --specpath /src /src/run_offline_zip_keymaster.spec"]
+CMD ["bash", "-lc", "mkdir -p /src/dist/windows-app /src/.artifacts/pyinstaller && xvfb-run wine C:\\Python311\\python.exe -m PyInstaller --noconfirm --clean --distpath /src/dist/windows-app --workpath /src/.artifacts/pyinstaller /src/run_offline_zip_keymaster.spec"]

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import os
+import sys
 from pathlib import Path
 
 from ._impl import (
@@ -13,7 +15,16 @@ from ._impl import (
 )
 
 
-DEFAULT_APP_WORKSPACE = Path("./offline_zip_keymaster_app")
+def _default_app_workspace() -> Path:
+    env_path = os.environ.get("OFFLINE_ZIP_KEYMASTER_WORKSPACE")
+    if env_path:
+        return Path(env_path).expanduser().resolve()
+    if getattr(sys, "frozen", False):
+        return Path.home() / "offline_zip_keymaster_app"
+    return (Path.cwd() / "offline_zip_keymaster_app").resolve()
+
+
+DEFAULT_APP_WORKSPACE = _default_app_workspace()
 
 
 def _build_parser() -> argparse.ArgumentParser:

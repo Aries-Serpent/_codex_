@@ -128,7 +128,18 @@ jobs:
             -w /src \
             offline-zip-keymaster-wine-builder
           test -f dist/windows-app/run_offline_zip_keymaster.exe
-          file dist/windows-app/run_offline_zip_keymaster.exe | grep -Ei 'PE32|PE32\+|PE/|executable'
+          file dist/windows-app/run_offline_zip_keymaster.exe | grep -E 'PE32\+|PE32|PE/'
+
+      - name: Headless smoke test the Windows GUI binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          export DISPLAY=:99
+          xvfb-run -a timeout 20s wine dist/windows-app/run_offline_zip_keymaster.exe --help >/tmp/offline_zip_keymaster_help.txt 2>&1 || {
+            cat /tmp/offline_zip_keymaster_help.txt || true
+            exit 1
+          }
+          grep -Ei 'Offline ZIP Keymaster|Usage|Default behavior' /tmp/offline_zip_keymaster_help.txt
 
       - name: Generate GUI bundle metadata
         shell: python
@@ -195,14 +206,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p release
-          cp dist/windows-app/run_offline_zip_keymaster.exe release/
-          cp dist/windows-app/README.txt release/
-          cp dist/windows-app/manifest.json release/
+          mkdir -p release runtime_bundle
+          rm -rf runtime_bundle/*
+          cp dist/windows-app/run_offline_zip_keymaster.exe runtime_bundle/
+          cp dist/windows-app/README.txt runtime_bundle/
+          cp dist/windows-app/manifest.json runtime_bundle/
+          test "$(find runtime_bundle -maxdepth 1 -type f | wc -l)" -eq 3
           zip -j release/run_offline_zip_keymaster_self_contained.zip \
-            release/run_offline_zip_keymaster.exe \
-            release/README.txt \
-            release/manifest.json
+            runtime_bundle/run_offline_zip_keymaster.exe \
+            runtime_bundle/README.txt \
+            runtime_bundle/manifest.json
 
       - name: Verify runtime ZIP
         shell: bash
@@ -213,6 +226,10 @@ jobs:
           mkdir -p .artifacts/zip_verify
           unzip -q release/run_offline_zip_keymaster_self_contained.zip -d .artifacts/zip_verify
           test -f .artifacts/zip_verify/run_offline_zip_keymaster.exe
+          test -f .artifacts/zip_verify/README.txt
+          test -f .artifacts/zip_verify/manifest.json
+          test "$(find .artifacts/zip_verify -maxdepth 1 -type f | wc -l)" -eq 3
+          ! find .artifacts/zip_verify -type d -name .codex | grep -q .
           ls -l .artifacts/zip_verify
 
       - name: Upload runtime ZIP artifact
