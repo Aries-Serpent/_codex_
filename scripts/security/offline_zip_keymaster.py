@@ -443,8 +443,10 @@ def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, An
     }
 
 
-def _candidate_key_roots() -> list[Path]:
-    seeds = [
+def _candidate_key_roots(zip_path: str | Path | None = None) -> list[Path]:
+    archive_root = Path(zip_path).resolve().parent if zip_path is not None else None
+    candidates: list[Path] = []
+    seeds: list[Path] = [
         Path.cwd(),
         ROOT_DIR,
         ROOT_DIR / "keys",
@@ -454,15 +456,22 @@ def _candidate_key_roots() -> list[Path]:
         Path.home(),
         Path.home() / ".offline_zip_keymaster",
     ]
-    roots: list[Path] = []
+    if archive_root is not None:
+        for parent in [archive_root, *archive_root.parents]:
+            seeds.append(parent)
+            seeds.append(parent / "keys")
+            seeds.append(parent / ".keys")
     seen: set[str] = set()
     for seed in seeds:
         for candidate in (seed, seed / "keys", seed / ".keys"):
-            candidate_str = str(candidate.resolve())
+            try:
+                candidate_str = str(candidate.resolve())
+            except OSError:
+                candidate_str = str(candidate)
             if candidate_str not in seen:
                 seen.add(candidate_str)
-                roots.append(candidate)
-    return roots
+                candidates.append(candidate)
+    return candidates
 
 
 def _iter_local_key_files(search_roots: list[Path] | None = None) -> list[Path]:
@@ -507,7 +516,8 @@ def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = Non
 
     manifest = _read_encrypted_manifest(archive_path)
     expected_fingerprint = str(manifest.get("key_fingerprint") or "")
-    for candidate_path in _iter_local_key_files():
+    search_roots = _candidate_key_roots(archive_path)
+    for candidate_path in _iter_local_key_files(search_roots):
         try:
             candidate = KeyState.from_file(candidate_path)
         except (FileNotFoundError, ValueError, OSError, json.JSONDecodeError):
