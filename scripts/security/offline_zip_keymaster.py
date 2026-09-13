@@ -18,6 +18,7 @@ import hashlib
 import hmac
 import itertools
 import json
+import math
 import os
 import posixpath
 import re
@@ -676,6 +677,68 @@ def _mask_candidates(mask: str, *, max_candidates: int = 20000) -> list[str]:
     return generated
 
 
+def _seed_variants(base: str, *, seed: str | None = None, archive_stem: str = "") -> list[str]:
+    value = str(base).strip()
+    if not value:
+        return []
+    variants: set[str] = {value, value.lower(), value.upper(), value.title(), value[::-1]}
+    if not seed:
+        return sorted(variants)
+    seed_values = {str(seed), str(seed).lower(), str(seed).upper(), str(seed).title()}
+    for seed_value in seed_values:
+        if not seed_value:
+            continue
+        variants.update(
+            {
+                f"{seed_value}{value}",
+                f"{value}{seed_value}",
+                f"{seed_value}:{value}",
+                f"{value}:{seed_value}",
+                f"{seed_value}-{value}",
+                f"{value}-{seed_value}",
+            }
+        )
+        if archive_stem:
+            variants.update(
+                {
+                    f"{seed_value}{archive_stem}",
+                    f"{archive_stem}{seed_value}",
+                    f"{seed_value}:{archive_stem}",
+                    f"{archive_stem}:{seed_value}",
+                    f"{seed_value}-{archive_stem}",
+                    f"{archive_stem}-{seed_value}",
+                }
+            )
+    return sorted(variants)
+
+
+def _physics_rank_score(candidate: str, *, seed: str | None = None, archive_stem: str = "") -> float:
+    normalized = candidate.strip()
+    if not normalized:
+        return float("-inf")
+    lower = normalized.lower()
+    semantic = 0.0
+    if seed and seed.lower() in lower:
+        semantic += 0.35
+    if archive_stem and archive_stem.lower() in lower:
+        semantic += 0.35
+    if any(token in lower for token in ("pass", "word", "pwd", "zip", "audit", "log", "recovery", "vault")):
+        semantic += 0.15
+    if len(normalized) >= 8:
+        semantic += 0.1
+    if normalized.isupper() or normalized.islower() or normalized.istitle():
+        semantic += 0.05
+
+    temporal = 0.4 if seed and seed.lower() in lower else 0.15
+    authority = 0.9 if normalized and normalized not in {archive_stem, str(seed or "")} else 0.6
+    relevant = 0.55 * semantic + 0.25 * temporal + 0.20 * authority
+    phase = (semantic + temporal + authority) / 3.0
+    amplitude = math.sqrt(max(relevant, 0.0)) * complex(math.cos(phase), math.sin(phase))
+    collapse_prob = abs(amplitude) ** 2
+    adjusted = (1.0 - 0.3) * collapse_prob + 0.3 * min(1.0, authority)
+    return float(adjusted)
+
+
 def generate_password_candidates(
     *,
     wordlist: str | Path | None = None,
@@ -726,18 +789,37 @@ def generate_password_candidates(
             add_value(primary, seen_primary, f"{seed}:{archive_stem}")
             add_value(primary, seen_primary, f"{archive_stem}:{seed}")
 
+    def add_seeded_variants(bucket: list[str], seen_bucket: set[str], value: str) -> None:
+        add_value(bucket, seen_bucket, value)
+        if not value:
+            return
+        for candidate in _seed_variants(value, seed=seed, archive_stem=archive_stem)[:6]:
+            add_value(bucket, seen_bucket, candidate)
+
     if candidate_file is not None:
         path = Path(candidate_file)
         if path.exists():
             for line in path.read_text(encoding="utf-8").splitlines():
-                add_value(primary, seen_primary, line)
+                add_seeded_variants(primary, seen_primary, line)
 
     if wordlist is not None:
         word_path = Path(wordlist)
         if not word_path.exists():
             raise FileNotFoundError(f"Wordlist not found: {word_path}")
         for line in word_path.read_text(encoding="utf-8", errors="replace").splitlines():
-            add_value(primary, seen_primary, line)
+            add_seeded_variants(primary, seen_primary, line)
+
+    archive_seed_values = [archive_stem, str(archive_value), archive_path.name if archive_value else "", archive_path.name.replace(".zip", "") if archive_value else ""]
+    for archive_value_item in archive_seed_values:
+        if archive_value_item:
+            add_seeded_variants(primary, seen_primary, archive_value_item)
+    if seed:
+        add_seeded_variants(primary, seen_primary, str(seed))
+        if archive_stem:
+            add_seeded_variants(primary, seen_primary, f"{seed}{archive_stem}")
+            add_seeded_variants(primary, seen_primary, f"{archive_stem}{seed}")
+            add_seeded_variants(primary, seen_primary, f"{seed}:{archive_stem}")
+            add_seeded_variants(primary, seen_primary, f"{archive_stem}:{seed}")
 
     if mask:
         for candidate in _mask_candidates(mask, max_candidates=max_candidates):
@@ -758,22 +840,24 @@ def generate_password_candidates(
             for item in custom_generator:
                 add_value(secondary, seen_secondary, item)
 
-    expanded: list[str] = []
-    for candidate in primary + secondary:
-        expanded.extend(_apply_password_rules(candidate, rules))
-        expanded.append(candidate)
-
-    ordered: list[str] = []
+    ranked: list[tuple[int, float, int, str]] = []
     seen_final: set[str] = set()
-    for candidate in expanded:
-        cleaned = candidate.strip()
-        if not cleaned or cleaned in seen_final:
-            continue
-        seen_final.add(cleaned)
-        ordered.append(cleaned)
-        if len(ordered) >= max_candidates:
-            break
-    return ordered
+    for bucket, candidates in ((0, primary), (1, secondary)):
+        for original_index, candidate in enumerate(candidates):
+            for mutated in _apply_password_rules(candidate, rules):
+                cleaned = mutated.strip()
+                if not cleaned or cleaned in seen_final:
+                    continue
+                seen_final.add(cleaned)
+                ranked.append((bucket, _physics_rank_score(cleaned, seed=seed, archive_stem=archive_stem), original_index, cleaned))
+            cleaned = candidate.strip()
+            if not cleaned or cleaned in seen_final:
+                continue
+            seen_final.add(cleaned)
+            ranked.append((bucket, _physics_rank_score(cleaned, seed=seed, archive_stem=archive_stem), original_index, cleaned))
+
+    ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
+    return [candidate for _, _, _, candidate in ranked[:max_candidates]]
 
 
 def recover_archive_password(
