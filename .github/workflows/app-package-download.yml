@@ -53,8 +53,8 @@ permissions:
 
 jobs:
   build-windows-gui-exe:
-    name: Build Windows GUI EXE bundle
-    runs-on: windows-latest
+    name: Build Windows GUI EXE bundle via Wine container
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
@@ -93,13 +93,6 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
           fetch-depth: 1
 
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
-
       - name: Prepare repo-local packaging directories
         shell: bash
         run: |
@@ -114,32 +107,28 @@ jobs:
             cp src/offline_zip_keymaster/README.md packages/offline_zip_keymaster/README.md
           fi
 
-      - name: Install PyInstaller
+      - name: Build Wine Windows GUI container
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install pyinstaller
+          docker build \
+            --pull \
+            -f Dockerfile.windows-pyinstaller \
+            -t offline-zip-keymaster-wine-builder \
+            .
 
-      - name: Build Windows GUI executable
+      - name: Build Windows GUI executable in Wine container
         shell: bash
         run: |
           set -euo pipefail
-          python -m PyInstaller \
-            --onefile \
-            --windowed \
-            --noconfirm \
-            --clean \
-            --name run_offline_zip_keymaster \
-            --distpath dist/windows-app \
-            --workpath .artifacts/pyinstaller \
-            --specpath .artifacts/pyinstaller \
-            --paths src \
-            --paths . \
-            --collect-submodules offline_zip_keymaster \
-            --collect-submodules scripts \
-            src/offline_zip_keymaster/gui.py
+          mkdir -p dist/windows-app .artifacts/pyinstaller
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/dist:/src/dist" \
+            -v "$GITHUB_WORKSPACE/.artifacts/pyinstaller:/src/.artifacts/pyinstaller" \
+            -w /src \
+            offline-zip-keymaster-wine-builder
           test -f dist/windows-app/run_offline_zip_keymaster.exe
+          file dist/windows-app/run_offline_zip_keymaster.exe | grep -Ei 'PE32|PE32\+|PE/|executable'
 
       - name: Generate GUI bundle metadata
         shell: python
@@ -200,40 +189,31 @@ jobs:
           assert manifest["requires_repo"] is False, manifest
           assert manifest["requires_network"] is False, manifest
           assert "run_offline_zip_keymaster.exe" in manifest["files"], manifest
-          assert "self-contained" in readme.read_text(encoding="utf-8").lower(), readme.read_text(encoding="utf-8")
+          assert "double-click" in readme.read_text(encoding="utf-8").lower(), readme.read_text(encoding="utf-8")
 
       - name: Create self-contained runtime ZIP
-        shell: pwsh
+        shell: bash
         run: |
-          $artifactDir = Join-Path $env:GITHUB_WORKSPACE "release"
-          $bundleDir = Join-Path $env:GITHUB_WORKSPACE "dist/windows-app"
-          New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
-
-          $exe = Join-Path $bundleDir "run_offline_zip_keymaster.exe"
-          $readme = Join-Path $bundleDir "README.txt"
-          $manifest = Join-Path $bundleDir "manifest.json"
-
-          Copy-Item $exe $artifactDir -Force
-          Copy-Item $readme $artifactDir -Force
-          Copy-Item $manifest $artifactDir -Force
-
-          $zipPath = Join-Path $artifactDir "run_offline_zip_keymaster_self_contained.zip"
-          if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
-          Compress-Archive -Path $exe, $readme, $manifest -DestinationPath $zipPath -Force
-          Write-Host "Created $zipPath"
+          set -euo pipefail
+          mkdir -p release
+          cp dist/windows-app/run_offline_zip_keymaster.exe release/
+          cp dist/windows-app/README.txt release/
+          cp dist/windows-app/manifest.json release/
+          zip -j release/run_offline_zip_keymaster_self_contained.zip \
+            release/run_offline_zip_keymaster.exe \
+            release/README.txt \
+            release/manifest.json
 
       - name: Verify runtime ZIP
-        shell: pwsh
+        shell: bash
         run: |
-          $zipPath = Join-Path $env:GITHUB_WORKSPACE "release/run_offline_zip_keymaster_self_contained.zip"
-          if (-not (Test-Path $zipPath)) { throw "Missing runtime zip: $zipPath" }
-          $verifyDir = Join-Path $env:GITHUB_WORKSPACE ".artifacts/zip_verify"
-          if (Test-Path $verifyDir) { Remove-Item $verifyDir -Recurse -Force }
-          New-Item -ItemType Directory -Force -Path $verifyDir | Out-Null
-          Expand-Archive -Path $zipPath -DestinationPath $verifyDir -Force
-          $exePath = Join-Path $verifyDir "run_offline_zip_keymaster.exe"
-          if (-not (Test-Path $exePath)) { throw "Zip bundle does not contain a GUI exe payload" }
-          Write-Host "Verified bundle includes GUI executable"
+          set -euo pipefail
+          test -f release/run_offline_zip_keymaster_self_contained.zip
+          rm -rf .artifacts/zip_verify
+          mkdir -p .artifacts/zip_verify
+          unzip -q release/run_offline_zip_keymaster_self_contained.zip -d .artifacts/zip_verify
+          test -f .artifacts/zip_verify/run_offline_zip_keymaster.exe
+          ls -l .artifacts/zip_verify
 
       - name: Upload runtime ZIP artifact
         uses: actions/upload-artifact@v4
@@ -249,6 +229,7 @@ jobs:
           set -euo pipefail
           echo "## ✅ GUI runtime bundle" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Primary artifact**: run_offline_zip_keymaster_self_contained.zip" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Build path**: Ubuntu `ubuntu-latest` + Wine-backed Windows container" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Launch mode**: GUI, double-click the bundled EXE" >> "$GITHUB_STEP_SUMMARY"
           ls -l release
 

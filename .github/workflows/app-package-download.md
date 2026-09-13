@@ -58,7 +58,7 @@ It contains the minimal source package used to construct the downloadable app, p
 
 1. Validate the selected app and safe target branch.
 2. Prepare repo-local staging directories (`dist/`, `.artifacts/`, `release/`, `packages/`).
-3. Build the Windows GUI app with PyInstaller on `windows-latest`.
+3. Build the Windows GUI app on `ubuntu-latest` inside a Wine-backed Windows container so a true Windows PE `.exe` can be produced without relying on a native Windows runner as the default path.
 4. Create a self-contained zip archive from the finished `run_offline_zip_keymaster.exe` plus support files.
 5. Generate a manifest with SHA-256 metadata, launch mode, and offline-only flags.
 6. Upload the runtime bundle and the build-support bundle as GitHub Actions artifacts.
@@ -89,4 +89,4 @@ Double-click the packaged `run_offline_zip_keymaster.exe` to open the GUI direct
 
 ## Build note
 
-The packaged runtime artifact must be a native Windows executable; the Python source-only staging path does not satisfy the user-facing requirement. The active workflow therefore builds on `windows-latest` and targets the GUI entrypoint instead of the console CLI.
+The packaged runtime artifact must be a native Windows executable; the Python source-only staging path does not satisfy the user-facing requirement. The active workflow therefore uses a Wine-backed Windows container build on `ubuntu-latest` for the Windows PE artifact, with the GUI entrypoint as the canonical target and the CLI kept secondary.

@@ -4,7 +4,7 @@
 
 Use the active workflow: `.github/workflows/app-package-download.yml`
 
-This workflow packages the offline ZIP keymaster as a native Windows GUI app and uploads a downloadable zip artifact that contains the bundled `run_offline_zip_keymaster.exe`.
+This workflow packages the offline ZIP keymaster as a native Windows GUI app using a Wine-backed Windows container on `ubuntu-latest`. The generated runtime zip contains the bundled `run_offline_zip_keymaster.exe` and is the default user-facing artifact.
 
 ### Trigger inputs
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from scripts.security.offline_zip_keymaster import (
+from ._impl import (
     encrypt_directory,
     generate_local_key,
     local_key_probe,

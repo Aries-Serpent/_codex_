@@ -6,7 +6,25 @@ import sys
 import tkinter as tk
 from pathlib import Path
 
-from .cli import DEFAULT_APP_WORKSPACE
+try:
+    from .cli import DEFAULT_APP_WORKSPACE
+except ImportError:  # pragma: no cover - fallback for PyInstaller single-file packaging
+    base_dir = Path(__file__).resolve()
+    search_roots: list[Path] = []
+    for parent in (base_dir.parent, base_dir.parents[1], base_dir.parents[2], Path.cwd()):
+        if parent.exists():
+            search_roots.append(parent)
+            search_roots.append(parent / "src")
+    seen: set[str] = set()
+    for root in search_roots:
+        root_str = str(root)
+        if root_str and root.exists() and root_str not in seen:
+            seen.add(root_str)
+            sys.path.insert(0, root_str)
+    try:
+        from offline_zip_keymaster.cli import DEFAULT_APP_WORKSPACE
+    except ImportError:  # pragma: no cover - fallback for direct script execution
+        from cli import DEFAULT_APP_WORKSPACE
 
 
 class OfflineZipKeymasterGUI:
