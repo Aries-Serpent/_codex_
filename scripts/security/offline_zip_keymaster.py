@@ -255,6 +255,116 @@ class KeyState:
         return cls.from_material(key_value, algorithm=algorithm, manifest_path=key_path)
 
 
+@dataclass(frozen=True)
+class RecoveryPlan:
+    """Structured information required to drive a local ZIP recovery campaign."""
+
+    archive_path: str | None = None
+    archive_name: str | None = None
+    archive_stem: str = ""
+    seed: str | None = None
+    wordlist: str | None = None
+    candidate_file: str | None = None
+    mask: str | None = None
+    charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    min_length: int = 1
+    max_length: int = 4
+    brute_force: bool = False
+    rules: tuple[str, ...] = ()
+    hints: tuple[str, ...] = ()
+    max_candidates: int = 20000
+    report_path: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "archive_path": self.archive_path,
+            "archive_name": self.archive_name,
+            "archive_stem": self.archive_stem,
+            "seed": self.seed,
+            "wordlist": self.wordlist,
+            "candidate_file": self.candidate_file,
+            "mask": self.mask,
+            "charset": self.charset,
+            "min_length": self.min_length,
+            "max_length": self.max_length,
+            "brute_force": self.brute_force,
+            "rules": list(self.rules),
+            "hints": list(self.hints),
+            "max_candidates": self.max_candidates,
+            "report_path": self.report_path,
+        }
+
+
+def build_recovery_plan(
+    *,
+    zip_path: str | Path | None = None,
+    wordlist: str | Path | None = None,
+    mask: str | None = None,
+    brute_force: bool = False,
+    min_length: int = 1,
+    max_length: int = 4,
+    charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    seed: str | None = None,
+    rules: Iterable[str] | None = None,
+    candidate_file: str | Path | None = None,
+    max_candidates: int = 20000,
+    archive_hints: Iterable[str] | None = None,
+    report_path: str | Path | None = None,
+) -> RecoveryPlan:
+    """Create a structured recovery campaign from the user's archive and clue inputs."""
+    actual_zip = Path(zip_path).resolve() if zip_path is not None else None
+    archive_name = actual_zip.name if actual_zip is not None else None
+    archive_stem = (actual_zip.stem if actual_zip is not None else "")
+    hints: list[str] = []
+    if archive_stem:
+        hints.append(archive_stem)
+    if archive_name:
+        hints.append(archive_name)
+    if archive_hints:
+        hints.extend(str(item).strip() for item in archive_hints if str(item).strip())
+    if seed:
+        hints.append(str(seed))
+    normalized_rules = tuple(str(item).strip() for item in (rules or ()) if str(item).strip())
+    return RecoveryPlan(
+        archive_path=str(actual_zip) if actual_zip is not None else None,
+        archive_name=archive_name,
+        archive_stem=archive_stem,
+        seed=str(seed).strip() if seed else None,
+        wordlist=str(wordlist) if wordlist is not None else None,
+        candidate_file=str(candidate_file) if candidate_file is not None else None,
+        mask=mask,
+        charset=charset,
+        min_length=max(1, int(min_length)),
+        max_length=max(1, int(max_length)),
+        brute_force=bool(brute_force),
+        rules=normalized_rules,
+        hints=tuple(dict.fromkeys(item for item in hints if item)),
+        max_candidates=max(1, int(max_candidates)),
+        report_path=str(report_path) if report_path is not None else None,
+    )
+
+
+def summarize_recovery_candidates(plan: RecoveryPlan, candidates: Iterable[str]) -> dict[str, Any]:
+    """Create a compact report describing the candidate pool used for a ZIP recovery attempt."""
+    candidate_list = [str(item).strip() for item in candidates if str(item).strip()]
+    unique = list(dict.fromkeys(candidate_list))
+    summary = {
+        "archive_stem": plan.archive_stem,
+        "seed": plan.seed,
+        "wordlist": plan.wordlist,
+        "mask": plan.mask,
+        "charset": plan.charset,
+        "min_length": plan.min_length,
+        "max_length": plan.max_length,
+        "candidate_count": len(candidate_list),
+        "unique_candidate_count": len(unique),
+        "top_candidates": unique[:10],
+        "hints": list(plan.hints),
+        "report_path": plan.report_path,
+    }
+    return summary
+
+
 def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> dict[str, str]:
     """Generate a local key manifest and a fixed master-seed contract for deterministic no-key unpacking."""
     if algorithm == "fernet":
@@ -634,6 +744,8 @@ def _apply_password_rules(value: str, rules: Iterable[str] | None) -> list[str]:
                 transformed.append(normalized[::-1])
             elif rule == "double":
                 transformed.append(normalized * 2)
+            elif rule in {"leet", "leetspeak", "symbolic", "common-variants"}:
+                transformed.extend(_common_word_variants(normalized))
             elif rule.startswith("prepend:"):
                 transformed.append(f"{rule.split(':', 1)[1]}{normalized}")
             elif rule.startswith("append:"):
@@ -644,6 +756,44 @@ def _apply_password_rules(value: str, rules: Iterable[str] | None) -> list[str]:
             else:
                 transformed.append(normalized)
     return transformed
+
+
+def _common_word_variants(value: str) -> list[str]:
+    """Expand a base word into realistic, common symbol/casing variants such as P@$$w0rd."""
+    base = value.strip()
+    if not base:
+        return []
+    variants: set[str] = {base, base.lower(), base.upper(), base.title(), base.capitalize()}
+    leet_map = {"a": "@", "e": "3", "i": "1", "l": "1", "o": "0", "s": "$", "t": "7", "g": "9"}
+    lowered = base.lower()
+    if len(lowered) <= 10:
+        replacements: list[list[str]] = []
+        for character in lowered:
+            options = [character]
+            if character in leet_map:
+                options.append(leet_map[character])
+            replacements.append(options)
+        for combo in itertools.product(*replacements):
+            variant = "".join(combo)
+            variants.add(variant)
+            variants.add(variant.lower())
+            variants.add(variant.capitalize())
+            variants.add(variant.title())
+            variants.add(variant.upper())
+    suffix_candidates = set()
+    for candidate in list(variants)[:20]:
+        suffix_candidates.update(
+            {
+                f"{candidate}!",
+                f"{candidate}@2026",
+                f"{candidate}_2026",
+                f"{candidate}123",
+                f"{candidate}1",
+                f"{candidate}-{candidate}",
+            }
+        )
+    variants.update(suffix_candidates)
+    return sorted({item for item in variants if item})[:64]
 
 
 def _mask_candidates(mask: str, *, max_candidates: int = 20000) -> list[str]:
@@ -755,6 +905,7 @@ def generate_password_candidates(
     candidate_file: str | Path | None = None,
 ) -> list[str]:
     """Generate a bounded list of password candidates for local ZIP recovery attempts."""
+    limit = max(1, int(max_candidates))
     primary: list[str] = []
     secondary: list[str] = []
     seen_primary: set[str] = set()
@@ -769,11 +920,11 @@ def generate_password_candidates(
         seen_bucket.add(cleaned)
         bucket.append(cleaned)
 
-    archive_stem = ""
     archive_value = archive_name if archive_name is not None else ""
-    if archive_value:
-        archive_path = Path(str(archive_value))
-        archive_stem = archive_path.stem or archive_path.name
+    archive_path = Path(str(archive_value)) if archive_value else None
+    archive_stem = archive_path.stem if archive_path is not None else ""
+    archive_stem = archive_stem or (Path(str(archive_value)).name if archive_value else "")
+    if archive_path is not None:
         add_value(primary, seen_primary, str(archive_path))
         add_value(primary, seen_primary, archive_stem)
         add_value(primary, seen_primary, archive_path.name)
@@ -793,14 +944,16 @@ def generate_password_candidates(
         add_value(bucket, seen_bucket, value)
         if not value:
             return
-        for candidate in _seed_variants(value, seed=seed, archive_stem=archive_stem)[:6]:
+        for candidate in _seed_variants(value, seed=seed, archive_stem=archive_stem)[:8]:
             add_value(bucket, seen_bucket, candidate)
 
     if candidate_file is not None:
         path = Path(candidate_file)
         if path.exists():
-            for line in path.read_text(encoding="utf-8").splitlines():
+            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
                 add_seeded_variants(primary, seen_primary, line)
+                for variant in _common_word_variants(line):
+                    add_seeded_variants(primary, seen_primary, variant)
 
     if wordlist is not None:
         word_path = Path(wordlist)
@@ -808,8 +961,15 @@ def generate_password_candidates(
             raise FileNotFoundError(f"Wordlist not found: {word_path}")
         for line in word_path.read_text(encoding="utf-8", errors="replace").splitlines():
             add_seeded_variants(primary, seen_primary, line)
+            for variant in _common_word_variants(line):
+                add_seeded_variants(primary, seen_primary, variant)
 
-    archive_seed_values = [archive_stem, str(archive_value), archive_path.name if archive_value else "", archive_path.name.replace(".zip", "") if archive_value else ""]
+    archive_seed_values = [
+        archive_stem,
+        str(archive_value),
+        archive_path.name if archive_path is not None else "",
+        archive_path.name.replace(".zip", "") if archive_path is not None else "",
+    ]
     for archive_value_item in archive_seed_values:
         if archive_value_item:
             add_seeded_variants(primary, seen_primary, archive_value_item)
@@ -822,15 +982,21 @@ def generate_password_candidates(
             add_seeded_variants(primary, seen_primary, f"{archive_stem}:{seed}")
 
     if mask:
-        for candidate in _mask_candidates(mask, max_candidates=max_candidates):
+        for candidate in _mask_candidates(mask, max_candidates=limit):
             add_value(secondary, seen_secondary, candidate)
 
     if brute_force:
         safe_min = max(1, min(int(min_length), 16))
         safe_max = max(safe_min, min(int(max_length), 16))
         for size in range(safe_min, safe_max + 1):
+            if len(secondary) >= limit:
+                break
             for combo in itertools.product(charset, repeat=size):
                 add_value(secondary, seen_secondary, "".join(combo))
+                if len(secondary) >= limit:
+                    break
+            if len(secondary) >= limit:
+                break
 
     if custom_generator is not None:
         if callable(custom_generator):
@@ -842,22 +1008,26 @@ def generate_password_candidates(
 
     ranked: list[tuple[int, float, int, str]] = []
     seen_final: set[str] = set()
+
+    def append_ranked(bucket: int, candidate: str, original_index: int) -> None:
+        cleaned = candidate.strip()
+        if not cleaned or cleaned in seen_final:
+            return
+        seen_final.add(cleaned)
+        score = _physics_rank_score(cleaned, seed=seed, archive_stem=archive_stem)
+        ranked.append((bucket, score, original_index, cleaned))
+
     for bucket, candidates in ((0, primary), (1, secondary)):
         for original_index, candidate in enumerate(candidates):
             for mutated in _apply_password_rules(candidate, rules):
-                cleaned = mutated.strip()
-                if not cleaned or cleaned in seen_final:
-                    continue
-                seen_final.add(cleaned)
-                ranked.append((bucket, _physics_rank_score(cleaned, seed=seed, archive_stem=archive_stem), original_index, cleaned))
-            cleaned = candidate.strip()
-            if not cleaned or cleaned in seen_final:
-                continue
-            seen_final.add(cleaned)
-            ranked.append((bucket, _physics_rank_score(cleaned, seed=seed, archive_stem=archive_stem), original_index, cleaned))
+                append_ranked(bucket, mutated, original_index)
+            append_ranked(bucket, candidate, original_index)
 
     ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
-    return [candidate for _, _, _, candidate in ranked[:max_candidates]]
+    selected = list(dict.fromkeys(primary + secondary))[:limit]
+    if not selected:
+        selected = [candidate for _, _, _, candidate in ranked[:limit]]
+    return selected
 
 
 def recover_archive_password(
@@ -882,6 +1052,9 @@ def recover_archive_password(
 
     with zipfile.ZipFile(archive_path, "r") as zf:
         infos = zf.infolist()
+        if not infos:
+            raise ValueError("Archive is empty")
+
         explicit_candidates: list[str] = []
         if candidate_file is not None:
             target = Path(candidate_file)
@@ -892,6 +1065,7 @@ def recover_archive_password(
             if not target.exists():
                 raise FileNotFoundError(f"Wordlist not found: {target}")
             explicit_candidates.extend(line.strip() for line in target.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+
         candidates = generate_password_candidates(
             wordlist=wordlist,
             mask=mask,
@@ -906,41 +1080,12 @@ def recover_archive_password(
             max_candidates=max_candidates,
             candidate_file=candidate_file,
         )
-        if not infos:
-            raise ValueError("Archive is empty")
         if not candidates:
             raise ValueError("No candidate passwords were generated for archive recovery")
-        recovered = candidates[-1]
-        ordered_candidates = explicit_candidates + [item for item in candidates if item not in explicit_candidates]
-        explicit_valid: str | None = None
-        for password in explicit_candidates:
-            try:
-                probe = zipfile.ZipFile(archive_path, "r")
-            except (FileNotFoundError, OSError, zipfile.BadZipFile, RuntimeError) as exc:
-                raise ValueError(f"Archive is malformed or unreadable: {archive_path}") from exc
-            try:
-                probe.setpassword(password.encode("utf-8"))
-                valid = False
-                for info in probe.infolist():
-                    if info.is_dir():
-                        continue
-                    try:
-                        probe.read(info.filename)
-                    except RuntimeError:
-                        continue
-                    except (zipfile.BadZipFile, NotImplementedError, ValueError):
-                        continue
-                    else:
-                        valid = True
-                        explicit_valid = password
-                if valid:
-                    continue
-            except (RuntimeError, ValueError, zipfile.BadZipFile, NotImplementedError):
-                continue
-            finally:
-                probe.close()
-        if explicit_valid is not None:
-            return explicit_valid
+
+        ordered_candidates = list(dict.fromkeys(explicit_candidates + [item for item in candidates if item not in explicit_candidates]))
+        recovered: str | None = None
+
         for password in ordered_candidates:
             try:
                 probe = zipfile.ZipFile(archive_path, "r")
@@ -948,7 +1093,6 @@ def recover_archive_password(
                 raise ValueError(f"Archive is malformed or unreadable: {archive_path}") from exc
             try:
                 probe.setpassword(password.encode("utf-8"))
-                valid = False
                 for info in probe.infolist():
                     if info.is_dir():
                         continue
@@ -959,15 +1103,14 @@ def recover_archive_password(
                     except (zipfile.BadZipFile, NotImplementedError, ValueError):
                         continue
                     else:
-                        valid = True
                         recovered = password
-                if valid:
-                    continue
+                        return recovered
             except (RuntimeError, ValueError, zipfile.BadZipFile, NotImplementedError):
                 continue
             finally:
                 probe.close()
-        return recovered
+
+        raise ValueError(f"No valid password candidate matched archive: {archive_path}")
 
 
 def _password_candidates_from_archive(zip_path: str | Path, *, seed: str | None = None, manifest: dict[str, Any] | None = None) -> list[str]:
@@ -1490,6 +1633,21 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
     recover_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
 
+    recover_plan_cmd = subparsers.add_parser("recover-plan", help="Build a recovery plan and candidate queue without immediately testing the archive")
+    recover_plan_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
+    recover_plan_cmd.add_argument("--wordlist", help="Optional password dictionary file")
+    recover_plan_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
+    recover_plan_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded brute-force generation")
+    recover_plan_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
+    recover_plan_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
+    recover_plan_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
+    recover_plan_cmd.add_argument("--seed", help="Optional seed or pattern used to generate candidate variants")
+    recover_plan_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
+    recover_plan_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to generate")
+    recover_plan_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
+    recover_plan_cmd.add_argument("--archive-hint", action="append", default=[], help="Extra archive context or user clue to include in candidate generation")
+    recover_plan_cmd.add_argument("--report-path", help="Optional path for the JSON recovery report")
+
     unpack_cmd = subparsers.add_parser("unpack", help="Decrypt a protected ZIP archive into a self-titled output folder")
     unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
     unpack_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
@@ -1568,6 +1726,43 @@ def main(argv: list[str] | None = None) -> int:
                 max_candidates=args.max_candidates,
             )
             print(_safe_log(f"Recovered ZIP password for {args.zip_path}: {password}"))
+            return 0
+
+        if args.command == "recover-plan":
+            plan = build_recovery_plan(
+                zip_path=args.zip_path,
+                wordlist=args.wordlist,
+                mask=args.mask,
+                brute_force=args.bruteforce,
+                min_length=args.min_length,
+                max_length=args.max_length,
+                charset=args.charset,
+                seed=args.seed,
+                rules=args.rules,
+                candidate_file=args.candidate_file,
+                max_candidates=args.max_candidates,
+                archive_hints=args.archive_hint,
+                report_path=args.report_path,
+            )
+            candidates = generate_password_candidates(
+                wordlist=args.wordlist,
+                mask=args.mask,
+                brute_force=args.bruteforce,
+                min_length=args.min_length,
+                max_length=args.max_length,
+                charset=args.charset,
+                seed=args.seed,
+                archive_name=args.zip_path,
+                rules=args.rules,
+                candidate_file=args.candidate_file,
+                max_candidates=args.max_candidates,
+            )
+            report = summarize_recovery_candidates(plan, candidates)
+            if args.report_path:
+                output_path = Path(args.report_path)
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
+            print(_safe_log(json.dumps(report, sort_keys=True)))
             return 0
 
         if args.command in {"unpack", "unpack-only", "decrypt-and-unpack"}:
