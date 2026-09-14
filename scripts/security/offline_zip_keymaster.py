@@ -1212,7 +1212,8 @@ def generate_password_candidates(
 
     ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
     ranked_candidates = [candidate for _, _, _, candidate in ranked]
-    selected = list(dict.fromkeys(secondary + primary + ranked_candidates))[:limit]
+    half = max(8, min(limit // 2, len(primary)))
+    selected = list(dict.fromkeys(primary[:half] + secondary + ranked_candidates + primary[half:]))[:limit]
     if not selected:
         selected = list(dict.fromkeys(primary + secondary))[:limit]
     return selected
@@ -1281,10 +1282,18 @@ def recover_archive_password(
 
         ordered_candidates = list(dict.fromkeys(explicit_candidates + [item for item in candidates if item not in explicit_candidates]))
         recovered: str | None = None
+        manifest_hint = {}
+        try:
+            manifest_hint = _read_encrypted_manifest(archive_path)
+        except ValueError:
+            manifest_hint = {}
+        is_custom_xor_archive = manifest_hint.get("cipher") == "xor-password"
 
         for password in ordered_candidates:
             if _local_password_archive_probe(archive_path, password):
                 return password
+            if is_custom_xor_archive:
+                continue
             try:
                 probe = zipfile.ZipFile(archive_path, "r")
             except (FileNotFoundError, OSError, zipfile.BadZipFile, RuntimeError) as exc:
@@ -1358,8 +1367,8 @@ def _local_password_archive_probe(archive_path: str | Path, password: str) -> bo
                 return False
             candidate = _xor_bytes(payload, password)
             expected_sha = str(manifest.get("payload_sha256") or manifest.get("source_sha256") or "")
-            if expected_sha and hashlib.sha256(candidate).hexdigest() == expected_sha:
-                return True
+            if expected_sha:
+                return hashlib.sha256(candidate).hexdigest() == expected_sha
             return bool(candidate) and (candidate.startswith(b"PK") or b"PK" in candidate[:8])
     except (FileNotFoundError, OSError, zipfile.BadZipFile, RuntimeError, ValueError):
         return False
@@ -1761,6 +1770,32 @@ def decrypt_and_unpack(
 
 
 
+def _extract_text_payload_bundle(payload: bytes, destination_root: Path) -> None:
+    """Extract an air-gapped text bundle in the form [relative/path]content..."""
+    try:
+        decoded = payload.decode("utf-8")
+    except UnicodeDecodeError:
+        raise ValueError("Encrypted archive payload is not valid UTF-8 text") from None
+
+    header_positions = list(re.finditer(r"\[[^\]]+\]", decoded))
+    if not header_positions:
+        raise ValueError("Encrypted archive payload does not contain extractable file records")
+
+    for index, match in enumerate(header_positions):
+        header_name = match.group(0)[1:-1].strip()
+        start = match.end()
+        next_start = header_positions[index + 1].start() if index + 1 < len(header_positions) else None
+        content = decoded[start:next_start] if next_start is not None else decoded[start:]
+        if next_start is not None and content.endswith("\n"):
+            content = content[:-1]
+        member_name = _safe_member_name(header_name)
+        target = _ensure_target_within_root(destination_root / member_name, destination_root)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        _apply_safe_permissions(target.parent, is_dir=True)
+        target.write_bytes(content.encode("utf-8"))
+        _apply_safe_permissions(target)
+
+
 def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
     if len(zip_bytes) > MAX_ARCHIVE_BYTES:
         raise ValueError("Archive exceeds maximum size cap")
@@ -1792,10 +1827,10 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
                                 break
                             dest.write(chunk)
                     _apply_safe_permissions(target)
-        except ValueError:
-            raise
-        except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
-            raise ValueError("Archive is malformed or exceeds safety limits") from exc
+                return
+        except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError):
+            pass
+        _extract_text_payload_bundle(zip_bytes, destination_root)
     finally:
         try:
             temp_path.unlink(missing_ok=True)
@@ -1885,9 +1920,40 @@ def _process_nested_archive_bytes(
                 temp_path.unlink()
 
 
-def unpack_archive(zip_path: str | Path, key_file: str | Path | None = None, output_dir: str | Path | None = None) -> Path:
+def unpack_archive(
+    zip_path: str | Path,
+    key_file: str | Path | None = None,
+    output_dir: str | Path | None = None,
+    *,
+    wordlist: str | Path | None = None,
+    mask: str | None = None,
+    brute_force: bool = False,
+    min_length: int = 1,
+    max_length: int = 4,
+    charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    seed: str | None = None,
+    rules: Iterable[str] | None = None,
+    custom_generator: Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None = None,
+    candidate_file: str | Path | None = None,
+    max_candidates: int = 20000,
+) -> Path:
     """Decrypt an encrypted ZIP archive and extract it into a self-titled folder."""
-    return decrypt_and_unpack(zip_path, key_file, output_dir=output_dir)
+    return decrypt_and_unpack(
+        zip_path,
+        key_file,
+        output_dir=output_dir,
+        wordlist=wordlist,
+        mask=mask,
+        brute_force=brute_force,
+        min_length=min_length,
+        max_length=max_length,
+        charset=charset,
+        seed=seed,
+        rules=rules,
+        custom_generator=custom_generator,
+        candidate_file=candidate_file,
+        max_candidates=max_candidates,
+    )
 
 
 def _build_parser() -> argparse.ArgumentParser:

@@ -46,8 +46,7 @@ def _xor_bytes(payload: bytes, password: str) -> bytes:
 
 
 def _write_local_password_archive(zip_path: Path, password: str, *, files: dict[str, bytes]) -> None:
-    plaintext = b"
-".join([b"[" + name.encode("utf-8") + b"]" + content for name, content in files.items()])
+    plaintext = b"\n".join([b"[" + name.encode("utf-8") + b"]" + content for name, content in files.items()])
     encrypted_bytes = _xor_bytes(plaintext, password)
     manifest = {
         "version": 1,
