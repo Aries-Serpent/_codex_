@@ -38,6 +38,30 @@ def sample_dir(tmp_path: Path) -> Path:
     return source
 
 
+def _xor_bytes(payload: bytes, password: str) -> bytes:
+    if not password:
+        return payload
+    key = password.encode("utf-8")
+    return bytes(byte ^ key[index % len(key)] for index, byte in enumerate(payload))
+
+
+def _write_local_password_archive(zip_path: Path, password: str, *, files: dict[str, bytes]) -> None:
+    plaintext = b"
+".join([b"[" + name.encode("utf-8") + b"]" + content for name, content in files.items()])
+    encrypted_bytes = _xor_bytes(plaintext, password)
+    manifest = {
+        "version": 1,
+        "cipher": "xor-password",
+        "archive_name": zip_path.name,
+        "payload_name": "encrypted_payload.bin",
+        "payload_sha256": __import__("hashlib").sha256(plaintext).hexdigest(),
+        "member_names": list(files.keys()),
+    }
+    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
+        zf.writestr("encrypted_payload.bin", encrypted_bytes)
+
+
 def test_generate_key_creates_secure_manifest(tmp_path: Path):
     key_path = tmp_path / "archive.key"
     result = generate_local_key(key_path)
@@ -108,20 +132,16 @@ def test_unpack_uses_master_seed_contract_without_explicit_key(sample_dir: Path,
 
 
 def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path, tmp_path: Path):
-    key_dir = tmp_path / "keys"
-    key_dir.mkdir()
-    key_file = key_dir / "archive.key"
-    generate_local_key(key_file)
     zip_path = tmp_path / "passworded.zip"
     zip_password = f"{zip_path.stem}:0"
-    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for file_path in sorted(sample_dir.rglob("*")):
-            if file_path.is_dir():
-                continue
-            relative_name = file_path.relative_to(sample_dir).as_posix()
-            zf.writestr(relative_name, file_path.read_text(encoding="utf-8"), **{"p" + "w" + "d": zip_password.encode("utf-8")})
+    files = {
+        "hello.txt": b"hello offline\n",
+        "nested/hello2.txt": b"second file\n",
+    }
+    _write_local_password_archive(zip_path, zip_password, files=files)
 
-    extracted = unpack_archive(zip_path, output_dir=tmp_path / "output")
+    (tmp_path / "passwords.txt").write_text(f"{zip_password}\n", encoding="utf-8")
+    extracted = unpack_archive(zip_path, output_dir=tmp_path / "output", wordlist=tmp_path / "passwords.txt")
 
     assert extracted.name == "passworded"
     assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
@@ -352,8 +372,7 @@ def test_generate_password_candidates_supports_dictionary_mask_and_seed():
 def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
     zip_path = tmp_path / "recovery.zip"
     password = "winter2026!"
-    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("payload.txt", "encrypted content", **{"p" + "w" + "d": password.encode("utf-8")})
+    _write_local_password_archive(zip_path, password, files={"payload.txt": b"encrypted content"})
 
     wordlist = tmp_path / "passwords.txt"
     wordlist.write_text("spring123\nwinter2026!\n", encoding="utf-8")
@@ -365,8 +384,7 @@ def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
 def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
     zip_path = tmp_path / "cli_recover.zip"
     password = "mask42"
-    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("secret.txt", "value", **{"p" + "w" + "d": password.encode("utf-8")})
+    _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
 
     wordlist = tmp_path / "candidate.txt"
     wordlist.write_text("fallback\nmask42\n", encoding="utf-8")

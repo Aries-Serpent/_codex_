@@ -1101,21 +1101,6 @@ def generate_password_candidates(
     archive_path = Path(str(archive_value)) if archive_value else None
     archive_stem = archive_path.stem if archive_path is not None else ""
     archive_stem = archive_stem or (Path(str(archive_value)).name if archive_value else "")
-    if archive_path is not None:
-        add_value(primary, seen_primary, str(archive_path))
-        add_value(primary, seen_primary, archive_stem)
-        add_value(primary, seen_primary, archive_path.name)
-        add_value(primary, seen_primary, archive_path.name.replace(".zip", ""))
-
-    if seed:
-        add_value(primary, seen_primary, str(seed))
-        add_value(primary, seen_primary, str(seed).lower())
-        add_value(primary, seen_primary, str(seed).upper())
-        if archive_stem:
-            add_value(primary, seen_primary, f"{seed}{archive_stem}")
-            add_value(primary, seen_primary, f"{archive_stem}{seed}")
-            add_value(primary, seen_primary, f"{seed}:{archive_stem}")
-            add_value(primary, seen_primary, f"{archive_stem}:{seed}")
 
     def add_seeded_variants(bucket: list[str], seen_bucket: set[str], value: str) -> None:
         add_value(bucket, seen_bucket, value)
@@ -1124,22 +1109,41 @@ def generate_password_candidates(
         for candidate in _seed_variants(value, seed=seed, archive_stem=archive_stem)[:8]:
             add_value(bucket, seen_bucket, candidate)
 
+    raw_terms: list[str] = []
+    seen_raw: set[str] = set()
+
+    def add_raw(candidate: str | None) -> None:
+        if candidate is None:
+            return
+        cleaned = str(candidate).strip()
+        if not cleaned or cleaned in seen_raw:
+            return
+        seen_raw.add(cleaned)
+        raw_terms.append(cleaned)
+
+    if archive_path is not None:
+        for value in [str(archive_path), archive_stem, archive_path.name, archive_path.name.replace(".zip", "")]:
+            add_raw(value)
+
+    if seed:
+        for value in [str(seed), str(seed).lower(), str(seed).upper()]:
+            add_raw(value)
+        if archive_stem:
+            for value in [f"{seed}{archive_stem}", f"{archive_stem}{seed}", f"{seed}:{archive_stem}", f"{archive_stem}:{seed}"]:
+                add_raw(value)
+
     if candidate_file is not None:
         path = Path(candidate_file)
         if path.exists():
             for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-                add_seeded_variants(primary, seen_primary, line)
-                for variant in _common_word_variants(line):
-                    add_seeded_variants(primary, seen_primary, variant)
+                add_raw(line)
 
     if wordlist is not None:
         word_path = Path(wordlist)
         if not word_path.exists():
             raise FileNotFoundError(f"Wordlist not found: {word_path}")
         for line in word_path.read_text(encoding="utf-8", errors="replace").splitlines():
-            add_seeded_variants(primary, seen_primary, line)
-            for variant in _common_word_variants(line):
-                add_seeded_variants(primary, seen_primary, variant)
+            add_raw(line)
 
     archive_seed_values = [
         archive_stem,
@@ -1149,14 +1153,20 @@ def generate_password_candidates(
     ]
     for archive_value_item in archive_seed_values:
         if archive_value_item:
-            add_seeded_variants(primary, seen_primary, archive_value_item)
+            add_raw(archive_value_item)
     if seed:
-        add_seeded_variants(primary, seen_primary, str(seed))
+        add_raw(str(seed))
         if archive_stem:
-            add_seeded_variants(primary, seen_primary, f"{seed}{archive_stem}")
-            add_seeded_variants(primary, seen_primary, f"{archive_stem}{seed}")
-            add_seeded_variants(primary, seen_primary, f"{seed}:{archive_stem}")
-            add_seeded_variants(primary, seen_primary, f"{archive_stem}:{seed}")
+            for value in [f"{seed}{archive_stem}", f"{archive_stem}{seed}", f"{seed}:{archive_stem}", f"{archive_stem}:{seed}"]:
+                add_raw(value)
+
+    for candidate in raw_terms:
+        add_value(primary, seen_primary, candidate)
+    for candidate in raw_terms:
+        for variant in _common_word_variants(candidate):
+            add_value(primary, seen_primary, variant)
+        for seed_variant in _seed_variants(candidate, seed=seed, archive_stem=archive_stem)[:8]:
+            add_value(primary, seen_primary, seed_variant)
 
     if mask:
         for candidate in _mask_candidates(mask, max_candidates=limit):
@@ -1201,7 +1211,8 @@ def generate_password_candidates(
             append_ranked(bucket, candidate, original_index)
 
     ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
-    selected = list(dict.fromkeys(primary + [candidate for _, _, _, candidate in ranked]))[:limit]
+    ranked_candidates = [candidate for _, _, _, candidate in ranked]
+    selected = list(dict.fromkeys(secondary + primary + ranked_candidates))[:limit]
     if not selected:
         selected = list(dict.fromkeys(primary + secondary))[:limit]
     return selected
@@ -1231,8 +1242,14 @@ def recover_archive_password(
         infos = zf.infolist()
         if not infos:
             raise ValueError("Archive is empty")
-        if not any(info.flag_bits & 0x1 for info in infos if not info.is_dir()):
-            raise ValueError(f"Archive is not password-protected: {archive_path}")
+        protected = any(info.flag_bits & 0x1 for info in infos if not info.is_dir())
+        if not protected:
+            try:
+                manifest = _read_encrypted_manifest(archive_path)
+            except ValueError:
+                manifest = {}
+            if manifest.get("cipher") != "xor-password":
+                raise ValueError(f"Archive is not password-protected: {archive_path}")
 
         explicit_candidates: list[str] = []
         if candidate_file is not None:
@@ -1266,6 +1283,8 @@ def recover_archive_password(
         recovered: str | None = None
 
         for password in ordered_candidates:
+            if _local_password_archive_probe(archive_path, password):
+                return password
             try:
                 probe = zipfile.ZipFile(archive_path, "r")
             except (FileNotFoundError, OSError, zipfile.BadZipFile, RuntimeError) as exc:
@@ -1307,6 +1326,43 @@ def _password_candidates_from_archive(zip_path: str | Path, *, seed: str | None 
         f"{seed}:{archive_name}:{stem}" if seed else f"{archive_name}:{stem}",
     ]
     return [item for item in dict.fromkeys(candidates) if item]
+
+
+def _xor_bytes(payload: bytes, password: str) -> bytes:
+    key = password.encode("utf-8")
+    if not key:
+        return payload
+    return bytes(byte ^ key[index % len(key)] for index, byte in enumerate(payload))
+
+
+def _local_password_archive_probe(archive_path: str | Path, password: str) -> bool:
+    archive = Path(archive_path).resolve()
+    try:
+        with zipfile.ZipFile(archive, "r") as zf:
+            entries = {info.filename: info for info in zf.infolist()}
+            if "manifest.json" not in entries:
+                return False
+            try:
+                manifest_data = zf.read("manifest.json")
+                manifest = json.loads(manifest_data.decode("utf-8"))
+            except (KeyError, json.JSONDecodeError, UnicodeDecodeError):
+                return False
+            if not isinstance(manifest, dict):
+                return False
+            if manifest.get("cipher") != "xor-password":
+                return False
+            payload_name = str(manifest.get("payload_name") or "encrypted_payload.bin")
+            try:
+                payload = zf.read(payload_name)
+            except KeyError:
+                return False
+            candidate = _xor_bytes(payload, password)
+            expected_sha = str(manifest.get("payload_sha256") or manifest.get("source_sha256") or "")
+            if expected_sha and hashlib.sha256(candidate).hexdigest() == expected_sha:
+                return True
+            return bool(candidate) and (candidate.startswith(b"PK") or b"PK" in candidate[:8])
+    except (FileNotFoundError, OSError, zipfile.BadZipFile, RuntimeError, ValueError):
+        return False
 
 
 def _zip_can_be_read_without_password(zip_path: str | Path) -> bool:
@@ -1519,6 +1575,53 @@ def decrypt_and_unpack(
         with zipfile.ZipFile(archive_path, "r") as zf:
             infos = zf.infolist()
             _validate_archive_member_count(infos)
+            try:
+                manifest = _read_encrypted_manifest(archive_path)
+            except ValueError:
+                manifest = {}
+
+            if manifest.get("cipher") == "xor-password":
+                candidate_pool: list[str] = []
+                explicit_candidates: list[str] = []
+                if candidate_file is not None:
+                    candidate_path = Path(candidate_file)
+                    if candidate_path.exists():
+                        explicit_candidates.extend(line.strip() for line in candidate_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                if wordlist is not None:
+                    wordlist_path = Path(wordlist)
+                    if wordlist_path.exists():
+                        explicit_candidates.extend(line.strip() for line in wordlist_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                candidate_pool.extend(explicit_candidates)
+                candidate_pool.extend(generate_password_candidates(
+                    wordlist=wordlist,
+                    mask=mask,
+                    brute_force=brute_force,
+                    min_length=min_length,
+                    max_length=max_length,
+                    charset=charset,
+                    seed=seed or _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR),
+                    archive_name=archive_path.name,
+                    rules=rules,
+                    custom_generator=custom_generator,
+                    max_candidates=max_candidates,
+                    candidate_file=candidate_file,
+                ))
+                seen: set[str] = set()
+                ordered = []
+                for candidate in candidate_pool:
+                    if not candidate or candidate in seen:
+                        continue
+                    seen.add(candidate)
+                    ordered.append(candidate)
+                for candidate in ordered:
+                    if _local_password_archive_probe(archive_path, candidate):
+                        payload_name = str(manifest.get("payload_name") or DEFAULT_PAYLOAD_NAME)
+                        decrypted = _xor_bytes(zf.read(payload_name), candidate)
+                        extracted_dir = destination_root / archive_path.stem
+                        _safe_extract_members(decrypted, extracted_dir)
+                        return extracted_dir
+                raise ValueError("No candidate password matched the locally encrypted archive")
+
             if _looks_like_encrypted_archive(zf):
                 key_state = _resolve_archive_key(archive_path, key_file)
                 manifest = _read_encrypted_manifest(archive_path)
@@ -1655,6 +1758,7 @@ def decrypt_and_unpack(
         raise
     except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
         raise ValueError(f"Archive is malformed or exceeds safety limits: {archive_path}") from exc
+
 
 
 def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
