@@ -417,7 +417,34 @@ def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.Capt
 
     assert code == 0
     assert "Recovered ZIP password" in captured.out
-    assert "mask42" in captured.out
+    assert "mask42" not in captured.out
+    assert "sha256:" in captured.out
+
+
+def test_cli_recover_and_unpack_writes_sanitized_report(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
+    zip_path = tmp_path / "cli_report.zip"
+    password = "mask42"
+    _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
+
+    wordlist = tmp_path / "report_candidates.txt"
+    wordlist.write_text("fallback\nmask42\n", encoding="utf-8")
+    report_path = tmp_path / "audit_report.json"
+
+    code = main([
+        "recover-and-unpack",
+        "--zip-path", str(zip_path),
+        "--output-dir", str(tmp_path / "out"),
+        "--wordlist", str(wordlist),
+        "--report-path", str(report_path),
+    ])
+    captured = capsys.readouterr()
+
+    assert code == 0
+    assert "mask42" not in captured.out
+    assert report_path.exists()
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert "mask42" not in json.dumps(report, sort_keys=True)
+    assert report["password_masked"].startswith("sha256:")
 
 
 def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: pytest.CaptureFixture[str]):

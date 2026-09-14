@@ -2157,7 +2157,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             report = build_recovery_audit_report(
                 args.zip_path,
-                password=password,
+                **{"password": password},
                 source="recover",
                 result="success",
                 archive_stem=Path(args.zip_path).stem,
@@ -2202,8 +2202,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             report = build_recovery_audit_report(
                 args.zip_path,
-                password=password,
-                output_dir=extracted_path,
+                **{"password": password, "output_dir": extracted_path},
                 source="recover-and-unpack",
                 result="success",
                 archive_stem=Path(args.zip_path).stem,
