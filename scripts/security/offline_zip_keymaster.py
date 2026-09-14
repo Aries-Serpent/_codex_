@@ -2003,7 +2003,9 @@ def decrypt_and_unpack(
                 member_name = _safe_member_name(info.filename)
                 if member_name.lower().endswith(".zip"):
                     nested_bytes = (
-                        zf.read(info.filename) if zip_pw is None else zf.read(info.filename)
+                        zf.read(info.filename)
+                        if zip_pw is None
+                        else zf.read(info.filename, zip_pw.encode("utf-8"))
                     )
                     _process_nested_archive_bytes(
                         nested_bytes, member_name, extracted_dir, key_file
