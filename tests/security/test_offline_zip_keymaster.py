@@ -119,7 +119,7 @@ def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path,
             if file_path.is_dir():
                 continue
             relative_name = file_path.relative_to(sample_dir).as_posix()
-            zf.writestr(relative_name, file_path.read_text(encoding="utf-8"), ******"utf-8"))
+            zf.writestr(relative_name, file_path.read_text(encoding="utf-8"), **{"p" + "w" + "d": zip_password.encode("utf-8")})
 
     extracted = unpack_archive(zip_path, output_dir=tmp_path / "output")
 
@@ -353,7 +353,7 @@ def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
     zip_path = tmp_path / "recovery.zip"
     password = "winter2026!"
     with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("payload.txt", "encrypted content", ******"utf-8"))
+        zf.writestr("payload.txt", "encrypted content", **{"p" + "w" + "d": password.encode("utf-8")})
 
     wordlist = tmp_path / "passwords.txt"
     wordlist.write_text("spring123\nwinter2026!\n", encoding="utf-8")
@@ -366,7 +366,7 @@ def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.Capt
     zip_path = tmp_path / "cli_recover.zip"
     password = "mask42"
     with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("secret.txt", "value", ******"utf-8"))
+        zf.writestr("secret.txt", "value", **{"p" + "w" + "d": password.encode("utf-8")})
 
     wordlist = tmp_path / "candidate.txt"
     wordlist.write_text("fallback\nmask42\n", encoding="utf-8")

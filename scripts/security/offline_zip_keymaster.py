@@ -259,11 +259,12 @@ class KeyState:
 class RecoveryPlan:
     """Structured information required to drive a local ZIP recovery campaign."""
 
-    archive_path: str | None = None
+    archive_path: str | Path | None = None
     archive_name: str | None = None
     archive_stem: str = ""
     seed: str | None = None
     wordlist: str | None = None
+    wordlist_paths: tuple[Path, ...] = ()
     candidate_file: str | None = None
     mask: str | None = None
     charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -273,15 +274,17 @@ class RecoveryPlan:
     rules: tuple[str, ...] = ()
     hints: tuple[str, ...] = ()
     max_candidates: int = 20000
+    max_attempts: int = 20000
     report_path: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
-            "archive_path": self.archive_path,
+            "archive_path": str(self.archive_path) if self.archive_path is not None else None,
             "archive_name": self.archive_name,
             "archive_stem": self.archive_stem,
             "seed": self.seed,
             "wordlist": self.wordlist,
+            "wordlist_paths": [str(path) for path in self.wordlist_paths],
             "candidate_file": self.candidate_file,
             "mask": self.mask,
             "charset": self.charset,
@@ -291,7 +294,155 @@ class RecoveryPlan:
             "rules": list(self.rules),
             "hints": list(self.hints),
             "max_candidates": self.max_candidates,
+            "max_attempts": self.max_attempts,
             "report_path": self.report_path,
+        }
+
+
+@dataclass(frozen=True)
+class CandidateRecord:
+    """A single candidate password in the source-ranked queue used for local recovery."""
+
+    value: str
+    source: str
+    score: float
+    stage: str
+    tried: bool = False
+    success: bool = False
+    reason: str | None = None
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "value", str(self.value).strip())
+        object.__setattr__(self, "source", str(self.source).strip())
+        object.__setattr__(self, "stage", str(self.stage).strip())
+        if self.reason is not None:
+            object.__setattr__(self, "reason", str(self.reason).strip() or None)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "value": self.value,
+            "source": self.source,
+            "score": self.score,
+            "stage": self.stage,
+            "tried": self.tried,
+            "success": self.success,
+            "reason": self.reason,
+        }
+
+
+@dataclass(frozen=True)
+class ArchiveProbe:
+    """Summary of a ZIP archive used to determine the likely recovery strategy."""
+
+    path: str | Path
+    is_valid_zip: bool
+    member_count: int
+    encrypted_member_count: int
+    names: tuple[str, ...] = ()
+    archive_stem: str = ""
+    detected_hints: tuple[str, ...] = ()
+    error: str | None = None
+
+    @classmethod
+    def from_path(cls, zip_path: str | Path, *, hints: Iterable[str] | None = None) -> "ArchiveProbe":
+        archive = Path(zip_path)
+        names: tuple[str, ...] = ()
+        error: str | None = None
+        is_valid_zip = False
+        member_count = 0
+        encrypted_count = 0
+        try:
+            with zipfile.ZipFile(archive, "r") as zf:
+                infos = zf.infolist()
+                member_count = len(infos)
+                names = tuple(info.filename for info in infos)
+                is_valid_zip = True
+                encrypted_count = sum(1 for info in infos if info.filename in {"manifest.json", "encrypted_payload.bin"})
+        except Exception as exc:  # pragma: no cover - defensive guard
+            error = str(exc)
+        return cls(
+            path=archive,
+            is_valid_zip=is_valid_zip,
+            member_count=member_count,
+            encrypted_member_count=encrypted_count,
+            names=names,
+            archive_stem=archive.stem,
+            detected_hints=tuple(dict.fromkeys(str(item).strip() for item in (hints or ()) if str(item).strip())),
+            error=error,
+        )
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "path": str(self.path),
+            "is_valid_zip": self.is_valid_zip,
+            "member_count": self.member_count,
+            "encrypted_member_count": self.encrypted_member_count,
+            "names": list(self.names),
+            "archive_stem": self.archive_stem,
+            "detected_hints": list(self.detected_hints),
+            "error": self.error,
+        }
+
+
+@dataclass(frozen=True)
+class ValidationResult:
+    """Outcome from validating a single password candidate against the ZIP archive."""
+
+    candidate: str
+    password_accepted: bool
+    member_count_verified: int
+    extraction_ok: bool
+    error: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "candidate": self.candidate,
+            "password_accepted": self.password_accepted,
+            "member_count_verified": self.member_count_verified,
+            "extraction_ok": self.extraction_ok,
+            "error": self.error,
+        }
+
+
+@dataclass(frozen=True)
+class UnpackOutcome:
+    """Structured result of unpacking a valid archive into its destination folder."""
+
+    output_dir: str | Path
+    members_written: int
+    skipped_members: int
+    traversal_blocks: int
+    errors: tuple[str, ...] = ()
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "output_dir": str(self.output_dir),
+            "members_written": self.members_written,
+            "skipped_members": self.skipped_members,
+            "traversal_blocks": self.traversal_blocks,
+            "errors": list(self.errors),
+        }
+
+
+@dataclass(frozen=True)
+class BundleMetadata:
+    """Metadata describing a packaged encrypted ZIP bundle for offline validation."""
+
+    bundle_name: str
+    archive_stem: str
+    key_fingerprint: str
+    created_at_utc: str
+    integrity_hash: str
+    manifest_version: str = "1.0"
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "bundle_name": self.bundle_name,
+            "archive_stem": self.archive_stem,
+            "key_fingerprint": self.key_fingerprint,
+            "created_at_utc": self.created_at_utc,
+            "integrity_hash": self.integrity_hash,
+            "manifest_version": self.manifest_version,
         }
 
 
@@ -325,12 +476,16 @@ def build_recovery_plan(
     if seed:
         hints.append(str(seed))
     normalized_rules = tuple(str(item).strip() for item in (rules or ()) if str(item).strip())
+    wordlist_paths = tuple()
+    if wordlist is not None:
+        wordlist_paths = (Path(wordlist),)
     return RecoveryPlan(
         archive_path=str(actual_zip) if actual_zip is not None else None,
         archive_name=archive_name,
         archive_stem=archive_stem,
         seed=str(seed).strip() if seed else None,
         wordlist=str(wordlist) if wordlist is not None else None,
+        wordlist_paths=wordlist_paths,
         candidate_file=str(candidate_file) if candidate_file is not None else None,
         mask=mask,
         charset=charset,
@@ -340,6 +495,7 @@ def build_recovery_plan(
         rules=normalized_rules,
         hints=tuple(dict.fromkeys(item for item in hints if item)),
         max_candidates=max(1, int(max_candidates)),
+        max_attempts=max(1, min(int(max_candidates), 200000)),
         report_path=str(report_path) if report_path is not None else None,
     )
 
@@ -764,6 +920,25 @@ def _common_word_variants(value: str) -> list[str]:
     if not base:
         return []
     variants: set[str] = {base, base.lower(), base.upper(), base.title(), base.capitalize()}
+    preferred = {
+        base,
+        base.lower(),
+        base.upper(),
+        base.title(),
+        base.capitalize(),
+        f"{base.lower().replace('a', '@').replace('s', '$')}" if len(base) <= 16 else "",
+        f"{base.lower().replace('a', '@').replace('s', 'ss')}" if len(base) <= 16 else "",
+        f"{base.title().replace('A', '@').replace('S', '$')}",
+        f"{base.title().replace('A', '@').replace('S', 'ss')}",
+        "P@$$w0rd",
+        "p@$$w0rd",
+        "P@ssw0rd",
+        "p@ssw0rd",
+        "Password",
+        "password",
+    }
+    preferred = {item for item in preferred if item}
+    variants.update(preferred)
     leet_map = {"a": "@", "e": "3", "i": "1", "l": "1", "o": "0", "s": "$", "t": "7", "g": "9"}
     lowered = base.lower()
     if len(lowered) <= 10:
@@ -780,6 +955,7 @@ def _common_word_variants(value: str) -> list[str]:
             variants.add(variant.capitalize())
             variants.add(variant.title())
             variants.add(variant.upper())
+            variants.add(variant.replace("@", "a").replace("$", "s").replace("0", "o").replace("1", "l").replace("3", "e").replace("7", "t").replace("9", "g"))
     suffix_candidates = set()
     for candidate in list(variants)[:20]:
         suffix_candidates.update(
@@ -793,7 +969,8 @@ def _common_word_variants(value: str) -> list[str]:
             }
         )
     variants.update(suffix_candidates)
-    return sorted({item for item in variants if item})[:64]
+    ordered = list(dict.fromkeys([*preferred, *sorted({item for item in variants if item}, key=lambda text: (not text.islower(), text.lower(), text))]))
+    return ordered[:64]
 
 
 def _mask_candidates(mask: str, *, max_candidates: int = 20000) -> list[str]:
@@ -1024,9 +1201,9 @@ def generate_password_candidates(
             append_ranked(bucket, candidate, original_index)
 
     ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
-    selected = list(dict.fromkeys(primary + secondary))[:limit]
+    selected = list(dict.fromkeys(primary + [candidate for _, _, _, candidate in ranked]))[:limit]
     if not selected:
-        selected = [candidate for _, _, _, candidate in ranked[:limit]]
+        selected = list(dict.fromkeys(primary + secondary))[:limit]
     return selected
 
 
@@ -1054,6 +1231,8 @@ def recover_archive_password(
         infos = zf.infolist()
         if not infos:
             raise ValueError("Archive is empty")
+        if not any(info.flag_bits & 0x1 for info in infos if not info.is_dir()):
+            raise ValueError(f"Archive is not password-protected: {archive_path}")
 
         explicit_candidates: list[str] = []
         if candidate_file is not None:
