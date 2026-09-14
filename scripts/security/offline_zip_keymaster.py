@@ -1243,14 +1243,18 @@ def recover_archive_password(
         infos = zf.infolist()
         if not infos:
             raise ValueError("Archive is empty")
-        protected = any(info.flag_bits & 0x1 for info in infos if not info.is_dir())
-        if not protected:
-            try:
-                manifest = _read_encrypted_manifest(archive_path)
-            except ValueError:
-                manifest = {}
-            if manifest.get("cipher") != "xor-password":
-                raise ValueError(f"Archive is not password-protected: {archive_path}")
+        protected = _archive_requires_password(zf)
+        if not protected and not _zip_can_be_read_without_password(archive_path):
+            protected = True
+        try:
+            manifest = _read_encrypted_manifest(archive_path)
+        except ValueError:
+            manifest = {}
+        if not protected and manifest.get("cipher") != "xor-password":
+            # Standard ZIP archives that require a password will fail to open without a
+            # proper password even when no custom manifest is present. Detect the real
+            # encryption signal before rejecting the archive.
+            raise ValueError(f"Archive is not password-protected: {archive_path}")
 
         explicit_candidates: list[str] = []
         if candidate_file is not None:
@@ -1837,6 +1841,26 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
         except TypeError:
             if temp_path.exists():
                 temp_path.unlink()
+
+
+def _archive_requires_password(zf: zipfile.ZipFile) -> bool:
+    """Detect standard ZIP encryption even when Python does not expose the flag bit."""
+    for info in zf.infolist():
+        if info.is_dir():
+            continue
+        if info.flag_bits & 0x1:
+            return True
+        try:
+            zf.read(info.filename)
+        except (RuntimeError, ValueError, zipfile.BadZipFile, NotImplementedError) as exc:
+            message = str(exc).lower()
+            if any(token in message for token in ("encrypted", "password", "crc", "bad password", "file is encrypted")):
+                return True
+            # A ZIP may still be protected without a reliable flag bit; treat read
+            # failures that look like general-purpose ZIP encryption as a password
+            # requirement even if the underlying library does not surface the bit.
+            return True
+    return False
 
 
 def _looks_like_encrypted_archive(zf: zipfile.ZipFile) -> bool:
