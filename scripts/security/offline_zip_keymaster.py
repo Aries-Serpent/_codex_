@@ -54,6 +54,7 @@ except ImportError:  # pragma: no cover - fallback for lightweight runtime
     def storage_generate_key() -> str:  # type: ignore[no-redef]
         raise ImportError("aries_serpent_core.security.storage is unavailable")
 
+
 try:
     import serpent  # type: ignore
 except ImportError:  # pragma: no cover - optional structured serialization
@@ -241,7 +242,9 @@ class KeyState:
     manifest_path: str | None = None
 
     @classmethod
-    def from_material(cls, key: str, *, algorithm: str = "aes-gcm", manifest_path: str | Path | None = None) -> "KeyState":
+    def from_material(
+        cls, key: str, *, algorithm: str = "aes-gcm", manifest_path: str | Path | None = None
+    ) -> "KeyState":
         normalized = key.strip()
         if not normalized:
             raise ValueError("Key material is empty")
@@ -263,7 +266,11 @@ class KeyState:
                 manifest_data = json.loads(key_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 manifest_data = {}
-        algorithm = str(manifest_data.get("algorithm", "aes-gcm")) if isinstance(manifest_data, dict) else "aes-gcm"
+        algorithm = (
+            str(manifest_data.get("algorithm", "aes-gcm"))
+            if isinstance(manifest_data, dict)
+            else "aes-gcm"
+        )
         return cls.from_material(key_value, algorithm=algorithm, manifest_path=key_path)
 
 
@@ -356,7 +363,9 @@ class ArchiveProbe:
     error: str | None = None
 
     @classmethod
-    def from_path(cls, zip_path: str | Path, *, hints: Iterable[str] | None = None) -> "ArchiveProbe":
+    def from_path(
+        cls, zip_path: str | Path, *, hints: Iterable[str] | None = None
+    ) -> "ArchiveProbe":
         archive = Path(zip_path)
         names: tuple[str, ...] = ()
         error: str | None = None
@@ -369,7 +378,11 @@ class ArchiveProbe:
                 member_count = len(infos)
                 names = tuple(info.filename for info in infos)
                 is_valid_zip = True
-                encrypted_count = sum(1 for info in infos if info.filename in {"manifest.json", "encrypted_payload.bin"})
+                encrypted_count = sum(
+                    1
+                    for info in infos
+                    if info.filename in {"manifest.json", "encrypted_payload.bin"}
+                )
         except Exception as exc:  # pragma: no cover - defensive guard
             error = str(exc)
         return cls(
@@ -379,7 +392,9 @@ class ArchiveProbe:
             encrypted_member_count=encrypted_count,
             names=names,
             archive_stem=archive.stem,
-            detected_hints=tuple(dict.fromkeys(str(item).strip() for item in (hints or ()) if str(item).strip())),
+            detected_hints=tuple(
+                dict.fromkeys(str(item).strip() for item in (hints or ()) if str(item).strip())
+            ),
             error=error,
         )
 
@@ -477,7 +492,7 @@ def build_recovery_plan(
     """Create a structured recovery campaign from the user's archive and clue inputs."""
     actual_zip = Path(zip_path).resolve() if zip_path is not None else None
     archive_name = actual_zip.name if actual_zip is not None else None
-    archive_stem = (actual_zip.stem if actual_zip is not None else "")
+    archive_stem = actual_zip.stem if actual_zip is not None else ""
     hints: list[str] = []
     if archive_stem:
         hints.append(archive_stem)
@@ -526,9 +541,7 @@ def summarize_recovery_candidates(plan: RecoveryPlan, candidates: Iterable[str])
         "max_length": plan.max_length,
         "candidate_count": len(candidate_list),
         "unique_candidate_count": len(unique),
-        "top_candidates": [
-            _mask_secret(item) for item in unique[:10]
-        ],
+        "top_candidates": [_mask_secret(item) for item in unique[:10]],
         "hints": list(plan.hints),
         "report_path": plan.report_path,
     }
@@ -563,7 +576,7 @@ def build_recovery_audit_report(
 
 
 def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> dict[str, str]:
-    """Generate a local key manifest and a fixed master-seed contract for deterministic no-key unpacking."""
+    """Generate a local key manifest and seed contract for deterministic unpacking."""
     if algorithm == "fernet":
         try:
             key = storage_generate_key()
@@ -577,7 +590,9 @@ def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> di
         raise ValueError("Unsupported algorithm: expected 'fernet' or 'aes-gcm'")
 
     output_path = _write_key_file(key_out, key, algorithm=algorithm)
-    seed_material = hashlib.sha256(f"{key}:{output_path.name}:{output_path.parent}:{_utc_now()}".encode("utf-8")).hexdigest()
+    seed_material = hashlib.sha256(
+        f"{key}:{output_path.name}:{output_path.parent}:{_utc_now()}".encode("utf-8")
+    ).hexdigest()
     master_seed_path = _write_master_seed(output_path.parent, seed_material)
     if SecureStorage is not None:
         try:
@@ -625,7 +640,9 @@ def _apply_safe_permissions(path: Path, *, is_dir: bool = False) -> None:
         pass
 
 
-def _validate_archive_member_count(infolist: list[zipfile.ZipInfo], *, total_limit: int = MAX_EXTRACTION_FILES) -> int:
+def _validate_archive_member_count(
+    infolist: list[zipfile.ZipInfo], *, total_limit: int = MAX_EXTRACTION_FILES
+) -> int:
     if len(infolist) > total_limit:
         raise ValueError(f"Archive exceeds maximum member count: {len(infolist)} > {total_limit}")
     total_size = 0
@@ -650,9 +667,13 @@ def _validate_archive_member_count(infolist: list[zipfile.ZipInfo], *, total_lim
             if member_name.lower().endswith(".zip"):
                 nested_archives += 1
     if nested_archives > MAX_NESTED_ARCHIVES:
-        raise ValueError(f"Archive exceeds nested archive cap: {nested_archives} > {MAX_NESTED_ARCHIVES}")
+        raise ValueError(
+            f"Archive exceeds nested archive cap: {nested_archives} > {MAX_NESTED_ARCHIVES}"
+        )
     if total_size > MAX_EXTRACTION_BYTES:
-        raise ValueError(f"Archive exceeds extraction size cap: {total_size} > {MAX_EXTRACTION_BYTES}")
+        raise ValueError(
+            f"Archive exceeds extraction size cap: {total_size} > {MAX_EXTRACTION_BYTES}"
+        )
     return total_size
 
 
@@ -681,7 +702,12 @@ def _safe_member_name(name: str) -> str:
     if candidate.is_absolute() or candidate.drive:
         raise ValueError(f"Archive member uses an absolute path: {name!r}")
     canonical = posixpath.normpath(normalized)
-    if canonical in {".", ".."} or canonical.startswith("../") or canonical.startswith("./") or canonical.startswith("/"):
+    if (
+        canonical in {".", ".."}
+        or canonical.startswith("../")
+        or canonical.startswith("./")
+        or canonical.startswith("/")
+    ):
         raise ValueError(f"Archive member attempts traversal: {name!r}")
     return canonical
 
@@ -694,7 +720,9 @@ def _build_plain_zip(source: str | Path, zip_out: str | Path) -> list[str]:
     members: list[str] = []
     with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         for file_path in _iter_source_files(source_path):
-            relative_name = file_path.relative_to(source_path if source_path.is_dir() else source_path.parent).as_posix()
+            relative_name = file_path.relative_to(
+                source_path if source_path.is_dir() else source_path.parent
+            ).as_posix()
             member_name = _safe_member_name(relative_name)
             zf.write(file_path, arcname=member_name)
             members.append(member_name)
@@ -705,13 +733,19 @@ def _validate_manifest_signature(manifest: dict[str, Any], key: str) -> None:
     expected_hmac = manifest.get("archive_hmac") or manifest.get("hmac")
     if expected_hmac is None:
         raise ValueError("Encrypted archive is missing a manifest signature")
-    canonical_manifest = {name: value for name, value in manifest.items() if name not in {"hmac", "archive_hmac"}}
-    actual_hmac = hmac.new(key.encode("ascii"), _canonical_json(canonical_manifest).encode("utf-8"), hashlib.sha256).hexdigest()
+    canonical_manifest = {
+        name: value for name, value in manifest.items() if name not in {"hmac", "archive_hmac"}
+    }
+    actual_hmac = hmac.new(
+        key.encode("ascii"), _canonical_json(canonical_manifest).encode("utf-8"), hashlib.sha256
+    ).hexdigest()
     if not hmac.compare_digest(actual_hmac, expected_hmac):
         raise ValueError("Encrypted archive manifest signature mismatch")
 
 
-def _build_normalized_manifest(directory: str | Path, *, include_content: bool = False) -> dict[str, Any]:
+def _build_normalized_manifest(
+    directory: str | Path, *, include_content: bool = False
+) -> dict[str, Any]:
     source_dir = Path(directory).resolve()
     if not source_dir.exists():
         raise FileNotFoundError(f"Directory not found: {source_dir}")
@@ -747,7 +781,12 @@ def _build_normalized_manifest(directory: str | Path, *, include_content: bool =
     return manifest
 
 
-def normalize_directory(directory: str | Path, *, output_manifest: str | Path | None = None, include_content: bool = False) -> dict[str, Any]:
+def normalize_directory(
+    directory: str | Path,
+    *,
+    output_manifest: str | Path | None = None,
+    include_content: bool = False,
+) -> dict[str, Any]:
     """Create a deterministic, reversible manifest for offline inspection or export."""
     source_dir = Path(directory).resolve()
     manifest = _build_normalized_manifest(source_dir, include_content=include_content)
@@ -760,7 +799,9 @@ def normalize_directory(directory: str | Path, *, output_manifest: str | Path | 
     return manifest
 
 
-def reconstruct_normalized_directory(normalized_manifest: dict[str, Any], output_dir: str | Path) -> Path:
+def reconstruct_normalized_directory(
+    normalized_manifest: dict[str, Any], output_dir: str | Path
+) -> Path:
     """Reconstruct a directory from a normalized manifest produced by normalize_directory()."""
     if not isinstance(normalized_manifest, dict):
         raise ValueError("Normalized manifest must decode to a dictionary")
@@ -804,12 +845,14 @@ def rezip_clean_directory(source_dir: str | Path, zip_out: str | Path) -> str:
 
 
 def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, Any]:
-    """Run a bounded, local-only key-derivation validation harness without exposing real attack logic."""
+    """Run a bounded local probe without exposing real attack logic."""
     key_state = KeyState.from_file(key_file)
     safe_attempts = max(1, min(int(attempts), 64))
     candidates: list[str] = []
     for index in range(safe_attempts):
-        digest = hmac.new(key_state.key.encode("ascii"), str(index).encode("utf-8"), hashlib.sha256).hexdigest()
+        digest = hmac.new(
+            key_state.key.encode("ascii"), str(index).encode("utf-8"), hashlib.sha256
+        ).hexdigest()
         candidates.append(digest)
     verified = all(len(candidate) == 64 for candidate in candidates)
     return {
@@ -823,7 +866,13 @@ def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, An
 
 def _candidate_key_roots(zip_path: str | Path | None = None) -> list[Path]:
     archive_root = Path(zip_path).resolve().parent if zip_path is not None else None
-    roots: list[Path] = [Path.cwd(), ROOT_DIR, ROOT_DIR / "keys", ROOT_DIR / ".codex" / "keys", Path.home()]
+    roots: list[Path] = [
+        Path.cwd(),
+        ROOT_DIR,
+        ROOT_DIR / "keys",
+        ROOT_DIR / ".codex" / "keys",
+        Path.home(),
+    ]
     if archive_root is not None:
         roots.insert(0, archive_root)
         for parent in archive_root.parents:
@@ -874,14 +923,28 @@ def _iter_local_key_files(search_roots: list[Path] | None = None) -> list[Path]:
 
 
 def _derive_deterministic_key(seed_material: str, *, salt: str | bytes | None = None) -> str:
-    salt_bytes = hashlib.sha256((salt if isinstance(salt, bytes) else str(salt or ROOT_DIR)).encode("utf-8" if isinstance(salt, str) else "utf-8")).digest()
-    raw_key = hashlib.pbkdf2_hmac("sha256", seed_material.encode("utf-8"), salt_bytes, 200000, dklen=32)
+    salt_bytes = hashlib.sha256(
+        (salt if isinstance(salt, bytes) else str(salt or ROOT_DIR)).encode(
+            "utf-8" if isinstance(salt, str) else "utf-8"
+        )
+    ).digest()
+    raw_key = hashlib.pbkdf2_hmac(
+        "sha256", seed_material.encode("utf-8"), salt_bytes, 200000, dklen=32
+    )
     return base64.urlsafe_b64encode(raw_key).decode("ascii")
 
 
-def _candidate_key_materials(zip_path: str | Path, manifest: dict[str, Any], *, master_seed: str | None = None) -> list[str]:
+def _candidate_key_materials(
+    zip_path: str | Path, manifest: dict[str, Any], *, master_seed: str | None = None
+) -> list[str]:
     archive_path = Path(zip_path).resolve()
-    seed_material = master_seed or _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR) or ""
+    seed_material = (
+        master_seed
+        or _load_master_seed(archive_path.parent)
+        or _load_master_seed(Path.cwd())
+        or _load_master_seed(ROOT_DIR)
+        or ""
+    )
     archive_tokens = [
         str(archive_path),
         archive_path.name,
@@ -907,7 +970,11 @@ def _candidate_key_materials(zip_path: str | Path, manifest: dict[str, Any], *, 
             ]
         )
     for index in range(MAX_KEY_CANDIDATES):
-        values.append(f"{seed_material}:{archive_path.stem}:{index}" if seed_material else f"{archive_path.stem}:{index}")
+        values.append(
+            f"{seed_material}:{archive_path.stem}:{index}"
+            if seed_material
+            else f"{archive_path.stem}:{index}"
+        )
     ordered: list[str] = []
     seen: set[str] = set()
     for value in values:
@@ -996,7 +1063,15 @@ def _common_word_variants(value: str) -> list[str]:
             variants.add(variant.capitalize())
             variants.add(variant.title())
             variants.add(variant.upper())
-            variants.add(variant.replace("@", "a").replace("$", "s").replace("0", "o").replace("1", "l").replace("3", "e").replace("7", "t").replace("9", "g"))
+            variants.add(
+                variant.replace("@", "a")
+                .replace("$", "s")
+                .replace("0", "o")
+                .replace("1", "l")
+                .replace("3", "e")
+                .replace("7", "t")
+                .replace("9", "g")
+            )
     suffix_candidates = set()
     for candidate in list(variants)[:20]:
         suffix_candidates.update(
@@ -1010,7 +1085,17 @@ def _common_word_variants(value: str) -> list[str]:
             }
         )
     variants.update(suffix_candidates)
-    ordered = list(dict.fromkeys([*preferred, *sorted({item for item in variants if item}, key=lambda text: (not text.islower(), text.lower(), text))]))
+    ordered = list(
+        dict.fromkeys(
+            [
+                *preferred,
+                *sorted(
+                    {item for item in variants if item},
+                    key=lambda text: (not text.islower(), text.lower(), text),
+                ),
+            ]
+        )
+    )
     return ordered[:64]
 
 
@@ -1080,7 +1165,9 @@ def _seed_variants(base: str, *, seed: str | None = None, archive_stem: str = ""
     return sorted(variants)
 
 
-def _physics_rank_score(candidate: str, *, seed: str | None = None, archive_stem: str = "") -> float:
+def _physics_rank_score(
+    candidate: str, *, seed: str | None = None, archive_stem: str = ""
+) -> float:
     normalized = candidate.strip()
     if not normalized:
         return float("-inf")
@@ -1090,7 +1177,10 @@ def _physics_rank_score(candidate: str, *, seed: str | None = None, archive_stem
         semantic += 0.35
     if archive_stem and archive_stem.lower() in lower:
         semantic += 0.35
-    if any(token in lower for token in ("pass", "word", "pwd", "zip", "audit", "log", "recovery", "vault")):
+    if any(
+        token in lower
+        for token in ("pass", "word", "pwd", "zip", "audit", "log", "recovery", "vault")
+    ):
         semantic += 0.15
     if len(normalized) >= 8:
         semantic += 0.1
@@ -1118,7 +1208,9 @@ def generate_password_candidates(
     seed: str | None = None,
     archive_name: str | Path | None = None,
     rules: Iterable[str] | None = None,
-    custom_generator: Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None = None,
+    custom_generator: (
+        Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None
+    ) = None,
     max_candidates: int = 20000,
     candidate_file: str | Path | None = None,
 ) -> list[str]:
@@ -1163,14 +1255,24 @@ def generate_password_candidates(
         raw_terms.append(cleaned)
 
     if archive_path is not None:
-        for value in [str(archive_path), archive_stem, archive_path.name, archive_path.name.replace(".zip", "")]:
+        for value in [
+            str(archive_path),
+            archive_stem,
+            archive_path.name,
+            archive_path.name.replace(".zip", ""),
+        ]:
             add_raw(value)
 
     if seed:
         for value in [str(seed), str(seed).lower(), str(seed).upper()]:
             add_raw(value)
         if archive_stem:
-            for value in [f"{seed}{archive_stem}", f"{archive_stem}{seed}", f"{seed}:{archive_stem}", f"{archive_stem}:{seed}"]:
+            for value in [
+                f"{seed}{archive_stem}",
+                f"{archive_stem}{seed}",
+                f"{seed}:{archive_stem}",
+                f"{archive_stem}:{seed}",
+            ]:
                 add_raw(value)
 
     if candidate_file is not None:
@@ -1198,7 +1300,12 @@ def generate_password_candidates(
     if seed:
         add_raw(str(seed))
         if archive_stem:
-            for value in [f"{seed}{archive_stem}", f"{archive_stem}{seed}", f"{seed}:{archive_stem}", f"{archive_stem}:{seed}"]:
+            for value in [
+                f"{seed}{archive_stem}",
+                f"{archive_stem}{seed}",
+                f"{seed}:{archive_stem}",
+                f"{archive_stem}:{seed}",
+            ]:
                 add_raw(value)
 
     for candidate in raw_terms:
@@ -1254,7 +1361,9 @@ def generate_password_candidates(
     ranked.sort(key=lambda item: (item[0], item[2], -item[1], item[3]))
     ranked_candidates = [candidate for _, _, _, candidate in ranked]
     half = max(8, min(limit // 2, len(primary)))
-    selected = list(dict.fromkeys(primary[:half] + secondary + ranked_candidates + primary[half:]))[:limit]
+    selected = list(dict.fromkeys(primary[:half] + secondary + ranked_candidates + primary[half:]))[
+        :limit
+    ]
     if not selected:
         selected = list(dict.fromkeys(primary + secondary))[:limit]
     return selected
@@ -1270,7 +1379,9 @@ def recover_archive_password(
     max_length: int = 4,
     charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
     seed: str | None = None,
-    custom_generator: Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None = None,
+    custom_generator: (
+        Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None
+    ) = None,
     rules: Iterable[str] | None = None,
     max_candidates: int = 20000,
     candidate_file: str | Path | None = None,
@@ -1286,18 +1397,13 @@ def recover_archive_password(
         raise FileNotFoundError(f"Archive not found: {archive_path}")
 
     has_candidate_inputs = bool(
-        wordlist
-        or candidate_file
-        or mask
-        or brute_force
-        or seed
-        or rules
-        or custom_generator
+        wordlist or candidate_file or mask or brute_force or seed or rules or custom_generator
     )
     if not has_candidate_inputs:
         raise ValueError(
-            "ZIP password recovery is candidate-driven and requires at least one clue source "
-            "(wordlist, candidate file, mask, seed, rules, or brute-force). Archive-only recovery is not supported."
+            "ZIP password recovery is candidate-driven and requires at least "
+            "one clue source (wordlist, candidate file, mask, seed, rules, or "
+            "brute-force). Archive-only recovery is not supported."
         )
 
     with zipfile.ZipFile(archive_path, "r") as zf:
@@ -1321,12 +1427,20 @@ def recover_archive_password(
         if candidate_file is not None:
             target = Path(candidate_file)
             if target.exists():
-                explicit_candidates.extend(line.strip() for line in target.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                explicit_candidates.extend(
+                    line.strip()
+                    for line in target.read_text(encoding="utf-8", errors="replace").splitlines()
+                    if line.strip()
+                )
         if wordlist is not None:
             target = Path(wordlist)
             if not target.exists():
                 raise FileNotFoundError(f"Wordlist not found: {target}")
-            explicit_candidates.extend(line.strip() for line in target.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+            explicit_candidates.extend(
+                line.strip()
+                for line in target.read_text(encoding="utf-8", errors="replace").splitlines()
+                if line.strip()
+            )
 
         candidates = generate_password_candidates(
             wordlist=wordlist,
@@ -1345,7 +1459,12 @@ def recover_archive_password(
         if not candidates:
             raise ValueError("No candidate passwords were generated for archive recovery")
 
-        ordered_candidates = list(dict.fromkeys(explicit_candidates + [item for item in candidates if item not in explicit_candidates]))
+        ordered_candidates = list(
+            dict.fromkeys(
+                explicit_candidates
+                + [item for item in candidates if item not in explicit_candidates]
+            )
+        )
         recovered: str | None = None
         manifest_hint = {}
         try:
@@ -1385,7 +1504,9 @@ def recover_archive_password(
         raise ValueError(f"No valid password candidate matched archive: {archive_path}")
 
 
-def _password_candidates_from_archive(zip_path: str | Path, *, seed: str | None = None, manifest: dict[str, Any] | None = None) -> list[str]:
+def _password_candidates_from_archive(
+    zip_path: str | Path, *, seed: str | None = None, manifest: dict[str, Any] | None = None
+) -> list[str]:
     archive_path = Path(zip_path).resolve()
     manifest_data = manifest or {}
     archive_name = str(manifest_data.get("archive_name") or archive_path.name)
@@ -1431,7 +1552,9 @@ def _local_password_archive_probe(archive_path: str | Path, password: str) -> bo
             except KeyError:
                 return False
             candidate = _xor_bytes(payload, password)
-            expected_sha = str(manifest.get("payload_sha256") or manifest.get("source_sha256") or "")
+            expected_sha = str(
+                manifest.get("payload_sha256") or manifest.get("source_sha256") or ""
+            )
             if expected_sha:
                 return hashlib.sha256(candidate).hexdigest() == expected_sha
             return bool(candidate) and (candidate.startswith(b"PK") or b"PK" in candidate[:8])
@@ -1469,7 +1592,9 @@ def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = Non
             candidate = KeyState.from_file(candidate_path)
         except (FileNotFoundError, ValueError, OSError, json.JSONDecodeError):
             continue
-        if expected_fingerprint and hmac.compare_digest(candidate.fingerprint, expected_fingerprint):
+        if expected_fingerprint and hmac.compare_digest(
+            candidate.fingerprint, expected_fingerprint
+        ):
             return candidate
         try:
             _validate_manifest_signature(manifest, candidate.key)
@@ -1477,10 +1602,19 @@ def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = Non
         except ValueError:
             continue
 
-    master_seed = _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR)
+    master_seed = (
+        _load_master_seed(archive_path.parent)
+        or _load_master_seed(Path.cwd())
+        or _load_master_seed(ROOT_DIR)
+    )
     for material in _candidate_key_materials(archive_path, manifest, master_seed=master_seed):
-        candidate = KeyState.from_material(_derive_deterministic_key(material, salt=master_seed or str(ROOT_DIR)), algorithm="aes-gcm")
-        if expected_fingerprint and hmac.compare_digest(candidate.fingerprint, expected_fingerprint):
+        candidate = KeyState.from_material(
+            _derive_deterministic_key(material, salt=master_seed or str(ROOT_DIR)),
+            algorithm="aes-gcm",
+        )
+        if expected_fingerprint and hmac.compare_digest(
+            candidate.fingerprint, expected_fingerprint
+        ):
             return candidate
         try:
             _validate_manifest_signature(manifest, candidate.key)
@@ -1490,7 +1624,9 @@ def _resolve_archive_key(zip_path: str | Path, key_file: str | Path | None = Non
     raise ValueError("Unable to resolve matching key for archive")
 
 
-def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str | Path) -> dict[str, Any]:
+def encrypt_directory(
+    input_dir: str | Path, zip_out: str | Path, key_file: str | Path
+) -> dict[str, Any]:
     """Package a directory into an encrypted ZIP archive."""
     key = _load_key_material(key_file)
     key_bytes = base64.urlsafe_b64decode(key.encode("ascii"))
@@ -1526,13 +1662,24 @@ def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str 
         "derivation_version": 1,
     }
     _literal_safe(manifest)
-    manifest["archive_hmac"] = hmac.new(key.encode("ascii"), _canonical_json({k: v for k, v in manifest.items() if k not in {"hmac", "archive_hmac"}}).encode("utf-8"), hashlib.sha256).hexdigest()
+    manifest["archive_hmac"] = hmac.new(
+        key.encode("ascii"),
+        _canonical_json(
+            {k: v for k, v in manifest.items() if k not in {"hmac", "archive_hmac"}}
+        ).encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
     manifest["hmac"] = manifest["archive_hmac"]
     with zipfile.ZipFile(zip_output, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr(DEFAULT_MANIFEST_NAME, json.dumps(manifest, sort_keys=True))
         zf.writestr(DEFAULT_PAYLOAD_NAME, payload_text)
     os.chmod(zip_output, stat.S_IRUSR | stat.S_IWUSR)
-    return {"zip_path": str(zip_output), "algorithm": "aes-gcm", "member_count": len(members), "key_fingerprint": _sha256_hex(key)}
+    return {
+        "zip_path": str(zip_output),
+        "algorithm": "aes-gcm",
+        "member_count": len(members),
+        "key_fingerprint": _sha256_hex(key),
+    }
 
 
 def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
@@ -1567,9 +1714,16 @@ def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
     return manifest
 
 
-def _candidate_password_materials(zip_path: str | Path, *, manifest: dict[str, Any] | None = None) -> list[str]:
+def _candidate_password_materials(
+    zip_path: str | Path, *, manifest: dict[str, Any] | None = None
+) -> list[str]:
     archive_path = Path(zip_path).resolve()
-    master_seed = _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR) or ""
+    master_seed = (
+        _load_master_seed(archive_path.parent)
+        or _load_master_seed(Path.cwd())
+        or _load_master_seed(ROOT_DIR)
+        or ""
+    )
     manifest_data = manifest or {}
     archive_name = str(manifest_data.get("archive_name") or archive_path.name)
     stem = archive_path.stem
@@ -1583,7 +1737,9 @@ def _candidate_password_materials(zip_path: str | Path, *, manifest: dict[str, A
         f"{master_seed}:{archive_name}:{stem}",
     ]
     for index in range(16):
-        candidates.append(f"{master_seed}:{archive_name}:{index}" if master_seed else f"{archive_name}:{index}")
+        candidates.append(
+            f"{master_seed}:{archive_name}:{index}" if master_seed else f"{archive_name}:{index}"
+        )
     seen: set[str] = set()
     ordered: list[str] = []
     for value in candidates:
@@ -1594,7 +1750,9 @@ def _candidate_password_materials(zip_path: str | Path, *, manifest: dict[str, A
     return ordered[:32]
 
 
-def _extract_zip_members(zf: zipfile.ZipFile, destination_root: Path, *, password: bytes | None = None) -> None:
+def _extract_zip_members(
+    zf: zipfile.ZipFile, destination_root: Path, *, password: bytes | None = None
+) -> None:
     infos = zf.infolist()
     _validate_archive_member_count(infos)
     for info in infos:
@@ -1630,18 +1788,25 @@ def decrypt_and_unpack(
     charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
     seed: str | None = None,
     rules: Iterable[str] | None = None,
-    custom_generator: Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None = None,
+    custom_generator: (
+        Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None
+    ) = None,
     candidate_file: str | Path | None = None,
     max_candidates: int = 20000,
 ) -> Path:
-    """Validate, decrypt, and extract an archive into a self-titled folder, including nested plain ZIP bundles."""
+    """Validate, decrypt, and extract a ZIP into a self-titled folder.
+
+    This includes nested plain ZIP bundles.
+    """
     archive_path = Path(zip_path)
     if not archive_path.exists():
         raise FileNotFoundError(f"Encrypted ZIP archive not found: {archive_path}")
     if archive_path.stat().st_size > MAX_ARCHIVE_BYTES:
         raise ValueError(f"Archive exceeds maximum size cap: {archive_path}")
 
-    destination_root = Path(output_dir).resolve() if output_dir is not None else archive_path.parent.resolve()
+    destination_root = (
+        Path(output_dir).resolve() if output_dir is not None else archive_path.parent.resolve()
+    )
     destination_root.mkdir(parents=True, exist_ok=True)
     _apply_safe_permissions(destination_root, is_dir=True)
 
@@ -1660,26 +1825,43 @@ def decrypt_and_unpack(
                 if candidate_file is not None:
                     candidate_path = Path(candidate_file)
                     if candidate_path.exists():
-                        explicit_candidates.extend(line.strip() for line in candidate_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                        explicit_candidates.extend(
+                            line.strip()
+                            for line in candidate_path.read_text(
+                                encoding="utf-8", errors="replace"
+                            ).splitlines()
+                            if line.strip()
+                        )
                 if wordlist is not None:
                     wordlist_path = Path(wordlist)
                     if wordlist_path.exists():
-                        explicit_candidates.extend(line.strip() for line in wordlist_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                        explicit_candidates.extend(
+                            line.strip()
+                            for line in wordlist_path.read_text(
+                                encoding="utf-8", errors="replace"
+                            ).splitlines()
+                            if line.strip()
+                        )
                 candidate_pool.extend(explicit_candidates)
-                candidate_pool.extend(generate_password_candidates(
-                    wordlist=wordlist,
-                    mask=mask,
-                    brute_force=brute_force,
-                    min_length=min_length,
-                    max_length=max_length,
-                    charset=charset,
-                    seed=seed or _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR),
-                    archive_name=archive_path.name,
-                    rules=rules,
-                    custom_generator=custom_generator,
-                    max_candidates=max_candidates,
-                    candidate_file=candidate_file,
-                ))
+                candidate_pool.extend(
+                    generate_password_candidates(
+                        wordlist=wordlist,
+                        mask=mask,
+                        brute_force=brute_force,
+                        min_length=min_length,
+                        max_length=max_length,
+                        charset=charset,
+                        seed=seed
+                        or _load_master_seed(archive_path.parent)
+                        or _load_master_seed(Path.cwd())
+                        or _load_master_seed(ROOT_DIR),
+                        archive_name=archive_path.name,
+                        rules=rules,
+                        custom_generator=custom_generator,
+                        max_candidates=max_candidates,
+                        candidate_file=candidate_file,
+                    )
+                )
                 seen: set[str] = set()
                 ordered = []
                 for candidate in candidate_pool:
@@ -1700,7 +1882,9 @@ def decrypt_and_unpack(
                 key_state = _resolve_archive_key(archive_path, key_file)
                 manifest = _read_encrypted_manifest(archive_path)
                 expected_fingerprint = manifest.get("key_fingerprint")
-                if expected_fingerprint is not None and not hmac.compare_digest(expected_fingerprint, key_state.fingerprint):
+                if expected_fingerprint is not None and not hmac.compare_digest(
+                    expected_fingerprint, key_state.fingerprint
+                ):
                     raise ValueError("Key fingerprint does not match the encrypted archive")
                 _validate_manifest_signature(manifest, key_state.key)
 
@@ -1726,11 +1910,23 @@ def decrypt_and_unpack(
             if candidate_file is not None:
                 candidate_path = Path(candidate_file)
                 if candidate_path.exists():
-                    explicit_candidates.extend(line.strip() for line in candidate_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                    explicit_candidates.extend(
+                        line.strip()
+                        for line in candidate_path.read_text(
+                            encoding="utf-8", errors="replace"
+                        ).splitlines()
+                        if line.strip()
+                    )
             if wordlist is not None:
                 wordlist_path = Path(wordlist)
                 if wordlist_path.exists():
-                    explicit_candidates.extend(line.strip() for line in wordlist_path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
+                    explicit_candidates.extend(
+                        line.strip()
+                        for line in wordlist_path.read_text(
+                            encoding="utf-8", errors="replace"
+                        ).splitlines()
+                        if line.strip()
+                    )
             candidate_pool = generate_password_candidates(
                 wordlist=wordlist,
                 mask=mask,
@@ -1738,7 +1934,10 @@ def decrypt_and_unpack(
                 min_length=min_length,
                 max_length=max_length,
                 charset=charset,
-                seed=seed or _load_master_seed(archive_path.parent) or _load_master_seed(Path.cwd()) or _load_master_seed(ROOT_DIR),
+                seed=seed
+                or _load_master_seed(archive_path.parent)
+                or _load_master_seed(Path.cwd())
+                or _load_master_seed(ROOT_DIR),
                 archive_name=archive_path.name,
                 rules=rules,
                 custom_generator=custom_generator,
@@ -1803,8 +2002,12 @@ def decrypt_and_unpack(
                     continue
                 member_name = _safe_member_name(info.filename)
                 if member_name.lower().endswith(".zip"):
-                    nested_bytes = zf.read(info.filename) if zip_pw is None else zf.read(info.filename)
-                    _process_nested_archive_bytes(nested_bytes, member_name, extracted_dir, key_file)
+                    nested_bytes = (
+                        zf.read(info.filename) if zip_pw is None else zf.read(info.filename)
+                    )
+                    _process_nested_archive_bytes(
+                        nested_bytes, member_name, extracted_dir, key_file
+                    )
                     continue
                 target = _ensure_target_within_root(extracted_dir / member_name, extracted_dir)
                 mode = info.external_attr >> 16
@@ -1813,7 +2016,10 @@ def decrypt_and_unpack(
                 target.parent.mkdir(parents=True, exist_ok=True)
                 _apply_safe_permissions(target.parent, is_dir=True)
                 if zip_pw is not None:
-                    with zf.open(info, "r", zip_pw.encode("utf-8")) as src, open(target, "wb") as dest:
+                    with (
+                        zf.open(info, "r", zip_pw.encode("utf-8")) as src,
+                        open(target, "wb") as dest,
+                    ):
                         while True:
                             chunk = src.read(65536)
                             if not chunk:
@@ -1834,7 +2040,6 @@ def decrypt_and_unpack(
         raise ValueError(f"Archive is malformed or exceeds safety limits: {archive_path}") from exc
 
 
-
 def _extract_text_payload_bundle(payload: bytes, destination_root: Path) -> None:
     """Extract an air-gapped text bundle in the form [relative/path]content..."""
     try:
@@ -1849,7 +2054,9 @@ def _extract_text_payload_bundle(payload: bytes, destination_root: Path) -> None
     for index, match in enumerate(header_positions):
         header_name = match.group(0)[1:-1].strip()
         start = match.end()
-        next_start = header_positions[index + 1].start() if index + 1 < len(header_positions) else None
+        next_start = (
+            header_positions[index + 1].start() if index + 1 < len(header_positions) else None
+        )
         content = decoded[start:next_start] if next_start is not None else decoded[start:]
         if next_start is not None and content.endswith("\n"):
             content = content[:-1]
@@ -1879,7 +2086,9 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
                     if info.is_dir():
                         continue
                     member_name = _safe_member_name(info.filename)
-                    target = _ensure_target_within_root(destination_root / member_name, destination_root)
+                    target = _ensure_target_within_root(
+                        destination_root / member_name, destination_root
+                    )
                     mode = info.external_attr >> 16
                     if stat.S_ISLNK(mode):
                         raise ValueError(f"ZIP contains a symbolic link entry: {member_name!r}")
@@ -1915,7 +2124,10 @@ def _archive_requires_password(zf: zipfile.ZipFile) -> bool:
             zf.read(info.filename)
         except (RuntimeError, ValueError, zipfile.BadZipFile, NotImplementedError) as exc:
             message = str(exc).lower()
-            if any(token in message for token in ("encrypted", "password", "crc", "bad password", "file is encrypted")):
+            if any(
+                token in message
+                for token in ("encrypted", "password", "crc", "bad password", "file is encrypted")
+            ):
                 return True
             # A ZIP may still be protected without a reliable flag bit; treat read
             # failures that look like general-purpose ZIP encryption as a password
@@ -1940,10 +2152,21 @@ def _recurse_nested_archives(
         raise ValueError("Archive recursion depth exceeded while processing nested ZIP bundles")
 
     for file_path in sorted(directory.rglob("*")):
-        if file_path.is_dir() or file_path.is_symlink() or not file_path.name.lower().endswith(".zip"):
+        if (
+            file_path.is_dir()
+            or file_path.is_symlink()
+            or not file_path.name.lower().endswith(".zip")
+        ):
             continue
         relative_name = file_path.relative_to(directory).as_posix()
-        _process_nested_archive_bytes(file_path.read_bytes(), relative_name, directory, key_file, depth=depth + 1, max_depth=max_depth)
+        _process_nested_archive_bytes(
+            file_path.read_bytes(),
+            relative_name,
+            directory,
+            key_file,
+            depth=depth + 1,
+            max_depth=max_depth,
+        )
         try:
             file_path.unlink(missing_ok=True)
         except OSError:
@@ -1966,7 +2189,9 @@ def _process_nested_archive_bytes(
         raise ValueError("Nested archive exceeds maximum size cap")
 
     member_path = PurePosixPath(_safe_member_name(member_name))
-    nested_parent = _ensure_target_within_root(destination_root / member_path.parent, destination_root)
+    nested_parent = _ensure_target_within_root(
+        destination_root / member_path.parent, destination_root
+    )
     nested_stem = member_path.stem or member_path.name
     nested_target = nested_parent / nested_stem
     nested_parent.mkdir(parents=True, exist_ok=True)
@@ -1990,13 +2215,19 @@ def _process_nested_archive_bytes(
                                 nested_target.unlink()
                         shutil.move(str(result_dir), str(nested_target))
                         result_dir = nested_target
-                    return _recurse_nested_archives(result_dir, key_file, depth=depth + 1, max_depth=max_depth)
+                    return _recurse_nested_archives(
+                        result_dir, key_file, depth=depth + 1, max_depth=max_depth
+                    )
                 _safe_extract_members(nested_zip_bytes, nested_target)
-                return _recurse_nested_archives(nested_target, key_file, depth=depth + 1, max_depth=max_depth)
+                return _recurse_nested_archives(
+                    nested_target, key_file, depth=depth + 1, max_depth=max_depth
+                )
         except ValueError:
             raise
         except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, RuntimeError) as exc:
-            raise ValueError(f"Nested archive is malformed or exceeds safety limits: {member_name!r}") from exc
+            raise ValueError(
+                f"Nested archive is malformed or exceeds safety limits: {member_name!r}"
+            ) from exc
     finally:
         try:
             temp_path.unlink(missing_ok=True)
@@ -2018,7 +2249,9 @@ def unpack_archive(
     charset: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
     seed: str | None = None,
     rules: Iterable[str] | None = None,
-    custom_generator: Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None = None,
+    custom_generator: (
+        Callable[[str | None, str | None], Iterable[str]] | Iterable[str] | None
+    ) = None,
     candidate_file: str | Path | None = None,
     max_candidates: int = 20000,
 ) -> Path:
@@ -2042,14 +2275,20 @@ def unpack_archive(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Air-gapped ZIP key generation and archive protection")
+    parser = argparse.ArgumentParser(
+        description="Air-gapped ZIP key generation and archive protection"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    key_cmd = subparsers.add_parser("generate-key", help="Generate a local key with a secured manifest")
+    key_cmd = subparsers.add_parser(
+        "generate-key", help="Generate a local key with a secured manifest"
+    )
     key_cmd.add_argument("--key-out", required=True, help="Destination file (.key or .json)")
     key_cmd.add_argument("--algorithm", choices=["fernet", "aes-gcm"], default="aes-gcm")
 
-    encrypt_cmd = subparsers.add_parser("encrypt", help="Encrypt a file or directory into a protected ZIP archive")
+    encrypt_cmd = subparsers.add_parser(
+        "encrypt", help="Encrypt a file or directory into a protected ZIP archive"
+    )
     encrypt_cmd.add_argument("--input-dir", help="Directory to package")
     encrypt_cmd.add_argument("--zip-out", required=True, help="Output ZIP path")
     encrypt_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
@@ -2057,101 +2296,267 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_cmd = subparsers.add_parser(
         "recover",
         help="Recover a password-protected ZIP archive by testing candidate passwords locally",
-        description="Recover a password-protected ZIP archive via local candidate testing. This tool is intentionally candidate-driven and cannot recover a ZIP password from the archive alone without clues.",
+        description=(
+            "Recover a password-protected ZIP archive via local candidate testing. "
+            "This tool is intentionally candidate-driven and cannot recover a ZIP "
+            "password from the archive alone without clues."
+        ),
     )
     recover_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_cmd.add_argument("--wordlist", help="Optional password dictionary file")
-    recover_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
-    recover_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded brute-force generation for a small character set")
+    recover_cmd.add_argument(
+        "--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'"
+    )
+    recover_cmd.add_argument(
+        "--bruteforce",
+        action="store_true",
+        help="Enable bounded brute-force generation for a small character set",
+    )
     recover_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
     recover_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
-    recover_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
-    recover_cmd.add_argument("--seed", help="Optional seed or pattern used to generate candidate variants")
-    recover_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
-    recover_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
-    recover_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
-    recover_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
+    recover_cmd.add_argument(
+        "--charset",
+        default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="Character set used for brute-force generation",
+    )
+    recover_cmd.add_argument(
+        "--seed", help="Optional seed or pattern used to generate candidate variants"
+    )
+    recover_cmd.add_argument(
+        "--candidate-file", help="Optional file containing one candidate password per line"
+    )
+    recover_cmd.add_argument(
+        "--max-candidates",
+        type=int,
+        default=20000,
+        help="Maximum number of candidate passwords to test",
+    )
+    recover_cmd.add_argument(
+        "--rules",
+        nargs="*",
+        default=[],
+        help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo",
+    )
+    recover_cmd.add_argument(
+        "--report-path", help="Optional path for a sanitized JSON recovery audit report"
+    )
 
     recover_unpack_cmd = subparsers.add_parser(
         "recover-and-unpack",
         help="Recover the archive password and unpack it into output/<archive_stem>/ in one step",
-        description="Recover a password-protected ZIP archive and unpack it into a self-titled folder. This workflow is candidate-driven and requires a wordlist, mask, seed, candidate file, or brute-force input; archive-only recovery is not supported.",
+        description=(
+            "Recover a password-protected ZIP archive and unpack it into a "
+            "self-titled folder. This workflow is candidate-driven and requires "
+            "a wordlist, mask, seed, candidate file, or brute-force input; "
+            "archive-only recovery is not supported."
+        ),
     )
     recover_unpack_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
-    recover_unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the output self-titled archive bundle")
+    recover_unpack_cmd.add_argument(
+        "--output-dir",
+        default=".",
+        help="Parent directory for the output self-titled archive bundle",
+    )
     recover_unpack_cmd.add_argument("--wordlist", help="Optional password dictionary file")
-    recover_unpack_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
-    recover_unpack_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded brute-force generation for a small character set")
-    recover_unpack_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
-    recover_unpack_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
-    recover_unpack_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
-    recover_unpack_cmd.add_argument("--seed", help="Optional seed or pattern used to generate candidate variants")
-    recover_unpack_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
-    recover_unpack_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
-    recover_unpack_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
-    recover_unpack_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
+    recover_unpack_cmd.add_argument(
+        "--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'"
+    )
+    recover_unpack_cmd.add_argument(
+        "--bruteforce",
+        action="store_true",
+        help="Enable bounded brute-force generation for a small character set",
+    )
+    recover_unpack_cmd.add_argument(
+        "--min-length", type=int, default=1, help="Minimum brute-force length"
+    )
+    recover_unpack_cmd.add_argument(
+        "--max-length", type=int, default=4, help="Maximum brute-force length"
+    )
+    recover_unpack_cmd.add_argument(
+        "--charset",
+        default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="Character set used for brute-force generation",
+    )
+    recover_unpack_cmd.add_argument(
+        "--seed", help="Optional seed or pattern used to generate candidate variants"
+    )
+    recover_unpack_cmd.add_argument(
+        "--candidate-file", help="Optional file containing one candidate password per line"
+    )
+    recover_unpack_cmd.add_argument(
+        "--max-candidates",
+        type=int,
+        default=20000,
+        help="Maximum number of candidate passwords to test",
+    )
+    recover_unpack_cmd.add_argument(
+        "--rules",
+        nargs="*",
+        default=[],
+        help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo",
+    )
+    recover_unpack_cmd.add_argument(
+        "--report-path", help="Optional path for a sanitized JSON recovery audit report"
+    )
 
     recover_plan_cmd = subparsers.add_parser(
         "recover-plan",
         help="Build a recovery plan and candidate queue without immediately testing the archive",
-        description="Create a structured candidate-driven recovery plan. ZIP password recovery depends on clue material; archive-only recovery is intentionally unsupported.",
+        description=(
+            "Create a structured candidate-driven recovery plan. ZIP password "
+            "recovery depends on clue material; archive-only recovery is "
+            "intentionally unsupported."
+        ),
     )
     recover_plan_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_plan_cmd.add_argument("--wordlist", help="Optional password dictionary file")
-    recover_plan_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
-    recover_plan_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded brute-force generation")
-    recover_plan_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
-    recover_plan_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
-    recover_plan_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
-    recover_plan_cmd.add_argument("--seed", help="Optional seed or pattern used to generate candidate variants")
-    recover_plan_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
-    recover_plan_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to generate")
-    recover_plan_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
-    recover_plan_cmd.add_argument("--archive-hint", action="append", default=[], help="Extra archive context or user clue to include in candidate generation")
-    recover_plan_cmd.add_argument("--report-path", help="Optional path for the JSON recovery report")
+    recover_plan_cmd.add_argument(
+        "--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'"
+    )
+    recover_plan_cmd.add_argument(
+        "--bruteforce", action="store_true", help="Enable bounded brute-force generation"
+    )
+    recover_plan_cmd.add_argument(
+        "--min-length", type=int, default=1, help="Minimum brute-force length"
+    )
+    recover_plan_cmd.add_argument(
+        "--max-length", type=int, default=4, help="Maximum brute-force length"
+    )
+    recover_plan_cmd.add_argument(
+        "--charset",
+        default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="Character set used for brute-force generation",
+    )
+    recover_plan_cmd.add_argument(
+        "--seed", help="Optional seed or pattern used to generate candidate variants"
+    )
+    recover_plan_cmd.add_argument(
+        "--candidate-file", help="Optional file containing one candidate password per line"
+    )
+    recover_plan_cmd.add_argument(
+        "--max-candidates",
+        type=int,
+        default=20000,
+        help="Maximum number of candidate passwords to generate",
+    )
+    recover_plan_cmd.add_argument(
+        "--rules",
+        nargs="*",
+        default=[],
+        help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo",
+    )
+    recover_plan_cmd.add_argument(
+        "--archive-hint",
+        action="append",
+        default=[],
+        help="Extra archive context or user clue to include in candidate generation",
+    )
+    recover_plan_cmd.add_argument(
+        "--report-path", help="Optional path for the JSON recovery report"
+    )
 
-    unpack_cmd = subparsers.add_parser("unpack", help="Decrypt a protected ZIP archive into a self-titled output folder")
+    unpack_cmd = subparsers.add_parser(
+        "unpack", help="Decrypt a protected ZIP archive into a self-titled output folder"
+    )
     unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    unpack_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
-    unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
-    unpack_cmd.add_argument("--wordlist", help="Optional password dictionary file to try before failing")
-    unpack_cmd.add_argument("--mask", help="Optional password mask for a local candidate generation loop")
-    unpack_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded local brute-force search")
+    unpack_cmd.add_argument(
+        "--key-file", help="Optional local key manifest or key file; auto-resolves when omitted"
+    )
+    unpack_cmd.add_argument(
+        "--output-dir", default=".", help="Parent directory for the extracted folder"
+    )
+    unpack_cmd.add_argument(
+        "--wordlist", help="Optional password dictionary file to try before failing"
+    )
+    unpack_cmd.add_argument(
+        "--mask", help="Optional password mask for a local candidate generation loop"
+    )
+    unpack_cmd.add_argument(
+        "--bruteforce", action="store_true", help="Enable bounded local brute-force search"
+    )
     unpack_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
     unpack_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
-    unpack_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
+    unpack_cmd.add_argument(
+        "--charset",
+        default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="Character set used for brute-force generation",
+    )
     unpack_cmd.add_argument("--seed", help="Optional seed used to derive password variants")
-    unpack_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
-    unpack_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
-    unpack_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
+    unpack_cmd.add_argument(
+        "--candidate-file", help="Optional file containing one candidate password per line"
+    )
+    unpack_cmd.add_argument(
+        "--rules",
+        nargs="*",
+        default=[],
+        help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo",
+    )
+    unpack_cmd.add_argument(
+        "--max-candidates",
+        type=int,
+        default=20000,
+        help="Maximum number of candidate passwords to test",
+    )
 
-    unpack_only_cmd = subparsers.add_parser("unpack-only", help="Alias for local decrypt-and-unpack behavior")
+    unpack_only_cmd = subparsers.add_parser(
+        "unpack-only", help="Alias for local decrypt-and-unpack behavior"
+    )
     unpack_only_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    unpack_only_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
-    unpack_only_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
+    unpack_only_cmd.add_argument(
+        "--key-file", help="Optional local key manifest or key file; auto-resolves when omitted"
+    )
+    unpack_only_cmd.add_argument(
+        "--output-dir", default=".", help="Parent directory for the extracted folder"
+    )
 
-    decrypt_and_unpack_cmd = subparsers.add_parser("decrypt-and-unpack", help="Validate, decrypt, and extract an encrypted ZIP into a self-titled folder")
+    decrypt_and_unpack_cmd = subparsers.add_parser(
+        "decrypt-and-unpack",
+        help="Validate, decrypt, and extract an encrypted ZIP into a self-titled folder",
+    )
     decrypt_and_unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
-    decrypt_and_unpack_cmd.add_argument("--key-file", help="Optional local key manifest or key file; auto-resolves when omitted")
-    decrypt_and_unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the extracted folder")
+    decrypt_and_unpack_cmd.add_argument(
+        "--key-file", help="Optional local key manifest or key file; auto-resolves when omitted"
+    )
+    decrypt_and_unpack_cmd.add_argument(
+        "--output-dir", default=".", help="Parent directory for the extracted folder"
+    )
 
-    normalize_cmd = subparsers.add_parser("normalize", help="Create a deterministic normalized manifest for an extracted directory")
+    normalize_cmd = subparsers.add_parser(
+        "normalize", help="Create a deterministic normalized manifest for an extracted directory"
+    )
     normalize_cmd.add_argument("--input-dir", required=True, help="Directory to normalize")
     normalize_cmd.add_argument("--output-manifest", help="Optional manifest output path")
-    normalize_cmd.add_argument("--include-content", action="store_true", help="Embed file content in base64 within the normalized manifest")
+    normalize_cmd.add_argument(
+        "--include-content",
+        action="store_true",
+        help="Embed file content in base64 within the normalized manifest",
+    )
 
-    transform_cmd = subparsers.add_parser("transform", help="Alias for local normalization/transform staging of extracted files")
+    transform_cmd = subparsers.add_parser(
+        "transform", help="Alias for local normalization/transform staging of extracted files"
+    )
     transform_cmd.add_argument("--input-dir", required=True, help="Directory to normalize")
     transform_cmd.add_argument("--output-manifest", help="Optional manifest output path")
-    transform_cmd.add_argument("--include-content", action="store_true", help="Embed file content in base64 within the normalized manifest")
+    transform_cmd.add_argument(
+        "--include-content",
+        action="store_true",
+        help="Embed file content in base64 within the normalized manifest",
+    )
 
-    rezip_cmd = subparsers.add_parser("rezip-clean", help="Rebuild a clean zip archive from a decrypted directory without re-encrypting it")
+    rezip_cmd = subparsers.add_parser(
+        "rezip-clean",
+        help="Rebuild a clean zip archive from a decrypted directory without re-encrypting it",
+    )
     rezip_cmd.add_argument("--input-dir", required=True, help="Directory to package")
     rezip_cmd.add_argument("--zip-out", required=True, help="Output ZIP path")
 
-    probe_cmd = subparsers.add_parser("probe-key", help="Run a bounded local-only key probe for validation and benchmarking")
+    probe_cmd = subparsers.add_parser(
+        "probe-key", help="Run a bounded local-only key probe for validation and benchmarking"
+    )
     probe_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
-    probe_cmd.add_argument("--attempts", type=int, default=16, help="Maximum number of local validation probes")
+    probe_cmd.add_argument(
+        "--attempts", type=int, default=16, help="Maximum number of local validation probes"
+    )
     return parser
 
 
@@ -2163,14 +2568,25 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "generate-key":
             result = generate_local_key(args.key_out, algorithm=args.algorithm)
             fingerprint = mask_token(result["fingerprint"], show_last=8)
-            print(_safe_log(f"Generated local key manifest at {args.key_out} with fingerprint {fingerprint} and algorithm {result['algorithm']}"))
+            print(
+                _safe_log(
+                    "Generated local key manifest at "
+                    f"{args.key_out} with fingerprint {fingerprint} and "
+                    f"algorithm {result['algorithm']}"
+                )
+            )
             return 0
 
         if args.command == "encrypt":
             if not args.input_dir:
                 raise ValueError("--input-dir is required for archive encryption")
             result = encrypt_directory(args.input_dir, args.zip_out, args.key_file)
-            print(_safe_log(f"Encrypted archive created at {args.zip_out} with {result['member_count']} files"))
+            print(
+                _safe_log(
+                    f"Encrypted archive created at {args.zip_out} with "
+                    f"{result['member_count']} files"
+                )
+            )
             return 0
 
         if args.command == "recover":
@@ -2198,8 +2614,15 @@ def main(argv: list[str] | None = None) -> int:
             if getattr(args, "report_path", None):
                 report_path = Path(args.report_path)
                 report_path.parent.mkdir(parents=True, exist_ok=True)
-                report_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
-            print(_safe_log(f"Recovered ZIP password for {Path(args.zip_path).name}: {_mask_secret(password)}"))
+                report_path.write_text(
+                    json.dumps(report, sort_keys=True, indent=2), encoding="utf-8"
+                )
+            print(
+                _safe_log(
+                    f"Recovered ZIP password for {Path(args.zip_path).name}: "
+                    f"{_mask_secret(password)}"
+                )
+            )
             if getattr(args, "report_path", None):
                 print(_safe_log(json.dumps(report, sort_keys=True)))
             return 0
@@ -2243,9 +2666,16 @@ def main(argv: list[str] | None = None) -> int:
             if getattr(args, "report_path", None):
                 report_path = Path(args.report_path)
                 report_path.parent.mkdir(parents=True, exist_ok=True)
-                report_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
+                report_path.write_text(
+                    json.dumps(report, sort_keys=True, indent=2), encoding="utf-8"
+                )
             print(_safe_log(json.dumps(report, sort_keys=True)))
-            print(_safe_log(f"Recovered password for {Path(args.zip_path).name}: {_mask_secret(password)}; extracted to {extracted_path}"))
+            print(
+                _safe_log(
+                    f"Recovered password for {Path(args.zip_path).name}: "
+                    f"{_mask_secret(password)}; extracted to {extracted_path}"
+                )
+            )
             return 0
 
         if args.command == "recover-plan":
@@ -2281,7 +2711,9 @@ def main(argv: list[str] | None = None) -> int:
             if args.report_path:
                 output_path = Path(args.report_path)
                 output_path.parent.mkdir(parents=True, exist_ok=True)
-                output_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
+                output_path.write_text(
+                    json.dumps(report, sort_keys=True, indent=2), encoding="utf-8"
+                )
             print(_safe_log(json.dumps(report, sort_keys=True)))
             return 0
 
@@ -2295,7 +2727,11 @@ def main(argv: list[str] | None = None) -> int:
                 brute_force=getattr(args, "bruteforce", False),
                 min_length=getattr(args, "min_length", 1),
                 max_length=getattr(args, "max_length", 4),
-                charset=getattr(args, "charset", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+                charset=getattr(
+                    args,
+                    "charset",
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                ),
                 seed=getattr(args, "seed", None),
                 rules=getattr(args, "rules", None),
                 candidate_file=getattr(args, "candidate_file", None),
@@ -2305,9 +2741,21 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.command in {"normalize", "transform"}:
-            output_manifest = args.output_manifest or str(Path(args.input_dir).resolve().parent / f"{Path(args.input_dir).name}.normalized.json")
-            manifest = normalize_directory(args.input_dir, output_manifest=output_manifest, include_content=args.include_content)
-            print(_safe_log(f"Normalized manifest created at {output_manifest} with {len(manifest.get('entries', []))} entries"))
+            output_manifest = args.output_manifest or str(
+                Path(args.input_dir).resolve().parent
+                / f"{Path(args.input_dir).name}.normalized.json"
+            )
+            manifest = normalize_directory(
+                args.input_dir,
+                output_manifest=output_manifest,
+                include_content=args.include_content,
+            )
+            print(
+                _safe_log(
+                    f"Normalized manifest created at {output_manifest} with "
+                    f"{len(manifest.get('entries', []))} entries"
+                )
+            )
             return 0
 
         if args.command == "rezip-clean":
@@ -2317,7 +2765,12 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.command == "probe-key":
             summary = local_key_probe(args.key_file, attempts=args.attempts)
-            print(_safe_log(f"Local key probe complete: attempts={summary['attempts']} verified={summary['verified']}"))
+            print(
+                _safe_log(
+                    "Local key probe complete: "
+                    f"attempts={summary['attempts']} verified={summary['verified']}"
+                )
+            )
             return 0
 
         parser.error(f"Unsupported command: {args.command}")

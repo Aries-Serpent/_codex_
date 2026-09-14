@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+import base64
 import json
-import os
 import shutil
-import stat
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
 import pytest
+
+from security.encryption import encrypt
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -18,13 +19,14 @@ sys.path.insert(0, str(ROOT / "src"))
 from scripts.security.offline_zip_keymaster import (  # noqa: E402
     MAX_MEMBER_BYTES,
     _common_word_variants,
+    _sha256_hex,
     encrypt_directory,
     generate_local_key,
     generate_password_candidates,
     main,
     normalize_directory,
-    recover_archive_password,
     reconstruct_normalized_directory,
+    recover_archive_password,
     rezip_clean_directory,
     unpack_archive,
 )
@@ -47,8 +49,12 @@ def _xor_bytes(payload: bytes, password: str) -> bytes:
     return bytes(byte ^ key[index % len(key)] for index, byte in enumerate(payload))
 
 
-def _write_local_password_archive(zip_path: Path, password: str, *, files: dict[str, bytes]) -> None:
-    plaintext = b"\n".join([b"[" + name.encode("utf-8") + b"]" + content for name, content in files.items()])
+def _write_local_password_archive(
+    zip_path: Path, password: str, *, files: dict[str, bytes]
+) -> None:
+    plaintext = b"\n".join(
+        [b"[" + name.encode("utf-8") + b"]" + content for name, content in files.items()]
+    )
     encrypted_bytes = _xor_bytes(plaintext, password)
     manifest = {
         "version": 1,
@@ -99,7 +105,11 @@ def test_encrypt_and_unpack_round_trip(sample_dir: Path, tmp_path: Path):
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
-def test_unpack_auto_resolves_key_from_local_key_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_unpack_auto_resolves_key_from_local_key_store(
+    sample_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
     key_dir = tmp_path / "keys"
     key_dir.mkdir()
     key_file = key_dir / "archive.key"
@@ -115,7 +125,11 @@ def test_unpack_auto_resolves_key_from_local_key_store(sample_dir: Path, tmp_pat
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
-def test_unpack_uses_master_seed_contract_without_explicit_key(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_unpack_uses_master_seed_contract_without_explicit_key(
+    sample_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
     key_dir = tmp_path / "keys"
     key_dir.mkdir()
     key_file = key_dir / "archive.key"
@@ -142,7 +156,11 @@ def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path,
     _write_local_password_archive(zip_path, zip_password, files=files)
 
     (tmp_path / "passwords.txt").write_text(f"{zip_password}\n", encoding="utf-8")
-    extracted = unpack_archive(zip_path, output_dir=tmp_path / "output", wordlist=tmp_path / "passwords.txt")
+    extracted = unpack_archive(
+        zip_path,
+        output_dir=tmp_path / "output",
+        wordlist=tmp_path / "passwords.txt",
+    )
 
     assert extracted.name == "passworded"
     assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
@@ -159,7 +177,11 @@ def test_standard_zipfile_password_protected_archive_recovers_and_unpacks(tmp_pa
 
     if not shutil.which("zip"):
         pytest.skip("zip CLI is required to generate a real encrypted ZIP archive")
-    subprocess.run(["zip", "-j", "-P", password, str(archive_path), str(source_file)], check=True, capture_output=True)
+    subprocess.run(
+        ["zip", "-j", "-P", password, str(archive_path), str(source_file)],
+        check=True,
+        capture_output=True,
+    )
 
     wordlist = tmp_path / "passwords.txt"
     wordlist.write_text(f"{password}\n", encoding="utf-8")
@@ -182,13 +204,24 @@ def test_recover_requires_candidate_inputs_for_archive_only_attempt(tmp_path: Pa
 
     if not shutil.which("zip"):
         pytest.skip("zip CLI is required to generate a real encrypted ZIP archive")
-    subprocess.run(["zip", "-j", "-P", password, str(archive_path), str(source_file)], check=True, capture_output=True)
+    subprocess.run(
+        ["zip", "-j", "-P", password, str(archive_path), str(source_file)],
+        check=True,
+        capture_output=True,
+    )
 
-    with pytest.raises(ValueError, match="candidate-driven|wordlist|mask|seed|brute-force|archive-only"):
+    with pytest.raises(
+        ValueError,
+        match="candidate-driven|wordlist|mask|seed|brute-force|archive-only",
+    ):
         recover_archive_password(archive_path)
 
 
-def test_unpack_requires_resolved_key_without_matching_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_unpack_requires_resolved_key_without_matching_store(
+    sample_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
     key_file = tmp_path / "archive.key"
     generate_local_key(key_file)
     archive_path = tmp_path / "payloads" / "audit_logs.zip"
@@ -201,7 +234,9 @@ def test_unpack_requires_resolved_key_without_matching_store(sample_dir: Path, t
         unpack_archive(archive_path, output_dir=tmp_path / "output")
 
 
-def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(sample_dir: Path, tmp_path: Path):
+def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(
+    sample_dir: Path, tmp_path: Path
+):
     key_file = tmp_path / "nested.key"
     generate_local_key(key_file)
     encrypted_bundle = tmp_path / "nested_bundle.zip"
@@ -213,11 +248,17 @@ def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(sample_dir:
 
     extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "outer_output")
     assert extracted.name == "outer_container"
-    assert (extracted / "packets" / "nested_bundle" / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
-    assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+    assert (extracted / "packets" / "nested_bundle" / "hello.txt").read_text(
+        encoding="utf-8"
+    ) == "hello offline\n"
+    assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(
+        encoding="utf-8"
+    ) == "second file\n"
 
 
-def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(sample_dir: Path, tmp_path: Path):
+def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(
+    sample_dir: Path, tmp_path: Path
+):
     key_file = tmp_path / "recursive.key"
     generate_local_key(key_file)
 
@@ -235,8 +276,12 @@ def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(sam
     extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "recursive_output")
 
     assert extracted.name == "outer_container"
-    assert (extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
-    assert (extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
+    assert (
+        extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "hello.txt"
+    ).read_text(encoding="utf-8") == "hello offline\n"
+    assert (
+        extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "nested" / "hello2.txt"
+    ).read_text(encoding="utf-8") == "second file\n"
 
 
 def test_unpack_rejects_zip_traversal(tmp_path: Path):
@@ -247,11 +292,6 @@ def test_unpack_rejects_zip_traversal(tmp_path: Path):
         zf.writestr("../escape.txt", "boom")
 
     payload = malicious_zip.read_bytes()
-    from scripts.security.offline_zip_keymaster import _read_encrypted_manifest
-    from scripts.security.offline_zip_keymaster import _sha256_hex
-    import base64
-    from security.encryption import encrypt
-
     key = json.loads(key_path.read_text(encoding="utf-8"))["key"]
     key_bytes = base64.urlsafe_b64decode(key.encode("ascii"))
     encrypted = encrypt(payload, key_bytes).decode("ascii")
@@ -265,9 +305,23 @@ def test_unpack_rejects_zip_traversal(tmp_path: Path):
         "source_sha256": _sha256_hex(payload),
         "payload_name": "encrypted_payload.bin",
     }
-    manifest["hmac"] = __import__("hmac").new(key.encode("ascii"), json.dumps({k: v for k, v in manifest.items() if k != "hmac"}, sort_keys=True, separators=(",", ":")).encode("utf-8"), __import__("hashlib").sha256).hexdigest()
+    manifest["hmac"] = (
+        __import__("hmac")
+        .new(
+            key.encode("ascii"),
+            json.dumps(
+                {k: v for k, v in manifest.items() if k != "hmac"},
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8"),
+            __import__("hashlib").sha256,
+        )
+        .hexdigest()
+    )
 
-    with zipfile.ZipFile(tmp_path / "encrypted-malicious.zip", mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(
+        tmp_path / "encrypted-malicious.zip", mode="w", compression=zipfile.ZIP_DEFLATED
+    ) as zf:
         zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
         zf.writestr("encrypted_payload.bin", encrypted)
 
@@ -288,13 +342,17 @@ def test_unpack_rejects_malformed_manifest_fields(tmp_path: Path):
         manifest = json.loads(zf.read("manifest.json").decode("utf-8"))
     manifest["hmac"] = "deadbeef"
     manifest["member_names"] = ["../../escape.txt"]
-    with zipfile.ZipFile(tmp_path / "tampered-bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(
+        tmp_path / "tampered-bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED
+    ) as zf:
         zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
         with zipfile.ZipFile(archive_path, "r") as src:
             zf.writestr("encrypted_payload.bin", src.read("encrypted_payload.bin"))
 
     with pytest.raises(ValueError, match="traversal|member names|manifest"):
-        unpack_archive(tmp_path / "tampered-bad.zip", key_path, output_dir=tmp_path / "tampered_out")
+        unpack_archive(
+            tmp_path / "tampered-bad.zip", key_path, output_dir=tmp_path / "tampered_out"
+        )
 
 
 def test_unpack_rejects_windows_path_variants(tmp_path: Path):
@@ -309,7 +367,9 @@ def test_unpack_rejects_windows_path_variants(tmp_path: Path):
     with zipfile.ZipFile(archive_path, "r") as zf:
         manifest = json.loads(zf.read("manifest.json").decode("utf-8"))
     manifest["member_names"] = ["nested\\..\\escape.txt", "C:/Windows/System32/drivers/etc/hosts"]
-    with zipfile.ZipFile(tmp_path / "windows_bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(
+        tmp_path / "windows_bad.zip", mode="w", compression=zipfile.ZIP_DEFLATED
+    ) as zf:
         zf.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
         with zipfile.ZipFile(archive_path, "r") as src:
             zf.writestr("encrypted_payload.bin", src.read("encrypted_payload.bin"))
@@ -426,7 +486,9 @@ def test_recover_archive_password_requires_candidate_clues(tmp_path: Path):
     password = "mask42"
     _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
 
-    with pytest.raises(ValueError, match=r"(?i)candidate-driven.*archive-only recovery is not supported"):
+    with pytest.raises(
+        ValueError, match=r"(?i)candidate-driven.*archive-only recovery is not supported"
+    ):
         recover_archive_password(zip_path)
 
 
@@ -459,7 +521,9 @@ def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.Capt
     assert "sha256:" in captured.out
 
 
-def test_cli_recover_and_unpack_writes_sanitized_report(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
+def test_cli_recover_and_unpack_writes_sanitized_report(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+):
     zip_path = tmp_path / "cli_report.zip"
     password = "mask42"
     _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
@@ -468,13 +532,19 @@ def test_cli_recover_and_unpack_writes_sanitized_report(tmp_path: Path, capsys: 
     wordlist.write_text("fallback\nmask42\n", encoding="utf-8")
     report_path = tmp_path / "audit_report.json"
 
-    code = main([
-        "recover-and-unpack",
-        "--zip-path", str(zip_path),
-        "--output-dir", str(tmp_path / "out"),
-        "--wordlist", str(wordlist),
-        "--report-path", str(report_path),
-    ])
+    code = main(
+        [
+            "recover-and-unpack",
+            "--zip-path",
+            str(zip_path),
+            "--output-dir",
+            str(tmp_path / "out"),
+            "--wordlist",
+            str(wordlist),
+            "--report-path",
+            str(report_path),
+        ]
+    )
     captured = capsys.readouterr()
 
     assert code == 0
@@ -485,7 +555,9 @@ def test_cli_recover_and_unpack_writes_sanitized_report(tmp_path: Path, capsys: 
     assert report["password_masked"].startswith("sha256:")
 
 
-def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
+def test_cli_generate_key_is_sanitized_and_successful(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+):
     key_path = tmp_path / "cli.key"
     code = main(["generate-key", "--key-out", str(key_path)])
     captured = capsys.readouterr()
@@ -498,7 +570,9 @@ def test_cli_generate_key_is_sanitized_and_successful(tmp_path: Path, capsys: py
     assert "key" not in captured.out.lower() or "manifest" in captured.out.lower()
 
 
-def test_default_workspace_uses_env_override_for_packaged_runtime(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+def test_default_workspace_uses_env_override_for_packaged_runtime(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
     from offline_zip_keymaster import cli
 
     workspace = tmp_path / "runtime_workspace"
