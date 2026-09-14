@@ -9,9 +9,12 @@ from collections.abc import Mapping, MutableMapping
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from codex_ml_telemetry import HealthReport as StandaloneHealthReport
 
 __all__ = [
     "DEFAULT_HEALTH_DIR",
@@ -19,8 +22,10 @@ __all__ = [
     "HealthChecker",
     "HealthReport",
     "HealthStatus",
+    "from_standalone_health_report",
     "health_log_path",
     "record_health_event",
+    "to_standalone_health_report",
 ]
 
 HEALTH_LOG_ENV = "CODEX_HEALTH_LOG_DIR"
@@ -136,6 +141,37 @@ class HealthReport(BaseModel):
     timestamp: str
     checks: dict[str, str]
     message: str
+
+
+def to_standalone_health_report(report: HealthReport) -> StandaloneHealthReport:
+    """Convert a legacy Pydantic report to the standalone transport contract.
+
+    The import is intentionally lazy because the standalone distribution
+    remains optional for monolith installations.
+    """
+
+    from codex_ml_telemetry import HealthReport as StandaloneHealthReport
+    from codex_ml_telemetry import HealthStatus as StandaloneHealthStatus
+
+    return StandaloneHealthReport(
+        status=StandaloneHealthStatus(report.status.value),
+        timestamp=report.timestamp,
+        checks=report.checks,
+        message=report.message,
+    )
+
+
+def from_standalone_health_report(report: StandaloneHealthReport) -> HealthReport:
+    """Convert a standalone transport report to the legacy Pydantic model."""
+
+    status = getattr(report, "status")
+    status_value = status.value if hasattr(status, "value") else str(status)
+    return HealthReport(
+        status=HealthStatus(status_value),
+        timestamp=str(getattr(report, "timestamp")),
+        checks=dict(getattr(report, "checks")),
+        message=str(getattr(report, "message")),
+    )
 
 
 class HealthChecker:

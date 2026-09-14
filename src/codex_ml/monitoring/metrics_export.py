@@ -17,6 +17,11 @@ Author: Codex Team
 
 from __future__ import annotations
 
+try:
+    from codex_ml_telemetry import render_prometheus as _render_prometheus
+except ImportError:  # pragma: no cover - standalone package is optional during migration
+    _render_prometheus = None
+
 try:  # Optional dependency for Prometheus integration
     from prometheus_client import REGISTRY, CollectorRegistry, generate_latest
 
@@ -32,6 +37,8 @@ except ImportError:  # pragma: no cover - optional dependency path
 def get_metrics_text(registry: CollectorRegistry | None = None) -> str:
     """Return metrics in Prometheus text exposition format."""
 
+    if _render_prometheus is not None:
+        return _render_prometheus(registry)
     if not _HAS_PROMETHEUS:
         return "# prometheus_client not installed\n"
 
@@ -48,7 +55,12 @@ async def metrics_endpoint_fastapi(
     text = get_metrics_text(registry)
     try:
         from fastapi import Response
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency path
+    except (  # pragma: no cover - optional dependency path
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ):
         return text
     return Response(content=text, media_type="text/plain; version=0.0.4")
 

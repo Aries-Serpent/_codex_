@@ -1,0 +1,5 @@
+# Release build frontend and all backends used by repository distributions.
+build==1.6.1
+hatchling==1.32.0
+setuptools==81.0.0
+wheel==0.48.0

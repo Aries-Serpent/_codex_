@@ -5,9 +5,6 @@ include README.md
 include LICENSE
 graft LICENSES
 
-# Global hygiene
-global-exclude *.pyc *.pyo *.pyd __pycache__ *.so *.dylib .DS_Store
-
 # Exclude non-runtime artifacts
 prune .codex
 prune audit_artifacts
@@ -51,3 +48,7 @@ graft hhg_logistics
 graft templates
 graft cli
 graft configs
+
+# Global hygiene must run after grafts so dirty source trees cannot re-add caches.
+global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store
+recursive-exclude * __pycache__/*

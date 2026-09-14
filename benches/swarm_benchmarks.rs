@@ -1,26 +1,89 @@
 // Swarm Benchmarks - Comprehensive Performance Testing
-// Phase 2: Performance Benchmarking
 
-use codex_engine::{Compression, SwarmEngine, TaskManager};
-use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
+use codex_swarm::{Compression, SwarmEngine, TaskManager};
+use criterion::{criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion, Throughput};
+use std::hint::black_box;
 use std::time::Duration;
 
-/// Benchmark 1: Task Latency
-/// Tests latency for various batch sizes (1, 10, 100, 1000 tasks)
-fn bench_task_latency(c: &mut Criterion) {
-    let mut group = c.benchmark_group("task_latency");
-    group.measurement_time(Duration::from_secs(10));
+// Phase 4 measurements deliberately use fixed inputs and short, bounded runs.
+// Criterion only reports a change outside this noise band as a regression. This
+// avoids turning ordinary shared-runner variance into a performance signal.
+const PHASE4_NOISE_THRESHOLD: f64 = 0.15;
+const PHASE4_SIGNIFICANCE_LEVEL: f64 = 0.01;
+const PHASE4_SAMPLE_SIZE: usize = 30;
+const PHASE4_WARM_UP: Duration = Duration::from_secs(1);
+const PHASE4_MEASUREMENT: Duration = Duration::from_secs(3);
+const QUEUE_BATCH_SIZES: [usize; 3] = [64, 512, 4_096];
+const SWARM_BATCH_SIZES: [usize; 2] = [256, 2_048];
+const TASK_PAYLOAD: &[u8] = br#"{"kind":"phase4","payload":"fixed"}"#;
 
-    for size in [1, 10, 100, 1000].iter() {
+/// Benchmark 1: synchronous task queue round-trip latency.
+///
+/// A fresh manager is used for each iteration and every submitted result is
+/// consumed. This prevents retained results from filling the bounded queue and
+/// making later samples measure backpressure (or block indefinitely).
+fn bench_task_latency(c: &mut Criterion) {
+    let mut group = c.benchmark_group("phase4/task_queue_round_trip");
+    group
+        .warm_up_time(PHASE4_WARM_UP)
+        .measurement_time(PHASE4_MEASUREMENT)
+        .sample_size(PHASE4_SAMPLE_SIZE)
+        .noise_threshold(PHASE4_NOISE_THRESHOLD)
+        .significance_level(PHASE4_SIGNIFICANCE_LEVEL);
+
+    for size in [1_usize, 10, 100, 1_000] {
+        group.throughput(Throughput::Elements(size as u64));
         group.bench_with_input(
             BenchmarkId::from_parameter(size),
-            size,
+            &size,
             |b: &mut criterion::Bencher, &size| {
-                let task_manager = TaskManager::new();
+                b.iter_batched_ref(
+                    TaskManager::new,
+                    |manager| {
+                        for _ in 0..size {
+                            manager.submit(black_box(TASK_PAYLOAD.to_vec()));
+                        }
+                        for _ in 0..size {
+                            black_box(manager.get_result(0.0).expect(
+                                "synchronous identity transport must make each result available",
+                            ));
+                        }
+                    },
+                    BatchSize::PerIteration,
+                );
+            },
+        );
+    }
+
+    group.finish();
+}
+
+/// Benchmark 2: bounded experimental identity-transport throughput.
+///
+/// A small, fixed worker count limits host contention. Every batch is below the
+/// result-queue capacity and is fully drained by `process_batch`, so iterations
+/// cannot leak work into later samples. The workers currently return their
+/// input unchanged; this measures transport and scheduling, not agent work.
+fn bench_throughput(c: &mut Criterion) {
+    let mut group = c.benchmark_group("phase4/experimental_identity_transport_throughput");
+    group
+        .warm_up_time(PHASE4_WARM_UP)
+        .measurement_time(PHASE4_MEASUREMENT)
+        .sample_size(PHASE4_SAMPLE_SIZE)
+        .noise_threshold(PHASE4_NOISE_THRESHOLD)
+        .significance_level(PHASE4_SIGNIFICANCE_LEVEL);
+
+    let swarm = SwarmEngine::new(4);
+    for batch_size in SWARM_BATCH_SIZES {
+        group.throughput(Throughput::Elements(batch_size as u64));
+        group.bench_with_input(
+            BenchmarkId::new("schedule_and_drain", batch_size),
+            &batch_size,
+            |b, &batch_size| {
                 b.iter(|| {
-                    for i in 0..size {
-                        task_manager.submit_task(black_box(&format!("task_{}", i)));
-                    }
+                    let received = swarm.process_batch(black_box(batch_size));
+                    assert_eq!(received, batch_size);
+                    black_box(received)
                 });
             },
         );
@@ -29,23 +92,71 @@ fn bench_task_latency(c: &mut Criterion) {
     group.finish();
 }
 
-/// Benchmark 2: Throughput
-/// Tests throughput with 10k tasks target
-fn bench_throughput(c: &mut Criterion) {
-    let mut group = c.benchmark_group("throughput");
-    group.measurement_time(Duration::from_secs(20));
-    group.sample_size(50);
+/// Benchmark 3: reproducible queue submission and drain throughput.
+///
+/// Setup is outside the timed section and creates a fresh manager for every
+/// iteration. `PerIteration` bounds retained queue entries while keeping the
+/// allocation and synchronization of each queue operation in the measurement.
+fn bench_queue_throughput(c: &mut Criterion) {
+    let mut group = c.benchmark_group("phase4/task_queue_throughput");
+    group
+        .warm_up_time(PHASE4_WARM_UP)
+        .measurement_time(PHASE4_MEASUREMENT)
+        .sample_size(PHASE4_SAMPLE_SIZE)
+        .noise_threshold(PHASE4_NOISE_THRESHOLD)
+        .significance_level(PHASE4_SIGNIFICANCE_LEVEL);
 
-    let swarm = SwarmEngine::new(1000); // 1000 agents
+    for batch_size in QUEUE_BATCH_SIZES {
+        group.throughput(Throughput::Elements(batch_size as u64));
 
-    group.bench_function("10k_tasks", |b: &mut criterion::Bencher| {
-        b.iter(|| swarm.process_batch(black_box(10_000)));
-    });
+        group.bench_with_input(
+            BenchmarkId::new("submit", batch_size),
+            &batch_size,
+            |b, &batch_size| {
+                b.iter_batched_ref(
+                    TaskManager::new,
+                    |manager| {
+                        for _ in 0..batch_size {
+                            manager.submit(black_box(TASK_PAYLOAD.to_vec()));
+                        }
+                        assert_eq!(manager.result_count(), batch_size);
+                        black_box(manager.result_count())
+                    },
+                    BatchSize::PerIteration,
+                );
+            },
+        );
+
+        group.bench_with_input(
+            BenchmarkId::new("drain_results", batch_size),
+            &batch_size,
+            |b, &batch_size| {
+                b.iter_batched_ref(
+                    || {
+                        let manager = TaskManager::new();
+                        for _ in 0..batch_size {
+                            manager.submit(TASK_PAYLOAD.to_vec());
+                        }
+                        manager
+                    },
+                    |manager| {
+                        let mut received = 0;
+                        for _ in 0..batch_size {
+                            received += usize::from(manager.get_result(0.0).is_some());
+                        }
+                        assert_eq!(received, batch_size);
+                        black_box(received)
+                    },
+                    BatchSize::PerIteration,
+                );
+            },
+        );
+    }
 
     group.finish();
 }
 
-/// Benchmark 3: Compression
+/// Benchmark 4: Compression
 /// Tests compression performance with 1MB data
 fn bench_compression(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression");
@@ -91,7 +202,7 @@ fn bench_compression(c: &mut Criterion) {
     group.finish();
 }
 
-/// Benchmark 4: Concurrent Agents
+/// Benchmark 5: Concurrent Agents
 /// Tests performance with varying agent counts (100, 500, 1000)
 fn bench_concurrent_agents(c: &mut Criterion) {
     let mut group = c.benchmark_group("concurrent_agents");
@@ -112,28 +223,45 @@ fn bench_concurrent_agents(c: &mut Criterion) {
     group.finish();
 }
 
-/// Benchmark 5: Task Manager Operations
+/// Benchmark 6: Task Manager Operations
 /// Tests individual task manager operations
 fn bench_task_manager_ops(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_manager_ops");
 
-    let manager = TaskManager::new();
-
     group.bench_function("submit_single_task", |b: &mut criterion::Bencher| {
-        b.iter(|| manager.submit_task(black_box("benchmark_task")));
+        b.iter_batched_ref(
+            TaskManager::new,
+            |manager| {
+                manager.submit_task(black_box("benchmark_task"));
+                black_box(
+                    manager
+                        .get_result(0.0)
+                        .expect("synchronous identity transport must return one result"),
+                )
+            },
+            BatchSize::PerIteration,
+        );
     });
 
     group.bench_function("submit_retrieve_cycle", |b: &mut criterion::Bencher| {
-        b.iter(|| {
-            let _id = manager.submit_task(black_box("test"));
-            manager.get_result(1.0)
-        });
+        b.iter_batched_ref(
+            TaskManager::new,
+            |manager| {
+                manager.submit_task(black_box("test"));
+                black_box(
+                    manager
+                        .get_result(0.0)
+                        .expect("synchronous identity transport must return one result"),
+                )
+            },
+            BatchSize::PerIteration,
+        );
     });
 
     group.finish();
 }
 
-/// Benchmark 6: Compression with Different Data Types
+/// Benchmark 7: Compression with Different Data Types
 /// Tests compression on various data patterns
 fn bench_compression_patterns(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression_patterns");
@@ -162,7 +290,7 @@ fn bench_compression_patterns(c: &mut Criterion) {
     group.finish();
 }
 
-/// Benchmark 7: End-to-End Workflow
+/// Benchmark 8: End-to-End Workflow
 /// Tests complete task processing pipeline
 fn bench_e2e_workflow(c: &mut Criterion) {
     let mut group = c.benchmark_group("e2e_workflow");
@@ -183,6 +311,7 @@ criterion_group!(
     benches,
     bench_task_latency,
     bench_throughput,
+    bench_queue_throughput,
     bench_compression,
     bench_concurrent_agents,
     bench_task_manager_ops,
