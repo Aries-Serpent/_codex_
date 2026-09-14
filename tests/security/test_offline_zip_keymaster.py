@@ -426,15 +426,15 @@ def test_recover_archive_password_requires_candidate_clues(tmp_path: Path):
     password = "mask42"
     _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
 
-    with pytest.raises(ValueError, match=r"candidate-driven.*archive-only recovery is not supported"):
+    with pytest.raises(ValueError, match=r"(?i)candidate-driven.*archive-only recovery is not supported"):
         recover_archive_password(zip_path)
 
 
-def test_cli_recover_help_mentions_candidate_only_recovery_limitation(
+def test_cli_recover_and_unpack_help_mentions_candidate_only_recovery_limitation(
     capsys: pytest.CaptureFixture[str],
 ):
     with pytest.raises(SystemExit) as exc_info:
-        main(["recover", "--help"])
+        main(["recover-and-unpack", "--help"])
 
     assert exc_info.value.code == 0
     captured = capsys.readouterr()
