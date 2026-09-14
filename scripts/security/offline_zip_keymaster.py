@@ -104,7 +104,10 @@ def _mask_secret(value: str | None, *, keep: int = 2) -> str:
     text = str(value).strip()
     if not text:
         return "***"
-    return mask_token(text, show_last=max(1, keep))
+    # Passwords and candidate values must never be emitted in recover logs or
+    # report artifacts. Keep a stable digest for correlation without exposing the
+    # original secret material.
+    return f"sha256:{_sha256_hex(text)[:max(8, min(16, max(keep, 1) * 4))]}"
 
 
 def _sha256_hex(data: str | bytes) -> str:
@@ -523,7 +526,9 @@ def summarize_recovery_candidates(plan: RecoveryPlan, candidates: Iterable[str])
         "max_length": plan.max_length,
         "candidate_count": len(candidate_list),
         "unique_candidate_count": len(unique),
-        "top_candidates": unique[:10],
+        "top_candidates": [
+            _mask_secret(item) for item in unique[:10]
+        ],
         "hints": list(plan.hints),
         "report_path": plan.report_path,
     }
@@ -543,12 +548,13 @@ def build_recovery_audit_report(
     """Create a sanitized JSON report for the archive recovery lifecycle."""
     archive = Path(zip_path)
     stem = archive.stem if archive_stem is None else str(archive_stem)
+    output_name = None if output_dir is None else Path(output_dir).name
     report = {
-        "archive_path": str(archive),
+        "archive_name": archive.name,
         "archive_stem": stem,
-        "output_dir": str(Path(output_dir).resolve()) if output_dir is not None else None,
-        "source": source or "unknown",
-        "result": result,
+        "output_dir": output_name,
+        "source": _safe_log(source or "unknown"),
+        "result": _safe_log(str(result or "unknown")),
         "password_masked": _mask_secret(password),
         "candidates_tried": int(candidates_tried),
         "contains_secret": bool(password),
@@ -2040,6 +2046,7 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
     recover_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
     recover_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
+    recover_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
 
     recover_unpack_cmd = subparsers.add_parser("recover-and-unpack", help="Recover the archive password and unpack it into output/<archive_stem>/ in one step")
     recover_unpack_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
@@ -2148,7 +2155,21 @@ def main(argv: list[str] | None = None) -> int:
                 candidate_file=args.candidate_file,
                 max_candidates=args.max_candidates,
             )
+            report = build_recovery_audit_report(
+                args.zip_path,
+                ******
+                source="recover",
+                result="success",
+                archive_stem=Path(args.zip_path).stem,
+                candidates_tried=max(args.max_candidates, 1),
+            )
+            if getattr(args, "report_path", None):
+                report_path = Path(args.report_path)
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
             print(_safe_log(f"Recovered ZIP password for {Path(args.zip_path).name}: {_mask_secret(password)}"))
+            if getattr(args, "report_path", None):
+                print(_safe_log(json.dumps(report, sort_keys=True)))
             return 0
 
         if args.command == "recover-and-unpack":
@@ -2181,9 +2202,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             report = build_recovery_audit_report(
                 args.zip_path,
-                password=password,
+                ******
                 output_dir=extracted_path,
-                source="candidate-validation",
+                source="recover-and-unpack",
                 result="success",
                 archive_stem=Path(args.zip_path).stem,
                 candidates_tried=max(args.max_candidates, 1),
