@@ -1,3 +1,31 @@
+## SESSION SUMMARY — 2026-09-14T09:44:55Z — PR #5613 cognitive pre-flight follow-up
+
+### Objective
+Close the active PR #5613 pre-flight follow-up by removing accidental generated-file churn and refreshing the branch accountability trail without reintroducing the reverted workflow dependency bumps.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Re-checked the active maintainer comments and latest PR workflow state before making any further branch changes.
+2. Restored the previous `.codex/session_startup_packet.json` content so the branch no longer carries timestamp-only generated drift.
+3. Updated the root accountability report and root changelog so the active branch state matches the current pre-flight governance expectations.
+
+### Validation
+- `git diff HEAD~1..HEAD -- .codex/session_startup_packet.json` → confirmed the prior progress-only commit changed only `generated_at`.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5613` → rerun after this session entry is committed.
+
+### Governance
+- REQ-4: Root `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` refreshed in the active session.
+- REQ-5: Root `CHANGELOG.md` refreshed in the same commit.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent`
+- [x] `workflow-ci-fixer`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-09-10T01:31:28Z — PR #5608 dependency bump + governance readiness follow-up
 
 **Objective:** Close the remaining merge-readiness governance gaps on PR #5608 by verifying the active dependency bump, preserving the direct dependency fix, and refreshing the daily PDA/accountability evidence without widening scope.

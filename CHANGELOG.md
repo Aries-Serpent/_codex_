@@ -4,6 +4,7 @@
 
 ### Fixed (auto-update — PR #5613)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5613 (SHA `9a93b44f`) at 2026-09-14T09:34:57Z [auto-generated]
+- Follow-up: restored the previous `.codex/session_startup_packet.json` content to remove timestamp-only churn from the accidental progress-only commit and refreshed the active accountability report for the current PR session.
 
 ### Fixed — PR #5608 dependency bump + governance readiness follow-up
 - Confirmed the active `accelerate` dependency bump remains consistent with the repo’s direct runtime and CPU manifests and preserved the guarded `bcrypt` dependency fix required by the config-management regression path.

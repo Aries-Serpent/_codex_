@@ -1,3 +1,29 @@
+## Session: 2026-09-14T09:44:55Z — PR #5613 cognitive pre-flight follow-up
+
+**Objective:** Close the active PR #5613 cognitive-preflight follow-up by removing accidental startup-packet timestamp churn and refreshing the required accountability trail without reintroducing the reverted workflow dependency bumps.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Re-checked the current maintainer comments and latest PR workflow state before making any additional file changes.
+2. Restored the previous `.codex/session_startup_packet.json` content so the branch no longer carries timestamp-only generated churn.
+3. Kept the PR-aligned accountability trail current for the active review cycle after the CI-rescue workflow rollback.
+
+**Validation:**
+- `git diff HEAD~1..HEAD -- .codex/session_startup_packet.json` → confirmed the previous commit contained timestamp-only churn before restore.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5613` → rerun after this session entry is committed.
+
+**Governance:**
+- REQ-4: This report updated for PR #5613 in the active session.
+- REQ-5: Root `CHANGELOG.md` already contains the PR #5613 `[Unreleased]` entry carried forward in the active branch state.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent`
+- [x] `workflow-ci-fixer`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-09-10T02:23:51Z — PR #5608 merge-readiness + Audit QA follow-up
 
 **Objective:** Finalize the remaining repo-level blockers on the active stack PR by resolving the Audit QA Ruff issue in `src/codex/optimization/pricing_engine.py` and refreshing the current session-governance artifacts so the daily PDA and accountability gates remain synchronized.
