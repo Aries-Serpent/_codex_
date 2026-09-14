@@ -21,7 +21,7 @@ jobs:
     if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
     steps:
     - name: Checkout PR branch (or main on schedule)
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: ${{ github.head_ref || 'main' }}
@@ -183,7 +183,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN

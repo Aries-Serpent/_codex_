@@ -47,7 +47,7 @@ jobs:
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -97,7 +97,7 @@ jobs:
       run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
     - name: Upload wheelhouse with manifest
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         path: ./wheelhouse
         retention-days: 30
@@ -118,7 +118,7 @@ jobs:
         - cpu
         - gpu
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -157,7 +157,7 @@ jobs:
         \ grype-${{ matrix.variant }}.sarif \\\n  --fail-on critical\n"
       continue-on-error: true
     - name: Upload SBOM artifacts
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         path: 'sbom-${{ matrix.variant }}.*.json
 
@@ -189,7 +189,7 @@ jobs:
         - '3.12'
         - '3.13'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Docker Buildx
@@ -225,7 +225,7 @@ jobs:
       contents: read
       issues: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Download current baseline (amd64)
@@ -278,7 +278,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Set up Python
@@ -319,7 +319,7 @@ jobs:
         \ \"::warning::safety found HIGH issues\"\nfi\n"
     - name: Upload audit artifacts
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v5
       with:
         path: 'workbench/security/ci_pip_audit.json
 
