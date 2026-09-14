@@ -218,9 +218,15 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             print(f"{run['id']}: {run['name']} - {run['conclusion']}")
         ```
     """
+    owner = params.get("owner")
+    repo = params.get("repo")
+    ref = params.get("ref")
     try:
         # Validate input
         input_data = ListCheckRunsInput(**params)
+        owner = input_data.owner
+        repo = input_data.repo
+        ref = input_data.ref
 
         # Get client
         client = _get_github_client()
@@ -257,13 +263,17 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             "check_runs": check_runs_list,
         }
 
-    except Exception as e:
-        type(e).__name__
-        logger.error("Failed to list check runs: <ERROR_TYPE>", exc_info=True)
+    except Exception as exc:
+        logger.exception(
+            "Failed to list check runs for %s/%s ref %s",
+            owner,
+            repo,
+            ref,
+        )
         return {
             "success": False,
-            "error": str(e),
-            "error_type": type(e).__name__,
+            "error": str(exc),
+            "error_type": type(exc).__name__,
         }
 
 

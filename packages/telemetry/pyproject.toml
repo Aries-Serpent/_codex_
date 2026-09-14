@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-ml-telemetry"
+dynamic = ["version"]
+description = "Framework-neutral telemetry contracts and Prometheus export helpers for Codex ML"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+keywords = ["machine-learning", "observability", "prometheus", "telemetry"]
+authors = [
+  { name = "Aries Serpent" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[project.optional-dependencies]
+prometheus = ["prometheus-client>=0.26.0"]
+test = [
+  "prometheus-client>=0.26.0",
+  "pytest>=9.0.3,<10",
+]
+
+[project.urls]
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+Source = "https://github.com/Aries-Serpent/_codex_"
+
+[tool.hatch.version]
+path = "src/codex_ml_telemetry/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_ml_telemetry"]
+
+[tool.coverage.run]
+source_pkgs = ["codex_ml_telemetry", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/codex_ml_telemetry/__about__.py",
+]
+
+[tool.coverage.paths]
+codex_ml_telemetry = ["src/codex_ml_telemetry", "*/codex-ml-telemetry/src/codex_ml_telemetry"]
+tests = ["tests", "*/codex-ml-telemetry/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
