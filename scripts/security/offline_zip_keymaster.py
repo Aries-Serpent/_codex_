@@ -98,6 +98,15 @@ def _safe_log(message: str) -> str:
     return sanitize_log(message, max_length=500)
 
 
+def _mask_secret(value: str | None, *, keep: int = 2) -> str:
+    if value is None:
+        return "***"
+    text = str(value).strip()
+    if not text:
+        return "***"
+    return mask_token(text, show_last=max(1, keep))
+
+
 def _sha256_hex(data: str | bytes) -> str:
     if isinstance(data, str):
         data = data.encode("utf-8")
@@ -519,6 +528,32 @@ def summarize_recovery_candidates(plan: RecoveryPlan, candidates: Iterable[str])
         "report_path": plan.report_path,
     }
     return summary
+
+
+def build_recovery_audit_report(
+    zip_path: str | Path,
+    *,
+    password: str | None = None,
+    output_dir: str | Path | None = None,
+    source: str | None = None,
+    result: str = "success",
+    archive_stem: str | None = None,
+    candidates_tried: int = 0,
+) -> dict[str, Any]:
+    """Create a sanitized JSON report for the archive recovery lifecycle."""
+    archive = Path(zip_path)
+    stem = archive.stem if archive_stem is None else str(archive_stem)
+    report = {
+        "archive_path": str(archive),
+        "archive_stem": stem,
+        "output_dir": str(Path(output_dir).resolve()) if output_dir is not None else None,
+        "source": source or "unknown",
+        "result": result,
+        "password_masked": _mask_secret(password),
+        "candidates_tried": int(candidates_tried),
+        "contains_secret": bool(password),
+    }
+    return {key: value for key, value in report.items() if value is not None}
 
 
 def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> dict[str, str]:
@@ -2006,6 +2041,21 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
     recover_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
 
+    recover_unpack_cmd = subparsers.add_parser("recover-and-unpack", help="Recover the archive password and unpack it into output/<archive_stem>/ in one step")
+    recover_unpack_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
+    recover_unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the output self-titled archive bundle")
+    recover_unpack_cmd.add_argument("--wordlist", help="Optional password dictionary file")
+    recover_unpack_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
+    recover_unpack_cmd.add_argument("--bruteforce", action="store_true", help="Enable bounded brute-force generation for a small character set")
+    recover_unpack_cmd.add_argument("--min-length", type=int, default=1, help="Minimum brute-force length")
+    recover_unpack_cmd.add_argument("--max-length", type=int, default=4, help="Maximum brute-force length")
+    recover_unpack_cmd.add_argument("--charset", default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", help="Character set used for brute-force generation")
+    recover_unpack_cmd.add_argument("--seed", help="Optional seed or pattern used to generate candidate variants")
+    recover_unpack_cmd.add_argument("--candidate-file", help="Optional file containing one candidate password per line")
+    recover_unpack_cmd.add_argument("--max-candidates", type=int, default=20000, help="Maximum number of candidate passwords to test")
+    recover_unpack_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
+    recover_unpack_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
+
     recover_plan_cmd = subparsers.add_parser("recover-plan", help="Build a recovery plan and candidate queue without immediately testing the archive")
     recover_plan_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_plan_cmd.add_argument("--wordlist", help="Optional password dictionary file")
@@ -2098,7 +2148,52 @@ def main(argv: list[str] | None = None) -> int:
                 candidate_file=args.candidate_file,
                 max_candidates=args.max_candidates,
             )
-            print(_safe_log(f"Recovered ZIP password for {args.zip_path}: {password}"))
+            print(_safe_log(f"Recovered ZIP password for {Path(args.zip_path).name}: {_mask_secret(password)}"))
+            return 0
+
+        if args.command == "recover-and-unpack":
+            password = recover_archive_password(
+                args.zip_path,
+                wordlist=args.wordlist,
+                mask=args.mask,
+                brute_force=args.bruteforce,
+                min_length=args.min_length,
+                max_length=args.max_length,
+                charset=args.charset,
+                seed=args.seed,
+                rules=args.rules,
+                candidate_file=args.candidate_file,
+                max_candidates=args.max_candidates,
+            )
+            extracted_path = decrypt_and_unpack(
+                args.zip_path,
+                output_dir=args.output_dir,
+                wordlist=args.wordlist,
+                mask=args.mask,
+                brute_force=args.bruteforce,
+                min_length=args.min_length,
+                max_length=args.max_length,
+                charset=args.charset,
+                seed=args.seed,
+                rules=args.rules,
+                candidate_file=args.candidate_file,
+                max_candidates=args.max_candidates,
+            )
+            report = build_recovery_audit_report(
+                args.zip_path,
+                password=password,
+                output_dir=extracted_path,
+                source="candidate-validation",
+                result="success",
+                archive_stem=Path(args.zip_path).stem,
+                candidates_tried=max(args.max_candidates, 1),
+            )
+            if getattr(args, "report_path", None):
+                report_path = Path(args.report_path)
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(json.dumps(report, sort_keys=True, indent=2), encoding="utf-8")
+            print(_safe_log(json.dumps(report, sort_keys=True)))
+            print(_safe_log(f"Recovered password for {Path(args.zip_path).name}: {_mask_secret(password)}; extracted to {extracted_path}"))
             return 0
 
         if args.command == "recover-plan":
