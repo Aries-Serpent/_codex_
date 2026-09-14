@@ -1199,6 +1199,13 @@ def chronicle_agent_chain(focus: str, as_json: bool) -> None:
     default=None,
     help="Optional JSON output path",
 )
+@click.option(
+    "--timeout-seconds",
+    type=click.FloatRange(min=0, min_open=True),
+    default=120.0,
+    show_default=True,
+    help="Maximum diagnostics duration; applies to --check-only",
+)
 @click.option("--json", "as_json", is_flag=True, help="Emit JSON instead of text")
 def chronicle_auto_fix(
     check_only: bool,
@@ -1206,6 +1213,7 @@ def chronicle_auto_fix(
     pattern_name: str | None,
     dry_run: bool,
     output: Path | None,
+    timeout_seconds: float,
     as_json: bool,
 ) -> None:
     """Run the campaign's CI auto-fix wrappers."""
@@ -1218,6 +1226,7 @@ def chronicle_auto_fix(
             pattern=pattern,
             pattern_name=pattern_name,
             output_path=output,
+            timeout_seconds=timeout_seconds,
         )
     else:
         from scripts.ci.bulk_remediation_orchestrator import run_bulk_remediation
@@ -1230,26 +1239,29 @@ def chronicle_auto_fix(
             dry_run=dry_run,
         )
 
-    _append_campaign_metric(
-        "autofix_invoked",
-        {
-            "mode": "diagnostics" if check_only else "remediation",
-            "pattern": pattern or 0,
-            "pattern_name": pattern_name or "",
-            "status": report.get("status", "unknown"),
-        },
-    )
+    if not check_only:
+        _append_campaign_metric(
+            "autofix_invoked",
+            {
+                "mode": "remediation",
+                "pattern": pattern or 0,
+                "pattern_name": pattern_name or "",
+                "status": report.get("status", "unknown"),
+            },
+        )
 
     if as_json:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
-        return
+    else:
+        click.echo(f"Status: {report.get('status', 'unknown')}")
+        click.echo(f"Total issues: {report.get('total_issues', 0)}")
+        click.echo(f"Auto-fixable: {report.get('auto_fixable', 0)}")
+        click.echo(f"Manual review: {report.get('manual_review', 0)}")
+        for next_step in report.get("next_steps", []):
+            click.echo(f"- {next_step}")
 
-    click.echo(f"Status: {report.get('status', 'unknown')}")
-    click.echo(f"Total issues: {report.get('total_issues', 0)}")
-    click.echo(f"Auto-fixable: {report.get('auto_fixable', 0)}")
-    click.echo(f"Manual review: {report.get('manual_review', 0)}")
-    for next_step in report.get("next_steps", []):
-        click.echo(f"- {next_step}")
+    if report.get("status") == "timed_out":
+        raise click.exceptions.Exit(124)
 
 
 @chronicle.command("improve")

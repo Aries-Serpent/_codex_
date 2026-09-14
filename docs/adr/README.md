@@ -1,5 +1,5 @@
 # Architecture Decision Records
-**Last Updated:** 2026-07-11
+**Last Updated:** 2026-09-12
 **Version:** v0.2.0
 
 **Last Updated: 2026-06-22
@@ -20,6 +20,7 @@ with the following required sections: **Status**, **Date**, **Context**, **Decis
 | [ADR-002](ADR-002-resilience-pattern.md) | Three-Layer Resilience: Circuit Breaker + Retry + Graceful Degradation | Accepted | 2025-01-15 |
 | [ADR-003](ADR-003-continuous-learning-architecture.md) | Event-Driven Continuous Learning via Drift Trigger EvalGate Promote | Accepted | 2025-01-15 |
 | [ADR-004](ADR-004-testing-strategy.md) | Multi-Layer Testing: Unit + Integration + Regression + Property + Fuzz + Chaos | Accepted | 2025-01-15 |
+| [ADR-009](ADR-009-federated-package-boundaries.md) | Federated Package Boundaries | Accepted | 2026-09-12 |
 
 ## Status Definitions
 
