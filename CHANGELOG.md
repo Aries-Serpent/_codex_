@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5613)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5613 (SHA `9a93b44f`) at 2026-09-14T09:34:57Z [auto-generated]
+- Follow-up: restored the previous `.codex/session_startup_packet.json` content to remove timestamp-only churn from the accidental progress-only commit and refreshed the active accountability report for the current PR session.
+
 ### Reviewed — branch-wide CI and governance evidence
 - Reviewed 37 commits across 129 files with 61 agent launches; 13 commits were metadata-only.
 - Confirmed successor run `34713850561` reached `action_required` instead of the preceding Rust run's `startup_failure`, showing startup validation passed; the local Chronicle database contained no records.
