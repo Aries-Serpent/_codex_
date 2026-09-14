@@ -1,10 +1,55 @@
 version: 2.0.0
 last_updated: '2026-09-04T18:00:00Z'
-total_agents: 117
-active_agents: 98
+total_agents: 118
+active_agents: 99
 archived_agents: 19
 enforcement_tier: MIXED
 agents:
+- id: offline-zip-recovery-agent
+  name: Offline ZIP Recovery Agent
+  version: 1.0.0
+  directory: .github/agents
+  file: .github/agents/offline-zip-recovery-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: archive_recovery
+  purpose: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  capabilities:
+  - archive_recovery
+  - zip_forensics
+  - offline_recovery
+  - safe_extraction
+  - sanitization
+  - key_management
+  - air_gap_security
+  integration_points:
+  - scripts/security/offline_zip_keymaster.py
+  - tests/security/test_offline_zip_keymaster.py
+  priority: high
+  created: '2026-09-14T00:00:00Z'
+  updated: '2026-09-14T00:00:00Z'
+  maintainer: mbaetiong
+  enforcement_tier: STANDARD
+  autonomy_model: D
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  consolidation_priority: false
+  role: specialist
+  description: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  capability_tags:
+  - archive_recovery
+  - zip_forensics
+  - offline_recovery
+  - safe_extraction
+  - sanitization
+  - key_management
+  - air_gap_security
 - id: github-guru-agent
   name: Github Guru Agent
   version: 1.1.0
