@@ -2,10 +2,24 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import subprocess
+import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import pytest
+
 from security.audit_logger import AuditLogger, log_audit_event
+
+
+def _rehash(record: dict[str, object]) -> None:
+    encoded = json.dumps(
+        {key: value for key, value in record.items() if key != "hash"}, sort_keys=True
+    ).encode("utf-8")
+    record["hash"] = hashlib.sha256(encoded).hexdigest()
 
 # ---------------------------------------------------------------------------
 # AuditLogger construction
@@ -42,6 +56,73 @@ def test_audit_logger_appends_and_verifies(tmp_path: Path) -> None:
 
     assert first["hash"] != second["hash"], "Condition must be true"
     assert al.verify_chain() is True, "Condition must be true"
+
+
+def test_audit_logger_emits_canonical_envelope_with_extensions_in_payload(
+    tmp_path: Path,
+) -> None:
+    al = AuditLogger(tmp_path / "audit.log")
+
+    record = al.append({"action": "create", "tenant": "example"}, ts=0)
+
+    event = record["event"]
+    assert set(event) == {
+        "schema_version",
+        "event_id",
+        "emitted_at",
+        "kind",
+        "source",
+        "source_version",
+        "correlation_id",
+        "payload",
+    }
+    assert event["schema_version"] == "1.0"
+    assert event["kind"] == "security.audit"
+    assert event["payload"] == {"action": "create", "tenant": "example"}
+    assert "tenant" not in event
+
+
+def test_verify_chain_accepts_legacy_event_dictionary(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    record: dict[str, object] = {
+        "ts": 0.0,
+        "event": {"action": "legacy"},
+        "prev_hash": "0" * 64,
+    }
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+def test_verify_chain_accepts_legacy_payload_schema_version(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    record: dict[str, object] = {
+        "ts": 0.0,
+        "event": {"action": "legacy", "schema_version": "legacy-v2"},
+        "prev_hash": "0" * 64,
+    }
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+def test_verify_chain_negotiates_versions_and_rejects_envelope_extensions(
+    tmp_path: Path,
+) -> None:
+    log_path = tmp_path / "audit.log"
+    logger = AuditLogger(log_path)
+    logger.append({"action": "create"}, ts=0)
+
+    assert AuditLogger(log_path, accepted_event_versions={"2.0"}).verify_chain() is False
+
+    record = json.loads(log_path.read_text(encoding="utf-8"))
+    record["event"]["tenant"] = "not-allowed-at-envelope-level"
+    _rehash(record)
+    log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+
+    assert logger.verify_chain() is False
 
 
 def test_audit_logger_detects_tampering(tmp_path: Path) -> None:
@@ -115,6 +196,142 @@ def test_audit_logger_multiple_records_chain(tmp_path: Path) -> None:
     assert log_path.exists(), "Condition must be true"
 
 
+def test_concurrent_appends_preserve_every_record_and_chain(tmp_path: Path) -> None:
+    log_path = tmp_path / "audit.log"
+    event_count = 40
+
+    def append_event(sequence: int) -> None:
+        AuditLogger(log_path).append({"sequence": sequence}, ts=float(sequence))
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        list(executor.map(append_event, range(event_count)))
+
+    records = [
+        json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(records) == event_count
+    assert {record["event"]["payload"]["sequence"] for record in records} == set(
+        range(event_count)
+    )
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+def test_separate_process_appends_preserve_every_record_and_chain(tmp_path: Path) -> None:
+    """Spawned OS processes must serialize complete hash-chain updates."""
+
+    log_path = tmp_path / "audit.log"
+    process_count = 4
+    events_per_process = 10
+    start_path = tmp_path / "start"
+    child_script = """
+import sys
+import time
+from pathlib import Path
+from security.audit_logger import AuditLogger
+
+log_path, start_path, ready_path = map(Path, sys.argv[1:4])
+worker_id, event_count = map(int, sys.argv[4:6])
+ready_path.touch()
+deadline = time.monotonic() + 10
+while not start_path.exists():
+    if time.monotonic() >= deadline:
+        raise TimeoutError("audit contention start signal was not received")
+    time.sleep(0.01)
+logger = AuditLogger(log_path)
+for sequence in range(event_count):
+    logger.append(
+        {"worker_id": worker_id, "sequence": sequence},
+        ts=float(worker_id * event_count + sequence),
+    )
+"""
+    processes = [
+        subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                child_script,
+                str(log_path),
+                str(start_path),
+                str(tmp_path / f"ready-{worker_id}"),
+                str(worker_id),
+                str(events_per_process),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        for worker_id in range(process_count)
+    ]
+
+    try:
+        ready_deadline = time.monotonic() + 10
+        while not all(
+            (tmp_path / f"ready-{worker_id}").exists()
+            for worker_id in range(process_count)
+        ):
+            assert time.monotonic() < ready_deadline, "audit writers did not become ready"
+            time.sleep(0.01)
+        start_path.touch()
+        for process in processes:
+            _stdout, stderr = process.communicate(timeout=20)
+            assert process.returncode == 0, stderr
+    finally:
+        for process in processes:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+
+    records = [
+        json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()
+    ]
+    observed = {
+        (
+            record["event"]["payload"]["worker_id"],
+            record["event"]["payload"]["sequence"],
+        )
+        for record in records
+    }
+    expected = {
+        (worker_id, sequence)
+        for worker_id in range(process_count)
+        for sequence in range(events_per_process)
+    }
+    assert len(records) == process_count * events_per_process
+    assert observed == expected
+    assert AuditLogger(log_path).verify_chain() is True
+
+
+@pytest.mark.parametrize(
+    "corrupt_content",
+    [
+        b'{"event": ',
+        b"\xff\xfe\n",
+        b"null\n",
+    ],
+    ids=["truncated-json", "invalid-utf8", "non-object"],
+)
+def test_verify_chain_returns_false_for_corrupt_content(
+    tmp_path: Path, corrupt_content: bytes
+) -> None:
+    log_path = tmp_path / "audit.log"
+    log_path.write_bytes(corrupt_content)
+
+    assert AuditLogger(log_path).verify_chain() is False
+
+
+def test_verify_chain_propagates_io_errors(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log_path = tmp_path / "audit.log"
+    log_path.write_text("{}\n", encoding="utf-8")
+
+    def fail_read(*args: object, **kwargs: object) -> str:
+        raise OSError("storage unavailable")
+
+    monkeypatch.setattr(Path, "read_text", fail_read)
+
+    with pytest.raises(OSError, match="storage unavailable"):
+        AuditLogger(log_path).verify_chain()
+
+
 def test_append_uses_current_time_when_ts_not_provided(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(log_path)
@@ -138,10 +355,11 @@ def test_log_event_writes_structured_entry(tmp_path: Path) -> None:
     )
     assert log_path.exists(), "Condition must be true"
     data = json.loads(log_path.read_text(encoding="utf-8").strip())
-    assert data["event"]["event_type"] == "authentication", "Data must not be empty"
-    assert data["event"]["user"] == "testuser", "Data must not be empty"
-    assert data["event"]["action"] == "login", "Data must not be empty"
-    assert data["event"]["resource"] == "/api/login", "Data must not be empty"
+    payload = data["event"]["payload"]
+    assert payload["event_type"] == "authentication", "Data must not be empty"
+    assert payload["user"] == "testuser", "Data must not be empty"
+    assert payload["action"] == "login", "Data must not be empty"
+    assert payload["resource"] == "/api/login", "Data must not be empty"
 
 
 def test_log_event_chain_is_valid(tmp_path: Path) -> None:
@@ -168,24 +386,25 @@ def test_log_audit_event_records_content(tmp_path: Path) -> None:
     log_file = tmp_path / "audit.log"
     content = log_file.read_text(encoding="utf-8")
     data = json.loads(content.strip())
-    assert data["event"]["user"] == "alice", "Data must not be empty"
-    assert data["event"]["action"] == "login", "Data must not be empty"
-    assert data["event"]["type"] == "authentication", "Data must not be empty"
-    assert data["event"]["success"] is True, "Data must not be empty"
+    payload = data["event"]["payload"]
+    assert payload["user"] == "alice", "Data must not be empty"
+    assert payload["action"] == "login", "Data must not be empty"
+    assert payload["type"] == "authentication", "Data must not be empty"
+    assert payload["success"] is True, "Data must not be empty"
 
 
 def test_log_audit_event_failure_recorded(tmp_path: Path) -> None:
     log_audit_event("authentication", "bob", "login", success=False, log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is False, "Data must not be empty"
+    assert data["event"]["payload"]["success"] is False, "Data must not be empty"
 
 
 def test_log_audit_event_default_success(tmp_path: Path) -> None:
     log_audit_event("access", "user1", "read", log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is True, "Data must not be empty"
+    assert data["event"]["payload"]["success"] is True, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------

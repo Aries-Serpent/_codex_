@@ -74,6 +74,9 @@ htmlcov/
 temp/
 tmp/
 
+# Rust build output
+/target/
+
 # DVC
 .dvc/cache/
 .dvc/tmp/
