@@ -42,7 +42,7 @@ dashmap = "6.2.1"  # Concurrent hash map for swarm state aggregation
 serde = { version = "1.0.197", features = ["derive"] }
 rmp-serde = "1.1.2"  # Binary serialization for agent state
 lz4 = "1.24.0"  # Fast compression for real-time agent streams
-zstd = { version = "0.13.0", features = ["zstdmt"] }  # High-ratio compression
+zstd = { version = "0.14.0", features = ["zstdmt"] }  # High-ratio compression
 flate2 = "1.1"  # DEFLATE compression for Compression module
 
 # System Interfaces & Communication
