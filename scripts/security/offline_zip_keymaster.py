@@ -1275,10 +1275,30 @@ def recover_archive_password(
     max_candidates: int = 20000,
     candidate_file: str | Path | None = None,
 ) -> str:
-    """Try a bounded set of local password candidates against a ZIP archive."""
+    """Try a bounded set of local password candidates against a ZIP archive.
+
+    This tool is intentionally candidate-driven. It does not perform generic
+    archive-only password recovery without external clues such as a wordlist,
+    candidate file, mask pattern, brute-force seed, or mutation rules.
+    """
     archive_path = Path(zip_path).resolve()
     if not archive_path.exists():
         raise FileNotFoundError(f"Archive not found: {archive_path}")
+
+    has_candidate_inputs = bool(
+        wordlist
+        or candidate_file
+        or mask
+        or brute_force
+        or seed
+        or rules
+        or custom_generator
+    )
+    if not has_candidate_inputs:
+        raise ValueError(
+            "ZIP password recovery is candidate-driven and requires at least one clue source "
+            "(wordlist, candidate file, mask, seed, rules, or brute-force). Archive-only recovery is not supported."
+        )
 
     with zipfile.ZipFile(archive_path, "r") as zf:
         infos = zf.infolist()
@@ -2034,7 +2054,11 @@ def _build_parser() -> argparse.ArgumentParser:
     encrypt_cmd.add_argument("--zip-out", required=True, help="Output ZIP path")
     encrypt_cmd.add_argument("--key-file", required=True, help="Local key manifest or key file")
 
-    recover_cmd = subparsers.add_parser("recover", help="Recover a password-protected ZIP archive by testing candidate passwords locally")
+    recover_cmd = subparsers.add_parser(
+        "recover",
+        help="Recover a password-protected ZIP archive by testing candidate passwords locally",
+        description="Recover a password-protected ZIP archive via local candidate testing. This tool is intentionally candidate-driven and cannot recover a ZIP password from the archive alone without clues.",
+    )
     recover_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_cmd.add_argument("--wordlist", help="Optional password dictionary file")
     recover_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")
@@ -2048,7 +2072,11 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
     recover_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
 
-    recover_unpack_cmd = subparsers.add_parser("recover-and-unpack", help="Recover the archive password and unpack it into output/<archive_stem>/ in one step")
+    recover_unpack_cmd = subparsers.add_parser(
+        "recover-and-unpack",
+        help="Recover the archive password and unpack it into output/<archive_stem>/ in one step",
+        description="Recover a password-protected ZIP archive and unpack it into a self-titled folder. This workflow is candidate-driven and requires a wordlist, mask, seed, candidate file, or brute-force input; archive-only recovery is not supported.",
+    )
     recover_unpack_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the output self-titled archive bundle")
     recover_unpack_cmd.add_argument("--wordlist", help="Optional password dictionary file")
@@ -2063,7 +2091,11 @@ def _build_parser() -> argparse.ArgumentParser:
     recover_unpack_cmd.add_argument("--rules", nargs="*", default=[], help="Optional password mutation rules: lower upper title reverse append:foo prepend:foo")
     recover_unpack_cmd.add_argument("--report-path", help="Optional path for a sanitized JSON recovery audit report")
 
-    recover_plan_cmd = subparsers.add_parser("recover-plan", help="Build a recovery plan and candidate queue without immediately testing the archive")
+    recover_plan_cmd = subparsers.add_parser(
+        "recover-plan",
+        help="Build a recovery plan and candidate queue without immediately testing the archive",
+        description="Create a structured candidate-driven recovery plan. ZIP password recovery depends on clue material; archive-only recovery is intentionally unsupported.",
+    )
     recover_plan_cmd.add_argument("--zip-path", required=True, help="ZIP archive to recover")
     recover_plan_cmd.add_argument("--wordlist", help="Optional password dictionary file")
     recover_plan_cmd.add_argument("--mask", help="Optional mask pattern such as '?l?l?d?d' or 'audit-?d?d'")

@@ -172,6 +172,22 @@ def test_standard_zipfile_password_protected_archive_recovers_and_unpacks(tmp_pa
     assert (extracted / "hello.txt").read_text(encoding="utf-8") == "secret data\n"
 
 
+def test_recover_requires_candidate_inputs_for_archive_only_attempt(tmp_path: Path):
+    archive_path = tmp_path / "standard_passworded.zip"
+    password = "audit-42"
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    source_file = source_dir / "hello.txt"
+    source_file.write_text("secret data\n", encoding="utf-8")
+
+    if not shutil.which("zip"):
+        pytest.skip("zip CLI is required to generate a real encrypted ZIP archive")
+    subprocess.run(["zip", "-j", "-P", password, str(archive_path), str(source_file)], check=True, capture_output=True)
+
+    with pytest.raises(ValueError, match="candidate-driven|wordlist|mask|seed|brute-force|archive-only"):
+        recover_archive_password(archive_path)
+
+
 def test_unpack_requires_resolved_key_without_matching_store(sample_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     key_file = tmp_path / "archive.key"
     generate_local_key(key_file)
@@ -403,6 +419,28 @@ def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
     recovered = recover_archive_password(zip_path, wordlist=wordlist)
 
     assert recovered == password
+
+
+def test_recover_archive_password_requires_candidate_clues(tmp_path: Path):
+    zip_path = tmp_path / "candidate_required.zip"
+    password = "mask42"
+    _write_local_password_archive(zip_path, password, files={"secret.txt": b"value"})
+
+    with pytest.raises(ValueError, match=r"candidate-driven.*archive-only recovery is not supported"):
+        recover_archive_password(zip_path)
+
+
+def test_cli_recover_help_mentions_candidate_only_recovery_limitation(
+    capsys: pytest.CaptureFixture[str],
+):
+    with pytest.raises(SystemExit) as exc_info:
+        main(["recover", "--help"])
+
+    assert exc_info.value.code == 0
+    captured = capsys.readouterr()
+    help_text = captured.out.lower()
+    assert "candidate-driven" in help_text
+    assert "archive-only recovery is not supported" in help_text
 
 
 def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
