@@ -52,13 +52,16 @@ except ImportError:  # pragma: no cover - fallback for lightweight runtime
             text = str(value)
             return text[:max_length] + ("..." if len(text) > max_length else "")
 
-        def mask_token(value: str | None, *, keep: int = 4) -> str:
+        def mask_token(
+            value: str | None, *, keep: int = 4, show_last: int | None = None
+        ) -> str:
+            effective_keep = show_last if show_last is not None else keep
             if not value:
                 return "<redacted>"
             token = str(value)
-            if len(token) <= keep * 2:
+            if len(token) <= effective_keep * 2:
                 return "<redacted>"
-            return f"{token[:keep]}...{token[-keep:]}"
+            return f"{token[:effective_keep]}...{token[-effective_keep:]}"
 
     SecureStorage = None  # type: ignore[assignment]
 

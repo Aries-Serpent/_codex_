@@ -10,11 +10,11 @@ from pathlib import Path
 
 import pytest
 
-from security.encryption import encrypt
-
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
+
+from security.encryption import encrypt
 
 from scripts.security.offline_zip_keymaster import (  # noqa: E402
     MAX_MEMBER_BYTES,
@@ -450,8 +450,8 @@ def test_unpack_raises_when_nested_zip_recursion_exceeds_limit(tmp_path: Path):
         unpack_archive(previous, key_path, output_dir=tmp_path / "depth_output")
 
 
-def test_generate_password_candidates_supports_dictionary_mask_and_seed():
-    wordlist = Path("/tmp/test_wordlist.txt")
+def test_generate_password_candidates_supports_dictionary_mask_and_seed(tmp_path: Path):
+    wordlist = tmp_path / "test_wordlist.txt"
     wordlist.write_text("alpha\nBeta\n", encoding="utf-8")
     candidates = generate_password_candidates(
         wordlist=wordlist,
