@@ -1,0 +1,188 @@
+name: Offline ZIP Artifact Unpacker
+
+'on':
+  workflow_dispatch:
+    inputs:
+      zip_path:
+        description: Repo-relative path to a ZIP file to unpack
+        required: false
+        default: ''
+        type: string
+      output_dir:
+        description: Parent directory to create for the extracted self-titled folder
+        required: false
+        default: output
+        type: string
+      artifact_name:
+        description: Downloadable artifact name for the extracted archive contents
+        required: false
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      zip_path:
+        description: Repo-relative path to a ZIP file to unpack
+        required: false
+        type: string
+      output_dir:
+        description: Parent directory to create for the extracted self-titled folder
+        required: false
+        default: output
+        type: string
+      artifact_name:
+        description: Downloadable artifact name for the extracted archive contents
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unpack-zip:
+    name: Unpack provided ZIP into a self-titled folder
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12.13
+          cache-tier: common
+
+      - name: Resolve ZIP source
+        id: resolve
+        shell: bash
+        env:
+          ZIP_PATH: ${{ inputs.zip_path }}
+        run: |
+          set -euo pipefail
+
+          WORKSPACE_ROOT="${GITHUB_WORKSPACE:-$PWD}"
+          ZIP_SOURCE=""
+          SOURCE_IS_REPO_PATH="false"
+          if [ -n "${ZIP_PATH}" ]; then
+            SOURCE_IS_REPO_PATH="true"
+            case "${ZIP_PATH}" in
+              "")
+                echo "ZIP path cannot be empty." >&2
+                exit 1
+                ;;
+              /*)
+                echo "ZIP path must be repo-relative, not absolute: ${ZIP_PATH}" >&2
+                exit 1
+                ;;
+            esac
+
+            ZIP_SOURCE="$(python -c 'import os, sys; from pathlib import Path; root = Path(sys.argv[1]).resolve(); relative = Path(sys.argv[2]); path = (root / relative).resolve(); sys.exit(2) if os.path.commonpath([str(root), str(path)]) != str(root) else None; print(path)' "$WORKSPACE_ROOT" "$ZIP_PATH")" || {
+              echo "ZIP path escapes the repository workspace: ${ZIP_PATH}" >&2
+              exit 1
+            }
+
+            if [ ! -f "${ZIP_SOURCE}" ]; then
+              echo "ZIP path is missing from the repository workspace: ${ZIP_PATH}" >&2
+              exit 1
+            fi
+          else
+            echo "No zip_path input was supplied." >&2
+            exit 1
+          fi
+
+          ARCHIVE_STEM="$(basename "${ZIP_SOURCE}" .zip)"
+          ARCHIVE_STEM="${ARCHIVE_STEM%.zip}"
+          if [ -z "${ARCHIVE_STEM}" ]; then
+            echo "Unable to determine the archive stem for ${ZIP_SOURCE}" >&2
+            exit 1
+          fi
+
+          echo "zip_source=${ZIP_SOURCE}" >> "$GITHUB_OUTPUT"
+          echo "source_is_repo_path=${SOURCE_IS_REPO_PATH}" >> "$GITHUB_OUTPUT"
+          echo "archive_stem=${ARCHIVE_STEM}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract ZIP into a self-titled folder
+        shell: bash
+        env:
+          ZIP_SOURCE: ${{ steps.resolve.outputs.zip_source }}
+          ARCHIVE_STEM: ${{ steps.resolve.outputs.archive_stem }}
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+          SOURCE_IS_REPO_PATH: ${{ steps.resolve.outputs.source_is_repo_path }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          from scripts.security.offline_zip_keymaster import _safe_extract_members, _safe_log
+
+          workspace_root = Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
+          source = Path(os.environ["ZIP_SOURCE"]).resolve()
+          output_dir = Path(os.environ.get("OUTPUT_DIR", "output"))
+          source_is_repo_path = os.environ.get("SOURCE_IS_REPO_PATH", "false").lower() == "true"
+          archive_stem = os.environ["ARCHIVE_STEM"].strip()
+          if not archive_stem:
+              raise ValueError("Archive stem is empty")
+
+          if not source.exists():
+              raise FileNotFoundError(f"ZIP source not found: {source}")
+
+          try:
+              with zipfile.ZipFile(source, "r") as zf:
+                  zf.testzip()
+          except zipfile.BadZipFile as exc:
+              raise ValueError(f"Provided archive is not a readable ZIP file: {source.name}") from exc
+
+          if output_dir.is_absolute():
+              output_root = output_dir.resolve()
+          else:
+              output_root = (workspace_root / output_dir).resolve()
+
+          if os.path.commonpath([str(workspace_root), str(output_root)]) != str(workspace_root):
+              raise ValueError(f"OUTPUT_DIR must stay within the repository workspace: {output_dir}")
+
+          if source_is_repo_path and os.path.commonpath([str(workspace_root), str(source)]) != str(workspace_root):
+              raise ValueError(f"ZIP source must stay within the repository workspace: {source}")
+
+          output_root.mkdir(parents=True, exist_ok=True)
+          if output_root.is_symlink():
+              raise ValueError(f"Output root is a symlink and cannot be used: {output_root}")
+
+          destination = output_root / archive_stem
+          if destination.is_symlink():
+              raise ValueError(f"Destination path is a symlink and cannot be overwritten: {destination}")
+          if destination.exists() and not destination.is_dir():
+              raise ValueError(f"Destination path already exists as a file: {destination}")
+          if destination.exists():
+              for child in sorted(destination.iterdir(), reverse=True):
+                  if child.is_symlink():
+                      raise ValueError(f"Destination child is a symlink and cannot be overwritten: {child}")
+                  if child.is_dir():
+                      shutil.rmtree(child)
+                  else:
+                      child.unlink()
+          else:
+              destination.mkdir(parents=True, exist_ok=True)
+
+          archive_bytes = source.read_bytes()
+          _safe_extract_members(archive_bytes, destination)
+          print(_safe_log(f"ZIP unpacked into self-titled output directory: {destination}"))
+          PY
+
+      - name: Upload extracted archive contents
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.artifact_name || steps.resolve.outputs.archive_stem }}
+          path: ${{ inputs.output_dir }}/${{ steps.resolve.outputs.archive_stem }}
+          if-no-files-found: error
+          retention-days: 30
