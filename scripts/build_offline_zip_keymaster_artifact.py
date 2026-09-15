@@ -33,10 +33,14 @@ def main() -> int:
         python_exe = "python"
 
     try:
-        _run([python_exe, "-m", "build", "--wheel", "--sdist", "--outdir", str(OUT_DIR)], STAGING_DIR)
-    except subprocess.CalledProcessError:
-        _run([python_exe, "-m", "pip", "install", "--quiet", "build"], ROOT)
-        _run([python_exe, "-m", "build", "--wheel", "--sdist", "--outdir", str(OUT_DIR)], STAGING_DIR)
+        import build  # noqa: F401
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "The offline ZIP keymaster artifact build requires the local 'build' package. "
+            "Install it from the local wheelhouse or a trusted offline source before running this script."
+        ) from exc
+
+    _run([python_exe, "-m", "build", "--wheel", "--sdist", "--outdir", str(OUT_DIR)], STAGING_DIR)
 
     print(f"Offline ZIP keymaster artifact staged at: {OUT_DIR}")
     for artifact in sorted(OUT_DIR.iterdir()):

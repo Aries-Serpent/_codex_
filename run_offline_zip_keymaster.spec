@@ -1,9 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
+import sys
 
 from PyInstaller.utils.hooks import collect_submodules
 
 ROOT = os.getcwd()
+if os.path.isdir(os.path.join(ROOT, "src")):
+    sys.path.insert(0, os.path.join(ROOT, "src"))
 
 block_cipher = None
 
@@ -57,6 +60,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    console=True,
 )
 
 coll = COLLECT(

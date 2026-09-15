@@ -88,6 +88,7 @@ try:
     )
 except ImportError:  # pragma: no cover - optional crypto fallback
     try:
+        from cryptography.fernet import Fernet
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     except ImportError as exc:  # pragma: no cover - packaging fallback
         raise ImportError("cryptography is required for local AES key generation") from exc
@@ -109,9 +110,18 @@ except ImportError:  # pragma: no cover - optional crypto fallback
         nonce, payload = raw[:12], raw[12:]
         return AESGCM(key).decrypt(nonce, payload, aad)
 
+    def fernet_encrypt(plaintext: bytes, key: str) -> bytes:
+        return Fernet(key.encode("ascii")).encrypt(plaintext)
+
+    def fernet_decrypt(token: bytes | str, key: str) -> bytes:
+        raw = token.encode("ascii") if isinstance(token, str) else token
+        return Fernet(key.encode("ascii")).decrypt(raw)
+
     crypto_generate_key = crypto_generate_key  # type: ignore[assignment]
     crypto_encrypt = crypto_encrypt  # type: ignore[assignment]
     crypto_decrypt = crypto_decrypt  # type: ignore[assignment]
+    fernet_encrypt = fernet_encrypt  # type: ignore[assignment]
+    fernet_decrypt = fernet_decrypt  # type: ignore[assignment]
 
 DEFAULT_MANIFEST_NAME = "manifest.json"
 DEFAULT_PAYLOAD_NAME = "encrypted_payload.bin"
@@ -227,29 +237,29 @@ class KeyState:
 
 def generate_local_key(key_out: str | Path, *, algorithm: str = "aes-gcm") -> dict[str, str]:
     """Generate a local key manifest and write it to disk with 0600 permissions."""
-    if algorithm == "fernet":
-        try:
-            key = storage_generate_key()
-        except ImportError:
-            raise ImportError("Fernet key generation requires SecureStorage support")
-    elif algorithm == "aes-gcm":
+    normalized_algorithm = (algorithm or "aes-gcm").lower()
+    if normalized_algorithm == "fernet":
+        if Fernet is None:
+            raise ImportError("cryptography is required for local Fernet key generation")
+        key = Fernet.generate_key().decode("ascii")
+    elif normalized_algorithm == "aes-gcm":
         if crypto_generate_key is None:
             raise ImportError("cryptography is required for local AES key generation")
         key = base64.urlsafe_b64encode(crypto_generate_key()).decode("ascii")
     else:
         raise ValueError("Unsupported algorithm: expected 'fernet' or 'aes-gcm'")
 
-    output_path = _write_key_file(key_out, key, algorithm=algorithm)
+    output_path = _write_key_file(key_out, key, algorithm=normalized_algorithm)
     if SecureStorage is not None:
         try:
-            secret_store = SecureStorage(key=key, algorithm="aes-gcm")
+            secret_store = SecureStorage(key=key, algorithm=normalized_algorithm)
             secure_sidecar = output_path.with_suffix(output_path.suffix + ".enc")
             secret_store.store_secret(str(secure_sidecar), key)
         except Exception:
             pass
     return {
         "key_path": str(output_path),
-        "algorithm": algorithm,
+        "algorithm": normalized_algorithm,
         "fingerprint": _sha256_hex(key),
     }
 
@@ -268,6 +278,8 @@ def _iter_source_files(source: str | Path) -> list[Path]:
 
 def _ensure_target_within_root(target: Path, root: Path) -> Path:
     resolved_root = root.resolve(strict=True)
+    if target.exists() and target.is_symlink():
+        raise ValueError(f"Target path is a symlink and cannot be extracted: {target!s}")
     resolved_target = target.resolve(strict=False)
     try:
         resolved_target.relative_to(resolved_root)
@@ -482,8 +494,9 @@ def local_key_probe(key_file: str | Path, *, attempts: int = 16) -> dict[str, An
 
 def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str | Path) -> dict[str, Any]:
     """Package a directory into an encrypted ZIP archive."""
-    key = _load_key_material(key_file)
-    key_bytes = base64.urlsafe_b64decode(key.encode("ascii"))
+    key_state = KeyState.from_file(key_file)
+    algorithm = key_state.algorithm.lower()
+    key = key_state.key
     zip_output = Path(zip_out)
     zip_output.parent.mkdir(parents=True, exist_ok=True)
     _apply_safe_permissions(zip_output.parent, is_dir=True)
@@ -501,13 +514,18 @@ def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str 
         except FileNotFoundError:
             pass
 
-    encrypted_payload = crypto_encrypt(archive_bytes, key_bytes)
-    payload_text = encrypted_payload.decode("ascii")
+    if algorithm == "fernet":
+        encrypted_payload = fernet_encrypt(archive_bytes, key)
+        payload_text = encrypted_payload.decode("ascii")
+    else:
+        key_bytes = base64.urlsafe_b64decode(key.encode("ascii"))
+        encrypted_payload = crypto_encrypt(archive_bytes, key_bytes)
+        payload_text = encrypted_payload.decode("ascii")
     manifest = {
         "version": 1,
         "archive_name": archive_name,
         "created_at": _utc_now(),
-        "algorithm": "aes-gcm",
+        "algorithm": algorithm,
         "member_names": members,
         "key_fingerprint": _sha256_hex(key),
         "source_sha256": _sha256_hex(archive_bytes),
@@ -519,7 +537,7 @@ def encrypt_directory(input_dir: str | Path, zip_out: str | Path, key_file: str 
         zf.writestr(DEFAULT_MANIFEST_NAME, json.dumps(manifest, sort_keys=True))
         zf.writestr(DEFAULT_PAYLOAD_NAME, payload_text)
     os.chmod(zip_output, stat.S_IRUSR | stat.S_IWUSR)
-    return {"zip_path": str(zip_output), "algorithm": "aes-gcm", "member_count": len(members), "key_fingerprint": _sha256_hex(key)}
+    return {"zip_path": str(zip_output), "algorithm": algorithm, "member_count": len(members), "key_fingerprint": _sha256_hex(key)}
 
 
 def _read_encrypted_manifest(zip_path: Path) -> dict[str, Any]:
@@ -579,17 +597,20 @@ def decrypt_and_unpack(zip_path: str | Path, key_file: str | Path, output_dir: s
                 _validate_manifest_signature(manifest, key_state.key)
 
                 try:
-                    payload_text = zf.read(DEFAULT_PAYLOAD_NAME).decode("utf-8")
+                    payload_text = zf.read(DEFAULT_PAYLOAD_NAME)
                 except KeyError as exc:
                     raise ValueError("Encrypted archive payload is missing") from exc
 
-                key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
-                decrypted_zip = crypto_decrypt(payload_text.encode("ascii"), key_bytes)
+                if key_state.algorithm.lower() == "fernet":
+                    decrypted_zip = fernet_decrypt(payload_text.decode("ascii"), key_state.key)
+                else:
+                    key_bytes = base64.urlsafe_b64decode(key_state.key.encode("ascii"))
+                    decrypted_zip = crypto_decrypt(payload_text, key_bytes)
                 if len(decrypted_zip) > MAX_ARCHIVE_BYTES:
                     raise ValueError("Decrypted archive exceeds maximum size cap")
                 extracted_dir = destination_root / archive_path.stem
                 _safe_extract_members(decrypted_zip, extracted_dir)
-                return extracted_dir
+                return _recurse_nested_archives(extracted_dir, key_file)
 
             extracted_dir = destination_root / archive_path.stem
             extracted_dir.mkdir(parents=True, exist_ok=True)
@@ -666,8 +687,12 @@ def _safe_extract_members(zip_bytes: bytes, destination_dir: Path) -> None:
 
 
 def _looks_like_encrypted_archive(zf: zipfile.ZipFile) -> bool:
-    lower_names = {PurePosixPath(info.filename).name.lower() for info in zf.infolist()}
-    return "manifest.json" in lower_names and "encrypted_payload.bin" in lower_names
+    root_names: set[str] = set()
+    for info in zf.infolist():
+        member = PurePosixPath(info.filename)
+        if member.parent == PurePosixPath("."):
+            root_names.add(member.name.lower())
+    return "manifest.json" in root_names and "encrypted_payload.bin" in root_names
 
 
 def _recurse_nested_archives(
@@ -707,9 +732,11 @@ def _process_nested_archive_bytes(
         raise ValueError("Nested archive exceeds maximum size cap")
 
     member_path = PurePosixPath(_safe_member_name(member_name))
-    nested_parent = _ensure_target_within_root(destination_root / member_path.parent, destination_root)
     nested_stem = member_path.stem or member_path.name
-    nested_target = nested_parent / nested_stem
+    nested_target = _ensure_target_within_root(destination_root / member_path.parent / nested_stem, destination_root)
+    if nested_target.exists() and nested_target.is_symlink():
+        raise ValueError(f"Nested archive destination is a symlink: {nested_target}")
+    nested_parent = nested_target.parent
     nested_parent.mkdir(parents=True, exist_ok=True)
     _apply_safe_permissions(nested_parent, is_dir=True)
 

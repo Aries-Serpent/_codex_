@@ -29,8 +29,8 @@ offline-zip-keymaster = "offline_zip_keymaster.cli:main"
 offline-zip-keymaster-gui = "offline_zip_keymaster.gui:main"
 
 [tool.setuptools]
-package-dir = { "" = "../../src" }
+package-dir = { "" = "../src" }
 
 [tool.setuptools.packages.find]
-where = ["../../src"]
+where = ["../src"]
 include = ["offline_zip_keymaster*"]

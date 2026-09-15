@@ -88,6 +88,7 @@ try:
     )
 except ImportError:  # pragma: no cover - optional crypto fallback
     try:
+        from cryptography.fernet import Fernet
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     except ImportError as exc:  # pragma: no cover - packaging fallback
         raise ImportError("cryptography is required for local AES key generation") from exc
@@ -109,9 +110,18 @@ except ImportError:  # pragma: no cover - optional crypto fallback
         nonce, payload = raw[:12], raw[12:]
         return AESGCM(key).decrypt(nonce, payload, aad)
 
+    def fernet_encrypt(plaintext: bytes, key: str) -> bytes:
+        return Fernet(key.encode("ascii")).encrypt(plaintext)
+
+    def fernet_decrypt(token: bytes | str, key: str) -> bytes:
+        raw = token.encode("ascii") if isinstance(token, str) else token
+        return Fernet(key.encode("ascii")).decrypt(raw)
+
     crypto_generate_key = crypto_generate_key  # type: ignore[assignment]
     crypto_encrypt = crypto_encrypt  # type: ignore[assignment]
     crypto_decrypt = crypto_decrypt  # type: ignore[assignment]
+    fernet_encrypt = fernet_encrypt  # type: ignore[assignment]
+    fernet_decrypt = fernet_decrypt  # type: ignore[assignment]
 
 DEFAULT_MANIFEST_NAME = "manifest.json"
 DEFAULT_PAYLOAD_NAME = "encrypted_payload.bin"

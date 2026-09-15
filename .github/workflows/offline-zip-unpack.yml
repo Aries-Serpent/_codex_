@@ -3,13 +3,8 @@ name: Offline ZIP Artifact Unpacker
 'on':
   workflow_dispatch:
     inputs:
-      zip_url:
-        description: Optional URL for a ZIP file to download and unpack
-        required: false
-        default: ''
-        type: string
       zip_path:
-        description: Optional repo-relative path to a ZIP file to unpack
+        description: Repo-relative path to a ZIP file to unpack
         required: false
         default: ''
         type: string
@@ -25,12 +20,8 @@ name: Offline ZIP Artifact Unpacker
         type: string
   workflow_call:
     inputs:
-      zip_url:
-        description: Optional URL for a ZIP file to download and unpack
-        required: false
-        type: string
       zip_path:
-        description: Optional repo-relative path to a ZIP file to unpack
+        description: Repo-relative path to a ZIP file to unpack
         required: false
         type: string
       output_dir:
@@ -73,7 +64,6 @@ jobs:
         id: resolve
         shell: bash
         env:
-          ZIP_URL: ${{ inputs.zip_url }}
           ZIP_PATH: ${{ inputs.zip_path }}
         run: |
           set -euo pipefail
@@ -81,12 +71,7 @@ jobs:
           WORKSPACE_ROOT="${GITHUB_WORKSPACE:-$PWD}"
           ZIP_SOURCE=""
           SOURCE_IS_REPO_PATH="false"
-          if [ -n "${ZIP_URL}" ]; then
-            mkdir -p "$RUNNER_TEMP/zip-input"
-            curl -L --fail --retry 3 --show-error \
-              -o "$RUNNER_TEMP/zip-input/source.zip" "${ZIP_URL}"
-            ZIP_SOURCE="$RUNNER_TEMP/zip-input/source.zip"
-          elif [ -n "${ZIP_PATH}" ]; then
+          if [ -n "${ZIP_PATH}" ]; then
             SOURCE_IS_REPO_PATH="true"
             case "${ZIP_PATH}" in
               "")
@@ -109,7 +94,7 @@ jobs:
               exit 1
             fi
           else
-            echo "No zip_url or zip_path input was supplied." >&2
+            echo "No zip_path input was supplied." >&2
             exit 1
           fi
 
@@ -170,9 +155,18 @@ jobs:
               raise ValueError(f"ZIP source must stay within the repository workspace: {source}")
 
           output_root.mkdir(parents=True, exist_ok=True)
+          if output_root.is_symlink():
+              raise ValueError(f"Output root is a symlink and cannot be used: {output_root}")
+
           destination = output_root / archive_stem
+          if destination.is_symlink():
+              raise ValueError(f"Destination path is a symlink and cannot be overwritten: {destination}")
+          if destination.exists() and not destination.is_dir():
+              raise ValueError(f"Destination path already exists as a file: {destination}")
           if destination.exists():
               for child in sorted(destination.iterdir(), reverse=True):
+                  if child.is_symlink():
+                      raise ValueError(f"Destination child is a symlink and cannot be overwritten: {child}")
                   if child.is_dir():
                       shutil.rmtree(child)
                   else:

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import importlib
-import subprocess
 import sys
 import tkinter as tk
 from pathlib import Path
 
 try:
+    from ._impl import decrypt_and_unpack, encrypt_directory, generate_local_key
     from .cli import DEFAULT_APP_WORKSPACE
 except ImportError:  # pragma: no cover - fallback for PyInstaller and direct script execution
     base_dir = Path(__file__).resolve()
@@ -31,6 +31,13 @@ except ImportError:  # pragma: no cover - fallback for PyInstaller and direct sc
             continue
     if DEFAULT_APP_WORKSPACE is None:
         raise
+
+    try:
+        from offline_zip_keymaster._impl import decrypt_and_unpack, encrypt_directory, generate_local_key
+    except ImportError:
+        decrypt_and_unpack = None
+        encrypt_directory = None
+        generate_local_key = None
 
 
 def _runtime_resource_dir() -> Path:
@@ -90,6 +97,8 @@ class OfflineZipKeymasterGUI:
         frame.columnconfigure(1, weight=1)
 
     def _command_for_action(self) -> list[str]:
+        if getattr(sys, "frozen", False):
+            return []
         action = self.action_var.get()
         if action == "generate-key":
             return [sys.executable, "-m", "offline_zip_keymaster", "generate-key", "--key-out", self.key_var.get()]
@@ -120,19 +129,24 @@ class OfflineZipKeymasterGUI:
         ]
 
     def run_action(self) -> None:
-        command = self._command_for_action()
         try:
-            self.status.set(f"Running: {' '.join(command)}")
-            self.root.update_idletasks()
-            proc = subprocess.run(command, capture_output=True, text=True, cwd=str(Path.cwd()))
-            if proc.stdout:
-                self.status.set(proc.stdout.strip() or proc.stderr.strip() or "Completed")
-            elif proc.stderr:
-                self.status.set(proc.stderr.strip())
-            else:
-                self.status.set("Completed")
-            if proc.returncode != 0:
-                self.status.set(f"Failed: {self.status.get()}")
+            action = self.action_var.get()
+            if action == "generate-key":
+                if generate_local_key is None:
+                    raise RuntimeError("offline_zip_keymaster backend is unavailable")
+                result = generate_local_key(self.key_var.get())
+                self.status.set(f"Generated key manifest: {result['key_path']}")
+                return
+            if action == "encrypt":
+                if encrypt_directory is None:
+                    raise RuntimeError("offline_zip_keymaster backend is unavailable")
+                result = encrypt_directory(self.input_var.get(), self.zip_var.get(), self.key_var.get())
+                self.status.set(f"Encrypted archive created: {result['zip_path']}")
+                return
+            if decrypt_and_unpack is None:
+                raise RuntimeError("offline_zip_keymaster backend is unavailable")
+            extracted = decrypt_and_unpack(self.zip_var.get(), self.key_var.get(), output_dir=self.output_var.get())
+            self.status.set(f"Extracted archive into: {extracted}")
         except Exception as exc:  # pragma: no cover - GUI safety surface
             self.status.set(f"Error: {exc}")
 

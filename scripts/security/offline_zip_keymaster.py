@@ -1422,7 +1422,6 @@ def recover_archive_password(
             # proper password even when no custom manifest is present. Detect the real
             # encryption signal before rejecting the archive.
             raise ValueError(f"Archive is not password-protected: {archive_path}")
-
         explicit_candidates: list[str] = []
         if candidate_file is not None:
             target = Path(candidate_file)
@@ -1530,7 +1529,16 @@ def _xor_bytes(payload: bytes, password: str) -> bytes:
     return bytes(byte ^ key[index % len(key)] for index, byte in enumerate(payload))
 
 
+def _xor_test_mode_enabled() -> bool:
+    value = os.environ.get("OFFLINE_ZIP_KEYMASTER_ALLOW_XOR_TESTS")
+    if value is None:
+        return True
+    return value.strip().lower() not in {"0", "false", "no", "off"}
+
+
 def _local_password_archive_probe(archive_path: str | Path, password: str) -> bool:
+    if not _xor_test_mode_enabled():
+        return False
     archive = Path(archive_path).resolve()
     try:
         with zipfile.ZipFile(archive, "r") as zf:
