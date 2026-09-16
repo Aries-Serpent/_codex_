@@ -117,9 +117,9 @@ class ManifestVerifier:
             logger.error(f"✗ {error_msg}")
             return False
 
-        # Create a copy of manifest without signature for verification
-        manifest_copy = dict(self.manifest)
-        manifest_copy["signature"] = ""
+        # Create a copy of manifest without signature for verification.
+        # The signing input must not include the signature field itself.
+        manifest_copy = {k: v for k, v in self.manifest.items() if k != "signature"}
 
         # Compute expected signature
         manifest_json = json.dumps(manifest_copy, sort_keys=True, separators=(",", ":"))
