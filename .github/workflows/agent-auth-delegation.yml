@@ -33,7 +33,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout (needed for session_wrapup_autofix.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
     - name: Set up Python
@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       if: always()
       with:
         path: .pytest_cache/
@@ -179,7 +179,7 @@ jobs:
     if: github.event.action != 'closed'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 50
     - name: Download pending session requirements (if any)
@@ -204,7 +204,7 @@ jobs:
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -272,7 +272,7 @@ jobs:
           \ for step-by-step instructions, ` +\n  `or run: gh workflow run copilot-session-chain.yml\
           \ -f source_branch=${head}`\n);\n"
     - name: Post Mandatory Agent Checklist to PR
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -373,7 +373,7 @@ jobs:
           \    body,\n  });\n  console.log(`\u2705 Checklist posted for SHA ${sha}`);\n\
           }\n"
     - name: Surface Session-Type Directives to Checklist
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -675,7 +675,7 @@ jobs:
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -797,7 +797,7 @@ jobs:
     - name: 'REQ-10: Branch rebase check (hard block if behind/diverged)'
       id: req10
       if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -932,7 +932,7 @@ jobs:
       '
     steps:
     - name: Cache Python dependencies (Layer 1)
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
@@ -940,7 +940,7 @@ jobs:
         restore-keys: '${{ runner.os }}-pip-
 
           '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -967,7 +967,7 @@ jobs:
     - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
       id: set_vars
       continue-on-error: true
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -998,7 +998,7 @@ jobs:
           \ COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);\n\ncore.setOutput('updated_actors',\
           \ updatedActors);\n"
     - name: Dispatch hub for token delegation approval (agent-auth-delegation)
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1052,7 +1052,7 @@ jobs:
         \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/${TARGET_BRANCH}\n\
         fi\n"
     - name: Dispatch GitHub Guru (maintainer verification)
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "try {\n  await github.rest.actions.createWorkflowDispatch({\n   \
@@ -1117,7 +1117,7 @@ jobs:
         \n"
     - name: Session Concurrency Gate
       id: session_gate
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number\
@@ -1244,7 +1244,7 @@ jobs:
     - name: Post @copilot continue
       id: post_copilot_comment
       if: steps.session_gate.outputs.acquired == 'true'
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       env:
         CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
       with:
@@ -1335,7 +1335,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout (for approve_pending_runs.py)
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -1344,7 +1344,7 @@ jobs:
           }}
     - name: Generate Cognitive Brain App token
       id: app-token
-      uses: actions/create-github-app-token@v3
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
@@ -1379,12 +1379,12 @@ jobs:
     if: github.event.action == 'closed'
     steps:
     - name: Checkout repository for shared helpers
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
         persist-credentials: false
     - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1488,7 +1488,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

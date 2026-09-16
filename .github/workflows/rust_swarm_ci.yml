@@ -62,24 +62,24 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
       with:
         toolchain: stable
         components: rustfmt, clippy
     - name: Cache cargo registry
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ~/.cargo/registry
         key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo index
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ~/.cargo/git
         key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
     - name: Cache cargo build
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
@@ -93,7 +93,7 @@ jobs:
       run: cargo test --lib --release --locked --verbose
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: rust-test-results
         path: target/release/deps/*.log
@@ -106,7 +106,7 @@ jobs:
     timeout-minutes: 30
     needs: rust_tests
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Run benchmarks
@@ -133,7 +133,7 @@ jobs:
         \  No benchmark data available (timeout or failure)\" >> benchmark_results.txt\n\
         fi\n"
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: benchmark-results
         path: 'benchmark_results.txt
@@ -165,7 +165,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Install tarpaulin
@@ -186,7 +186,7 @@ jobs:
         files: ./coverage/lcov.info
         fail_ci_if_error: false
     - name: Upload coverage report
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: coverage-report
         path: coverage/
@@ -214,7 +214,7 @@ jobs:
         df -h
 
         '
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -253,7 +253,7 @@ jobs:
         \ - tests not run or no tests found</p>\n</body>\n</html>\nEOF\nfi\n"
     - name: Upload integration test results
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: integration-test-results
         path: htmlcov/
@@ -269,11 +269,11 @@ jobs:
     needs:
     - rust_benchmarks
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 0
     - name: Download benchmark results
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
       with:
         name: benchmark-results
     - name: Verify benchmark results exist
@@ -304,7 +304,7 @@ jobs:
     - name: Comment on PR
       if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt')
         != '' }}
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         script: "const fs = require('fs');\nconst results = fs.readFileSync('coverage/benchmark_validation_report.txt',\
           \ 'utf8');\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
@@ -317,7 +317,7 @@ jobs:
       contents: read
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Run cargo audit
@@ -335,7 +335,7 @@ jobs:
       contents: read
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
     - name: Build Rust docs
@@ -343,7 +343,7 @@ jobs:
 
         '
     - name: Upload documentation
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: rust-documentation
         path: target/doc/
@@ -367,7 +367,7 @@ jobs:
         python-version:
         - '3.12'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -381,7 +381,7 @@ jobs:
     - name: Build wheel
       run: maturin build --release
     - name: Upload wheel
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
         path: target/wheels/*.whl
@@ -400,7 +400,7 @@ jobs:
     if: always()
     steps:
     - name: Checkout for cache health
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         sparse-checkout: scripts/ci
     - name: Cache health report
