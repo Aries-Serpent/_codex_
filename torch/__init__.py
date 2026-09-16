@@ -42,6 +42,12 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:
+    raise ModuleNotFoundError(
+        "The repo-local 'torch' directory is not a Python package. "
+        "Install the real 'torch' library or use pytest.importorskip('torch') "
+        "for optional-dependency tests."
+    )
+
     IS_CODEX_STUB = True
     __version__ = "stub"
 
@@ -238,6 +244,7 @@ else:
         "no_grad",
         "nn",
     ]
+    __file__ = ""
 
     def __getattr__(name: str) -> Any:
         if name == "nn":

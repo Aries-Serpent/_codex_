@@ -63,14 +63,8 @@ if _real_spec is not None:
     globals().update({k: getattr(module, k) for k in dir(module) if not k.startswith("__")})
     __all__ = list(getattr(module, "__all__", []))
 else:
-    __all__ = []
-
-    def __getattr__(name: str):
-        raise ModuleNotFoundError(
-            "The repo-local 'datasets' directory is not a Python package. "
-            "Install the real 'datasets' library or use pytest.importorskip('datasets') "
-            "for optional-dependency tests."
-        )
-
-    def __dir__():
-        return []
+    raise ModuleNotFoundError(
+        "The repo-local 'datasets' directory is not a Python package. "
+        "Install the real 'datasets' library or use pytest.importorskip('datasets') "
+        "for optional-dependency tests."
+    )
