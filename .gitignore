@@ -23,6 +23,11 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Offline package artifacts / generated release bundles
+/wheelhouse/
+/wheelhouse_*.tar.gz
+/*.whl
+
 # Virtual environments
 venv/
 ENV/

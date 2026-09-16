@@ -18,6 +18,8 @@ concurrency:
   cancel-in-progress: false
 permissions:
   contents: read
+  id-token: write
+  attestations: write
 jobs:
   build:
     name: Build Distribution
@@ -53,6 +55,8 @@ jobs:
       with:
         path: dist/
         name: python-package-distributions
+        retention-days: 90
+        if-no-files-found: error
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

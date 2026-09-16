@@ -185,4 +185,5 @@ jobs:
         with:
           path: htmlcov/
           name: coverage-report
+          retention-days: 90
     timeout-minutes: 60

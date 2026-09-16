@@ -97,6 +97,7 @@ jobs:
       with:
         name: rust-test-results
         path: target/release/deps/*.log
+        retention-days: 90
   rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
@@ -141,6 +142,7 @@ jobs:
 
           '
         if-no-files-found: warn
+        retention-days: 90
   code_coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
@@ -189,6 +191,7 @@ jobs:
         name: coverage-report
         path: coverage/
         if-no-files-found: warn
+        retention-days: 90
   python_integration:
     name: Python Integration Tests
     runs-on: ubuntu-latest

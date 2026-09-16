@@ -54,6 +54,14 @@ fi
 # shellcheck disable=SC1090
 source "$VENV_DIR/bin/activate"
 
+if [[ -f "$WHEELHOUSE/CHECKSUMS.txt" ]]; then
+  echo "Verifying wheelhouse checksum manifest..."
+  (cd "$WHEELHOUSE" && sha256sum -c CHECKSUMS.txt >/dev/null)
+else
+  echo "wheelhouse checksum manifest missing: $WHEELHOUSE/CHECKSUMS.txt" >&2
+  exit 2
+fi
+
 python -m pip install --upgrade pip
 python -m pip install --no-index --find-links "$WHEELHOUSE" "$ARTIFACT"
 
