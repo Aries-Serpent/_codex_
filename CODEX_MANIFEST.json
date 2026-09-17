@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-13T05:29:37Z",
+  "generated_at": "2026-09-17T06:51:41Z",
   "agents": [
+    {
+      "name": "offline-zip-recovery-agent",
+      "role": "specialist",
+      "enforcement_tier": "STANDARD",
+      "autonomy_model": "D"
+    },
     {
       "name": "github-guru-agent",
       "role": "specialist",
@@ -722,6 +728,11 @@
       "has_concurrency": true
     },
     {
+      "name": "app-package-download",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "artifact-monitoring",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -849,6 +860,11 @@
     {
       "name": "nox_gates",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "offline-zip-unpack",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1328,5 +1344,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "2ebcf45048d9c0735fdc9c1a0f88f89e16d3d64b8e04e5b1f897462bd280c671"
+  "integrity_sha256": "e32d86b5dbf2e6250c67f0afda3f45c86a272af5b87b610d7e78b1274fe62b91"
 }
