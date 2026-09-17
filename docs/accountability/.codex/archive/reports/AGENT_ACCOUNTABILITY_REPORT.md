@@ -23579,10 +23579,13 @@ and the CI gate requirement.
 3. **Run URL** — N/A
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
+5. **Final lint regression fix** — wrapped the legacy router import guard in
+   `src/aries_serpent_core/api/app.py` to satisfy the repo Ruff E501 gate without
+   changing the runtime behavior of the app endpoints.
 
 ### Root-Cause Note
 The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
-occurs when a commit is pushed that does not include an update to this file.  The
+occurs when a commit is pushed that does not include an update to this file. The
 self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
 auto-commits a minimal session entry, closing the gap between agent session commits
 and the CI gate requirement.
@@ -23595,10 +23598,12 @@ and the CI gate requirement.
   approach is for the agent session to update this file explicitly before committing.
 - Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
   from genuine session summaries written by the agent.
+- The PR-specific Ruff issue was a single line-length regression in the legacy router
+  exception guard; wrapping that block clears the lint gate while preserving behavior.
 
 ### Impact Score
 - Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
-- CI gates unblocked: REQ-4, REQ-5
+- CI gates unblocked: REQ-4, REQ-5, and the targeted app.py lint gate
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
