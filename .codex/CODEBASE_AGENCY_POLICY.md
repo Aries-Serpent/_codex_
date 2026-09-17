@@ -1512,6 +1512,61 @@ Plans that list tasks without an `agent_type` binding are non-compliant and MUST
 
 ---
 
+### CAD Rule 4: Multi-Lane Agent Coordination Model (MLCM)
+
+**Hard Rule** — All agent work must be executed under a deterministic multi-lane coordination model. The runtime is not "parallel tasks" in the abstract; it is a controlled set of isolated execution tracks that converge on a single shared azimuth.
+
+**Definitions**
+
+- **Multi-lane**: an isolated execution track with its own state, workspace view, artifact set, and write boundary.
+- **Parallel + sequential**: independent lanes run concurrently; dependent lanes wait on explicit handoff bundles and run serially after the upstream lane has produced evidence.
+- **Unified azimuth**: the single target vector shared by all lanes:
+  - objective
+  - repo/branch/PR context
+  - constraints
+  - acceptance criteria
+  - success gate
+  - evidence artifact contract
+
+**Required execution model**
+
+1. Every task must declare `lane_id`, `lane_type`, `depends_on`, `accepts_handoff_from`, and `state_scope`.
+2. Parallel lanes must not share mutable session state.
+3. Sequential handoff must pass an evidence bundle rather than raw working state.
+4. No cross-lane writes to shared mutable artifacts are allowed unless explicitly declared.
+5. Final convergence requires all lanes to validate against the same azimuth before the merge-readiness lane accepts the result.
+
+**Lane contract**
+
+- `lane_id`: stable identifier
+- `lane_type`: `parallel`, `dependency`, or `aggregator`
+- `state_scope`: `isolated`, `shared-read-only`, or `shared-writable`
+- `azimuth_target`: pointer to the canonical objective vector
+- `evidence_contract`: expected outputs and artifact set
+- `completion_gate`: the proof condition required before the next lane may proceed
+
+**Deterministic handoff payload**
+
+Every lane transition must include:
+
+- trigger objective
+- branch/PR context
+- azimuth target
+- results produced
+- evidence artifacts
+- remaining blockers
+- next required lane
+
+**Convergence rule**
+
+All lanes converge only when every upstream lane has completed, its evidence matches the shared azimuth, and the final readout lane reports pass/fail against the same objective. Silent deferral, divergent objective interpretation, or handoff of raw working state is prohibited.
+
+**Repository baseline**
+
+The repository baseline is: independent workstreams launch as parallel background lanes; dependent follow-up work waits on explicit handoff bundles; final validation is a single convergence gate rather than disconnected agent outputs.
+
+---
+
 ### Implementation workflow
 
 All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md`:
