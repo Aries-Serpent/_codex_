@@ -1,7 +1,7 @@
 # Multi-Lane Governance Framework
 
-**Date:** 2026-07-13  
-**Version:** 1.0  
+**Date:** 2026-09-17  
+**Version:** 1.1  
 **Authority:** @mbaetiong (D-tier autonomous)  
 **Status:** Active  
 
@@ -147,6 +147,53 @@ This document establishes the governance structure for 11 orchestration lanes (A
 1. Lane owner and @mbaetiong sync within 24h
 2. Options: (a) modify proposal, (b) defer to next phase, (c) escalate to Tier 3
 3. Decision + rationale logged in decision trace
+
+---
+
+## Explicit Lane Isolation, Handoff Semantics, and Azimuth Alignment
+
+This contract governs how every lane in the orchestration mesh behaves once the lane manifest is instantiated. It is the repo-wide minimum for valid lane execution.
+
+### 1. Lane Isolation
+
+- Each lane owns a unique namespace, execution budget, and artifact boundary.
+- A lane may read from its own namespace, shared input locks, and upstream artifact manifests only.
+- A lane may write only to its declared `lane_isolation.write_scope` and not to sibling lane directories or state objects.
+- Shared state is only valid through explicit `input_lock`, checkpoint bundles, and acknowledged handoff payloads.
+- Any write that bypasses the allowlist is a policy violation and is treated as a cross-lane mutation.
+
+### 2. Handoff Semantics
+
+A handoff is the only legal mechanism for state transfer between lanes. A valid handoff must be explicit and checkpoint-based.
+
+- Handoffs occur only at `checkpoint`, `pass`, or `yield` boundaries.
+- Every handoff must contain: `source_lane`, `target_lane`, `mode`, `status`, and `result_contract`.
+- `mode` values are constrained to: `pass`, `yield`, `checkpoint`, `escalate`, `abort`.
+- Receiver acknowledgment is mandatory before downstream work proceeds.
+- `status` transitions are atomic: `pending -> accepted|rejected|blocked`.
+- `rejected` and `blocked` states keep the upstream lane in a hold state and prevent continuation until remediation is logged.
+
+### 3. Azimuth Alignment Requirements
+
+Azimuth is the directional heading for a lane’s active objective vector. It is not a cosmetic label; it is a contract signal that keeps every lane aligned with the orchestrator’s mission vector.
+
+- Every lane manifest can carry an `azimuth` object with `target`, `reference`, `alignment`, `delta_deg`, and `locked` fields.
+- The orchestrator declares the mission azimuth for the current run; downstream lanes must match or explicitly reorient.
+- Handoffs require `azimuth.alignment` to be `aligned` or `reoriented`; `blocked` handoffs are not allowed to continue.
+- If `delta_deg` exceeds the allowed coherence window (default 15°), the target lane enters `hold` and must not begin work until re-alignment is logged.
+- A lane that is `blocked` must remain isolated until the lane owner records a remediation and resets `locked` to `False`.
+
+### Contract Checklist for Every Lane
+
+Before any lane is marked active, the following must be true:
+
+1. `lane_isolation.namespace` is unique and not shared with sibling lanes.
+2. `lane_isolation.write_scope` excludes other lanes’ runtime paths.
+3. `handoff` is present whenever a dependency or result crosses a lane boundary.
+4. `azimuth.reference` matches the orchestration mission or an approved alternate objective.
+5. `azimuth.alignment` is not `blocked`.
+
+This checklist is enforced as part of the repo-wide runtime contract and is considered non-negotiable for multi-lane operation.
 
 ---
 

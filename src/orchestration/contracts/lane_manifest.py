@@ -81,6 +81,46 @@ class LaneManifestContract:
                     "solver_version": {"type": "string"},
                 },
             },
+            "lane_isolation": {
+                "type": "object",
+                "properties": {
+                    "namespace": {"type": "string"},
+                    "read_scope": {"type": "array", "items": {"type": "string"}},
+                    "write_scope": {"type": "array", "items": {"type": "string"}},
+                    "shared_state": {"type": "array", "items": {"type": "string"}},
+                    "cutover_guard": {"type": "string"},
+                },
+            },
+            "handoff": {
+                "type": "object",
+                "properties": {
+                    "source_lane": {"type": "string"},
+                    "target_lane": {"type": "string"},
+                    "mode": {
+                        "type": "string",
+                        "enum": ["pass", "yield", "checkpoint", "escalate", "abort"],
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["pending", "accepted", "rejected", "blocked"],
+                    },
+                    "result_contract": {"type": "string"},
+                    "checkpoint_id": {"type": "string"},
+                },
+            },
+            "azimuth": {
+                "type": "object",
+                "properties": {
+                    "target": {"type": "integer", "minimum": 0, "maximum": 359},
+                    "reference": {"type": "string"},
+                    "alignment": {
+                        "type": "string",
+                        "enum": ["aligned", "reoriented", "blocked"],
+                    },
+                    "delta_deg": {"type": "integer", "minimum": 0, "maximum": 180},
+                    "locked": {"type": "boolean"},
+                },
+            },
             "execution_order": {"type": "array", "items": {"type": "string"}},
             "expected_outputs": {"type": "array", "items": {"type": "string"}},
             "provenance": {
@@ -114,6 +154,9 @@ class LaneManifestContract:
         execution_order: Optional[List[str]] = None,
         expected_outputs: Optional[List[str]] = None,
         git_sha: Optional[str] = None,
+        lane_isolation: Optional[Dict[str, Any]] = None,
+        handoff: Optional[Dict[str, Any]] = None,
+        azimuth: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Generate an immutable lane manifest.
 
@@ -127,6 +170,9 @@ class LaneManifestContract:
             execution_order: Optional list of tasks to execute
             expected_outputs: Optional list of expected output files
             git_sha: Optional Git SHA for provenance
+            lane_isolation: Optional isolation contract describing read/write scopes
+            handoff: Optional handoff contract for lane-to-lane transfer
+            azimuth: Optional azimuth alignment metadata for directional compliance
 
         Returns:
             Immutable manifest dictionary
@@ -153,6 +199,15 @@ class LaneManifestContract:
                     "created_at": cls._utc_timestamp(),
                 },
             }
+
+            if lane_isolation is not None:
+                manifest["lane_isolation"] = lane_isolation
+
+            if handoff is not None:
+                manifest["handoff"] = handoff
+
+            if azimuth is not None:
+                manifest["azimuth"] = azimuth
 
             if git_sha:
                 manifest["provenance"]["git_sha"] = git_sha
@@ -188,11 +243,89 @@ class LaneManifestContract:
         """
         try:
             jsonschema.validate(manifest, cls.SCHEMA)
+            cls.validate_lane_isolation(manifest)
+            cls.validate_handoff_contract(manifest)
+            cls.validate_azimuth_alignment(manifest)
             return True
         except jsonschema.ValidationError as e:
             raise LaneManifestError(f"Manifest validation failed: {e}")
         except Exception as e:
             raise LaneManifestError(f"Failed to validate manifest: {e}")
+
+    @classmethod
+    def validate_lane_isolation(cls, manifest: Dict[str, Any]) -> bool:
+        """Validate lane isolation semantics for a manifest.
+
+        A lane may read only its shared and upstream artifacts plus its own
+        namespace, and must not mutate sibling lane state without an explicit
+        handoff contract.
+        """
+        lane_isolation = manifest.get("lane_isolation")
+        if lane_isolation is None:
+            return True
+
+        required = {"namespace", "read_scope", "write_scope"}
+        missing = sorted(required - set(lane_isolation.keys()))
+        if missing:
+            raise LaneManifestError(
+                "lane_isolation missing required fields: " + ", ".join(missing)
+            )
+
+        if not isinstance(lane_isolation.get("read_scope"), list):
+            raise LaneManifestError("lane_isolation.read_scope must be a list")
+        if not isinstance(lane_isolation.get("write_scope"), list):
+            raise LaneManifestError("lane_isolation.write_scope must be a list")
+        return True
+
+    @classmethod
+    def validate_handoff_contract(cls, manifest: Dict[str, Any]) -> bool:
+        """Validate lane-to-lane handoff semantics.
+
+        Handoffs are only valid when the origin and target lanes are declared and
+        the mode is one of the supported explicit checkpoint handoff states.
+        """
+        handoff = manifest.get("handoff")
+        if handoff is None:
+            return True
+
+        for key in ("source_lane", "target_lane", "mode", "status"):
+            if key not in handoff:
+                raise LaneManifestError(f"handoff missing required field: {key}")
+
+        if handoff["mode"] not in {"pass", "yield", "checkpoint", "escalate", "abort"}:
+            raise LaneManifestError(f"Unsupported handoff mode: {handoff['mode']}")
+
+        if handoff["status"] not in {"pending", "accepted", "rejected", "blocked"}:
+            raise LaneManifestError(f"Unsupported handoff status: {handoff['status']}")
+        return True
+
+    @classmethod
+    def validate_azimuth_alignment(cls, manifest: Dict[str, Any]) -> bool:
+        """Validate azimuth alignment and lane directional intent.
+
+        Azimuth is a directional objective vector for an active lane. Any lane
+        receiving a handoff must either be aligned to the same target azimuth or
+        be explicitly marked as reoriented or blocked before work continues.
+        """
+        azimuth = manifest.get("azimuth")
+        if azimuth is None:
+            return True
+
+        target = azimuth.get("target")
+        if target is not None and not 0 <= int(target) <= 359:
+            raise LaneManifestError("azimuth.target must be an integer between 0 and 359")
+
+        if azimuth.get("alignment") not in {"aligned", "reoriented", "blocked"}:
+            raise LaneManifestError("azimuth.alignment must be aligned, reoriented, or blocked")
+
+        delta_deg = azimuth.get("delta_deg")
+        if delta_deg is not None and not 0 <= int(delta_deg) <= 180:
+            raise LaneManifestError("azimuth.delta_deg must be between 0 and 180")
+
+        if azimuth.get("alignment") == "blocked" and azimuth.get("locked") is not False:
+            raise LaneManifestError("blocked azimuth must be explicitly unlocked before resume")
+
+        return True
 
     @classmethod
     def validate_upstream_gates(cls, manifest: Dict[str, Any]) -> bool:
