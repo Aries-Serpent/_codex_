@@ -377,9 +377,10 @@ def main():
         help="Repository root directory",
     )
     parser.add_argument(
-        "--master-key",
+        "--master-key-file",
+        type=Path,
         default=None,
-        help="HMAC key used to sign generated wheelhouse manifests",
+        help="Path to a protected file containing the HMAC signing key. Prefer CODEX_MASTER_KEY in the environment.",
     )
     parser.add_argument(
         "-v",
@@ -391,7 +392,11 @@ def main():
     args = parser.parse_args()
     setup_logging(args.verbose)
 
-    generator = WheelhouseGenerator(args.repo_root, args.output_dir, master_key=args.master_key)
+    master_key = os.environ.get("CODEX_MASTER_KEY", "").strip()
+    if args.master_key_file is not None:
+        master_key = args.master_key_file.read_text(encoding="utf-8").strip()
+
+    generator = WheelhouseGenerator(args.repo_root, args.output_dir, master_key=master_key)
 
     if args.profile == "all":
         success, results = generator.generate_all()

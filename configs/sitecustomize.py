@@ -62,10 +62,14 @@ class _ShadowedDependencyFinder(importlib.abc.MetaPathFinder):
 
     _SHADOWED_NAMES = {"datasets", "sentencepiece", "torch", "transformers"}
 
+    def _shadow_roots(self) -> set[Path]:
+        return {repo_root / name for name in self._SHADOWED_NAMES if (repo_root / name).exists()}
+
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self._SHADOWED_NAMES:
             return None
 
+        shadow_roots = self._shadow_roots()
         search_paths: list[str] = []
         for entry in sys.path:
             if not entry:
@@ -74,12 +78,7 @@ class _ShadowedDependencyFinder(importlib.abc.MetaPathFinder):
                 resolved = Path(entry).resolve()
             except (OSError, RuntimeError, TypeError, ValueError):
                 continue
-            if resolved == repo_root or resolved == repo_root.parent:
-                continue
-            if any(
-                resolved == root or resolved.is_relative_to(root)
-                for root in {repo_root, repo_root.parent}
-            ):
+            if any(resolved == root or resolved.is_relative_to(root) for root in shadow_roots):
                 continue
             search_paths.append(entry)
 
@@ -132,6 +131,11 @@ def _strip_shadow_roots() -> None:
                 if key == legacy_name or key.startswith(f"{legacy_name}."):
                     sys.modules.pop(key, None)
 
+    dependency_shadow_roots = {
+        (repo_root / name).resolve()
+        for name in _ShadowedDependencyFinder._SHADOWED_NAMES
+        if (repo_root / name).exists()
+    }
     for shadow_name in _ShadowedDependencyFinder._SHADOWED_NAMES:
         module = sys.modules.get(shadow_name)
         if module is None:
@@ -143,7 +147,7 @@ def _strip_shadow_roots() -> None:
             origin_path = Path(origin).resolve()
         except (OSError, RuntimeError, TypeError, ValueError):
             continue
-        if any(origin_path.is_relative_to(root) for root in {repo_root, repo_root.parent}):
+        if any(origin_path == root or origin_path.is_relative_to(root) for root in dependency_shadow_roots):
             sys.modules.pop(shadow_name, None)
             for key in list(sys.modules):
                 if key == shadow_name or key.startswith(f"{shadow_name}."):

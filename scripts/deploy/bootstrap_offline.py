@@ -477,11 +477,6 @@ def main():
         help="Verify core API imports after installation",
     )
     parser.add_argument(
-        "--master-key",
-        default=None,
-        help="Master key used to validate the wheelhouse manifest signature",
-    )
-    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -496,7 +491,7 @@ def main():
         args.profile,
         dry_run=args.dry_run,
         verify_imports=args.verify_imports,
-        master_key=args.master_key,
+        master_key=os.environ.get("CODEX_MASTER_KEY"),
     )
 
     success, message = bootstrapper.run()

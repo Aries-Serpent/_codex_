@@ -54,23 +54,49 @@ fi
 # shellcheck disable=SC1090
 source "$VENV_DIR/bin/activate"
 
-if [[ -f "$WHEELHOUSE/CHECKSUMS.txt" ]]; then
-  echo "Verifying wheelhouse checksum manifest..."
-  (cd "$WHEELHOUSE" && sha256sum -c CHECKSUMS.txt >/dev/null)
-else
-  echo "wheelhouse checksum manifest missing: $WHEELHOUSE/CHECKSUMS.txt" >&2
-  exit 2
-fi
+MANIFEST_PATH="$WHEELHOUSE/manifest.json"
+if [[ -f "$MANIFEST_PATH" ]]; then
+  echo "Verifying wheelhouse manifest signature and artifact hash..."
+  MASTER_KEY="${CODEX_MASTER_KEY:-${OFFLINE_MASTER_KEY:-}}"
+  if [[ -z "$MASTER_KEY" ]]; then
+    echo "CODEX_MASTER_KEY or OFFLINE_MASTER_KEY must be set to verify the signed wheelhouse manifest." >&2
+    exit 2
+  fi
+  "$PYTHON_BIN" - "$WHEELHOUSE" "$ARTIFACT" "$MASTER_KEY" <<'PY'
+import hashlib
+import hmac
+import json
+import sys
+from pathlib import Path
 
-ARTIFACT_NAME="$(basename "$ARTIFACT")"
-ARTIFACT_HASH="$(sha256sum "$ARTIFACT" | awk '{print $1}')"
-EXPECTED_HASH="$(awk -v artifact="$ARTIFACT_NAME" '$2 == artifact {print $1; exit}' "$WHEELHOUSE/CHECKSUMS.txt")"
-if [[ -z "$EXPECTED_HASH" ]]; then
-  echo "Artifact $ARTIFACT_NAME is not listed in $WHEELHOUSE/CHECKSUMS.txt; refusing installation." >&2
-  exit 2
-fi
-if [[ "$ARTIFACT_HASH" != "$EXPECTED_HASH" ]]; then
-  echo "Artifact hash mismatch for $ARTIFACT_NAME; refusing installation." >&2
+wheelhouse = Path(sys.argv[1])
+artifact = Path(sys.argv[2])
+master_key = sys.argv[3]
+manifest_path = wheelhouse / "manifest.json"
+if not manifest_path.exists():
+    raise SystemExit(f"wheelhouse manifest missing: {manifest_path}")
+manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+expected_sig = (manifest.get("signature") or "").strip()
+if not expected_sig:
+    raise SystemExit(f"signed wheelhouse manifest is missing a signature: {manifest_path}")
+unsigned = {key: value for key, value in manifest.items() if key != "signature"}
+canonical = json.dumps(unsigned, sort_keys=True, separators=(",", ":")).encode("utf-8")
+actual_sig = hmac.new(master_key.encode("utf-8"), canonical, hashlib.sha256).hexdigest()
+if not hmac.compare_digest(expected_sig, actual_sig):
+    raise SystemExit("wheelhouse manifest signature mismatch; refusing installation")
+artifact_name = artifact.name
+wheel_data = manifest.get("wheels", {})
+if artifact_name not in wheel_data:
+    raise SystemExit(f"Artifact {artifact_name} is not listed in {manifest_path}; refusing installation")
+actual_hash = hashlib.sha256(artifact.read_bytes()).hexdigest()
+expected_hash = wheel_data[artifact_name].get("sha256")
+if not expected_hash:
+    raise SystemExit(f"Artifact {artifact_name} is missing a manifest hash; refusing installation")
+if actual_hash != expected_hash:
+    raise SystemExit(f"Artifact hash mismatch for {artifact_name}; refusing installation")
+PY
+else
+  echo "wheelhouse manifest missing: $MANIFEST_PATH" >&2
   exit 2
 fi
 
