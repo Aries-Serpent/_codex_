@@ -191,10 +191,9 @@ class WheelhouseGenerator:
     def _sign_manifest(self, manifest: Dict) -> Dict:
         """Attach an HMAC-SHA256 signature when a master key is configured."""
         if not self.master_key:
-            logger.warning(
-                "CODEX_MASTER_KEY is not set; wheelhouse manifest is unsigned and will fail verification."
+            raise ValueError(
+                "CODEX_MASTER_KEY is required to generate a release wheelhouse; unsigned manifests are not allowed."
             )
-            return manifest
 
         unsigned_manifest = {k: v for k, v in manifest.items() if k != "signature"}
         payload = json.dumps(unsigned_manifest, sort_keys=True, separators=(",", ":")).encode()

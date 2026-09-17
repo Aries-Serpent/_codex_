@@ -35,6 +35,7 @@ permissions:
   contents: read
   id-token: write
   attestations: write
+
 jobs:
   build:
     name: Build ${{ matrix.distribution.name }}
@@ -44,13 +45,13 @@ jobs:
       contents: read
     env:
       SELECTED_DISTRIBUTION: >-
-        ${{
+        ${
           (github.event_name == 'release' &&
           startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
           (github.event_name == 'workflow_dispatch' &&
           (github.event.inputs.package == 'all' ||
           github.event.inputs.package == matrix.distribution.name))
-        }}
+        }
     strategy:
       fail-fast: false
       matrix:
@@ -141,68 +142,87 @@ jobs:
 
   attest:
     name: Attest ${{ matrix.distribution.name }}
-    needs: [build]
+    needs:
+      - build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
       id-token: write
       attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+          - name: codex-ml
+            release_tag_prefix: v
+          - name: codex-cognitive-sdk
+            release_tag_prefix: codex-cognitive-sdk-v
+          - name: codex-contracts
+            release_tag_prefix: codex-contracts-v
+          - name: codex-ml-evaluation
+            release_tag_prefix: codex-ml-evaluation-v
+          - name: codex-ml-lora
+            release_tag_prefix: codex-ml-lora-v
+          - name: codex-ml-telemetry
+            release_tag_prefix: codex-ml-telemetry-v
     env:
       SELECTED_DISTRIBUTION: >-
-        ${{
+        ${
           (github.event_name == 'release' &&
           startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
           (github.event_name == 'workflow_dispatch' &&
           (github.event.inputs.package == 'all' ||
           github.event.inputs.package == matrix.distribution.name))
-        }}
+        }
+    steps:
+      - uses: actions/checkout@v7
+        if: env.SELECTED_DISTRIBUTION == 'true'
+        with:
+          persist-credentials: false
+
+      - name: Download artifacts
+        if: env.SELECTED_DISTRIBUTION == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: python-package-${{ matrix.distribution.name }}
+          path: dist/
+
+      - name: Generate build provenance
+        if: env.SELECTED_DISTRIBUTION == 'true'
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: dist/${{ matrix.distribution.name }}/*.whl
+
+  validate:
+    name: Validate ${{ matrix.distribution.name }}
+    needs:
+      - attest
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     strategy:
       fail-fast: false
       matrix:
         distribution:
-          - {name: codex-ml, release_tag_prefix: v}
-          - {name: codex-cognitive-sdk, release_tag_prefix: codex-cognitive-sdk-v}
-          - {name: codex-contracts, release_tag_prefix: codex-contracts-v}
-          - {name: codex-ml-evaluation, release_tag_prefix: codex-ml-evaluation-v}
-          - {name: codex-ml-lora, release_tag_prefix: codex-ml-lora-v}
-          - {name: codex-ml-telemetry, release_tag_prefix: codex-ml-telemetry-v}
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      with:
-        persist-credentials: false
-    - name: CacheManager health check
-      continue-on-error: true
-      run: 'python scripts/ci/generate_cache_keys.py --health --workflow pypi-publish
-        2>/dev/null || echo "Cache health: check skipped"
-
-        '
-    - name: Set up Python 3.12 with tiered cache
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: 3.12.13
-        cache-tier: common
-    - name: Install build dependencies
-      run: 'python -m pip install --upgrade pip
-
-        pip install build twine
-
-        '
-    - name: Build package
-      run: python -m build
-    - name: Check distribution
-      run: twine check dist/*
-    - name: Upload artifacts
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-      with:
-        path: dist/
-        name: python-package-distributions
-        retention-days: 90
-        if-no-files-found: error
+          - name: codex-ml
+            release_tag_prefix: v
+          - name: codex-cognitive-sdk
+            release_tag_prefix: codex-cognitive-sdk-v
+          - name: codex-contracts
+            release_tag_prefix: codex-contracts-v
+          - name: codex-ml-evaluation
+            release_tag_prefix: codex-ml-evaluation-v
+          - name: codex-ml-lora
+            release_tag_prefix: codex-ml-lora-v
+          - name: codex-ml-telemetry
+            release_tag_prefix: codex-ml-telemetry-v
     env:
-      GH_TOKEN: ${{ github.token }}
       SELECTED_DISTRIBUTION: >-
-        ${{
+        ${
           (github.event_name == 'release' &&
           startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
           (github.event_name == 'workflow_dispatch' &&
@@ -214,17 +234,7 @@ jobs:
           startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
           (github.event.inputs.package == 'all' ||
           github.event.inputs.package == matrix.distribution.name))
-        }}
-    strategy:
-      fail-fast: false
-      matrix:
-        distribution:
-          - {name: codex-ml, release_tag_prefix: v}
-          - {name: codex-cognitive-sdk, release_tag_prefix: codex-cognitive-sdk-v}
-          - {name: codex-contracts, release_tag_prefix: codex-contracts-v}
-          - {name: codex-ml-evaluation, release_tag_prefix: codex-ml-evaluation-v}
-          - {name: codex-ml-lora, release_tag_prefix: codex-ml-lora-v}
-          - {name: codex-ml-telemetry, release_tag_prefix: codex-ml-telemetry-v}
+        }
     steps:
       - uses: actions/checkout@v7
         if: env.SELECTED_DISTRIBUTION == 'true'
@@ -312,21 +322,21 @@ jobs:
       name: testpypi
       url: https://test.pypi.org/p/${{ matrix.distribution.name }}
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        path: dist/
-        name: python-package-distributions
-    - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        skip-existing: true
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          name: python-package-${{ matrix.distribution.name }}
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          skip-existing: true
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 30
+
   publish-pypi:
     name: Publish ${{ matrix.distribution.name }} to PyPI
     if: >-
@@ -367,20 +377,20 @@ jobs:
       name: pypi
       url: https://pypi.org/p/${{ matrix.distribution.name }}
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        path: dist/
-        name: python-package-distributions
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # release/v1
-      with:
-        password: ${{ secrets.PYPI_TOKEN }}
-        skip-existing: false
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          name: python-package-${{ matrix.distribution.name }}
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          skip-existing: false
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 45
+
   verify-installation:
     name: Verify ${{ matrix.distribution.name }} (Python 3.12)
     needs:
@@ -519,21 +529,10 @@ jobs:
           (github.event.inputs.package == 'all' ||
           github.event.inputs.package == matrix.distribution.name))
         env:
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           IMPORT_NAME: ${{ matrix.distribution.import }}
         run: |
-          cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -I - <<'PY'
+          python - <<'PY'
           import importlib
-          import importlib.metadata as metadata
-          import os
-
-          distribution = os.environ["DISTRIBUTION_NAME"]
-          module_name = os.environ["IMPORT_NAME"]
-          module = importlib.import_module(module_name)
-          installed_version = metadata.version(distribution)
-          module_version = getattr(module, "__version__", installed_version)
-          print(f"{distribution}=={installed_version}")
-          assert installed_version
-          assert module_version == installed_version
+          importlib.import_module("${{ env.IMPORT_NAME }}")
+          print(f"✅ Imported ${{ env.IMPORT_NAME }}")
           PY

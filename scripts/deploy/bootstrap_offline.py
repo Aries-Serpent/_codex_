@@ -288,8 +288,7 @@ class OfflineBootstrapper:
             )
             return False
 
-        manifest_copy = dict(self.manifest)
-        manifest_copy["signature"] = ""
+        manifest_copy = {k: v for k, v in self.manifest.items() if k != "signature"}
         payload = json.dumps(manifest_copy, sort_keys=True, separators=(",", ":")).encode()
         expected_signature = hmac.new(self.master_key.encode(), payload, hashlib.sha256).hexdigest()
 

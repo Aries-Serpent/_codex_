@@ -213,10 +213,6 @@ agents:
   enforcement_tier: GROUNDED
   autonomy_model: D_CAPABLE
   handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - ci-health-alert-agent
-  - agent-orchestrator
   consolidation_priority: true
   activation_frequency_rank: 1
   role: specialist
@@ -225,10 +221,6 @@ agents:
   lane_id: P1
   lane_type: parallel
   depends_on: []
-  accepts_handoff_from:
-  - orchestrator
-  - ci-health-alert-agent
-  - agent-orchestrator
   state_scope: isolated
   azimuth_target: branch_validation
   evidence_contract: validation_bundle

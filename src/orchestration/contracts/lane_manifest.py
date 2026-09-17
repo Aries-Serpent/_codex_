@@ -218,8 +218,11 @@ class LaneManifestContract:
             if expected_outputs:
                 manifest["expected_outputs"] = expected_outputs
 
-            # Validate against schema
+            # Validate against schema and semantic invariants before returning.
             jsonschema.validate(manifest, cls.SCHEMA)
+            cls.validate_lane_isolation(manifest)
+            cls.validate_handoff_contract(manifest)
+            cls.validate_azimuth_alignment(manifest)
 
             return manifest
 
@@ -252,6 +255,16 @@ class LaneManifestContract:
         except Exception as e:
             raise LaneManifestError(f"Failed to validate manifest: {e}")
 
+    @staticmethod
+    def _normalize_lane_namespace(namespace: str) -> str:
+        """Normalize a lane namespace such as `lane/A` to a canonical lane key."""
+        if not isinstance(namespace, str):
+            return ""
+        normalized = namespace.strip().rstrip("/")
+        if normalized.startswith("lane/"):
+            return normalized.split("/", 1)[1]
+        return normalized
+
     @classmethod
     def validate_lane_isolation(cls, manifest: Dict[str, Any]) -> bool:
         """Validate lane isolation semantics for a manifest.
@@ -271,10 +284,63 @@ class LaneManifestContract:
                 "lane_isolation missing required fields: " + ", ".join(missing)
             )
 
-        if not isinstance(lane_isolation.get("read_scope"), list):
+        read_scope = lane_isolation.get("read_scope")
+        write_scope = lane_isolation.get("write_scope")
+        if not isinstance(read_scope, list):
             raise LaneManifestError("lane_isolation.read_scope must be a list")
-        if not isinstance(lane_isolation.get("write_scope"), list):
+        if not isinstance(write_scope, list):
             raise LaneManifestError("lane_isolation.write_scope must be a list")
+
+        lane_namespace = cls._normalize_lane_namespace(lane_isolation.get("namespace", ""))
+        lane_key = lane_namespace.split("/", 1)[0] if lane_namespace else ""
+
+        for scope in read_scope:
+            if not isinstance(scope, str):
+                raise LaneManifestError("lane_isolation.read_scope entries must be strings")
+            normalized = scope.strip()
+            if not normalized:
+                raise LaneManifestError("lane_isolation.read_scope entries cannot be empty")
+            if normalized in {"shared", "shared/*", "shared/**", "upstream", "upstream/*", "upstream/**"}:
+                continue
+            if normalized.startswith("shared/") or normalized.startswith("upstream/"):
+                continue
+            if lane_key and (
+                normalized == f"lane/{lane_key}" or normalized.startswith(f"lane/{lane_key}/")
+            ):
+                continue
+            if lane_key and normalized == lane_key:
+                continue
+            raise LaneManifestError(
+                "lane_isolation.read_scope exceeds the documented shared/upstream/own allowance: "
+                f"{scope}"
+            )
+
+        for scope in write_scope:
+            if not isinstance(scope, str):
+                raise LaneManifestError("lane_isolation.write_scope entries must be strings")
+            normalized = scope.strip()
+            if not normalized:
+                raise LaneManifestError("lane_isolation.write_scope entries cannot be empty")
+            if normalized in {"shared", "shared/*", "shared/**", "upstream", "upstream/*", "upstream/**"}:
+                continue
+            if normalized.startswith("shared/") or normalized.startswith("upstream/"):
+                continue
+            if lane_key and (
+                normalized == f"lane/{lane_key}" or normalized.startswith(f"lane/{lane_key}/")
+            ):
+                continue
+            if normalized.startswith("lane/"):
+                target_lane = normalized.split("/", 2)[1]
+                if target_lane != lane_key:
+                    raise LaneManifestError(
+                        "lane_isolation.write_scope must not target sibling lanes: "
+                        f"{scope}"
+                    )
+                continue
+            raise LaneManifestError(
+                "lane_isolation.write_scope must stay within shared/upstream or the current lane: "
+                f"{scope}"
+            )
         return True
 
     @classmethod
@@ -288,15 +354,29 @@ class LaneManifestContract:
         if handoff is None:
             return True
 
-        for key in ("source_lane", "target_lane", "mode", "status"):
+        for key in ("source_lane", "target_lane", "mode", "status", "result_contract"):
             if key not in handoff:
                 raise LaneManifestError(f"handoff missing required field: {key}")
+
+        source_lane = handoff.get("source_lane")
+        target_lane = handoff.get("target_lane")
+        if source_lane not in set("ABCDEFGHIJK") or target_lane not in set("ABCDEFGHIJK"):
+            raise LaneManifestError(
+                "handoff source_lane and target_lane must be declared lane IDs A-K"
+            )
+        if source_lane == target_lane:
+            raise LaneManifestError("handoff source_lane and target_lane must differ")
 
         if handoff["mode"] not in {"pass", "yield", "checkpoint", "escalate", "abort"}:
             raise LaneManifestError(f"Unsupported handoff mode: {handoff['mode']}")
 
         if handoff["status"] not in {"pending", "accepted", "rejected", "blocked"}:
             raise LaneManifestError(f"Unsupported handoff status: {handoff['status']}")
+
+        if handoff["status"] == "accepted" and not handoff.get("result_contract"):
+            raise LaneManifestError("accepted handoffs require a result_contract")
+        if handoff.get("mode") == "checkpoint" and handoff.get("status") == "accepted" and not handoff.get("checkpoint_id"):
+            raise LaneManifestError("checkpoint handoffs require a checkpoint_id when accepted")
         return True
 
     @classmethod
@@ -321,6 +401,9 @@ class LaneManifestContract:
         delta_deg = azimuth.get("delta_deg")
         if delta_deg is not None and not 0 <= int(delta_deg) <= 180:
             raise LaneManifestError("azimuth.delta_deg must be between 0 and 180")
+
+        if azimuth.get("alignment") == "aligned" and delta_deg is not None and int(delta_deg) > 15:
+            raise LaneManifestError("aligned azimuth must remain within the 15 degree coherence window")
 
         if azimuth.get("alignment") == "blocked" and azimuth.get("locked") is not False:
             raise LaneManifestError("blocked azimuth must be explicitly unlocked before resume")

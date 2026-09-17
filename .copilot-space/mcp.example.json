@@ -12,7 +12,7 @@
         "PYTHONPATH": ".",
         "ITA_URL": "http://staging.ita.internal:8080",
         "ITA_API_KEY": "${env:CODEX_ITA_API_KEY}",
-        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY}",
         "MCP_OFFLINE": "false",
         "MCP_HEALTH_CHECK_INTERVAL_S": "60",
         "AUDIT_DEPTH": "4",
@@ -41,7 +41,7 @@
       ],
       "env": {
         "PYTHONPATH": ".",
-        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY}",
         "MCP_OFFLINE": "true"
       },
       "cwd": "${workspaceFolder}",
@@ -65,7 +65,7 @@
         "PYTHONPATH": ".",
         "ITA_URL": "http://staging.ita.internal:8080",
         "ITA_API_KEY": "${env:CODEX_ITA_API_KEY}",
-        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY}",
         "MCP_OFFLINE": "false",
         "AUDIT_DEPTH": "4",
         "ACTIVATION_CHECKLIST": "ACTIVATION_CHECKLIST_STATUS.md"
