@@ -33,7 +33,7 @@ jobs:
         - 3.12.13
     steps:
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       if: always()
       with:
         path: .pytest_cache/
@@ -42,7 +42,7 @@ jobs:
 
           '
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -78,7 +78,7 @@ jobs:
         \ for auth tests\npip install bandit>=1.7.5  # Pre-install bandit for security\
         \ scan\n"
     - name: Cache coverage reports (Layer 4)
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: coverage/
         key: ${{ runner.os }}-coverage-${{ github.sha }}
@@ -134,7 +134,7 @@ jobs:
         set -euo pipefail
         pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term
     - name: Upload scope report
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: always()
       with:
         path: .codex/scope_report.json
@@ -142,7 +142,7 @@ jobs:
         if-no-files-found: warn
         name: codex-master-key-scope-report-${{ matrix.python-version }}
     - name: Upload coverage report
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: always()
       with:
         path: coverage.json
@@ -184,7 +184,7 @@ jobs:
         \ 2>&1 || true\n  exit 1\nfi\necho \"\u2713 Security report verified and ready\
         \ for upload\"\nls -lh auth-security-report.json\n"
     - name: Upload security report
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: always()
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -203,7 +203,7 @@ jobs:
     needs: test-authentication
     steps:
     - name: Checkout code
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Set up Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
@@ -269,7 +269,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

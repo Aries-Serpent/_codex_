@@ -154,7 +154,23 @@ turn_index | timestamp | user_message | assistant_response | tool_calls | metada
 
 ---
 
-### 6. Artifact Types Summary Table
+### 6. GitHub Actions Release & Workflow Artifacts
+
+**Location**: release bundles in `.codex/`, PyPI build outputs in `dist/`, and GitHub Actions run artifacts under workflow-managed storage  
+**Format**: release notes, JSON manifests, SBOMs, archives, and package distributions  
+**Retention Period**: **90 days**
+
+**Rationale**:
+- Release bundles are required for auditability and incident response during the post-release window.
+- PyPI build and verification artifacts provide provenance and rollback context for the package lifecycle.
+- The 90-day standard matches the operational support window for release validation and customer escalation review.
+
+**Lifecycle**:
+1. **Days 0-90**: Active retention for support, security triage, and rollback verification.
+2. **Day 90**: Archive or remove stale release bundles if they are no longer needed for support or audit.
+3. **Manual override**: Keep release evidence longer for legal, compliance, or customer-impact investigations.
+
+### 7. Artifact Types Summary Table
 
 | Artifact Type | Location | Format | Retention | Archive | Notes |
 |---------------|----------|--------|-----------|---------|-------|
@@ -164,6 +180,8 @@ turn_index | timestamp | user_message | assistant_response | tool_calls | metada
 | Coverage reports | `coverage_reports/` | JSON/HTML | 365 days | After day 365 | Planning input |
 | Checkpoints | `.codex/checkpoints/` | YAML/JSON | 180 days | After day 180 | Rollback support |
 | Campaign reports | `reports/`, `artifacts/` | Markdown/JSON | 365 days | After day 365 | Accountability |
+| Release bundles | `.codex/release-*`, `dist/` | JSON/Markdown/tarballs | 90 days | Optional | Release and provenance evidence |
+| Workflow artifacts | `.codex/monitoring/`, `.codex/audit_artifacts/` | JSON/metadata | 90 days | Optional | Operational monitoring state |
 
 ---
 

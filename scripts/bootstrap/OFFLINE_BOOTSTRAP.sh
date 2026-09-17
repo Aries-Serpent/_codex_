@@ -54,6 +54,26 @@ fi
 # shellcheck disable=SC1090
 source "$VENV_DIR/bin/activate"
 
+if [[ -f "$WHEELHOUSE/CHECKSUMS.txt" ]]; then
+  echo "Verifying wheelhouse checksum manifest..."
+  (cd "$WHEELHOUSE" && sha256sum -c CHECKSUMS.txt >/dev/null)
+else
+  echo "wheelhouse checksum manifest missing: $WHEELHOUSE/CHECKSUMS.txt" >&2
+  exit 2
+fi
+
+ARTIFACT_NAME="$(basename "$ARTIFACT")"
+ARTIFACT_HASH="$(sha256sum "$ARTIFACT" | awk '{print $1}')"
+EXPECTED_HASH="$(awk -v artifact="$ARTIFACT_NAME" '$2 == artifact {print $1; exit}' "$WHEELHOUSE/CHECKSUMS.txt")"
+if [[ -z "$EXPECTED_HASH" ]]; then
+  echo "Artifact $ARTIFACT_NAME is not listed in $WHEELHOUSE/CHECKSUMS.txt; refusing installation." >&2
+  exit 2
+fi
+if [[ "$ARTIFACT_HASH" != "$EXPECTED_HASH" ]]; then
+  echo "Artifact hash mismatch for $ARTIFACT_NAME; refusing installation." >&2
+  exit 2
+fi
+
 python -m pip install --upgrade pip
 python -m pip install --no-index --find-links "$WHEELHOUSE" "$ARTIFACT"
 

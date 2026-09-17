@@ -40,7 +40,7 @@ jobs:
 
         '
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -77,12 +77,12 @@ jobs:
     if: ${{ needs.identify-candidates.outputs.count > 0 }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Create Archival Issue
       if: ${{ github.event.inputs.dry_run != 'true' }}
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         script: "const candidates = `${{ needs.identify-candidates.outputs.candidates\
           \ }}`;\nconst count = \"${{ needs.identify-candidates.outputs.count }}\"\
@@ -126,7 +126,7 @@ jobs:
     if: ${{ github.event.inputs.dry_run != 'true' }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Find and Compress Large Files

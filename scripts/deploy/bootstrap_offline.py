@@ -39,6 +39,7 @@ Authority: D-tier autonomous execution (@mbaetiong)
 
 import argparse
 import hashlib
+import hmac
 import json
 import logging
 import os
@@ -76,12 +77,14 @@ class OfflineBootstrapper:
         profile: str,
         dry_run: bool = False,
         verify_imports: bool = False,
+        master_key: str | None = None,
     ):
         """Initialize bootstrapper."""
         self.wheelhouse_path = wheelhouse_path
         self.profile = profile
         self.dry_run = dry_run
         self.verify_imports = verify_imports
+        self.master_key = (master_key or os.environ.get("CODEX_MASTER_KEY") or "").strip()
         self.extraction_dir = None
         self.wheelhouse_dir = None
         self.manifest = {}
@@ -108,26 +111,31 @@ class OfflineBootstrapper:
             if not self._load_manifest():
                 return False, "Failed to load manifest"
 
-            # Step 4: Verify wheel hashes
-            logger.info("Step 4: Verifying wheel hashes (SHA256)...")
+            # Step 4: Verify manifest signature
+            logger.info("Step 4: Verifying manifest signature...")
+            if not self._verify_manifest_signature():
+                return False, "Manifest signature verification failed"
+
+            # Step 5: Verify wheel hashes
+            logger.info("Step 5: Verifying wheel hashes (SHA256)...")
             if not self._verify_hashes():
                 return False, "Hash verification failed - wheels may be corrupted"
 
-            # Step 5: Install wheels (if not dry-run)
+            # Step 6: Install wheels (if not dry-run)
             if not self.dry_run:
-                logger.info("Step 5: Installing wheels...")
+                logger.info("Step 6: Installing wheels...")
                 if not self._install_wheels():
                     return False, "Wheel installation failed"
             else:
-                logger.info("Step 5: [DRY-RUN] Skipping installation")
+                logger.info("Step 6: [DRY-RUN] Skipping installation")
 
-            # Step 6: Verify imports (if requested)
+            # Step 7: Verify imports (if requested)
             if self.verify_imports:
-                logger.info("Step 6: Verifying core API imports...")
+                logger.info("Step 7: Verifying core API imports...")
                 if not self._verify_imports():
                     return False, "Core API import verification failed"
             else:
-                logger.info("Step 6: Skipping import verification")
+                logger.info("Step 7: Skipping import verification")
 
             logger.info("=" * 70)
             logger.info("✅ BOOTSTRAP COMPLETED SUCCESSFULLY")
@@ -266,6 +274,33 @@ class OfflineBootstrapper:
             logger.error(f"Failed to load manifest: {e}")
             return False
 
+    def _verify_manifest_signature(self) -> bool:
+        """Verify the manifest HMAC when a signing key is configured."""
+        stored_signature = str(self.manifest.get("signature") or "").strip()
+        if not stored_signature:
+            logger.error("Manifest signature missing; refusing to install unsigned wheelhouse")
+            return False
+
+        if not self.master_key:
+            logger.error(
+                "Manifest signature verification requires CODEX_MASTER_KEY or --master-key; "
+                "refusing unsigned release installation"
+            )
+            return False
+
+        manifest_copy = {k: v for k, v in self.manifest.items() if k != "signature"}
+        payload = json.dumps(manifest_copy, sort_keys=True, separators=(",", ":")).encode()
+        expected_signature = hmac.new(self.master_key.encode(), payload, hashlib.sha256).hexdigest()
+
+        if not hmac.compare_digest(stored_signature, expected_signature):
+            logger.error(
+                f"Manifest signature mismatch: expected {expected_signature[:16]}..., got {stored_signature[:16]}..."
+            )
+            return False
+
+        logger.info("✅ Manifest signature valid")
+        return True
+
     def _verify_hashes(self) -> bool:
         """Verify SHA256 hashes of all wheels against manifest."""
         logger.info("Verifying wheel hashes...")
@@ -273,7 +308,19 @@ class OfflineBootstrapper:
         failed_wheels = []
         verified_count = 0
 
-        for wheel_name, wheel_info in self.manifest.get("wheels", {}).items():
+        raw_wheels = self.manifest.get("wheels", {})
+        if isinstance(raw_wheels, dict):
+            manifest_wheels = raw_wheels
+        elif isinstance(raw_wheels, list):
+            manifest_wheels = {
+                str(item.get("name") or item.get("file_name")): item
+                for item in raw_wheels
+                if isinstance(item, dict) and (item.get("name") or item.get("file_name"))
+            }
+        else:
+            manifest_wheels = {}
+
+        for wheel_name, wheel_info in manifest_wheels.items():
             wheel_path = self.wheelhouse_dir / wheel_name
 
             if not wheel_path.exists():
@@ -283,7 +330,7 @@ class OfflineBootstrapper:
 
             # Compute SHA256
             sha256 = self._compute_sha256(wheel_path)
-            expected_sha256 = wheel_info.get("sha256")
+            expected_sha256 = wheel_info.get("sha256") or wheel_info.get("hash")
 
             if sha256 != expected_sha256:
                 logger.error(
@@ -430,6 +477,11 @@ def main():
         help="Verify core API imports after installation",
     )
     parser.add_argument(
+        "--master-key",
+        default=None,
+        help="Master key used to validate the wheelhouse manifest signature",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -444,6 +496,7 @@ def main():
         args.profile,
         dry_run=args.dry_run,
         verify_imports=args.verify_imports,
+        master_key=args.master_key,
     )
 
     success, message = bootstrapper.run()

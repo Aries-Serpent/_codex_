@@ -2,14 +2,14 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Multi-Lane Orchestration Canonical Artifacts",
   "description": "JSONSchema definitions for all 7 contract artifact types used in deterministic multi-lane orchestration",
-  "version": "1.0",
-  "date": "2026-07-13",
+  "version": "1.1",
+  "date": "2026-09-17",
   "authority": "@mbaetiong",
   "definitions": {
     "lane_manifest": {
       "$id": "#lane_manifest",
       "title": "Lane Manifest",
-      "description": "Immutable declaration of lane identity, execution mode, dependencies, and metadata",
+      "description": "Immutable declaration of lane identity, execution mode, dependencies, isolation boundaries, handoff contracts, and azimuth alignment metadata",
       "type": "object",
       "required": [
         "lane_id",
@@ -89,6 +89,40 @@
               "type": "string",
               "description": "Solver version (classical or hybrid)"
             }
+          }
+        },
+        "lane_isolation": {
+          "type": "object",
+          "description": "Explicit read/write segregation for a lane namespace and shared-state contract",
+          "properties": {
+            "namespace": { "type": "string", "description": "Lane-scoped workspace namespace" },
+            "read_scope": { "type": "array", "items": { "type": "string" }, "description": "Allowed read-only artifacts and manifests" },
+            "write_scope": { "type": "array", "items": { "type": "string" }, "description": "Allowed writable artifact paths" },
+            "shared_state": { "type": "array", "items": { "type": "string" }, "description": "Shared state objects declared for coordination" },
+            "cutover_guard": { "type": "string", "description": "Guard condition enforcing no sibling cross-write" }
+          }
+        },
+        "handoff": {
+          "type": "object",
+          "description": "Checkpoint-based lane-to-lane transfer contract",
+          "properties": {
+            "source_lane": { "type": "string", "description": "Origin lane for the handoff" },
+            "target_lane": { "type": "string", "description": "Destination lane for the handoff" },
+            "mode": { "type": "string", "enum": ["pass", "yield", "checkpoint", "escalate", "abort"], "description": "Explicit handoff mode" },
+            "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "blocked"], "description": "Current handoff state" },
+            "result_contract": { "type": "string", "description": "Artifact emitted by the source lane for downstream validation" },
+            "checkpoint_id": { "type": "string", "description": "Checkpoint or boundary identifier for the handoff" }
+          }
+        },
+        "azimuth": {
+          "type": "object",
+          "description": "Mission-direction alignment metadata used to bound cross-lane continuity",
+          "properties": {
+            "target": { "type": "integer", "minimum": 0, "maximum": 359, "description": "Target azimuth in degrees" },
+            "reference": { "type": "string", "description": "Objective or mission reference used for alignment" },
+            "alignment": { "type": "string", "enum": ["aligned", "reoriented", "blocked"], "description": "Current alignment state" },
+            "delta_deg": { "type": "integer", "minimum": 0, "maximum": 180, "description": "Difference between actual and target heading" },
+            "locked": { "type": "boolean", "description": "Whether the azimuth is locked until a remediation step" }
           }
         },
         "execution_order": {

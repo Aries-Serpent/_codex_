@@ -49,21 +49,21 @@ jobs:
       gate_status: ${{ steps.gate-decision.outputs.status }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       with:
         fetch-depth: 0
         persist-credentials: false
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
+      uses: github/codeql-action/init@311b4ee155dcdab395044f00946f664bd51ff173
       with:
         languages: python
         queries: security-and-quality
         config-file: ./.github/codeql/codeql-config.yml
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
+      uses: github/codeql-action/autobuild@311b4ee155dcdab395044f00946f664bd51ff173
     - name: Perform CodeQL Analysis
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-      uses: github/codeql-action/analyze@v4
+      uses: github/codeql-action/analyze@311b4ee155dcdab395044f00946f664bd51ff173
       with:
         category: python-security-gate-${{ github.run_id }}-${{ github.run_attempt }}
         upload: true
@@ -132,7 +132,7 @@ jobs:
         PY
     - name: Upload CodeQL results artifact
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       with:
         name: codeql-ga-sarif-${{ github.run_id }}
         path: |
@@ -158,7 +158,7 @@ jobs:
         \ != \"true\" ]; then\n  exit 1\nfi\n"
     - name: Create PR Comment with Gate Status
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         script: "const critical = '${{ steps.analyze.outputs.critical_count }}';\n\
           const high = '${{ steps.analyze.outputs.high_count }}';\nconst medium =\
@@ -201,7 +201,7 @@ jobs:
         \ \"Audit trail recorded: $AUDIT_LOG\"\n"
     - name: Upload Gate Audit Logs
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
       with:
         name: codeql-ga-gate-audit-${{ github.run_id }}
         path: .codex/security/gate_audit/
@@ -218,9 +218,9 @@ jobs:
       security-events: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
     - name: Create Security Alert Issue
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
       with:
         script: "const critical = '${{ needs.codeql-analysis.outputs.critical_count\
           \ }}';\nconst high = '${{ needs.codeql-analysis.outputs.high_count }}';\n\

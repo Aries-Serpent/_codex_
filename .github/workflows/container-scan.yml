@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
 
@@ -111,13 +111,13 @@ jobs:
 
       - name: Upload SARIF to GitHub Security
         if: always()
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@311b4ee155dcdab395044f00946f664bd51ff173
         with:
           sarif_file: trivy-results-${{ strategy.job-index }}.sarif
 
       - name: Upload scan artifact
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
           path: |

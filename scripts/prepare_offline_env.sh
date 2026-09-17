@@ -151,16 +151,19 @@ if pip show cyclonedx-bom &>/dev/null; then
         log_warning "SBOM generation failed, continuing without SBOM"
     fi
 else
-    log_warning "cyclonedx-bom not found, skipping SBOM generation"
+    log_warning "cyclonedx-bom not installed, installing..."
+    if pip install cyclonedx-bom -q 2>&1 | tee -a "$LOG_FILE"; then
+        if cyclonedx-bom -o "${WHEELHOUSE_DIR}/sbom.json" -r "$FILTERED_REQS" 2>&1 | tee -a "$LOG_FILE"; then
+            log_success "SBOM created: $WHEELHOUSE_DIR/sbom.json"
+        else
+            log_warning "SBOM generation failed, continuing without SBOM"
+        fi
+    else
+        log_warning "Could not install cyclonedx-bom, skipping SBOM generation"
+    fi
 fi
 
 rm -f "$FILTERED_REQS"
-else
-    log_warning "cyclonedx-bom not installed, installing..."
-    pip install cyclonedx-bom -q 2>&1 | tee -a "$LOG_FILE" || {
-        log_warning "Could not install cyclonedx-bom, skipping SBOM generation"
-    }
-fi
 
 # Step 6: Create manifest file with metadata
 log_info "Step 6: Creating offline manifest..."

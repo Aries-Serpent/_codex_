@@ -57,6 +57,42 @@ class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
         )
 
 
+class _ShadowedDependencyFinder(importlib.abc.MetaPathFinder):
+    """Prevent repo-local dependency directories from masking installed packages."""
+
+    _SHADOWED_NAMES = {"datasets", "sentencepiece", "torch", "transformers"}
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in self._SHADOWED_NAMES:
+            return None
+
+        search_paths: list[str] = []
+        for entry in sys.path:
+            if not entry:
+                continue
+            try:
+                resolved = Path(entry).resolve()
+            except (OSError, RuntimeError, TypeError, ValueError):
+                continue
+            if resolved == repo_root or resolved == repo_root.parent:
+                continue
+            if any(
+                resolved == root or resolved.is_relative_to(root)
+                for root in {repo_root, repo_root.parent}
+            ):
+                continue
+            search_paths.append(entry)
+
+        spec = importlib.machinery.PathFinder().find_spec(fullname, search_paths)
+        if spec is not None and spec.loader is not None:
+            return spec
+
+        raise ModuleNotFoundError(
+            f"The repo-local '{fullname}' directory is not an importable Python package. "
+            "Install the real dependency or use pytest.importorskip(...) for optional tests."
+        )
+
+
 
 def _strip_shadow_roots() -> None:
     """Keep project subtrees like ``scripts``/``tests`` from masking canonical src packages."""
@@ -96,6 +132,26 @@ def _strip_shadow_roots() -> None:
                 if key == legacy_name or key.startswith(f"{legacy_name}."):
                     sys.modules.pop(key, None)
 
+    for shadow_name in _ShadowedDependencyFinder._SHADOWED_NAMES:
+        module = sys.modules.get(shadow_name)
+        if module is None:
+            continue
+        origin = getattr(module, "__file__", "") or ""
+        if not origin:
+            continue
+        try:
+            origin_path = Path(origin).resolve()
+        except (OSError, RuntimeError, TypeError, ValueError):
+            continue
+        if any(origin_path.is_relative_to(root) for root in {repo_root, repo_root.parent}):
+            sys.modules.pop(shadow_name, None)
+            for key in list(sys.modules):
+                if key == shadow_name or key.startswith(f"{shadow_name}."):
+                    sys.modules.pop(key, None)
+
+
+if not any(isinstance(finder, _ShadowedDependencyFinder) for finder in sys.meta_path):
+    sys.meta_path.insert(0, _ShadowedDependencyFinder())
 
 if not any(isinstance(finder, _CanonicalPackageFinder) for finder in sys.meta_path):
     sys.meta_path.insert(0, _CanonicalPackageFinder())

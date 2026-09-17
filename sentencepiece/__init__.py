@@ -44,6 +44,12 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
+    raise ModuleNotFoundError(
+        "The repo-local 'sentencepiece' directory is not a Python package. "
+        "Install the real 'sentencepiece' library or use pytest.importorskip('sentencepiece') "
+        "for optional-dependency tests."
+    )
+
     _ERR = "sentencepiece is not installed"
 
     class SentencePieceProcessor:
@@ -97,8 +103,12 @@ else:  # pragma: no cover - exercised in minimal test envs
 
     __all__ = ["SentencePieceProcessor", "SentencePieceTrainer"]
     __path__ = []
+    __file__ = ""
     IS_CODEX_STUB = True
-    _MISSING_MSG = "sentencepiece is not installed in this environment. Install sentencepiece to enable these features."
+    _MISSING_MSG = (
+        "sentencepiece is not installed in this environment. "
+        "Install sentencepiece to enable these features."
+    )
 
     def __getattr__(name: str) -> object:
         raise AttributeError(_MISSING_MSG)

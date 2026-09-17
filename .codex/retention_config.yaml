@@ -43,6 +43,24 @@ retention:
       - coverage_reports/
       - .codex/test_skeletons/
 
+  # Release artifacts and workflow bundles
+  release_artifacts:
+    window_days: 90
+    archive: true
+    locations:
+      - .codex/release-notes.md
+      - .codex/release-audits/
+      - .codex/release-announcements/
+      - dist/
+
+  # GitHub Actions outputs and monitoring state
+  workflow_artifacts:
+    window_days: 90
+    archive: true
+    locations:
+      - .codex/monitoring/
+      - .codex/audit_artifacts/
+
 # Archive configuration
 archive:
   # Archive format: tar.gz or tar.bz2

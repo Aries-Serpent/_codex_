@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -47,10 +47,11 @@ jobs:
 
       - name: Upload Bandit results (JSON)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: bandit-report
           path: bandit-report.json
+          retention-days: 90
 
   codeql:
     name: CodeQL Security Analysis (Matrix)
@@ -64,19 +65,19 @@ jobs:
           - javascript
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@c20e34f438d671fc35777cc9820dd7adf8252874
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@c20e34f438d671fc35777cc9820dd7adf8252874
 
       - name: Analyze code
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@c20e34f438d671fc35777cc9820dd7adf8252874
         with:
           category: /language:${{ matrix.language }}
           upload: never
@@ -87,7 +88,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Install Semgrep
         run: pip install semgrep
@@ -97,7 +98,7 @@ jobs:
 
       - name: Upload Semgrep results
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@c20e34f438d671fc35777cc9820dd7adf8252874
         with:
           sarif_file: semgrep-report.json
 
@@ -112,7 +113,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Create compliance dashboard
         run: |
