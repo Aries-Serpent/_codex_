@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5618)
+- Final governance sync: restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the active accountability evidence so the current PR clears REQ-4 / REQ-5 without widening scope.
+
+### Fixed (auto-update — PR #5618)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5618 (SHA `73f655d4`) at 2026-09-17T07:49:32Z [auto-generated]
 - Final lint regression fix: wrapped the legacy router import guard in `src/aries_serpent_core/api/app.py` to satisfy the repo’s Ruff E501 gate without changing runtime behavior.
 

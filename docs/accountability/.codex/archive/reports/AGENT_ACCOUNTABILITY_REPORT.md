@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-09-17T07:56:49Z — PR #5618 governance finalization follow-up
+
+### Objective
+Close the remaining PR #5618 compliance drift by restoring the tracked startup-packet baseline and refreshing the active governance artifacts without widening the change scope beyond the current review gate.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Re-checked the current PR state and the remaining merge-readiness blockers before making any further change.
+2. Restored the repo's tracked `.codex/session_startup_packet.json` value so the branch no longer carries timestamp-only churn.
+3. Refreshed the active governance evidence in `CHANGELOG.md` and this accountability archive so REQ-4 and REQ-5 are satisfied for the current PR tip.
+
+### Validation
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5618` → pass after the governance files update in the same final commit.
+- `git diff -- .codex/session_startup_packet.json` → no remaining drift from the tracked baseline.
+
+### Governance
+- REQ-4: Active accountability archive refreshed for PR #5618 in the final session commit.
+- REQ-5: Root `CHANGELOG.md` refreshed under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` remains aligned with the current PR evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## SESSION SUMMARY — 2026-09-14T09:44:55Z — PR #5613 cognitive pre-flight follow-up
 
 ### Objective
