@@ -1,0 +1,137 @@
+# Codex Ecosystem Index
+
+> **As of:** 2026-09-12  
+> **Package version:** 0.3.0  
+> **Scope:** evidence-based current repository architecture and a proposed federated target
+
+This index separates what exists in this checkout from the ecosystem the roadmap proposes.
+“Implemented” means a source or configuration surface exists; it does not imply deployment,
+live connectivity, or permission to actuate.
+
+## Current repository architecture
+
+```mermaid
+flowchart TB
+    UI["Interfaces<br/>CLI · APIs · Cognitive App"]
+    ORCH["Decision and orchestration<br/>OODA · plansets · specialist routing"]
+    CAP["Capability plane<br/>ML · ingestion · RAG · evaluation · serving"]
+    CTRL["Control plane<br/>RBAC · autonomy policy · config · observability"]
+    DATA["State plane<br/>session records · memory · artifacts · registries"]
+    EXT["External boundaries<br/>GitHub · MCP · cloud/deployment"]
+
+    UI --> ORCH
+    UI --> CAP
+    ORCH --> CAP
+    ORCH --> CTRL
+    ORCH <--> DATA
+    CAP <--> DATA
+    CTRL --> EXT
+    CAP --> EXT
+```
+
+The five-layer interpretation is documented in
+[`REPOSITORY_EXPLANATION.md`](REPOSITORY_EXPLANATION.md#4-canonical-five-layer-architecture).
+The diagram above emphasizes execution planes without replacing those canonical layers.
+
+## Current-state evidence matrix
+
+| Surface | Current evidence | Evidence-based status |
+|---|---|---|
+| Distribution and runtime | [`pyproject.toml`](../pyproject.toml) declares `codex-ml` 0.3.0, Python 3.12, dependencies, extras, and package mappings. | Implemented package contract |
+| ML and retrieval | [`src/codex_ml/`](../src/codex_ml/) and [`src/rag/`](../src/rag/) contain training, evaluation, inference, serving, indexing, and retrieval implementations. | Implemented; features vary by dependency profile |
+| Cognitive orchestration | [`src/aries_serpent_core/cognitive/planset_orchestrator.py`](../src/aries_serpent_core/cognitive/planset_orchestrator.py) maps repository plans to ranked prompt sets. | Repository-local planning engine |
+| Cognitive SDK | [`packages/cognitive_sdk/`](../packages/cognitive_sdk/) defines `codex-cognitive-sdk` 0.1.0a1 and the `codex_cognitive_sdk` governance, memory, and OODA contracts. | Implemented, unpublished alpha package boundary; not a deployed cognitive service |
+| Rust swarm crate | [`Cargo.toml`](../Cargo.toml) defines the Rust crate `codex-swarm-engine` 0.1.0 and builds the `codex_swarm` library/Python extension module. | Implemented source/build target; publication is not established |
+| Rust core crate | [`src/codex_core/Cargo.toml`](../src/codex_core/Cargo.toml) separately defines the `codex_core` 0.1.0 PyO3 extension crate. | Separate implemented source/build target |
+| Ecosystem observation | [`src/aries_serpent_core/brain/ooda_observer.py`](../src/aries_serpent_core/brain/ooda_observer.py) returns explicitly labelled representative agent data. | Scaffold/sample, not live federation telemetry |
+| Authorization | [`src/aries_serpent_core/governance/rbac.py`](../src/aries_serpent_core/governance/rbac.py) defines roles and an action/resource permission matrix. | Implemented local policy surface |
+| Autonomy enforcement | [`src/aries_serpent_core/autonomy/registry.py`](../src/aries_serpent_core/autonomy/registry.py) applies kill-switch, surface, mode, approval, and dry-run checks. | Guarded, policy-scoped actuation |
+| Checked-in agent mode | [`.codex/autonomous_agent.yaml`](../.codex/autonomous_agent.yaml) enables selected operations while retaining approval and escalation categories. | Enabled configuration, not proof of live authority |
+| Agent inventory | [`CODEX_MANIFEST.json`](../CODEX_MANIFEST.json) records per-agent role, enforcement tier, and autonomy model. | Generated repository inventory |
+| Delivery boundaries | [`docker/`](../docker/), [`k8s/`](../k8s/), and [`infrastructure/`](../infrastructure/) contain deployment declarations. | Multiple deployment options; environment-specific |
+
+## Federated target ecosystem
+
+The target is a set of independently governed repository or service nodes that exchange
+versioned capability, evidence, and policy envelopes. It is **not the current runtime**.
+The roadmap names multi-repository support, distributed agents, knowledge sharing, and
+unified orchestration as future work
+([`ROADMAP.md`](ROADMAP.md#phase-3-current-cycle-objectives)).
+
+### Package maturity and compatibility
+
+| Distribution | Version | Release status | Maturity | Compatibility guarantee |
+|---|---:|---|---|---|
+| `codex-ml` | `0.3.0` | Current implementation distribution | Stable core; profile-dependent features | Existing public imports remain the compatibility host during extraction |
+| `codex-contracts` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root immutable contracts only |
+| `codex-ml-telemetry` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root health, metrics, export, and server helpers |
+| `codex-ml-evaluation` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root contracts, registry, runner, and documented adapters |
+| `codex-ml-lora` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root configuration, lifecycle, and documented adapters |
+| `codex-swarm-engine` (Rust crate) | `0.1.0` | Current source crate; builds module `codex_swarm` | Experimental | No crates.io or wheel publication claim |
+| `codex_core` (Rust crate/module) | `0.1.0` | Current separate source crate and extension target | Experimental | No publication claim |
+| `codex-swarm` (distribution name) | — | Target only | Experimental concept | No standalone distribution guarantee |
+| `codex-cognitive-sdk` | `0.1.0a1` | Unpublished alpha in this checkout | Alpha boundary | Package-root governance, memory, and OODA contracts |
+
+`codex-ml-evaluation` is the frozen evaluation distribution name;
+`codex-ml-eval` is not an alias. The standalone packages use pre-release
+versioning and do not imply that `codex-ml` is already a metapackage.
+Rust crate names, Python module names, and proposed distribution names are
+listed separately above and must not be treated as aliases.
+
+```mermaid
+flowchart LR
+    subgraph N1["Federation node A"]
+        A_CAP[Capabilities]
+        A_POLICY[Local policy]
+        A_STATE[Local evidence]
+    end
+    subgraph N2["Federation node B"]
+        B_CAP[Capabilities]
+        B_POLICY[Local policy]
+        B_STATE[Local evidence]
+    end
+    FED["Federation contracts<br/>identity · capability manifest<br/>task/evidence envelope · versioning"]
+    ROUTER["Policy-aware router<br/>discovery · negotiation · delegation"]
+    OBS["Federated observability<br/>provenance · audit · health"]
+
+    A_CAP <--> FED
+    B_CAP <--> FED
+    A_POLICY --> ROUTER
+    B_POLICY --> ROUTER
+    FED <--> ROUTER
+    A_STATE --> OBS
+    B_STATE --> OBS
+    ROUTER --> OBS
+```
+
+### Required transition contracts
+
+1. **Identity and trust:** stable node and agent identities, authentication, revocation,
+   and least-privilege delegation.
+2. **Capability discovery:** versioned manifests with inputs, outputs, constraints, and
+   compatibility rules.
+3. **Task and evidence envelopes:** correlation IDs, provenance, idempotency, result
+   status, and audit references.
+4. **Policy negotiation:** local policy always constrains delegated authority; no remote
+   node may raise its own autonomy ceiling.
+5. **Observability:** distinguish sampled, simulated, cached, and live health data.
+6. **Failure semantics:** bounded retries, cancellation, partial-failure reporting, and
+   deterministic handoff recovery.
+
+These are target requirements, not claims of implementation. Existing local primitives
+provide starting points: RBAC in
+[`src/aries_serpent_core/governance/rbac.py`](../src/aries_serpent_core/governance/rbac.py),
+autonomy checks in
+[`src/aries_serpent_core/autonomy/registry.py`](../src/aries_serpent_core/autonomy/registry.py),
+and planset routing in
+[`src/aries_serpent_core/cognitive/planset_orchestrator.py`](../src/aries_serpent_core/cognitive/planset_orchestrator.py).
+
+## Navigation
+
+- [Architecture overview](architecture.md)
+- [Federated package boundaries](architecture/federated_package_boundaries.md)
+- [ADR-009: Federated Package Boundaries](adr/ADR-009-federated-package-boundaries.md)
+- [Evidence-based repository explanation](REPOSITORY_EXPLANATION.md)
+- [Repository map](REPOSITORY_MAP.md)
+- [Workflow and governance map](WORKFLOW_MAP.md)
+- [Next-session architecture plan](plans/ARCHITECTURE_NEXT_SESSION.md)

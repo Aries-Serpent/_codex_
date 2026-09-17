@@ -1,4 +1,9 @@
 # Missing Files Recovery Report
+> **Historical record:** This report preserves claims made during the 2026 recovery
+> sessions. File counts, test totals, workflow schedules, “operational,” and “complete”
+> statements are not current-state attestations. Re-verify them against the present
+> checkout and current CI artifacts before relying on them.
+
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
@@ -10,7 +15,7 @@
 
 ---
 
-## Problem Identification
+## Historical Problem Identification
 
 Through detailed analysis of commit history and the extracted log file (`logs/extracted_log_59387344823.log`), discovered that previous iterations **described** implementations but failed to **commit** the actual files.
 

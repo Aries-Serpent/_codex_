@@ -1,0 +1,36 @@
+[build-system]
+requires = [
+    "setuptools>=78.1.1,<82",
+    "wheel>=0.48.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offline-zip-keymaster"
+version = "0.1.0"
+description = "Offline ZIP key generation and safe unpacking toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Aries Serpent" },
+]
+dependencies = [
+    "cryptography>=50.0.1,<51.0.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+offline-zip-keymaster = "offline_zip_keymaster.cli:main"
+offline-zip-keymaster-gui = "offline_zip_keymaster.gui:main"
+
+[tool.setuptools]
+package-dir = { "" = "../src" }
+
+[tool.setuptools.packages.find]
+where = ["../src"]
+include = ["offline_zip_keymaster*"]

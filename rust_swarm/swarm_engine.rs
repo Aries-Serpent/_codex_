@@ -2,26 +2,34 @@
 //!
 //! Manages a pool of concurrent agents for high-throughput task processing.
 
-use crossbeam::channel::{bounded, Receiver, Sender};
-use parking_lot::RwLock;
+use crossbeam::channel::{bounded, Receiver, Sender, TrySendError};
+use parking_lot::Mutex;
 use pyo3::prelude::*;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use std::thread;
+use std::thread::{self, JoinHandle};
+use std::time::Duration;
+
+const QUEUE_CAPACITY: usize = 1024;
+const CHANNEL_POLL_INTERVAL: Duration = Duration::from_millis(10);
 
 /// Core swarm engine managing agent pools
 pub struct SwarmEngine {
     agent_count: usize,
     task_sender: Sender<Vec<u8>>,
     result_receiver: Receiver<Vec<u8>>,
-    running: Arc<RwLock<bool>>,
+    running: Arc<AtomicBool>,
+    workers: Mutex<Vec<JoinHandle<()>>>,
 }
 
 impl SwarmEngine {
     /// Create a new swarm with specified number of agents
     pub fn new(agent_count: usize) -> Self {
-        let (task_tx, task_rx) = bounded(10000);
-        let (result_tx, result_rx) = bounded(10000);
-        let running = Arc::new(RwLock::new(true));
+        let agent_count = agent_count.max(1);
+        let (task_tx, task_rx) = bounded(QUEUE_CAPACITY);
+        let (result_tx, result_rx) = bounded(QUEUE_CAPACITY);
+        let running = Arc::new(AtomicBool::new(true));
+        let mut workers = Vec::with_capacity(agent_count);
 
         // Spawn agent threads
         for agent_id in 0..agent_count {
@@ -29,17 +37,22 @@ impl SwarmEngine {
             let result_tx = result_tx.clone();
             let running = Arc::clone(&running);
 
-            thread::spawn(move || {
-                while *running.read() {
-                    if let Ok(task_data) = task_rx.try_recv() {
-                        // Process task (placeholder for actual processing)
-                        let result = Self::process_task(agent_id, task_data);
-                        let _ = result_tx.try_send(result);
-                    } else {
-                        thread::yield_now();
+            workers.push(thread::spawn(move || {
+                while running.load(Ordering::Acquire) {
+                    if let Ok(task_data) = task_rx.recv_timeout(CHANNEL_POLL_INTERVAL) {
+                        let mut result = Self::process_task(agent_id, task_data);
+                        while running.load(Ordering::Acquire) {
+                            match result_tx.send_timeout(result, CHANNEL_POLL_INTERVAL) {
+                                Ok(()) => break,
+                                Err(crossbeam::channel::SendTimeoutError::Timeout(returned)) => {
+                                    result = returned;
+                                }
+                                Err(crossbeam::channel::SendTimeoutError::Disconnected(_)) => break,
+                            }
+                        }
                     }
                 }
-            });
+            }));
         }
 
         Self {
@@ -47,31 +60,50 @@ impl SwarmEngine {
             task_sender: task_tx,
             result_receiver: result_rx,
             running,
+            workers: Mutex::new(workers),
         }
     }
 
     /// Process a single task
     fn process_task(_agent_id: usize, task_data: Vec<u8>) -> Vec<u8> {
-        // Simulate task processing
-        // In real implementation, this would deserialize, process, and serialize
+        // Phase 4 currently provides an experimental identity transport. It
+        // validates bounded scheduling and ownership, not agent semantics.
         task_data
     }
 
     /// Process a batch of tasks
     pub fn process_batch(&self, count: usize) -> usize {
         let mut submitted = 0;
+        let mut received = 0;
         for i in 0..count {
-            let task = format!("task_{}", i).into_bytes();
-            if self.task_sender.try_send(task).is_ok() {
-                submitted += 1;
+            let mut task = format!("task_{}", i).into_bytes();
+            loop {
+                if !self.running.load(Ordering::Acquire) {
+                    return received;
+                }
+                match self.task_sender.try_send(task) {
+                    Ok(()) => {
+                        submitted += 1;
+                        break;
+                    }
+                    Err(TrySendError::Full(returned)) => {
+                        task = returned;
+                        match self.result_receiver.recv_timeout(CHANNEL_POLL_INTERVAL) {
+                            Ok(_) => received += 1,
+                            Err(_) if !self.running.load(Ordering::Acquire) => return received,
+                            Err(_) => {}
+                        }
+                    }
+                    Err(TrySendError::Disconnected(_)) => return received,
+                }
             }
         }
 
-        // Wait for results
-        let mut received = 0;
         while received < submitted {
-            if self.result_receiver.try_recv().is_ok() {
-                received += 1;
+            match self.result_receiver.recv_timeout(CHANNEL_POLL_INTERVAL) {
+                Ok(_) => received += 1,
+                Err(_) if !self.running.load(Ordering::Acquire) => break,
+                Err(_) => {}
             }
         }
 
@@ -87,11 +119,27 @@ impl SwarmEngine {
     pub fn agent_count(&self) -> usize {
         self.agent_count
     }
+
+    /// Cancel pending work and wait for all worker threads to stop.
+    pub fn shutdown(&self) {
+        if !self.running.swap(false, Ordering::AcqRel) {
+            return;
+        }
+        let mut workers = self.workers.lock();
+        for worker in workers.drain(..) {
+            let _ = worker.join();
+        }
+    }
+
+    /// Whether this engine still accepts work.
+    pub fn is_running(&self) -> bool {
+        self.running.load(Ordering::Acquire)
+    }
 }
 
 impl Drop for SwarmEngine {
     fn drop(&mut self) {
-        *self.running.write() = false;
+        self.shutdown();
     }
 }
 
@@ -110,25 +158,30 @@ impl PySwarmEngine {
         }
     }
 
-    fn process_batch(&self, count: usize) -> usize {
-        self.engine.process_batch(count)
+    fn process_batch(&self, py: Python<'_>, count: usize) -> usize {
+        py.allow_threads(|| self.engine.process_batch(count))
     }
 
-    fn execute_parallel(&self, task_count: usize) -> usize {
-        self.engine.execute_parallel(task_count)
+    fn execute_parallel(&self, py: Python<'_>, task_count: usize) -> usize {
+        py.allow_threads(|| self.engine.execute_parallel(task_count))
     }
 
     fn agent_count(&self) -> usize {
         self.engine.agent_count()
     }
 
+    fn shutdown(&self, py: Python<'_>) {
+        py.allow_threads(|| self.engine.shutdown())
+    }
+
+    fn is_running(&self) -> bool {
+        self.engine.is_running()
+    }
+
     fn process_tasks(&self, tasks: Vec<PyObject>) -> Vec<PyObject> {
-        // Currently, this method is a no-op pass-through that simply returns
-        // the provided Python tasks without modification. This avoids runtime
-        // panics from `unimplemented!` while keeping the public API stable.
-        //
-        // In future, this can be extended to serialize tasks, submit them to
-        // the underlying SwarmEngine, and collect results.
+        // Explicitly retained as an experimental identity-transport API.
+        // Python objects cannot be processed off-GIL; byte-oriented workloads
+        // should use `process_batch`, which releases the GIL.
         tasks
     }
 }
@@ -176,5 +229,21 @@ mod tests {
             "Throughput too low: {:.0} tasks/s",
             throughput
         );
+    }
+
+    #[test]
+    fn test_shutdown_is_idempotent() {
+        let swarm = SwarmEngine::new(2);
+        assert!(swarm.is_running());
+        swarm.shutdown();
+        swarm.shutdown();
+        assert!(!swarm.is_running());
+        assert_eq!(swarm.process_batch(1), 0);
+    }
+
+    #[test]
+    fn test_batch_larger_than_queue_capacity() {
+        let swarm = SwarmEngine::new(2);
+        assert_eq!(swarm.process_batch(QUEUE_CAPACITY * 3), QUEUE_CAPACITY * 3);
     }
 }

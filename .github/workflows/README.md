@@ -69,59 +69,51 @@ Then check debug output in workflow logs.
 
 ---
 
-### Application Distribution Workflows
+### Application Distribution & Offline Packaging
 
 #### `app-package-download.yml`
 **Status**: ✅ Active  
-**Last Updated**: 2026-02-13  
+**Last Updated**: 2026-09-12  
 **Trigger**: Manual (`workflow_dispatch`)
 
-**Purpose**: Package and distribute applications from the `apps/` directory as ready-to-use ZIP or TAR.GZ archives for end users.
+**Purpose**: Build a native Windows GUI executable for the offline ZIP keymaster app, package it as a self-contained zip bundle, and upload the runtime bundle plus the minimal build-support bundle as workflow artifacts.
 
 **Inputs**:
-- `app_name` (default: zd_voice_lines) - Application to package: zd_voice_lines, all
-- `branch` (default: copilot/add-zd-voice-lines-console-app) - Source branch: main, 0D_base_, copilot/add-zd-voice-lines-console-app
-- `custom_branch` (optional) - Custom branch name (overrides dropdown selection)
-- `include_dependencies` (default: true) - Include requirements.txt with dependencies
-- `package_format` (default: zip) - Archive format: zip, tar.gz
+- `app_name` - `offline_zip_keymaster`, `offline-zip-keymaster`, or `all`
+- `branch` - `main` or `0D_base_`
+- `package_format` - `zip` (the runtime bundle is a self-contained Windows GUI EXE zip)
+- `include_dependencies` - include dependency metadata in the bundle
+- `include_build_bundle` - include the minimal source bundle
+- `offline_wheelhouse` - generate a local wheelhouse for offline support
 
 **Permissions**:
-- `contents: read` - Read repository contents
-- `actions: read` - Read workflow information
+- `contents: read` - Read repository files
+- `actions: read` - Read workflow metadata
 
 **Outputs**:
-- Package artifact (ZIP or TAR.GZ) - Complete application bundle with code, docs, tests
-- Package manifest (JSON) - Metadata about package creation
-- Retention: 30 days for packages, 90 days for manifests
+- `run_offline_zip_keymaster_self_contained.zip` - primary self-contained GUI runtime bundle
+- `offline_zip_keymaster_build_bundle.zip` - minimal source/build bundle used to recreate the package
 
 **Usage**:
 ```bash
-# Trigger manually via UI
-# 1. Go to Actions > App Package Download
-# 2. Click "Run workflow"
-# 3. Select application, branch, and options
-# 4. Download from Artifacts section
-
-# Trigger via GitHub CLI
+# Trigger the app packaging workflow
 gh workflow run app-package-download.yml \
-  --field app_name=zd_voice_lines \
-  --field branch=copilot/add-zd-voice-lines-console-app \
+  --field app_name=offline_zip_keymaster \
+  --field branch=main \
+  --field package_format=zip \
   --field include_dependencies=true \
-  --field package_format=zip
-
-# Download artifact after run completes
-gh run download <run-id> --name <package-name>
+  --field include_build_bundle=true \
+  --field offline_wheelhouse=false
 ```
 
-**Package Contents** (Zendesk Voice Lines):
-- `zd_voice_lines.py` - Main GUI application (950 LOC)
-- `test_api_client.py` - Component tests (7 tests)
-- `requirements.txt` - Python dependencies
-- `PACKAGE_INFO.md` - Quick start and installation guide
-- `docs/` - Complete documentation (USER_GUIDE.md, DEVELOPMENT.md)
-- Supporting files: README, CHANGELOG, specs, mockups
+**Security**:
+- Packages only repo-local files under `dist/`, `.artifacts/`, `release/`, and `packages/`
+- Builds the runtime app using a Windows GUI entrypoint instead of a console fallback
+- Produces a self-contained EXE bundle that does not require repo checkout, GitHub variables, or network access
 
-**Documentation**: See [app-package-download.md](./app-package-download.md) for complete guide.
+**Documentation**: See [app-package-download.md](./app-package-download.md) and [app-package-download-quick-ref.md](./app-package-download-quick-ref.md) for the live packaging contract and artifact layout.
+
+**Documentation**: Historical reference only; use the active offline ZIP workflow and keymaster contract instead.
 
 ---
 
