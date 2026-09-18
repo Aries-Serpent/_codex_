@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-09-18T10:32:38Z — PR #5618 startup-packet governance sync
+
+### Objective
+Close the remaining PR #5618 governance drift by restoring the tracked startup-packet baseline, refreshing the active session evidence, and validating the wrap-up gate without widening the change scope.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Rechecked the active PR state and the outstanding wrap-up findings before moving any further.
+2. Restored the repo baseline in `.codex/session_startup_packet.json` so the branch no longer carries timestamp-only churn.
+3. Refreshed `CHANGELOG.md` and the archived accountability report so the active PR again shows current REQ-4 / REQ-5 evidence and the supported daily PDA record.
+
+### Validation
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5618` → pass after the governance artifacts are refreshed in the same final commit.
+- `git diff -- .codex/session_startup_packet.json` → no remaining drift from the tracked baseline.
+
+### Governance
+- REQ-4: Active accountability archive refreshed for PR #5618 in the final session sync.
+- REQ-5: Root `CHANGELOG.md` refreshed under `[Unreleased]` for the same PR.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-09-18 session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## SESSION SUMMARY — 2026-09-17T07:56:49Z — PR #5618 governance finalization follow-up
 
 ### Objective

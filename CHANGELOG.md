@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5618)
+- Final governance sync: restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the active accountability/PDA evidence for PR #5618 so the current branch remains compliant with REQ-4, REQ-5, and the daily session-wrapup gate.
+- Follow-up: the current session revalidated the canonical WEC block and the repo wrap-up contract after removing the timestamp-only startup-packet churn that was reintroduced during the active PR cycle.
+
+### Fixed (auto-update — PR #5618)
 - Final governance sync: restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the active accountability evidence so the current PR clears REQ-4 / REQ-5 without widening scope.
 
 ### Fixed (auto-update — PR #5618)
