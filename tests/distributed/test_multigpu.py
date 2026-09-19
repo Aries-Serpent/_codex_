@@ -346,8 +346,9 @@ class TestDistributedDataLoader(unittest.TestCase):
 
     def test_data_sharding(self):
         """Test data sharding across ranks."""
-        from torch.utils.data import DataLoader, Dataset
         from torch.utils.data.distributed import DistributedSampler
+
+        from torch.utils.data import DataLoader, Dataset
 
         class DummyDataset(Dataset):
             def __init__(self, size=100):

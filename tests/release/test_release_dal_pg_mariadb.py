@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 
 import pytest
+
 from codex.archive.dal import ArchiveDAL
 
 PG = os.getenv("CODEX_ARCHIVE_BACKEND", "") == "postgres"

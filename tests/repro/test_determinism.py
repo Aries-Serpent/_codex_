@@ -23,7 +23,6 @@ def test_determinism_dual_run():
     """
     try:
         import torch
-
         from codex_ml.evaluation.loop import evaluate_epoch
     except ImportError:
         pytest.skip("torch not available")
@@ -79,7 +78,6 @@ def test_determinism_with_metrics():
     """
     try:
         import torch
-
         from codex_ml.evaluation.loop import evaluate_epoch
     except ImportError:
         pytest.skip("torch not available")

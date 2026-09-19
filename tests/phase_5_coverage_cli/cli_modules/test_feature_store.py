@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 
-
 try:
     from codex_ml.cli import feature_store
 except ImportError:

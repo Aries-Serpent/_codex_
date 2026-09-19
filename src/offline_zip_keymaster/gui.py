@@ -33,7 +33,11 @@ except ImportError:  # pragma: no cover - fallback for PyInstaller and direct sc
         raise
 
     try:
-        from offline_zip_keymaster._impl import decrypt_and_unpack, encrypt_directory, generate_local_key
+        from offline_zip_keymaster._impl import (
+            decrypt_and_unpack,
+            encrypt_directory,
+            generate_local_key,
+        )
     except ImportError:
         decrypt_and_unpack = None
         encrypt_directory = None

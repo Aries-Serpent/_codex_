@@ -249,8 +249,9 @@ class TestDeepModuleIntegration:
     def test_ingest_transform_store_pipeline(self):
         """Test full ingest → transform → store pipeline"""
         try:
-            from codex.archive.dal import ArchiveDAL
             from codex.archive.standardization import Standardizer
+
+            from codex.archive.dal import ArchiveDAL
             from codex.ingestion.file_ingestor import FileIngestor
 
             ingestor = FileIngestor()
@@ -269,6 +270,7 @@ class TestDeepModuleIntegration:
         try:
             from codex.rag.pipelines.embedding import EmbeddingGenerator
             from codex.rag.pipelines.retrieval import RetrieverAPI
+
             from codex.tokenization.api import Tokenizer
 
             tokenizer = Tokenizer()
@@ -309,8 +311,9 @@ class TestCrossLayerErrorPropagation:
     def test_partial_failure_handling_multimodule(self):
         """Should handle partial failures across modules"""
         try:
-            from codex.ingestion.file_ingestor import FileIngestor
             from codex.rag.pipelines.embedding import EmbeddingGenerator
+
+            from codex.ingestion.file_ingestor import FileIngestor
             from codex.tokenization.api import Tokenizer
 
             FileIngestor()

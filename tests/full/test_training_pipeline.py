@@ -20,13 +20,12 @@ from typing import Dict
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
-
 from tests.full.training_fixtures import (
     MiniTransformerModel,
     SyntheticCodeDataset,
     TrainingState,
 )
+from torch.utils.data import DataLoader
 
 
 class TestDataLoading:

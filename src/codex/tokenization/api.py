@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
-
 
 class Tokenizer:
     """Small compatibility tokenizer used by legacy tests and imports."""

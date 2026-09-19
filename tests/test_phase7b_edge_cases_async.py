@@ -439,8 +439,9 @@ class TestEndToEndWorkflows:
     def test_ingest_tokenize_embed_flow(self):
         """Test full ingest->tokenize->embed pipeline"""
         try:
-            from codex.ingestion.file_ingestor import FileIngestor
             from codex.rag.pipelines.embedding import EmbeddingGenerator
+
+            from codex.ingestion.file_ingestor import FileIngestor
             from codex.tokenization.api import Tokenizer
 
             ingestor = FileIngestor()

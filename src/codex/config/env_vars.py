@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from aries_serpent_core.config.env_vars import (
-    EnvVarConfig,
     EnvironmentManager,
+    EnvVarConfig,
     env_manager,
 )
 

@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 
-
 try:
     from codex_ml.cli import repo_map
 except ImportError:

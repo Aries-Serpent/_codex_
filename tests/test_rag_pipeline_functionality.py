@@ -115,6 +115,7 @@ class TestVectorEmbedding:
         """Test embedding generation."""
         try:
             import numpy as np
+
             import torch
             
             class SimpleEmbedder:

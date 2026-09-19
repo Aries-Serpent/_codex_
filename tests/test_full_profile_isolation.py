@@ -184,7 +184,6 @@ class TestFullProfileComplexIntegration:
         try:
             import torch
             import torch.nn as nn
-
             from omegaconf import OmegaConf
             
             # Create config using core infrastructure
@@ -204,9 +203,10 @@ class TestFullProfileComplexIntegration:
     def test_fastapi_with_ml_integration(self):
         """Test FastAPI app can use ML models."""
         try:
+            from fastapi import FastAPI
+
             import torch
             import torch.nn as nn
-            from fastapi import FastAPI
             
             app = FastAPI()
             model = nn.Linear(100, 10)
@@ -228,6 +228,7 @@ class TestFullProfileComplexIntegration:
         try:
             import numpy as np
             import pytest
+
             import torch
             
             @pytest.fixture
@@ -248,9 +249,10 @@ class TestFullProfileComplexIntegration:
     def test_ml_training_with_accelerate(self):
         """Test ML training can use accelerate."""
         try:
+            from accelerate import Accelerator
+
             import torch
             import torch.nn as nn
-            from accelerate import Accelerator
             
             accelerator = Accelerator()
             model = nn.Linear(10, 5)
@@ -338,10 +340,10 @@ class TestFullProfileFeatureCompleteness:
     def test_ml_training_features(self):
         """Test ML training features are available."""
         try:
-            import torch
             from accelerate import Accelerator
             from peft import LoraConfig, get_peft_model
 
+            import torch
             from transformers import AutoModelForCausalLM
             
             # All ML training components available

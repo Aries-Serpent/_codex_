@@ -18,7 +18,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-
 from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)

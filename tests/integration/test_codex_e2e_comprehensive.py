@@ -22,6 +22,7 @@ from typing import Generator
 
 import pytest
 from codex.logging.session_db import SessionDB
+
 from codex.logging.structured_logger import logger
 
 

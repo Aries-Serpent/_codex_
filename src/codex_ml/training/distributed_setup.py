@@ -14,7 +14,6 @@ from typing import Optional
 
 import torch
 import torch.distributed as dist
-
 from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)

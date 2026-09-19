@@ -14,8 +14,6 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
-from security.encryption import encrypt
-
 from scripts.security.offline_zip_keymaster import (  # noqa: E402
     MAX_MEMBER_BYTES,
     _common_word_variants,
@@ -30,6 +28,7 @@ from scripts.security.offline_zip_keymaster import (  # noqa: E402
     rezip_clean_directory,
     unpack_archive,
 )
+from security.encryption import encrypt
 
 
 @pytest.fixture
