@@ -81,7 +81,7 @@ jobs:
             import: codex_ml_telemetry
             release_tag_prefix: codex-ml-telemetry-v
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload artifacts
         if: env.SELECTED_DISTRIBUTION == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@65462800fd0af4f03d4b8d36972228f5f4f8d2c0
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/${{ matrix.distribution.name }}/
@@ -176,21 +176,21 @@ jobs:
           github.event.inputs.package == matrix.distribution.name))
         }
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
 
       - name: Download artifacts
         if: env.SELECTED_DISTRIBUTION == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@d3f86a106a0bac45b91598a1fba7f5d9bff5e8c4
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/
 
       - name: Generate build provenance
         if: env.SELECTED_DISTRIBUTION == 'true'
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@fbd636b8c13254d66ee710f814d9ca1d2d5b2f82
         with:
           subject-path: dist/${{ matrix.distribution.name }}/*.whl
 
@@ -236,14 +236,14 @@ jobs:
           github.event.inputs.package == matrix.distribution.name))
         }
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
 
       - name: Download artifacts
         if: env.SELECTED_DISTRIBUTION == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@d3f86a106a0bac45b91598a1fba7f5d9bff5e8c4
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/
@@ -323,7 +323,7 @@ jobs:
       url: https://test.pypi.org/p/${{ matrix.distribution.name }}
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@d3f86a106a0bac45b91598a1fba7f5d9bff5e8c4
         with:
           path: dist/
           name: python-package-${{ matrix.distribution.name }}
@@ -378,7 +378,7 @@ jobs:
       url: https://pypi.org/p/${{ matrix.distribution.name }}
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@d3f86a106a0bac45b91598a1fba7f5d9bff5e8c4
         with:
           path: dist/
           name: python-package-${{ matrix.distribution.name }}
@@ -431,7 +431,7 @@ jobs:
             import: codex_ml_telemetry
             release_tag_prefix: codex-ml-telemetry-v
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
         if: >-
           (github.event_name == 'release' &&
           startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
