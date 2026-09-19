@@ -688,7 +688,6 @@ exclude = [
     "*__pycache__*",                # Python cache (all variants)
     "security-suite-artifacts*",    # Artifact storage
     "configs*",                     # Configuration files (not Python packages)
-    "config_legacy*",               # Legacy configuration (deprecated)
     "cli",                          # CLI module (development only)
     "cli.*",                        # CLI submodules
     "codex_addons*",                # Add-on packages (not bundled)

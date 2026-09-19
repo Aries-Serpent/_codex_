@@ -36,7 +36,7 @@ repo_root = Path(__file__).resolve().parents[1]
 class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
     """Prefer repo src packages over stray script/test namespaces that shadow them."""
 
-    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils", "zendesk"}
+    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils"}
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self._CANONICAL_NAMES:
@@ -118,7 +118,7 @@ def _strip_shadow_roots() -> None:
         filtered.append(entry)
     sys.path[:] = filtered
 
-    for legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+    for legacy_name in ("agents", "deploy", "services", "tools", "training", "utils"):
         module = sys.modules.get(legacy_name)
         if module is None:
             continue

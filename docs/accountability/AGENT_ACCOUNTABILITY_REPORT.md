@@ -1,3 +1,43 @@
+## Session: 2026-09-19T23:45:00Z — Production-readiness Phase 1 (structural foundation) — Session 2: Step 0
+
+**Objective:** Begin Phase 1 (eliminate the dual-package root/src shadow system) per maintainer directive. Execute the zero-risk Step 0 batch.
+
+**Status:** ✅ COMPLETE (Step 0)
+
+**Key decision (corrects the original plan):**
+The original Phase 1 framing — "delete root shadow dirs" — was found to be **unsafe and partly incorrect** after two parallel analysis lanes (`root-organizer-agent`, `reference-updater-agent`) and independent verification:
+
+1. Root `tools/` (334 unique files), `services/` (49), `agents/` (59), `deploy/`, `codex_utils/` (7), `utils/` (3) are **substantive installable packages**, wired into `[tool.setuptools.package-dir]` and coverage `source` — they must be **moved** into `src/`, never deleted.
+2. Under the editable install, `training`/`tools`/`services`/`agents`/`tokenization` resolve to **root** copies, but under pytest they resolve to **src** (via conftest/sitecustomize finders) — the exact dual-package hazard. Naively deleting root dirs breaks `pip install -e .` and script contexts.
+3. `configs/sitecustomize.py` is **load-bearing** (offline env defaults, `_ShadowedDependencyFinder` pinned by `tests/test_dependency_shadow_guard.py`, ~30 optional-dep stubs, `codex_ml` tracking import) — it must be **shrunk**, not deleted.
+4. Only `codex_ml/` (0 unique), `training/` (0 unique), `tokenization/` (0 unique) are **pure shims**; and `config_legacy/`, `yaml_legacy/`, `codex_core.pyi`, `omegaconf/` are zero-importer dead weight.
+
+**Adopted approach:** Lane P2's 5-step sequenced migration (Step 0 reconcile content → Step 1 move unique subtrees → Step 2 rewrite `from src.X`→`from X` → Step 3 packaging fix → Step 4 delete empty shims → Step 5 drop hooks). Spread across Sessions 2–4.
+
+**Actions (Session 2 / Step 0):**
+1. Launched two background Step-0 lanes in parallel: `root-organizer-agent` (dead-weight deletions + zendesk finder-name cleanup) and `reference-updater-agent` (content reconciliation of `utils`/`codex_utils` root-only modules into `src/`; REPORT-ONLY diff for diverged `training`/`tokenization`).
+2. Documented the course-correction here and in the PR description.
+3. Executed Step 0: deleted `codex_core.pyi`, `config_legacy/`, `yaml_legacy/`, `omegaconf/` stub; removed `zendesk` from both `_CanonicalPackageFinder` lists; dropped `config_legacy*` packaging exclude; copied 3 `utils` + 7 `codex_utils` root-only modules into `src/` (root retained).
+
+**Validation:**
+- `ruff check .` → green (exit 0).
+- Focused pytest `test_dependency_shadow_guard` + `test_packaging_metadata` → 6/6 passed.
+- Import smoke: `from utils import safe_pickle, safe_torch_loader, torch_resource_manager` and `codex_utils.*` → ok.
+- Pre-commit on changed files: bandit + trailing-whitespace flagged only pre-existing content in the verbatim-copied files (whitespace auto-fixed); no new issues introduced.
+- Secret scan: clean.
+
+**Findings carried to Session 3:** `training/checkpoint_manager.py` has unique logic (port, don't delete); 3 `test_security_utilities` failures are pre-existing (verified via stash-and-rerun).
+
+**Governance:**
+- REQ-4: This report updated for the Phase 1 Session 2.
+- REQ-5: Root `CHANGELOG.md` to be updated on Step 0 completion.
+
+### Agents Used
+- [x] `root-organizer-agent` (P1 inventory + Step 0 dead-weight)
+- [x] `reference-updater-agent` (P2 import surface + Step 0 content)
+
+---
+
 ## Session: 2026-09-19T22:35:00Z — Production-readiness Phase 0 (quick wins)
 
 **Objective:** Execute Phase 0 of the approved production-readiness program — repo hygiene (Lane A) and static-analysis enablement (Lane B) — as the first session of the multi-phase plan.
