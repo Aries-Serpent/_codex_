@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed — Phase 0 production-readiness quick wins
+- Repo hygiene (Lane A): added targeted `.gitignore` patterns for generated artifacts (`/.codex/sessions/`, `/.codex/aftermath/cache/`, `/.codex/.validation_cache.json`, `/site/`, `/runs/`) to stop future churn while keeping `.codex/` policy files tracked; deleted stray root stubs `a.py`/`b.py`; removed 3 unreferenced `.disabled` workflow files (`security_policy_gate`, `required-actions-enforcer`, `secrets-baseline-enforcer`); added deprecation redirect READMEs in `docs/changelog/` and `docs/changelogs/` pointing to the canonical root `CHANGELOG.md`.
+- Static analysis (Lane B): enabled Ruff rule sets `B` (bugbear), `LOG`, and `UP` (pyupgrade) alongside existing `E,F,I`; parked the pre-existing repo-wide lint backlog (13,887 baseline errors — incl. 5,652 in the non-first-party `.codex/` tree, now excluded) in an annotated `ignore`/`per-file-ignores` inventory with a Phase 3 burn-down reference so `ruff check` is green (exit 0); aligned pytest plugin floors (`pytest>=8.4.2`, `pytest-cov>=5.0.0`, `pytest-xdist>=3.8.0`, `pytest-timeout>=2.4.0`, `pytest-asyncio>=1.3.0`) across all 5 extras with `code-quality-coverage-suite.yml`; documented the 34% coverage baseline and 34→40→50→65% climb plan in `pytest.ini`.
+
 ### Fixed (auto-update — PR #5618)
 - Final governance sync: restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the active accountability/PDA evidence for PR #5618 so the current branch remains compliant with REQ-4, REQ-5, and the daily session-wrapup gate.
 - Follow-up: the current session revalidated the canonical WEC block and the repo wrap-up contract after removing the timestamp-only startup-packet churn that was reintroduced during the active PR cycle.
