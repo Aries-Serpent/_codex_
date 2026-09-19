@@ -78,6 +78,8 @@ class _ShadowedDependencyFinder(importlib.abc.MetaPathFinder):
                 resolved = Path(entry).resolve()
             except (OSError, RuntimeError, TypeError, ValueError):
                 continue
+            if resolved == repo_root:
+                continue
             if any(resolved == root or resolved.is_relative_to(root) for root in shadow_roots):
                 continue
             search_paths.append(entry)
@@ -108,6 +110,8 @@ def _strip_shadow_roots() -> None:
             resolved = Path(entry).resolve()
         except (OSError, RuntimeError):
             filtered.append(entry)
+            continue
+        if resolved == repo_root:
             continue
         if any(resolved == root or resolved.is_relative_to(root) for root in shadow_roots):
             continue

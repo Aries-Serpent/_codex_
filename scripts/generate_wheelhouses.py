@@ -157,32 +157,32 @@ class WheelhouseGenerator:
         wheelhouse_dir: Path,
         profile: str,
     ) -> bool:
-        """Download wheels to wheelhouse directory."""
+        """Download binary wheels to the wheelhouse directory."""
         try:
-            # Use pip to download wheels
             cmd = [
                 sys.executable,
                 "-m",
                 "pip",
                 "download",
                 f"--dest={wheelhouse_dir}",
-                "--no-binary=:all:",  # Download all packages
-                "--no-deps",  # Don't download dependencies (use uv.lock)
+                "--only-binary=:all:",
+                "--no-deps",
             ]
-
-            # Add requirements
             for req in requirements:
                 cmd.append(req)
 
             logger.debug(f"Running: {' '.join(cmd)}")
             result = subprocess.run(cmd, capture_output=True, text=True)
-
             if result.returncode != 0:
                 logger.warning(f"pip download returned {result.returncode}")
-                # Don't fail - might be normal in offline mode
                 logger.debug(f"stdout: {result.stdout}")
                 logger.debug(f"stderr: {result.stderr}")
+                return False
 
+            wheel_files = sorted(wheelhouse_dir.glob("*.whl"))
+            if not wheel_files:
+                logger.error("pip download produced no wheel artifacts; refusing to sign an empty manifest")
+                return False
             return True
         except Exception as e:
             logger.error(f"Failed to download wheels: {e}")
@@ -203,6 +203,12 @@ class WheelhouseGenerator:
 
     def _generate_manifest(self, wheelhouse_dir: Path, profile: str) -> Dict:
         """Generate manifest with SHA256 hashes."""
+        wheel_files = sorted(wheelhouse_dir.glob("*.whl"))
+        if not wheel_files:
+            raise ValueError(
+                f"No wheel artifacts were found in {wheelhouse_dir}; refusing to sign an empty manifest"
+            )
+
         manifest = {
             "version": "1.0",
             "profile": profile,
@@ -218,7 +224,7 @@ class WheelhouseGenerator:
         total_size = 0
         wheel_count = 0
 
-        for wheel_file in sorted(wheelhouse_dir.glob("*.whl")):
+        for wheel_file in wheel_files:
             sha256 = self.compute_sha256(wheel_file)
             size = wheel_file.stat().st_size
             total_size += size

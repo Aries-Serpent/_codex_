@@ -23,8 +23,8 @@ try:
         render_prometheus,
     )
 except ImportError:  # pragma: no cover - standalone distribution is optional
-    HealthReport = None  # type: ignore[assignment,misc]
-    HealthStatus = None  # type: ignore[assignment,misc]
+    from codex_ml.monitoring.health import HealthReport, HealthStatus
+
     MetricsRegistry = None  # type: ignore[assignment,misc]
     render_prometheus = None  # type: ignore[assignment]
 
