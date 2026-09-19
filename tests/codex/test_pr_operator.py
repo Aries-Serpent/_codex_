@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from codex.cli.pr_operator import (  # pragma: allowlist secret
     DEFAULT_LABELS,
     PRConfig,

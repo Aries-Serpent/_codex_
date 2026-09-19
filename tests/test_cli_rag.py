@@ -19,8 +19,9 @@ import pytest
 
 pytest.importorskip("typer")
 
-from codex.cli_rag import app
 from typer.testing import CliRunner
+
+from codex.cli_rag import app
 
 
 @pytest.fixture

@@ -1,3 +1,29 @@
+## Session: 2026-09-14T09:44:55Z — PR #5613 cognitive pre-flight follow-up
+
+**Objective:** Close the active PR #5613 cognitive-preflight follow-up by removing accidental startup-packet timestamp churn and refreshing the required accountability trail without reintroducing the reverted workflow dependency bumps.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Re-checked the current maintainer comments and latest PR workflow state before making any additional file changes.
+2. Restored the previous `.codex/session_startup_packet.json` content so the branch no longer carries timestamp-only generated churn.
+3. Kept the PR-aligned accountability trail current for the active review cycle after the CI-rescue workflow rollback.
+
+**Validation:**
+- `git diff HEAD~1..HEAD -- .codex/session_startup_packet.json` → confirmed the previous commit contained timestamp-only churn before restore.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5613` → rerun after this session entry is committed.
+
+**Governance:**
+- REQ-4: This report updated for PR #5613 in the active session.
+- REQ-5: Root `CHANGELOG.md` already contains the PR #5613 `[Unreleased]` entry carried forward in the active branch state.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent`
+- [x] `workflow-ci-fixer`
+- [x] `general-purpose`
+
+---
+
 ## Session: 2026-09-10T02:23:51Z — PR #5608 merge-readiness + Audit QA follow-up
 
 **Objective:** Finalize the remaining repo-level blockers on the active stack PR by resolving the Audit QA Ruff issue in `src/codex/optimization/pricing_engine.py` and refreshing the current session-governance artifacts so the daily PDA and accountability gates remain synchronized.
@@ -22975,3 +23001,53 @@ agent signatures and a direct meta-tensor regression run are absent.
 ### Agents Used
 - `code-review`
 - `ci-testing-agent`
+
+---
+
+## Session: 2026-09-12T18:32:15Z — Federation hardening finalization
+
+**Objective:** Complete the remaining release, audit-integrity, and plugin-isolation controls in the federated package roadmap.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Corrected PyPI matrix evaluation and separated artifact validation from OIDC-enabled publication while preserving provenance and package-selection guarantees.
+2. Locked the release toolchain and added archive-content checks that reject generated Python bytecode.
+3. Serialized audit-log appends across processes, made corrupted records fail verification safely, and enforced plugin execution deadlines through terminable worker processes and quarantine.
+
+**Validation:**
+- Standalone packages: 74 passed, 1 skipped.
+- Compatibility facades: 7 passed; architecture boundaries: 25 passed.
+- Native Rust: 39 passed, 1 ignored; Python boundary: 6 passed when the extension was built.
+- Focused audit, plugin, and workflow regressions: 42 passed with Ruff clean.
+- Release suite: 20 passed, 1 skipped, including the archive-assurance coverage.
+
+**Governance:**
+- Generated `.codex/session_startup_packet.json` timestamp churn was restored to the tracked baseline.
+- Canonical WEC entries were preserved.
+
+### Agents Used
+- [x] `security-audit-agent`
+- [x] `integration-test-runner`
+- [x] `packaging-validation-agent`
+- [x] `workflow-ci-fixer`
+- [x] `code-analysis-agent`
+- [x] `rubber-duck`
+- [x] `task`
+
+---
+
+## Session: 2026-09-12T20:03:47Z — Branch-wide CI review wrap-up
+
+**Status:** ✅ COMPLETE
+
+**Evidence:**
+- Reviewed 37 commits / 129 files using 61 agent launches; 13 commits were metadata-only.
+- Successor run `34713850561` reached `action_required` instead of the preceding Rust run's `startup_failure`, confirming startup validation passed.
+- The local Chronicle database was empty.
+- Chronicle `auto-fix --check-only` now preserves tracked metrics/state, emits requested diagnostics, and stops after 120 seconds by default.
+- Rust Swarm CI now ignores `.codex/**`-only push and pull-request changes while preserving Rust, code, and configuration triggers.
+- Focused regression batches passed: 9 tests for Chronicle and 24 tests for the combined workflow validation; secret scanning was clean.
+- `.codex/session_startup_packet.json` remained at its tracked baseline.
+
+---

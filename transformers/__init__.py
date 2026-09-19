@@ -64,6 +64,12 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
+    raise ModuleNotFoundError(
+        "The repo-local 'transformers' directory is not a Python package. "
+        "Install the real 'transformers' library or use pytest.importorskip('transformers') "
+        "for optional-dependency tests."
+    )
+
     # Use proper stub classes (not _Stub instances) so type annotations remain valid.
 
     _ERR = "transformers is not installed"
@@ -296,3 +302,4 @@ else:  # pragma: no cover - exercised in minimal test envs
         "__version__",
     ]
     __path__ = []
+    __file__ = ""

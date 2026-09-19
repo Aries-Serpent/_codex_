@@ -578,6 +578,46 @@ class TestLaneManifest:
         with pytest.raises(LaneManifestError):
             LaneManifestContract.validate_upstream_gates(manifest)
 
+    def test_manifest_rejects_sibling_write_scope(self, manifest_inputs):
+        """Test that lane writes cannot target sibling lane namespaces."""
+        with pytest.raises(LaneManifestError):
+            LaneManifestContract.generate(
+                **manifest_inputs,
+                lane_isolation={
+                    "namespace": "lane/B",
+                    "read_scope": ["shared/**", "lane/B/**"],
+                    "write_scope": ["lane/A/**"],
+                },
+            )
+
+    def test_manifest_rejects_invalid_handoff_contract(self, manifest_inputs):
+        """Test that handoff validation requires a declared result contract."""
+        with pytest.raises(LaneManifestError):
+            LaneManifestContract.generate(
+                **manifest_inputs,
+                handoff={
+                    "source_lane": "A",
+                    "target_lane": "B",
+                    "mode": "checkpoint",
+                    "status": "accepted",
+                    "checkpoint_id": "cp-42",
+                },
+            )
+
+    def test_manifest_rejects_aligned_azimuth_outside_window(self, manifest_inputs):
+        """Test that aligned azimuths cannot drift beyond the 15-degree coherence window."""
+        with pytest.raises(LaneManifestError):
+            LaneManifestContract.generate(
+                **manifest_inputs,
+                azimuth={
+                    "target": 30,
+                    "reference": "north",
+                    "alignment": "aligned",
+                    "delta_deg": 16,
+                    "locked": False,
+                },
+            )
+
     def test_manifest_write_file(self, manifest_inputs):
         """Test writing manifest to file."""
         with tempfile.TemporaryDirectory() as tmpdir:

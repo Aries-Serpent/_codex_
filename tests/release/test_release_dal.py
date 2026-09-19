@@ -10,8 +10,9 @@ import json
 import sqlite3
 
 from codex.archive.api import store
-from codex.archive.dal import ArchiveDAL
 from codex.release.api import pack_release
+
+from codex.archive.dal import ArchiveDAL
 
 
 def test_release_persist_rows(tmp_path, monkeypatch):

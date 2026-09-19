@@ -23,6 +23,11 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Offline package artifacts / generated release bundles
+/wheelhouse/
+/wheelhouse_*.tar.gz
+/*.whl
+
 # Virtual environments
 venv/
 ENV/
@@ -73,6 +78,9 @@ htmlcov/
 *.log
 temp/
 tmp/
+
+# Rust build output
+/target/
 
 # DVC
 .dvc/cache/

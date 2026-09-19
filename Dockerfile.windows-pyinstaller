@@ -1,0 +1,22 @@
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+ENV WINEARCH=win64
+ENV WINEPREFIX=/wineprefix
+
+WORKDIR /src
+
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends wine64 xvfb wget ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN wget -O /tmp/python311.exe https://www.python.org/ftp/python/3.11.8/python-3.11.8-amd64.exe && \
+    xvfb-run wine /tmp/python311.exe /quiet InstallAllUsers=1 PrependPath=1 TargetDir=C:\Python311 && \
+    rm /tmp/python311.exe
+
+COPY . /src
+
+RUN xvfb-run wine C:\\Python311\\python.exe -m pip install --upgrade pip setuptools wheel && \
+    xvfb-run wine C:\\Python311\\python.exe -m pip install --only-binary=:all: --no-cache-dir "pyinstaller>=6.0,<7.0" "cryptography>=50.0.0,<51.0.0"
+
+CMD ["bash", "-lc", "mkdir -p /src/dist/windows-app /src/.artifacts/pyinstaller && xvfb-run wine 'C:\\Python311\\python.exe' -m PyInstaller --noconfirm --clean --distpath /src/dist/windows-app --workpath /src/.artifacts/pyinstaller /src/run_offline_zip_keymaster.spec"]

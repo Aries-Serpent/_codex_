@@ -8,6 +8,8 @@ from pathlib import Path
 
 from aries_serpent_core.archive.dal import (
     ArchiveDAL as _CoreArchiveDAL,
+)
+from aries_serpent_core.archive.dal import (
     ArtifactRow,
     BaseDAL,
     ItemRow,

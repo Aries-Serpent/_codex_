@@ -1,10 +1,123 @@
 version: 2.0.0
 last_updated: '2026-09-04T18:00:00Z'
-total_agents: 117
-active_agents: 98
+total_agents: 118
+active_agents: 99
 archived_agents: 19
 enforcement_tier: MIXED
+execution_contract:
+  model: deterministic_multi_lane_unified_azimuth
+  summary: >-
+    Independent lanes run in parallel with isolated state and explicit dependency
+    handoffs. Each lane validates against the same shared azimuth and the final
+    aggregation gate accepts only evidence-backed convergence.
+  core_terms:
+    multi_lane: >-
+      Isolated execution track with its own state, workspace view, artifact set,
+      and write boundary.
+    parallel_and_sequential: >-
+      Independent lanes run concurrently; dependency lanes run serially on explicit
+      evidence handoff.
+    unified_azimuth: >-
+      The single target vector for objective, repo/branch/PR context, constraints,
+      acceptance criteria, success gate, and evidence contract.
+  required_fields:
+  - lane_id
+  - lane_type
+  - depends_on
+  - accepts_handoff_from
+  - state_scope
+  - azimuth_target
+  - evidence_contract
+  - completion_gate
+  lane_registry:
+  - lane_id: P1
+    lane_type: parallel
+    depends_on: []
+    accepts_handoff_from: []
+    state_scope: isolated
+    azimuth_target: branch_validation
+    evidence_contract: validation_bundle
+    completion_gate: branch_validation_passed
+    description: P1 parallel validation lane for branch health and dependency safety.
+  - lane_id: P2
+    lane_type: parallel
+    depends_on: []
+    accepts_handoff_from: []
+    state_scope: isolated
+    azimuth_target: workflow_governance
+    evidence_contract: governance_bundle
+    completion_gate: workflow_governance_valid
+    description: P2 parallel governance lane for workflow and policy checks.
+  - lane_id: S1
+    lane_type: dependency
+    depends_on:
+    - P1
+    - P2
+    accepts_handoff_from:
+    - P1
+    - P2
+    state_scope: shared-read-only
+    azimuth_target: final_merge_readiness
+    evidence_contract: convergence_bundle
+    completion_gate: all_upstream_gates_passed
+    description: Sequential handoff lane that assembles evidence into a single bundle.
+  - lane_id: A1
+    lane_type: aggregator
+    depends_on:
+    - S1
+    accepts_handoff_from:
+    - S1
+    state_scope: shared-read-only
+    azimuth_target: final_merge_readiness
+    evidence_contract: readiness_bundle
+    completion_gate: final_merge_gate_passed
+    description: Final readiness lane that accepts only converged evidence.
 agents:
+- id: offline-zip-recovery-agent
+  name: Offline ZIP Recovery Agent
+  version: 1.0.0
+  directory: .github/agents
+  file: .github/agents/offline-zip-recovery-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: archive_recovery
+  purpose: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  capabilities:
+  - archive_recovery
+  - zip_forensics
+  - offline_recovery
+  - safe_extraction
+  - sanitization
+  - key_management
+  - air_gap_security
+  integration_points:
+  - scripts/security/offline_zip_keymaster.py
+  - tests/security/test_offline_zip_keymaster.py
+  priority: high
+  created: '2026-09-14T00:00:00Z'
+  updated: '2026-09-14T00:00:00Z'
+  maintainer: mbaetiong
+  enforcement_tier: STANDARD
+  autonomy_model: D
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  consolidation_priority: false
+  role: specialist
+  description: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  capability_tags:
+  - archive_recovery
+  - zip_forensics
+  - offline_recovery
+  - safe_extraction
+  - sanitization
+  - key_management
+  - air_gap_security
 - id: github-guru-agent
   name: Github Guru Agent
   version: 1.1.0
@@ -100,15 +213,18 @@ agents:
   enforcement_tier: GROUNDED
   autonomy_model: D_CAPABLE
   handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - ci-health-alert-agent
-  - agent-orchestrator
   consolidation_priority: true
   activation_frequency_rank: 1
   role: specialist
   description: Specialized agent for debugging and fixing CI/CD pipeline issues, test
     failures, and build problems
+  lane_id: P1
+  lane_type: parallel
+  depends_on: []
+  state_scope: isolated
+  azimuth_target: branch_validation
+  evidence_contract: validation_bundle
+  completion_gate: repo_validation_passed
   capability_tags:
   - ci_failure_diagnosis
   - test_failure_analysis
@@ -2299,6 +2415,18 @@ agents:
     specialist agents via semantic search over the FAISS corpus and AGENT_REGISTRY
     capability tags. Operates in E model (advisory); D_CAPABLE when transition gate
     passes.
+  lane_id: A1
+  lane_type: aggregator
+  depends_on:
+  - P1
+  - P2
+  accepts_handoff_from:
+  - P1
+  - P2
+  state_scope: shared-read-only
+  azimuth_target: final_merge_readiness
+  evidence_contract: convergence_bundle
+  completion_gate: all_lanes_converged
   capability_tags:
   - operations
   directory: .github/agents

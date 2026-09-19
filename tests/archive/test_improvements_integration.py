@@ -11,8 +11,9 @@ import logging
 from pathlib import Path
 
 from click.testing import CliRunner
-from codex.archive import batch
 from codex.archive.cli import cli
+
+from codex.archive import batch
 
 
 class StubService:

@@ -27,10 +27,10 @@ from functools import lru_cache  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
-import torch  # noqa: E402
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
+import torch  # noqa: E402
 from codex_ml.safety.moderation import (  # noqa: E402
     ModerationAdapter,
     ModerationRejection,
@@ -66,7 +66,12 @@ try:
     from aries_serpent_core.api.legacy_endpoints import router as legacy_router
 
     app.include_router(legacy_router, tags=["legacy"])
-except (IOError, OSError, ModuleNotFoundError, ImportError) as _legacy_exc:  # pragma: no cover – unexpected init error
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+) as _legacy_exc:  # pragma: no cover – unexpected init error
     logger.warning("Legacy router not mounted — unexpected error during import: %s", _legacy_exc)
 
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")

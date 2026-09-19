@@ -5,9 +5,9 @@ from __future__ import annotations
 from aries_serpent_core.api.rag_api import (  # noqa: F401
     BuildIndexRequest,
     BuildIndexResponse,
+    MergeIndicesRequest,
     QueryRequest,
     QueryResult,
-    MergeIndicesRequest,
     _ensure_subpath,
     _safe_join_under_base,
     _validate_path_segment,

@@ -21,11 +21,10 @@ from datetime import datetime
 from unittest import mock
 
 import pytest
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
-
 from codex_ml.train_loop import (
     ReasoningRuntime,
     ToyDataset,
@@ -37,6 +36,7 @@ from codex_ml.train_loop import (
     _set_seed,
     run_training,
 )
+from torch.utils.data import DataLoader, TensorDataset
 
 # ============================================================================
 # FIXTURES

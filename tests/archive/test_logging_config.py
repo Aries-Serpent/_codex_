@@ -11,9 +11,10 @@ import json
 from pathlib import Path
 
 import pytest
-from codex.archive import logging_config
 from codex.archive.config import LoggingConfig, PerformanceConfig
 from codex.archive.perf import TimingMetrics
+
+from codex.archive import logging_config
 
 
 def test_setup_logging_json_format() -> None:

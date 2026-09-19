@@ -5,8 +5,6 @@ import pytest
 pytest.importorskip("torch")
 import torch
 import torch.nn as nn
-from torch.optim import Adam
-
 from codex_ml.utils.performance_benchmark import (
     BenchmarkResult,
     BenchmarkSuite,
@@ -15,6 +13,7 @@ from codex_ml.utils.performance_benchmark import (
     benchmark_inference,
     benchmark_training_step,
 )
+from torch.optim import Adam
 
 
 class SimpleModel(nn.Module):

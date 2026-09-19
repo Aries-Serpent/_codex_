@@ -214,6 +214,28 @@ task agent_type="agent-name" prompt="[instructions]"
 └──────────┴──────────┴──────────┴───────────┘
 ```
 
+### Deterministic Multi-Lane Runtime Contract
+
+The repository treats agent execution as a deterministic multi-lane runtime rather than an informal collection of parallel tasks. Every lane has a declared write boundary, explicit dependency path, and a shared azimuth target so that independent work, sequential handoffs, and final readiness validation all converge on one objective.
+
+- **Multi-lane**: isolated execution track with its own state, workspace view, artifact set, and write boundary.
+- **Parallel + sequential**: independent workstreams run concurrently; dependent workstreams wait on evidence bundles and execute serially.
+- **Unified azimuth**: the single target vector across objective, repo/branch/PR context, constraints, acceptance criteria, success gate, and evidence contract.
+
+```mermaid
+flowchart LR
+    P1["P1: branch validation lane\nparallel"] --> S1["S1: evidence handoff lane\ndependency"]
+    P2["P2: governance lane\nparallel"] --> S1
+    S1 --> A1["A1: final readiness lane\naggregator"]
+    A1 --> R["merge-ready proof\nagainst shared azimuth"]
+```
+
+This contract is enforced at three layers:
+
+1. **Policy layer** — `.codex/CODEBASE_AGENCY_POLICY.md` requires lane declarations, explicit state boundaries, evidence handoff, and azimuth convergence.
+2. **Registry layer** — `.github/agents/AGENT_REGISTRY.yaml` models `lane_id`, `lane_type`, `depends_on`, `accepts_handoff_from`, `state_scope`, `azimuth_target`, `evidence_contract`, and `completion_gate`.
+3. **Runtime layer** — multi-lane execution uses parallel background agents for independent work, then a sequential validation / readiness lane that accepts only converged proof.
+
 ### Agent Lifecycle
 
 ```

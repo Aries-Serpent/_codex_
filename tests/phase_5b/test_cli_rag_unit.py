@@ -15,6 +15,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import typer
+
 from codex.cli_rag import (
     RAGIndexer,
     RAGRetriever,

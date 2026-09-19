@@ -357,7 +357,7 @@ class GitHubApp:
             "User-Agent": "codex-github-app/compat",
         }
         if self._config is not None:
-            headers["Authorization"] = f"******"
+            headers["Authorization"] = "******"
         else:
             headers["Authorization"] = "******"
 

@@ -398,7 +398,6 @@ class TestIntegration:
         try:
             import torch
             import torch.nn as nn
-
             from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer or PyTorch not available")

@@ -15,10 +15,20 @@ if _migrated_root.is_dir():
 if TYPE_CHECKING:
     from aries_serpent_core.monitoring import (
         Counter as Counter,
+    )
+    from aries_serpent_core.monitoring import (
         Histogram as Histogram,
+    )
+    from aries_serpent_core.monitoring import (
         PerformanceMonitor as PerformanceMonitor,
+    )
+    from aries_serpent_core.monitoring import (
         PerformanceSnapshot as PerformanceSnapshot,
+    )
+    from aries_serpent_core.monitoring import (
         PerformanceThresholds as PerformanceThresholds,
+    )
+    from aries_serpent_core.monitoring import (
         metrics as metrics,
     )
 else:

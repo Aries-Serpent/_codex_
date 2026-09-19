@@ -119,7 +119,7 @@ def validate_subprocess_command(
     SubprocessSecurityError
         If command fails validation
     """
-    # Security Rule 1: Never accept shell=True with user input
+    # Security Rule 1: Never accept shell execution with user input
     if isinstance(cmd, str):
         raise SubprocessSecurityError(
             "Command must be a list, not a string. "
@@ -222,9 +222,9 @@ def secure_subprocess_run(
     )
 
     # Ensure safe execution parameters
-    # Never allow shell=True
+    # Never allow shell execution through the subprocess wrapper.
     if kwargs.get("shell", False):
-        raise SubprocessSecurityError("shell=True is not permitted")
+        raise SubprocessSecurityError("shell execution is not permitted")
 
     # Use safe defaults
     run_kwargs = {

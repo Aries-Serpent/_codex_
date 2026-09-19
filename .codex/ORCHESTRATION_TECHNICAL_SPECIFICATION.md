@@ -1,7 +1,7 @@
 # Multi-Lane Orchestration — Technical Specification
 
-**Version:** 1.0  
-**Date:** 2026-07-13  
+**Version:** 1.1  
+**Date:** 2026-09-17  
 **Reference Plan:** `.codex/MULTI_LANE_ORCHESTRATION_IMPLEMENTATION_PLAN.md`
 
 ---
@@ -48,6 +48,54 @@
 - Parallel lanes require input-lock and seed to be immutable for determinism
 - Sharded lanes must include shard count and deterministic merge order
 - Timestamp must be UTC with Z suffix (no +00:00)
+
+### 1.1a Lane Isolation, Handoff, and Azimuth Contract
+
+This is the repo-wide runtime contract for inter-lane execution. Every lane manifest may include `lane_isolation`, `handoff`, and `azimuth` blocks. These blocks are required for contract compliance when a lane crosses a dependency boundary or participates in synchronized scheduling.
+
+**Runtime contract schema (additive):**
+```json
+{
+  "lane_id": "B",
+  "lane_name": "security",
+  "execution_mode": "parallel",
+  "owner": "security-audit-agent",
+  "lane_isolation": {
+    "namespace": "lane/B",
+    "read_scope": ["input-lock.json", "lane/A/output-contract.json"],
+    "write_scope": ["lane/B/**"],
+    "shared_state": ["input-lock.json"],
+    "cutover_guard": "no sibling lane write access"
+  },
+  "handoff": {
+    "source_lane": "B",
+    "target_lane": "D",
+    "mode": "checkpoint",
+    "status": "pending",
+    "result_contract": "lane/B/output-contract-security.json",
+    "checkpoint_id": "security-wave-3"
+  },
+  "azimuth": {
+    "target": 90,
+    "reference": "mission-goal",
+    "alignment": "aligned",
+    "delta_deg": 4,
+    "locked": false
+  }
+}
+```
+
+**Semantics:**
+- `lane_isolation.namespace` is the lane’s exclusive runtime namespace. No sibling lane may write there without explicit approval.
+- `handoff` is the only legal boundary transfer mechanism. Status must transition atomically through `pending -> accepted|rejected|blocked`.
+- `azimuth` defines the active directional heading for the lane. A `blocked` azimuth or a delta beyond the configured threshold prevents the handoff from proceeding.
+- Cross-lane continuation is not valid when the receiver is `blocked`, when the handoff is not acknowledged, or when the target lane's azimuth diverges beyond policy tolerance.
+
+**Required runtime rules:**
+1. Isolation is enforced by path allowlist and namespace ownership.
+2. Handoffs are checkpoint-based and result-driven.
+3. Azimuth alignment is part of the acceptance check before any downstream work begins.
+4. If a lane fails the azimuth check, it remains in `hold` until reoriented or explicitly rolled back.
 
 ---
 

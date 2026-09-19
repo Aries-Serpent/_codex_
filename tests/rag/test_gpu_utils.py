@@ -9,7 +9,6 @@ from unittest import mock
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-
 from codex.rag.gpu_utils import (
     check_cuda_available,
     get_gpu_memory,

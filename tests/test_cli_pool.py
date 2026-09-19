@@ -4,8 +4,9 @@ import concurrent.futures as cf
 import os
 import sqlite3
 
-from codex.cli import _fix_pool
 from codex.db import sqlite_patch
+
+from codex.cli import _fix_pool
 
 
 def test_fix_pool_executor_created() -> None:

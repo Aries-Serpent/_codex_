@@ -238,6 +238,7 @@ else:
         "no_grad",
         "nn",
     ]
+    __file__ = ""
 
     def __getattr__(name: str) -> Any:
         if name == "nn":

@@ -9,7 +9,6 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-
 from codex_ml.utils.checkpointing import (
     CheckpointLoadError,
     load_training_checkpoint,

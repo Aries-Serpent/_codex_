@@ -150,8 +150,8 @@ class TestGitHubLogsCLI:
     def test_fetch_check_run_logs_command(self, mock_get_client):
         """Test check-run CLI command."""
         from click.testing import CliRunner
-        from codex.cli_github_logs import cli
 
+        from codex.cli_github_logs import cli
         from services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -184,8 +184,8 @@ class TestGitHubLogsCLI:
     def test_list_check_runs_command(self, mock_get_client):
         """Test list-check-runs CLI command."""
         from click.testing import CliRunner
-        from codex.cli_github_logs import cli
 
+        from codex.cli_github_logs import cli
         from services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -235,10 +235,10 @@ class TestGitHubLogsAPI:
 
     def test_get_check_run_logs_endpoint(self, mock_github_client):
         """Test GET /github/check-runs/{id}/logs endpoint."""
-        from codex.api.github_logs import router
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
+        from codex.api.github_logs import router
         from services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -275,10 +275,10 @@ class TestGitHubLogsAPI:
 
     def test_list_check_runs_endpoint(self, mock_github_client):
         """Test GET /github/check-runs endpoint."""
-        from codex.api.github_logs import router
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
+        from codex.api.github_logs import router
         from services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -386,6 +386,23 @@ class TestGitHubLogsMCPTools:
         assert result["total_count"] == 1, "Result must not be empty"
         assert len(result["check_runs"]) == 1, "Collection must not be empty"
         assert result["check_runs"][0]["id"] == 123, "Result must not be empty"
+
+    @patch("src.mcp.tools.github_logs._get_github_client")
+    def test_list_check_runs_tool_error_logging(self, mock_get_client, caplog):
+        """Test list_check_runs logs the actual exception type instead of a placeholder."""
+        from mcp.tools.github_logs import list_check_runs
+
+        mock_client = Mock()
+        mock_client.list_check_runs_for_ref.side_effect = RuntimeError("boom")
+        mock_get_client.return_value = mock_client
+
+        with caplog.at_level("ERROR"):
+            result = list_check_runs({"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"})
+
+        assert result["success"] is False
+        assert result["error_type"] == "RuntimeError"
+        assert "RuntimeError" in caplog.text
+        assert "<ERROR_TYPE>" not in caplog.text
 
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_mcp_tool_error_handling(self, mock_get_client):

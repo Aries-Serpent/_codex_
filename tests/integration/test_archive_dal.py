@@ -5,6 +5,7 @@ Tests basic DAL functionality with SQLite backend.
 """
 
 import pytest
+
 from codex.archive.dal import SqliteDAL
 
 

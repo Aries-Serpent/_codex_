@@ -18,6 +18,7 @@ import hashlib
 from pathlib import Path
 
 import pytest
+
 from codex.verify.comparator import (
     ComparisonDetail,
     ComparisonMode,

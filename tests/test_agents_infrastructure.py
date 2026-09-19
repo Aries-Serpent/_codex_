@@ -159,6 +159,7 @@ class TestCLI:
     def test_validate_env_command(self):
         """Test validate-env CLI command."""
         from click.testing import CliRunner
+
         from codex.cli import validate_env_cmd
 
         runner = CliRunner()
@@ -171,6 +172,7 @@ class TestCLI:
     def test_session_logger_command(self):
         """Test session-logger CLI command."""
         from click.testing import CliRunner
+
         from codex.cli import session_logger_cmd
 
         runner = CliRunner()
@@ -187,6 +189,7 @@ class TestCLI:
     def test_query_logs_command_no_results(self):
         """Test query-logs CLI command with no results."""
         from click.testing import CliRunner
+
         from codex.cli import query_logs_cmd
 
         runner = CliRunner()
@@ -262,6 +265,7 @@ class TestDBManager:
     def test_init_db_cli_command(self):
         """Test init-db CLI command."""
         from click.testing import CliRunner
+
         from codex.cli import init_db_cmd
 
         runner = CliRunner()
@@ -310,6 +314,7 @@ class TestCLIEndToEnd:
     def test_cli_session_lifecycle(self, tmp_path):
         """Test complete CLI workflow: init → log → view → query."""
         from click.testing import CliRunner
+
         from codex.cli import (
             init_db_cmd,
             query_logs_cmd,
@@ -365,6 +370,7 @@ class TestNewCLICommands:
     def test_export_env_text(self):
         """Test export-env command with text format."""
         from click.testing import CliRunner
+
         from codex.cli import export_env_cmd
 
         runner = CliRunner()
@@ -376,6 +382,7 @@ class TestNewCLICommands:
     def test_export_env_json(self):
         """Test export-env command with JSON format."""
         from click.testing import CliRunner
+
         from codex.cli import export_env_cmd
 
         runner = CliRunner()
@@ -391,6 +398,7 @@ class TestNewCLICommands:
     def test_list_sessions(self, tmp_path):
         """Test list-sessions command."""
         from click.testing import CliRunner
+
         from codex.cli import list_sessions_cmd
 
         runner = CliRunner()
@@ -426,6 +434,7 @@ class TestNewCLICommands:
     def test_clean_logs_dry_run(self):
         """Test clean-logs command in dry-run mode."""
         from click.testing import CliRunner
+
         from codex.cli import clean_logs_cmd
 
         runner = CliRunner()
@@ -563,6 +572,7 @@ class TestEdgeCases:
         from unittest.mock import patch
 
         from click.testing import CliRunner
+
         from codex.cli import export_env_cmd
 
         runner = CliRunner()
@@ -580,6 +590,7 @@ class TestEdgeCases:
     def test_clean_logs_with_no_old_logs(self):
         """Test clean-logs when no old logs exist."""
         from click.testing import CliRunner
+
         from codex.cli import clean_logs_cmd
 
         runner = CliRunner()
@@ -659,8 +670,9 @@ class TestFullSessionLifecycle:
         import time
 
         from click.testing import CliRunner
-        from codex.cli import init_db_cmd
         from codex.logging.db_manager import DBManager
+
+        from codex.cli import init_db_cmd
 
         runner = CliRunner()
         db_path = tmp_path / "lifecycle_test.db"

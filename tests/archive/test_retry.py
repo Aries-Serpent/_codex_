@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections import deque
 
 import pytest
+
 from codex.archive.retry import RetryConfig, calculate_backoff, retry_with_backoff
 
 

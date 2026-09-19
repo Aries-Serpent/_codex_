@@ -24,6 +24,12 @@ What problem are you solving? Why is this change needed?
 - [ ] scheduled-archival.yml — Scheduled archival
 - [ ] scheduled-dependency-audit.yml — Dependency audit
 
+### 🚫 Never auto-checked / legacy-disabled workflow entries
+- [ ] comment-review-gate.yml — Comment review gate (legacy / disabled in active baseline)
+- [ ] iterative-self-healing-ci.yml — Iterative self-healing CI (legacy / disabled in active baseline)
+- [ ] pre-merge-validation.yml — Pre-merge validation (legacy / disabled in active baseline)
+- [ ] unified-copilot-management.yml — Unified Copilot management (legacy / disabled in active baseline)
+
 ## Type of Change
 
 Please delete options that are not relevant.

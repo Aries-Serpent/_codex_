@@ -31,8 +31,10 @@ Authority: D-tier autonomous execution (@mbaetiong)
 
 import argparse
 import hashlib
+import hmac
 import json
 import logging
+import os
 import shutil
 import subprocess
 import sys
@@ -81,12 +83,13 @@ class WheelhouseGenerator:
         },
     }
 
-    def __init__(self, repo_root: Path, output_dir: Path):
+    def __init__(self, repo_root: Path, output_dir: Path, master_key: str | None = None):
         """Initialize wheelhouse generator."""
         self.repo_root = repo_root
         self.output_dir = output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.timestamp = datetime.now().isoformat()
+        self.master_key = (master_key or os.environ.get("CODEX_MASTER_KEY") or "").strip()
 
     def compute_sha256(self, filepath: Path) -> str:
         """Compute SHA256 hash of a file."""
@@ -154,39 +157,58 @@ class WheelhouseGenerator:
         wheelhouse_dir: Path,
         profile: str,
     ) -> bool:
-        """Download wheels to wheelhouse directory."""
+        """Download binary wheels to the wheelhouse directory."""
         try:
-            # Use pip to download wheels
             cmd = [
                 sys.executable,
                 "-m",
                 "pip",
                 "download",
                 f"--dest={wheelhouse_dir}",
-                "--no-binary=:all:",  # Download all packages
-                "--no-deps",  # Don't download dependencies (use uv.lock)
+                "--only-binary=:all:",
+                "--no-deps",
             ]
-
-            # Add requirements
             for req in requirements:
                 cmd.append(req)
 
             logger.debug(f"Running: {' '.join(cmd)}")
             result = subprocess.run(cmd, capture_output=True, text=True)
-
             if result.returncode != 0:
                 logger.warning(f"pip download returned {result.returncode}")
-                # Don't fail - might be normal in offline mode
                 logger.debug(f"stdout: {result.stdout}")
                 logger.debug(f"stderr: {result.stderr}")
+                return False
 
+            wheel_files = sorted(wheelhouse_dir.glob("*.whl"))
+            if not wheel_files:
+                logger.error("pip download produced no wheel artifacts; refusing to sign an empty manifest")
+                return False
             return True
         except Exception as e:
             logger.error(f"Failed to download wheels: {e}")
             return False
 
+    def _sign_manifest(self, manifest: Dict) -> Dict:
+        """Attach an HMAC-SHA256 signature when a master key is configured."""
+        if not self.master_key:
+            raise ValueError(
+                "CODEX_MASTER_KEY is required to generate a release wheelhouse; unsigned manifests are not allowed."
+            )
+
+        unsigned_manifest = {k: v for k, v in manifest.items() if k != "signature"}
+        payload = json.dumps(unsigned_manifest, sort_keys=True, separators=(",", ":")).encode()
+        signature = hmac.new(self.master_key.encode(), payload, hashlib.sha256).hexdigest()
+        manifest["signature"] = signature
+        return manifest
+
     def _generate_manifest(self, wheelhouse_dir: Path, profile: str) -> Dict:
         """Generate manifest with SHA256 hashes."""
+        wheel_files = sorted(wheelhouse_dir.glob("*.whl"))
+        if not wheel_files:
+            raise ValueError(
+                f"No wheel artifacts were found in {wheelhouse_dir}; refusing to sign an empty manifest"
+            )
+
         manifest = {
             "version": "1.0",
             "profile": profile,
@@ -202,7 +224,7 @@ class WheelhouseGenerator:
         total_size = 0
         wheel_count = 0
 
-        for wheel_file in sorted(wheelhouse_dir.glob("*.whl")):
+        for wheel_file in wheel_files:
             sha256 = self.compute_sha256(wheel_file)
             size = wheel_file.stat().st_size
             total_size += size
@@ -217,6 +239,7 @@ class WheelhouseGenerator:
         manifest["metadata"]["total_size"] = total_size
         manifest["metadata"]["wheel_count"] = wheel_count
         manifest["metadata"]["total_size_mb"] = round(total_size / 1024 / 1024, 2)
+        manifest = self._sign_manifest(manifest)
 
         # Write manifest
         manifest_path = wheelhouse_dir / "manifest.json"
@@ -360,6 +383,12 @@ def main():
         help="Repository root directory",
     )
     parser.add_argument(
+        "--master-key-file",
+        type=Path,
+        default=None,
+        help="Path to a protected file containing the HMAC signing key. Prefer CODEX_MASTER_KEY in the environment.",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -369,7 +398,11 @@ def main():
     args = parser.parse_args()
     setup_logging(args.verbose)
 
-    generator = WheelhouseGenerator(args.repo_root, args.output_dir)
+    master_key = os.environ.get("CODEX_MASTER_KEY", "").strip()
+    if args.master_key_file is not None:
+        master_key = args.master_key_file.read_text(encoding="utf-8").strip()
+
+    generator = WheelhouseGenerator(args.repo_root, args.output_dir, master_key=master_key)
 
     if args.profile == "all":
         success, results = generator.generate_all()

@@ -1,8 +1,8 @@
 # Codex Documentation Hub
 
-**Version:** v0.2.0  
-**Last Updated:** 2026-07-18  
-**Status:** ✅ Production Documentation
+**Version:** v0.3.0  
+**Last Updated:** 2026-09-12  
+**Status:** Maintained documentation for the v0.3.0 repository
 
 Welcome to the documentation for **Aries-Serpent/_codex_**, an ML platform,
 repository-automation workspace, and persistent decision-and-learning system.
@@ -26,6 +26,8 @@ Shared orientation:
 - **[Quick start by profile](QUICKSTART_BY_PROFILE.md)** — Core, runtime, and full setup
 - **[Workflow and governance map](WORKFLOW_MAP.md)** — CI, security, coverage, and policy
 - **[Session and agent-state guide](SESSION_STATE_GUIDE.md)** — Memory, checkpoints, and accountability
+- **[Ecosystem index](ECOSYSTEM_INDEX.md)** — Evidence-based current architecture and federated target
+- **[Next-session architecture plan](plans/ARCHITECTURE_NEXT_SESSION.md)** — Bounded follow-up work and evidence gates
 
 ---
 
@@ -62,7 +64,10 @@ Shared orientation:
 
 ## Cognitive Brain (AI Agents Start Here)
 
-The cognitive brain enables autonomous AI agent orchestration with persistent memory and decision-making:
+The cognitive brain supplies orchestration, memory, and decision-support components.
+Autonomous actuation is policy-scoped and environment-dependent; an implemented component
+does not by itself prove that it is enabled or deployed. See
+[the ecosystem evidence matrix](ECOSYSTEM_INDEX.md#current-state-evidence-matrix).
 
 ### **Unified Navigation System**
 - **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** — Complete architecture, components, flows, and dependencies
@@ -73,7 +78,8 @@ The cognitive brain enables autonomous AI agent orchestration with persistent me
 - **Context Continuity** — Maintain understanding across sessions
 - **Efficient Navigation** — Quick discovery of components and relationships
 - **Duration-Aware Planning** — Maximize work within token/time budgets
-- **Autonomous Operation** — Self-directed agents without constant human guidance
+- **Guarded operation** — Agent actions remain bounded by runtime policy, approval classes,
+  kill switches, and environment permissions
 - **Memory Management** — Hippocampus-cortex inspired STM/LTM system
 
 ---
@@ -162,5 +168,4 @@ pip install -e .
 
 ---
 
-**Last updated:** 2026-07-18  
-**Next update:** 2026-07-25
+**Last updated:** 2026-09-12

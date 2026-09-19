@@ -7,6 +7,7 @@ Validates ``codex auth register``, ``codex auth login``, and
 
 import pytest
 from click.testing import CliRunner
+
 from codex.cli import cli
 
 # ---------------------------------------------------------------------------

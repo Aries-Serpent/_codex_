@@ -12,7 +12,6 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-
 from codex_ml.codex_model import ModelConfig, build_codex_model
 
 

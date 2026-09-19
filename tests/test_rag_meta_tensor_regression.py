@@ -12,6 +12,7 @@ from collections.abc import Callable
 from types import SimpleNamespace
 
 import pytest
+
 from codex.rag import utils
 
 

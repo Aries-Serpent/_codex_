@@ -4,11 +4,11 @@
 // and task distribution. It runs independently of Python's GIL, enabling true
 // parallel execution across all CPU cores.
 
+use crate::state::SwarmState;
 use pyo3::prelude::*;
-use tokio::runtime::Runtime;
 use std::sync::Arc;
 use std::time::Duration;
-use crate::state::SwarmState;
+use tokio::runtime::Runtime;
 
 /// High-performance async orchestrator for agent coordination
 ///
@@ -60,7 +60,8 @@ impl Orchestrator {
 
     /// Stop the orchestration loop
     fn stop(&self) -> PyResult<()> {
-        self.running.store(false, std::sync::atomic::Ordering::SeqCst);
+        self.running
+            .store(false, std::sync::atomic::Ordering::SeqCst);
         Ok(())
     }
 
@@ -75,10 +76,7 @@ impl Orchestrator {
 /// This async function runs continuously, processing agent state updates
 /// and coordinating task distribution. It operates at 10 Hz (100ms interval)
 /// to balance responsiveness with CPU usage.
-async fn orchestrator_loop(
-    state: Arc<SwarmState>,
-    running: Arc<std::sync::atomic::AtomicBool>,
-) {
+async fn orchestrator_loop(state: Arc<SwarmState>, running: Arc<std::sync::atomic::AtomicBool>) {
     let mut interval = tokio::time::interval(Duration::from_millis(100));
 
     while running.load(std::sync::atomic::Ordering::SeqCst) {

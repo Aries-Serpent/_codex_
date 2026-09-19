@@ -49,7 +49,7 @@ class ManifestVerifier:
         """
         self.manifest_path = Path(manifest_path)
         self.wheelhouse_dir = Path(wheelhouse_dir) if wheelhouse_dir else None
-        self.master_key = master_key or os.environ.get("CODEX_MASTER_KEY", "")
+        self.master_key = (master_key or os.environ.get("CODEX_MASTER_KEY") or "").strip()
         self.audit_log_path = Path(audit_log_path or ".codex/security/manifest_audit.log")
         
         self.manifest = None
@@ -94,45 +94,53 @@ class ManifestVerifier:
     def verify_signature(self) -> bool:
         """
         Verify HMAC-SHA256 signature of manifest.
-        
+
         Returns:
             True if signature is valid, False otherwise
         """
         if not self.manifest:
             self.errors.append("Manifest not loaded")
             return False
-        
-        stored_signature = self.manifest.get("signature", "")
-        
-        # Create a copy of manifest without signature for verification
-        manifest_copy = dict(self.manifest)
-        manifest_copy["signature"] = ""
-        
+
+        stored_signature = (self.manifest.get("signature") or "").strip()
+        if not stored_signature:
+            error_msg = "Manifest signature missing; unsigned release manifests are not allowed"
+            self.errors.append(error_msg)
+            self.log_audit("SIGNATURE_MISSING", "ERROR", error_msg)
+            logger.error(f"✗ {error_msg}")
+            return False
+
+        if not self.master_key:
+            error_msg = "Master key missing; set CODEX_MASTER_KEY or pass --master-key to verify manifests"
+            self.errors.append(error_msg)
+            self.log_audit("SIGNATURE_KEY_MISSING", "ERROR", error_msg)
+            logger.error(f"✗ {error_msg}")
+            return False
+
+        # Create a copy of manifest without signature for verification.
+        # The signing input must not include the signature field itself.
+        manifest_copy = {k: v for k, v in self.manifest.items() if k != "signature"}
+
         # Compute expected signature
         manifest_json = json.dumps(manifest_copy, sort_keys=True, separators=(",", ":"))
-        
-        if self.master_key:
-            expected_signature = hmac.new(
-                self.master_key.encode(),
-                manifest_json.encode(),
-                hashlib.sha256
-            ).hexdigest()
-        else:
-            logger.warning("No master key provided, skipping signature verification")
-            self.warnings.append("Signature verification skipped (no master key)")
-            self.log_audit("SIGNATURE_SKIP", "WARNING", "No master key available")
-            return True
-        
-        if stored_signature == expected_signature:
+        expected_signature = hmac.new(
+            self.master_key.encode(),
+            manifest_json.encode(),
+            hashlib.sha256,
+        ).hexdigest()
+
+        if hmac.compare_digest(stored_signature, expected_signature):
             logger.info("✓ Manifest signature valid")
             self.log_audit("SIGNATURE_VALID", "INFO", f"signature={stored_signature[:16]}...")
             return True
-        else:
-            error_msg = f"Signature mismatch! Expected {expected_signature[:16]}..., got {stored_signature[:16]}..."
-            self.errors.append(error_msg)
-            self.log_audit("SIGNATURE_INVALID", "ERROR", error_msg)
-            logger.error(f"✗ {error_msg}")
-            return False
+
+        error_msg = (
+            f"Signature mismatch! Expected {expected_signature[:16]}..., got {stored_signature[:16]}..."
+        )
+        self.errors.append(error_msg)
+        self.log_audit("SIGNATURE_INVALID", "ERROR", error_msg)
+        logger.error(f"✗ {error_msg}")
+        return False
 
     def calculate_sha256(self, file_path: Path) -> str:
         """Calculate SHA256 hash of a file."""
@@ -159,6 +167,26 @@ class ManifestVerifier:
         
         return sorted(wheels)
 
+    def _manifest_wheels(self) -> dict[str, dict]:
+        """Normalize supported manifest wheel schemas to {name: {sha256: ...}}."""
+        raw_wheels = self.manifest.get("wheels", {})
+        if isinstance(raw_wheels, dict):
+            return {str(name): info for name, info in raw_wheels.items() if isinstance(info, dict)}
+        if isinstance(raw_wheels, list):
+            normalized: dict[str, dict] = {}
+            for item in raw_wheels:
+                if not isinstance(item, dict):
+                    continue
+                name = item.get("name") or item.get("file_name")
+                if not name:
+                    continue
+                normalized[str(name)] = {
+                    "sha256": item.get("sha256") or item.get("hash") or "",
+                    **item,
+                }
+            return normalized
+        return {}
+
     def verify_wheel_hashes(self) -> bool:
         """
         Verify SHA256 hashes of all wheels against manifest.
@@ -176,9 +204,14 @@ class ManifestVerifier:
             return True
         
         wheels = self.discover_wheels()
-        manifest_wheels = {w["name"]: w["sha256"] for w in self.manifest.get("wheels", [])}
+        manifest_wheels = self._manifest_wheels()
+        manifest_hashes = {
+            name: info.get("sha256") or info.get("hash")
+            for name, info in manifest_wheels.items()
+            if info.get("sha256") or info.get("hash")
+        }
         
-        if not wheels and not manifest_wheels:
+        if not wheels and not manifest_hashes:
             logger.info("✓ No wheels to verify")
             return True
         
@@ -186,7 +219,7 @@ class ManifestVerifier:
         
         # Check each wheel in wheelhouse
         for wheel_path, wheel_name in wheels:
-            if wheel_name not in manifest_wheels:
+            if wheel_name not in manifest_hashes:
                 error_msg = f"Wheel {wheel_name} not in manifest"
                 self.errors.append(error_msg)
                 self.log_audit("WHEEL_NOT_IN_MANIFEST", "ERROR", wheel_name)
@@ -196,7 +229,7 @@ class ManifestVerifier:
             
             # Calculate actual hash
             actual_hash = self.calculate_sha256(wheel_path)
-            expected_hash = manifest_wheels[wheel_name]
+            expected_hash = manifest_hashes[wheel_name]
             
             if actual_hash == expected_hash:
                 logger.info(f"✓ {wheel_name}: hash valid")
@@ -210,7 +243,7 @@ class ManifestVerifier:
         
         # Check for manifest wheels not in wheelhouse
         wheelhouse_names = {w[1] for w in wheels}
-        for manifest_wheel_name in manifest_wheels.keys():
+        for manifest_wheel_name in manifest_hashes.keys():
             if manifest_wheel_name not in wheelhouse_names:
                 warning_msg = f"Manifest wheel {manifest_wheel_name} not found in wheelhouse"
                 self.warnings.append(warning_msg)

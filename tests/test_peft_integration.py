@@ -25,8 +25,9 @@ except (ImportError, AttributeError):
 def disable_torch_profiler(monkeypatch):
     """Disable PyTorch profiler to avoid Protocol isinstance issues."""
     try:
-        import torch
         import torch.profiler as profiler_module
+
+        import torch
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

@@ -5,10 +5,11 @@
 // capable of handling 10,000+ tasks per second.
 
 use pyo3::prelude::*;
-use tokio::sync::mpsc;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::sync::Mutex;
+use tokio::sync::mpsc;
 
 /// A task to be executed by an agent
 ///
@@ -40,7 +41,11 @@ impl Task {
     /// * `data` - JSON-encoded task parameters
     #[new]
     fn new(id: String, task_type: String, data: String) -> Self {
-        Task { id, task_type, data }
+        Task {
+            id,
+            task_type,
+            data,
+        }
     }
 }
 
@@ -53,6 +58,7 @@ impl Task {
 pub struct TaskQueue {
     tx: Arc<mpsc::UnboundedSender<Task>>,
     rx: Arc<Mutex<mpsc::UnboundedReceiver<Task>>>,
+    pending: Arc<AtomicUsize>,
 }
 
 #[pymethods]
@@ -64,6 +70,7 @@ impl TaskQueue {
         TaskQueue {
             tx: Arc::new(tx),
             rx: Arc::new(Mutex::new(rx)),
+            pending: Arc::new(AtomicUsize::new(0)),
         }
     }
 
@@ -75,11 +82,17 @@ impl TaskQueue {
     /// # Arguments
     /// * `task` - Task to submit
     fn submit(&self, task: Task) -> PyResult<()> {
-        self.tx.send(task)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(
-                format!("Failed to submit task: {}", e)
-            ))?;
-        Ok(())
+        self.pending.fetch_add(1, Ordering::Release);
+        match self.tx.send(task) {
+            Ok(()) => Ok(()),
+            Err(error) => {
+                self.pending.fetch_sub(1, Ordering::AcqRel);
+                Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                    "Failed to submit task: {}",
+                    error
+                )))
+            }
+        }
     }
 
     /// Receive the next task from the queue (non-blocking)
@@ -87,18 +100,26 @@ impl TaskQueue {
     /// Returns None if the queue is empty. This is a non-blocking operation
     /// suitable for polling from Python.
     fn receive(&self) -> PyResult<Option<Task>> {
-        let mut rx = self.rx.lock().unwrap();
-        Ok(rx.try_recv().ok())
+        let mut rx = self.rx.lock().map_err(|_| {
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("Task queue lock is poisoned")
+        })?;
+        match rx.try_recv() {
+            Ok(task) => {
+                self.pending.fetch_sub(1, Ordering::AcqRel);
+                Ok(Some(task))
+            }
+            Err(mpsc::error::TryRecvError::Empty) => Ok(None),
+            Err(mpsc::error::TryRecvError::Disconnected) => {
+                Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(
+                    "Task queue is disconnected",
+                ))
+            }
+        }
     }
 
-    /// Get the approximate number of tasks in the queue
-    ///
-    /// Note: This is an estimate due to concurrent access. The actual
-    /// count may change immediately after this call.
+    /// Get the number of tasks awaiting receipt
     fn size(&self) -> usize {
-        // Tokio unbounded channels don't expose size directly
-        // This would require additional bookkeeping in a production system
-        0  // Placeholder for now
+        self.pending.load(Ordering::Acquire)
     }
 }
 
