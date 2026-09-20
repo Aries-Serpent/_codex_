@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="1.922" timestamp="2026-09-20T20:30:22.943284+00:00" hostname="runnervmlun5p"><testcase classname="tests.test_session_logger_log_adapters" name="test_session_logger_falls_back_to_log_adapters" time="0.142" /><testcase classname="tests.test_session_query_cli" name="test_session_query_cli" time="0.228"><failure message="AssertionError: lines is not valid&#10;assert ['2026-09-20 ...ssistant\tyo'] == ['timestamp\t...ssistant\tyo']&#10;  &#10;  At index 0 diff: '2026-09-20 20:30:24,827 - codex - INFO - timestamp\tsession_id\trole\tmessage' != 'timestamp\tsession_id\trole\tmessage'&#10;  &#10;  Full diff:&#10;    [&#10;  -     'timestamp\tsession_id\trole\tmessage',&#10;  -     '2025-01-01T00:00:00Z\tS1\tuser\thi',&#10;  -     '2025-01-01T00:00:01Z\tS1\tassistant\tyo',&#10;  +     '2026-09-20 20:30:24,827 - codex - INFO - timestamp\tsession_id\trole\t'&#10;  +     'message',&#10;  +     '2026-09-20 20:30:24,827 - codex - INFO - 2025-01-01T00:00:00Z\tS1\tuser\t'&#10;  +     'hi',&#10;  +     '2026-09-20 20:30:24,828 - codex - INFO - 2025-01-01T00:00:01Z\tS1\t'&#10;  +     'assistant\tyo',&#10;    ]">tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-6/test_session_query_cli0')
+
+&gt;   ???
+E   AssertionError: lines is not valid
+E   assert ['2026-09-20 ...ssistant\tyo'] == ['timestamp\t...ssistant\tyo']
+E     
+E     At index 0 diff: '2026-09-20 20:30:24,827 - codex - INFO - timestamp\tsession_id\trole\tmessage' != 'timestamp\tsession_id\trole\tmessage'
+E     
+E     Full diff:
+E       [
+E     -     'timestamp\tsession_id\trole\tmessage',
+E     -     '2025-01-01T00:00:00Z\tS1\tuser\thi',
+E     -     '2025-01-01T00:00:01Z\tS1\tassistant\tyo',
+E     +     '2026-09-20 20:30:24,827 - codex - INFO - timestamp\tsession_id\trole\t'
+E     +     'message',
+E     +     '2026-09-20 20:30:24,827 - codex - INFO - 2025-01-01T00:00:00Z\tS1\tuser\t'
+E     +     'hi',
+E     +     '2026-09-20 20:30:24,828 - codex - INFO - 2025-01-01T00:00:01Z\tS1\t'
+E     +     'assistant\tyo',
+E       ]
+
+tests/test_session_query_cli.py:53: AssertionError</failure></testcase></testsuite></testsuites>

@@ -92,13 +92,13 @@ def parse_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
 
 
 def stable_id(prefix: str, *parts: str) -> str:
-    digest = hashlib.sha1("|".join(parts).encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha1("|".join(parts).encode("utf-8"), usedforsecurity=False).hexdigest()[:16]
     return f"{prefix}_{digest}"
 
 
 def sha1_file(path: Path) -> str | None:
     try:
-        return hashlib.sha1(path.read_bytes()).hexdigest()
+        return hashlib.sha1(path.read_bytes(), usedforsecurity=False).hexdigest()
     except Exception:
         return None
 

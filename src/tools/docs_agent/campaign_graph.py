@@ -47,7 +47,7 @@ class CampaignGraphBuilder:
     def _make_relationship_id(self, source_id: str, target_id: str, rel_type: str) -> str:
         """Generate deterministic relationship ID."""
         source = f"{source_id}::{rel_type}::{target_id}"
-        hash_digest = hashlib.md5(source.encode()).hexdigest()
+        hash_digest = hashlib.md5(source.encode(), usedforsecurity=False).hexdigest()
         return str(uuid.UUID(hex=hash_digest))
 
     def build_phase_to_track_relationships(self):

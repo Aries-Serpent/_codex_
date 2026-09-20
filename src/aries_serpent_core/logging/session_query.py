@@ -177,12 +177,12 @@ def fetch_rows(
 
 def print_rows(rows: list[sqlite3.Row], cols: dict[str, str]) -> None:
     if not rows:
-        logger.error("(no rows)")
+        print("(no rows)")
         return
     header_keys = [k for k in ["timestamp", "session_id", "role", "message"] if k in cols]
-    logger.info("\t".join(header_keys))
+    print("\t".join(header_keys))
     for r in rows:
-        logger.info("\t".join("" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys))
+        print("\t".join("" if r[cols[k]] is None else str(r[cols[k]]) for k in header_keys))
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
