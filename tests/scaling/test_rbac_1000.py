@@ -13,7 +13,7 @@ import time
 
 import pytest
 
-from src.codex.scaling.infrastructure.rbac_engine import (
+from codex.scaling.infrastructure.rbac_engine import (
     AccessLevel,
     Permission,
     RBACEngine,

@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
-from src.security import secure_subprocess_run
+from security import secure_subprocess_run
 
 logger = logging.getLogger(__name__)
 

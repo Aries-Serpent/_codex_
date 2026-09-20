@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import re
 
-from src.codex.cognitive_brain.capability_registry import (
+from codex.cognitive_brain.capability_registry import (
     CAPABILITY_SCHEMA_VERSION,
     ToolSurfaceCategory,
     ToolSurfaceProfile,

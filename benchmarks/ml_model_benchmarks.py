@@ -36,8 +36,8 @@ except ImportError:
     print("ERROR: PyTorch not installed")
     sys.exit(1)
 
-from src.codex_ml.models.minilm import MiniLM, MiniLMConfig
-from src.codex_ml.models.decoder_only import DecoderOnlyLM, ModelConfig
+from codex_ml.models.minilm import MiniLM, MiniLMConfig
+from codex_ml.models.decoder_only import DecoderOnlyLM, ModelConfig
 
 logger = logging.getLogger(__name__)
 

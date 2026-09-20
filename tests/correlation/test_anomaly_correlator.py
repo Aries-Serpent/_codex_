@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from src.codex.correlation.anomaly_correlator import (
+from codex.correlation.anomaly_correlator import (
     AlertAggregator,
     AlertSeverity,
     Anomaly,
@@ -29,14 +29,14 @@ from src.codex.correlation.anomaly_correlator import (
     SpatialCorrelator,
     TemporalCorrelator,
 )
-from src.codex.correlation.fp_suppressor import (
+from codex.correlation.fp_suppressor import (
     AlertFeatures,
     AlertHistoryRecord,
     FalsePositiveClassifier,
     HistoricalTracker,
     SuppressionPolicy,
 )
-from src.codex.correlation.root_cause_engine import (
+from codex.correlation.root_cause_engine import (
     BackwardChainer,
     CausalGraph,
     RootCauseEngine,

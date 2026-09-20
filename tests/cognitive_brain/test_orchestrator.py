@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.orchestrator import (
+from codex.cognitive_brain.orchestrator import (
     TOOL_GITHUB_MCP,
     TOOL_PLAYWRIGHT,
     TOOL_SHELL,
@@ -20,7 +20,7 @@ from src.codex.cognitive_brain.orchestrator import (
     MCPOrchestrator,
     ToolchainPlan,
 )
-from src.codex.cognitive_brain.policy import DeterministicPolicy, PolicyContext
+from codex.cognitive_brain.policy import DeterministicPolicy, PolicyContext
 
 # ---------------------------------------------------------------------------
 # Fixtures

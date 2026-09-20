@@ -5,12 +5,12 @@ import logging
 import numpy as np
 import pytest
 
-from src.codex.ensemble.calibration import CalibrationFramework
-from src.codex.ensemble.ensemble_evaluator import EnsembleEvaluator
-from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
-from src.codex.ensemble.integration_adapters import adapt_prediction_for_downstream
-from src.codex.ensemble.load_testing import LoadTestConfig, LoadTester
-from src.codex.ensemble.models import HeuristicModel, MLModel, SymbolicModel
+from codex.ensemble.calibration import CalibrationFramework
+from codex.ensemble.ensemble_evaluator import EnsembleEvaluator
+from codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from codex.ensemble.integration_adapters import adapt_prediction_for_downstream
+from codex.ensemble.load_testing import LoadTestConfig, LoadTester
+from codex.ensemble.models import HeuristicModel, MLModel, SymbolicModel
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ class TestEnsembleGateCriteria:
         calibration = CalibrationFramework(k_folds=5)
 
         # Test heuristic model
-        from src.codex.ensemble.types import ModelType
+        from codex.ensemble.types import ModelType
         heuristic_results = calibration.cross_validate(X, y, ModelType.HEURISTIC)
 
         f1_scores = [r.f1_score for r in heuristic_results]
@@ -162,7 +162,7 @@ class TestEnsembleGateCriteria:
 
     def test_gate_7_model_diversity_validation(self, predictor, test_data):
         """Gate 7: Model diversity validated (correlation <0.6)."""
-        from src.codex.ensemble.ensemble_evaluator import DiversityValidator
+        from codex.ensemble.ensemble_evaluator import DiversityValidator
 
         features_list, _ = test_data
         predictions = predictor.batch_predict(features_list)

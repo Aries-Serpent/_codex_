@@ -37,11 +37,6 @@ recursive-exclude notebooks *.ipynb
 # Keep source trees
 graft src
 # Selected top-level runtime packages (present in this repo)
-graft training
-graft tokenization
-graft codex_utils
-graft interfaces
-graft tools
 graft codex_addons
 graft codex_digest
 graft hhg_logistics

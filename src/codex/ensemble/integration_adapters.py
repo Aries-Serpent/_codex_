@@ -3,7 +3,7 @@
 import logging
 from typing import Any, Dict, List
 
-from src.codex.ensemble.types import EnsemblePrediction, ModelPrediction
+from codex.ensemble.types import EnsemblePrediction, ModelPrediction
 
 logger = logging.getLogger(__name__)
 

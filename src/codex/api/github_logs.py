@@ -59,7 +59,7 @@ class CheckRunsListResponse(BaseModel):
 def _get_github_client():
     """Return the canonical GitHub client with a compatibility fallback."""
     try:
-        from src.services.github.client import GitHubClientSync
+        from services.github.client import GitHubClientSync
     except ImportError:
         from services.github.client import GitHubClientSync
 

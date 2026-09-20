@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from src.codex.utils.path_extended import get_repo_root
+from codex.utils.path_extended import get_repo_root
 """
 Test script for Zendesk Voice Lines API Client (non-GUI components).
 

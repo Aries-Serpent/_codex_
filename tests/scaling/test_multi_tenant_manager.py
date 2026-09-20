@@ -16,21 +16,21 @@ import time
 
 import pytest
 
-from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
-from src.codex.scaling.cost_allocator import (
+from codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
+from codex.scaling.cost_allocator import (
     CostAllocationConfig,
     CostAllocator,
     InstancePricing,
     InstanceType,
 )
-from src.codex.scaling.failover_manager import FailoverManager, HealthStatus, RegionConfig
-from src.codex.scaling.load_balancer import (
+from codex.scaling.failover_manager import FailoverManager, HealthStatus, RegionConfig
+from codex.scaling.load_balancer import (
     BackendNode,
     BackendState,
     LoadBalancer,
     LoadBalancerConfig,
 )
-from src.codex.scaling.multi_tenant_manager import (
+from codex.scaling.multi_tenant_manager import (
     AccessLevel,
     AuditEventType,
     TenantManager,

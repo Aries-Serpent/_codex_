@@ -6,10 +6,7 @@ import logging
 from typing import Any
 
 from agent.core import AgentConfig, AgentCore
-from src.tools import (  # src. prefix needed: root ./tools/ shadows src/tools/
-    ToolRegistry,
-    get_registry,
-)
+from tools import ToolRegistry, get_registry
 
 logger = logging.getLogger(__name__)
 

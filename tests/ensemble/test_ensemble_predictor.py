@@ -14,18 +14,18 @@ Test Coverage Targets:
 import numpy as np
 import pytest
 
-from src.codex.ensemble.calibration import CalibrationFramework
-from src.codex.ensemble.ensemble_predictor import (
+from codex.ensemble.calibration import CalibrationFramework
+from codex.ensemble.ensemble_predictor import (
     EnsembleConfig,
     EnsemblePredictor,
 )
-from src.codex.ensemble.models import (
+from codex.ensemble.models import (
     HeuristicModel,
     MLModel,
     SymbolicModel,
 )
-from src.codex.ensemble.prediction_api import PredictionAPI
-from src.codex.ensemble.types import (
+from codex.ensemble.prediction_api import PredictionAPI
+from codex.ensemble.types import (
     ModelType,
 )
 

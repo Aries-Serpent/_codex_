@@ -7,8 +7,8 @@ from typing import Any, Dict, List, Tuple
 import numpy as np
 from scipy.stats import pearsonr, spearmanr
 
-from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
-from src.codex.ensemble.types import ModelType
+from codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from codex.ensemble.types import ModelType
 
 logger = logging.getLogger(__name__)
 

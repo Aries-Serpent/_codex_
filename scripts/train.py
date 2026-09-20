@@ -45,8 +45,8 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from src.training.config import TrainingConfig
-from src.training.engine_hf_trainer import run_hf_trainer
+from training.config import TrainingConfig
+from training.engine_hf_trainer import run_hf_trainer
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

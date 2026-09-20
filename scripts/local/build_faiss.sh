@@ -71,7 +71,7 @@ from pathlib import Path
 sys.path.insert(0, '.')
 
 try:
-    from src.codex.rag.indexer import build_index_from_files
+    from codex.rag.indexer import build_index_from_files
 
     # Safely retrieve values from environment variables
     tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
@@ -144,8 +144,8 @@ import os
 sys.path.insert(0, '.')
 
 try:
-    from src.codex.retrieval.embed import build_embeddings
-    from src.codex.retrieval.stores import FAISSStore
+    from codex.retrieval.embed import build_embeddings
+    from codex.retrieval.stores import FAISSStore
 
     # Safely retrieve values from environment variables
     source_path = os.environ.get('BUILD_SOURCE_PATH', '.')

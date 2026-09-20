@@ -17,8 +17,8 @@ from unittest.mock import patch
 
 import pytest
 
-from src.aries_serpent_core.cli_secure import SecureHTMLOutput
-from src.aries_serpent_core.config_secure import (
+from aries_serpent_core.cli_secure import SecureHTMLOutput
+from aries_serpent_core.config_secure import (
     APIConfig,
     ConfigurationError,
     DatabaseConfig,
@@ -26,8 +26,8 @@ from src.aries_serpent_core.config_secure import (
 )
 
 # Import secure implementations
-from src.aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
-from src.codex_ml.utils.serialization_secure import SecureSerializer, SerializationError, UserData
+from aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
+from codex_ml.utils.serialization_secure import SecureSerializer, SerializationError, UserData
 
 
 class TestCWE89SQLInjection:
