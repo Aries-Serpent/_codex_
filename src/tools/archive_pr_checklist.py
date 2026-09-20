@@ -31,7 +31,7 @@ from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.security import secure_subprocess_run
+from security import secure_subprocess_run
 
 logger = logging.getLogger(__name__)
 

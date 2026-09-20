@@ -239,7 +239,7 @@ The following conditions will trigger automatic evaluation for rollback:
 3. **Execute Rollback**: Use deployment manager to restore previous version
    ```bash
    python -c "
-   from src.codex_ml.serving.deployment_manager import DeploymentManager
+   from codex_ml.serving.deployment_manager import DeploymentManager
    dm = DeploymentManager()
    versions = dm.list_versions()
    previous = versions[-2]  # Get previous version

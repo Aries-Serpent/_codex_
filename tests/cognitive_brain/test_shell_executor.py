@@ -6,11 +6,11 @@ from subprocess import CompletedProcess
 
 import pytest
 
-from src.codex.cognitive_brain.shell_executor import (
+from codex.cognitive_brain.shell_executor import (
     ShellExecutionDenied,
     execute_command,
 )
-from src.codex.cognitive_brain.shell_policy import PolicyVerdict, ShellPolicy
+from codex.cognitive_brain.shell_policy import PolicyVerdict, ShellPolicy
 
 
 def test_denied_command_never_reaches_subprocess(monkeypatch: pytest.MonkeyPatch) -> None:

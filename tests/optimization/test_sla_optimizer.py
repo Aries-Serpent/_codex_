@@ -8,7 +8,7 @@ import json
 
 import pytest
 
-from src.codex.optimization.sla_optimizer import (
+from codex.optimization.sla_optimizer import (
     BillingEngine,
     HeuristicConstraintSolver,
     ParetoOptimizer,
@@ -532,7 +532,7 @@ class TestPricingEngine:
 
     def test_dynamic_price_adjustment(self):
         """Test prices adjust based on demand and supply."""
-        from src.codex.optimization.pricing_engine import DynamicPricingModel
+        from codex.optimization.pricing_engine import DynamicPricingModel
 
         model = DynamicPricingModel()
         base_price = model.resource_prices["cpu"].base_price
@@ -545,7 +545,7 @@ class TestPricingEngine:
 
     def test_cost_predictor_accuracy(self):
         """Test cost prediction accuracy ±10%."""
-        from src.codex.optimization.pricing_engine import CostPredictor
+        from codex.optimization.pricing_engine import CostPredictor
 
         predictor = CostPredictor()
 

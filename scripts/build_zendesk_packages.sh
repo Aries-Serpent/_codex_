@@ -330,8 +330,8 @@ run_tests() {
     # Test Python imports
     if python3 -c "
 from tools.zendesk_package_curator import ZendeskPackageCurator
-from src.zendesk.json_generator import ZendeskJSONGenerator
-from src.zendesk.api_client import ZendeskAPIClient
+from zendesk.json_generator import ZendeskJSONGenerator
+from zendesk.api_client import ZendeskAPIClient
 
 print('All imports successful')
 " 2>/dev/null; then

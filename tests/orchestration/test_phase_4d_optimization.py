@@ -13,13 +13,13 @@ import random
 
 import pytest
 
-from src.orchestration.load_balancer import LoadBalancer, TaskPriority
-from src.orchestration.routing_v2 import AgentHealth, AgentLoad, EnhancedRouter
-from src.orchestration.simulation import (
+from orchestration.load_balancer import LoadBalancer, TaskPriority
+from orchestration.routing_v2 import AgentHealth, AgentLoad, EnhancedRouter
+from orchestration.simulation import (
     ScenarioBuilder,
     SimulationEngine,
 )
-from src.orchestration.tracing import HandoffTracer, SpanStatus, TraceContext
+from orchestration.tracing import HandoffTracer, SpanStatus, TraceContext
 
 
 class TestEnhancedRouting:
