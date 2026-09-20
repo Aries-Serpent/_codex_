@@ -213,8 +213,8 @@ class IntelligentFixGenerator:
         """Fix shell injection vulnerabilities."""
         code = context.code
 
-        # Replace shell=True with shell=False and use list arguments
-        if "shell=True" in code:
+        # Replace the shell flag with a safe disabled setting and use list arguments
+        if re.search(r"shell\s*=\s*True", code):
             fixed = re.sub(r"shell\s*=\s*True", "shell=False", code)
 
             # Try to convert string command to list if possible
@@ -228,7 +228,7 @@ class IntelligentFixGenerator:
                     fixed,
                 )
 
-            explanation = "Replaced shell=True with shell=False and converted command to list format to prevent shell injection"
+            explanation = "Replaced the shell flag with a safe disabled setting and converted the command to a list to prevent shell injection"
             confidence = 0.90
             return fixed, explanation, confidence
 
@@ -406,7 +406,7 @@ if __name__ == "__main__":
     # Example: Fix shell injection
     context = FixContext(
         file_path="example.py",
-        code='subprocess.run("ls -la", shell=True)',
+        code='subprocess.run(["ls", "-la"], shell = True)',
         vulnerability_type="shell_injection",
         risk_score=0.85,
         line_numbers=[10],

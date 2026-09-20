@@ -42,7 +42,7 @@ def _load_et_module():
 
 ET = _load_et_module()
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "run_validation.sh"
 LOG_PATH = ROOT / "validation.log"
 JUNIT_PATH = ROOT / "validation-junit.xml"

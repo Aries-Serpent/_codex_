@@ -111,7 +111,7 @@ jobs:
         fi
         yamllint -c .yamllint.yml --strict -f parsable "${yaml_files[@]}"
     - name: Run fast validation
-      run: "set -e\nchmod +x scripts/run_validation.sh\npython tools/validate.py --mode\
+      run: "set -e\nchmod +x scripts/run_validation.sh\npython src/tools/validate.py --mode\
         \ fast || {\n  echo \"\u26A0\uFE0F Validation script failed, but continuing\
         \ to upload artifacts\"\n  exit 1\n}\n"
     - name: Emit pre-commit failure details to step summary
@@ -227,7 +227,7 @@ jobs:
     - name: Run full validation
       env:
         PYTEST_OPTS: ${{ inputs.pytest_opts || '' }}
-      run: "set -e\nchmod +x scripts/run_validation.sh\npython tools/validate.py --mode\
+      run: "set -e\nchmod +x scripts/run_validation.sh\npython src/tools/validate.py --mode\
         \ full ${PYTEST_OPTS} || {\n  echo \"\u26A0\uFE0F Full validation script failed,\
         \ but continuing to upload artifacts\"\n  exit 1\n}\n"
     - name: Emit pre-commit failure details to step summary

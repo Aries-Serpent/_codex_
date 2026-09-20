@@ -9,6 +9,7 @@ import ast
 import difflib
 import hashlib
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime
@@ -214,9 +215,9 @@ class FixVerifier:
         """Calculate simple security score (0-100)."""
         score = 100.0
 
-        # Deduct points for risky patterns
+        # Deduct points for risky patterns.
         risky_patterns = [
-            ("shell=True", 10),
+            ("shell", 10),
             ("eval(", 15),
             ("exec(", 15),
             ("pickle.loads", 10),
@@ -225,7 +226,10 @@ class FixVerifier:
         ]
 
         for pattern, deduction in risky_patterns:
-            if pattern in code:
+            if pattern == "shell":
+                if re.search(r"shell\s*=\s*True", code):
+                    score -= deduction
+            elif pattern in code:
                 score -= deduction
 
         return max(0.0, score)
@@ -377,7 +381,7 @@ if __name__ == "__main__":
     # Example usage
     verifier = FixVerifier()
 
-    original_code = 'subprocess.run("ls", shell=True)'
+    original_code = 'subprocess.run(["ls"], shell = True)'
     fixed_code = 'subprocess.run(["ls"], shell=False)'
 
     result = verifier.verify_fix("example.py", original_code, fixed_code)

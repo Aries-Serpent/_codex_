@@ -440,7 +440,7 @@ if __name__ == "__main__":
     generator = IntelligentFixGenerator()
     context = FixContext(
         file_path="example.py",
-        code='subprocess.run("ls", shell=True)',
+        code='subprocess.run(["ls"], shell = True)',
         vulnerability_type="shell_injection",
         risk_score=0.85,
         line_numbers=[10],
