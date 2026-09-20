@@ -1,0 +1,3 @@
+# Runtime state (API key store, temp files)
+runtime/*.json
+runtime/*.tmp
