@@ -31,6 +31,13 @@ Last Updated: 2026-01-16
 from __future__ import annotations
 
 import logging
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+for candidate in (REPO_ROOT, REPO_ROOT / "src"):
+    if str(candidate) not in sys.path:
+        sys.path.insert(0, str(candidate))
 
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
@@ -45,8 +52,12 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from training.config import TrainingConfig
-from training.engine_hf_trainer import run_hf_trainer
+
+def _load_runtime_modules():
+    from training.config import TrainingConfig
+    from training.engine_hf_trainer import run_hf_trainer
+
+    return TrainingConfig, run_hf_trainer
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -79,7 +90,7 @@ def _load_config_file(path: Path) -> Mapping[str, Any]:
         return data or {}
 
 
-def _config_to_dict(cfg: TrainingConfig) -> dict[str, Any]:
+def _config_to_dict(cfg: Any) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in cfg.as_dict().items():
         if isinstance(value, Path):
@@ -117,6 +128,7 @@ def _split_texts(
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
+    TrainingConfig, run_hf_trainer = _load_runtime_modules()
     cfg = TrainingConfig.from_env() if args.config_from_env else TrainingConfig()
     data = cfg.as_dict()
     if args.config:

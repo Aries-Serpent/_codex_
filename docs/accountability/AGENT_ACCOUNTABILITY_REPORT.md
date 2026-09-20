@@ -1,3 +1,31 @@
+## Session: 2026-09-20T23:38:27Z — PR #5624 review-thread remediation and merge-readiness follow-up
+
+**Objective:** Resolve the outstanding review-thread items on PR #5624 by restoring the direct-execution import bootstrap, the src-first tool compatibility layer, the restricted `CODEX_*` environment snapshot contract, and the repo governance artifacts without widening scope beyond the requested feedback.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Re-checked the active review-thread feedback and fixed the import-path/bootstrap regressions caused by the root `tools/` compatibility shim and the missing `src/` bootstrap in the direct-entry scripts.
+2. Restored the tracked startup-packet baseline and kept the environment snapshot restricted to the supported `CODEX_*` variables instead of serializing the full process environment.
+3. Synced the active branch governance evidence (`CHANGELOG.md`, `.codex/aftermath/pda_iterations.jsonl`, and the accountability report) so the current session clears the stale REQ-4 / REQ-5 and daily PDA readiness checks without broadening scope.
+
+**Validation:**
+- `python src/aries_serpent_core/zendesk/agent.py` → direct checkout import path passes without `ImportError`.
+- `python scripts/train.py --help` → direct execution parses cleanly without the false `src/`-path import failure.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5624` → pass after the final governance refresh is in place.
+
+**Governance:**
+- REQ-4: This report updated for PR #5624 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the current 2026-09-20 session entry.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## Session: 2026-09-20T00:32:00Z — Production-readiness Phase 1 (structural foundation) — Session 3: Steps 1+2
 
 **Objective:** Complete Phase 1 Steps 1+2 — move root-only subtrees into canonical `src/`, port the `training/checkpoint_manager.py` unique logic, and rewrite `from src.X`→`from X`. Recovering from a prior session interrupted by credit limit (commit `e97d5b7e` held partial Lane A copies).

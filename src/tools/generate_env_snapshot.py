@@ -30,7 +30,11 @@ def _redact_env_value(key: str, value: str) -> str:
 
 
 def capture_environment() -> dict:
-    """Collect environment details for serialization."""
+    """Collect environment details for serialization.
+
+    The serialized snapshot intentionally contains only the CODEX_* keys that the
+    project explicitly supports; unrelated process environment data is excluded.
+    """
     info = {
         "python_version": sys.version,
         "python_version_info": {
@@ -54,7 +58,6 @@ def capture_environment() -> dict:
     }
     if codex_vars:
         info["codex_env_vars"] = codex_vars
-    info["env"] = {key: _redact_env_value(key, value) for key, value in os.environ.items()}
     return info
 
 

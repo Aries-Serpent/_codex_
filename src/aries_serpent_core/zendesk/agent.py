@@ -3,10 +3,17 @@
 from __future__ import annotations
 
 import logging
+import sys
+from pathlib import Path
 from typing import Any
 
-from agent.core import AgentConfig, AgentCore
-from tools import ToolRegistry, get_registry
+REPO_ROOT = Path(__file__).resolve().parents[3]
+for candidate in (REPO_ROOT, REPO_ROOT / "src"):
+    if str(candidate) not in sys.path:
+        sys.path.insert(0, str(candidate))
+
+from src.agent.core import AgentConfig, AgentCore
+from src.tools.registry import ToolRegistry, get_registry
 
 logger = logging.getLogger(__name__)
 

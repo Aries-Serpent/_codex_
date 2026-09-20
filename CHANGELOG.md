@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5624)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5624 (SHA `HEAD`) at 2026-09-20T23:38:27Z [auto-generated]
+
 ### Changed — Phase 1 (structural foundation) Session 3 / Steps 1+2
 - Step 1 (move root-only subtrees into canonical `src/`, root retained pending Session 4): consolidated `services/{api,ita,msp_gateway,workflow.backup}` → `src/services/`, `tools/*` → `src/tools/`, `agents/*` (minus `codex_client`) → `src/agents/`; rewrote internal `src.`-prefixed imports inside moved files to the canonical bare form.
 - Step 2 (import rewrite): converted remaining `from src.X` / `import src.X` → `from X` / `import X` across tests/src/scripts/models/benchmarks/apps/cli (`.github/agents/*` subprojects excluded; `src/aries_serpent_core/zendesk/agent.py` deferred until root `tools/` shadow is removed in Session 4).

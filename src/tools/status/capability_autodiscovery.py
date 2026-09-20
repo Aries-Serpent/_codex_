@@ -45,7 +45,7 @@ def main():
         )
     outdir = root / "audit_artifacts"
     outdir.mkdir(parents=True, exist_ok=True)
-    payload = {"items": caps}
+    payload = {"capabilities": caps, "items": caps}
     (outdir / "capabilities_scored.json").write_text(json.dumps(payload, indent=2))
     print("audit_artifacts/capabilities_scored.json")
     return 0
