@@ -11,7 +11,7 @@ Phase 4D Optimization: Replaces `scripts/ci/orchestrator_routing.py` with:
   6. SLA enforcement
 
 Usage:
-  from src.orchestration.routing_v2 import EnhancedRouter
+  from orchestration.routing_v2 import EnhancedRouter
   
   router = EnhancedRouter()
   selection = router.select_best_agent(

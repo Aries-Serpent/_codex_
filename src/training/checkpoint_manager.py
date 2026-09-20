@@ -15,153 +15,152 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-_warnings.warn(
-    "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
-    DeprecationWarning,
-    stacklevel=2,
+_LEGACY_WARNING_MESSAGE = (
+    "training.checkpoint_manager is legacy; prefer "
+    "codex_ml.utils.checkpointing.CheckpointManager."
 )
+if not getattr(_warnings, "_training_checkpoint_manager_legacy_warned", False):
+    _warnings.warn(
+        _LEGACY_WARNING_MESSAGE,
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    setattr(_warnings, "_training_checkpoint_manager_legacy_warned", True)
+_checkpoint_helpers_import_ok = False
 try:
     from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-        CheckpointManager,
         build_payload_bytes,
         dump_rng_state,
     )
-except (ImportError, AttributeError):
-    logger.warning("Exception occurred", exc_info=True)
-    # fall back to existing local implementation below (if present)
-
-
-if "CheckpointManager" not in globals():
+    _checkpoint_helpers_import_ok = True
+except (ImportError, ModuleNotFoundError):
+    # fall back to existing local helper implementation below (if present)
+    logger.debug(
+        "Failed to import build_payload_bytes/dump_rng_state "
+        "from codex_ml.utils.checkpointing; using legacy local fallback.",
+        exc_info=True,
+    )
+if not _checkpoint_helpers_import_ok:
     import io
-    import os
     import random
-    from pathlib import Path
-    from typing import Any, Optional
 
-    try:  # Prefer canonical helpers when available.
-        from codex_ml.utils.checkpointing import (  # type: ignore
-            build_payload_bytes,
-            dump_rng_state,
+    try:  # numpy is optional for RNG capture
+        import numpy as _np
+    except ImportError:  # pragma: no cover - optional dependency
+        _np = None
+
+    try:  # torch may be absent in lightweight environments
+        import torch as _torch
+    except ImportError:  # pragma: no cover - optional dependency
+        _torch = None  # type: ignore[assignment]
+
+    def _python_state_payload(raw_state: Any) -> list[Any]:
+        return [raw_state[0], list(raw_state[1]), raw_state[2]]
+
+    def _numpy_state_payload(raw_state: Any) -> list[Any]:  # pragma: no cover - numpy optional
+        return [
+            raw_state[0],
+            raw_state[1].tolist(),
+            raw_state[2],
+            raw_state[3],
+            raw_state[4],
+        ]
+
+    def _torch_cuda_rng_available(torch_module: Any) -> bool:
+        """Return True when torch CUDA RNG-state APIs are available and usable."""
+        return (
+            hasattr(torch_module, "cuda")
+            and hasattr(torch_module.cuda, "is_available")
+            and torch_module.cuda.is_available()
+            and hasattr(torch_module.cuda, "get_rng_state_all")
         )
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - legacy fallback path
-        try:  # numpy is optional for RNG capture
-            import numpy as _np
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
-            _np = None
 
-        try:  # torch may be absent in lightweight environments
-            import torch as _torch
-        except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore[assignment]
+    def dump_rng_state() -> dict[str, Any]:
+        state: dict[str, Any] = {}
+        try:
+            state["python"] = _python_state_payload(random.getstate())
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
+            state["python"] = []
 
-        def _python_state_payload(raw_state: Any) -> list[Any]:
-            return [raw_state[0], list(raw_state[1]), raw_state[2]]
-
-        def _numpy_state_payload(
-            raw_state: Any,
-        ) -> list[Any]:  # pragma: no cover - numpy optional
-            return [
-                raw_state[0],
-                raw_state[1].tolist(),
-                raw_state[2],
-                raw_state[3],
-                raw_state[4],
-            ]
-
-        def _torch_cuda_rng_available(torch_module: Any) -> bool:
-            return (
-                hasattr(torch_module, "cuda")
-                and hasattr(torch_module.cuda, "is_available")
-                and torch_module.cuda.is_available()
-                and hasattr(torch_module.cuda, "get_rng_state_all")
-            )
-
-        def dump_rng_state() -> dict[str, Any]:
-            state: dict[str, Any] = {}
+        if _np is not None:  # pragma: no branch - optional dependency
             try:
-                state["python"] = _python_state_payload(random.getstate())
-            except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
-                state["python"] = []
+                state["numpy"] = _numpy_state_payload(_np.random.get_state())
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
+                logger.debug("Failed to capture numpy random state: %s", exc)
 
-            if _np is not None:  # pragma: no branch - optional dependency
-                try:
-                    state["numpy"] = _numpy_state_payload(_np.random.get_state())
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
-                    logger.debug("Failed to capture numpy random state: %s", exc)
-
-            if _torch is not None:
-                torch_state: dict[str, Any] = {}
-                try:
-                    if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
-                        cpu_state = _torch.random.get_rng_state()
-                    else:
-                        cpu_state = (
-                            _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
-                        )
-                    if cpu_state is not None and hasattr(cpu_state, "tolist"):
-                        torch_state["cpu"] = cpu_state.tolist()
-                except (
-                    ValueError,
-                    TypeError,
-                    RuntimeError,
-                ) as exc:  # pragma: no cover - torch optional
-                    logger.debug("Failed to capture torch CPU random state: %s", exc)
-                try:
-                    if _torch_cuda_rng_available(_torch):
-                        torch_state["cuda"] = [
-                            tensor.tolist() for tensor in _torch.cuda.get_rng_state_all()
-                        ]
-                except (
-                    ValueError,
-                    TypeError,
-                    RuntimeError,
-                ) as exc:  # pragma: no cover - cuda optional
-                    logger.debug("Failed to capture CUDA random state: %s", exc)
-                if torch_state:
-                    state["torch"] = torch_state
-            return state
-
-        def build_payload_bytes(
-            model: Any,
-            optimizer: Any | None = None,
-            scheduler: Any | None = None,
-            scaler: Any | None = None,
-            *,
-            rng_state: bool = False,
-        ) -> bytes:
-            if _torch is None:
-                raise RuntimeError("torch is required to build checkpoint payloads")
-
-            payload: dict[str, Any] = {
-                "model": model.state_dict() if model is not None else None,
-                "optimizer": optimizer.state_dict() if optimizer is not None else None,
-                "scheduler": (
-                    scheduler.state_dict()
-                    if scheduler is not None and hasattr(scheduler, "state_dict")
-                    else None
-                ),
-            }
-            if scaler is not None and hasattr(scaler, "state_dict"):
-                payload["scaler"] = scaler.state_dict()
-            if rng_state:
-                payload["rng"] = dump_rng_state()
-
-            # Trusted local ML checkpoint payloads only; justify B403 suppression.
-            import pickle as _stdlib_pickle  # nosec B403
-
-            buffer = io.BytesIO()
+        if _torch is not None:
+            torch_state: dict[str, Any] = {}
             try:
-                _torch.save(payload, buffer)
+                if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
+                    cpu_state = _torch.random.get_rng_state()
+                else:
+                    cpu_state = (
+                        _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
+                    )
+                if cpu_state is not None and hasattr(cpu_state, "tolist"):
+                    torch_state["cpu"] = cpu_state.tolist()
             except (
-                RuntimeError,
+                ValueError,
                 TypeError,
-                _stdlib_pickle.PicklingError,
-            ):  # pragma: no cover
-                # Retry without extra parameters on PyTorch 2.x
-                # PyTorch 2.x handles pickle protocol automatically
-                buffer = io.BytesIO()
-                _torch.save(payload, buffer)
-            return buffer.getvalue()
+                RuntimeError,
+            ) as exc:  # pragma: no cover - torch optional
+                logger.debug("Failed to capture torch CPU random state: %s", exc)
+            try:
+                if _torch_cuda_rng_available(_torch):
+                    torch_state["cuda"] = [
+                        tensor.tolist() for tensor in _torch.cuda.get_rng_state_all()
+                    ]
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - cuda optional
+                logger.debug("Failed to capture CUDA random state: %s", exc)
+            if torch_state:
+                state["torch"] = torch_state
+        return state
+
+    def build_payload_bytes(
+        model: Any,
+        optimizer: Any | None = None,
+        scheduler: Any | None = None,
+        scaler: Any | None = None,
+        *,
+        rng_state: bool = False,
+    ) -> bytes:
+        if _torch is None:
+            raise RuntimeError("torch is required to build checkpoint payloads")
+
+        payload: dict[str, Any] = {
+            "model": model.state_dict() if model is not None else None,
+            "optimizer": optimizer.state_dict() if optimizer is not None else None,
+            "scheduler": (
+                scheduler.state_dict()
+                if scheduler is not None and hasattr(scheduler, "state_dict")
+                else None
+            ),
+        }
+        if scaler is not None and hasattr(scaler, "state_dict"):
+            payload["scaler"] = scaler.state_dict()
+        if rng_state:
+            payload["rng"] = dump_rng_state()
+
+        # Trusted local ML checkpoint payloads only; justify B403 suppression.
+        import pickle as _stdlib_pickle  # nosec B403
+
+        buffer = io.BytesIO()
+        try:
+            _torch.save(payload, buffer)
+        except (
+            RuntimeError,
+            TypeError,
+            _stdlib_pickle.PicklingError,
+        ):  # pragma: no cover
+            # Retry without extra parameters on PyTorch 2.x
+            # PyTorch 2.x handles pickle protocol automatically
+            buffer = io.BytesIO()
+            _torch.save(payload, buffer)
+        return buffer.getvalue()
 
 
 class CheckpointManager:  # type: ignore[no-redef]
@@ -187,7 +186,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         resolved_best = best_k if best_k is not None else keep_best
         if resolved_best is None:
             resolved_best = 1
-        self.best_k = max(1, int(resolved_best))
+        self.best_k = max(0, int(resolved_best))
         self._best_meta = self.root / "best.json"
         self._best_file = self.root / "best"
         self._best_dir = self.root / "best_candidates"
@@ -243,7 +242,12 @@ class CheckpointManager:  # type: ignore[no-redef]
                 logger.warning("Exception occurred", exc_info=True)
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
-        self._best = self._best_records[0]["value"] if self._best_records else None
+        self._best = self._best_records[0].get("value") if self._best_records else None
+        self._protected_names_cache: set[str] = {
+            Path(str(p)).name
+            for rec in self._best_records
+            if (p := rec.get("path")) is not None
+        }
         self._refresh_best_symlinks()
 
     # ------------------------------------------------------------------

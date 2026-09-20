@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.kernel import (
+from codex.cognitive_brain.kernel import (
     CognitiveBrainKernel,
     KernelConfig,
     get_kernel,

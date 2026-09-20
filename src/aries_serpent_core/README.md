@@ -53,12 +53,12 @@ python -m codex.cli verify <snapshot-id> --compare
 ### Python API
 
 ```python
-from src.codex.ingest import ingest, parse_manifest
-from src.codex.analyze.static import analyze
-from src.codex.analyze.runtime import SandboxManager, RuntimeTracer
-from src.codex.intent import infer_intent
-from src.codex.transform.transformer import transform
-from src.codex.verify.comparator import compare
+from codex.ingest import ingest, parse_manifest
+from codex.analyze.static import analyze
+from codex.analyze.runtime import SandboxManager, RuntimeTracer
+from codex.intent import infer_intent
+from codex.transform.transformer import transform
+from codex.verify.comparator import compare
 
 # Ingest
 snapshot = ingest("./script.py", manifest_path="manifest.yaml")

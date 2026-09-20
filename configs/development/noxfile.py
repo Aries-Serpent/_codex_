@@ -305,7 +305,6 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
         "-p",
         "pytest_cov",
         "--cov=src",
-        "--cov=training",
         "--cov-branch",
         "--cov-report=term-missing",
         f"--cov-report=html:{COVERAGE_HTML.as_posix()}",

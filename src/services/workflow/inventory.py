@@ -44,12 +44,16 @@ class WorkflowInventory:
         ```
     """
 
-    def __init__(self, workflows_dir: Path | str):
+    def __init__(self, workflows_dir: Path | str | None = None):
         """Initialize workflow inventory.
 
         Args:
-            workflows_dir: Path to .github/workflows directory.
+            workflows_dir: Path to .github/workflows directory. Defaults to the
+                repository's live workflow directory.
         """
+        if workflows_dir is None:
+            repo_root = Path(__file__).resolve().parents[3]
+            workflows_dir = repo_root / ".github" / "workflows"
         self.workflows_dir = Path(workflows_dir)
         self.parser = WorkflowParser()
         self._workflows: dict[str, WorkflowMetadata] = {}
@@ -65,22 +69,33 @@ class WorkflowInventory:
         """Get all workflow dependencies."""
         return self._dependencies
 
-    def scan(self, force_refresh: bool = False) -> int:
+    def scan(
+        self,
+        workflows_dir: Path | str | bool | None = None,
+        force_refresh: bool = False,
+    ) -> int:
         """Scan workflows directory and parse all workflow files.
 
         Args:
+            workflows_dir: Optional directory override; accepts repo-relative or
+                Path-like values as well as legacy bool-style refresh flags.
             force_refresh: If True, clear cache and reparse everything.
 
         Returns:
             Number of workflows successfully parsed.
         """
+        if isinstance(workflows_dir, (str, Path)):
+            self.workflows_dir = Path(workflows_dir)
+        elif workflows_dir is not None and isinstance(workflows_dir, bool):
+            force_refresh = workflows_dir or force_refresh
+
         if force_refresh:
             self._workflows.clear()
             self.parser.clear_cache()
 
         if not self.workflows_dir.exists():
             logger.error(f"Workflows directory not found: {self.workflows_dir}")
-            return 0
+            return 0 if not isinstance(workflows_dir, (str, Path)) else {}
 
         parsed_count = 0
         workflow_files = list(self.workflows_dir.glob("*.yml")) + list(
@@ -115,6 +130,8 @@ class WorkflowInventory:
         logger.info(
             f"Scanned {parsed_count} workflows, found {len(self._dependencies)} dependencies"
         )
+        if isinstance(workflows_dir, (str, Path)):
+            return dict(self._workflows)
         return parsed_count
 
     def get_workflow(self, filename: str) -> Optional[WorkflowMetadata]:

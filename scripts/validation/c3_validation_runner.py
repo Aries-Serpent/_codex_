@@ -26,7 +26,7 @@ import contextlib
 
 def extract_metrics_inventory() -> dict:
     """Extract all metrics and their signatures from unified_api.py."""
-    from src.codex_ml.metrics import unified_api
+    from codex_ml.metrics import unified_api
 
     inventory = {
         "module": "src.codex_ml.metrics.unified_api",
@@ -87,7 +87,7 @@ def extract_metrics_inventory() -> dict:
 
 def validate_metrics() -> dict:
     """Test each metric with synthetic data."""
-    from src.codex_ml.metrics import unified_api
+    from codex_ml.metrics import unified_api
 
     results = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -229,7 +229,7 @@ def test_integration() -> dict:
     # Test 1: Metrics import and callable
     print("  Test 1: Metric import and callable", file=sys.stderr)
     try:
-        from src.codex_ml.metrics.unified_api import (
+        from codex_ml.metrics.unified_api import (
             compute_bleu,
             compute_rouge_l,
             compute_perplexity,
@@ -248,7 +248,7 @@ def test_integration() -> dict:
     # Test 2: Simulate training loop
     print("  Test 2: Training loop simulation", file=sys.stderr)
     try:
-        from src.codex_ml.metrics.unified_api import compute_accuracy, compute_f1, compute_perplexity
+        from codex_ml.metrics.unified_api import compute_accuracy, compute_f1, compute_perplexity
 
         # Simulate N training steps
         for step in range(3):
@@ -271,7 +271,7 @@ def test_integration() -> dict:
     # Test 3: Callback-style metric logging
     print("  Test 3: Callback-style metric logging", file=sys.stderr)
     try:
-        from src.codex_ml.metrics.unified_api import batch_metrics_from_outputs
+        from codex_ml.metrics.unified_api import batch_metrics_from_outputs
 
         class SimpleCallback:
             def __init__(self):
@@ -343,7 +343,7 @@ def generate_coverage_report() -> str:
 
 def analyze_performance() -> dict:
     """Measure execution time for each metric at different scales."""
-    from src.codex_ml.metrics import unified_api
+    from codex_ml.metrics import unified_api
     import numpy as np
 
     results = {

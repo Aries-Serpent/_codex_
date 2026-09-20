@@ -11,23 +11,23 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.codex.forecasting.bottleneck_predictor import (
+from codex.forecasting.bottleneck_predictor import (
     BottleneckAlert,
     BottleneckPredictor,
 )
-from src.codex.forecasting.capacity_planner import (
+from codex.forecasting.capacity_planner import (
     TimeSeriesForecaster,
     TrendAnalyzer,
 )
-from src.codex.forecasting.dashboard_generator import (
+from codex.forecasting.dashboard_generator import (
     DashboardGenerator,
 )
-from src.codex.forecasting.models import (
+from codex.forecasting.models import (
     ARIMAModel,
     EnsembleForecaster,
     ProphetModel,
 )
-from src.codex.forecasting.provisioning_recommender import (
+from codex.forecasting.provisioning_recommender import (
     ProvisioningRecommender,
 )
 

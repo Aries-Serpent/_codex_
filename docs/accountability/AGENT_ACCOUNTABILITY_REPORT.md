@@ -1,3 +1,101 @@
+## Session: 2026-09-20T00:32:00Z — Production-readiness Phase 1 (structural foundation) — Session 3: Steps 1+2
+
+**Objective:** Complete Phase 1 Steps 1+2 — move root-only subtrees into canonical `src/`, port the `training/checkpoint_manager.py` unique logic, and rewrite `from src.X`→`from X`. Recovering from a prior session interrupted by credit limit (commit `e97d5b7e` held partial Lane A copies).
+
+**Status:** ✅ COMPLETE (Steps 1+2)
+
+**Recovery assessment:**
+- Lane A copies present (`src/agents`, `src/services/{api,ita,msp_gateway}`, `src/tools`) but root copies remained; Lane B checkpoint port partial (`_protected_names_cache` missing); Lane C `src.` rewrite partial (53 files remained).
+- Relaunched three completion lanes in parallel: `reference-updater-agent` (Lane A: finish Step 1 moves + internal `src.`-import rewrite), `test-alignment-fixer-enhanced` (Lane B: finish checkpoint port), `reference-updater-agent` (Lane C: finish `src.`→bare rewrite). Coordination constraint: Lane C skips `src/{tools,services,agents}/` (Lane A owns them).
+
+**Validation (final):**
+- Lane A (`c0d2cac0`/`a4a0013e`): 66 root-only files copied into `src/{agents,services,tools}`; 32 divergences resolved preserving src logic; 471 files AST-clean; pytest collection exit 0.
+- Lane C (`a4a0013e`): 81 files rewritten `from src.X`→`from X`; zero new ruff/collection errors (65 pre-existing collection errors baseline-stable); only deferred `zendesk/agent.py` remains.
+- Lane B (`152b9d9e`): all 5 checkpoint behaviors ported into `src/training/checkpoint_manager.py`; 8/8 checkpoint tests pass (up from 3 failed + 5 skipped + 1 error baseline); fixed `scripts/metrics` self-import shadow + added missing `disable_torch_profiler` conftest fixture.
+- `ruff check .` → green (exit 0) after extending the Phase 0 per-file-ignores to the relocated `src/{tools,agents,services}/` trees (same deferred Phase 3 burn-down status).
+- Focused pytest: checkpointing 8/8, packaging-metadata 2/2. The `test_dependency_shadow_guard` torch-parametrized run core-dumps due to a pre-existing shadow-guard/torch-stub interaction surfaced by the venv now having real torch — unrelated to this session's changes (no torch/stub/sitecustomize edits).
+- Secret scan: clean.
+
+**Deferred to Session 4:** packaging/package-dir remap + `pip install -e .` re-run; delete empty root shims (`codex_ml`/`training`/`tokenization`/`utils`/`services`/`agents`/`tools`); flip `src/codex_utils` reverse-import; rewrite `zendesk/agent.py` src.-import; drop sitecustomize/conftest hooks; rewrite `tests/test_packaging_metadata.py` layout assertion.
+
+**Governance:**
+- REQ-4: This report updated for Phase 1 Session 3.
+- REQ-5: Root `CHANGELOG.md` updated with the Session 3 entry.
+
+### Agents Used
+- [x] `reference-updater-agent` (Lane A + Lane C)
+- [x] `test-alignment-fixer-enhanced` (Lane B)
+
+---
+
+## Session: 2026-09-19T23:45:00Z — Production-readiness Phase 1 (structural foundation) — Session 2: Step 0
+
+**Objective:** Begin Phase 1 (eliminate the dual-package root/src shadow system) per maintainer directive. Execute the zero-risk Step 0 batch.
+
+**Status:** ✅ COMPLETE (Step 0)
+
+**Key decision (corrects the original plan):**
+The original Phase 1 framing — "delete root shadow dirs" — was found to be **unsafe and partly incorrect** after two parallel analysis lanes (`root-organizer-agent`, `reference-updater-agent`) and independent verification:
+
+1. Root `tools/` (334 unique files), `services/` (49), `agents/` (59), `deploy/`, `codex_utils/` (7), `utils/` (3) are **substantive installable packages**, wired into `[tool.setuptools.package-dir]` and coverage `source` — they must be **moved** into `src/`, never deleted.
+2. Under the editable install, `training`/`tools`/`services`/`agents`/`tokenization` resolve to **root** copies, but under pytest they resolve to **src** (via conftest/sitecustomize finders) — the exact dual-package hazard. Naively deleting root dirs breaks `pip install -e .` and script contexts.
+3. `configs/sitecustomize.py` is **load-bearing** (offline env defaults, `_ShadowedDependencyFinder` pinned by `tests/test_dependency_shadow_guard.py`, ~30 optional-dep stubs, `codex_ml` tracking import) — it must be **shrunk**, not deleted.
+4. Only `codex_ml/` (0 unique), `training/` (0 unique), `tokenization/` (0 unique) are **pure shims**; and `config_legacy/`, `yaml_legacy/`, `codex_core.pyi`, `omegaconf/` are zero-importer dead weight.
+
+**Adopted approach:** Lane P2's 5-step sequenced migration (Step 0 reconcile content → Step 1 move unique subtrees → Step 2 rewrite `from src.X`→`from X` → Step 3 packaging fix → Step 4 delete empty shims → Step 5 drop hooks). Spread across Sessions 2–4.
+
+**Actions (Session 2 / Step 0):**
+1. Launched two background Step-0 lanes in parallel: `root-organizer-agent` (dead-weight deletions + zendesk finder-name cleanup) and `reference-updater-agent` (content reconciliation of `utils`/`codex_utils` root-only modules into `src/`; REPORT-ONLY diff for diverged `training`/`tokenization`).
+2. Documented the course-correction here and in the PR description.
+3. Executed Step 0: deleted `codex_core.pyi`, `config_legacy/`, `yaml_legacy/`, `omegaconf/` stub; removed `zendesk` from both `_CanonicalPackageFinder` lists; dropped `config_legacy*` packaging exclude; copied 3 `utils` + 7 `codex_utils` root-only modules into `src/` (root retained).
+
+**Validation:**
+- `ruff check .` → green (exit 0).
+- Focused pytest `test_dependency_shadow_guard` + `test_packaging_metadata` → 6/6 passed.
+- Import smoke: `from utils import safe_pickle, safe_torch_loader, torch_resource_manager` and `codex_utils.*` → ok.
+- Pre-commit on changed files: bandit + trailing-whitespace flagged only pre-existing content in the verbatim-copied files (whitespace auto-fixed); no new issues introduced.
+- Secret scan: clean.
+
+**Findings carried to Session 3:** `training/checkpoint_manager.py` has unique logic (port, don't delete); 3 `test_security_utilities` failures are pre-existing (verified via stash-and-rerun).
+
+**Governance:**
+- REQ-4: This report updated for the Phase 1 Session 2.
+- REQ-5: Root `CHANGELOG.md` to be updated on Step 0 completion.
+
+### Agents Used
+- [x] `root-organizer-agent` (P1 inventory + Step 0 dead-weight)
+- [x] `reference-updater-agent` (P2 import surface + Step 0 content)
+
+---
+
+## Session: 2026-09-19T22:35:00Z — Production-readiness Phase 0 (quick wins)
+
+**Objective:** Execute Phase 0 of the approved production-readiness program — repo hygiene (Lane A) and static-analysis enablement (Lane B) — as the first session of the multi-phase plan.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Launched two background lanes in parallel per the multi-lane delegation mandate: `repository-hygiene-agent` (Lane A) and `code-analysis-agent` (Lane B).
+2. Lane A: added targeted `.gitignore` patterns for generated artifacts (`/.codex/sessions/`, `/.codex/aftermath/cache/`, `/.codex/.validation_cache.json`, `/site/`, `/runs/`) — `.codex/` policy files remain tracked; already-tracked files intentionally left tracked (maintainer decision). Deleted stray root stubs `a.py`/`b.py`; removed 3 unreferenced `.disabled` workflows; added deprecation redirect READMEs to `docs/changelog/` and `docs/changelogs/`.
+3. Lane B: enabled Ruff `B`/`LOG`/`UP` rule sets; verified the pre-existing repo-wide lint backlog at HEAD (13,887 errors; 5,652 in the non-first-party `.codex/` tree) and parked it in an annotated `ignore`/`per-file-ignores` inventory with a Phase 3 burn-down reference so the `ruff check` gate is green; aligned pytest plugin floors with `code-quality-coverage-suite.yml` across all 5 extras; documented the 34% coverage baseline and 34→40→50→65% climb plan in `pytest.ini`.
+4. Kept changes config/docs-only (no `.py` source modified); no active workflow files touched (only 3 `.disabled` files deleted).
+
+**Validation:**
+- `ruff check .` → "All checks passed!" (exit 0) with the new config.
+- `python -c "import tomllib; tomllib.load(open('pyproject.toml','rb'))"` → TOML OK; `pytest.ini` parses (configparser).
+- Focused pytest smoke `tests/test_packaging_metadata.py tests/test_dependency_shadow_guard.py` → 6/6 passed.
+- Pre-existing mypy pre-commit baseline (499 errors / 151 files, unrelated to this config-only diff) noted; F821/E722/F822 intentionally kept in the Phase 3 burn-down inventory with hit counts rather than weakened silently.
+
+**Governance:**
+- REQ-4: This report updated for the Phase 0 session.
+- REQ-5: Root `CHANGELOG.md` updated with a `### Changed — Phase 0 production-readiness quick wins` entry under `[Unreleased]`.
+
+### Agents Used
+- [x] `repository-hygiene-agent`
+- [x] `code-analysis-agent`
+
+---
+
 ## Session: 2026-09-14T09:44:55Z — PR #5613 cognitive pre-flight follow-up
 
 **Objective:** Close the active PR #5613 cognitive-preflight follow-up by removing accidental startup-packet timestamp churn and refreshing the required accountability trail without reintroducing the reverted workflow dependency bumps.

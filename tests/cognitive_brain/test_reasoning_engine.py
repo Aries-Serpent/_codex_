@@ -13,9 +13,9 @@ import time
 
 import pytest
 
-from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
-from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
-from src.codex.cognitive_brain.reasoning_engine import (
+from codex.cognitive_brain.calibration import ConfidenceCalibrator
+from codex.cognitive_brain.knowledge_base import KnowledgeBase
+from codex.cognitive_brain.reasoning_engine import (
     ActionLayer,
     AgentContext,
     ConfidenceLevel,
@@ -305,7 +305,7 @@ class TestFeedbackLayer:
     @pytest.mark.asyncio
     async def test_collect_outcome_basic(self, knowledge_base, calibrator):
         """Test basic outcome collection."""
-        from src.codex.cognitive_brain.reasoning_engine import Decision
+        from codex.cognitive_brain.reasoning_engine import Decision
 
         feedback = FeedbackLayer()
 
@@ -335,7 +335,7 @@ class TestFeedbackLayer:
     @pytest.mark.asyncio
     async def test_outcome_confidence_accuracy_check(self, knowledge_base, calibrator):
         """Test confidence accuracy validation in outcomes."""
-        from src.codex.cognitive_brain.reasoning_engine import Decision
+        from codex.cognitive_brain.reasoning_engine import Decision
 
         feedback = FeedbackLayer()
 
@@ -395,7 +395,7 @@ class TestImprovementLayer:
 
     def test_calculate_brier_score(self):
         """Test Brier score calculation."""
-        from src.codex.cognitive_brain.reasoning_engine import DecisionOutcome
+        from codex.cognitive_brain.reasoning_engine import DecisionOutcome
 
         improvement = ImprovementLayer()
 
@@ -1068,7 +1068,7 @@ class TestCoverageGaps:
 
     def test_candidate_decision_all_fields(self, knowledge_base):
         """Test candidate decision with all fields."""
-        from src.codex.cognitive_brain.reasoning_engine import CandidateDecision
+        from codex.cognitive_brain.reasoning_engine import CandidateDecision
 
         candidate = CandidateDecision(
             id="test_id",
@@ -1086,7 +1086,7 @@ class TestCoverageGaps:
 
     def test_decision_outcome_all_fields(self):
         """Test decision outcome with all fields."""
-        from src.codex.cognitive_brain.reasoning_engine import DecisionOutcome
+        from codex.cognitive_brain.reasoning_engine import DecisionOutcome
 
         outcome = DecisionOutcome(
             decision_id="dec_123",

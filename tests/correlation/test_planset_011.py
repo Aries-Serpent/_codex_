@@ -23,7 +23,7 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
-from src.codex.correlation.anomaly_correlator import (
+from codex.correlation.anomaly_correlator import (
     AlertAggregator,
     AlertSeverity,
     Anomaly,
@@ -33,7 +33,7 @@ from src.codex.correlation.anomaly_correlator import (
     SpatialCorrelator,
     TemporalCorrelator,
 )
-from src.codex.correlation.planset_011 import (
+from codex.correlation.planset_011 import (
     AnomalyCorrelationEngine,
     AnomalyDetectionAPI,
     AnomalyDetectionRequest,
@@ -43,7 +43,7 @@ from src.codex.correlation.planset_011 import (
     Planset012IntegrationAdapter,
     RootCauseChain,
 )
-from src.codex.correlation.root_cause_engine import (
+from codex.correlation.root_cause_engine import (
     BackwardChainer,
     CausalGraph,
 )
@@ -534,7 +534,7 @@ class TestGate8Documentation:
     
     def test_docstrings_present(self):
         """Test main components have docstrings"""
-        from src.codex.correlation.planset_011 import (
+        from codex.correlation.planset_011 import (
             AnomalyDetectionAPI,
             EnsembleAnomalyDetector,
             Planset011Orchestrator,

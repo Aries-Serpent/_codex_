@@ -33,7 +33,7 @@ class TestWorkflowInventoryIntegration:
 
     def test_workflow_inventory_initialization(self, tmp_path):
         """Test workflow inventory can be initialized."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -46,7 +46,7 @@ class TestWorkflowInventoryIntegration:
 
     def test_workflow_inventory_scan_empty_directory(self, tmp_path):
         """Test scanning empty workflows directory."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -59,7 +59,7 @@ class TestWorkflowInventoryIntegration:
 
     def test_workflow_parser_yaml_parsing(self, tmp_path):
         """Test workflow YAML parsing with valid structure."""
-        from src.services.workflow import WorkflowParser
+        from services.workflow import WorkflowParser
 
         yaml_content = """
 name: Test Workflow
@@ -84,7 +84,7 @@ jobs:
 
     def test_workflow_inventory_with_valid_yaml(self, tmp_path):
         """Test workflow inventory with valid YAML file."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -110,7 +110,7 @@ jobs:
 
     def test_workflow_inventory_error_handling(self, tmp_path):
         """Test workflow inventory handles errors gracefully."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -130,7 +130,7 @@ jobs:
 
     def test_workflow_inventory_path_validation(self, tmp_path):
         """Test workflow inventory validates paths."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -140,7 +140,7 @@ jobs:
 
     def test_workflow_parser_handles_complex_workflow(self, tmp_path):
         """Test workflow parser handles complex multi-job workflows."""
-        from src.services.workflow import WorkflowParser
+        from services.workflow import WorkflowParser
 
         yaml_content = """
 name: Complex Workflow
@@ -180,7 +180,7 @@ jobs:
 
     def test_workflow_inventory_force_refresh(self, tmp_path):
         """Test workflow inventory force refresh functionality."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -227,19 +227,19 @@ class TestServicesModuleInitialization:
 
     def test_workflow_inventory_exported(self):
         """Test that WorkflowInventory is available from src.services."""
-        from src.services import WorkflowInventory
+        from services import WorkflowInventory
 
         assert WorkflowInventory is not None
 
     def test_workflow_parser_exported(self):
         """Test that WorkflowParser is available from src.services."""
-        from src.services import WorkflowParser
+        from services import WorkflowParser
 
         assert WorkflowParser is not None
 
     def test_all_exports_defined_properly(self):
         """Test that __all__ is properly defined."""
-        from src.services import __all__
+        from services import __all__
 
         assert isinstance(__all__, list)
         assert "WorkflowParser" in __all__
@@ -256,7 +256,7 @@ class TestServiceDependencyInjection:
 
     def test_workflow_parser_dependency_in_inventory(self, tmp_path):
         """Test workflow parser dependency injection in inventory."""
-        from src.services.workflow import WorkflowInventory, WorkflowParser
+        from services.workflow import WorkflowInventory, WorkflowParser
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -269,7 +269,7 @@ class TestServiceDependencyInjection:
 
     def test_service_composition_with_multiple_components(self, tmp_path):
         """Test service composition with multiple components."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -284,7 +284,7 @@ class TestServiceDependencyInjection:
 
     def test_service_state_isolation(self, tmp_path):
         """Test service state isolation between instances."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir1 = tmp_path / "workflows1"
         workflows_dir2 = tmp_path / "workflows2"
@@ -310,7 +310,7 @@ class TestServiceErrorHandling:
 
     def test_workflow_parser_handles_missing_file(self, tmp_path):
         """Test workflow parser handles missing files gracefully."""
-        from src.services.workflow import WorkflowParser
+        from services.workflow import WorkflowParser
 
         nonexistent_file = tmp_path / "nonexistent.yml"
 
@@ -325,7 +325,7 @@ class TestServiceErrorHandling:
 
     def test_workflow_inventory_handles_permission_errors(self, tmp_path):
         """Test workflow inventory handles permission errors."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -346,7 +346,7 @@ class TestServiceErrorHandling:
 
     def test_service_exception_propagation(self, tmp_path):
         """Test service exception propagation."""
-        from src.services.workflow import WorkflowInventory
+        from services.workflow import WorkflowInventory
 
         workflows_dir = tmp_path / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
@@ -376,7 +376,7 @@ class TestWorkflowTypesAndMetadata:
 
     def test_workflow_metadata_types_imported(self):
         """Test workflow metadata types are importable."""
-        from src.services.workflow import (
+        from services.workflow import (
             WorkflowDependency,
             WorkflowJob,
             WorkflowMetadata,
@@ -390,7 +390,7 @@ class TestWorkflowTypesAndMetadata:
 
     def test_workflow_input_type_available(self):
         """Test workflow input type is available."""
-        from src.services.workflow import WorkflowInput
+        from services.workflow import WorkflowInput
 
         assert WorkflowInput is not None
 
@@ -428,7 +428,7 @@ class TestEndToEndWorkflowServiceIntegration:
 
     def test_complete_workflow_service_lifecycle(self, tmp_path):
         """Test complete workflow service lifecycle."""
-        from src.services.workflow import WorkflowInventory, WorkflowParser
+        from services.workflow import WorkflowInventory, WorkflowParser
 
         # Setup
         workflows_dir = tmp_path / ".github" / "workflows"

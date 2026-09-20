@@ -10,8 +10,8 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
-from src.codex.ensemble.types import PredictionType
+from codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from codex.ensemble.types import PredictionType
 
 logger = logging.getLogger(__name__)
 

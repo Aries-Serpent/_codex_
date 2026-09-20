@@ -145,3 +145,14 @@ mlruns/
 
 # Malformed pip install artifacts
 =*
+
+# Generated artifacts - Phase 0 Lane A hygiene (do NOT blanket-ignore .codex/;
+# policy files like .codex/AGENTIC_REPO_STATE.md, .codex/CODEBASE_AGENCY_POLICY.md
+# and .codex/agent_context.json must stay tracked)
+# Note: already-tracked files under these paths remain tracked (maintainer decision);
+# these patterns only prevent future churn from newly generated files.
+/.codex/sessions/
+/.codex/aftermath/cache/
+/.codex/.validation_cache.json
+/site/
+/runs/

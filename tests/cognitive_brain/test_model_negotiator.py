@@ -12,12 +12,12 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.capability_registry import (
+from codex.cognitive_brain.capability_registry import (
     CapabilityRegistry,
     ModelCapabilityProfile,
 )
-from src.codex.cognitive_brain.fallbacks import safe_default_config
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator
+from codex.cognitive_brain.fallbacks import safe_default_config
+from codex.cognitive_brain.model_negotiator import ModelNegotiator
 
 # ---------------------------------------------------------------------------
 # Fixtures
