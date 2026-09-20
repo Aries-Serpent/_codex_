@@ -1,7 +1,0 @@
-# BEGIN: CODEX_API_REQS
-# This service intentionally relies on FastAPI's transitive Starlette dependency.
-# The project-wide Starlette security bounds are enforced centrally in
-# pyproject.toml (starlette>=1.0.1,<2), rather than by pinning Starlette here.
-fastapi==0.115.12
-uvicorn==0.30.1
-pydantic==2.8.2

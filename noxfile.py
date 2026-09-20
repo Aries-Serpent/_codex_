@@ -35,7 +35,7 @@ LEGACY_REPO_TEST_TOOLS = (
     "tools/selection_guard.py",
     "tools/schema_validate.py",
 )
-LEGACY_TEST_COVERAGE_TARGETS = ("--cov=src", "--cov=training")
+LEGACY_TEST_COVERAGE_TARGETS = ("--cov=src",)
 
 
 def _run_dev_session(session: nox.Session, name: str) -> None:

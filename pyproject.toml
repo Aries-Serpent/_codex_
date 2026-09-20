@@ -636,18 +636,9 @@ functional = "codex_ml.registry.trainers:load_functional_trainer"
 
 [tool.setuptools.package-dir]
 "" = "src"
-agents = "agents"
-services = "services"
-scripts = "scripts"
-tools = "tools"
-training = "training"
-tokenization = "tokenization"
-codex_utils = "codex_utils"
-interfaces = "interfaces"
 
 [tool.setuptools.packages.find]
 where = [
-    ".",
     "src",
 ]
 # Bundled packages (production code and AI subsystems)
@@ -917,10 +908,6 @@ line_length = 100
 branch = true
 source = [
     "src",
-    "agents",
-    "training",
-    "scripts",
-    "services",
 ]
 omit = [
     "*/tests/*",
