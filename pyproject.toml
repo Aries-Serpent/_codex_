@@ -888,6 +888,26 @@ ignore = [
     "LOG",
     "UP",
 ]
+# Phase 1 Step 1 relocated these legacy ops trees into src/; they keep the same
+# deferred Phase 3 burn-down status as their former root locations.
+"src/tools/**/*.py" = [
+    "B",
+    "E",
+    "LOG",
+    "UP",
+]
+"src/agents/**/*.py" = [
+    "B",
+    "E",
+    "LOG",
+    "UP",
+]
+"src/services/**/*.py" = [
+    "B",
+    "E",
+    "LOG",
+    "UP",
+]
 
 [tool.isort]
 profile = "black"
