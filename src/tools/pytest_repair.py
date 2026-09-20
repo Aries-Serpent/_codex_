@@ -15,12 +15,18 @@ def has_pytest_cov() -> bool:
         return False
 
 
+def _strip_coverage_flags(raw: str) -> str:
+    pattern = re.compile(
+        r"(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?"
+    )
+    return pattern.sub("", raw).strip()
+
+
 root = pathlib.Path(".")
 pytest_ini_candidates = [root / "configs" / "development" / "pytest.ini", root / "pytest.ini"]
 pytest_ini = next(
     (path for path in pytest_ini_candidates if path.exists()), pytest_ini_candidates[0]
 )
-pyproject = root / "pyproject.toml"
 noxfile = root / "configs" / "development" / "noxfile.py"
 
 cov_ok = has_pytest_cov()
@@ -28,17 +34,27 @@ changed = False
 
 
 def scrub_cov(text: str) -> str:
-    text = re.sub(r"--cov[=\s][^\s]+", "", text)
-    text = re.sub(r"--cov-report[=\s][^\s]+", "", text)
-    text = re.sub(r"--cov-branch\b", "", text)
-    text = re.sub(r"--cov-fail-under[=\s]\d+", "", text)
-    return re.sub(r"\s{2,}", " ", text).strip()
+    """Remove coverage flags without rewriting unrelated Python formatting."""
+    regex = re.compile(
+        r"(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?"
+    )
+    lines: list[str] = []
+    for line in text.splitlines(keepends=True):
+        if "--cov" not in line:
+            lines.append(line)
+            continue
+        lines.append(regex.sub("", line))
+    return "".join(lines)
 
 
 if pytest_ini.exists():
     t = pytest_ini.read_text(encoding="utf-8")
     if not cov_ok and "--cov" in t:
-        t2 = re.sub(r"(?m)^addopts\s*=\s*(.*)$", lambda m: f"addopts = {scrub_cov(m.group(1))}", t)
+        t2 = re.sub(
+            r"(?m)^(addopts\s*=\s*)(.*)$",
+            lambda m: f"{m.group(1)}{_strip_coverage_flags(m.group(2))}",
+            t,
+        )
         if t2 != t:
             pytest_ini.write_text(t2, encoding="utf-8")
             changed = True

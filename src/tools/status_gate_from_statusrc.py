@@ -38,12 +38,15 @@ def main() -> int:
     ok = True
     reasons = []
 
-    if threshold and cov:
-        if cov_pct + 1e-9 < threshold:
+    if threshold:
+        if not cov:
+            ok = False
+            reasons.append("coverage check failed (missing .coverage.json)")
+        elif cov_pct + 1e-9 < threshold:
             ok = False
             reasons.append(f"coverage {cov_pct:.2f}% < threshold {threshold:.2f}%")
     else:
-        reasons.append("coverage check skipped (missing .coverage.json or threshold not set)")
+        reasons.append("coverage check skipped (threshold not set)")
 
     if ok:
         print(f"[OK] Gates passed (coverage={cov_pct:.2f}%, threshold={threshold:.2f}%)")

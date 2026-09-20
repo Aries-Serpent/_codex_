@@ -36,7 +36,7 @@ main() {
   fi
   step "Removing runner from $(pwd)/${CODEX_RUNNER_DIR}"
   if [ "${DRY_RUN}" = "1" ]; then
-    printf '+ cd %q && ./config.sh remove --token %q\n' "${CODEX_RUNNER_DIR}" "${CODEX_RUNNER_TOKEN}"
+    printf '+ cd %q && ./config.sh remove --token [REDACTED]\n' "${CODEX_RUNNER_DIR}"
   else
     ( cd "${CODEX_RUNNER_DIR}" && ./config.sh remove --token "${CODEX_RUNNER_TOKEN}" )
   fi

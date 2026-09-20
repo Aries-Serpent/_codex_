@@ -6,14 +6,18 @@ import re
 import shutil
 import sys
 
-REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
 def move_module() -> bool:
-    src = REPO_ROOT / "functional_training.py"
-    dest = REPO_ROOT / "src" / "codex" / "training.py"
-    if not src.exists():
+    candidates = [
+        REPO_ROOT / "training" / "functional_training.py",
+        REPO_ROOT / "src" / "training" / "functional_training.py",
+    ]
+    src = next((p for p in candidates if p.exists()), None)
+    if src is None:
         return False
+    dest = REPO_ROOT / "src" / "codex" / "training.py"
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), str(dest))
     return True

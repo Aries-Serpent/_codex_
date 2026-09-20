@@ -23,13 +23,13 @@ def main() -> int:
         print("security_allowlist.json not found; nothing to validate.")
         return 0
     if not SCHEMA.exists():
-        print("Schema not found; skipping validation.")
-        return 0
+        print("Schema not found; validation required for allowlist.", file=sys.stderr)
+        return 2
     try:
         import jsonschema  # type: ignore
     except Exception:
-        print("jsonschema not installed; skipping validation.", file=sys.stderr)
-        return 0
+        print("jsonschema not installed; validation required for allowlist.", file=sys.stderr)
+        return 2
     try:
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
         allow = json.loads(ALLOW.read_text(encoding="utf-8"))
@@ -39,7 +39,7 @@ def main() -> int:
         return 0
     except Exception as e:
         error_type = type(e).__name__
-        print("Allowlist validation failed: <ERROR_TYPE>", file=sys.stderr)
+        print(f"Allowlist validation failed: {error_type}", file=sys.stderr)
         return 2
 
 

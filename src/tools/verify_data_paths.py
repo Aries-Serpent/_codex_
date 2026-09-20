@@ -13,18 +13,18 @@ from pathlib import Path
 
 from codex_ml.utils.subproc import run_argv
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def main() -> int:
-    snap = ROOT / "tools" / "build_sqlite_snapshot.py"
-    parq = ROOT / "tools" / "export_to_parquet.py"
+    snap = ROOT / "src" / "tools" / "build_sqlite_snapshot.py"
+    parq = ROOT / "src" / "tools" / "export_to_parquet.py"
     try:
         run_argv([sys.executable, str(snap)])
         run_argv([sys.executable, str(parq)])
     except subprocess.CalledProcessError as exc:
         error_type = type(exc).__name__
-        print("Verification failed: <ERROR_TYPE>")
+        print(f"Verification failed: {error_type}")
         return 1
     db_path = ROOT / ".artifacts" / "snippets.db"
     url = f"https://lite.datasette.io/?url={db_path.as_uri()}"

@@ -9,23 +9,24 @@ def run(*args):
         subprocess.check_call(list(args))
     except Exception as e:
         error_type = type(e).__name__
-        print("[warn] <ERROR_TYPE>", file=sys.stderr)
+        print(f"[warn] {error_type}", file=sys.stderr)
+        return False
+    return True
 
 
 def main():
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     prefix = "reports/daily/_codex_status_update"
     json_path = f"{prefix}-{today}.json"
-    # generate
-    run("python", "tools/status/generate_status_update.py", "--emit-md")
-    # validate
-    run("python", "tools/status/validate_status_update.py", json_path)
-    # auto-discover capabilities
-    run("python", "tools/status/capability_autodiscovery.py")
-    # harvest questions
-    run("python", "tools/docs/harvest_open_questions.py")
-    # render nicer MD
-    run("python", "tools/status/render_md.py", json_path, f"{prefix}-{today}.tables.md")
+    ok = True
+    ok &= run("python", "tools/status/generate_status_update.py", "--emit-md")
+    ok &= run("python", "tools/status/validate_status_update.py", json_path)
+    ok &= run("python", "tools/status/capability_autodiscovery.py")
+    ok &= run("python", "tools/docs/harvest_open_questions.py")
+    ok &= run("python", "tools/status/render_md.py", json_path, f"{prefix}-{today}.tables.md")
+    if not ok:
+        print(f"STATUS FAILED -> {json_path}", file=sys.stderr)
+        return 1
     print(f"OK -> {json_path}")
     return 0
 

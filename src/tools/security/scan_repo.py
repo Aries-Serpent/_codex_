@@ -16,7 +16,7 @@ EXCLUDE_DIRS = [".git", "artifacts", "audit_artifacts", "node_modules", "venv", 
 
 
 def mask(s: str) -> str:
-    return s[:4] + "…" + s[-4:] if len(s) > 8 else "[REDACTED]"
+    return "[REDACTED]"
 
 
 def scan(root: Path):

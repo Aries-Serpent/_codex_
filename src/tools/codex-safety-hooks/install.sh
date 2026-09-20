@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
 HOOK_DIR="$ROOT/.git/hooks"
-SRC_DIR="$ROOT/tools/codex-safety-hooks"
+SRC_DIR="$ROOT/src/tools/codex-safety-hooks"
 
 mkdir -p "$HOOK_DIR"
 

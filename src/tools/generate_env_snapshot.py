@@ -8,6 +8,26 @@ import platform
 import sys
 from pathlib import Path
 
+_SENSITIVE_KEYS = {
+    "CODEX_MASTER_KEY",
+    "CODEX_BACKUP_KEY",
+    "CODEX_RUNNER_TOKEN",
+    "GITHUB_TOKEN",
+    "GH_TOKEN",
+    "TOKEN",
+    "SECRET",
+    "SECRET_KEY",
+    "API_KEY",
+    "PASSWORD",
+}
+
+
+def _redact_env_value(key: str, value: str) -> str:
+    upper = key.upper()
+    if upper in _SENSITIVE_KEYS or any(marker in upper for marker in ("TOKEN", "SECRET", "PASSWORD", "API_KEY")):
+        return "[REDACTED]"
+    return value
+
 
 def capture_environment() -> dict:
     """Collect environment details for serialization."""
@@ -27,11 +47,14 @@ def capture_environment() -> dict:
         "python_executable": sys.executable,
     }
 
-    # Capture CODEX_* environment variables only (not all env vars for privacy)
-    codex_vars = {k: v for k, v in os.environ.items() if k.startswith("CODEX_")}
+    codex_vars = {
+        key: _redact_env_value(key, value)
+        for key, value in os.environ.items()
+        if key.startswith("CODEX_")
+    }
     if codex_vars:
         info["codex_env_vars"] = codex_vars
-
+    info["env"] = {key: _redact_env_value(key, value) for key, value in os.environ.items()}
     return info
 
 

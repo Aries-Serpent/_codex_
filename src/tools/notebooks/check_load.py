@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import pathlib
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
+ROOT = pathlib.Path(__file__).resolve().parents[3]
 OUTPUT_DIR = ROOT / "artifacts" / "notebook_checks"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -13,6 +13,33 @@ from typing import Any
 from codex_ml.utils import environment_summary
 
 DEFAULT_OUTPUT = Path("env_snapshot.json")
+_SENSITIVE_ENV_KEYS = {
+    "CODEX_MASTER_KEY",
+    "CODEX_BACKUP_KEY",
+    "CODEX_RUNNER_TOKEN",
+    "GITHUB_TOKEN",
+    "GH_TOKEN",
+    "TOKEN",
+    "SECRET_KEY",
+    "SECRET",
+    "API_KEY",
+    "PASSWORD",
+    "SESSION_TOKEN",
+}
+
+
+def _safe_env() -> dict[str, str]:
+    """Return a redacted environment map with secrets stripped."""
+    sanitized: dict[str, str] = {}
+    for key, value in os.environ.items():
+        upper_key = key.upper()
+        if upper_key in _SENSITIVE_ENV_KEYS or any(
+            marker in upper_key for marker in ("TOKEN", "SECRET", "PASSWORD", "API_KEY")
+        ):
+            sanitized[key] = "[REDACTED]"
+        else:
+            sanitized[key] = value
+    return sanitized
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -27,27 +54,17 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def capture_environment() -> dict[str, Any]:
-    """Collect environment details, including variables, for serialization.
-
-    Captures:
-    - Python version and platform information (from environment_summary)
-    - Python interpreter path
-    - All environment variables
-    - CODEX_* environment variables (highlighted separately)
-    """
+    """Collect environment details, including variables, for serialization."""
     info = environment_summary()
-
-    # Add interpreter path explicitly
     info["python_executable"] = sys.executable
-
-    # Capture all environment variables
-    info["env"] = dict(os.environ)
-
-    # Highlight CODEX_* environment variables for easy access
-    codex_vars = {k: v for k, v in os.environ.items() if k.startswith("CODEX_")}
+    info["env"] = _safe_env()
+    codex_vars = {
+        key: "[REDACTED]" if key.upper() in _SENSITIVE_ENV_KEYS or "TOKEN" in key.upper() else value
+        for key, value in os.environ.items()
+        if key.startswith("CODEX_")
+    }
     if codex_vars:
         info["codex_env_vars"] = codex_vars
-
     return info
 
 

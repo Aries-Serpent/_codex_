@@ -33,16 +33,20 @@ def _run(cmd: Iterable[str]) -> dict[str, object]:
 def main() -> int:
     ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     summary: dict[str, object] = {}
+    failures = 0
     for name, cmd in SCANS.items():
         result = _run(cmd)
-        summary[name] = result["status"]
+        status = str(result["status"])
+        summary[name] = status
         (ARTIFACT_ROOT / f"{name}.json").write_text(
             json.dumps(result, indent=2, sort_keys=True), encoding="utf-8"
         )
+        if status != "ok":
+            failures += 1
     (ARTIFACT_ROOT / "summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"
     )
-    return 0
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry
