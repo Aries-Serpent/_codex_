@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.shell_policy import (
+from codex.cognitive_brain.shell_policy import (
     PolicyVerdict,
     ShellPolicy,
     get_default_policy,

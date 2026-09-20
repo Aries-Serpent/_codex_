@@ -11,7 +11,7 @@ try:
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
     try:
-        from src.codex_ml.tracking.mlflow_guard import (
+        from codex_ml.tracking.mlflow_guard import (
             bootstrap_offline_tracking,
         )
     except ModuleNotFoundError:

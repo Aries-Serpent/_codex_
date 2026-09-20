@@ -21,24 +21,24 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.cognitive_brain.kernel import (
+from codex.cognitive_brain.kernel import (
     CognitiveBrainKernel,
     KernelConfig,
     assert_loaded,
     get_kernel,
     reset_kernel,
 )
-from src.codex.cognitive_brain.session_guard import (
+from codex.cognitive_brain.session_guard import (
     SessionCreateResult,
     SessionGuard,
     safe_create_session,
 )
-from src.codex.cognitive_brain.shell_policy import (
+from codex.cognitive_brain.shell_policy import (
     _SHELL_METACHARACTERS,
     PolicyVerdict,
     ShellPolicy,
 )
-from src.codex.cognitive_brain.telemetry import (
+from codex.cognitive_brain.telemetry import (
     CognitiveTelemetry,
     InMemoryTelemetryBackend,
     NDJSONTelemetryBackend,
@@ -170,7 +170,7 @@ class TestNoDirectSessionCreatePaths:
 
     def test_session_guard_module_is_present(self) -> None:
         """The SessionGuard module must remain importable and contain the expected API."""
-        from src.codex.cognitive_brain import session_guard
+        from codex.cognitive_brain import session_guard
 
         assert hasattr(session_guard, "SessionGuard")
         assert hasattr(session_guard, "safe_create_session")

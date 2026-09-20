@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed — Phase 1 (structural foundation) Session 3 / Steps 1+2
+- Step 1 (move root-only subtrees into canonical `src/`, root retained pending Session 4): consolidated `services/{api,ita,msp_gateway,workflow.backup}` → `src/services/`, `tools/*` → `src/tools/`, `agents/*` (minus `codex_client`) → `src/agents/`; rewrote internal `src.`-prefixed imports inside moved files to the canonical bare form.
+- Step 2 (import rewrite): converted remaining `from src.X` / `import src.X` → `from X` / `import X` across tests/src/scripts/models/benchmarks/apps/cli (`.github/agents/*` subprojects excluded; `src/aries_serpent_core/zendesk/agent.py` deferred until root `tools/` shadow is removed in Session 4).
+- Ported the unique runtime logic from root `training/checkpoint_manager.py` into `src/training/checkpoint_manager.py` (fallback RNG-state helpers, `_protected_names_cache`, `best_k` early-return, best-record validation, `step>0` save gate) rather than blind-deleting the shim.
+
 ### Changed — Phase 1 (structural foundation) Session 2 / Step 0
 - Course-corrected Phase 1 approach after parallel analysis (`root-organizer-agent` + `reference-updater-agent`): replaced the unsafe "delete root shadow dirs" framing with a 5-step sequenced migration, because root `tools`/`services`/`agents`/`codex_utils`/`utils` are substantive installable packages (450+ unique files) and `configs/sitecustomize.py` is load-bearing.
 - Dead-weight deletions (verified zero-importer or guarded-fallback): removed `codex_core.pyi`, `config_legacy/`, `yaml_legacy/`, and the root `omegaconf/` stub (real `omegaconf>=2.3.1` is a declared dep); removed the nonexistent `zendesk` name from both `_CanonicalPackageFinder` lists (`configs/sitecustomize.py`, `tests/conftest.py`) and dropped the stale `config_legacy*` packaging exclude.

@@ -9,7 +9,7 @@ import time
 
 import pytest
 
-from src.codex.scaling.infrastructure.audit_trail import (
+from codex.scaling.infrastructure.audit_trail import (
     AuditEventType,
     AuditSeverity,
     AuditTrail,

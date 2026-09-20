@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.policy import (
+from codex.cognitive_brain.policy import (
     CandidatePlan,
     DeterministicPolicy,
     PolicyContext,

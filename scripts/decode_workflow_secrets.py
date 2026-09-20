@@ -40,7 +40,7 @@ import yaml
 
 # Import security utilities for sanitizing sensitive data
 try:
-    from src.aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import sanitize_log_message
 except ImportError:
     # Fallback: simple sanitization if security_utils not available
     def sanitize_log_message(msg: str) -> str:

@@ -10,13 +10,13 @@ from pathlib import Path
 # Add repo root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.aries_serpent_core.security_utils import sanitize_log_message
+from aries_serpent_core.security_utils import sanitize_log_message
 
 def create_safe_error_function() -> str:
     """Generate a safe error handling function."""
     return '''def _safe_error(exc: Exception) -> str:
     """Return a sanitized, non-sensitive error summary."""
-    from src.aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import sanitize_log_message
     error_name = type(exc).__name__
     # Sanitize error message to prevent information disclosure
     error_msg = str(exc)
@@ -31,7 +31,7 @@ def create_import_section() -> str:
     """Generate security utility imports."""
     return '''# Security utilities for sanitizing sensitive data
 try:
-    from src.aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import sanitize_log_message
 except ImportError:
     # Fallback sanitization
     def sanitize_log_message(msg: str) -> str:

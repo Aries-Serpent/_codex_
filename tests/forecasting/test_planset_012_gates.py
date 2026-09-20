@@ -19,12 +19,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.codex.forecasting.arima_prophet_ensemble import (
+from codex.forecasting.arima_prophet_ensemble import (
     BottleneckAlert,
     BottleneckPredictor,
     CapexRecommendationEngine,
 )
-from src.codex.forecasting.models import (
+from codex.forecasting.models import (
     ARIMAModel,
     EnsembleConfig,
     EnsembleForecaster,

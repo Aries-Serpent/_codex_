@@ -4,8 +4,8 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
-from src.codex.ensemble.types import EnsemblePrediction, PredictionType
+from codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from codex.ensemble.types import EnsemblePrediction, PredictionType
 
 logger = logging.getLogger(__name__)
 

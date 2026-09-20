@@ -1,3 +1,26 @@
+## Session: 2026-09-20T00:32:00Z — Production-readiness Phase 1 (structural foundation) — Session 3: Steps 1+2
+
+**Objective:** Complete Phase 1 Steps 1+2 — move root-only subtrees into canonical `src/`, port the `training/checkpoint_manager.py` unique logic, and rewrite `from src.X`→`from X`. Recovering from a prior session interrupted by credit limit (commit `e97d5b7e` held partial Lane A copies).
+
+**Status:** 🔄 IN PROGRESS (3 completion lanes running)
+
+**Recovery assessment:**
+- Lane A copies present (`src/agents`, `src/services/{api,ita,msp_gateway}`, `src/tools`) but root copies remained; Lane B checkpoint port partial (`_protected_names_cache` missing); Lane C `src.` rewrite partial (53 files remained).
+- Relaunched three completion lanes in parallel: `reference-updater-agent` (Lane A: finish Step 1 moves + internal `src.`-import rewrite), `test-alignment-fixer-enhanced` (Lane B: finish checkpoint port), `reference-updater-agent` (Lane C: finish `src.`→bare rewrite). Coordination constraint: Lane C skips `src/{tools,services,agents}/` (Lane A owns them).
+
+**Validation (pending lane completion):**
+- `ruff check .` → must stay green; focused pytest (training/checkpointing/services/tools/agents) → pass; pre-commit + secret scan.
+
+**Governance:**
+- REQ-4: This report updated for Phase 1 Session 3.
+- REQ-5: Root `CHANGELOG.md` updated with the Session 3 entry.
+
+### Agents Used
+- [x] `reference-updater-agent` (Lane A + Lane C)
+- [x] `test-alignment-fixer-enhanced` (Lane B)
+
+---
+
 ## Session: 2026-09-19T23:45:00Z — Production-readiness Phase 1 (structural foundation) — Session 2: Step 0
 
 **Objective:** Begin Phase 1 (eliminate the dual-package root/src shadow system) per maintainer directive. Execute the zero-risk Step 0 batch.

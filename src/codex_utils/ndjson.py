@@ -15,10 +15,10 @@ try:
     )
 except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
     try:
-        from src.codex_ml.logging.ndjson_logger import (
+        from codex_ml.logging.ndjson_logger import (
             NDJSONLogger as _CoreNDJSONLogger,
         )
-        from src.codex_ml.logging.ndjson_logger import (
+        from codex_ml.logging.ndjson_logger import (
             is_legacy_mode,
             timestamped_record,
         )
