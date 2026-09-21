@@ -105,7 +105,7 @@ jobs:
         \n"
     - name: Post cost proposal to PR (grouped)
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       env:
         PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
         WORKFLOW_NAME: ${{ inputs.workflow_name }}
@@ -205,7 +205,7 @@ jobs:
     - name: "RED \u2014 poll PR for stakeholder checkbox approval"
       id: red_poll
       if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         script: "// Guard: ensure we have a valid PR number before polling.\n// context.issue.number\
           \ is undefined on push events; cost-gate already\n// short-circuits those\

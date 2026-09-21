@@ -670,7 +670,7 @@ jobs:
       id: approve
       if: steps.resolve.outputs.skip != 'true'
       continue-on-error: true
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       env:
         MODE: ${{ steps.resolve.outputs.mode }}
         PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}
