@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5625 CI/governance blocker remediation
+- Removed the duplicate `timeout-minutes` key from `.github/workflows/pypi-publish.yml` so workflow-policy YAML parsing no longer fails the nox gate.
+- Dropped the nonexistent `services/` and `utils/` entries from `.github/codeql/codeql-config.yml` so CodeQL no longer aborts on missing analysis roots in this branch layout.
+- Restored the `post_rescue_comment.py` repo fallback via `GITHUB_REPOSITORY`, fixed the `src/tools/pytest_repair.py` regex syntax regression, and added a targeted test covering the rescue-comment fallback path.
+
 ### Fixed (auto-update — PR #5624)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5624 (SHA `HEAD`) at 2026-09-20T23:38:27Z [auto-generated]
 

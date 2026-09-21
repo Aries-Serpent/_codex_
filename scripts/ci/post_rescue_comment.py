@@ -551,7 +551,7 @@ def _lookup_pr_number(token: str, repo: str, branch: str) -> int | None:
 def main() -> None:
     token = os.environ["GH_TOKEN"]
     pr_number_raw = os.environ.get("PR_NUMBER", "").strip()
-    repo = os.environ["REPO"]
+    repo = os.environ.get("REPO", "").strip() or os.environ["GITHUB_REPOSITORY"]
     commit_sha = os.environ.get("COMMIT_SHA", "").strip()
     run_id = os.environ["RUN_ID"]
     run_url = os.environ["RUN_URL"]

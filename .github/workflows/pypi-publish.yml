@@ -335,7 +335,6 @@ jobs:
           skip-existing: true
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 30
 
   publish-pypi:
     name: Publish ${{ matrix.distribution.name }} to PyPI
@@ -389,7 +388,6 @@ jobs:
           skip-existing: false
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 45
 
   verify-installation:
     name: Verify ${{ matrix.distribution.name }} (Python 3.12)

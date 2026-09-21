@@ -1,3 +1,31 @@
+## Session: 2026-09-21T03:42:45Z — PR #5625 CI/governance blocker remediation
+
+**Objective:** Clear the current PR #5625 code-fixable blockers by repairing the broken workflow YAML, restoring the CI helper script fallback, removing stale CodeQL paths, and fixing the syntax regression surfaced by the QA walkthrough without widening scope beyond the failing checks.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Reviewed the live PR comments and failing workflow runs, then confirmed the actionable blockers from `Nox Quality Gates`, `Validation Pipeline`, `Audit & QA Suite`, and the CodeQL checks.
+2. Removed the duplicate `timeout-minutes` key from `.github/workflows/pypi-publish.yml`, dropped the nonexistent `services/` and `utils/` entries from `.github/codeql/codeql-config.yml`, and added a `GITHUB_REPOSITORY` fallback in `scripts/ci/post_rescue_comment.py`.
+3. Fixed the raw-regex quoting bug in `src/tools/pytest_repair.py`, added a targeted regression test for the rescue-comment repo fallback, and re-ran the focused validations before restoring generated QA churn.
+
+**Validation:**
+- `python -m py_compile src/tools/pytest_repair.py scripts/ci/post_rescue_comment.py`
+- `pytest -q tests/ci/test_post_rescue_comment.py tests/test_session_query_cli.py`
+- `python scripts/ci/check_workflow_yaml.py .github/workflows`
+- `python scripts/qa/codebase_walkthrough.py --depth standard --focus security,performance,testing,documentation --pr 5625` → 0 issues / 0 critical
+
+**Governance:**
+- REQ-4: This report updated for PR #5625 in the active session.
+- REQ-5: Root `CHANGELOG.md` updated for the same remediation session.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with the 2026-09-21 PR #5625 session entry.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent`
+- [x] `ci-testing-agent`
+
+---
+
 ## Session: 2026-09-20T23:38:27Z — PR #5624 review-thread remediation and merge-readiness follow-up
 
 **Objective:** Resolve the outstanding review-thread items on PR #5624 by restoring the direct-execution import bootstrap, the src-first tool compatibility layer, the restricted `CODEX_*` environment snapshot contract, and the repo governance artifacts without widening scope beyond the requested feedback.

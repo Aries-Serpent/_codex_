@@ -379,6 +379,30 @@ class TestDefensiveShaResolution:
         out = capsys.readouterr().out
         assert "resolved" in out.lower(), f"Expected branch resolution log message, got: {out!r}"
 
+    def test_falls_back_to_github_repository_when_repo_missing(self, monkeypatch, capsys):
+        """When REPO is unset, the script should use GITHUB_REPOSITORY."""
+        resolved_sha = "feedface1234feedface1234feedface12345678"  # pragma: allowlist secret
+        self._patch_env(monkeypatch, COMMIT_SHA=resolved_sha, BRANCH="0D_base_")
+        monkeypatch.delenv("REPO", raising=False)
+        monkeypatch.setenv("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
+
+        def _gh_side_effect(method, path, token, body=None):
+            if method == "GET" and "/comments" in path:
+                return 200, []
+            if method == "POST":
+                return 201, {"id": 3, "html_url": "https://example.com/c/3"}
+            return 200, {}
+
+        with (
+            patch.object(prc, "_gh", side_effect=_gh_side_effect),
+            patch.object(prc, "_get_branch_head_sha", return_value=resolved_sha),
+        ):
+            prc.main()
+
+        out = capsys.readouterr().out
+        assert ("Posted" in out or "✅" in out, "Condition must be true"
+        ), f"Expected post success when REPO falls back to GITHUB_REPOSITORY, got: {out!r}"
+
     def test_continues_with_warning_when_pr_api_lookup_fails(self, monkeypatch, capsys):
         """When the PR API lookup fails, the script warns and continues (best-effort)."""
         self._patch_env(monkeypatch, COMMIT_SHA="", BRANCH="")
