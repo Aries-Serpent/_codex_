@@ -9,7 +9,7 @@ import math
 import numpy as np
 import pytest
 
-from src.codex_ml.metrics.unified_api import (
+from codex_ml.metrics.unified_api import (
     batch_metrics_from_outputs,
     compute_accuracy,
     compute_bleu,

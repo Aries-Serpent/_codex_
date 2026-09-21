@@ -9,7 +9,7 @@ Implements sophisticated load distribution across agents:
   - Dynamic capacity adjustment
 
 Usage:
-  from src.orchestration.load_balancer import LoadBalancer, QueueEntry
+  from orchestration.load_balancer import LoadBalancer, QueueEntry
   
   balancer = LoadBalancer()
   

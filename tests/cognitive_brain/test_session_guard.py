@@ -16,14 +16,14 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.session_guard import (
+from codex.cognitive_brain.session_guard import (
     SessionCreateResult,
     SessionGuard,
     get_default_guard,
     reset_default_guard,
     safe_create_session,
 )
-from src.codex.cognitive_brain.telemetry import CognitiveTelemetry, InMemoryTelemetryBackend
+from codex.cognitive_brain.telemetry import CognitiveTelemetry, InMemoryTelemetryBackend
 
 # ---------------------------------------------------------------------------
 # Fixtures

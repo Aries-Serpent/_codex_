@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from src.codex.utils.path_extended import get_repo_root
+from codex.utils.path_extended import get_repo_root
 
 logging.basicConfig(
     level=logging.INFO,

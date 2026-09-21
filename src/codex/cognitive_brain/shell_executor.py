@@ -6,7 +6,7 @@ import shlex
 from pathlib import Path
 from typing import Any, Optional, cast
 
-from src.aries_serpent_core.utils import subprocess as secure_subprocess
+from aries_serpent_core.utils import subprocess as secure_subprocess
 
 from .shell_policy import GateDecision, PolicyVerdict, ShellPolicy, get_default_policy
 

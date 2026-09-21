@@ -21,7 +21,7 @@ class TestBridgeManager:
     def test_bridge_manager_initialization(self):
         """Test basic bridge manager initialization"""
         try:
-            from src.bridge_manager import BridgeManager
+            from bridge_manager import BridgeManager
             manager = BridgeManager()
             assert manager is not None
         except ImportError:
@@ -30,7 +30,7 @@ class TestBridgeManager:
     def test_bridge_manager_connection_state(self):
         """Test bridge manager connection state tracking"""
         try:
-            from src.bridge_manager import BridgeManager
+            from bridge_manager import BridgeManager
             manager = BridgeManager()
             # Test initial state
             assert hasattr(manager, '__dict__')
@@ -40,7 +40,7 @@ class TestBridgeManager:
     def test_bridge_manager_error_handling(self):
         """Test bridge manager error handling"""
         try:
-            from src.bridge_manager import BridgeManager
+            from bridge_manager import BridgeManager
             manager = BridgeManager()
             # Should handle None inputs gracefully
             result = manager if manager else None
@@ -79,7 +79,7 @@ class TestCacheModules:
     def test_cache_base_initialization(self):
         """Test cache base class initialization"""
         try:
-            from src.cache.base import CacheBase
+            from cache.base import CacheBase
             cache = CacheBase()
             assert cache is not None
         except (ImportError, TypeError):
@@ -88,7 +88,7 @@ class TestCacheModules:
     def test_cache_base_set_get_operations(self):
         """Test basic cache set/get operations"""
         try:
-            from src.cache.base import CacheBase
+            from cache.base import CacheBase
             cache = CacheBase()
             # Test if cache has basic methods
             assert hasattr(cache, '__class__')
@@ -98,7 +98,7 @@ class TestCacheModules:
     def test_cache_local_cache_operations(self):
         """Test local cache implementation"""
         try:
-            from src.cache.local_cache import LocalCache
+            from cache.local_cache import LocalCache
             cache = LocalCache()
             # Verify cache instance
             assert cache is not None
@@ -108,7 +108,7 @@ class TestCacheModules:
     def test_cache_TTL_handling(self):
         """Test cache TTL expiration handling"""
         try:
-            from src.cache.local_cache import LocalCache
+            from cache.local_cache import LocalCache
             cache = LocalCache()
             # Test TTL support
             assert isinstance(cache, object)
@@ -123,7 +123,7 @@ class TestCLIModules:
     def test_cli_entry_point_loads(self):
         """Test CLI entry point loads without errors"""
         try:
-            from src.aries_serpent_core import cli
+            from aries_serpent_core import cli
             assert cli is not None
         except ImportError:
             pytest.skip("CLI module not available")
@@ -131,7 +131,7 @@ class TestCLIModules:
     def test_cli_help_text_generation(self):
         """Test CLI help text generation"""
         try:
-            from src.aries_serpent_core.cli import main
+            from aries_serpent_core.cli import main
             # Verify main function exists
             assert callable(main) or True
         except (ImportError, AttributeError):
@@ -140,7 +140,7 @@ class TestCLIModules:
     def test_cli_argument_parser_setup(self):
         """Test CLI argument parser configuration"""
         try:
-            from src.aries_serpent_core import cli
+            from aries_serpent_core import cli
             assert hasattr(cli, '__file__')
         except ImportError:
             pytest.skip("CLI module not available")
@@ -153,7 +153,7 @@ class TestFileUtils:
     def test_file_utils_path_normalization(self):
         """Test file path normalization"""
         try:
-            from src.aries_serpent_core.file_utils import normalize_path
+            from aries_serpent_core.file_utils import normalize_path
             result = normalize_path("./test/path")
             assert result is not None
         except (ImportError, AttributeError):
@@ -162,7 +162,7 @@ class TestFileUtils:
     def test_file_utils_exists_check(self):
         """Test file existence checking"""
         try:
-            from src.aries_serpent_core.file_utils import safe_exists
+            from aries_serpent_core.file_utils import safe_exists
             result = safe_exists("/nonexistent/path")
             assert isinstance(result, bool)
         except (ImportError, AttributeError):
@@ -171,7 +171,7 @@ class TestFileUtils:
     def test_file_utils_read_operations(self):
         """Test file read operations"""
         try:
-            from src.aries_serpent_core.file_utils import safe_read
+            from aries_serpent_core.file_utils import safe_read
             with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
                 f.write("test content")
                 f.flush()
@@ -184,7 +184,7 @@ class TestFileUtils:
     def test_file_utils_write_operations(self):
         """Test file write operations"""
         try:
-            from src.aries_serpent_core.file_utils import safe_write
+            from aries_serpent_core.file_utils import safe_write
             with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
                 temp_path = f.name
             safe_write(temp_path, "test content")
@@ -196,7 +196,7 @@ class TestFileUtils:
     def test_file_utils_directory_operations(self):
         """Test directory creation operations"""
         try:
-            from src.aries_serpent_core.file_utils import ensure_dir
+            from aries_serpent_core.file_utils import ensure_dir
             with tempfile.TemporaryDirectory() as tmpdir:
                 test_dir = os.path.join(tmpdir, "test", "nested", "dir")
                 ensure_dir(test_dir)
@@ -212,7 +212,7 @@ class TestSerializationSafe:
     def test_safe_json_loads(self):
         """Test safe JSON loading"""
         try:
-            from src.aries_serpent_core.serialization_safe import safe_json_loads
+            from aries_serpent_core.serialization_safe import safe_json_loads
             result = safe_json_loads('{"key": "value"}')
             assert result == {"key": "value"}
         except (ImportError, AttributeError):
@@ -221,7 +221,7 @@ class TestSerializationSafe:
     def test_safe_json_loads_invalid(self):
         """Test safe JSON loading with invalid input"""
         try:
-            from src.aries_serpent_core.serialization_safe import safe_json_loads
+            from aries_serpent_core.serialization_safe import safe_json_loads
             result = safe_json_loads("invalid json")
             assert result is None or result == {}
         except (ImportError, AttributeError):
@@ -230,7 +230,7 @@ class TestSerializationSafe:
     def test_safe_json_dumps(self):
         """Test safe JSON dumping"""
         try:
-            from src.aries_serpent_core.serialization_safe import safe_json_dumps
+            from aries_serpent_core.serialization_safe import safe_json_dumps
             result = safe_json_dumps({"key": "value"})
             assert result is not None
             assert "key" in result
@@ -240,7 +240,7 @@ class TestSerializationSafe:
     def test_safe_pickle_operations(self):
         """Test safe pickle operations"""
         try:
-            from src.aries_serpent_core.serialization_safe import safe_pickle_dumps
+            from aries_serpent_core.serialization_safe import safe_pickle_dumps
             result = safe_pickle_dumps({"test": "data"})
             assert result is not None
         except (ImportError, AttributeError):
@@ -254,7 +254,7 @@ class TestLoggingSafe:
     def test_logging_safe_initialization(self):
         """Test safe logging initialization"""
         try:
-            from src.aries_serpent_core.logging_safe import get_safe_logger
+            from aries_serpent_core.logging_safe import get_safe_logger
             logger = get_safe_logger(__name__)
             assert logger is not None
         except (ImportError, AttributeError):
@@ -263,7 +263,7 @@ class TestLoggingSafe:
     def test_logging_safe_redaction(self):
         """Test logging message redaction"""
         try:
-            from src.aries_serpent_core.logging_safe import redact_sensitive_data
+            from aries_serpent_core.logging_safe import redact_sensitive_data
             result = redact_sensitive_data("******")
             assert "secret123" not in result or "password" in result
         except (ImportError, AttributeError):
@@ -272,7 +272,7 @@ class TestLoggingSafe:
     def test_logging_safe_context_tracking(self):
         """Test safe logging context tracking"""
         try:
-            from src.aries_serpent_core.logging_safe import setup_context
+            from aries_serpent_core.logging_safe import setup_context
             setup_context(request_id="test-123")
             # Should not raise
             assert True
@@ -287,7 +287,7 @@ class TestSecurityUtils:
     def test_security_hash_generation(self):
         """Test hash generation for strings"""
         try:
-            from src.aries_serpent_core.security_utils import hash_string
+            from aries_serpent_core.security_utils import hash_string
             result = hash_string("test data")
             assert result is not None
             assert len(result) > 0
@@ -297,7 +297,7 @@ class TestSecurityUtils:
     def test_security_encrypt_decrypt(self):
         """Test encryption/decryption operations"""
         try:
-            from src.aries_serpent_core.security_utils import decrypt_string, encrypt_string
+            from aries_serpent_core.security_utils import decrypt_string, encrypt_string
             encrypted = encrypt_string("sensitive data")
             decrypted = decrypt_string(encrypted)
             assert decrypted == "sensitive data"
@@ -307,7 +307,7 @@ class TestSecurityUtils:
     def test_security_token_generation(self):
         """Test secure token generation"""
         try:
-            from src.aries_serpent_core.security_utils import generate_token
+            from aries_serpent_core.security_utils import generate_token
             token = generate_token(32)
             assert token is not None
             assert len(token) == 32
@@ -317,7 +317,7 @@ class TestSecurityUtils:
     def test_security_input_validation(self):
         """Test input validation utilities"""
         try:
-            from src.aries_serpent_core.security_utils import validate_input
+            from aries_serpent_core.security_utils import validate_input
             result = validate_input("test", max_length=100)
             assert result is not None or True
         except (ImportError, AttributeError):
@@ -331,7 +331,7 @@ class TestSessionDB:
     def test_session_db_initialization(self):
         """Test session database initialization"""
         try:
-            from src.aries_serpent_core.session_db import SessionDB
+            from aries_serpent_core.session_db import SessionDB
             with tempfile.TemporaryDirectory() as tmpdir:
                 db_path = os.path.join(tmpdir, "test.db")
                 db = SessionDB(db_path)
@@ -342,7 +342,7 @@ class TestSessionDB:
     def test_session_db_create_session(self):
         """Test creating a new session"""
         try:
-            from src.aries_serpent_core.session_db import SessionDB
+            from aries_serpent_core.session_db import SessionDB
             with tempfile.TemporaryDirectory() as tmpdir:
                 db_path = os.path.join(tmpdir, "test.db")
                 db = SessionDB(db_path)
@@ -354,7 +354,7 @@ class TestSessionDB:
     def test_session_db_query_operations(self):
         """Test session database query operations"""
         try:
-            from src.aries_serpent_core.session_db import SessionDB
+            from aries_serpent_core.session_db import SessionDB
             with tempfile.TemporaryDirectory() as tmpdir:
                 db_path = os.path.join(tmpdir, "test.db")
                 db = SessionDB(db_path)
@@ -372,7 +372,7 @@ class TestVersioning:
     def test_versioning_module_loads(self):
         """Test versioning module loads"""
         try:
-            from src.aries_serpent_core.versioning import get_version
+            from aries_serpent_core.versioning import get_version
             version = get_version()
             assert version is not None
         except (ImportError, AttributeError):
@@ -381,7 +381,7 @@ class TestVersioning:
     def test_versioning_format(self):
         """Test version format validation"""
         try:
-            from src.aries_serpent_core.versioning import validate_version
+            from aries_serpent_core.versioning import validate_version
             result = validate_version("1.0.0")
             assert result is True or result is None
         except (ImportError, AttributeError):
@@ -395,7 +395,7 @@ class TestPaths:
     def test_paths_module_initialization(self):
         """Test paths module initialization"""
         try:
-            from src.aries_serpent_core.paths import get_config_dir
+            from aries_serpent_core.paths import get_config_dir
             config_dir = get_config_dir()
             assert config_dir is not None
         except (ImportError, AttributeError):
@@ -404,7 +404,7 @@ class TestPaths:
     def test_paths_home_directory(self):
         """Test home directory path resolution"""
         try:
-            from src.aries_serpent_core.paths import get_home_dir
+            from aries_serpent_core.paths import get_home_dir
             home = get_home_dir()
             assert home is not None
             assert len(home) > 0
@@ -414,7 +414,7 @@ class TestPaths:
     def test_paths_cache_directory(self):
         """Test cache directory path resolution"""
         try:
-            from src.aries_serpent_core.paths import get_cache_dir
+            from aries_serpent_core.paths import get_cache_dir
             cache_dir = get_cache_dir()
             assert cache_dir is not None
         except (ImportError, AttributeError):
@@ -428,7 +428,7 @@ class TestReflection:
     def test_reflection_get_class_methods(self):
         """Test class method reflection"""
         try:
-            from src.aries_serpent_core.reflection import get_class_methods
+            from aries_serpent_core.reflection import get_class_methods
             methods = get_class_methods(object)
             assert methods is not None
             assert isinstance(methods, (list, tuple))
@@ -438,7 +438,7 @@ class TestReflection:
     def test_reflection_get_function_signature(self):
         """Test function signature reflection"""
         try:
-            from src.aries_serpent_core.reflection import get_function_signature
+            from aries_serpent_core.reflection import get_function_signature
             sig = get_function_signature(print)
             assert sig is not None
         except (ImportError, AttributeError):
@@ -447,7 +447,7 @@ class TestReflection:
     def test_reflection_is_iterable(self):
         """Test iterable type checking"""
         try:
-            from src.aries_serpent_core.reflection import is_iterable
+            from aries_serpent_core.reflection import is_iterable
             assert is_iterable([1, 2, 3]) is True
             assert is_iterable("string") is True
             assert is_iterable(42) is False
@@ -462,7 +462,7 @@ class TestResourceManagement:
     def test_resource_context_manager(self):
         """Test resource context manager"""
         try:
-            from src.aries_serpent_core.resource_management import ManagedResource
+            from aries_serpent_core.resource_management import ManagedResource
             resource = ManagedResource()
             assert resource is not None
         except (ImportError, TypeError):
@@ -471,7 +471,7 @@ class TestResourceManagement:
     def test_resource_cleanup(self):
         """Test resource cleanup"""
         try:
-            from src.aries_serpent_core.resource_management import cleanup_resources
+            from aries_serpent_core.resource_management import cleanup_resources
             cleanup_resources()
             # Should not raise
             assert True
@@ -486,7 +486,7 @@ class TestEvidence:
     def test_evidence_creation(self):
         """Test evidence object creation"""
         try:
-            from src.aries_serpent_core.evidence import create_evidence
+            from aries_serpent_core.evidence import create_evidence
             evidence = create_evidence("test_claim", "test_supporting_data")
             assert evidence is not None
         except (ImportError, AttributeError):
@@ -495,7 +495,7 @@ class TestEvidence:
     def test_evidence_validation(self):
         """Test evidence validation"""
         try:
-            from src.aries_serpent_core.evidence import validate_evidence
+            from aries_serpent_core.evidence import validate_evidence
             result = validate_evidence({"claim": "test", "data": "test"})
             assert result is not None or True
         except (ImportError, AttributeError):
@@ -509,7 +509,7 @@ class TestTraining:
     def test_training_module_loads(self):
         """Test training module loads"""
         try:
-            from src.aries_serpent_core.training import TrainingConfig
+            from aries_serpent_core.training import TrainingConfig
             assert TrainingConfig is not None
         except (ImportError, AttributeError):
             pytest.skip("TrainingConfig not available")
@@ -517,7 +517,7 @@ class TestTraining:
     def test_training_config_creation(self):
         """Test training configuration creation"""
         try:
-            from src.aries_serpent_core.training import TrainingConfig
+            from aries_serpent_core.training import TrainingConfig
             config = TrainingConfig()
             assert config is not None
         except (ImportError, TypeError):
@@ -531,7 +531,7 @@ class TestAgentModules:
     def test_agent_core_initialization(self):
         """Test agent core initialization"""
         try:
-            from src.agent.core import Agent
+            from agent.core import Agent
             agent = Agent()
             assert agent is not None
         except (ImportError, TypeError):
@@ -540,7 +540,7 @@ class TestAgentModules:
     def test_agent_phase10_operations(self):
         """Test Phase 10 agent operations"""
         try:
-            from src.agent.phase10 import Phase10Agent
+            from agent.phase10 import Phase10Agent
             agent = Phase10Agent()
             assert agent is not None
         except (ImportError, TypeError):
@@ -549,7 +549,7 @@ class TestAgentModules:
     def test_agent_secrets_handling(self):
         """Test agent secrets handling"""
         try:
-            from src.agent.secrets import SecretManager
+            from agent.secrets import SecretManager
             manager = SecretManager()
             assert manager is not None
         except (ImportError, TypeError):
@@ -569,7 +569,7 @@ class TestEdgeCases:
     def test_string_validation_edge_cases(self, input_val, expected):
         """Test string validation with edge cases"""
         try:
-            from src.aries_serpent_core.security_utils import validate_input
+            from aries_serpent_core.security_utils import validate_input
             if input_val is None:
                 result = False
             else:
@@ -587,7 +587,7 @@ class TestEdgeCases:
     def test_path_normalization_edge_cases(self, path_val):
         """Test path normalization with various inputs"""
         try:
-            from src.aries_serpent_core.file_utils import normalize_path
+            from aries_serpent_core.file_utils import normalize_path
             result = normalize_path(path_val)
             assert result is not None
         except (ImportError, AttributeError):
@@ -601,7 +601,7 @@ class TestPhase5Integration:
     def test_module_import_chain(self):
         """Test importing multiple related modules"""
         try:
-            from src.aries_serpent_core import cli, file_utils, logging_safe
+            from aries_serpent_core import cli, file_utils, logging_safe
             assert True
         except ImportError:
             pytest.skip("Import chain incomplete")
@@ -609,8 +609,8 @@ class TestPhase5Integration:
     def test_cross_module_functionality(self):
         """Test cross-module functionality"""
         try:
-            from src.aries_serpent_core.file_utils import safe_exists
-            from src.aries_serpent_core.logging_safe import get_safe_logger
+            from aries_serpent_core.file_utils import safe_exists
+            from aries_serpent_core.logging_safe import get_safe_logger
             logger = get_safe_logger(__name__)
             exists = safe_exists("/test")
             assert logger is not None

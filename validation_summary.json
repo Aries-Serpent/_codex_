@@ -1,0 +1,21 @@
+{
+  "mode": "fast",
+  "selectors": [],
+  "pytest_opts": "",
+  "exit_code": 1,
+  "artifacts": {
+    "log": "validation.log",
+    "junit": "validation-junit.xml",
+    "coverage": null
+  },
+  "junit": {
+    "tests": 2,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 1.922,
+    "failed_cases": [
+      "tests::test_session_query_cli::test_session_query_cli"
+    ]
+  }
+}

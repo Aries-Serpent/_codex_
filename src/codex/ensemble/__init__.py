@@ -20,20 +20,20 @@ Components:
 - Integration Adapters: Format for downstream consumers (010, 011, 012)
 """
 
-from src.codex.ensemble.calibration import CalibrationFramework
-from src.codex.ensemble.ensemble_evaluator import (
+from codex.ensemble.calibration import CalibrationFramework
+from codex.ensemble.ensemble_evaluator import (
     DiversityMetrics,
     DiversityValidator,
     EnsembleEvaluationResult,
     EnsembleEvaluator,
 )
-from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor, WeightedVoter
-from src.codex.ensemble.fastapi_server import (
+from codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor, WeightedVoter
+from codex.ensemble.fastapi_server import (
     BatchPredictionRequest,
     PredictionAPIServer,
     PredictionRequest,
 )
-from src.codex.ensemble.integration_adapters import (
+from codex.ensemble.integration_adapters import (
     AdapterFactory,
     AnomalyCorrelationAdapter,
     ForecastingAdapter,
@@ -42,10 +42,10 @@ from src.codex.ensemble.integration_adapters import (
     adapt_prediction_for_downstream,
     batch_adapt_predictions,
 )
-from src.codex.ensemble.load_testing import LoadTestConfig, LoadTester, LoadTestResult
-from src.codex.ensemble.models import BaseModel, HeuristicModel, MLModel, SymbolicModel
-from src.codex.ensemble.prediction_api import PredictionAPI
-from src.codex.ensemble.types import (
+from codex.ensemble.load_testing import LoadTestConfig, LoadTester, LoadTestResult
+from codex.ensemble.models import BaseModel, HeuristicModel, MLModel, SymbolicModel
+from codex.ensemble.prediction_api import PredictionAPI
+from codex.ensemble.types import (
     CalibrationMetrics,
     CrossValidationResult,
     EnsemblePrediction,

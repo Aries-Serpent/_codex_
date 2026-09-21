@@ -8,10 +8,10 @@ import json
 
 import pytest
 
-from src.codex.cognitive_brain.integration_adapters import (
+from codex.cognitive_brain.integration_adapters import (
     PlansetIntegrationAdapter,
 )
-from src.codex.cognitive_brain.reasoning_engine import (
+from codex.cognitive_brain.reasoning_engine import (
     ReasoningEngine,
 )
 

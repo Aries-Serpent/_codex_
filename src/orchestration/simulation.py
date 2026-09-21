@@ -9,7 +9,7 @@ Comprehensive simulation framework for testing orchestration scenarios:
   - Performance regression detection
 
 Usage:
-  from src.orchestration.simulation import SimulationEngine, ScenarioBuilder
+  from orchestration.simulation import SimulationEngine, ScenarioBuilder
 
   # Build a simulation scenario
   scenario = (ScenarioBuilder()

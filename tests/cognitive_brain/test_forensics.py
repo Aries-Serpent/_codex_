@@ -14,8 +14,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.codex.cognitive_brain.kernel import CognitiveBrainKernel, KernelConfig, reset_kernel
-from src.codex.cognitive_brain.telemetry import (
+from codex.cognitive_brain.kernel import CognitiveBrainKernel, KernelConfig, reset_kernel
+from codex.cognitive_brain.telemetry import (
     CognitiveTelemetry,
     InMemoryTelemetryBackend,
     NDJSONTelemetryBackend,

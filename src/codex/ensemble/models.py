@@ -7,7 +7,7 @@ from typing import Any, Dict
 
 import numpy as np
 
-from src.codex.ensemble.types import ModelPrediction, ModelType
+from codex.ensemble.types import ModelPrediction, ModelType
 
 logger = logging.getLogger(__name__)
 

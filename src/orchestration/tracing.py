@@ -10,7 +10,7 @@ Implements comprehensive observability for all agent-to-agent handoffs:
   - Visualization-ready output
 
 Usage:
-  from src.orchestration.tracing import HandoffTracer, TraceContext
+  from orchestration.tracing import HandoffTracer, TraceContext
   
   tracer = HandoffTracer()
   with tracer.trace_handoff(

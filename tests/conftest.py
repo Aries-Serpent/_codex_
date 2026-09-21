@@ -16,7 +16,7 @@ from pathlib import Path as _ImportHookPath
 class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
     """Prefer repo src packages even when test files inject scripts/tests onto sys.path."""
 
-    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils", "zendesk"}
+    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils"}
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self._CANONICAL_NAMES:
@@ -198,7 +198,7 @@ def _strip_shadow_roots() -> None:
         _filtered.append(_entry)
     _sys.path[:] = _filtered
 
-    for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+    for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils"):
         _mod = _sys.modules.get(_legacy_name)
         if _mod is None:
             continue
@@ -225,7 +225,7 @@ if str(_PROJECT_ROOT) not in _sys.path:
 
 # Keep stale alias modules from earlier imports or shadow packages from
 # site-packages from freezing the wrong import path during collection.
-for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils", "zendesk"):
+for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils"):
     _mod = _sys.modules.get(_legacy_name)
     if _mod is None:
         continue
@@ -383,22 +383,22 @@ def _pydantic_available() -> bool:
 @pytest.fixture(scope="session", autouse=True)
 def _fix_torch_stubs_for_cli_tests():
     """Replace torch stubs with real torch for CLI subprocess tests.
-    
+
     This fixture ensures that when CLI commands spawn subprocesses,
     they don't load torch stubs. This is needed for tests like
     test_evaluate_cli.py which run CLI subprocesses that import torch modules.
     """
     import sys
-    
+
     # Check if torch is a stub
     torch_mod = sys.modules.get("torch")
     if torch_mod is None:
         return
-    
+
     is_stub = getattr(torch_mod, "__version__", "").endswith("stub")
     if not is_stub:
         return
-    
+
     # Try to replace stub with real torch
     try:
         from pathlib import Path
@@ -408,12 +408,12 @@ def _fix_torch_stubs_for_cli_tests():
         )
         if site_packages.exists() and str(site_packages) not in sys.path:
             sys.path.insert(0, str(site_packages))
-        
+
         # Remove stub and reimport real torch
         for mod_name in list(sys.modules.keys()):
             if mod_name.startswith("torch"):
                 del sys.modules[mod_name]
-        
+
         importlib.import_module("torch")
     except Exception:
         # If real torch not available, just continue with stub
