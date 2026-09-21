@@ -128,7 +128,7 @@ jobs:
         \"))\"' >> $GITHUB_STEP_SUMMARY || true\n"
     - name: Notify on failure
       if: failure()
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         script: "const issue_body = `## \u26A0\uFE0F Artifact Monitoring Workflow\
           \ Failed\n\nThe automated artifact monitoring workflow has failed.\n\n**Run**:\

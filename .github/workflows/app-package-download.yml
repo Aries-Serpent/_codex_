@@ -88,7 +88,7 @@ jobs:
           esac
 
       - name: Check out repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.inputs.branch }}
           fetch-depth: 1
@@ -108,10 +108,10 @@ jobs:
           fi
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069
 
       - name: Build and Cache Wine Builder
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
           context: .
           file: Dockerfile.windows-pyinstaller
@@ -238,7 +238,7 @@ jobs:
           ls -l .artifacts/zip_verify
 
       - name: Upload runtime ZIP artifact
-        uses: actions/upload-artifact@65462800fd0af4f03d4b8d36972228f5f4f8d2c0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: offline-zip-keymaster-gui-${{ github.run_id }}
           path: release/run_offline_zip_keymaster_self_contained.zip
@@ -271,7 +271,7 @@ jobs:
     if: ${{ github.event.inputs.include_build_bundle }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.inputs.branch }}
           fetch-depth: 1
@@ -350,7 +350,7 @@ jobs:
           zip -r ../release/offline_zip_keymaster_build_bundle.zip src pyproject.toml build_bundle_manifest.json dependency_manifest.json 2>/dev/null || zip -r ../release/offline_zip_keymaster_build_bundle.zip src pyproject.toml build_bundle_manifest.json
 
       - name: Upload build bundle artifact
-        uses: actions/upload-artifact@65462800fd0af4f03d4b8d36972228f5f4f8d2c0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: offline-zip-keymaster-build-${{ github.run_id }}
           path: release/offline_zip_keymaster_build_bundle.zip
