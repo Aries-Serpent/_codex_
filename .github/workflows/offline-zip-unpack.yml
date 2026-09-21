@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
           fetch-depth: 1
@@ -180,7 +180,7 @@ jobs:
           PY
 
       - name: Upload extracted archive contents
-        uses: actions/upload-artifact@65462800fd0af4f03d4b8d36972228f5f4f8d2c0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: ${{ inputs.artifact_name || steps.resolve.outputs.archive_stem }}
           path: ${{ inputs.output_dir }}/${{ steps.resolve.outputs.archive_stem }}
