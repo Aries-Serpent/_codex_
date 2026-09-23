@@ -350,7 +350,16 @@ jobs:
           PY
 
           cd build_bundle
-          zip -r ../release/offline_zip_keymaster_build_bundle.zip src pyproject.toml build_bundle_manifest.json dependency_manifest.json 2>/dev/null || zip -r ../release/offline_zip_keymaster_build_bundle.zip src pyproject.toml build_bundle_manifest.json
+          zip -r ../release/offline_zip_keymaster_build_bundle.zip \
+            src \
+            pyproject.toml \
+            build_bundle_manifest.json \
+            dependency_manifest.json \
+            2>/dev/null || \
+          zip -r ../release/offline_zip_keymaster_build_bundle.zip \
+            src \
+            pyproject.toml \
+            build_bundle_manifest.json
 
       - name: Upload build bundle artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
