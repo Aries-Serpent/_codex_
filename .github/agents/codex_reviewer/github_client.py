@@ -59,14 +59,38 @@ class GitHubAPIClient:
     and retry logic for GitHub API interactions.
     """
 
-    def __init__(self, config: Optional[GitHubConfig] = None):
+    def __init__(
+        self,
+        config: Optional[GitHubConfig] = None,
+        token: Optional[str] = None,
+        base_url: Optional[str] = None,
+        timeout: Optional[int] = None,
+    ):
         """
         Initialize GitHub API client.
 
         Args:
             config: GitHub configuration (defaults to environment-based config)
+            token: Optional token override for simple test/config usage.
+            base_url: Optional base URL override.
         """
-        self.config = config or GitHubConfig.from_env()
+        if config is None:
+            config = GitHubConfig(
+                token=token or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN"),
+                base_url=base_url or os.environ.get("GITHUB_API_URL", "https://api.github.com"),
+                timeout=timeout or 30,
+            )
+        elif token is not None or base_url is not None:
+            config = GitHubConfig(
+                token=token if token is not None else config.token,
+                base_url=base_url or config.base_url,
+                timeout=getattr(config, "timeout", 30),
+                max_retries=getattr(config, "max_retries", 3),
+            )
+
+        self.config = config
+        self.token = self.config.token
+        self.base_url = self.config.base_url
 
         if not self.config.token:
             logger.warning("No GitHub token configured - API requests will fail")  # codeql[py/clear-text-logging-sensitive-data]
@@ -189,7 +213,10 @@ class GitHubAPIClient:
             payload["comments"] = comments
 
         logger.info(f"Posting {event} review to {repo}#{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        return await self._make_request(url, payload)
 
+    async def _make_request(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Core request logic, exposed for tests and compatibility wrappers."""
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
         return await self._post_with_urllib(url, payload)

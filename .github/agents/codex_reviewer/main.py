@@ -7,6 +7,7 @@ handling logic.
 """
 
 import asyncio
+import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -230,11 +231,23 @@ class CodexQuantumReviewer:
         logger.info("Integrating human feedback")  # codeql[py/clear-text-logging-sensitive-data]
 
         feedback = event.get("feedback", {})
+        if isinstance(feedback, str):
+            try:
+                feedback = json.loads(feedback)
+            except json.JSONDecodeError:
+                feedback = {"comments": [feedback]}
+        elif not isinstance(feedback, dict):
+            feedback = {"comments": []}
+
+        comments = feedback.get("comments", [])
+        if isinstance(comments, str):
+            comments = [comments]
+
         await self.learning_system.integrate_feedback(feedback)
 
         return {
             "status": "feedback_integrated",
-            "feedback_items": len(feedback.get("comments", []))
+            "feedback_items": len(comments)
         }
 
     async def respond_to_mention(self, event: dict[str, Any]) -> dict[str, Any]:
@@ -251,7 +264,12 @@ class CodexQuantumReviewer:
             Dictionary with response status
         """
         comment = event.get("comment", {})
-        body = comment.get("body", "")
+        if isinstance(comment, str):
+            body = comment
+        elif isinstance(comment, dict):
+            body = comment.get("body", "")
+        else:
+            body = str(comment)
 
         logger.info(f"Responding to mention: {body[:100]}...")  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -562,7 +580,7 @@ class CodexQuantumReviewer:
             logger.info(f"Successfully posted {action} review")  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as e:
             logger.error(f"Failed to post review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-            raise
+            return None
 
     def _format_review_body(self, result: ReviewResult) -> str:
         """

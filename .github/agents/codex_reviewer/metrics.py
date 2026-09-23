@@ -78,6 +78,8 @@ class MetricsCollector:
 
         self.metrics_file = self.storage_path / "reviews.jsonl"
         self.feedback_file = self.storage_path / "feedback.jsonl"
+        self.metrics_file.touch(exist_ok=True)
+        self.feedback_file.touch(exist_ok=True)
 
         # Buffering for performance
         self.buffer_size = buffer_size
@@ -108,7 +110,7 @@ class MetricsCollector:
         logger.info(f"Flushed {len(self._feedback_buffer)} feedback records")  # codeql[py/clear-text-logging-sensitive-data]
         self._feedback_buffer.clear()
 
-    def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = False):
+    def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = True):
         """
         Record metrics for a completed review.
 
@@ -135,7 +137,7 @@ class MetricsCollector:
 
         logger.info(f"Recorded metrics for PR #{metrics.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = False):
+    def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = True):
         """
         Record feedback for a review.
 
@@ -243,6 +245,22 @@ class MetricsCollector:
             suggestion_acceptance_rate=acceptance_rate,
             knowledge_gaps_identified=total_gaps,
         )
+
+    def get_aggregate_stats(self, days: int = 30) -> dict:
+        """Compatibility wrapper returning the dictionary shape expected by tests."""
+        aggregates = self.calculate_aggregates(days)
+        stats = aggregates.to_dict()
+        return {
+            "total_reviews": stats["total_reviews"],
+            "avg_review_time": stats["average_review_time"],
+            "avg_confidence": stats["average_confidence"],
+            "average_review_time": stats["average_review_time"],
+            "average_confidence": stats["average_confidence"],
+            "status_distribution": stats["status_distribution"],
+            "review_accuracy_rate": stats["review_accuracy_rate"],
+            "suggestion_acceptance_rate": stats["suggestion_acceptance_rate"],
+            "knowledge_gaps_identified": stats["knowledge_gaps_identified"],
+        }
 
     def _calculate_acceptance_rate(self, days: int) -> float:
         """Calculate suggestion acceptance rate from feedback."""

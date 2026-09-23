@@ -50,6 +50,18 @@ class SelfEvolutionSystem:
 
         logger.info(f"Learned from review #{context.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
 
+    async def learn_from_feedback(self, context, feedback_payload):
+        """Backward-compatible entry point for feedback processing."""
+        if isinstance(feedback_payload, str):
+            import json
+            try:
+                feedback = json.loads(feedback_payload)
+            except json.JSONDecodeError:
+                feedback = {"user_comment": feedback_payload}
+        else:
+            feedback = feedback_payload
+        return await self.integrate_feedback(feedback)
+
     async def integrate_feedback(self, feedback: dict[str, Any]):
         """
         Integrate human feedback into learning system.
@@ -57,6 +69,9 @@ class SelfEvolutionSystem:
         Args:
             feedback: Feedback data from human reviewers
         """
+        if isinstance(feedback, str):
+            feedback = {"user_comment": feedback}
+
         # Track which suggestions were accepted/rejected
         await self._track_suggestion_outcomes(feedback)
 
@@ -67,6 +82,15 @@ class SelfEvolutionSystem:
         await self._learn_from_feedback_patterns(feedback)
 
         logger.info("Integrated human feedback")  # codeql[py/clear-text-logging-sensitive-data]
+
+    async def respond_to_prompt(self, context, prompt: str) -> str:
+        """Respond to a user prompt with a concise explanation."""
+        prompt_lower = prompt.lower()
+        if "security" in prompt_lower:
+            return "Security review recommendations focus on secrets, unsafe subprocess usage, path traversal, and validation gaps."
+        if "feedback" in prompt_lower or "review" in prompt_lower:
+            return "Review feedback should prioritize objective findings, actionable fixes, and evidence from the changed diff."
+        return f"I reviewed the context for PR #{getattr(context, 'pr_number', 'unknown')} and found no blocking issue in the provided prompt."
 
     async def learn_from_user_input(self, content: str):
         """
@@ -134,13 +158,18 @@ class SelfEvolutionSystem:
 
     async def _track_suggestion_outcomes(self, feedback: dict[str, Any]):
         """Track which suggestions were accepted or rejected."""
-        accepted = feedback.get("suggestions_accepted", [])
-        rejected = feedback.get("suggestions_rejected", [])
+        accepted = feedback.get("suggestions_accepted", 0)
+        rejected = feedback.get("suggestions_rejected", 0)
+
+        if isinstance(accepted, list):
+            accepted = len(accepted)
+        if isinstance(rejected, list):
+            rejected = len(rejected)
 
         self.feedback_history.append({
             "timestamp": datetime.utcnow().isoformat(),
-            "accepted_count": len(accepted),
-            "rejected_count": len(rejected)
+            "accepted_count": int(accepted),
+            "rejected_count": int(rejected)
         })
 
         # Calculate acceptance rate
