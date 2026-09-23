@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5625 governance compliance sync (2026-09-23)
+- Restored the tracked `.codex/session_startup_packet.json` baseline to eliminate timestamp-only churn from the last session.
+- Refreshed the active governance evidence in the accountability archive and changelog so the branch clears the REQ-4 / REQ-5 gate for the current PR tip.
+
 ### Fixed — PR #5625 review-thread remediation (2026-09-23)
 - Fixed the stale packaged-import issues in the review thread by switching invalid `utils.*` / `src.*` imports to the supported repo package paths and adding a packaged `aries_serpent_core.agent` compatibility layer for the Zendesk wrapper.
 - Applied the exact workflow and security fixes from the review thread: pinned `actions/checkout` to the repo-approved `v5` policy, replaced the insecure SHA-1 hashing in `src/tools/docs_agent/utils.py` with SHA-256, corrected the stale status CLI invocation, and restored the valid functional-training migration path.

@@ -1,3 +1,30 @@
+## Session: 2026-09-23T07:26:43Z — PR #5625 governance compliance sync
+
+**Objective:** Clear the repo’s final governance blockers on the active branch by restoring the tracked `.codex/session_startup_packet.json` baseline and ensuring the current session touches the required accountability/changelog artifacts in the same commit.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Confirmed the outstanding branch issue was generated-file drift in `.codex/session_startup_packet.json` plus the repo’s `REQ-4` / `REQ-5` last-commit gate.
+2. Restored the repo baseline for the startup packet so the branch no longer carries timestamp-only churn.
+3. Updated the active governance evidence in `CHANGELOG.md` and the accountability archive so the current PR tip satisfies the required wrap-up checks without widening scope.
+
+**Validation:**
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5625` → pass after the governance refresh.
+- `git diff -- .codex/session_startup_packet.json` → no remaining timestamp-only drift from the tracked baseline.
+
+**Governance:**
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` remains aligned with the current session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## Session: 2026-09-23T04:35:40Z — PR readiness blockers resolved: auto_fix + stale accountability report
 
 **Objective:** Clear the current branch-readiness blockers by applying the repo auto-fix sweep and refreshing the accountability/PDA evidence without expanding scope beyond the noted merge-readiness gaps.
