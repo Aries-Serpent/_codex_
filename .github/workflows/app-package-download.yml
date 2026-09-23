@@ -234,7 +234,10 @@ jobs:
           test -f .artifacts/zip_verify/README.txt
           test -f .artifacts/zip_verify/manifest.json
           test "$(find .artifacts/zip_verify -maxdepth 1 -type f | wc -l)" -eq 3
-          ! find .artifacts/zip_verify -type d -name .codex | grep -q .
+          if find .artifacts/zip_verify -type d -name .codex | grep -q .; then
+            echo "Unexpected .codex directory inside runtime ZIP bundle" >&2
+            exit 1
+          fi
           ls -l .artifacts/zip_verify
 
       - name: Upload runtime ZIP artifact
@@ -289,28 +292,28 @@ jobs:
           cp pyproject.toml build_bundle/pyproject.toml
 
           if [[ "$INCLUDE_DEPS" == "true" ]]; then
-            python - <<'PY'
-            import json
-            from pathlib import Path
-            pyproject = Path('pyproject.toml').read_text(encoding='utf-8')
-            dependency_lines = []
-            current = None
-            for line in pyproject.splitlines():
-                if line.startswith('dependencies = ['):
-                    current = 'dependencies'
-                    continue
-                if current == 'dependencies' and line.strip() == ']':
-                    current = None
-                    continue
-                if current == 'dependencies':
-                    dependency_lines.append(line.strip().strip(',').strip('"'))
-            manifest = {
-                'artifact_type': 'dependency-metadata',
-                'include_dependencies': True,
-                'dependencies': [item for item in dependency_lines if item],
-            }
-            (Path('build_bundle') / 'dependency_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-            PY
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          pyproject = Path('pyproject.toml').read_text(encoding='utf-8')
+          dependency_lines = []
+          current = None
+          for line in pyproject.splitlines():
+              if line.startswith('dependencies = ['):
+                  current = 'dependencies'
+                  continue
+              if current == 'dependencies' and line.strip() == ']':
+                  current = None
+                  continue
+              if current == 'dependencies':
+                  dependency_lines.append(line.strip().strip(',').strip('"'))
+          manifest = {
+              'artifact_type': 'dependency-metadata',
+              'include_dependencies': True,
+              'dependencies': [item for item in dependency_lines if item],
+          }
+          (Path('build_bundle') / 'dependency_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+          PY
           fi
 
           if [[ "$OFFLINE_WHEELHOUSE" == "true" ]]; then

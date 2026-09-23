@@ -1,0 +1,31 @@
+{
+  "capabilities": [
+    {
+      "id": "alpha",
+      "found_patterns": [
+        "checkpoint",
+        "epoch",
+        "save_checkpoint",
+        "train",
+        "training"
+      ],
+      "found_patterns_original": [
+        "train",
+        "checkpoint"
+      ],
+      "synonym_expansion_count": 3
+    },
+    {
+      "id": "beta",
+      "found_patterns": [
+        "unknown"
+      ],
+      "found_patterns_original": [
+        "unknown"
+      ],
+      "synonym_expansion_count": 0
+    }
+  ],
+  "synonym_map_hash": "34c3b053e4fc9fa1",
+  "synonym_count": 3
+}
