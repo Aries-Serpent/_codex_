@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5625 repo-lint contract repair (2026-09-23)
+- Fixed the remaining repo-lint contract violations by restoring the import ordering in `src/cli.py` and `src/bridge_manager.py` and by resolving repo helper scripts through the active root/src layout in `configs/development/noxfile.py`.
+
 ### Fixed — PR #5625 governance compliance sync (2026-09-23)
 - Restored the tracked `.codex/session_startup_packet.json` baseline to eliminate timestamp-only churn from the last session.
 - Refreshed the active governance evidence in the accountability archive and changelog so the branch clears the REQ-4 / REQ-5 gate for the current PR tip.

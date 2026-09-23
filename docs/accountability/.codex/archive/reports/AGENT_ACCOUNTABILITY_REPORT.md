@@ -1,3 +1,32 @@
+## SESSION SUMMARY — 2026-09-23T07:49:00Z — PR #5625 repo-lint contract repair
+
+### Objective
+Repair the remaining repo-lint blockers in the active PR without widening scope beyond the exact import-order and mixed root/src script-resolution issues surfaced by the local validation gate.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Rechecked the active validation failure and confirmed the remaining issues were import ordering in `src/cli.py` and `src/bridge_manager.py` plus a root-only script lookup in `configs/development/noxfile.py`.
+2. Applied the narrow import-order fixes and route repo helper execution through a resolver that supports the repo’s mixed root/src layout.
+3. Re-ran the direct validation on the touched files and confirmed the linter gate is green.
+
+### Validation
+- `python -m isort --check-only src/cli.py src/bridge_manager.py configs/development/noxfile.py` → pass
+- `python -m ruff check src/cli.py src/bridge_manager.py configs/development/noxfile.py` → pass
+
+### Governance
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` remains aligned with the active session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## SESSION SUMMARY — 2026-09-23T05:00:13Z — PR #5625 review-thread remediation + merge-readiness sync
 
 ### Objective

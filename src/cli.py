@@ -11,10 +11,11 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
 
+from omegaconf import OmegaConf
+
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
 from metrics import accuracy as metrics_accuracy
-from omegaconf import OmegaConf
 from training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 logger = logging.getLogger(__name__)
