@@ -48,7 +48,7 @@ try:
         load_speaker_map,
     )
 except ImportError:  # pragma: no cover - fallback path for src-layout execution
-    from services.audio.workflow.transcription_workflow import (  # type: ignore[no-redef]
+    from src.services.audio.workflow.transcription_workflow import (  # type: ignore[no-redef]
         AudioTranscriptionWorkflow,
         TranscriptionConfig,
         load_speaker_map,
