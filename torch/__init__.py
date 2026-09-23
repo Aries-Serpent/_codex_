@@ -237,14 +237,19 @@ else:
         "bfloat16",
         "no_grad",
         "nn",
+        "utils",
+        "optim",
+        "distributed",
     ]
-    __file__ = ""
+    __file__ = str(Path(__file__).resolve())
+    __path__ = [str(Path(__file__).resolve().parent)]
 
     def __getattr__(name: str) -> Any:
-        if name == "nn":
+        if name in {"nn", "utils", "optim", "distributed", "cuda"}:
             import importlib
 
-            module = importlib.import_module(".nn", __name__)
+            module = importlib.import_module(f".{name}", __name__)
+            globals()[name] = module
             return module
         raise AttributeError(f"module 'torch' has no attribute {name!r}")
 
@@ -252,3 +257,8 @@ else:
     import importlib
 
     nn = importlib.import_module(".nn", __name__)
+    for _alias in ("utils", "optim", "distributed"):
+        try:
+            globals()[_alias] = importlib.import_module(f".{_alias}", __name__)
+        except ModuleNotFoundError:
+            pass

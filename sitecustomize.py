@@ -12,15 +12,34 @@ logic and avoids accidental import drift in the security gate.
 
 from __future__ import annotations
 
+import importlib.abc
 import importlib.util
 import sys
 from pathlib import Path
 
 
+_REPO_ROOT = Path(__file__).resolve().parent
+
+
+class _SiteCustomizeFinder(importlib.abc.MetaPathFinder):
+    """Keep the root shim reloadable even when pytest strips repo root from sys.path."""
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname != "sitecustomize":
+            return None
+        candidate = _REPO_ROOT / "sitecustomize.py"
+        if not candidate.exists():
+            return None
+        return importlib.util.spec_from_file_location(fullname, candidate)
+
+
+if not any(isinstance(finder, _SiteCustomizeFinder) for finder in sys.meta_path):
+    sys.meta_path.insert(0, _SiteCustomizeFinder())
+
+
 def _load_repo_sitecustomize() -> None:
     """Execute the repository's real startup hook from the ``configs`` tree."""
-    root = Path(__file__).resolve().parent
-    config_path = root / "configs" / "sitecustomize.py"
+    config_path = _REPO_ROOT / "configs" / "sitecustomize.py"
     if not config_path.exists():
         return
 
