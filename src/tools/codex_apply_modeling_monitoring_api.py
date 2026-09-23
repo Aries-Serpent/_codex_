@@ -428,7 +428,7 @@ try:
     from fastapi import FastAPI, Request, HTTPException, Depends
     from fastapi.responses import JSONResponse
 except Exception:
-    FastAPI = None  # type: ignore
+    FastAPI = None  # type: ignore[assignment]
 
 API_KEY_ENV = "CODEX_API_KEY"  # pragma: allowlist secret
 

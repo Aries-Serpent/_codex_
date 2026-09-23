@@ -229,7 +229,7 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    maximum_filter = None  # type: ignore
+    maximum_filter = None  # type: ignore[assignment]
     SCIPY_AVAILABLE = False
 
 

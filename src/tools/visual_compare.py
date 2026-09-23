@@ -7,18 +7,18 @@ from pathlib import Path
 try:
     from PIL import Image
 except Exception:  # pragma: no cover
-    Image = None  # type: ignore
+    Image = None  # type: ignore[assignment]
 
 try:
     import numpy as np
 except Exception:  # pragma: no cover
-    np = None  # type: ignore
+    np = None  # type: ignore[assignment]
 
 # Optional SSIM from scikit-image if available
 try:
     from skimage.metrics import structural_similarity as ssim  # type: ignore
 except Exception:  # pragma: no cover
-    ssim = None  # type: ignore
+    ssim = None  # type: ignore[assignment]
 
 # Maximum pixel value for 8-bit grayscale images
 MAX_PIXEL_VALUE = 255.0

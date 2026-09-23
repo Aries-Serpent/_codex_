@@ -19,7 +19,7 @@ except Exception:
 try:
     import torch
 except Exception:
-    torch = None  # type: ignore
+    torch = None  # type: ignore[assignment]
 
 
 @dataclass

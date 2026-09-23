@@ -16,7 +16,7 @@ from typing import Any
 try:
     import yaml  # type: ignore
 except Exception:
-    yaml = None  # type: ignore
+    yaml = None  # type: ignore[assignment]
 
 
 def load_any(p: Path) -> Any:

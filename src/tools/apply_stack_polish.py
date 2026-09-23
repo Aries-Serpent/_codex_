@@ -120,7 +120,7 @@ from pathlib import Path
 try:
     import sentencepiece as spm  # type: ignore
 except Exception:
-    spm = None  # type: ignore
+    spm = None  # type: ignore[assignment]
 
 class SentencePieceAdapter:
     def __init__(self, model_path: Path):

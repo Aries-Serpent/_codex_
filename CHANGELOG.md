@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR readiness blockers resolved (2026-09-23)
+- Cleared the active `auto_fix` readiness gate by running the repo auto-fix sweep and keeping only the minimal remediation required for the current branch state.
+- Refreshed the active accountability report and PDA evidence so the stale accountability-report blocker is cleared for today's session without broader scope drift.
+
 ### Fixed — PR #5625 CI/governance blocker remediation
 - Removed the duplicate `timeout-minutes` key from `.github/workflows/pypi-publish.yml` so workflow-policy YAML parsing no longer fails the nox gate.
 - Dropped the nonexistent `services/` and `utils/` entries from `.github/codeql/codeql-config.yml` so CodeQL no longer aborts on missing analysis roots in this branch layout.

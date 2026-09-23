@@ -93,7 +93,7 @@ try:  # pragma: no cover
     _HAS_MLFLOW = True
 except Exception:  # pragma: no cover
     _HAS_MLFLOW = False
-    _mlf = None  # type: ignore
+    _mlf = None  # type: ignore[assignment]
 
 
 @dataclass
@@ -260,7 +260,7 @@ def _set_global_seeds(seed: int) -> dict[str, Any]:
     try:
         import numpy as np  # type: ignore
     except Exception:  # pragma: no cover
-        np = None  # type: ignore
+        np = None  # type: ignore[assignment]
 
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)

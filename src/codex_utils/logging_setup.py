@@ -19,7 +19,7 @@ except Exception:
 try:  # pragma: no cover - ``resource`` missing on some platforms
     import resource
 except Exception:  # pragma: no cover - fallback path
-    resource = None  # type: ignore
+    resource = None  # type: ignore[assignment]
 
 
 class OfflineTB(AbstractContextManager["OfflineTB"]):
