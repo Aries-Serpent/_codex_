@@ -10,7 +10,7 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
 def move_module() -> bool:
-    src = REPO_ROOT / "training" / "functional_training.py"
+    src = REPO_ROOT / "src" / "training" / "functional_training.py"
     if not src.exists():
         return False
     dest = REPO_ROOT / "src" / "codex" / "training.py"

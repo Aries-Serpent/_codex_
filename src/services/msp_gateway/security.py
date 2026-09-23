@@ -11,7 +11,7 @@ from typing import Optional
 
 import yaml
 
-from utils.log_sanitizer import sanitize_log_input
+from src.utils.log_sanitizer import sanitize_log_input
 
 from .config import settings
 

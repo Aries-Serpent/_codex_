@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5625 review-thread remediation (2026-09-23)
+- Fixed the stale packaged-import issues in the review thread by switching invalid `utils.*` / `src.*` imports to the supported repo package paths and adding a packaged `aries_serpent_core.agent` compatibility layer for the Zendesk wrapper.
+- Applied the exact workflow and security fixes from the review thread: pinned `actions/checkout` to the repo-approved `v5` policy, replaced the insecure SHA-1 hashing in `src/tools/docs_agent/utils.py` with SHA-256, corrected the stale status CLI invocation, and restored the valid functional-training migration path.
+- Reverted timestamp-only churn in `.codex/session_startup_packet.json` and normalized `validation_summary.json` back to the true green result for the current branch state.
+
 ### Fixed — PR readiness blockers resolved (2026-09-23)
 - Cleared the active `auto_fix` readiness gate by running the repo auto-fix sweep and keeping only the minimal remediation required for the current branch state.
 - Refreshed the active accountability report and PDA evidence so the stale accountability-report blocker is cleared for today's session without broader scope drift.

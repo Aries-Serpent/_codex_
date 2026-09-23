@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from utils.log_sanitizer import sanitize_log_input
+from src.utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
 from ..security import auth_manager, candidate_api_key_hashes, hash_api_key

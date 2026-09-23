@@ -19,7 +19,15 @@ def main():
     prefix = "reports/daily/_codex_status_update"
     json_path = f"{prefix}-{today}.json"
     ok = True
-    ok &= run(sys.executable, "src/tools/status/generate_status_update.py", "--emit-md")
+    ok &= run(
+        sys.executable,
+        "src/tools/status/generate_status_update.py",
+        "--author",
+        "codex",
+        "--date",
+        today,
+        "--write",
+    )
     ok &= run(sys.executable, "src/tools/status/validate_status_update.py", json_path)
     ok &= run(sys.executable, "src/tools/status/capability_autodiscovery.py")
     ok &= run(sys.executable, "src/tools/docs/harvest_open_questions.py")

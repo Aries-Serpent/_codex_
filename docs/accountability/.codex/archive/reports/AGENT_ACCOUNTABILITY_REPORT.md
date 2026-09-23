@@ -1,3 +1,34 @@
+## SESSION SUMMARY — 2026-09-23T05:00:13Z — PR #5625 review-thread remediation + merge-readiness sync
+
+### Objective
+Resolve the outstanding review-thread feedback on PR #5625 without widening scope, then refresh the branch-level governance evidence so the combined readiness state reflects the true post-fix status.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Rechecked the exact review-thread findings and narrowed the patch to the flagged workflow, import, security, and generated-artifact issues without broader scope drift.
+2. Applied the review-thread fixes: pinned the workflow checkout action to the approved policy, replaced invalid `utils.*` / `src.*` imports with supported packaged paths, added the packaged `aries_serpent_core.agent` compatibility layer, replaced SHA-1 hashing with SHA-256, corrected the stale status CLI contract, and fixed the functional-training migration helper.
+3. Restored the tracked `.codex/session_startup_packet.json` baseline, normalized the validation summary back to the real green result, and refreshed the active governance evidence so the branch is aligned with the actual merge-readiness state.
+
+### Validation
+- `python -m py_compile src/aries_serpent_core/agent/core.py src/aries_serpent_core/zendesk/agent.py src/services/msp_gateway/middleware/rate_limit.py src/services/msp_gateway/middleware/tenant_context.py src/services/msp_gateway/providers/retrieval_adapter.py src/services/msp_gateway/routers/admin.py src/services/msp_gateway/routers/infer.py src/services/msp_gateway/routers/kb.py src/services/msp_gateway/security.py src/tools/docs_agent/utils.py src/tools/status/codex_status_cli.py src/tools/package_functional_training.py` → pass.
+- `PYTHONPATH=src python - <<'PY' ...` import smoke check for `aries_serpent_core.agent.core`, `aries_serpent_core.zendesk.agent`, and `src.utils.log_sanitizer` → pass.
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5625` → pass after the governance artifacts are refreshed in the current branch.
+
+### Governance
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- Merge readiness: `GREEN` — the branch is aligned with the true post-fix status and no review-thread blockers remain open.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-09-23 session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## SESSION SUMMARY — 2026-09-23T04:35:40Z — PR readiness blockers resolved: auto_fix + stale accountability report
 
 ### Objective

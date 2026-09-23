@@ -7,7 +7,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Response, status
 
-from utils.log_sanitizer import sanitize_log_input
+from src.utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
 from ..middleware.tenant_context import tenant_registry
