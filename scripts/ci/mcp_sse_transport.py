@@ -29,14 +29,55 @@ Design notes
 
 from __future__ import annotations
 
+import ipaddress
 import json
 import logging
 import os
 import sys
 import urllib.request
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 logger = logging.getLogger(__name__)
+
+
+def _validated_network_url(
+    url: str, *, allow_http: bool = False, allow_local: bool = False
+) -> str:
+    """Reject private/loopback endpoints unless explicitly opted in."""
+    allow_local = allow_local or os.environ.get("CODEX_MCP_ALLOW_LOCAL", "").strip().lower() in {"1", "true", "yes", "on"}
+    parts = urlsplit(url)
+    allowed_schemes = {"https", "http"} if (allow_http or allow_local) else {"https"}
+    if parts.scheme not in allowed_schemes or not parts.netloc:
+        raise ValueError(
+            f"http_post_json_streaming: unsupported URL scheme (expected http:// or https://): {url!r}"
+        )
+    if parts.username or parts.password:
+        raise ValueError("Refusing URL with embedded credentials")
+
+    hostname = (parts.hostname or "").lower()
+    if hostname in {"localhost", "localhost.localdomain"} or hostname.endswith(".localhost"):
+        if allow_local:
+            return url
+        raise ValueError("Refusing localhost endpoint without explicit opt-in")
+
+    try:
+        ip = ipaddress.ip_address(hostname)
+    except ValueError:
+        return url
+
+    blocked = (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+        or ip.is_site_local
+    )
+    if blocked and not allow_local:
+        raise ValueError(f"Refusing non-public network target: {hostname!r}")
+    return url
 
 
 def http_post_json_streaming(
@@ -44,6 +85,9 @@ def http_post_json_streaming(
     payload: dict[str, Any],
     auth_token: Optional[str] = None,
     timeout: int = 30,
+    *,
+    allow_http: bool = False,
+    allow_local: bool = False,
 ) -> dict[str, Any]:
     """POST *payload* as JSON and read the response as SSE or plain JSON.
 
@@ -77,11 +121,7 @@ def http_post_json_streaming(
     ValueError
         If *url* does not start with ``http://`` or ``https://``.
     """
-    if not url.startswith(("http://", "https://")):
-        raise ValueError(
-            f"http_post_json_streaming: URL must start with "
-            f"http:// or https://, got: {url!r}"
-        )
+    url = _validated_network_url(url, allow_http=allow_http, allow_local=allow_local)
 
     data = json.dumps(payload).encode("utf-8")
     headers: dict[str, str] = {

@@ -6,6 +6,7 @@ while supporting mock/simulation mode for environments without real servers.
 """
 
 import asyncio
+import ipaddress
 import json
 import logging
 import os
@@ -66,14 +67,51 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-def _validated_network_url(url: str, *, allow_http: bool = True) -> str:
-    """Allow only credential-free HTTP(S) URLs with an explicit host."""
+def _validated_network_url(
+    url: str, *, allow_http: bool = False, allow_local: bool = False
+) -> str:
+    """Allow only credential-free HTTP(S) URLs with a trusted public host.
+
+    Local, loopback, private, link-local, multicast, and metadata endpoints are
+    rejected unless callers explicitly opt in with ``allow_local=True``.
+    """
+    allow_local = allow_local or os.environ.get("CODEX_MCP_ALLOW_LOCAL", "").strip().lower() in {"1", "true", "yes", "on"}
     parts = urlsplit(url)
-    allowed_schemes = {"https", "http"} if allow_http else {"https"}
+    allowed_schemes = {"https", "http"} if (allow_http or allow_local) else {"https"}
     if parts.scheme not in allowed_schemes or not parts.netloc:
-        raise ValueError(f"Unsupported network URL: {url!r}")
+        raise ValueError(
+            f"Unsupported network URL scheme (expected http:// or https://): {url!r}"
+        )
     if parts.username or parts.password:
         raise ValueError("Refusing URL with embedded credentials")
+
+    hostname = (parts.hostname or "").lower()
+    if not hostname:
+        raise ValueError(
+            f"Unsupported network URL scheme (expected http:// or https://): {url!r}"
+        )
+
+    if hostname in {"localhost", "localhost.localdomain"} or hostname.endswith(".localhost"):
+        if allow_local:
+            return url
+        raise ValueError("Refusing localhost endpoint without explicit opt-in")
+
+    try:
+        ip = ipaddress.ip_address(hostname)
+    except ValueError:
+        return url
+
+    blocked = (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+        or ip.is_site_local
+    )
+    if blocked and not allow_local:
+        raise ValueError(f"Refusing non-public network target: {hostname!r}")
     return url
 
 
@@ -529,6 +567,9 @@ class MCPIntegration:
         payload: dict[str, Any],
         auth_token: Optional[str] = None,
         timeout: int = 30,
+        *,
+        allow_http: bool = False,
+        allow_local: bool = False,
     ) -> dict[str, Any]:
         """Send a synchronous HTTP POST with a JSON body and return the decoded response.
 
@@ -555,7 +596,7 @@ class MCPIntegration:
         ValueError
             If *url* does not start with ``http://`` or ``https://``.
         """
-        url = _validated_network_url(url)
+        url = _validated_network_url(url, allow_http=allow_http, allow_local=allow_local)
         data = json.dumps(payload).encode("utf-8")
         headers: dict[str, str] = {"Content-Type": "application/json"}
         if auth_token:
@@ -674,11 +715,15 @@ class MCPIntegration:
                 error=str(exc),
             )
 
+    @staticmethod
     def _http_post_json_streaming(
-        self: str,
+        url: str,
         payload: dict[str, Any],
         auth_token: Optional[str] = None,
         timeout: int = 30,
+        *,
+        allow_http: bool = False,
+        allow_local: bool = False,
     ) -> dict[str, Any]:
         """POST JSON and read the response as SSE or plain JSON.
 
@@ -689,8 +734,14 @@ class MCPIntegration:
         See :mod:`mcp_sse_transport` for the full parameter/return documentation.
         """
         if _sse_transport_imported:
+            url = _validated_network_url(url, allow_http=allow_http, allow_local=allow_local)
             return _http_post_json_streaming_fn(
-                self, payload, auth_token=auth_token, timeout=timeout
+                url,
+                payload,
+                auth_token=auth_token,
+                timeout=timeout,
+                allow_http=allow_http,
+                allow_local=allow_local,
             )
 
         # ------------------------------------------------------------------ #
@@ -698,7 +749,7 @@ class MCPIntegration:
         # where the repo root is not available, e.g. a bare checkout of the  #
         # .github/copilot-cascade/ sub-tree only).                            #
         # ------------------------------------------------------------------ #
-        self = _validated_network_url(self)
+        url = _validated_network_url(url, allow_http=allow_http, allow_local=allow_local)
         data = json.dumps(payload).encode("utf-8")
         headers: dict[str, str] = {
             "Content-Type": "application/json",
@@ -707,7 +758,7 @@ class MCPIntegration:
         if auth_token:
             headers["Authorization"] = f"Bearer {auth_token}"
 
-        req = urllib.request.Request(self, data=data, headers=headers, method="POST")
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_network_url()
             req, timeout=timeout
         ) as resp:
