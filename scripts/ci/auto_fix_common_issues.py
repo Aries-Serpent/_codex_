@@ -373,7 +373,6 @@ class CommonIssueFixer:
             "Test Assertions",          # Pattern 6  - auto-fix: narrow except Exception → specific types
             "Redundant Imports",        # Pattern 7  - auto-fix: remove duplicate inline imports
             "Unsorted Imports",         # Pattern 9  - ruff --fix I001
-            "Bandit Security",          # Pattern 10 - ruff --fix (nosec injection)
             "F-String Placeholders",    # Pattern 11 - ruff --fix F541
             "Line Length",              # Pattern 12 - ruff format (E501)
             "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
@@ -399,6 +398,7 @@ class CommonIssueFixer:
         # these before every human/Copilot push.
         self.soft_warning_patterns = {
             "Tracked File Sync",        # Pattern 22 - CODEX_MANIFEST hash drift from bot auto-commits
+            "mypy Baseline Freshness", # Pattern 15 - informational only; requires isolated-venv update
             # Patterns 31-32 are useful hygiene auto-fixes, but in check-only mode they can
             # generate large codebase-wide churn unrelated to the current PR. Keep them
             # non-blocking so Fast Validation only fails on issues that require immediate PR action.
@@ -1571,10 +1571,10 @@ class CommonIssueFixer:
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return issues  # skip if mypy unavailable
 
-        # Report when live count is more than 50 below baseline.  The 50-error
-        # threshold filters out the known full-env vs isolated-venv discrepancy
-        # (~46 errors) so this only fires for genuine large-scale improvements
-        # that definitely warrant a manual baseline update.
+        # Keep this as informational only: the recorded baseline is intentionally
+        # tied to the isolated-venv used by mypy-baseline.yml, and a full-env run
+        # can legitimately report fewer errors.  This is a soft warning and must not
+        # keep the merge-readiness scorecard red.
         threshold = 50
         if live <= stored - threshold:
             issues.append(

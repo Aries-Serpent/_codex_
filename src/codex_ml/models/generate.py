@@ -28,8 +28,8 @@ def _sample(logits: torch.Tensor, temperature: float, top_k: int, top_p: float) 
 
 def generate(
     model,
-    tokenizer,
-    prompt_ids: torch.Tensor,
+    tokenizer=None,
+    prompt_ids: Optional[torch.Tensor] = None,
     *,
     max_new_tokens: int = 20,
     temperature: float = 1.0,
@@ -37,7 +37,12 @@ def generate(
     top_p: float = 1.0,
     eos_id: Optional[int] = None,
     pad_id: Optional[int] = None,
+    input_ids: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if prompt_ids is None:
+        prompt_ids = input_ids
+    if prompt_ids is None:
+        raise ValueError("prompt_ids or input_ids must be provided")
     """Generate tokens from ``model`` starting from ``prompt_ids``."""
 
     model.eval()

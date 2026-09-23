@@ -25,15 +25,29 @@ logger = logging.getLogger(__name__)
 from collections.abc import Iterable, Sequence  # noqa: E402
 
 from codex_ml.interfaces.tokenizer import TokenizerAdapter  # noqa: E402
-from codex_ml.plugins.registries import tokenizers  # noqa: E402
+
+# Import the registry lazily to avoid partial-initialization issues during package
+# import and to keep optional dependencies safe in readiness checks.
+try:
+    from codex_ml.plugins.registries import tokenizers  # noqa: E402
+except (ImportError, AttributeError, ValueError, TypeError):  # pragma: no cover - best effort
+    tokenizers = None
 
 try:  # pragma: no cover - optional dependency guard
     from tokenizers import Tokenizer as _FastTokenizer
-except (ValueError, TypeError):  # pragma: no cover - dependency missing
+except (ValueError, TypeError, ImportError, AttributeError):  # pragma: no cover - dependency missing
     _FastTokenizer = None
 
 
-@tokenizers.register("hf_tokenizer_json")
+def _register_hf_adapter() -> None:
+    """Register the adapter only when the registry is available and initialized."""
+    if tokenizers is not None:
+        try:
+            tokenizers.register("hf_tokenizer_json")(HFTokenizerAdapter)
+        except (AttributeError, ValueError, TypeError):
+            logger.debug("HFTokenizerAdapter registration skipped during partial initialization", exc_info=True)
+
+
 class HFTokenizerAdapter(TokenizerAdapter):
     """Adapter for Hugging Face ``tokenizers`` JSON artefacts."""
 
@@ -106,5 +120,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def eos_id(self) -> int:
         return int(self._eos_id)
 
+
+_register_hf_adapter()
 
 __all__ = ["HFTokenizerAdapter"]

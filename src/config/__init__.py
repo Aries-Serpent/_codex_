@@ -20,9 +20,12 @@ Author: Codex Team
 
 from __future__ import annotations
 
-# Backward compatibility imports (P19 shadow import fix)
-# These modules have been moved to src/codex/clients/
-from codex.clients.openai_client import (
+# Keep the public config namespace lightweight and import-safe.
+# Importing the legacy codex.clients package pulls in networked client modules
+# and their optional dependencies at import time, which violates the repo's
+# no-network-on-import guard.  Re-export the local, in-tree implementation
+# directly instead.
+from .openai_client import (
     AVAILABLE_MODELS,
     AuditLogEntry,
     CodexOpenAIClient,

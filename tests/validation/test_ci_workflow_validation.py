@@ -25,6 +25,9 @@
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # # =============================================================================
 # 
+import re
+from pathlib import Path
+
 #             assert (, "Condition must be true"
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
@@ -205,8 +208,7 @@ class TestWorkflowSecurityValidation:
 
     def test_no_hardcoded_secrets(self) -> None:
         """Test that workflows don't have hardcoded secrets."""
-        workflows_dir = Path(".github/workflows"
-                        ), "Condition must be true"
+        workflows_dir = Path(".github/workflows")
         sensitive_patterns = [
             r"password\s*=\s*['\"][^'\"]+['\"]",
             r"token\s*=\s*['\"][^'\"]+['\"]",

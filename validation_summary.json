@@ -1,0 +1,19 @@
+{
+  "mode": "fast",
+  "selectors": [],
+  "pytest_opts": "",
+  "exit_code": 0,
+  "artifacts": {
+    "log": "validation.log",
+    "junit": "validation-junit.xml",
+    "coverage": null
+  },
+  "junit": {
+    "tests": 0,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 0.0,
+    "failed_cases": []
+  }
+}

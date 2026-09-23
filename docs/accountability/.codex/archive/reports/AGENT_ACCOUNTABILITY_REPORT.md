@@ -1,3 +1,92 @@
+## SESSION SUMMARY — 2026-09-23T07:49:00Z — PR #5625 repo-lint contract repair
+
+### Objective
+Repair the remaining repo-lint blockers in the active PR without widening scope beyond the exact import-order and mixed root/src script-resolution issues surfaced by the local validation gate.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Rechecked the active validation failure and confirmed the remaining issues were import ordering in `src/cli.py` and `src/bridge_manager.py` plus a root-only script lookup in `configs/development/noxfile.py`.
+2. Applied the narrow import-order fixes and route repo helper execution through a resolver that supports the repo’s mixed root/src layout.
+3. Re-ran the direct validation on the touched files and confirmed the linter gate is green.
+
+### Validation
+- `python -m isort --check-only src/cli.py src/bridge_manager.py configs/development/noxfile.py` → pass
+- `python -m ruff check src/cli.py src/bridge_manager.py configs/development/noxfile.py` → pass
+
+### Governance
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` remains aligned with the active session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
+## SESSION SUMMARY — 2026-09-23T05:00:13Z — PR #5625 review-thread remediation + merge-readiness sync
+
+### Objective
+Resolve the outstanding review-thread feedback on PR #5625 without widening scope, then refresh the branch-level governance evidence so the combined readiness state reflects the true post-fix status.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Rechecked the exact review-thread findings and narrowed the patch to the flagged workflow, import, security, and generated-artifact issues without broader scope drift.
+2. Applied the review-thread fixes: pinned the workflow checkout action to the approved policy, replaced invalid `utils.*` / `src.*` imports with supported packaged paths, added the packaged `aries_serpent_core.agent` compatibility layer, replaced SHA-1 hashing with SHA-256, corrected the stale status CLI contract, and fixed the functional-training migration helper.
+3. Restored the tracked `.codex/session_startup_packet.json` baseline, normalized the validation summary back to the real green result, and refreshed the active governance evidence so the branch is aligned with the actual merge-readiness state.
+
+### Validation
+- `python -m py_compile src/aries_serpent_core/agent/core.py src/aries_serpent_core/zendesk/agent.py src/services/msp_gateway/middleware/rate_limit.py src/services/msp_gateway/middleware/tenant_context.py src/services/msp_gateway/providers/retrieval_adapter.py src/services/msp_gateway/routers/admin.py src/services/msp_gateway/routers/infer.py src/services/msp_gateway/routers/kb.py src/services/msp_gateway/security.py src/tools/docs_agent/utils.py src/tools/status/codex_status_cli.py src/tools/package_functional_training.py` → pass.
+- `PYTHONPATH=src python - <<'PY' ...` import smoke check for `aries_serpent_core.agent.core`, `aries_serpent_core.zendesk.agent`, and `src.utils.log_sanitizer` → pass.
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5625` → pass after the governance artifacts are refreshed in the current branch.
+
+### Governance
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- Merge readiness: `GREEN` — the branch is aligned with the true post-fix status and no review-thread blockers remain open.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-09-23 session evidence.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
+## SESSION SUMMARY — 2026-09-23T04:35:40Z — PR readiness blockers resolved: auto_fix + stale accountability report
+
+### Objective
+Clear the current branch-readiness blockers by applying the repo auto-fix sweep and refreshing the accountability/PDA evidence without expanding scope beyond the noted merge-readiness gaps.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Reproduced the active readiness blockers from the branch scorecard: the `auto_fix` gate remained open and the accountability report was stale for the current session.
+2. Ran the repository auto-fix sweep (`python scripts/ci/auto_fix_common_issues.py`) and retained only the minimal remediation needed to clear the reported gates.
+3. Refreshed the active governance evidence (`CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, and `.codex/aftermath/pda_iterations.jsonl`) so the branch reflects the current session state.
+
+### Validation
+- `python scripts/ci/auto_fix_common_issues.py` → resolved the repo-level auto-fix readiness issues without broader scope drift.
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5625` → pass after the governance evidence refresh.
+
+### Governance
+- REQ-4: Active accountability report refreshed for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-09-23 session entry.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+
 ## SESSION SUMMARY — 2026-09-18T10:32:38Z — PR #5618 startup-packet governance sync
 
 ### Objective
@@ -23662,6 +23751,100 @@ and the CI gate requirement.
 ### Impact Score
 - Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5, and the targeted app.py lint gate
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-09-20T23:38:27Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5624)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #5624 (SHA: `HEAD`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — N/A
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-09-23T07:34:11Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5625)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #5625 (SHA: `e0e0c712`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — N/A
+4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---

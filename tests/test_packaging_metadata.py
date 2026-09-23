@@ -75,15 +75,15 @@ def test_pyproject_core_metadata():
     for key in ("codex-train", "codex-eval", "codex-list-plugins"):
         assert key in scripts, f"missing console script: {key}"
 
-    # Package-dir maps (top-level shims + src)
+    # Package-dir maps to the canonical src layout only.
     pkgdir = data.get("tool", {}).get("setuptools", {}).get("package-dir", {})
-    for k in ("", "training", "tokenization", "codex_utils", "interfaces"):
-        assert k in pkgdir, f"missing package-dir mapping for '{k}'"
+    assert pkgdir.get("") == "src", "src must be the only package-dir mapping"
+    assert set(pkgdir) == {""}, "legacy root package-dir mappings must be removed"
 
-    # Package discovery "where" includes "." and "src"
+    # Package discovery is src-only.
     find = data.get("tool", {}).get("setuptools", {}).get("packages", {}).get("find", {})
     where = find.get("where", [])
-    assert "." in where and "src" in where, "Condition must be true"
+    assert where == ["src"], "Condition must be true"
 
     # Include patterns cover codex_ml namespace
     include = find.get("include", [])

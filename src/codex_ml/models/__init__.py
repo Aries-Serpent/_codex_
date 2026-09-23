@@ -63,7 +63,7 @@ try:  # pragma: no cover - optional dependency
     from .minilm import MiniLM, MiniLMConfig
 
     register_model("minilm")(MiniLM)
-except (ValueError, TypeError):  # pragma: no cover - dependency not installed
+except (ValueError, TypeError, ModuleNotFoundError):  # pragma: no cover - dependency not installed
     MiniLM = None  # type: ignore[misc,assignment]
     MiniLMConfig = None  # type: ignore[misc,assignment]
 
@@ -71,7 +71,7 @@ try:  # pragma: no cover - optional dependency
     from .decoder_only import DecoderOnlyLM, ModelConfig
 
     register_model("decoder_only")(DecoderOnlyLM)
-except (ValueError, TypeError):  # pragma: no cover - dependency not installed
+except (ValueError, TypeError, ModuleNotFoundError):  # pragma: no cover - dependency not installed
     DecoderOnlyLM = None  # type: ignore[misc,assignment]
     ModelConfig = None  # type: ignore[misc,assignment]
 
@@ -82,7 +82,7 @@ try:  # pragma: no cover - optional dependency
         ToolUseAdapter,
         attach_reasoning_adapters,
     )
-except (ValueError, TypeError):  # pragma: no cover - dependency not installed
+except (ValueError, TypeError, ModuleNotFoundError):  # pragma: no cover - dependency not installed
     ReasoningHarness = None  # type: ignore[misc,assignment]
     ReasoningHead = None  # type: ignore[misc,assignment]
     ToolUseAdapter = None  # type: ignore[misc,assignment]

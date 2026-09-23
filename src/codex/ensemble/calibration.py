@@ -6,12 +6,12 @@ from typing import Dict, List
 
 import numpy as np
 
-from src.codex.ensemble.models import (
+from codex.ensemble.models import (
     HeuristicModel,
     MLModel,
     SymbolicModel,
 )
-from src.codex.ensemble.types import (
+from codex.ensemble.types import (
     CalibrationMetrics,
     CrossValidationResult,
     ModelType,

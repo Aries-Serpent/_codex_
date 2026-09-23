@@ -78,13 +78,7 @@
     "hypothesis",
     "hypothesis"
   ],
-  "tests/agents/test_public_api_phase9_2.py": [
-    "numpy"
-  ],
   "tests/agents/test_quantum_game_core_flows.py": [
-    "numpy"
-  ],
-  "tests/agents/test_quantum_game_theory_phase9_1.py": [
     "numpy"
   ],
   "tests/ast/test_ast_cli.py": [
@@ -219,9 +213,6 @@
     "torch.utils.data"
   ],
   "tests/cognitive/test_context_injector.py": [
-    "numpy"
-  ],
-  "tests/conftest.py": [
     "numpy"
   ],
   "tests/data/test_cache_flush_threshold.py": [
@@ -432,8 +423,8 @@
     "numpy"
   ],
   "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py": [
-    "torch.optim",
     "torch",
+    "torch.optim",
     "transformers"
   ],
   "tests/space_traversal/test_peft_comprehensive/test_distributed.py": [
@@ -461,8 +452,8 @@
     "torch"
   ],
   "tests/test_checkpoint_integrity.py": [
-    "torch.optim",
-    "torch"
+    "torch",
+    "torch.optim"
   ],
   "tests/test_checkpoint_integrity_corruption.py": [
     "torch"
@@ -529,8 +520,8 @@
     "typer.testing"
   ],
   "tests/test_performance_benchmark.py": [
-    "torch.optim",
     "torch",
+    "torch.optim",
     "torch.utils.data"
   ],
   "tests/test_plugins_cli.py": [

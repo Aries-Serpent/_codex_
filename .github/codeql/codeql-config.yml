@@ -13,10 +13,8 @@ paths:
   - tests/
   - scripts/
   - .github/
-  - services/
   - tools/
   - cognitive_app/
-  - utils/
 
 paths-ignore:
   - "**/__pycache__/"

@@ -14,18 +14,18 @@ from __future__ import annotations
 
 import pytest
 
-from src.codex.cognitive_brain.capability_registry import (
+from codex.cognitive_brain.capability_registry import (
     CapabilityRegistry,
     ModelCapabilityProfile,
 )
-from src.codex.cognitive_brain.kernel import (
+from codex.cognitive_brain.kernel import (
     CognitiveBrainKernel,
     KernelConfig,
     reset_kernel,
 )
-from src.codex.cognitive_brain.model_negotiator import ModelNegotiator
-from src.codex.cognitive_brain.session_guard import SessionGuard
-from src.codex.cognitive_brain.shell_policy import PolicyVerdict, ShellPolicy
+from codex.cognitive_brain.model_negotiator import ModelNegotiator
+from codex.cognitive_brain.session_guard import SessionGuard
+from codex.cognitive_brain.shell_policy import PolicyVerdict, ShellPolicy
 
 # ---------------------------------------------------------------------------
 # A) Unsupported reasoning param — impossible by construction
@@ -139,14 +139,14 @@ class TestKernelAutoLoadGuard:
     def test_auto_load_respects_failsafe_off(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """COGNITIVE_BRAIN_FAILSAFE_OFF=true disables auto_load (returns None)."""
         monkeypatch.setenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "true")
-        from src.codex.cognitive_brain.kernel import auto_load
+        from codex.cognitive_brain.kernel import auto_load
 
         result = auto_load()
         assert result is None
 
     def test_auto_load_disabled_by_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("COGNITIVE_BRAIN_AUTO_LOAD", "false")
-        from src.codex.cognitive_brain.kernel import auto_load
+        from codex.cognitive_brain.kernel import auto_load
 
         result = auto_load()
         assert result is None

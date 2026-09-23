@@ -18,7 +18,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf
-except (ValueError, TypeError):  # pragma: no cover - optional
+except (AttributeError, ImportError, ModuleNotFoundError, TypeError, ValueError):  # pragma: no cover - optional
     DictConfig = object  # type: ignore
     OmegaConf = None  # type: ignore[misc,assignment]
 

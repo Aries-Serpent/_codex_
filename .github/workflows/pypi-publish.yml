@@ -81,7 +81,7 @@ jobs:
             import: codex_ml_telemetry
             release_tag_prefix: codex-ml-telemetry-v
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload artifacts
         if: env.SELECTED_DISTRIBUTION == 'true'
-        uses: actions/upload-artifact@65462800fd0af4f03d4b8d36972228f5f4f8d2c0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: python-package-${{ matrix.distribution.name }}
           path: dist/${{ matrix.distribution.name }}/
@@ -176,7 +176,7 @@ jobs:
           github.event.inputs.package == matrix.distribution.name))
         }
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
@@ -236,7 +236,7 @@ jobs:
           github.event.inputs.package == matrix.distribution.name))
         }
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         if: env.SELECTED_DISTRIBUTION == 'true'
         with:
           persist-credentials: false
@@ -328,14 +328,13 @@ jobs:
           path: dist/
           name: python-package-${{ matrix.distribution.name }}
       - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33
         with:
           repository-url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           skip-existing: true
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 30
 
   publish-pypi:
     name: Publish ${{ matrix.distribution.name }} to PyPI
@@ -383,13 +382,12 @@ jobs:
           path: dist/
           name: python-package-${{ matrix.distribution.name }}
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33
         with:
           password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: false
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 45
 
   verify-installation:
     name: Verify ${{ matrix.distribution.name }} (Python 3.12)
@@ -431,7 +429,7 @@ jobs:
             import: codex_ml_telemetry
             release_tag_prefix: codex-ml-telemetry-v
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d8e6fa9b1d0b9f7c
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         if: >-
           (github.event_name == 'release' &&
           startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||

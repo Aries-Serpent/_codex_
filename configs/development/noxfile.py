@@ -59,6 +59,18 @@ REPO_TEST_TOOLS = (
     "tools/schema_validate.py",
 )
 
+
+def _resolve_repo_script(script: str) -> Path | None:
+    """Resolve repo helper paths across the legacy root and src-first layouts."""
+
+    candidate = REPO_ROOT / script
+    if candidate.exists():
+        return candidate
+    src_candidate = REPO_ROOT / "src" / script.lstrip("./")
+    if src_candidate.exists():
+        return src_candidate
+    return None
+
 nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = False
 nox.options.error_on_missing_interpreters = False
@@ -89,8 +101,8 @@ def _run_repo_health_prechecks(session: nox.Session) -> None:
     """Run the repo-level validation helpers before the full pytest contract."""
 
     for script in REPO_TEST_TOOLS:
-        script_path = REPO_ROOT / script
-        if script_path.exists():
+        script_path = _resolve_repo_script(script)
+        if script_path is not None:
             session.run("python", str(script_path), external=True)
 
 
@@ -305,7 +317,6 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
         "-p",
         "pytest_cov",
         "--cov=src",
-        "--cov=training",
         "--cov-branch",
         "--cov-report=term-missing",
         f"--cov-report=html:{COVERAGE_HTML.as_posix()}",
@@ -539,12 +550,14 @@ def lint(session: nox.Session) -> None:
             success_codes=[0, 1],
         )
         # Print an advisory summary for trend tracking
-        session.run(
-            "python",
-            "tools/import_contracts_summary.py",
-            external=True,
-            success_codes=[0, 1],
-        )
+        summary_script = _resolve_repo_script("src/tools/import_contracts_summary.py")
+        if summary_script is not None:
+            session.run(
+                "python",
+                str(summary_script),
+                external=True,
+                success_codes=[0, 1],
+            )
 
 
 @nox.session(python=DEFAULT_PYTHON)

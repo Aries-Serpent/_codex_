@@ -47,14 +47,17 @@ from typing import Any, Optional  # noqa: E402
 
 try:
     import torch
-
-    DataLoader = torch.utils.data.DataLoader
 except ImportError as e:
     error_type = type(e).__name__
     get_default_logger().debug("ImportError: <ERROR_TYPE>")
     get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
     torch = None  # type: ignore[assignment]
     DataLoader = None
+else:
+    try:
+        DataLoader = torch.utils.data.DataLoader
+    except (AttributeError, TypeError):
+        DataLoader = None
 
 
 @dataclass

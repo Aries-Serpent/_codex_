@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
-from src.codex.ensemble.ensemble_predictor import EnsemblePredictor
+from codex.ensemble.ensemble_predictor import EnsemblePredictor
 
 logger = logging.getLogger(__name__)
 

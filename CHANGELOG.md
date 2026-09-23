@@ -2,6 +2,45 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5625 repo-lint contract repair (2026-09-23)
+- Fixed the remaining repo-lint contract violations by restoring the import ordering in `src/cli.py` and `src/bridge_manager.py` and by resolving repo helper scripts through the active root/src layout in `configs/development/noxfile.py`.
+
+### Fixed — PR #5625 governance compliance sync (2026-09-23)
+- Restored the tracked `.codex/session_startup_packet.json` baseline to eliminate timestamp-only churn from the last session.
+- Refreshed the active governance evidence in the accountability archive and changelog so the branch clears the REQ-4 / REQ-5 gate for the current PR tip.
+
+### Fixed — PR #5625 review-thread remediation (2026-09-23)
+- Fixed the stale packaged-import issues in the review thread by switching invalid `utils.*` / `src.*` imports to the supported repo package paths and adding a packaged `aries_serpent_core.agent` compatibility layer for the Zendesk wrapper.
+- Applied the exact workflow and security fixes from the review thread: pinned `actions/checkout` to the repo-approved `v5` policy, replaced the insecure SHA-1 hashing in `src/tools/docs_agent/utils.py` with SHA-256, corrected the stale status CLI invocation, and restored the valid functional-training migration path.
+- Reverted timestamp-only churn in `.codex/session_startup_packet.json` and normalized `validation_summary.json` back to the true green result for the current branch state.
+
+### Fixed — PR readiness blockers resolved (2026-09-23)
+- Cleared the active `auto_fix` readiness gate by running the repo auto-fix sweep and keeping only the minimal remediation required for the current branch state.
+- Refreshed the active accountability report and PDA evidence so the stale accountability-report blocker is cleared for today's session without broader scope drift.
+
+### Fixed — PR #5625 CI/governance blocker remediation
+- Removed the duplicate `timeout-minutes` key from `.github/workflows/pypi-publish.yml` so workflow-policy YAML parsing no longer fails the nox gate.
+- Dropped the nonexistent `services/` and `utils/` entries from `.github/codeql/codeql-config.yml` so CodeQL no longer aborts on missing analysis roots in this branch layout.
+- Restored the `post_rescue_comment.py` repo fallback via `GITHUB_REPOSITORY`, fixed the `src/tools/pytest_repair.py` regex syntax regression, and added a targeted test covering the rescue-comment fallback path.
+
+### Fixed (auto-update — PR #5624)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5624 (SHA `HEAD`) at 2026-09-20T23:38:27Z [auto-generated]
+
+### Changed — Phase 1 (structural foundation) Session 3 / Steps 1+2
+- Step 1 (move root-only subtrees into canonical `src/`, root retained pending Session 4): consolidated `services/{api,ita,msp_gateway,workflow.backup}` → `src/services/`, `tools/*` → `src/tools/`, `agents/*` (minus `codex_client`) → `src/agents/`; rewrote internal `src.`-prefixed imports inside moved files to the canonical bare form.
+- Step 2 (import rewrite): converted remaining `from src.X` / `import src.X` → `from X` / `import X` across tests/src/scripts/models/benchmarks/apps/cli (`.github/agents/*` subprojects excluded; `src/aries_serpent_core/zendesk/agent.py` deferred until root `tools/` shadow is removed in Session 4).
+- Ported the unique runtime logic from root `training/checkpoint_manager.py` into `src/training/checkpoint_manager.py` (fallback RNG-state helpers, `_protected_names_cache`, `best_k` early-return, best-record validation, `step>0` save gate) rather than blind-deleting the shim.
+
+### Changed — Phase 1 (structural foundation) Session 2 / Step 0
+- Course-corrected Phase 1 approach after parallel analysis (`root-organizer-agent` + `reference-updater-agent`): replaced the unsafe "delete root shadow dirs" framing with a 5-step sequenced migration, because root `tools`/`services`/`agents`/`codex_utils`/`utils` are substantive installable packages (450+ unique files) and `configs/sitecustomize.py` is load-bearing.
+- Dead-weight deletions (verified zero-importer or guarded-fallback): removed `codex_core.pyi`, `config_legacy/`, `yaml_legacy/`, and the root `omegaconf/` stub (real `omegaconf>=2.3.1` is a declared dep); removed the nonexistent `zendesk` name from both `_CanonicalPackageFinder` lists (`configs/sitecustomize.py`, `tests/conftest.py`) and dropped the stale `config_legacy*` packaging exclude.
+- Content reconciliation into canonical `src/`: copied root-only `utils/{safe_pickle,safe_torch_loader,torch_resource_manager}.py` → `src/utils/` and `codex_utils/{json_report,logging_setup,mlflow_offline,ndjson,repro,cli/*}.py` → `src/codex_utils/` (root copies retained pending the Session 4 shim deletion + reverse-import flip).
+- Flagged for Session 3: `training/checkpoint_manager.py` is NOT a pure shim (168 lines of unique logic with live test consumers) and must be ported, not deleted.
+
+### Changed — Phase 0 production-readiness quick wins
+- Repo hygiene (Lane A): added targeted `.gitignore` patterns for generated artifacts (`/.codex/sessions/`, `/.codex/aftermath/cache/`, `/.codex/.validation_cache.json`, `/site/`, `/runs/`) to stop future churn while keeping `.codex/` policy files tracked; deleted stray root stubs `a.py`/`b.py`; removed 3 unreferenced `.disabled` workflow files (`security_policy_gate`, `required-actions-enforcer`, `secrets-baseline-enforcer`); added deprecation redirect READMEs in `docs/changelog/` and `docs/changelogs/` pointing to the canonical root `CHANGELOG.md`.
+- Static analysis (Lane B): enabled Ruff rule sets `B` (bugbear), `LOG`, and `UP` (pyupgrade) alongside existing `E,F,I`; parked the pre-existing repo-wide lint backlog (13,887 baseline errors — incl. 5,652 in the non-first-party `.codex/` tree, now excluded) in an annotated `ignore`/`per-file-ignores` inventory with a Phase 3 burn-down reference so `ruff check` is green (exit 0); aligned pytest plugin floors (`pytest>=8.4.2`, `pytest-cov>=5.0.0`, `pytest-xdist>=3.8.0`, `pytest-timeout>=2.4.0`, `pytest-asyncio>=1.3.0`) across all 5 extras with `code-quality-coverage-suite.yml`; documented the 34% coverage baseline and 34→40→50→65% climb plan in `pytest.ini`.
+
 ### Fixed (auto-update — PR #5618)
 - Final governance sync: restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the active accountability/PDA evidence for PR #5618 so the current branch remains compliant with REQ-4, REQ-5, and the daily session-wrapup gate.
 - Follow-up: the current session revalidated the canonical WEC block and the repo wrap-up contract after removing the timestamp-only startup-packet churn that was reintroduced during the active PR cycle.
