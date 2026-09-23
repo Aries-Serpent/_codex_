@@ -1,0 +1,8 @@
+{
+  "stage": "S7",
+  "timestamp": "2026-09-23T18:34:28.440821+00:00",
+  "warnings": [
+    "invalid_regex:1",
+    "pointer_style_degraded:embedded"
+  ]
+}
