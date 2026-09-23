@@ -109,13 +109,22 @@ class GitHubAPIClient:
             raise ValueError("Repository owner and name may only use GitHub-safe characters")
         return f"{owner}/{name}"
 
+    @staticmethod
+    def _has_unsafe_path_segments(path: str) -> bool:
+        """Reject empty, dot, or traversal path segments after URL-decoding."""
+        decoded = urllib.parse.unquote(path).replace("\\", "/").lstrip("/")
+        if not decoded:
+            return True
+        segments = decoded.split("/")
+        return any(segment in ("", ".", "..") for segment in segments)
+
     def _build_github_api_url(self, repo: str, api_path: str) -> str:
         """Build a GitHub API URL only from validated repo and API path segments."""
         repo_name = self._normalize_repo_name(repo)
         normalized_path = api_path.strip().lstrip("/")
         if not normalized_path:
             raise ValueError("GitHub API path must not be empty")
-        if any(segment in ("", ".", "..") for segment in normalized_path.split("/")):
+        if self._has_unsafe_path_segments(normalized_path):
             raise ValueError("GitHub API path contains empty or traversal segments")
         if "?" in normalized_path or "#" in normalized_path or "\\" in normalized_path:
             raise ValueError("GitHub API path must not include query strings or fragments")
@@ -136,9 +145,12 @@ class GitHubAPIClient:
             )
         if target.query or target.fragment:
             raise ValueError("GitHub request URL must not include query parameters or fragments")
-        if not target.path.startswith("/repos/"):
+
+        base_path = (base.path or "").rstrip("/")
+        expected_prefix = f"{base_path}/repos/" if base_path else "/repos/"
+        if not target.path.startswith(expected_prefix):
             raise ValueError("GitHub request URL must target a GitHub repos API endpoint")
-        if "/../" in target.path or target.path.startswith("/../") or target.path.endswith("/../"):
+        if self._has_unsafe_path_segments(target.path):
             raise ValueError("GitHub request URL path contains traversal")
         return url
 
