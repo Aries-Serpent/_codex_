@@ -76,16 +76,10 @@ class QuantumPatternAnalyzer:
         """
         Find components that could benefit from entanglement.
 
-        Identifies files that are frequently modified together and might
-        benefit from tighter coupling or shared state management.
+        This detector intentionally requires evidence of actual co-change history
+        or a trusted dependency graph; the raw file count alone is not enough to
+        infer a meaningful entanglement relationship.
         """
-        if len(files) >= 3:
-            return [{
-                "type": "entanglement_candidate",
-                "description": f"{len(files)} related files suggest a coupled workflow that may benefit from shared state management.",
-                "confidence": 0.75,
-                "impact": "maintainability",
-            }]
         return []
 
     def _find_tunneling_opportunities(self, diff: str) -> list[dict[str, Any]]:

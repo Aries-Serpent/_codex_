@@ -16,8 +16,9 @@ metadata:
   - auto-orchestration
   visibility: organization
 triggers:
-- issue_comment
-- pull_request
+  events:
+  - issue_comment
+  - pull_request
 permissions:
   contents: read
   pull_requests: write

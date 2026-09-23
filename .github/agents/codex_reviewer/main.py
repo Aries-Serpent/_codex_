@@ -178,7 +178,19 @@ class CodexQuantumReviewer:
         review_result.review_time_seconds = (end_time - start_time).total_seconds()
 
         # Post review
-        await self._post_review(context, review_result)
+        try:
+            await self._post_review(context, review_result)
+        except Exception as exc:
+            logger.error(f"Review posting failed for PR #{context.pr_number}: {exc}")
+            return {
+                "status": "review_failed",
+                "pr_number": context.pr_number,
+                "review_status": review_result.status,
+                "suggestions_count": len(review_result.suggestions),
+                "confidence": review_result.confidence,
+                "review_time_seconds": review_result.review_time_seconds,
+                "error": str(exc),
+            }
 
         # Learn from review
         await self.learning_system.learn_from_review(context, review_result)
@@ -233,15 +245,25 @@ class CodexQuantumReviewer:
         feedback = event.get("feedback", {})
         if isinstance(feedback, str):
             try:
-                feedback = json.loads(feedback)
+                parsed = json.loads(feedback)
             except json.JSONDecodeError:
-                feedback = {"comments": [feedback]}
+                parsed = {"comments": [feedback]}
+            if isinstance(parsed, dict):
+                feedback = parsed
+            elif isinstance(parsed, list):
+                feedback = {"comments": parsed}
+            elif parsed is None:
+                feedback = {}
+            else:
+                feedback = {"comments": [str(parsed)]}
         elif not isinstance(feedback, dict):
-            feedback = {"comments": []}
+            feedback = {"comments": [feedback] if not isinstance(feedback, list) else feedback}
 
         comments = feedback.get("comments", [])
         if isinstance(comments, str):
             comments = [comments]
+        elif comments is None:
+            comments = []
 
         await self.learning_system.integrate_feedback(feedback)
 
@@ -580,7 +602,7 @@ class CodexQuantumReviewer:
             logger.info(f"Successfully posted {action} review")  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as e:
             logger.error(f"Failed to post review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-            return None
+            raise RuntimeError(f"Failed to post review for PR #{context.pr_number}: {e}") from e
 
     def _format_review_body(self, result: ReviewResult) -> str:
         """

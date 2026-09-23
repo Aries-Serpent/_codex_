@@ -84,7 +84,7 @@ class GitHubAPIClient:
             config = GitHubConfig(
                 token=token if token is not None else config.token,
                 base_url=base_url or config.base_url,
-                timeout=getattr(config, "timeout", 30),
+                timeout=timeout if timeout is not None else getattr(config, "timeout", 30),
                 max_retries=getattr(config, "max_retries", 3),
             )
 

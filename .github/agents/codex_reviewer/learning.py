@@ -55,11 +55,25 @@ class SelfEvolutionSystem:
         if isinstance(feedback_payload, str):
             import json
             try:
-                feedback = json.loads(feedback_payload)
+                parsed = json.loads(feedback_payload)
             except json.JSONDecodeError:
-                feedback = {"user_comment": feedback_payload}
-        else:
+                parsed = {"user_comment": feedback_payload}
+            if isinstance(parsed, dict):
+                feedback = parsed
+            elif isinstance(parsed, list):
+                feedback = {"comments": parsed}
+            elif parsed is None:
+                feedback = {}
+            else:
+                feedback = {"user_comment": str(parsed)}
+        elif isinstance(feedback_payload, dict):
             feedback = feedback_payload
+        elif isinstance(feedback_payload, list):
+            feedback = {"comments": feedback_payload}
+        elif feedback_payload is None:
+            feedback = {}
+        else:
+            feedback = {"user_comment": str(feedback_payload)}
         return await self.integrate_feedback(feedback)
 
     async def integrate_feedback(self, feedback: dict[str, Any]):

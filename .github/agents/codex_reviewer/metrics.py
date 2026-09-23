@@ -110,7 +110,7 @@ class MetricsCollector:
         logger.info(f"Flushed {len(self._feedback_buffer)} feedback records")  # codeql[py/clear-text-logging-sensitive-data]
         self._feedback_buffer.clear()
 
-    def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = True):
+    def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = False):
         """
         Record metrics for a completed review.
 
@@ -137,7 +137,7 @@ class MetricsCollector:
 
         logger.info(f"Recorded metrics for PR #{metrics.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = True):
+    def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = False):
         """
         Record feedback for a review.
 

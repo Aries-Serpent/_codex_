@@ -10,6 +10,7 @@ import ipaddress
 import json
 import logging
 import os
+import socket
 import sys
 import urllib.error
 import urllib.request
@@ -97,21 +98,28 @@ def _validated_network_url(
         raise ValueError("Refusing localhost endpoint without explicit opt-in")
 
     try:
-        ip = ipaddress.ip_address(hostname)
-    except ValueError:
+        addr_info = socket.getaddrinfo(hostname, None, type=socket.SOCK_STREAM)
+    except socket.gaierror:
         return url
 
-    blocked = (
-        ip.is_private
-        or ip.is_loopback
-        or ip.is_link_local
-        or ip.is_multicast
-        or ip.is_reserved
-        or ip.is_unspecified
-        or ip.is_site_local
-    )
-    if blocked and not allow_local:
-        raise ValueError(f"Refusing non-public network target: {hostname!r}")
+    for family, _, _, _, sockaddr in addr_info:
+        if family not in (socket.AF_INET, socket.AF_INET6):
+            continue
+        addr = sockaddr[0]
+        try:
+            ip = ipaddress.ip_address(addr)
+        except ValueError:
+            continue
+        if (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_multicast
+            or ip.is_reserved
+            or ip.is_unspecified
+            or getattr(ip, "is_site_local", False)
+        ) and not allow_local:
+            raise ValueError(f"Refusing non-public network target: {hostname!r}")
     return url
 
 
@@ -517,6 +525,8 @@ class MCPIntegration:
                     rpc_payload,
                     auth_token=server.auth_token,
                     timeout=server.timeout,
+                    allow_http=endpoint.startswith("http://"),
+                    allow_local=False,
                 ),
             )
 
@@ -660,6 +670,8 @@ class MCPIntegration:
                     rpc_payload,
                     auth_token=server.auth_token,
                     timeout=server.timeout,
+                    allow_http=endpoint.startswith("http://"),
+                    allow_local=False,
                 ),
             )
 
