@@ -32,6 +32,7 @@ class SecurityValidator:
 
         # Pre-compile SQL injection patterns for performance
         self._sql_patterns = [
+            re.compile(r'(?i)(?:;\s*drop\s+table|union\s+select|select\s+.*\s+from\s+.*|insert\s+into\s+.*\s+values\s*\(|delete\s+from\s+.*)'),
             re.compile(r'execute\s*\(["\'].*%s.*["\']\s*%', re.IGNORECASE),
             re.compile(r'\.format\s*\(.*\).*(?:SELECT|INSERT|UPDATE|DELETE)', re.IGNORECASE),
             re.compile(r'f["\'].*(?:SELECT|INSERT|UPDATE|DELETE).*\{.*\}', re.IGNORECASE),
@@ -39,6 +40,7 @@ class SecurityValidator:
 
         # Pre-compile XSS patterns
         self._xss_patterns = [
+            re.compile(r'(?i)<script\b|onerror\s*=|javascript\s*:|innerHTML\s*=|dangerouslySetInnerHTML'),
             re.compile(r'innerHTML\s*='),
             re.compile(r'dangerouslySetInnerHTML'),
             re.compile(r'\.html\s*\([^)]*\+'),
@@ -56,6 +58,7 @@ class SecurityValidator:
 
         # Pre-compile path traversal patterns
         self._path_patterns = [
+            (re.compile(r'(?i)(?:\.\./|\.\.\\)+'), "Relative path traversal escape sequence"),
             (re.compile(r'open\s*\([^,]*\+'), "File open with string concatenation"),
             (re.compile(r'os\.path\.join\s*\([^,]*\+'), "Path join with concatenation"),
             (re.compile(r'Path\s*\([^,]*\+'), "Path construction with concatenation"),
