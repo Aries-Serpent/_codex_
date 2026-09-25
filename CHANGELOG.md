@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5634 cognitive-preflight gate remediation (2026-09-25)
+- Added explicit `.gitignore` negation for `.codex/agent_auth_session.json` so cognitive-preflight’s ignore-policy check can pass even when broader `.codex` patterns are present.
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in the same session to satisfy the REQ-4 last-commit accountability gate.
+
 ### Fixed — PR #5633 governance drift remediation (2026-09-25)
 - Restored the tracked `.codex/session_startup_packet.json` baseline to remove timestamp-only churn from the branch and keep the repo state aligned with the tracked startup packet.
 - Refreshed the live session evidence in `.codex/aftermath/pda_iterations.jsonl` and the accountability archive so the active branch clears the stale `auto_fix` and `PDA entry today` readiness checks without broadening scope.
