@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5634 validation-pipeline CI rescue (2026-09-25)
+- Removed two broken markdown links in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` that pointed to a non-existent archived monolithic report path and were failing the `check-cross-references` gate in Validation Pipeline.
+- Preserved the historical archive path as inline code text (non-link) so accountability context remains documented without tripping link validation.
+
 ### Fixed — PR #5634 cognitive-preflight gate remediation (2026-09-25)
 - Added explicit `.gitignore` negation for `.codex/agent_auth_session.json` so cognitive-preflight’s ignore-policy check can pass even when broader `.codex` patterns are present.
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in the same session to satisfy the REQ-4 last-commit accountability gate.
