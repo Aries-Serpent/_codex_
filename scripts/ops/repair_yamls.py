@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Repair all YAML files by reconstructing them properly"""
-import yaml
 from pathlib import Path
+
+import yaml
+
 
 def reconstruct_trigger_on_approval():
     """Read current file and reconstruct it properly"""
     content = Path('.github/workflows/trigger-on-approval.yml').read_text()
-    
+
     # Replace the broken section with correct YAML
     fixed = content.replace(
         '''      - name: Resolve PR context
@@ -46,7 +48,7 @@ def reconstruct_trigger_on_approval():
           fi
           echo "Approval by ${REVIEWER} on PR  #${PR_NUM} @ ${PR_SHA} (${PR_REF})"'''
     )
-    
+
     # Fix checkout step indentation
     fixed = fixed.replace(
         '''      - name: Checkout
@@ -65,7 +67,7 @@ def reconstruct_trigger_on_approval():
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           ref: ${{ github.event.pull_request.head.ref }}'''
     )
-    
+
     # Fix setup-python step indentation
     fixed = fixed.replace(
         '''      - name: Set up Python (for approve_pending_runs.py)
@@ -79,12 +81,12 @@ def reconstruct_trigger_on_approval():
           cache: pip
           python-version: 3.12.13'''
     )
-    
+
     return fixed
 
 if __name__ == '__main__':
     fixed_content = reconstruct_trigger_on_approval()
-    
+
     # Validate
     try:
         yaml.safe_load(fixed_content)

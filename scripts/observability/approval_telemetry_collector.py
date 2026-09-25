@@ -14,11 +14,11 @@ import json
 import logging
 import threading
 import time
-from dataclasses import dataclass, field, asdict
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, List, Optional, Any, Set, Tuple
-from collections import defaultdict, deque
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 # ============================================================================
 # CONFIGURATION & ENUMS
@@ -112,7 +112,7 @@ class MetricPoint:
 class ApprovalMetricsSnapshot:
     """Point-in-time snapshot of all approval metrics"""
     timestamp: datetime
-    
+
     # Workflow metrics (8)
     request_submitted: int = 0
     request_latency_p50: float = 0.0
@@ -122,26 +122,26 @@ class ApprovalMetricsSnapshot:
     decision_time_p95: float = 0.0
     chain_depth_avg: float = 0.0
     rejections: int = 0
-    
+
     # Escalation metrics (3)
     escalations_triggered: int = 0
     escalation_time_to_resolution_p95: float = 0.0
     escalation_overrides: int = 0
-    
+
     # Authorization metrics (3)
     authority_decision_latency_p95: float = 0.0
     authority_errors: int = 0
     delegations: int = 0
-    
+
     # Audit metrics (3)
     audit_log_entries: int = 0
     policy_violations: int = 0
     unauthorized_attempts: int = 0
-    
+
     # SLA tracking
     sla_breached_count: int = 0
     sla_met_pct: float = 0.0
-    
+
     # Cardinality tracking
     timeseries_count: int = 0
     per_agent_metrics: Dict[str, Any] = field(default_factory=dict)
@@ -159,7 +159,7 @@ class ApprovalTelemetryCollector:
     Validates all events against schema v1.0.0.
     Tracks SLA compliance and escalation patterns.
     """
-    
+
     def __init__(self, max_events: int = 10000, cardinality_limit: int = 900):
         """
         Initialize the approval telemetry collector.
@@ -173,12 +173,12 @@ class ApprovalTelemetryCollector:
         self.max_events = max_events
         self.cardinality_limit = cardinality_limit
         self.events: deque = deque(maxlen=max_events)
-        
+
         # Metric accumulators (low-cardinality dimensions only)
         self.counters: Dict[str, int] = defaultdict(int)
         self.histograms: Dict[str, List[float]] = defaultdict(list)
         self.gauges: Dict[str, float] = defaultdict(float)
-        
+
         # Per-agent breakdown (medium cardinality, stored separately)
         self.per_agent_metrics: Dict[str, Dict[str, Any]] = defaultdict(
             lambda: {
@@ -188,20 +188,20 @@ class ApprovalTelemetryCollector:
                 "last_request_time": None,
             }
         )
-        
+
         # Tracked dimensions for cardinality monitoring
         self.active_dimensions: Set[str] = set()
         self.dimension_sets: Dict[str, Set[str]] = defaultdict(set)
-        
+
         # SLA tracking
         self.sla_breaches: Dict[str, List[float]] = defaultdict(list)
         self.escalations: Dict[str, int] = defaultdict(int)
-        
+
         self.logger.info(
             "ApprovalTelemetryCollector initialized with "
             f"max_events={max_events}, cardinality_limit={cardinality_limit}"
         )
-    
+
     def record_approval_request(
         self,
         approval_id: str,
@@ -217,15 +217,15 @@ class ApprovalTelemetryCollector:
             # Increment request counter
             metric_key = f"approval_request_submitted_total:{policy_category}:{requester_role}"
             self.counters[metric_key] += 1
-            
+
             # Track dimensions
             self.dimension_sets["policy_category"].add(policy_category)
             self.dimension_sets["requester_role"].add(requester_role)
-            
+
             # Per-agent tracking
             self.per_agent_metrics[requester_id]["request_count"] += 1
             self.per_agent_metrics[requester_id]["last_request_time"] = time.time()
-            
+
             # Create event
             event = ApprovalEventData(
                 event_type=ApprovalEventType.REQUEST_SUBMITTED.value,
@@ -238,10 +238,10 @@ class ApprovalTelemetryCollector:
                 audit_context={"approval_id": approval_id},
                 metadata={"cardinality_class": "low", "retention_tier": "warm"},
             )
-            
+
             self.events.append(asdict(event))
             self.logger.debug(f"Recorded approval request {approval_id}")
-    
+
     def record_approval_decision(
         self,
         approval_id: str,
@@ -265,20 +265,20 @@ class ApprovalTelemetryCollector:
             per_stage_sla, _ = SLA_THRESHOLDS.get(PolicyCategory(policy_category), (14400, None))
             sla_met = decision_time_seconds <= per_stage_sla
             sla_status = "met" if sla_met else "breached"
-            
+
             if not sla_met:
                 sla_key = f"approval_sla_breached_total:{policy_category}:stage"
                 self.counters[sla_key] += 1
                 self.sla_breaches[policy_category].append(decision_time_seconds)
-            
+
             # Record latency histogram
             hist_key = f"approval_decision_time_seconds:{policy_category}:{approver_role}"
             self.histograms[hist_key].append(decision_time_seconds)
-            
+
             # Record decision counter
             counter_key = f"approval_decision_made_total:{policy_category}:{decision}"
             self.counters[counter_key] += 1
-            
+
             # Per-agent tracking
             if approver_id:
                 self.per_agent_metrics[approver_id]["decision_latencies"].append(
@@ -286,11 +286,11 @@ class ApprovalTelemetryCollector:
                 )
                 if not sla_met:
                     self.per_agent_metrics[approver_id]["sla_breaches"] += 1
-            
+
             # Track dimensions
             self.dimension_sets["policy_category"].add(policy_category)
             self.dimension_sets["approver_role"].add(approver_role)
-            
+
             # Create event
             event = ApprovalEventData(
                 event_type=ApprovalEventType.DECISION_MADE.value,
@@ -305,12 +305,12 @@ class ApprovalTelemetryCollector:
                 audit_context={"approval_id": approval_id},
                 metadata={"cardinality_class": "low", "retention_tier": "warm"},
             )
-            
+
             self.events.append(asdict(event))
             self.logger.debug(f"Recorded decision for {approval_id}: {sla_status}")
-            
+
             return (sla_met, sla_status)
-    
+
     def record_escalation(
         self,
         approval_id: str,
@@ -326,16 +326,16 @@ class ApprovalTelemetryCollector:
             counter_key = f"escalation_triggered_total:{policy_category}:{trigger_type}"
             self.counters[counter_key] += 1
             self.escalations[policy_category] += 1
-            
+
             # Track resolution time if provided
             if resolution_time_seconds is not None:
                 hist_key = f"escalation_time_to_resolution_seconds:{escalation_level}:{policy_category}"
                 self.histograms[hist_key].append(resolution_time_seconds)
-            
+
             # Track dimensions
             self.dimension_sets["policy_category"].add(policy_category)
             self.dimension_sets["escalation_level"].add(escalation_level)
-            
+
             # Create event
             event = ApprovalEventData(
                 event_type=ApprovalEventType.ESCALATED.value,
@@ -344,10 +344,10 @@ class ApprovalTelemetryCollector:
                 policy_category=policy_category,
                 audit_context={"approval_id": approval_id},
             )
-            
+
             self.events.append(asdict(event))
             self.logger.info(f"Escalation triggered for {approval_id}: {trigger_type}")
-    
+
     def record_delegation(
         self,
         source_role: str,
@@ -359,11 +359,11 @@ class ApprovalTelemetryCollector:
         with self.lock:
             counter_key = f"approval_delegation_count_total:{source_role}:{target_role}:{policy_category}"
             self.counters[counter_key] += 1
-            
+
             self.dimension_sets["policy_category"].add(policy_category)
             self.dimension_sets["source_role"].add(source_role)
             self.dimension_sets["target_role"].add(target_role)
-    
+
     def record_delegation_revocation(
         self,
         revocation_reason: str,
@@ -374,7 +374,7 @@ class ApprovalTelemetryCollector:
         with self.lock:
             counter_key = f"approval_delegation_revocation_count_total:{policy_category}:{revocation_reason}"
             self.counters[counter_key] += 1
-    
+
     def record_unauthorized_attempt(
         self,
         agent_id: str,
@@ -385,7 +385,7 @@ class ApprovalTelemetryCollector:
         with self.lock:
             counter_key = f"approval_unauthorized_attempt_count_total:{agent_id}"
             self.counters[counter_key] += 1
-            
+
             # Create security event
             event = ApprovalEventData(
                 event_type=ApprovalEventType.POLICY_VIOLATED.value,
@@ -396,12 +396,12 @@ class ApprovalTelemetryCollector:
                     "security_relevant": True,
                 },
             )
-            
+
             self.events.append(asdict(event))
             self.logger.warning(
                 f"Unauthorized approval attempt by {agent_id}: {attempted_action}"
             )
-    
+
     def validate_cardinality(self) -> Dict[str, Any]:
         """
         Validate current cardinality against limits.
@@ -418,7 +418,7 @@ class ApprovalTelemetryCollector:
             # Calculate total timeseries count
             total_timeseries = 0
             per_dimension = {}
-            
+
             for dimension_name, values in self.dimension_sets.items():
                 count = len(values)
                 per_dimension[dimension_name] = count
@@ -428,16 +428,16 @@ class ApprovalTelemetryCollector:
                 elif dimension_name in ["requester_role", "source_role", "target_role"]:
                     # Medium cardinality - aggregate
                     total_timeseries += max(1, count // 2)  # rough aggregation
-            
+
             # Estimate based on metric combinations
             # Baseline: 8 policy_categories × 10 approver_roles × 4 approval_stages
             estimated = 8 * 10 * 4
-            
+
             is_safe = estimated < self.cardinality_limit
             warning = None
             if estimated > 4000:
                 warning = f"Cardinality approaching limit: {estimated} estimated timeseries"
-            
+
             return {
                 "timeseries_count": estimated,
                 "per_dimension": per_dimension,
@@ -445,31 +445,31 @@ class ApprovalTelemetryCollector:
                 "warning": warning,
                 "limit": self.cardinality_limit,
             }
-    
+
     def get_snapshot(self) -> ApprovalMetricsSnapshot:
         """Generate a point-in-time metrics snapshot."""
         with self.lock:
             snap = ApprovalMetricsSnapshot(timestamp=datetime.now(timezone.utc))
-            
+
             # Workflow metrics
             snap.request_submitted = self.counters.get("approval_request_submitted_total:D:release-operator", 0)
             snap.request_resolved = self.counters.get("approval_request_resolved_total:D:approved", 0)
             snap.rejections = self.counters.get("approval_rejection_count_total:D:unauthorized", 0)
-            
+
             # Latency percentiles
             if self.histograms.get("approval_decision_time_seconds:D:release-manager"):
                 hist = sorted(self.histograms["approval_decision_time_seconds:D:release-manager"])
                 snap.request_latency_p50 = hist[len(hist) // 2] if hist else 0.0
                 snap.request_latency_p95 = hist[int(len(hist) * 0.95)] if hist else 0.0
                 snap.request_latency_p99 = hist[int(len(hist) * 0.99)] if hist else 0.0
-            
+
             # Escalation metrics
             snap.escalations_triggered = sum(
                 v for k, v in self.counters.items()
                 if k.startswith("escalation_triggered_total")
             )
             snap.escalation_overrides = self.counters.get("escalation_authority_override_count_total:L1:owner-override", 0)
-            
+
             # Authorization metrics
             snap.delegations = sum(
                 v for k, v in self.counters.items()
@@ -479,7 +479,7 @@ class ApprovalTelemetryCollector:
                 v for k, v in self.counters.items()
                 if k.startswith("approval_authority_error_count_total")
             )
-            
+
             # Audit metrics
             snap.audit_log_entries = len([e for e in self.events if e])
             snap.policy_violations = sum(
@@ -490,13 +490,13 @@ class ApprovalTelemetryCollector:
                 v for k, v in self.counters.items()
                 if k.startswith("approval_unauthorized_attempt_count_total")
             )
-            
+
             # SLA metrics
             snap.sla_breached_count = sum(
                 v for k, v in self.counters.items()
                 if k.startswith("approval_sla_breached_total")
             )
-            
+
             # Cardinality
             card = self.validate_cardinality()
             snap.timeseries_count = card["timeseries_count"]
@@ -507,16 +507,16 @@ class ApprovalTelemetryCollector:
                 })
                 for agent_id, metrics in list(self.per_agent_metrics.items())[:20]
             )
-            
+
             return snap
-    
+
     def export_prometheus_format(self) -> str:
         """Export metrics in Prometheus format."""
         with self.lock:
             lines = []
             lines.append("# HELP approval_request_submitted_total Total approval requests submitted")
             lines.append("# TYPE approval_request_submitted_total counter")
-            
+
             for metric_key, value in self.counters.items():
                 if metric_key.startswith("approval_"):
                     parts = metric_key.split(":")
@@ -527,15 +527,15 @@ class ApprovalTelemetryCollector:
                             labels["policy_category"] = parts[1]
                         if "role" in metric_key:
                             labels["approver_role"] = parts[2] if len(parts) > 2 else ""
-                    
+
                     label_str = ",".join(f'{k}="{v}"' for k, v in labels.items())
                     if label_str:
                         lines.append(f"{metric_name}{{{label_str}}} {value}")
                     else:
                         lines.append(f"{metric_name} {value}")
-            
+
             return "\n".join(lines)
-    
+
     def export_json(self) -> str:
         """Export all events and metrics as JSON."""
         with self.lock:
@@ -573,9 +573,9 @@ def get_approval_telemetry_collector() -> ApprovalTelemetryCollector:
 if __name__ == "__main__":
     # Quick test
     logging.basicConfig(level=logging.DEBUG)
-    
+
     collector = get_approval_telemetry_collector()
-    
+
     # Record a sample approval workflow
     collector.record_approval_request(
         approval_id="apr-001",
@@ -585,7 +585,7 @@ if __name__ == "__main__":
         requester_role="release-operator",
         sla_seconds=14400,
     )
-    
+
     sla_met, status = collector.record_approval_decision(
         approval_id="apr-001",
         policy_id="D-001",
@@ -597,7 +597,7 @@ if __name__ == "__main__":
         stage=1,
         sla_seconds=14400,
     )
-    
+
     print(f"SLA Status: {status}")
     print(f"Metrics: {collector.get_snapshot()}")
     print(f"Cardinality Check: {collector.validate_cardinality()}")

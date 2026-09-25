@@ -101,7 +101,12 @@ class EMAHook(BaseHook):
             return
         try:
             torch.save(self.shadow, Path(checkpoint_dir) / "ema.pt")
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional path
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional path
             logger.warning("EMAHook save failed: %s", exc)
 
 
@@ -132,7 +137,12 @@ class CheckpointHook(BaseHook):
             ckpt_path = self.out_dir / f"ckpt_step{step}.pt"
             torch.save(model.state_dict(), ckpt_path)
             state["checkpoint_dir"] = str(self.out_dir)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional
             logger.warning("Checkpoint save failed: %s", exc)
 
 
@@ -151,5 +161,10 @@ class NDJSONLogHook(BaseHook):
         try:
             with self.file.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record) + "\n")
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - best effort
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - best effort
             logger.debug("NDJSONLogHook failed to append record: %s", exc)

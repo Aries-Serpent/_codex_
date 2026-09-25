@@ -131,7 +131,9 @@ def _store_patch(patch: str) -> Path:
     if not resolved.is_relative_to(REPO_ROOT.resolve()):
         raise ValueError(f"patch write outside repo root: {resolved}")
     path.write_text(patch, encoding="utf-8")
-    _log_audit("patch_stored", path=str(path.relative_to(REPO_ROOT)), bytes=len(patch.encode("utf-8")))
+    _log_audit(
+        "patch_stored", path=str(path.relative_to(REPO_ROOT)), bytes=len(patch.encode("utf-8"))
+    )
     return path
 
 
@@ -148,7 +150,10 @@ def request_patch(
         payload = {
             "model": DEFAULT_MODEL or "",
             "messages": [
-                {"role": "system", "content": "You produce minimal unified diffs to fix code issues."},
+                {
+                    "role": "system",
+                    "content": "You produce minimal unified diffs to fix code issues.",
+                },
                 {"role": "user", "content": _build_prompt(diff, errors)},
             ],
             "metadata": metadata or {},

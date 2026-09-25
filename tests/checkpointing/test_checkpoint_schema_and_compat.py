@@ -44,7 +44,7 @@ def test_schema_v2_roundtrip() -> None:
 def test_checkpoint_compat_emits_warning(monkeypatch) -> None:
     # Clear the lru_cache on _warn_save_checkpoint_deprecated so the warning is emitted
     compat._warn_save_checkpoint_deprecated.cache_clear()
-    
+
     calls = {}
 
     def fake_save(out_dir, **kwargs):

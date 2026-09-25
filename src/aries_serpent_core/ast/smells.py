@@ -514,7 +514,7 @@ class CodeSmellDetector:
                             file_path=file_path,
                             line_start=node.lineno,
                             line_end=getattr(node, "end_lineno", node.lineno),
-                            suggestion="Specify the exception type: except (IOError, OSError, ModuleNotFoundError, ImportError):",
+                            suggestion="Specify the exception type: except (IOError, OSError, ModuleNotFoundError, ImportError):",  # noqa: E501
                         )
                     )
                 elif isinstance(node.type, ast.Name) and node.type.id == "Exception":

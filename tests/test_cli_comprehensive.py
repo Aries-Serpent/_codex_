@@ -21,7 +21,7 @@ class TestCLIImport:
         """Test importing core CLI module."""
         try:
             from aries_serpent_core import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("aries_serpent_core.cli not available")
 
@@ -29,7 +29,7 @@ class TestCLIImport:
         """Test that CLI module file exists and is importable."""
         try:
             import aries_serpent_core.cli as cli_module
-            assert cli_module is not None
+            assert cli_module is not None, "cli_module must be initialized"
         except ImportError:
             pytest.skip("aries_serpent_core.cli not available")
 
@@ -41,9 +41,9 @@ class TestCLIDocumentation:
         """Test that module has documentation."""
         try:
             from aries_serpent_core import cli
-            
-            assert cli.__doc__ is not None
-            assert len(cli.__doc__) > 0
+
+            assert cli.__doc__ is not None, "__doc__ must be initialized"
+            assert len(cli.__doc__) > 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -51,10 +51,10 @@ class TestCLIDocumentation:
         """Test CLI docstring quality."""
         try:
             from aries_serpent_core import cli
-            
+
             doc = cli.__doc__
             # Should have meaningful documentation
-            assert len(doc) > 20
+            assert len(doc) > 20, "Doc must not be empty"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -66,9 +66,9 @@ class TestCLILogging:
         """Test that logger is properly configured."""
         try:
             from aries_serpent_core import cli
-            
+
             logger = cli.logger
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
             assert isinstance(logger, logging.Logger)
         except ImportError:
             pytest.skip("cli module not available")
@@ -77,8 +77,8 @@ class TestCLILogging:
         """Test that logger has correct name."""
         try:
             from aries_serpent_core.cli import logger
-            
-            assert logger.name == "aries_serpent_core.cli"
+
+            assert logger.name == "aries_serpent_core.cli", "name is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -90,7 +90,7 @@ class TestCLIStructure:
         """Test that CLI has expected attributes."""
         try:
             from aries_serpent_core import cli
-            
+
             # Should have logger
             assert hasattr(cli, "logger")
         except ImportError:
@@ -100,9 +100,9 @@ class TestCLIStructure:
         """Test that module is a valid Python module."""
         try:
             from aries_serpent_core import cli
-            
+
             assert hasattr(cli, "__name__")
-            assert "cli" in cli.__name__
+            assert "cli" in cli.__name__, "Condition must be true"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -114,7 +114,7 @@ class TestCLIImports:
         """Test that logging module is imported."""
         try:
             from aries_serpent_core import cli
-            
+
             assert hasattr(cli, "logging") or hasattr(cli, "logger")
         except ImportError:
             pytest.skip("cli module not available")
@@ -123,7 +123,7 @@ class TestCLIImports:
         """Test that required imports are available."""
         try:
             from aries_serpent_core import cli
-            
+
             # Check common CLI-related imports
             assert hasattr(cli, "logger")
         except ImportError:
@@ -137,8 +137,8 @@ class TestCLIApp:
         """Test that CLI app can be instantiated."""
         try:
             from aries_serpent_core.cli import app
-            
-            assert app is not None
+
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("cli app not available")
 
@@ -146,9 +146,9 @@ class TestCLIApp:
         """Test CLI app has standard attributes."""
         try:
             from aries_serpent_core.cli import app
-            
+
             # Should have typical typer/click attributes
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("cli app not available")
 
@@ -160,7 +160,7 @@ class TestCLIAppExecution:
         """Test that app is callable."""
         try:
             from aries_serpent_core.cli import app
-            
+
             assert callable(app) or hasattr(app, "command")
         except ImportError:
             pytest.skip("app not available")
@@ -173,7 +173,7 @@ class TestCLIErrorHandling:
         """Test that CLI imports without raising errors."""
         try:
             from aries_serpent_core import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError as e:
             pytest.skip(f"CLI not available: {e}")
 
@@ -185,7 +185,7 @@ class TestCLIIntegration:
         """Test that CLI module loads successfully."""
         try:
             import aries_serpent_core.cli
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("CLI module not available")
 
@@ -193,10 +193,10 @@ class TestCLIIntegration:
         """Test that CLI logger can be used."""
         try:
             from aries_serpent_core.cli import logger
-            
+
             # Should be able to log
             logger.debug("Test message")
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -208,9 +208,9 @@ class TestCLIFileHandling:
         """Test that CLI file is valid Python."""
         try:
             from aries_serpent_core import cli
-            
+
             module_file = cli.__file__
-            assert module_file is not None
+            assert module_file is not None, "module_file must be initialized"
             assert module_file.endswith((".py", ".pyc", ".pyi"))
         except ImportError:
             pytest.skip("cli module not available")
@@ -225,9 +225,9 @@ class TestCLIVersionHandling:
             import sys
 
             from aries_serpent_core import cli
-            
+
             # Should work with Python 3.11+
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -239,9 +239,9 @@ class TestCLIEnvironmentHandling:
         """Test that CLI handles missing environment variables."""
         try:
             from aries_serpent_core import cli
-            
+
             # CLI should load even without special env vars
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -253,8 +253,8 @@ class TestCLIConstants:
         """Test CLI module name."""
         try:
             from aries_serpent_core import cli
-            
-            assert cli.__name__ == "aries_serpent_core.cli"
+
+            assert cli.__name__ == "aries_serpent_core.cli", "__name__ is not valid"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -266,10 +266,10 @@ class TestCLIPublicAPI:
         """Test that CLI has public names."""
         try:
             from aries_serpent_core import cli
-            
-            public_names = [name for name in dir(cli) 
+
+            public_names = [name for name in dir(cli)
                            if not name.startswith("_")]
-            assert len(public_names) > 0
+            assert len(public_names) > 0, "Public_names must not be empty"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -277,13 +277,13 @@ class TestCLIPublicAPI:
         """Test that public names are valid."""
         try:
             from aries_serpent_core import cli
-            
-            public_names = [name for name in dir(cli) 
+
+            public_names = [name for name in dir(cli)
                            if not name.startswith("_")]
-            
+
             for name in public_names:
                 attr = getattr(cli, name)
-                assert attr is not None
+                assert attr is not None, "attr must be initialized"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -295,7 +295,7 @@ class TestCLITypeHints:
         """Test module annotations."""
         try:
             from aries_serpent_core import cli
-            
+
             annotations = getattr(cli, "__annotations__", {})
             assert isinstance(annotations, dict)
         except ImportError:
@@ -309,7 +309,7 @@ class TestCLIModuleAttributes:
         """Test that module has __file__ attribute."""
         try:
             from aries_serpent_core import cli
-            
+
             assert hasattr(cli, "__file__")
             assert isinstance(cli.__file__, str)
         except ImportError:
@@ -319,7 +319,7 @@ class TestCLIModuleAttributes:
         """Test that module has __name__ attribute."""
         try:
             from aries_serpent_core import cli
-            
+
             assert hasattr(cli, "__name__")
             assert isinstance(cli.__name__, str)
         except ImportError:
@@ -329,7 +329,7 @@ class TestCLIModuleAttributes:
         """Test that module has __doc__ attribute."""
         try:
             from aries_serpent_core import cli
-            
+
             assert hasattr(cli, "__doc__")
         except ImportError:
             pytest.skip("cli module not available")
@@ -344,9 +344,9 @@ class TestCLICaching:
             import sys
 
             from aries_serpent_core import cli
-            
-            assert "aries_serpent_core.cli" in sys.modules
-            assert sys.modules["aries_serpent_core.cli"] is cli
+
+            assert "aries_serpent_core.cli" in sys.modules, "Condition must be true"
+            assert sys.modules["aries_serpent_core.cli"] is cli, "Condition must be true"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -355,8 +355,8 @@ class TestCLICaching:
         try:
             from aries_serpent_core import cli as cli1
             from aries_serpent_core import cli as cli2
-            
-            assert cli1 is cli2
+
+            assert cli1 is cli2, "cli1 is not valid"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -368,9 +368,9 @@ class TestCLIEncoding:
         """Test that module has valid encoding."""
         try:
             from aries_serpent_core import cli
-            
+
             # Module should be importable without encoding errors
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except UnicodeDecodeError:
             pytest.fail("Module has encoding issues")
         except ImportError:
@@ -384,10 +384,10 @@ class TestCLITraceability:
         """Test module representation."""
         try:
             from aries_serpent_core import cli
-            
+
             repr_str = repr(cli)
             assert isinstance(repr_str, str)
-            assert "module" in repr_str.lower()
+            assert "module" in repr_str.lower(), "Condition must be true"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -400,10 +400,10 @@ class TestCLIConsistency:
         try:
             from aries_serpent_core import cli as m1
             from aries_serpent_core import cli as m2
-            
+
             attrs1 = set(dir(m1))
             attrs2 = set(dir(m2))
-            assert attrs1 == attrs2
+            assert attrs1 == attrs2, "attrs1 is not valid"
         except ImportError:
             pytest.skip("cli module not available")
 
@@ -417,7 +417,7 @@ def test_cli_import_methods(import_method):
     """Parametrized test for different import methods."""
     try:
         exec(import_method)
-        assert True
+        assert True, "True is not valid"
     except ImportError:
         pytest.skip(f"CLI not available via {import_method}")
 
@@ -429,7 +429,7 @@ class TestCLISemantics:
         """Test that CLI follows Python module conventions."""
         try:
             from aries_serpent_core import cli
-            
+
             # Should have __doc__, __name__, __file__
             assert hasattr(cli, "__doc__")
             assert hasattr(cli, "__name__")

@@ -6,7 +6,6 @@ Runs as part of post-merge validation workflow
 """
 
 import json
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,12 +14,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 class PostMergeContinuationTrigger:
     """Manages automatic Phase 2-3 continuation upon merge completion"""
-    
+
     def __init__(self, repo_root: str = REPO_ROOT):
         self.repo_root = Path(repo_root)
         self.codex_dir = self.repo_root / ".codex"
         self.timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    
+
     def check_phase_4_completion(self) -> bool:
         """Verify Phase 4 Lane D is complete"""
         # Check git log for recent Phase 4 Lane D merge
@@ -35,7 +34,7 @@ class PostMergeContinuationTrigger:
             return "Phase 4 Lane D" in result.stdout or "Lane D" in result.stdout
         except Exception:
             return False
-    
+
     def generate_execution_manifest(self) -> dict:
         """Generate structured manifest for phase 2-3 execution"""
         return {
@@ -92,17 +91,17 @@ class PostMergeContinuationTrigger:
             "escalation_contact": "@mbaetiong",
             "authority": "D-tier autonomous (standing GO CONTINUE approval)"
         }
-    
+
     def create_trigger_entry(self) -> None:
         """Create trigger entry point for next session"""
         manifest = self.generate_execution_manifest()
-        
+
         # Write manifest
         manifest_file = self.codex_dir / "phase_2_3_execution_manifest.json"
         with open(manifest_file, "w") as f:
             json.dump(manifest, f, indent=2)
         print(f"✅ Created execution manifest: {manifest_file}")
-        
+
         # Create trigger file
         trigger_file = self.codex_dir / "POST_MERGE_PHASE_2_3_TRIGGER.md"
         trigger_content = f"""# 🎯 POST-MERGE PHASE 2-3 EXECUTION TRIGGER
@@ -149,11 +148,11 @@ class PostMergeContinuationTrigger:
         with open(trigger_file, "w") as f:
             f.write(trigger_content)
         print(f"✅ Created trigger entry: {trigger_file}")
-    
+
     def update_accountability_report(self) -> None:
         """Add entry to accountability report"""
         report_file = self.repo_root / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
-        
+
         entry = f"""
 ## POST-MERGE PHASE 2-3 EXECUTION BRIEF GENERATION — {self.timestamp}
 
@@ -172,7 +171,7 @@ class PostMergeContinuationTrigger:
 **Authority:** D-tier autonomous, standing GO CONTINUE approval (@mbaetiong)  
 **Campaign Status:** 75%+ complete (Phase 4 parallel execution), Phases 2-3 ready for activation
 """
-        
+
         # Append to report (create if missing)
         if report_file.exists():
             with open(report_file, "a") as f:
@@ -187,13 +186,13 @@ class PostMergeContinuationTrigger:
 """
             with open(report_file, "w") as f:
                 f.write(header + entry)
-        
+
         print(f"✅ Updated accountability report: {report_file}")
-    
+
     def execute(self) -> bool:
         """Execute post-merge trigger"""
         print("🚀 EXECUTING POST-MERGE PHASE 2-3 CONTINUATION TRIGGER\n")
-        
+
         try:
             # Check Phase 4 completion
             print("1️⃣  Checking Phase 4 Lane D completion...")
@@ -201,17 +200,17 @@ class PostMergeContinuationTrigger:
                 print("   ✅ Phase 4 Lane D is complete (found in git log)\n")
             else:
                 print("   ⚠️  Phase 4 Lane D status unclear (may still be running)\n")
-            
+
             # Generate execution manifest
             print("2️⃣  Generating execution manifest...")
             self.create_trigger_entry()
             print()
-            
+
             # Update accountability report
             print("3️⃣  Updating accountability report...")
             self.update_accountability_report()
             print()
-            
+
             # Success
             print("✅ POST-MERGE TRIGGER ACTIVATION COMPLETE\n")
             print("📋 NEXT STEPS FOR COPILOT CLOUD AGENT:")
@@ -226,7 +225,7 @@ class PostMergeContinuationTrigger:
             print("   - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)")
             print()
             return True
-            
+
         except Exception as e:
             print(f"❌ ERROR: {e}")
             return False

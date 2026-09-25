@@ -11,10 +11,10 @@ Key Concepts:
 """
 
 import logging
-import requests
-from typing import Dict, List
 from dataclasses import dataclass
+from typing import Dict, List
 
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,25 +31,25 @@ class Alert:
 
 class SecurityAlertVerificationAgent:
     """Verify and triage security alerts."""
-    
+
     def __init__(self):
         from scripts.ci._token_resolver import get_token, validate_scope
-        
+
         # Try Level 2 first, fallback to Level 1
         self.token = get_token(required_elevated=True)
-        
+
         if not self.token:
             logger.warning("Level 2 unavailable, using standard token")
             self.token = get_token(required_elevated=False)
             if not self.token:
                 raise RuntimeError("No token available")
-        
+
         # Validate available scopes
         try:
             validate_scope(self.token, ['repo', 'security_events'])
         except Exception:
             logger.warning("Full scopes not available, limited functionality")
-    
+
     def verify_security_alerts(self, repo: str) -> List[Alert]:
         """Retrieve and verify security alerts."""
         url = f"https://api.github.com/repos/{repo}/security-advisories"
@@ -57,11 +57,11 @@ class SecurityAlertVerificationAgent:
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        
+
         try:
             response = requests.get(url, headers=headers, timeout=30)
             response.raise_for_status()
-            
+
             alerts = []
             for item in response.json():
                 alerts.append(Alert(
@@ -71,18 +71,18 @@ class SecurityAlertVerificationAgent:
                     severity=item.get('severity', 'unknown'),
                     url=item.get('html_url', '')
                 ))
-            
+
             logger.info(
                 "alerts_retrieved",
                 extra={"repo": repo, "count": len(alerts)}
             )
             return alerts
-        
+
         except requests.HTTPError as e:
             if e.response.status_code == 403:
                 logger.error("Insufficient scope for security alerts")
             raise
-    
+
     def create_alert_issue(
         self,
         repo: str,
@@ -91,13 +91,13 @@ class SecurityAlertVerificationAgent:
     ) -> Dict:
         """Create GitHub issue for alert."""
         title = title or f"Security Alert: {alert.tool} - {alert.severity}"
-        
+
         url = f"https://api.github.com/repos/{repo}/issues"
         headers = {
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        
+
         body = f"""## Security Alert
 
 **Tool**: {alert.tool}
@@ -106,7 +106,7 @@ class SecurityAlertVerificationAgent:
 
 [View Alert]({alert.url})
 """
-        
+
         try:
             response = requests.post(
                 url,
@@ -115,14 +115,14 @@ class SecurityAlertVerificationAgent:
                 timeout=30
             )
             response.raise_for_status()
-            
+
             issue = response.json()
             logger.info(
                 "alert_issue_created",
                 extra={"repo": repo, "issue": issue['number']}
             )
             return issue
-        
+
         except requests.HTTPError as e:
             logger.error(f"Failed to create issue: {e}")
             raise

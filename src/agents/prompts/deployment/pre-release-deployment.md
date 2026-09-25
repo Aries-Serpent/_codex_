@@ -242,25 +242,24 @@ import logging
 from datetime import datetime
 
 # Configure structured logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
 
 def log_release_event(event_type, data):
     """Log release event in structured format"""
     event = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'event_type': event_type,
-        'data': data,
-        'release_version': VERSION
+        "timestamp": datetime.utcnow().isoformat(),
+        "event_type": event_type,
+        "data": data,
+        "release_version": VERSION,
     }
     logging.info(json.dumps(event))
 
+
 # Example usage
-log_release_event('validation_start', {'stage': 'tests'})
-log_release_event('validation_complete', {'stage': 'tests', 'passed': True})
-log_release_event('artifact_generated', {'file': 'dashboard.html', 'size': 12345})
+log_release_event("validation_start", {"stage": "tests"})
+log_release_event("validation_complete", {"stage": "tests", "passed": True})
+log_release_event("artifact_generated", {"file": "dashboard.html", "size": 12345})
 ```
 
 ### Query Logs
@@ -283,13 +282,15 @@ Track release metrics for continuous improvement:
 from hypothesis import assume, given, strategies as st
 import pytest
 
+
 @given(st.integers(min_value=0))
 def test_release_artifacts_exist(artifact_count):
     """Hypothesis: All expected artifacts are generated"""
     assume(artifact_count >= 7)  # Minimum expected artifacts
 
-    artifacts = list(Path('release_artifacts').glob('*'))
+    artifacts = list(Path("release_artifacts").glob("*"))
     assert len(artifacts) >= artifact_count
+
 
 @given(st.floats(min_value=0.0, max_value=100.0))
 def test_test_coverage_threshold(coverage):

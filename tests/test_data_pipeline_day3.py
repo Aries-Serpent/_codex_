@@ -24,7 +24,7 @@ class TestDataLoadingFormats:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump({"data": [1, 2, 3]}, f)
             f.flush()
-            
+
             try:
                 data = load_json(f.name)
                 assert data is not None, "data must be initialized"
@@ -42,7 +42,7 @@ class TestDataLoadingFormats:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
             f.write("col1,col2,col3\n1,2,3\n4,5,6\n")
             f.flush()
-            
+
             try:
                 data = load_csv(f.name)
                 assert data is not None, "data must be initialized"
@@ -66,7 +66,7 @@ class TestDataLoadingFormats:
             try:
                 df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
                 df.to_parquet(f.name)
-                
+
                 data = load_parquet(f.name)
                 assert data is not None, "data must be initialized"
                 Path(f.name).unlink()
@@ -84,7 +84,7 @@ class TestDataLoadingFormats:
             f.write('{"id": 1, "text": "hello"}\n')
             f.write('{"id": 2, "text": "world"}\n')
             f.flush()
-            
+
             try:
                 data = load_jsonl(f.name)
                 assert data is not None, "data must be initialized"
@@ -113,7 +113,7 @@ class TestDataLoadingFormats:
                         f.write('{"key": "value"}\n')
                     else:  # parquet would need pandas
                         f.write("dummy")
-                
+
                 try:
                     # Attempt to load data
                     result = load_data(temp_path)
@@ -133,7 +133,7 @@ class TestDataLoadingFormats:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False, encoding='utf-8') as f:
             f.write("col1,col2\nhello,world\n")
             f.flush()
-            
+
             try:
                 data = load_csv(f.name, encoding='utf-8')
                 assert data is not None, "data must be initialized"
@@ -302,10 +302,10 @@ class TestSchemaValidation:
 
         try:
             data = {"email": "test@example.com"}
-            
+
             def is_valid_email(val):
                 return "@" in val
-            
+
             rules = {"email": is_valid_email}
             validate_custom(data, rules)
             # Should not raise
@@ -344,7 +344,7 @@ class TestErrorRecoveryCheckpointing:
                 ckpt = Checkpointer(tmpdir)
                 data = {"step": 1, "data": [1, 2, 3]}
                 ckpt.save(data, step=1)
-                
+
                 loaded = ckpt.load(step=1)
                 assert loaded is not None, "loaded must be initialized"
             except (IOError, NotImplementedError):
@@ -360,7 +360,7 @@ class TestErrorRecoveryCheckpointing:
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
                 ckpt = Checkpointer(tmpdir)
-                
+
                 # Resume should work even without prior checkpoint
                 resumed = ckpt.resume()
                 assert resumed is not None or resumed is None, "handled resume"
@@ -379,7 +379,7 @@ class TestErrorRecoveryCheckpointing:
                 if data == "fail":
                     raise ValueError("Processing failed")
                 return data
-            
+
             result = process_with_recovery("fail", failing_process, max_retries=3)
             # Should either recover or raise
         except (ValueError, NotImplementedError):
@@ -413,11 +413,11 @@ class TestBatchProcessing:
         try:
             data = list(range(100))
             iterator = BatchIterator(data, batch_size=10)
-            
+
             batch_count = 0
             for batch in iterator:
                 batch_count += 1
-            
+
             assert batch_count > 0, "must have batches"
         except (ValueError, TypeError):
             pytest.skip("Batch iteration incomplete")
@@ -433,7 +433,7 @@ class TestBatchProcessing:
             data = list(range(100))
             batches1 = create_batches(data, batch_size=10, shuffle=False)
             batches2 = create_batches(data, batch_size=10, shuffle=True)
-            
+
             assert batches1 is not None and batches2 is not None, "batches must be initialized"
         except (ValueError, TypeError):
             pytest.skip("Shuffling incomplete")
@@ -476,7 +476,7 @@ class TestBatchProcessing:
         try:
             data = list(range(100))
             loader = AsyncBatchLoader(data, batch_size=10)
-            
+
             # Should initialize
             assert loader is not None, "loader must be initialized"
         except (ValueError, TypeError):
@@ -584,12 +584,12 @@ class TestDataPipelineIntegration:
 
         try:
             pipeline = DataPipeline()
-            
+
             # Add stages
             pipeline.add_load_stage("json")
             pipeline.add_transform_stage(lambda x: x)
             pipeline.add_validate_stage()
-            
+
             # Should build without errors
         except (NotImplementedError, TypeError):
             pytest.skip("Pipeline integration incomplete")

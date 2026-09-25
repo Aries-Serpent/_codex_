@@ -173,7 +173,7 @@ example_code()
     def test_clarity_score_empty_content(self, analyzer):
         """Test clarity score for empty content."""
         score = analyzer.calculate_clarity_score("")
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_clarity_improves_with_structure(self, analyzer):
         """Test that clarity score improves with good structure."""
@@ -181,13 +181,13 @@ example_code()
         good = "# Title\n\n## Section\n\n- Point 1\n- Point 2"
         bad_score = analyzer.calculate_clarity_score(bad)
         good_score = analyzer.calculate_clarity_score(good)
-        assert good_score >= bad_score
+        assert good_score >= bad_score, "good_score must be greater than zero"
 
     def test_documentation_with_good_paragraphs(self, analyzer):
         """Test clarity for well-paragraphed documentation."""
         content = "A reasonable paragraph with about 100 words that flows well. " * 5
         score = analyzer.calculate_clarity_score(content)
-        assert score > 0
+        assert score > 0, "score must be greater than zero"
 
     def test_clarity_with_code_examples(self, analyzer):
         """Test that code examples improve clarity."""
@@ -196,7 +196,7 @@ example_code()
         score_with = analyzer.calculate_clarity_score(with_code)
         score_without = analyzer.calculate_clarity_score(without_code)
         # Code examples should help clarity
-        assert score_with >= score_without
+        assert score_with >= score_without, "score_with must be greater than zero"
 
 
 class TestDocumentationCompletenessAssessment:
@@ -211,12 +211,12 @@ class TestDocumentationCompletenessAssessment:
         """Test that completeness score calculates properly."""
         content = "This is a description. Examples: code here. Usage: how to use. Parameters: param1"
         score = analyzer.calculate_completeness_score(content)
-        assert 0 <= score <= 1
+        assert 0 <= score <= 1, "0 is not valid"
 
     def test_completeness_empty_content(self, analyzer):
         """Test completeness for empty content."""
         score = analyzer.calculate_completeness_score("")
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_completeness_with_all_sections(self, analyzer):
         """Test completeness with all major sections."""
@@ -259,7 +259,7 @@ class TestDocumentationGrammarQuality:
         """Test that doubled words are detected."""
         content = "This this is wrong. The the problem."
         issues = analyzer.check_grammar_quality(content)
-        assert any("doubled" in issue.lower() or "word" in issue.lower() for issue in issues)
+        assert any("doubled" in issue.lower() or "word" in issue.lower() for issue in issues), "in is not valid"
 
     def test_no_false_positives_for_repeated_words(self, analyzer):
         """Test that repeated words in different contexts aren't flagged."""
@@ -271,13 +271,13 @@ class TestDocumentationGrammarQuality:
         """Test detection of missing space after punctuation."""
         content = "First sentence.Second sentence!"
         issues = analyzer.check_grammar_quality(content)
-        assert any("space" in issue.lower() for issue in issues)
+        assert any("space" in issue.lower() for issue in issues), "in is not valid"
 
     def test_detects_trailing_whitespace(self, analyzer):
         """Test detection of excessive trailing whitespace."""
         content = "Line 1   \nLine 2   \nLine 3   \nLine 4   \nLine 5   \nLine 6   \n"
         issues = analyzer.check_grammar_quality(content)
-        assert any("trailing" in issue.lower() for issue in issues)
+        assert any("trailing" in issue.lower() for issue in issues), "in is not valid"
 
     def test_well_formatted_text_passes(self, analyzer):
         """Test that well-formatted text passes grammar check."""
@@ -288,7 +288,7 @@ class TestDocumentationGrammarQuality:
         """
         issues = analyzer.check_grammar_quality(content)
         # Should have few or no issues
-        assert len(issues) <= 2
+        assert len(issues) <= 2, "Issues must not be empty"
 
 
 class TestDocumentationTechnicalAccuracy:
@@ -303,7 +303,7 @@ class TestDocumentationTechnicalAccuracy:
         """Test that technical accuracy score calculates."""
         content = "This function returns a string. Version: v1.0"
         score = analyzer.assess_technical_accuracy(content)
-        assert 0 <= score <= 1
+        assert 0 <= score <= 1, "0 is not valid"
 
     def test_recognizes_version_information(self, analyzer):
         """Test that version information is recognized."""
@@ -311,25 +311,25 @@ class TestDocumentationTechnicalAccuracy:
         without_version = "This is some text"
         score_with = analyzer.assess_technical_accuracy(with_version)
         score_without = analyzer.assess_technical_accuracy(without_version)
-        assert score_with > score_without
+        assert score_with > score_without, "score_with must be greater than zero"
 
     def test_recognizes_api_documentation(self, analyzer):
         """Test that API documentation format is recognized."""
         api_content = "Returns: (str): The result string"
         score = analyzer.assess_technical_accuracy(api_content)
-        assert score > 0
+        assert score > 0, "score must be greater than zero"
 
     def test_recognizes_error_handling_docs(self, analyzer):
         """Test that error documentation is recognized."""
         error_content = "Raises ValueError if input is invalid"
         score = analyzer.assess_technical_accuracy(error_content)
-        assert score > 0
+        assert score > 0, "score must be greater than zero"
 
     def test_recognizes_type_information(self, analyzer):
         """Test that type annotations are recognized."""
         typed_content = "function(param: str) -> bool"
         score = analyzer.assess_technical_accuracy(typed_content)
-        assert score > 0
+        assert score > 0, "score must be greater than zero"
 
 
 class TestDocumentationVersionConsistency:
@@ -343,7 +343,7 @@ class TestDocumentationVersionConsistency:
     def test_consistent_version_information(self, analyzer):
         """Test that version information is consistent."""
         consistent = "Version 1.0. Latest: 1.0.1. Requires: >= 1.0"
-        assert analyzer.check_version_consistency(consistent)
+        assert analyzer.check_version_consistency(consistent), "Condition must be true"
 
     def test_inconsistent_version_information(self, analyzer):
         """Test detection of wildly inconsistent versions."""
@@ -355,12 +355,12 @@ class TestDocumentationVersionConsistency:
     def test_no_version_information_acceptable(self, analyzer):
         """Test that docs without versions are acceptable."""
         no_version = "This is documentation without version info"
-        assert analyzer.check_version_consistency(no_version)
+        assert analyzer.check_version_consistency(no_version), "Condition must be true"
 
     def test_single_version_is_consistent(self, analyzer):
         """Test that single version is consistent."""
         single = "Version 2.0 is required"
-        assert analyzer.check_version_consistency(single)
+        assert analyzer.check_version_consistency(single), "Condition must be true"
 
 
 class TestDocumentationDeprecationDetection:
@@ -370,24 +370,24 @@ class TestDocumentationDeprecationDetection:
         """Test detection of deprecated markers."""
         content = "@deprecated Use new_function() instead"
         deprecated = re.search(r"@?deprecated|obsolete|outdated", content, re.IGNORECASE)
-        assert deprecated is not None
+        assert deprecated is not None, "deprecated must be initialized"
 
     def test_detects_legacy_patterns(self):
         """Test detection of legacy code patterns."""
         content = "LEGACY: This function uses the old API"
         legacy = re.search(r"legacy|old\s+api|obsolete", content, re.IGNORECASE)
-        assert legacy is not None
+        assert legacy is not None, "legacy must be initialized"
 
     def test_recognizes_replacement_info(self):
         """Test recognition of replacement information."""
         content = "Deprecated: Use new_function() instead"
-        assert "use" in content.lower() or "instead" in content.lower()
+        assert "use" in content.lower() or "instead" in content.lower(), "Content must not be empty"
 
     def test_no_false_positive_deprecated(self):
         """Test that standard text isn't flagged as deprecated."""
         content = "This discusses the history and development"
         deprecated = re.search(r"@deprecated|^\s*deprecated\s*:", content, re.IGNORECASE)
-        assert deprecated is None or "@deprecated" not in content.lower()
+        assert deprecated is None or "@deprecated" not in content.lower(), "Content must not be empty"
 
 
 class TestDocumentationArchitectureIntegrity:
@@ -406,7 +406,7 @@ class TestDocumentationArchitectureIntegrity:
         arch_files = list(docs_root.rglob("*arch*.md"))[:3]
         for arch_file in arch_files:
             content = arch_file.read_text(encoding="utf-8")
-            assert len(content) > 0
+            assert len(content) > 0, "Content must not be empty"
 
     def test_architecture_consistency_across_docs(self):
         """Test that architecture is consistently documented."""

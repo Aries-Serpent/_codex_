@@ -58,7 +58,7 @@ def mlflow_experiment(mlflow_client):
         experiment = None
         try:
             experiment = mlflow_client.get_experiment_by_name(experiment_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -93,7 +93,7 @@ def mlflow_run(mlflow_client, mlflow_experiment):
         # Cleanup: end the run
         try:
             mlflow_client.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -182,7 +182,7 @@ def mlflow_tracker_instance(mlflow_tracking_uri: str):
         try:
             if tracker._active:
                 tracker.end_run()
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("codex_ml.tracking.mlflow_wrapper not available")
@@ -288,7 +288,7 @@ def batch_test_texts() -> list[list[str]]:
         "Text embeddings are useful for similarity matching.",
         "Model evaluation metrics help us understand performance.",
     ]
-    
+
     # Create batches
     batch_size = 4
     batches = [texts[i : i + batch_size] for i in range(0, len(texts), batch_size)]
@@ -299,7 +299,7 @@ def batch_test_texts() -> list[list[str]]:
 def device_info() -> dict[str, Any]:
     """Get information about the available device."""
     info = {"cuda_available": False, "device": "cpu", "device_name": "CPU"}
-    
+
     try:
         import torch
         if torch.cuda.is_available():
@@ -307,16 +307,16 @@ def device_info() -> dict[str, Any]:
             info["device"] = "cuda"
             info["device_name"] = torch.cuda.get_device_name(0)
             info["cuda_version"] = torch.version.cuda
-    except Exception:
+    except (ImportError, AttributeError, ModuleNotFoundError):
         pass
-    
+
     return info
 
 
 @pytest.fixture
 def performance_tracker() -> Generator[dict[str, Any], None, None]:
     """Track performance metrics during inference."""
-    
+
     metrics = {
         "inference_times_ms": [],
         "total_samples": 0,
@@ -326,7 +326,7 @@ def performance_tracker() -> Generator[dict[str, Any], None, None]:
         "mean_latency_ms": 0.0,
         "throughput_samples_per_sec": 0.0,
     }
-    
+
     yield metrics
 
 
@@ -337,9 +337,9 @@ def inference_test_config() -> dict[str, Any]:
         try:
             import torch
             return torch.cuda.is_available()
-        except Exception:
+        except Exception as _err:
             return False
-    
+
     return {
         "model_name": "distilbert-base-uncased",
         "max_seq_length": 128,

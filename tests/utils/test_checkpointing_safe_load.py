@@ -105,6 +105,6 @@ def test_load_checkpoint_legacy_weights_only_rejected(
 
     out = load_checkpoint(ckpt_path, safe=True, map_location="cpu")
     assert isinstance(out, Mapping)
-    assert set(out.keys()) == set(state.keys())
+    assert set(out.keys()) == set(state.keys()), "Condition must be true"
     for tensor in out.values():
-        assert torch.is_tensor(tensor)
+        assert torch.is_tensor(tensor), "t is not valid"

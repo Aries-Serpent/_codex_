@@ -273,12 +273,12 @@ The **Skills Master Agent** is the apex knowledge agent for Codex:
 from agents.skills_master import SkillsMaster
 
 skills_master = SkillsMaster()
-skills_master.discover()      # Find available skills
-skills_master.install()       # Install skill
-skills_master.execute()       # Run skill
-skills_master.score()         # Rate IQ effectiveness
-skills_master.compress()      # Optimize for storage
-skills_master.train()         # Train new agents
+skills_master.discover()  # Find available skills
+skills_master.install()  # Install skill
+skills_master.execute()  # Run skill
+skills_master.score()  # Rate IQ effectiveness
+skills_master.compress()  # Optimize for storage
+skills_master.train()  # Train new agents
 ```
 
 ### Cognitive Brain Integration

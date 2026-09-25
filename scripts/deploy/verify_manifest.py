@@ -14,17 +14,16 @@ Validation:
     6. Log tampering attempts to audit log
 """
 
-import json
+import argparse
 import hashlib
 import hmac
+import json
+import logging
 import os
 import sys
-import argparse
-import logging
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import List, Tuple
-
 
 # Configure logging
 logging.basicConfig(
@@ -51,7 +50,7 @@ class ManifestVerifier:
         self.wheelhouse_dir = Path(wheelhouse_dir) if wheelhouse_dir else None
         self.master_key = (master_key or os.environ.get("CODEX_MASTER_KEY") or "").strip()
         self.audit_log_path = Path(audit_log_path or ".codex/security/manifest_audit.log")
-        
+
         self.manifest = None
         self.errors = []
         self.warnings = []
@@ -59,7 +58,7 @@ class ManifestVerifier:
     def log_audit(self, event: str, severity: str = "INFO", details: str = ""):
         """Log verification event to audit log."""
         self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(self.audit_log_path, "a") as f:
             timestamp = datetime.utcnow().isoformat() + "Z"
             f.write(f"{timestamp} | {severity:8} | {event:40} | {details}\n")
@@ -75,7 +74,7 @@ class ManifestVerifier:
             self.errors.append(f"Manifest file not found: {self.manifest_path}")
             self.log_audit("MANIFEST_NOT_FOUND", "ERROR", str(self.manifest_path))
             return False
-        
+
         try:
             with open(self.manifest_path, "r") as f:
                 self.manifest = json.load(f)
@@ -160,11 +159,11 @@ class ManifestVerifier:
         if not self.wheelhouse_dir or not self.wheelhouse_dir.exists():
             logger.warning(f"Wheelhouse directory not found: {self.wheelhouse_dir}")
             return []
-        
+
         wheels = []
         for wheel_file in self.wheelhouse_dir.glob("*.whl"):
             wheels.append((wheel_file, wheel_file.name))
-        
+
         return sorted(wheels)
 
     def _manifest_wheels(self) -> dict[str, dict]:
@@ -197,12 +196,12 @@ class ManifestVerifier:
         if not self.manifest:
             self.errors.append("Manifest not loaded")
             return False
-        
+
         if not self.wheelhouse_dir:
             logger.warning("No wheelhouse directory specified, skipping hash verification")
             self.warnings.append("Wheelhouse hash verification skipped")
             return True
-        
+
         wheels = self.discover_wheels()
         manifest_wheels = self._manifest_wheels()
         manifest_hashes = {
@@ -210,13 +209,13 @@ class ManifestVerifier:
             for name, info in manifest_wheels.items()
             if info.get("sha256") or info.get("hash")
         }
-        
+
         if not wheels and not manifest_hashes:
             logger.info("✓ No wheels to verify")
             return True
-        
+
         all_valid = True
-        
+
         # Check each wheel in wheelhouse
         for wheel_path, wheel_name in wheels:
             if wheel_name not in manifest_hashes:
@@ -226,11 +225,11 @@ class ManifestVerifier:
                 logger.error(f"✗ {error_msg}")
                 all_valid = False
                 continue
-            
+
             # Calculate actual hash
             actual_hash = self.calculate_sha256(wheel_path)
             expected_hash = manifest_hashes[wheel_name]
-            
+
             if actual_hash == expected_hash:
                 logger.info(f"✓ {wheel_name}: hash valid")
                 self.log_audit("WHEEL_HASH_VALID", "INFO", wheel_name)
@@ -240,7 +239,7 @@ class ManifestVerifier:
                 self.log_audit("WHEEL_HASH_MISMATCH", "ERROR", wheel_name)
                 logger.error(f"✗ {error_msg}")
                 all_valid = False
-        
+
         # Check for manifest wheels not in wheelhouse
         wheelhouse_names = {w[1] for w in wheels}
         for manifest_wheel_name in manifest_hashes.keys():
@@ -249,7 +248,7 @@ class ManifestVerifier:
                 self.warnings.append(warning_msg)
                 self.log_audit("WHEEL_MISSING_FROM_WHEELHOUSE", "WARNING", manifest_wheel_name)
                 logger.warning(f"⚠ {warning_msg}")
-        
+
         return all_valid
 
     def verify(self) -> bool:
@@ -260,19 +259,19 @@ class ManifestVerifier:
             True if all verifications pass, False otherwise
         """
         logger.info(f"Starting verification of {self.manifest_path}")
-        
+
         # Step 1: Load manifest
         if not self.load_manifest():
             return False
-        
+
         # Step 2: Verify signature
         if not self.verify_signature():
             return False
-        
+
         # Step 3: Verify wheel hashes
         if not self.verify_wheel_hashes():
             return False
-        
+
         return True
 
     def print_report(self):
@@ -280,24 +279,24 @@ class ManifestVerifier:
         print("\n" + "=" * 70)
         print("MANIFEST VERIFICATION REPORT")
         print("=" * 70)
-        
+
         if self.manifest:
             print(f"\nManifest:        {self.manifest_path}")
             print(f"Release Version: {self.manifest.get('release_version')}")
             print(f"Timestamp:       {self.manifest.get('timestamp')}")
-        
+
         if self.errors:
             print(f"\n❌ ERRORS ({len(self.errors)}):")
             for error in self.errors:
                 print(f"   - {error}")
         else:
             print("\n✅ No errors detected")
-        
+
         if self.warnings:
             print(f"\n⚠️  WARNINGS ({len(self.warnings)}):")
             for warning in self.warnings:
                 print(f"   - {warning}")
-        
+
         print("\n" + "=" * 70)
 
 
@@ -310,19 +309,19 @@ def main():
     parser.add_argument("--master-key", help="HMAC-SHA256 master key (uses CODEX_MASTER_KEY env var if not provided)")
     parser.add_argument("--audit-log", help="Path to audit log file")
     parser.add_argument("--strict", action="store_true", help="Fail on any warning")
-    
+
     args = parser.parse_args()
-    
+
     verifier = ManifestVerifier(
         manifest_path=args.manifest,
         wheelhouse_dir=args.wheelhouse,
         master_key=args.master_key,
         audit_log_path=args.audit_log,
     )
-    
+
     success = verifier.verify()
     verifier.print_report()
-    
+
     if success:
         print("\n✅ Verification successful!")
         return 0

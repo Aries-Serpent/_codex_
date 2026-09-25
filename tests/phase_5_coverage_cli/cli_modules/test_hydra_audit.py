@@ -1,22 +1,22 @@
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 # import tempfile
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # # Try to import the module; skip if PyYAML not available
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     from codex_ml.cli import hydra_audit
 # except ImportError:
 #     hydra_audit = None
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # @pytest.mark.skipif(hydra_audit is None, reason="hydra_audit not importable")
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     """Test data classes from hydra_audit."""
@@ -36,7 +36,7 @@
 #         issue = hydra_audit.DefaultsIssue(file="config.yaml", kind="issue_type", message="msg")
 #         assert issue.entry is None, "entry is not valid"
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # @pytest.mark.skipif(hydra_audit is None, reason="hydra_audit not importable")
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     """Test utility functions in hydra_audit."""
@@ -48,7 +48,7 @@
 #         assert pattern.search("${namespace.key}") is not None, "Value must be initialized"
 #         assert pattern.search("simple_text") is None, "Condition must be true"
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # @pytest.mark.skipif(hydra_audit is None, reason="hydra_audit not importable")
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     """Test Hydra config loading."""
@@ -58,7 +58,7 @@
 #         if hydra_audit.yaml is None:
 #             assert hydra_audit.yaml is None, "yaml is not valid"
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # @pytest.mark.skipif(hydra_audit is None, reason="hydra_audit not importable")
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     """Test main functions in hydra_audit module."""
@@ -77,7 +77,7 @@
 #         # Main should be present
 #         assert "main" in module_functions, "Condition must be true"
 # class TestHydraAuditIntegration(temp_config_dir: Path):
-# 
+#
 # @pytest.mark.skipif(hydra_audit is None, reason="hydra_audit not importable")
 # class TestHydraAuditIntegration(temp_config_dir: Path):
 #     """Integration tests with temporary configs."""

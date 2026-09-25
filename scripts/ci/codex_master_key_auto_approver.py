@@ -8,12 +8,13 @@ This script demonstrates explicit use of CODEX_MASTER_KEY to:
 3. Dispatch required approval workflows
 """
 
-import os
-import sys
-import subprocess
 import json
+import os
+import subprocess
+import sys
 from datetime import datetime
 from typing import Dict, List, Tuple
+
 
 class WorkflowAutoApprover:
     """Auto-approve workflows using CODEX_MASTER_KEY token."""

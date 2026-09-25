@@ -30,7 +30,7 @@ def run_internal(prompt_file: str) -> int:
     out = pathlib.Path("artifacts")
     out.mkdir(exist_ok=True)
     (out / "AUDIT_RESULT.txt").write_text(f"[audit] processed: {pf.name}\n", encoding="utf-8")
-    print(f"[audit] wrote {out/'AUDIT_RESULT.txt'}")
+    print(f"[audit] wrote {out / 'AUDIT_RESULT.txt'}")
     return 0
 
 

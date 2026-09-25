@@ -85,7 +85,9 @@ class ReplayVerifier:
             lane_results[lane_id] = {
                 "passed": lane_passed,
                 "failed": lane_failed,
-                "success_rate_pct": (lane_passed / (lane_passed + lane_failed) * 100) if (lane_passed + lane_failed) > 0 else 0,
+                "success_rate_pct": (lane_passed / (lane_passed + lane_failed) * 100)
+                if (lane_passed + lane_failed) > 0
+                else 0,
             }
 
             total_tests += lane_passed + lane_failed
@@ -139,7 +141,7 @@ class ReplayVerifier:
             output_hash_2 = self._execute_lane_with_lock(lane_id, input_lock_hash)
             output_hash_3 = self._execute_lane_with_lock(lane_id, input_lock_hash)
 
-            deterministic = (output_hash_1 == output_hash_2 == output_hash_3)
+            deterministic = output_hash_1 == output_hash_2 == output_hash_3
 
             test_result = ReplayTestResult(
                 test_id=test_id,
@@ -199,12 +201,18 @@ class ReplayVerifier:
         failed_lanes = [lane for lane, result in lane_results.items() if result["failed"] > 0]
 
         if total_failed > 0:
-            recommendations.append(f"Address determinism failures in lanes: {', '.join(failed_lanes)}")
-            recommendations.append("Non-deterministic behavior may cause issues under high load or failure scenarios")
+            recommendations.append(
+                f"Address determinism failures in lanes: {', '.join(failed_lanes)}"
+            )
+            recommendations.append(
+                "Non-deterministic behavior may cause issues under high load or failure scenarios"
+            )
             recommendations.append("Root cause investigation required before production deployment")
 
         if all(result["success_rate_pct"] == 100.0 for result in lane_results.values()):
-            recommendations.append("✅ All lanes verified as deterministic - system ready for production")
+            recommendations.append(
+                "✅ All lanes verified as deterministic - system ready for production"
+            )
             recommendations.append("Monitor for any changes that might affect determinism")
 
         return recommendations
@@ -233,7 +241,9 @@ class ReplayVerifier:
             "total_tests_run": total_tests,
             "total_passed": total_passed,
             "total_failed": total_failed,
-            "overall_success_rate_pct": (total_passed / total_tests * 100) if total_tests > 0 else 0,
+            "overall_success_rate_pct": (total_passed / total_tests * 100)
+            if total_tests > 0
+            else 0,
             "all_verifications_production_ready": all_production_ready,
             "last_verification": self.reports[-1].timestamp if self.reports else None,
         }

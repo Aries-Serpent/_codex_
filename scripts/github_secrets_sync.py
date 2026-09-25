@@ -39,8 +39,8 @@ import secrets
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 try:
     from github import Github

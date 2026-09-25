@@ -1,11 +1,11 @@
 """Campaign artifact ingestion pipeline — converts .codex/ files into structured JSONL records."""
 
+import hashlib
 import json
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
-import hashlib
+from typing import Any, Dict, List
 
 
 class CampaignIngester:

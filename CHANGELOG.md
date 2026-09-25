@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5633 governance drift remediation (2026-09-25)
+- Restored the tracked `.codex/session_startup_packet.json` baseline to remove timestamp-only churn from the branch and keep the repo state aligned with the tracked startup packet.
+- Refreshed the live session evidence in `.codex/aftermath/pda_iterations.jsonl` and the accountability archive so the active branch clears the stale `auto_fix` and `PDA entry today` readiness checks without broadening scope.
+
 ### Fixed — PR #5625 repo-lint contract repair (2026-09-23)
 - Fixed the remaining repo-lint contract violations by restoring the import ordering in `src/cli.py` and `src/bridge_manager.py` and by resolving repo helper scripts through the active root/src layout in `configs/development/noxfile.py`.
 

@@ -119,11 +119,7 @@ A **Planset** is a structured work plan that defines objectives, tasks, dependen
 from agents.api.plansets import PlansetAPI
 
 # Create a new planset
-planset = PlansetAPI.create(
-    name="Repository Organization Phase 1",
-    objectives=[...],
-    tasks=[...]
-)
+planset = PlansetAPI.create(name="Repository Organization Phase 1", objectives=[...], tasks=[...])
 
 # Load existing planset
 planset = PlansetAPI.load("plan-2025-12-10-001")
@@ -348,9 +344,7 @@ from agents.api.batchsets import BatchsetAPI
 
 # Create batchset
 batchset = BatchsetAPI.create(
-    name="Pre-Release Preparation Batch",
-    operations=[...],
-    transaction_mode="atomic"
+    name="Pre-Release Preparation Batch", operations=[...], transaction_mode="atomic"
 )
 
 # Execute batchset
@@ -464,11 +458,7 @@ A **Patchset** is a collection of code changes (patches) with metadata, validati
 from agents.api.patchsets import PatchsetAPI
 
 # Create patchset
-patchset = PatchsetAPI.create(
-    name="Fix Unused Format Arguments",
-    patches=[...],
-    validation={...}
-)
+patchset = PatchsetAPI.create(name="Fix Unused Format Arguments", patches=[...], validation={...})
 
 # Preview changes
 preview = patchset.preview()
@@ -525,31 +515,29 @@ codex patchset rollback patch-2025-12-10-001
 from agents.api.github_integration import CodexGitHubAPI
 
 # Initialize with token
-gh = CodexGitHubAPI(token=os.getenv('GITHUB_TOKEN'))
+gh = CodexGitHubAPI(token=os.getenv("GITHUB_TOKEN"))
 
 # Create planset from issue
-issue = gh.issues.get(repo='Aries-Serpent/_codex_', number=2459)
+issue = gh.issues.get(repo="Aries-Serpent/_codex_", number=2459)
 planset = gh.plansets.from_issue(issue)
 
 # Create patchset from PR
-pr = gh.pull_requests.get(repo='Aries-Serpent/_codex_', number=2459)
+pr = gh.pull_requests.get(repo="Aries-Serpent/_codex_", number=2459)
 patchset = gh.patchsets.from_pull_request(pr)
 
 # Execute promptset and create PR
-promptset = PromptsetAPI.load('promptset-audit-v1')
+promptset = PromptsetAPI.load("promptset-audit-v1")
 results = promptset.execute()
 pr = gh.pull_requests.create_from_results(
-    repo='Aries-Serpent/_codex_',
+    repo="Aries-Serpent/_codex_",
     results=results,
-    title='Automated Audit Results',
-    branch='audit/automated-results'
+    title="Automated Audit Results",
+    branch="audit/automated-results",
 )
 
 # Query archived data
 archives = gh.archives.query(
-    repo='Aries-Serpent/_codex_',
-    pattern='*STATUS*.md',
-    date_range=('2025-01-01', '2025-12-10')
+    repo="Aries-Serpent/_codex_", pattern="*STATUS*.md", date_range=("2025-01-01", "2025-12-10")
 )
 ```
 
@@ -558,24 +546,26 @@ archives = gh.archives.query(
 ```python
 from agents.api.webhooks import WebhookHandler
 
+
 # Register webhook handler
-@WebhookHandler.on('planset.completed')
+@WebhookHandler.on("planset.completed")
 def handle_planset_completed(event):
     """Handle planset completion event"""
     planset = event.planset
-    if planset.status == 'success':
+    if planset.status == "success":
         # Notify success
         send_notification(f"Planset {planset.name} completed successfully")
     else:
         # Create issue for failures
         gh.issues.create(
-            repo='Aries-Serpent/_codex_',
+            repo="Aries-Serpent/_codex_",
             title=f"Planset Failure: {planset.name}",
-            body=planset.get_error_report()
+            body=planset.get_error_report(),
         )
 
+
 # Register for patchset events
-@WebhookHandler.on('patchset.applied')
+@WebhookHandler.on("patchset.applied")
 def handle_patchset_applied(event):
     """Handle patchset application"""
     patchset = event.patchset
@@ -584,8 +574,7 @@ def handle_patchset_applied(event):
     if not validation.passed:
         patchset.rollback()
         gh.comments.create(
-            issue=patchset.issue_refs[0],
-            body=f"Patchset validation failed: {validation.errors}"
+            issue=patchset.issue_refs[0], body=f"Patchset validation failed: {validation.errors}"
         )
 ```
 
@@ -602,7 +591,7 @@ from agents.api import PlansetAPI, PromptsetAPI, BatchsetAPI
 planset = PlansetAPI.create(
     name="Monthly Audit Cycle",
     objectives=[{"description": "Complete monthly audit and reporting"}],
-    tasks=[...]
+    tasks=[...],
 )
 
 # 2. Load prompts
@@ -614,8 +603,8 @@ batchset = BatchsetAPI.create(
     operations=[
         {"command": "python -m scripts.space_traversal.audit_runner run"},
         {"command": "python -m scripts.space_traversal.audit_runner store-trend"},
-        {"command": "python -m scripts.space_traversal.audit_runner check-regressions"}
-    ]
+        {"command": "python -m scripts.space_traversal.audit_runner check-regressions"},
+    ],
 )
 
 # 4. Execute
@@ -646,10 +635,7 @@ from agents.api import PlansetAPI, BatchsetAPI, PatchsetAPI
 deployment = PlansetAPI.load("plan-pre-release-v1.5.5")
 
 # Create pre-release batch
-batch = BatchsetAPI.create(
-    name="Pre-Release v1.5.5",
-    operations=deployment.get_operations()
-)
+batch = BatchsetAPI.create(name="Pre-Release v1.5.5", operations=deployment.get_operations())
 
 # Execute with monitoring
 results = batch.execute(monitor=True, callback=log_progress)
@@ -670,28 +656,35 @@ if results.success:
 ```python
 class Planset:
     """Base class for plansets"""
+
     def create(cls, name, objectives, tasks): ...
     def load(cls, id): ...
     def execute(self): ...
     def get_status(self): ...
     def rollback(self): ...
 
+
 class Promptset:
     """Base class for promptsets"""
+
     def load(cls, id): ...
     def search(self, tags): ...
     def get_prompt(self, id): ...
     def execute_workflow(self, workflow_id): ...
 
+
 class Batchset:
     """Base class for batchsets"""
+
     def create(cls, name, operations): ...
     def execute(self, parallel): ...
     def get_results(self): ...
     def rollback(self): ...
 
+
 class Patchset:
     """Base class for patchsets"""
+
     def create(cls, name, patches): ...
     def preview(self): ...
     def validate_pre(self): ...

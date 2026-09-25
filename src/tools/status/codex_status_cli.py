@@ -31,7 +31,9 @@ def main():
     ok &= run(sys.executable, "src/tools/status/validate_status_update.py", json_path)
     ok &= run(sys.executable, "src/tools/status/capability_autodiscovery.py")
     ok &= run(sys.executable, "src/tools/docs/harvest_open_questions.py")
-    ok &= run(sys.executable, "src/tools/status/render_md.py", json_path, f"{prefix}-{today}.tables.md")
+    ok &= run(
+        sys.executable, "src/tools/status/render_md.py", json_path, f"{prefix}-{today}.tables.md"
+    )
     if not ok:
         print(f"STATUS FAILED -> {json_path}", file=sys.stderr)
         return 1

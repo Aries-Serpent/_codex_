@@ -37,8 +37,8 @@ import secrets
 import sys
 from datetime import datetime
 from pathlib import Path
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 try:
     from cryptography.hazmat.backends import default_backend

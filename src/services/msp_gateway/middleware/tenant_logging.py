@@ -24,7 +24,7 @@ _tenant_context: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
 
 def get_current_tenant_id() -> Optional[str]:
     """Get the current tenant ID from context.
-    
+
     Returns:
         The current tenant ID, or None if not set.
     """
@@ -33,7 +33,7 @@ def get_current_tenant_id() -> Optional[str]:
 
 def set_tenant_context(tenant_id: str) -> None:
     """Set the current tenant ID in context.
-    
+
     Args:
         tenant_id: The tenant identifier to set.
     """
@@ -47,7 +47,7 @@ def clear_tenant_context() -> None:
 
 class TenantContextManager:
     """Context manager for temporarily setting tenant context.
-    
+
     Usage:
         with TenantContextManager("tenant-123"):
             # tenant_id is "tenant-123" here
@@ -70,7 +70,7 @@ class TenantContextManager:
 
 def tenant_logged(func: Callable) -> Callable:
     """Decorator to log function calls with tenant context.
-    
+
     Usage:
         @tenant_logged
         async def my_function(request: Request):
@@ -103,10 +103,10 @@ def tenant_logged(func: Callable) -> Callable:
 
 def extract_tenant_id_from_request(request: Request) -> Optional[str]:
     """Extract tenant ID from request state.
-    
+
     Args:
         request: The FastAPI request object.
-    
+
     Returns:
         The tenant ID if available, None otherwise.
     """
@@ -116,7 +116,7 @@ def extract_tenant_id_from_request(request: Request) -> Optional[str]:
 
 class TenantAwareLogger:
     """Logger that automatically includes tenant ID in log records.
-    
+
     Usage:
         logger = TenantAwareLogger(__name__)
         logger.info("Processing request", tenant_id="tenant-123")

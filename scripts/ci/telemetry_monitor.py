@@ -10,14 +10,13 @@ Collects and tracks:
 """
 
 import json
-import sys
 import os
-from datetime import datetime, timedelta
-from pathlib import Path
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional
-from collections import defaultdict
 import statistics
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
 
 
 @dataclass

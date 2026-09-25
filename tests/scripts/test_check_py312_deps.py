@@ -267,6 +267,6 @@ class TestIntegration:
 
         # Script should run (may pass or fail depending on actual compatibility)
         assert result.returncode in [0, 1]
-        assert (
+        assert (, "Condition must be true"
             "Python 3.12 Dependency Compatibility Checker" in result.stdout
         ), "Result must not be empty"

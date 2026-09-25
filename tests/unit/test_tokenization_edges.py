@@ -1,12 +1,12 @@
 #             assert (, "Condition must be true"
-# 
+#
 #         """Verify null bytes don't cause crashes or silent failures."""
 #         # Arrange
 #         try:
 #             from transformers import AutoTokenizer
 #         except ImportError:
 #             pytest.skip("transformers not available")
-# 
+#
 #             # It's acceptable to reject null bytes with clear error
 #             assert (, "Condition must be true"
 # class TestTokenizationEmptyInputs:
@@ -29,14 +29,14 @@
 #         except (ValueError, TypeError) as _err:
 #             pytest.skip("Could not load tokenizer")
 #         result = tokenizer("")
-# 
+#
 #         # Assert
 #         assert isinstance(result, dict) or hasattr(
 #             result, "input_ids"
 #         ), "Tokenizer should return dict-like object"
 #         assert len(result.get("input_ids", [])) == 0, "Empty input should produce empty token list"
 #         assert len(result.get("input_ids", [])) == 0, "Empty input should produce empty token list"
-# 
+#
 #     def test_tokenize_whitespace_only(self):
 #     def test_tokenize_whitespace_only(self):
 #         """Verify whitespace-only input is handled correctly."""
@@ -61,7 +61,7 @@
 #         # the result is a valid token sequence
 #         assert isinstance(result.get("input_ids"), (list, type(None))
 #         )
-# 
+#
 #     def test_tokenize_single_character(self):
 #     def test_tokenize_single_character(self):
 #         """Verify single character tokenization works."""
@@ -79,14 +79,14 @@
 #         except (ValueError, TypeError) as _err:
 #             pytest.skip("Could not load tokenizer")
 #         result = tokenizer("a")
-# 
+#
 #         # Assert
 #         assert "input_ids" in result, "Result should contain input_ids"
 #         assert len(result["input_ids"]) >= 1, "Single character should produce at least one token"
 #         except ValueError as e:
 #             # It's acceptable to reject null bytes with clear error
 #             assert (, "Condition must be true"
-# 
+#
 #             assert (, "Condition must be true"
 #     """Test tokenization with special characters and encodings."""
 #     def test_tokenize_null_byte_handling(self):
@@ -139,12 +139,12 @@
 #         text_with_bom = "\ufeffhello world"
 #         # Act
 #         result = tokenizer(text_with_bom)
-# 
+#
 #         # Assert: Should tokenize without error
 #         assert "input_ids" in result, "Should handle BOM in UTF-8 string"
 #         assert len(result["input_ids"]) > 0, "Should produce tokens even with BOM"
 #         assert len(result["input_ids"]) > 0, "Should produce tokens even with BOM"
-# 
+#
 #     def test_tokenize_mixed_unicode_scripts(self):
 #     def test_tokenize_mixed_unicode_scripts(self):
 #         """Verify mixed Unicode scripts (Latin, CJK, Emoji) are handled."""
@@ -164,11 +164,11 @@
 #         mixed_text = "Hello 世界 🌍 мир"
 #         # Act
 #         result = tokenizer(mixed_text)
-# 
+#
 #         # Assert
 #         assert "input_ids" in result, "Should handle mixed Unicode scripts"
 #         assert len(result["input_ids"]) > 0, "Should produce tokens for mixed scripts"
-# 
+#
 #         # Assert
 #         assert (, "Condition must be true"
 #             len(result["input_ids"]) <= max_length

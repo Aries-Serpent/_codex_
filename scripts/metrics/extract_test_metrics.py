@@ -18,7 +18,7 @@ from pathlib import Path
 
 def extract_test_metrics(collection_json_path: str, output_path: str) -> None:
     """Extract test count and distribution metrics."""
-    
+
     try:
         with open(collection_json_path) as f:
             data = json.load(f)
@@ -40,10 +40,10 @@ def extract_test_metrics(collection_json_path: str, output_path: str) -> None:
     except json.JSONDecodeError:
         print(f"Invalid JSON in test collection file: {collection_json_path}")
         return
-    
+
     # Count tests
     tests = data.get('tests', [])
-    
+
     # Categorize tests
     categories = {
         'unit': 0,
@@ -53,19 +53,19 @@ def extract_test_metrics(collection_json_path: str, output_path: str) -> None:
         'smoke': 0,
         'other': 0,
     }
-    
+
     markers_found = {}
-    
+
     for test in tests:
         # Check test path for category hints
         test_path = test.get('nodeid', '')
         markers = test.get('markers', []) if isinstance(test.get('markers'), list) else []
-        
+
         # Store all markers
         for marker in markers:
             marker_name = marker if isinstance(marker, str) else marker.get('name', 'unknown')
             markers_found[marker_name] = markers_found.get(marker_name, 0) + 1
-        
+
         # Categorize based on markers or path
         if 'unit' in markers or 'test_unit' in test_path.lower():
             categories['unit'] += 1
@@ -79,9 +79,9 @@ def extract_test_metrics(collection_json_path: str, output_path: str) -> None:
             categories['smoke'] += 1
         else:
             categories['other'] += 1
-    
+
     total_tests = len(tests)
-    
+
     output = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "metric_id": "test_count",
@@ -91,14 +91,14 @@ def extract_test_metrics(collection_json_path: str, output_path: str) -> None:
         "status": "collected" if total_tests > 0 else "no_tests",
         "source": "pytest-collect-only",
     }
-    
+
     # Write output
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(output, f, indent=2)
-    
+
     print(f"✅ Test metrics written to {output_path}")
     print(f"   Total tests: {total_tests}")
     for category, count in categories.items():
@@ -111,5 +111,5 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: extract_test_metrics.py <test_collection.json> <output.json>")
         sys.exit(1)
-    
+
     extract_test_metrics(sys.argv[1], sys.argv[2])

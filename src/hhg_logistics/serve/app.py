@@ -43,10 +43,11 @@ except ImportError as e:
     import config_legacy as hydra
 
 
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
+
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path  # noqa: E402
 from hhg_logistics.model.adapters import load_adapters_into  # noqa: E402
 from hhg_logistics.model.peft_utils import load_hf_llm  # noqa: E402
-from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
 OFFLINE_ENV_VARS: dict[str, str] = {
     "WANDB_MODE": "offline",
@@ -304,7 +305,12 @@ class LLMService:
             }
             try:
                 append_event_ndjson(self.metrics_file, record)
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - logging best effort
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - logging best effort
                 logger.debug("Failed to append request log", exc_info=True)
 
         return JSONResponse(response)

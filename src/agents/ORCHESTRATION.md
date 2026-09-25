@@ -76,14 +76,14 @@ Net_Potential = Attractive - Repulsive
 
 ```python
 class NodeType:
-    PROBLEM      # Problem to solve
-    HYPOTHESIS   # Potential solution
-    EVIDENCE     # Supporting data
-    DECISION     # Made decision
-    ACTION       # Executed action
-    OUTCOME      # Result of action
-    REFLECTION   # Self-appraisal
-    LEARNING     # Lesson learned
+    PROBLEM  # Problem to solve
+    HYPOTHESIS  # Potential solution
+    EVIDENCE  # Supporting data
+    DECISION  # Made decision
+    ACTION  # Executed action
+    OUTCOME  # Result of action
+    REFLECTION  # Self-appraisal
+    LEARNING  # Lesson learned
 ```
 
 ### Reasoning Chain
@@ -140,13 +140,12 @@ state = DecisionState(
     goal_position="pr_approved_and_merged",
     available_resources=0.8,
     time_available=0.6,
-    current_velocity=0.7
+    current_velocity=0.7,
 )
 
 # Think through the problem
 problem_node, reasoning = mental_map.think_through_problem(
-    problem="PR has 4 code review comments to address",
-    context={'pr_number': 2459}
+    problem="PR has 4 code review comments to address", context={"pr_number": 2459}
 )
 
 # Define possible paths
@@ -161,7 +160,7 @@ paths = [
         confidence=0.85,
         risk=0.2,
         impact=0.9,
-        urgency=0.7
+        urgency=0.7,
     ),
     ActionPath(
         action_type=ActionType.DOCUMENT,
@@ -173,8 +172,8 @@ paths = [
         confidence=0.95,
         risk=0.1,
         impact=0.6,
-        urgency=0.5
-    )
+        urgency=0.5,
+    ),
 ]
 
 # Orchestrate decision
@@ -182,11 +181,11 @@ result = orchestrator.orchestrate(state, paths)
 
 # Record decision in mental map
 decision_node = mental_map.make_decision(
-    decision_content=result['action_taken'],
+    decision_content=result["action_taken"],
     problem_node_id=problem_node.node_id,
-    confidence=result.get('confidence', 0.5),
+    confidence=result.get("confidence", 0.5),
     alternatives_considered=[p.description for p in paths],
-    reasoning="Physics-based optimization selected best path"
+    reasoning="Physics-based optimization selected best path",
 )
 
 # Later: record outcome
@@ -194,14 +193,14 @@ outcome_node = mental_map.record_outcome(
     decision_node_id=decision_node.node_id,
     outcome_content="All comments addressed, PR approved",
     success=True,
-    actual_impact=0.9
+    actual_impact=0.9,
 )
 
 # Iterative review
 mental_map.iterative_review(review_threshold=0.6)
 
 # Save for future reference
-mental_map.save_mental_map(Path('decision_history/pr_2459.json'))
+mental_map.save_mental_map(Path("decision_history/pr_2459.json"))
 ```
 
 ### Example 2: Architecture Decision
@@ -216,26 +215,26 @@ forces = [
         name="Performance Requirements",
         magnitude=0.9,
         direction=0.0,  # 0 radians (right)
-        priority=1.0
+        priority=1.0,
     ),
     ForceVector(
         name="Development Time",
         magnitude=0.7,
         direction=math.pi,  # π radians (left)
-        priority=0.8
+        priority=0.8,
     ),
     ForceVector(
         name="Maintainability",
         magnitude=0.8,
-        direction=math.pi/2,  # π/2 radians (up)
-        priority=0.9
+        direction=math.pi / 2,  # π/2 radians (up)
+        priority=0.9,
     ),
     ForceVector(
         name="Team Expertise",
         magnitude=0.6,
-        direction=3*math.pi/2,  # 3π/2 radians (down)
-        priority=0.7
-    )
+        direction=3 * math.pi / 2,  # 3π/2 radians (down)
+        priority=0.7,
+    ),
 ]
 
 # Calculate net force
@@ -261,7 +260,7 @@ state = DecisionState(
     goal_position="audit_passed",
     available_resources=0.9,
     time_available=0.8,
-    current_velocity=0.6
+    current_velocity=0.6,
 )
 
 paths = [
@@ -271,15 +270,15 @@ paths = [
         potential_energy=40.0,
         confidence=0.9,
         impact=0.95,
-        urgency=0.8
+        urgency=0.8,
     )
 ]
 
 result = orchestrator.orchestrate(state, paths)
 
-if result['action_taken'] == 'audit':
+if result["action_taken"] == "audit":
     # Execute audit
-    subprocess.run(['python', '-m', 'scripts.space_traversal.audit_runner', 'run'])
+    subprocess.run(["python", "-m", "scripts.space_traversal.audit_runner", "run"])
 ```
 
 ### With Pre-Release Deployment
@@ -291,7 +290,7 @@ state = DecisionState(
     goal_position="deployed_to_production",
     available_resources=0.95,
     time_available=1.0,
-    current_velocity=0.8
+    current_velocity=0.8,
 )
 
 # High energy, high impact decision
@@ -305,7 +304,7 @@ deploy_path = ActionPath(
     confidence=0.85,
     risk=0.4,  # Moderate risk
     impact=0.95,  # High impact
-    urgency=0.9  # Time-sensitive
+    urgency=0.9,  # Time-sensitive
 )
 
 # Deliberate carefully before deployment
@@ -318,12 +317,12 @@ result = orchestrator.orchestrate(state, [deploy_path, wait_path])
 
 ```python
 mental_map.appraisal_metrics = {
-    'total_decisions': 15,
-    'correct_decisions': 13,
-    'accuracy_rate': 0.867,
-    'average_confidence': 0.78,
-    'average_quality': 0.82,
-    'review_rate': 0.40  # 40% of nodes reviewed
+    "total_decisions": 15,
+    "correct_decisions": 13,
+    "accuracy_rate": 0.867,
+    "average_confidence": 0.78,
+    "average_quality": 0.82,
+    "review_rate": 0.40,  # 40% of nodes reviewed
 }
 ```
 
@@ -333,16 +332,17 @@ mental_map.appraisal_metrics = {
 # Track decision quality over time
 history = mental_map.learning_history
 
-qualities = [entry['quality_score'] for entry in history]
-timestamps = [entry['timestamp'] for entry in history]
+qualities = [entry["quality_score"] for entry in history]
+timestamps = [entry["timestamp"] for entry in history]
 
 # Quality improving over time?
 import matplotlib.pyplot as plt
+
 plt.plot(range(len(qualities)), qualities)
-plt.xlabel('Decision Number')
-plt.ylabel('Quality Score')
-plt.title('Decision Quality Over Time')
-plt.savefig('learning_curve.png')
+plt.xlabel("Decision Number")
+plt.ylabel("Quality Score")
+plt.title("Decision Quality Over Time")
+plt.savefig("learning_curve.png")
 ```
 
 ## Configuration
@@ -397,7 +397,7 @@ decision_node.add_reasoning_step(
     reasoning_type="deductive",
     confidence=0.8,
     alternatives=["approach_b", "approach_c"],
-    evidence=["benchmark_results", "expert_opinion"]
+    evidence=["benchmark_results", "expert_opinion"],
 )
 ```
 
@@ -407,10 +407,7 @@ decision_node.add_reasoning_step(
 # After every outcome, reflect
 outcome = execute_decision(decision)
 mental_map.record_outcome(
-    decision_node_id,
-    outcome.description,
-    success=outcome.success,
-    actual_impact=outcome.impact
+    decision_node_id, outcome.description, success=outcome.success, actual_impact=outcome.impact
 )
 
 # Periodic review
@@ -463,7 +460,7 @@ from agents.quantum_game_theory import (
     create_security_game,
     ClassicalGameEngine,
     QuantumInspiredGameEngine,
-    TeamType
+    TeamType,
 )
 
 # Classical: Payoffs → Hamiltonian, Strategies → Microstates
@@ -481,11 +478,14 @@ blue_strats, red_strats, payoff_blue, payoff_red = create_security_game()
 
 # Quantum simulator with entanglement and noise
 simulator = BlueRedTeamSimulator(
-    blue_strats, red_strats, payoff_blue, payoff_red,
-    mode='quantum',
-    entanglement=0.5,      # Correlated strategies
-    noise_level=0.1,       # Decoherence for uncertainty
-    risk_aversion=0.3      # Risk-adjusted utilities
+    blue_strats,
+    red_strats,
+    payoff_blue,
+    payoff_red,
+    mode="quantum",
+    entanglement=0.5,  # Correlated strategies
+    noise_level=0.1,  # Decoherence for uncertainty
+    risk_aversion=0.3,  # Risk-adjusted utilities
 )
 
 # Evaluate a hypothesis
@@ -538,6 +538,7 @@ The `ImportMigrationOrchestrator` extends `PhysicsInspiredOrchestrator` to autom
 ```python
 from agents import ImportMigration, ImportMigrationOrchestrator
 
+
 # ImportMigration dataclass with auto-calculated physics properties
 @dataclass
 class ImportMigration:
@@ -548,12 +549,12 @@ class ImportMigration:
 
     # Auto-calculated properties
     potential_energy: float  # Effort required
-    momentum: float          # Alignment with patterns
-    friction: float          # Resistance/risk
-    impact: float            # File importance
-    confidence: float        # Straightforwardness
-    risk: float              # Could break things
-    urgency: float           # Actively causing issues
+    momentum: float  # Alignment with patterns
+    friction: float  # Resistance/risk
+    impact: float  # File importance
+    confidence: float  # Straightforwardness
+    risk: float  # Could break things
+    urgency: float  # Actively causing issues
     optimization_score: float  # Calculated score
 ```
 
@@ -561,21 +562,21 @@ class ImportMigration:
 
 ```python
 # Impact based on file type
-if '/cli/' in file_path:
+if "/cli/" in file_path:
     impact = 0.9  # CLI files are high impact
-elif '/tests/' in file_path:
+elif "/tests/" in file_path:
     impact = 0.7  # Tests are medium-high impact
-elif '/agents/' in file_path:
+elif "/agents/" in file_path:
     impact = 0.85  # Agent files are high impact
 
 # Friction based on location
-if '/tests/training/' in file_path or '/cli/' in file_path:
+if "/tests/training/" in file_path or "/cli/" in file_path:
     friction = 0.1  # Training-related files have low friction
 
 # Risk based on module criticality
-if 'functional_training' in old_import:
+if "functional_training" in old_import:
     risk = 0.3  # Critical module
-elif 'checkpoint' in old_import:
+elif "checkpoint" in old_import:
     risk = 0.25
 ```
 
@@ -592,7 +593,7 @@ orchestrator = ImportMigrationOrchestrator()
 result = orchestrator.run_migration_cycle(
     repo_root=Path("/path/to/repo"),
     energy_budget=500.0,  # Maximum energy to expend
-    dry_run=True  # Set to False to execute
+    dry_run=True,  # Set to False to execute
 )
 
 # Result contains:
@@ -629,10 +630,10 @@ The orchestrator uses a predefined migration map:
 
 ```python
 migration_map = {
-    'from training.': 'from src.training.',
-    'from models.': 'from src.models.',
-    'import training.': 'import src.training.',
-    'import models.': 'import src.models.',
+    "from training.": "from src.training.",
+    "from models.": "from src.models.",
+    "import training.": "import src.training.",
+    "import models.": "import src.models.",
 }
 ```
 
@@ -713,16 +714,11 @@ flow_model.add_attractor((0.8, 0.8), strength=2.0)
 flow_model.add_repulsor((0.3, 0.5), strength=1.0)
 
 # Simulate agent flow toward goal
-trajectory = flow_model.simulate_flow(
-    start_position=(0.1, 0.1),
-    steps=100,
-    dt=0.1
-)
+trajectory = flow_model.simulate_flow(start_position=(0.1, 0.1), steps=100, dt=0.1)
 
 # Integration with mental mapping
 result = flow_model.integrate_with_mental_mapping(
-    problem_position=(0.1, 0.1),
-    goal_position=(0.8, 0.8)
+    problem_position=(0.1, 0.1), goal_position=(0.8, 0.8)
 )
 print(f"Steps to goal: {result['steps_to_goal']}")
 ```
@@ -742,16 +738,14 @@ from agents import EnergyLandscape, EnergyState
 landscape = EnergyLandscape(temperature=1.0)
 
 # Add decision states with energy/entropy
-landscape.add_state(EnergyState(
-    configuration={'action': 'deploy'},
-    energy=0.3,  # Low energy = favorable
-    entropy=0.1   # Low entropy = certain
-))
-landscape.add_state(EnergyState(
-    configuration={'action': 'wait'},
-    energy=0.5,
-    entropy=0.3
-))
+landscape.add_state(
+    EnergyState(
+        configuration={"action": "deploy"},
+        energy=0.3,  # Low energy = favorable
+        entropy=0.1,  # Low entropy = certain
+    )
+)
+landscape.add_state(EnergyState(configuration={"action": "wait"}, energy=0.5, entropy=0.3))
 
 # Select state using Gibbs distribution
 best_state = landscape.select_state()
@@ -762,10 +756,7 @@ print(f"Probability: {landscape.gibbs_probability(best_state):.3f}")
 optimal = landscape.minimize_free_energy()
 
 # Integration with self-appraisal
-result = landscape.integrate_with_self_appraisal(
-    decision_quality=0.8,
-    expected_confidence=0.7
-)
+result = landscape.integrate_with_self_appraisal(decision_quality=0.8, expected_confidence=0.7)
 ```
 
 **Key Equations:**
@@ -784,28 +775,27 @@ from agents import SwarmIntelligence
 swarm = SwarmIntelligence(
     num_particles=10,
     dimensions=2,
-    inertia=0.7,      # w: continue current direction
-    cognitive=1.5,     # c1: personal best attraction
-    social=1.5         # c2: global best attraction
+    inertia=0.7,  # w: continue current direction
+    cognitive=1.5,  # c1: personal best attraction
+    social=1.5,  # c2: global best attraction
 )
+
 
 # Define fitness function
 def fitness(position):
-    return -sum((x - 0.5)**2 for x in position)  # Optimal at center
+    return -sum((x - 0.5) ** 2 for x in position)  # Optimal at center
+
 
 # Run optimization
 result = swarm.run_optimization(
-    fitness_function=fitness,
-    bounds=[(0, 1), (0, 1)],
-    max_iterations=50
+    fitness_function=fitness, bounds=[(0, 1), (0, 1)], max_iterations=50
 )
 print(f"Best position: {result['best_position']}")
 print(f"Converged: {result['converged']}")
 
 # Coordinate multiple agents toward target
 new_positions = swarm.coordinate_agents(
-    agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)],
-    target_position=(0.8, 0.8)
+    agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)], target_position=(0.8, 0.8)
 )
 ```
 
@@ -829,7 +819,7 @@ task = ActionPath(
     description="Deploy new feature",
     potential_energy=80.0,
     impact=0.9,
-    urgency=0.7
+    urgency=0.7,
 )
 
 # Decompose into sub-tasks
@@ -864,15 +854,15 @@ from agents import ReflectionLoop
 # Create feedback controller
 feedback = ReflectionLoop(
     k_proportional=0.5,  # Immediate error response
-    k_integral=0.1,       # Accumulated error correction
-    k_derivative=0.05     # Rate of change response
+    k_integral=0.1,  # Accumulated error correction
+    k_derivative=0.05,  # Rate of change response
 )
 
 # Record decisions and outcomes
 result = feedback.record_decision(
-    decision={'action': 'deploy', 'confidence': 0.8},
+    decision={"action": "deploy", "confidence": 0.8},
     predicted_outcome=0.8,
-    actual_outcome=0.7  # Slightly worse than expected
+    actual_outcome=0.7,  # Slightly worse than expected
 )
 print(f"Error: {result['error']:.3f}")
 print(f"Correction: {result['correction']:.3f}")
@@ -885,6 +875,7 @@ print(f"Trend: {metrics['trend']}")
 
 # Integration with orchestrator
 from agents import PhysicsInspiredOrchestrator
+
 orchestrator = PhysicsInspiredOrchestrator()
 feedback.integrate_with_orchestrator(orchestrator)
 # Updates orchestrator's confidence_threshold and risk_tolerance
@@ -909,11 +900,13 @@ trajectory = flow.simulate_flow((0.1, 0.1))
 # Use energy landscape for final decision
 landscape = EnergyLandscape(temperature=0.5)
 for i, pos in enumerate(trajectory[-5:]):  # Last 5 positions
-    landscape.add_state(EnergyState(
-        configuration={'position': pos, 'step': len(trajectory) - 5 + i},
-        energy=1.0 - (pos[0] + pos[1]) / 2,  # Energy decreases near goal
-        entropy=0.1 * i
-    ))
+    landscape.add_state(
+        EnergyState(
+            configuration={"position": pos, "step": len(trajectory) - 5 + i},
+            energy=1.0 - (pos[0] + pos[1]) / 2,  # Energy decreases near goal
+            entropy=0.1 * i,
+        )
+    )
 
 optimal_state = landscape.minimize_free_energy()
 ```
@@ -926,9 +919,7 @@ from agents import SwarmIntelligence, TaskDecomposer, ActionPath
 # Use swarm to find optimal configuration
 swarm = SwarmIntelligence(num_particles=5, dimensions=3)
 result = swarm.run_optimization(
-    fitness_function=lambda x: -sum(xi**2 for xi in x),
-    bounds=[(-1, 1)] * 3,
-    max_iterations=30
+    fitness_function=lambda x: -sum(xi**2 for xi in x), bounds=[(-1, 1)] * 3, max_iterations=30
 )
 
 # Decompose optimal task
@@ -937,7 +928,7 @@ task = ActionPath(
     action_type=ActionType.OPTIMIZE,
     description=f"Optimize at {result['best_position']}",
     potential_energy=50.0,
-    impact=result['best_score']
+    impact=result["best_score"],
 )
 decomposer.integrate_with_action_path(task)
 ```

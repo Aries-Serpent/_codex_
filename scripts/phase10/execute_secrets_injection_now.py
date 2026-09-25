@@ -33,8 +33,8 @@ Last Updated: 2026-01-16
 import os
 import subprocess
 import sys
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # WARNING: Do NOT log secret names or values in clear text.
 # Use redaction for any sensitive information.

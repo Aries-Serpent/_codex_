@@ -1,28 +1,28 @@
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # to push coverage from 90% to 95%.
-# 
-# 
+#
+#
 # Created: 2026-01-18
 #         """Test None type checking."""
 #         value = None
-# 
-# 
+#
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # import os
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # from typing import Any
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
-# 
+#
 # # =============================================================================
 # # Edge Case Test Fixtures
 # # =============================================================================
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # def empty_input() -> str:
@@ -62,11 +62,11 @@
 #         assert "@" in str(special_path), "Condition must be true"
 # # String Edge Case Tests
 # # =============================================================================
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 #     """Tests for string handling edge cases."""
-# 
+#
 #     def test_empty_string_handling(self, empty_input: str) -> None:
 #     def test_empty_string_handling(self, empty_input: str) -> None:
 #         """Test handling of empty strings."""
@@ -90,7 +90,7 @@
 #         decoded = encoded.decode("utf-8")
 #         assert decoded == unicode_input, "decoded is not valid"
 #         assert decoded == unicode_input, "decoded is not valid"
-# 
+#
 #     def test_very_long_string(self, long_input: str) -> None:
 #     def test_very_long_string(self, long_input: str) -> None:
 #         """Test handling of very long strings."""
@@ -99,7 +99,7 @@
 #         assert long_input[0] == "x", "Condition must be true"
 #         assert long_input[-1] == "x", "Condition must be true"
 #         assert long_input[-1] == "x", "Condition must be true"
-# 
+#
 #     def test_null_character_handling(self) -> None:
 #     def test_null_character_handling(self) -> None:
 #         """Test handling of null characters in strings."""
@@ -115,16 +115,16 @@
 #         assert unix_newline.splitlines() == ["line1", "line2"]
 #         assert windows_newline.splitlines() == ["line1", "line2"]
 #         assert mac_newline.splitlines() == ["line1", "line2"]
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # # Numeric Edge Case Tests
 # # =============================================================================
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 #     """Tests for numeric handling edge cases."""
-# 
+#
 #     def test_zero_values(self) -> None:
 #     def test_zero_values(self) -> None:
 #         """Test handling of zero values."""
@@ -160,29 +160,29 @@
 #         import math
 #         pos_inf = float("inf")
 #         neg_inf = float("-inf")
-# 
+#
 #         assert math.isinf(pos_inf), "Condition must be true"
 #         assert math.isinf(neg_inf), "Condition must be true"
 #         assert pos_inf > 0, "pos_inf must be greater than zero"
 #         assert neg_inf < 0, "neg_inf is not valid"
-# 
+#
 #     def test_nan_handling(self) -> None:
 #     def test_nan_handling(self) -> None:
 #         """Test handling of NaN values."""
 #         import math
 #         nan_value = float("nan")
-# 
+#
 #         assert math.isnan(nan_value), "Value must be initialized"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # # Collection Edge Case Tests
 # # =============================================================================
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 #     """Tests for collection handling edge cases."""
-# 
+#
 #     def test_empty_list(self) -> None:
 #     def test_empty_list(self) -> None:
 #         """Test handling of empty lists."""
@@ -190,7 +190,7 @@
 #         assert len(empty_list) == 0, "Empty_list must not be empty"
 #         assert not empty_list, "Condition must be true"
 #         assert list(empty_list) == [], "Condition must be true"
-# 
+#
 #     def test_empty_dict(self) -> None:
 #     def test_empty_dict(self) -> None:
 #         """Test handling of empty dictionaries."""
@@ -198,13 +198,13 @@
 #         assert len(empty_dict) == 0, "Empty_dict must not be empty"
 #         assert not empty_dict, "Condition must be true"
 #         assert dict(empty_dict) == {}, "Condition must be true"
-# 
+#
 #     def test_nested_collections(self) -> None:
 #     def test_nested_collections(self) -> None:
 #         """Test handling of deeply nested collections."""
 #         nested = {"a": {"b": {"c": {"d": {"e": "value"}}}}}
 #         assert nested["a"]["b"]["c"]["d"]["e"] == "value", "Value must be initialized"
-# 
+#
 #     def test_mixed_type_list(self) -> None:
 #     def test_mixed_type_list(self) -> None:
 #         """Test handling of lists with mixed types."""
@@ -216,7 +216,7 @@
 #         assert mixed[3] is None, "Condition must be true"
 #         assert isinstance(mixed[4], bool)
 #         assert isinstance(mixed[5], list)
-# 
+#
 #     def test_dict_with_none_values(self) -> None:
 #     def test_dict_with_none_values(self) -> None:
 #         """Test handling of dictionaries with None values."""
@@ -224,23 +224,23 @@
 #         assert "key1" in dict_with_none, "Condition must be true"
 #         assert dict_with_none["key1"] is None, "Condition must be true"
 #         assert dict_with_none.get("key1") is None, "Condition must be true"
-# 
+#
 #     def test_dict_with_none_key(self) -> None:
 #     def test_dict_with_none_key(self) -> None:
 #         """Test handling of dictionaries with None as key."""
 #         dict_with_none_key: dict[Any, str] = {None: "value"}
 #         assert None in dict_with_none_key, "Condition must be true"
 #         assert dict_with_none_key[None] == "value", "Value must be initialized"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 # # File System Edge Case Tests
 # # =============================================================================
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
 #     """Tests for file system handling edge cases."""
-# 
+#
 #     def test_path_normalization(self) -> None:
 #     def test_path_normalization(self) -> None:
 #         """Test path normalization."""
@@ -248,7 +248,7 @@
 #         Path("/foo/baz")
 #         assert str(path1) == "/foo/bar/../baz", "Condition must be true"
 #         assert str(path1) == "/foo/bar/../baz", "Condition must be true"
-# 
+#
 #     def test_relative_path(self) -> None:
 #     def test_relative_path(self) -> None:
 #         """Test relative path handling."""
@@ -257,20 +257,20 @@
 #         # Path normalizes "./foo/bar" to "foo/bar" on Python 3.12+
 #         # Use as_posix() for platform-agnostic comparison
 #         assert "foo/bar" in rel_path.as_posix(), "Condition must be true"
-# 
+#
 #     def test_path_with_spaces(self) -> None:
 #     def test_path_with_spaces(self) -> None:
 #         """Test path with spaces."""
 #         path_with_spaces = Path("/foo bar/baz qux")
 #         assert " " in str(path_with_spaces), "Condition must be true"
-# 
+#
 #     def test_special_characters_in_path(self) -> None:
 #     def test_special_characters_in_path(self) -> None:
 #         """Test special characters in file paths."""
 #         special_path = Path("/foo#bar/baz@qux")
 #         assert ", "Condition must be true"
 #         assert "@" in str(special_path), "Condition must be true"
-# 
+#
 #     def test_empty_file_handling(self) -> None:
 #     def test_empty_file_handling(self) -> None:
 #         """Test handling of empty files."""
@@ -278,14 +278,14 @@
 #             temp_path = f.name
 #         try:
 #             assert Path(temp_path).stat().st_size == 0, "st_size is not valid"
-# 
+#
 #             with open(temp_path) as f:
 #                 content = f.read()
-# 
+#
 #             assert content == "", "Content must not be empty"
 #         finally:
 #             os.unlink(temp_path)
-# 
+#
 #     def test_binary_file_handling(self) -> None:
 #     def test_binary_file_handling(self) -> None:
 #         """Test handling of binary files."""
@@ -293,11 +293,11 @@
 #         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as f:
 #             f.write(binary_content)
 #             temp_path = f.name
-# 
+#
 #         try:
 #             with open(temp_path, "rb") as f:
 #                 read_content = f.read()
-# 
+#
 #             assert read_content == binary_content, "Content must not be empty"
 #         finally:
 #             os.unlink(temp_path)

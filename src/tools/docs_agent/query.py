@@ -82,19 +82,26 @@ def query_document(repo_root: Path, document_id: str) -> dict[str, Any]:
 
 def query_table(repo_root: Path, table: str, limit: int = 100) -> dict[str, Any]:
     """Query a table from the documentation database.
-    
+
     Security: Table name is validated against a whitelist to prevent SQL injection.
     Only safe, known tables are allowed.
     """
     # Security: Whitelist of allowed tables to prevent SQL injection via table name
     ALLOWED_TABLES = {
-        "documents", "sections", "actions", "requirements", "decisions", 
-        "relationships", "docs_fts"
+        "documents",
+        "sections",
+        "actions",
+        "requirements",
+        "decisions",
+        "relationships",
+        "docs_fts",
     }
-    
+
     if table not in ALLOWED_TABLES:
-        raise ValueError(f"Invalid table name: {table}. Allowed tables: {', '.join(ALLOWED_TABLES)}")
-    
+        raise ValueError(
+            f"Invalid table name: {table}. Allowed tables: {', '.join(ALLOWED_TABLES)}"
+        )
+
     with _db(repo_root) as conn:
         # Safe: table name is validated against whitelist, limit is parameterized
         rows = conn.execute(f"SELECT * FROM {table} LIMIT ?", (limit,)).fetchall()
@@ -126,7 +133,7 @@ def query_related(repo_root: Path, entity_id: str, depth: int) -> dict[str, Any]
 
 def query_impact(repo_root: Path, files: list[str]) -> dict[str, Any]:
     """Query impact of file changes on documentation.
-    
+
     Security: File list is validated and used only as parameterized query values,
     never interpolated into SQL strings.
     """
@@ -142,12 +149,12 @@ def query_impact(repo_root: Path, files: list[str]) -> dict[str, Any]:
             ).fetchall()
         else:
             docs = []
-            
+
         doc_ids = [d[0] for d in docs]
         actions = []
         requirements = []
         decisions = []
-        
+
         if doc_ids:
             # Safe: Use parameterized query with placeholders for doc_ids
             q = ",".join("?" * len(doc_ids))
@@ -156,7 +163,7 @@ def query_impact(repo_root: Path, files: list[str]) -> dict[str, Any]:
             ).fetchall()
             requirements = conn.execute("SELECT id, statement, status FROM requirements").fetchall()
             decisions = conn.execute("SELECT id, statement, status FROM decisions").fetchall()
-            
+
     return {
         "changed_files": files,
         "affected_documents": [{"id": d[0], "title": d[1], "source_path": d[2]} for d in docs],

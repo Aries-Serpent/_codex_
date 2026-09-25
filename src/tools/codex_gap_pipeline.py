@@ -92,9 +92,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
 
     _run(
-        "python tools/codex_gap_trends.py "
-        f"--registry {args.registry} "
-        "--out codex_gap_trends.md",
+        f"python tools/codex_gap_trends.py --registry {args.registry} --out codex_gap_trends.md",
         root,
     )
 

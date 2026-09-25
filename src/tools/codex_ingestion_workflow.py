@@ -241,9 +241,11 @@ def patch_ingestion_module(dry_run: bool):
         new = base
         new = re.sub(
             r"(?ms)^def\s+ingest\s*\(.*?^\)",
-            lambda m: "# ORIGINAL_INGEST_REMOVED\n"
-            + "\n".join("# " + ln for ln in m.group(0).splitlines())
-            + "\n",
+            lambda m: (
+                "# ORIGINAL_INGEST_REMOVED\n"
+                + "\n".join("# " + ln for ln in m.group(0).splitlines())
+                + "\n"
+            ),
             new,
         )
         if not new.strip():
@@ -359,9 +361,11 @@ def patch_deep_research_script(dry_run: bool):
                 removed.append(name)
                 new = re.sub(
                     rf"(?ms)^def\s+{name}\s*\(.*?^\)",
-                    lambda m: "# PRUNED_PLACEHOLDER\n"
-                    + "\n".join("# " + ln for ln in m.group(0).splitlines())
-                    + "\n",
+                    lambda m: (
+                        "# PRUNED_PLACEHOLDER\n"
+                        + "\n".join("# " + ln for ln in m.group(0).splitlines())
+                        + "\n"
+                    ),
                     new,
                 )
         if "from ingestion import ingest" not in new:

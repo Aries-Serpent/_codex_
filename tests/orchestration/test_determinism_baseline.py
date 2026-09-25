@@ -63,7 +63,7 @@ class TestInputLock:
         """Test that lock generation is deterministic."""
         lock_hash_1, _ = InputLockAdapter.generate(**sample_inputs)
         lock_hash_2, _ = InputLockAdapter.generate(**sample_inputs)
-        assert lock_hash_1 == lock_hash_2
+        assert lock_hash_1 == lock_hash_2, "lock_hash_1 is not valid"
 
     def test_lock_collision_rate_zero(self, sample_inputs):
         """Test that collision rate is zero for 1000+ hashes."""
@@ -75,7 +75,7 @@ class TestInputLock:
             lock_hash, _ = InputLockAdapter.generate(**modified_inputs)
             hashes.add(lock_hash)
 
-        assert len(hashes) == 100  # All unique
+        assert len(hashes) == 100, "Hashes must not be empty"
 
     def test_lock_immutability(self, sample_inputs):
         """Test that generated lock is immutable."""
@@ -90,16 +90,16 @@ class TestInputLock:
             lock_dict["context"]["environment"],
             lock_dict["context"]["input_checksums"],
         )
-        assert recalculated != original_hash
+        assert recalculated != original_hash, "recalculated is not valid"
 
     def test_lock_format_validation(self, sample_inputs):
         """Test that lock conforms to expected format."""
         _, lock_dict = InputLockAdapter.generate(**sample_inputs)
 
-        assert lock_dict["lock_version"] == "1"
-        assert len(lock_dict["lock_hash"]) == 64
-        assert "T" in lock_dict["generated_at"] and "Z" in lock_dict["generated_at"]
-        assert "context" in lock_dict
+        assert lock_dict["lock_version"] == "1", "Condition must be true"
+        assert len(lock_dict["lock_hash"]) == 64, "Collection must not be empty"
+        assert "T" in lock_dict["generated_at"] and "Z" in lock_dict["generated_at"], "Condition must be true"
+        assert "context" in lock_dict, "Condition must be true"
 
     def test_lock_hash_is_sha256(self, sample_inputs):
         """Test that lock_hash is valid SHA256."""
@@ -107,8 +107,8 @@ class TestInputLock:
         lock_hash = lock_dict["lock_hash"]
 
         # SHA256 produces 64-character hex string
-        assert len(lock_hash) == 64
-        assert all(c in "0123456789abcdef" for c in lock_hash)
+        assert len(lock_hash) == 64, "Lock_hash must not be empty"
+        assert all(c in "0123456789abcdef" for c in lock_hash), "Condition must be true"
 
     def test_policy_config_affects_hash(self, sample_inputs):
         """Test that policy_config changes affect hash."""
@@ -120,7 +120,7 @@ class TestInputLock:
 
         _, lock2 = InputLockAdapter.generate(**modified)
 
-        assert lock1["lock_hash"] != lock2["lock_hash"]
+        assert lock1["lock_hash"] != lock2["lock_hash"], "Condition must be true"
 
     def test_solver_info_affects_hash(self, sample_inputs):
         """Test that solver_info changes affect hash."""
@@ -132,7 +132,7 @@ class TestInputLock:
 
         _, lock2 = InputLockAdapter.generate(**modified)
 
-        assert lock1["lock_hash"] != lock2["lock_hash"]
+        assert lock1["lock_hash"] != lock2["lock_hash"], "Condition must be true"
 
     def test_environment_affects_hash(self, sample_inputs):
         """Test that environment changes affect hash."""
@@ -144,7 +144,7 @@ class TestInputLock:
 
         _, lock2 = InputLockAdapter.generate(**modified)
 
-        assert lock1["lock_hash"] != lock2["lock_hash"]
+        assert lock1["lock_hash"] != lock2["lock_hash"], "Condition must be true"
 
     def test_input_checksum_affects_hash(self, sample_inputs):
         """Test that input_checksums changes affect hash."""
@@ -156,7 +156,7 @@ class TestInputLock:
 
         _, lock2 = InputLockAdapter.generate(**modified)
 
-        assert lock1["lock_hash"] != lock2["lock_hash"]
+        assert lock1["lock_hash"] != lock2["lock_hash"], "Condition must be true"
 
     def test_lock_json_schema_compliance(self, sample_inputs):
         """Test that lock conforms to JSON schema."""
@@ -168,7 +168,7 @@ class TestInputLock:
     def test_validate_lock_hash_success(self, sample_inputs):
         """Test successful lock hash validation."""
         _, lock_dict = InputLockAdapter.generate(**sample_inputs)
-        assert InputLockAdapter.validate_lock_hash(lock_dict) is True
+        assert InputLockAdapter.validate_lock_hash(lock_dict) is True, "Condition must be true"
 
     def test_validate_lock_hash_failure(self, sample_inputs):
         """Test that validation fails when hash is corrupted."""
@@ -186,10 +186,10 @@ class TestInputLock:
 
             InputLockAdapter.write_lock_file(lock_dict, output_path)
 
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
             with open(output_path) as f:
                 written = json.load(f)
-            assert written["lock_hash"] == lock_dict["lock_hash"]
+            assert written["lock_hash"] == lock_dict["lock_hash"], "Condition must be true"
 
     def test_lock_timestamp_format(self, sample_inputs):
         """Test that timestamp is ISO 8601 with Z suffix."""
@@ -197,10 +197,10 @@ class TestInputLock:
         ts = lock_dict["generated_at"]
 
         # Format: YYYY-MM-DDTHH:MM:SSZ
-        assert ts.endswith("Z")
-        assert "T" in ts
-        assert ts.count("-") == 2  # Date separators
-        assert ts.count(":") == 2  # Time separators
+        assert ts.endswith("Z"), "Condition must be true"
+        assert "T" in ts, "Condition must be true"
+        assert ts.count("-") == 2, "Count must be greater than zero"
+        assert ts.count(":") == 2, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -213,9 +213,9 @@ class TestSeedControl:
 
     def test_seed_validation_valid(self):
         """Test that valid seeds pass validation."""
-        assert SeedControlSystem.validate_seed(0) is True
-        assert SeedControlSystem.validate_seed(2**31 - 1) is True
-        assert SeedControlSystem.validate_seed(42) is True
+        assert SeedControlSystem.validate_seed(0) is True, "Condition must be true"
+        assert SeedControlSystem.validate_seed(2**31 - 1) is True, "Condition must be true"
+        assert SeedControlSystem.validate_seed(42) is True, "Condition must be true"
 
     def test_seed_validation_invalid_type(self):
         """Test that non-integer seeds fail validation."""
@@ -246,7 +246,7 @@ class TestSeedControl:
         for _ in range(10):
             values_2.append(random.random())
 
-        assert values_1 == values_2
+        assert values_1 == values_2, "Value must be initialized"
 
     def test_seed_reproducibility_numpy(self):
         """Test numpy seed reproducibility."""
@@ -303,27 +303,27 @@ class TestSeedControl:
         SeedControlSystem.set_seed(42)
 
         random_val_2 = random.random()
-        assert random_val == random_val_2
+        assert random_val == random_val_2, "random_val is not valid"
 
         if numpy_val is not None:
             import numpy as np
 
             numpy_val_2 = np.random.random()
-            assert abs(numpy_val - numpy_val_2) < 1e-10
+            assert abs(numpy_val - numpy_val_2) < 1e-10, "Condition must be true"
 
         if torch_val is not None:
             import torch
 
             torch_val_2 = torch.randn(1).item()
-            assert abs(torch_val - torch_val_2) < 1e-5
+            assert abs(torch_val - torch_val_2) < 1e-5, "Condition must be true"
 
     def test_seed_documentation(self):
         """Test seed documentation generation."""
         doc = SeedControlSystem.get_seed_documentation(42)
 
-        assert doc["seed"] == 42
+        assert doc["seed"] == 42, "Condition must be true"
         assert doc["range"] == [0, 2**31 - 1]
-        assert "random" in doc["systems"]
+        assert "random" in doc["systems"], "Condition must be true"
 
     def test_set_deterministic_seed_convenience(self):
         """Test convenience function for setting seed."""
@@ -337,7 +337,7 @@ class TestSeedControl:
         for _ in range(5):
             values_2.append(random.random())
 
-        assert values_1 == values_2
+        assert values_1 == values_2, "Value must be initialized"
 
     def test_seed_different_values_produce_different_outputs(self):
         """Test that different seeds produce different outputs."""
@@ -347,7 +347,7 @@ class TestSeedControl:
         SeedControlSystem.set_seed(43, numpy_enabled=False)
         val_2 = random.random()
 
-        assert val_1 != val_2
+        assert val_1 != val_2, "val_1 is not valid"
 
 
 # ============================================================================
@@ -369,10 +369,10 @@ class TestDecisionTrace:
         writer = DecisionTraceWriter(trace_path)
 
         writer.append("A", "action", "a" * 64, "success")
-        assert writer.get_entry_count() == 1
+        assert writer.get_entry_count() == 1, "Count must be greater than zero"
 
         writer.append("A", "action", "b" * 64, "success")
-        assert writer.get_entry_count() == 2
+        assert writer.get_entry_count() == 2, "Count must be greater than zero"
 
     def test_trace_jsonl_format(self, trace_path):
         """Test that trace file is valid JSONL."""
@@ -382,9 +382,9 @@ class TestDecisionTrace:
         writer.append("A", "gate_pass", "b" * 64, "success", description="Test 2")
 
         entries = writer.read_all()
-        assert len(entries) == 2
-        assert entries[0]["description"] == "Test 1"
-        assert entries[1]["description"] == "Test 2"
+        assert len(entries) == 2, "Entries must not be empty"
+        assert entries[0]["description"] == "Test 1", "Condition must be true"
+        assert entries[1]["description"] == "Test 2", "Condition must be true"
 
     def test_trace_timestamp_utc_z_format(self, trace_path):
         """Test that timestamp uses UTC Z format."""
@@ -396,9 +396,9 @@ class TestDecisionTrace:
         ts = entries[0]["timestamp"]
 
         # Format: YYYY-MM-DDTHH:MM:SS.fffZ
-        assert ts.endswith("Z")
-        assert "T" in ts
-        assert "." in ts
+        assert ts.endswith("Z"), "Condition must be true"
+        assert "T" in ts, "Condition must be true"
+        assert "." in ts, "Condition must be true"
 
     def test_trace_integrity_check(self, trace_path):
         """Test integrity check passes for valid trace."""
@@ -407,7 +407,7 @@ class TestDecisionTrace:
         writer.append("A", "action", "a" * 64, "success")
         writer.append("A", "gate_pass", "b" * 64, "success")
 
-        assert writer.verify_integrity() is True
+        assert writer.verify_integrity() is True, "Condition must be true"
 
     def test_trace_immutability(self, trace_path):
         """Test that trace entries cannot be modified."""
@@ -421,7 +421,7 @@ class TestDecisionTrace:
 
         # Read again - should not be modified
         entries_2 = writer.read_all()
-        assert entries_2[0]["outcome"] == "success"
+        assert entries_2[0]["outcome"] == "success", "Condition must be true"
 
     def test_trace_lane_id_validation(self, trace_path):
         """Test that invalid lane_id is rejected."""
@@ -436,7 +436,7 @@ class TestDecisionTrace:
 
         writer.append("A", "action", "a" * 64, "success")
 
-        assert trace_path.exists()
+        assert trace_path.exists(), "Condition must be true"
 
     def test_trace_decision_type_validation(self, trace_path):
         """Test that invalid decision_type is rejected."""
@@ -460,7 +460,7 @@ class TestDecisionTrace:
         writer.append("A", "action", "a" * 64, "success", evidence=evidence)
 
         entries = writer.read_all()
-        assert entries[0]["evidence"] == evidence
+        assert entries[0]["evidence"] == evidence, "Condition must be true"
 
     def test_trace_with_context(self, trace_path):
         """Test appending trace with context."""
@@ -470,26 +470,26 @@ class TestDecisionTrace:
         writer.append("A", "escalation", "a" * 64, "escalated", context=context)
 
         entries = writer.read_all()
-        assert entries[0]["context"] == context
+        assert entries[0]["context"] == context, "Condition must be true"
 
     def test_trace_entry_count(self, trace_path):
         """Test that entry count is tracked."""
         writer = DecisionTraceWriter(trace_path)
 
-        assert writer.get_entry_count() == 0
+        assert writer.get_entry_count() == 0, "Count must be greater than zero"
 
         writer.append("A", "action", "a" * 64, "success")
-        assert writer.get_entry_count() == 1
+        assert writer.get_entry_count() == 1, "Count must be greater than zero"
 
         writer.append("A", "action", "b" * 64, "success")
-        assert writer.get_entry_count() == 2
+        assert writer.get_entry_count() == 2, "Count must be greater than zero"
 
     def test_trace_read_empty_file(self, trace_path):
         """Test reading from non-existent file returns empty list."""
         writer = DecisionTraceWriter(trace_path)
 
         entries = writer.read_all()
-        assert entries == []
+        assert entries == [], "entries is not valid"
 
     def test_trace_integrity_check_empty_file(self, trace_path):
         """Test integrity check fails for empty file."""
@@ -527,9 +527,9 @@ class TestLaneManifest:
         """Test manifest generation."""
         manifest = LaneManifestContract.generate(**manifest_inputs)
 
-        assert manifest["lane_id"] == "A"
-        assert manifest["lane_name"] == "Determinism Baseline"
-        assert manifest["owner"] == "orchestrator-agent"
+        assert manifest["lane_id"] == "A", "Condition must be true"
+        assert manifest["lane_name"] == "Determinism Baseline", "Condition must be true"
+        assert manifest["owner"] == "orchestrator-agent", "Condition must be true"
 
     def test_manifest_schema_compliance(self, manifest_inputs):
         """Test that manifest conforms to schema."""
@@ -546,15 +546,15 @@ class TestLaneManifest:
         }
 
         manifest = LaneManifestContract.generate(**manifest_inputs)
-        assert manifest["dependencies"]["upstream_lanes"] == []
+        assert manifest["dependencies"]["upstream_lanes"] == [], "Condition must be true"
 
     def test_manifest_immutability(self, manifest_inputs):
         """Test that manifest has run_id and timestamp (immutability markers)."""
         manifest = LaneManifestContract.generate(**manifest_inputs)
 
-        assert "run_id" in manifest
-        assert "timestamp" in manifest
-        assert len(manifest["run_id"]) == 36  # UUID format
+        assert "run_id" in manifest, "Condition must be true"
+        assert "timestamp" in manifest, "Condition must be true"
+        assert len(manifest["run_id"]) == 36, "Collection must not be empty"
 
     def test_manifest_upstream_gates_resolved(self, manifest_inputs):
         """Test that upstream gates must be resolved."""
@@ -564,7 +564,7 @@ class TestLaneManifest:
         }
 
         manifest = LaneManifestContract.generate(**manifest_inputs)
-        assert LaneManifestContract.validate_upstream_gates(manifest) is True
+        assert LaneManifestContract.validate_upstream_gates(manifest) is True, "Condition must be true"
 
     def test_manifest_upstream_gates_pending_fails(self, manifest_inputs):
         """Test that pending gates fail validation."""
@@ -626,26 +626,26 @@ class TestLaneManifest:
 
             LaneManifestContract.write_manifest_file(manifest, output_path)
 
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
             with open(output_path) as f:
                 written = json.load(f)
-            assert written["lane_id"] == manifest["lane_id"]
+            assert written["lane_id"] == manifest["lane_id"], "Condition must be true"
 
     def test_manifest_timestamp_format(self, manifest_inputs):
         """Test that manifest timestamp uses Z format."""
         manifest = LaneManifestContract.generate(**manifest_inputs)
 
         ts = manifest["timestamp"]
-        assert ts.endswith("Z")
-        assert "T" in ts
-        assert ts.count("-") == 2
+        assert ts.endswith("Z"), "Condition must be true"
+        assert "T" in ts, "Condition must be true"
+        assert ts.count("-") == 2, "Count must be greater than zero"
 
     def test_manifest_provenance(self, manifest_inputs):
         """Test manifest includes provenance."""
         manifest = LaneManifestContract.generate(**manifest_inputs)
 
-        assert manifest["provenance"]["created_by"] == "orchestrator-agent"
-        assert "created_at" in manifest["provenance"]
+        assert manifest["provenance"]["created_by"] == "orchestrator-agent", "Condition must be true"
+        assert "created_at" in manifest["provenance"], "Condition must be true"
 
 
 # ============================================================================
@@ -678,7 +678,7 @@ class TestDeterminismIntegration:
             outputs.append(lock_hash)
 
         # All hashes should be identical
-        assert len(set(outputs)) == 1
+        assert len(set(outputs)) == 1, "Collection must not be empty"
 
     def test_replay_with_different_seed(self, test_inputs):
         """Test that different seed produces different output."""
@@ -689,7 +689,7 @@ class TestDeterminismIntegration:
         lock2, _ = InputLockAdapter.generate(**test_inputs)
 
         # Different seeds, same input → same lock (seed affects RNG, not lock)
-        assert lock1 == lock2
+        assert lock1 == lock2, "lock1 is not valid"
 
     def test_replay_with_different_policy(self, test_inputs):
         """Test that different policy produces different lock."""
@@ -700,7 +700,7 @@ class TestDeterminismIntegration:
 
         lock2, _ = InputLockAdapter.generate(**modified)
 
-        assert lock1 != lock2
+        assert lock1 != lock2, "lock1 is not valid"
 
     def test_full_lane_manifest_generation(self, test_inputs):
         """Test full lane manifest generation."""
@@ -720,8 +720,8 @@ class TestDeterminismIntegration:
             dependencies={"upstream_lanes": [], "upstream_gates": {}},
         )
 
-        assert manifest["inputs"]["input_lock"] == lock_hash
-        assert manifest["lane_id"] == "A"
+        assert manifest["inputs"]["input_lock"] == lock_hash, "Condition must be true"
+        assert manifest["lane_id"] == "A", "Condition must be true"
 
     def test_end_to_end_determinism_certification(self, test_inputs):
         """Test end-to-end determinism certification."""
@@ -761,9 +761,9 @@ class TestDeterminismIntegration:
             )
 
             # Verify all components
-            assert InputLockAdapter.validate_lock_hash(lock_dict)
-            assert LaneManifestContract.validate_manifest(manifest)
-            assert trace.verify_integrity()
+            assert InputLockAdapter.validate_lock_hash(lock_dict), "Condition must be true"
+            assert LaneManifestContract.validate_manifest(manifest), "Condition must be true"
+            assert trace.verify_integrity(), "Condition must be true"
 
     def test_determinism_with_all_modules(self):
         """Test integration of all 4 modules."""
@@ -802,9 +802,9 @@ class TestDeterminismIntegration:
             )
 
             # Verify all
-            assert InputLockAdapter.validate_lock_hash(lock_dict)
-            assert trace.verify_integrity()
-            assert LaneManifestContract.validate_manifest(manifest)
+            assert InputLockAdapter.validate_lock_hash(lock_dict), "Condition must be true"
+            assert trace.verify_integrity(), "Condition must be true"
+            assert LaneManifestContract.validate_manifest(manifest), "Condition must be true"
 
 
 # ============================================================================
@@ -824,7 +824,7 @@ class TestEdgeCases:
             "input_checksums": {"data": "hash\x00\x01"},
         }
         lock_hash, lock_dict = InputLockAdapter.generate(**inputs)
-        assert InputLockAdapter.validate_lock_hash(lock_dict)
+        assert InputLockAdapter.validate_lock_hash(lock_dict), "Condition must be true"
 
     def test_lock_collision_across_order(self):
         """Test that hash is stable regardless of input organization."""
@@ -842,7 +842,7 @@ class TestEdgeCases:
         }
         lock1, _ = InputLockAdapter.generate(**inputs1)
         lock2, _ = InputLockAdapter.generate(**inputs2)
-        assert lock1 == lock2
+        assert lock1 == lock2, "lock1 is not valid"
 
     def test_seed_boundary_values(self):
         """Test seed with boundary values."""
@@ -878,8 +878,8 @@ class TestEdgeCases:
             )
 
             entries = trace.read_all()
-            assert len(entries) == 1
-            assert "émojis" in entries[0]["description"]
+            assert len(entries) == 1, "Entries must not be empty"
+            assert "émojis" in entries[0]["description"], "Condition must be true"
 
     def test_manifest_with_empty_dependencies(self):
         """Test manifest generation with no dependencies."""
@@ -893,7 +893,7 @@ class TestEdgeCases:
         )
         # Dependencies is converted to dict with upstream_lanes and upstream_gates
         assert isinstance(manifest["dependencies"], dict)
-        assert LaneManifestContract.validate_manifest(manifest)
+        assert LaneManifestContract.validate_manifest(manifest), "Condition must be true"
 
     def test_lock_with_large_nested_config(self):
         """Test lock generation with deeply nested configuration."""
@@ -916,7 +916,7 @@ class TestEdgeCases:
             "input_checksums": {"f": "h"},
         }
         lock_hash, lock_dict = InputLockAdapter.generate(**inputs)
-        assert len(lock_hash) == 64  # SHA256 hex string length
+        assert len(lock_hash) == 64, "Lock_hash must not be empty"
 
     def test_decision_trace_multiple_sequential_appends(self):
         """Test appending many entries sequentially."""
@@ -938,9 +938,9 @@ class TestEdgeCases:
 
             # Verify all entries
             entries = trace.read_all()
-            assert len(entries) == 100
-            assert entries[0]["lane_id"] == "A"
-            assert entries[99]["description"] == "Decision 99"
+            assert len(entries) == 100, "Entries must not be empty"
+            assert entries[0]["lane_id"] == "A", "Condition must be true"
+            assert entries[99]["description"] == "Decision 99", "Condition must be true"
 
     def test_manifest_validation_with_invalid_execution_mode(self):
         """Test that invalid execution mode is rejected."""
@@ -969,7 +969,7 @@ class TestEdgeCases:
             random.seed(seed_val)
             val2 = random.random()
 
-            assert val1 == val2
+            assert val1 == val2, "val1 is not valid"
 
     def test_lock_determinism_with_empty_strings(self):
         """Test lock generation handles empty strings correctly."""
@@ -983,7 +983,7 @@ class TestEdgeCases:
 
         # Same inputs should produce same hash
         lock_hash2, _ = InputLockAdapter.generate(**inputs)
-        assert lock_hash1 == lock_hash2
+        assert lock_hash1 == lock_hash2, "lock_hash1 is not valid"
 
 
 # ============================================================================

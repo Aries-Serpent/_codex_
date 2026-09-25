@@ -182,17 +182,17 @@ class intuitive_aptitude:
         Result: O(n) instead of O(7n) where n = AST nodes
         """
         assert self.ast_tree is not None
-        
+
         # Clear all collections
         self.imports.clear()
         self.variables.clear()
         self.functions.clear()
         self.classes.clear()
         self.patterns = {k: [] for k in self.patterns.keys()}
-        
+
         # Naming classification cache (used by _analyze_naming_conventions)
         self._naming_cache = {}
-        
+
         def cache_name(name: str) -> str:
             """Classify and cache a name."""
             if name in self._naming_cache:
@@ -207,7 +207,7 @@ class intuitive_aptitude:
                 classification = "other"
             self._naming_cache[name] = classification
             return classification
-        
+
         # Single pass through AST to extract all information
         for node in ast.walk(self.ast_tree):
             # Imports
@@ -229,7 +229,7 @@ class intuitive_aptitude:
                         level=getattr(node, "level", 0) or 0,
                     ))
                     cache_name(alias.name)
-            
+
             # Classes and methods
             elif isinstance(node, ast.ClassDef):
                 cache_name(node.name)
@@ -237,7 +237,7 @@ class intuitive_aptitude:
                 decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
                 doc = ast.get_docstring(node)
                 methods: dict[str, FunctionInfo] = {}
-                
+
                 for body_node in node.body:
                     if isinstance(body_node, ast.FunctionDef):
                         cache_name(body_node.name)
@@ -261,7 +261,7 @@ class intuitive_aptitude:
                             complexity=complexity,
                             calls=calls,
                         )
-                
+
                 self.classes[node.name] = ClassInfo(
                     name=node.name,
                     bases=bases,
@@ -271,7 +271,7 @@ class intuitive_aptitude:
                     lineno=getattr(node, "lineno", 0),
                     end_lineno=getattr(node, "end_lineno", None),
                 )
-            
+
             # Patterns
             if isinstance(node, ast.Try):
                 self.patterns["error_handling"].append({
@@ -303,7 +303,7 @@ class intuitive_aptitude:
                     "args": len(getattr(node, "args", []) or []),
                     "keywords": [kw.arg for kw in getattr(node, "keywords", []) if kw.arg],
                 })
-        
+
         # Module-level functions and variables (NOT inside classes)
         # These are only in the module body, not nested deeper
         for node in getattr(self.ast_tree, "body", []):
@@ -317,7 +317,7 @@ class intuitive_aptitude:
                 if isinstance(node.target, ast.Name):
                     self.variables[node.target.id] = "annotated"
                     cache_name(node.target.id)
-            
+
             # Top-level functions
             elif isinstance(node, ast.FunctionDef):
                 cache_name(node.name)
@@ -573,7 +573,7 @@ class intuitive_aptitude:
     def _analyze_naming_conventions(self) -> dict[str, Any]:
         """OPTIMIZATION: Use pre-computed naming cache from single-pass extraction."""
         snake = camel = pascal = other = 0
-        
+
         # Use cached classifications if available (from optimized extraction)
         if self._naming_cache:
             for classification in self._naming_cache.values():

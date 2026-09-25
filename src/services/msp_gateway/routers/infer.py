@@ -8,11 +8,11 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
+from codex.rag.postprocess import postprocess_output
+from codex.rag.prompt import build_prompt
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.concurrency import run_in_threadpool
 
-from codex.rag.postprocess import postprocess_output
-from codex.rag.prompt import build_prompt
 from src.utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
@@ -110,7 +110,11 @@ async def infer(request: Request, infer_request: InferRequest):
     # Validate prompt
     is_valid, error_msg = validate_prompt(infer_request.prompt, tenant_id)
     if not is_valid:
-        logger.warning("Invalid prompt for request %s: %s", sanitize_log_input(request_id), sanitize_log_input(error_msg))
+        logger.warning(
+            "Invalid prompt for request %s: %s",
+            sanitize_log_input(request_id),
+            sanitize_log_input(error_msg),
+        )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid prompt")
 
     # Redact sensitive content from prompt

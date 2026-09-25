@@ -135,7 +135,7 @@ class TestSuiteAnalyzer:
         report.append(f"Total Lines of Code:    {total_lines:,}")
         report.append(f"Total Assertions:       {total_assertions}")
         report.append(
-            f"Assertions per Test:    {total_assertions/total_methods if total_methods > 0 else 0:.2f}"
+            f"Assertions per Test:    {total_assertions / total_methods if total_methods > 0 else 0:.2f}"
         )
         report.append(f"Expected Coverage Gain: {total_expected_gain:.2f}%")
         report.append("")

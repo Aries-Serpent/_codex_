@@ -94,7 +94,7 @@ cfg = PipelineConfig(
 )
 restored_u8, metrics = process(
     image,
-    mask=mask_array,      # optional
+    mask=mask_array,  # optional
     reference=ref_array,  # optional — enables metrics
     config=cfg,
 )

@@ -10,8 +10,8 @@ from pathlib import Path
 #     length validation
 #   - FunctionEntry.sufficient_coverage semantics (≥50% executable lines)
 #   - pr_delta regression detection (covered→uncovered transition)
-# 
-# 
+#
+#
 # Thread [7] (pullrequestreview-4033687302): the PR added generate_coverage_map.py
 # with non-trivial behaviours but no unit tests.  These tests prevent regressions.
 #     """Write coverage XML to a temp file and return the path."""
@@ -48,10 +48,10 @@ from pathlib import Path
 # # ---------------------------------------------------------------------------
 # # parse_coverage_xml — basic parsing
 # # ---------------------------------------------------------------------------
-# 
-# 
-# 
-# 
+#
+#
+#
+#
 # class TestParseCoverageXml:
 #     def test_returns_module_entry(self, tmp_path):
 #         xml = _write_coverage_xml(
@@ -89,14 +89,14 @@ from pathlib import Path
 #             entry.uncovered_lines
 #         ), "A line must not appear in both covered and uncovered"
 # # ---------------------------------------------------------------------------
-# 
-# 
-# 
+#
+#
+#
 # # ---------------------------------------------------------------------------
 # # build_coverage_map — multi-suite merge
 # # ---------------------------------------------------------------------------
-# 
-# 
+#
+#
 # class TestBuildCoverageMap:
 #     def test_single_suite(self, tmp_path):
 #         xml = _write_coverage_xml(
@@ -128,7 +128,7 @@ from pathlib import Path
 #         assert entry.suite == "unit", "suite is not valid"
 #         assert 1 in entry.covered_lines, "Condition must be true"
 #         assert 5 in entry.uncovered_lines, "Condition must be true"
-# 
+#
 #     def test_absolute_filename_normalised(self, tmp_path):
 #     def test_absolute_filename_normalised(self, tmp_path):
 #         """Absolute filename in coverage.xml must be normalised to repo-relative path."""
@@ -199,7 +199,7 @@ from pathlib import Path
 #         assert "codex.cli" in result["modules"], "Result must not be empty"
 #         mod = result["modules"]["codex.cli"]
 #         assert mod["line_rate"] == pytest.approx(0.75), "Condition must be true"
-# 
+#
 #     def test_multi_suite_union(self, tmp_path):
 #     def test_multi_suite_union(self, tmp_path):
 #         """Lines covered by ANY suite appear in the merged covered set."""
@@ -226,7 +226,7 @@ from pathlib import Path
 #         )
 #         with pytest.raises(ValueError, match="same length"):
 #             build_coverage_map([xml], suite_names=["a", "b"])
-# 
+#
 #     def test_merged_suite_tag(self, tmp_path):
 #     def test_merged_suite_tag(self, tmp_path):
 #         """Multi-suite merge tags the module entry with '+merged'."""
@@ -277,7 +277,7 @@ from pathlib import Path
 #             sufficient_coverage=False,
 #         )
 #         assert fn.sufficient_coverage is False, "sufficient_coverage is not valid"
-# 
+#
 #     def test_field_is_not_named_is_covered(self):
 #     def test_field_is_not_named_is_covered(self):
 #         """Thread [2] — field was renamed from is_covered to sufficient_coverage

@@ -176,9 +176,7 @@ class CognitiveBrainKernel:
         }
         self._telemetry.startup(__kernel_version__, config_summary)
         # Initialize SessionGuard eagerly to avoid race conditions in multi-threaded contexts
-        self._session_guard = SessionGuard(
-            negotiator=self._negotiator, telemetry=self._telemetry
-        )
+        self._session_guard = SessionGuard(negotiator=self._negotiator, telemetry=self._telemetry)
         self._loaded = True
         logger.info(
             "🧠 Cognitive Brain Kernel v%s loaded "
@@ -213,7 +211,7 @@ class CognitiveBrainKernel:
         Strips parameters unsupported by the model (e.g. ``reasoning_effort``
         on ``claude-haiku-4.5``), selects a fallback if required capabilities
         are unavailable, and emits a telemetry event.
-        
+
         Parameters
         ----------
         model_id : str
@@ -226,7 +224,7 @@ class CognitiveBrainKernel:
             Caller's turn identifier (for telemetry / forensics).
         task_id : Optional[str]
             Caller's task identifier (for telemetry / forensics).
-        
+
         Returns
         -------
         NegotiationResult
@@ -237,8 +235,7 @@ class CognitiveBrainKernel:
         if self._session_guard is None:
             raise RuntimeError("Session guard not initialized after assert_loaded()")
         result = self._session_guard.create_session(
-            model_id, session_config, required_capabilities,
-            turn_id=turn_id, task_id=task_id
+            model_id, session_config, required_capabilities, turn_id=turn_id, task_id=task_id
         )
         return result.negotiation
 
@@ -252,7 +249,7 @@ class CognitiveBrainKernel:
         task_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Convenience wrapper — returns the cleaned config dict with ``model`` key.
-        
+
         Parameters
         ----------
         model_id : str
@@ -265,7 +262,7 @@ class CognitiveBrainKernel:
             Caller's turn identifier (for telemetry / forensics).
         task_id : Optional[str]
             Caller's task identifier (for telemetry / forensics).
-        
+
         Returns
         -------
         Dict[str, Any]
@@ -276,8 +273,7 @@ class CognitiveBrainKernel:
         if self._session_guard is None:
             raise RuntimeError("Session guard not initialized after assert_loaded()")
         result = self._session_guard.create_session(
-            model_id, session_config, required_capabilities,
-            turn_id=turn_id, task_id=task_id
+            model_id, session_config, required_capabilities, turn_id=turn_id, task_id=task_id
         )
         return result.safe_config
 
@@ -505,7 +501,4 @@ def assert_loaded() -> None:
         # exception and its message (prevents double-wrapping and preserves semantics)
         raise
     except Exception as exc:
-        raise RuntimeError(
-            f"Failed to get or boot Cognitive Brain kernel: {exc}"
-        ) from exc
-
+        raise RuntimeError(f"Failed to get or boot Cognitive Brain kernel: {exc}") from exc

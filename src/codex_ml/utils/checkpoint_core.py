@@ -59,7 +59,12 @@ except (ImportError, AttributeError):  # pragma: no cover - treated as unavailab
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency failures tolerated
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
@@ -77,7 +82,12 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency 
 
 try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency
 
     def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore
         return {}

@@ -362,7 +362,9 @@ class SessionDB:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM sessions WHERE archive_status = 'active' ORDER BY created_at DESC")
+        cursor.execute(
+            "SELECT * FROM sessions WHERE archive_status = 'active' ORDER BY created_at DESC"
+        )
         rows = cursor.fetchall()
         conn.close()
 
@@ -382,7 +384,7 @@ class SessionDB:
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM sessions WHERE pr_number = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            "SELECT * FROM sessions WHERE pr_number = ? AND archive_status = 'active' ORDER BY created_at DESC",  # noqa: E501
             (pr_number,),
         )
         rows = cursor.fetchall()
@@ -404,7 +406,7 @@ class SessionDB:
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM sessions WHERE branch = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            "SELECT * FROM sessions WHERE branch = ? AND archive_status = 'active' ORDER BY created_at DESC",  # noqa: E501
             (branch,),
         )
         rows = cursor.fetchall()
@@ -426,7 +428,7 @@ class SessionDB:
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM sessions WHERE agent_name = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            "SELECT * FROM sessions WHERE agent_name = ? AND archive_status = 'active' ORDER BY created_at DESC",  # noqa: E501
             (agent_name,),
         )
         rows = cursor.fetchall()

@@ -28,15 +28,15 @@ def test_blocking_result_wait_releases_gil() -> None:
 
     thread = threading.Thread(target=ticker)
     thread.start()
-    assert ready.wait(1.0)
+    assert ready.wait(1.0), "Condition must be true"
     before = ticks
     try:
-        assert manager.get_result(0.15) is None
+        assert manager.get_result(0.15) is None, "Result must not be empty"
     finally:
         stop.set()
         thread.join(1.0)
 
-    assert not thread.is_alive()
+    assert not thread.is_alive(), "Condition must be true"
     assert ticks - before > 100, "Rust held the GIL during a blocking wait"
 
 
@@ -53,7 +53,7 @@ def test_shutdown_cancels_in_flight_batch() -> None:
 
     thread = threading.Thread(target=run_batch)
     thread.start()
-    assert started.wait(1.0)
+    assert started.wait(1.0), "Condition must be true"
     time.sleep(0.02)
     assert thread.is_alive(), "test batch completed before cancellation was exercised"
 
@@ -61,8 +61,8 @@ def test_shutdown_cancels_in_flight_batch() -> None:
     thread.join(2.0)
 
     assert not thread.is_alive(), "shutdown did not unblock the in-flight batch"
-    assert processed and processed[0] < requested
-    assert not engine.is_running()
+    assert processed and processed[0] < requested, "processed is not valid"
+    assert not engine.is_running(), "Condition must be true"
     engine.shutdown()  # Idempotent at the Python boundary too.
 
 
@@ -72,7 +72,7 @@ def test_bounded_result_queue_applies_backpressure_and_shutdown_unblocks() -> No
     capacity = 10_000
     for _ in range(capacity):
         manager.submit(b"queued")
-    assert manager.result_count() == capacity
+    assert manager.result_count() == capacity, "Result must not be empty"
 
     started = threading.Event()
     finished = threading.Event()
@@ -84,7 +84,7 @@ def test_bounded_result_queue_applies_backpressure_and_shutdown_unblocks() -> No
 
     thread = threading.Thread(target=submit_one_more)
     thread.start()
-    assert started.wait(1.0)
+    assert started.wait(1.0), "Condition must be true"
     time.sleep(0.05)
     assert not finished.is_set(), "submission bypassed bounded backpressure"
 
@@ -92,8 +92,8 @@ def test_bounded_result_queue_applies_backpressure_and_shutdown_unblocks() -> No
     thread.join(1.0)
 
     assert finished.is_set(), "shutdown did not cancel the blocked submission"
-    assert manager.result_count() == capacity
-    assert not manager.is_running()
+    assert manager.result_count() == capacity, "Result must not be empty"
+    assert not manager.is_running(), "Condition must be true"
 
 
 def test_decompression_limit_rejects_expansion() -> None:
@@ -115,9 +115,9 @@ def test_submitted_buffer_is_owned_after_python_source_is_mutated() -> None:
     gc.collect()
 
     task_id, success, result = manager.get_result(1.0)
-    assert task_id == 0
-    assert success
-    assert bytes(result) == expected
+    assert task_id == 0, "task_id is not valid"
+    assert success, "success is not valid"
+    assert bytes(result) == expected, "Result must not be empty"
 
 
 def test_process_tasks_remains_experimental_identity_transport() -> None:
@@ -128,6 +128,6 @@ def test_process_tasks_remains_experimental_identity_transport() -> None:
 
     returned = engine.process_tasks([marker, mutable])
 
-    assert returned[0] is marker
-    assert returned[1] is mutable
+    assert returned[0] is marker, "Condition must be true"
+    assert returned[1] is mutable, "Condition must be true"
     engine.shutdown()

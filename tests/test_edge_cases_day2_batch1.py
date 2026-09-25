@@ -189,7 +189,7 @@ class TestMemoryEntryRelationships:
         """MemoryEntry should initialize with no related memories"""
         entry = memory_entry_factory(memory_id="test_rel")
         if hasattr(entry, "related_memories"):
-            assert (
+            assert (, "Condition must be true"
                 entry.related_memories == [] or entry.related_memories == set()
             ), "related_memories should initialize empty"
 
@@ -288,7 +288,7 @@ class TestContextFrameStateTransitions:
         """ContextFrame should initialize with no modified files"""
         frame = context_frame_factory(task_id="task1")
         if hasattr(frame, "files_modified"):
-            assert (
+            assert (, "Condition must be true"
                 frame.files_modified == set() or frame.files_modified == []
             ), "files_modified should initialize empty"
 

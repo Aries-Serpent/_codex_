@@ -273,7 +273,7 @@ class SessionDB:
 
         Raises:
             ValueError: If event_type invalid.
-        """
+        """  # noqa: E501
         return self._recorder.add_event_to_session(session_id, event_type, event_details)
 
     def delete_session(self, session_id: str) -> bool:

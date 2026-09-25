@@ -21,7 +21,7 @@ def test_session_preload_output_is_bounded() -> None:
         check=False,
     )
 
-    assert result.returncode == 0
-    assert "::group::✅ AGENTIC REPO STATE" in result.stdout
-    assert "::endgroup::" in result.stdout
-    assert len(result.stdout) < 30_000
+    assert result.returncode == 0, "Result must not be empty"
+    assert "::group::✅ AGENTIC REPO STATE" in result.stdout, "Result must not be empty"
+    assert "::endgroup::" in result.stdout, "Result must not be empty"
+    assert len(result.stdout) < 30_000, "Collection must not be empty"

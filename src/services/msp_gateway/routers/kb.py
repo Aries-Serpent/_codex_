@@ -126,7 +126,9 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             audit=audit,
         )
 
-        logger.info("KB query %s returned %d results", sanitize_log_input(request_id), len(search_results))
+        logger.info(
+            "KB query %s returned %d results", sanitize_log_input(request_id), len(search_results)
+        )
         return response
 
     except ImportError as exc:

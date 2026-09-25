@@ -209,9 +209,7 @@ class RAGMonitor:
 
         # Log alerts
         for alert in alerts:
-            logger.warning(
-                f"[{alert.severity.upper()}] {alert.alert_type}: {alert.message}"
-            )
+            logger.warning(f"[{alert.severity.upper()}] {alert.alert_type}: {alert.message}")
 
         return alerts
 
@@ -228,7 +226,8 @@ class RAGMonitor:
         window_start = now - self.window_size
 
         relevant_metrics = [
-            m for m in self._metrics
+            m
+            for m in self._metrics
             if m.operation_type == operation_type and m.timestamp >= window_start
         ]
 

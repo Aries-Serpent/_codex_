@@ -16,13 +16,11 @@ Validates system resilience and incident response capabilities including:
 import json
 import logging
 import os
-import subprocess
 import sys
-import threading
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 # Setup logging
 logging.basicConfig(
@@ -43,8 +41,8 @@ class FailureScenario:
     duration_seconds: float
     impact: str
     recovery_target_sla: float  # seconds
-    
-    
+
+
 @dataclass
 class TestResult:
     """Results from executing a single failure scenario."""
@@ -68,12 +66,12 @@ class TestResult:
 
 class ChaosTestFramework:
     """Main chaos engineering test orchestrator."""
-    
+
     def __init__(self, repo_root: str = REPO_ROOT):
         self.repo_root = repo_root
         self.results: List[TestResult] = []
         self.scenarios = self._define_scenarios()
-        
+
     def _define_scenarios(self) -> List[FailureScenario]:
         """Define 15+ failure scenarios."""
         return [
@@ -118,7 +116,7 @@ class ChaosTestFramework:
                 impact="Cannot reach external services",
                 recovery_target_sla=60,
             ),
-            
+
             # Dependency Failures (5-8)
             FailureScenario(
                 id="DEP-001",
@@ -160,7 +158,7 @@ class ChaosTestFramework:
                 impact="No caching, direct queries to backends",
                 recovery_target_sla=90,
             ),
-            
+
             # Resource Exhaustion (9-11)
             FailureScenario(
                 id="RES-001",
@@ -192,7 +190,7 @@ class ChaosTestFramework:
                 impact="Cannot write logs, core functionality unaffected",
                 recovery_target_sla=120,
             ),
-            
+
             # Cascading Failures (12-14)
             FailureScenario(
                 id="CASCADE-001",
@@ -224,7 +222,7 @@ class ChaosTestFramework:
                 impact="Verify incident response automation triggers",
                 recovery_target_sla=240,
             ),
-            
+
             # Circuit Breaker & Fallback Testing (15-17)
             FailureScenario(
                 id="CB-001",
@@ -257,7 +255,7 @@ class ChaosTestFramework:
                 recovery_target_sla=90,
             ),
         ]
-    
+
     def detect_failure(self, scenario: FailureScenario) -> Tuple[bool, float]:
         """Detect when a failure is detected (MTTD).
         
@@ -267,7 +265,7 @@ class ChaosTestFramework:
         # Simulate failure detection
         # In a real scenario, this would check logs, metrics, health endpoints
         logger.info(f"Detecting failure for {scenario.id}...")
-        
+
         # Simulate detection delay based on scenario type
         if scenario.category == "network":
             detection_delay = 5  # Network issues detected quickly
@@ -277,10 +275,10 @@ class ChaosTestFramework:
             detection_delay = 15  # Resource exhaustion detected gradually
         else:
             detection_delay = 12
-        
+
         time.sleep(detection_delay * 0.1)  # Scale down for testing
         return True, detection_delay
-    
+
     def apply_remediation(self, scenario: FailureScenario) -> Tuple[bool, float]:
         """Apply remediation and measure MTTR.
         
@@ -288,7 +286,7 @@ class ChaosTestFramework:
             Tuple of (remediated, time_to_remediate_seconds)
         """
         logger.info(f"Applying remediation for {scenario.id}...")
-        
+
         # Simulate remediation based on scenario
         if scenario.id == "NET-001":
             # Simple retry typically works
@@ -309,11 +307,11 @@ class ChaosTestFramework:
         else:
             remediation_time = 60
             success = True
-        
+
         time.sleep(remediation_time * 0.05)  # Scale down for testing
         return success, remediation_time
-    
-    def verify_recovery(self, scenario: FailureScenario, 
+
+    def verify_recovery(self, scenario: FailureScenario,
                        remediation_time: float) -> Tuple[bool, float]:
         """Verify full recovery after remediation.
         
@@ -321,61 +319,61 @@ class ChaosTestFramework:
             Tuple of (recovered, full_recovery_time_seconds)
         """
         logger.info(f"Verifying recovery for {scenario.id}...")
-        
+
         # Full recovery includes remediation + verification time
         verification_time = 10
         total_recovery_time = remediation_time + verification_time
-        
+
         # Check if within SLA
         sla_met = total_recovery_time <= scenario.recovery_target_sla
-        
+
         time.sleep(verification_time * 0.05)  # Scale down for testing
         return sla_met, total_recovery_time
-    
+
     def run_scenario(self, scenario: FailureScenario) -> TestResult:
         """Execute a single failure scenario test."""
         logger.info(f"\n{'='*60}")
         logger.info(f"Running: {scenario.name} ({scenario.id})")
         logger.info(f"{'='*60}")
-        
+
         start_time = time.time()
-        
+
         try:
             # Phase 1: Inject failure
             logger.info(f"[PHASE 1] Injecting failure for {scenario.duration_seconds}s...")
             time.sleep(scenario.duration_seconds * 0.02)  # Scale down
-            
+
             # Phase 2: Detect failure (MTTD)
             detected, mttd = self.detect_failure(scenario)
             if not detected:
                 raise RuntimeError("Failure not detected")
-            
+
             logger.info(f"[PHASE 2] Failure detected in {mttd}s")
-            
+
             # Phase 3: Apply remediation (MTTR)
             remediated, mttr = self.apply_remediation(scenario)
             if not remediated:
                 raise RuntimeError("Remediation failed")
-            
+
             logger.info(f"[PHASE 3] Remediated in {mttr}s")
-            
+
             # Phase 4: Verify recovery
             recovered, total_recovery_time = self.verify_recovery(scenario, mttr)
-            
+
             logger.info(f"[PHASE 4] Full recovery time: {total_recovery_time}s")
             logger.info(f"[RESULT] SLA Met: {recovered} (target: {scenario.recovery_target_sla}s)")
-            
+
             end_time = time.time()
-            
+
             # Simulate health checks
             health_passed = 8 if recovered else 6
             health_failed = 2 if not recovered else 4
-            
+
             # Simulate resilience mechanisms
             cb_activated = scenario.category in ["dependency", "network"]
             fallback_triggered = scenario.category in ["dependency", "cascading"]
             incident_triggered = scenario.severity in ["Sev-1"]
-            
+
             return TestResult(
                 scenario_id=scenario.id,
                 scenario_name=scenario.name,
@@ -398,11 +396,11 @@ class ChaosTestFramework:
                     "impact": scenario.impact,
                 }
             )
-            
+
         except Exception as e:
             logger.error(f"Test failed: {str(e)}", exc_info=True)
             end_time = time.time()
-            
+
             return TestResult(
                 scenario_id=scenario.id,
                 scenario_name=scenario.name,
@@ -420,33 +418,33 @@ class ChaosTestFramework:
                 incident_response_triggered=False,
                 error_message=str(e),
             )
-    
+
     def run_all_scenarios(self) -> List[TestResult]:
         """Execute all failure scenarios."""
         logger.info(f"\n{'*'*60}")
-        logger.info(f"Phase 7 Lane 3: Chaos Engineering Tests")
+        logger.info("Phase 7 Lane 3: Chaos Engineering Tests")
         logger.info(f"Starting {len(self.scenarios)} scenarios...")
         logger.info(f"{'*'*60}\n")
-        
+
         for scenario in self.scenarios:
             result = self.run_scenario(scenario)
             self.results.append(result)
-        
+
         return self.results
-    
+
     def generate_results_json(self) -> Dict[str, Any]:
         """Generate comprehensive test results JSON."""
         results_data = [asdict(r) for r in self.results]
-        
+
         # Calculate aggregate metrics
         total_tests = len(self.results)
         passed_tests = sum(1 for r in self.results if r.sla_met)
         failed_tests = total_tests - passed_tests
-        
+
         avg_mttd = sum(r.mttd for r in self.results) / total_tests if total_tests > 0 else 0
         avg_mttr = sum(r.mttr for r in self.results) / total_tests if total_tests > 0 else 0
         avg_recovery = sum(r.recovery_time for r in self.results) / total_tests if total_tests > 0 else 0
-        
+
         # Category breakdown
         categories = {}
         for result in self.results:
@@ -466,12 +464,12 @@ class ChaosTestFramework:
                 categories[cat]["failed"] += 1
             categories[cat]["avg_mttd"] += result.mttd
             categories[cat]["avg_mttr"] += result.mttr
-        
+
         for cat_data in categories.values():
             if cat_data["total"] > 0:
                 cat_data["avg_mttd"] /= cat_data["total"]
                 cat_data["avg_mttr"] /= cat_data["total"]
-        
+
         return {
             "test_run": {
                 "timestamp": datetime.now().isoformat(),
@@ -495,14 +493,14 @@ class ChaosTestFramework:
             "category_breakdown": categories,
             "results": results_data,
         }
-    
+
     def generate_scenarios_md(self) -> str:
         """Generate scenarios markdown documentation."""
         md = "# Phase 7 Lane 3: Chaos Engineering Test Scenarios\n\n"
         md += f"**Generated:** {datetime.now().isoformat()}\n\n"
         md += "## Overview\n\n"
         md += f"Total Scenarios: {len(self.scenarios)}\n\n"
-        
+
         # Group by category
         categories = {}
         for scenario in self.scenarios:
@@ -510,7 +508,7 @@ class ChaosTestFramework:
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(scenario)
-        
+
         for category, scenarios in sorted(categories.items()):
             md += f"## {category.upper()}\n\n"
             for scenario in scenarios:
@@ -520,39 +518,39 @@ class ChaosTestFramework:
                 md += f"**Description:** {scenario.description}\n\n"
                 md += f"**Impact:** {scenario.impact}\n\n"
                 md += f"**Recovery Target SLA:** {scenario.recovery_target_sla}s\n\n"
-        
+
         return md
 
 
 def main():
     """Main entry point."""
     framework = ChaosTestFramework()
-    
+
     # Run all scenarios
     results = framework.run_all_scenarios()
-    
+
     # Generate JSON results
     results_json = framework.generate_results_json()
-    
+
     # Generate scenarios markdown
     scenarios_md = framework.generate_scenarios_md()
-    
+
     # Output results
     codex_dir = str(REPO_ROOT / ".codex")
     os.makedirs(codex_dir, exist_ok=True)
-    
+
     # Save scenarios
     scenarios_path = os.path.join(codex_dir, "PHASE_7_CHAOS_TEST_SCENARIOS.md")
     with open(scenarios_path, "w") as f:
         f.write(scenarios_md)
     logger.info(f"Saved scenarios to: {scenarios_path}")
-    
+
     # Save results
     results_path = os.path.join(codex_dir, "PHASE_7_CHAOS_TEST_RESULTS.json")
     with open(results_path, "w") as f:
         json.dump(results_json, f, indent=2)
     logger.info(f"Saved results to: {results_path}")
-    
+
     logger.info("\n" + "="*60)
     logger.info("TEST SUMMARY")
     logger.info("="*60)
@@ -563,7 +561,7 @@ def main():
     logger.info(f"\nAvg MTTD: {results_json['metrics']['avg_mttd_seconds']:.1f}s")
     logger.info(f"Avg MTTR: {results_json['metrics']['avg_mttr_seconds']:.1f}s")
     logger.info(f"Avg Recovery Time: {results_json['metrics']['avg_recovery_time_seconds']:.1f}s")
-    
+
     return 0 if results_json['test_run']['success_rate'] >= 80 else 1
 
 

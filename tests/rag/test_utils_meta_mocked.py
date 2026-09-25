@@ -31,7 +31,7 @@ class TestCheckForMetaTensorsMocked:
 
         result = check_for_meta_tensors(mock_model)
 
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_root_module_skipped_in_named_modules_walk(self):
         """Root module is skipped via 'continue' in the named_modules walk (line 95).
@@ -53,7 +53,7 @@ class TestCheckForMetaTensorsMocked:
             result = check_for_meta_tensors(mock_model)
 
         # Root is skipped, no sub-modules → no meta tensors found
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_meta_tensor_detected_in_submodule_parameter(self):
         """is_meta=True on a submodule parameter → return True (lines 105-106)."""

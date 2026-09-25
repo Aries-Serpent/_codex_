@@ -1,7 +1,7 @@
 """SQLite + FTS Query Layer — Builds indexed searchable database from JSONL records."""
 
-import sqlite3
 import json
+import sqlite3
 from pathlib import Path
 from typing import Dict
 

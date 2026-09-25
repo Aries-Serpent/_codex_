@@ -23,7 +23,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from scripts.ci._token_resolver import get_token
 
 
-
 class TelemetryCollector:
     """Collects and analyzes CI telemetry data."""
 
@@ -238,171 +237,171 @@ class TelemetryCollector:
             "same issues persist", "permanent ci block",
             "RP-026",
         ],
-        
+
         # ── P0 CRITICAL #5322: NEW PATTERN CLASSIFIERS ─────────────────────────
         # Added to reduce unknown patterns from 63.5% (442) to <30%
         # 18 new patterns covering YAML, dependencies, network, security, performance
-        
+
         # YAML / CONFIGURATION ERRORS (5 patterns)
         "yaml-syntax": [
             "yaml", "syntax error", "invalid yaml", "yaml.parser",
             "mapping values", "expected", "could not find expected",
             "ansible-lint", "yamllint", "yaml error",
         ],
-        
+
         "env-variable-missing": [
             "environment variable", "undefined variable", "not set",
             "missing env", "env var", "unbound variable", "variable not defined",
             "env: ", "echo ${", "env substitution",
         ],
-        
+
         "docker-compose-error": [
             "docker-compose", "compose", "yml", "service",
             "depends_on", "networking", "docker compose", "compose up",
             "docker network", "compose config",
         ],
-        
+
         "credentials-config": [
             "credentials", "auth.json", ".netrc", "config file",
             "gitconfig", "authentication config", "credentials store",
             "docker config", "ssh config", "~/.config",
         ],
-        
+
         "http-config": [
             "http_proxy", "https_proxy", "no_proxy", "proxy error",
             "certificate", "ssl error", "cert verify", "peer verification",
             "proxy configuration", "tls", "ssl_certificate",
         ],
-        
+
         # DEPENDENCY / IMPORT ERRORS (4 patterns)
         "dependency-version-conflict": [
             "version conflict", "incompatible", "requires", "constraint",
             "dependency conflict", "cannot satisfy", "version mismatch",
             "pip version", "poetry lock", "version spec",
         ],
-        
+
         "import-not-found": [
             "importerror", "modulenotfounderror", "no module named",
             "cannot import", "import failed", "no such module",
             "sys.path", "moduleerror", "from X import",
         ],
-        
+
         "lockfile-mismatch": [
             "lock file", "poetry.lock", "package-lock.json", "yarn.lock",
             "requirements.lock", "lockfile", "lock mismatch", "frozen deps",
             "lock out of sync", "lock integrity",
         ],
-        
+
         "optional-dependency": [
             "optional", "extra", "[dev]", "[test]", "[all]",
             "optional dependency", "not installed", "optional-test-deps",
             "requires-dist", "install with", "[extras]",
         ],
-        
+
         # NETWORK / INFRASTRUCTURE ERRORS (3 patterns)
         "network-timeout": [
             "timeout", "connection timeout", "timed out", "read timeout",
             "connect timeout", "request timeout", "deadline exceeded",
             "socket timeout", "dns timeout", "http timeout",
         ],
-        
+
         "rate-limit": [
             "rate limit", "rate-limit", "exceeded", "throttled",
             "429", "too many requests", "api limit", "quota",
             "api rate", "ratelimit", "429 too many",
         ],
-        
+
         "dns-resolution": [
             "dns", "name resolution", "getaddrinfo", "cannot resolve",
             "unknown host", "name or service not known", "temporary failure",
             "resolver", "dns lookup", "host unreachable",
         ],
-        
+
         # PERMISSION / ACCESS ERRORS (2 patterns)
         "permission-denied": [
             "permission denied", "access denied", "not permitted", "forbidden",
             "chmod", "file mode", "execute permission", "read-only", "403",
             "insufficient privileges", "operation not permitted",
         ],
-        
+
         "token-invalid": [
             "invalid token", "token expired", "bad credentials", "401",
             "authentication failed", "token invalid", "unauthorized",
             "invalid credentials", "token rejected", "invalid oauth",
         ],
-        
+
         # PERFORMANCE / RESOURCE ERRORS (2 patterns)
         "out-of-memory": [
             "out of memory", "oom", "memory error", "memoryerror",
             "cannot allocate", "heap space", "max heap", "gc overhead limit",
             "memory exhausted", "killed", "oom-killer",
         ],
-        
+
         "disk-full": [
             "disk full", "no space", "out of space", "disk space",
             "enospc", "write failed", "disk quota", "cannot write",
             "partition full", "storage full",
         ],
-        
+
         # PYTHON / TEST ERRORS (2 patterns)
         "python-syntax": [
             "syntaxerror", "syntax error", "invalid syntax",
             "unexpected token", "indentationerror", "unexpected indent",
             "unexpected dedent", "invalid character", "def ", "class ",
         ],
-        
+
         "assertion-failure": [
             "assertion", "assert ", "AssertionError", "failed assertion",
             "assert failed", "assert_", "assertEqual", "assertTrue",
             "assertRaises", "assertion failed",
         ],
-        
+
         # ── P4.5 PHASE 4 LANE 3: TELEMETRY EXPANSION ─────────────────────────
         # 8 medium-confidence (85-95%) patterns promoted to high-confidence (95%+)
         # Extended from Phase 3 knowledge graph for unknown-bucket reduction
         # Target: reduce unknown-failure bucket from 20% → <10%
-        
+
         "parameterized-test": [
             "parametrize", "pytest.mark.parametrize", "indirect", "fixture",
             "param", "parametrized test", "parameter", "yield fixture",
         ],
-        
+
         "resource-cleanup": [
             "teardown", "cleanup", "finally", "context manager",
             "with statement", "resource cleanup", "fixture cleanup",
             "resource leaked", "not cleaned up",
         ],
-        
+
         "transient-network": [
             "connection timeout", "network unreliable", "retry logic",
             "connection reset", "timeout expired", "socket timeout",
             "unable to connect", "network error", "connection refused",
         ],
-        
+
         "test-order-dependency": [
             "test isolation", "state pollution", "fixture cache",
             "test order", "execution order", "previous test",
             "shared state", "test independence", "randomize",
         ],
-        
+
         "database-deadlock": [
             "database deadlock", "transaction lock", "concurrent access",
             "deadlock detected", "lock timeout", "circular wait",
             "transaction isolation", "serialization failure",
         ],
-        
+
         "coverage-edge-case": [
             "edge case", "boundary condition", "untested path",
             "uncovered branch", "coverage gap", "missing test",
             "boundary value", "corner case", "extreme value",
         ],
-        
+
         "coverage-branch": [
             "branch coverage", "decision point", "uncovered path",
             "branch not covered", "conditional uncovered", "decision tree",
             "path coverage", "unreachable code", "dead code",
         ],
-        
+
         "error-handling-coverage": [
             "error path", "exception handling", "error coverage",
             "exception uncovered", "error not tested", "exception path",
@@ -420,7 +419,7 @@ class TelemetryCollector:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
-    
+
     def __repr__(self) -> str:
         """Prevent token leakage in string representations."""
         return f"<GitHubClient owner={self.owner} repo={self.repo}>"

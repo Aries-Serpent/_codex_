@@ -64,7 +64,8 @@ def q5(step: str, err: str, ctx: str) -> None:
             {err}
             Context: {ctx}
             What are the possible causes, and how can this be resolved while preserving intended functionality?
-            """).strip() + "\n",
+            """).strip()
+        + "\n",
     )
 
 

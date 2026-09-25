@@ -83,7 +83,9 @@ class ReasoningEngine:
             "context_used": len(context),
         }
 
-    def chain_reasoning(self, problems: list[Any], context: dict[str, Any] | None = None) -> list[Any]:
+    def chain_reasoning(
+        self, problems: list[Any], context: dict[str, Any] | None = None
+    ) -> list[Any]:
         """Chain reasoning operations across multiple problems.
 
         Performs sequential reasoning where each step builds on previous

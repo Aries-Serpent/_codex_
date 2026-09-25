@@ -59,7 +59,7 @@ def parent_experiment(mlflow_client_full):
         experiment = None
         try:
             experiment = mlflow_client_full.get_experiment_by_name(parent_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -85,7 +85,7 @@ def child_experiment(mlflow_client_full, parent_experiment):
         experiment = None
         try:
             experiment = mlflow_client_full.get_experiment_by_name(child_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -123,7 +123,7 @@ def parent_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -153,7 +153,7 @@ def child_run(mlflow_client_full, parent_experiment, parent_run):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -186,7 +186,7 @@ def multi_metric_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -222,7 +222,7 @@ def artifact_run(mlflow_client_full, parent_experiment, mlflow_temp_dir):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -279,7 +279,7 @@ def sweep_run_set(mlflow_client_full, parent_experiment):
         for run in runs:
             try:
                 mlflow_client_full.set_terminated(run["id"])
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -326,7 +326,7 @@ def distributed_run_set(mlflow_client_full, parent_experiment):
         for run in runs:
             try:
                 mlflow_client_full.set_terminated(run["id"])
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -336,7 +336,7 @@ def distributed_run_set(mlflow_client_full, parent_experiment):
 def model_registry_run(mlflow_client_full, parent_experiment):
     """Create a run for model registry testing."""
     try:
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
         from pathlib import Path
 
         import mlflow
@@ -365,7 +365,7 @@ def model_registry_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -397,7 +397,7 @@ def export_import_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")

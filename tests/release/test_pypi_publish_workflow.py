@@ -31,14 +31,14 @@ def test_workflow_dispatch_package_options_include_cognitive_sdk() -> None:
     workflow = _load_workflow()
     options = workflow["on"]["workflow_dispatch"]["inputs"]["package"]["options"]
 
-    assert "codex-cognitive-sdk" in options
+    assert "codex-cognitive-sdk" in options, "Condition must be true"
 
 
 def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
     workflow = _load_workflow()
 
     build_entries = _distribution_entries(workflow["jobs"]["build"])
-    assert any(
+    assert any(, "Condition must be true"
         entry["name"] == "codex-cognitive-sdk" and entry["path"] == "packages/cognitive_sdk"
         for entry in build_entries
     )
@@ -51,10 +51,10 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
         "verify-installation",
     ):
         entries = _distribution_entries(workflow["jobs"][job_name])
-        assert any(entry["name"] == "codex-cognitive-sdk" for entry in entries)
+        assert any(entry["name"] == "codex-cognitive-sdk" for entry in entries), "Condition must be true"
 
     verify_entries = _distribution_entries(workflow["jobs"]["verify-installation"])
-    assert any(
+    assert any(, "Condition must be true"
         entry["name"] == "codex-cognitive-sdk" and entry["import"] == "codex_cognitive_sdk"
         for entry in verify_entries
     )
@@ -65,13 +65,13 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
     build_job = workflow["jobs"]["build"]
     step_names = _step_names(build_job)
 
-    assert "id-token" not in build_job["permissions"]
-    assert "attestations" not in build_job["permissions"]
-    assert "Validate release artifacts" in step_names
-    assert "Install built wheel in isolated virtualenv" in step_names
-    assert "Attest release artifacts" not in step_names
-    assert "Verify build provenance" not in step_names
-    assert "--require-hashes -r requirements/lock-release.txt" in _step(
+    assert "id-token" not in build_job["permissions"], "Condition must be true"
+    assert "attestations" not in build_job["permissions"], "Condition must be true"
+    assert "Validate release artifacts" in step_names, "Condition must be true"
+    assert "Install built wheel in isolated virtualenv" in step_names, "in is not valid"
+    assert "Attest release artifacts" not in step_names, "Condition must be true"
+    assert "Verify build provenance" not in step_names, "Condition must be true"
+    assert "--require-hashes -r requirements/lock-release.txt" in _step(, "Condition must be true"
         build_job, "Install build dependencies"
     )["run"]
     assert "python -m build --no-isolation" in _step(build_job, "Build package")["run"]
@@ -79,7 +79,7 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
         build_job,
         "Install built wheel in isolated virtualenv",
     )["run"]
-    assert '--import-name "$IMPORT_NAME"' in install_command
+    assert '--import-name "$IMPORT_NAME"' in install_command, "Condition must be true"
 
 
 def test_publish_jobs_validate_tag_and_provenance_before_upload() -> None:
@@ -90,22 +90,22 @@ def test_publish_jobs_validate_tag_and_provenance_before_upload() -> None:
     testpypi_job = workflow["jobs"]["publish-testpypi"]
     pypi_job = workflow["jobs"]["publish-pypi"]
 
-    assert attest_job["permissions"]["id-token"] == "write"
-    assert attest_job["permissions"]["attestations"] == "write"
-    assert all("run" not in step for step in attest_job["steps"])
+    assert attest_job["permissions"]["id-token"] == "write", "Condition must be true"
+    assert attest_job["permissions"]["attestations"] == "write", "Condition must be true"
+    assert all("run" not in step for step in attest_job["steps"]), "Condition must be true"
 
-    assert "id-token" not in validation_job["permissions"]
-    assert validation_job["permissions"]["attestations"] == "read"
-    assert "Validate downloaded artifacts" in _step_names(validation_job)
-    assert "Verify release tag matches built version" in _step_names(validation_job)
-    assert "Verify artifact provenance" in _step_names(validation_job)
+    assert "id-token" not in validation_job["permissions"], "Condition must be true"
+    assert validation_job["permissions"]["attestations"] == "read", "Condition must be true"
+    assert "Validate downloaded artifacts" in _step_names(validation_job), "Condition must be true"
+    assert "Verify release tag matches built version" in _step_names(validation_job), "Condition must be true"
+    assert "Verify artifact provenance" in _step_names(validation_job), "Condition must be true"
 
     for job in (testpypi_job, pypi_job):
-        assert job["permissions"]["id-token"] == "write"
-        assert "attestations" not in job["permissions"]
-        assert all("run" not in step for step in job["steps"])
-        assert all(step.get("uses") != "actions/checkout@v7" for step in job["steps"])
-        assert len(job["steps"]) == 2
+        assert job["permissions"]["id-token"] == "write", "Condition must be true"
+        assert "attestations" not in job["permissions"], "Condition must be true"
+        assert all("run" not in step for step in job["steps"]), "Condition must be true"
+        assert all(step.get("uses") != "actions/checkout@v7" for step in job["steps"]), "Condition must be true"
+        assert len(job["steps"]) == 2, "Collection must not be empty"
 
 
 def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps() -> None:

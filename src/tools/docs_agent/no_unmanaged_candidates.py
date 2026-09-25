@@ -18,6 +18,7 @@ def main() -> int:
 
     # Load policy to check fail_on_unmanaged_candidates setting
     from .utils import load_policy
+
     policy = load_policy(repo_root)
     should_fail_on_unmanaged = policy.get("enforcement", {}).get(
         "fail_on_unmanaged_candidates", True

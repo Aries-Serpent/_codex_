@@ -162,8 +162,8 @@ def verify_sbom_integrity(profile: str) -> int:
         if xml_count != json_count:
             logger.warning(f"Component count mismatch: XML={xml_count}, JSON={json_count}")
 
-        logger.info(f"✓ SBOM integrity verified")
-        logger.info(f"  Format: CycloneDX 1.4")
+        logger.info("✓ SBOM integrity verified")
+        logger.info("  Format: CycloneDX 1.4")
         logger.info(f"  Components: {xml_count}")
         logger.info(f"  Profile: {profile}")
 
@@ -249,7 +249,7 @@ def verify_wheels_against_sbom(wheelhouse: Path, profile: str) -> int:
         logger.error(f"Found {len(issues)} wheels not in SBOM")
         return 1
     else:
-        logger.info(f"✓ All wheels match SBOM packages")
+        logger.info("✓ All wheels match SBOM packages")
         return 0
 
 

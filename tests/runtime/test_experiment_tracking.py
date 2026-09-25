@@ -39,19 +39,19 @@ class TestMLflowServerInitialization:
 
     def test_mlflow_tracking_uri_configuration(self, mlflow_tracking_uri: str):
         """Test that MLflow tracking URI is properly configured."""
-        assert mlflow_tracking_uri.startswith("sqlite:///")
-        assert "mlruns.db" in mlflow_tracking_uri
+        assert mlflow_tracking_uri.startswith("sqlite:///"), "Condition must be true"
+        assert "mlruns.db" in mlflow_tracking_uri, "Condition must be true"
 
     def test_mlflow_client_creation(self, mlflow_client):
         """Test that MLflow client can be created."""
-        assert mlflow_client is not None
+        assert mlflow_client is not None, "mlflow_client must be initialized"
         assert hasattr(mlflow_client, "create_experiment")
         assert hasattr(mlflow_client, "create_run")
 
     def test_mlflow_tracking_uri_environment(self, mlflow_tracking_uri: str):
         """Test MLflow tracking URI via environment variable."""
         with mock_mlflow_tracking_context(mlflow_tracking_uri):
-            assert os.environ.get("MLFLOW_TRACKING_URI") == mlflow_tracking_uri
+            assert os.environ.get("MLFLOW_TRACKING_URI") == mlflow_tracking_uri, "Condition must be true"
 
 
 class TestMLflowExperimentCreation:
@@ -62,23 +62,23 @@ class TestMLflowExperimentCreation:
         exp_name = "test_exp_creation"
         exp_id = mlflow_client.create_experiment(exp_name)
 
-        assert exp_id is not None
+        assert exp_id is not None, "exp_id must be initialized"
         experiment = mlflow_client.get_experiment(exp_id)
-        assert experiment is not None
-        assert experiment.name == exp_name
+        assert experiment is not None, "experiment must be initialized"
+        assert experiment.name == exp_name, "name is not valid"
 
     def test_mlflow_experiment_retrieval(self, mlflow_experiment: dict):
         """Test that created MLflow experiment can be retrieved."""
-        assert mlflow_experiment["id"] is not None
-        assert mlflow_experiment["name"] == "test_experiment_integration"
-        assert mlflow_experiment["tracking_uri"] is not None
+        assert mlflow_experiment["id"] is not None, "Value must be initialized"
+        assert mlflow_experiment["name"] == "test_experiment_integration", "Condition must be true"
+        assert mlflow_experiment["tracking_uri"] is not None, "Value must be initialized"
 
     def test_mlflow_experiment_list(self, mlflow_client, mlflow_experiment: dict):
         """Test that experiments can be listed."""
         experiments = mlflow_client.search_experiments()
-        assert experiments is not None
+        assert experiments is not None, "experiments must be initialized"
         exp_names = [exp.name for exp in experiments]
-        assert mlflow_experiment["name"] in exp_names
+        assert mlflow_experiment["name"] in exp_names, "Condition must be true"
 
 
 class TestMLflowRunLogging:
@@ -86,9 +86,9 @@ class TestMLflowRunLogging:
 
     def test_mlflow_run_creation(self, mlflow_run: dict):
         """Test that MLflow runs can be created."""
-        assert mlflow_run["id"] is not None
-        assert mlflow_run["experiment_id"] is not None
-        assert mlflow_run["status"] == "RUNNING"
+        assert mlflow_run["id"] is not None, "Value must be initialized"
+        assert mlflow_run["experiment_id"] is not None, "Value must be initialized"
+        assert mlflow_run["status"] == "RUNNING", "Condition must be true"
 
     def test_mlflow_parameter_logging(self, mlflow_client, mlflow_run: dict):
         """Test logging parameters to MLflow runs."""
@@ -105,9 +105,9 @@ class TestMLflowRunLogging:
 
         # Retrieve run and verify parameters
         run = mlflow_client.get_run(run_id)
-        assert run.data.params["learning_rate"] == "0.001"
-        assert run.data.params["batch_size"] == "32"
-        assert run.data.params["epochs"] == "10"
+        assert run.data.params["learning_rate"] == "0.001", "Data must not be empty"
+        assert run.data.params["batch_size"] == "32", "Data must not be empty"
+        assert run.data.params["epochs"] == "10", "Data must not be empty"
 
     def test_mlflow_metrics_logging(self, mlflow_client, mlflow_run: dict):
         """Test logging metrics to MLflow runs."""
@@ -120,9 +120,9 @@ class TestMLflowRunLogging:
 
         # Retrieve run and verify metrics
         run = mlflow_client.get_run(run_id)
-        assert run.data.metrics["accuracy"] == 0.95
-        assert run.data.metrics["loss"] == 0.05
-        assert run.data.metrics["f1_score"] == 0.92
+        assert run.data.metrics["accuracy"] == 0.95, "Data must not be empty"
+        assert run.data.metrics["loss"] == 0.05, "Data must not be empty"
+        assert run.data.metrics["f1_score"] == 0.92, "Data must not be empty"
 
     def test_mlflow_metrics_with_step(self, mlflow_client, mlflow_run: dict):
         """Test logging metrics with step tracking."""
@@ -134,7 +134,7 @@ class TestMLflowRunLogging:
 
         # Verify metrics were logged
         run = mlflow_client.get_run(run_id)
-        assert "train_loss" in run.data.metrics
+        assert "train_loss" in run.data.metrics, "Data must not be empty"
 
 
 class TestMLflowArtifactHandling:
@@ -154,7 +154,7 @@ class TestMLflowArtifactHandling:
 
         # Verify artifact exists
         run = mlflow_client.get_run(run_id)
-        assert run is not None
+        assert run is not None, "run must be initialized"
 
     def test_mlflow_multiple_artifacts(self, mlflow_client, mlflow_run: dict, temp_mlflow_dir: Path):
         """Test uploading multiple artifacts."""
@@ -174,7 +174,7 @@ class TestMLflowArtifactHandling:
 
         # Verify at least one artifact exists
         run = mlflow_client.get_run(run_id)
-        assert run is not None
+        assert run is not None, "run must be initialized"
 
 
 class TestMLflowTrackerWrapper:
@@ -188,8 +188,8 @@ class TestMLflowTrackerWrapper:
         """Test MLflowTracker initialization."""
         # When MLflow is available, check enabled status
         if mlflow_tracker_instance.enabled:
-            assert mlflow_tracker_instance.experiment_name == "integration_test"
-            assert mlflow_tracker_instance.run_name == "test_run"
+            assert mlflow_tracker_instance.experiment_name == "integration_test", "experiment_name is not valid"
+            assert mlflow_tracker_instance.run_name == "test_run", "run_name is not valid"
         # If disabled due to missing mlflow, skip gracefully
         pytest.skip("MLflow initialization skipped (not available)")
 
@@ -203,9 +203,9 @@ class TestMLflowTrackerWrapper:
             pytest.skip("MLflow not available")
 
         with mlflow_tracker_instance.start_run() as run_info:
-            assert mlflow_tracker_instance._active is True
+            assert mlflow_tracker_instance._active is True, "_active is not valid"
 
-        assert mlflow_tracker_instance._active is False
+        assert mlflow_tracker_instance._active is False, "_active is not valid"
 
     @pytest.mark.skipif(
         not __import__("importlib.util").util.find_spec("mlflow"),
@@ -219,7 +219,7 @@ class TestMLflowTrackerWrapper:
         with mlflow_tracker_instance.start_run():
             mlflow_tracker_instance.log_param("learning_rate", 0.001)
             mlflow_tracker_instance.log_param("batch_size", 32)
-            assert mlflow_tracker_instance._run is not None
+            assert mlflow_tracker_instance._run is not None, "_run must be initialized"
 
     @pytest.mark.skipif(
         not __import__("importlib.util").util.find_spec("mlflow"),
@@ -233,7 +233,7 @@ class TestMLflowTrackerWrapper:
         with mlflow_tracker_instance.start_run():
             mlflow_tracker_instance.log_metric("accuracy", 0.95)
             mlflow_tracker_instance.log_metric("loss", 0.05)
-            assert mlflow_tracker_instance._run is not None
+            assert mlflow_tracker_instance._run is not None, "_run must be initialized"
 
 
 class TestWandBIntegration:
@@ -241,25 +241,25 @@ class TestWandBIntegration:
 
     def test_wandb_configuration(self, wandb_config: dict):
         """Test wandb configuration."""
-        assert wandb_config["project"] == "codex-test"
-        assert wandb_config["mode"] == "offline"
+        assert wandb_config["project"] == "codex-test", "w is not valid"
+        assert wandb_config["mode"] == "offline", "w is not valid"
 
     def test_wandb_environment_mode(self):
         """Test wandb environment mode configuration."""
         with mock_wandb_tracking_context("offline"):
-            assert os.environ.get("WANDB_MODE") == "offline"
+            assert os.environ.get("WANDB_MODE") == "offline", "Condition must be true"
 
     def test_wandb_mock_initialization(self, wandb_mock):
         """Test wandb mock initialization."""
         run = wandb_mock.init(project="test", mode="offline")
-        assert run is not None
-        assert run.state == "running"
+        assert run is not None, "run must be initialized"
+        assert run.state == "running", "state is not valid"
 
     def test_wandb_mock_logging(self, wandb_mock):
         """Test wandb mock metric logging."""
         run = wandb_mock.init(project="test", mode="offline")
         wandb_mock.log({"accuracy": 0.95, "loss": 0.05})
-        assert run.log_count > 0
+        assert run.log_count > 0, "log_count must be positive"
 
     def test_wandb_graceful_skip(self):
         """Test that wandb tests skip gracefully if not configured."""
@@ -268,7 +268,7 @@ class TestWandBIntegration:
             import wandb
 
             # If wandb is available, verify it can be used
-            assert wandb is not None
+            assert wandb is not None, "wandb must be initialized"
         except ImportError:
             # If wandb is not available, test should skip naturally
             pytest.skip("wandb not installed")
@@ -304,9 +304,9 @@ class TestExperimentTrackingIntegration:
 
         # Verify complete run
         completed_run = mlflow_client.get_run(run_id)
-        assert completed_run.data.params["model"] == "bert-base"
-        assert completed_run.data.metrics["loss"] < 1.0
-        assert completed_run.data.metrics["accuracy"] > 0.5
+        assert completed_run.data.params["model"] == "bert-base", "Data must not be empty"
+        assert completed_run.data.metrics["loss"] < 1.0, "Data must not be empty"
+        assert completed_run.data.metrics["accuracy"] > 0.5, "Value must be greater than zero"
 
     def test_multiple_parallel_runs(self, mlflow_client, mlflow_experiment: dict):
         """Test tracking multiple parallel runs."""
@@ -325,10 +325,10 @@ class TestExperimentTrackingIntegration:
             runs.append(run_id)
 
         # Verify all runs exist
-        assert len(runs) == 3
+        assert len(runs) == 3, "Runs must not be empty"
         for run_id in runs:
             run = mlflow_client.get_run(run_id)
-            assert run is not None
+            assert run is not None, "run must be initialized"
 
     def test_experiment_tracking_with_timestamps(self, mlflow_client, mlflow_experiment: dict):
         """Test that experiment tracking includes timestamps."""
@@ -342,4 +342,4 @@ class TestExperimentTrackingIntegration:
 
         # Verify run has timestamps
         completed_run = mlflow_client.get_run(run_id)
-        assert completed_run.info.start_time is not None
+        assert completed_run.info.start_time is not None, "start_time must be initialized"

@@ -93,7 +93,6 @@ def dashboard_main(output: str, open_browser: bool) -> None:
             f"<tbody>{rows_html}</tbody></table>"
         )
 
-
     html = (
         "<!DOCTYPE html><html><head><title>Codex Dashboard</title></head>"
         f"<body><h1>Codex Metrics Dashboard</h1>{body}</body></html>"
@@ -116,9 +115,10 @@ if __name__ == "__main__":
 
 class ReportingCLI:
     """CLI interface for reporting functionality."""
+
     def __init__(self):
         self.config = {}
-    
+
     def generate_report(self, format="html"):
         """Generate a report."""
         return f"Report generated in {format} format"

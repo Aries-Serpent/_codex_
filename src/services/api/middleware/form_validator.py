@@ -4,6 +4,7 @@ Middleware to protect against malicious multipart form uploads.
 This module provides middleware to mitigate CVE-2024-XXXXX (Starlette DoS
 via multipart/form-data) by enforcing size limits and field count restrictions.
 """
+
 import logging
 from collections.abc import Callable
 
@@ -12,6 +13,7 @@ try:
     from starlette.requests import Request
     from starlette.responses import JSONResponse, Response
 except ImportError:  # pragma: no cover
+
     class BaseHTTPMiddleware:  # type: ignore[no-redef]
         """Fallback stub when starlette is not installed."""
 
@@ -47,9 +49,7 @@ class SecureMultipartMiddleware(BaseHTTPMiddleware):
     MAX_FIELD_COUNT = 1000  # Maximum number of form fields
     MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB per file
 
-    async def dispatch(
-        self, request: Request, call_next: Callable
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         """
         Validate multipart form requests before processing.
 
@@ -81,9 +81,7 @@ class SecureMultipartMiddleware(BaseHTTPMiddleware):
                             status_code=413,
                         )
                 except ValueError:
-                    logger.warning(
-                        f"Invalid Content-Length header: {content_length}"
-                    )
+                    logger.warning(f"Invalid Content-Length header: {content_length}")
                     return JSONResponse(
                         {"error": "Invalid Content-Length header"},
                         status_code=400,

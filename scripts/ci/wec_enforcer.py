@@ -147,7 +147,7 @@ def _extract_wec_section(body: str) -> str:
     # Decode HTML entities to handle PR body storage encoding
     import html
     decoded_body = html.unescape(body)
-    
+
     idx = decoded_body.find(_WEC_HEADING)
     if idx == -1:
         return ""

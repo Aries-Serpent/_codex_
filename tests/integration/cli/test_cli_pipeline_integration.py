@@ -3,7 +3,6 @@
 import tempfile
 
 import pytest
-
 from omegaconf import OmegaConf
 
 

@@ -9,7 +9,6 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
 
 try:
     import yaml
@@ -23,7 +22,7 @@ def check_slo_compliance(
     output_path: str
 ) -> None:
     """Check module coverage against SLOs."""
-    
+
     # Load SLOs
     slos = {}
     if yaml:
@@ -38,7 +37,7 @@ def check_slo_compliance(
                     }
         except FileNotFoundError:
             print(f"SLO file not found: {slos_yaml}")
-    
+
     # Load module coverage
     try:
         with open(module_coverage_json) as f:
@@ -48,9 +47,9 @@ def check_slo_compliance(
         coverage_data = {'modules': {}}
     except json.JSONDecodeError:
         coverage_data = {'modules': {}}
-    
+
     modules = coverage_data.get('modules', {})
-    
+
     # Check compliance
     compliance = {
         'total_modules': len(slos),
@@ -62,13 +61,13 @@ def check_slo_compliance(
             'utility': {'compliant': 0, 'total': 0},
         },
     }
-    
+
     for module_name, slo_info in slos.items():
         category = slo_info['category']
         target = slo_info['target']
-        
+
         compliance['by_category'][category]['total'] += 1
-        
+
         # Find matching module in coverage data
         actual_coverage = None
         for coverage_module, coverage_info in modules.items():
@@ -77,7 +76,7 @@ def check_slo_compliance(
                coverage_module.lower() in module_name.replace('_', '/').lower():
                 actual_coverage = coverage_info.get('coverage', 0)
                 break
-        
+
         if actual_coverage is not None:
             if actual_coverage >= target:
                 compliance['compliant_modules'] += 1
@@ -90,10 +89,10 @@ def check_slo_compliance(
                     'actual': actual_coverage,
                     'gap': target - actual_coverage,
                 })
-    
+
     # Sort non-compliant by gap (largest first)
     compliance['non_compliant_modules'].sort(key=lambda x: x['gap'], reverse=True)
-    
+
     output = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "metric_id": "slo_compliance",
@@ -104,14 +103,14 @@ def check_slo_compliance(
         ),
         "source": "slo-checker",
     }
-    
+
     # Write output
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(output, f, indent=2)
-    
+
     print(f"✅ SLO compliance written to {output_path}")
     print(f"   Compliance: {output['compliance_percentage']:.1f}%")
     print(f"   Compliant: {compliance['compliant_modules']}/{compliance['total_modules']}")
@@ -122,5 +121,5 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: check_slo_compliance.py <slos.yaml> <module_coverage.json> <output.json>")
         sys.exit(1)
-    
+
     check_slo_compliance(sys.argv[1], sys.argv[2], sys.argv[3])

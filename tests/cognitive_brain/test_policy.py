@@ -75,7 +75,7 @@ class TestDeterministicPolicy:
         plan = _make_plan()
         scored = policy.score(plan, context)
         assert isinstance(scored, ScoredPlan)
-        assert 0.0 <= scored.total_score <= 1.0
+        assert 0.0 <= scored.total_score <= 1.0, "0 is not valid"
 
     def test_all_dimension_scores_in_range(
         self, policy: DeterministicPolicy, context: PolicyContext
@@ -94,7 +94,7 @@ class TestDeterministicPolicy:
         plan = _make_plan(matched_patterns=["repo_introspection"], constraints_satisfied=["read_only"])
         s1 = p1.score(plan, context)
         s2 = p2.score(plan, context)
-        assert s1.total_score == s2.total_score
+        assert s1.total_score == s2.total_score, "total_score is not valid"
 
     def test_different_seed_may_differ_in_tiebreak(self) -> None:
         """Different seeds should produce different tiebreak orderings for equal scores."""
@@ -102,14 +102,14 @@ class TestDeterministicPolicy:
         p2 = DeterministicPolicy(seed=99)
         key1 = p1._tiebreak_key("plan_x")
         key2 = p2._tiebreak_key("plan_x")
-        assert key1 != key2
+        assert key1 != key2, "key1 is not valid"
 
     def test_rank_returns_all_candidates(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plans = [_make_plan(plan_id=f"p{i}") for i in range(5)]
         ranked = policy.rank(plans, context)
-        assert len(ranked) == 5
+        assert len(ranked) == 5, "Ranked must not be empty"
 
     def test_rank_is_sorted_descending(
         self, policy: DeterministicPolicy, context: PolicyContext
@@ -119,7 +119,7 @@ class TestDeterministicPolicy:
             _make_plan("slow", steps=20, latency=9000, certainty=0.3, risk=0.9),
         ]
         ranked = policy.rank(plans, context)
-        assert ranked[0].total_score >= ranked[1].total_score
+        assert ranked[0].total_score >= ranked[1].total_score, "total_score must be greater than zero"
 
     def test_rank_assigns_sequential_ranks(
         self, policy: DeterministicPolicy, context: PolicyContext
@@ -136,8 +136,8 @@ class TestDeterministicPolicy:
             _make_plan("worst", certainty=0.1, risk=0.9, branches=0),
         ]
         winner = policy.select(plans, context)
-        assert winner is not None
-        assert winner.plan.plan_id == "best"
+        assert winner is not None, "winner must be initialized"
+        assert winner.plan.plan_id == "best", "plan_id is not valid"
 
     def test_select_empty_candidates_returns_none(
         self, policy: DeterministicPolicy, context: PolicyContext
@@ -151,14 +151,14 @@ class TestDeterministicPolicy:
         long_ = _make_plan("long", steps=50, latency=9000)
         s_short = policy.score(short, context)
         s_long = policy.score(long_, context)
-        assert s_short.path_score > s_long.path_score
+        assert s_short.path_score > s_long.path_score, "path_score must be greater than zero"
 
     def test_fields_score_all_constraints_satisfied(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(constraints_satisfied=["read_only"])
         scored = policy.score(plan, context)
-        assert scored.fields_score == 1.0
+        assert scored.fields_score == 1.0, "fields_score is not valid"
 
     def test_fields_score_no_constraints_neutral(
         self, policy: DeterministicPolicy
@@ -170,21 +170,21 @@ class TestDeterministicPolicy:
         )
         plan = _make_plan()
         scored = policy.score(plan, ctx)
-        assert scored.fields_score == 0.8  # neutral default
+        assert scored.fields_score == 0.8, "fields_score is not valid"
 
     def test_patterns_score_full_overlap(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(matched_patterns=["repo_introspection", "code_search"])
         scored = policy.score(plan, context)
-        assert scored.patterns_score == 1.0  # perfect Jaccard overlap
+        assert scored.patterns_score == 1.0, "patterns_score is not valid"
 
     def test_patterns_score_no_overlap(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(matched_patterns=["ui_interaction"])
         scored = policy.score(plan, context)
-        assert scored.patterns_score < 0.5
+        assert scored.patterns_score < 0.5, "patterns_score is not valid"
 
     def test_redundancy_score_more_branches_higher(
         self, policy: DeterministicPolicy, context: PolicyContext
@@ -193,28 +193,28 @@ class TestDeterministicPolicy:
         high = _make_plan("high", branches=8)
         s_low = policy.score(low, context)
         s_high = policy.score(high, context)
-        assert s_high.redundancy_score > s_low.redundancy_score
+        assert s_high.redundancy_score > s_low.redundancy_score, "redundancy_score must be greater than zero"
 
     def test_redundancy_score_zero_branches(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(branches=0)
         scored = policy.score(plan, context)
-        assert scored.redundancy_score == 0.0
+        assert scored.redundancy_score == 0.0, "redundancy_score is not valid"
 
     def test_balance_score_low_risk_high_certainty(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(certainty=0.99, risk=0.01)
         scored = policy.score(plan, context)
-        assert scored.balance_score > 0.7
+        assert scored.balance_score > 0.7, "balance_score must be greater than zero"
 
     def test_balance_score_high_risk_low_certainty(
         self, policy: DeterministicPolicy, context: PolicyContext
     ) -> None:
         plan = _make_plan(certainty=0.1, risk=0.95)
         scored = policy.score(plan, context)
-        assert scored.balance_score < 0.4
+        assert scored.balance_score < 0.4, "balance_score is not valid"
 
     def test_weights_sum_to_one(self, policy: DeterministicPolicy) -> None:
         total = sum(policy.weights.values())
@@ -226,7 +226,7 @@ class TestDeterministicPolicy:
         plan = _make_plan(steps=1, latency=50)
         scored = p.score(plan, context)
         # total_score ≈ path_score (other terms are 0)
-        assert abs(scored.total_score - scored.path_score) < 1e-9
+        assert abs(scored.total_score - scored.path_score) < 1e-9, "Condition must be true"
 
     def test_invalid_zero_weights_raises(self) -> None:
         with pytest.raises(ValueError):
@@ -243,4 +243,4 @@ class TestDeterministicPolicy:
     def test_tiebreak_is_consistent(self, policy: DeterministicPolicy) -> None:
         k1 = policy._tiebreak_key("same_id")
         k2 = policy._tiebreak_key("same_id")
-        assert k1 == k2
+        assert k1 == k2, "k1 is not valid"

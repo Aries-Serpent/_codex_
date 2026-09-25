@@ -39,7 +39,7 @@ class TestInputBoundaryConditions:
     def test_empty_list_processing(self):
         """Test that empty lists are handled correctly."""
         result = self._process_items([])
-        assert result == []
+        assert result == [], "Result must not be empty"
         assert isinstance(result, list)
 
     def test_none_input_raises_type_error(self):
@@ -50,21 +50,21 @@ class TestInputBoundaryConditions:
     def test_single_element_list(self):
         """Test that single element lists are processed correctly."""
         result = self._process_items([1])
-        assert len(result) == 1
-        assert result[0] == 1
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0] == 1, "Result must not be empty"
 
     def test_very_large_list_processing(self):
         """Test processing of very large lists (1M+ items)."""
         large_list = list(range(100000))
         result = self._process_items(large_list)
-        assert len(result) == 100000
-        assert result[0] == 0
-        assert result[-1] == 99999
+        assert len(result) == 100000, "Result must not be empty"
+        assert result[0] == 0, "Result must not be empty"
+        assert result[-1] == 99999, "Result must not be empty"
 
     def test_empty_string_processing(self):
         """Test that empty strings are handled correctly."""
         result = self._process_string("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_unicode_string_processing(self):
         """Test processing of unicode strings with special characters."""
@@ -77,14 +77,14 @@ class TestInputBoundaryConditions:
         ]
         for test_str in test_strings:
             result = self._process_string(test_str)
-            assert result is not None
-            assert len(result) > 0
+            assert result is not None, "result must be initialized"
+            assert len(result) > 0, "Result must not be empty"
 
     def test_very_long_string_processing(self):
         """Test processing of very long strings (10K+ chars)."""
         long_string = "x" * 100000
         result = self._process_string(long_string)
-        assert len(result) == 100000
+        assert len(result) == 100000, "Result must not be empty"
 
     def test_null_byte_in_string(self):
         """Test handling of null bytes in strings."""
@@ -117,24 +117,24 @@ class TestNumericEdgeCases:
     def test_negative_number_handling(self):
         """Test correct handling of negative numbers."""
         result = self._safe_divide(-10, 2)
-        assert result == -5
+        assert result == -5, "Result must not be empty"
 
     def test_very_small_float_precision(self):
         """Test precision handling for very small floats."""
         result = self._safe_divide(1e-10, 1e-10)
-        assert abs(result - 1.0) < 1e-6
+        assert abs(result - 1.0) < 1e-6, "Result must not be empty"
 
     def test_very_large_float_handling(self):
         """Test handling of very large float values."""
         result = self._safe_divide(1e308, 2)
-        assert result > 0
-        assert not (result == float('inf'))
+        assert result > 0, "result must be greater than zero"
+        assert not (result == float('inf')), "Result must not be empty"
 
     def test_integer_overflow_handling(self):
         """Test handling of integer overflow (Python: unlimited precision)."""
         large_int = 10 ** 100
         result = self._safe_divide(large_int, 2)
-        assert result == large_int / 2
+        assert result == large_int / 2, "Result must not be empty"
 
     def test_nan_propagation(self):
         """Test that NaN values are handled appropriately."""
@@ -171,13 +171,13 @@ class TestCollectionEdgeCases:
     def test_empty_dict_processing(self):
         """Test processing of empty dictionaries."""
         result = self._process_dict({})
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_dict_with_none_values(self):
         """Test processing of dicts containing None values."""
         test_dict = {"a": None, "b": None}
         result = self._process_dict(test_dict)
-        assert result["a"] is None
+        assert result["a"] is None, "Result must not be empty"
 
     def test_dict_with_missing_keys(self):
         """Test accessing missing dictionary keys."""
@@ -189,14 +189,14 @@ class TestCollectionEdgeCases:
         """Test deeply nested dictionary processing."""
         nested = {"a": {"b": {"c": {"d": {"e": 1}}}}}
         result = self._process_nested_dict(nested)
-        assert result["a"]["b"]["c"]["d"]["e"] == 1
+        assert result["a"]["b"]["c"]["d"]["e"] == 1, "Result must not be empty"
 
     def test_circular_reference_prevention(self):
         """Test handling of circular references in structures."""
         circular = {"a": 1}
         circular["self"] = circular
         # Should not hang or error
-        assert circular["a"] == 1
+        assert circular["a"] == 1, "Condition must be true"
 
     def test_tuple_vs_list_handling(self):
         """Test correct handling of tuples vs lists."""
@@ -206,12 +206,12 @@ class TestCollectionEdgeCases:
     def test_set_uniqueness_preservation(self):
         """Test set operations preserve uniqueness."""
         test_set = {1, 1, 2, 2, 3, 3}
-        assert len(test_set) == 3
+        assert len(test_set) == 3, "Test_set must not be empty"
 
     def test_empty_set_processing(self):
         """Test processing of empty sets."""
         result = self._process_collection(set())
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     @staticmethod
     def _process_dict(d):
@@ -243,15 +243,15 @@ class TestStringEdgeCases:
 
     def test_empty_string_length(self):
         """Test that empty string has zero length."""
-        assert len("") == 0
-        assert bool("") is False
+        assert len("") == 0, "Collection must not be empty"
+        assert bool("") is False, "Condition must be true"
 
     def test_whitespace_only_string(self):
         """Test strings with only whitespace."""
         whitespace_strings = ["   ", "\t", "\n", "\r\n", "  \t  \n  "]
         for ws in whitespace_strings:
-            assert len(ws) > 0
-            assert ws.strip() == ""
+            assert len(ws) > 0, "Ws must not be empty"
+            assert ws.strip() == "", "Condition must be true"
 
     def test_string_encoding_edge_cases(self):
         """Test various string encodings."""
@@ -264,12 +264,12 @@ class TestStringEdgeCases:
         for encoding, text in test_cases:
             encoded = text.encode(encoding)
             decoded = encoded.decode(encoding)
-            assert decoded == text
+            assert decoded == text, "decoded is not valid"
 
     def test_case_sensitivity_handling(self):
         """Test case sensitivity in string comparisons."""
-        assert "test" != "TEST"
-        assert "test".lower() == "TEST".lower()
+        assert "test" != "TEST", "Condition must be true"
+        assert "test".lower() == "TEST".lower(), "Condition must be true"
 
     def test_string_with_escape_sequences(self):
         """Test strings containing escape sequences."""
@@ -285,8 +285,8 @@ class TestStringEdgeCases:
     def test_very_long_line_processing(self):
         """Test processing of very long single-line strings."""
         long_line = "x" * 1000000
-        assert len(long_line) == 1000000
-        assert long_line.count("x") == 1000000
+        assert len(long_line) == 1000000, "Long_line must not be empty"
+        assert long_line.count("x") == 1000000, "Count must be greater than zero"
 
 
 class TestTimeEdgeCases:
@@ -295,37 +295,37 @@ class TestTimeEdgeCases:
     def test_epoch_time_handling(self):
         """Test handling of Unix epoch."""
         epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
-        assert epoch.timestamp() == 0
+        assert epoch.timestamp() == 0, "Condition must be true"
 
     def test_far_future_date(self):
         """Test handling of dates far in the future."""
         future = datetime(9999, 12, 31, tzinfo=timezone.utc)
-        assert future.year == 9999
+        assert future.year == 9999, "year is not valid"
 
     def test_past_date_handling(self):
         """Test handling of dates in the past."""
         past = datetime(1900, 1, 1, tzinfo=timezone.utc)
-        assert past.year == 1900
+        assert past.year == 1900, "year is not valid"
 
     def test_timezone_aware_vs_naive(self):
         """Test distinction between timezone-aware and naive datetimes."""
         naive = datetime.now()
         aware = datetime.now(timezone.utc)
-        
-        assert naive.tzinfo is None
-        assert aware.tzinfo is not None
+
+        assert naive.tzinfo is None, "tzinfo is not valid"
+        assert aware.tzinfo is not None, "tzinfo must be initialized"
 
     def test_daylight_saving_time_transition(self):
         """Test handling of DST transitions."""
         # Note: This is a boundary condition test
         from datetime import timezone
-        
+
         # Create times at DST boundary
         utc = timezone.utc
         dt1 = datetime(2024, 3, 10, 1, 59, 59, tzinfo=utc)
         dt2 = datetime(2024, 3, 10, 3, 0, 0, tzinfo=utc)
-        
-        assert dt2 > dt1
+
+        assert dt2 > dt1, "dt2 must be greater than zero"
 
     def test_leap_second_handling(self):
         """Test that leap seconds are handled gracefully."""
@@ -337,8 +337,8 @@ class TestTimeEdgeCases:
         """Test timedelta calculations at boundaries."""
         td_max = timedelta(days=999999999)
         td_min = timedelta(days=-999999999)
-        
-        assert td_max > td_min
+
+        assert td_max > td_min, "td_max must be greater than zero"
 
 
 class TestConcurrencyEdgeCases:
@@ -348,83 +348,84 @@ class TestConcurrencyEdgeCases:
         """Test thread-safety of list operations."""
         items = []
         lock = threading.Lock()
-        
+
         def append_items(n):
             for i in range(n):
                 with lock:
                     items.append(i)
-        
+
         threads = [
             threading.Thread(target=append_items, args=(100,))
             for _ in range(10)
         ]
-        
+
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
-        assert len(items) == 1000
+
+        assert len(items) == 1000, "Items must not be empty"
 
     def test_deadlock_prevention(self):
         """Test that deadlocks don't occur in lock ordering."""
         lock1 = threading.Lock()
         lock2 = threading.Lock()
         acquired_locks = []
-        
+
         def thread1():
             with lock1:
                 time.sleep(0.01)
                 acquired_locks.append("thread1_lock1")
                 with lock2:
                     acquired_locks.append("thread1_lock2")
-        
+
         def thread2():
             time.sleep(0.005)  # Slight delay to avoid race
             with lock2:
                 acquired_locks.append("thread2_lock2")
                 with lock1:
                     acquired_locks.append("thread2_lock1")
-        
+
         t1 = threading.Thread(target=thread1)
         t2 = threading.Thread(target=thread2)
-        
+
         t1.start()
         t2.start()
-        
+
         t1.join(timeout=2)
         t2.join(timeout=2)
-        
+
         # If we reach here without timeout, no deadlock occurred
-        assert not t1.is_alive()
-        assert not t2.is_alive()
+        assert not t1.is_alive(), "Condition must be true"
+        assert not t2.is_alive(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_race_condition(self):
         """Test async race conditions."""
         counter = 0
-        
+
         async def increment():
             nonlocal counter
             counter += 1
-        
+
         # Run concurrent increments
         await asyncio.gather(
             *[increment() for _ in range(100)]
         )
-        
-        assert counter == 100
+
+        assert counter == 100, "Count must be greater than zero"
 
     def test_lock_timeout_handling(self):
         """Test proper timeout handling for locks."""
         lock = threading.Lock()
         acquired = []
-        
+
         def long_holder():
             with lock:
                 acquired.append("holder")
                 time.sleep(0.5)
-        
+
         def waiter():
             acquired.append("waiter_start")
             if lock.acquire(timeout=0.1):
@@ -432,18 +433,18 @@ class TestConcurrencyEdgeCases:
                 lock.release()
             else:
                 acquired.append("waiter_timeout")
-        
+
         t1 = threading.Thread(target=long_holder)
         t2 = threading.Thread(target=waiter)
-        
+
         t1.start()
         time.sleep(0.05)  # Ensure holder starts first
         t2.start()
-        
+
         t1.join()
         t2.join()
-        
-        assert "waiter_timeout" in acquired or "waiter_acquired" in acquired
+
+        assert "waiter_timeout" in acquired or "waiter_acquired" in acquired, "Condition must be true"
 
 
 class TestFileIOEdgeCases:
@@ -453,11 +454,11 @@ class TestFileIOEdgeCases:
         """Test reading empty files."""
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
             temp_path = f.name
-        
+
         try:
             with open(temp_path, 'r') as f:
                 content = f.read()
-            assert content == ""
+            assert content == "", "Content must not be empty"
         finally:
             os.unlink(temp_path)
 
@@ -468,10 +469,10 @@ class TestFileIOEdgeCases:
             # Write 10MB of data
             for _ in range(10000):
                 f.write("x" * 1000)
-        
+
         try:
             size = os.path.getsize(temp_path)
-            assert size >= 10000000
+            assert size >= 10000000, "size must be greater than zero"
         finally:
             os.unlink(temp_path)
 
@@ -479,7 +480,7 @@ class TestFileIOEdgeCases:
         """Test handling of permission denied errors."""
         with tempfile.NamedTemporaryFile(delete=False) as f:
             temp_path = f.name
-        
+
         try:
             os.chmod(temp_path, 0o000)
             with pytest.raises(PermissionError):
@@ -502,7 +503,7 @@ class TestFileIOEdgeCases:
             dangerous_path = os.path.join(tmpdir, "..", "..", "etc", "passwd")
             # Should be handled safely or raise error
             normalized = os.path.normpath(dangerous_path)
-            assert not normalized.startswith(tmpdir)
+            assert not normalized.startswith(tmpdir), "Condition must be true"
 
 
 class TestErrorHandlingEdgeCases:
@@ -515,33 +516,33 @@ class TestErrorHandlingEdgeCases:
                 raise ValueError("original error")
             except ValueError:
                 raise RuntimeError("handler error")
-        
+
         with pytest.raises(RuntimeError):
             problematic_function()
 
     def test_cleanup_on_exception(self):
         """Test that cleanup code runs even on exception."""
         cleanup_called = []
-        
+
         try:
             raise ValueError("test error")
         except ValueError:
             cleanup_called.append("cleaned")
-        
-        assert "cleaned" in cleanup_called
+
+        assert "cleaned" in cleanup_called, "Condition must be true"
 
     def test_finally_block_execution(self):
         """Test that finally blocks execute in all cases."""
         finally_executed = []
-        
+
         try:
             raise ValueError("test")
         except ValueError:
             pass
         finally:
             finally_executed.append("done")
-        
-        assert "done" in finally_executed
+
+        assert "done" in finally_executed, "Condition must be true"
 
     def test_exception_chaining(self):
         """Test exception chaining with raise from."""
@@ -551,7 +552,7 @@ class TestErrorHandlingEdgeCases:
             except ValueError as e:
                 raise RuntimeError("wrapped") from e
         except RuntimeError as e:
-            assert e.__cause__ is not None
+            assert e.__cause__ is not None, "__cause__ must be initialized"
             assert isinstance(e.__cause__, ValueError)
 
     def test_context_manager_exception_handling(self):
@@ -559,11 +560,11 @@ class TestErrorHandlingEdgeCases:
         class TestContextManager:
             def __enter__(self):
                 return self
-            
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 # Return False to propagate exception
                 return False
-        
+
         with pytest.raises(ValueError):
             with TestContextManager():
                 raise ValueError("test")
@@ -575,19 +576,19 @@ class TestMemoryEdgeCases:
     def test_large_object_creation(self):
         """Test creation of very large objects."""
         large_list = list(range(1000000))
-        assert len(large_list) == 1000000
+        assert len(large_list) == 1000000, "Large_list must not be empty"
         del large_list  # Cleanup
 
     def test_deeply_nested_structure(self):
         """Test handling of deeply nested data structures."""
         deep = {"level": 0}
         current = deep
-        
+
         for i in range(100):
             current["next"] = {"level": i + 1}
             current = current["next"]
-        
-        assert current["level"] == 100
+
+        assert current["level"] == 100, "Condition must be true"
 
     def test_reference_cycles(self):
         """Test handling of reference cycles."""
@@ -595,7 +596,7 @@ class TestMemoryEdgeCases:
         obj2 = {}
         obj1["ref"] = obj2
         obj2["ref"] = obj1
-        
+
         # Should not cause infinite loops
         del obj1
         del obj2
@@ -607,15 +608,15 @@ class TestValidationEdgeCases:
     def test_email_validation_edge_cases(self):
         """Test email validation with edge cases."""
         import re
-        
+
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        
+
         valid_emails = [
             "test@example.com",
             "user.name+tag@example.co.uk",
             "a@b.cc",
         ]
-        
+
         invalid_emails = [
             "notanemail",
             "@example.com",
@@ -623,23 +624,23 @@ class TestValidationEdgeCases:
             "test@.com",
             "",
         ]
-        
+
         for email in valid_emails:
             assert re.match(email_pattern, email), f"{email} should be valid"
-        
+
         for email in invalid_emails:
             assert not re.match(email_pattern, email), f"{email} should be invalid"
 
     def test_url_validation_edge_cases(self):
         """Test URL validation with edge cases."""
         from urllib.parse import urlparse
-        
+
         valid_urls = [
             "http://example.com",
             "https://example.com:8080/path",
             "ftp://files.example.com",
         ]
-        
+
         for url in valid_urls:
             result = urlparse(url)
             assert result.scheme in ["http", "https", "ftp"]
@@ -655,17 +656,17 @@ class TestValidationEdgeCases:
             '{"key": 0}',
             '{"key": ""}',
         ]
-        
+
         for json_str in valid_json:
             obj = json.loads(json_str)
-            assert obj is not None
-        
+            assert obj is not None, "obj must be initialized"
+
         invalid_json = [
             '{invalid}',
             "{'single': 'quotes'}",  # JSON requires double quotes
             '{"unclosed": ',
         ]
-        
+
         for json_str in invalid_json:
             with pytest.raises(json.JSONDecodeError):
                 json.loads(json_str)
@@ -678,27 +679,27 @@ class TestPerformanceEdgeCases:
     def test_large_dict_lookup_performance(self):
         """Test that dict lookups remain fast with large dicts."""
         large_dict = {i: f"value_{i}" for i in range(100000)}
-        
-        import time
+
+        pass  # removed redundant `import time` (top-level import used)
         start = time.time()
         for key in range(0, 100000, 1000):
             _ = large_dict[key]
         elapsed = time.time() - start
-        
+
         # Lookups should be O(1), not take >1 second
-        assert elapsed < 1.0
+        assert elapsed < 1.0, "elapsed is not valid"
 
     def test_list_search_performance(self):
         """Test that list searches show expected O(n) behavior."""
         test_list = list(range(10000))
-        
-        import time
+
+        pass  # removed redundant `import time` (top-level import used)
         start = time.time()
-        assert 5000 in test_list
+        assert 5000 in test_list, "Condition must be true"
         elapsed = time.time() - start
-        
+
         # Should be reasonably fast even for O(n) search
-        assert elapsed < 1.0
+        assert elapsed < 1.0, "elapsed is not valid"
 
 
 # Integration test section
@@ -711,30 +712,30 @@ class TestEdgeCaseIntegration:
             if not data:
                 return None
             return len(data)
-        
+
         # Both should work without errors
-        assert process_dataset([]) is None
-        assert process_dataset(list(range(1000000))) == 1000000
+        assert process_dataset([]) is None, "Data must not be empty"
+        assert process_dataset(list(range(1000000))) == 1000000, "Data must not be empty"
 
     def test_concurrent_file_operations(self):
         """Test concurrent file operations don't corrupt data."""
         with tempfile.TemporaryDirectory() as tmpdir:
             file_path = os.path.join(tmpdir, "test.txt")
-            
+
             def write_file():
                 with open(file_path, 'w') as f:
                     f.write("test")
-            
+
             def read_file():
                 try:
                     with open(file_path, 'r') as f:
                         return f.read()
                 except FileNotFoundError:
                     return None
-            
+
             # Sequential ops should work
             write_file()
-            assert read_file() == "test"
+            assert read_file() == "test", "Condition must be true"
 
 
 # Test execution helpers

@@ -80,8 +80,8 @@ def test_chronicle_checkpoint_and_resume_round_trip(runner: CliRunner, campaign_
     )
     assert resume_result.exit_code == 0, resume_result.output
     restored = json.loads(resume_result.output)
-    assert restored["session_id"] == "S-test"
-    assert restored["task"] == "stabilize chronicle campaign"
+    assert restored["session_id"] == "S-test", "rest is not valid"
+    assert restored["task"] == "stabilize chronicle campaign", "rest is not valid"
 
 
 def test_chronicle_route_task_prefers_task_agent(runner: CliRunner) -> None:
@@ -93,8 +93,8 @@ def test_chronicle_route_task_prefers_task_agent(runner: CliRunner) -> None:
     )
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
-    assert payload["recommended_runner"] == "task"
-    assert payload["recommended_agent"] == "task"
+    assert payload["recommended_runner"] == "task", "Condition must be true"
+    assert payload["recommended_agent"] == "task", "Condition must be true"
 
 
 def test_chronicle_agent_chain_outputs_codeql_chain(runner: CliRunner) -> None:
@@ -107,7 +107,7 @@ def test_chronicle_agent_chain_outputs_codeql_chain(runner: CliRunner) -> None:
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
     agents = [step["agent"] for step in payload["steps"]]
-    assert agents == [
+    assert agents == [, "agents is not valid"
         "codeql-alert-resolution-agent",
         "code-scanning-remediation-agent",
     ]
@@ -143,9 +143,9 @@ def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
             ],
         )
     assert result.exit_code == 0, result.output
-    assert json.loads(result.output)["status"] == "passed"
+    assert json.loads(result.output)["status"] == "passed", "Result must not be empty"
     mock_run.assert_called_once()
-    assert mock_run.call_args.kwargs == {
+    assert mock_run.call_args.kwargs == {, "kwargs is not valid"
         "repo_root": campaign_repo,
         "pattern": None,
         "pattern_name": None,
@@ -153,7 +153,7 @@ def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
         "timeout_seconds": 120.0,
     }
     metrics_path = campaign_repo / ".codex" / "campaign_metrics.jsonl"
-    assert not metrics_path.exists()
+    assert not metrics_path.exists(), "Condition must be true"
 
 
 def test_chronicle_autofix_check_only_timeout_is_nonzero_and_keeps_json(
@@ -188,9 +188,9 @@ def test_chronicle_autofix_check_only_timeout_is_nonzero_and_keeps_json(
             ],
         )
 
-    assert result.exit_code == 124
-    assert json.loads(result.output)["status"] == "timed_out"
-    assert not (campaign_repo / ".codex" / "campaign_metrics.jsonl").exists()
+    assert result.exit_code == 124, "Result must not be empty"
+    assert json.loads(result.output)["status"] == "timed_out", "Result must not be empty"
+    assert not (campaign_repo / ".codex" / "campaign_metrics.jsonl").exists(), "Condition must be true"
 
 
 def test_check_only_does_not_persist_cascade_state(campaign_repo: Path) -> None:
@@ -204,7 +204,7 @@ def test_check_only_does_not_persist_cascade_state(campaign_repo: Path) -> None:
     fixer = CommonIssueFixer(campaign_repo, check_only=True)
     fixer.cascade_detector.record_attempt(1, ["src/example.py"])
 
-    assert state_path.read_text(encoding="utf-8") == original
+    assert state_path.read_text(encoding="utf-8") == original, "Condition must be true"
 
 
 def test_enhanced_diagnostics_writes_requested_output(campaign_repo: Path) -> None:
@@ -214,11 +214,11 @@ def test_enhanced_diagnostics_writes_requested_output(campaign_repo: Path) -> No
     with patch.object(CommonIssueFixer, "run_all_patterns", return_value=False):
         report = run_enhanced_diagnostics(campaign_repo, output_path=output_path)
 
-    assert output_path.exists()
-    assert json.loads(output_path.read_text(encoding="utf-8")) == report
-    assert report["diagnostics_complete"] is True
-    assert not (campaign_repo / ".codex" / "campaign_metrics.jsonl").exists()
-    assert not (campaign_repo / ".codex" / "cascade_detector_state.json").exists()
+    assert output_path.exists(), "Condition must be true"
+    assert json.loads(output_path.read_text(encoding="utf-8")) == report, "Condition must be true"
+    assert report["diagnostics_complete"] is True, "rep is not valid"
+    assert not (campaign_repo / ".codex" / "campaign_metrics.jsonl").exists(), "Condition must be true"
+    assert not (campaign_repo / ".codex" / "cascade_detector_state.json").exists(), "Condition must be true"
 
 
 @pytest.mark.skipif(not hasattr(signal, "SIGALRM"), reason="POSIX interval timer required")
@@ -238,9 +238,9 @@ def test_enhanced_diagnostics_timeout_writes_partial_output(campaign_repo: Path)
             timeout_seconds=0.01,
         )
 
-    assert report["status"] == "timed_out"
-    assert report["diagnostics_complete"] is False
-    assert json.loads(output_path.read_text(encoding="utf-8")) == report
+    assert report["status"] == "timed_out", "rep is not valid"
+    assert report["diagnostics_complete"] is False, "rep is not valid"
+    assert json.loads(output_path.read_text(encoding="utf-8")) == report, "Condition must be true"
 
 
 def test_chronicle_autofix_apply_uses_bulk_orchestrator(runner: CliRunner) -> None:
@@ -259,5 +259,5 @@ def test_chronicle_autofix_apply_uses_bulk_orchestrator(runner: CliRunner) -> No
     ) as mock_run:
         result = runner.invoke(CLI, ["chronicle", "auto-fix", "--json"])
     assert result.exit_code == 0, result.output
-    assert json.loads(result.output)["auto_fixable"] == 2
+    assert json.loads(result.output)["auto_fixable"] == 2, "Result must not be empty"
     mock_run.assert_called_once()

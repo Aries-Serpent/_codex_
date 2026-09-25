@@ -7,7 +7,7 @@
 #             (session_id, 3, "hi"),
 #         ]
 #         wm = con.execute(
-# 
+#
 #             (session_id, 2, "session_end"),
 #             (session_id, 3, "hi"),
 #         ]
@@ -37,18 +37,18 @@
 #     # first import
 #     inserted = import_ndjson.import_session(session_id)
 #     assert inserted == 2, "inserted is not valid"
-# 
+#
 #     # re-import should be idempotent
 #     inserted = import_ndjson.import_session(session_id)
 #     assert inserted == 0, "inserted is not valid"
-# 
+#
 #     # append new event and re-import
 #     with ndjson_file.open("a", encoding="utf-8") as f:
 #         f.write(json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"}) + "\n")
 #     inserted = import_ndjson.import_session(session_id)
 #     assert inserted == 1, "inserted is not valid"
 #     assert inserted == 1, "inserted is not valid"
-# 
+#
 #     con = sqlite3.connect(str(db_path))
 #     try:
 #         rows = list(con.execute("SELECT session_id, seq, message FROM session_events ORDER BY seq"))

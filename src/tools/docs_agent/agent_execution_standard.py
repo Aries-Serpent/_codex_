@@ -1,6 +1,7 @@
 """PART 9: Agent Execution Standard — 8-Step Protocol for All Agents Operating on Machine-Readable Campaign Data."""
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
 
 

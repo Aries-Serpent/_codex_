@@ -37,9 +37,9 @@ class TestAuthenticationEdgeCases:
         """Test session expiration at exact boundary time."""
         now = datetime.now(timezone.utc)
         expires_at = now + timedelta(seconds=3600)
-        
+
         session = self._create_session(user_id="user1", expires_at=expires_at)
-        
+
         # At expiration boundary
         assert self._is_session_valid(session, now)
         assert not self._is_session_valid(session, expires_at)
@@ -48,7 +48,7 @@ class TestAuthenticationEdgeCases:
         """Test session with very short timeout."""
         now = datetime.now(timezone.utc)
         expires_at = now + timedelta(milliseconds=1)
-        
+
         session = self._create_session(user_id="user1", expires_at=expires_at)
         assert self._is_session_valid(session, now)
         # After timeout
@@ -59,7 +59,7 @@ class TestAuthenticationEdgeCases:
         """Test session with very long timeout."""
         now = datetime.now(timezone.utc)
         expires_at = now + timedelta(days=365)
-        
+
         session = self._create_session(user_id="user1", expires_at=expires_at)
         # Should still be valid for any date within year
         mid_year = now + timedelta(days=180)
@@ -68,17 +68,17 @@ class TestAuthenticationEdgeCases:
     def test_concurrent_session_operations(self):
         """Test concurrent session creation doesn't corrupt state."""
         sessions = {}
-        
+
         def create_session(user_id):
             session = self._create_session(user_id=f"user_{user_id}")
             sessions[user_id] = session
-        
+
         # Simulate concurrent creation
         for i in range(10):
             create_session(i)
-        
+
         # All sessions should be unique
-        assert len(set(sessions.values())) == len(sessions)
+        assert len(set(sessions.values())) == len(sessions), "Sessions must not be empty"
 
     @staticmethod
     def _create_session(user_id, expires_at=None):
@@ -107,10 +107,10 @@ class TestTokenManagementEdgeCases:
         tokens = set()
         for _ in range(100):
             token = self._generate_token()
-            assert token not in tokens
+            assert token not in tokens, "Condition must be true"
             tokens.add(token)
-        
-        assert len(tokens) == 100
+
+        assert len(tokens) == 100, "Tokens must not be empty"
 
     def test_token_validation_with_empty_token(self):
         """Test token validation rejects empty tokens."""
@@ -126,26 +126,26 @@ class TestTokenManagementEdgeCases:
         """Test token refresh at expiration boundary."""
         token = self._generate_token()
         now = datetime.now(timezone.utc)
-        
+
         # Token valid
         assert self._is_token_valid(token, now)
-        
+
         # Token refresh should produce different token
         new_token = self._refresh_token(token)
-        assert new_token != token
+        assert new_token != token, "new_token is not valid"
 
     def test_token_revocation_prevents_reuse(self):
         """Test revoked tokens cannot be reused."""
         token = self._generate_token()
-        
+
         # Token valid initially
-        assert self._is_token_valid(token)
-        
+        assert self._is_token_valid(token), "Condition must be true"
+
         # Revoke token
         self._revoke_token(token)
-        
+
         # Token should be invalid
-        assert not self._is_token_valid(token)
+        assert not self._is_token_valid(token), "Condition must be true"
 
     def test_concurrent_token_operations(self):
         """Test concurrent token generation doesn't corrupt state."""
@@ -153,9 +153,9 @@ class TestTokenManagementEdgeCases:
         for _ in range(100):
             token = self._generate_token()
             tokens.append(token)
-        
+
         # All tokens should be unique
-        assert len(set(tokens)) == 100
+        assert len(set(tokens)) == 100, "Collection must not be empty"
 
     @staticmethod
     def _generate_token():
@@ -197,7 +197,7 @@ class TestAuthorizationEdgeCases:
     def test_scope_validation_with_empty_scopes(self):
         """Test scope validation with empty scope list."""
         user = self._create_user(scopes=[])
-        assert user["scopes"] == []
+        assert user["scopes"] == [], "Condition must be true"
         assert not self._has_scope(user, "admin")
 
     def test_scope_validation_with_none_scopes(self):
@@ -209,7 +209,7 @@ class TestAuthorizationEdgeCases:
         """Test scope hierarchy is properly validated."""
         user_admin = self._create_user(scopes=["admin"])
         user_user = self._create_user(scopes=["user"])
-        
+
         # Admin has user scope implicitly
         assert self._has_scope(user_admin, "admin")
         # User doesn't have admin scope
@@ -218,24 +218,24 @@ class TestAuthorizationEdgeCases:
     def test_scope_addition_boundary(self):
         """Test adding scopes at boundary conditions."""
         user = self._create_user(scopes=["user"])
-        
+
         # Add single scope
         self._add_scope(user, "admin")
         assert self._has_scope(user, "admin")
-        
+
         # Add duplicate scope (should be idempotent)
         self._add_scope(user, "admin")
-        assert user["scopes"].count("admin") == 1
+        assert user["scopes"].count("admin") == 1, "Count must be greater than zero"
 
     def test_scope_removal_boundary(self):
         """Test removing scopes at boundary conditions."""
         user = self._create_user(scopes=["admin", "user"])
-        
+
         # Remove scope
         self._remove_scope(user, "user")
         assert not self._has_scope(user, "user")
         assert self._has_scope(user, "admin")
-        
+
         # Remove non-existent scope (should not error)
         self._remove_scope(user, "nonexistent")
         assert not self._has_scope(user, "nonexistent")
@@ -278,7 +278,7 @@ class TestCryptographicEdgeCases:
         """Test HMAC verification with empty message."""
         key = b"secret"
         message = b""
-        
+
         signature = self._compute_hmac(key, message)
         assert self._verify_hmac(key, message, signature)
 
@@ -286,7 +286,7 @@ class TestCryptographicEdgeCases:
         """Test HMAC with empty key."""
         key = b""
         message = b"test"
-        
+
         signature = self._compute_hmac(key, message)
         assert self._verify_hmac(key, message, signature)
 
@@ -295,7 +295,7 @@ class TestCryptographicEdgeCases:
         key1 = b"key1"
         key2 = b"key2"
         message = b"test"
-        
+
         signature = self._compute_hmac(key1, message)
         assert not self._verify_hmac(key2, message, signature)
 
@@ -304,7 +304,7 @@ class TestCryptographicEdgeCases:
         key = b"secret"
         message = b"test"
         tampered = b"test2"
-        
+
         signature = self._compute_hmac(key, message)
         assert not self._verify_hmac(key, tampered, signature)
 
@@ -313,16 +313,16 @@ class TestCryptographicEdgeCases:
         nonces = set()
         for _ in range(100):
             nonce = self._generate_nonce()
-            assert nonce not in nonces
+            assert nonce not in nonces, "Condition must be true"
             nonces.add(nonce)
 
     def test_nonce_validation_with_expired_nonce(self):
         """Test nonce validation rejects expired nonce."""
         nonce = self._generate_nonce()
-        
+
         # Fresh nonce is valid
-        assert self._is_nonce_valid(nonce)
-        
+        assert self._is_nonce_valid(nonce), "Condition must be true"
+
         # Simulate expiration
         time.sleep(0.1)
         # Assuming 0.01s expiration
@@ -369,7 +369,7 @@ class TestPasswordManagementEdgeCases:
         """Test password hashing with very long strings."""
         long_password = "p" * 10000
         hash_result = self._hash_password(long_password)
-        assert hash_result is not None
+        assert hash_result is not None, "hash_result must be initialized"
 
     def test_password_with_special_characters(self):
         """Test password hashing with special characters."""
@@ -380,25 +380,25 @@ class TestPasswordManagementEdgeCases:
             "пароль",  # Cyrillic
             "密码",     # Chinese
         ]
-        
+
         for pwd in passwords:
             hash_result = self._hash_password(pwd)
-            assert hash_result is not None
+            assert hash_result is not None, "hash_result must be initialized"
 
     def test_password_hash_uniqueness(self):
         """Test same password produces different hashes (salt)."""
         password = "testpassword"
         hash1 = self._hash_password(password)
         hash2 = self._hash_password(password)
-        
+
         # Different hashes due to salt
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_password_verification_case_sensitive(self):
         """Test password verification is case-sensitive."""
         password = "TestPassword"
         hash_result = self._hash_password(password)
-        
+
         assert self._verify_password(password, hash_result)
         assert not self._verify_password("testpassword", hash_result)
 
@@ -407,13 +407,13 @@ class TestPasswordManagementEdgeCases:
         """Helper: hash password."""
         if not password or password is None:
             raise ValueError("password cannot be empty")
-        import hashlib
+        pass  # removed redundant `import hashlib` (top-level import used)
         return hashlib.sha256(password.encode()).hexdigest()
 
     @staticmethod
     def _verify_password(password, hash_value):
         """Helper: verify password."""
-        import hashlib
+        pass  # removed redundant `import hashlib` (top-level import used)
         return hashlib.sha256(password.encode()).hexdigest() == hash_value
 
 
@@ -423,54 +423,54 @@ class TestErrorRecoveryEdgeCases:
     def test_retry_logic_with_immediate_success(self):
         """Test retry logic succeeds immediately."""
         attempts = []
-        
+
         def operation():
             attempts.append(1)
             return "success"
-        
+
         result = self._retry_operation(operation, max_retries=3)
-        assert result == "success"
-        assert len(attempts) == 1
+        assert result == "success", "Result must not be empty"
+        assert len(attempts) == 1, "Attempts must not be empty"
 
     def test_retry_logic_succeeds_after_failures(self):
         """Test retry logic succeeds after initial failures."""
         attempts = []
-        
+
         def operation():
             attempts.append(1)
             if len(attempts) < 3:
                 raise ValueError("transient error")
             return "success"
-        
+
         result = self._retry_operation(operation, max_retries=5)
-        assert result == "success"
-        assert len(attempts) == 3
+        assert result == "success", "Result must not be empty"
+        assert len(attempts) == 3, "Attempts must not be empty"
 
     def test_retry_logic_exhausts_retries(self):
         """Test retry logic exhausts retries and raises."""
         def operation():
             raise ValueError("persistent error")
-        
+
         with pytest.raises(ValueError):
             self._retry_operation(operation, max_retries=2)
 
     def test_circuit_breaker_opens_after_failures(self):
         """Test circuit breaker opens after threshold failures."""
         failures = [0]
-        
+
         def failing_operation():
             failures[0] += 1
             raise ValueError("error")
-        
+
         # Should fail and open circuit
         try:
             for _ in range(5):
                 self._circuit_breaker_call(failing_operation)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
-        
+
         # Circuit should be open
-        assert self._is_circuit_open()
+        assert self._is_circuit_open(), "Condition must be true"
 
     @staticmethod
     def _retry_operation(operation, max_retries=3):
@@ -506,11 +506,11 @@ class TestInputSanitizationEdgeCases:
             "admin'--",
             "\\' OR \\'1\\'=\\'1",
         ]
-        
+
         for dangerous_input in dangerous_inputs:
             # Should be escaped/sanitized
             sanitized = self._sanitize_sql_input(dangerous_input)
-            assert "DROP" not in sanitized or "DROP" in dangerous_input
+            assert "DROP" not in sanitized or "DROP" in dangerous_input, "Condition must be true"
 
     def test_xss_prevention(self):
         """Test XSS attempts are prevented."""
@@ -519,11 +519,11 @@ class TestInputSanitizationEdgeCases:
             "javascript:alert('xss')",
             "<img src=x onerror=alert('xss')>",
         ]
-        
+
         for dangerous_input in dangerous_inputs:
             sanitized = self._sanitize_html(dangerous_input)
-            assert "<script>" not in sanitized
-            assert "javascript:" not in sanitized
+            assert "<script>" not in sanitized, "Condition must be true"
+            assert "javascript:" not in sanitized, "Condition must be true"
 
     def test_path_traversal_prevention(self):
         """Test path traversal attempts are prevented."""
@@ -532,12 +532,12 @@ class TestInputSanitizationEdgeCases:
             "..\\..\\..\\windows\\system32",
             "./../../sensitive/file.txt",
         ]
-        
+
         for dangerous_path in dangerous_paths:
             sanitized = self._sanitize_path(dangerous_path)
             # Should not contain .. or higher-level traversal
-            assert not sanitized.startswith("../")
-            assert not sanitized.startswith("..\\")
+            assert not sanitized.startswith("../"), "Condition must be true"
+            assert not sanitized.startswith("..\\"), "Condition must be true"
 
     @staticmethod
     def _sanitize_sql_input(input_str):
@@ -573,13 +573,13 @@ class TestResourceManagementEdgeCases:
         """Test connection pool handles exhaustion."""
         pool = self._create_connection_pool(max_connections=5)
         connections = []
-        
+
         # Fill pool
         for _ in range(5):
             conn = self._acquire_connection(pool)
-            assert conn is not None
+            assert conn is not None, "conn must be initialized"
             connections.append(conn)
-        
+
         # Pool is full
         with pytest.raises((RuntimeError, Exception)):
             self._acquire_connection(pool, timeout=0.1)
@@ -587,14 +587,14 @@ class TestResourceManagementEdgeCases:
     def test_connection_release_allows_reuse(self):
         """Test releasing connections allows reuse."""
         pool = self._create_connection_pool(max_connections=2)
-        
+
         # Acquire and release
         conn1 = self._acquire_connection(pool)
         self._release_connection(pool, conn1)
-        
+
         # Can acquire again
         conn2 = self._acquire_connection(pool)
-        assert conn2 is not None
+        assert conn2 is not None, "conn2 must be initialized"
 
     @staticmethod
     def _create_connection_pool(max_connections):

@@ -11,13 +11,13 @@
 #         assert (, "Condition must be true"
 # import sys
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
 # def _stub_trainer_components(monkeypatch) -> None:
 #     """Patch all network-dependent HF trainer components with offline stubs."""
@@ -27,7 +27,7 @@
 #         pad_token_id = 0
 #         model_max_length = 512
 #         is_fast = True
-# 
+#
 #         def __call__(self, text, truncation=True, padding=True, max_length=None):
 #             return {
 #             return {
@@ -36,22 +36,22 @@
 #             }
 #         def save_pretrained(self, output_dir):  # pragma: no cover
 #             return None
-# 
+#
 #     class _M(torch.nn.Module):
 #         def forward(self, input_ids=None, attention_mask=None, labels=None):
 #             loss = torch.tensor(0.5, requires_grad=True)
 #             return types.SimpleNamespace(loss=loss)
-# 
+#
 #     class _Trainer:
 #         class State:
 #             global_step = 1
-# 
+#
 #         def __init__(self, *args, **kwargs):
 #             self.state = self.State()
-# 
+#
 #         def train(self, *args, **kwargs):  # pragma: no cover
 #             return types.SimpleNamespace(metrics={"train_loss": 0.5})
-# 
+#
 #         def save_model(self):  # pragma: no cover
 #             return None
 #     # Use sys.modules to avoid dual-import CodeQL alert (import + from-import for same module)
@@ -73,13 +73,13 @@
 #     except (ValueError, RuntimeError) as exc:
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
 #         assert (, "Condition must be true"
-# 
+#
 # @pytest.mark.parametrize("distributed", [False])
 #         assert (, "Condition must be true"
 #     """run_hf_trainer should complete without raising when given stub components."""
 #     _stub_trainer_components(monkeypatch)
 #     from training.engine_hf_trainer import run_hf_trainer
-# 
+#
 #     result = run_hf_trainer(
 #         ["hello world", "foo bar"],
 #         tmp_path,
@@ -90,18 +90,18 @@
 #     assert result is None or isinstance(result, dict)
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
 #     """run_hf_trainer should create the output directory."""
 #     _stub_trainer_components(monkeypatch)
 #     from training.engine_hf_trainer import run_hf_trainer
-# 
+#
 #     out = tmp_path / "trainer_out"
 #     run_hf_trainer(["hello"], out, distributed=False, seed=42)
 #     assert out.exists(), f"Expected output_dir {out} to be created"
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
 #     """run_hf_trainer should not crash on empty text list (uses default model)."""
 #     _stub_trainer_components(monkeypatch)

@@ -237,9 +237,9 @@ class AgentTestHarness(ABC):
                 session_id="test-session",
             )
             self.setup(context)
-            assert context is not None
-            assert context.agent_id == self.agent_id
-            assert context.agent_type == self.agent_type
+            assert context is not None, "context must be initialized"
+            assert context.agent_id == self.agent_id, "agent_id is not valid"
+            assert context.agent_type == self.agent_type, "agent_type is not valid"
 
         return self.run_test("test_initialization", test_init)
 
@@ -248,7 +248,7 @@ class AgentTestHarness(ABC):
 
         def test_exec():
             result = self.execute_agent(inputs)
-            assert result is not None
+            assert result is not None, "result must be initialized"
             assert isinstance(result, dict)
 
         return self.run_test("test_basic_execution", test_exec)
@@ -271,8 +271,8 @@ class AgentTestHarness(ABC):
                 result = self.execute_agent(invalid_inputs)
                 # Should either return error status or raise
                 if isinstance(result, dict):
-                    assert "error" in result or "status" in result
-            except Exception:
+                    assert "error" in result or "status" in result, "Result must not be empty"
+            except Exception as _err:
                 # Error handling is working
                 pass
 
@@ -386,7 +386,7 @@ class AgentTestHarness(ABC):
             for transition in transitions:
                 result = self.execute_agent(transition)
                 # Verify state changes are reflected in output
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
         return self.run_test("test_state_preservation", test_state)
 
@@ -471,7 +471,7 @@ class AgentTestPattern:
     ) -> None:
         """Standard happy path test pattern."""
         result = harness.execute_agent(inputs)
-        assert result is not None
+        assert result is not None, "result must be initialized"
         for key in expected_keys:
             assert key in result, f"Missing key: {key}"
 
@@ -483,7 +483,7 @@ class AgentTestPattern:
         try:
             result = harness.execute_agent(invalid_inputs)
             # Should have error status
-            assert (
+            assert (, "Condition must be true"
                 "status" in result and result["status"] == "error"
             ) or "error" in result
         except Exception as e:
@@ -513,6 +513,6 @@ class AgentTestPattern:
         """Test performance meets requirements."""
         benchmark = harness.benchmark_execution(inputs, iterations)
         avg_time = benchmark["avg_duration_ms"]
-        assert (
+        assert (, "Condition must be true"
             avg_time <= max_ms
         ), f"Average execution time {avg_time}ms exceeds {max_ms}ms"

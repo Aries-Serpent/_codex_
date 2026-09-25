@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import tomllib
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-import tomllib
 import yaml
 
 PINNED_OPERATORS = ("==", ">=", "<=", "~=", ">", "<")

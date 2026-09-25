@@ -128,7 +128,7 @@ class PipResolverAnalyzer:
             List of detected ConflictIssue objects
         """
         detected = []
-        
+
         # Parse requirements
         parsed_reqs = []
         for req_str in requirements:
@@ -178,11 +178,11 @@ class PipResolverAnalyzer:
             # If specs are identical, they're compatible
             if str(spec1) == str(spec2):
                 return True
-            
+
             # If either is empty (no constraint), they're compatible
             if len(spec1) == 0 or len(spec2) == 0:
                 return True
-             
+
             # Try a range of test versions
             test_versions = [
                 "0.1.0", "0.9.0", "1.0.0", "1.5.0", "2.0.0",
@@ -209,7 +209,7 @@ class PipResolverAnalyzer:
             Dictionary mapping package names to DependencyNode objects
         """
         graph = {}
-        
+
         for req_str in requirements:
             try:
                 req = Requirement(req_str)
@@ -221,7 +221,7 @@ class PipResolverAnalyzer:
                 graph[req.name.lower()] = node
             except Exception:
                 pass
-        
+
         self.dependency_graph = graph
         return graph
 
@@ -229,25 +229,25 @@ class PipResolverAnalyzer:
         """Find circular dependency patterns"""
         circles = []
         visited = set()
-        
+
         def dfs(node_name: str, path: Set[str]) -> None:
             if node_name in path:
                 circles.append((node_name, "->".join(path)))
                 return
-            
+
             if node_name in visited:
                 return
-            
+
             visited.add(node_name)
             path = path | {node_name}
-            
+
             if node_name in self.dependency_graph:
                 for dep in self.dependency_graph[node_name].requires:
                     dfs(dep, path)
-        
+
         for node_name in self.dependency_graph:
             dfs(node_name, set())
-        
+
         return circles
 
 
@@ -261,7 +261,7 @@ class VersionMatrixGenerator:
         """Generate a compatibility matrix for a package across versions."""
         matrix = VersionMatrix(package_name=package_name)
         matrix.versions_analyzed = sorted(versions, key=lambda v: pkg_version.parse(v))
-        
+
         # Build compatibility matrix
         compatibility = {}
         for v1 in matrix.versions_analyzed:
@@ -275,9 +275,9 @@ class VersionMatrixGenerator:
                     compatibility[v1][v2] = compat
                 except Exception:
                     compatibility[v1][v2] = v1 == v2
-        
+
         matrix.compatibility_matrix = compatibility
-        
+
         # Find safe ranges
         if matrix.versions_analyzed:
             try:
@@ -293,7 +293,7 @@ class VersionMatrixGenerator:
                 ]
             except Exception:
                 pass
-        
+
         self.matrices[package_name] = matrix
         return matrix
 
@@ -304,7 +304,7 @@ class SchemaValidator:
     def __init__(self, schemas_path: Optional[Path] = None):
         self.schemas: Dict[str, Dict] = {}
         self.compatibilities: List[SchemaCompatibility] = []
-        
+
         if schemas_path:
             self._load_schemas(schemas_path)
 
@@ -331,21 +331,21 @@ class SchemaValidator:
             schema_name=schema_name,
             schema_version=schema_version
         )
-        
+
         # Check each package
         for pkg_name, version in package_versions.items():
             if self._is_compatible(schema_name, pkg_name, version):
                 compat.compatible_packages[pkg_name] = version
             else:
                 compat.incompatibilities.append((pkg_name, version, schema_name))
-        
+
         return compat
 
     def _is_compatible(self, schema_name: str, pkg_name: str, version: str) -> bool:
         """Check if package version is compatible with schema"""
         if schema_name not in self.schemas:
             return True
-        
+
         schema = self.schemas[schema_name]
         if "incompatible_packages" in schema:
             incomp = schema["incompatible_packages"]
@@ -353,7 +353,7 @@ class SchemaValidator:
                 blocked_versions = incomp[pkg_name]
                 if version in blocked_versions:
                     return False
-        
+
         return True
 
 
@@ -404,10 +404,10 @@ class DependencyConflictResolver:
     def analyze_requirements(self, requirements_path: Path) -> ResolutionResult:
         """Analyze requirements file for conflicts."""
         requirements = self._load_requirements(requirements_path)
-        
+
         conflicts = self.analyzer.detect_conflicts(requirements)
         self.issues = conflicts
-        
+
         result = ResolutionResult(
             success=len(conflicts) == 0,
             conflicts_found=len(conflicts),
@@ -417,30 +417,30 @@ class DependencyConflictResolver:
                 if c.severity == ConflictSeverity.CRITICAL
             ])
         )
-        
+
         # Generate resolution recommendations
         for conflict in conflicts:
             if conflict.severity in [ConflictSeverity.HIGH, ConflictSeverity.CRITICAL]:
                 result.recommendations.append(
                     f"Resolve {conflict.conflict_type.value}: {conflict.description}"
                 )
-        
+
         self.resolutions.append(result)
         return result
 
     def _load_requirements(self, path: Path) -> List[str]:
         """Load requirements from file"""
         requirements = []
-        
+
         if not path.exists():
             return requirements
-        
+
         with open(path) as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith('#'):
                     requirements.append(line)
-        
+
         return requirements
 
     def validate_schema_compatibility(
@@ -450,7 +450,7 @@ class DependencyConflictResolver:
     ) -> Dict[str, Any]:
         """Validate requirements compatibility with a schema."""
         requirements = self._load_requirements(requirements_path)
-        
+
         # Parse versions from requirements
         package_versions = {}
         for req_str in requirements:
@@ -459,13 +459,13 @@ class DependencyConflictResolver:
                 package_versions[req.name] = str(req.specifier) if req.specifier else "*"
             except Exception:
                 pass
-        
+
         compat = self.validator.validate_package_compatibility(
             schema_name,
             "1.0.0",
             package_versions
         )
-        
+
         return {
             "schema_name": schema_name,
             "compatible_packages": compat.compatible_packages,
@@ -480,12 +480,12 @@ class DependencyConflictResolver:
     ) -> Dict[str, VersionMatrix]:
         """Generate version compatibility matrices for packages."""
         matrices = {}
-        
+
         for pkg_name in package_names:
             versions = versions_per_package.get(pkg_name, ["1.0.0"])
             matrix = self.matrix_gen.generate_matrix(pkg_name, versions)
             matrices[pkg_name] = matrix
-        
+
         return matrices
 
     def export_analysis_report(self, output_path: Path) -> None:
@@ -515,7 +515,7 @@ class DependencyConflictResolver:
                 for res in self.resolutions
             ]
         }
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(report, f, indent=2)
@@ -524,21 +524,21 @@ class DependencyConflictResolver:
 def main():
     """CLI entry point for the agent"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="Dependency Conflict Resolver Agent"
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
-    
+
     # analyze command
     analyze_parser = subparsers.add_parser("analyze", help="Analyze requirements for conflicts")
     analyze_parser.add_argument("--path", type=Path, default=Path("requirements.txt"))
-    
+
     # validate-schema command
     schema_parser = subparsers.add_parser("validate-schema", help="Validate schema compatibility")
     schema_parser.add_argument("--schema", type=str, required=True)
     schema_parser.add_argument("--requirements", type=Path, default=Path("requirements.txt"))
-    
+
     # generate-matrix command
     matrix_parser = subparsers.add_parser(
         "generate-matrix", help="Generate version matrix"
@@ -551,11 +551,11 @@ def main():
         "--versions", type=str,
         help="Comma-separated versions per package"
     )
-    
+
     args = parser.parse_args()
-    
+
     agent = DependencyConflictResolver()
-    
+
     if args.command == "analyze":
         result = agent.analyze_requirements(args.path)
         print(json.dumps({
@@ -564,11 +564,11 @@ def main():
             "critical_remaining": result.critical_remaining,
             "recommendations": result.recommendations
         }, indent=2))
-    
+
     elif args.command == "validate-schema":
         result = agent.validate_schema_compatibility(args.schema, args.requirements)
         print(json.dumps(result, indent=2))
-    
+
     elif args.command == "generate-matrix":
         packages = [p.strip() for p in args.packages.split(",")]
         versions_per_package = {}
@@ -577,7 +577,7 @@ def main():
             for pkg_spec in args.versions.split(";"):
                 pkg, versions = pkg_spec.split(":")
                 versions_per_package[pkg.strip()] = [v.strip() for v in versions.split(",")]
-        
+
         matrices = agent.generate_version_matrix(packages, versions_per_package)
         print(json.dumps({
             "matrices": {

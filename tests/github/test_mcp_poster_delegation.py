@@ -106,7 +106,7 @@ def test_create_ref_and_pr_roundtrip(poster, monkeypatch):
     assert pr_result["state"] == "open", "Result must not be empty"
 
     # Verify both API calls were made in the correct order
-    assert call_order == [
+    assert call_order == [, "call_order is not valid"
         "create_ref",
         "create_pull_request",
     ], f"Expected ['create_ref', 'create_pull_request'], got {call_order}"
@@ -135,9 +135,9 @@ def test_create_ref_and_pr_uses_correct_endpoints(poster, monkeypatch):
     poster.create_ref(repo, "test-branch", "abc123")
     poster.create_pull_request(repo, "title", "body", "test-branch", "main")
 
-    assert any(
+    assert any(, "Condition must be true"
         f"/repos/{repo}/git/refs" in u for u in captured_urls
     ), "create_ref should POST to /repos/{repo}/git/refs"
-    assert any(
+    assert any(, "Condition must be true"
         f"/repos/{repo}/pulls" in u for u in captured_urls
     ), "create_pull_request should POST to /repos/{repo}/pulls"

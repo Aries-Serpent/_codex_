@@ -18,6 +18,7 @@ from codex_ml.tracking.mlflow_guard import (
 mlflow = None
 if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
     import mlflow as _mlflow
+
     if not getattr(_mlflow, "__codex_stub__", False):
         mlflow = _mlflow
 

@@ -26,10 +26,10 @@ class TestMLInferenceEntryPoints:
             # Try importing from codex_ml
             import sys
             sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
-            
+
             # Check if codex_ml exists
             import codex_ml
-            assert codex_ml is not None
+            assert codex_ml is not None, "codex_ml must be initialized"
         except ImportError as e:
             pytest.skip(f"codex_ml not installed: {e}")
 
@@ -37,19 +37,19 @@ class TestMLInferenceEntryPoints:
         """Test basic inference pipeline setup."""
         try:
             import torch
-            
+
             # Test basic model inference setup
             class SimpleModel(torch.nn.Module):
                 def __init__(self):
                     super().__init__()
                     self.fc = torch.nn.Linear(10, 5)
-                
+
                 def forward(self, x):
                     return self.fc(x)
-            
+
             model = SimpleModel()
             model.eval()
-            
+
             # Test inference
             with torch.no_grad():
                 input_data = torch.randn(1, 10)
@@ -63,11 +63,11 @@ class TestMLInferenceEntryPoints:
         try:
             import torch
             from transformers import AutoModel, AutoTokenizer
-            
+
             # We'll just test the import and basic setup
             # Not actually loading models to avoid large downloads
-            assert AutoTokenizer is not None
-            assert AutoModel is not None
+            assert AutoTokenizer is not None, "AutoTokenizer must be initialized"
+            assert AutoModel is not None, "AutoModel must be initialized"
         except ImportError:
             pytest.skip("transformers not installed")
 
@@ -80,7 +80,7 @@ class TestPatternLearningTorchBackend:
         try:
             import torch
             import torch.nn as nn
-            
+
             class PatternLearner:
                 def __init__(self, hidden_dim=64, backend='torch'):
                     self.backend = backend
@@ -92,7 +92,7 @@ class TestPatternLearningTorchBackend:
                             nn.Linear(hidden_dim, 5)
                         )
                         self.optimizer = torch.optim.Adam(self.model.parameters())
-                
+
                 def learn_from_batch(self, X, y):
                     """Learn from a batch of data."""
                     if self.backend == 'torch':
@@ -102,10 +102,10 @@ class TestPatternLearningTorchBackend:
                         loss.backward()
                         self.optimizer.step()
                         return loss.item()
-            
+
             learner = PatternLearner(backend='torch')
-            assert learner is not None
-            assert learner.backend == 'torch'
+            assert learner is not None, "learner must be initialized"
+            assert learner.backend == 'torch', "backend is not valid"
             assert hasattr(learner, 'learn_from_batch')
         except ImportError:
             pytest.skip("torch not installed")
@@ -115,13 +115,13 @@ class TestPatternLearningTorchBackend:
         try:
             import torch
             import torch.nn as nn
-            
+
             class SimplePatternLearner:
                 def __init__(self):
                     self.model = nn.Linear(5, 2)
                     self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.01)
                     self.criterion = nn.MSELoss()
-                
+
                 def train_step(self, X, y):
                     self.model.train()
                     outputs = self.model(X)
@@ -130,21 +130,21 @@ class TestPatternLearningTorchBackend:
                     loss.backward()
                     self.optimizer.step()
                     return loss.item()
-            
+
             learner = SimplePatternLearner()
-            
+
             # Create dummy data
             X = torch.randn(10, 5)
             y = torch.randn(10, 2)
-            
+
             # Train for a few steps
             losses = []
             for _ in range(3):
                 loss = learner.train_step(X, y)
                 losses.append(loss)
-            
+
             # Verify loss is computed
-            assert len(losses) == 3
+            assert len(losses) == 3, "Losses must not be empty"
             assert all(isinstance(l, float) for l in losses)
         except ImportError:
             pytest.skip("torch not installed")
@@ -154,7 +154,7 @@ class TestPatternLearningTorchBackend:
         try:
             import torch
             import torch.nn as nn
-            
+
             class EvaluablePatternLearner:
                 def __init__(self):
                     self.model = nn.Sequential(
@@ -163,24 +163,24 @@ class TestPatternLearningTorchBackend:
                         nn.Linear(32, 5)
                     )
                     self.criterion = nn.CrossEntropyLoss()
-                
+
                 def evaluate(self, X, y):
                     self.model.eval()
                     with torch.no_grad():
                         outputs = self.model(X)
                         loss = self.criterion(outputs, y)
                     return loss.item()
-            
+
             learner = EvaluablePatternLearner()
-            
+
             # Create dummy data
             X = torch.randn(10, 10)
             y = torch.randint(0, 5, (10,))
-            
+
             # Evaluate
             loss = learner.evaluate(X, y)
             assert isinstance(loss, float)
-            assert loss >= 0
+            assert loss >= 0, "loss must be greater than zero"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -194,29 +194,29 @@ class TestModelRegistry:
             import json
 
             import torch
-            
+
             class ModelRegistry:
                 def __init__(self):
                     self.models = {}
                     self.metadata = {}
-                
+
                 def register_model(self, name, model, metadata=None):
                     """Register a model."""
                     self.models[name] = model
                     if metadata:
                         self.metadata[name] = metadata
-                
+
                 def get_model(self, name):
                     """Get a registered model."""
                     return self.models.get(name)
-                
+
                 def list_models(self):
                     """List all registered models."""
                     return list(self.models.keys())
-            
+
             registry = ModelRegistry()
-            assert registry is not None
-            assert len(registry.list_models()) == 0
+            assert registry is not None, "registry must be initialized"
+            assert len(registry.list_models()) == 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -225,32 +225,32 @@ class TestModelRegistry:
         try:
             import torch
             import torch.nn as nn
-            
+
             class ModelRegistry:
                 def __init__(self):
                     self.models = {}
-                
+
                 def register(self, name, model):
                     self.models[name] = model
-                
+
                 def load(self, name):
                     return self.models.get(name)
-                
+
                 def list_all(self):
                     return list(self.models.keys())
-            
+
             registry = ModelRegistry()
-            
+
             # Create dummy model
             model = nn.Linear(10, 5)
-            
+
             # Register model
             registry.register('test_model', model)
-            assert 'test_model' in registry.list_all()
-            
+            assert 'test_model' in registry.list_all(), "Condition must be true"
+
             # Load model
             loaded = registry.load('test_model')
-            assert loaded is not None
+            assert loaded is not None, "loaded must be initialized"
             assert isinstance(loaded, nn.Linear)
         except ImportError:
             pytest.skip("torch not installed")
@@ -263,18 +263,18 @@ class TestModelRegistry:
 
             import torch
             import torch.nn as nn
-            
+
             class PersistentModelRegistry:
                 def __init__(self, storage_dir=None):
                     self.models = {}
                     self.storage_dir = storage_dir or tempfile.mkdtemp()
-                
+
                 def save_model(self, name, model):
                     """Save model to disk."""
                     path = os.path.join(self.storage_dir, f"{name}.pt")
                     torch.save(model.state_dict(), path)
                     self.models[name] = path
-                
+
                 def load_model(self, name, model_class):
                     """Load model from disk."""
                     path = self.models.get(name)
@@ -283,18 +283,18 @@ class TestModelRegistry:
                         model.load_state_dict(torch.load(path))
                         return model
                     return None
-            
+
             registry = PersistentModelRegistry()
-            
+
             # Create and save model
             model = nn.Linear(10, 5)
             registry.save_model('test_model', model)
-            
+
             # Load model
             loaded = registry.load_model('test_model', nn.Linear)
             # We need to create a new Linear layer with same dims
             loaded = registry.load_model('test_model', lambda: nn.Linear(10, 5))
-            assert loaded is not None
+            assert loaded is not None, "loaded must be initialized"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -306,7 +306,7 @@ class TestRAGPipelineIntegration:
         """Test basic RAG pipeline setup."""
         try:
             import chromadb
-            
+
             class SimpleRAGPipeline:
                 def __init__(self, collection_name='test_collection'):
                     self.client = chromadb.Client()
@@ -314,15 +314,15 @@ class TestRAGPipelineIntegration:
                         name=collection_name,
                         metadata={"hnsw:space": "cosine"}
                     )
-                
+
                 def add_documents(self, documents, ids=None):
                     """Add documents to the collection."""
                     if ids is None:
                         ids = [str(i) for i in range(len(documents))]
                     self.collection.add(ids=ids, documents=documents)
-            
+
             pipeline = SimpleRAGPipeline()
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except ImportError:
             pytest.skip("chromadb not installed")
 
@@ -331,9 +331,9 @@ class TestRAGPipelineIntegration:
         try:
             import numpy as np
             from sentence_transformers import SentenceTransformer
-            
+
             # We won't download actual models, just test the API
-            assert SentenceTransformer is not None
+            assert SentenceTransformer is not None, "SentenceTransformer must be initialized"
         except ImportError:
             pytest.skip("sentence-transformers not installed")
 
@@ -342,22 +342,22 @@ class TestRAGPipelineIntegration:
         try:
             import faiss
             import numpy as np
-            
+
             # Create simple FAISS index
             dimension = 128
             index = faiss.IndexFlatL2(dimension)
-            
+
             # Add some vectors
             vectors = np.random.random((10, dimension)).astype('float32')
             index.add(vectors)
-            
+
             # Test search
-            assert index.ntotal == 10
-            
+            assert index.ntotal == 10, "ntotal is not valid"
+
             # Search for nearest neighbors
             query = np.random.random((1, dimension)).astype('float32')
             distances, indices = index.search(query, k=3)
-            
+
             assert distances.shape == (1, 3)
             assert indices.shape == (1, 3)
         except ImportError:
@@ -372,17 +372,17 @@ class TestDuckDBIntegration:
         try:
             import duckdb
             import pandas as pd
-            
+
             # Create in-memory database
             conn = duckdb.connect(':memory:')
-            
+
             # Create a table
             conn.execute('CREATE TABLE test (id INTEGER, value VARCHAR)')
             conn.execute('INSERT INTO test VALUES (1, \'test\')')
-            
+
             # Query the table
             result = conn.execute('SELECT * FROM test').fetchall()
-            assert len(result) == 1
+            assert len(result) == 1, "Result must not be empty"
             assert result[0] == (1, 'test')
         except ImportError:
             pytest.skip("duckdb not installed")
@@ -392,18 +392,18 @@ class TestDuckDBIntegration:
         try:
             import duckdb
             import pandas as pd
-            
+
             # Create a pandas dataframe
             df = pd.DataFrame({
                 'id': [1, 2, 3],
                 'name': ['Alice', 'Bob', 'Charlie']
             })
-            
+
             # Use DuckDB to query the dataframe
             conn = duckdb.connect(':memory:')
             result = conn.execute('SELECT * FROM df WHERE id > 1').fetchall()
-            
-            assert len(result) == 2
+
+            assert len(result) == 2, "Result must not be empty"
         except ImportError:
             pytest.skip("duckdb or pandas not installed")
 
@@ -416,21 +416,21 @@ class TestWebServiceIntegration:
         try:
             from fastapi import FastAPI
             from fastapi.testclient import TestClient
-            
+
             app = FastAPI()
-            
+
             @app.get("/health")
             def health_check():
                 return {"status": "healthy"}
-            
+
             @app.post("/process")
             def process_data(data: dict):
                 return {"processed": data}
-            
+
             client = TestClient(app)
             response = client.get("/health")
-            assert response.status_code == 200
-            assert response.json()["status"] == "healthy"
+            assert response.status_code == 200, "Response must not be empty"
+            assert response.json()["status"] == "healthy", "Response must not be empty"
         except ImportError:
             pytest.skip("fastapi not installed")
 
@@ -438,13 +438,13 @@ class TestWebServiceIntegration:
         """Test basic Litestar application."""
         try:
             from litestar import Litestar, get
-            
+
             @get("/test")
             def test_handler() -> dict:
                 return {"status": "ok"}
-            
+
             app = Litestar(route_handlers=[test_handler])
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("litestar not installed")
 
@@ -456,23 +456,23 @@ class TestMonitoringIntegration:
         """Test Prometheus metrics setup."""
         try:
             from prometheus_client import Counter, Gauge, Histogram
-            
+
             # Create test metrics
             request_count = Counter('test_requests_total', 'Total requests')
             request_latency = Histogram('test_request_latency', 'Request latency')
             active_connections = Gauge('test_active_connections', 'Active connections')
-            
+
             # Increment counter
             request_count.inc()
-            
+
             # Set gauge
             active_connections.set(5)
-            
+
             # Observe histogram
             request_latency.observe(0.5)
-            
-            assert request_count._value.get() == 1
-            assert active_connections._value.get() == 5
+
+            assert request_count._value.get() == 1, "Value must be initialized"
+            assert active_connections._value.get() == 5, "Value must be initialized"
         except ImportError:
             pytest.skip("prometheus-client not installed")
 
@@ -480,19 +480,19 @@ class TestMonitoringIntegration:
         """Test psutil monitoring."""
         try:
             import psutil
-            
+
             # Get CPU usage
             cpu = psutil.cpu_percent(interval=0.1)
-            assert 0 <= cpu <= 100
-            
+            assert 0 <= cpu <= 100, "0 is not valid"
+
             # Get memory usage
             mem = psutil.virtual_memory()
-            assert mem.percent >= 0
-            assert mem.available > 0
-            
+            assert mem.percent >= 0, "percent must be greater than zero"
+            assert mem.available > 0, "available must be greater than zero"
+
             # Get process info
             proc = psutil.Process()
-            assert proc.pid > 0
+            assert proc.pid > 0, "pid must be greater than zero"
         except ImportError:
             pytest.skip("psutil not installed")
 

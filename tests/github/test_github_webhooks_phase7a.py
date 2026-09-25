@@ -30,7 +30,7 @@ class TestWebhookVerifierInit:
     def test_init_valid_secret(self):
         """WebhookVerifier initialises successfully with a non-empty secret."""
         verifier = WebhookVerifier("my-secret")
-        assert verifier is not None
+        assert verifier is not None, "verifier must be initialized"
 
     def test_init_empty_secret_raises_value_error(self):
         """An empty string secret must raise ValueError."""
@@ -39,12 +39,12 @@ class TestWebhookVerifierInit:
 
     def test_header_prefix_constant(self):
         """HEADER_PREFIX class constant must equal 'sha256='."""
-        assert WebhookVerifier._HEADER_PREFIX == "sha256="
+        assert WebhookVerifier._HEADER_PREFIX == "sha256=", "_HEADER_PREFIX is not valid"
 
     def test_init_single_char_secret_is_valid(self):
         """A single-character secret is technically valid (non-empty)."""
         verifier = WebhookVerifier("x")
-        assert verifier is not None
+        assert verifier is not None, "verifier must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class TestComputeSignature:
         """Same payload + secret always produces the same signature."""
         verifier = WebhookVerifier("supersecret")
         payload = b'{"action":"opened"}'
-        assert verifier.compute_signature(payload) == verifier.compute_signature(payload)
+        assert verifier.compute_signature(payload) == verifier.compute_signature(payload), "Condition must be true"
 
     def test_signature_hex_digest_length(self):
         """SHA-256 hex digest must be exactly 64 hex characters after prefix."""
@@ -82,7 +82,7 @@ class TestComputeSignature:
             secret.encode("utf-8"), payload, hashlib.sha256
         ).hexdigest()
         verifier = WebhookVerifier(secret)
-        assert verifier.compute_signature(payload) == f"sha256={expected_hex}"
+        assert verifier.compute_signature(payload) == f"sha256={expected_hex}", "Condition must be true"
 
     def test_different_payloads_produce_different_signatures(self):
         """Different payloads must produce different signatures."""
@@ -92,7 +92,7 @@ class TestComputeSignature:
     def test_different_secrets_produce_different_signatures(self):
         """The same payload with different secrets must produce different signatures."""
         payload = b"shared payload"
-        assert (
+        assert (, "Condition must be true"
             WebhookVerifier("secret-one").compute_signature(payload)
             != WebhookVerifier("secret-two").compute_signature(payload)
         )
@@ -101,8 +101,8 @@ class TestComputeSignature:
         """An empty payload must still produce a valid sha256= signature."""
         verifier = WebhookVerifier("some-secret")
         sig = verifier.compute_signature(b"")
-        assert sig.startswith("sha256=")
-        assert len(sig[len("sha256="):]) == 64
+        assert sig.startswith("sha256="), "Condition must be true"
+        assert len(sig[len("sha256="):]) == 64, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -191,15 +191,15 @@ class TestWebhookEdgeCases:
         payload = b"test"
         verifier = WebhookVerifier(secret)
         manual = hmac_stdlib.new(secret.encode("utf-8"), payload, hashlib.sha256).hexdigest()
-        assert verifier.compute_signature(payload) == f"sha256={manual}"
+        assert verifier.compute_signature(payload) == f"sha256={manual}", "Condition must be true"
 
     def test_signature_prefix_is_exactly_sha256_equals(self):
         """The signature prefix must be exactly 'sha256=' (lowercase, no spaces)."""
         verifier = WebhookVerifier("exact-prefix-test")
         sig = verifier.compute_signature(b"data")
-        assert sig[:7] == "sha256="
-        assert not sig.startswith("SHA256=")
-        assert not sig.startswith("sha256 =")
+        assert sig[:7] == "sha256=", "Condition must be true"
+        assert not sig.startswith("SHA256="), "Condition must be true"
+        assert not sig.startswith("sha256 ="), "Condition must be true"
 
     def test_compute_and_verify_roundtrip(self):
         """compute_signature output must always satisfy verify() on the same payload."""

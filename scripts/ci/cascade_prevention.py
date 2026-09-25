@@ -31,10 +31,8 @@ from typing import Any, Optional
 from cascade_detection_system import (
     CascadeDetector,
     CascadeMonitor,
-    CascadeWave,
     CircuitBreaker,
     CircuitBreakerState,
-    ErrorComment,
 )
 
 logger = logging.getLogger(__name__)
@@ -303,13 +301,13 @@ def wrap_comment_generator(post_comment_fn):
             # Post the comment
             result = post_comment_fn(pr_number, comment_body)
             record_success(pr_number)
-            
+
             # If this was an error comment with placeholder ID (0), update it with actual ID
             # This maintains the link between cascade detection and the posted comment
             comment_id = result.get("id")
             if is_error and comment_id:
                 update_error_comment_id(pr_number, old_comment_id=0, new_comment_id=comment_id)
-            
+
             logger.info(f"Comment posted to PR #{pr_number}")
             return {"status": "success", "comment_id": comment_id}
         except Exception as e:

@@ -23260,3 +23260,31 @@ agent signatures and a direct meta-tensor regression run are absent.
 - `.codex/session_startup_packet.json` remained at its tracked baseline.
 
 ---
+
+## Session: 2026-09-25T09:23:34Z — PR #5633 governance drift remediation
+
+**Objective:** Clear the active branch readiness drift by restoring the tracked `.codex/session_startup_packet.json` baseline and refreshing the current-day PDA/accountability evidence without widening scope beyond the reported auto-fix and PDA freshness blockers.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Verified the current branch drift was limited to timestamp-only churn in `.codex/session_startup_packet.json` and stale session evidence in `.codex/aftermath/pda_iterations.jsonl`.
+2. Restored the tracked startup-packet baseline and appended the current-session PDA entry so the active branch reflects the same session evidence expected by the daily wrap-up gate.
+3. Kept the immediacy fix narrow to the repo governance artifacts and avoided unrelated code or workflow churn.
+
+**Validation:**
+- `git diff -- .codex/session_startup_packet.json` → no remaining timestamp-only drift from the tracked baseline.
+- `tail -n 5 .codex/aftermath/pda_iterations.jsonl` → includes the 2026-09-25 session entry for the active branch.
+
+**Governance:**
+- REQ-4: Accountability report updated for the current session.
+- REQ-5: Root `CHANGELOG.md` updated under `[Unreleased]` for the same branch state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` refreshed with a current-session entry.
+
+### Agents Used
+- [x] `general-purpose`
+- [x] `ci-testing-agent`
+- [x] `workflow-compliance-guardian`
+
+---
+

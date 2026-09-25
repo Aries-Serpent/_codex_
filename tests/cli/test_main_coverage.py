@@ -1,6 +1,6 @@
 #         ), f"Option {option} not documented in train help"
 #                     {"key": "config_value"},  # cfg
-# 
+#
 # Created: 2026-01-18
 # Target: 20+ tests covering all major CLI functionality.
 # Created: 2026-01-18

@@ -296,7 +296,7 @@ def test_standalone_packages_do_not_import_monolith_packages() -> None:
 
 
 def test_all_standalone_packages_have_public_api_snapshots() -> None:
-    assert _standalone_package_roots() == {
+    assert _standalone_package_roots() == {, "_st is not valid"
         package_dir: import_name
         for package_dir, (import_name, _) in PUBLIC_API_SNAPSHOTS.items()
     }
@@ -318,7 +318,7 @@ def test_standalone_package_root_public_api_snapshot(
     monkeypatch.syspath_prepend(str(STANDALONE_SOURCES / package_dir / "src"))
     module = importlib.import_module(import_name)
 
-    assert set(module.__all__) == expected
+    assert set(module.__all__) == expected, "Condition must be true"
     assert all(hasattr(module, name) for name in expected)
 
 
@@ -360,7 +360,7 @@ def test_nested_compatibility_namespaces_have_domain_aliases() -> None:
         "utils.checkpoint_core": "checkpointing",
         "utils.checkpointing": "checkpointing",
     }
-    assert {module: _domain_alias(module) for module in expected} == expected
+    assert {module: _domain_alias(module) for module in expected} == expected, "Condition must be true"
 
 
 def test_domain_dependencies_follow_the_allowed_dag() -> None:

@@ -5,11 +5,11 @@
 # import pytest
 #         assert result.returncode == 0, "Result must not be empty"
 #         assert "hello@, "Condition must be true"
-# 
+#
 #         assert result.returncode == 0, "Result must not be empty"
 #         assert "hello@, "Condition must be true"
 #     """Test suite for subprocess run wrapper."""
-# 
+#
 #     def test_run_simple_command(self):
 #     def test_run_simple_command(self):
 #         """Test running a simple command."""

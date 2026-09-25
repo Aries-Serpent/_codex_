@@ -16,8 +16,7 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 _LEGACY_WARNING_MESSAGE = (
-    "training.checkpoint_manager is legacy; prefer "
-    "codex_ml.utils.checkpointing.CheckpointManager."
+    "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager."
 )
 if not getattr(_warnings, "_training_checkpoint_manager_legacy_warned", False):
     _warnings.warn(
@@ -32,6 +31,7 @@ try:
         build_payload_bytes,
         dump_rng_state,
     )
+
     _checkpoint_helpers_import_ok = True
 except (ImportError, ModuleNotFoundError):
     # fall back to existing local helper implementation below (if present)
@@ -94,9 +94,7 @@ if not _checkpoint_helpers_import_ok:
                 if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
                     cpu_state = _torch.random.get_rng_state()
                 else:
-                    cpu_state = (
-                        _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
-                    )
+                    cpu_state = _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
                 if cpu_state is not None and hasattr(cpu_state, "tolist"):
                     torch_state["cpu"] = cpu_state.tolist()
             except (
@@ -244,9 +242,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         self._best_records = self._best_records[: self.best_k]
         self._best = self._best_records[0].get("value") if self._best_records else None
         self._protected_names_cache: set[str] = {
-            Path(str(p)).name
-            for rec in self._best_records
-            if (p := rec.get("path")) is not None
+            Path(str(p)).name for rec in self._best_records if (p := rec.get("path")) is not None
         }
         self._refresh_best_symlinks()
 

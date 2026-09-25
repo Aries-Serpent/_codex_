@@ -31,7 +31,7 @@ class TestSessionTrackerImport:
     def test_session_tracker_importable(self):
         """session_tracker module can be imported."""
         mod = _import_tracker()
-        assert mod is not None
+        assert mod is not None, "mod must be initialized"
 
     def test_status_constants_defined(self):
         """Status constants are defined and correct."""
@@ -41,10 +41,10 @@ class TestSessionTrackerImport:
         assert hasattr(mod, "STATUS_ERROR"), "STATUS_ERROR constant missing"
         assert hasattr(mod, "STATUS_ARCHIVED"), "STATUS_ARCHIVED constant missing"
 
-        assert mod.STATUS_ACTIVE == "active"
-        assert mod.STATUS_COMPLETED == "completed"
-        assert mod.STATUS_ERROR == "error"
-        assert mod.STATUS_ARCHIVED == "archived"
+        assert mod.STATUS_ACTIVE == "active", "STATUS_ACTIVE is not valid"
+        assert mod.STATUS_COMPLETED == "completed", "STATUS_COMPLETED is not valid"
+        assert mod.STATUS_ERROR == "error", "Error should be raised or set"
+        assert mod.STATUS_ARCHIVED == "archived", "STATUS_ARCHIVED is not valid"
 
 
 class TestSessionStartEnd:
@@ -191,7 +191,7 @@ class TestSessionList:
     def test_archive_session_in_list(self, tmp_path):
         """Archived sessions appear in list with correct status."""
         mod = _import_tracker()
-        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session") 
+        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session")
                 and hasattr(mod, "list_sessions")):
             pytest.skip("start_session / archive_session / list_sessions not exported")
 
@@ -236,8 +236,8 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Active count must be at least 1"
         assert result["archived"] >= 1, "Archived count must be at least 1"
-        assert result["total"] == (result["active"] + result["completed"] 
-                                   + result["error"] + result["archived"] 
+        assert result["total"] == (result["active"] + result["completed"], "Result must not be empty"
+                                   + result["error"] + result["archived"]
                                    + result.get("unknown", 0)), \
             "Total must equal sum of all categories"
 

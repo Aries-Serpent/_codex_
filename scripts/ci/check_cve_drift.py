@@ -14,19 +14,19 @@ Usage:
     python scripts/ci/check_cve_drift.py --quarterly-audit
 """
 
+import argparse
 import json
+import re
 import subprocess
 import sys
-import argparse
 from datetime import datetime
 from pathlib import Path
-import re
 
 
 class CVEDriftGate:
     """CI gate for CVE and vulnerability exception governance."""
 
-    def __init__(self, registry_path: str = ".codex/VULNERABILITY_EXCEPTION_REGISTRY.md", 
+    def __init__(self, registry_path: str = ".codex/VULNERABILITY_EXCEPTION_REGISTRY.md",
                  lock_file: str = "uv.lock",
                  verbose: bool = False):
         """
@@ -63,20 +63,20 @@ class CVEDriftGate:
         expiry_pattern = r"\|\s*\*\*Expiry Date\*\*\s*\|\s*(\d{4}-\d{2}-\d{2})\s*\|"
         # Also look for inline expiry dates
         inline_pattern = r"expires_at\s*=\s*['\"](\d{4}-\d{2}-\d{2})"
-        
+
         matches = re.findall(expiry_pattern, content) + re.findall(inline_pattern, content)
-        
+
         if not matches:
             print("⚠️  No expiry dates found in registry")
             return True
 
         today = datetime.now().date()
-        
+
         for expiry_str in matches:
             try:
                 expiry_date = datetime.strptime(expiry_str, "%Y-%m-%d").date()
                 days_remaining = (expiry_date - today).days
-                
+
                 if days_remaining < 0:
                     self.errors.append(f"EXPIRED exception (expired {abs(days_remaining)} days ago): {expiry_str}")
                     self.passed = False
@@ -191,7 +191,7 @@ class CVEDriftGate:
 
         # Count exceptions
         documented = self._load_documented_cves()
-        print(f"\n3. Exception Statistics:")
+        print("\n3. Exception Statistics:")
         print(f"   - Total documented exceptions: {len(documented)}")
         print(f"   - Warning: {len(self.warnings)}")
         print(f"   - Errors: {len(self.errors)}")
@@ -204,26 +204,26 @@ class CVEDriftGate:
     def _create_github_issue(self):
         """Create GitHub issue with audit findings."""
         title = "Quarterly CVE Exception Audit - Action Required"
-        
+
         body_parts = ["## Quarterly CVE Exception Audit Report\n"]
-        
+
         if self.errors:
             body_parts.append("### ❌ Errors\n")
             for error in self.errors:
                 body_parts.append(f"- {error}\n")
-        
+
         if self.warnings:
             body_parts.append("### ⚠️ Warnings\n")
             for warning in self.warnings:
                 body_parts.append(f"- {warning}\n")
-        
+
         body_parts.append("\n### Action Items\n")
         body_parts.append("- [ ] Review and update VULNERABILITY_EXCEPTION_REGISTRY.md\n")
         body_parts.append("- [ ] Update suppression rules if needed\n")
         body_parts.append("- [ ] Approve changes\n")
-        
+
         body = "".join(body_parts)
-        
+
         # Try to create GitHub issue using gh CLI
         try:
             result = subprocess.run(
@@ -232,10 +232,10 @@ class CVEDriftGate:
                 text=True
             )
             if result.returncode == 0:
-                print(f"✓ Created GitHub issue for audit findings")
+                print("✓ Created GitHub issue for audit findings")
                 print(result.stdout)
             else:
-                print(f"⚠️  Could not create GitHub issue (gh CLI not available)")
+                print("⚠️  Could not create GitHub issue (gh CLI not available)")
                 print("Please create issue manually with findings above")
         except FileNotFoundError:
             print("⚠️  GitHub CLI (gh) not available; issue creation skipped")
@@ -309,7 +309,7 @@ def main():
         gate.passed = all_pass
 
     gate.report()
-    
+
     return 0 if gate.passed else 1
 
 

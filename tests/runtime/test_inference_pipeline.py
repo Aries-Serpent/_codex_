@@ -25,38 +25,38 @@ class TestModelInitialization:
         """Test that AutoModel can load a small transformer model."""
         pytest.importorskip("transformers")
         from transformers import AutoModel
-        
+
         model = AutoModel.from_pretrained(
             model_config["model_name"],
             trust_remote_code=True,
         )
-        
-        assert model is not None
+
+        assert model is not None, "model must be initialized"
         assert hasattr(model, "forward") or hasattr(model, "__call__")
-        assert model.training is False
+        assert model.training is False, "training is not valid"
 
     def test_model_to_eval_mode(self, model_config: dict[str, Any]) -> None:
         """Test that model can be put in evaluation mode."""
         pytest.importorskip("transformers")
         from transformers import AutoModel
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         model.eval()
-        
-        assert model.training is False
+
+        assert model.training is False, "training is not valid"
 
     def test_model_has_config(self, model_config: dict[str, Any]) -> None:
         """Test that loaded model has proper configuration."""
         pytest.importorskip("transformers")
         from transformers import AutoConfig, AutoModel
-        
+
         config = AutoConfig.from_pretrained(model_config["model_name"])
         model = AutoModel.from_pretrained(
             model_config["model_name"],
             config=config,
         )
-        
-        assert model.config is not None
+
+        assert model.config is not None, "config must be initialized"
         assert hasattr(model.config, "vocab_size")
         assert hasattr(model.config, "hidden_size")
 
@@ -68,10 +68,10 @@ class TestTokenizerInitialization:
         """Test that AutoTokenizer can load a tokenizer."""
         pytest.importorskip("transformers")
         from transformers import AutoTokenizer
-        
+
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
-        assert tokenizer is not None
+
+        assert tokenizer is not None, "tokenizer must be initialized"
         assert hasattr(tokenizer, "encode")
         assert hasattr(tokenizer, "decode")
 
@@ -79,21 +79,21 @@ class TestTokenizerInitialization:
         """Test that tokenizer reports vocabulary size."""
         pytest.importorskip("transformers")
         from transformers import AutoTokenizer
-        
+
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
         vocab_size = len(tokenizer)
-        
-        assert vocab_size > 0
-        assert vocab_size > 1000
+
+        assert vocab_size > 0, "vocab_size must be greater than zero"
+        assert vocab_size > 1000, "vocab_size must be greater than zero"
 
     def test_tokenizer_pad_token(self, model_config: dict[str, Any]) -> None:
         """Test that tokenizer has proper padding token."""
         pytest.importorskip("transformers")
         from transformers import AutoTokenizer
-        
+
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
-        assert tokenizer.pad_token is not None or tokenizer.pad_token_id is not None
+
+        assert tokenizer.pad_token is not None or tokenizer.pad_token_id is not None, "pad_token must be initialized"
 
 
 class TestInferenceExecution:
@@ -110,14 +110,14 @@ class TestInferenceExecution:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -126,13 +126,13 @@ class TestInferenceExecution:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert outputs is not None
+
+        assert outputs is not None, "outputs must be initialized"
         assert hasattr(outputs, "last_hidden_state")
-        assert outputs.last_hidden_state.shape[0] == 1
+        assert outputs.last_hidden_state.shape[0] == 1, "Condition must be true"
 
     def test_batch_inference(
         self,
@@ -145,14 +145,14 @@ class TestInferenceExecution:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         batch = batch_test_texts[0]
         inputs = tokenizer(
             batch,
@@ -162,12 +162,12 @@ class TestInferenceExecution:
             padding=True,
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert outputs.last_hidden_state.shape[0] == len(batch)
-        assert outputs.last_hidden_state.shape[1] <= model_config["max_seq_length"]
+
+        assert outputs.last_hidden_state.shape[0] == len(batch), "Batch must not be empty"
+        assert outputs.last_hidden_state.shape[1] <= model_config["max_seq_length"], "Length must be greater than zero"
 
 
 class TestOutputValidation:
@@ -184,14 +184,14 @@ class TestOutputValidation:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -200,14 +200,14 @@ class TestOutputValidation:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
+
         batch_size = 1
         seq_len = inputs["input_ids"].shape[1]
         hidden_size = model.config.hidden_size
-        
+
         assert outputs.last_hidden_state.shape == (batch_size, seq_len, hidden_size)
 
     def test_output_tensor_dtype(
@@ -221,14 +221,14 @@ class TestOutputValidation:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -237,10 +237,10 @@ class TestOutputValidation:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
+
         assert outputs.last_hidden_state.dtype in (torch.float32, torch.float64)
 
 
@@ -258,14 +258,14 @@ class TestPerformanceProfiling:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -274,19 +274,19 @@ class TestPerformanceProfiling:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             _ = model(**inputs)
-        
+
         start_time = time.perf_counter()
         with torch.no_grad():
             _ = model(**inputs)
         end_time = time.perf_counter()
-        
+
         latency_ms = (end_time - start_time) * 1000
-        
-        assert latency_ms > 0
-        assert latency_ms < 5000
+
+        assert latency_ms > 0, "latency_ms must be greater than zero"
+        assert latency_ms < 5000, "latency_ms is not valid"
 
     def test_batch_inference_throughput(
         self,
@@ -299,17 +299,17 @@ class TestPerformanceProfiling:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         batch = batch_test_texts[0]
         batch_size = len(batch)
-        
+
         inputs = tokenizer(
             batch,
             return_tensors="pt",
@@ -318,20 +318,20 @@ class TestPerformanceProfiling:
             padding=True,
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             _ = model(**inputs)
-        
+
         start_time = time.perf_counter()
         with torch.no_grad():
             _ = model(**inputs)
         end_time = time.perf_counter()
-        
+
         latency_sec = end_time - start_time
         throughput = batch_size / latency_sec if latency_sec > 0 else 0
-        
-        assert throughput > 0
-        assert throughput >= 1
+
+        assert throughput > 0, "throughput must be greater than zero"
+        assert throughput >= 1, "throughput must be greater than zero"
 
 
 class TestMemoryProfiling:
@@ -346,16 +346,16 @@ class TestMemoryProfiling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         from transformers import AutoModel
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         device = device_info["device"]
         model = model.to(device)
-        
-        assert model is not None
-        
+
+        assert model is not None, "model must be initialized"
+
         param_count = sum(p.numel() for p in model.parameters())
-        assert param_count > 0
-        assert param_count > 1_000_000
+        assert param_count > 0, "param_count must be positive"
+        assert param_count > 1_000_000, "param_count must be positive"
 
     def test_inference_memory_stability(
         self,
@@ -371,17 +371,17 @@ class TestMemoryProfiling:
 
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         process = psutil.Process()
         initial_memory = process.memory_info().rss / (1024 ** 3)
-        
+
         for text in test_texts[:5]:
             inputs = tokenizer(
                 text,
@@ -390,14 +390,14 @@ class TestMemoryProfiling:
                 max_length=model_config["max_seq_length"],
             )
             inputs = {k: v.to(device) for k, v in inputs.items()}
-            
+
             with torch.no_grad():
                 _ = model(**inputs)
-        
+
         final_memory = process.memory_info().rss / (1024 ** 3)
         memory_increase = final_memory - initial_memory
-        
-        assert memory_increase < 1.0
+
+        assert memory_increase < 1.0, "memory_increase is not valid"
 
 
 class TestErrorHandling:
@@ -413,14 +413,14 @@ class TestErrorHandling:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         inputs = tokenizer(
             "",
             return_tensors="pt",
@@ -428,11 +428,11 @@ class TestErrorHandling:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert outputs is not None
+
+        assert outputs is not None, "outputs must be initialized"
 
     def test_long_sequence_truncation(
         self,
@@ -444,16 +444,16 @@ class TestErrorHandling:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         long_text = " ".join(["word"] * 500)
-        
+
         inputs = tokenizer(
             long_text,
             return_tensors="pt",
@@ -461,13 +461,13 @@ class TestErrorHandling:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
-        assert inputs["input_ids"].shape[1] <= model_config["max_seq_length"]
-        
+
+        assert inputs["input_ids"].shape[1] <= model_config["max_seq_length"], "Length must be greater than zero"
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert outputs is not None
+
+        assert outputs is not None, "outputs must be initialized"
 
 
 class TestDeviceManagement:
@@ -483,13 +483,13 @@ class TestDeviceManagement:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         model = model.to("cpu")
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -498,11 +498,11 @@ class TestDeviceManagement:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to("cpu") for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert outputs is not None
+
+        assert outputs is not None, "outputs must be initialized"
 
     def test_input_output_device_consistency(
         self,
@@ -515,14 +515,14 @@ class TestDeviceManagement:
         pytest.importorskip("torch")
         import torch
         from transformers import AutoModel, AutoTokenizer
-        
+
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
-        
+
         device = device_info["device"]
         model = model.to(device)
         model.eval()
-        
+
         text = test_texts[0]
         inputs = tokenizer(
             text,
@@ -531,8 +531,8 @@ class TestDeviceManagement:
             max_length=model_config["max_seq_length"],
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         with torch.no_grad():
             outputs = model(**inputs)
-        
-        assert str(outputs.last_hidden_state.device) == device
+
+        assert str(outputs.last_hidden_state.device) == device, "Condition must be true"

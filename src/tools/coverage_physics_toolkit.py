@@ -553,7 +553,7 @@ def main():
         print(f"Output file: {output_file}")
 
         test_code = analyzer.generate_test_suite(args.module, output_file)
-        print(f"\nGenerated {len(test_code.split('def test_'))-1} tests")
+        print(f"\nGenerated {len(test_code.split('def test_')) - 1} tests")
         print(f"Saved to: {output_file}")
 
     else:

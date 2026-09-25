@@ -158,8 +158,8 @@ class TestRAGDocumentIngestion:
             doc_id="doc_1",
             content="This is a test document.",
         )
-        assert pipeline.ingest_document(doc) is True
-        assert pipeline.ingested_count == 1
+        assert pipeline.ingest_document(doc) is True, "Condition must be true"
+        assert pipeline.ingested_count == 1, "Count must be greater than zero"
 
     def test_ingest_multiple_documents(self):
         """Test ingesting multiple documents."""
@@ -170,7 +170,7 @@ class TestRAGDocumentIngestion:
                 content=f"Document {i} content.",
             )
             pipeline.ingest_document(doc)
-        assert pipeline.ingested_count == 5
+        assert pipeline.ingested_count == 5, "Count must be greater than zero"
 
     def test_duplicate_document_ingestion_fails(self):
         """Test that duplicate document ingestion fails."""
@@ -190,7 +190,7 @@ class TestRAGDocumentIngestion:
         )
         pipeline.ingest_document(doc)
         retrieved = pipeline.documents["doc_1"]
-        assert retrieved.metadata["source"] == "test"
+        assert retrieved.metadata["source"] == "test", "Data must not be empty"
 
 
 class TestRAGDocumentChunking:
@@ -205,7 +205,7 @@ class TestRAGDocumentChunking:
         )
         pipeline.ingest_document(doc)
         chunks = pipeline.chunk_document("doc_1", chunk_size=100)
-        assert len(chunks) == 5
+        assert len(chunks) == 5, "Chunks must not be empty"
 
     def test_chunk_small_document(self):
         """Test chunking a small document."""
@@ -213,8 +213,8 @@ class TestRAGDocumentChunking:
         doc = Document(doc_id="doc_1", content="Small content")
         pipeline.ingest_document(doc)
         chunks = pipeline.chunk_document("doc_1", chunk_size=100)
-        assert len(chunks) == 1
-        assert chunks[0].content == "Small content"
+        assert len(chunks) == 1, "Chunks must not be empty"
+        assert chunks[0].content == "Small content", "Content must not be empty"
 
     def test_chunk_nonexistent_document_fails(self):
         """Test that chunking nonexistent document fails."""
@@ -229,7 +229,7 @@ class TestRAGDocumentChunking:
         pipeline.ingest_document(doc)
         chunks = pipeline.chunk_document("doc_1", chunk_size=100)
         for i, chunk in enumerate(chunks):
-            assert chunk.chunk_id == f"doc_1_chunk_{i}"
+            assert chunk.chunk_id == f"doc_1_chunk_{i}", "chunk_id is not valid"
 
 
 class TestRAGVectorEmbedding:
@@ -243,21 +243,21 @@ class TestRAGVectorEmbedding:
         chunks = pipeline.chunk_document("doc_1", chunk_size=100)
         chunk_ids = [c.chunk_id for c in chunks]
         embeddings = pipeline.generate_embeddings(chunk_ids)
-        assert len(embeddings) == len(chunks)
+        assert len(embeddings) == len(chunks), "Embeddings must not be empty"
 
     def test_embedding_dimension(self):
         """Test that embeddings have correct dimension."""
         pipeline = MockRAGPipeline()
         embedding = pipeline.embeddings.embed("test text")
-        assert len(embedding) == 384
+        assert len(embedding) == 384, "Embedding must not be empty"
 
     def test_batch_embedding_generation(self):
         """Test batch embedding generation."""
         pipeline = MockRAGPipeline()
         texts = ["text1", "text2", "text3"]
         embeddings = pipeline.embeddings.embed_batch(texts)
-        assert len(embeddings) == 3
-        assert all(len(e) == 384 for e in embeddings)
+        assert len(embeddings) == 3, "Embeddings must not be empty"
+        assert all(len(e) == 384 for e in embeddings), "E must not be empty"
 
     def test_embedding_consistency(self):
         """Test that embeddings are consistent."""
@@ -265,7 +265,7 @@ class TestRAGVectorEmbedding:
         text = "test text"
         embedding1 = pipeline.embeddings.embed(text)
         embedding2 = pipeline.embeddings.embed(text)
-        assert embedding1 == embedding2
+        assert embedding1 == embedding2, "embedding1 is not valid"
 
 
 class TestRAGSimilaritySearch:
@@ -282,7 +282,7 @@ class TestRAGSimilaritySearch:
         pipeline.chunk_document("doc_1")
         pipeline.generate_embeddings(list(pipeline.chunks.keys()))
         results = pipeline.retrieve("machine learning")
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
     def test_retrieve_with_similarity_scores(self):
         """Test that retrieval includes similarity scores."""
@@ -292,7 +292,7 @@ class TestRAGSimilaritySearch:
         pipeline.chunk_document("doc_1")
         pipeline.generate_embeddings(list(pipeline.chunks.keys()))
         results = pipeline.retrieve("test")
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
         result = results[0]
         assert isinstance(result.similarity_score, float)
 
@@ -305,13 +305,13 @@ class TestRAGSimilaritySearch:
             pipeline.chunk_document(f"doc_{i}")
         pipeline.generate_embeddings(list(pipeline.chunks.keys()))
         results = pipeline.retrieve("content", top_k=3)
-        assert len(results) <= 3
+        assert len(results) <= 3, "Results must not be empty"
 
     def test_empty_retrieval(self):
         """Test retrieval when no documents ingested."""
         pipeline = MockRAGPipeline()
         results = pipeline.retrieve("query")
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
 
 class TestRAGFullPipeline:
@@ -328,14 +328,14 @@ class TestRAGFullPipeline:
         pipeline.ingest_document(doc)
         # Chunk
         chunks = pipeline.chunk_document("doc_1", chunk_size=30)
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
         # Embed
         chunk_ids = [c.chunk_id for c in chunks]
         embeddings = pipeline.generate_embeddings(chunk_ids)
-        assert len(embeddings) > 0
+        assert len(embeddings) > 0, "Embeddings must not be empty"
         # Retrieve
         results = pipeline.retrieve("programming language")
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
     def test_multi_document_rag_pipeline(self):
         """Test RAG pipeline with multiple documents."""
@@ -350,7 +350,7 @@ class TestRAGFullPipeline:
             pipeline.chunk_document(doc.doc_id)
         pipeline.generate_embeddings(list(pipeline.chunks.keys()))
         results = pipeline.retrieve("programming")
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
     def test_rag_search_api(self):
         """Test RAG search API."""
@@ -362,9 +362,9 @@ class TestRAGFullPipeline:
         results = pipeline.search("search", limit=5)
         assert isinstance(results, list)
         if results:
-            assert "chunk_id" in results[0]
-            assert "content" in results[0]
-            assert "score" in results[0]
+            assert "chunk_id" in results[0], "Result must not be empty"
+            assert "content" in results[0], "Result must not be empty"
+            assert "score" in results[0], "Result must not be empty"
 
 
 class TestRAGMetrics:
@@ -376,7 +376,7 @@ class TestRAGMetrics:
         for i in range(3):
             doc = Document(doc_id=f"doc_{i}", content="content")
             pipeline.ingest_document(doc)
-        assert pipeline.ingested_count == 3
+        assert pipeline.ingested_count == 3, "Count must be greater than zero"
 
     def test_retrieval_count_tracking(self):
         """Test tracking retrieval count."""
@@ -387,7 +387,7 @@ class TestRAGMetrics:
         pipeline.generate_embeddings(list(pipeline.chunks.keys()))
         pipeline.retrieve("query1")
         pipeline.retrieve("query2")
-        assert pipeline.retrieved_count == 2
+        assert pipeline.retrieved_count == 2, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

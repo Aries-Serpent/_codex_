@@ -288,7 +288,7 @@ class TestWorkflowNavigator:
         navigator = WorkflowNavigator(workspace_dir=tmp_path)
 
         # Navigator should have default workflows registered
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             navigator.workflows, (list, tuple, set, dict)
         )  # was: len() >= 0 (always true)
 

@@ -310,7 +310,7 @@ class DocumentProcessor:
         """
         output_file.write_text(self.to_jsonl(), encoding="utf-8")
         logger.info(
-            f"Wrote {len(self.documents) + len(self.sections) + len(self.blocks)} records to {output_file}"
+            f"Wrote {len(self.documents) + len(self.sections) + len(self.blocks)} records to {output_file}"  # noqa: E501
         )
 
     def get_statistics(self) -> Dict[str, Any]:

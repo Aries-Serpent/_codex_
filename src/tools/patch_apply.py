@@ -33,7 +33,11 @@ DELETE = re.compile(r"^\*\*\* Delete File: (.+)$")
 
 def audit(event: str, **details: object) -> None:
     AUDIT_LOG.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "event": event, **details}
+    payload = {
+        "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "event": event,
+        **details,
+    }
     with AUDIT_LOG.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
@@ -61,8 +65,12 @@ def preview_diff(target: Path, new_content: str) -> str:
     diff = difflib.unified_diff(
         old_content.splitlines(keepends=True),
         new_content.splitlines(keepends=True),
-        fromfile=str(target.relative_to(REPO_ROOT)) if target.is_relative_to(REPO_ROOT) else str(target),
-        tofile=str(target.relative_to(REPO_ROOT)) if target.is_relative_to(REPO_ROOT) else str(target),
+        fromfile=str(target.relative_to(REPO_ROOT))
+        if target.is_relative_to(REPO_ROOT)
+        else str(target),
+        tofile=str(target.relative_to(REPO_ROOT))
+        if target.is_relative_to(REPO_ROOT)
+        else str(target),
         lineterm="",
     )
     lines = list(diff)
@@ -88,7 +96,12 @@ def apply_patch_block(lines: list[str], *, preview_only: bool = False) -> None:
     if m_add:
         path = validate_path(m_add.group(1))
         content = "\n".join(lines[1:])
-        audit("patch_preview", action="add", path=str(path.relative_to(REPO_ROOT)), preview=preview_diff(path, content))
+        audit(
+            "patch_preview",
+            action="add",
+            path=str(path.relative_to(REPO_ROOT)),
+            preview=preview_diff(path, content),
+        )
         if preview_only:
             print(f"[PREVIEW] {path}\n{preview_diff(path, content)}")
             return
@@ -99,7 +112,12 @@ def apply_patch_block(lines: list[str], *, preview_only: bool = False) -> None:
     elif m_upd:
         path = validate_path(m_upd.group(1))
         content = "\n".join(lines[1:])
-        audit("patch_preview", action="update", path=str(path.relative_to(REPO_ROOT)), preview=preview_diff(path, content))
+        audit(
+            "patch_preview",
+            action="update",
+            path=str(path.relative_to(REPO_ROOT)),
+            preview=preview_diff(path, content),
+        )
         if preview_only:
             print(f"[PREVIEW] {path}\n{preview_diff(path, content)}")
             return
@@ -113,7 +131,12 @@ def apply_patch_block(lines: list[str], *, preview_only: bool = False) -> None:
         path = validate_path(m_del.group(1))
         if path.exists():
             preview = f"DELETE {path.relative_to(REPO_ROOT)}"
-            audit("patch_preview", action="delete", path=str(path.relative_to(REPO_ROOT)), preview=preview)
+            audit(
+                "patch_preview",
+                action="delete",
+                path=str(path.relative_to(REPO_ROOT)),
+                preview=preview,
+            )
             if preview_only:
                 print(f"[PREVIEW] {preview}")
                 return

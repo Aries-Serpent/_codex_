@@ -15,4 +15,5 @@ except ModuleNotFoundError:  # pragma: no cover - optional standalone package
 
         return _get_metrics_text(registry)
 
+
 __all__ = ["render_prometheus"]

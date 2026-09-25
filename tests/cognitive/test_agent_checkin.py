@@ -1,8 +1,8 @@
 import pytest
 
 #         assert "PR, "Condition must be true"
-# 
-# 
+#
+#
 # Validates the hardened 2x-per-session check-in protocol without network calls.
 #         """RAG topic should no longer say '90%' as a target — it's at 95% already."""
 #         rag_topic = next(t for t in _mod.RESEARCH_TOPICS if "RAG" in t["title"])
@@ -11,14 +11,14 @@ import pytest
 #         # Must say 95% is achieved
 #         assert "95%" in rag_topic["summary"], "Condition must be true"
 #             assert topic["category"] in body, "Condition must be true"
-# 
+#
 #         body = self._make(pr_number=1234)
 #         assert "PR, "Condition must be true"
 # # Ensure scripts/ is importable
 # _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 #         body = self._make(pr_number=1234)
 #         assert "PR, "Condition must be true"
-# 
+#
 #         body = self._make(pr_number=1234)
 #         assert "PR, "Condition must be true"
 # # ---------------------------------------------------------------------------
@@ -43,25 +43,25 @@ import pytest
 #         body = _mod._build_research_comment("S215-test", "abc123def456")
 #         for topic in _mod.RESEARCH_TOPICS:
 #             assert topic["title"] in body, f"Missing topic: {topic['title']}"
-# 
+#
 #     def test_contains_session_marker(self):
 #         body = _mod._build_research_comment("S215-test", "abc123def456")
 #         assert "<!-- agent-checkin-research:S215-test -->" in body, "Condition must be true"
-# 
+#
 #     def test_contains_links(self):
 #         body = _mod._build_research_comment("S215-test", "abc123def456")
 #         for topic in _mod.RESEARCH_TOPICS:
 #             assert topic["link"] in body, "Condition must be true"
-# 
+#
 #     def test_contains_categories(self):
 #         body = _mod._build_research_comment("S215-test", "abc123def456")
 #         for topic in _mod.RESEARCH_TOPICS:
 #             assert topic["category"] in body, "Condition must be true"
-# 
+#
 #     def test_sha_short_appears(self):
 #         body = _mod._build_research_comment("S215-test", "deadbeef1234")  # pragma: allowlist secret
 #         assert "deadbeef1234" in body  # pragma: allowlist secret
-# 
+#
 #     def test_no_raw_github_head_ref_expression(self):
 #     def test_no_raw_github_head_ref_expression(self):
 #         """Research comment body must NOT contain raw ${{ ... }} expressions."""
@@ -91,26 +91,26 @@ import pytest
 #         )
 #         defaults.update(kwargs)
 #         return _mod._build_open_checkin_comment(**defaults)
-# 
+#
 #     def test_contains_session_marker(self):
 #         body = self._make()
 #         assert "<!-- agent-checkin-open:S215-test -->" in body, "Condition must be true"
-# 
+#
 #     def test_contains_three_questions(self):
 #         body = self._make()
 #         assert "**Q1" in body, "Condition must be true"
 #         assert "**Q2" in body, "Condition must be true"
 #         assert "**Q3" in body, "Condition must be true"
-# 
+#
 #     def test_contains_deep_reflection_question(self):
 #         body = self._make()
 #         assert "Deep Reflection Question" in body, "Condition must be true"
 #         assert "Cognitive Brain" in body, "Condition must be true"
-# 
+#
 #     def test_contains_cognitive_brain_url(self):
 #         body = self._make()
 #         assert _mod.COGNITIVE_BRAIN_URL in body, "Condition must be true"
-# 
+#
 #     def test_q2_content_is_not_stale(self):
 #     def test_q2_content_is_not_stale(self):
 #         """Q2 must say RAG is at 95% (achieved), not that it's still a target."""
@@ -122,22 +122,22 @@ import pytest
 #     def test_contains_pr_ref(self):
 #         body = self._make(pr_number=1234)
 #         assert "PR, "Condition must be true"
-# 
+#
 #     def test_no_pr_linked(self):
 #         body = self._make(pr_number=None)
 #         assert "no linked PR" in body, "Condition must be true"
-# 
+#
 #     def test_includes_session_memories_from_state(self):
 #         cb_state = {"session_memories": ["## SESSION SUMMARY — S213", "## SESSION SUMMARY — S214"]}
 #         body = self._make(cb_state=cb_state)
 #         assert "S213" in body, "Condition must be true"
 #         assert "S214" in body, "Condition must be true"
-# 
+#
 #     def test_includes_ci_patterns_from_state(self):
 #         cb_state = {"ci_patterns": ["pattern-alpha", "pattern-beta"]}
 #         body = self._make(cb_state=cb_state)
 #         assert "pattern-alpha" in body, "Condition must be true"
-# 
+#
 #     def test_no_raw_github_context_expressions(self):
 #         body = self._make()
 #         assert "${{" not in body, "Condition must be true"

@@ -5,9 +5,6 @@
     "numpy",
     "numpy"
   ],
-  "tests/agents/test_agent_orchestration.py": [
-    "numpy"
-  ],
   "tests/agents/test_edge_cases_phase9_4.py": [
     "numpy",
     "numpy",
@@ -186,7 +183,6 @@
     "numpy"
   ],
   "tests/codex_ml/metrics/test_unified_api.py": [
-    "numpy",
     "numpy"
   ],
   "tests/codex_ml/test_cli_train_config_bridge.py": [
@@ -251,10 +247,6 @@
   ],
   "tests/forecasting/test_planset_012_gates.py": [
     "numpy"
-  ],
-  "tests/full/test_training_pipeline.py": [
-    "torch",
-    "torch.utils.data"
   ],
   "tests/fuzz/test_fuzz_api.py": [
     "hypothesis",
@@ -339,9 +331,6 @@
     "hypothesis"
   ],
   "tests/quantum_orchestrator/test_mlops_bridge.py": [
-    "numpy"
-  ],
-  "tests/quantum_orchestrator/test_orchestrator_physics.py": [
     "numpy"
   ],
   "tests/rag/test_device_placement.py": [
@@ -542,16 +531,6 @@
   ],
   "tests/test_reproducibility.py": [
     "numpy"
-  ],
-  "tests/test_torch_stub.py": [
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch"
   ],
   "tests/test_trainer_reward_registry.py": [
     "typer.testing"

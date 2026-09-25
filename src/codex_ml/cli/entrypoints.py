@@ -91,7 +91,12 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
 
     try:
         module = import_module(module_path)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - import failures are rare
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - import failures are rare
         failures.append(f"{module_path}: import failed ({exc})")
         return None
 

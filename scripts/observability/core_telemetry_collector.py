@@ -14,11 +14,11 @@ Status: Production-Ready
 import json
 import logging
 import threading
-from dataclasses import dataclass, field, asdict
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, Any, Set
-from collections import defaultdict, deque
+from typing import Any, Dict, Set
 
 # ============================================================================
 # CONFIGURATION & ENUMS
@@ -71,25 +71,25 @@ class CoreTelemetryCollector:
     """
     Thread-safe collector for 25 core metrics.
     """
-    
+
     def __init__(self, max_events: int = 10000, cardinality_limit: int = 2000):
         self.logger = logging.getLogger(__name__)
         self.lock = threading.RLock()
         self.max_events = max_events
         self.cardinality_limit = cardinality_limit
-        
+
         # State
         self.events: deque = deque(maxlen=max_events)
-        
+
         # Counters
         self.counters = defaultdict(int)
-        
+
         # Gauges
         self.gauges = defaultdict(float)
-        
+
         # Histograms (stored as lists of values for simplicity)
         self.histograms = defaultdict(list)
-        
+
         # Timeseries registry
         self.timeseries_keys: Set[str] = set()
 
@@ -97,19 +97,19 @@ class CoreTelemetryCollector:
         """Register a timeseries and return its unique key. Enforces cardinality limit."""
         sorted_labels = ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
         key = f"{metric_name}{{{sorted_labels}}}"
-        
+
         if key not in self.timeseries_keys:
             if len(self.timeseries_keys) >= self.cardinality_limit:
                 self.logger.warning(f"Cardinality limit ({self.cardinality_limit}) reached! Dropping metric: {key}")
                 return ""
             self.timeseries_keys.add(key)
-        
+
         return key
 
     # ========================================================================
     # A.1 AGENT LIFECYCLE METRICS
     # ========================================================================
-    
+
     def record_agent_launch(self, agent_id: str, agent_type: str, initiator_id: str) -> None:
         """agent_launches_total"""
         with self.lock:
@@ -117,7 +117,7 @@ class CoreTelemetryCollector:
             key = self._register_timeseries("agent_launches_total", labels)
             if key:
                 self.counters[key] += 1
-            
+
             event = CoreEventData(
                 event_type=CoreEventType.AGENT_LAUNCHED.value,
                 domain="agent_lifecycle",
@@ -186,7 +186,7 @@ class CoreTelemetryCollector:
     # ========================================================================
     # A.2 WORKFLOW EXECUTION METRICS
     # ========================================================================
-    
+
     def record_workflow_trigger(self, workflow_id: str, trigger_type: str, initiator_id: str) -> None:
         """workflow_triggers_total"""
         with self.lock:
@@ -202,7 +202,7 @@ class CoreTelemetryCollector:
             key = self._register_timeseries("workflow_completions_total", labels)
             if key:
                 self.counters[key] += 1
-                
+
             dur_labels = {"workflow_id": workflow_id, "workflow_type": workflow_type}
             dur_key = self._register_timeseries("workflow_duration_seconds", dur_labels)
             if dur_key:
@@ -227,7 +227,7 @@ class CoreTelemetryCollector:
     # ========================================================================
     # A.3 PERMISSION & ACCESS CONTROL METRICS
     # ========================================================================
-    
+
     def record_role_check(self, agent_id: str, role: str, check_result: str) -> None:
         """role_checks_total"""
         with self.lock:
@@ -271,7 +271,7 @@ class CoreTelemetryCollector:
     # ========================================================================
     # A.4 CONFIGURATION MANAGEMENT METRICS
     # ========================================================================
-    
+
     def record_config_change(self, config_domain: str, change_type: str) -> None:
         """config_changes_total"""
         with self.lock:
@@ -307,7 +307,7 @@ class CoreTelemetryCollector:
     # ========================================================================
     # A.5 SECRET & TOKEN MANAGEMENT METRICS
     # ========================================================================
-    
+
     def record_secret_access(self, secret_type: str, accessor_id: str, access_result: str) -> None:
         """secret_access_events_total"""
         with self.lock:
@@ -357,7 +357,7 @@ if __name__ == "__main__":
     # Test core collector
     logging.basicConfig(level=logging.INFO)
     collector = CoreTelemetryCollector()
-    
+
     # Simulate some events
     collector.record_agent_launch("agent-01", "explore", "user-01")
     collector.update_agent_uptime("agent-01", "explore", 3600)
@@ -366,7 +366,7 @@ if __name__ == "__main__":
     collector.record_role_check("agent-01", "admin", "allowed")
     collector.record_config_change("database", "update")
     collector.record_secret_access("api-key", "agent-01", "success")
-    
+
     snapshot = collector.get_metrics_snapshot()
     print(f"Metrics snapshot:\n{json.dumps(snapshot, indent=2)}")
     print("Total metrics implemented: 25")

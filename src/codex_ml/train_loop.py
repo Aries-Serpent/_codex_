@@ -320,7 +320,12 @@ class ReasoningRuntime:
             _persist_reasoning_trace(self.store_path, payload)
         try:
             self.harness.record(payload)
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - history append best effort
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - history append best effort
             logger.debug(
                 "Suppressed exception in handler", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -376,7 +381,12 @@ def _initialize_reasoning_runtime(
         return model, None
     try:
         harness = attach_reasoning_adapters(model, reasoning_cfg)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - adapter construction best effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - adapter construction best effort
         logger.warning(
             "Failed to attach reasoning adapters: %s", exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -460,7 +470,7 @@ def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any])
 def _set_seed(seed: Optional[int]) -> int:
     if seed in (None, 0):
         seed = _DEFAULT_SEED
-    resolved_seed = int(seed) 
+    resolved_seed = int(seed)
     random.seed(resolved_seed)
     try:
         import numpy as np
@@ -674,7 +684,12 @@ def _assert_bf16_capability(
                     "Suppressed exception in handler", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
         _ = a @ b
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - runtime check
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - runtime check
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
 
 
@@ -1220,12 +1235,12 @@ def run_training(
         steps_per_epoch = 1
 
     reasoning_runtime: ReasoningRuntime | None = None
-    
+
     # Extract artifacts setup to helper (reduces ~30 branches)
     from codex_ml._train_init_helpers import setup_artifacts_directory
+
     art_dir_path = setup_artifacts_directory(
-        art_dir, 
-        create_telemetry=_telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0
+        art_dir, create_telemetry=_telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0
     )
 
     model_cfg = dict(model_cfg or {})
@@ -1236,6 +1251,7 @@ def run_training(
 
     # Extract DP setup to helper (reduces ~50 branches from run_training)
     from codex_ml._train_init_helpers import setup_differential_privacy_config
+
     dp_settings = setup_differential_privacy_config(dp_config)
 
     # Dataset ingestion (summaries only)
@@ -1274,23 +1290,30 @@ def run_training(
                     "dataset_files": dataset_files_count,
                 },
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort logging
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - best effort logging
             logger.debug(
                 "Suppressed exception in handler", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
-    
+
     # Extract metrics setup to helper (reduces ~20 branches)
     from codex_ml._train_init_helpers import setup_metrics_registry
+
     metrics_registry, metrics_port_value = setup_metrics_registry(telemetry_enable, telemetry_port)
 
     # Extract MLflow setup to helper (reduces ~15 branches)
     from codex_ml._train_init_helpers import setup_mlflow
+
     if _HAS_MLFLOW:
         setup_mlflow(
             mlflow_enable,
             mlflow_uri,
             mlflow_experiment,
-            {"epochs": epochs, "grad_accum": grad_accum, "model": model_name}
+            {"epochs": epochs, "grad_accum": grad_accum, "model": model_name},
         )
 
     device_obj = _resolve_device(device)
@@ -1299,6 +1322,7 @@ def run_training(
 
     # Extract model kwargs building to helper (reduces ~5 branches)
     from codex_ml._train_init_helpers import build_model_kwargs
+
     model_kwargs = build_model_kwargs(model_cfg, str(device_obj), dtype_obj, lora, lora_cfg)
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
@@ -1311,6 +1335,7 @@ def run_training(
     if _HAS_TORCH and model is not None:
         # Extract model device/dtype setup to helper (reduces ~30 branches)
         from codex_ml._train_init_helpers import setup_model_device_dtype
+
         setup_model_device_dtype(model, device_obj, dtype_obj, dtype, art_dir_path)
         # Log dtype mismatch after setup
         _log_dtype_mismatch_if_any(dtype_obj, model)
@@ -1323,9 +1348,10 @@ def run_training(
 
     # Extract dataset setup to helper (reduces ~15 branches)
     from codex_ml._train_init_helpers import setup_dataset_and_loader
+
     dataset = None
     train_loader = None
-    
+
     if _HAS_TORCH:
         dataset, train_loader = setup_dataset_and_loader(
             batch_size,
@@ -1376,14 +1402,13 @@ def run_training(
 
     # Extract optimizer and DP setup to helper (reduces ~20 branches)
     from codex_ml._train_init_helpers import setup_optimizer_with_dp
+
     optimizer, privacy_engine = setup_optimizer_with_dp(
         model, learning_rate, dtype_obj, dp_settings, train_loader
     )
-    
+
     if dp_settings is not None and not _HAS_TORCH:
-        logger.warning(
-            "Differential privacy requested but torch is unavailable; skipping"
-        )
+        logger.warning("Differential privacy requested but torch is unavailable; skipping")
         dp_settings = None
 
     if _HAS_TORCH:
@@ -1554,7 +1579,12 @@ def run_training(
         if reasoning_runtime is not None:
             try:
                 reasoning_history = reasoning_runtime.harness.history_snapshot()
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive snapshot
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - defensive snapshot
                 reasoning_history = []
             if reasoning_history:
                 try:
@@ -1734,7 +1764,12 @@ def run_training(
         if reasoning_runtime is not None:
             try:
                 result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive snapshot
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - defensive snapshot
                 result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
         report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path

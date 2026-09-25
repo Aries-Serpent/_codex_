@@ -24,17 +24,17 @@ class TestListPlanDocumentsGapFill:
         """
         with tempfile.TemporaryDirectory() as tmpdir:
             test_dir = Path(tmpdir)
-            
+
             # Create test structure
             (test_dir / "plan_a.md").write_text("# Plan A")
             (test_dir / "plan_b.md").write_text("# Plan B")
             (test_dir / "not_a_plan.txt").write_text("Not a plan")
-            
+
             result = list_plan_documents(base_dir=test_dir)
-            
-            assert len(result) == 2
+
+            assert len(result) == 2, "Result must not be empty"
             assert all(isinstance(p, Path) for p in result)
-            assert all(p.suffix == ".md" for p in result)
+            assert all(p.suffix == ".md" for p in result), "Result must not be empty"
 
     def test_custom_base_dir_empty_directory(self):
         """Test function with empty custom directory.
@@ -43,7 +43,7 @@ class TestListPlanDocumentsGapFill:
         """
         with tempfile.TemporaryDirectory() as tmpdir:
             result = list_plan_documents(base_dir=Path(tmpdir))
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_list_plan_documents_sorted_output(self):
         """Test that output is properly sorted.
@@ -51,12 +51,12 @@ class TestListPlanDocumentsGapFill:
         Targets: Line 31 (sorted() function)
         """
         result = list_plan_documents()
-        assert result == sorted(result)
-        
+        assert result == sorted(result), "Result must not be empty"
+
         # Additional check: verify alphabetical ordering
         if len(result) > 1:
             for i in range(len(result) - 1):
-                assert result[i] <= result[i + 1]
+                assert result[i] <= result[i + 1], "Result must not be empty"
 
     def test_none_base_dir_equals_default(self):
         """Test that None base_dir behaves like default.
@@ -65,7 +65,7 @@ class TestListPlanDocumentsGapFill:
         """
         result_default = list_plan_documents()
         result_none = list_plan_documents(base_dir=None)
-        assert result_default == result_none
+        assert result_default == result_none, "Result must not be empty"
 
     def test_returns_path_objects(self):
         """Test that all returned items are Path objects.
@@ -82,7 +82,7 @@ class TestListPlanDocumentsGapFill:
         Targets: Line 30 (glob pattern filtering)
         """
         result = list_plan_documents()
-        assert all(str(item).endswith('.md') for item in result)
+        assert all(str(item).endswith('.md') for item in result), "Result must not be empty"
 
     def test_glob_integration_with_sorting(self):
         """Test that glob() is correctly applied with sorting.
@@ -91,18 +91,18 @@ class TestListPlanDocumentsGapFill:
         """
         with tempfile.TemporaryDirectory() as tmpdir:
             test_dir = Path(tmpdir)
-            
+
             # Create mixed files in non-alphabetical order
             (test_dir / "z_plan.md").touch()
             (test_dir / "a_plan.md").touch()
             (test_dir / "m_plan.md").touch()
             (test_dir / "b_other.txt").touch()  # Should be excluded
-            
+
             result = list_plan_documents(base_dir=test_dir)
-            
+
             # Verify sorted order
             names = [p.name for p in result]
-            assert names == sorted(names)
+            assert names == sorted(names), "names is not valid"
             assert names == ["a_plan.md", "m_plan.md", "z_plan.md"]
 
     def test_path_resolve_behavior(self):
@@ -112,9 +112,9 @@ class TestListPlanDocumentsGapFill:
         """
         # Test with default module directory
         result = list_plan_documents()
-        
+
         # All paths should be absolute and resolvable
         for path in result:
-            assert path.is_absolute()
-            assert path.exists()
-            assert path.is_file()
+            assert path.is_absolute(), "Condition must be true"
+            assert path.exists(), "Condition must be true"
+            assert path.is_file(), "Condition must be true"

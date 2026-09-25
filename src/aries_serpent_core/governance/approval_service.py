@@ -289,7 +289,7 @@ class ApprovalService:
 
         elapsed_ms = (time.time() - start_time) * 1000
         self.logger.info(
-            f"[PHASE 3] Auto-approval check: {len(auto_approved)} auto-approved ({elapsed_ms:.2f}ms)"
+            f"[PHASE 3] Auto-approval check: {len(auto_approved)} auto-approved ({elapsed_ms:.2f}ms)"  # noqa: E501
         )
 
         return auto_approved
@@ -434,18 +434,18 @@ class ApprovalService:
             try:
                 engine = get_default_engine()
                 # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
+                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
                     if req.is_incident_related and not engine.check_permission(
                         approver_id, Action.APPROVE, ResourceType.SECRETS
                     ):
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
                         )
                     elif not req.is_incident_related:
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
                         )
             except NameError:
                 pass  # If import failed
@@ -489,18 +489,18 @@ class ApprovalService:
             try:
                 engine = get_default_engine()
                 # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
+                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
                     if req.is_incident_related and not engine.check_permission(
                         approver_id, Action.APPROVE, ResourceType.SECRETS
                     ):
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
                         )
                     elif not req.is_incident_related:
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
                         )
             except NameError:
                 pass  # If import failed
@@ -541,18 +541,18 @@ class ApprovalService:
             try:
                 engine = get_default_engine()
                 # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
+                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
                     if req.is_incident_related and not engine.check_permission(
                         approver_id, Action.APPROVE, ResourceType.SECRETS
                     ):
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
                         )
                     elif not req.is_incident_related:
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
                         )
             except NameError:
                 pass  # If import failed
@@ -581,18 +581,18 @@ class ApprovalService:
             try:
                 engine = get_default_engine()
                 # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
+                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
                     if req.is_incident_related and not engine.check_permission(
                         approver_id, Action.APPROVE, ResourceType.SECRETS
                     ):
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
                         )
                     elif not req.is_incident_related:
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
                         )
             except NameError:
                 pass  # If import failed
@@ -672,18 +672,18 @@ class ApprovalService:
             try:
                 engine = get_default_engine()
                 # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS
+                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
                 if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
                     # For incident modes, check SECRETS or CODE
                     if req.is_incident_related and not engine.check_permission(
                         approver_id, Action.APPROVE, ResourceType.SECRETS
                     ):
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
                         )
                     elif not req.is_incident_related:
                         raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"
+                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
                         )
             except NameError:
                 pass  # If import failed

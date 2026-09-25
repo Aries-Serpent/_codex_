@@ -117,7 +117,7 @@ class TestOutputValidation:
         result = agent.execute_agent({})
 
         assert "status" in result, "Output missing 'status' field"
-        assert result["status"] in [
+        assert result["status"] in [, "Result must not be empty"
             "success",
             "partial",
             "error",
@@ -154,11 +154,11 @@ class TestOutputValidation:
         result = agent.execute_agent({})
 
         if "metadata" in result:
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 result["metadata"], dict
             ), "Metadata must be dict"
             if "execution_time_ms" in result["metadata"]:
-                assert isinstance(
+                assert isinstance(, "Condition must be true"
                     result["metadata"]["execution_time_ms"], (int, float)
                 ), "execution_time_ms must be numeric"
 
@@ -180,9 +180,9 @@ class TestOutputValidation:
             "code": "ERROR_001",
         }
 
-        assert error_output["status"] == "error"
-        assert "error" in error_output
-        assert "code" in error_output
+        assert error_output["status"] == "error", "Error should be raised or set"
+        assert "error" in error_output, "Error should be raised or set"
+        assert "code" in error_output, "Error should be raised or set"
 
         agent.teardown()
 
@@ -199,9 +199,9 @@ class TestOutputValidation:
 
         try:
             json_str = json.dumps(result)
-            assert json_str is not None
+            assert json_str is not None, "json_str must be initialized"
             parsed = json.loads(json_str)
-            assert parsed["status"] == result["status"]
+            assert parsed["status"] == result["status"], "Result must not be empty"
         except (TypeError, ValueError) as e:
             pytest.fail(f"Output not JSON serializable: {e}")
 
@@ -248,8 +248,8 @@ class TestPerformance:
 
         result = agent.test_basic_execution({})
 
-        assert result.duration_ms >= 0
-        assert result.duration_ms < 1000  # Should complete in < 1 second
+        assert result.duration_ms >= 0, "duration_ms must be greater than zero"
+        assert result.duration_ms < 1000, "Result must not be empty"
 
         agent.teardown()
 
@@ -264,8 +264,8 @@ class TestPerformance:
 
         benchmark = agent.benchmark_execution({}, iterations=10)
 
-        assert benchmark["avg_duration_ms"] < 50  # Should be < 50ms on average
-        assert benchmark["max_duration_ms"] < 100  # Max < 100ms
+        assert benchmark["avg_duration_ms"] < 50, "Condition must be true"
+        assert benchmark["max_duration_ms"] < 100, "Condition must be true"
 
         agent.teardown()
 
@@ -281,8 +281,8 @@ class TestPerformance:
 
         benchmark = agent.benchmark_execution({}, iterations=5)
 
-        assert benchmark["avg_duration_ms"] > 50  # Should be > 50ms
-        assert benchmark["successes"] == 5  # All should succeed
+        assert benchmark["avg_duration_ms"] > 50, "Value must be greater than zero"
+        assert benchmark["successes"] == 5, "Condition must be true"
 
         agent.teardown()
 
@@ -388,7 +388,7 @@ class TestReliability:
 
         # Should have both successes and partial results
         statuses = [r["status"] for r in results]
-        assert "success" in statuses or "partial" in statuses
+        assert "success" in statuses or "partial" in statuses, "Condition must be true"
 
         agent.teardown()
 
@@ -410,8 +410,8 @@ class TestMetricsCollection:
         )
         agent.setup(context)
 
-        assert agent.metrics.duration_ms == 0
-        assert agent.metrics.ops_executed == 0
+        assert agent.metrics.duration_ms == 0, "duration_ms is not valid"
+        assert agent.metrics.ops_executed == 0, "ops_executed is not valid"
 
         agent.teardown()
 
@@ -427,7 +427,7 @@ class TestMetricsCollection:
         agent.test_basic_execution({})
         agent.test_basic_execution({})
 
-        assert agent.metrics.ops_executed == 2
+        assert agent.metrics.ops_executed == 2, "ops_executed is not valid"
 
         agent.teardown()
 
@@ -442,8 +442,8 @@ class TestMetricsCollection:
 
         result = agent.test_basic_execution({})
 
-        assert result.duration_ms >= 0
-        assert result.metrics is not None
+        assert result.duration_ms >= 0, "duration_ms must be greater than zero"
+        assert result.metrics is not None, "metrics must be initialized"
 
         agent.teardown()
 
@@ -461,11 +461,11 @@ class TestMetricsCollection:
 
         summary = agent.get_summary()
 
-        assert summary["total_tests"] == 5
-        assert summary["passed"] >= 0
-        assert summary["failed"] >= 0
-        assert summary["pass_rate"] >= 0
-        assert summary["avg_time_ms"] >= 0
+        assert summary["total_tests"] == 5, "Condition must be true"
+        assert summary["passed"] >= 0, "Value must be greater than zero"
+        assert summary["failed"] >= 0, "Value must be greater than zero"
+        assert summary["pass_rate"] >= 0, "Value must be greater than zero"
+        assert summary["avg_time_ms"] >= 0, "Value must be greater than zero"
 
         agent.teardown()
 
@@ -500,7 +500,7 @@ class TestCoverageMetrics:
         agent.test_error_handling({})
 
         # All paths should have executed
-        assert agent.execution_count > 0
+        assert agent.execution_count > 0, "execution_count must be positive"
 
         agent.teardown()
 
@@ -521,7 +521,7 @@ class TestCoverageMetrics:
 
         final_results = len(agent.test_results)
 
-        assert final_results >= initial_results + 3
+        assert final_results >= initial_results + 3, "final_results must be greater than zero"
 
         agent.teardown()
 
@@ -544,7 +544,7 @@ class TestResourceUsage:
         agent.setup(context)
 
         # Memory tracking is optional but should not error
-        assert agent.metrics.memory_peak_mb >= 0
+        assert agent.metrics.memory_peak_mb >= 0, "memory_peak_mb must be greater than zero"
 
         agent.teardown()
 
@@ -558,7 +558,7 @@ class TestResourceUsage:
         agent.setup(context)
 
         # CPU tracking is optional but should not error
-        assert agent.metrics.cpu_percent >= 0
+        assert agent.metrics.cpu_percent >= 0, "cpu_percent must be greater than zero"
 
         agent.teardown()
 
@@ -576,7 +576,7 @@ class TestResourceUsage:
             agent.execute_agent({})
 
         # Should complete without issues
-        assert agent.execution_count == 0  # Mock agent doesn't track this
+        assert agent.execution_count == 0, "Count must be greater than zero"
         agent.teardown()
 
 
@@ -666,7 +666,7 @@ class TestComparativePerformance:
         slow_benchmark = slow_agent.benchmark_execution({}, iterations=5)
 
         # Fast agent should be faster
-        assert (
+        assert (, "Condition must be true"
             fast_benchmark["avg_duration_ms"]
             < slow_benchmark["avg_duration_ms"]
         )

@@ -26,7 +26,7 @@
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_loads_valid_entries(self, tmp_path):
 #     def test_loads_valid_entries(self, tmp_path):
 #         """Test loading valid action log entries."""
@@ -37,10 +37,10 @@
 #         ]
 #         log_file.write_text("\n".join(json.dumps(e) for e in entries))
 #         result = load_action_log(log_file)
-# 
+#
 #         assert len(result) == 2, "Result must not be empty"
 #         assert result[0]["path"] == "src/new.py", "Result must not be empty"
-# 
+#
 #     def test_filters_by_hours(self, tmp_path):
 #     def test_filters_by_hours(self, tmp_path):
 #         """Test filtering entries by hours."""
@@ -56,10 +56,10 @@
 #         ]
 #         log_file.write_text("\n".join(json.dumps(e) for e in entries))
 #         result = load_action_log(log_file, hours=1)
-# 
+#
 #         assert len(result) == 1, "Result must not be empty"
 #         assert result[0]["path"] == "new.py", "Result must not be empty"
-# 
+#
 #     def test_handles_missing_file(self, tmp_path):
 #     def test_handles_missing_file(self, tmp_path):
 #         """Test handling of missing log file."""
@@ -73,13 +73,13 @@
 #         content = '{"action": "created", "path": "valid.py"}\nnot valid json\n{"action": "edited", "path": "another.py"}'
 #         log_file.write_text(content)
 #         result = load_action_log(log_file)
-# 
+#
 #         assert len(result) == 2, "Result must not be empty"
 #         assert "test-session" in result, "Result must not be empty"
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_loads_valid_store(self, tmp_path):
 #     def test_loads_valid_store(self, tmp_path):
 #         """Test loading valid pattern store."""
@@ -87,10 +87,10 @@
 #         store = {"patterns": {"test_pattern": {"success_rate": 0.95}}, "statistics": {}}
 #         store_file.write_text(json.dumps(store))
 #         result = load_pattern_store(store_file)
-# 
+#
 #         assert "patterns" in result, "Result must not be empty"
 #         assert "test_pattern" in result["patterns"], "Result must not be empty"
-# 
+#
 #     def test_handles_missing_file(self, tmp_path):
 #     def test_handles_missing_file(self, tmp_path):
 #         """Test handling of missing store file."""
@@ -101,7 +101,7 @@
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_extracts_file_operations(self):
 #     def test_extracts_file_operations(self):
 #         """Test extraction of file operations from entries."""
@@ -111,10 +111,10 @@
 #         ]
 #         pattern_store = {"patterns": {}, "learning_log": []}
 #         result = extract_session_context(entries, pattern_store)
-# 
+#
 #         assert "src/new.py" in result["files_created"], "Result must not be empty"
 #         assert "src/old.py" in result["files_modified"], "Result must not be empty"
-# 
+#
 #     def test_extracts_session_info_from_pattern_store(self):
 #     def test_extracts_session_info_from_pattern_store(self):
 #         """Test extraction of session info from pattern store."""
@@ -131,7 +131,7 @@
 #             ],
 #         }
 #         result = extract_session_context(entries, pattern_store)
-# 
+#
 #         assert result["session_id"] == "test-session", "Result must not be empty"
 #         assert result["pr_number"] == 1234, "Result must not be empty"
 #         assert "pattern1" in result["patterns_applied"], "Result must not be empty"
@@ -139,29 +139,29 @@
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_includes_pending_task(self):
 #     def test_includes_pending_task(self):
 #         """Test that pending tasks are included in recommendations."""
 #         context = {"pending_tasks": ["Complete documentation"]}
 #         pattern_store = {"patterns": {}}
 #         result = generate_recommended_actions(context, pattern_store)
-# 
+#
 #         assert any("Complete documentation" in action for action in result), "Result must not be empty"
-# 
+#
 #     def test_includes_standard_recommendations(self):
 #     def test_includes_standard_recommendations(self):
 #         """Test that standard recommendations are included."""
 #         context = {"pending_tasks": []}
 #         pattern_store = {"patterns": {}}
 #         result = generate_recommended_actions(context, pattern_store)
-# 
+#
 #         assert any("cognitive brain" in action.lower() for action in result), "Result must not be empty"
 #         assert "test-session" in result, "Result must not be empty"
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_includes_existing_files(self, tmp_path):
 #     def test_includes_existing_files(self, tmp_path):
 #         """Test that existing reference files are included."""
@@ -170,9 +170,9 @@
 #         (tmp_path / ".codex" / "cognitive_brain" / "pattern_learning_store.json").write_text("{}")
 #         context = {"files_created": []}
 #         result = generate_references(context, tmp_path)
-# 
+#
 #         assert any("pattern" in ref["name"].lower() for ref in result), "Result must not be empty"
-# 
+#
 #     def test_includes_created_files(self, tmp_path):
 #     def test_includes_created_files(self, tmp_path):
 #         """Test that recently created files are included."""
@@ -183,7 +183,7 @@
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_includes_session_info(self):
 #     def test_includes_session_info(self):
 #         """Test that session info is included in markdown."""
@@ -203,12 +203,12 @@
 #             "activation_command": "Continue",
 #         }
 #         result = generate_markdown_prompt(context)
-# 
+#
 #         assert "test-session" in result, "Result must not be empty"
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"
-# 
+#
 #     def test_includes_metrics_table(self):
 #     def test_includes_metrics_table(self):
 #         """Test that metrics table is included."""
@@ -228,7 +228,7 @@
 #             "activation_command": "Done",
 #         }
 #         result = generate_markdown_prompt(context)
-# 
+#
 #         assert "Tasks Completed" in result, "Result must not be empty"
 #         assert "| 3 |" in result or "3" in result, "Result must not be empty"
 

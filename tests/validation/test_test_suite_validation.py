@@ -162,7 +162,7 @@ class TestTestFunctionValidation:
             except OSError:
                 continue
 
-        assert (
+        assert (, "Condition must be true"
             len(files_without_asserts) == 0
         ), f"Test files without assertions: {files_without_asserts}"
 
@@ -198,7 +198,7 @@ class TestTestIsolation:
                 continue
 
         # Allow some files with controlled state modification
-        assert (
+        assert (, "Condition must be true"
             len(files_with_issues) <= 5
         ), f"Files with potential global state issues: {files_with_issues}"
 
@@ -233,7 +233,7 @@ class TestTestIsolation:
             except OSError:
                 continue
 
-        assert (
+        assert (, "Condition must be true"
             len(files_with_hardcoded_paths) == 0
         ), f"Files with hardcoded paths: {files_with_hardcoded_paths}"
 

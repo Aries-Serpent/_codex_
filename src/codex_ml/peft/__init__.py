@@ -33,11 +33,10 @@ def __getattr__(name: str) -> object:
     try:
         value = getattr(import_module("codex_lora"), name)
     except ImportError as exc:
-        raise AttributeError(
-            f"{name} requires the optional codex-ml-lora distribution"
-        ) from exc
+        raise AttributeError(f"{name} requires the optional codex-ml-lora distribution") from exc
     globals()[name] = value
     return value
+
 
 __all__ = [
     "CodexMlLoraAdapter",

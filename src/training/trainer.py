@@ -35,7 +35,13 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
-except (ImportError, ModuleNotFoundError, ValueError, TypeError, AttributeError):  # pragma: no cover - degrade to a safe torch stub when absent
+except (
+    ImportError,
+    ModuleNotFoundError,
+    ValueError,
+    TypeError,
+    AttributeError,
+):  # pragma: no cover - degrade to a safe torch stub when absent
     _HAS_REAL_TORCH = False
 
     class _NoOpScaler:
@@ -460,7 +466,12 @@ class Trainer:
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - directory read failure
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - directory read failure
             return None
         return candidates[0] if candidates else None
 
@@ -647,7 +658,12 @@ class Trainer:
             for path in (ckpt_path, meta_path):
                 try:
                     path.unlink(missing_ok=True)
-                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - retention guard
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                ) as exc:  # pragma: no cover - retention guard
                     LOGGER.debug("Failed to remove checkpoint '%s': %s", path, exc)
 
     def _save_checkpoint(self, epoch: int, metrics: Mapping[str, float]) -> None:
@@ -692,7 +708,12 @@ class Trainer:
             }
             pointer_path = checkpoint_path.parent / "latest.json"
             pointer_path.write_text(json.dumps(pointer_payload, indent=2), encoding="utf-8")
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - persistence guard
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - persistence guard
             LOGGER.warning("Failed to persist checkpoint '%s': %s", checkpoint_path, exc)
 
     def evaluate(self) -> Mapping[str, float]:
@@ -818,7 +839,12 @@ class Trainer:
         try:
             eval_metrics = self.evaluate()
             epoch_metrics.update(eval_metrics)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - evaluation robustness
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - evaluation robustness
             LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
 
     def _checkpoint_epoch(
@@ -832,7 +858,12 @@ class Trainer:
                 record = {"epoch": epoch, "global_step": self.state.global_step}
                 record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
                 append_ndjson(record, self._metrics_path)
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - diagnostics only
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - diagnostics only
                 LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
         self._save_checkpoint(epoch, epoch_metrics)
 

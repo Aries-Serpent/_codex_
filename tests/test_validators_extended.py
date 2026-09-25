@@ -1,5 +1,5 @@
 #         assert validate_url("https://example.com, "Condition must be true"
-# 
+#
 #     def test_validation_type_consistency(self):
 # Tests cover:
 # - Input validation

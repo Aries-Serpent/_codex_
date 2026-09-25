@@ -11,12 +11,11 @@ from __future__ import annotations
 import datetime
 import json
 import os
-import sys
 import pathlib
+import sys
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Optional
-
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
 # Directory where batched rescue comment items are stored as JSON files.

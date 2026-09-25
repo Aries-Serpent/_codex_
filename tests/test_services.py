@@ -490,7 +490,7 @@ class TestServicesWithMockDependencies:
     @patch("src.services.workflow.parser.yaml.safe_load")
     def test_parser_with_mocked_yaml_loader(self, mock_yaml):
         """Test parser with mocked YAML loader."""
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
         from pathlib import Path
 
         from services import WorkflowParser
@@ -509,7 +509,7 @@ class TestServicesWithMockDependencies:
 
     def test_inventory_with_path_variations(self):
         """Test inventory scan with various path inputs."""
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
         from pathlib import Path
 
         from services import WorkflowInventory

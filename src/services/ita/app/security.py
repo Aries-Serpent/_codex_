@@ -146,9 +146,7 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     pathological input from causing a denial-of-service on this legacy path.
     """
     if len(candidate_bytes) > 512:
-        raise ValueError(
-            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
-        )
+        raise ValueError("Legacy API key material exceeds the maximum allowed length (512 bytes).")
     h = hashlib.sha256()  # nosec B324 — migration-only; not used for new hashes
     # Legacy-compatibility path: this must remain byte-for-byte equivalent to historic
     # pre-0.2 stored hashes so successful auth can trigger upgrade to PBKDF2.
@@ -168,9 +166,7 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
     New hashes use :func:`hash_key` (PBKDF2-HMAC-SHA256).
     """
     if len(candidate_bytes) > 512:
-        raise ValueError(
-            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
-        )
+        raise ValueError("Legacy API key material exceeds the maximum allowed length (512 bytes).")
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324  # migration-only
     h.update(candidate_bytes)  # migration-only; not used for new keys
@@ -195,9 +191,7 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
         stacklevel=2,
     )
     if len(candidate_bytes) > 512:
-        raise ValueError(
-            "Legacy API key material exceeds the maximum allowed length (512 bytes)."
-        )
+        raise ValueError("Legacy API key material exceeds the maximum allowed length (512 bytes).")
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324  # migration-only

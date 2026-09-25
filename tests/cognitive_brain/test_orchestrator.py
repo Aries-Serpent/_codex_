@@ -50,15 +50,15 @@ def shell_orchestrator() -> MCPOrchestrator:
 class TestMCPOrchestrator:
     def test_repo_introspection_selects_github_mcp(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert plan.primary_tool == TOOL_GITHUB_MCP
+        assert plan.primary_tool == TOOL_GITHUB_MCP, "primary_tool is not valid"
 
     def test_code_search_selects_github_mcp(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("code_search")
-        assert plan.primary_tool == TOOL_GITHUB_MCP
+        assert plan.primary_tool == TOOL_GITHUB_MCP, "primary_tool is not valid"
 
     def test_ci_investigation_selects_github_mcp(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("ci_investigation")
-        assert plan.primary_tool == TOOL_GITHUB_MCP
+        assert plan.primary_tool == TOOL_GITHUB_MCP, "primary_tool is not valid"
 
     def test_ui_interaction_prefers_playwright(self, orchestrator: MCPOrchestrator) -> None:
         # Playwright should score higher for ui_interaction.
@@ -93,39 +93,39 @@ class TestMCPOrchestrator:
 
     def test_plan_has_steps(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert len(plan.steps) > 0
+        assert len(plan.steps) > 0, "Collection must not be empty"
 
     def test_plan_has_policy_scores(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert "total" in plan.policy_scores
+        assert "total" in plan.policy_scores, "Condition must be true"
         assert isinstance(plan.policy_scores["total"], float)
 
     def test_plan_has_fallback(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert plan.fallback_plan is not None
+        assert plan.fallback_plan is not None, "fallback_plan must be initialized"
 
     def test_fallback_has_steps(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert plan.fallback_plan is not None
-        assert len(plan.fallback_plan.steps) > 0
+        assert plan.fallback_plan is not None, "fallback_plan must be initialized"
+        assert len(plan.fallback_plan.steps) > 0, "Collection must not be empty"
 
     def test_plan_task_intent_preserved(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("my_custom_task")
-        assert plan.task_intent == "my_custom_task"
+        assert plan.task_intent == "my_custom_task", "task_intent is not valid"
 
     def test_available_tools_returned(self, orchestrator: MCPOrchestrator) -> None:
         tools = orchestrator.available_tools()
-        assert TOOL_GITHUB_MCP in tools
-        assert TOOL_PLAYWRIGHT in tools
-        assert TOOL_WEB_SEARCH in tools
+        assert TOOL_GITHUB_MCP in tools, "Condition must be true"
+        assert TOOL_PLAYWRIGHT in tools, "Condition must be true"
+        assert TOOL_WEB_SEARCH in tools, "Condition must be true"
         # shell not in default orchestrator.
-        assert TOOL_SHELL not in tools
+        assert TOOL_SHELL not in tools, "Condition must be true"
 
     def test_shell_orchestrator_includes_shell(
         self, shell_orchestrator: MCPOrchestrator
     ) -> None:
         tools = shell_orchestrator.available_tools()
-        assert TOOL_SHELL in tools
+        assert TOOL_SHELL in tools, "Condition must be true"
 
     def test_local_test_can_select_shell(self, shell_orchestrator: MCPOrchestrator) -> None:
         plan = shell_orchestrator.plan(
@@ -159,18 +159,18 @@ class TestMCPOrchestrator:
         )
         plan1 = orchestrator.plan("code_search", ctx)
         plan2 = orchestrator.plan("code_search", ctx)
-        assert plan1.primary_tool == plan2.primary_tool
-        assert plan1.policy_scores == plan2.policy_scores
+        assert plan1.primary_tool == plan2.primary_tool, "primary_tool is not valid"
+        assert plan1.policy_scores == plan2.policy_scores, "policy_scores is not valid"
 
     def test_plan_notes_non_empty(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
-        assert len(plan.notes) > 0
+        assert len(plan.notes) > 0, "Collection must not be empty"
 
     def test_step_has_fallback_tool(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
         # Primary step should declare a fallback surface.
         primary_steps = [s for s in plan.steps if s.required]
-        assert len(primary_steps) > 0
+        assert len(primary_steps) > 0, "Primary_steps must not be empty"
 
     def test_step_tool_is_known_surface(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("repo_introspection")
@@ -180,4 +180,4 @@ class TestMCPOrchestrator:
 
     def test_pr_review_uses_github_mcp(self, orchestrator: MCPOrchestrator) -> None:
         plan = orchestrator.plan("pr_review")
-        assert plan.primary_tool == TOOL_GITHUB_MCP
+        assert plan.primary_tool == TOOL_GITHUB_MCP, "primary_tool is not valid"

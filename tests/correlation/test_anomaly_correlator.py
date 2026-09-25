@@ -120,7 +120,7 @@ def fp_classifier(historical_tracker):
 
 class TestAnomalyCollector:
     """Tests for anomaly collection"""
-    
+
     def test_collect_from_single_system(self, anomaly_collector, now):
         """Test collecting anomalies from single system"""
         anomalies = [
@@ -143,12 +143,12 @@ class TestAnomalyCollector:
                 description="Build failed"
             ),
         ]
-        
+
         anomaly_collector.collect_from_system(AnomalySystem.CI_CD, anomalies)
-        
-        assert len(anomaly_collector.anomalies) == 2
-        assert len(anomaly_collector.get_system_anomalies(AnomalySystem.CI_CD)) == 2
-    
+
+        assert len(anomaly_collector.anomalies) == 2, "Collection must not be empty"
+        assert len(anomaly_collector.get_system_anomalies(AnomalySystem.CI_CD)) == 2, "Collection must not be empty"
+
     def test_collect_from_multiple_systems(self, anomaly_collector, now):
         """Test collecting anomalies from 6 systems"""
         systems = [
@@ -159,7 +159,7 @@ class TestAnomalyCollector:
             AnomalySystem.COVERAGE,
             AnomalySystem.SECURITY,
         ]
-        
+
         for system in systems:
             anomalies = [
                 Anomaly(
@@ -173,11 +173,11 @@ class TestAnomalyCollector:
                 )
             ]
             anomaly_collector.collect_from_system(system, anomalies)
-        
-        assert len(anomaly_collector.anomalies) == len(systems)
+
+        assert len(anomaly_collector.anomalies) == len(systems), "Systems must not be empty"
         for system in systems:
-            assert len(anomaly_collector.get_system_anomalies(system)) > 0
-    
+            assert len(anomaly_collector.get_system_anomalies(system)) > 0, "Collection must not be empty"
+
     def test_get_recent_anomalies(self, anomaly_collector, now):
         """Test filtering anomalies by time window"""
         old_anomaly = Anomaly(
@@ -189,7 +189,7 @@ class TestAnomalyCollector:
             severity=AlertSeverity.LOW,
             description="Old anomaly"
         )
-        
+
         new_anomaly = Anomaly(
             system=AnomalySystem.CI_CD,
             timestamp=now,
@@ -199,13 +199,13 @@ class TestAnomalyCollector:
             severity=AlertSeverity.LOW,
             description="New anomaly"
         )
-        
+
         anomaly_collector.collect_from_system(AnomalySystem.CI_CD, [old_anomaly, new_anomaly])
-        
+
         recent = anomaly_collector.get_recent_anomalies(lookback_ms=300000)
-        
-        assert len(recent) == 1
-        assert recent[0].metric_name == "new"
+
+        assert len(recent) == 1, "Recent must not be empty"
+        assert recent[0].metric_name == "new", "metric_name is not valid"
 
 
 # ============================================================================
@@ -215,7 +215,7 @@ class TestAnomalyCollector:
 
 class TestTemporalCorrelator:
     """Tests for temporal correlation"""
-    
+
     def test_correlate_within_window(self, temporal_correlator, now):
         """Test correlating anomalies within 5-minute window"""
         anomalies = [
@@ -238,13 +238,13 @@ class TestTemporalCorrelator:
                 description="Latency spike"
             ),
         ]
-        
+
         correlated = temporal_correlator.correlate(anomalies)
-        
-        assert len(correlated) > 0
-        assert correlated[0].correlation_type == CorrelationType.TEMPORAL
-        assert len(correlated[0].anomalies) == 2
-    
+
+        assert len(correlated) > 0, "Correlated must not be empty"
+        assert correlated[0].correlation_type == CorrelationType.TEMPORAL, "correlation_type is not valid"
+        assert len(correlated[0].anomalies) == 2, "Collection must not be empty"
+
     def test_temporal_correlation_accuracy(self, temporal_correlator, now):
         """Test temporal correlation accuracy >85%"""
         # Create 10 anomalies within window
@@ -260,12 +260,12 @@ class TestTemporalCorrelator:
             )
             for i in range(10)
         ]
-        
+
         correlated = temporal_correlator.correlate(anomalies)
-        
-        assert len(correlated) > 0
+
+        assert len(correlated) > 0, "Correlated must not be empty"
         # Confidence should be high for anomalies close together
-        assert correlated[0].correlation_confidence > 0.85
+        assert correlated[0].correlation_confidence > 0.85, "correlation_confidence must be greater than zero"
 
 
 # ============================================================================
@@ -275,7 +275,7 @@ class TestTemporalCorrelator:
 
 class TestSpatialCorrelator:
     """Tests for spatial correlation across dependent systems"""
-    
+
     def test_correlate_dependent_systems(self, spatial_correlator, now):
         """Test correlating anomalies in dependent systems"""
         # CI/CD depends on Performance
@@ -299,11 +299,11 @@ class TestSpatialCorrelator:
                 description="Latency spike"
             ),
         ]
-        
+
         correlated = spatial_correlator.correlate(anomalies)
-        
-        assert len(correlated) > 0
-        assert correlated[0].correlation_type == CorrelationType.SPATIAL
+
+        assert len(correlated) > 0, "Correlated must not be empty"
+        assert correlated[0].correlation_type == CorrelationType.SPATIAL, "correlation_type is not valid"
 
 
 # ============================================================================
@@ -313,7 +313,7 @@ class TestSpatialCorrelator:
 
 class TestMagnitudeCorrelator:
     """Tests for magnitude correlation"""
-    
+
     def test_correlate_similar_magnitudes(self, magnitude_correlator, now):
         """Test correlating anomalies with similar magnitude changes"""
         anomalies = [
@@ -336,11 +336,11 @@ class TestMagnitudeCorrelator:
                 description="Anomaly 2"
             ),
         ]
-        
+
         correlated = magnitude_correlator.correlate(anomalies)
-        
-        assert len(correlated) > 0
-        assert correlated[0].correlation_type == CorrelationType.MAGNITUDE
+
+        assert len(correlated) > 0, "Correlated must not be empty"
+        assert correlated[0].correlation_type == CorrelationType.MAGNITUDE, "correlation_type is not valid"
 
 
 # ============================================================================
@@ -350,7 +350,7 @@ class TestMagnitudeCorrelator:
 
 class TestAlertAggregator:
     """Tests for alert aggregation"""
-    
+
     def test_aggregate_reduces_alerts(self, alert_aggregator, now):
         """Test that aggregation reduces alert count 60%+"""
         # Create 10 correlations with high overlap
@@ -374,7 +374,7 @@ class TestAlertAggregator:
                 description="Latency spike"
             ),
         ]
-        
+
         correlations = [
             CorrelatedAnomaly(
                 id=f"corr_{i}",
@@ -385,13 +385,13 @@ class TestAlertAggregator:
             )
             for i in range(10)
         ]
-        
+
         consolidated, suppressed = alert_aggregator.aggregate(correlations)
-        
+
         # Should achieve 60%+ reduction
         reduction_rate = (len(correlations) - len(consolidated)) / len(correlations)
-        assert reduction_rate >= 0.6
-        assert suppressed > 0
+        assert reduction_rate >= 0.6, "reduction_rate must be greater than zero"
+        assert suppressed > 0, "suppressed must be greater than zero"
 
 
 # ============================================================================
@@ -401,36 +401,36 @@ class TestAlertAggregator:
 
 class TestCausalGraph:
     """Tests for probabilistic causal graph"""
-    
+
     def test_causal_graph_initialization(self, causal_graph):
         """Test causal graph initializes with system structure"""
-        assert len(causal_graph.nodes) >= 10  # Should have 10+ nodes
-        assert len(causal_graph.links) >= 15  # Should have 15+ edges
-    
+        assert len(causal_graph.nodes) >= 10, "Collection must not be empty"
+        assert len(causal_graph.links) >= 15, "Collection must not be empty"
+
     def test_add_link(self, causal_graph):
         """Test adding causal link"""
         causal_graph.add_link("new_source", "new_target", 0.7)
-        
-        assert "new_source" in causal_graph.nodes
-        assert "new_target" in causal_graph.nodes
+
+        assert "new_source" in causal_graph.nodes, "Condition must be true"
+        assert "new_target" in causal_graph.nodes, "Condition must be true"
         assert ("new_source", "new_target") in causal_graph.links
-    
+
     def test_learn_from_correlation(self, causal_graph):
         """Test learning from correlations"""
         before_count = sum(link.learned_from_count for link in causal_graph.links.values())
-        
+
         causal_graph.learn_from_correlation("source", "target", success=True)
-        
+
         after_count = sum(link.learned_from_count for link in causal_graph.links.values())
-        assert after_count > before_count
-    
+        assert after_count > before_count, "after_count must be positive"
+
     def test_get_upstream_causes(self, causal_graph):
         """Test retrieving upstream causes"""
         causes = causal_graph.get_upstream_causes("coverage.regression")
-        
-        assert len(causes) > 0
-        assert "performance.latency_spike" in causes or "ci_cd.build_failure" in causes
-    
+
+        assert len(causes) > 0, "Causes must not be empty"
+        assert "performance.latency_spike" in causes or "ci_cd.build_failure" in causes, "Condition must be true"
+
     def test_causal_graph_reaches_100_nodes(self, causal_graph):
         """Test expanding causal graph to 100+ nodes"""
         # Add systematic extensions
@@ -438,8 +438,8 @@ class TestCausalGraph:
             source = f"system_{i}"
             target = f"system_{i+1}"
             causal_graph.add_link(source, target, 0.5)
-        
-        assert len(causal_graph.nodes) >= 100
+
+        assert len(causal_graph.nodes) >= 100, "Collection must not be empty"
 
 
 # ============================================================================
@@ -449,30 +449,30 @@ class TestCausalGraph:
 
 class TestBackwardChainer:
     """Tests for backward-chaining root cause inference"""
-    
+
     def test_find_single_hop_cause(self, backward_chainer, causal_graph):
         """Test finding single-hop root cause"""
         # Add a known link
         causal_graph.add_link("root_cause", "symptom", 0.8)
-        
+
         inferences = backward_chainer.find_root_causes("symptom")
-        
-        assert len(inferences) > 0
-        assert "root_cause" in [inf.root_cause for inf in inferences]
-    
+
+        assert len(inferences) > 0, "Inferences must not be empty"
+        assert "root_cause" in [inf.root_cause for inf in inferences], "Condition must be true"
+
     def test_find_multi_hop_cause(self, backward_chainer, causal_graph):
         """Test finding multi-hop causal chains"""
         # Create chain: root -> intermediate -> symptom
         causal_graph.add_link("root", "intermediate", 0.7)
         causal_graph.add_link("intermediate", "symptom", 0.8)
-        
+
         inferences = backward_chainer.find_root_causes("symptom")
-        
-        assert len(inferences) > 0
+
+        assert len(inferences) > 0, "Inferences must not be empty"
         # Should find either direct or multi-hop causes
         found_causes = [inf.root_cause for inf in inferences]
         assert any(c in ["intermediate", "root"] for c in found_causes)
-    
+
     def test_multi_hop_chains_depth_5(self, backward_chainer, causal_graph):
         """Test finding causal chains 5+ levels deep"""
         # Create 5-level chain
@@ -480,35 +480,35 @@ class TestBackwardChainer:
             source = f"level_{i}"
             target = f"level_{i+1}"
             causal_graph.add_link(source, target, 0.7)
-        
+
         # Use a lower confidence threshold to allow deeper chains
         deep_chainer = BackwardChainer(causal_graph, max_depth=6, confidence_threshold=0.1)
         inferences = deep_chainer.find_root_causes("level_5")
-        
-        assert len(inferences) > 0
+
+        assert len(inferences) > 0, "Inferences must not be empty"
         if inferences[0].causal_path:
-            assert inferences[0].causal_path.depth() >= 1  # At least 1 hop
+            assert inferences[0].causal_path.depth() >= 1, "Value must be greater than zero"
 
 
 class TestRootCauseEngine:
     """Tests for root cause engine"""
-    
+
     def test_infer_root_cause_success_rate(self, root_cause_engine):
         """Test root cause inference success rate >80%"""
         successes = 0
         trials = 20
-        
+
         for i in range(trials):
             # Simulate anomaly with known root cause
             root_cause_engine.causal_graph.add_link(f"cause_{i}", f"effect_{i}", 0.8)
-            
+
             inference = root_cause_engine.infer_root_cause(f"effect_{i}")
-            
+
             if inference and inference.confidence > 0.3:
                 successes += 1
-        
+
         success_rate = successes / trials
-        assert success_rate > 0.8
+        assert success_rate > 0.8, "success_rate must be greater than zero"
 
 
 # ============================================================================
@@ -518,7 +518,7 @@ class TestRootCauseEngine:
 
 class TestHistoricalTracker:
     """Tests for historical alert tracking"""
-    
+
     def test_track_alert_outcomes(self, historical_tracker, now):
         """Test tracking alert history"""
         record = AlertHistoryRecord(
@@ -529,12 +529,12 @@ class TestHistoricalTracker:
             suppressed=False,
             was_real_issue=True,
         )
-        
+
         historical_tracker.record_alert(record)
-        
-        assert len(historical_tracker.history) == 1
-        assert historical_tracker.get_fp_rate("build_failure") == 0.0
-    
+
+        assert len(historical_tracker.history) == 1, "Collection must not be empty"
+        assert historical_tracker.get_fp_rate("build_failure") == 0.0, "hist is not valid"
+
     def test_calculate_fp_rate(self, historical_tracker, now):
         """Test false positive rate calculation"""
         # Add 10 TP records
@@ -548,7 +548,7 @@ class TestHistoricalTracker:
                 was_real_issue=True,
             )
             historical_tracker.record_alert(record)
-        
+
         # Add 2 FP records
         for i in range(2):
             record = AlertHistoryRecord(
@@ -560,14 +560,14 @@ class TestHistoricalTracker:
                 was_real_issue=False,
             )
             historical_tracker.record_alert(record)
-        
+
         fp_rate = historical_tracker.get_fp_rate("build_failure")
-        assert 0.15 <= fp_rate <= 0.25  # About 16.7%
+        assert 0.15 <= fp_rate <= 0.25, "15 is not valid"
 
 
 class TestFalsePositiveClassifier:
     """Tests for ML-based false positive classification"""
-    
+
     def test_classify_true_positive(self, fp_classifier):
         """Test classifying high-confidence true positive"""
         features = AlertFeatures(
@@ -587,19 +587,19 @@ class TestFalsePositiveClassifier:
             has_correlated_anomalies=True,
             num_correlated_systems=3,
         )
-        
+
         is_fp, confidence = fp_classifier.predict_is_false_positive(features)
-        
-        assert not is_fp  # Should be true positive
+
+        assert not is_fp, "not is not valid"
 
 
 class TestSuppressionPolicy:
     """Tests for suppression policy"""
-    
+
     def test_never_suppress_critical(self, fp_classifier):
         """Test that critical severity alerts are never suppressed"""
         policy = SuppressionPolicy(fp_classifier, critical_severity_exclude=True)
-        
+
         features = AlertFeatures(
             alert_id="critical_alert",
             hour_of_day=3,
@@ -617,10 +617,10 @@ class TestSuppressionPolicy:
             has_correlated_anomalies=False,
             num_correlated_systems=0,
         )
-        
+
         should_suppress = policy.should_suppress(features)
-        
-        assert not should_suppress
+
+        assert not should_suppress, "Condition must be true"
 
 
 # ============================================================================
@@ -630,7 +630,7 @@ class TestSuppressionPolicy:
 
 class TestIntegration:
     """End-to-end integration tests with 6 systems"""
-    
+
     def test_full_correlation_pipeline(
         self,
         anomaly_collector,
@@ -650,7 +650,7 @@ class TestIntegration:
             AnomalySystem.COVERAGE,
             AnomalySystem.SECURITY,
         ]
-        
+
         for system in systems:
             anomalies = [
                 Anomaly(
@@ -665,26 +665,26 @@ class TestIntegration:
                 for i in range(3)
             ]
             anomaly_collector.collect_from_system(system, anomalies)
-        
+
         # Get all anomalies
         all_anomalies = anomaly_collector.get_recent_anomalies()
-        assert len(all_anomalies) == 18  # 6 systems * 3 anomalies
-        
+        assert len(all_anomalies) == 18, "All_anomalies must not be empty"
+
         # Apply all correlation types
         temporal = temporal_correlator.correlate(all_anomalies)
         spatial = spatial_correlator.correlate(all_anomalies)
         magnitude = magnitude_correlator.correlate(all_anomalies)
-        
+
         # Aggregate
         all_correlations = temporal + spatial + magnitude
         consolidated, suppressed = alert_aggregator.aggregate(all_correlations)
-        
+
         # Should have consolidated alerts
-        assert len(consolidated) > 0
+        assert len(consolidated) > 0, "Consolidated must not be empty"
         # Should have suppressed some cascading alerts
         if all_correlations:
-            assert suppressed >= 0
-    
+            assert suppressed >= 0, "suppressed must be greater than zero"
+
     def test_end_to_end_with_root_cause(
         self,
         root_cause_engine,
@@ -696,12 +696,12 @@ class TestIntegration:
         # Setup causal chain
         root_cause_engine.causal_graph.add_link("ci_cd.build_failure", "performance.latency_spike", 0.8)
         root_cause_engine.causal_graph.add_link("performance.latency_spike", "coverage.regression", 0.7)
-        
+
         # Infer root cause
         inference = root_cause_engine.infer_root_cause("coverage.regression")
-        
-        assert inference is not None
-        
+
+        assert inference is not None, "inference must be initialized"
+
         # Track history
         record = AlertHistoryRecord(
             alert_id="coverage.regression",
@@ -712,7 +712,7 @@ class TestIntegration:
             was_real_issue=True,
         )
         historical_tracker.record_alert(record)
-        
+
         # Create alert features
         features = AlertFeatures(
             alert_id="coverage.regression",
@@ -731,11 +731,11 @@ class TestIntegration:
             has_correlated_anomalies=True,
             num_correlated_systems=2,
         )
-        
+
         # Check FP classification
         is_fp, confidence = fp_classifier.predict_is_false_positive(features)
-        
-        assert not is_fp  # Should be true positive
+
+        assert not is_fp, "not is not valid"
 
 
 # ============================================================================
@@ -745,11 +745,11 @@ class TestIntegration:
 
 class TestPerformance:
     """Performance and latency tests"""
-    
+
     def test_temporal_correlation_latency(self, temporal_correlator):
         """Test temporal correlation <500ms for 100 anomalies"""
         import time
-        
+
         now = datetime.utcnow()
         anomalies = [
             Anomaly(
@@ -763,27 +763,27 @@ class TestPerformance:
             )
             for i in range(100)
         ]
-        
+
         start = time.time()
         correlated = temporal_correlator.correlate(anomalies)
         elapsed_ms = (time.time() - start) * 1000
-        
-        assert elapsed_ms < 500
-        assert len(correlated) > 0
-    
+
+        assert elapsed_ms < 500, "elapsed_ms is not valid"
+        assert len(correlated) > 0, "Correlated must not be empty"
+
     def test_root_cause_inference_latency(self, root_cause_engine):
         """Test root cause inference <1s per anomaly"""
         import time
-        
+
         # Add chain
         for i in range(10):
             root_cause_engine.causal_graph.add_link(f"cause_{i}", f"effect_{i}", 0.7)
-        
+
         start = time.time()
         inference = root_cause_engine.infer_root_cause("effect_5")
         elapsed_ms = (time.time() - start) * 1000
-        
-        assert elapsed_ms < 1000
+
+        assert elapsed_ms < 1000, "elapsed_ms is not valid"
 
 
 # ============================================================================
@@ -793,7 +793,7 @@ class TestPerformance:
 
 class TestGateCriteria:
     """Tests verifying all 8 gate criteria"""
-    
+
     def test_criterion_1_correlation_accuracy(self, temporal_correlator, now):
         """Gate 1: Correlation accuracy >85%"""
         # Create 20 anomalies with clear temporal correlation
@@ -809,27 +809,27 @@ class TestGateCriteria:
             )
             for i in range(20)
         ]
-        
+
         correlated = temporal_correlator.correlate(anomalies)
-        
+
         if correlated:
             accuracy = correlated[0].correlation_confidence
-            assert accuracy > 0.85
-    
+            assert accuracy > 0.85, "accuracy must be greater than zero"
+
     def test_criterion_2_root_cause_success(self, root_cause_engine):
         """Gate 2: Root cause ID success >80%"""
         # Create 10 test cases with known root causes
         successes = 0
         for i in range(10):
             root_cause_engine.causal_graph.add_link(f"cause_{i}", f"effect_{i}", 0.85)
-            
+
             inference = root_cause_engine.infer_root_cause(f"effect_{i}")
             if inference and inference.confidence > 0.3:
                 successes += 1
-        
+
         success_rate = successes / 10
-        assert success_rate >= 0.8
-    
+        assert success_rate >= 0.8, "success_rate must be greater than zero"
+
     def test_criterion_3_alert_reduction(self, alert_aggregator, now):
         """Gate 3: Alert aggregation 60%+ reduction"""
         # Create 10 overlapping correlations
@@ -844,7 +844,7 @@ class TestGateCriteria:
                 description="Anomaly"
             ),
         ]
-        
+
         correlations = [
             CorrelatedAnomaly(
                 id=f"corr_{i}",
@@ -855,28 +855,28 @@ class TestGateCriteria:
             )
             for i in range(10)
         ]
-        
+
         consolidated, suppressed = alert_aggregator.aggregate(correlations)
-        
+
         reduction = (len(correlations) - len(consolidated)) / len(correlations)
-        assert reduction >= 0.6
-    
+        assert reduction >= 0.6, "reduction must be greater than zero"
+
     def test_criterion_4_causal_graph_size(self, causal_graph):
         """Gate 4: Causal graph 100+ nodes, 300+ edges"""
         # Expand graph
         for i in range(100):
             causal_graph.add_link(f"source_{i}", f"target_{i}", 0.6)
-        
+
         stats = causal_graph.stats()
-        
-        assert stats["nodes"] >= 100
-        assert stats["edges"] >= 100  # At least 100 edges from our additions
-    
+
+        assert stats["nodes"] >= 100, "Value must be greater than zero"
+        assert stats["edges"] >= 100, "Value must be greater than zero"
+
     def test_criterion_7_test_coverage(self):
         """Gate 7: Test coverage ≥85%"""
         # This test file demonstrates comprehensive coverage
         # Covers: correlation, root cause, FP suppression, integration, performance
-        assert True
+        assert True, "True is not valid"
 
 
 if __name__ == "__main__":

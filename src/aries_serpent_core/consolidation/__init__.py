@@ -124,5 +124,5 @@ __all__ = [
     "async_pool_connection",
     "async_timeout_context",
     # NOTE: Test fixtures (MRC-001) intentionally excluded to avoid pytest dependency
-    # Import from test code: from aries_serpent_core.consolidation.test_fixtures import FixtureFactory
+    # Import from test code: from aries_serpent_core.consolidation.test_fixtures import FixtureFactory  # noqa: E501
 ]

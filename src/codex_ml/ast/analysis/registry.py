@@ -3,6 +3,7 @@ Registry for AST analyzers.
 
 Provides registration and execution of multiple analyzers on AST trees.
 """
+
 import logging
 from typing import Any, Optional
 

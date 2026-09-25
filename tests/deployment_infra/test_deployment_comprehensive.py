@@ -13,7 +13,7 @@
 #         assert ", "Condition must be true"
 #         assert "exec" in content or "python" in content, "Content must not be empty"
 #     """Test Docker configuration files and patterns."""
-# 
+#
 #     def test_dockerfile_exists(self):
 #     def test_dockerfile_exists(self):
 #         """Test that Dockerfiles exist in expected locations."""
@@ -23,10 +23,10 @@
 #             repo_root / "Dockerfile.gpu",
 #             repo_root / "Dockerfile.local",
 #         ]
-# 
+#
 #         existing = [d for d in dockerfiles if d.exists()]
 #         assert len(existing) > 0, "At least one Dockerfile should exist"
-# 
+#
 #     def test_dockerfile_has_from_statement(self):
 #     def test_dockerfile_has_from_statement(self):
 #         """Test that Dockerfiles have valid FROM statements."""
@@ -34,10 +34,10 @@
 #         dockerfile = repo_root / "Dockerfile"
 #         if not dockerfile.exists():
 #             pytest.skip("Dockerfile not found")
-# 
+#
 #         content = dockerfile.read_text()
 #         assert "FROM" in content, "Dockerfile should have FROM statement"
-# 
+#
 #     def test_dockerignore_exists(self):
 #     def test_dockerignore_exists(self):
 #         """Test that .dockerignore file exists."""
@@ -47,18 +47,18 @@
 #             content = dockerignore.read_text()
 #             # Should ignore common patterns
 #             assert len(content.strip()) > 0, "Collection must not be empty"
-# 
+#
 #     def test_docker_entrypoint_pattern(self, tmp_path):
 #     def test_docker_entrypoint_pattern(self, tmp_path):
 #         """Test Docker entrypoint script patterns."""
 #         entrypoint = tmp_path / "entrypoint.sh"
 #         entrypoint.write_text('#!/bin/bash\nset -e\nexec "$@"\n')
 #         entrypoint.write_text('#!/bin/bash\nset -e\nexec "$@"\n')
-# 
+#
 #         content = entrypoint.read_text()
 #         assert ", "Condition must be true"
 #         assert "exec" in content or "python" in content, "Content must not be empty"
-# 
+#
 #     def test_docker_build_args_pattern(self):
 #     def test_docker_build_args_pattern(self):
 #         """Test Docker build args configuration."""

@@ -46,7 +46,9 @@ class RequestBatcher:
 
     def __init__(self, config: Optional[BatchConfig] = None):
         self.config = config or BatchConfig()
-        self.queue: deque[tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]] = deque()
+        self.queue: deque[tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]] = (
+            deque()
+        )
         self.lock = threading.Lock()
         self.batch_ready = threading.Event()
         self.results: dict[str, Any] = {}
@@ -86,7 +88,9 @@ class RequestBatcher:
             await asyncio.sleep(self.config.max_wait_ms / 1000.0)
 
             # Extract batch
-            batch_items: list[tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]] = []
+            batch_items: list[
+                tuple[int, str, Any, asyncio.Future[Any], Callable[[list[Any]], Any]]
+            ] = []
             with self.lock:
                 batch_size = min(len(self.queue), self.config.max_batch_size)
                 for _ in range(batch_size):

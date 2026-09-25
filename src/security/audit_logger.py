@@ -138,9 +138,9 @@ class AuditLogger:
             kind=_AUDIT_EVENT_KIND,
             source=_AUDIT_EVENT_SOURCE,
             payload=event,
-            emitted_at=datetime.fromtimestamp(event_ts, tz=timezone.utc).isoformat().replace(
-                "+00:00", "Z"
-            ),
+            emitted_at=datetime.fromtimestamp(event_ts, tz=timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z"),
         )
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with _locked(self._lock_path, exclusive=True):
@@ -183,9 +183,9 @@ class AuditLogger:
                     if rec.get("prev_hash") != expected_prev:
                         return False
                     computed = _sha256_bytes(
-                        json.dumps(
-                            {k: rec[k] for k in rec if k != "hash"}, sort_keys=True
-                        ).encode("utf-8")
+                        json.dumps({k: rec[k] for k in rec if k != "hash"}, sort_keys=True).encode(
+                            "utf-8"
+                        )
                     )
                     hash_value = rec.get("hash")
                     if not isinstance(hash_value, str) or hash_value != computed:

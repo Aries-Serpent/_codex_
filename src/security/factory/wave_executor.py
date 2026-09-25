@@ -20,6 +20,7 @@ from .scoring import ScoredFamily, WavePlan
 
 class ExecutionStatus(str, Enum):
     """Execution status for a finding."""
+
     PENDING = "pending"
     RUNNING = "running"
     SUCCESS = "success"
@@ -30,6 +31,7 @@ class ExecutionStatus(str, Enum):
 @dataclass
 class ExecutionResult:
     """Result of executing a single finding."""
+
     family_id: str
     status: ExecutionStatus
     start_time: str = field(default_factory=lambda: datetime.utcnow().isoformat())
@@ -63,6 +65,7 @@ class ExecutionResult:
 @dataclass
 class WaveExecutionReport:
     """Report for a complete wave execution."""
+
     wave_number: int
     total_findings: int
     completed: int = 0
