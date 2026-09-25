@@ -23,7 +23,7 @@ class TestSubprocessTimingEvent:
             try:
                 self.proc.terminate()
                 self.proc.wait(timeout=2)
-            except Exception:
+            except Exception as _err:
                 self.proc.kill()
 
         if Path(self.temp_dir).exists():
@@ -64,6 +64,6 @@ print('DONE', flush=True)
             pytest.fail(f"Subprocess timed out: {stderr}")
 
         self.output = stdout.splitlines()
-        assert "READY" in self.output
-        assert "DONE" in self.output
-        assert self.proc.returncode == 0
+        assert "READY" in self.output, "Condition must be true"
+        assert "DONE" in self.output, "Condition must be true"
+        assert self.proc.returncode == 0, "returncode is not valid"

@@ -96,7 +96,7 @@ class AutoRemediationEngine:
 
             # Execute remediation action
             result = decision["action"](service)
-            
+
             execution_record["status"] = RemediationStatus.COMPLETED.value
             execution_record["success"] = result
             self.throttle_count += 1
@@ -146,7 +146,7 @@ class TestProblemDetection:
         problem = engine.detect_problem(service)
 
         # Assert
-        assert problem is not None
+        assert problem is not None, "problem must be initialized"
         assert problem in ["high_error_rate", "low_uptime", "generic_unhealthy"]
 
     def test_detect_unhealthy_service(self):
@@ -160,32 +160,32 @@ class TestProblemDetection:
         problem = engine.detect_problem(service)
 
         # Assert
-        assert problem is not None
+        assert problem is not None, "problem must be initialized"
 
     def test_no_detection_healthy_service(self):
         """Test no detection for healthy service."""
         # Arrange
         engine = AutoRemediationEngine()
         service = MockService("api")
-        assert service.state == ServiceState.HEALTHY
+        assert service.state == ServiceState.HEALTHY, "state is not valid"
 
         # Act
         problem = engine.detect_problem(service)
 
         # Assert
-        assert problem is None
+        assert problem is None, "problem is not valid"
 
     def test_detection_metrics_thresholds(self):
         """Test problem detection based on metrics thresholds."""
         # Arrange
         service = MockService("api")
         service.metrics["error_rate"] = 0.75
-        
+
         # Act
         is_problematic = service.metrics["error_rate"] > 0.5
 
         # Assert
-        assert is_problematic is True
+        assert is_problematic is True, "is_problematic is not valid"
 
 
 # ============================================================================
@@ -205,8 +205,8 @@ class TestRemediationDecision:
         decision = engine.decide_remediation("generic_unhealthy")
 
         # Assert
-        assert decision is not None
-        assert decision["problem_type"] == "generic_unhealthy"
+        assert decision is not None, "decision must be initialized"
+        assert decision["problem_type"] == "generic_unhealthy", "Condition must be true"
 
     def test_rule_priority_selection(self):
         """Test selection based on rule priority."""
@@ -219,8 +219,8 @@ class TestRemediationDecision:
         decision = engine.decide_remediation("error")
 
         # Assert
-        assert decision is not None
-        assert decision["priority"] == 10
+        assert decision is not None, "decision must be initialized"
+        assert decision["priority"] == 10, "Condition must be true"
 
     def test_no_matching_rule(self):
         """Test behavior with no matching remediation rule."""
@@ -232,7 +232,7 @@ class TestRemediationDecision:
         decision = engine.decide_remediation("unknown_problem")
 
         # Assert
-        assert decision is None
+        assert decision is None, "decision is not valid"
 
 
 # ============================================================================
@@ -254,8 +254,8 @@ class TestRemediationExecution:
         result = engine.execute_remediation(service, "unhealthy")
 
         # Assert
-        assert result is True
-        assert service.state == ServiceState.HEALTHY
+        assert result is True, "Result must not be empty"
+        assert service.state == ServiceState.HEALTHY, "state is not valid"
 
     def test_remediation_execution_audit_trail(self):
         """Test audit trail for remediation execution."""
@@ -269,10 +269,10 @@ class TestRemediationExecution:
         engine.execute_remediation(service, "unhealthy")
 
         # Assert
-        assert len(engine.execution_history) == 1
+        assert len(engine.execution_history) == 1, "Collection must not be empty"
         record = engine.execution_history[0]
-        assert record["service"] == "api"
-        assert record["status"] == RemediationStatus.COMPLETED.value
+        assert record["service"] == "api", "rec is not valid"
+        assert record["status"] == RemediationStatus.COMPLETED.value, "Value must be initialized"
 
     def test_remediation_execution_failure_logging(self):
         """Test failure logging for remediation."""
@@ -287,9 +287,9 @@ class TestRemediationExecution:
         result = engine.execute_remediation(service, "error")
 
         # Assert
-        assert result is False
-        assert len(engine.execution_history) == 1
-        assert engine.execution_history[0]["status"] == RemediationStatus.FAILED.value
+        assert result is False, "Result must not be empty"
+        assert len(engine.execution_history) == 1, "Collection must not be empty"
+        assert engine.execution_history[0]["status"] == RemediationStatus.FAILED.value, "Value must be initialized"
 
 
 # ============================================================================
@@ -312,7 +312,7 @@ class TestRemediationValidation:
         is_valid = engine.validate_remediation(service)
 
         # Assert
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_failed_remediation(self):
         """Test validating failed remediation."""
@@ -326,7 +326,7 @@ class TestRemediationValidation:
         is_valid = engine.validate_remediation(service)
 
         # Assert
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
 
 # ============================================================================
@@ -349,8 +349,8 @@ class TestRemediationRollback:
         result = engine.enable_rollback(0)
 
         # Assert
-        assert result is True
-        assert engine.execution_history[0].get("rollback_available") is True
+        assert result is True, "Result must not be empty"
+        assert engine.execution_history[0].get("rollback_available") is True, "Condition must be true"
 
     def test_rollback_remediation(self):
         """Test rolling back a remediation."""
@@ -366,8 +366,8 @@ class TestRemediationRollback:
         result = engine.rollback_remediation(0)
 
         # Assert
-        assert result is True
-        assert engine.execution_history[0]["status"] == RemediationStatus.ROLLED_BACK.value
+        assert result is True, "Result must not be empty"
+        assert engine.execution_history[0]["status"] == RemediationStatus.ROLLED_BACK.value, "Value must be initialized"
 
     def test_rollback_unavailable(self):
         """Test rollback when not available."""
@@ -379,7 +379,7 @@ class TestRemediationRollback:
         result = engine.rollback_remediation(0)
 
         # Assert
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -407,7 +407,7 @@ class TestRemediationThrottling:
                 execution_count += 1
 
         # Assert
-        assert execution_count <= engine.max_throttle
+        assert execution_count <= engine.max_throttle, "Count must be greater than zero"
 
     def test_throttle_window_reset(self):
         """Test throttle window behavior."""
@@ -420,14 +420,14 @@ class TestRemediationThrottling:
         is_throttled = engine.throttle_count >= engine.max_throttle
 
         # Assert
-        assert is_throttled is False
+        assert is_throttled is False, "is_throttled is not valid"
 
     def test_cascading_failure_prevention(self):
         """Test preventing cascading failures."""
         # Arrange
         engine = AutoRemediationEngine()
         engine.max_throttle = 2
-        
+
         # Act
         throttle_states = []
         for i in range(5):
@@ -436,7 +436,7 @@ class TestRemediationThrottling:
 
         # Assert
         # After 3 attempts, should be throttled
-        assert throttle_states[2] is True
+        assert throttle_states[2] is True, "Condition must be true"
 
 
 # ============================================================================
@@ -457,8 +457,8 @@ class TestCustomRemediationRules:
         result = engine.register_rule("connection_pool_issue", custom_action, priority=5)
 
         # Assert
-        assert result is True
-        assert len(engine.remediation_rules) == 1
+        assert result is True, "Result must not be empty"
+        assert len(engine.remediation_rules) == 1, "Collection must not be empty"
 
     def test_multiple_custom_rules(self):
         """Test multiple custom remediation rules."""
@@ -471,14 +471,14 @@ class TestCustomRemediationRules:
         engine.register_rule("rule3", lambda s: "action3", priority=3)
 
         # Assert
-        assert len(engine.remediation_rules) == 3
+        assert len(engine.remediation_rules) == 3, "Collection must not be empty"
 
     def test_custom_rule_execution(self):
         """Test execution of custom remediation rule."""
         # Arrange
         engine = AutoRemediationEngine()
         service = MockService("cache")
-        
+
         def custom_action(s):
             return s.reset_connection_pool()
         engine.register_rule("custom_issue", custom_action)
@@ -488,7 +488,7 @@ class TestCustomRemediationRules:
         result = engine.execute_remediation(service, "custom_issue")
 
         # Assert
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 # ============================================================================
@@ -504,7 +504,7 @@ class TestAutoRemediationStress:
         engine = AutoRemediationEngine()
         engine.max_throttle = 50  # Higher threshold for stress test
         engine.register_rule("error", lambda s: s.restart() if s.state != ServiceState.HEALTHY else True)
-        
+
         # Act
         success_count = 0
         for i in range(20):
@@ -514,7 +514,7 @@ class TestAutoRemediationStress:
                 success_count += 1
 
         # Assert
-        assert success_count == 20
+        assert success_count == 20, "Count must be greater than zero"
 
     def test_multi_service_remediation(self):
         """Test remediation across multiple services."""
@@ -531,7 +531,7 @@ class TestAutoRemediationStress:
                 remediation_count += 1
 
         # Assert
-        assert remediation_count == 5
+        assert remediation_count == 5, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

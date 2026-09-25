@@ -232,7 +232,12 @@ def cmd_ping() -> None:
         dal = ArchiveDAL.from_env()
         with dal.txn():
             pass
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - diagnostic path
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - diagnostic path
         status = "error"
         detail = str(exc)
     payload = {

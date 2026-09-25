@@ -97,16 +97,16 @@
 #             shim2 = Path(tmpdir) / "shim2.py"
 #             write_python_shim(shim1, "src.module1")
 #             write_python_shim(shim2, "src.module2")
-# 
+#
 #             assert shim1.exists(), "Condition must be true"
 #             assert shim2.exists(), "Condition must be true"
-# 
+#
 #             content1 = shim1.read_text()
 #             content2 = shim2.read_text()
-# 
+#
 #             assert "from module1 import *" in content1, "Content must not be empty"
 #             assert "from module2 import *" in content2, "Content must not be empty"
-# 
+#
 #     def test_write_python_shim_special_characters_in_path(self):
 #     def test_write_python_shim_special_characters_in_path(self):
 #         """Test with special characters in module path."""
@@ -162,7 +162,7 @@
 #             pointer2 = Path(tmpdir) / "readme2.md"
 #             write_markdown_pointer(pointer1, "docs/canonical1.md")
 #             write_markdown_pointer(pointer2, "docs/canonical2.md")
-# 
+#
 #             assert pointer1.exists(), "Condition must be true"
 #             assert pointer2.exists(), "Condition must be true"
 #             content = duplicate.read_text()
@@ -187,11 +187,11 @@
 #             content = duplicate.read_text()
 #             import json
 #             import json
-# 
+#
 #             data = json.loads(content)
 #             assert "$ref" in data, "Data must not be empty"
 #             assert data["$ref"] == canonical_path, "Data must not be empty"
-# 
+#
 #     def test_write_json_pointer_ref_format(self):
 #     def test_write_json_pointer_ref_format(self):
 #         """Test that $ref is properly formatted."""
@@ -226,7 +226,7 @@
 #             json2 = Path(tmpdir) / "config2.json"
 #             write_json_pointer(json1, "canonical/config1.json")
 #             write_json_pointer(json2, "canonical/config2.json")
-# 
+#
 #             assert json1.exists(), "Condition must be true"
 #             assert json2.exists(), "Condition must be true"
 #             content = duplicate.read_text()
@@ -275,12 +275,12 @@
 #             csv2 = Path(tmpdir) / "data2.csv"
 #             write_csv_pointer(csv1, "canonical/data1.csv")
 #             write_csv_pointer(csv2, "canonical/data2.csv")
-# 
+#
 #             assert csv1.exists(), "Condition must be true"
 #             assert csv2.exists(), "Condition must be true"
 #             # Should have forward slashes in JSON
 #             assert (, "Condition must be true"
-# 
+#
 #             assert (, "Condition must be true"
 #     """Test suite for _PY_WARN constant."""
 #     def test_py_warn_contains_warning_import(self):
@@ -304,7 +304,7 @@
 #         """Test that _PY_WARN is a string."""
 #         assert isinstance(_PY_WARN, str)
 #             assert (, "Condition must be true"
-# 
+#
 #             assert (, "Condition must be true"
 #     """Integration tests for shim functions."""
 #     def test_all_shim_types_in_temp_directory(self):
@@ -319,12 +319,12 @@
 #             write_markdown_pointer(md_pointer, "docs/canonical.md")
 #             write_json_pointer(json_pointer, "canonical.json")
 #             write_csv_pointer(csv_pointer, "canonical.csv")
-# 
+#
 #             assert py_shim.exists(), "Condition must be true"
 #             assert md_pointer.exists(), "Condition must be true"
 #             assert json_pointer.exists(), "Condition must be true"
 #             assert csv_pointer.exists(), "Condition must be true"
-# 
+#
 #     def test_directory_hierarchy_maintained(self):
 #     def test_directory_hierarchy_maintained(self):
 #         """Test that directory hierarchy is properly maintained."""
@@ -336,7 +336,7 @@
 #             assert deep_path.parent == Path(tmpdir) / "a" / "b" / "c" / "d", "parent is not valid"
 #             # Should have forward slashes in JSON
 #             assert (, "Condition must be true"
-# 
+#
 #             assert (, "Condition must be true"
 #     """Test edge cases for shim functions."""
 #     def test_write_python_shim_with_dots_in_path(self):

@@ -6,7 +6,7 @@ concrete implementations.
 
 Key Exports:
     - DatasetProtocol: Interface for dataset operations
-    - ModelProtocol: Interface for model operations  
+    - ModelProtocol: Interface for model operations
     - OptimizerProtocol: Interface for optimizer operations
     - SchedulerProtocol: Interface for scheduler operations
     - MetricsProtocol: Interface for metrics operations
@@ -22,7 +22,7 @@ Usage:
         ModelProtocol,
         TrainerProtocol,
     )
-    
+
     def train(
         trainer: TrainerProtocol,
         model: ModelProtocol,

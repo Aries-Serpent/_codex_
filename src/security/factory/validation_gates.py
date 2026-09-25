@@ -17,6 +17,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 class GateStatus(str, Enum):
     """Status of a validation gate."""
+
     PASSED = "passed"
     FAILED = "failed"
     WARNING = "warning"
@@ -26,6 +27,7 @@ class GateStatus(str, Enum):
 @dataclass
 class GateResult:
     """Result of a single validation gate."""
+
     gate_name: str
     status: GateStatus
     checks_run: int = 0
@@ -44,6 +46,7 @@ class GateResult:
 @dataclass
 class ValidationGateReport:
     """Report for complete validation gate run."""
+
     finding_id: str
     gate_results: List[GateResult] = field(default_factory=list)
     all_passed: bool = True

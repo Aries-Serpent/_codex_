@@ -113,7 +113,7 @@ class DecisionDomainMapper:
         metadata: Optional[dict[str, Any]] = None,
     ) -> DomainCompatibility:
         """Register a decision domain for hybrid optimization"""
-        
+
         defaults = self._default_thresholds.get(domain, {})
         thresholds = {**defaults, **(custom_thresholds or {})}
 
@@ -147,19 +147,18 @@ class DecisionDomainMapper:
 
         return compat
 
-    def generate_mapping(
-        self, include_high_risk: bool = False
-    ) -> DomainMapping:
+    def generate_mapping(self, include_high_risk: bool = False) -> DomainMapping:
         """Generate domain mapping with compatibility assessments"""
-        
+
         mapping_id = f"mapping_{int(time.time())}"
         total = len(self._domains)
-        
+
         if include_high_risk:
             compatible = total
         else:
             compatible = sum(
-                1 for d in self._domains.values()
+                1
+                for d in self._domains.values()
                 if d.risk_level in (RiskLevel.LOW, RiskLevel.MEDIUM)
             )
 
@@ -173,21 +172,15 @@ class DecisionDomainMapper:
 
         logger.info(
             f"Generated domain mapping: {total} total, "
-            f"{compatible} compatible ({mapping.compatibility_pct*100:.1f}%)"
+            f"{compatible} compatible ({mapping.compatibility_pct * 100:.1f}%)"
         )
 
         return mapping
 
     def get_low_risk_domains(self) -> list[DomainCompatibility]:
         """Get low-risk domains suitable for immediate Phase 6 promotion"""
-        return [
-            d for d in self._domains.values()
-            if d.risk_level == RiskLevel.LOW
-        ]
+        return [d for d in self._domains.values() if d.risk_level == RiskLevel.LOW]
 
     def get_medium_risk_domains(self) -> list[DomainCompatibility]:
         """Get medium-risk domains for Phase 6 staged promotion"""
-        return [
-            d for d in self._domains.values()
-            if d.risk_level == RiskLevel.MEDIUM
-        ]
+        return [d for d in self._domains.values() if d.risk_level == RiskLevel.MEDIUM]

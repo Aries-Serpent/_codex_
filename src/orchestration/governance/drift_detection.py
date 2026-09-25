@@ -71,10 +71,16 @@ class DriftDetector:
             "lane_c_success_rate": BaselineMetrics("lane_c_success_rate", 99.0, tolerance_pct=1.0),
             "lane_d_success_rate": BaselineMetrics("lane_d_success_rate", 99.2, tolerance_pct=0.8),
             "lane_e_success_rate": BaselineMetrics("lane_e_success_rate", 99.0, tolerance_pct=1.0),
-            "orchestration_overhead_pct": BaselineMetrics("orchestration_overhead_pct", 2.5, tolerance_pct=1.5),
+            "orchestration_overhead_pct": BaselineMetrics(
+                "orchestration_overhead_pct", 2.5, tolerance_pct=1.5
+            ),
             "decision_latency_ms": BaselineMetrics("decision_latency_ms", 150.0, tolerance_pct=0.5),
-            "replay_determinism_pct": BaselineMetrics("replay_determinism_pct", 100.0, tolerance_pct=0.1),
-            "error_budget_burn_rate": BaselineMetrics("error_budget_burn_rate", 0.5, tolerance_pct=2.0),
+            "replay_determinism_pct": BaselineMetrics(
+                "replay_determinism_pct", 100.0, tolerance_pct=0.1
+            ),
+            "error_budget_burn_rate": BaselineMetrics(
+                "error_budget_burn_rate", 0.5, tolerance_pct=2.0
+            ),
         }
 
     def detect_drift(self, observed_metrics: Dict[str, float]) -> DriftReport:
@@ -96,10 +102,14 @@ class DriftDetector:
                 continue
 
             observed_value = observed_metrics[metric_name]
-            drift_magnitude_pct = abs((observed_value - baseline.expected_value) / baseline.expected_value * 100)
+            drift_magnitude_pct = abs(
+                (observed_value - baseline.expected_value) / baseline.expected_value * 100
+            )
 
             if drift_magnitude_pct > baseline.tolerance_pct:
-                severity = "alert" if drift_magnitude_pct > baseline.tolerance_pct * 2 else "warning"
+                severity = (
+                    "alert" if drift_magnitude_pct > baseline.tolerance_pct * 2 else "warning"
+                )
 
                 observation = DriftObservation(
                     metric_name=metric_name,
@@ -159,19 +169,26 @@ class DriftDetector:
             return {"total_reports": 0, "drifts_detected": 0}
 
         total_drifts = sum(len(r.metrics_with_drift) for r in self.reports)
-        avg_drift_magnitude = (sum(r.drift_magnitude_pct for r in self.reports) / len(self.reports)) if self.reports else 0
+        avg_drift_magnitude = (
+            (sum(r.drift_magnitude_pct for r in self.reports) / len(self.reports))
+            if self.reports
+            else 0
+        )
 
         return {
             "total_reports": len(self.reports),
             "total_drifts_detected": total_drifts,
             "avg_drift_magnitude_pct": avg_drift_magnitude,
-            "false_positive_rate_pct": sum(r.false_positive_rate_pct for r in self.reports) / len(self.reports)
+            "false_positive_rate_pct": sum(r.false_positive_rate_pct for r in self.reports)
+            / len(self.reports)
             if self.reports
             else 0,
             "issues_generated": sum(1 for r in self.reports if r.action_taken == "issue_generated"),
         }
 
-    def update_baseline(self, metric_name: str, new_expected_value: float, new_tolerance_pct: float) -> bool:
+    def update_baseline(
+        self, metric_name: str, new_expected_value: float, new_tolerance_pct: float
+    ) -> bool:
         """Update baseline for a specific metric."""
         if metric_name not in self.baseline_metrics:
             logger.warning(f"Metric {metric_name} not found in baseline")

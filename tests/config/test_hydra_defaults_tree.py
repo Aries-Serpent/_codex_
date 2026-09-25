@@ -33,7 +33,6 @@ def test_hydra_compose_smoke():
         import sys as _sys_hydra
 
         from hydra import compose, initialize_config_dir
-
         from omegaconf import OmegaConf
 
         hydra_module = _sys_hydra.modules["hydra"]
@@ -44,7 +43,7 @@ def test_hydra_compose_smoke():
         pytest.skip("Hydra stub active")
 
     cfg_dir = _config_root().resolve()
-    
+
     # Try to compose with defaults config, but skip gracefully if it fails
     # due to missing configuration group files
     try:

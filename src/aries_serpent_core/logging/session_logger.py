@@ -45,7 +45,12 @@ _fetch_messages_mod = import_module(".fetch_messages", __package__)
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback when not a package
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - fallback when not a package
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
@@ -69,7 +74,12 @@ except (ImportError, AttributeError):
             from aries_serpent_core.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
                 log_event as _shared_log_event,
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - nothing available
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - nothing available
             _shared_log_event = None  # type: ignore[assignment]
 # Local, minimal fallbacks (if needed)
 # ------------------------------------

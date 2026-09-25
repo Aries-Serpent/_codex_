@@ -99,7 +99,7 @@ class TestCLIEndToEndWorkflows:
             assert result.exit_code in [0, 2]
             # Should be able to create output files if needed
             Path("output.txt").write_text("output\n")
-            assert Path("output.txt").exists()
+            assert Path("output.txt").exists(), "Condition must be true"
 
     def test_cli_error_recovery_workflow(self):
         """Test CLI error recovery workflow."""
@@ -318,7 +318,7 @@ class TestCLIErrorRecovery:
         result = runner.invoke(main_cli, ["--invalid-flag"])
         # Should show help or error, not crash
         assert isinstance(result.exit_code, int)
-        assert result.exit_code != 0 or "invalid" in result.output.lower()
+        assert result.exit_code != 0 or "invalid" in result.output.lower(), "Result must not be empty"
 
     def test_cli_recovery_after_partial_failure(self):
         """Test CLI recovery after partial execution failure."""
@@ -414,7 +414,7 @@ class TestCLIPerformance:
             elapsed = time.time() - start
 
             # Should complete in reasonable time
-            assert elapsed < 5.0
+            assert elapsed < 5.0, "elapsed is not valid"
             assert result.exit_code in [0, 2]
 
 
@@ -467,8 +467,8 @@ class TestCLIParallelExecution:
         result2 = runner.invoke(main_cli, ["--help"])
 
         # Same input should produce same output
-        assert result1.output == result2.output
-        assert result1.exit_code == result2.exit_code
+        assert result1.output == result2.output, "Result must not be empty"
+        assert result1.exit_code == result2.exit_code, "Result must not be empty"
 
 
 class TestCLIIntegrationWithEnvironment:
@@ -511,7 +511,7 @@ class TestCLIIntegrationWithEnvironment:
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
         # Should return to original directory
-        assert os.getcwd() == original_cwd
+        assert os.getcwd() == original_cwd, "Condition must be true"
 
     def test_cli_preserves_environment_state(self):
         """Test that CLI doesn't permanently modify environment."""
@@ -524,4 +524,4 @@ class TestCLIIntegrationWithEnvironment:
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"], env={"TEST_VAR": "test_value"})
         # Environment should not be permanently modified
-        assert os.environ == original_env
+        assert os.environ == original_env, "environ is not valid"

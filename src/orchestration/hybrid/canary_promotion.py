@@ -153,11 +153,11 @@ class CanaryPromoter:
         # Set recommendation
         if not sla_met:
             gate_eval.recommendation = (
-                f"❌ SLA not compliant. Keep {config['percentage']*100:.0f}% stage."
+                f"❌ SLA not compliant. Keep {config['percentage'] * 100:.0f}% stage."
             )
         elif not accuracy_met:
             gate_eval.recommendation = (
-                f"⚠️  Accuracy {cohort_accuracy*100:.1f}% < 99% threshold. "
+                f"⚠️  Accuracy {cohort_accuracy * 100:.1f}% < 99% threshold. "
                 "Investigate hybrid results."
             )
         elif not volume_met:
@@ -167,18 +167,15 @@ class CanaryPromoter:
             )
         elif not duration_met:
             gate_eval.recommendation = (
-                f"⏳ Insufficient duration ({hours_elapsed:.1f}/{config['min_duration_hours']} hours). "
+                f"⏳ Insufficient duration ({hours_elapsed:.1f}/{config['min_duration_hours']} hours). "  # noqa: E501
                 "Monitor longer."
             )
         elif ready:
             next_pct = (
-                config["percentage"] * 100
-                if stage != CanaryStage.STAGE_4_FULL_ROLLOUT
-                else 100
+                config["percentage"] * 100 if stage != CanaryStage.STAGE_4_FULL_ROLLOUT else 100
             )
             gate_eval.recommendation = (
-                f"✅ READY TO PROMOTE: Advance to "
-                f"{next_pct:.0f}% canary stage"
+                f"✅ READY TO PROMOTE: Advance to {next_pct:.0f}% canary stage"
             )
 
         logger.info(
@@ -198,8 +195,7 @@ class CanaryPromoter:
 
         if not gate_eval.ready_for_next_stage:
             logger.warning(
-                f"Cannot promote from {self._current_stage.value}: "
-                f"Gate evaluation not ready"
+                f"Cannot promote from {self._current_stage.value}: Gate evaluation not ready"
             )
             return None
 
@@ -227,8 +223,7 @@ class CanaryPromoter:
             canary_percentage=config["percentage"],
             decisions_in_cohort=gate_eval.evidence.get("num_samples", 0),
             decisions_routed_to_hybrid=int(
-                gate_eval.evidence.get("num_samples", 0)
-                * config["percentage"]
+                gate_eval.evidence.get("num_samples", 0) * config["percentage"]
             ),
             hybrid_success_rate=gate_eval.cohort_accuracy,
             classical_fallback_rate=1.0 - gate_eval.cohort_accuracy,
@@ -238,10 +233,7 @@ class CanaryPromoter:
         )
 
         self._stage_history.append(status)
-        logger.info(
-            f"✅ PROMOTED to {next_stage.value} "
-            f"({config['percentage']*100:.0f}% canary)"
-        )
+        logger.info(f"✅ PROMOTED to {next_stage.value} ({config['percentage'] * 100:.0f}% canary)")
 
         return status
 

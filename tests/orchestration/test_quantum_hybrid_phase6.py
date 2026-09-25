@@ -25,8 +25,8 @@ class TestCohortRouting:
     def test_router_init(self):
         """Test CohortRouter initialization"""
         router = CohortRouter()
-        assert router is not None
-        assert len(router._classifications) == 0
+        assert router is not None, "router must be initialized"
+        assert len(router._classifications) == 0, "Collection must not be empty"
 
     def test_classify_low_risk_decision(self):
         """Test classifying a low-risk decision"""
@@ -39,8 +39,8 @@ class TestCohortRouting:
                 "operational_criticality": 0.1,
             },
         )
-        assert classification.decision_id == "dec_1"
-        assert classification.cohort == CohortRisk.LOW
+        assert classification.decision_id == "dec_1", "decision_id is not valid"
+        assert classification.cohort == CohortRisk.LOW, "cohort is not valid"
 
     def test_classify_medium_risk_decision(self):
         """Test classifying a medium-risk decision"""
@@ -53,7 +53,7 @@ class TestCohortRouting:
                 "operational_criticality": 0.5,
             },
         )
-        assert classification.cohort == CohortRisk.MEDIUM
+        assert classification.cohort == CohortRisk.MEDIUM, "cohort is not valid"
 
     def test_classify_high_risk_decision(self):
         """Test classifying a high-risk decision"""
@@ -66,7 +66,7 @@ class TestCohortRouting:
                 "operational_criticality": 0.9,
             },
         )
-        assert classification.cohort == CohortRisk.HIGH
+        assert classification.cohort == CohortRisk.HIGH, "cohort is not valid"
 
     def test_generate_routes_single_cohort(self):
         """Test generating routes with single cohort"""
@@ -74,8 +74,8 @@ class TestCohortRouting:
         router.classify_decision("dec_1", {"financial_impact": 0.1})
         router.classify_decision("dec_2", {"financial_impact": 0.1})
         routes = router.generate_routes()
-        assert routes.total_decisions == 2
-        assert routes.low_risk_count == 2
+        assert routes.total_decisions == 2, "total_decisions is not valid"
+        assert routes.low_risk_count == 2, "Count must be greater than zero"
 
     def test_generate_routes_mixed_cohorts(self):
         """Test generating routes with mixed cohorts"""
@@ -84,10 +84,10 @@ class TestCohortRouting:
         router.classify_decision("dec_med", {"financial_impact": 0.5})
         router.classify_decision("dec_high", {"financial_impact": 0.9})
         routes = router.generate_routes()
-        assert routes.total_decisions == 3
-        assert routes.low_risk_count == 1
-        assert routes.medium_risk_count == 1
-        assert routes.high_risk_count == 1
+        assert routes.total_decisions == 3, "total_decisions is not valid"
+        assert routes.low_risk_count == 1, "Count must be greater than zero"
+        assert routes.medium_risk_count == 1, "Count must be greater than zero"
+        assert routes.high_risk_count == 1, "Count must be greater than zero"
 
     def test_routing_history_tracking(self):
         """Test routing history tracking"""
@@ -96,7 +96,7 @@ class TestCohortRouting:
             router.classify_decision(f"dec_{i}", {"financial_impact": 0.1 * (i+1)})
             router.generate_routes()
         history = router.get_routing_history()
-        assert len(history) == 3
+        assert len(history) == 3, "History must not be empty"
 
     def test_get_latest_routes(self):
         """Test getting latest routing result"""
@@ -104,8 +104,8 @@ class TestCohortRouting:
         router.classify_decision("dec_1", {"financial_impact": 0.1})
         routes = router.generate_routes()
         latest = router.get_latest_routes()
-        assert latest is not None
-        assert latest.routing_id == routes.routing_id
+        assert latest is not None, "latest must be initialized"
+        assert latest.routing_id == routes.routing_id, "routing_id is not valid"
 
     def test_reversibility_negative_weight(self):
         """Test reversibility factor reduces risk"""
@@ -119,7 +119,7 @@ class TestCohortRouting:
             },
         )
         # Score should be lower due to reversibility
-        assert classification.risk_score < 0.5
+        assert classification.risk_score < 0.5, "risk_score is not valid"
 
     def test_classify_with_domain_metadata(self):
         """Test classification with domain metadata"""
@@ -130,8 +130,8 @@ class TestCohortRouting:
             domain="resource_allocation",
             metadata={"solver": "linear", "constraints": 10},
         )
-        assert classification.metadata["domain"] == "resource_allocation"
-        assert classification.metadata["solver"] == "linear"
+        assert classification.metadata["domain"] == "resource_allocation", "Data must not be empty"
+        assert classification.metadata["solver"] == "linear", "Data must not be empty"
 
     def test_empty_risk_indicators(self):
         """Test with no risk indicators defaults to medium"""
@@ -141,7 +141,7 @@ class TestCohortRouting:
             risk_indicators={},
         )
         # Should default to medium risk
-        assert classification.cohort == CohortRisk.MEDIUM
+        assert classification.cohort == CohortRisk.MEDIUM, "cohort is not valid"
 
 
 class TestSLAMonitoring:
@@ -150,21 +150,21 @@ class TestSLAMonitoring:
     def test_sla_monitor_init(self):
         """Test SLAMonitor initialization"""
         monitor = SLAMonitor()
-        assert monitor is not None
-        assert len(monitor._measurements) == 0
+        assert monitor is not None, "monitor must be initialized"
+        assert len(monitor._measurements) == 0, "Collection must not be empty"
 
     def test_record_success_rate(self):
         """Test recording success rate metric"""
         monitor = SLAMonitor()
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
-        assert len(monitor._measurements) == 1
-        assert monitor._measurements[0].value == 0.995
+        assert len(monitor._measurements) == 1, "Collection must not be empty"
+        assert monitor._measurements[0].value == 0.995, "Value must be initialized"
 
     def test_record_latency(self):
         """Test recording latency metric"""
         monitor = SLAMonitor()
         monitor.record_measurement(SLAMetric.LATENCY, 1500.0)
-        assert monitor._measurements[0].metric == SLAMetric.LATENCY
+        assert monitor._measurements[0].metric == SLAMetric.LATENCY, "metric is not valid"
 
     def test_record_multiple_measurements(self):
         """Test recording multiple measurements"""
@@ -172,7 +172,7 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
         monitor.record_measurement(SLAMetric.LATENCY, 1500.0)
         monitor.record_measurement(SLAMetric.CORRECTNESS, 0.9995)
-        assert len(monitor._measurements) == 3
+        assert len(monitor._measurements) == 3, "Collection must not be empty"
 
     def test_evaluate_compliant(self):
         """Test evaluation when compliant"""
@@ -182,7 +182,7 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.LATENCY, 2500.0)  # Above threshold to avoid breach
         monitor.record_measurement(SLAMetric.CORRECTNESS, 0.9995)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert report.compliance_status == ComplianceStatus.COMPLIANT
+        assert report.compliance_status == ComplianceStatus.COMPLIANT, "compliance_status is not valid"
 
     def test_evaluate_breached_success_rate(self):
         """Test evaluation with breached success rate"""
@@ -191,8 +191,8 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.LATENCY, 1500.0)
         monitor.record_measurement(SLAMetric.CORRECTNESS, 0.9995)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert report.compliance_status == ComplianceStatus.BREACHED
-        assert len(report.breaches_detected) > 0
+        assert report.compliance_status == ComplianceStatus.BREACHED, "compliance_status is not valid"
+        assert len(report.breaches_detected) > 0, "Collection must not be empty"
 
     def test_evaluate_breached_latency(self):
         """Test evaluation with breached latency"""
@@ -204,7 +204,7 @@ class TestSLAMonitoring:
         report = monitor.evaluate_compliance(canary_percentage=0.01)
         # Record high success rate to avoid that breach
         # Test is checking implementation behavior
-        assert report is not None
+        assert report is not None, "report must be initialized"
 
     def test_evaluate_approaching_breach(self):
         """Test evaluation when approaching breach"""
@@ -229,8 +229,8 @@ class TestSLAMonitoring:
         monitor = SLAMonitor(fallback_fn=mock_fallback)
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.98)  # Breach
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert fallback_called is True
-        assert report.fallback_triggered is True
+        assert fallback_called is True, "fallback_called is not valid"
+        assert report.fallback_triggered is True, "fallback_triggered is not valid"
 
     def test_metrics_summary_calculation(self):
         """Test metrics summary calculation"""
@@ -239,7 +239,7 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.996)
         monitor.record_measurement(SLAMetric.LATENCY, 1500.0)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert SLAMetric.SUCCESS_RATE.value in report.metrics_summary
+        assert SLAMetric.SUCCESS_RATE.value in report.metrics_summary, "Value must be initialized"
 
     def test_sla_report_history(self):
         """Test SLA report history tracking"""
@@ -248,7 +248,7 @@ class TestSLAMonitoring:
             monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
             monitor.evaluate_compliance(canary_percentage=0.01)
         history = monitor.get_compliance_history()
-        assert len(history) == 3
+        assert len(history) == 3, "History must not be empty"
 
     def test_get_latest_report(self):
         """Test getting latest SLA report"""
@@ -256,15 +256,15 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
         latest = monitor.get_latest_report()
-        assert latest is not None
-        assert latest.report_id == report.report_id
+        assert latest is not None, "latest must be initialized"
+        assert latest.report_id == report.report_id, "report_id is not valid"
 
     def test_insufficient_data_handling(self):
         """Test handling when no measurements recorded"""
         monitor = SLAMonitor()
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert report.compliance_status == ComplianceStatus.APPROACHING_BREACH
-        assert "Insufficient data" in report.recommendation
+        assert report.compliance_status == ComplianceStatus.APPROACHING_BREACH, "compliance_status is not valid"
+        assert "Insufficient data" in report.recommendation, "Data must not be empty"
 
     def test_window_based_measurement_filtering(self):
         """Test that measurements outside window are excluded"""
@@ -274,7 +274,7 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
         report = monitor.evaluate_compliance(canary_percentage=0.01, window_seconds=300)
         # Recent measurement should be included
-        assert len(report.measurements) > 0
+        assert len(report.measurements) > 0, "Collection must not be empty"
 
     def test_recommendation_compliant(self):
         """Test recommendation text when compliant"""
@@ -284,16 +284,16 @@ class TestSLAMonitoring:
         monitor.record_measurement(SLAMetric.CORRECTNESS, 0.9995)
         report = monitor.evaluate_compliance(canary_percentage=0.05)
         # Just check that we get a recommendation string
-        assert report.recommendation is not None
-        assert len(report.recommendation) > 0
+        assert report.recommendation is not None, "recommendation must be initialized"
+        assert len(report.recommendation) > 0, "Collection must not be empty"
 
     def test_recommendation_breached(self):
         """Test recommendation text when breached"""
         monitor = SLAMonitor()
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.98)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert "BREACH" in report.recommendation
-        assert "fallback" in report.recommendation.lower()
+        assert "BREACH" in report.recommendation, "Condition must be true"
+        assert "fallback" in report.recommendation.lower(), "Condition must be true"
 
 
 class TestCanaryPromotion:
@@ -302,7 +302,7 @@ class TestCanaryPromotion:
     def test_canary_promoter_init(self):
         """Test CanaryPromoter initialization"""
         promoter = CanaryPromoter()
-        assert promoter.get_current_stage() == CanaryStage.STAGE_0_SHADOW
+        assert promoter.get_current_stage() == CanaryStage.STAGE_0_SHADOW, "Condition must be true"
 
     def test_evaluate_stage_1_ready(self):
         """Test evaluation for Stage 1 (1%) readiness"""
@@ -314,7 +314,7 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=30,
         )
-        assert gate_eval.ready_for_next_stage is True
+        assert gate_eval.ready_for_next_stage is True, "ready_for_next_stage is not valid"
 
     def test_evaluate_stage_1_insufficient_volume(self):
         """Test Stage 1 fails with insufficient samples"""
@@ -326,8 +326,8 @@ class TestCanaryPromotion:
             num_samples=50,  # Below 100 minimum
             hours_elapsed=30,
         )
-        assert gate_eval.ready_for_next_stage is False
-        assert gate_eval.volume_threshold_met is False
+        assert gate_eval.ready_for_next_stage is False, "ready_for_next_stage is not valid"
+        assert gate_eval.volume_threshold_met is False, "volume_threshold_met is not valid"
 
     def test_evaluate_stage_1_insufficient_duration(self):
         """Test Stage 1 fails with insufficient duration"""
@@ -339,8 +339,8 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=12,  # Below 24 hour minimum
         )
-        assert gate_eval.ready_for_next_stage is False
-        assert gate_eval.duration_threshold_met is False
+        assert gate_eval.ready_for_next_stage is False, "ready_for_next_stage is not valid"
+        assert gate_eval.duration_threshold_met is False, "duration_threshold_met is not valid"
 
     def test_evaluate_stage_1_low_accuracy(self):
         """Test Stage 1 fails with low accuracy"""
@@ -352,7 +352,7 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=30,
         )
-        assert gate_eval.ready_for_next_stage is False
+        assert gate_eval.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
     def test_evaluate_stage_1_sla_non_compliant(self):
         """Test Stage 1 fails with SLA non-compliance"""
@@ -364,7 +364,7 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=30,
         )
-        assert gate_eval.ready_for_next_stage is False
+        assert gate_eval.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
     def test_promote_to_stage_1(self):
         """Test promotion to Stage 1"""
@@ -372,7 +372,7 @@ class TestCanaryPromotion:
         # Manually set to STAGE_0 (special case - requires manual progression)
         # Instead, test the stage progression logic by starting from a valid stage
         promoter._current_stage = CanaryStage.STAGE_0_SHADOW
-        
+
         gate_eval = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_1_CANARY_1PCT,
             sla_compliant=True,
@@ -382,14 +382,14 @@ class TestCanaryPromotion:
         )
         # promote_to_next_stage fails from STAGE_0_SHADOW; need to manually test Stage 1→2
         # This test verifies that evaluation is ready
-        assert gate_eval.ready_for_next_stage is True
+        assert gate_eval.ready_for_next_stage is True, "ready_for_next_stage is not valid"
 
     def test_promote_stage_1_to_2(self):
         """Test promotion from Stage 1 to Stage 2"""
         promoter = CanaryPromoter()
         # Manually set to STAGE_1 to test progression
         promoter._current_stage = CanaryStage.STAGE_1_CANARY_1PCT
-        
+
         gate_eval = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_2_CANARY_5PCT,
             sla_compliant=True,
@@ -398,9 +398,9 @@ class TestCanaryPromotion:
             hours_elapsed=60,
         )
         status = promoter.promote_to_next_stage(gate_eval)
-        assert status is not None
-        assert promoter.get_current_stage() == CanaryStage.STAGE_2_CANARY_5PCT
-        assert status.canary_percentage == 0.05
+        assert status is not None, "status must be initialized"
+        assert promoter.get_current_stage() == CanaryStage.STAGE_2_CANARY_5PCT, "Condition must be true"
+        assert status.canary_percentage == 0.05, "canary_percentage is not valid"
 
     def test_promote_to_stage_3(self):
         """Test promotion to Stage 3 (25%)"""
@@ -415,8 +415,8 @@ class TestCanaryPromotion:
             hours_elapsed=80,
         )
         status = promoter.promote_to_next_stage(gate_eval)
-        assert promoter.get_current_stage() == CanaryStage.STAGE_3_CANARY_25PCT
-        assert status.canary_percentage == 0.25
+        assert promoter.get_current_stage() == CanaryStage.STAGE_3_CANARY_25PCT, "Condition must be true"
+        assert status.canary_percentage == 0.25, "canary_percentage is not valid"
 
     def test_promote_to_stage_4_full_rollout(self):
         """Test promotion to Stage 4 (100% - Full Rollout)"""
@@ -431,8 +431,8 @@ class TestCanaryPromotion:
             hours_elapsed=170,
         )
         status = promoter.promote_to_next_stage(gate_eval)
-        assert promoter.is_production_ready() is True
-        assert status.canary_percentage == 1.0
+        assert promoter.is_production_ready() is True, "Condition must be true"
+        assert status.canary_percentage == 1.0, "canary_percentage is not valid"
 
     def test_promotion_cannot_skip_stages(self):
         """Test that stages cannot be skipped"""
@@ -455,7 +455,7 @@ class TestCanaryPromotion:
         promoter = CanaryPromoter()
         # Start from STAGE_0_SHADOW and manually progress
         promoter._current_stage = CanaryStage.STAGE_1_CANARY_1PCT
-        
+
         gate_eval = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_2_CANARY_5PCT,
             sla_compliant=True,
@@ -467,14 +467,14 @@ class TestCanaryPromotion:
             promoter.promote_to_next_stage(gate_eval)
 
         history = promoter.get_promotion_history()
-        assert len(history) >= 1
+        assert len(history) >= 1, "History must not be empty"
 
     def test_get_promotion_status(self):
         """Test getting current promotion status"""
         promoter = CanaryPromoter()
         # Manually set to STAGE_1, then promote to STAGE_2 to get a status
         promoter._current_stage = CanaryStage.STAGE_1_CANARY_1PCT
-        
+
         gate_eval = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_2_CANARY_5PCT,
             sla_compliant=True,
@@ -485,8 +485,8 @@ class TestCanaryPromotion:
         status = promoter.promote_to_next_stage(gate_eval)
         # After promotion, get_promotion_status should return the latest status
         latest_status = promoter.get_promotion_status()
-        assert latest_status is not None
-        assert latest_status.current_stage == CanaryStage.STAGE_2_CANARY_5PCT
+        assert latest_status is not None, "latest_status must be initialized"
+        assert latest_status.current_stage == CanaryStage.STAGE_2_CANARY_5PCT, "current_stage is not valid"
 
     def test_recommendation_ready_for_promotion(self):
         """Test recommendation when ready for promotion"""
@@ -498,8 +498,8 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=30,
         )
-        assert "✅" in gate_eval.recommendation
-        assert "READY" in gate_eval.recommendation
+        assert "✅" in gate_eval.recommendation, "Condition must be true"
+        assert "READY" in gate_eval.recommendation, "Condition must be true"
 
     def test_recommendation_insufficient_volume(self):
         """Test recommendation with insufficient volume"""
@@ -511,7 +511,7 @@ class TestCanaryPromotion:
             num_samples=50,
             hours_elapsed=30,
         )
-        assert "Insufficient volume" in gate_eval.recommendation
+        assert "Insufficient volume" in gate_eval.recommendation, "Condition must be true"
 
     def test_recommendation_insufficient_duration(self):
         """Test recommendation with insufficient duration"""
@@ -523,7 +523,7 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=12,
         )
-        assert "Insufficient duration" in gate_eval.recommendation
+        assert "Insufficient duration" in gate_eval.recommendation, "Condition must be true"
 
     def test_recommendation_low_accuracy(self):
         """Test recommendation with low accuracy"""
@@ -535,22 +535,22 @@ class TestCanaryPromotion:
             num_samples=150,
             hours_elapsed=30,
         )
-        assert "Accuracy" in gate_eval.recommendation
+        assert "Accuracy" in gate_eval.recommendation, "Condition must be true"
 
     def test_stage_config_percentages(self):
         """Test stage configuration percentages"""
         promoter = CanaryPromoter()
-        assert promoter._stage_config[CanaryStage.STAGE_1_CANARY_1PCT]["percentage"] == 0.01
-        assert promoter._stage_config[CanaryStage.STAGE_2_CANARY_5PCT]["percentage"] == 0.05
-        assert promoter._stage_config[CanaryStage.STAGE_3_CANARY_25PCT]["percentage"] == 0.25
-        assert promoter._stage_config[CanaryStage.STAGE_4_FULL_ROLLOUT]["percentage"] == 1.0
+        assert promoter._stage_config[CanaryStage.STAGE_1_CANARY_1PCT]["percentage"] == 0.01, "Condition must be true"
+        assert promoter._stage_config[CanaryStage.STAGE_2_CANARY_5PCT]["percentage"] == 0.05, "Condition must be true"
+        assert promoter._stage_config[CanaryStage.STAGE_3_CANARY_25PCT]["percentage"] == 0.25, "Condition must be true"
+        assert promoter._stage_config[CanaryStage.STAGE_4_FULL_ROLLOUT]["percentage"] == 1.0, "Condition must be true"
 
     def test_stage_config_sample_requirements(self):
         """Test stage configuration sample requirements"""
         promoter = CanaryPromoter()
-        assert promoter._stage_config[CanaryStage.STAGE_1_CANARY_1PCT]["min_samples"] == 100
-        assert promoter._stage_config[CanaryStage.STAGE_2_CANARY_5PCT]["min_samples"] == 500
-        assert promoter._stage_config[CanaryStage.STAGE_3_CANARY_25PCT]["min_samples"] == 2500
+        assert promoter._stage_config[CanaryStage.STAGE_1_CANARY_1PCT]["min_samples"] == 100, "Condition must be true"
+        assert promoter._stage_config[CanaryStage.STAGE_2_CANARY_5PCT]["min_samples"] == 500, "Condition must be true"
+        assert promoter._stage_config[CanaryStage.STAGE_3_CANARY_25PCT]["min_samples"] == 2500, "Condition must be true"
 
     def test_stage_config_duration_requirements(self):
         """Test stage configuration duration requirements"""
@@ -565,7 +565,7 @@ class TestCanaryPromotion:
         # Manually set to STAGE_0_SHADOW → STAGE_1 progression
         # Can't promote from STAGE_0_SHADOW, so test the calculation logic differently
         promoter._current_stage = CanaryStage.STAGE_1_CANARY_1PCT
-        
+
         gate_eval = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_2_CANARY_5PCT,
             sla_compliant=True,
@@ -575,12 +575,12 @@ class TestCanaryPromotion:
         )
         status = promoter.promote_to_next_stage(gate_eval)
         # 5% of 1000 = 50
-        assert status is not None
-        assert status.decisions_routed_to_hybrid == 50
+        assert status is not None, "status must be initialized"
+        assert status.decisions_routed_to_hybrid == 50, "decisions_routed_to_hybrid is not valid"
 
     def test_production_ready_check(self):
         """Test production readiness check"""
         promoter = CanaryPromoter()
-        assert promoter.is_production_ready() is False
+        assert promoter.is_production_ready() is False, "Condition must be true"
         promoter._current_stage = CanaryStage.STAGE_4_FULL_ROLLOUT
-        assert promoter.is_production_ready() is True
+        assert promoter.is_production_ready() is True, "Condition must be true"

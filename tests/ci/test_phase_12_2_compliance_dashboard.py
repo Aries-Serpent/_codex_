@@ -13,7 +13,7 @@ def _load_module():
         / "phase_12_2_compliance_dashboard.py"
     )
     spec = importlib.util.spec_from_file_location("phase_12_2_compliance_dashboard", module_path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -43,7 +43,7 @@ def test_heuristic_secret_scan_diff_skips_allowlisted_lines(monkeypatch):
 
     found, details = mod._heuristic_secret_scan_diff()
 
-    assert found is True
-    assert "webhook-secret" not in details
-    assert "******" not in details
-    assert 'token = "******"'[:20] in details
+    assert found is True, "found is not valid"
+    assert "webhook-secret" not in details, "Condition must be true"
+    assert "******" not in details, "Condition must be true"
+    assert 'token = "******"'[:20] in details, "Condition must be true"

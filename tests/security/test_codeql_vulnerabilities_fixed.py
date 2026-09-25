@@ -37,7 +37,7 @@ class TestCWE89SQLInjection:
         """Verify SQL injection attempts are blocked."""
         with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
             db_path = f.name
-        
+
         try:
             # Create database with test data
             conn = sqlite3.connect(db_path)
@@ -46,19 +46,19 @@ class TestCWE89SQLInjection:
             conn.execute('INSERT INTO users VALUES (2, "user@example.com")')
             conn.commit()
             conn.close()
-            
+
             # Attempt SQL injection
             executor = SecureUserQueryExecutor(db_path)
-            
+
             # SQL injection attempt: "1 OR 1=1--"
             # Vulnerable code would return ALL users
             # Secure code raises TypeError because string is not int
             with pytest.raises(TypeError, match="user_id must be int"):
                 executor.get_user_by_id("1 OR 1=1--")
-            
+
             # Close the connection properly
             executor.conn.close()
-        
+
         finally:
             Path(db_path).unlink(missing_ok=True)
 
@@ -66,7 +66,7 @@ class TestCWE89SQLInjection:
         """Verify type validation prevents SQL injection."""
         with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
             db_path = f.name
-        
+
         try:
             # Create test database
             conn = sqlite3.connect(db_path)
@@ -74,13 +74,13 @@ class TestCWE89SQLInjection:
             conn.execute('INSERT INTO users VALUES (1, "admin@example.com")')
             conn.commit()
             conn.close()
-            
+
             executor = SecureUserQueryExecutor(db_path)
-            
+
             # Type checking prevents injection
             with pytest.raises(TypeError):
                 executor.get_user_by_id("1; DROP TABLE users;--")
-        
+
         finally:
             Path(db_path).unlink(missing_ok=True)
 
@@ -88,7 +88,7 @@ class TestCWE89SQLInjection:
         """Verify parameterized queries prevent SQL injection."""
         with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
             db_path = f.name
-        
+
         try:
             # Create test database
             conn = sqlite3.connect(db_path)
@@ -96,13 +96,13 @@ class TestCWE89SQLInjection:
             conn.execute('INSERT INTO users VALUES (1, "admin@example.com")')
             conn.commit()
             conn.close()
-            
+
             executor = SecureUserQueryExecutor(db_path)
-            
+
             # Valid integer query works
             result = executor.get_user_by_id(1)
-            assert result['email'] == 'admin@example.com'
-        
+            assert result['email'] == 'admin@example.com', "Result must not be empty"
+
         finally:
             Path(db_path).unlink(missing_ok=True)
 
@@ -114,52 +114,52 @@ class TestCWE79XSS:
         """Verify HTML special characters are properly escaped."""
         dangerous_input = '<script>alert("XSS")</script>'
         escaped = SecureHTMLOutput.escape_html(dangerous_input)
-        
+
         # Should be HTML-encoded
-        assert '&lt;' in escaped
-        assert '&gt;' in escaped
-        assert '<script>' not in escaped
-        assert 'alert' in escaped  # Text is preserved, but tags are escaped
+        assert '&lt;' in escaped, "Condition must be true"
+        assert '&gt;' in escaped, "Condition must be true"
+        assert '<script>' not in escaped, "Condition must be true"
+        assert 'alert' in escaped, "Condition must be true"
 
     def test_xss_in_user_profile(self):
         """Verify XSS prevention in user profile rendering."""
         username = '<img src=x onerror="alert(1)">'
         bio = '<script>steal_cookies()</script>'
-        
+
         html = SecureHTMLOutput.render_user_profile(username, bio)
-        
+
         # Verify dangerous tags are escaped
-        assert '<img' not in html
-        assert '<script>' not in html
-        assert 'onerror=' not in html
-        assert '&lt;img' in html
-        assert '&lt;script&gt;' in html
+        assert '<img' not in html, "Condition must be true"
+        assert '<script>' not in html, "Condition must be true"
+        assert 'onerror=' not in html, "Error should be raised or set"
+        assert '&lt;img' in html, "Condition must be true"
+        assert '&lt;script&gt;' in html, "Condition must be true"
 
     def test_xss_in_search_results(self):
         """Verify XSS prevention in search results with query reflection."""
         malicious_query = '"><script>alert("xss")</script>'
         results = ['result1', 'result2']
-        
+
         html = SecureHTMLOutput.render_search_results(malicious_query, results)
-        
+
         # Verify query is escaped in output
-        assert '<script>' not in html
-        assert 'alert' not in html
-        assert '&lt;script&gt;' in html
+        assert '<script>' not in html, "Condition must be true"
+        assert 'alert' not in html, "Condition must be true"
+        assert '&lt;script&gt;' in html, "Condition must be true"
 
     def test_xss_in_comments(self):
         """Verify XSS prevention in comment rendering."""
         author = '"><script>alert(1)</script><div class="'
         comment = '<img src=x onerror="fetch(\'https://evil.com\');">'
-        
+
         html = SecureHTMLOutput.render_comment(comment, author)
-        
+
         # Verify dangerous content is escaped
-        assert '<script>' not in html
-        assert '<img' not in html
-        assert 'onerror=' not in html
-        assert '&lt;script&gt;' in html
-        assert '&lt;img' in html
+        assert '<script>' not in html, "Condition must be true"
+        assert '<img' not in html, "Condition must be true"
+        assert 'onerror=' not in html, "Error should be raised or set"
+        assert '&lt;script&gt;' in html, "Condition must be true"
+        assert '&lt;img' in html, "Condition must be true"
 
 
 class TestCWE502Deserialization:
@@ -169,17 +169,17 @@ class TestCWE502Deserialization:
         """Verify JSON deserialization is safe."""
         safe_data = json.dumps({'user_id': 1, 'username': 'john'}).encode()
         result = SecureSerializer.deserialize_untrusted(safe_data)
-        
-        assert result['user_id'] == 1
-        assert result['username'] == 'john'
+
+        assert result['user_id'] == 1, "Result must not be empty"
+        assert result['username'] == 'john', "Result must not be empty"
 
     def test_pickle_object_rejected_from_untrusted_source(self):
         """Verify pickle data is rejected from untrusted sources."""
         import pickle
-        
+
         # Create a pickle object (would be dangerous if deserialized)
         dangerous_data = pickle.dumps({'user_id': 1})
-        
+
         # Attempting to deserialize as JSON should fail
         with pytest.raises(SerializationError):
             SecureSerializer.deserialize_untrusted(dangerous_data)
@@ -188,7 +188,7 @@ class TestCWE502Deserialization:
         """Verify schema validation is enforced after deserialization."""
         # Missing required field
         incomplete_data = json.dumps({'user_id': 1}).encode()
-        
+
         with pytest.raises(SerializationError):
             SecureSerializer.deserialize_untrusted(incomplete_data)
 
@@ -200,24 +200,24 @@ class TestCWE502Deserialization:
             'username': 'john',
             'email': 'john@example.com'
         }).encode()
-        
+
         with pytest.raises(SerializationError):
             UserData.from_json(wrong_type_data)
 
     def test_userdata_roundtrip_serialization(self):
         """Verify UserData serialization roundtrip."""
         original = UserData(user_id=1, username='john', email='john@example.com')
-        
+
         # Serialize
         serialized = original.to_json()
-        
+
         # Deserialize
         restored = UserData.from_json(serialized)
-        
+
         # Verify data is preserved
-        assert restored.user_id == original.user_id
-        assert restored.username == original.username
-        assert restored.email == original.email
+        assert restored.user_id == original.user_id, "user_id is not valid"
+        assert restored.username == original.username, "username is not valid"
+        assert restored.email == original.email, "email is not valid"
 
 
 class TestCWE798HardcodedCredentials:
@@ -239,13 +239,13 @@ class TestCWE798HardcodedCredentials:
         """Verify required env vars are properly loaded."""
         with patch.dict(os.environ, {'DB_PASSWORD': 'secure_password'}, clear=True):
             result = SecureConfig.get_required_env('DB_PASSWORD')
-            assert result == 'secure_password'
+            assert result == 'secure_password', "Result must not be empty"
 
     def test_optional_env_var_with_default(self):
         """Verify optional env vars use default when not set."""
         with patch.dict(os.environ, {}, clear=True):
             result = SecureConfig.get_optional_env('DB_PORT', '5432')
-            assert result == '5432'
+            assert result == '5432', "Result must not be empty"
 
     def test_database_config_requires_env_vars(self):
         """Verify database config requires all env vars."""
@@ -262,13 +262,13 @@ class TestCWE798HardcodedCredentials:
             'DB_PASSWORD': 'secure_password',
             'DB_NAME': 'mydb',
         }
-        
+
         with patch.dict(os.environ, env_vars, clear=True):
             config = DatabaseConfig()
-            assert config.host == 'localhost'
-            assert config.user == 'admin'
-            assert config.password == 'secure_password'
-            assert config.database == 'mydb'
+            assert config.host == 'localhost', "host is not valid"
+            assert config.user == 'admin', "user is not valid"
+            assert config.password == 'secure_password', "password is not valid"
+            assert config.database == 'mydb', "Data must not be empty"
 
     def test_api_config_from_env_vars(self):
         """Verify API config loads from env vars."""
@@ -277,22 +277,22 @@ class TestCWE798HardcodedCredentials:
             'API_SECRET': 'secret_xyz',
             'API_URL': 'https://api.example.com',
         }
-        
+
         with patch.dict(os.environ, env_vars, clear=True):
             config = APIConfig()
-            assert config.api_key == 'sk-1234567890abcdef'
-            assert config.api_secret == 'secret_xyz'
+            assert config.api_key == 'sk-1234567890abcdef', "api_key is not valid"
+            assert config.api_secret == 'secret_xyz', "api_secret is not valid"
 
     def test_env_file_integration(self):
         """Verify .env file loading works (development only)."""
         with tempfile.TemporaryDirectory() as tmpdir:
             dotenv_path = Path(tmpdir) / '.env'
             dotenv_path.write_text('TEST_VAR=test_value\n')
-            
+
             # This would require python-dotenv to be installed
             # Just verify the path exists and can be read
-            assert dotenv_path.exists()
-            assert 'TEST_VAR' in dotenv_path.read_text()
+            assert dotenv_path.exists(), "Condition must be true"
+            assert 'TEST_VAR' in dotenv_path.read_text(), "Condition must be true"
 
 
 class TestVulnerabilityComplianceReport:
@@ -322,7 +322,7 @@ class TestVulnerabilityComplianceReport:
                 'status': 'FIXED',
             },
         }
-        
+
         # All should be FIXED
         for cwe, details in vulnerabilities.items():
             assert details['status'] == 'FIXED', f"{cwe} not fixed: {details}"

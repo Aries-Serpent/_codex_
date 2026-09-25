@@ -18,6 +18,7 @@ MCP server integrates with security utilities:
 ```python
 from codex.security import mask_token, sanitize_log
 
+
 # In MCP handlers
 @app.post("/endpoint")
 async def handler(request: Request):

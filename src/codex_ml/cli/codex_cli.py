@@ -36,6 +36,7 @@ from typing import Optional
 
 import click
 import yaml
+from omegaconf import OmegaConf
 
 from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (
@@ -50,7 +51,6 @@ from codex_ml.monitoring.system_metrics import SystemMetricsLogger
 from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 from codex_utils.ndjson import NDJSONLogger
-from omegaconf import OmegaConf
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -489,7 +489,12 @@ def train(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("Training complete")
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - Click handles presentation
         log_training_error(
             "cli.train",
             str(exc),
@@ -554,7 +559,12 @@ def resume(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo(f"resumed training from {checkpoint}")
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
 
@@ -766,7 +776,12 @@ def evaluate(
             }
             # Prefer explicit run_id flag; fall back to summary's run_id if present.
             NDJSONLogger(out_path, run_id=record_run_id).log(record)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - Click handles presentation
             raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 
     provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"

@@ -18,6 +18,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
 from codex.monkeypatch.log_adapters import (
     _ensure_table,
     _resolve_path,
@@ -34,7 +35,7 @@ class TestPathResolution:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             resolved = _resolve_path(db_path)
-            assert resolved == db_path
+            assert resolved == db_path, "resolved is not valid"
 
     def test_resolve_none_with_env_var(self):
         """Test resolving None with CODEX_LOG_DB_PATH env var."""
@@ -42,7 +43,7 @@ class TestPathResolution:
             env_path = os.path.join(tmpdir, "env_logs.db")
             with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": env_path}):
                 resolved = _resolve_path(None)
-                assert str(resolved) == env_path
+                assert str(resolved) == env_path, "Condition must be true"
 
     def test_resolve_none_without_env_var(self):
         """Test resolving None without env var uses default."""
@@ -51,7 +52,7 @@ class TestPathResolution:
             env_backup = os.environ.pop("CODEX_LOG_DB_PATH", None)
             try:
                 resolved = _resolve_path(None)
-                assert ".codex/session_logs.db" in str(resolved)
+                assert ".codex/session_logs.db" in str(resolved), "Condition must be true"
             finally:
                 if env_backup:
                     os.environ["CODEX_LOG_DB_PATH"] = env_backup
@@ -79,7 +80,7 @@ class TestTableEnsurance:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             _ensure_table(db_path)
-            
+
             # Verify table exists
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
@@ -88,58 +89,58 @@ class TestTableEnsurance:
             )
             result = cur.fetchone()
             conn.close()
-            
-            assert result is not None
+
+            assert result is not None, "result must be initialized"
 
     def test_ensure_table_idempotent(self):
         """Test that ensure_table is idempotent."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
-            
+
             _ensure_table(db_path)
             _ensure_table(db_path)  # Should not raise error
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT COUNT(*) FROM app_log")
             count = cur.fetchone()[0]
             conn.close()
-            
-            assert count == 0  # No data should be created
+
+            assert count == 0, "Count must be greater than zero"
 
     def test_table_has_required_columns(self):
         """Test that table has all required columns."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             _ensure_table(db_path)
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("PRAGMA table_info(app_log)")
             columns = cur.fetchall()
             conn.close()
-            
+
             column_names = [col[1] for col in columns]
-            assert "id" in column_names
-            assert "ts" in column_names
-            assert "level" in column_names
-            assert "message" in column_names
-            assert "meta" in column_names
+            assert "id" in column_names, "Condition must be true"
+            assert "ts" in column_names, "Condition must be true"
+            assert "level" in column_names, "Condition must be true"
+            assert "message" in column_names, "Condition must be true"
+            assert "meta" in column_names, "Condition must be true"
 
     def test_table_primary_key(self):
         """Test that id column is primary key."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             _ensure_table(db_path)
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("PRAGMA table_info(app_log)")
             columns = cur.fetchall()
             conn.close()
-            
+
             id_col = [col for col in columns if col[1] == "id"][0]
-            assert id_col[5] == 1  # pk flag
+            assert id_col[5] == 1, "Condition must be true"
 
 
 class TestLogEvent:
@@ -154,17 +155,17 @@ class TestLogEvent:
                 message="Test message",
                 db_path=db_path
             )
-            
+
             assert isinstance(result, Path)
-            
+
             # Verify entry exists
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT COUNT(*) FROM app_log")
             count = cur.fetchone()[0]
             conn.close()
-            
-            assert count == 1
+
+            assert count == 1, "Count must be greater than zero"
 
     def test_log_event_with_meta(self):
         """Test log_event with metadata."""
@@ -176,16 +177,16 @@ class TestLogEvent:
                 meta='{"error_code": "E001"}',
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
-            cur.execute("SELECT meta FROM app_log WHERE message=?", 
+            cur.execute("SELECT meta FROM app_log WHERE message=?",
                        ("Error occurred",))
             result = cur.fetchone()
             conn.close()
-            
-            assert result is not None
-            assert result[0] == '{"error_code": "E001"}'
+
+            assert result is not None, "result must be initialized"
+            assert result[0] == '{"error_code": "E001"}', "Result must not be empty"
 
     def test_log_event_without_meta(self):
         """Test log_event with None metadata."""
@@ -197,14 +198,14 @@ class TestLogEvent:
                 meta=None,
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT meta FROM app_log")
             result = cur.fetchone()
             conn.close()
-            
-            assert result[0] is None
+
+            assert result[0] is None, "Result must not be empty"
 
     def test_log_event_timestamp(self):
         """Test log_event creates timestamp."""
@@ -218,14 +219,14 @@ class TestLogEvent:
                 db_path=db_path
             )
             after_time = time.time()
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT ts FROM app_log")
             ts = cur.fetchone()[0]
             conn.close()
-            
-            assert before_time <= ts <= after_time
+
+            assert before_time <= ts <= after_time, "before_time is not valid"
 
     def test_log_event_level_stored(self):
         """Test log_event stores level."""
@@ -236,14 +237,14 @@ class TestLogEvent:
                 message="Warning message",
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT level FROM app_log")
             level = cur.fetchone()[0]
             conn.close()
-            
-            assert level == "WARNING"
+
+            assert level == "WARNING", "level is not valid"
 
     def test_log_event_returns_path(self):
         """Test log_event returns database path."""
@@ -254,8 +255,8 @@ class TestLogEvent:
                 message="Test",
                 db_path=db_path
             )
-            
-            assert result == db_path
+
+            assert result == db_path, "Result must not be empty"
 
     def test_log_event_default_path(self):
         """Test log_event with default path."""
@@ -264,28 +265,28 @@ class TestLogEvent:
                 level="INFO",
                 message="Default path test"
             )
-            
-            assert result is not None
+
+            assert result is not None, "result must be initialized"
 
     def test_log_multiple_events(self):
         """Test logging multiple events."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
-            
+
             for i in range(5):
                 log_event(
                     level="INFO",
                     message=f"Message {i}",
                     db_path=db_path
                 )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT COUNT(*) FROM app_log")
             count = cur.fetchone()[0]
             conn.close()
-            
-            assert count == 5
+
+            assert count == 5, "Count must be greater than zero"
 
 
 class TestLogMessage:
@@ -299,16 +300,16 @@ class TestLogMessage:
                 message="Test message",
                 db_path=db_path
             )
-            
+
             assert isinstance(result, Path)
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT COUNT(*) FROM app_log")
             count = cur.fetchone()[0]
             conn.close()
-            
-            assert count == 1
+
+            assert count == 1, "Count must be greater than zero"
 
     def test_log_message_default_level(self):
         """Test log_message uses default INFO level."""
@@ -318,14 +319,14 @@ class TestLogMessage:
                 message="Default level",
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT level FROM app_log")
             level = cur.fetchone()[0]
             conn.close()
-            
-            assert level == "INFO"
+
+            assert level == "INFO", "level is not valid"
 
     def test_log_message_custom_level(self):
         """Test log_message with custom level."""
@@ -336,14 +337,14 @@ class TestLogMessage:
                 level="CRITICAL",
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT level FROM app_log")
             level = cur.fetchone()[0]
             conn.close()
-            
-            assert level == "CRITICAL"
+
+            assert level == "CRITICAL", "level is not valid"
 
     def test_log_message_with_meta(self):
         """Test log_message with metadata."""
@@ -354,14 +355,14 @@ class TestLogMessage:
                 meta='{"key": "value"}',
                 db_path=db_path
             )
-            
+
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
             cur.execute("SELECT meta FROM app_log")
             result = cur.fetchone()
             conn.close()
-            
-            assert result[0] == '{"key": "value"}'
+
+            assert result[0] == '{"key": "value"}', "Result must not be empty"
 
     def test_log_message_returns_path(self):
         """Test log_message returns database path."""
@@ -371,8 +372,8 @@ class TestLogMessage:
                 message="Test",
                 db_path=db_path
             )
-            
-            assert result == db_path
+
+            assert result == db_path, "Result must not be empty"
 
 
 class TestConnectionPooling:
@@ -389,8 +390,8 @@ class TestConnectionPooling:
                     message="Pooling test",
                     db_path=db_path
                 )
-            
-            assert True  # Connection should close after operation
+
+            assert True, "True is not valid"
 
     def test_pooling_enabled_with_env_var(self):
         """Test connection pooling enabled with CODEX_SQLITE_POOL=1."""
@@ -402,8 +403,8 @@ class TestConnectionPooling:
                     message="Pooling enabled",
                     db_path=db_path
                 )
-            
-            assert True
+
+            assert True, "True is not valid"
 
 
 class TestErrorHandling:
@@ -412,7 +413,7 @@ class TestErrorHandling:
     def test_invalid_database_path(self):
         """Test handling of invalid database path."""
         invalid_path = Path("/invalid/path/that/does/not/exist/test.db")
-        
+
         try:
             log_event(
                 level="INFO",
@@ -421,17 +422,17 @@ class TestErrorHandling:
             )
             # May fail or handle gracefully
         except (OSError, sqlite3.Error):
-            assert True
+            assert True, "True is not valid"
 
     def test_corrupted_database(self):
         """Test handling of corrupted database."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "corrupted.db"
-            
+
             # Create corrupted file
             with open(db_path, "w") as f:
                 f.write("corrupted data")
-            
+
             try:
                 log_event(
                     level="INFO",
@@ -439,17 +440,17 @@ class TestErrorHandling:
                     db_path=db_path
                 )
             except sqlite3.DatabaseError:
-                assert True
+                assert True, "True is not valid"
 
     def test_permission_denied(self):
         """Test handling permission denied."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "readonly.db"
             _ensure_table(db_path)
-            
+
             # Make read-only
             os.chmod(db_path, 0o444)
-            
+
             try:
                 log_event(
                     level="INFO",
@@ -457,7 +458,7 @@ class TestErrorHandling:
                     db_path=db_path
                 )
             except (OSError, sqlite3.Error, PermissionError):
-                assert True
+                assert True, "True is not valid"
             finally:
                 # Restore permissions for cleanup
                 os.chmod(db_path, 0o644)

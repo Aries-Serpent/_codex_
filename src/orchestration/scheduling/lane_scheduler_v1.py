@@ -133,9 +133,7 @@ class LaneSchedulerV1:
         for lane_id, lane in self.lanes.items():
             for dep in lane.upstream_dependencies:
                 if dep not in self.lanes:
-                    raise LaneSchedulerError(
-                        f"Lane {lane_id} depends on unregistered lane {dep}"
-                    )
+                    raise LaneSchedulerError(f"Lane {lane_id} depends on unregistered lane {dep}")
 
         return True
 
@@ -216,9 +214,7 @@ class LaneSchedulerV1:
         # Check dependencies
         if not self._check_dependencies_ready(lane_id):
             failed_deps = [
-                d
-                for d in lane.upstream_dependencies
-                if self.lanes[d].state != LaneState.PASSED
+                d for d in lane.upstream_dependencies if self.lanes[d].state != LaneState.PASSED
             ]
             error_msg = f"Upstream dependencies not ready: {failed_deps}"
 
@@ -250,7 +246,9 @@ class LaneSchedulerV1:
 
         return result
 
-    def schedule_all_lanes(self, mode: ExecutionMode = ExecutionMode.SEQUENTIAL) -> Dict[str, ScheduleResult]:
+    def schedule_all_lanes(
+        self, mode: ExecutionMode = ExecutionMode.SEQUENTIAL
+    ) -> Dict[str, ScheduleResult]:
         """Schedule all lanes with dependency enforcement.
 
         Args:

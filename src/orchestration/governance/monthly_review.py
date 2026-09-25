@@ -90,7 +90,8 @@ class MonthlyReviewCycle:
             baseline = self.baseline_metrics.get(f"lane_{lane_id}", {})
             lane_metrics[lane_id] = LaneMetrics(
                 lane_id=lane_id,
-                success_rate_pct=baseline.get("success_rate", 99.0) + (1.0 if lane_id in ["H", "I"] else 0),
+                success_rate_pct=baseline.get("success_rate", 99.0)
+                + (1.0 if lane_id in ["H", "I"] else 0),
                 avg_execution_time_seconds=baseline.get("avg_fix_time", 15.0) * 60,
                 incident_count=self._simulate_incident_count(lane_id),
                 avg_incident_fix_time_minutes=baseline.get("avg_fix_time", 15.0),
@@ -109,7 +110,9 @@ class MonthlyReviewCycle:
             "rollback_required": 1,
         }
         total_incidents = sum(incident_summary.values())
-        avg_fix_time = sum(m.avg_incident_fix_time_minutes for m in lane_metrics.values()) / len(lane_metrics)
+        avg_fix_time = sum(m.avg_incident_fix_time_minutes for m in lane_metrics.values()) / len(
+            lane_metrics
+        )
 
         # Generate recommendations
         recommendations = self._generate_recommendations(trends, total_incidents)
@@ -128,7 +131,9 @@ class MonthlyReviewCycle:
         )
 
         self.reviews[month] = report
-        logger.info(f"Captured snapshot for {month}: {total_incidents} incidents, {avg_fix_time:.1f}min avg fix time")
+        logger.info(
+            f"Captured snapshot for {month}: {total_incidents} incidents, {avg_fix_time:.1f}min avg fix time"  # noqa: E501
+        )
         return report
 
     def _simulate_incident_count(self, lane_id: str) -> int:
@@ -176,7 +181,9 @@ class MonthlyReviewCycle:
 
         return trends
 
-    def _generate_recommendations(self, trends: List[MetricTrend], total_incidents: int) -> List[str]:
+    def _generate_recommendations(
+        self, trends: List[MetricTrend], total_incidents: int
+    ) -> List[str]:
         """Generate recommendations based on trends."""
         recommendations = []
 
@@ -189,7 +196,9 @@ class MonthlyReviewCycle:
 
         improving_lanes = [t for t in trends if t.direction == "improving"]
         if improving_lanes:
-            recommendations.append(f"Document improvements in {len(improving_lanes)} lane(s) as best practices")
+            recommendations.append(
+                f"Document improvements in {len(improving_lanes)} lane(s) as best practices"
+            )
 
         return recommendations
 
@@ -207,7 +216,9 @@ class MonthlyReviewCycle:
             return {"total_reviews": 0}
 
         total_incidents = sum(r.total_incidents for r in self.reviews.values())
-        avg_fix_time = sum(r.avg_fix_time_minutes for r in self.reviews.values()) / len(self.reviews)
+        avg_fix_time = sum(r.avg_fix_time_minutes for r in self.reviews.values()) / len(
+            self.reviews
+        )
 
         return {
             "total_reviews": len(self.reviews),

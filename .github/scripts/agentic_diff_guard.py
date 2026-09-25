@@ -56,10 +56,10 @@ def comment_has_banned(content: str, added_lines: set[int]) -> list[str]:
             c = tok.string.lower()
             line_num = tok.start[0]
             line_text = lines[line_num - 1] if line_num <= len(lines) else ""
-            
+
             # Allow suppression on import statements (common and valid use case)
             is_import_line = "import " in line_text
-            
+
             for pat in BANNED_PATTERNS:
                 if pat in c:
                     # Skip suppression patterns on imports

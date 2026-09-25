@@ -560,7 +560,9 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
                         key_value = None
                         if isinstance(key_node, ast.Constant) and isinstance(key_node.value, str):
                             key_value = key_node.value
-                        elif isinstance(key_node, ast.Index) and isinstance(key_node.value, ast.Constant):  # type: ignore[attr-defined]
+                        elif isinstance(key_node, ast.Index) and isinstance(
+                            key_node.value, ast.Constant
+                        ):  # type: ignore[attr-defined]
                             if isinstance(key_node.value.value, str):
                                 key_value = key_node.value.value
                         if key_value:

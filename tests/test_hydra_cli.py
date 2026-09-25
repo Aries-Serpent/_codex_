@@ -8,7 +8,7 @@
 #     assert (, "Condition must be true"
 # import sys
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 # def test_cli_smoke():
 #     """Test that CLI can be invoked with --help."""
@@ -17,7 +17,7 @@
 #     result = subprocess.run(cmd, check=True, capture_output=True, text=True, env=env)
 #     assert result.returncode == 0, "Result must not be empty"
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 #     """Test that CLI help shows expected commands."""
 #     cmd = [sys.executable, "-m", "codex_ml.cli.main", "--help"]

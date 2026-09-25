@@ -7,7 +7,7 @@
 # - _generate_agent_hints()  (all four decision branches)
 # - _detect_pattern_from_inputs() (all patterns + default)
 # - _inputs_to_audit()
-# 
+#
 
 class TestAgentHints:
     """Verify agent hint content for each decision branch."""

@@ -95,8 +95,28 @@ class RestrictedUnpickler(pickle.Unpickler):
             "MutableSequence",
         },
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
-        "numpy.core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
-        "numpy._core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy.core.numeric": {
+            "_frombuffer",
+            "ndarray",
+            "dtype",
+            "generic",
+            "number",
+            "int_",
+            "float_",
+            "complex_",
+            "bool_",
+        },
+        "numpy._core.numeric": {
+            "_frombuffer",
+            "ndarray",
+            "dtype",
+            "generic",
+            "number",
+            "int_",
+            "float_",
+            "complex_",
+            "bool_",
+        },
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "numpy._core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
@@ -195,7 +215,7 @@ def safe_pickle_load(
         - NEVER use use_restricted_unpickler=False in production
         - ALWAYS verify signatures for external sources
         - Prefer safetensors or torch.save(weights_only=True) for new code
-    """
+    """  # noqa: E501
     file_path = Path(file_path)
 
     if not file_path.exists():

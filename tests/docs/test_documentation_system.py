@@ -9,13 +9,13 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #     """Test documentation system detection"""
-# 
+#
 #     def test_detector_import(self):
 #     def test_detector_import(self):
 #         """Test that documentation detector can be imported"""
 #         from scripts.space_traversal.detectors import documentation_system
 #         assert hasattr(documentation_system, "detect")
-# 
+#
 #     def test_detector_contract(self):
 #     def test_detector_contract(self):
 #         """Test detector follows the contract"""
@@ -30,14 +30,14 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #     """Test documentation generation functionality"""
-# 
+#
 #     def test_generate_markdown_doc(self, tmp_path):
 #     def test_generate_markdown_doc(self, tmp_path):
 #         """Test generating markdown documentation"""
 #         doc_content = """# Test Documentation
 #         """Test documentation metrics can be collected"""
 #         metrics = {
-# 
+#
 #         """Test documentation metrics can be collected"""
 #         metrics = {
 # ## Features
@@ -46,7 +46,7 @@
 # - Feature 2
 #         """Test documentation metrics can be collected"""
 #         metrics = {
-# 
+#
 # ```python
 #         """Test documentation metrics can be collected"""
 #         metrics = {
@@ -59,7 +59,7 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_generate_api_docs(self):
 #     def test_generate_api_docs(self):
 #         """Test API documentation structure"""
@@ -78,7 +78,7 @@
 #         assert "parameters" in api_doc, "Condition must be true"
 #         assert "response" in api_doc, "Response must not be empty"
 #         assert "response" in api_doc, "Response must not be empty"
-# 
+#
 #     def test_documentation_metadata(self):
 #     def test_documentation_metadata(self):
 #         """Test documentation metadata"""
@@ -107,7 +107,7 @@
 #         # Link target exists
 #         assert doc2.exists(), "Condition must be true"
 #         assert doc2.exists(), "Condition must be true"
-# 
+#
 #     def test_validate_link_format(self):
 #     def test_validate_link_format(self):
 #         """Test link format validation"""
@@ -119,7 +119,7 @@
 #         for link in valid_links:
 #             # Basic format check
 #             assert "[" in link and "](" in link and ")" in link
-# 
+#
 #     def test_detect_broken_links(self, tmp_path):
 #     def test_detect_broken_links(self, tmp_path):
 #         """Test detection of broken links"""
@@ -128,14 +128,14 @@
 #         missing_file = tmp_path / "nonexistent.md"
 #         assert not missing_file.exists(), "Condition must be true"
 #         assert not missing_file.exists(), "Condition must be true"
-# 
+#
 #     def test_validate_anchor_links(self):
 #     def test_validate_anchor_links(self):
 #         """Test validation of anchor links"""
 #         doc_content = """# Main Title
 #         """Test documentation metrics can be collected"""
 #         metrics = {
-# 
+#
 #         """Test documentation metrics can be collected"""
 #         metrics = {
 # ## Section 2
@@ -147,22 +147,22 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "Content here" in rendered, "Content must not be empty"
-# 
+#
 #         assert metrics["word_count"] > 0, "Value must be greater than zero"
 #         assert metrics["code_examples"] >= 0, "Value must be greater than zero"
 #         assert metrics["broken_links"] == 0, "Condition must be true"
 #         assert isinstance(metrics["missing_sections"], list)
-# 
-# 
-# 
-# 
+#
+#
+#
+#
 # class TestDocumentationMaintenance:
 #         (docs_dir / "guide.md").write_text("# Guide")
 #         assert (docs_dir / "index.md").exists(), "Condition must be true"
 #         assert (docs_dir / "guide.md").exists(), "Condition must be true"
 #         assert len(list(docs_dir.glob("*.md"))) == 2, "Collection must not be empty"
 #         assert len(list(docs_dir.glob("*.md"))) == 2, "Collection must not be empty"
-# 
+#
 #     def test_build_navigation(self):
 #     def test_build_navigation(self):
 #         """Test documentation navigation structure"""
@@ -177,24 +177,24 @@
 #         assert "Home" in nav, "Condition must be true"
 #         assert "Guides" in nav, "Condition must be true"
 #         assert isinstance(nav["Guides"], dict)
-# 
+#
 #     def test_build_output_validation(self, tmp_path):
 #     def test_build_output_validation(self, tmp_path):
 #         """Test build output validation"""
 #         output_dir = tmp_path / "site"
 #         output_dir.mkdir()
 #         (output_dir / "index.html").write_text("<html></html>")
-# 
+#
 #         # Verify output
 #         assert output_dir.exists(), "Condition must be true"
 #         assert (output_dir / "index.html").exists(), "Condition must be true"
 #         rendered = template.format(**data)
-# 
-# 
+#
+#
 #         assert ", "Condition must be true"
 #         assert "Content here" in rendered, "Content must not be empty"
 #     def test_docs_directory_structure(self):
-# 
+#
 #     def test_template_structure(self):
 #         """Test documentation template structure"""
 #         template = """---
@@ -203,7 +203,7 @@
 # ---
 #         """Test documentation metrics can be collected"""
 #         metrics = {
-# 
+#
 # {content}
 #         """Test documentation metrics can be collected"""
 #         metrics = {
@@ -216,7 +216,7 @@
 #         template = "# {title}\n\n{content}"
 #         data = {"title": "Test", "content": "Content here"}
 #         rendered = template.format(**data)
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "Content here" in rendered, "Content must not be empty"
 #         content = doc.read_text()
@@ -234,7 +234,7 @@
 #         }
 #         assert "last_modified" in doc_info, "Condition must be true"
 #         assert isinstance(doc_info["needs_update"], bool)
-# 
+#
 #     def test_docs_coverage_check(self):
 #     def test_docs_coverage_check(self):
 #         """Test documentation coverage checking"""
@@ -246,7 +246,7 @@
 #         assert coverage["coverage_percentage"] == (, "Condition must be true"
 #             coverage["documented_modules"] / coverage["total_modules"] * 100
 #         )
-# 
+#
 #     def test_docs_quality_metrics(self):
 #     def test_docs_quality_metrics(self):
 #         """Test documentation quality metrics"""
@@ -329,7 +329,7 @@
 #         doc.write_text("# Title\n\nContent")
 #         content = doc.read_text()
 #         assert content.startswith(", "Content must not be empty"
-# 
+#
 #     def test_docs_have_metadata(self):
 #     def test_docs_have_metadata(self):
 #         """Test documentation metadata structure"""
@@ -342,7 +342,7 @@
 #         assert "title" in metadata, "Data must not be empty"
 #         assert "description" in metadata, "Data must not be empty"
 #         assert isinstance(metadata.get("tags"), list)
-# 
+#
 #     def test_docs_index_structure(self):
 #     def test_docs_index_structure(self):
 #         """Test documentation index structure"""
@@ -356,11 +356,11 @@
 #         assert "documents" in index, "Condition must be true"
 #         assert isinstance(index["documents"], list)
 #         assert len(index["documents"]) > 0, "Collection must not be empty"
-# 
+#
 #         assert (, "Condition must be true"
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
-# 
+#
 #     def test_version_tracking(self):
 #     def test_version_tracking(self):
 #         """Test documentation version tracking"""
@@ -371,7 +371,7 @@
 #         }
 #         assert "current" in version_info, "Condition must be true"
 #         assert "previous" in version_info, "Condition must be true"
-# 
+#
 #     def test_version_comparison(self):
 #     def test_version_comparison(self):
 #         """Test version comparison logic"""
@@ -379,7 +379,7 @@
 #         v2 = "2.0.0"
 #         assert v2 > v1, "v2 must be greater than zero"
 #         assert v2 > v1, "v2 must be greater than zero"
-# 
+#
 #     def test_deprecation_notices(self):
 #     def test_deprecation_notices(self):
 #         """Test deprecation notice structure"""
@@ -391,11 +391,11 @@
 #         }
 #         assert "deprecated_in" in deprecation, "Condition must be true"
 #         assert "replacement" in deprecation, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
-# 
+#
 #     def test_auto_generated_docs_marker(self, tmp_path):
 #     def test_auto_generated_docs_marker(self, tmp_path):
 #         """Test auto-generated documentation has proper markers"""
@@ -408,7 +408,7 @@
 #         doc.write_text(content)
 #         text = doc.read_text()
 #         assert "AUTO-GENERATED" in text or "GENERATED" in text.upper(), "Condition must be true"
-# 
+#
 #     def test_documentation_build_config(self):
 #     def test_documentation_build_config(self):
 #         """Test documentation build configuration exists"""
@@ -426,7 +426,7 @@
 #         assert (, "Condition must be true"
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
-# 
+#
 #     def test_spell_check_integration(self):
 #     def test_spell_check_integration(self):
 #         """Test spell check can be integrated"""
@@ -445,9 +445,9 @@
 #         assert (, "Condition must be true"
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
-#         
+#
 #         ), "Condition must be true"
-# 
+#
 #     def test_documentation_metrics_collection(self):
 #     def test_documentation_metrics_collection(self):
 #         """Test documentation metrics can be collected"""

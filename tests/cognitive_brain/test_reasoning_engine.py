@@ -45,10 +45,10 @@ class TestPerceptionLayer:
             category="performance",
         )
 
-        assert context.goal == "optimize_performance"
-        assert len(context.constraints) == 2
-        assert context.category == "performance"
-        assert context.current_state["cpu"] == 45.0
+        assert context.goal == "optimize_performance", "goal is not valid"
+        assert len(context.constraints) == 2, "Collection must not be empty"
+        assert context.category == "performance", "category is not valid"
+        assert context.current_state["cpu"] == 45.0, "Condition must be true"
 
     def test_extract_context_with_history(self):
         """Test context extraction with decision history."""
@@ -63,7 +63,7 @@ class TestPerceptionLayer:
             current_state={}, category="test"
         )
 
-        assert len(context.decision_history) == 2
+        assert len(context.decision_history) == 2, "Collection must not be empty"
 
     def test_extract_context_truncates_long_history(self):
         """Test that very long decision histories are truncated."""
@@ -76,15 +76,15 @@ class TestPerceptionLayer:
         )
 
         # Should keep last 10
-        assert len(context.decision_history) == 10
+        assert len(context.decision_history) == 10, "Collection must not be empty"
 
     def test_context_to_dict(self, sample_context):
         """Test context serialization."""
         data = sample_context.to_dict()
 
-        assert data["goal"] == sample_context.goal
-        assert data["category"] == "coverage"
-        assert "timestamp" in data
+        assert data["goal"] == sample_context.goal, "Data must not be empty"
+        assert data["category"] == "coverage", "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
 
 
 # ============================================================================
@@ -108,9 +108,9 @@ class TestReasoningLayer:
 
         candidates = reasoning.generate_candidates(context)
 
-        assert len(candidates) >= 3  # At least 3 strategies
+        assert len(candidates) >= 3, "Candidates must not be empty"
         heuristic_cands = [c for c in candidates if c.strategy == DecisionStrategy.HEURISTIC]
-        assert len(heuristic_cands) >= 1
+        assert len(heuristic_cands) >= 1, "Heuristic_cands must not be empty"
 
     def test_generate_candidates_ml(self, knowledge_base):
         """Test ML strategy generation."""
@@ -126,9 +126,9 @@ class TestReasoningLayer:
         candidates = reasoning.generate_candidates(context)
 
         ml_cands = [c for c in candidates if c.strategy == DecisionStrategy.MACHINE_LEARNING]
-        assert len(ml_cands) >= 1
+        assert len(ml_cands) >= 1, "Ml_cands must not be empty"
         # ML confidence should improve with history
-        assert ml_cands[0].confidence > 0.70
+        assert ml_cands[0].confidence > 0.70, "confidence must be greater than zero"
 
     def test_generate_candidates_ensemble(self, knowledge_base):
         """Test ensemble strategy generation."""
@@ -144,7 +144,7 @@ class TestReasoningLayer:
         candidates = reasoning.generate_candidates(context)
 
         ensemble_cands = [c for c in candidates if c.strategy == DecisionStrategy.ENSEMBLE]
-        assert len(ensemble_cands) >= 1
+        assert len(ensemble_cands) >= 1, "Ensemble_cands must not be empty"
 
     def test_candidate_confidence_scores(self, knowledge_base):
         """Test that candidates have valid confidence scores."""
@@ -157,7 +157,7 @@ class TestReasoningLayer:
         candidates = reasoning.generate_candidates(context)
 
         for candidate in candidates:
-            assert 0.0 <= candidate.confidence <= 1.0
+            assert 0.0 <= candidate.confidence <= 1.0, "0 is not valid"
 
     def test_candidate_serialization(self, knowledge_base):
         """Test candidate serialization."""
@@ -170,8 +170,8 @@ class TestReasoningLayer:
         candidates = reasoning.generate_candidates(context)
         candidate_dict = candidates[0].to_dict()
 
-        assert "id" in candidate_dict
-        assert "strategy" in candidate_dict
+        assert "id" in candidate_dict, "Condition must be true"
+        assert "strategy" in candidate_dict, "Condition must be true"
         assert candidate_dict["strategy"] in ["heuristic", "ml", "ensemble"]
 
 
@@ -196,10 +196,10 @@ class TestActionLayer:
 
         decision = action.select_decision(context, candidates, calibrator)
 
-        assert decision.id
-        assert decision.option
-        assert 0.0 <= decision.confidence <= 1.0
-        assert decision.confidence_level in ConfidenceLevel
+        assert decision.id, "Condition must be true"
+        assert decision.option, "Condition must be true"
+        assert 0.0 <= decision.confidence <= 1.0, "0 is not valid"
+        assert decision.confidence_level in ConfidenceLevel, "Condition must be true"
 
     def test_select_decision_highest_confidence(self, knowledge_base, calibrator):
         """Test that highest confidence candidate is selected."""
@@ -216,7 +216,7 @@ class TestActionLayer:
 
         # Decision confidence should be among candidates
         candidate_confidences = [c.confidence for c in candidates]
-        assert decision.confidence >= min(candidate_confidences)
+        assert decision.confidence >= min(candidate_confidences), "confidence must be greater than zero"
 
     def test_decision_latency_under_500ms(self, knowledge_base, calibrator):
         """Test that decision latency is <500ms."""
@@ -234,7 +234,7 @@ class TestActionLayer:
         elapsed_ms = (time.time() - start) * 1000
 
         # Layer latency should be well under 500ms (typically <50ms)
-        assert elapsed_ms < 500.0
+        assert elapsed_ms < 500.0, "elapsed_ms is not valid"
 
     def test_confidence_classification(self, knowledge_base, calibrator):
         """Test confidence level classification."""
@@ -251,9 +251,9 @@ class TestActionLayer:
 
         # Classify based on decision confidence
         if decision.confidence >= 0.90:
-            assert decision.confidence_level == ConfidenceLevel.VERY_HIGH
+            assert decision.confidence_level == ConfidenceLevel.VERY_HIGH, "confidence_level is not valid"
         elif decision.confidence >= 0.75:
-            assert decision.confidence_level == ConfidenceLevel.HIGH
+            assert decision.confidence_level == ConfidenceLevel.HIGH, "confidence_level is not valid"
 
     def test_domain_validation(self, knowledge_base, calibrator):
         """Test domain rule validation."""
@@ -272,7 +272,7 @@ class TestActionLayer:
 
         decision = action.select_decision(context, candidates, calibrator)
 
-        assert decision.domain_validation is True
+        assert decision.domain_validation is True, "domain_validation is not valid"
 
     def test_decision_serialization(self, knowledge_base, calibrator):
         """Test decision serialization."""
@@ -288,10 +288,10 @@ class TestActionLayer:
         decision = action.select_decision(context, candidates, calibrator)
         decision_dict = decision.to_dict()
 
-        assert "id" in decision_dict
-        assert "option" in decision_dict
-        assert "confidence" in decision_dict
-        assert "timestamp" in decision_dict
+        assert "id" in decision_dict, "Condition must be true"
+        assert "option" in decision_dict, "Condition must be true"
+        assert "confidence" in decision_dict, "Condition must be true"
+        assert "timestamp" in decision_dict, "Condition must be true"
 
 
 # ============================================================================
@@ -303,6 +303,7 @@ class TestFeedbackLayer:
     """Test FeedbackLayer: async outcome collection."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_collect_outcome_basic(self, knowledge_base, calibrator):
         """Test basic outcome collection."""
         from codex.cognitive_brain.reasoning_engine import Decision
@@ -328,11 +329,12 @@ class TestFeedbackLayer:
             expected_result="coverage_increase",
         )
 
-        assert outcome.decision_id == "test_decision_1"
-        assert outcome.success is True
-        assert outcome.confidence_was_accurate is True
+        assert outcome.decision_id == "test_decision_1", "decision_id is not valid"
+        assert outcome.success is True, "success is not valid"
+        assert outcome.confidence_was_accurate is True, "confidence_was_accurate is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_outcome_confidence_accuracy_check(self, knowledge_base, calibrator):
         """Test confidence accuracy validation in outcomes."""
         from codex.cognitive_brain.reasoning_engine import Decision
@@ -355,7 +357,7 @@ class TestFeedbackLayer:
         outcome1 = await feedback.collect_outcome(
             decision1, success=True, actual_result="ok", expected_result="ok"
         )
-        assert outcome1.confidence_was_accurate is True
+        assert outcome1.confidence_was_accurate is True, "confidence_was_accurate is not valid"
 
         # High confidence, failed outcome
         decision2 = Decision(
@@ -373,7 +375,7 @@ class TestFeedbackLayer:
         outcome2 = await feedback.collect_outcome(
             decision2, success=False, actual_result="failed", expected_result="ok"
         )
-        assert outcome2.confidence_was_accurate is False
+        assert outcome2.confidence_was_accurate is False, "confidence_was_accurate is not valid"
 
     def test_feedback_storage(self, temp_dir):
         """Test outcome storage to disk."""
@@ -382,7 +384,7 @@ class TestFeedbackLayer:
         )
 
         # Note: actual storage is async, this just tests the initialization
-        assert feedback.storage_path.parent.exists() or not feedback.storage_path.exists()
+        assert feedback.storage_path.parent.exists() or not feedback.storage_path.exists(), "Condition must be true"
 
 
 # ============================================================================
@@ -411,21 +413,21 @@ class TestImprovementLayer:
         ]
 
         brier = improvement._calculate_brier_score(outcomes)
-        assert 0.0 <= brier <= 1.0
+        assert 0.0 <= brier <= 1.0, "0 is not valid"
 
     def test_strategy_weight_initialization(self):
         """Test strategy weights are initialized correctly."""
         improvement = ImprovementLayer()
 
         total_weight = sum(improvement.strategy_weights.values())
-        assert abs(total_weight - 1.0) < 0.01  # Close to 1.0
+        assert abs(total_weight - 1.0) < 0.01, "Condition must be true"
 
     def test_get_improvement_metrics(self):
         """Test improvement metrics retrieval."""
         improvement = ImprovementLayer()
         metrics = improvement.get_improvement_metrics()
 
-        assert "status" in metrics or "strategy_weights" in metrics
+        assert "status" in metrics or "strategy_weights" in metrics, "Condition must be true"
 
 
 # ============================================================================
@@ -446,10 +448,10 @@ class TestReasoningEngineIntegration:
             category=sample_context.category,
         )
 
-        assert decision.id
-        assert decision.option
-        assert 0.0 <= decision.confidence <= 1.0
-        assert len(decision.candidates) >= 3
+        assert decision.id, "Condition must be true"
+        assert decision.option, "Condition must be true"
+        assert 0.0 <= decision.confidence <= 1.0, "0 is not valid"
+        assert len(decision.candidates) >= 3, "Collection must not be empty"
 
     def test_decision_latency_p99_under_500ms(self, reasoning_engine, sample_context):
         """Test p99 latency is <500ms."""
@@ -469,6 +471,7 @@ class TestReasoningEngineIntegration:
         assert p99_latency < 500.0, f"p99 latency {p99_latency}ms exceeds 500ms target"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_record_outcome_and_calibration(self, reasoning_engine, sample_context):
         """Test outcome recording updates calibration."""
         decision = reasoning_engine.make_decision(
@@ -486,8 +489,8 @@ class TestReasoningEngineIntegration:
             expected_result="coverage_increase",
         )
 
-        assert outcome.decision_id == decision.id
-        assert outcome.success is True
+        assert outcome.decision_id == decision.id, "decision_id is not valid"
+        assert outcome.success is True, "success is not valid"
 
     def test_get_metrics_comprehensive(self, reasoning_engine, sample_context):
         """Test comprehensive metrics retrieval."""
@@ -503,11 +506,11 @@ class TestReasoningEngineIntegration:
 
         metrics = reasoning_engine.get_metrics()
 
-        assert "total_decisions" in metrics
-        assert "latency_ms" in metrics
-        assert "confidence" in metrics
-        assert "calibration" in metrics
-        assert metrics["total_decisions"] >= 10
+        assert "total_decisions" in metrics, "Condition must be true"
+        assert "latency_ms" in metrics, "Condition must be true"
+        assert "confidence" in metrics, "Condition must be true"
+        assert "calibration" in metrics, "Condition must be true"
+        assert metrics["total_decisions"] >= 10, "Value must be greater than zero"
 
     def test_accuracy_target_95_percent(self, reasoning_engine, sample_context):
         """Test that decision accuracy meets >95% target."""
@@ -529,7 +532,7 @@ class TestReasoningEngineIntegration:
                 correct_decisions += 1
 
         accuracy = correct_decisions / total_decisions
-        assert accuracy >= 0.80  # Reasonable lower bound for test
+        assert accuracy >= 0.80, "accuracy must be greater than zero"
 
 
 # ============================================================================
@@ -547,7 +550,7 @@ class TestConfidenceCalibration:
 
         brier = calibrator._calculate_brier_score(confidences, outcomes)
 
-        assert 0.0 <= brier <= 1.0
+        assert 0.0 <= brier <= 1.0, "0 is not valid"
 
     def test_calibration_update(self, calibrator):
         """Test calibration update with new data."""
@@ -556,7 +559,7 @@ class TestConfidenceCalibration:
         calibrator.update(0.5, False)
 
         metrics = calibrator.get_metrics()
-        assert metrics["total_predictions"] == 3
+        assert metrics["total_predictions"] == 3, "Condition must be true"
 
     def test_calibration_by_category(self, calibrator):
         """Test per-category calibration."""
@@ -565,8 +568,8 @@ class TestConfidenceCalibration:
         calibrator.update_category("performance", 0.70, False)
 
         metrics = calibrator.get_metrics()
-        assert "coverage" in metrics["category_metrics"]
-        assert "performance" in metrics["category_metrics"]
+        assert "coverage" in metrics["category_metrics"], "Condition must be true"
+        assert "performance" in metrics["category_metrics"], "Condition must be true"
 
     def test_brier_score_target_met(self, calibrator):
         """Test Brier score target <0.15."""
@@ -578,7 +581,7 @@ class TestConfidenceCalibration:
         metrics = calibrator.get_metrics()
         # Should have reasonable calibration
         brier = metrics["overall_brier_score"]
-        assert brier is not None
+        assert brier is not None, "brier must be initialized"
 
 
 # ============================================================================
@@ -593,23 +596,23 @@ class TestKnowledgeBaseIntegration:
         """Test KB query by category."""
         coverage_patterns = knowledge_base.query(category="coverage")
 
-        assert len(coverage_patterns) >= 1
-        assert all(p.category == "coverage" for p in coverage_patterns)
+        assert len(coverage_patterns) >= 1, "Coverage_patterns must not be empty"
+        assert all(p.category == "coverage" for p in coverage_patterns), "category is not valid"
 
     def test_kb_find_best_pattern(self, knowledge_base):
         """Test finding best performing pattern."""
         best = knowledge_base.query_interface.find_best_pattern("coverage")
 
-        assert best is not None
-        assert best.success_rate >= 0.85
+        assert best is not None, "best must be initialized"
+        assert best.success_rate >= 0.85, "success_rate must be greater than zero"
 
     def test_kb_statistics(self, knowledge_base):
         """Test KB statistics."""
         stats = knowledge_base.get_statistics()
 
-        assert stats["total_patterns"] >= 3
-        assert "coverage" in stats["categories"]
-        assert 0.0 <= stats["avg_success_rate"] <= 1.0
+        assert stats["total_patterns"] >= 3, "Value must be greater than zero"
+        assert "coverage" in stats["categories"], "Condition must be true"
+        assert 0.0 <= stats["avg_success_rate"] <= 1.0, "0 is not valid"
 
 
 # ============================================================================
@@ -630,7 +633,7 @@ class TestEdgeCasesAndFailures:
             category="coverage",
         )
 
-        assert decision.id is not None
+        assert decision.id is not None, "id must be initialized"
 
     def test_no_candidates_raises_error(self, knowledge_base, calibrator):
         """Test error handling with no candidates."""
@@ -654,9 +657,9 @@ class TestEdgeCasesAndFailures:
                 category="performance",
             )
 
-            assert 0.0 <= decision.confidence <= 1.0
+            assert 0.0 <= decision.confidence <= 1.0, "0 is not valid"
             for candidate in decision.candidates:
-                assert 0.0 <= candidate.confidence <= 1.0
+                assert 0.0 <= candidate.confidence <= 1.0, "0 is not valid"
 
 
 # ============================================================================
@@ -681,7 +684,7 @@ class TestKnowledgeBaseCoverage:
                 metadata={"iteration": i},
             )
 
-        assert len(kb.patterns) == 5
+        assert len(kb.patterns) == 5, "Collection must not be empty"
 
     def test_kb_update_pattern(self, temp_dir):
         """Test updating an existing pattern."""
@@ -702,9 +705,9 @@ class TestKnowledgeBaseCoverage:
             tags=["test", "updated"],
         )
 
-        assert updated.success_rate == 0.95
-        assert updated.frequency == 100
-        assert "updated" in updated.tags
+        assert updated.success_rate == 0.95, "success_rate is not valid"
+        assert updated.frequency == 100, "frequency is not valid"
+        assert "updated" in updated.tags, "Condition must be true"
 
     def test_kb_find_related_patterns(self, knowledge_base):
         """Test finding related patterns."""
@@ -719,14 +722,14 @@ class TestKnowledgeBaseCoverage:
     def test_kb_query_by_tag(self, knowledge_base):
         """Test KB query by tag."""
         patterns = knowledge_base.query_interface.query_by_tag("coverage")
-        assert len(patterns) >= 0
+        assert len(patterns) >= 0, "Patterns must not be empty"
 
     def test_kb_query_by_decision_type(self, knowledge_base):
         """Test KB query by decision type."""
         patterns = knowledge_base.query_interface.query_by_decision_type(
             "coverage_increase"
         )
-        assert len(patterns) >= 1
+        assert len(patterns) >= 1, "Patterns must not be empty"
 
     def test_kb_parse_report(self, temp_dir):
         """Test parsing accountability report."""
@@ -743,12 +746,12 @@ class TestKnowledgeBaseCoverage:
 
         result = kb.parse_accountability_report(report_path)
 
-        assert result["patterns_extracted"] >= 0
+        assert result["patterns_extracted"] >= 0, "Value must be greater than zero"
 
     def test_kb_generic_query(self, knowledge_base):
         """Test generic query method."""
         patterns = knowledge_base.query(category="coverage")
-        assert len(patterns) >= 1
+        assert len(patterns) >= 1, "Patterns must not be empty"
 
     def test_kb_query_interface_persistence(self, knowledge_base):
         """Test that query interface is rebuilt after updates."""
@@ -762,7 +765,7 @@ class TestKnowledgeBaseCoverage:
             tags=["new"],
         )
 
-        assert len(knowledge_base.patterns) == initial_count + 1
+        assert len(knowledge_base.patterns) == initial_count + 1, "Collection must not be empty"
 
 
 class TestCalibrationCoverage:
@@ -781,7 +784,7 @@ class TestCalibrationCoverage:
 
         # Load in new instance
         calibrator2 = ConfidenceCalibrator(storage_path=cal_path)
-        assert calibrator2.total_predictions == 3
+        assert calibrator2.total_predictions == 3, "total_predictions is not valid"
 
     def test_calibrator_per_category_tracking(self, calibrator):
         """Test per-category calibration tracking."""
@@ -790,7 +793,7 @@ class TestCalibrationCoverage:
                 calibrator.update_category(cat, conf, conf > 0.6)
 
         metrics = calibrator.get_metrics()
-        assert len(metrics["category_metrics"]) == 3
+        assert len(metrics["category_metrics"]) == 3, "Collection must not be empty"
 
     def test_calibrator_bin_accuracy_calculation(self, calibrator):
         """Test bin accuracy calculation."""
@@ -800,23 +803,23 @@ class TestCalibrationCoverage:
         calibrator.update_category("test", 0.85, False)
 
         bin_acc = calibrator._calculate_bin_accuracy("test", 0.85)
-        assert 0.0 <= bin_acc <= 1.0
+        assert 0.0 <= bin_acc <= 1.0, "0 is not valid"
 
     def test_calibrator_calibrate_confidence_no_data(self, calibrator):
         """Test calibration with no prior data."""
         confidence = calibrator.calibrate_confidence(0.75, "unknown_category")
         # Should return raw confidence when no data
-        assert 0.0 <= confidence <= 1.0
+        assert 0.0 <= confidence <= 1.0, "0 is not valid"
 
     def test_calibrator_brier_score_edge_cases(self, calibrator):
         """Test Brier score calculation edge cases."""
         # Empty lists
         brier = calibrator._calculate_brier_score([], [])
-        assert brier == 1.0
+        assert brier == 1.0, "brier is not valid"
 
         # Single prediction
         brier = calibrator._calculate_brier_score([0.9], [True])
-        assert 0.0 <= brier <= 1.0
+        assert 0.0 <= brier <= 1.0, "0 is not valid"
 
 
 class TestReasoningEngineAdvanced:
@@ -835,7 +838,7 @@ class TestReasoningEngineAdvanced:
                 category=category,
             )
 
-            assert decision.id is not None
+            assert decision.id is not None, "id must be initialized"
 
     def test_reasoning_engine_with_constraints(self, reasoning_engine):
         """Test decision making with multiple constraints."""
@@ -852,7 +855,7 @@ class TestReasoningEngineAdvanced:
             category="performance",
         )
 
-        assert decision.id is not None
+        assert decision.id is not None, "id must be initialized"
 
     def test_reasoning_engine_metrics_after_decisions(self, reasoning_engine):
         """Test metrics retrieval after multiple decisions."""
@@ -868,11 +871,12 @@ class TestReasoningEngineAdvanced:
 
         metrics = reasoning_engine.get_metrics()
 
-        assert metrics["total_decisions"] == 25
-        assert "latency_ms" in metrics
-        assert metrics["latency_ms"]["p99"] > 0
+        assert metrics["total_decisions"] == 25, "Condition must be true"
+        assert "latency_ms" in metrics, "Condition must be true"
+        assert metrics["latency_ms"]["p99"] > 0, "Value must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_reasoning_engine_async_outcome_pipeline(self, reasoning_engine):
         """Test complete async outcome collection pipeline."""
         # Make a decision
@@ -891,7 +895,7 @@ class TestReasoningEngineAdvanced:
                 success=i % 2 == 0,
                 actual_result=f"result_{i}",
             )
-            assert outcome.decision_id == decision.id
+            assert outcome.decision_id == decision.id, "decision_id is not valid"
 
     def test_reasoning_engine_improve_cycle(self, reasoning_engine):
         """Test improvement cycle execution."""
@@ -909,7 +913,7 @@ class TestReasoningEngineAdvanced:
         improvement = reasoning_engine.improve()
 
         assert isinstance(improvement, dict)
-        assert "weight_adjustments" in improvement
+        assert "weight_adjustments" in improvement, "Condition must be true"
 
 
 class TestActionLayerAdvanced:
@@ -938,7 +942,7 @@ class TestActionLayerAdvanced:
         candidates = reasoning.generate_candidates(context)
         decision = action.select_decision(context, candidates, calibrator)
 
-        assert decision.id is not None
+        assert decision.id is not None, "id must be initialized"
 
     def test_action_layer_confidence_levels_all(self, knowledge_base, calibrator):
         """Test all confidence levels are properly classified."""
@@ -960,9 +964,9 @@ class TestActionLayerAdvanced:
             level = action._classify_confidence(conf)
             confidence_levels.append(level)
 
-        assert len(confidence_levels) == len(test_confidences)
-        assert confidence_levels[0] == ConfidenceLevel.VERY_LOW
-        assert confidence_levels[-1] == ConfidenceLevel.VERY_HIGH
+        assert len(confidence_levels) == len(test_confidences), "Confidence_levels must not be empty"
+        assert confidence_levels[0] == ConfidenceLevel.VERY_LOW, "Condition must be true"
+        assert confidence_levels[-1] == ConfidenceLevel.VERY_HIGH, "Condition must be true"
 
 
 
@@ -972,18 +976,18 @@ class TestCoverageGaps:
     def test_kb_find_related_patterns_not_found(self, knowledge_base):
         """Test finding related patterns when pattern not found."""
         related = knowledge_base.query_interface.find_related_patterns("nonexistent_id")
-        assert related == []
+        assert related == [], "related is not valid"
 
     def test_kb_update_pattern_not_found(self, knowledge_base):
         """Test updating non-existent pattern."""
         result = knowledge_base.update_pattern("nonexistent", success_rate=0.95)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_kb_parse_nonexistent_report(self, temp_dir):
         """Test parsing non-existent report."""
         kb = KnowledgeBase(kb_path=temp_dir / ".codex" / "reasoning" / "kb_nonexistent.json")
         result = kb.parse_accountability_report(temp_dir / "nonexistent.md")
-        assert "error" in result
+        assert "error" in result, "Result must not be empty"
 
     def test_kb_load_invalid_json(self, temp_dir):
         """Test loading corrupted KB file."""
@@ -993,19 +997,19 @@ class TestCoverageGaps:
 
         # Should not crash
         kb = KnowledgeBase(kb_path=kb_path)
-        assert len(kb.patterns) == 0
+        assert len(kb.patterns) == 0, "Collection must not be empty"
 
     def test_calibrator_load_nonexistent_file(self, temp_dir):
         """Test loading calibrator with non-existent file."""
         cal_path = temp_dir / ".codex" / "reasoning" / "nonexistent_cal.json"
         calibrator = ConfidenceCalibrator(storage_path=cal_path)
-        assert calibrator.total_predictions == 0
+        assert calibrator.total_predictions == 0, "total_predictions is not valid"
 
     def test_feedback_layer_storage_initialization(self, temp_dir):
         """Test feedback layer storage path creation."""
         storage_path = temp_dir / ".codex" / "reasoning" / "feedback.jsonl"
         feedback = FeedbackLayer(storage_path=storage_path)
-        assert feedback.storage_path == storage_path
+        assert feedback.storage_path == storage_path, "storage_path is not valid"
 
     def test_perception_layer_extraction_rules(self):
         """Test registering custom extraction rules."""
@@ -1015,13 +1019,13 @@ class TestCoverageGaps:
             return {"processed": True}
 
         perception.register_extraction_rule("custom_category", custom_rule)
-        assert "custom_category" in perception.extraction_rules
+        assert "custom_category" in perception.extraction_rules, "Condition must be true"
 
     def test_improvement_layer_get_metrics_no_data(self):
         """Test improvement metrics with no learning data."""
         improvement = ImprovementLayer()
         metrics = improvement.get_improvement_metrics()
-        assert metrics["status"] == "no_data"
+        assert metrics["status"] == "no_data", "Data must not be empty"
 
     def test_reasoning_layer_decision_count(self, knowledge_base):
         """Test decision count tracking in reasoning layer."""
@@ -1034,7 +1038,7 @@ class TestCoverageGaps:
         )
         candidates = reasoning.generate_candidates(context)
 
-        assert reasoning.decision_count > initial_count
+        assert reasoning.decision_count > initial_count, "decision_count must be positive"
 
     def test_action_layer_validate_domain_rules_safety(self, knowledge_base, calibrator):
         """Test domain rule validation for safety constraint."""
@@ -1051,7 +1055,7 @@ class TestCoverageGaps:
         candidates = reasoning.generate_candidates(context)
 
         decision = action.select_decision(context, candidates, calibrator)
-        assert decision.domain_validation is True
+        assert decision.domain_validation is True, "domain_validation is not valid"
 
     def test_brier_score_perfect_calibration(self, calibrator):
         """Test Brier score with perfectly calibrated predictions."""
@@ -1064,7 +1068,7 @@ class TestCoverageGaps:
         metrics = calibrator.get_metrics()
         brier = metrics["overall_brier_score"]
         # Should be very low for perfect calibration
-        assert brier <= 0.05
+        assert brier <= 0.05, "brier is not valid"
 
     def test_candidate_decision_all_fields(self, knowledge_base):
         """Test candidate decision with all fields."""
@@ -1080,9 +1084,9 @@ class TestCoverageGaps:
         )
 
         data = candidate.to_dict()
-        assert data["id"] == "test_id"
-        assert data["strategy"] == "ensemble"
-        assert len(data["validation_rules"]) == 3
+        assert data["id"] == "test_id", "Data must not be empty"
+        assert data["strategy"] == "ensemble", "Data must not be empty"
+        assert len(data["validation_rules"]) == 3, "Collection must not be empty"
 
     def test_decision_outcome_all_fields(self):
         """Test decision outcome with all fields."""
@@ -1098,8 +1102,8 @@ class TestCoverageGaps:
         )
 
         data = outcome.to_dict()
-        assert data["decision_id"] == "dec_123"
-        assert data["latency_ms"] == 123.45
+        assert data["decision_id"] == "dec_123", "Data must not be empty"
+        assert data["latency_ms"] == 123.45, "Data must not be empty"
 
     def test_reasoning_engine_history_limit(self, reasoning_engine):
         """Test that decision history stays bounded."""
@@ -1114,12 +1118,12 @@ class TestCoverageGaps:
             )
 
         # History should not grow unbounded in memory (implementation may limit)
-        assert len(reasoning_engine.decision_history) >= 100
+        assert len(reasoning_engine.decision_history) >= 100, "Collection must not be empty"
 
     def test_kb_category_statistics(self, knowledge_base):
         """Test KB category statistics."""
         stats = knowledge_base.get_statistics()
-        assert "categories" in stats
+        assert "categories" in stats, "Condition must be true"
         assert isinstance(stats["categories"], list)
 
     def test_feedback_get_outcomes_by_category(self):
@@ -1132,4 +1136,4 @@ class TestCoverageGaps:
         """Test that calibrated confidence stays in bounds."""
         for raw_conf in [0.0, 0.25, 0.5, 0.75, 1.0]:
             calibrated = calibrator.calibrate_confidence(raw_conf)
-            assert 0.0 <= calibrated <= 1.0
+            assert 0.0 <= calibrated <= 1.0, "0 is not valid"

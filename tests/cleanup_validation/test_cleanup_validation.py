@@ -44,7 +44,7 @@ class TestConfigurationLoading:
     def test_mypy_ini_has_python_version(self):
         """Verify mypy.ini has Python 3.12 configured."""
         content = Path("mypy.ini").read_text()
-        assert "python_version = 3.12" in content
+        assert "python_version = 3.12" in content, "Content must not be empty"
 
     def test_pyproject_toml_exists(self):
         """Verify pyproject.toml exists."""
@@ -53,29 +53,29 @@ class TestConfigurationLoading:
     def test_pyproject_toml_has_build_system(self):
         """Verify pyproject.toml has build-system section."""
         content = Path("pyproject.toml").read_text()
-        assert "[build-system]" in content
-        assert "setuptools" in content.lower()
+        assert "[build-system]" in content, "Content must not be empty"
+        assert "setuptools" in content.lower(), "Content must not be empty"
 
     def test_requirements_txt_exists(self):
         """Verify requirements.txt exists."""
-        assert Path("requirements.txt").exists()
+        assert Path("requirements.txt").exists(), "Condition must be true"
 
     def test_requirements_dev_exists(self):
         """Verify requirements-dev.txt exists."""
-        assert Path("requirements-dev.txt").exists()
+        assert Path("requirements-dev.txt").exists(), "Condition must be true"
 
     def test_requirements_test_exists(self):
         """Verify requirements-test.txt exists."""
-        assert Path("requirements-test.txt").exists()
+        assert Path("requirements-test.txt").exists(), "Condition must be true"
 
     def test_editorconfig_exists(self):
         """Verify .editorconfig exists."""
-        assert Path(".editorconfig").exists()
+        assert Path(".editorconfig").exists(), "Condition must be true"
 
     def test_pre_commit_config_exists(self):
         """Verify pre-commit config exists."""
         configs = [".pre-commit-config.yaml", ".pre-commit-ruff.yaml"]
-        assert any(Path(c).exists() for c in configs)
+        assert any(Path(c).exists() for c in configs), "Condition must be true"
 
 
 # ============================================================================
@@ -89,12 +89,12 @@ class TestConfigurationContent:
     def test_pyproject_has_project_name(self):
         """Verify pyproject.toml has project name."""
         content = Path("pyproject.toml").read_text()
-        assert 'name = "codex-ml"' in content or 'name="codex-ml"' in content
+        assert 'name = "codex-ml"' in content or 'name="codex-ml"' in content, "Content must not be empty"
 
     def test_pyproject_has_dependencies(self):
         """Verify pyproject.toml has dependencies section."""
         content = Path("pyproject.toml").read_text()
-        assert "dependencies = [" in content or "dependencies=[" in content
+        assert "dependencies = [" in content or "dependencies=[" in content, "Content must not be empty"
 
     def test_requirements_not_empty(self):
         """Verify requirements.txt is not empty."""
@@ -111,13 +111,13 @@ class TestConfigurationContent:
     def test_mypy_ini_valid_format(self):
         """Verify mypy.ini has valid INI format."""
         content = Path("mypy.ini").read_text()
-        assert "[mypy]" in content
+        assert "[mypy]" in content, "Content must not be empty"
 
     def test_pytest_ini_valid_format(self):
         """Verify pytest.ini has valid format."""
         content = Path("pytest.ini").read_text()
-        assert "[pytest]" in content
-        assert "testpaths" in content
+        assert "[pytest]" in content, "Content must not be empty"
+        assert "testpaths" in content, "Content must not be empty"
 
 
 # ============================================================================
@@ -150,11 +150,11 @@ class TestDirectoryStructure:
 
     def test_cleanup_validation_directory_exists(self):
         """Verify cleanup_validation test directory exists."""
-        assert Path("tests/cleanup_validation").is_dir()
+        assert Path("tests/cleanup_validation").is_dir(), "Condition must be true"
 
     def test_cleanup_validation_tests_exist(self):
         """Verify cleanup validation tests exist."""
-        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists()
+        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists(), "Condition must be true"
 
 
 # ============================================================================
@@ -206,11 +206,11 @@ class TestDocumentation:
 
     def test_cleanup_validation_guide_exists(self):
         """Verify cleanup validation guide exists."""
-        assert Path("docs/cleanup_validation_guide.md").exists()
+        assert Path("docs/cleanup_validation_guide.md").exists(), "Condition must be true"
 
     def test_cleanup_validation_infrastructure_doc_exists(self):
         """Verify cleanup infrastructure doc exists."""
-        assert Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").exists()
+        assert Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").exists(), "Condition must be true"
 
     def test_cleanup_validation_guide_has_content(self):
         """Verify cleanup validation guide has meaningful content."""
@@ -256,7 +256,7 @@ class TestCleanupValidationIntegration:
         """Verify validation infrastructure is complete."""
         # Check test suite
         test_file = Path("tests/cleanup_validation/test_cleanup_validation.py")
-        assert test_file.exists()
+        assert test_file.exists(), "Condition must be true"
         content = test_file.read_text()
         assert "def test_" in content, "No tests found in validation file"
 
@@ -306,8 +306,8 @@ class TestValidationSummary:
     def test_cleanup_validation_ready(self):
         """Verify cleanup validation infrastructure is ready."""
         # Verify test suite
-        assert Path("tests/cleanup_validation").is_dir()
-        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists()
+        assert Path("tests/cleanup_validation").is_dir(), "Condition must be true"
+        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists(), "Condition must be true"
 
         # Verify scripts
         scripts_ok = all(

@@ -31,7 +31,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from scripts.ci._token_resolver import get_token
 
 
-
 def _list_action_required_runs(repo: str, sha: str, token: str) -> list[dict]:
     """Use API to get run IDs and URLs for action_required runs."""
     import json

@@ -42,12 +42,12 @@ class EmbeddingModel:
             logger.info("Embedding model loaded successfully on CPU")
         except ImportError:
             logger.error(
-                "sentence-transformers not installed. Install with: pip install sentence-transformers"
+                "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
             )
             raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
-                "Embedding model '%s' failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",
+                "Embedding model '%s' failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",  # noqa: E501
                 self.model_name,
                 type(e).__name__,
             )

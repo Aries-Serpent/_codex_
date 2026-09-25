@@ -48,9 +48,7 @@ class WeightedVoter:
             ModelType.SYMBOLIC: config.symbolic_weight,
         }
 
-    def vote(
-        self, model_predictions: List[ModelPrediction]
-    ) -> tuple[Any, float, Dict[str, float]]:
+    def vote(self, model_predictions: List[ModelPrediction]) -> tuple[Any, float, Dict[str, float]]:
         """Aggregate predictions via weighted voting.
 
         Args:
@@ -93,9 +91,7 @@ class WeightedVoter:
 
         return final_prediction, weighted_confidence, scores
 
-    def calculate_disagreement(
-        self, model_predictions: List[ModelPrediction]
-    ) -> float:
+    def calculate_disagreement(self, model_predictions: List[ModelPrediction]) -> float:
         """Calculate disagreement between models.
 
         Args:
@@ -167,7 +163,9 @@ class EnsemblePredictor:
         logger.info(f"Initialized {len(self.models)} models")
 
     def predict(
-        self, features: Dict[str, Any], prediction_type: PredictionType = PredictionType.CLASSIFICATION
+        self,
+        features: Dict[str, Any],
+        prediction_type: PredictionType = PredictionType.CLASSIFICATION,
     ) -> EnsemblePrediction:
         """Make an ensemble prediction.
 

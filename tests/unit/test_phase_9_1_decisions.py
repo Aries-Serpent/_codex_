@@ -713,39 +713,39 @@ EXTENDED_SCENARIOS = TEST_SCENARIOS + [
     ("ci-testing-agent", "test_fix", "high", 51.0, "Risky fix at threshold"),
     ("workflow-ci-fixer", "workflow_update", "low", 100.0, "Perfect confidence score"),
     ("packaging-validation-agent", "security_validation", "high", 49.0, "Below threshold risk"),
-    
+
     # Multi-file scenarios
     ("ci-testing-agent", "test_fix", "medium", 78.0, "Multi-file test alignment"),
     ("workflow-ci-fixer", "workflow_update", "high", 63.0, "Multi-workflow orchestration"),
-    
+
     # High-volume scenarios
     ("ci-health-alert-agent", "ci_healing", "low", 85.0, "Batch failure processing"),
     ("test-pattern-guardian", "pattern_enforcement", "low", 88.0, "Large codebase scan"),
-    
+
     # Time-based scenarios
     ("ci-testing-agent", "test_fix", "low", 84.0, "First-run detection"),
     ("self-healing-orchestrator-agent", "orchestration", "medium", 75.0, "Delayed cascade healing"),
-    
+
     # Rollback scenarios
     ("workflow-ci-fixer", "workflow_update", "medium", 77.0, "Rollback-safe update"),
     ("test-assertion-updater", "test_alignment", "high", 66.0, "Reversible modification"),
-    
+
     # Performance scenarios
     ("packaging-validation-agent", "security_validation", "low", 89.0, "Fast scanning"),
     ("rust-error-validator", "code_review", "medium", 79.0, "Large file analysis"),
-    
+
     # Integration scenarios
     ("copilot-session-chain", "orchestration", "medium", 82.0, "Cross-branch integration"),
     ("self-healing-orchestrator-agent", "orchestration", "low", 87.0, "Coordinated healing"),
-    
+
     # Failure recovery scenarios
     ("ci-health-alert-agent", "ci_healing", "high", 59.0, "Transient failure detection"),
     ("workflow-ci-fixer", "workflow_update", "high", 61.0, "Permission escalation"),
-    
+
     # Security scenarios
     ("packaging-validation-agent", "security_validation", "high", 70.0, "Zero-day mitigation"),
     ("rust-error-validator", "code_review", "high", 69.0, "Memory safety verification"),
-    
+
     # Correctness scenarios
     ("test-assertion-updater", "test_alignment", "low", 86.0, "Semantic equivalence"),
     ("test-pattern-guardian", "pattern_enforcement", "medium", 78.0, "Pattern compliance"),
@@ -761,12 +761,12 @@ FINAL_SCENARIOS = EXTENDED_SCENARIOS + [
 
 class TestDecisionScenarios:
     """Test 100+ decision scenarios across all D_CAPABLE agents."""
-    
+
     @pytest.mark.parametrize("agent_id,decision_type,risk_level,confidence,description", FINAL_SCENARIOS[:100])
     def test_agent_decision_scenarios(self, setup, agent_id, decision_type, risk_level, confidence, description):
         """Test individual agent decision scenarios."""
         logger, scorer = setup
-        
+
         # Score decision
         result = scorer.score_with_context(
             agent_id=agent_id,
@@ -776,10 +776,10 @@ class TestDecisionScenarios:
                 "description": description,
             },
         )
-        
+
         # Verify confidence within expected range
         assert 0 <= result["confidence_score"] <= 100, f"Invalid confidence: {result['confidence_score']}"
-        
+
         # Log decision
         record = create_decision_record(
             agent_id=agent_id,
@@ -796,48 +796,48 @@ class TestDecisionScenarios:
             input_context={"description": description},
             outcome="SUCCESS" if confidence >= 70 else "REVIEW_REQUIRED",
         )
-        
+
         decision_id = logger.log_decision(record)
-        assert decision_id is not None
-    
+        assert decision_id is not None, "decision_id must be initialized"
+
     @pytest.mark.parametrize("risk_level", ["low", "medium", "high"])
     def test_risk_level_distribution(self, setup, risk_level):
         """Test decisions across risk levels."""
         logger, scorer = setup
-        
+
         count = 0
         for agent_id in D_CAPABLE_AGENTS:
             result = scorer.score_with_context(
                 agent_id=agent_id,
                 decision_context={"risk_level": risk_level},
             )
-            
-            assert "confidence_score" in result
-            assert "recommendation" in result
+
+            assert "confidence_score" in result, "Result must not be empty"
+            assert "recommendation" in result, "Result must not be empty"
             count += 1
-        
-        assert count == len(D_CAPABLE_AGENTS)
-    
+
+        assert count == len(D_CAPABLE_AGENTS), "D_capable_agents must not be empty"
+
     def test_all_agents_representedrepresented(self, setup):
         """Test that all 9 D_CAPABLE agents are represented."""
         logger, scorer = setup
-        
+
         agent_set = set()
         for agent_id, _, _, _, _ in FINAL_SCENARIOS[:100]:
             result = scorer.score_with_context(agent_id=agent_id, decision_context={})
-            assert result is not None
+            assert result is not None, "result must be initialized"
             agent_set.add(agent_id)
-        
+
         # Verify all 9 agents appear in scenarios
         assert len(agent_set) >= 5, f"Only {len(agent_set)} agents tested, need 9"
-    
+
     def test_decision_accuracy_tracking(self, setup):
         """Test tracking of decision accuracy across scenarios."""
         logger, scorer = setup
-        
+
         correct_count = 0
         total_count = 0
-        
+
         for agent_id, decision_type, risk_level, confidence, description in FINAL_SCENARIOS[:50]:
             result = scorer.score_with_context(
                 agent_id=agent_id,
@@ -846,27 +846,27 @@ class TestDecisionScenarios:
                     "risk_level": risk_level,
                 },
             )
-            
+
             # Mark as correct if confidence >= 70
             if result["confidence_score"] >= 70:
                 correct_count += 1
-            
+
             total_count += 1
-        
+
         accuracy = correct_count / total_count * 100 if total_count > 0 else 0
         assert accuracy >= 85.0, f"Accuracy {accuracy}% below target of 85%"
 
 
 class TestFalsePositiveRate:
     """Test false positive rate in decision scoring."""
-    
+
     def test_false_positive_rate_below_threshold(self, setup):
         """Test that false positive rate is below 2%."""
         logger, scorer = setup
-        
+
         false_positives = 0
         total = 100
-        
+
         for i, (agent_id, decision_type, risk_level, confidence, description) in enumerate(FINAL_SCENARIOS[:total]):
             result = scorer.score_with_context(
                 agent_id=agent_id,
@@ -875,11 +875,11 @@ class TestFalsePositiveRate:
                     "confidence": confidence,
                 },
             )
-            
+
             # A false positive would be high confidence (>80) but low base confidence (<50)
             if result["confidence_score"] > 80 and confidence < 50:
                 false_positives += 1
-        
+
         false_positive_rate = (false_positives / total) * 100
         assert false_positive_rate < 2.0, f"FP rate: {false_positive_rate}%, expected <2%"
 

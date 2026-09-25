@@ -176,7 +176,7 @@ class DeploymentObserver:
         except subprocess.CalledProcessError as e:
             self.log_error(
                 "install_failed",
-                f"Package installation failed",
+                "Package installation failed",
                 e.stderr.decode() if e.stderr else "",
             )
 

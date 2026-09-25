@@ -98,27 +98,27 @@ class TestPatternLearningBackendInit:
     def test_backend_initialization(self):
         """Test that learning backend initializes correctly."""
         learner = MockPatternLearner()
-        assert learner.is_initialized is True
+        assert learner.is_initialized is True, "is_initialized is not valid"
 
     def test_backend_type_specification(self):
         """Test that backend type can be specified."""
         learner_cpu = MockPatternLearner(backend_type="cpu")
-        assert learner_cpu.backend_type == "cpu"
+        assert learner_cpu.backend_type == "cpu", "backend_type is not valid"
 
     def test_backend_reinitialize(self):
         """Test that backend can be reinitialized."""
         learner = MockPatternLearner()
-        assert learner.is_initialized is True
+        assert learner.is_initialized is True, "is_initialized is not valid"
         result = learner.initialize_backend()
-        assert result is True
-        assert learner.is_initialized is True
+        assert result is True, "Result must not be empty"
+        assert learner.is_initialized is True, "is_initialized is not valid"
 
     @pytest.mark.heavy
     def test_cuda_backend_fallback_to_cpu(self):
         """Test fallback to CPU when CUDA unavailable."""
         learner = MockPatternLearner(backend_type="cuda")
         # Should gracefully fall back
-        assert learner.initialize_backend() is True
+        assert learner.initialize_backend() is True, "Condition must be true"
 
 
 class TestPatternLearningDataIngestion:
@@ -129,7 +129,7 @@ class TestPatternLearningDataIngestion:
         learner = MockPatternLearner()
         data = [{"features": [1.0, 2.0, 3.0], "label": 0}]
         count = learner.add_training_data(data)
-        assert count == 1
+        assert count == 1, "Count must be greater than zero"
 
     def test_add_multiple_training_samples(self):
         """Test adding multiple training samples."""
@@ -140,7 +140,7 @@ class TestPatternLearningDataIngestion:
             {"features": [3.0, 4.0, 5.0], "label": 0},
         ]
         count = learner.add_training_data(data)
-        assert count == 3
+        assert count == 3, "Count must be greater than zero"
 
     def test_batch_data_ingestion(self):
         """Test batch ingestion of training data."""
@@ -151,7 +151,7 @@ class TestPatternLearningDataIngestion:
             for i in range(batch_size)
         ]
         count = learner.add_training_data(data)
-        assert count == batch_size
+        assert count == batch_size, "Count must be greater than zero"
 
     def test_data_with_variable_feature_dimensions(self):
         """Test handling data with variable feature dimensions."""
@@ -162,7 +162,7 @@ class TestPatternLearningDataIngestion:
             {"features": [1.0, 2.0, 3.0], "label": 0},
         ]
         count = learner.add_training_data(data)
-        assert count == 3
+        assert count == 3, "Count must be greater than zero"
 
 
 class TestPatternLearningExtraction:
@@ -177,7 +177,7 @@ class TestPatternLearningExtraction:
         ]
         learner.add_training_data(data)
         result = learner.train_patterns(num_epochs=5)
-        assert result["patterns_learned"] > 0
+        assert result["patterns_learned"] > 0, "Value must be greater than zero"
 
     @pytest.mark.heavy
     def test_pattern_training_with_epochs(self):
@@ -186,7 +186,7 @@ class TestPatternLearningExtraction:
         data = [{"features": [float(i)], "label": i % 2} for i in range(50)]
         learner.add_training_data(data)
         result = learner.train_patterns(num_epochs=10)
-        assert result["epochs_trained"] == 10
+        assert result["epochs_trained"] == 10, "Result must not be empty"
 
     def test_pattern_retrieval_by_id(self):
         """Test retrieving specific learned patterns."""
@@ -198,8 +198,8 @@ class TestPatternLearningExtraction:
         learner.add_training_data(data)
         learner.train_patterns()
         pattern = learner.get_pattern_by_id("pattern_0")
-        assert pattern is not None
-        assert pattern.pattern_id == "pattern_0"
+        assert pattern is not None, "pattern must be initialized"
+        assert pattern.pattern_id == "pattern_0", "pattern_id is not valid"
 
     def test_pattern_confidence_scores(self):
         """Test that patterns have confidence scores."""
@@ -208,9 +208,9 @@ class TestPatternLearningExtraction:
         learner.add_training_data(data)
         learner.train_patterns()
         patterns = learner.extract_patterns()
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
         for pattern in patterns:
-            assert 0 <= pattern.confidence <= 1
+            assert 0 <= pattern.confidence <= 1, "0 is not valid"
 
 
 class TestPatternLearningErrorHandling:
@@ -236,7 +236,7 @@ class TestPatternLearningErrorHandling:
         learner = MockPatternLearner()
         data = [{"features": [1.0, 2.0]}]  # No label
         count = learner.add_training_data(data)
-        assert count == 1  # Should handle gracefully
+        assert count == 1, "Count must be greater than zero"
 
 
 class TestPatternLearningIntegration:
@@ -246,7 +246,7 @@ class TestPatternLearningIntegration:
         """Test complete learning pipeline."""
         learner = MockPatternLearner()
         # Initialize
-        assert learner.is_initialized is True
+        assert learner.is_initialized is True, "is_initialized is not valid"
         # Ingest data
         data = [
             {"features": [1.0, 2.0, 3.0], "label": 0},
@@ -255,10 +255,10 @@ class TestPatternLearningIntegration:
         learner.add_training_data(data)
         # Train
         result = learner.train_patterns(num_epochs=5)
-        assert result["patterns_learned"] > 0
+        assert result["patterns_learned"] > 0, "Value must be greater than zero"
         # Extract patterns
         patterns = learner.extract_patterns()
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
 
     def test_pattern_learning_determinism(self):
         """Test that pattern learning produces consistent results."""
@@ -274,7 +274,7 @@ class TestPatternLearningIntegration:
         learner2.add_training_data(data)
         result2 = learner2.train_patterns()
 
-        assert result1["patterns_learned"] == result2["patterns_learned"]
+        assert result1["patterns_learned"] == result2["patterns_learned"], "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ Environment variables:
     CODEX_SESSION_AUTHOR    — author login (fallback: ``git config user.name``).
     GITHUB_RUN_ID           — CI run identifier (optional).
     GITHUB_REPOSITORY       — owner/repo string (optional).
-"""
+"""  # noqa: E501
 
 from __future__ import annotations
 
@@ -50,7 +50,9 @@ from typing import Any, Optional
 from aries_serpent_core.logging.structured_logger import logger
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
-REPORT_PATH = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+REPORT_PATH = (
+    REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+)
 CHANGELOG_PATH = REPO_ROOT / "CHANGELOG.md"
 SESSIONS_DIR = REPO_ROOT / ".codex" / "sessions"
 

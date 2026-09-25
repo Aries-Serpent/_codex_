@@ -169,7 +169,9 @@ class SREMonitor:
             self.alerts.append(alert)
             logger.warning(f"Latency anomaly detected: {alert.message}")
 
-    def get_slo_compliance(self, target_name: str, compliance_rate: float) -> Optional[MonitoringAlert]:
+    def get_slo_compliance(
+        self, target_name: str, compliance_rate: float
+    ) -> Optional[MonitoringAlert]:
         """Generate alert for SLO non-compliance."""
         target = self.slo_targets.get(target_name)
         if not target:
@@ -206,11 +208,17 @@ class SREMonitor:
     ) -> MonitoringReport:
         """Generate comprehensive monitoring report."""
         critical_alerts = [a for a in self.alerts if a.severity == AlertSeverity.CRITICAL]
-        anomalies = [a.message for a in self.alerts if a.severity in (AlertSeverity.HIGH, AlertSeverity.CRITICAL)]
+        anomalies = [
+            a.message
+            for a in self.alerts
+            if a.severity in (AlertSeverity.HIGH, AlertSeverity.CRITICAL)
+        ]
 
         recommendations = []
         if slo_compliance_pct < 99.9:
-            recommendations.append("Investigate SLO non-compliance; check error rates and latencies")
+            recommendations.append(
+                "Investigate SLO non-compliance; check error rates and latencies"
+            )
         if error_rate_pct > 1.0:
             recommendations.append("Error rate elevated; review recent deployments and logs")
         if len(critical_alerts) > 0:

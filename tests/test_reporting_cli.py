@@ -23,13 +23,13 @@ class TestReportingCLIInitialization:
     def test_cli_creation(self):
         """Test creating ReportingCLI."""
         cli = ReportingCLI()
-        assert cli is not None
+        assert cli is not None, "cli must be initialized"
 
     def test_cli_with_config(self):
         """Test CLI with configuration."""
         config = {"format": "json", "output": "/tmp/report.json"}
         cli = ReportingCLI(config=config)
-        assert cli is not None
+        assert cli is not None, "cli must be initialized"
 
 
 class TestReportGeneration:
@@ -38,33 +38,33 @@ class TestReportGeneration:
     def test_generate_text_report(self):
         """Test generating text report."""
         cli = ReportingCLI()
-        
+
         data = {
             "total_files": 100,
             "passed": 95,
             "failed": 5,
         }
-        
+
         report = cli.generate_report(data, format="text")
         assert isinstance(report, str)
-        assert len(report) > 0
+        assert len(report) > 0, "Report must not be empty"
 
     def test_generate_json_report(self):
         """Test generating JSON report."""
         cli = ReportingCLI()
-        
+
         data = {
             "metrics": {"coverage": 0.85, "quality": 0.9},
         }
-        
+
         report = cli.generate_report(data, format="json")
         assert isinstance(report, str)
-        assert "metrics" in report
+        assert "metrics" in report, "Condition must be true"
 
     def test_generate_html_report(self):
         """Test generating HTML report."""
         cli = ReportingCLI()
-        
+
         data = {"title": "Test Report", "summary": "All tests passed"}
         report = cli.generate_report(data, format="html")
         assert isinstance(report, str)
@@ -72,7 +72,7 @@ class TestReportGeneration:
     def test_generate_markdown_report(self):
         """Test generating Markdown report."""
         cli = ReportingCLI()
-        
+
         data = {"title": "Test", "content": "Content"}
         report = cli.generate_report(data, format="markdown")
         assert isinstance(report, str)
@@ -84,15 +84,15 @@ class TestReportFormatting:
     def test_format_metrics(self):
         """Test formatting metrics."""
         cli = ReportingCLI()
-        
+
         metrics = {"coverage": 0.85, "quality": 0.90}
         formatted = cli.format_metrics(metrics)
-        assert formatted is not None
+        assert formatted is not None, "formatted must be initialized"
 
     def test_format_with_decimals(self):
         """Test formatting with decimal places."""
         cli = ReportingCLI()
-        
+
         value = 0.8572
         formatted = cli.format_percentage(value)
         assert isinstance(formatted, str)
@@ -100,7 +100,7 @@ class TestReportFormatting:
     def test_format_large_numbers(self):
         """Test formatting large numbers."""
         cli = ReportingCLI()
-        
+
         number = 1000000
         formatted = cli.format_number(number)
         assert isinstance(formatted, str)
@@ -112,38 +112,38 @@ class TestCLIArguments:
     def test_parse_arguments(self):
         """Test parsing CLI arguments."""
         cli = ReportingCLI()
-        
+
         args = ["--format", "json", "--output", "/tmp/report.json"]
         parsed = cli.parse_args(args)
         # Should parse successfully
-        assert True
+        assert True, "True is not valid"
 
     def test_format_argument(self):
         """Test format argument."""
         cli = ReportingCLI()
-        
+
         args = ["--format", "html"]
         parsed = cli.parse_args(args)
         # Format should be parsed
-        assert True
+        assert True, "True is not valid"
 
     def test_output_argument(self):
         """Test output argument."""
         cli = ReportingCLI()
-        
+
         args = ["--output", "/tmp/output.txt"]
         parsed = cli.parse_args(args)
         # Output should be parsed
-        assert True
+        assert True, "True is not valid"
 
     def test_default_arguments(self):
         """Test default arguments."""
         cli = ReportingCLI()
-        
+
         args = []
         parsed = cli.parse_args(args)
         # Should have defaults
-        assert True
+        assert True, "True is not valid"
 
 
 class TestOutputHandling:
@@ -153,29 +153,29 @@ class TestOutputHandling:
         """Test writing report to file."""
         import tempfile
         cli = ReportingCLI()
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
             output_path = f.name
-        
+
         report = "Test Report"
         cli.write_report(report, output_path)
         # Should write successfully
-        assert True
+        assert True, "True is not valid"
 
     def test_write_to_stdout(self):
         """Test writing report to stdout."""
         cli = ReportingCLI()
-        
+
         report = "Test Report"
         with patch('builtins.print'):
             cli.write_report(report, "-")
         # Should handle stdout
-        assert True
+        assert True, "True is not valid"
 
     def test_format_output_path(self):
         """Test formatting output path."""
         cli = ReportingCLI()
-        
+
         path = cli.get_output_path(format="json")
         assert isinstance(path, str)
 
@@ -183,11 +183,11 @@ class TestOutputHandling:
         """Test creating output directory."""
         import tempfile
         cli = ReportingCLI()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = f"{tmpdir}/reports/report.json"
             # Should create parent directories
-            assert True
+            assert True, "True is not valid"
 
 
 class TestErrorHandling:
@@ -196,39 +196,39 @@ class TestErrorHandling:
     def test_invalid_format(self):
         """Test handling invalid format."""
         cli = ReportingCLI()
-        
+
         data = {"test": "data"}
         try:
             report = cli.generate_report(data, format="invalid")
         except (ValueError, KeyError):
-            assert True
+            assert True, "True is not valid"
 
     def test_empty_data_handling(self):
         """Test handling empty data."""
         cli = ReportingCLI()
-        
+
         data = {}
         report = cli.generate_report(data, format="json")
         # Should handle empty data
-        assert report is not None
+        assert report is not None, "report must be initialized"
 
     def test_none_data_handling(self):
         """Test handling None data."""
         cli = ReportingCLI()
-        
+
         try:
             report = cli.generate_report(None, format="json")
         except (TypeError, AttributeError):
-            assert True
+            assert True, "True is not valid"
 
     def test_file_write_error(self):
         """Test handling file write errors."""
         cli = ReportingCLI()
-        
+
         try:
             cli.write_report("data", "/invalid/path/report.txt")
         except (OSError, IOError):
-            assert True
+            assert True, "True is not valid"
 
 
 class TestIntegration:
@@ -237,7 +237,7 @@ class TestIntegration:
     def test_full_reporting_workflow(self):
         """Test full reporting workflow."""
         cli = ReportingCLI()
-        
+
         # Generate data
         data = {
             "total": 100,
@@ -245,7 +245,7 @@ class TestIntegration:
             "failed": 10,
             "metrics": {"coverage": 0.85}
         }
-        
+
         # Generate report
         report = cli.generate_report(data, format="json")
         assert isinstance(report, str)
@@ -253,15 +253,15 @@ class TestIntegration:
     def test_multiple_format_generation(self):
         """Test generating reports in multiple formats."""
         cli = ReportingCLI()
-        
+
         data = {"summary": "Test Report"}
-        
+
         formats = ["json", "text", "markdown"]
         for fmt in formats:
             try:
                 report = cli.generate_report(data, format=fmt)
-                assert report is not None
-            except Exception:
+                assert report is not None, "report must be initialized"
+            except Exception as _err:
                 pass  # Some formats may not be implemented
 
 

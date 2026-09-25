@@ -46,10 +46,12 @@ I need help remediating a security vulnerability in the Codex repository.
 
    # ✅ Fixed: Escape user input
    import html
+
    safe_html = f"<div>{html.escape(user_input)}</div>"
 
    # ✅ Better: Use template engine with auto-escaping
    from jinja2 import Template
+
    template = Template("<div>{{ user_input }}</div>")
    safe_html = template.render(user_input=user_input)
    ```
@@ -89,6 +91,7 @@ I need help remediating a security vulnerability in the Codex repository.
 
    # ✅ Fixed: Use subprocess with list
    import subprocess
+
    subprocess.run(["ls", user_input], check=True)
 
    # ✅ Better: Validate input first
@@ -101,10 +104,12 @@ I need help remediating a security vulnerability in the Codex repository.
    ```python
    # ❌ Vulnerable
    import pickle
+
    data = pickle.loads(user_data)
 
    # ✅ Fixed: Use safe formats
    import json
+
    data = json.loads(user_data)
 
    # ✅ Or validate source
@@ -128,10 +133,12 @@ I need help remediating a security vulnerability in the Codex repository.
    ```python
    # ❌ Vulnerable: MD5 for passwords
    import hashlib
+
    password_hash = hashlib.md5(password.encode()).hexdigest()
 
    # ✅ Fixed: Use proper password hashing
    from passlib.hash import bcrypt
+
    password_hash = bcrypt.hash(password)
    ```
 
@@ -143,6 +150,7 @@ I need help remediating a security vulnerability in the Codex repository.
    def sanitizeHTML(text):
        """Escape HTML to prevent XSS."""
        import html
+
        return html.escape(text)
    ```
 
@@ -166,6 +174,7 @@ I need help remediating a security vulnerability in the Codex repository.
        connector = LocalConnector(root="/safe/dir")
        with pytest.raises(ConnectorError):
            connector.read_file("../../etc/passwd")
+
 
    def test_xss_prevention():
        """Ensure XSS is prevented."""

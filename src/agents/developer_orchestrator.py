@@ -59,6 +59,7 @@ except ImportError:
 # Import logging utilities
 try:
     from codex.logging.session_logger import log_message
+
     LOGGING_AVAILABLE = True
 
 except ImportError:
@@ -293,7 +294,7 @@ class PhysicsGuidedDeveloperOrchestrator:
             analysis["missing_variables"].append(var_info)
             analysis["suggestions"][var_name] = suggestions[:5] if suggestions else []
 
-        self._log("system", f"Completeness: {analysis['completeness']*100:.1f}%")
+        self._log("system", f"Completeness: {analysis['completeness'] * 100:.1f}%")
         self._log("system", f"Provided: {len(provided_vars)} variables")
         self._log("system", f"Missing: {len(missing_vars)} variables")
 
@@ -332,81 +333,81 @@ class PhysicsGuidedDeveloperOrchestrator:
         app_specific_vars: dict = {}
         if self.app_type == AppType.PYTHON_CLI:
             app_specific_vars = {
-                    "cli_framework": RequirementVariable(
-                        name="cli_framework",
-                        description="CLI framework to use",
-                        variable_type="str",
-                        required=False,
-                        default_value="argparse",
-                        suggested_values=["argparse", "click", "typer", "fire"],
-                    ),
-                    "commands": RequirementVariable(
-                        name="commands",
-                        description="list of CLI commands",
-                        variable_type="list",
-                        required=True,
-                    ),
-                }
+                "cli_framework": RequirementVariable(
+                    name="cli_framework",
+                    description="CLI framework to use",
+                    variable_type="str",
+                    required=False,
+                    default_value="argparse",
+                    suggested_values=["argparse", "click", "typer", "fire"],
+                ),
+                "commands": RequirementVariable(
+                    name="commands",
+                    description="list of CLI commands",
+                    variable_type="list",
+                    required=True,
+                ),
+            }
 
         elif self.app_type == AppType.PYTHON_API:
             app_specific_vars = {
-                    "api_framework": RequirementVariable(
-                        name="api_framework",
-                        description="API framework to use",
-                        variable_type="str",
-                        required=False,
-                        default_value="fastapi",
-                        suggested_values=["fastapi", "flask", "django", "starlette"],
-                    ),
-                    "endpoints": RequirementVariable(
-                        name="endpoints",
-                        description="list of API endpoints",
-                        variable_type="list",
-                        required=True,
-                    ),
-                    "authentication": RequirementVariable(
-                        name="authentication",
-                        description="Authentication method",
-                        variable_type="str",
-                        required=False,
-                        default_value="none",
-                        suggested_values=["none", "jwt", "oauth2", "api_key", "basic"],
-                    ),
-                }
+                "api_framework": RequirementVariable(
+                    name="api_framework",
+                    description="API framework to use",
+                    variable_type="str",
+                    required=False,
+                    default_value="fastapi",
+                    suggested_values=["fastapi", "flask", "django", "starlette"],
+                ),
+                "endpoints": RequirementVariable(
+                    name="endpoints",
+                    description="list of API endpoints",
+                    variable_type="list",
+                    required=True,
+                ),
+                "authentication": RequirementVariable(
+                    name="authentication",
+                    description="Authentication method",
+                    variable_type="str",
+                    required=False,
+                    default_value="none",
+                    suggested_values=["none", "jwt", "oauth2", "api_key", "basic"],
+                ),
+            }
 
         elif self.app_type == AppType.PYTHON_WEB:
             app_specific_vars = {
-                    "web_framework": RequirementVariable(
-                        name="web_framework",
-                        description="Web framework to use",
-                        variable_type="str",
-                        required=False,
-                        default_value="flask",
-                        suggested_values=["flask", "django", "fastapi", "starlette"],
-                    ),
-                    "routes": RequirementVariable(
-                        name="routes",
-                        description="Web routes/pages",
-                        variable_type="list",
-                        required=True,
-                    ),
-                }
+                "web_framework": RequirementVariable(
+                    name="web_framework",
+                    description="Web framework to use",
+                    variable_type="str",
+                    required=False,
+                    default_value="flask",
+                    suggested_values=["flask", "django", "fastapi", "starlette"],
+                ),
+                "routes": RequirementVariable(
+                    name="routes",
+                    description="Web routes/pages",
+                    variable_type="list",
+                    required=True,
+                ),
+            }
 
         elif self.app_type == AppType.PYTHON_LIBRARY:
             app_specific_vars = {
-                    "modules": RequirementVariable(
-                        name="modules",
-                        description="Main modules/packages",
-                        variable_type="list",
-                        required=True,
-                    ),
-                    "public_api": RequirementVariable(
-                        name="public_api",
-                        description="Public API functions/classes",
-                        variable_type="list",
-                        required=True,
-                    ),
-                }
+                "modules": RequirementVariable(
+                    name="modules",
+                    description="Main modules/packages",
+                    variable_type="list",
+                    required=True,
+                ),
+                "public_api": RequirementVariable(
+                    name="public_api",
+                    description="Public API functions/classes",
+                    variable_type="list",
+                    required=True,
+                ),
+            }
 
         if app_specific_vars:
             self.required_variables = {**self.required_variables, **app_specific_vars}
@@ -830,9 +831,7 @@ def test_main_imports():
     def get_development_status(self) -> dict[str, Any]:
         """Get current development status."""
         total_components = len(self.components)
-        completed = sum(
-            1 for comp in self.components if comp.implementation_status == "complete"
-        )
+        completed = sum(1 for comp in self.components if comp.implementation_status == "complete")
 
         return {
             "phase": self.current_phase.value,

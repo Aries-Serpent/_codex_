@@ -152,11 +152,13 @@ class RagAPI(BaseRagAPI):
         for doc_id in doc_ids:
             if doc_id in self._documents:
                 doc = self._documents[doc_id]
-                results.append({
-                    "id": doc_id,
-                    "content": doc["content"],
-                    "metadata": doc["metadata"],
-                })
+                results.append(
+                    {
+                        "id": doc_id,
+                        "content": doc["content"],
+                        "metadata": doc["metadata"],
+                    }
+                )
             else:
                 logger.warning(f"Document not found: {doc_id}")
 

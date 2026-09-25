@@ -123,10 +123,10 @@ def test_collect_distribution_artifacts_returns_validated_metadata(tmp_path: Pat
 
     artifacts = collect_distribution_artifacts(dist_dir, "codex-cognitive-sdk")
 
-    assert artifacts.version == "0.1.0a1"
-    assert artifacts.wheel_path == wheel_path
-    assert artifacts.sdist_path == sdist_path
-    assert artifacts.metadata_name == "codex-cognitive-sdk"
+    assert artifacts.version == "0.1.0a1", "version is not valid"
+    assert artifacts.wheel_path == wheel_path, "wheel_path is not valid"
+    assert artifacts.sdist_path == sdist_path, "sdist_path is not valid"
+    assert artifacts.metadata_name == "codex-cognitive-sdk", "Data must not be empty"
 
 
 def test_collect_distribution_artifacts_rejects_duplicate_wheels(tmp_path: Path) -> None:
@@ -206,7 +206,7 @@ def test_validate_release_tag_accepts_expected_formats(
     payload = validate_release_tag(distribution, dist_dir, tag)
 
     assert payload["expected_tag"] == expected_release_tag(distribution, version)
-    assert payload["version"] == version
+    assert payload["version"] == version, "Condition must be true"
 
 
 def test_validate_release_tag_rejects_version_mismatch(tmp_path: Path) -> None:
@@ -248,8 +248,8 @@ def test_install_wheel_in_isolated_venv_installs_built_wheel(tmp_path: Path) -> 
         import_name="codex_cognitive_sdk",
     )
 
-    assert payload["version"] == "0.1.0a1"
-    assert Path(payload["venv_dir"]).exists()
+    assert payload["version"] == "0.1.0a1", "Condition must be true"
+    assert Path(payload["venv_dir"]).exists(), "Condition must be true"
     installed_version = subprocess.run(
         [
             str(Path(payload["venv_dir"]) / "bin" / "python"),
@@ -260,7 +260,7 @@ def test_install_wheel_in_isolated_venv_installs_built_wheel(tmp_path: Path) -> 
         capture_output=True,
         text=True,
     )
-    assert installed_version.stdout.strip() == "0.1.0a1"
+    assert installed_version.stdout.strip() == "0.1.0a1", "Condition must be true"
 
 
 def test_verify_attestations_uses_gh_for_wheel_and_sdist(
@@ -317,9 +317,9 @@ def test_verify_attestations_uses_gh_for_wheel_and_sdist(
     )
 
     assert payload["verified_paths"] == [str(wheel_path), str(sdist_path)]
-    assert len(observed_commands) == 2
+    assert len(observed_commands) == 2, "Observed_commands must not be empty"
     assert observed_commands[0][:4] == ["gh", "attestation", "verify", str(wheel_path)]
-    assert "--signer-workflow" in observed_commands[0]
+    assert "--signer-workflow" in observed_commands[0], "Condition must be true"
 
 
 def test_verify_attestations_rejects_wrong_subject(

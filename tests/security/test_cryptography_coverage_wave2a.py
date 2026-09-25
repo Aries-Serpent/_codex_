@@ -206,7 +206,7 @@ class TestCryptographyEncryption:
         pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
         iv = os.urandom(16)  # 128-bit IV
-  
+
         # lgtm[py/mode-without-authentication] - Intentional: Legacy crypto coverage
         # nosemgrep: python.cryptography.security.mode-without-authentication
         cipher = Cipher(

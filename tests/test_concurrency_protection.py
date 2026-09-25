@@ -306,7 +306,7 @@ class TestThreadSafeSessionDB:
 
         # Final status should be one of the updated values
         final_session = db.get_session("TEST_SESSION")
-        assert final_session["status"] in statuses
+        assert final_session["status"] in statuses, "Condition must be true"
         db.cleanup()
 
 
@@ -460,8 +460,8 @@ class TestDeadlockRecovery:
             return "success"
 
         result = DeadlockRecovery.retry_with_backoff(func_with_retry, max_retries=5)
-        assert result == "success"
-        assert attempt_count[0] == 3
+        assert result == "success", "Result must not be empty"
+        assert attempt_count[0] == 3, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

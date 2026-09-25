@@ -131,7 +131,7 @@ def extract_copilot_reply_index(
         Dict mapping parent comment ID to list of Copilot reply timestamps
     """
     copilot_reply_index: dict[int, list[datetime]] = {}
-    
+
     for c in review_comments:
         login = (c.get("user") or {}).get("login", "")
         if login in copilot_agents:
@@ -207,11 +207,11 @@ def should_skip_comment(
         True if comment should be skipped, False otherwise
     """
     body_start = body[:80]
-    
+
     if any(body_start.lstrip().startswith(m) for m in skip_body_markers):
         return True
-    
+
     if any(body_start.lstrip().startswith(p) for p in skip_text_patterns):
         return True
-    
+
     return False

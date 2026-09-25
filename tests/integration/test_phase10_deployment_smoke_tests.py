@@ -35,31 +35,31 @@ class TestPhase10ProductionDeploymentSmoke:
         # Arrange
         blue_version = deployment_context["blue"]["version"]
         green_version = deployment_context["green"]["version"]
-        
+
         # Act
         deployment_context["green"]["healthy"] = True
         deployment_context["deployment_status"] = "validation_pending"
-        
+
         # Assert
-        assert deployment_context["blue"]["healthy"] is True
-        assert deployment_context["green"]["healthy"] is True
-        assert blue_version == "0.1.0"
-        assert green_version == "0.2.0"
+        assert deployment_context["blue"]["healthy"] is True, "Condition must be true"
+        assert deployment_context["green"]["healthy"] is True, "Condition must be true"
+        assert blue_version == "0.1.0", "blue_version is not valid"
+        assert green_version == "0.2.0", "green_version is not valid"
 
     def test_canary_traffic_shift(self, deployment_context):
         """Test canary deployment traffic shift."""
         # Arrange
         initial_blue_traffic = deployment_context["blue"]["traffic_percent"]
         initial_green_traffic = deployment_context["green"]["traffic_percent"]
-        
+
         # Act - shift 5% traffic to green (canary)
         deployment_context["blue"]["traffic_percent"] = 95
         deployment_context["green"]["traffic_percent"] = 5
-        
+
         # Assert
-        assert deployment_context["blue"]["traffic_percent"] == 95
-        assert deployment_context["green"]["traffic_percent"] == 5
-        assert (deployment_context["blue"]["traffic_percent"] + 
+        assert deployment_context["blue"]["traffic_percent"] == 95, "Condition must be true"
+        assert deployment_context["green"]["traffic_percent"] == 5, "Condition must be true"
+        assert (deployment_context["blue"]["traffic_percent"] +, "Condition must be true"
                 deployment_context["green"]["traffic_percent"]) == 100
 
     def test_smoke_test_api_endpoint(self, deployment_context):
@@ -67,7 +67,7 @@ class TestPhase10ProductionDeploymentSmoke:
         # Arrange
         endpoint = "/health"
         expected_status = 200
-        
+
         # Act
         deployment_context["smoke_tests"]["api_health"] = {
             "endpoint": endpoint,
@@ -75,16 +75,16 @@ class TestPhase10ProductionDeploymentSmoke:
             "response_time_ms": 45,
             "passed": True,
         }
-        
+
         # Assert
-        assert deployment_context["smoke_tests"]["api_health"]["passed"] is True
-        assert deployment_context["smoke_tests"]["api_health"]["status"] == 200
+        assert deployment_context["smoke_tests"]["api_health"]["passed"] is True, "Condition must be true"
+        assert deployment_context["smoke_tests"]["api_health"]["status"] == 200, "Condition must be true"
 
     def test_smoke_test_database_connection(self, deployment_context):
         """Test smoke test for database connectivity."""
         # Arrange
         db_config = {"host": "localhost", "port": 5432}
-        
+
         # Act
         deployment_context["smoke_tests"]["db_connection"] = {
             "config": db_config,
@@ -92,16 +92,16 @@ class TestPhase10ProductionDeploymentSmoke:
             "latency_ms": 12,
             "passed": True,
         }
-        
+
         # Assert
-        assert deployment_context["smoke_tests"]["db_connection"]["passed"] is True
-        assert deployment_context["smoke_tests"]["db_connection"]["connected"] is True
+        assert deployment_context["smoke_tests"]["db_connection"]["passed"] is True, "Condition must be true"
+        assert deployment_context["smoke_tests"]["db_connection"]["connected"] is True, "Condition must be true"
 
     def test_smoke_test_ml_pipeline(self, deployment_context):
         """Test smoke test for ML pipeline."""
         # Arrange
         test_input = {"data": [1.0, 2.0, 3.0]}
-        
+
         # Act
         deployment_context["smoke_tests"]["ml_pipeline"] = {
             "input": test_input,
@@ -109,17 +109,17 @@ class TestPhase10ProductionDeploymentSmoke:
             "latency_ms": 234,
             "passed": True,
         }
-        
+
         # Assert
-        assert deployment_context["smoke_tests"]["ml_pipeline"]["passed"] is True
-        assert "prediction" in deployment_context["smoke_tests"]["ml_pipeline"]["output"]
+        assert deployment_context["smoke_tests"]["ml_pipeline"]["passed"] is True, "Condition must be true"
+        assert "prediction" in deployment_context["smoke_tests"]["ml_pipeline"]["output"], "Condition must be true"
 
     def test_smoke_test_cache_layer(self, deployment_context):
         """Test smoke test for cache layer."""
         # Arrange
         cache_key = "test_key"
         cache_value = "test_value"
-        
+
         # Act
         deployment_context["smoke_tests"]["cache"] = {
             "write_success": True,
@@ -128,9 +128,9 @@ class TestPhase10ProductionDeploymentSmoke:
             "latency_ms": 2,
             "passed": True,
         }
-        
+
         # Assert
-        assert deployment_context["smoke_tests"]["cache"]["passed"] is True
+        assert deployment_context["smoke_tests"]["cache"]["passed"] is True, "Condition must be true"
 
     def test_all_smoke_tests_passing(self, deployment_context):
         """Test that all smoke tests pass."""
@@ -141,19 +141,19 @@ class TestPhase10ProductionDeploymentSmoke:
             "ml_pipeline",
             "cache",
         ]
-        
+
         # Act
         for test_name in smoke_test_names:
             deployment_context["smoke_tests"][test_name] = {"passed": True}
-        
+
         all_passed = all(
-            deployment_context["smoke_tests"][name]["passed"] 
+            deployment_context["smoke_tests"][name]["passed"]
             for name in smoke_test_names
         )
-        
+
         # Assert
-        assert all_passed is True
-        assert len(deployment_context["smoke_tests"]) == len(smoke_test_names)
+        assert all_passed is True, "all_passed is not valid"
+        assert len(deployment_context["smoke_tests"]) == len(smoke_test_names), "Smoke_test_names must not be empty"
 
 
 @pytest.mark.integration
@@ -167,47 +167,47 @@ class TestPhase10DeploymentRollback:
         # Arrange
         current_version = "0.2.0"
         previous_version = "0.1.0"
-        
+
         # Act
         can_rollback = previous_version != current_version
-        
+
         # Assert
-        assert can_rollback is True
+        assert can_rollback is True, "can_rollback is not valid"
 
     def test_health_check_triggered_rollback(self):
         """Test health check triggered rollback."""
         # Arrange
         deployment_status = "unhealthy"
-        
+
         # Act
         should_rollback = deployment_status in ["unhealthy", "degraded"]
-        
+
         # Assert
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_error_rate_threshold_rollback(self):
         """Test error rate threshold triggered rollback."""
         # Arrange
         error_rate = 0.15  # 15%
         threshold = 0.05  # 5%
-        
+
         # Act
         should_rollback = error_rate > threshold
-        
+
         # Assert
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_rollback_data_consistency(self):
         """Test data consistency after rollback."""
         # Arrange
         data_before = {"value": 42}
         data_after_rollback = {"value": 42}
-        
+
         # Act
         consistent = data_before == data_after_rollback
-        
+
         # Assert
-        assert consistent is True
+        assert consistent is True, "consistent is not valid"
 
 
 @pytest.mark.integration
@@ -224,13 +224,13 @@ class TestPhase10ProductionMonitoring:
             "request_latency_p95": 234,
             "error_rate": 0.01,
         }
-        
+
         # Act
         all_metrics_valid = all(isinstance(v, (int, float)) for v in metrics.values())
-        
+
         # Assert
-        assert all_metrics_valid is True
-        assert len(metrics) == 4
+        assert all_metrics_valid is True, "all_metrics_valid is not valid"
+        assert len(metrics) == 4, "Metrics must not be empty"
 
     def test_alerting_thresholds(self):
         """Test alerting thresholds."""
@@ -243,17 +243,17 @@ class TestPhase10ProductionMonitoring:
             "cpu_usage": 90,
             "memory_usage": 85,
         }
-        
+
         # Act
         triggered_alerts = [
             metric for metric, value in metrics.items()
             if value > thresholds[metric]
         ]
-        
+
         # Assert
-        assert len(triggered_alerts) > 0
-        assert "cpu_usage" in triggered_alerts
-        assert "memory_usage" in triggered_alerts
+        assert len(triggered_alerts) > 0, "Triggered_alerts must not be empty"
+        assert "cpu_usage" in triggered_alerts, "Condition must be true"
+        assert "memory_usage" in triggered_alerts, "Condition must be true"
 
     def test_slo_compliance_tracking(self):
         """Test SLO compliance tracking."""
@@ -263,15 +263,15 @@ class TestPhase10ProductionMonitoring:
             "latency_p95": {"target": 500, "current": 234},
             "error_rate": {"target": 0.001, "current": 0.0008},
         }
-        
+
         # Act
         compliant_slos = {
             name: slo for name, slo in slos.items()
             if slo["current"] >= slo["target"] or slo["current"] <= slo["target"]
         }
-        
+
         # Assert
-        assert len(compliant_slos) == 3
+        assert len(compliant_slos) == 3, "Compliant_slos must not be empty"
 
 
 if __name__ == "__main__":

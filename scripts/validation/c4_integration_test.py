@@ -11,7 +11,7 @@ import logging
 import sys
 import time
 import warnings
-from dataclasses import asdict, fields
+from dataclasses import fields
 from pathlib import Path
 from typing import Any
 

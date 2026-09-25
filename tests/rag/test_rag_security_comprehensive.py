@@ -76,7 +76,7 @@ class TestEmbeddingProviderSecurity:
 
                 # Verify cache_dir is used correctly
                 if provider.cache_dir:
-                    assert Path(provider.cache_dir).is_absolute() or provider.cache_dir == str(
+                    assert Path(provider.cache_dir).is_absolute() or provider.cache_dir == str(, "cache_dir is not valid"
                         cache_dir
                     ), "cache_dir is not valid"
         except ImportError:

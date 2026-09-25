@@ -33,19 +33,19 @@ class TestPhase10CICDPipelineIntegration:
         # Arrange
         workflow_name = "production-release"
         expected_jobs = ["build", "test", "security-scan", "deploy"]
-        
+
         # Act
         pipeline_context["workflows"].append({
             "name": workflow_name,
             "jobs": expected_jobs,
             "status": "running",
         })
-        
+
         # Assert
-        assert len(pipeline_context["workflows"]) == 1
+        assert len(pipeline_context["workflows"]) == 1, "Collection must not be empty"
         workflow = pipeline_context["workflows"][0]
-        assert workflow["name"] == workflow_name
-        assert len(workflow["jobs"]) == len(expected_jobs)
+        assert workflow["name"] == workflow_name, "w is not valid"
+        assert len(workflow["jobs"]) == len(expected_jobs), "Expected_jobs must not be empty"
 
     def test_workflow_artifact_generation(self, pipeline_context):
         """Test artifact generation in CI/CD workflow."""
@@ -55,15 +55,15 @@ class TestPhase10CICDPipelineIntegration:
             "build_artifacts": {"path": "dist/", "size": 5120},
             "test_results": {"path": "test-results.xml", "size": 512},
         }
-        
+
         # Act
         for artifact_name, artifact_info in artifacts.items():
             pipeline_context["artifacts"][artifact_name] = artifact_info
-        
+
         # Assert
-        assert len(pipeline_context["artifacts"]) == 3
-        assert "coverage_report" in pipeline_context["artifacts"]
-        assert "build_artifacts" in pipeline_context["artifacts"]
+        assert len(pipeline_context["artifacts"]) == 3, "Collection must not be empty"
+        assert "coverage_report" in pipeline_context["artifacts"], "Condition must be true"
+        assert "build_artifacts" in pipeline_context["artifacts"], "Condition must be true"
 
     def test_code_quality_gates(self, pipeline_context):
         """Test code quality gates execution."""
@@ -74,17 +74,17 @@ class TestPhase10CICDPipelineIntegration:
             "linting": {"status": "passed", "threshold": 0},
             "security": {"status": "passed", "threshold": 0},
         }
-        
+
         # Act
         all_passed = True
         for gate_name, gate_info in gates.items():
             pipeline_context["gates"][gate_name] = gate_info
             if gate_info["status"] != "passed":
                 all_passed = False
-        
+
         # Assert
-        assert all_passed is True
-        assert len(pipeline_context["gates"]) == 4
+        assert all_passed is True, "all_passed is not valid"
+        assert len(pipeline_context["gates"]) == 4, "Collection must not be empty"
 
     def test_workflow_execution_checklist(self, pipeline_context):
         """Test Workflow Execution Checklist (WEC) validation."""
@@ -96,16 +96,16 @@ class TestPhase10CICDPipelineIntegration:
             "security_scan_passed",
             "no_secrets_detected",
         ]
-        
+
         # Act
         pipeline_context["checks"]["wec"] = {
             "items": wec_items,
             "all_passed": True,
         }
-        
+
         # Assert
-        assert pipeline_context["checks"]["wec"]["all_passed"] is True
-        assert len(pipeline_context["checks"]["wec"]["items"]) == 5
+        assert pipeline_context["checks"]["wec"]["all_passed"] is True, "Condition must be true"
+        assert len(pipeline_context["checks"]["wec"]["items"]) == 5, "Collection must not be empty"
 
     def test_deployment_gate_validation(self, pipeline_context):
         """Test deployment gate validation."""
@@ -117,16 +117,16 @@ class TestPhase10CICDPipelineIntegration:
             "security_approved": True,
             "manual_approval": True,
         }
-        
+
         # Act
         all_gates_passed = all(deployment_gates.values())
         pipeline_context["gates"]["deployment"] = {
             "status": "passed" if all_gates_passed else "blocked",
             "gates": deployment_gates,
         }
-        
+
         # Assert
-        assert pipeline_context["gates"]["deployment"]["status"] == "passed"
+        assert pipeline_context["gates"]["deployment"]["status"] == "passed", "Condition must be true"
 
     def test_artifact_validation(self, pipeline_context):
         """Test artifact validation after build."""
@@ -136,7 +136,7 @@ class TestPhase10CICDPipelineIntegration:
             "dist/package.tar.gz": {"format": "archive", "required": True},
             "test-results.xml": {"format": "xml", "required": True},
         }
-        
+
         # Act
         validation_results = {}
         for artifact_name, artifact_spec in artifacts_to_validate.items():
@@ -145,9 +145,9 @@ class TestPhase10CICDPipelineIntegration:
                 "valid": True,
                 "format": artifact_spec["format"],
             }
-        
+
         # Assert
-        assert all(v["valid"] for v in validation_results.values())
+        assert all(v["valid"] for v in validation_results.values()), "Result must not be empty"
 
     def test_codeql_security_scan(self, pipeline_context):
         """Test CodeQL security scan execution."""
@@ -157,7 +157,7 @@ class TestPhase10CICDPipelineIntegration:
             "severity": "error",
             "findings": [],
         }
-        
+
         # Act
         pipeline_context["checks"]["codeql"] = {
             "status": "completed",
@@ -165,26 +165,26 @@ class TestPhase10CICDPipelineIntegration:
             "critical_findings": 0,
             "high_findings": 0,
         }
-        
+
         # Assert
-        assert pipeline_context["checks"]["codeql"]["status"] == "completed"
-        assert pipeline_context["checks"]["codeql"]["critical_findings"] == 0
+        assert pipeline_context["checks"]["codeql"]["status"] == "completed", "Condition must be true"
+        assert pipeline_context["checks"]["codeql"]["critical_findings"] == 0, "Condition must be true"
 
     def test_coverage_threshold_validation(self, pipeline_context):
         """Test coverage threshold validation."""
         # Arrange
         current_coverage = 42.5
         minimum_threshold = 40
-        
+
         # Act
         pipeline_context["checks"]["coverage"] = {
             "current": current_coverage,
             "threshold": minimum_threshold,
             "passed": current_coverage >= minimum_threshold,
         }
-        
+
         # Assert
-        assert pipeline_context["checks"]["coverage"]["passed"] is True
+        assert pipeline_context["checks"]["coverage"]["passed"] is True, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -200,14 +200,14 @@ class TestPhase10HealthCheckIntegration:
             "database": {"healthy": True, "response_time_ms": 12},
             "cache": {"healthy": True, "response_time_ms": 5},
         }
-        
+
         # Act
         all_healthy = all(s["healthy"] for s in services.values())
         avg_response_time = sum(s["response_time_ms"] for s in services.values()) / len(services)
-        
+
         # Assert
-        assert all_healthy is True
-        assert avg_response_time < 100
+        assert all_healthy is True, "all_healthy is not valid"
+        assert avg_response_time < 100, "Response must not be empty"
 
     def test_deployment_readiness_check(self):
         """Test deployment readiness validation."""
@@ -219,12 +219,12 @@ class TestPhase10HealthCheckIntegration:
             "performance_acceptable": True,
             "no_regressions": True,
         }
-        
+
         # Act
         ready_for_deployment = all(readiness_checks.values())
-        
+
         # Assert
-        assert ready_for_deployment is True
+        assert ready_for_deployment is True, "ready_for_deployment is not valid"
 
     def test_rollback_capability_validation(self):
         """Test rollback capability validation."""
@@ -235,12 +235,12 @@ class TestPhase10HealthCheckIntegration:
             "previous_version_available": True,
             "recovery_time_sla": 300,  # seconds
         }
-        
+
         # Act
         can_rollback = all(rollback_requirements.values())
-        
+
         # Assert
-        assert can_rollback is True
+        assert can_rollback is True, "can_rollback is not valid"
 
 
 if __name__ == "__main__":

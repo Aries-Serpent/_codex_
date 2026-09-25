@@ -106,8 +106,8 @@ class TestRepositoriesTransactionIsolation:
             repo.create_user(user2)
 
         # Verify first user still exists and second wasn't partially inserted
-        assert repo.get_by_user_id("user1") is not None
-        assert repo.get_by_user_id("user2") is None
+        assert repo.get_by_user_id("user1") is not None, "Value must be initialized"
+        assert repo.get_by_user_id("user2") is None, "Condition must be true"
 
     def test_transaction_consistency_after_error(self):
         """Test that repository state remains consistent after errors."""
@@ -140,7 +140,7 @@ class TestRepositoriesTransactionIsolation:
 
         # Verify original user still intact
         retrieved = repo.get_by_user_id("user1")
-        assert retrieved.username == "alice"
+        assert retrieved.username == "alice", "username is not valid"
 
 
 class TestRepositoriesEdgeCases:
@@ -173,9 +173,9 @@ class TestRepositoriesEdgeCases:
         # Document case sensitivity behavior
         # (either both should work or both should fail, not inconsistent)
         if retrieved_lower is not None:
-            assert retrieved_lower.user_id == "user1"
+            assert retrieved_lower.user_id == "user1", "user_id is not valid"
         if retrieved_upper is not None:
-            assert retrieved_upper.user_id == "user1"
+            assert retrieved_upper.user_id == "user1", "user_id is not valid"
 
     def test_delete_nonexistent_user(self):
         """Test deleting a user that doesn't exist."""
@@ -185,7 +185,7 @@ class TestRepositoriesEdgeCases:
         repo.delete_user("nonexistent_id")
 
         # Verify nothing broke
-        assert repo.get_by_user_id("nonexistent_id") is None
+        assert repo.get_by_user_id("nonexistent_id") is None, "Condition must be true"
 
     def test_update_user_partial_fields(self):
         """Test updating specific user fields without overwriting others."""
@@ -205,7 +205,7 @@ class TestRepositoriesEdgeCases:
         repo.update_user(user)
 
         retrieved = repo.get_by_user_id("user1")
-        assert retrieved.email == "newemail@example.com"
+        assert retrieved.email == "newemail@example.com", "email is not valid"
         assert retrieved.username == "alice", "Username should be unchanged"
 
 
@@ -233,8 +233,8 @@ class TestRepositoriesMigration:
             # Verify persistence (create new instance, same DB)
             repo2 = SQLiteUserRepository(db_path)
             retrieved = repo2.get_by_user_id("user1")
-            assert retrieved is not None
-            assert retrieved.username == "alice"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.username == "alice", "username is not valid"
         finally:
             if os.path.exists(db_path):
                 os.unlink(db_path)
@@ -298,7 +298,7 @@ class TestRepositoriesErrorHandling:
             repo.create_user(user)
             retrieved = repo.get_by_user_id("user1")
             # If created, verify it's stored
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
         except ValueError:
             # If validation rejects it, that's also valid
             pass

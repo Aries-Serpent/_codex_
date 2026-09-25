@@ -38,11 +38,11 @@ class TestCWEParsing:
 
     def test_parse_valid_cwe_id(self) -> None:
         """Test parsing valid CWE ID."""
-        assert _parse_cwe_id("CWE-89") == "CWE-89"
+        assert _parse_cwe_id("CWE-89") == "CWE-89", "Condition must be true"
 
     def test_parse_cwe_with_whitespace(self) -> None:
         """Test parsing CWE with surrounding whitespace."""
-        assert _parse_cwe_id("  CWE-22  ") == "CWE-22"
+        assert _parse_cwe_id("  CWE-22  ") == "CWE-22", "Condition must be true"
 
     def test_parse_empty_cwe(self) -> None:
         """Test parsing empty CWE string."""
@@ -57,12 +57,12 @@ class TestCWETitles:
     def test_get_known_cwe_title(self) -> None:
         """Test getting title for known CWE."""
         title = _get_cwe_title("CWE-89")
-        assert "SQL" in title
+        assert "SQL" in title, "Condition must be true"
 
     def test_get_unknown_cwe_title(self) -> None:
         """Test getting title for unknown CWE."""
         title = _get_cwe_title("CWE-9999")
-        assert title == "Unknown CWE"
+        assert title == "Unknown CWE", "title is not valid"
 
 
 class TestSeverityConversion:
@@ -70,32 +70,32 @@ class TestSeverityConversion:
 
     def test_critical_severity(self) -> None:
         """Test CRITICAL severity conversion."""
-        assert _severity_to_int("CRITICAL") == 4
+        assert _severity_to_int("CRITICAL") == 4, "Condition must be true"
 
     def test_high_severity(self) -> None:
         """Test HIGH severity conversion."""
-        assert _severity_to_int("HIGH") == 3
+        assert _severity_to_int("HIGH") == 3, "Condition must be true"
 
     def test_medium_severity(self) -> None:
         """Test MEDIUM severity conversion."""
-        assert _severity_to_int("MEDIUM") == 2
+        assert _severity_to_int("MEDIUM") == 2, "Condition must be true"
 
     def test_low_severity(self) -> None:
         """Test LOW severity conversion."""
-        assert _severity_to_int("LOW") == 1
+        assert _severity_to_int("LOW") == 1, "Condition must be true"
 
     def test_info_severity(self) -> None:
         """Test INFO severity conversion."""
-        assert _severity_to_int("INFO") == 0
+        assert _severity_to_int("INFO") == 0, "Condition must be true"
 
     def test_unknown_severity(self) -> None:
         """Test unknown severity conversion."""
-        assert _severity_to_int("UNKNOWN") == -1
+        assert _severity_to_int("UNKNOWN") == -1, "Condition must be true"
 
     def test_case_insensitive_severity(self) -> None:
         """Test case-insensitive severity conversion."""
-        assert _severity_to_int("critical") == 4
-        assert _severity_to_int("CrItIcAl") == 4
+        assert _severity_to_int("critical") == 4, "Condition must be true"
+        assert _severity_to_int("CrItIcAl") == 4, "Condition must be true"
 
 
 class TestConfidenceConversion:
@@ -103,27 +103,27 @@ class TestConfidenceConversion:
 
     def test_confidence_float_to_percent(self) -> None:
         """Test converting float confidence to percentage."""
-        assert _convert_confidence_to_percent(0.95) == "95%"
+        assert _convert_confidence_to_percent(0.95) == "95%", "Condition must be true"
 
     def test_confidence_integer_0_to_100(self) -> None:
         """Test converting integer 0-100 confidence."""
-        assert _convert_confidence_to_percent(95) == "95%"
+        assert _convert_confidence_to_percent(95) == "95%", "Condition must be true"
 
     def test_confidence_string_with_percent(self) -> None:
         """Test string confidence with percent sign."""
-        assert _convert_confidence_to_percent("95%") == "95%"
+        assert _convert_confidence_to_percent("95%") == "95%", "Condition must be true"
 
     def test_confidence_string_without_percent(self) -> None:
         """Test string confidence without percent sign."""
-        assert _convert_confidence_to_percent("95") == "95%"
+        assert _convert_confidence_to_percent("95") == "95%", "Condition must be true"
 
     def test_confidence_zero(self) -> None:
         """Test zero confidence."""
-        assert _convert_confidence_to_percent(0) == "0%"
+        assert _convert_confidence_to_percent(0) == "0%", "Condition must be true"
 
     def test_confidence_one(self) -> None:
         """Test confidence of 1.0."""
-        assert _convert_confidence_to_percent(1.0) == "100%"
+        assert _convert_confidence_to_percent(1.0) == "100%", "Condition must be true"
 
 
 class TestFixPatternGeneration:
@@ -136,8 +136,8 @@ class TestFixPatternGeneration:
             "fix_recommendation": "Use parameterized queries",
         }
         pattern = _generate_fix_pattern(finding)
-        assert "parameterized" in pattern
-        assert "@code-review-agent" in pattern
+        assert "parameterized" in pattern, "Condition must be true"
+        assert "@code-review-agent" in pattern, "Condition must be true"
 
     def test_path_traversal_pattern(self) -> None:
         """Test fix pattern for path traversal."""
@@ -146,8 +146,8 @@ class TestFixPatternGeneration:
             "fix_recommendation": "Use pathlib.Path.resolve()",
         }
         pattern = _generate_fix_pattern(finding)
-        assert "pathlib" in pattern
-        assert "@code-review-agent" in pattern
+        assert "pathlib" in pattern, "Condition must be true"
+        assert "@code-review-agent" in pattern, "Condition must be true"
 
     def test_hardcoded_credentials_pattern(self) -> None:
         """Test fix pattern for hardcoded credentials."""
@@ -156,14 +156,14 @@ class TestFixPatternGeneration:
             "fix_recommendation": "Move to environment variables",
         }
         pattern = _generate_fix_pattern(finding)
-        assert "environment" in pattern
-        assert "@secret-detection-agent" in pattern
+        assert "environment" in pattern, "Condition must be true"
+        assert "@secret-detection-agent" in pattern, "Condition must be true"
 
     def test_generic_pattern_without_recommendation(self) -> None:
         """Test generic pattern when no recommendation provided."""
         finding = {"cwe": "CWE-999"}
         pattern = _generate_fix_pattern(finding)
-        assert "security patch" in pattern
+        assert "security patch" in pattern, "Condition must be true"
 
 
 class TestFindingsLoading:
@@ -191,8 +191,8 @@ class TestFindingsLoading:
 
         try:
             findings = _load_findings(temp_path)
-            assert len(findings) == 1
-            assert findings[0]["cwe"] == "CWE-89"
+            assert len(findings) == 1, "Findings must not be empty"
+            assert findings[0]["cwe"] == "CWE-89", "Condition must be true"
         finally:
             Path(temp_path).unlink()
 
@@ -228,22 +228,22 @@ class TestCWEGrouping:
         ]
 
         groups = _group_by_cwe(findings)
-        assert len(groups) == 2
-        assert len(groups["CWE-89"]) == 2
-        assert len(groups["CWE-22"]) == 1
+        assert len(groups) == 2, "Groups must not be empty"
+        assert len(groups["CWE-89"]) == 2, "Collection must not be empty"
+        assert len(groups["CWE-22"]) == 1, "Collection must not be empty"
 
     def test_group_findings_with_missing_cwe(self) -> None:
         """Test grouping when CWE is missing."""
         findings = [{"severity": "HIGH"}, {"cwe": "CWE-89", "severity": "CRITICAL"}]
 
         groups = _group_by_cwe(findings)
-        assert "UNKNOWN" in groups
-        assert "CWE-89" in groups
+        assert "UNKNOWN" in groups, "Condition must be true"
+        assert "CWE-89" in groups, "Condition must be true"
 
     def test_group_empty_findings(self) -> None:
         """Test grouping empty findings list."""
         groups = _group_by_cwe([])
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 class TestSortingBySeverity:
@@ -268,7 +268,7 @@ class TestSortingBySeverity:
 
         sorted_findings = _sort_findings_by_severity(findings)
         # Missing severity should be treated as INFO (lowest)
-        assert sorted_findings[0]["severity"] == "CRITICAL"
+        assert sorted_findings[0]["severity"] == "CRITICAL", "s is not valid"
 
 
 class TestFormatCodeQLAlerts:
@@ -311,25 +311,25 @@ class TestFormatCodeQLAlerts:
             formatted = format_codeql_alerts(temp_path)
 
             # Verify structure
-            assert "cwe_groups" in formatted
-            assert "metadata" in formatted
+            assert "cwe_groups" in formatted, "Condition must be true"
+            assert "metadata" in formatted, "Data must not be empty"
 
             # Verify metadata
-            assert formatted["metadata"]["total_findings"] == 2
-            assert formatted["metadata"]["critical_count"] == 1
-            assert formatted["metadata"]["high_count"] == 1
-            assert formatted["metadata"]["cwe_count"] == 2
+            assert formatted["metadata"]["total_findings"] == 2, "Data must not be empty"
+            assert formatted["metadata"]["critical_count"] == 1, "Data must not be empty"
+            assert formatted["metadata"]["high_count"] == 1, "Data must not be empty"
+            assert formatted["metadata"]["cwe_count"] == 2, "Data must not be empty"
 
             # Verify CWE groups
-            assert len(formatted["cwe_groups"]) == 2
-            assert formatted["cwe_groups"][0]["cwe_id"] == "CWE-89"
-            assert formatted["cwe_groups"][0]["severity"] == "CRITICAL"
+            assert len(formatted["cwe_groups"]) == 2, "Collection must not be empty"
+            assert formatted["cwe_groups"][0]["cwe_id"] == "CWE-89", "f is not valid"
+            assert formatted["cwe_groups"][0]["severity"] == "CRITICAL", "f is not valid"
 
             # Verify findings within group
-            assert len(formatted["cwe_groups"][0]["findings"]) == 1
+            assert len(formatted["cwe_groups"][0]["findings"]) == 1, "Collection must not be empty"
             finding = formatted["cwe_groups"][0]["findings"][0]
-            assert "queries.py:42" in finding["file"]
-            assert finding["confidence"] == "99%"
+            assert "queries.py:42" in finding["file"], "Condition must be true"
+            assert finding["confidence"] == "99%", "Condition must be true"
 
         finally:
             Path(temp_path).unlink()
@@ -347,8 +347,8 @@ class TestFormatCodeQLAlerts:
         try:
             formatted = format_codeql_alerts(temp_path)
 
-            assert formatted["metadata"]["total_findings"] == 0
-            assert len(formatted["cwe_groups"]) == 0
+            assert formatted["metadata"]["total_findings"] == 0, "Data must not be empty"
+            assert len(formatted["cwe_groups"]) == 0, "Collection must not be empty"
 
         finally:
             Path(temp_path).unlink()
@@ -372,8 +372,8 @@ class TestFormatCodeQLAlerts:
 
         try:
             formatted = format_codeql_alerts(temp_path)
-            assert formatted["metadata"]["total_findings"] == 1
-            assert len(formatted["cwe_groups"]) == 1
+            assert formatted["metadata"]["total_findings"] == 1, "Data must not be empty"
+            assert len(formatted["cwe_groups"]) == 1, "Collection must not be empty"
 
         finally:
             Path(temp_path).unlink()
@@ -417,12 +417,12 @@ class TestMarkdownReportGeneration:
         markdown = _generate_markdown_report(formatted)
 
         # Verify sections
-        assert "# CodeQL Security Findings Report" in markdown
-        assert "## Summary" in markdown
-        assert "## Findings by CWE" in markdown
-        assert "CWE-89" in markdown
-        assert "SQL Injection" in markdown
-        assert "CRITICAL" in markdown
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert "CWE-89" in markdown, "Condition must be true"
+        assert "SQL Injection" in markdown, "Condition must be true"
+        assert "CRITICAL" in markdown, "Condition must be true"
 
     def test_markdown_report_metadata(self) -> None:
         """Test markdown report includes all metadata."""
@@ -443,11 +443,11 @@ class TestMarkdownReportGeneration:
         markdown = _generate_markdown_report(formatted)
 
         # Verify counts (with markdown formatting: **Total Findings**)
-        assert "5" in markdown and "Total Findings" in markdown
-        assert "2" in markdown and "Critical" in markdown
-        assert "1" in markdown and "High" in markdown
-        assert "1" in markdown and "Medium" in markdown
-        assert "1" in markdown and "Low" in markdown
+        assert "5" in markdown and "Total Findings" in markdown, "Condition must be true"
+        assert "2" in markdown and "Critical" in markdown, "Condition must be true"
+        assert "1" in markdown and "High" in markdown, "Condition must be true"
+        assert "1" in markdown and "Medium" in markdown, "Condition must be true"
+        assert "1" in markdown and "Low" in markdown, "Condition must be true"
 
 
 class TestPerformance:
@@ -484,8 +484,8 @@ class TestPerformance:
             elapsed = time.time() - start_time
 
             # Should complete in under 500ms
-            assert elapsed < 0.5
-            assert formatted["metadata"]["total_findings"] == 100
+            assert elapsed < 0.5, "elapsed is not valid"
+            assert formatted["metadata"]["total_findings"] == 100, "Data must not be empty"
 
         finally:
             Path(temp_path).unlink()
@@ -519,7 +519,7 @@ class TestEdgeCases:
 
         try:
             formatted = format_codeql_alerts(temp_path)
-            assert formatted["metadata"]["total_findings"] == 1
+            assert formatted["metadata"]["total_findings"] == 1, "Data must not be empty"
 
         finally:
             Path(temp_path).unlink()
@@ -549,7 +549,7 @@ class TestEdgeCases:
 
         try:
             formatted = format_codeql_alerts(temp_path)
-            assert formatted["metadata"]["total_findings"] == 1
+            assert formatted["metadata"]["total_findings"] == 1, "Data must not be empty"
 
         finally:
             Path(temp_path).unlink()
@@ -589,8 +589,8 @@ class TestEdgeCases:
 
         try:
             formatted = format_codeql_alerts(temp_path)
-            assert formatted["metadata"]["total_findings"] == 2
-            assert len(formatted["cwe_groups"]) == 2
+            assert formatted["metadata"]["total_findings"] == 2, "Data must not be empty"
+            assert len(formatted["cwe_groups"]) == 2, "Collection must not be empty"
 
         finally:
             Path(temp_path).unlink()

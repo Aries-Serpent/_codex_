@@ -41,11 +41,11 @@ class TestBasicWorkflowExecution:
             metadata={"owner": "test"}
         )
 
-        assert workflow is not None
-        assert workflow.name == "Test Workflow"
-        assert workflow.version == "1.0.0"
-        assert workflow.status == WorkflowStatus.DRAFT
-        assert workflow.metadata["owner"] == "test"
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.name == "Test Workflow", "name is not valid"
+        assert workflow.version == "1.0.0", "version is not valid"
+        assert workflow.status == WorkflowStatus.DRAFT, "status is not valid"
+        assert workflow.metadata["owner"] == "test", "Data must not be empty"
 
     def test_retrieve_workflow(self, orchestration_engine):
         """Test retrieving a workflow by ID."""
@@ -55,14 +55,14 @@ class TestBasicWorkflowExecution:
         )
         retrieved = orchestration_engine.get_workflow(created.workflow_id)
 
-        assert retrieved is not None
-        assert retrieved.workflow_id == created.workflow_id
-        assert retrieved.name == "Retrieve Test"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.workflow_id == created.workflow_id, "workflow_id is not valid"
+        assert retrieved.name == "Retrieve Test", "name is not valid"
 
     def test_workflow_not_found(self, orchestration_engine):
         """Test retrieving a non-existent workflow."""
         result = orchestration_engine.get_workflow("non-existent-id")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_add_task_to_workflow(self, orchestration_engine):
         """Test adding tasks to a workflow."""
@@ -71,8 +71,8 @@ class TestBasicWorkflowExecution:
 
         workflow.add_task(task)
 
-        assert len(workflow.tasks) == 1
-        assert workflow.get_task("task_1") is not None
+        assert len(workflow.tasks) == 1, "Collection must not be empty"
+        assert workflow.get_task("task_1") is not None, "w must be initialized"
 
     def test_add_multiple_tasks(self, orchestration_engine):
         """Test adding multiple tasks to a workflow."""
@@ -86,7 +86,7 @@ class TestBasicWorkflowExecution:
             )
             workflow.add_task(task)
 
-        assert len(workflow.tasks) == 5
+        assert len(workflow.tasks) == 5, "Collection must not be empty"
 
     def test_simple_linear_workflow(self, sample_workflow, orchestration_engine):
         """Test execution of a simple linear workflow (task1 -> task2 -> task3)."""
@@ -94,9 +94,9 @@ class TestBasicWorkflowExecution:
 
         result = orchestration_engine.execute_workflow(sample_workflow.workflow_id)
 
-        assert result["status"] == "completed"
-        assert len(result["results"]) == 3
-        assert all(r.is_success() for r in result["results"].values())
+        assert result["status"] == "completed", "Result must not be empty"
+        assert len(result["results"]) == 3, "Collection must not be empty"
+        assert all(r.is_success() for r in result["results"].values()), "Result must not be empty"
 
 
 # ============================================================================
@@ -113,12 +113,12 @@ class TestComplexDAGWorkflows:
         result = orchestration_engine.execute_workflow(complex_workflow.workflow_id)
 
         # Verify all parallel tasks (2a, 2b, 2c) completed
-        assert "task_2a" in result["results"]
-        assert "task_2b" in result["results"]
-        assert "task_2c" in result["results"]
-        assert result["results"]["task_2a"].is_success()
-        assert result["results"]["task_2b"].is_success()
-        assert result["results"]["task_2c"].is_success()
+        assert "task_2a" in result["results"], "Result must not be empty"
+        assert "task_2b" in result["results"], "Result must not be empty"
+        assert "task_2c" in result["results"], "Result must not be empty"
+        assert result["results"]["task_2a"].is_success(), "Result must not be empty"
+        assert result["results"]["task_2b"].is_success(), "Result must not be empty"
+        assert result["results"]["task_2c"].is_success(), "Result must not be empty"
 
     def test_dag_topological_sort(self, complex_workflow, orchestration_engine):
         """Test topological sorting of DAG tasks."""
@@ -153,8 +153,8 @@ class TestComplexDAGWorkflows:
 
         result = orchestration_engine.execute_workflow(workflow.workflow_id)
 
-        assert result["status"] == "completed"
-        assert len(result["results"]) == 4
+        assert result["status"] == "completed", "Result must not be empty"
+        assert len(result["results"]) == 4, "Collection must not be empty"
 
     def test_wide_dag_many_parallel_tasks(self, orchestration_engine):
         """Test wide DAG with many parallel tasks."""
@@ -180,8 +180,8 @@ class TestComplexDAGWorkflows:
 
         result = orchestration_engine.execute_workflow(workflow.workflow_id)
 
-        assert result["status"] == "completed"
-        assert len(result["results"]) == 12
+        assert result["status"] == "completed", "Result must not be empty"
+        assert len(result["results"]) == 12, "Collection must not be empty"
 
     def test_deep_dag_long_chain(self, orchestration_engine):
         """Test deep DAG with long dependency chain."""
@@ -202,8 +202,8 @@ class TestComplexDAGWorkflows:
 
         result = orchestration_engine.execute_workflow(workflow.workflow_id)
 
-        assert result["status"] == "completed"
-        assert len(result["results"]) == 20
+        assert result["status"] == "completed", "Result must not be empty"
+        assert len(result["results"]) == 20, "Collection must not be empty"
 
 
 # ============================================================================
@@ -219,10 +219,10 @@ class TestConditionalBranching:
 
         result = orchestration_engine.execute_workflow(conditional_workflow.workflow_id)
 
-        assert result["status"] == "completed"
+        assert result["status"] == "completed", "Result must not be empty"
         # Both branches should execute in mock
-        assert "task_2" in result["results"]
-        assert "task_3" in result["results"]
+        assert "task_2" in result["results"], "Result must not be empty"
+        assert "task_3" in result["results"], "Result must not be empty"
 
     def test_conditional_success_branch(self, orchestration_engine):
         """Test conditional execution on success."""
@@ -237,7 +237,7 @@ class TestConditionalBranching:
             conditional="success"
         ))
 
-        assert workflow.get_task("success_branch").conditional == "success"
+        assert workflow.get_task("success_branch").conditional == "success", "conditional is not valid"
 
     def test_conditional_failure_branch(self, orchestration_engine):
         """Test conditional execution on failure."""
@@ -252,7 +252,7 @@ class TestConditionalBranching:
             conditional="failure"
         ))
 
-        assert workflow.get_task("failure_branch").conditional == "failure"
+        assert workflow.get_task("failure_branch").conditional == "failure", "conditional is not valid"
 
     def test_conditional_always_branch(self, orchestration_engine):
         """Test conditional execution that always runs."""
@@ -267,7 +267,7 @@ class TestConditionalBranching:
             conditional="always"
         ))
 
-        assert workflow.get_task("always_branch").conditional == "always"
+        assert workflow.get_task("always_branch").conditional == "always", "conditional is not valid"
 
     def test_nested_conditionals(self, orchestration_engine):
         """Test nested conditional branching."""
@@ -295,7 +295,7 @@ class TestConditionalBranching:
             conditional="success"
         ))
 
-        assert len(workflow.tasks) == 4
+        assert len(workflow.tasks) == 4, "Collection must not be empty"
 
 
 # ============================================================================
@@ -315,7 +315,7 @@ class TestTaskDependencies:
         )
 
         deps = dependency_resolver.resolve_dependencies(task)
-        assert deps == ["task_1"]
+        assert deps == ["task_1"], "deps is not valid"
 
     def test_multiple_dependencies(self, orchestration_engine, dependency_resolver):
         """Test task with multiple dependencies."""
@@ -327,10 +327,10 @@ class TestTaskDependencies:
         )
 
         deps = dependency_resolver.resolve_dependencies(task)
-        assert len(deps) == 3
-        assert "task_1" in deps
-        assert "task_2" in deps
-        assert "task_3" in deps
+        assert len(deps) == 3, "Deps must not be empty"
+        assert "task_1" in deps, "Condition must be true"
+        assert "task_2" in deps, "Condition must be true"
+        assert "task_3" in deps, "Condition must be true"
 
     def test_dependency_satisfaction(self, dependency_resolver):
         """Test checking if dependencies are satisfied."""
@@ -348,7 +348,7 @@ class TestTaskDependencies:
         assert not dependency_resolver.check_dependency_satisfaction(task, {"task_1"})
 
         # Satisfied when all dependencies are met
-        assert dependency_resolver.check_dependency_satisfaction(
+        assert dependency_resolver.check_dependency_satisfaction(, "Condition must be true"
             task, {"task_1", "task_2"}
         )
 
@@ -363,18 +363,18 @@ class TestTaskDependencies:
 
         # All tasks are blocking
         blocking = dependency_resolver.get_blocking_tasks(task, set())
-        assert len(blocking) == 3
+        assert len(blocking) == 3, "Blocking must not be empty"
 
         # Some tasks are blocking
         blocking = dependency_resolver.get_blocking_tasks(task, {"task_1"})
-        assert len(blocking) == 2
-        assert "task_1" not in blocking
+        assert len(blocking) == 2, "Blocking must not be empty"
+        assert "task_1" not in blocking, "Condition must be true"
 
         # No tasks are blocking
         blocking = dependency_resolver.get_blocking_tasks(
             task, {"task_1", "task_2", "task_3"}
         )
-        assert len(blocking) == 0
+        assert len(blocking) == 0, "Blocking must not be empty"
 
     def test_circular_dependency_detection(self, orchestration_engine):
         """Test detection of circular dependencies."""
@@ -394,7 +394,7 @@ class TestTaskDependencies:
         ))
 
         is_circular = orchestration_engine._has_circular_dependency(workflow)
-        assert is_circular
+        assert is_circular, "is_circular is not valid"
 
 
 # ============================================================================
@@ -407,25 +407,25 @@ class TestWorkflowValidation:
     def test_validate_valid_workflow(self, sample_workflow, orchestration_engine):
         """Test validation of a valid workflow."""
         valid, msg = orchestration_engine.validate_workflow(sample_workflow.workflow_id)
-        
+
         orchestration_engine.workflows[sample_workflow.workflow_id] = sample_workflow
         valid, msg = orchestration_engine.validate_workflow(sample_workflow.workflow_id)
-        
-        assert valid
+
+        assert valid, "valid is not valid"
 
     def test_validate_nonexistent_workflow(self, orchestration_engine):
         """Test validation of non-existent workflow."""
         valid, msg = orchestration_engine.validate_workflow("non-existent")
-        assert not valid
-        assert "not found" in msg.lower()
+        assert not valid, "Condition must be true"
+        assert "not found" in msg.lower(), "Condition must be true"
 
     def test_validate_empty_workflow(self, orchestration_engine):
         """Test validation of empty workflow (no tasks)."""
         workflow = orchestration_engine.create_workflow("Empty")
         valid, msg = orchestration_engine.validate_workflow(workflow.workflow_id)
 
-        assert not valid
-        assert "no tasks" in msg.lower()
+        assert not valid, "Condition must be true"
+        assert "no tasks" in msg.lower(), "Condition must be true"
 
     def test_validate_circular_dependency(self, orchestration_engine):
         """Test validation detects circular dependencies."""
@@ -441,8 +441,8 @@ class TestWorkflowValidation:
         ))
 
         valid, msg = orchestration_engine.validate_workflow(workflow.workflow_id)
-        assert not valid
-        assert "circular" in msg.lower()
+        assert not valid, "Condition must be true"
+        assert "circular" in msg.lower(), "Condition must be true"
 
 
 # ============================================================================
@@ -456,15 +456,15 @@ class TestRootAndLeafTasks:
         """Test retrieving root tasks (no dependencies)."""
         root_tasks = complex_workflow.get_root_tasks()
 
-        assert len(root_tasks) == 1
-        assert root_tasks[0].task_id == "task_1"
+        assert len(root_tasks) == 1, "Root_tasks must not be empty"
+        assert root_tasks[0].task_id == "task_1", "task_id is not valid"
 
     def test_get_leaf_tasks(self, complex_workflow):
         """Test retrieving leaf tasks (no dependents)."""
         leaf_tasks = complex_workflow.get_leaf_tasks()
 
-        assert len(leaf_tasks) == 1
-        assert leaf_tasks[0].task_id == "task_4"
+        assert len(leaf_tasks) == 1, "Leaf_tasks must not be empty"
+        assert leaf_tasks[0].task_id == "task_4", "task_id is not valid"
 
     def test_multiple_root_tasks(self, orchestration_engine):
         """Test workflow with multiple root tasks."""
@@ -478,7 +478,7 @@ class TestRootAndLeafTasks:
         ))
 
         root_tasks = workflow.get_root_tasks()
-        assert len(root_tasks) == 2
+        assert len(root_tasks) == 2, "Root_tasks must not be empty"
 
     def test_multiple_leaf_tasks(self, orchestration_engine):
         """Test workflow with multiple leaf tasks."""
@@ -495,9 +495,9 @@ class TestRootAndLeafTasks:
         ))
 
         leaf_tasks = workflow.get_leaf_tasks()
-        assert len(leaf_tasks) == 2
-        assert "task_2" in [t.task_id for t in leaf_tasks]
-        assert "task_3" in [t.task_id for t in leaf_tasks]
+        assert len(leaf_tasks) == 2, "Leaf_tasks must not be empty"
+        assert "task_2" in [t.task_id for t in leaf_tasks], "Condition must be true"
+        assert "task_3" in [t.task_id for t in leaf_tasks], "Condition must be true"
 
 
 # ============================================================================
@@ -520,21 +520,21 @@ class TestWorkflowSerialization:
 
         task_dict = task.to_dict()
 
-        assert task_dict["task_id"] == "task_1"
-        assert task_dict["name"] == "Test Task"
-        assert task_dict["retries"] == 3
-        assert task_dict["timeout"] == 600
-        assert task_dict["dependencies"] == ["task_0"]
+        assert task_dict["task_id"] == "task_1", "Condition must be true"
+        assert task_dict["name"] == "Test Task", "Condition must be true"
+        assert task_dict["retries"] == 3, "Condition must be true"
+        assert task_dict["timeout"] == 600, "Condition must be true"
+        assert task_dict["dependencies"] == ["task_0"], "Condition must be true"
 
     def test_serialize_workflow(self, sample_workflow):
         """Test serializing a workflow to dictionary."""
         workflow_dict = sample_workflow.to_dict()
 
-        assert workflow_dict["workflow_id"] == sample_workflow.workflow_id
-        assert workflow_dict["name"] == sample_workflow.name
-        assert workflow_dict["version"] == sample_workflow.version
-        assert len(workflow_dict["tasks"]) == 3
-        assert workflow_dict["status"] == "draft"
+        assert workflow_dict["workflow_id"] == sample_workflow.workflow_id, "w is not valid"
+        assert workflow_dict["name"] == sample_workflow.name, "w is not valid"
+        assert workflow_dict["version"] == sample_workflow.version, "w is not valid"
+        assert len(workflow_dict["tasks"]) == 3, "Collection must not be empty"
+        assert workflow_dict["status"] == "draft", "w is not valid"
 
     def test_serialize_to_json(self, sample_workflow):
         """Test converting workflow to JSON."""
@@ -543,7 +543,7 @@ class TestWorkflowSerialization:
 
         # Should be valid JSON
         parsed = json.loads(json_str)
-        assert parsed["name"] == "Sample Workflow"
+        assert parsed["name"] == "Sample Workflow", "Condition must be true"
 
     def test_serialize_workflow_with_metadata(self, orchestration_engine):
         """Test serializing workflow with metadata."""
@@ -557,8 +557,8 @@ class TestWorkflowSerialization:
         )
 
         workflow_dict = workflow.to_dict()
-        assert workflow_dict["metadata"]["owner"] == "test@example.com"
-        assert "automation" in workflow_dict["metadata"]["tags"]
+        assert workflow_dict["metadata"]["owner"] == "test@example.com", "Data must not be empty"
+        assert "automation" in workflow_dict["metadata"]["tags"], "Data must not be empty"
 
 
 # ============================================================================
@@ -575,8 +575,8 @@ class TestExecutionHistory:
         orchestration_engine.execute_workflow(sample_workflow.workflow_id)
 
         history = orchestration_engine.get_execution_history(sample_workflow.workflow_id)
-        assert len(history) > 0
-        assert history[0]["workflow_id"] == sample_workflow.workflow_id
+        assert len(history) > 0, "History must not be empty"
+        assert history[0]["workflow_id"] == sample_workflow.workflow_id, "hist is not valid"
 
     def test_multiple_executions_tracked(self, sample_workflow, orchestration_engine):
         """Test that multiple executions are tracked separately."""
@@ -587,7 +587,7 @@ class TestExecutionHistory:
             orchestration_engine.execute_workflow(sample_workflow.workflow_id)
 
         history = orchestration_engine.get_execution_history(sample_workflow.workflow_id)
-        assert len(history) == 3
+        assert len(history) == 3, "History must not be empty"
 
     def test_execution_timestamp(self, sample_workflow, orchestration_engine):
         """Test that execution includes timestamp."""
@@ -596,7 +596,7 @@ class TestExecutionHistory:
         orchestration_engine.execute_workflow(sample_workflow.workflow_id)
 
         history = orchestration_engine.get_execution_history(sample_workflow.workflow_id)
-        assert "timestamp" in history[0]
+        assert "timestamp" in history[0], "Condition must be true"
 
 
 # ============================================================================
@@ -611,11 +611,11 @@ class TestTaskScheduling:
         future_time = datetime.utcnow() + timedelta(hours=1)
         schedule_id = task_scheduler.schedule_task("task_1", future_time)
 
-        assert schedule_id is not None
+        assert schedule_id is not None, "schedule_id must be initialized"
         scheduled = task_scheduler.get_scheduled_task(schedule_id)
-        assert scheduled is not None
-        assert scheduled["task_id"] == "task_1"
-        assert scheduled["status"] == "scheduled"
+        assert scheduled is not None, "scheduled must be initialized"
+        assert scheduled["task_id"] == "task_1", "Condition must be true"
+        assert scheduled["status"] == "scheduled", "Condition must be true"
 
     def test_cancel_scheduled_task(self, task_scheduler):
         """Test cancelling a scheduled task."""
@@ -623,8 +623,8 @@ class TestTaskScheduling:
         schedule_id = task_scheduler.schedule_task("task_1", future_time)
 
         result = task_scheduler.cancel_scheduled_task(schedule_id)
-        assert result
-        assert task_scheduler.get_scheduled_task(schedule_id)["status"] == "cancelled"
+        assert result, "Result must not be empty"
+        assert task_scheduler.get_scheduled_task(schedule_id)["status"] == "cancelled", "Condition must be true"
 
     def test_schedule_task_with_recurrence(self, task_scheduler):
         """Test scheduling a task with recurrence."""
@@ -634,16 +634,16 @@ class TestTaskScheduling:
         )
 
         scheduled = task_scheduler.get_scheduled_task(schedule_id)
-        assert scheduled["recurrence"] == "daily"
+        assert scheduled["recurrence"] == "daily", "Condition must be true"
 
     def test_queue_and_retrieve_tasks(self, task_scheduler):
         """Test queuing and retrieving tasks."""
         task_scheduler.queue_task_for_execution("task_1")
         task_scheduler.queue_task_for_execution("task_2")
 
-        assert task_scheduler.get_next_task() == "task_1"
-        assert task_scheduler.get_next_task() == "task_2"
-        assert task_scheduler.get_next_task() is None
+        assert task_scheduler.get_next_task() == "task_1", "Condition must be true"
+        assert task_scheduler.get_next_task() == "task_2", "Condition must be true"
+        assert task_scheduler.get_next_task() is None, "Condition must be true"
 
     def test_get_pending_tasks(self, task_scheduler):
         """Test getting all pending tasks."""
@@ -651,7 +651,7 @@ class TestTaskScheduling:
             task_scheduler.queue_task_for_execution(f"task_{i}")
 
         pending = task_scheduler.get_pending_tasks()
-        assert len(pending) == 5
+        assert len(pending) == 5, "Pending must not be empty"
 
 
 # ============================================================================
@@ -665,7 +665,7 @@ class TestComprehensiveIntegration:
         """Test complete workflow lifecycle."""
         # Create
         workflow = orchestration_engine.create_workflow("Lifecycle Test")
-        assert workflow.status == WorkflowStatus.DRAFT
+        assert workflow.status == WorkflowStatus.DRAFT, "status is not valid"
 
         # Add tasks
         workflow.add_task(Task(task_id="t1", name="T1", action="t1"))
@@ -676,12 +676,12 @@ class TestComprehensiveIntegration:
 
         # Validate
         valid, _ = orchestration_engine.validate_workflow(workflow.workflow_id)
-        assert valid
+        assert valid, "valid is not valid"
 
         # Execute
         result = orchestration_engine.execute_workflow(workflow.workflow_id)
-        assert result["status"] == "completed"
-        assert workflow.status == WorkflowStatus.COMPLETED
+        assert result["status"] == "completed", "Result must not be empty"
+        assert workflow.status == WorkflowStatus.COMPLETED, "status is not valid"
 
     def test_workflow_with_retries(self, orchestration_engine):
         """Test workflow with task retries."""
@@ -696,7 +696,7 @@ class TestComprehensiveIntegration:
         workflow.add_task(task)
 
         result = orchestration_engine.execute_workflow(workflow.workflow_id)
-        assert result["status"] == "completed"
+        assert result["status"] == "completed", "Result must not be empty"
 
     def test_workflow_with_timeouts(self, orchestration_engine):
         """Test workflow with task timeouts."""
@@ -710,7 +710,7 @@ class TestComprehensiveIntegration:
         )
         workflow.add_task(task)
 
-        assert workflow.get_task("task_1").timeout == 30
+        assert workflow.get_task("task_1").timeout == 30, "timeout is not valid"
 
 
 if __name__ == "__main__":

@@ -45,8 +45,8 @@ from typing import Any, Optional
 
 # Import Bridge Protocol v2 for enhanced features
 try:
-    from bridge_protocol_v2 import MAGIC_BYTES  # Import magic bytes constant for consistency
     from bridge_protocol_v2 import (
+        MAGIC_BYTES,  # Import magic bytes constant for consistency
         MultiClientBridge,
     )
     from bridge_protocol_v2 import decode_message as v2_decode

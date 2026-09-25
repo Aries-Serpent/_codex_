@@ -29,8 +29,7 @@ import json
 import logging
 import sqlite3
 import sys
-import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
@@ -262,14 +261,14 @@ class CascadeDetector:
                 window_end = window_start + timedelta(
                     seconds=config["wave_2_window"]
                 )
-                
+
                 # Ensure right >= i (comments sorted by time, so right never needs to go backward)
                 right = max(right, i)
-                
+
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
                     right += 1
-                
+
                 # Count of comments in window [i, right)
                 count_in_window = right - i
 
@@ -285,14 +284,14 @@ class CascadeDetector:
                 window_end = window_start + timedelta(
                     seconds=config["wave_3_window"]
                 )
-                
+
                 # Ensure right >= i (comments sorted by time, so right never needs to go backward)
                 right = max(right, i)
-                
+
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
                     right += 1
-                
+
                 # Count of comments in window [i, right)
                 count_in_window = right - i
 
@@ -326,7 +325,7 @@ class CascadeDetector:
             if wave is None:
                 error_count = self.get_error_count(pr_number, time_window_seconds=60)
                 wave = self.detect_cascade(pr_number, error_count)
-            
+
             # Insert with wave value (eliminates need for separate UPDATE)
             conn.execute(
                 """
@@ -343,7 +342,7 @@ class CascadeDetector:
                     is_self_referential,
                 ),
             )
-            
+
             # Record cascade event if wave detected
             if wave:
                 error_count = self.get_error_count(pr_number, time_window_seconds=60)
@@ -368,7 +367,7 @@ class CascadeDetector:
                         }),
                     ),
                 )
-            
+
             conn.commit()
 
     def update_error_comment_id(

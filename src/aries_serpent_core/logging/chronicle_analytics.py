@@ -64,16 +64,12 @@ class ChronicleAnalytics:
                     )
                 optional_columns = ("status", "agent_name", "repository")
                 selected_columns = [
-                    (
-                        f'"{name}" AS "{name}"'
-                        if name in columns
-                        else f'NULL AS "{name}"'
-                    )
+                    (f'"{name}" AS "{name}"' if name in columns else f'NULL AS "{name}"')
                     for name in optional_columns
                 ]
                 cursor.execute(
                     f'SELECT "{id_column}" AS "id", "{created_column}" AS "created_at", '
-                    f'{", ".join(selected_columns)} '
+                    f"{', '.join(selected_columns)} "
                     f'FROM sessions ORDER BY "{created_column}" DESC'
                 )
                 self.sessions = [

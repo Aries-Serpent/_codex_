@@ -31,7 +31,7 @@ def test_dependabot_config_validator_rejects_null_directory_values():
     }
 
     errors = validate_dependabot_config(document)
-    assert any("missing a valid directory" in error for error in errors)
+    assert any("missing a valid directory" in error for error in errors), "Error should be raised or set"
 
 
 def test_dependabot_config_validator_allows_suppressed_prs_for_ignored_updates():

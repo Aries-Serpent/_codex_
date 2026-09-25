@@ -7,7 +7,7 @@
 #         assert "\n\n" in content, "Content must not be empty"
 #         import shutil
 #     """Test markdown validation and linting."""
-# 
+#
 #     def test_markdown_file_structure(self):
 #     def test_markdown_file_structure(self):
 #         """Test markdown file has valid structure."""
@@ -19,7 +19,7 @@
 #         assert "\n\n" in content, "Content must not be empty"
 #         import shutil
 #         shutil.rmtree(test_dir)
-# 
+#
 #     def test_markdown_headers(self):
 #     def test_markdown_headers(self):
 #         """Test markdown headers are properly formatted."""

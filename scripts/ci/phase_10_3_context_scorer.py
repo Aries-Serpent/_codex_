@@ -25,15 +25,15 @@ import json
 import logging
 import math
 import os
+import re
 import sqlite3
 import sys
 import time
-from dataclasses import dataclass, asdict
+from collections import Counter
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from collections import Counter
-import re
 
 logging.basicConfig(
     level=logging.INFO,

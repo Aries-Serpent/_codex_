@@ -20,9 +20,7 @@ class Checkpoint:
     checkpoint_id: str = field(default_factory=lambda: str(uuid4()))
     transfer_id: str = ""
     state_data: Dict[str, Any] = field(default_factory=dict)
-    created_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     valid: bool = True
 
     def to_dict(self) -> Dict[str, Any]:
@@ -64,9 +62,7 @@ class RollbackManager:
         self.transfer_checkpoints: Dict[str, str] = {}
         self.restored_states: Dict[str, Dict[str, Any]] = {}
 
-    def create_checkpoint(
-        self, transfer_id: str, state_data: Dict[str, Any]
-    ) -> Checkpoint:
+    def create_checkpoint(self, transfer_id: str, state_data: Dict[str, Any]) -> Checkpoint:
         """Create a checkpoint before transfer."""
         checkpoint = Checkpoint(
             transfer_id=transfer_id,
@@ -75,9 +71,7 @@ class RollbackManager:
         self.checkpoints[checkpoint.checkpoint_id] = checkpoint
         self.transfer_checkpoints[transfer_id] = checkpoint.checkpoint_id
 
-        logger.info(
-            f"Checkpoint created: {checkpoint.checkpoint_id} for transfer {transfer_id}"
-        )
+        logger.info(f"Checkpoint created: {checkpoint.checkpoint_id} for transfer {transfer_id}")
         return checkpoint
 
     def validate_checkpoint(self, checkpoint_id: str) -> bool:
@@ -107,9 +101,7 @@ class RollbackManager:
             )
 
         start_time = datetime.now(timezone.utc)
-        state_bytes = sum(
-            len(str(v).encode()) for v in checkpoint.state_data.values()
-        )
+        state_bytes = sum(len(str(v).encode()) for v in checkpoint.state_data.values())
 
         self.restored_states[checkpoint_id] = checkpoint.state_data.copy()
 

@@ -55,8 +55,8 @@ def test_plugin_boundary_contains_unexpected_plugin_exceptions() -> None:
     plugin = _BoundaryPlugin()
     sandbox = PluginSandbox()
 
-    assert sandbox.execute_sandboxed(plugin) is None
-    assert sandbox.get_health_status(plugin.name).failure_count == 1
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
+    assert sandbox.get_health_status(plugin.name).failure_count == 1, "Count must be greater than zero"
 
 
 def test_plugin_boundary_rejects_arbitrary_method_dispatch() -> None:
@@ -68,8 +68,8 @@ def test_plugin_boundary_does_not_format_plugin_controlled_exceptions() -> None:
     plugin = _UnprintableFailurePlugin()
     sandbox = PluginSandbox()
 
-    assert sandbox.execute_sandboxed(plugin) is None
-    assert sandbox.get_health_status(plugin.name).last_error == "_UnprintablePluginError"
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
+    assert sandbox.get_health_status(plugin.name).last_error == "_UnprintablePluginError", "Error should be raised or set"
 
 
 def test_checkpoint_provenance_is_checked_before_deserialization(
@@ -89,7 +89,7 @@ def test_checkpoint_provenance_is_checked_before_deserialization(
 
     with pytest.raises(checkpoint_core.CheckpointIntegrityError, match="Provenance"):
         checkpoint_core.load_checkpoint(checkpoint, expected_file_sha256="0" * 64)
-    assert deserialized is False
+    assert deserialized is False, "deserialized is not valid"
 
 
 def test_checkpoint_requires_embedded_integrity_provenance(

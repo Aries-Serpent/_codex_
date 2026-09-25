@@ -44,12 +44,12 @@ class TestPytestTool:
         test_file = tmp_path / "test_simple.py"
         test_file.write_text("""
 def test_basic():
-    assert 1 + 1 == 2
+    assert 1 + 1 == 2, "1 is not valid"
 
 def test_string():
-    assert "hello" == "hello"
+    assert "hello" == "hello", "Condition must be true"
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "pytest", str(test_file), "-v"],
             capture_output=True,
@@ -83,7 +83,7 @@ def add(a: int, b: int) -> int:
 
 result: int = add(1, 2)
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "mypy", str(test_file)],
             capture_output=True,
@@ -103,7 +103,7 @@ def add(a: int, b: int) -> int:
 
 result: int = add("1", "2")  # Type error - passing strings instead of ints
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "mypy", str(test_file)],
             capture_output=True,
@@ -138,7 +138,7 @@ def hello(name: str) -> str:
 if __name__ == "__main__":
     print(hello("World"))
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", str(test_file)],
             capture_output=True,
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 x=1+2
 y = 3
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", str(test_file)],
             capture_output=True,
@@ -190,7 +190,7 @@ class TestBlackTool:
 def hello(name: str) -> str:
     return f"Hello, {name}!"
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "black", "--check", str(test_file)],
             capture_output=True,
@@ -205,14 +205,14 @@ def hello(name: str) -> str:
         test_file = tmp_path / "poorly_formatted.py"
         # Poorly formatted code
         test_file.write_text("x=1;y=2;z=3")
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "black", str(test_file)],
             capture_output=True,
             text=True,
             timeout=10
         )
-        
+
         assert result.returncode == 0, f"black formatting failed: {result.stderr}"
         formatted_content = test_file.read_text()
         assert "x = 1" in formatted_content or "x=1" not in formatted_content, \
@@ -243,7 +243,7 @@ class TestIsortTool:
         from pathlib import Path
         from typing import List
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "isort", "--check-only", str(test_file)],
             capture_output=True,
@@ -260,14 +260,14 @@ class TestIsortTool:
         import sys
         import os
 """)
-        
+
         result = subprocess.run(
             [sys.executable, "-m", "isort", str(test_file)],
             capture_output=True,
             text=True,
             timeout=10
         )
-        
+
         assert result.returncode == 0, f"isort sorting failed: {result.stderr}"
         # File should still be valid Python
         sorted_content = test_file.read_text()
@@ -300,7 +300,7 @@ def process_items(items: List[str]) -> int:
         count += 1
     return count
 """)
-        
+
         # Run ruff
         result_ruff = subprocess.run(
             [sys.executable, "-m", "ruff", "check", str(test_file)],
@@ -309,7 +309,7 @@ def process_items(items: List[str]) -> int:
             timeout=10
         )
         assert result_ruff.returncode in [0, 1], "ruff check failed"
-        
+
         # Run black
         result_black = subprocess.run(
             [sys.executable, "-m", "black", "--check", str(test_file)],
@@ -318,7 +318,7 @@ def process_items(items: List[str]) -> int:
             timeout=10
         )
         assert result_black.returncode in [0, 1], "black check failed"
-        
+
         # Run isort
         result_isort = subprocess.run(
             [sys.executable, "-m", "isort", "--check-only", str(test_file)],
@@ -327,7 +327,7 @@ def process_items(items: List[str]) -> int:
             timeout=10
         )
         assert result_isort.returncode in [0, 1], "isort check failed"
-        
+
         # Run mypy
         result_mypy = subprocess.run(
             [sys.executable, "-m", "mypy", str(test_file)],
@@ -345,10 +345,10 @@ def process_items(items: List[str]) -> int:
             project_root / "ruff.toml",
             project_root / "mypy.ini",
         ]
-        
+
         # At least pyproject.toml should exist
         assert (project_root / "pyproject.toml").exists(), "pyproject.toml not found"
-        
+
         # pyproject.toml should be readable
         with open(project_root / "pyproject.toml", "r") as f:
             content = f.read()
@@ -363,7 +363,7 @@ class TestDevToolchain:
         # Create a sample test file in a temporary location
         test_dir = tmp_path / "test_toolchain"
         test_dir.mkdir()
-        
+
         test_file = test_dir / "toolchain_test.py"
         test_file.write_text("""
 '''Test module for toolchain validation.'''
@@ -380,9 +380,9 @@ if __name__ == "__main__":
     result = validate_data(test_data)
     print(f"Validation result: {result}")
 """)
-        
+
         tools_executed = []
-        
+
         # Execute pytest (discover tests)
         pytest_result = subprocess.run(
             [sys.executable, "-m", "pytest", "--collect-only", "-q", str(test_dir)],
@@ -391,7 +391,7 @@ if __name__ == "__main__":
             timeout=10
         )
         tools_executed.append(("pytest", pytest_result.returncode in [0, 5]))
-        
+
         # Execute ruff
         ruff_result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", str(test_file)],
@@ -400,7 +400,7 @@ if __name__ == "__main__":
             timeout=10
         )
         tools_executed.append(("ruff", ruff_result.returncode in [0, 1]))
-        
+
         # Execute black
         black_result = subprocess.run(
             [sys.executable, "-m", "black", "--check", str(test_file)],
@@ -409,7 +409,7 @@ if __name__ == "__main__":
             timeout=10
         )
         tools_executed.append(("black", black_result.returncode in [0, 1]))
-        
+
         # Execute isort
         isort_result = subprocess.run(
             [sys.executable, "-m", "isort", "--check-only", str(test_file)],
@@ -418,7 +418,7 @@ if __name__ == "__main__":
             timeout=10
         )
         tools_executed.append(("isort", isort_result.returncode in [0, 1]))
-        
+
         # Execute mypy
         mypy_result = subprocess.run(
             [sys.executable, "-m", "mypy", str(test_file)],
@@ -427,7 +427,7 @@ if __name__ == "__main__":
             timeout=30
         )
         tools_executed.append(("mypy", mypy_result.returncode in [0, 1]))
-        
+
         # Verify all tools executed successfully
         failed_tools = [tool for tool, success in tools_executed if not success]
         assert not failed_tools, f"Tools failed: {failed_tools}"

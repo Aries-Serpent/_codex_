@@ -67,9 +67,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
         self.retry_strategy = AdaptiveRetryStrategy(retry_config or RetryConfig())
         self.monitor = get_rag_monitor()
 
-        logger.info(
-            "HardenedEmbeddingPipeline initialized with timeout protection"
-        )
+        logger.info("HardenedEmbeddingPipeline initialized with timeout protection")
 
     def _load_model_with_timeout(self) -> bool:
         """Load model with timeout protection."""
@@ -78,9 +76,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
 
         # Check circuit breaker
         if self.timeout_manager.is_circuit_open("embedding_load"):
-            logger.warning(
-                "Circuit breaker open for model loading, using fallback"
-            )
+            logger.warning("Circuit breaker open for model loading, using fallback")
             self._use_fallback = True
             return False
 
@@ -109,6 +105,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
 
             # Record metric
             import time
+
             metric = OperationMetric(
                 operation_type="embedding_load",
                 timestamp=time.time(),
@@ -174,9 +171,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
                 return self._fallback_embedding(text), "fallback-hash"
             else:
                 normalize = self.config.normalize
-                raw_embedding = self._model.encode(
-                    text, normalize_embeddings=normalize
-                )
+                raw_embedding = self._model.encode(text, normalize_embeddings=normalize)
                 return raw_embedding.tolist(), self.config.model_name
 
         try:
@@ -220,9 +215,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
                 error_type=type(e).__name__,
             )
             self.monitor.record_metric(metric)
-            self.timeout_manager.record_failure(
-                operation_type, metric, str(e)
-            )
+            self.timeout_manager.record_failure(operation_type, metric, str(e))
 
             return EmbeddingResult(
                 text=text[:100],
@@ -243,9 +236,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
 
         # Check circuit breaker
         if self.timeout_manager.is_circuit_open(operation_type):
-            logger.warning(
-                "Circuit breaker open for batch embedding, using fallback"
-            )
+            logger.warning("Circuit breaker open for batch embedding, using fallback")
             results = [self.embed_text(text) for text in texts]
             metric = OperationMetric(
                 operation_type=operation_type,
@@ -328,9 +319,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
                 error_type=type(e).__name__,
             )
             self.monitor.record_metric(metric)
-            self.timeout_manager.record_failure(
-                operation_type, metric, str(e)
-            )
+            self.timeout_manager.record_failure(operation_type, metric, str(e))
 
             return results
 

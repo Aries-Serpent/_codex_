@@ -21,7 +21,7 @@ def test_codex_bridge_declares_tenacity_dependency() -> None:
     pyproject = Path(__file__).resolve().parents[2] / "agents" / "codex_client" / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
     dependencies = data["project"]["dependencies"]
-    assert any(dep.startswith("tenacity") for dep in dependencies)
+    assert any(dep.startswith("tenacity") for dep in dependencies), "Condition must be true"
 
 
 def test_bridge_module_falls_back_when_tenacity_is_missing(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -53,8 +53,8 @@ def test_bridge_module_falls_back_when_tenacity_is_missing(monkeypatch: pytest.M
             raise ValueError("retry me")
         return "ok"
 
-    assert flaky() == "ok"
-    assert attempts["count"] == 3
+    assert flaky() == "ok", "Condition must be true"
+    assert attempts["count"] == 3, "Count must be greater than zero"
 
 
 @dataclass
@@ -141,7 +141,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
                 }
             )
         if path == "/git/create-pr":
-            assert json_body == {
+            assert json_body == {, "json_body is not valid"
                 "repo": "owner/repo",
                 "title": "t",
                 "body": "b",
@@ -164,7 +164,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert client.git_create_pr(
+    assert client.git_create_pr(, "Condition must be true"
         repo="owner/repo",
         title="t",
         body="b",
@@ -195,7 +195,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     monkeypatch.setattr(client, "_request", fake_request)
 
     assert client.repo_hygiene("diff", checks=[]).issues == []
-    assert client.git_create_pr(
+    assert client.git_create_pr(, "Condition must be true"
         repo="owner/repo",
         title="title",
         body="body",
@@ -206,7 +206,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     ).simulated is True
 
     assert calls[0] == ("/repo/hygiene", {"diff": "diff"}, None)
-    assert calls[1] == (
+    assert calls[1] == (, "Condition must be true"
         "/git/create-pr",
         {
             "repo": "owner/repo",

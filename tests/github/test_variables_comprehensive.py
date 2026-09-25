@@ -50,10 +50,10 @@ class TestProcess1RepositoryScopeVariables:
             ],
         }
 
-        assert "actions/variables" in endpoint
-        assert endpoint.startswith("https://api.github.com/repos/")
+        assert "actions/variables" in endpoint, "Condition must be true"
+        assert endpoint.startswith("https://api.github.com/repos/"), "Condition must be true"
         # Verify structure suitable for urllib.request
-        assert all(v.get("name") and v.get("value") for v in expected_response["variables"])
+        assert all(v.get("name") and v.get("value") for v in expected_response["variables"]), "Response must not be empty"
 
     def test_process1_list_variables_empty(
         self,
@@ -64,9 +64,9 @@ class TestProcess1RepositoryScopeVariables:
         endpoint = f"{gh_api_base}{repo_vars_endpoint}"
         expected_response = {"total_count": 0, "variables": []}
 
-        assert expected_response["total_count"] == 0
-        assert len(expected_response["variables"]) == 0
-        assert "actions/variables" in endpoint
+        assert expected_response["total_count"] == 0, "Response must not be empty"
+        assert len(expected_response["variables"]) == 0, "Collection must not be empty"
+        assert "actions/variables" in endpoint, "Condition must be true"
 
     def test_process1_list_variables_with_pagination(
         self,
@@ -75,8 +75,8 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: List variables supports pagination (per_page, page params)."""
         endpoint = f"{gh_api_base}{repo_vars_endpoint}?per_page=10&page=2"
-        assert "per_page=10" in endpoint
-        assert "page=2" in endpoint
+        assert "per_page=10" in endpoint, "Condition must be true"
+        assert "page=2" in endpoint, "Condition must be true"
 
     def test_process1_get_variable_success(
         self,
@@ -89,9 +89,9 @@ class TestProcess1RepositoryScopeVariables:
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{var_name}"
         expected_response = mock_variable_response(var_name, "specific_value")
 
-        assert var_name in endpoint
-        assert expected_response["name"] == var_name
-        assert expected_response["value"] == "specific_value"
+        assert var_name in endpoint, "Condition must be true"
+        assert expected_response["name"] == var_name, "Response must not be empty"
+        assert expected_response["value"] == "specific_value", "Response must not be empty"
 
     def test_process1_get_variable_not_found(
         self,
@@ -104,8 +104,8 @@ class TestProcess1RepositoryScopeVariables:
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{var_name}"
         error = api_errors.resource_not_found()
 
-        assert error.code == 404
-        assert var_name in endpoint
+        assert error.code == 404, "Error should be raised or set"
+        assert var_name in endpoint, "Condition must be true"
 
     def test_process1_create_variable_success(
         self,
@@ -120,12 +120,12 @@ class TestProcess1RepositoryScopeVariables:
             "value": "initial_value",
         }
 
-        assert payload["name"]
-        assert payload["value"]
+        assert payload["name"], "Condition must be true"
+        assert payload["value"], "Value must be initialized"
         # Validate URL structure: scheme should be https and netloc should be api.github.com
         parsed_url = urlparse(endpoint)
-        assert parsed_url.scheme == "https"
-        assert parsed_url.netloc == "api.github.com"
+        assert parsed_url.scheme == "https", "scheme is not valid"
+        assert parsed_url.netloc == "api.github.com", "netloc is not valid"
 
     def test_process1_create_variable_size_limit(
         self,
@@ -141,8 +141,8 @@ class TestProcess1RepositoryScopeVariables:
             "value": large_value,
         }
 
-        assert len(payload["value"]) == 1000
-        assert "actions/variables" in endpoint
+        assert len(payload["value"]) == 1000, "Collection must not be empty"
+        assert "actions/variables" in endpoint, "Condition must be true"
 
         # Over limit should trigger 422
         oversized_value = "x" * 1001
@@ -151,7 +151,7 @@ class TestProcess1RepositoryScopeVariables:
             "value": oversized_value,
         }
 
-        assert len(payload_oversized["value"]) > 1000
+        assert len(payload_oversized["value"]) > 1000, "Collection must not be empty"
 
     def test_process1_create_variable_duplicate_error(
         self,
@@ -162,7 +162,7 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: 422 Unprocessable Entity when creating duplicate variable."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
     def test_process1_update_variable_success(
         self,
@@ -177,8 +177,8 @@ class TestProcess1RepositoryScopeVariables:
             "value": "updated_value",
         }
 
-        assert payload["value"] == "updated_value"
-        assert test_var_name_base in endpoint
+        assert payload["value"] == "updated_value", "Value must be initialized"
+        assert test_var_name_base in endpoint, "Condition must be true"
 
     def test_process1_update_variable_idempotent(
         self,
@@ -191,8 +191,8 @@ class TestProcess1RepositoryScopeVariables:
         payload = {"value": "same_value"}
 
         # Multiple updates with same payload should not fail
-        assert payload["value"] == "same_value"
-        assert test_var_name_base in endpoint
+        assert payload["value"] == "same_value", "Value must be initialized"
+        assert test_var_name_base in endpoint, "Condition must be true"
 
     def test_process1_delete_variable_success(
         self,
@@ -204,7 +204,7 @@ class TestProcess1RepositoryScopeVariables:
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{test_var_name_base}"
 
         # DELETE should return 204 No Content
-        assert endpoint.endswith(test_var_name_base)
+        assert endpoint.endswith(test_var_name_base), "Condition must be true"
 
     def test_process1_delete_variable_not_found(
         self,
@@ -214,7 +214,7 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: 404 Not Found when deleting non-existent variable."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     def test_process1_delete_variable_idempotent(
         self,
@@ -226,7 +226,7 @@ class TestProcess1RepositoryScopeVariables:
         # First delete should succeed
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{test_var_name_base}"
         # Second delete should fail with 404
-        assert endpoint.endswith(test_var_name_base)
+        assert endpoint.endswith(test_var_name_base), "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -240,7 +240,7 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: 401 Unauthorized when token is missing/invalid."""
         error = api_errors.missing_token()
-        assert error.code == 401
+        assert error.code == 401, "Error should be raised or set"
 
     def test_process1_insufficient_scope_error(
         self,
@@ -250,7 +250,7 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: 403 Forbidden when token lacks 'repo' scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
     def test_process1_rate_limit_exceeded(
         self,
@@ -260,7 +260,7 @@ class TestProcess1RepositoryScopeVariables:
     ):
         """Test: 429 Too Many Requests when rate limited."""
         error = api_errors.rate_limited()
-        assert error.code == 429
+        assert error.code == 429, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Batch Operations
@@ -280,10 +280,10 @@ class TestProcess1RepositoryScopeVariables:
         ]
 
         for payload in batch_payloads:
-            assert payload["name"]
-            assert payload["value"]
+            assert payload["name"], "Condition must be true"
+            assert payload["value"], "Value must be initialized"
 
-        assert "actions/variables" in endpoint
+        assert "actions/variables" in endpoint, "Condition must be true"
 
     def test_process1_batch_delete_variables(
         self,
@@ -295,7 +295,7 @@ class TestProcess1RepositoryScopeVariables:
 
         for var_name in vars_to_delete:
             endpoint = f"{gh_api_base}{repo_vars_endpoint}/{var_name}"
-            assert var_name in endpoint
+            assert var_name in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -328,9 +328,9 @@ class TestProcess2OrganizationScopeVariables:
             "variables": [mock_variable_response("ORG_VAR", "org_value")],
         }
 
-        assert "actions/variables" in endpoint
-        assert "/orgs/" in endpoint
-        assert expected_response["total_count"] == 1
+        assert "actions/variables" in endpoint, "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
+        assert expected_response["total_count"] == 1, "Response must not be empty"
 
     def test_process2_list_org_variables_pagination(
         self,
@@ -339,7 +339,7 @@ class TestProcess2OrganizationScopeVariables:
     ):
         """Test: Organization variables list supports pagination."""
         endpoint = f"{gh_api_base}{org_vars_endpoint}?per_page=20&page=1"
-        assert "per_page=20" in endpoint
+        assert "per_page=20" in endpoint, "Condition must be true"
 
     def test_process2_create_org_variable_success(
         self,
@@ -355,10 +355,10 @@ class TestProcess2OrganizationScopeVariables:
             "visibility": "all",
         }
 
-        assert payload["name"]
-        assert payload["value"]
+        assert payload["name"], "Condition must be true"
+        assert payload["value"], "Value must be initialized"
         assert payload["visibility"] in ["all", "private", "selected"]
-        assert "/orgs/" in endpoint
+        assert "/orgs/" in endpoint, "Condition must be true"
 
     def test_process2_create_org_variable_with_visibility(
         self,
@@ -379,9 +379,9 @@ class TestProcess2OrganizationScopeVariables:
             if visibility == "selected":
                 payload["selected_repository_ids"] = [123456, 789012]
 
-            assert payload["visibility"] == visibility
+            assert payload["visibility"] == visibility, "Condition must be true"
 
-        assert "actions/variables" in endpoint
+        assert "actions/variables" in endpoint, "Condition must be true"
 
     def test_process2_update_org_variable_success(
         self,
@@ -393,8 +393,8 @@ class TestProcess2OrganizationScopeVariables:
         endpoint = f"{gh_api_base}{org_vars_endpoint}/{test_var_name_org}"
         payload = {"value": "updated_org_value"}
 
-        assert payload["value"] == "updated_org_value"
-        assert test_var_name_org in endpoint
+        assert payload["value"] == "updated_org_value", "Value must be initialized"
+        assert test_var_name_org in endpoint, "test_var_name_ is not valid"
 
     def test_process2_delete_org_variable_success(
         self,
@@ -405,7 +405,7 @@ class TestProcess2OrganizationScopeVariables:
         """Test: Delete organization variable."""
         endpoint = f"{gh_api_base}{org_vars_endpoint}/{test_var_name_org}"
 
-        assert test_var_name_org in endpoint
+        assert test_var_name_org in endpoint, "test_var_name_ is not valid"
 
     # ───────────────────────────────────────────────────────────────────────
     # Precedence and Inheritance
@@ -423,7 +423,7 @@ class TestProcess2OrganizationScopeVariables:
         org_endpoint = f"{gh_api_base}{org_vars_endpoint}/SHARED_VAR"
         # Org would have org_value, repo would have repo_value
         # Org takes precedence
-        assert "/orgs/" in org_endpoint
+        assert "/orgs/" in org_endpoint, "Condition must be true"
 
     def test_process2_org_variable_visibility_all(
         self,
@@ -439,8 +439,8 @@ class TestProcess2OrganizationScopeVariables:
             "visibility": "all",
         }
 
-        assert payload["visibility"] == "all"
-        assert "/orgs/" in endpoint
+        assert payload["visibility"] == "all", "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
 
     def test_process2_org_variable_visibility_selected(
         self,
@@ -457,12 +457,12 @@ class TestProcess2OrganizationScopeVariables:
             "selected_repository_ids": [12345, 67890],
         }
 
-        assert payload["visibility"] == "selected"
-        assert len(payload["selected_repository_ids"]) > 0
-        assert "/orgs/" in endpoint
+        assert payload["visibility"] == "selected", "Condition must be true"
+        assert len(payload["selected_repository_ids"]) > 0, "Collection must not be empty"
+        assert "/orgs/" in endpoint, "Condition must be true"
 
-        assert payload["visibility"] == "selected"
-        assert len(payload["selected_repository_ids"]) == 2
+        assert payload["visibility"] == "selected", "Condition must be true"
+        assert len(payload["selected_repository_ids"]) == 2, "Collection must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -476,7 +476,7 @@ class TestProcess2OrganizationScopeVariables:
     ):
         """Test: 403 Forbidden when token lacks 'admin:org' scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
     def test_process2_org_not_found_error(
         self,
@@ -485,7 +485,7 @@ class TestProcess2OrganizationScopeVariables:
     ):
         """Test: 404 Not Found when organization doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     def test_process2_invalid_repository_id_error(
         self,
@@ -495,7 +495,7 @@ class TestProcess2OrganizationScopeVariables:
     ):
         """Test: 422 when specified repository IDs are invalid."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Batch Operations
@@ -512,8 +512,8 @@ class TestProcess2OrganizationScopeVariables:
             endpoint = f"{gh_api_base}{org_vars_endpoint}/{var_name}"
             payload = {"value": f"updated_value_{i}"}
 
-            assert payload["value"] == f"updated_value_{i}"
-            assert var_name in endpoint
+            assert payload["value"] == f"updated_value_{i}", "Value must be initialized"
+            assert var_name in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -545,15 +545,15 @@ class TestVariablesIntegration:
     def test_variable_timestamps(self, mock_variable_response):
         """Test: Variables include created_at and updated_at timestamps."""
         var = mock_variable_response("TEST_VAR", "test_value")
-        assert "created_at" in var
-        assert "updated_at" in var
-        assert var["created_at"].endswith("Z")
-        assert var["updated_at"].endswith("Z")
+        assert "created_at" in var, "Condition must be true"
+        assert "updated_at" in var, "Condition must be true"
+        assert var["created_at"].endswith("Z"), "Condition must be true"
+        assert var["updated_at"].endswith("Z"), "Condition must be true"
 
     def test_rate_limit_headers(self, mock_rate_limit_headers):
         """Test: API responses include rate limit headers."""
         headers = mock_rate_limit_headers(remaining=59, limit=60)
-        assert "X-RateLimit-Limit" in headers
-        assert "X-RateLimit-Remaining" in headers
-        assert "X-RateLimit-Reset" in headers
-        assert int(headers["X-RateLimit-Remaining"]) <= int(headers["X-RateLimit-Limit"])
+        assert "X-RateLimit-Limit" in headers, "Condition must be true"
+        assert "X-RateLimit-Remaining" in headers, "Condition must be true"
+        assert "X-RateLimit-Reset" in headers, "Condition must be true"
+        assert int(headers["X-RateLimit-Remaining"]) <= int(headers["X-RateLimit-Limit"]), "Condition must be true"

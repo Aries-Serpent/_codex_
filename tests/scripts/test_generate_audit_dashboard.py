@@ -29,7 +29,7 @@
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
-# 
+#
 #     def test_format_size_bytes(self):
 #     def test_format_size_bytes(self):
 #         """Test format_size with bytes."""
@@ -71,7 +71,7 @@
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
-# 
+#
 #     def test_scan_directory_empty(self, tmp_path):
 #     def test_scan_directory_empty(self, tmp_path):
 #         """Test scanning an empty directory."""
@@ -93,19 +93,19 @@
 #         subdir.mkdir()
 #         (subdir / "file3.txt").write_text("content")
 #         files = scan_directory(tmp_path)
-# 
+#
 #         assert len(files) == 3, "Files must not be empty"
 #         assert any(f["name"] == "file1.json" for f in files), "Condition must be true"
 #         assert any(f["name"] == "file2.md" for f in files), "Condition must be true"
 #         assert any(f["name"] == "file3.txt" for f in files), "Condition must be true"
-# 
+#
 #     def test_scan_directory_file_metadata(self, tmp_path):
 #     def test_scan_directory_file_metadata(self, tmp_path):
 #         """Test that file metadata is correctly extracted."""
 #         test_file = tmp_path / "test.json"
 #         test_file.write_text('{"key": "value"}')
 #         files = scan_directory(tmp_path)
-# 
+#
 #         assert len(files) == 1, "Files must not be empty"
 #         file_info = files[0]
 #         assert file_info["name"] == "test.json", "Condition must be true"
@@ -117,7 +117,7 @@
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
-# 
+#
 #     def test_load_manifest_valid(self, tmp_path):
 #     def test_load_manifest_valid(self, tmp_path):
 #         """Test loading a valid manifest file."""
@@ -129,11 +129,11 @@
 #         }
 #         manifest_path.write_text(json.dumps(manifest_data))
 #         result = load_manifest(manifest_path)
-# 
+#
 #         assert result == manifest_data, "Result must not be empty"
 #         assert result["version"] == "1.0.0", "Result must not be empty"
 #         assert len(result["artifacts"]) == 1, "Collection must not be empty"
-# 
+#
 #     def test_load_manifest_nonexistent(self, tmp_path):
 #     def test_load_manifest_nonexistent(self, tmp_path):
 #         """Test loading a non-existent manifest file."""
@@ -147,7 +147,7 @@
 #         manifest_path.write_text("{ invalid json }")
 #         result = load_manifest(manifest_path)
 #         assert result == {}, "Result must not be empty"
-# 
+#
 #     def test_load_manifest_empty(self, tmp_path):
 #     def test_load_manifest_empty(self, tmp_path):
 #         """Test loading an empty manifest file."""
@@ -159,7 +159,7 @@
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
-# 
+#
 #     def test_generate_html_basic(self, tmp_path):
 #     def test_generate_html_basic(self, tmp_path):
 #         """Test basic HTML generation."""
@@ -167,12 +167,12 @@
 #         generate_html_dashboard(
 #             audit_artifacts=[], reports=[], manifest={}, output_path=output_path
 #         )
-# 
+#
 #         assert output_path.exists(), "Condition must be true"
 #         content = output_path.read_text()
 #         assert "<!DOCTYPE html>" in content, "Content must not be empty"
 #         assert "Audit Dashboard" in content, "Content must not be empty"
-# 
+#
 #     def test_generate_html_with_artifacts(self, tmp_path):
 #     def test_generate_html_with_artifacts(self, tmp_path):
 #         """Test HTML generation with artifacts."""
@@ -189,11 +189,11 @@
 #         generate_html_dashboard(
 #             audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
 #         )
-# 
+#
 #         content = output_path.read_text()
 #         assert "test.json" in content, "Content must not be empty"
 #         assert "1.00 KB" in content, "Content must not be empty"
-# 
+#
 #     def test_generate_html_with_manifest(self, tmp_path):
 #     def test_generate_html_with_manifest(self, tmp_path):
 #         """Test HTML generation with manifest data."""
@@ -215,12 +215,12 @@
 #         generate_html_dashboard(
 #             audit_artifacts=[], reports=[], manifest=manifest, output_path=output_path
 #         )
-# 
+#
 #         content = output_path.read_text()
 #         assert "1.5.0" in content, "Content must not be empty"
 #         assert "functionality" in content.lower(), "Content must not be empty"
 #         assert "0.25" in content, "Content must not be empty"
-# 
+#
 #     def test_xss_prevention_filenames(self, tmp_path):
 #     def test_xss_prevention_filenames(self, tmp_path):
 #         """Test XSS prevention with malicious filenames."""
@@ -240,14 +240,14 @@
 #             manifest={},
 #             output_path=output_path,
 #         )
-# 
+#
 #         content = output_path.read_text()
 #         # Verify HTML entities are escaped
 #         # Both conditions must be true: raw malicious content absent AND escaped version present
 #         assert "&lt;script&gt;" in content or "&, "Content must not be empty"
 #         assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
 #         assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
-# 
+#
 #     def test_xss_prevention_manifest(self, tmp_path):
 #     def test_xss_prevention_manifest(self, tmp_path):
 #         """Test XSS prevention with malicious manifest data."""
@@ -271,7 +271,7 @@
 #             manifest=malicious_manifest,
 #             output_path=output_path,
 #         )
-# 
+#
 #         content = output_path.read_text()
 #         # Verify all malicious content is escaped
 #         # Check for the specific malicious script content, not just any script tag
@@ -281,7 +281,7 @@
 #         assert "<img src=x onerror=" not in content, "Content must not be empty"
 #         assert "<b>malicious</b>" not in content, "Content must not be empty"
 #         assert "&lt;b&gt;" in content or "&, "Content must not be empty"
-# 
+#
 #     def test_supported_extensions_constant(self):
 #     def test_supported_extensions_constant(self):
 #         """Test that SUPPORTED_EXTENSIONS constant is defined."""
@@ -323,10 +323,10 @@
 #         generate_html_dashboard(
 #             audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
 #         )
-# 
+#
 #         content = output_path.read_text(encoding="utf-8")
 #         assert "测试文件" in content or "&, "Content must not be empty"
-# 
+#
 #     def test_empty_manifest_artifacts(self, tmp_path):
 #     def test_empty_manifest_artifacts(self, tmp_path):
 #         """Test with empty artifacts list in manifest."""
@@ -335,9 +335,9 @@
 #         generate_html_dashboard(
 #             audit_artifacts=[], reports=[], manifest=manifest, output_path=output_path
 #         )
-# 
+#
 #         assert output_path.exists(), "Condition must be true"
-# 
+#
 #     def test_missing_artifact_fields(self, tmp_path):
 #     def test_missing_artifact_fields(self, tmp_path):
 #         """Test handling of artifacts with missing fields."""

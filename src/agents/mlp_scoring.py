@@ -87,8 +87,7 @@ class MLPScorer:
 
         if len(features_list) != self.input_dim:
             logger.warning(
-                f"Feature dimension mismatch: expected {self.input_dim}, "
-                f"got {len(features_list)}"
+                f"Feature dimension mismatch: expected {self.input_dim}, got {len(features_list)}"
             )
             # Pad or truncate
             if len(features_list) < self.input_dim:
@@ -112,9 +111,7 @@ class MLPScorer:
         h = []
         for i in range(self.hidden_dim):
             # Dot product
-            activation = sum(
-                w * f for w, f in zip(self.W1[i], features_list)
-            )
+            activation = sum(w * f for w, f in zip(self.W1[i], features_list))
             activation += self.b1[i]
 
             # ReLU

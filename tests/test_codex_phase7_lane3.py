@@ -94,7 +94,7 @@ class TestNDJSONHelpers:
         records = [{"id": 1, "value": "test"}]
         write_ndjson(records, output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         with output_file.open() as f:
             line = f.readline()
             assert json.loads(line) == {"id": 1, "value": "test"}
@@ -111,10 +111,10 @@ class TestNDJSONHelpers:
 
         with output_file.open() as f:
             lines = f.readlines()
-            assert len(lines) == 3
-            assert json.loads(lines[0]) == records[0]
-            assert json.loads(lines[1]) == records[1]
-            assert json.loads(lines[2]) == records[2]
+            assert len(lines) == 3, "Lines must not be empty"
+            assert json.loads(lines[0]) == records[0], "Condition must be true"
+            assert json.loads(lines[1]) == records[1], "Condition must be true"
+            assert json.loads(lines[2]) == records[2], "Condition must be true"
 
     def test_write_ndjson_creates_directories(self, tmp_path):
         """Test write_ndjson creates parent directories."""
@@ -122,8 +122,8 @@ class TestNDJSONHelpers:
         records = [{"test": "data"}]
         write_ndjson(records, nested_file)
 
-        assert nested_file.parent.exists()
-        assert nested_file.exists()
+        assert nested_file.parent.exists(), "Condition must be true"
+        assert nested_file.exists(), "Condition must be true"
 
     def test_append_ndjson_single_record(self, tmp_path):
         """Test appending a single record to NDJSON."""
@@ -132,7 +132,7 @@ class TestNDJSONHelpers:
         append_ndjson(record, output_file)
 
         with output_file.open() as f:
-            assert json.loads(f.readline()) == record
+            assert json.loads(f.readline()) == record, "Condition must be true"
 
     def test_append_ndjson_multiple_appends(self, tmp_path):
         """Test appending multiple records sequentially."""
@@ -148,9 +148,9 @@ class TestNDJSONHelpers:
 
         with output_file.open() as f:
             lines = f.readlines()
-            assert len(lines) == 3
+            assert len(lines) == 3, "Lines must not be empty"
             for i, line in enumerate(lines):
-                assert json.loads(line) == records[i]
+                assert json.loads(line) == records[i], "Condition must be true"
 
     def test_append_ndjson_creates_directories(self, tmp_path):
         """Test append_ndjson creates parent directories."""
@@ -158,8 +158,8 @@ class TestNDJSONHelpers:
         record = {"test": "append"}
         append_ndjson(record, nested_file)
 
-        assert nested_file.parent.exists()
-        assert nested_file.exists()
+        assert nested_file.parent.exists(), "Condition must be true"
+        assert nested_file.exists(), "Condition must be true"
 
     def test_write_ndjson_with_special_characters(self, tmp_path):
         """Test writing NDJSON with special Unicode characters."""
@@ -172,8 +172,8 @@ class TestNDJSONHelpers:
 
         with output_file.open(encoding="utf-8") as f:
             lines = f.readlines()
-            assert json.loads(lines[0])["text"] == "Hello 世界 🌍"
-            assert json.loads(lines[1])["text"] == "Привет мир"
+            assert json.loads(lines[0])["text"] == "Hello 世界 🌍", "Condition must be true"
+            assert json.loads(lines[1])["text"] == "Привет мир", "Condition must be true"
 
 
 # ============================================================================
@@ -187,11 +187,11 @@ class TestLoggingConfig:
     def test_logging_config_defaults(self):
         """Test LoggingConfig initializes with correct defaults."""
         config = LoggingConfig()
-        assert config.enable_tensorboard is False
-        assert config.tensorboard_log_dir == "runs"
-        assert config.enable_mlflow is False
-        assert config.mlflow_run_name == "codex-training"
-        assert config.mlflow_offline is True
+        assert config.enable_tensorboard is False, "enable_tensorboard is not valid"
+        assert config.tensorboard_log_dir == "runs", "tensorboard_log_dir is not valid"
+        assert config.enable_mlflow is False, "enable_mlflow is not valid"
+        assert config.mlflow_run_name == "codex-training", "mlflow_run_name is not valid"
+        assert config.mlflow_offline is True, "mlflow_offline is not valid"
 
     def test_logging_config_custom_values(self):
         """Test LoggingConfig with custom values."""
@@ -201,10 +201,10 @@ class TestLoggingConfig:
             enable_mlflow=True,
             mlflow_run_name="custom-run",
         )
-        assert config.enable_tensorboard is True
-        assert config.tensorboard_log_dir == "/custom/path"
-        assert config.enable_mlflow is True
-        assert config.mlflow_run_name == "custom-run"
+        assert config.enable_tensorboard is True, "enable_tensorboard is not valid"
+        assert config.tensorboard_log_dir == "/custom/path", "tensorboard_log_dir is not valid"
+        assert config.enable_mlflow is True, "enable_mlflow is not valid"
+        assert config.mlflow_run_name == "custom-run", "mlflow_run_name is not valid"
 
     def test_logging_session_structure(self):
         """Test LoggingSession dataclass structure."""
@@ -213,22 +213,22 @@ class TestLoggingConfig:
             mlflow_active=False,
             fallback_writer=None,
         )
-        assert session.tensorboard is None
-        assert session.mlflow_active is False
-        assert session.fallback_writer is None
+        assert session.tensorboard is None, "tensorboard is not valid"
+        assert session.mlflow_active is False, "mlflow_active is not valid"
+        assert session.fallback_writer is None, "fallback_writer is not valid"
 
     def test_log_handles_defaults(self):
         """Test LogHandles dataclass defaults."""
         handles = LogHandles()
-        assert handles.tb is None
-        assert handles.mlflow_run_active is False
+        assert handles.tb is None, "tb is not valid"
+        assert handles.mlflow_run_active is False, "mlflow_run_active is not valid"
 
     def test_log_handles_with_tensorboard(self):
         """Test LogHandles with TensorBoard writer."""
         mock_writer = mock.MagicMock()
         handles = LogHandles(tb=mock_writer, mlflow_run_active=True)
-        assert handles.tb is mock_writer
-        assert handles.mlflow_run_active is True
+        assert handles.tb is mock_writer, "tb is not valid"
+        assert handles.mlflow_run_active is True, "mlflow_run_active is not valid"
 
     def test_import_module_success(self):
         """Test import_module successfully imports standard library."""
@@ -259,32 +259,32 @@ class TestCLIIntegration:
         """Test CLI package can be imported."""
         # Test that cli package exists
         cli_path = Path("/home/runner/work/_codex_/_codex_/cli")
-        assert cli_path.exists()
-        assert (cli_path / "__init__.py").exists()
+        assert cli_path.exists(), "Condition must be true"
+        assert (cli_path / "__init__.py").exists(), "Condition must be true"
 
     def test_cli_has_core_modules(self):
         """Test CLI has core modules."""
         cli_path = Path("/home/runner/work/_codex_/_codex_/cli")
-        assert (cli_path / "workflow.py").exists()
-        assert (cli_path / "patch_runner.py").exists()
-        assert (cli_path / "task_sequence.py").exists()
+        assert (cli_path / "workflow.py").exists(), "Condition must be true"
+        assert (cli_path / "patch_runner.py").exists(), "Condition must be true"
+        assert (cli_path / "task_sequence.py").exists(), "Condition must be true"
 
     def test_cli_ast_upgrade_module(self):
         """Test CLI ast_upgrade module exists."""
         ast_path = Path("/home/runner/work/_codex_/_codex_/cli/ast_upgrade.py")
-        assert ast_path.exists()
-        assert ast_path.stat().st_size > 0
+        assert ast_path.exists(), "Condition must be true"
+        assert ast_path.stat().st_size > 0, "st_size must be greater than zero"
 
     def test_cli_brain_cli_module(self):
         """Test CLI brain_cli module exists."""
         brain_path = Path("/home/runner/work/_codex_/_codex_/cli/brain_cli.py")
-        assert brain_path.exists()
+        assert brain_path.exists(), "Condition must be true"
 
     def test_cli_patch_runner_module(self):
         """Test CLI patch runner module exists."""
         patch_path = Path("/home/runner/work/_codex_/_codex_/cli/patch_runner.py")
-        assert patch_path.exists()
-        assert patch_path.stat().st_size > 0
+        assert patch_path.exists(), "Condition must be true"
+        assert patch_path.stat().st_size > 0, "st_size must be greater than zero"
 
     def test_logging_config_loader(self):
         """Test LoggingConfig can be instantiated."""
@@ -297,24 +297,24 @@ class TestCLIIntegration:
     def test_cli_package_readme(self):
         """Test CLI package has documentation."""
         readme_path = Path("/home/runner/work/_codex_/_codex_/cli/README.md")
-        assert readme_path.exists()
+        assert readme_path.exists(), "Condition must be true"
 
     def test_src_cli_module_structure(self):
         """Test src/cli module structure."""
         src_cli_path = Path("/home/runner/work/_codex_/_codex_/src/cli")
-        assert src_cli_path.exists()
-        assert (src_cli_path / "__init__.py").exists()
+        assert src_cli_path.exists(), "Condition must be true"
+        assert (src_cli_path / "__init__.py").exists(), "Condition must be true"
 
     def test_cli_training_module(self):
         """Test CLI train_codex module exists."""
         train_path = Path("/home/runner/work/_codex_/_codex_/cli/train_codex.py")
-        assert train_path.exists()
+        assert train_path.exists(), "Condition must be true"
 
     def test_cli_workflow_module(self):
         """Test CLI workflow module is readable."""
         workflow_path = Path("/home/runner/work/_codex_/_codex_/cli/workflow.py")
-        assert workflow_path.exists()
-        assert workflow_path.stat().st_size > 0
+        assert workflow_path.exists(), "w is not valid"
+        assert workflow_path.stat().st_size > 0, "st_size must be greater than zero"
 
 
 # ============================================================================
@@ -330,15 +330,15 @@ class TestFallbackMetricsWriter:
         metrics_file = tmp_path / "metrics.ndjson"
         writer = FallbackMetricsWriter(metrics_file)
 
-        assert writer.path == metrics_file
-        assert metrics_file.parent.exists()
+        assert writer.path == metrics_file, "path is not valid"
+        assert metrics_file.parent.exists(), "Condition must be true"
 
     def test_fallback_writer_creates_directories(self, tmp_path):
         """Test FallbackMetricsWriter creates nested directories."""
         nested_path = tmp_path / "a" / "b" / "c" / "metrics.ndjson"
         writer = FallbackMetricsWriter(nested_path)
 
-        assert nested_path.parent.exists()
+        assert nested_path.parent.exists(), "Condition must be true"
 
     def test_fallback_writer_write_metrics(self, tmp_path):
         """Test FallbackMetricsWriter writes metrics correctly."""
@@ -350,10 +350,10 @@ class TestFallbackMetricsWriter:
 
         with metrics_file.open() as f:
             data = json.loads(f.readline())
-            assert data["step"] == 1
-            assert data["metrics"]["loss"] == 0.5
-            assert data["metrics"]["accuracy"] == 0.95
-            assert "ts" in data
+            assert data["step"] == 1, "Data must not be empty"
+            assert data["metrics"]["loss"] == 0.5, "Data must not be empty"
+            assert data["metrics"]["accuracy"] == 0.95, "Data must not be empty"
+            assert "ts" in data, "Data must not be empty"
 
     def test_fallback_writer_multiple_writes(self, tmp_path):
         """Test FallbackMetricsWriter appends multiple metric writes."""
@@ -365,10 +365,10 @@ class TestFallbackMetricsWriter:
 
         with metrics_file.open() as f:
             lines = f.readlines()
-            assert len(lines) == 3
+            assert len(lines) == 3, "Lines must not be empty"
             for i, line in enumerate(lines):
                 data = json.loads(line)
-                assert data["step"] == i
+                assert data["step"] == i, "Data must not be empty"
 
     def test_fallback_writer_timestamp(self, tmp_path):
         """Test FallbackMetricsWriter includes timestamp."""
@@ -381,7 +381,7 @@ class TestFallbackMetricsWriter:
 
         with metrics_file.open() as f:
             data = json.loads(f.readline())
-            assert before <= data["ts"] <= after
+            assert before <= data["ts"] <= after, "Data must not be empty"
 
     def test_fallback_writer_float_conversion(self, tmp_path):
         """Test FallbackMetricsWriter converts metrics to float."""
@@ -432,8 +432,8 @@ class TestLoggingUtilities:
 
         with metrics_file.open() as f:
             data = json.loads(f.readline())
-            assert data["step"] == 1
-            assert data["metrics"]["loss"] == 0.5
+            assert data["step"] == 1, "Data must not be empty"
+            assert data["metrics"]["loss"] == 0.5, "Data must not be empty"
 
     def test_shutdown_logging_handles_none_components(self):
         """Test shutdown_logging handles None components."""
@@ -460,17 +460,17 @@ class TestErrorHandling:
         predictions = [0, 1, 0]
         labels = [0, 1, 0]
         result = accuracy(predictions, labels)
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_write_ndjson_empty_records(self, tmp_path):
         """Test write_ndjson with empty record list."""
         output_file = tmp_path / "output.ndjson"
         write_ndjson([], output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         with output_file.open() as f:
             content = f.read()
-            assert content == ""
+            assert content == "", "Content must not be empty"
 
     def test_append_ndjson_to_nonexistent_file(self, tmp_path):
         """Test append_ndjson creates file if not exists."""
@@ -478,9 +478,9 @@ class TestErrorHandling:
         record = {"test": "data"}
         append_ndjson(record, output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         with output_file.open() as f:
-            assert json.loads(f.readline()) == record
+            assert json.loads(f.readline()) == record, "Condition must be true"
 
     def test_logging_config_with_path_object(self, tmp_path):
         """Test LoggingConfig accepts Path objects."""
@@ -496,7 +496,7 @@ class TestErrorHandling:
 
         assert isinstance(writer.path, Path)
         writer.write({"test": 1.0}, step=0)
-        assert Path(metrics_file_str).exists()
+        assert Path(metrics_file_str).exists(), "Condition must be true"
 
 
 # ============================================================================

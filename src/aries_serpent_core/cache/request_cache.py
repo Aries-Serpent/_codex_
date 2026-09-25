@@ -345,7 +345,7 @@ class L1CacheDecorator:
                 # Generate cache key from function name and arguments
                 # Use sorted kwargs to ensure consistent key generation regardless of order
                 sorted_kwargs = sorted(kwargs.items())
-                cache_key = f"{func.__module__}.{func.__name__}:{hashlib.sha256(f'{args}:{sorted_kwargs}'.encode()).hexdigest()}"
+                cache_key = f"{func.__module__}.{func.__name__}:{hashlib.sha256(f'{args}:{sorted_kwargs}'.encode()).hexdigest()}"  # noqa: E501
 
                 # Try to get from cache
                 cached_value = self.cache.get(cache_key)

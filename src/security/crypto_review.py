@@ -215,8 +215,8 @@ class CryptographicReviewer:
                 "api_key": r'api[_-]?key\s*=\s*["\']([^\'"]+)["\']',
                 "password": r'password\s*=\s*["\']([^\'"]+)["\']',
                 "token": r'(token|auth)\s*=\s*["\']([^\'"]+)["\']',
-                "aws_key": r'AKIA[0-9A-Z]{16}',
-                "private_key": r'-----BEGIN RSA PRIVATE KEY-----',
+                "aws_key": r"AKIA[0-9A-Z]{16}",
+                "private_key": r"-----BEGIN RSA PRIVATE KEY-----",
             }
 
         secrets = []
@@ -226,12 +226,14 @@ class CryptographicReviewer:
                 for line_num, line in enumerate(f, 1):
                     for secret_type, pattern in patterns.items():
                         if re.search(pattern, line, re.IGNORECASE):
-                            secrets.append({
-                                "file": file_path,
-                                "line": line_num,
-                                "type": secret_type,
-                                "severity": "CRITICAL",
-                            })
+                            secrets.append(
+                                {
+                                    "file": file_path,
+                                    "line": line_num,
+                                    "type": secret_type,
+                                    "severity": "CRITICAL",
+                                }
+                            )
                             logger.warning(
                                 f"Potential {secret_type} found in {file_path}:{line_num}"
                             )

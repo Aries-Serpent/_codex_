@@ -80,9 +80,9 @@ def test_exact_supplied_research_inventory() -> None:
     inventory = _inventory()
     startup = inventory["github_mcp"]["startup_identifiers"]
 
-    assert len(startup) == len(set(startup)) == 36
-    assert set(startup) == EXPECTED_RESEARCH_STARTUP
-    assert inventory["counts"]["startup_research_inventory"] == 36
+    assert len(startup) == len(set(startup)) == 36, "Startup must not be empty"
+    assert set(startup) == EXPECTED_RESEARCH_STARTUP, "Condition must be true"
+    assert inventory["counts"]["startup_research_inventory"] == 36, "Count must be greater than zero"
 
 
 def test_callable_topology_separates_web_search() -> None:
@@ -90,8 +90,8 @@ def test_callable_topology_separates_web_search() -> None:
     github_tools = inventory["github_mcp"]["callable_tools"]
     companion = inventory["companion_tools"]
 
-    assert len(github_tools) == len(set(github_tools)) == 35
-    assert companion == [
+    assert len(github_tools) == len(set(github_tools)) == 35, "Github_tools must not be empty"
+    assert companion == [, "companion is not valid"
         {
             "startup_identifier": "github-mcp-server/web_search",
             "callable_name": "web_search",
@@ -101,18 +101,18 @@ def test_callable_topology_separates_web_search() -> None:
             ),
         }
     ]
-    assert inventory["counts"]["github_mcp_callable_tools"] == 35
-    assert inventory["counts"]["companion_web_tools"] == 1
+    assert inventory["counts"]["github_mcp_callable_tools"] == 35, "Count must be greater than zero"
+    assert inventory["counts"]["companion_web_tools"] == 1, "Count must be greater than zero"
 
 
 def test_read_only_boundary_and_consolidated_methods() -> None:
     inventory = _inventory()
     github = inventory["github_mcp"]
 
-    assert github["endpoint_mode"] == "read-only"
-    assert github["supports_repository_variable_crud"] is False
-    assert github["supports_secret_crud"] is False
-    assert github["consolidated_methods"]["actions_get"] == [
+    assert github["endpoint_mode"] == "read-only", "Condition must be true"
+    assert github["supports_repository_variable_crud"] is False, "Condition must be true"
+    assert github["supports_secret_crud"] is False, "Condition must be true"
+    assert github["consolidated_methods"]["actions_get"] == [, "Condition must be true"
         "get_workflow",
         "get_workflow_run",
         "get_workflow_job",
@@ -120,20 +120,20 @@ def test_read_only_boundary_and_consolidated_methods() -> None:
         "get_workflow_run_usage",
         "get_workflow_run_logs_url",
     ]
-    assert github["consolidated_methods"]["actions_list"] == [
+    assert github["consolidated_methods"]["actions_list"] == [, "Condition must be true"
         "list_workflows",
         "list_workflow_runs",
         "list_workflow_jobs",
         "list_workflow_run_artifacts",
     ]
-    assert github["consolidated_methods"]["issue_read"] == [
+    assert github["consolidated_methods"]["issue_read"] == [, "Condition must be true"
         "get",
         "get_comments",
         "get_sub_issues",
         "get_parent",
         "get_labels",
     ]
-    assert github["consolidated_methods"]["pull_request_read"] == [
+    assert github["consolidated_methods"]["pull_request_read"] == [, "Condition must be true"
         "get",
         "get_diff",
         "get_status",
@@ -150,8 +150,8 @@ def test_playwright_inventory_and_surface_totals() -> None:
     inventory = _inventory()
     playwright = inventory["playwright_mcp"]["callable_tools"]
 
-    assert len(playwright) == len(set(playwright)) == 21
-    assert set(playwright) == EXPECTED_PLAYWRIGHT
-    assert inventory["counts"]["playwright_mcp_tools"] == 21
-    assert inventory["counts"]["mcp_namespaced_tools"] == 56
-    assert inventory["counts"]["surfaced_research_and_browser_capabilities"] == 57
+    assert len(playwright) == len(set(playwright)) == 21, "Playwright must not be empty"
+    assert set(playwright) == EXPECTED_PLAYWRIGHT, "Condition must be true"
+    assert inventory["counts"]["playwright_mcp_tools"] == 21, "Count must be greater than zero"
+    assert inventory["counts"]["mcp_namespaced_tools"] == 56, "Count must be greater than zero"
+    assert inventory["counts"]["surfaced_research_and_browser_capabilities"] == 57, "Count must be greater than zero"

@@ -125,7 +125,7 @@ def main():
         "",
     ]
     (OUT / "audit.md").write_text("\n".join(md), encoding="utf-8")
-    print(f"[audit_builder] Wrote: {OUT/'audit.json'} and {OUT/'audit.md'}")
+    print(f"[audit_builder] Wrote: {OUT / 'audit.json'} and {OUT / 'audit.md'}")
 
 
 if __name__ == "__main__":

@@ -74,10 +74,10 @@ class InMemoryVectorStore(VectorStoreBackend):
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
         # Security: Issue #5299 - Validate document ID to prevent code injection
         doc_id = validate_document_id(doc_id)
-        
+
         # Validate metadata to prevent code injection
         metadata = validate_metadata(metadata)
-        
+
         self._index.append(
             {
                 "id": doc_id,
@@ -96,7 +96,7 @@ class InMemoryVectorStore(VectorStoreBackend):
         # Security: Issue #5299 - Validate filters to prevent code injection
         filters = validate_filters(filters)
         top_k = validate_top_k(top_k)
-        
+
         scored: list[tuple[dict, float]] = []
         for doc in self._index:
             if filters:
@@ -431,7 +431,7 @@ def main() -> None:
     logger.info(f"Time: {response.search_time_ms:.1f}ms")
     logger.info("\nResults:")
     for r in response.results:
-       logger.info(f"  [{r.score:.3f}] {r.content[:50]}...")
+        logger.info(f"  [{r.score:.3f}] {r.content[:50]}...")
 
 
 if __name__ == "__main__":

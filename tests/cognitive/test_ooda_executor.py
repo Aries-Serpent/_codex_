@@ -34,11 +34,11 @@ from scripts.cognitive.ooda_loop_executor import (
 
 class MockStateProvider(StateProvider):
     """Mock state provider for testing."""
-    
+
     def __init__(self, fail_on_call: str = None):
         self.fail_on_call = fail_on_call
         self.call_count = {}
-    
+
     def get_repo_state(self):
         self._track_call("get_repo_state")
         if self.fail_on_call == "get_repo_state":
@@ -49,7 +49,7 @@ class MockStateProvider(StateProvider):
             "recent_commits": ["abc123", "def456"],
             "test_status": "passing",
         }
-    
+
     def get_agent_state(self):
         self._track_call("get_agent_state")
         return {
@@ -61,7 +61,7 @@ class MockStateProvider(StateProvider):
                 "throughput": 10,
             },
         }
-    
+
     def get_environment_state(self):
         self._track_call("get_environment_state")
         return {
@@ -72,7 +72,7 @@ class MockStateProvider(StateProvider):
                 "disk": 0.30,
             },
         }
-    
+
     def get_task_context(self, task_id: str):
         self._track_call(f"get_task_context:{task_id}")
         return {
@@ -80,18 +80,18 @@ class MockStateProvider(StateProvider):
             "priority": "P1",
             "dependencies": ["task_000"],
         }
-    
+
     def _track_call(self, method_name: str):
         self.call_count[method_name] = self.call_count.get(method_name, 0) + 1
 
 
 class MockContextProvider(ContextProvider):
     """Mock context provider for testing."""
-    
+
     def __init__(self, degradation_level: DegradationLevel = DegradationLevel.FULL_CONTEXT):
         self.degradation_level = degradation_level
         self.call_count = {}
-    
+
     async def get_patterns(self, observation, top_k=5):
         self._track_call("get_patterns")
         if self.degradation_level == DegradationLevel.NO_CONTEXT:
@@ -106,7 +106,7 @@ class MockContextProvider(ContextProvider):
                 "tags": ["ci_self_healing", "automated"],
             }
         ]
-    
+
     async def get_sessions(self, task_type, limit=3):
         self._track_call("get_sessions")
         if self.degradation_level in [DegradationLevel.NO_CONTEXT, DegradationLevel.PATTERN_ONLY]:
@@ -121,7 +121,7 @@ class MockContextProvider(ContextProvider):
                 "decisions": [{"decision_id": "dec_001", "strategy": "pattern_follow", "outcome": "success"}],
             }
         ]
-    
+
     async def get_external_context(self):
         self._track_call("get_external_context")
         return {
@@ -129,7 +129,7 @@ class MockContextProvider(ContextProvider):
             "repo_variables": {"CODEX_CI_FAILURE_RATE": "15.3:medium"},
             "ci_health": 0.85,
         }
-    
+
     def _track_call(self, method_name: str):
         self.call_count[method_name] = self.call_count.get(method_name, 0) + 1
 
@@ -139,101 +139,108 @@ class MockContextProvider(ContextProvider):
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_observe_phase_collects_state():
     """Test that OBSERVE phase collects complete state."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     observation = await executor._observe("task_001", "ci_fix")
-    
-    assert observation is not None
-    assert observation.repo_state is not None
-    assert observation.task is not None
-    assert observation.agent_state is not None
-    assert observation.environment is not None
-    assert observation.task["type"] == "ci_fix"
-    assert len(observation.repo_state) > 0
+
+    assert observation is not None, "observation must be initialized"
+    assert observation.repo_state is not None, "repo_state must be initialized"
+    assert observation.task is not None, "task must be initialized"
+    assert observation.agent_state is not None, "agent_state must be initialized"
+    assert observation.environment is not None, "environment must be initialized"
+    assert observation.task["type"] == "ci_fix", "Condition must be true"
+    assert len(observation.repo_state) > 0, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_observe_phase_timing():
     """Test that OBSERVE phase completes within SLA."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     start_time = time.time()
     observation = await executor._observe("task_001", "ci_fix")
     elapsed_ms = (time.time() - start_time) * 1000
-    
+
     # Should complete much faster than 50ms target (mock implementation)
     assert elapsed_ms < 50, f"OBSERVE phase took {elapsed_ms:.1f}ms (target < 50ms)"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_orient_phase_with_full_context():
     """Test ORIENT phase with full context available."""
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=MockContextProvider(DegradationLevel.FULL_CONTEXT),
     )
-    
+
     observation = await executor._observe("task_001", "ci_fix")
     orientation = await executor._orient(observation)
-    
-    assert orientation is not None
-    assert orientation.context.degradation_level == DegradationLevel.FULL_CONTEXT
-    assert len(orientation.context.patterns) > 0
-    assert len(orientation.context.sessions) > 0
-    assert orientation.confidence > 0
+
+    assert orientation is not None, "orientation must be initialized"
+    assert orientation.context.degradation_level == DegradationLevel.FULL_CONTEXT, "degradation_level is not valid"
+    assert len(orientation.context.patterns) > 0, "Collection must not be empty"
+    assert len(orientation.context.sessions) > 0, "Collection must not be empty"
+    assert orientation.confidence > 0, "confidence must be greater than zero"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_orient_phase_with_pattern_only_context():
     """Test ORIENT phase with pattern-only context."""
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=MockContextProvider(DegradationLevel.PATTERN_ONLY),
     )
-    
+
     observation = await executor._observe("task_001", "ci_fix")
     orientation = await executor._orient(observation)
-    
-    assert orientation.context.degradation_level == DegradationLevel.PATTERN_ONLY
-    assert len(orientation.context.patterns) > 0
-    assert len(orientation.context.sessions) == 0
+
+    assert orientation.context.degradation_level == DegradationLevel.PATTERN_ONLY, "degradation_level is not valid"
+    assert len(orientation.context.patterns) > 0, "Collection must not be empty"
+    assert len(orientation.context.sessions) == 0, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_orient_phase_with_no_context():
     """Test ORIENT phase with no context (emergency mode)."""
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=MockContextProvider(DegradationLevel.NO_CONTEXT),
     )
-    
+
     observation = await executor._observe("task_001", "ci_fix")
     orientation = await executor._orient(observation)
-    
-    assert orientation.context.degradation_level == DegradationLevel.NO_CONTEXT
-    assert len(orientation.context.patterns) == 0
-    assert len(orientation.context.sessions) == 0
+
+    assert orientation.context.degradation_level == DegradationLevel.NO_CONTEXT, "degradation_level is not valid"
+    assert len(orientation.context.patterns) == 0, "Collection must not be empty"
+    assert len(orientation.context.sessions) == 0, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_decide_phase_selects_strategy():
     """Test DECIDE phase selects appropriate strategy."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     observation = await executor._observe("task_001", "ci_fix")
     orientation = await executor._orient(observation)
     decision = await executor._decide(orientation, "P1")
-    
-    assert decision is not None
-    assert len(decision.strategies) > 0
-    assert decision.selected_strategy is not None
-    assert decision.confidence_score >= 0.0
-    assert decision.success_probability >= 0.0
+
+    assert decision is not None, "decision must be initialized"
+    assert len(decision.strategies) > 0, "Collection must not be empty"
+    assert decision.selected_strategy is not None, "selected_strategy must be initialized"
+    assert decision.confidence_score >= 0.0, "confidence_score must be greater than zero"
+    assert decision.success_probability >= 0.0, "success_probability must be greater than zero"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_decide_phase_respects_degradation_level():
     """Test DECIDE phase generates appropriate strategies based on context."""
     # Full context
@@ -244,7 +251,7 @@ async def test_decide_phase_respects_degradation_level():
     obs_full = await executor_full._observe("task_001", "ci_fix")
     orient_full = await executor_full._orient(obs_full)
     decision_full = await executor_full._decide(orient_full, "P1")
-    
+
     # No context
     executor_none = OODAExecutor(
         state_provider=MockStateProvider(),
@@ -253,24 +260,25 @@ async def test_decide_phase_respects_degradation_level():
     obs_none = await executor_none._observe("task_001", "ci_fix")
     orient_none = await executor_none._orient(obs_none)
     decision_none = await executor_none._decide(orient_none, "P1")
-    
+
     # Full context should have more strategy options
-    assert len(decision_full.strategies) >= len(decision_none.strategies)
+    assert len(decision_full.strategies) >= len(decision_none.strategies), "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_act_phase_executes_and_returns_result():
     """Test ACT phase executes strategy and returns result."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     observation = await executor._observe("task_001", "ci_fix")
     orientation = await executor._orient(observation)
     decision = await executor._decide(orientation, "P1")
     result = await executor._act(decision)
-    
-    assert result is not None
+
+    assert result is not None, "result must be initialized"
     assert result.status in ["success", "partial", "failure"]
-    assert result.execution_time_ms >= 0
+    assert result.execution_time_ms >= 0, "execution_time_ms must be greater than zero"
     assert isinstance(result.metrics, dict)
 
 
@@ -279,52 +287,55 @@ async def test_act_phase_executes_and_returns_result():
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_execute_cycle_complete_flow():
     """Test complete OODA cycle execution."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
-    assert state.cycle_id is not None
-    assert state.observation is not None
-    assert state.orientation is not None
-    assert state.decision is not None
-    assert state.action_result is not None
-    assert state.phase == OODAPhase.FEEDBACK
-    assert "observe_ms" in state.metrics
-    assert "orient_ms" in state.metrics
-    assert "decide_ms" in state.metrics
-    assert "act_ms" in state.metrics
+
+    assert state.cycle_id is not None, "cycle_id must be initialized"
+    assert state.observation is not None, "observation must be initialized"
+    assert state.orientation is not None, "orientation must be initialized"
+    assert state.decision is not None, "decision must be initialized"
+    assert state.action_result is not None, "action_result must be initialized"
+    assert state.phase == OODAPhase.FEEDBACK, "phase is not valid"
+    assert "observe_ms" in state.metrics, "Condition must be true"
+    assert "orient_ms" in state.metrics, "Condition must be true"
+    assert "decide_ms" in state.metrics, "Condition must be true"
+    assert "act_ms" in state.metrics, "Condition must be true"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_execute_cycle_timing_sla():
     """Test that complete cycle meets < 200ms SLA."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     start_time = time.time()
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
     total_ms = (time.time() - start_time) * 1000
-    
+
     # Mock implementation should complete much faster, but SLA is < 200ms
     assert total_ms < 200, f"Complete cycle took {total_ms:.1f}ms (target < 200ms)"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_ooda_state_to_dict():
     """Test OODAState serialization to dictionary."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
     state_dict = state.to_dict()
-    
-    assert state_dict["cycle_id"] is not None
-    assert state_dict["phase"] == "feedback"
-    assert state_dict["observation"] is not None
-    assert state_dict["orientation"] is not None
-    assert state_dict["decision"] is not None
-    assert state_dict["action_result"] is not None
-    assert "metrics" in state_dict
+
+    assert state_dict["cycle_id"] is not None, "Value must be initialized"
+    assert state_dict["phase"] == "feedback", "Condition must be true"
+    assert state_dict["observation"] is not None, "Value must be initialized"
+    assert state_dict["orientation"] is not None, "Value must be initialized"
+    assert state_dict["decision"] is not None, "Value must be initialized"
+    assert state_dict["action_result"] is not None, "Value must be initialized"
+    assert "metrics" in state_dict, "Condition must be true"
 
 
 # ============================================================================
@@ -332,59 +343,62 @@ async def test_ooda_state_to_dict():
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_concurrent_cycles_respect_limit():
     """Test that concurrent OODA cycles respect max_concurrent_loops limit."""
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         max_concurrent_loops=10,
     )
-    
+
     # Launch 20 cycles
     tasks = [
         executor.execute_cycle(f"task_{i:03d}", "ci_fix", "P1")
         for i in range(20)
     ]
-    
+
     results = await asyncio.gather(*tasks)
-    
-    assert len(results) == 20
-    assert all(r.action_result is not None for r in results)
+
+    assert len(results) == 20, "Results must not be empty"
+    assert all(r.action_result is not None for r in results), "action_result must be initialized"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_concurrent_cycles_isolation():
     """Test that concurrent cycles have isolated state."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     # Launch 5 concurrent cycles
     tasks = [
         executor.execute_cycle(f"task_{i:03d}", "ci_fix", "P1")
         for i in range(5)
     ]
-    
+
     results = await asyncio.gather(*tasks)
-    
+
     # Each should have unique cycle_id
     cycle_ids = [r.cycle_id for r in results]
     assert len(cycle_ids) == len(set(cycle_ids)), "Cycle IDs should be unique"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_metrics_aggregation_across_cycles():
     """Test that metrics are correctly aggregated across multiple cycles."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     # Execute 5 cycles
     for i in range(5):
         await executor.execute_cycle(f"task_{i:03d}", "ci_fix", "P1")
-    
+
     metrics = executor.get_metrics()
-    
-    assert metrics["total_cycles"] == 5
-    assert metrics["successful_cycles"] > 0
-    assert "observe_p50_ms" in metrics
-    assert "observe_p99_ms" in metrics
-    assert metrics["active_cycles"] == 0  # All should be completed
+
+    assert metrics["total_cycles"] == 5, "Condition must be true"
+    assert metrics["successful_cycles"] > 0, "Value must be greater than zero"
+    assert "observe_p50_ms" in metrics, "Condition must be true"
+    assert "observe_p99_ms" in metrics, "Condition must be true"
+    assert metrics["active_cycles"] == 0, "Condition must be true"
 
 
 # ============================================================================
@@ -392,53 +406,56 @@ async def test_metrics_aggregation_across_cycles():
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_ooda_handles_state_provider_failure():
     """Test graceful handling of state provider failures."""
     executor = OODAExecutor(state_provider=MockStateProvider(fail_on_call="get_agent_state"))
-    
+
     # Should not crash, but handle error
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
-    assert state.action_result.status == "failure"
-    assert len(state.action_result.errors) > 0
+
+    assert state.action_result.status == "failure", "Result must not be empty"
+    assert len(state.action_result.errors) > 0, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_ooda_handles_missing_strategy():
     """Test graceful handling when no strategy can be selected."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     # This should still complete even if strategy selection has issues
     state = await executor.execute_cycle("task_001", "unknown_type", "P1")
-    
-    assert state.action_result is not None
+
+    assert state.action_result is not None, "action_result must be initialized"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_ooda_handles_context_provider_timeout():
     """Test graceful degradation when context provider times out."""
-    
+
     class SlowContextProvider(ContextProvider):
         async def get_patterns(self, observation, top_k=5):
             await asyncio.sleep(1)  # Will timeout
             return []
-        
+
         async def get_sessions(self, task_type, limit=3):
             return []
-        
+
         async def get_external_context(self):
             return {}
-    
+
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=SlowContextProvider(),
     )
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
+
     # Should complete despite timeout (with degraded context)
-    assert state.action_result is not None
-    assert state.phase == OODAPhase.FEEDBACK
+    assert state.action_result is not None, "action_result must be initialized"
+    assert state.phase == OODAPhase.FEEDBACK, "phase is not valid"
 
 
 # ============================================================================
@@ -446,65 +463,68 @@ async def test_ooda_handles_context_provider_timeout():
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_degradation_to_pattern_only():
     """Test degradation to pattern-only mode."""
-    
+
     class PartialContextProvider(ContextProvider):
         async def get_patterns(self, observation, top_k=5):
             return [{"pattern_id": "pat_001", "name": "Test", "similarity": 0.9, "success_rate": 0.8}]
-        
+
         async def get_sessions(self, task_type, limit=3):
             raise Exception("Sessions unavailable")
-        
+
         async def get_external_context(self):
             return {}
-    
+
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=PartialContextProvider(),
     )
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
-    assert state.orientation is not None
-    assert state.orientation.context.degradation_level == DegradationLevel.PATTERN_ONLY
+
+    assert state.orientation is not None, "orientation must be initialized"
+    assert state.orientation.context.degradation_level == DegradationLevel.PATTERN_ONLY, "degradation_level is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_degradation_to_no_context():
     """Test degradation to no-context mode."""
-    
+
     class FailingContextProvider(ContextProvider):
         async def get_patterns(self, observation, top_k=5):
             raise Exception("Patterns unavailable")
-        
+
         async def get_sessions(self, task_type, limit=3):
             raise Exception("Sessions unavailable")
-        
+
         async def get_external_context(self):
             raise Exception("External data unavailable")
-    
+
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=FailingContextProvider(),
     )
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
-    assert state.orientation is not None
-    assert state.orientation.context.degradation_level == DegradationLevel.NO_CONTEXT
+
+    assert state.orientation is not None, "orientation must be initialized"
+    assert state.orientation.context.degradation_level == DegradationLevel.NO_CONTEXT, "degradation_level is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_degradation_without_context_provider():
     """Test that executor works without context provider (no-context mode)."""
     executor = OODAExecutor(state_provider=MockStateProvider(), context_provider=None)
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
-    assert state.orientation is not None
-    assert state.orientation.context.degradation_level == DegradationLevel.NO_CONTEXT
-    assert state.action_result is not None
+
+    assert state.orientation is not None, "orientation must be initialized"
+    assert state.orientation.context.degradation_level == DegradationLevel.NO_CONTEXT, "degradation_level is not valid"
+    assert state.action_result is not None, "action_result must be initialized"
 
 
 # ============================================================================
@@ -512,27 +532,29 @@ async def test_degradation_without_context_provider():
 # ============================================================================
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_confidence_scoring():
     """Test confidence scoring based on context quality."""
     executor = OODAExecutor(
         state_provider=MockStateProvider(),
         context_provider=MockContextProvider(DegradationLevel.FULL_CONTEXT),
     )
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
+
     # Should have reasonable confidence with full context
-    assert state.orientation.confidence >= 0.0
-    assert state.orientation.confidence <= 1.0
+    assert state.orientation.confidence >= 0.0, "confidence must be greater than zero"
+    assert state.orientation.confidence <= 1.0, "confidence is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_risk_level_assessment():
     """Test risk level is correctly assessed."""
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")
-    
+
     assert state.orientation.risk_level in [RiskLevel.LOW, RiskLevel.MEDIUM, RiskLevel.HIGH]
 
 
@@ -549,11 +571,11 @@ def test_observation_data_serialization():
         agent_state={"health": 0.9},
         environment={"cpu": 0.5},
     )
-    
+
     obs_dict = obs.to_dict()
-    
-    assert "timestamp" in obs_dict
-    assert obs_dict["repo_state"]["branch"] == "main"
+
+    assert "timestamp" in obs_dict, "Condition must be true"
+    assert obs_dict["repo_state"]["branch"] == "main", "Condition must be true"
 
 
 def test_context_data_serialization():
@@ -563,11 +585,11 @@ def test_context_data_serialization():
         sessions=[],
         degradation_level=DegradationLevel.FULL_CONTEXT,
     )
-    
+
     context_dict = context.to_dict()
-    
-    assert len(context_dict["patterns"]) == 1
-    assert context_dict["degradation_level"] == "full_context"
+
+    assert len(context_dict["patterns"]) == 1, "Collection must not be empty"
+    assert context_dict["degradation_level"] == "full_context", "Condition must be true"
 
 
 def test_action_result_serialization():
@@ -577,11 +599,11 @@ def test_action_result_serialization():
         output={"step": 1},
         execution_time_ms=150.5,
     )
-    
+
     result_dict = result.to_dict()
-    
-    assert result_dict["status"] == "success"
-    assert result_dict["execution_time_ms"] == 150.5
+
+    assert result_dict["status"] == "success", "Result must not be empty"
+    assert result_dict["execution_time_ms"] == 150.5, "Result must not be empty"
 
 
 if __name__ == "__main__":

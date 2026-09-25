@@ -150,9 +150,7 @@ def _clean_path(path: Path) -> None:
 
         def _onerror(func, p, exc_info) -> None:  # pragma: no cover - defensive cleanup
             with contextlib.suppress(OSError):
-                os.chmod(
-                    p, 0o700
-                )  # nosec B103 -- nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- temporary owner-only mode applied to force-delete locked tree entries before immediately removing them
+                os.chmod(p, 0o700)  # nosec B103 -- nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- temporary owner-only mode applied to force-delete locked tree entries before immediately removing them
             func(p)
 
         shutil.rmtree(path, onerror=_onerror)
@@ -262,7 +260,12 @@ def pack_release(
         _evidence_append_release(
             "RELEASE_PERSIST", {"release_id": m.release_id, "meta_id": release_meta_id}
         )
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - best effort logging
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - best effort logging
         _evidence_append_release(
             "RELEASE_PERSIST_FAIL",
             {"release_id": m.release_id, "error": str(exc)},

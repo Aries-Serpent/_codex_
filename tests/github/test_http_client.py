@@ -24,20 +24,20 @@ class TestURLValidation:
         """Test that credentials are removed from URLs."""
         url = "******api.github.com/repos/owner/repo"
         redacted = redact_url_for_log(url)
-        assert "user" not in redacted
-        assert "pass" not in redacted
-        assert "api.github.com" in redacted
+        assert "user" not in redacted, "Condition must be true"
+        assert "pass" not in redacted, "Condition must be true"
+        assert "api.github.com" in redacted, "Condition must be true"
 
     def test_redact_url_for_log_preserves_path(self):
         """Test that paths are preserved in redacted URLs."""
         url = "https://api.github.com/repos/owner/repo/issues/123"
         redacted = redact_url_for_log(url)
-        assert "/repos/owner/repo/issues/123" in redacted
+        assert "/repos/owner/repo/issues/123" in redacted, "Condition must be true"
 
     def test_validated_github_api_url_accepts_valid_urls(self):
         """Test that valid API URLs pass validation."""
         url = "https://api.github.com/user"
-        assert validated_github_api_url(url) == url
+        assert validated_github_api_url(url) == url, "Condition must be true"
 
     def test_validated_github_api_url_rejects_non_https(self):
         """Test that non-HTTPS URLs are rejected."""
@@ -96,7 +96,7 @@ class TestGitHubHTTPClient:
         data = {"title": "Test", "body": "Content"}
         result = client.post("/repos/owner/repo/issues", data=data)
 
-        assert result == {"id": 456}
+        assert result == {"id": 456}, "Result must not be empty"
         mock_urlopen.assert_called_once()
 
     @patch("urllib.request.urlopen")
@@ -111,7 +111,7 @@ class TestGitHubHTTPClient:
         client = GitHubHTTPClient(token="test-token")
         result = client.patch("/repos/owner/repo/issues/123", data={"state": "closed"})
 
-        assert result == {"updated": True}
+        assert result == {"updated": True}, "Result must not be empty"
 
     @patch("urllib.request.urlopen")
     def test_delete_request(self, mock_urlopen):
@@ -125,7 +125,7 @@ class TestGitHubHTTPClient:
         client = GitHubHTTPClient(token="test-token")
         result = client.delete("/repos/owner/repo/issues/123")
 
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     @patch("urllib.request.urlopen")
     def test_http_error_handling(self, mock_urlopen):
@@ -165,7 +165,7 @@ class TestGitHubHTTPClient:
         client = GitHubHTTPClient(token="test-token")
         result = client.get("/user")
 
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     @patch("urllib.request.urlopen")
     def test_custom_timeout(self, mock_urlopen):
@@ -181,7 +181,7 @@ class TestGitHubHTTPClient:
 
         # Verify timeout was passed
         args, kwargs = mock_urlopen.call_args
-        assert kwargs.get("timeout") == 30
+        assert kwargs.get("timeout") == 30, "Condition must be true"
 
     @patch("urllib.request.urlopen")
     def test_url_auto_prefixing(self, mock_urlopen):
@@ -198,7 +198,7 @@ class TestGitHubHTTPClient:
         # Verify the full URL was constructed
         args, _ = mock_urlopen.call_args
         request = args[0]
-        assert request.full_url == "https://api.github.com/user"
+        assert request.full_url == "https://api.github.com/user", "full_url is not valid"
 
     @patch("urllib.request.urlopen")
     def test_authorization_header_added(self, mock_urlopen):
@@ -217,7 +217,7 @@ class TestGitHubHTTPClient:
         request = args[0]
         # Note: In actual code, we'd check the full header
         # but here we just verify the request was made
-        assert mock_urlopen.called
+        assert mock_urlopen.called, "Condition must be true"
 
 
 class TestClientIntegration:

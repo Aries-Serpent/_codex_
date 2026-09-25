@@ -58,6 +58,8 @@ except (ImportError, AttributeError) as e:
         hydra = _HydraFallback()
         to_absolute_path = hydra.utils.to_absolute_path
 
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
+
 from common.hooks import (  # noqa: E402
     CheckpointHook,
     EMAHook,
@@ -77,7 +79,6 @@ from hhg_logistics.model.peft_utils import (  # noqa: E402
     tokenize_for_causal_lm,
 )
 from hhg_logistics.plugins import load_plugins  # noqa: E402
-from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import torch

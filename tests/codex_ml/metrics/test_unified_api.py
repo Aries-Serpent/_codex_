@@ -40,21 +40,21 @@ class TestComputeBleu:
         preds = ["hello world"]
         refs = ["hello world"]
         score = compute_bleu(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_multiple_references(self):
         """Test BLEU with multiple references per hypothesis."""
         preds = ["hello world"]
         refs = [["hello world", "hello there"]]
         score = compute_bleu(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_partial_overlap(self):
         """Test BLEU with partial word overlap."""
         preds = ["the cat sat"]
         refs = ["the dog sat"]
         score = compute_bleu(preds, refs)
-        assert 0.0 < score < 1.0
+        assert 0.0 < score < 1.0, "0 is not valid"
 
     def test_no_overlap(self):
         """Test BLEU with no word overlap."""
@@ -62,14 +62,14 @@ class TestComputeBleu:
         refs = ["goodbye"]
         score = compute_bleu(preds, refs)
         # Due to smoothing, score will be very close to 0 but not exactly 0
-        assert score < 1e-6
+        assert score < 1e-6, "score is not valid"
 
     def test_empty_hypothesis(self):
         """Test BLEU with empty hypothesis."""
         preds = [""]
         refs = ["the cat sat"]
         score = compute_bleu(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_custom_max_n(self):
         """Test BLEU with custom n-gram order."""
@@ -77,15 +77,15 @@ class TestComputeBleu:
         refs = ["the cat is on the mat"]
         score_2gram = compute_bleu(preds, refs, max_n=2)
         score_4gram = compute_bleu(preds, refs, max_n=4)
-        assert 0.0 <= score_2gram <= 1.0
-        assert 0.0 <= score_4gram <= 1.0
+        assert 0.0 <= score_2gram <= 1.0, "0 is not valid"
+        assert 0.0 <= score_4gram <= 1.0, "0 is not valid"
 
     def test_smooth_parameter(self):
         """Test BLEU with custom smoothing."""
         preds = ["a"]
         refs = ["b"]
         score_smooth = compute_bleu(preds, refs, smooth=1e-3)
-        assert 0.0 <= score_smooth <= 1.0
+        assert 0.0 <= score_smooth <= 1.0, "0 is not valid"
 
     def test_multiple_sentences(self):
         """Test BLEU with multiple sentence pairs."""
@@ -93,7 +93,7 @@ class TestComputeBleu:
         refs = ["hello world", "goodbye world"]
         score = compute_bleu(preds, refs)
         # Multiple sentences should give a non-trivial score
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_length_mismatch_raises(self):
         """Test BLEU raises on length mismatch."""
@@ -116,42 +116,42 @@ class TestComputeRougeL:
         preds = ["the cat sat on the mat"]
         refs = ["the cat sat on the mat"]
         score = compute_rouge_l(preds, refs)
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"
 
     def test_partial_match(self):
         """Test ROUGE-L with partial match."""
         preds = ["the cat sat"]
         refs = ["the dog sat"]
         score = compute_rouge_l(preds, refs)
-        assert 0.0 < score < 1.0
+        assert 0.0 < score < 1.0, "0 is not valid"
 
     def test_no_match(self):
         """Test ROUGE-L with no match."""
         preds = ["hello"]
         refs = ["goodbye"]
         score = compute_rouge_l(preds, refs)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_empty_hypothesis(self):
         """Test ROUGE-L with empty hypothesis."""
         preds = [""]
         refs = ["the cat sat"]
         score = compute_rouge_l(preds, refs)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_empty_reference(self):
         """Test ROUGE-L with empty reference."""
         preds = ["the cat sat"]
         refs = [""]
         score = compute_rouge_l(preds, refs)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_multiple_pairs(self):
         """Test ROUGE-L with multiple sentence pairs."""
         preds = ["hello world", "goodbye world"]
         refs = ["hello world", "goodbye world"]
         score = compute_rouge_l(preds, refs)
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"
 
     def test_length_mismatch_raises(self):
         """Test ROUGE-L raises on length mismatch."""
@@ -161,7 +161,7 @@ class TestComputeRougeL:
         refs = ["hello", "world"]
         # Should not raise, just compute on first pair
         score = compute_rouge_l(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
 
 # ============================================================================
@@ -178,22 +178,22 @@ class TestComputePerplexity:
         logits = [[0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]
         targets = [1, 2]
         ppl = compute_perplexity(logits, targets, from_logits=True)
-        assert ppl > 0.0
-        assert math.isfinite(ppl)
+        assert ppl > 0.0, "ppl must be greater than zero"
+        assert math.isfinite(ppl), "Condition must be true"
 
     def test_from_nll(self):
         """Test perplexity from NLL values."""
         nll_values = [1.0, 1.0, 1.0]
         targets = [0, 1, 2]
         ppl = compute_perplexity(nll_values, targets, from_logits=False)
-        assert abs(ppl - math.exp(1.0)) < 1e-6
+        assert abs(ppl - math.exp(1.0)) < 1e-6, "Condition must be true"
 
     def test_ignore_index(self):
         """Test perplexity ignores specified index."""
         logits = [[1.0, 2.0], [2.0, 3.0]]
         targets = [0, -100]
         ppl = compute_perplexity(logits, targets, from_logits=True, ignore_index=-100)
-        assert ppl > 0.0
+        assert ppl > 0.0, "ppl must be greater than zero"
 
     def test_all_ignored_raises(self):
         """Test perplexity raises when all indices ignored."""
@@ -235,35 +235,35 @@ class TestComputeTokenAccuracy:
         logits = np.array([[0.0, 10.0, 0.0], [0.0, 0.0, 10.0]])
         targets = np.array([1, 2])
         acc = compute_token_accuracy(logits, targets)
-        assert acc == 1.0
+        assert acc == 1.0, "acc is not valid"
 
     def test_half_accuracy(self):
         """Test token accuracy with 50% correct."""
         logits = np.array([[0.0, 10.0, 0.0], [0.0, 0.0, 10.0]])
         targets = np.array([1, 1])
         acc = compute_token_accuracy(logits, targets)
-        assert acc == 0.5
+        assert acc == 0.5, "acc is not valid"
 
     def test_zero_accuracy(self):
         """Test token accuracy with zero correct."""
         logits = np.array([[0.0, 10.0, 0.0], [0.0, 0.0, 10.0]])
         targets = np.array([0, 0])
         acc = compute_token_accuracy(logits, targets)
-        assert acc == 0.0
+        assert acc == 0.0, "acc is not valid"
 
     def test_list_inputs(self):
         """Test token accuracy with list inputs."""
         logits = [[1.0, 2.0], [3.0, 4.0]]
         targets = [1, 1]
         acc = compute_token_accuracy(logits, targets)
-        assert 0.0 <= acc <= 1.0
+        assert 0.0 <= acc <= 1.0, "0 is not valid"
 
     def test_empty_raises(self):
         """Test token accuracy raises on empty input."""
         logits = np.array([]).reshape(0, 3)
         targets = np.array([])
         acc = compute_token_accuracy(logits, targets)
-        assert acc == 0.0
+        assert acc == 0.0, "acc is not valid"
 
 
 # ============================================================================
@@ -279,28 +279,28 @@ class TestComputeAccuracy:
         preds = [0, 1, 2]
         targets = [0, 1, 2]
         acc = compute_accuracy(preds, targets)
-        assert acc == 1.0
+        assert acc == 1.0, "acc is not valid"
 
     def test_zero_accuracy(self):
         """Test accuracy with all wrong predictions."""
         preds = [0, 0, 0]
         targets = [1, 1, 1]
         acc = compute_accuracy(preds, targets)
-        assert acc == 0.0
+        assert acc == 0.0, "acc is not valid"
 
     def test_partial_accuracy(self):
         """Test accuracy with partial correctness."""
         preds = [0, 1, 2, 1]
         targets = [0, 1, 1, 1]
         acc = compute_accuracy(preds, targets)
-        assert acc == 0.75
+        assert acc == 0.75, "acc is not valid"
 
     def test_empty_returns_zero(self):
         """Test accuracy with empty input."""
         preds = []
         targets = []
         acc = compute_accuracy(preds, targets)
-        assert acc == 0.0
+        assert acc == 0.0, "acc is not valid"
 
     def test_length_mismatch_raises(self):
         """Test accuracy raises on length mismatch."""
@@ -323,28 +323,28 @@ class TestComputeF1:
         preds = [0, 1, 2]
         targets = [0, 1, 2]
         f1 = compute_f1(preds, targets, average="micro")
-        assert f1 == 1.0
+        assert f1 == 1.0, "f1 is not valid"
 
     def test_zero_f1(self):
         """Test F1 with all wrong predictions."""
         preds = [0, 0, 0]
         targets = [1, 1, 1]
         f1 = compute_f1(preds, targets, average="micro")
-        assert f1 == 0.0
+        assert f1 == 0.0, "f1 is not valid"
 
     def test_f1_macro(self):
         """Test F1 macro averaging."""
         preds = [0, 1, 2, 1]
         targets = [0, 1, 1, 1]
         f1_macro = compute_f1(preds, targets, average="macro")
-        assert 0.0 <= f1_macro <= 1.0
+        assert 0.0 <= f1_macro <= 1.0, "0 is not valid"
 
     def test_f1_weighted(self):
         """Test F1 weighted averaging."""
         preds = [0, 1, 2, 1]
         targets = [0, 1, 1, 1]
         f1_weighted = compute_f1(preds, targets, average="weighted")
-        assert 0.0 <= f1_weighted <= 1.0
+        assert 0.0 <= f1_weighted <= 1.0, "0 is not valid"
 
     def test_custom_labels(self):
         """Test F1 with custom label set."""
@@ -352,14 +352,14 @@ class TestComputeF1:
         targets = [0, 1, 1]
         labels = [0, 1]
         f1 = compute_f1(preds, targets, labels=labels, average="micro")
-        assert 0.0 <= f1 <= 1.0
+        assert 0.0 <= f1 <= 1.0, "0 is not valid"
 
     def test_empty_returns_zero(self):
         """Test F1 with empty input."""
         preds = []
         targets = []
         f1 = compute_f1(preds, targets)
-        assert f1 == 0.0
+        assert f1 == 0.0, "f1 is not valid"
 
     def test_invalid_average_raises(self):
         """Test F1 raises on invalid average."""
@@ -390,17 +390,17 @@ class TestComputeClassificationMetrics:
         targets = [0, 1, 2]
         metrics = compute_classification_metrics(preds, targets)
         assert isinstance(metrics, dict)
-        assert "accuracy" in metrics
-        assert "f1_micro" in metrics
-        assert "f1_macro" in metrics
+        assert "accuracy" in metrics, "Condition must be true"
+        assert "f1_micro" in metrics, "Condition must be true"
+        assert "f1_macro" in metrics, "Condition must be true"
 
     def test_all_metrics_present(self):
         """Test all expected metrics are present."""
         preds = [0, 1, 2, 1]
         targets = [0, 1, 1, 1]
         metrics = compute_classification_metrics(preds, targets)
-        assert len(metrics) == 3
-        assert all(0.0 <= v <= 1.0 for v in metrics.values())
+        assert len(metrics) == 3, "Metrics must not be empty"
+        assert all(0.0 <= v <= 1.0 for v in metrics.values()), "Value must be initialized"
 
     def test_consistency_with_individual(self):
         """Test consistency with individual metric functions."""
@@ -411,9 +411,9 @@ class TestComputeClassificationMetrics:
         individual_f1_micro = compute_f1(preds, targets, average="micro")
         individual_f1_macro = compute_f1(preds, targets, average="macro")
 
-        assert abs(combined["accuracy"] - individual_acc) < 1e-9
-        assert abs(combined["f1_micro"] - individual_f1_micro) < 1e-9
-        assert abs(combined["f1_macro"] - individual_f1_macro) < 1e-9
+        assert abs(combined["accuracy"] - individual_acc) < 1e-9, "Condition must be true"
+        assert abs(combined["f1_micro"] - individual_f1_micro) < 1e-9, "Condition must be true"
+        assert abs(combined["f1_macro"] - individual_f1_macro) < 1e-9, "Condition must be true"
 
 
 # ============================================================================
@@ -431,8 +431,8 @@ class TestBatchMetricsFromOutputs:
 
         batch = {}
         metrics = batch_metrics_from_outputs(MockOutput(), batch)
-        assert "loss" in metrics
-        assert "perplexity" in metrics
+        assert "loss" in metrics, "Condition must be true"
+        assert "perplexity" in metrics, "Condition must be true"
 
     def test_with_logits_and_labels(self):
         """Test extraction of token accuracy."""
@@ -444,10 +444,10 @@ class TestBatchMetricsFromOutputs:
 
             batch = {"labels": torch.tensor([1, 1])}
             metrics = batch_metrics_from_outputs(MockOutput(), batch)
-            assert "token_accuracy" in metrics
+            assert "token_accuracy" in metrics, "Condition must be true"
         except ImportError:
             # Fall back to numpy
-            import numpy as np
+            np = numpy
             class MockOutput:
                 logits = np.array([[1.0, 2.0], [2.0, 3.0]])
 
@@ -467,9 +467,9 @@ class TestBatchMetricsFromOutputs:
             "references": ["hello world", "goodbye world"],
         }
         metrics = batch_metrics_from_outputs(MockOutput(), batch)
-        assert "exact_match" in metrics
-        assert "bleu1" in metrics
-        assert "rouge1" in metrics
+        assert "exact_match" in metrics, "Condition must be true"
+        assert "bleu1" in metrics, "Condition must be true"
+        assert "rouge1" in metrics, "Condition must be true"
 
     def test_with_alternative_reference_keys(self):
         """Test alternative keys for references."""
@@ -503,7 +503,7 @@ class TestBatchMetricsFromOutputs:
         batch = {}
         metrics = batch_metrics_from_outputs(MockOutput(), batch)
         assert isinstance(metrics, dict)
-        assert len(metrics) == 0
+        assert len(metrics) == 0, "Metrics must not be empty"
 
     def test_handles_tensor_loss(self):
         """Test handling of tensor loss values."""
@@ -515,7 +515,7 @@ class TestBatchMetricsFromOutputs:
 
             batch = {}
             metrics = batch_metrics_from_outputs(MockOutput(), batch)
-            assert "loss" in metrics
+            assert "loss" in metrics, "Condition must be true"
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -550,25 +550,25 @@ class TestEdgeCases:
         preds = ["word " * 1000]
         refs = ["word " * 1000]
         score = compute_bleu(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_unicode_strings(self):
         """Test with unicode strings."""
         preds = ["你好世界"]
         refs = ["你好世界"]
         score = compute_rouge_l(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_special_characters(self):
         """Test with special characters."""
         preds = ["hello@#$%world"]
         refs = ["hello@#$%world"]
         score = compute_bleu(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_newlines_in_text(self):
         """Test with newlines in text."""
         preds = ["hello\nworld"]
         refs = ["hello\nworld"]
         score = compute_rouge_l(preds, refs)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"

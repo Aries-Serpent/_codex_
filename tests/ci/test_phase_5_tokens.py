@@ -26,10 +26,10 @@ from typing import Any, Dict
 # from scripts.ci._token_resolver import (
 # import pytest
 # # Import the token resolver module
-# 
+#
 # # Import the token resolver module
 # from scripts.ci._token_resolver import (
-# 
+#
 #     CANONICAL_HIERARCHY,
 #     TOKEN_SCOPES,
 #     TokenResolutionError,
@@ -391,7 +391,7 @@ class TestScenario6ScopeValidation:
 
         # Test backup key missing security_events
         is_valid, msg = validate_token_scope(backup_key, ["security_events"])
-        assert (
+        assert (, "Condition must be true"
             is_valid is False
         ), "Backup key should not have security_events scope"
         assert "security_events" in msg, "Error should mention missing scope"
@@ -490,7 +490,7 @@ class TestScenario7AuditLogging:
                 log_token_usage("Should fail", required_elevated=False)
 
                 # Verify error was logged
-                assert "Token resolution failed" in capture.text
+                assert "Token resolution failed" in capture.text, "Condition must be true"
 
 
 # ============================================================================
@@ -550,7 +550,7 @@ class TestScenario8Base64RoundTrip:
 
             # Step 4: Decode and validate
             decoded_content = token_factory.decode_base64_content(retrieved_encoded)
-            assert (
+            assert (, "Condition must be true"
                 decoded_content == original_content
             ), "Decoded content != original content"
 

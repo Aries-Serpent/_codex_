@@ -38,14 +38,14 @@
 # class TestRegistry:
 #     def test_registry_is_non_empty(self):
 #         assert len(_REGISTRY) >= 80, "_registry must not be empty"
-# 
+#
 #     def test_all_entries_have_required_fields(self):
 #         for entry in _REGISTRY:
 #             assert entry.name, f"Empty name: {entry}"
 #             assert entry.layer, f"Empty layer: {entry}"
 #             assert entry.category, f"Empty category: {entry}"
 #             assert entry.purpose, f"Empty purpose: {entry}"
-# 
+#
 #     def test_layers_are_valid(self):
 #         valid = {
 #             LAYER_ORG_SECRETS,
@@ -57,22 +57,22 @@
 #         }
 #         for entry in _REGISTRY:
 #             assert entry.layer in valid, f"Unknown layer '{entry.layer}' for {entry.name}"
-# 
+#
 #     def test_human_governance_entries_exist(self):
 #         gov = [e for e in _REGISTRY if e.human_governance]
 #         assert len(gov) >= 3, "Expected at least 3 human-governance entries"
-# 
+#
 #     def test_codespace_layer_entries_present(self):
 #         cs = [e for e in _REGISTRY if e.layer == LAYER_CODESPACE]
 #         names = {e.name for e in cs}
 #         assert "CODEX_MASTER_KEY" in names, "Condition must be true"
 #         assert "_GITHUB_APP_ID" in names, "Condition must be true"
-# 
+#
 #     def test_required_org_secrets_present(self):
 #         org = {e.name for e in _REGISTRY if e.layer == LAYER_ORG_SECRETS and e.required}
 #         for expected in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "CODEX_ADMIN_KEY"):
 #             assert expected in org, "Condition must be true"
-# 
+#
 #     def test_repo_vars_contains_cache_version(self):
 #         rv = {e.name for e in _REGISTRY if e.layer == LAYER_REPO_VARS}
 #         assert "CODEX_CACHE_VERSION" in rv, "Condition must be true"
@@ -105,19 +105,19 @@
 #     def test_contains_variable_name(self):
 #         output = format_table(_make_report("present"))
 #         assert "TEST_VAR" in output, "Condition must be true"
-# 
+#
 #     def test_contains_present_icon(self):
 #         output = format_table(_make_report("present"))
 #         assert "✅" in output, "Condition must be true"
-# 
+#
 #     def test_absent_icon_shown(self):
 #         output = format_table(_make_report("absent"))
 #         assert "❌" in output, "Condition must be true"
-# 
+#
 #     def test_unknown_icon_shown(self):
 #         output = format_table(_make_report("unknown"))
 #         assert "❓" in output, "Condition must be true"
-# 
+#
 #     def test_summary_line_included(self):
 #         output = format_table(_make_report())
 #         assert "TOTAL" in output, "Condition must be true"
@@ -129,18 +129,18 @@
 #         data = json.loads(output)
 #         assert "results" in data, "Result must not be empty"
 #         assert "summary" in data, "Data must not be empty"
-# 
+#
 #     def test_summary_counts(self):
 #         report = _make_report("present")
 #         data = json.loads(format_json(report))
 #         assert data["summary"]["present"] == 1, "Data must not be empty"
 #         assert data["summary"]["absent"] == 0, "Data must not be empty"
-# 
+#
 #     def test_absent_summary(self):
 #         report = _make_report("absent")
 #         data = json.loads(format_json(report))
 #         assert data["summary"]["absent"] == 1, "Data must not be empty"
-# 
+#
 #     def test_auth_ok_field(self):
 #         report = _make_report()
 #         report.auth_ok = False
@@ -152,11 +152,11 @@
 #     def test_starts_with_heading(self):
 #         output = format_markdown(_make_report())
 #         assert output.startswith(", "Condition must be true"
-# 
+#
 #     def test_contains_table(self):
 #         output = format_markdown(_make_report())
 #         assert "|" in output, "Condition must be true"
-# 
+#
 #     def test_variable_name_in_output(self):
 #         output = format_markdown(_make_report())
 #         assert "TEST_VAR" in output, "Condition must be true"
@@ -167,17 +167,17 @@
 #         output = format_expected_table("all")
 #         assert LAYER_ORG_SECRETS in output, "Condition must be true"
 #         assert LAYER_REPO_VARS in output, "Condition must be true"
-# 
+#
 #     def test_layer_filter(self):
 #         output = format_expected_table(LAYER_CODESPACE)
 #         assert LAYER_CODESPACE in output, "Condition must be true"
 #         # Should not contain org-secrets entries
 #         assert "CODECOV_TOKEN" not in output, "Condition must be true"
-# 
+#
 #     def test_total_count_line(self):
 #         output = format_expected_table("all")
 #         assert "Total:" in output, "Condition must be true"
-# 
+#
 #     def test_json_format_via_main(self, capsys):
 #         rc = main(["expected", "--format", "json"])
 #         captured = capsys.readouterr()
@@ -199,19 +199,19 @@
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             report = run_audit()
 #         assert isinstance(report, AuditReport)
-# 
+#
 #     def test_all_results_are_unknown_offline(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             report = run_audit()
 #         for r in report.results:
 #             assert r.live_status == "unknown", "live_status is not valid"
-# 
+#
 #     def test_layer_filter_reduces_results(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             report_all = run_audit("all")
 #             report_repo = run_audit(LAYER_REPO_VARS)
 #         assert len(report_repo.results) < len(report_all.results), "Collection must not be empty"
-# 
+#
 #     def test_auth_ok_false_offline(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             report = run_audit()
@@ -238,7 +238,7 @@
 #             # and inject synthetic live data via a subclassed call.
 #             pass
 #             pass
-# 
+#
 #         # Simpler: construct results manually from the registry
 #         report = AuditReport(
 #             timestamp="2026-03-06T00:00:00+00:00",
@@ -255,7 +255,7 @@
 #             report.results.append(AuditResult(entry=entry, live_status=status))
 #         return report
 #         return report
-# 
+#
 #     def test_present_var_detected(self):
 #         report = self._make_report_with_live(
 #             LAYER_REPO_VARS,
@@ -266,7 +266,7 @@
 #         )
 #         assert cache_result is not None, "cache_result must be initialized"
 #         assert cache_result.live_status == "present", "Result must not be empty"
-# 
+#
 #     def test_absent_var_detected(self):
 #         report = self._make_report_with_live(LAYER_REPO_VARS, {})
 #         absent = [r for r in report.results if r.live_status == "absent"]
@@ -282,30 +282,30 @@
 #     def test_expected_command_returns_0(self, capsys):
 #         rc = main(["expected"])
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_expected_json_is_valid(self, capsys):
 #         main(["expected", "--format", "json"])
 #         out = capsys.readouterr().out
 #         data = json.loads(out)
 #         assert isinstance(data, list)
-# 
+#
 #     def test_check_offline_returns_0(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             rc = main(["check"])
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_check_fail_on_absent_exits_1_when_absent(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             # offline → all unknown → not "absent" → 0 even with --fail-on-absent
 #             rc = main(["check", "--fail-on-absent"])
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_diff_command_offline(self):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             rc = main(["diff"])
 #         # No required-absent entries in offline mode (all unknown)
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_report_writes_to_file(self, tmp_path):
 #         out_file = str(tmp_path / "report.md")
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
@@ -313,13 +313,13 @@
 #         assert Path(out_file).exists(), "Condition must be true"
 #         content = Path(out_file).read_text()
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_check_md_format(self, capsys):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             main(["check", "--format", "md"])
 #         out = capsys.readouterr().out
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_check_json_format(self, capsys):
 #         with patch("variable_audit_cli._VM_AVAILABLE", False):
 #             main(["check", "--format", "json"])

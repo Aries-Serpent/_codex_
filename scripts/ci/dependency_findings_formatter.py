@@ -56,7 +56,7 @@ def load_findings(findings_path: str) -> List[Dict[str, Any]]:
     path = Path(findings_path)
     if not path.exists():
         raise FileNotFoundError(f"Findings file not found: {findings_path}")
-    
+
     with open(path, 'r') as f:
         data = json.load(f)
         return data.get("findings", [])
@@ -79,7 +79,7 @@ def extract_package_name(description: str) -> Optional[str]:
         r"package\s+(\w+)",
         r"^(\w+)$",
     ]
-    
+
     for pattern in patterns:
         match = re.search(pattern, description, re.IGNORECASE)
         if match:
@@ -126,7 +126,7 @@ def calculate_upgrade_path(
     # Find minimum fixed version from all vulnerabilities
     min_fixed = None
     has_breaking_changes = False
-    
+
     for finding in findings:
         fix_rec = finding.get("fix_recommendation", "")
         # Extract version if mentioned in fix recommendation
@@ -139,21 +139,21 @@ def calculate_upgrade_path(
                 # Compare versions (simple semantic versioning)
                 if parse_version(fixed_version) > parse_version(min_fixed):
                     min_fixed = fixed_version
-        
+
         # Check for breaking changes indicators
         if any(word in fix_rec.lower() for word in ["major", "breaking", "incompatible"]):
             has_breaking_changes = True
-    
+
     if not min_fixed:
         min_fixed = current_version
-    
+
     current_parsed = parse_version(current_version)
     fixed_parsed = parse_version(min_fixed)
-    
+
     # Detect major version change
     major_bump = fixed_parsed[0] > current_parsed[0]
     risk_level = "HIGH" if major_bump or has_breaking_changes else "LOW"
-    
+
     return {
         "target_version": min_fixed,
         "breaking_changes": major_bump or has_breaking_changes,
@@ -181,7 +181,7 @@ def filter_dependency_findings(findings: List[Dict[str, Any]]) -> List[Dict[str,
         # Also include findings with "package" in description
         elif "package" in finding.get("description", "").lower():
             dependency_findings.append(finding)
-    
+
     return dependency_findings
 
 
@@ -198,11 +198,11 @@ def group_by_package(
         Dict mapping package name to list of findings.
     """
     grouped: Dict[str, List[Dict[str, Any]]] = {}
-    
+
     for finding in findings:
         # Try to extract package name from various fields
         package = None
-        
+
         # First try explicit package field
         if "package" in finding:
             package = finding["package"].lower()
@@ -214,12 +214,12 @@ def group_by_package(
             file_match = re.search(r"requirements[.-]([a-z0-9]+)", finding["file_path"])
             if file_match:
                 package = file_match.group(1)
-        
+
         if package:
             if package not in grouped:
                 grouped[package] = []
             grouped[package].append(finding)
-    
+
     return grouped
 
 
@@ -236,7 +236,7 @@ def format_dependency_vulnerabilities(findings_json_path: str) -> Dict[str, Any]
     # Load and filter findings
     all_findings = load_findings(findings_json_path)
     dep_findings = filter_dependency_findings(all_findings)
-    
+
     if not dep_findings:
         logger.warning("No dependency findings detected")
         return {
@@ -250,33 +250,33 @@ def format_dependency_vulnerabilities(findings_json_path: str) -> Dict[str, Any]
                 "generated_at": datetime.now(timezone.utc).isoformat() + "Z"
             }
         }
-    
+
     # Group by package
     grouped = group_by_package(dep_findings)
-    
+
     # Format output
     vulnerable_packages = []
     critical_count = 0
     safe_upgrades = 0
     risky_upgrades = 0
-    
+
     for package, package_findings in grouped.items():
         for finding in package_findings:
             severity = finding.get("severity", "MEDIUM")
             if severity == "CRITICAL":
                 critical_count += 1
-            
+
             # Extract version if available
             current_version = extract_version_from_finding(finding)
-            
+
             # Calculate upgrade path
             upgrade_info = calculate_upgrade_path(package, current_version, package_findings)
-            
+
             if upgrade_info["risk_level"] == "LOW":
                 safe_upgrades += 1
             else:
                 risky_upgrades += 1
-            
+
             vulnerable_packages.append({
                 "package": package,
                 "current_version": current_version,
@@ -287,7 +287,7 @@ def format_dependency_vulnerabilities(findings_json_path: str) -> Dict[str, Any]
                 "tool": finding.get("tool", "unknown"),
                 "confidence": f"{int(finding.get('confidence', 0.8) * 100)}%"
             })
-    
+
     return {
         "vulnerable_packages": vulnerable_packages,
         "metadata": {
@@ -313,12 +313,12 @@ def extract_version_from_finding(finding: Dict[str, Any]) -> str:
     """
     if "version" in finding:
         return finding["version"]
-    
+
     # Try to extract from description
     match = re.search(r"(\d+\.\d+(?:\.\d+)?)", finding.get("description", ""))
     if match:
         return match.group(1)
-    
+
     return "unknown"
 
 
@@ -334,12 +334,12 @@ def extract_cve_id(finding: Dict[str, Any]) -> str:
     """
     if "cve_id" in finding:
         return finding["cve_id"]
-    
+
     # Try to extract from description
     match = re.search(r"(CVE-\d{4}-\d{4,})", finding.get("description", ""))
     if match:
         return match.group(1)
-    
+
     return ""
 
 
@@ -369,13 +369,13 @@ def generate_markdown_report(formatted_data: Dict[str, Any]) -> str:
         f"| Packages Affected | {formatted_data['metadata']['packages_affected']} |",
         "",
     ]
-    
+
     if formatted_data["vulnerable_packages"]:
         lines.extend([
             "## Vulnerable Packages",
             "",
         ])
-        
+
         for pkg in formatted_data["vulnerable_packages"]:
             lines.extend([
                 f"### {pkg['package']} (current: {pkg['current_version']})",
@@ -391,7 +391,7 @@ def generate_markdown_report(formatted_data: Dict[str, Any]) -> str:
                 f"- Risk Level: {pkg['safe_upgrade']['risk_level']}",
                 "",
             ])
-    
+
     return "\n".join(lines)
 
 
@@ -401,7 +401,7 @@ def main() -> int:
         description="Format dependency vulnerabilities for agent consumption"
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # format-deps command
     format_parser = subparsers.add_parser(
         "format-deps",
@@ -421,41 +421,41 @@ def main() -> int:
         "--markdown",
         help="Optional markdown report output path"
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return 1
-    
+
     try:
         # Format findings
         formatted = format_dependency_vulnerabilities(args.findings)
-        
+
         if not formatted["vulnerable_packages"]:
             logger.info("No vulnerable packages found")
             return 2
-        
+
         # Write JSON output
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(output_path, 'w') as f:
             json.dump(formatted, f, indent=2)
         logger.info(f"Formatted output written to {output_path}")
-        
+
         # Write markdown report if requested
         if args.markdown:
             markdown_path = Path(args.markdown)
             markdown_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             report = generate_markdown_report(formatted)
             with open(markdown_path, 'w') as f:
                 f.write(report)
             logger.info(f"Markdown report written to {markdown_path}")
-        
+
         return 0
-        
+
     except FileNotFoundError as e:
         logger.error(f"File not found: {e}")
         return 1

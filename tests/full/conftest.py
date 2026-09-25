@@ -49,7 +49,7 @@ def all_python_files(project_root: Path) -> List[Path]:
     """Get all Python files (src + tests)."""
     src_dir = project_root / "src"
     tests_dir = project_root / "tests"
-    
+
     files = []
     if src_dir.exists():
         files.extend(src_dir.glob("**/*.py"))
@@ -80,7 +80,7 @@ def run_tool_command():
             return -1, "", "Command timed out after 60 seconds"
         except Exception as e:
             return -1, "", str(e)
-    
+
     return _run
 
 
@@ -88,9 +88,9 @@ def run_tool_command():
 def tool_versions() -> Dict[str, str]:
     """Get versions of installed dev tools."""
     versions = {}
-    
+
     tools = ["pytest", "mypy", "ruff", "black", "isort"]
-    
+
     for tool in tools:
         try:
             result = subprocess.run(
@@ -107,7 +107,7 @@ def tool_versions() -> Dict[str, str]:
             versions[tool] = "unknown (timeout)"
         except Exception as e:
             versions[tool] = f"unknown ({type(e).__name__})"
-    
+
     return versions
 
 
@@ -118,7 +118,7 @@ def check_tool_installed():
         """Check if a tool is installed. Returns (installed, version_string)."""
         if module_name is None:
             module_name = tool_name
-        
+
         try:
             result = subprocess.run(
                 [sys.executable, "-m", module_name, "--version"],
@@ -136,9 +136,9 @@ def check_tool_installed():
                 timeout=5
             )
             return result.returncode == 0, "installed"
-        except Exception:
+        except Exception as _err:
             return False, ""
-    
+
     return _check
 
 
@@ -190,7 +190,7 @@ def parent_experiment(mlflow_client_full):
         experiment = None
         try:
             experiment = mlflow_client_full.get_experiment_by_name(parent_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -216,7 +216,7 @@ def child_experiment(mlflow_client_full, parent_experiment):
         experiment = None
         try:
             experiment = mlflow_client_full.get_experiment_by_name(child_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -254,7 +254,7 @@ def parent_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -284,7 +284,7 @@ def child_run(mlflow_client_full, parent_experiment, parent_run):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -317,7 +317,7 @@ def multi_metric_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -353,7 +353,7 @@ def artifact_run(mlflow_client_full, parent_experiment, mlflow_temp_dir):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -410,7 +410,7 @@ def sweep_run_set(mlflow_client_full, parent_experiment):
         for run in runs:
             try:
                 mlflow_client_full.set_terminated(run["id"])
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -457,7 +457,7 @@ def distributed_run_set(mlflow_client_full, parent_experiment):
         for run in runs:
             try:
                 mlflow_client_full.set_terminated(run["id"])
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -493,7 +493,7 @@ def model_registry_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -525,7 +525,7 @@ def export_import_run(mlflow_client_full, parent_experiment):
         # Cleanup
         try:
             mlflow_client_full.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -543,7 +543,7 @@ from typing import Tuple
 
 class DocstringAnalyzer:
     """Analyzes docstring coverage in Python files."""
-    
+
     @staticmethod
     def has_docstring(node: ast.AST) -> bool:
         """Check if an AST node has a docstring."""
@@ -551,29 +551,29 @@ class DocstringAnalyzer:
             ast.get_docstring(node) is not None
             and len(ast.get_docstring(node).strip()) > 0
         )
-    
+
     @staticmethod
     def analyze_file(file_path: Path) -> Dict[str, any]:
         """Analyze docstring coverage in a Python file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             tree = ast.parse(content)
-            
+
             classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
             functions = [
                 n for n in ast.walk(tree)
                 if isinstance(n, ast.FunctionDef) or isinstance(n, ast.AsyncFunctionDef)
             ]
-            
+
             documented_classes = sum(
                 1 for c in classes if DocstringAnalyzer.has_docstring(c)
             )
             documented_functions = sum(
                 1 for f in functions if DocstringAnalyzer.has_docstring(f)
             )
-            
+
             return {
                 "file": str(file_path),
                 "classes": len(classes),
@@ -597,7 +597,7 @@ class DocstringAnalyzer:
 
 class TypeHintValidator:
     """Validates type hint coverage in Python files."""
-    
+
     @staticmethod
     def has_type_hints(node: ast.FunctionDef) -> bool:
         """Check if a function has type hints."""
@@ -608,24 +608,24 @@ class TypeHintValidator:
             if arg.arg != "self"
         )
         return has_return_hint or has_param_hints
-    
+
     @staticmethod
     def analyze_file(file_path: Path) -> Dict[str, any]:
         """Analyze type hint coverage in a Python file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             tree = ast.parse(content)
             functions = [
                 n for n in ast.walk(tree)
                 if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
             ]
-            
+
             hinted_functions = sum(
                 1 for f in functions if TypeHintValidator.has_type_hints(f)
             )
-            
+
             return {
                 "file": str(file_path),
                 "total_functions": len(functions),
@@ -644,7 +644,7 @@ class TypeHintValidator:
 
 class SecretScanner:
     """Scans files for hardcoded secrets and credentials."""
-    
+
     # Patterns to detect potential secrets
     PATTERNS = {
         "api_key": re.compile(r"['\"]?api[_-]?key['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{20,}"),
@@ -655,14 +655,14 @@ class SecretScanner:
         "aws_key": re.compile(r"AKIA[0-9A-Z]{16}"),
         "github_token": re.compile(r"gh[pousr]{1,4}_[a-zA-Z0-9_]{36,255}"),
     }
-    
+
     @staticmethod
     def scan_file(file_path: Path) -> Dict[str, any]:
         """Scan a file for potential secrets."""
         try:
             with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
-            
+
             findings = []
             for pattern_name, pattern in SecretScanner.PATTERNS.items():
                 matches = pattern.finditer(content)
@@ -673,7 +673,7 @@ class SecretScanner:
                         "line": line_num,
                         "match": match.group()[:50],  # Truncate for safety
                     })
-            
+
             return {
                 "file": str(file_path),
                 "findings": findings,
@@ -689,48 +689,48 @@ class SecretScanner:
 
 class LinkValidator:
     """Validates links in markdown files."""
-    
+
     # Markdown link patterns
     MARKDOWN_LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
-    
+
     @staticmethod
     def extract_links(content: str) -> List[str]:
         """Extract links from markdown content."""
         matches = LinkValidator.MARKDOWN_LINK_PATTERN.finditer(content)
         return [match.group(2) for match in matches]
-    
+
     @staticmethod
     def is_external_link(link: str) -> bool:
         """Check if a link is external."""
         return link.startswith(("http://", "https://", "ftp://"))
-    
+
     @staticmethod
     def validate_file(file_path: Path, root_dir: Path) -> Dict[str, any]:
         """Validate links in a markdown file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             links = LinkValidator.extract_links(content)
-            
+
             broken_links = []
             valid_links = []
-            
+
             for link in links:
                 if LinkValidator.is_external_link(link):
                     # Skip external links for now
                     continue
-                
+
                 # Remove anchor
                 link_path = link.split("#")[0]
-                
+
                 if not link_path:  # Anchor-only link
                     valid_links.append(link)
                     continue
-                
+
                 # Resolve path relative to markdown file
                 target_path = (file_path.parent / link_path).resolve()
-                
+
                 if target_path.exists():
                     valid_links.append(link)
                 else:
@@ -738,7 +738,7 @@ class LinkValidator:
                         "link": link,
                         "resolved_path": str(target_path),
                     })
-            
+
             return {
                 "file": str(file_path),
                 "total_links": len(links),
@@ -808,14 +808,14 @@ def doc_files(docs_dir: Path) -> List[Path]:
 def all_markdown_files(project_root: Path, docs_dir: Path) -> List[Path]:
     """Get all markdown files including root level."""
     files = []
-    
+
     # Root level markdown files
     files.extend(project_root.glob("*.md"))
-    
+
     # Docs directory markdown files
     if docs_dir.exists():
         files.extend(docs_dir.glob("**/*.md"))
-    
+
     return files
 
 # Import training fixtures so they're available to all tests

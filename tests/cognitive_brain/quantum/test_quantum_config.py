@@ -6,7 +6,7 @@
 #                 config.wave_collapse,
 #             ]
 #         )
-# 
+#
 #         assert not config.quantum_mode, "Condition must be true"
 #         assert not any(, "Condition must be true"
 #             [
@@ -18,14 +18,14 @@
 #         )
 #         """Test that all features are disabled by default."""
 #         config = QuantumConfig()
-# 
+#
 #         assert config.quantum_mode is False, "quantum_mode is not valid"
 #         assert config.superposition is False, "superposition is not valid"
 #         assert config.entanglement is False, "entanglement is not valid"
 #         assert config.uncertainty is False, "uncertainty is not valid"
 #         assert config.wave_collapse is False, "wave_collapse is not valid"
 #         assert config.rollout_percentage == 0, "rollout_percentage is not valid"
-# 
+#
 #     def test_from_env_empty_environment(self, monkeypatch):
 #     def test_from_env_empty_environment(self, monkeypatch):
 #         """Test from_env() with no environment variables set."""
@@ -34,7 +34,7 @@
 #             if key.startswith("CODEX_QUANTUM"):
 #                 monkeypatch.delenv(key, raising=False)
 #         config = QuantumConfig.from_env()
-# 
+#
 #         assert config.quantum_mode is False, "quantum_mode is not valid"
 #         assert config.superposition is False, "superposition is not valid"
 #         assert config.entanglement is False, "entanglement is not valid"
@@ -50,9 +50,9 @@
 #                 config.wave_collapse,
 #             ]
 #         )
-# 
+#
 #         assert config.quantum_mode is True, "quantum_mode is not valid"
-# 
+#
 #     def test_parse_quantum_mode_various_true_values(self, monkeypatch):
 #     def test_parse_quantum_mode_various_true_values(self, monkeypatch):
 #         """Test that various true-like values are accepted."""
@@ -61,7 +61,7 @@
 #             monkeypatch.setenv("CODEX_QUANTUM_MODE", value)
 #             config = QuantumConfig.from_env()
 #             assert config.quantum_mode is True, f"Failed for value: {value}"
-# 
+#
 #     def test_parse_quantum_mode_false_values(self, monkeypatch):
 #     def test_parse_quantum_mode_false_values(self, monkeypatch):
 #         """Test that false-like values result in disabled mode."""
@@ -79,7 +79,7 @@
 #             monkeypatch.setenv("CODEX_QUANTUM_MODE", value)
 #             config = QuantumConfig.from_env()
 #             assert config.quantum_mode is False, f"Failed for value: {value}"
-# 
+#
 #     def test_parse_individual_features(self, monkeypatch):
 #     def test_parse_individual_features(self, monkeypatch):
 #         """Test parsing individual feature flags."""
@@ -89,29 +89,29 @@
 #         monkeypatch.setenv("CODEX_QUANTUM_UNCERTAINTY", "yes")
 #         monkeypatch.setenv("CODEX_QUANTUM_WAVE_COLLAPSE", "on")
 #         config = QuantumConfig.from_env()
-# 
+#
 #         assert config.quantum_mode is True, "quantum_mode is not valid"
 #         assert config.superposition is True, "superposition is not valid"
 #         assert config.entanglement is True, "entanglement is not valid"
 #         assert config.uncertainty is True, "uncertainty is not valid"
 #         assert config.wave_collapse is True, "wave_collapse is not valid"
-# 
+#
 #     def test_parse_rollout_percentage(self, monkeypatch):
 #     def test_parse_rollout_percentage(self, monkeypatch):
 #         """Test parsing CODEX_QUANTUM_ROLLOUT_PCT."""
 #         monkeypatch.setenv("CODEX_QUANTUM_MODE", "true")
 #         monkeypatch.setenv("CODEX_QUANTUM_ROLLOUT_PCT", "50")
 #         config = QuantumConfig.from_env()
-# 
+#
 #         assert config.rollout_percentage == 50, "rollout_percentage is not valid"
-# 
+#
 #     def test_parse_rollout_percentage_invalid(self, monkeypatch):
 #     def test_parse_rollout_percentage_invalid(self, monkeypatch):
 #         """Test parsing invalid rollout percentage falls back to default."""
 #         monkeypatch.setenv("CODEX_QUANTUM_MODE", "true")
 #         monkeypatch.setenv("CODEX_QUANTUM_ROLLOUT_PCT", "invalid")
 #         config = QuantumConfig.from_env()
-# 
+#
 #         assert config.rollout_percentage == 0, "rollout_percentage is not valid"
 #         assert not config.quantum_mode, "Condition must be true"
 #         assert not any(, "Condition must be true"
@@ -122,7 +122,7 @@
 #                 config.wave_collapse,
 #             ]
 #         )
-# 
+#
 #     def test_invalid_rollout_percentage_negative(self):
 #     def test_invalid_rollout_percentage_negative(self):
 #         """Test that negative rollout percentage raises ValueError."""
@@ -140,7 +140,7 @@
 #         monkeypatch.setenv("CODEX_QUANTUM_SUPERPOSITION", "true")
 #         monkeypatch.setenv("CODEX_QUANTUM_ENTANGLEMENT", "true")
 #         config = QuantumConfig.from_env()
-# 
+#
 #         assert config.quantum_mode is False, "quantum_mode is not valid"
 #         assert config.superposition is False, "superposition is not valid"
 #         assert config.entanglement is False, "entanglement is not valid"
@@ -158,12 +158,12 @@
 #             uncertainty=True,
 #             wave_collapse=True,
 #         )
-# 
+#
 #         assert config.is_enabled("superposition") is True, "Condition must be true"
 #         assert config.is_enabled("entanglement") is True, "Condition must be true"
 #         assert config.is_enabled("uncertainty") is True, "Condition must be true"
 #         assert config.is_enabled("wave_collapse") is True, "Condition must be true"
-# 
+#
 #     def test_is_enabled_mixed_features(self):
 #     def test_is_enabled_mixed_features(self):
 #         """Test is_enabled() with some features enabled."""
@@ -178,14 +178,14 @@
 #         assert config.is_enabled("entanglement") is False, "Condition must be true"
 #         assert config.is_enabled("uncertainty") is True, "Condition must be true"
 #         assert config.is_enabled("wave_collapse") is False, "Condition must be true"
-# 
+#
 #     def test_is_enabled_invalid_feature(self):
 #     def test_is_enabled_invalid_feature(self):
 #         """Test is_enabled() with invalid feature name."""
 #         config = QuantumConfig(quantum_mode=True)
 #         with pytest.raises(ValueError, match="Invalid feature"):
 #             config.is_enabled("nonexistent_feature")
-# 
+#
 #     def test_is_enabled_when_quantum_mode_false(self):
 #     def test_is_enabled_when_quantum_mode_false(self):
 #         """Test is_enabled() always returns False when quantum_mode is False."""
@@ -194,7 +194,7 @@
 #         assert config.is_enabled("entanglement") is False, "Condition must be true"
 #         assert config.is_enabled("uncertainty") is False, "Condition must be true"
 #         assert config.is_enabled("wave_collapse") is False, "Condition must be true"
-# 
+#
 #     def test_to_dict(self):
 #     def test_to_dict(self):
 #         """Test to_dict() conversion."""
@@ -207,8 +207,8 @@
 #             rollout_percentage=50,
 #         )
 #         result = config.to_dict()
-# 
-# 
+#
+#
 #         """Test __repr__() string representation."""
 #         config = QuantumConfig(
 #             quantum_mode=True,
@@ -217,7 +217,7 @@
 #             rollout_percentage=25,
 #         )
 #         repr_str = repr(config)
-# 
+#
 #         assert "QuantumConfig" in repr_str, "Condition must be true"
 #         assert "mode=True" in repr_str, "Condition must be true"
 #         assert "rollout=25%" in repr_str, "Condition must be true"
@@ -242,7 +242,7 @@
 #                 config.wave_collapse,
 #             ]
 #         )
-# 
+#
 #     def test_from_env_without_vars_has_no_impact(self, monkeypatch):
 #     def test_from_env_without_vars_has_no_impact(self, monkeypatch):
 #         """Test that from_env() without env vars is backward compatible."""

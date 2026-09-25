@@ -339,7 +339,7 @@ def optimize_nested_loops(
 
             if max_total_iterations is not None and total_iterations > max_total_iterations:
                 raise ResourceLimitError(
-                    f"Nested loop iterations exceeded limit: {total_iterations} > {max_total_iterations}"
+                    f"Nested loop iterations exceeded limit: {total_iterations} > {max_total_iterations}"  # noqa: E501
                 )
 
             yield (outer_item, inner_item)

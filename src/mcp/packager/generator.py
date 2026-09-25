@@ -32,7 +32,12 @@ try:
     import yaml as _yaml_module
 
     yaml = _yaml_module
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency
     yaml = None
 
 

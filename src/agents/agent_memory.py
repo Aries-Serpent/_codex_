@@ -347,7 +347,9 @@ class AgentMemory:
 
             conn.commit()
 
-    def store_memory(self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any) -> None:
+    def store_memory(
+        self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any
+    ) -> None:
         """
         Store a memory entry.
 
@@ -426,9 +428,7 @@ class AgentMemory:
             )
             conn.commit()
 
-    def add_memory(
-        self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any
-    ) -> None:
+    def add_memory(self, entry: MemoryEntry | dict[str, Any] | None = None, **kwargs: Any) -> None:
         """
         Add a memory entry (alias for store_memory for API consistency).
 
@@ -898,9 +898,9 @@ class AgentMemorySystem:
         reasoning: str,
     ) -> MemoryEntry:
         """Record a decision made during the task."""
-        memory_id = hashlib.sha256(f"{decision}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
-            :16
-        ]
+        memory_id = hashlib.sha256(
+            f"{decision}:{datetime.now(UTC).isoformat()}".encode()
+        ).hexdigest()[:16]
 
         entry = MemoryEntry(
             memory_id=memory_id,
@@ -930,9 +930,9 @@ class AgentMemorySystem:
 
     def record_lesson(self, lesson: str, success: bool) -> MemoryEntry:
         """Record a lesson learned."""
-        memory_id = hashlib.sha256(f"{lesson}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
-            :16
-        ]
+        memory_id = hashlib.sha256(
+            f"{lesson}:{datetime.now(UTC).isoformat()}".encode()
+        ).hexdigest()[:16]
 
         entry = MemoryEntry(
             memory_id=memory_id,
@@ -1106,7 +1106,9 @@ class AgentMemorySystem:
         """
         # Extract keywords from task description
         keywords = [
-            word.lower() for word in task_description.split() if len(word) > 3  # Skip short words
+            word.lower()
+            for word in task_description.split()
+            if len(word) > 3  # Skip short words
         ][:10]
 
         if not keywords:

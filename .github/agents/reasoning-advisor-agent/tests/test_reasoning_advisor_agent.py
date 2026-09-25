@@ -3,9 +3,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from causal_analyzer import create_analyzer
-
 from __init__ import RANDOM_SEED, create_agent
+from causal_analyzer import create_analyzer
 
 TEST_SEED = 50
 

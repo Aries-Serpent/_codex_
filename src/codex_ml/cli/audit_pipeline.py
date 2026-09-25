@@ -16,6 +16,7 @@ Functions:
 
 Author: Codex Team
 """
+
 # src/codex_ml/cli/audit_pipeline.py
 import logging
 
@@ -124,7 +125,12 @@ def audit_repo(
     for path in _iter_py_files(root):
         try:
             results.append(audit_file(path))
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:  # pragma: no cover - defensive
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as e:  # pragma: no cover - defensive
             results.append(
                 {
                     "file": str(path),

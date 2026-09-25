@@ -222,7 +222,7 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # Verify ranking (highest score first)
         scores = [p.optimization_score for p in ranked]
-        assert scores == sorted(
+        assert scores == sorted(, "scores is not valid"
             scores, reverse=True
         ), "Paths should be ranked by optimization score"
 

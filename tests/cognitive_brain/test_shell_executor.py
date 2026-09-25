@@ -28,8 +28,8 @@ def test_denied_command_never_reaches_subprocess(monkeypatch: pytest.MonkeyPatch
     with pytest.raises(ShellExecutionDenied) as excinfo:
         execute_command("git status; rm -rf /", policy=ShellPolicy(allow_patterns=["git *"]))
 
-    assert calls == []
-    assert excinfo.value.decision.verdict == PolicyVerdict.DENY
+    assert calls == [], "calls is not valid"
+    assert excinfo.value.decision.verdict == PolicyVerdict.DENY, "Value must be initialized"
 
 
 def test_allowed_command_uses_argv_and_shell_false(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -47,6 +47,6 @@ def test_allowed_command_uses_argv_and_shell_false(monkeypatch: pytest.MonkeyPat
 
     result = execute_command("git status --short", policy=ShellPolicy())
 
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
     assert captured["args"][0] == ["git", "status", "--short"]
-    assert captured["kwargs"]["shell"] is False
+    assert captured["kwargs"]["shell"] is False, "Condition must be true"

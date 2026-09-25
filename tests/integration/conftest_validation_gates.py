@@ -78,7 +78,7 @@ class GateResult:
     message: str = ""
     error: Optional[str] = None
     metrics: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -97,7 +97,7 @@ class CriticalPath:
     description: str
     gates: List[str]  # gate IDs that comprise this path
     required_gates: List[str]  # gates that MUST pass for path success
-    
+
     def is_complete(self, passed_gates: Set[str]) -> bool:
         """Check if all required gates passed."""
         return all(gate_id in passed_gates for gate_id in self.required_gates)
@@ -105,7 +105,7 @@ class CriticalPath:
 
 class ValidationGateRegistry:
     """Registry and executor for validation gates."""
-    
+
     def __init__(self):
         """Initialize registry."""
         self.gates: Dict[str, Callable] = {}
@@ -115,7 +115,7 @@ class ValidationGateRegistry:
         self.failed_gates: Set[str] = set()
         self.gate_metadata: Dict[str, Dict[str, Any]] = {}
         self.start_time = datetime.now()
-        
+
     def register_gate(
         self,
         gate_id: str,
@@ -134,7 +134,7 @@ class ValidationGateRegistry:
             "severity": severity,
             "description": description,
         }
-    
+
     def register_critical_path(
         self,
         path_id: str,
@@ -152,20 +152,20 @@ class ValidationGateRegistry:
             required_gates=required_gates or gates,
         )
         self.critical_paths[path_id] = path
-    
+
     def execute_gate(self, gate_id: str) -> GateResult:
         """Execute a single validation gate."""
         if gate_id not in self.gates:
             raise ValueError(f"Unknown gate: {gate_id}")
-        
+
         metadata = self.gate_metadata[gate_id]
         test_func = self.gates[gate_id]
-        
+
         start = time.time()
         status = GateStatus.RUNNING
         error = None
         message = ""
-        
+
         try:
             # Execute the gate test
             result = test_func()
@@ -178,9 +178,9 @@ class ValidationGateRegistry:
             message = f"Gate failed: {error}"
             self.failed_gates.add(gate_id)
             logger.error(f"Gate {gate_id} failed: {error}")
-        
+
         duration_ms = (time.time() - start) * 1000
-        
+
         gate_result = GateResult(
             gate_id=gate_id,
             gate_name=metadata["gate_name"],
@@ -192,10 +192,10 @@ class ValidationGateRegistry:
             message=message,
             error=error,
         )
-        
+
         self.results.append(gate_result)
         return gate_result
-    
+
     def execute_all_gates(self) -> List[GateResult]:
         """Execute all registered gates."""
         results = []
@@ -203,33 +203,33 @@ class ValidationGateRegistry:
             result = self.execute_gate(gate_id)
             results.append(result)
             logger.info(f"Gate {gate_id}: {result.status.value}")
-        
+
         return results
-    
+
     def execute_critical_paths(self) -> Dict[str, bool]:
         """Execute all critical paths and check completion."""
         path_completion = {}
         for path_id, path in self.critical_paths.items():
             is_complete = path.is_complete(self.passed_gates)
             path_completion[path_id] = is_complete
-            
+
             status = "✓ COMPLETE" if is_complete else "✗ FAILED"
             logger.info(f"Critical Path {path_id}: {status}")
-            
+
             if not is_complete:
                 missing = set(path.required_gates) - self.passed_gates
                 logger.warning(f"  Missing gates: {missing}")
-        
+
         return path_completion
-    
+
     def get_coverage_metrics(self) -> Dict[str, Any]:
         """Calculate coverage metrics."""
         total_gates = len(self.gates)
         passed = len(self.passed_gates)
         failed = len(self.failed_gates)
-        
+
         coverage_pct = (passed / total_gates * 100) if total_gates > 0 else 0
-        
+
         # Critical gates
         critical_gates = {
             gid: m for gid, m in self.gate_metadata.items()
@@ -240,7 +240,7 @@ class ValidationGateRegistry:
             critical_passed / len(critical_gates) * 100
             if critical_gates else 100
         )
-        
+
         # Path completion
         path_results = self.execute_critical_paths()
         paths_complete = sum(1 for v in path_results.values() if v)
@@ -248,7 +248,7 @@ class ValidationGateRegistry:
             paths_complete / len(self.critical_paths) * 100
             if self.critical_paths else 100
         )
-        
+
         return {
             "total_gates": total_gates,
             "passed_gates": passed,
@@ -262,11 +262,11 @@ class ValidationGateRegistry:
             "path_coverage_pct": path_coverage,
             "overall_coverage_pct": (coverage_pct + path_coverage) / 2,
         }
-    
+
     def get_report(self) -> Dict[str, Any]:
         """Generate comprehensive validation report."""
         metrics = self.get_coverage_metrics()
-        
+
         # Group results by category
         results_by_category = {}
         for result in self.results:
@@ -274,7 +274,7 @@ class ValidationGateRegistry:
             if cat not in results_by_category:
                 results_by_category[cat] = []
             results_by_category[cat].append(result.to_dict())
-        
+
         # Group results by severity
         results_by_severity = {}
         for result in self.results:
@@ -282,7 +282,7 @@ class ValidationGateRegistry:
             if sev not in results_by_severity:
                 results_by_severity[sev] = []
             results_by_severity[sev].append(result.to_dict())
-        
+
         return {
             "timestamp": datetime.now().isoformat(),
             "metrics": metrics,
@@ -300,11 +300,11 @@ class ValidationGateRegistry:
             },
             "all_results": [r.to_dict() for r in self.results],
         }
-    
+
     def print_summary(self) -> None:
         """Print summary report."""
         metrics = self.get_coverage_metrics()
-        
+
         print("\n" + "=" * 70)
         print("VALIDATION GATE FRAMEWORK SUMMARY")
         print("=" * 70)
@@ -314,16 +314,16 @@ class ValidationGateRegistry:
         print(f"  Failed: {metrics['failed_gates']}")
         print(f"  Skipped: {metrics['skipped_gates']}")
         print(f"  Coverage: {metrics['gate_coverage_pct']:.1f}%")
-        
+
         print("\nCritical Gates:")
         print(f"  Total: {metrics['critical_gates']}")
         print(f"  Coverage: {metrics['critical_coverage_pct']:.1f}%")
-        
+
         print("\nCritical Paths:")
         print(f"  Total: {metrics['total_paths']}")
         print(f"  Complete: {metrics['paths_complete']}")
         print(f"  Coverage: {metrics['path_coverage_pct']:.1f}%")
-        
+
         print(f"\nOverall Coverage: {metrics['overall_coverage_pct']:.1f}%")
         print(f"Status: {'✓ PASS' if metrics['overall_coverage_pct'] >= 90 else '✗ FAIL'}")
         print("=" * 70 + "\n")
@@ -393,11 +393,11 @@ def gate_session_create():
     import tempfile
 
     from codex.logging.session_db import SessionDB
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = f"{tmpdir}/test.db"
         db = SessionDB(db_path)
-        assert db is not None
+        assert db is not None, "db must be initialized"
         return "Session creation gate passed"
 
 
@@ -412,11 +412,11 @@ def gate_session_resume():
     import tempfile
 
     from codex.logging.session_db import SessionDB
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = f"{tmpdir}/test.db"
         db = SessionDB(db_path)
-        assert db is not None
+        assert db is not None, "db must be initialized"
         return "Session resume gate passed"
 
 
@@ -444,7 +444,7 @@ def gate_config_loading():
         import os
 
         from hydra import compose, initialize_config_dir
-        
+
         config_dir = os.path.join(os.path.dirname(__file__), "..", "..", "conf")
         if os.path.exists(config_dir):
             return "Config loading gate passed"
@@ -483,7 +483,7 @@ def gate_cli_entrypoint():
             capture_output=True,
             timeout=5,
         )
-        assert result.returncode == 0
+        assert result.returncode == 0, "Result must not be empty"
         return "CLI entrypoint gate passed"
     except (subprocess.CalledProcessError, AssertionError):
         # CLI not available, but check if it's installed
@@ -517,17 +517,17 @@ def gate_concurrent_access():
     """Validate concurrent access."""
     import threading
     results = []
-    
+
     def worker():
         results.append(1)
-    
+
     threads = [threading.Thread(target=worker) for _ in range(10)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-    
-    assert len(results) == 10
+
+    assert len(results) == 10, "Results must not be empty"
     return "Concurrent access gate passed"
 
 
@@ -629,12 +629,12 @@ def execute_validation_gates(validation_gates):
 def generate_validation_report(output_path: Optional[str] = None) -> Dict[str, Any]:
     """Generate validation report and optionally save to file."""
     report = _gate_registry.get_report()
-    
+
     if output_path:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
         with open(output_file, "w") as f:
             json.dump(report, f, indent=2)
         logger.info(f"Validation report saved to {output_file}")
-    
+
     return report

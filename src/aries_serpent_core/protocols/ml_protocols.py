@@ -21,7 +21,7 @@ T = TypeVar("T")
 
 class DatasetProtocol(Protocol):
     """Interface for dataset operations.
-    
+
     Implemented by: codex_ml.data.dataset.Dataset and similar classes.
     """
 
@@ -43,7 +43,7 @@ class DatasetProtocol(Protocol):
 
 class ModelProtocol(Protocol):
     """Interface for model operations.
-    
+
     Implemented by: codex_ml.models.model_base.ModelBase and similar classes.
     """
 
@@ -80,7 +80,7 @@ class ModelProtocol(Protocol):
 
 class OptimizerProtocol(Protocol):
     """Interface for optimizer operations.
-    
+
     Implemented by: torch.optim.Optimizer subclasses.
     """
 
@@ -97,7 +97,7 @@ class OptimizerProtocol(Protocol):
 
 class SchedulerProtocol(Protocol):
     """Interface for learning rate scheduler operations.
-    
+
     Implemented by: torch.optim.lr_scheduler subclasses.
     """
 
@@ -114,7 +114,7 @@ class SchedulerProtocol(Protocol):
 
 class MetricsProtocol(Protocol):
     """Interface for metrics operations.
-    
+
     Implemented by: codex_ml.metrics.Metrics and similar classes.
     """
 
@@ -136,7 +136,7 @@ class MetricsProtocol(Protocol):
 
 class LossProtocol(Protocol):
     """Interface for loss operations.
-    
+
     Implemented by: torch.nn.Module subclasses and custom loss functions.
     """
 
@@ -148,7 +148,7 @@ class LossProtocol(Protocol):
 
 class EvaluatorProtocol(Protocol):
     """Interface for evaluation operations.
-    
+
     Implemented by: codex_ml.evaluation.Evaluator and similar classes.
     """
 
@@ -165,7 +165,7 @@ class EvaluatorProtocol(Protocol):
 
 class CheckpointerProtocol(Protocol):
     """Interface for checkpointing operations.
-    
+
     Implemented by: training.checkpoint_manager.CheckpointManager and similar.
     """
 
@@ -193,7 +193,7 @@ class CheckpointerProtocol(Protocol):
 
 class TrainerProtocol(Protocol):
     """Interface for trainer operations.
-    
+
     Implemented by: training.trainer.Trainer and codex_ml.training classes.
     """
 
@@ -225,7 +225,7 @@ class TrainerProtocol(Protocol):
 
 class LoggerProtocol(Protocol):
     """Interface for logging operations.
-    
+
     Implemented by: codex_ml.logging and similar.
     """
 

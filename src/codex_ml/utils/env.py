@@ -88,7 +88,12 @@ def _cuda_driver_version() -> Optional[str]:
             if isinstance(val, (bytes, bytearray)):
                 val = val.decode("utf-8", errors="replace")
             return val or None
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - NVML runtime failure
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - NVML runtime failure
             LOGGER.debug("pynvml driver version query failed", exc_info=True)
     # Fallback: read nvidia-smi output
     smi = shutil.which("nvidia-smi")

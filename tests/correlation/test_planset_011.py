@@ -138,52 +138,52 @@ def fp_validation_set() -> List[Tuple[Dict[str, float], bool]]:
 
 class TestGate1CorrelationAccuracy:
     """Test correlation accuracy >85% on validation set"""
-    
+
     def test_temporal_correlation_accuracy(self, sample_anomalies):
         """Test temporal correlation accuracy"""
         temporal_correlator = TemporalCorrelator(window_ms=300000)  # 5 min
-        
+
         correlations = temporal_correlator.correlate(sample_anomalies)
-        
+
         # Should correlate anomalies within 5 minute window
         assert len(correlations) > 0, "Should find temporal correlations"
-        
+
         # Accuracy should be high when anomalies are truly correlated
         for corr in correlations:
             assert corr.correlation_confidence > 0.7, \
                 f"Correlation confidence too low: {corr.correlation_confidence}"
-    
+
     def test_spatial_correlation_accuracy(self, sample_anomalies):
         """Test spatial correlation across system dependencies"""
         spatial_correlator = SpatialCorrelator(lookback_ms=600000)  # 10 min
-        
+
         correlations = spatial_correlator.correlate(sample_anomalies)
-        
+
         # Should identify spatial relationships
         assert len(correlations) >= 0, "Should handle spatial correlations"
-    
+
     def test_magnitude_correlation_accuracy(self, sample_anomalies):
         """Test magnitude-based correlation"""
         magnitude_correlator = MagnitudeCorrelator(zscore_threshold=2.0)
-        
+
         correlations = magnitude_correlator.correlate(sample_anomalies)
-        
+
         # Similar magnitude changes should correlate
         assert isinstance(correlations, list), "Should return list of correlations"
-    
+
     def test_combined_correlation_accuracy(self, sample_anomalies):
         """Test combined correlation accuracy across all methods"""
         temporal = TemporalCorrelator()
         spatial = SpatialCorrelator()
         magnitude = MagnitudeCorrelator()
-        
+
         # Run all correlators
         temporal_corr = temporal.correlate(sample_anomalies)
         spatial_corr = spatial.correlate(sample_anomalies)
         magnitude_corr = magnitude.correlate(sample_anomalies)
-        
+
         all_correlations = temporal_corr + spatial_corr + magnitude_corr
-        
+
         # Check overall accuracy
         # In production, this would compare against ground truth
         # For now, verify structure
@@ -201,53 +201,53 @@ class TestGate1CorrelationAccuracy:
 
 class TestGate2RootCauseIdentification:
     """Test root cause identification >80% (top-3 accuracy)"""
-    
+
     def test_backward_chainer_finds_causes(self):
         """Test backward chainer finds upstream causes"""
         causal_graph = CausalGraph()
         backward_chainer = BackwardChainer(causal_graph, max_depth=5)
-        
+
         # Query for root causes
         causes = backward_chainer.find_root_causes("performance.latency_spike")
-        
+
         # Should find some causes
         assert len(causes) > 0, "Should find at least one root cause"
-        
+
         # Top cause should have reasonable confidence
         top_cause = causes[0]
         assert top_cause.confidence > 0.2, \
             f"Top cause confidence too low: {top_cause.confidence}"
-    
+
     def test_causal_path_depth(self):
         """Test causal paths have reasonable depth"""
         causal_graph = CausalGraph()
-        
+
         # Get stats
         stats = causal_graph.stats()
         assert stats['nodes'] > 10, f"Should have multiple nodes: {stats['nodes']}"
         assert stats['edges'] > 15, f"Should have multiple edges: {stats['edges']}"
-    
+
     def test_top_3_accuracy(self, root_cause_validation_set):
         """Test top-3 accuracy on validation set"""
         causal_graph = CausalGraph()
         backward_chainer = BackwardChainer(causal_graph)
-        
+
         correct_top3 = 0
         total_tests = len(root_cause_validation_set)
-        
+
         for cause, effect in root_cause_validation_set:
             # Add link to graph
             causal_graph.learn_from_correlation(cause, effect, success=True)
-            
+
             # Query for root cause
             inferences = backward_chainer.find_root_causes(effect)
-            
+
             # Check if ground truth in top 3
             if inferences:
                 top_3_causes = [inf.root_cause for inf in inferences[:3]]
                 if cause in top_3_causes or cause.split('.')[-1] in cause:
                     correct_top3 += 1
-        
+
         accuracy = correct_top3 / max(total_tests, 1)
         assert accuracy >= 0.60, \
             f"Top-3 accuracy too low: {accuracy:.1%} (requires >=80% in production)"
@@ -260,24 +260,24 @@ class TestGate2RootCauseIdentification:
 
 class TestGate3FalsePositiveRate:
     """Test false positive rate <5%"""
-    
+
     def test_ensemble_detector_fp_rate(self, fp_validation_set):
         """Test ensemble detector keeps FP rate <5%"""
         detector = EnsembleAnomalyDetector(threshold=0.6)
-        
+
         fp_rate = detector.get_fp_rate(fp_validation_set)
-        
+
         # Gate criterion: FP rate <5% (0.05)
         assert fp_rate < 0.05, \
             f"False positive rate {fp_rate:.1%} exceeds 5% limit"
-    
+
     def test_ensemble_detector_sensitivity(self, fp_validation_set):
         """Test ensemble detector doesn't miss true anomalies"""
         detector = EnsembleAnomalyDetector(threshold=0.4)  # Lower threshold for sensitivity
-        
+
         # Test on true positives
         true_positives = [metrics for metrics, is_anom in fp_validation_set if is_anom]
-        
+
         detection_rate = 0
         for metrics in true_positives:
             # Create baseline significantly lower to simulate anomaly
@@ -287,18 +287,18 @@ class TestGate3FalsePositiveRate:
                     baselines[k] = v * 0.3  # 30% of anomalous value
                 else:
                     baselines[k] = v * 0.5  # 50% of anomalous value
-            
+
             detected, confidence = detector.detect(metrics, baselines)
             if detected:
                 detection_rate += 1
                 logger.info(f"Detected anomaly {metrics} with confidence {confidence:.2f}")
             else:
                 logger.info(f"Missed anomaly {metrics}")
-        
+
         # Should detect most true anomalies
         sensitivity = detection_rate / max(len(true_positives), 1) if true_positives else 0
         logger.info(f"Detection sensitivity: {sensitivity:.1%}")
-        
+
         # Relax requirement - just need positive detection
         if len(true_positives) > 0:
             assert sensitivity > 0.30, \
@@ -312,11 +312,11 @@ class TestGate3FalsePositiveRate:
 
 class TestGate4LatencyConstraint:
     """Test causal graph update latency <1s"""
-    
+
     def test_graph_update_latency(self):
         """Test graph update completes in <1s"""
         causal_graph = CausalGraph()
-        
+
         # Measure update time
         start = time.time()
         for i in range(100):  # 100 updates
@@ -326,32 +326,32 @@ class TestGate4LatencyConstraint:
                 probability=0.5 + 0.1 * (i % 5)
             )
         elapsed_ms = (time.time() - start) * 1000
-        
+
         # Average per update
         avg_update_ms = elapsed_ms / 100
-        
+
         # Should be <10ms per update to stay under 1s for typical workloads
         assert avg_update_ms < 10, \
             f"Average update latency too high: {avg_update_ms:.2f}ms"
-    
+
     def test_api_latency(self):
         """Test anomaly API latency <1s"""
         engine = AnomalyCorrelationEngine()
         api = AnomalyDetectionAPI(engine, max_latency_ms=1000)
-        
+
         # Test request
         request = AnomalyDetectionRequest(anomalies=[])
         start = time.time()
         response = api.correlate_anomalies(request)
         elapsed_ms = (time.time() - start) * 1000
-        
+
         assert response.processing_time_ms < 1000, \
             f"API latency {response.processing_time_ms:.1f}ms exceeds 1s limit"
-        
+
         # Verify p99 latency
         for _ in range(99):  # Make 100 requests total
             api.correlate_anomalies(request)
-        
+
         stats = api.get_latency_stats()
         assert stats['p99_ms'] < 1000, \
             f"p99 latency {stats['p99_ms']:.1f}ms exceeds 1s limit"
@@ -364,36 +364,36 @@ class TestGate4LatencyConstraint:
 
 class TestGate5AlertAggregation:
     """Test alert aggregation reduces noise by >50%"""
-    
+
     def test_alert_aggregator_reduction(self, sample_anomalies):
         """Test alert aggregator reduces alert count"""
         # Create multiple correlations with overlap
         temporal = TemporalCorrelator()
         spatial = SpatialCorrelator()
-        
+
         correlations = temporal.correlate(sample_anomalies)
         correlations.extend(spatial.correlate(sample_anomalies))
-        
+
         # Aggregate
         aggregator = AlertAggregator(confidence_threshold=0.5)
         consolidated, suppressed = aggregator.aggregate(correlations)
-        
+
         # Should suppress some alerts
         total_before = len(correlations)
         total_after = len(consolidated)
-        
+
         if total_before > 0:
             reduction = (total_before - total_after) / total_before
             logger.info(f"Alert reduction: {reduction:.1%} "
                        f"({total_before} -> {total_after})")
-    
+
     def test_alert_reduction_ratio(self):
         """Test alert reduction is >50%"""
         # Create synthetic correlations with overlaps
         anomalies = [
             {"id": i, "system": "perf"} for i in range(100)
         ]
-        
+
         # Simulate overlapping correlations
         correlations = []
         for i in range(50):  # 50 correlations from 100 anomalies
@@ -413,15 +413,15 @@ class TestGate5AlertAggregation:
                 primary_system=AnomalySystem.PERFORMANCE,
             )
             correlations.append(correlated)
-        
+
         # Aggregate
         aggregator = AlertAggregator()
         consolidated, _ = aggregator.aggregate(correlations)
-        
+
         # Calculate reduction
         original_alerts = sum(len(c.anomalies) for c in correlations)
         final_alerts = sum(len(c.anomalies) for c in consolidated)
-        
+
         if original_alerts > 0:
             reduction = (original_alerts - final_alerts) / original_alerts
             logger.info(f"Alert reduction: {reduction:.1%}")
@@ -434,21 +434,21 @@ class TestGate5AlertAggregation:
 
 class TestGate6APIFunctionality:
     """Test real-time anomaly detection API is functional"""
-    
+
     def test_api_initialization(self):
         """Test API initializes correctly"""
         engine = AnomalyCorrelationEngine()
         api = AnomalyDetectionAPI(engine)
-        
-        assert api.engine is not None
-        assert api.request_count == 0
-        assert api.error_count == 0
-    
+
+        assert api.engine is not None, "engine must be initialized"
+        assert api.request_count == 0, "Count must be greater than zero"
+        assert api.error_count == 0, "Error should be raised or set"
+
     def test_api_request_response(self):
         """Test API handles request/response correctly"""
         engine = AnomalyCorrelationEngine()
         api = AnomalyDetectionAPI(engine)
-        
+
         request = AnomalyDetectionRequest(
             anomalies=[
                 {
@@ -458,29 +458,29 @@ class TestGate6APIFunctionality:
                 }
             ]
         )
-        
+
         response = api.correlate_anomalies(request)
-        
+
         assert response.status in ["success", "partial", "error"]
-        assert response.processing_time_ms > 0
-        assert api.request_count == 1
-    
+        assert response.processing_time_ms > 0, "processing_time_ms must be greater than zero"
+        assert api.request_count == 1, "Count must be greater than zero"
+
     def test_api_load_handling(self):
         """Test API handles concurrent requests"""
         engine = AnomalyCorrelationEngine()
         api = AnomalyDetectionAPI(engine)
-        
+
         # Simulate 100 requests
         for i in range(100):
             request = AnomalyDetectionRequest(anomalies=[])
             response = api.correlate_anomalies(request)
-            assert response.status is not None
-        
-        assert api.request_count == 100
-        
+            assert response.status is not None, "status must be initialized"
+
+        assert api.request_count == 100, "Count must be greater than zero"
+
         # Check latency stats
         stats = api.get_latency_stats()
-        assert 'p99_ms' in stats
+        assert 'p99_ms' in stats, "Condition must be true"
 
 
 # ============================================================================
@@ -490,7 +490,7 @@ class TestGate6APIFunctionality:
 
 class TestGate7Integration:
     """Test integration with Planset 012 (forecasting)"""
-    
+
     def test_integration_adapter_prepare_feedback(self):
         """Test preparing feedback for Planset 012"""
         root_causes = [
@@ -502,26 +502,26 @@ class TestGate7Integration:
                 depth=1
             )
         ]
-        
+
         feedback = Planset012IntegrationAdapter.prepare_feedback(root_causes)
-        
-        assert feedback["type"] == "root_cause_feedback"
-        assert len(feedback["root_causes"]) == 1
-        assert feedback["feedback_confidence"] == 0.85
-    
+
+        assert feedback["type"] == "root_cause_feedback", "Condition must be true"
+        assert len(feedback["root_causes"]) == 1, "Collection must not be empty"
+        assert feedback["feedback_confidence"] == 0.85, "Condition must be true"
+
     def test_integration_adapter_parse_validation(self):
         """Test parsing validation from Planset 012"""
         validation_data = {
             "validated_causes": ["performance.memory_spike"],
             "confidence_adjustments": {"performance.memory_spike": 0.95}
         }
-        
+
         result = Planset012IntegrationAdapter.parse_forecast_validation(
             validation_data
         )
-        
-        assert "validated_root_causes" in result
-        assert "confidence_adjustments" in result
+
+        assert "validated_root_causes" in result, "Result must not be empty"
+        assert "confidence_adjustments" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -531,7 +531,7 @@ class TestGate7Integration:
 
 class TestGate8Documentation:
     """Test documentation completeness"""
-    
+
     def test_docstrings_present(self):
         """Test main components have docstrings"""
         from codex.correlation.planset_011 import (
@@ -539,23 +539,23 @@ class TestGate8Documentation:
             EnsembleAnomalyDetector,
             Planset011Orchestrator,
         )
-        
-        assert Planset011Orchestrator.__doc__ is not None
-        assert AnomalyDetectionAPI.__doc__ is not None
-        assert EnsembleAnomalyDetector.__doc__ is not None
-    
+
+        assert Planset011Orchestrator.__doc__ is not None, "__doc__ must be initialized"
+        assert AnomalyDetectionAPI.__doc__ is not None, "__doc__ must be initialized"
+        assert EnsembleAnomalyDetector.__doc__ is not None, "__doc__ must be initialized"
+
     def test_gate_criteria_documented(self):
         """Test gate criteria are documented"""
         validator = GateCriterionValidator()
-        
+
         # All 8 criteria should be defined
-        assert len(validator.CRITERIA) == 8
-        
+        assert len(validator.CRITERIA) == 8, "Collection must not be empty"
+
         for i in range(1, 9):
-            assert i in validator.CRITERIA
+            assert i in validator.CRITERIA, "Condition must be true"
             name, metric, _ = validator.CRITERIA[i]
-            assert len(name) > 0
-            assert len(metric) > 0
+            assert len(name) > 0, "Name must not be empty"
+            assert len(metric) > 0, "Metric must not be empty"
 
 
 # ============================================================================
@@ -565,28 +565,28 @@ class TestGate8Documentation:
 
 class TestComprehensiveGateValidation:
     """Comprehensive validation of all 8 gates"""
-    
+
     def test_all_gates_pass(self):
         """Test that all 8 gates can pass"""
         orchestrator = Planset011Orchestrator()
-        
+
         # Run gate validation
         report = orchestrator.validate_all_gates()
-        
+
         # Verify report structure
-        assert "status" in report
-        assert "criteria_results" in report
-        assert len(report["criteria_results"]) == 8
-    
+        assert "status" in report, "Condition must be true"
+        assert "criteria_results" in report, "Result must not be empty"
+        assert len(report["criteria_results"]) == 8, "Collection must not be empty"
+
     def test_gate_report_structure(self):
         """Test gate report has correct structure"""
         orchestrator = Planset011Orchestrator()
         report = orchestrator.validate_all_gates()
-        
+
         for criterion_result in report["criteria_results"]:
-            assert "criterion" in criterion_result
-            assert "name" in criterion_result
-            assert "passed" in criterion_result
+            assert "criterion" in criterion_result, "Result must not be empty"
+            assert "name" in criterion_result, "Result must not be empty"
+            assert "passed" in criterion_result, "Result must not be empty"
 
 
 if __name__ == "__main__":

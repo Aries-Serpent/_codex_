@@ -32,21 +32,21 @@ class TestWorkflowStatus:
         # Should have: workflows[], health object
         response_fields = ["workflows", "health"]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_workflow_status_workflows_array(self, valid_auth_header):
         """Test workflows array in response."""
         # Each workflow should have: name, status, last_run, run_count_7d, success_rate
         workflow_fields = ["name", "status", "last_run", "run_count_7d", "success_rate"]
         for field in workflow_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_workflow_status_health_object(self, valid_auth_header):
         """Test health object structure."""
         # Should have: total_workflows, passing, failing, disabled
         health_fields = ["total_workflows", "passing", "failing", "disabled"]
         for field in health_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_workflow_status_all_workflows_list(self, valid_auth_header):
         """Test contains known workflows."""
@@ -115,27 +115,27 @@ class TestWorkflowGate:
     def test_gate_check_happy_path(self, valid_gate_payload, valid_auth_header):
         """Test successful gate check."""
         payload = valid_gate_payload
-        assert payload["pr_number"] == 1234
-        assert payload["action"] == "check"
+        assert payload["pr_number"] == 1234, "Condition must be true"
+        assert payload["action"] == "check", "Condition must be true"
 
     def test_gate_check_all_passed(self, valid_gate_payload):
         """Test gate check when all required checks passed."""
         payload = valid_gate_payload
         # Response should have passed=true
-        assert payload["pr_number"]
+        assert payload["pr_number"], "Condition must be true"
 
     def test_gate_check_some_failed(self, valid_gate_payload):
         """Test gate check when some checks failed."""
         payload = valid_gate_payload
         # Response should have passed=false with details
-        assert payload
+        assert payload, "payload is not valid"
 
     def test_gate_check_response_structure(self, valid_gate_payload):
         """Test response includes required fields."""
         # Should have: pr_number, passed, message, checks object
         response_fields = ["pr_number", "passed", "message", "checks"]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_gate_check_all_checks_required(self, valid_auth_header):
         """Test gate check includes all required checks."""
@@ -146,7 +146,7 @@ class TestWorkflowGate:
             "pre-release-validation",
         ]
         for check in required_checks:
-            assert check
+            assert check, "check is not valid"
 
     def test_gate_check_checks_object_values(self, valid_auth_header):
         """Test checks object contains status values."""
@@ -157,7 +157,7 @@ class TestWorkflowGate:
         """Test gate check with various PR numbers."""
         for pr_num in [1, 100, 9999, 99999]:
             payload = {**valid_gate_payload, "pr_number": pr_num}
-            assert payload["pr_number"] == pr_num
+            assert payload["pr_number"] == pr_num, "Condition must be true"
 
     def test_gate_check_pr_number_negative(self, valid_gate_payload):
         """Test gate check with negative PR number (invalid)."""
@@ -180,28 +180,28 @@ class TestWorkflowGate:
     def test_gate_check_required_checks_single(self, valid_gate_payload):
         """Test gate check with single required check."""
         payload = {**valid_gate_payload, "required_checks": ["auto-approve-workflows"]}
-        assert len(payload["required_checks"]) == 1
+        assert len(payload["required_checks"]) == 1, "Collection must not be empty"
 
     def test_gate_check_required_checks_many(self, valid_gate_payload):
         """Test gate check with many required checks."""
         checks = [f"check_{i}" for i in range(20)]
         payload = {**valid_gate_payload, "required_checks": checks}
-        assert len(payload["required_checks"]) == 20
+        assert len(payload["required_checks"]) == 20, "Collection must not be empty"
 
     def test_gate_check_action_check(self, valid_gate_payload):
         """Test gate check with action='check'."""
         payload = {**valid_gate_payload, "action": "check"}
-        assert payload["action"] == "check"
+        assert payload["action"] == "check", "Condition must be true"
 
     def test_gate_check_action_enforce(self, valid_gate_payload):
         """Test gate check with action='enforce'."""
         payload = {**valid_gate_payload, "action": "enforce"}
-        assert payload["action"] == "enforce"
+        assert payload["action"] == "enforce", "Condition must be true"
 
     def test_gate_check_action_report(self, valid_gate_payload):
         """Test gate check with action='report'."""
         payload = {**valid_gate_payload, "action": "report"}
-        assert payload["action"] == "report"
+        assert payload["action"] == "report", "Condition must be true"
 
     def test_gate_check_invalid_action(self, valid_gate_payload):
         """Test gate check with invalid action."""
@@ -286,7 +286,7 @@ class TestWorkflowRateLimit:
             "safe_to_proceed",
         ]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_rate_limit_values_consistency(self, valid_auth_header):
         """Test rate limit values are consistent."""

@@ -11,8 +11,8 @@ def test_detect_environment_type_flags_ml_rag_signals() -> None:
         "torch",
     ])
 
-    assert environment_type == "ml-heavy"
-    assert "ML/RAG signal" in reason
+    assert environment_type == "ml-heavy", "environment_type is not valid"
+    assert "ML/RAG signal" in reason, "Condition must be true"
 
 
 def test_detect_environment_type_ignores_ml_substring_in_yaml() -> None:
@@ -22,8 +22,8 @@ def test_detect_environment_type_ignores_ml_substring_in_yaml() -> None:
         "deployment pipeline",
     ])
 
-    assert environment_type == "standard"
-    assert "No ML/RAG" in reason
+    assert environment_type == "standard", "environment_type is not valid"
+    assert "No ML/RAG" in reason, "Condition must be true"
 
 
 def test_detect_environment_type_flags_pytorch_module_names() -> None:
@@ -32,8 +32,8 @@ def test_detect_environment_type_flags_pytorch_module_names() -> None:
         "embedding regression",
     ])
 
-    assert environment_type == "ml-heavy"
-    assert "ML/RAG signal" in reason
+    assert environment_type == "ml-heavy", "environment_type is not valid"
+    assert "ML/RAG signal" in reason, "Condition must be true"
 
 
 def test_detect_missing_runtime_dependencies_uses_runtime_package_names(monkeypatch) -> None:
@@ -50,7 +50,7 @@ def test_detect_missing_runtime_dependencies_uses_runtime_package_names(monkeypa
         "faiss-cpu>=1.15.0,<2.0.0",
     ])
 
-    assert missing == [
+    assert missing == [, "missing is not valid"
         "numpy>=2.5.2,<3",
         "torch>=2.6.1,<3.0.0; platform_system != 'Windows'",
         "faiss-cpu>=1.15.0,<2.0.0",
@@ -102,5 +102,5 @@ def test_render_yaml_quotes_reason_with_colon_and_normalizes_bool() -> None:
         }
     )
 
-    assert 'reason: "Detected security signal: \'security\'"' in rendered
-    assert "sandbox_is_staging_only: true" in rendered
+    assert 'reason: "Detected security signal: \'security\'"' in rendered, "Condition must be true"
+    assert "sandbox_is_staging_only: true" in rendered, "Condition must be true"

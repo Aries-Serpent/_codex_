@@ -30,11 +30,11 @@ class TestApprovalRequestDataClass:
     def test_approval_request_creation_with_defaults(self):
         """Test creating ApprovalRequest with default values."""
         req = ApprovalRequest()
-        assert req.status == ApprovalState.PENDING
-        assert req.request_id is not None
-        assert req.created_at > 0
-        assert req.escalation_count == 0
-        assert req.sla_extensions_used == 0
+        assert req.status == ApprovalState.PENDING, "status is not valid"
+        assert req.request_id is not None, "request_id must be initialized"
+        assert req.created_at > 0, "created_at must be greater than zero"
+        assert req.escalation_count == 0, "Count must be greater than zero"
+        assert req.sla_extensions_used == 0, "sla_extensions_used is not valid"
 
     def test_approval_request_creation_with_custom_values(self):
         """Test creating ApprovalRequest with custom values."""
@@ -43,31 +43,31 @@ class TestApprovalRequestDataClass:
             policy_code="SECURITY_PATCH",
             requester_id="user-456",
         )
-        assert req.request_id == "test-123"
-        assert req.policy_code == "SECURITY_PATCH"
-        assert req.requester_id == "user-456"
+        assert req.request_id == "test-123", "request_id is not valid"
+        assert req.policy_code == "SECURITY_PATCH", "policy_code is not valid"
+        assert req.requester_id == "user-456", "requester_id is not valid"
 
     def test_approval_request_age_seconds(self):
         """Test age_seconds property calculation."""
         req = ApprovalRequest()
         time.sleep(0.1)
         age = req.age_seconds
-        assert age >= 0.1
-        assert age < 1.0
+        assert age >= 0.1, "age must be greater than zero"
+        assert age < 1.0, "age is not valid"
 
     def test_approval_request_is_expired_property(self):
         """Test is_expired property."""
         req = ApprovalRequest(
             sla_deadline=time.time() - 100  # Expired
         )
-        assert req.is_expired is True
+        assert req.is_expired is True, "is_expired is not valid"
 
     def test_approval_request_is_not_expired_property(self):
         """Test is_expired property when not expired."""
         req = ApprovalRequest(
             sla_deadline=time.time() + 3600  # 1 hour in future
         )
-        assert req.is_expired is False
+        assert req.is_expired is False, "is_expired is not valid"
 
     def test_approval_request_sla_exceeded_calculation(self):
         """Test sla_exceeded_by_seconds property."""
@@ -75,8 +75,8 @@ class TestApprovalRequestDataClass:
             sla_deadline=time.time() - 100  # Exceeded by ~100 seconds
         )
         exceeded = req.sla_exceeded_by_seconds
-        assert exceeded >= 99
-        assert exceeded <= 101
+        assert exceeded >= 99, "exceeded must be greater than zero"
+        assert exceeded <= 101, "exceeded is not valid"
 
     def test_approval_request_escalations_remaining(self):
         """Test escalations_remaining property."""
@@ -84,7 +84,7 @@ class TestApprovalRequestDataClass:
             escalation_count=1,
             escalation_chain=[1, 2, 3]
         )
-        assert req.escalations_remaining == 1
+        assert req.escalations_remaining == 1, "escalations_remaining is not valid"
 
     def test_approval_request_escalations_remaining_at_limit(self):
         """Test escalations_remaining when all escalations exhausted."""
@@ -92,7 +92,7 @@ class TestApprovalRequestDataClass:
             escalation_count=2,
             escalation_chain=[1, 2, 3]
         )
-        assert req.escalations_remaining == 0
+        assert req.escalations_remaining == 0, "escalations_remaining is not valid"
 
 
 class TestApprovalDecision:
@@ -106,11 +106,11 @@ class TestApprovalDecision:
             decision="APPROVED",
             authority_level=2
         )
-        assert decision.approver_id == "approver-1"
-        assert decision.approver_name == "Alice"
-        assert decision.decision == "APPROVED"
-        assert decision.authority_level == 2
-        assert decision.timestamp > 0
+        assert decision.approver_id == "approver-1", "approver_id is not valid"
+        assert decision.approver_name == "Alice", "approver_name is not valid"
+        assert decision.decision == "APPROVED", "decision is not valid"
+        assert decision.authority_level == 2, "authority_level is not valid"
+        assert decision.timestamp > 0, "timestamp must be greater than zero"
 
     def test_approval_decision_with_reason(self):
         """Test approval decision with reason."""
@@ -120,7 +120,7 @@ class TestApprovalDecision:
             decision="REJECTED",
             reason="Security risk identified"
         )
-        assert decision.reason == "Security risk identified"
+        assert decision.reason == "Security risk identified", "reason is not valid"
 
 
 class TestSLAPolicy:
@@ -129,11 +129,11 @@ class TestSLAPolicy:
     def test_sla_policy_creation_with_defaults(self):
         """Test creating SLAPolicy with default values."""
         policy = SLAPolicy(policy_code="STANDARD")
-        assert policy.policy_code == "STANDARD"
-        assert policy.l1_sla_hours == 4.0
-        assert policy.l2_sla_hours == 4.0
-        assert policy.owner_sla_hours == 4.0
-        assert policy.is_destructive is False
+        assert policy.policy_code == "STANDARD", "policy_code is not valid"
+        assert policy.l1_sla_hours == 4.0, "l1_sla_hours is not valid"
+        assert policy.l2_sla_hours == 4.0, "l2_sla_hours is not valid"
+        assert policy.owner_sla_hours == 4.0, "owner_sla_hours is not valid"
+        assert policy.is_destructive is False, "is_destructive is not valid"
 
     def test_sla_policy_destructive_operation(self):
         """Test SLA policy for destructive operations."""
@@ -143,8 +143,8 @@ class TestSLAPolicy:
             owner_sla_hours=2.0,
             incident_sla_minutes=15.0
         )
-        assert policy.is_destructive is True
-        assert policy.owner_sla_hours == 2.0
+        assert policy.is_destructive is True, "is_destructive is not valid"
+        assert policy.owner_sla_hours == 2.0, "owner_sla_hours is not valid"
 
     def test_sla_policy_incident_escalation(self):
         """Test SLA policy with incident escalation."""
@@ -154,8 +154,8 @@ class TestSLAPolicy:
             incident_sla_minutes=30.0,
             max_escalations=1
         )
-        assert policy.is_incident_related is True
-        assert policy.max_escalations == 1
+        assert policy.is_incident_related is True, "is_incident_related is not valid"
+        assert policy.max_escalations == 1, "max_escalations is not valid"
 
 
 class TestApprovalService:
@@ -164,44 +164,44 @@ class TestApprovalService:
     def test_approval_service_initialization(self):
         """Test ApprovalService initialization."""
         service = ApprovalService()
-        assert service.logger is not None
+        assert service.logger is not None, "logger must be initialized"
         assert isinstance(service._requests, dict)
-        assert len(service._requests) == 0
+        assert len(service._requests) == 0, "Collection must not be empty"
 
     def test_approval_service_initialization_with_logger(self):
         """Test ApprovalService initialization with custom logger."""
         logger = logging.getLogger("test")
         service = ApprovalService(logger=logger)
-        assert service.logger is logger
+        assert service.logger is logger, "logger is not valid"
 
     def test_submit_approval_request(self):
         """Test submitting an approval request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="SECURITY_PATCH", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="SECURITY_PATCH",
             requester_id="user-123",
             required_approvers=["approver-1"]
         )
-        assert req is not None
-        assert req.request_id is not None
-        
+        assert req is not None, "req must be initialized"
+        assert req.request_id is not None, "request_id must be initialized"
+
     def test_get_approval_request(self):
         """Test retrieving an approval request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
         retrieved = service.get_request(req.request_id)
-        assert retrieved is not None
-        assert retrieved.policy_code == "TEST"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.policy_code == "TEST", "policy_code is not valid"
 
     def test_get_nonexistent_request(self):
         """Test getting nonexistent request raises error."""
@@ -214,91 +214,91 @@ class TestApprovalService:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.approve_request(
             request_id=req.request_id,
             approver_id="approver-1",
             authority_level=1
         )
         retrieved = service.get_request(req.request_id)
-        assert retrieved.status == ApprovalState.APPROVED
+        assert retrieved.status == ApprovalState.APPROVED, "status is not valid"
 
     def test_reject_request(self):
         """Test rejecting an approval request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.reject_request(
             request_id=req.request_id,
             approver_id="approver-1",
             reason="Not approved"
         )
         retrieved = service.get_request(req.request_id)
-        assert retrieved.status == ApprovalState.REJECTED
+        assert retrieved.status == ApprovalState.REJECTED, "status is not valid"
 
     def test_request_transitions_through_states(self):
         """Test request transitions through 7-state machine."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         # PENDING -> approved
-        assert req.status == ApprovalState.PENDING
-        
+        assert req.status == ApprovalState.PENDING, "status is not valid"
+
         service.approve_request(req.request_id, "approver-1", 1)
         req = service.get_request(req.request_id)
-        assert req.status == ApprovalState.APPROVED
+        assert req.status == ApprovalState.APPROVED, "status is not valid"
 
     def test_cancel_request(self):
         """Test cancelling an approval request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.cancel_request(req.request_id, "Cancelled")
         retrieved = service.get_request(req.request_id)
-        assert retrieved.status == ApprovalState.CANCELLED
+        assert retrieved.status == ApprovalState.CANCELLED, "status is not valid"
 
     def test_audit_log_entry_on_approval(self):
         """Test audit log entry created on approval."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.approve_request(req.request_id, "approver-1", 1)
         retrieved = service.get_request(req.request_id)
-        assert len(retrieved.audit_log) > 0
+        assert len(retrieved.audit_log) > 0, "Collection must not be empty"
 
     def test_register_sla_policy(self):
         """Test registering an SLA policy."""
@@ -306,29 +306,29 @@ class TestApprovalService:
         policy = SLAPolicy(policy_code="CUSTOM", l1_sla_hours=8.0)
         service.register_sla_policy(policy)
         # Policy should be stored
-        assert service._sla_policies.get("CUSTOM") is not None
+        assert service._sla_policies.get("CUSTOM") is not None, "Value must be initialized"
 
     def test_multiple_approvers_on_request(self):
         """Test multiple approvers on single request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="MULTI_APPROVER", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="MULTI_APPROVER",
             requester_id="user-1",
             required_approvers=["approver-1", "approver-2"]
         )
-        
+
         # First approver decision
         service.approve_request(
             request_id=req.request_id,
             approver_id="approver-1",
             authority_level=1
         )
-        
+
         req = service.get_request(req.request_id)
-        assert len(req.required_approvers) == 2
+        assert len(req.required_approvers) == 2, "Collection must not be empty"
 
 
 class TestApprovalEscalation:
@@ -339,16 +339,16 @@ class TestApprovalEscalation:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         # Force expiration for escalation
         req.sla_deadline = time.time() - 1
-        
+
         escalated = service.check_and_escalate()
         # Check if escalation occurred
         assert isinstance(escalated, list)
@@ -358,19 +358,19 @@ class TestApprovalEscalation:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         initial_count = req.escalation_count
-        
+
         # Force escalation
         req.sla_deadline = time.time() - 1
         escalated = service.check_and_escalate()
-        
+
         req = service.get_request(req.request_id)
         # Escalation count should have incremented or list should have entries
         assert isinstance(escalated, list)
@@ -380,30 +380,30 @@ class TestApprovalEscalation:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         # Should have escalation chain
-        assert len(req.escalation_chain) > 0
+        assert len(req.escalation_chain) > 0, "Collection must not be empty"
 
     def test_escalation_updates_authority_level(self):
         """Test escalation updates current authority level."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         initial_level = req.current_authority_level
-        assert initial_level >= 0
+        assert initial_level >= 0, "initial_level must be greater than zero"
 
 
 class TestAutoApprovalConditions:
@@ -414,7 +414,7 @@ class TestAutoApprovalConditions:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="INCIDENT", l1_sla_hours=4.0, is_incident_related=True, incident_sla_minutes=15.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="INCIDENT",
             requester_id="user-1",
@@ -422,7 +422,7 @@ class TestAutoApprovalConditions:
             is_incident_related=True,
             incident_id="incident-123"
         )
-        
+
         # Check auto-approval conditions
         auto_approvals = service.check_auto_approval_conditions()
         assert isinstance(auto_approvals, list)
@@ -441,63 +441,63 @@ class TestSLAManagement:
             owner_sla_hours=4.0
         )
         service.register_sla_policy(policy)
-        
+
         # Retrieve and verify
-        assert service._sla_policies.get("URGENT") is not None
+        assert service._sla_policies.get("URGENT") is not None, "Value must be initialized"
 
     def test_sla_enforcement_on_request(self):
         """Test SLA enforcement creates correct deadline."""
         service = ApprovalService()
         now = time.time()
-        
+
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         # SLA deadline should be in future (default 4 hours)
-        assert req.sla_deadline > now
+        assert req.sla_deadline > now, "sla_deadline must be greater than zero"
 
     def test_sla_extension(self):
         """Test SLA extension functionality."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         original_deadline = req.sla_deadline
-        
+
         service.request_sla_extension(req.request_id, "Waiting for more info")
-        
+
         extended_req = service.get_request(req.request_id)
-        assert extended_req.sla_deadline > original_deadline
+        assert extended_req.sla_deadline > original_deadline, "sla_deadline must be greater than zero"
 
     def test_sla_extension_limit(self):
         """Test SLA extension respects max limit."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.request_sla_extension(req.request_id, "Extension 1")
-        
+
         # Second extension should be allowed or rejected
         req = service.get_request(req.request_id)
-        assert req.sla_extensions_used <= req.max_sla_extensions
+        assert req.sla_extensions_used <= req.max_sla_extensions, "sla_extensions_used is not valid"
 
 
 class TestAuditLogging:
@@ -508,35 +508,35 @@ class TestAuditLogging:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.approve_request(req.request_id, "approver-1", 1)
-        
+
         req = service.get_request(req.request_id)
-        assert len(req.audit_log) > 0
+        assert len(req.audit_log) > 0, "Collection must not be empty"
 
     def test_audit_log_contains_timestamps(self):
         """Test audit log entries have timestamps."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.approve_request(req.request_id, "approver-1", 1)
-        
+
         req = service.get_request(req.request_id)
         for entry in req.audit_log:
-            assert "timestamp" in entry or "time" in str(entry).lower()
+            assert "timestamp" in entry or "time" in str(entry).lower(), "Condition must be true"
 
     def test_audit_codes_mapped_to_actions(self):
         """Test audit codes are properly mapped."""
@@ -560,15 +560,15 @@ class TestErrorHandling:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         service.reject_request(req.request_id, "approver-1", "Reason")
-        
+
         with pytest.raises((ValueError, RuntimeError)):
             service.approve_request(req.request_id, "approver-2", 1)
 
@@ -577,18 +577,18 @@ class TestErrorHandling:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=[]
         )
-        assert req.required_approvers == []
+        assert req.required_approvers == [], "required_approvers is not valid"
 
     def test_missing_sla_policy(self):
         """Test submission with missing SLA policy raises error."""
         service = ApprovalService()
-        
+
         with pytest.raises(ValueError):
             service.submit_request(
                 policy_code="NONEXISTENT",
@@ -605,7 +605,7 @@ class TestBatchOperations:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         # Create multiple requests
         req1 = service.submit_request(
             policy_code="TEST",
@@ -617,28 +617,28 @@ class TestBatchOperations:
             requester_id="user-2",
             required_approvers=["approver-1"]
         )
-        
+
         # Approve one
         service.approve_request(req1.request_id, "approver-1", 1)
-        
+
         # Get pending
         pending = service.list_pending()
-        assert len(pending) >= 1
+        assert len(pending) >= 1, "Pending must not be empty"
 
     def test_get_all_requests(self):
         """Test retrieving all requests."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"]
         )
-        
+
         all_reqs = service.list_all()
-        assert len(all_reqs) >= 1
+        assert len(all_reqs) >= 1, "All_reqs must not be empty"
 
 
 class TestContextManagement:
@@ -649,7 +649,7 @@ class TestContextManagement:
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         context = {"custom_field": "custom_value"}
         req = service.submit_request(
             policy_code="TEST",
@@ -657,31 +657,31 @@ class TestContextManagement:
             required_approvers=["approver-1"],
             context=context
         )
-        
-        assert req.context.get("custom_field") == "custom_value"
+
+        assert req.context.get("custom_field") == "custom_value", "Value must be initialized"
 
     def test_context_with_complex_data(self):
         """Test context with nested data structures."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
-        
+
         context = {
             "change_details": {
                 "files_modified": ["file1.py", "file2.py"],
                 "lines_changed": 150
             }
         }
-        
+
         req = service.submit_request(
             policy_code="TEST",
             requester_id="user-1",
             required_approvers=["approver-1"],
             context=context
         )
-        
-        assert "change_details" in req.context
-        assert len(req.context["change_details"]["files_modified"]) == 2
+
+        assert "change_details" in req.context, "Condition must be true"
+        assert len(req.context["change_details"]["files_modified"]) == 2, "Collection must not be empty"
 
 
 if __name__ == "__main__":

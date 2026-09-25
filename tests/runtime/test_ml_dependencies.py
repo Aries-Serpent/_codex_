@@ -73,7 +73,7 @@ def get_system_memory():
     try:
         import psutil
         return int(psutil.virtual_memory().total / (1024 ** 3))
-    except Exception:
+    except Exception as _err:
         return 0
 
 
@@ -109,77 +109,77 @@ def synthetic_numerical_data():
 def dependency_versions():
     """Collect version information for all key ML dependencies."""
     versions = {}
-    
+
     # PyTorch
     try:
         import torch
         versions["torch"] = torch.__version__
     except ImportError:
         versions["torch"] = "NOT_INSTALLED"
-    
+
     # Transformers
     try:
         import transformers
         versions["transformers"] = transformers.__version__
     except ImportError:
         versions["transformers"] = "NOT_INSTALLED"
-    
+
     # Scikit-learn
     try:
         import sklearn
         versions["scikit-learn"] = sklearn.__version__
     except ImportError:
         versions["scikit-learn"] = "NOT_INSTALLED"
-    
+
     # NumPy
     try:
         import numpy
         versions["numpy"] = numpy.__version__
     except ImportError:
         versions["numpy"] = "NOT_INSTALLED"
-    
+
     # Pandas
     try:
         import pandas
         versions["pandas"] = pandas.__version__
     except ImportError:
         versions["pandas"] = "NOT_INSTALLED"
-    
+
     # Datasets (HuggingFace)
     try:
         import datasets
         versions["datasets"] = datasets.__version__
     except ImportError:
         versions["datasets"] = "NOT_INSTALLED"
-    
+
     # Sentence-transformers
     try:
         import sentence_transformers
         versions["sentence-transformers"] = sentence_transformers.__version__
     except ImportError:
         versions["sentence-transformers"] = "NOT_INSTALLED"
-    
+
     # Accelerate
     try:
         import accelerate
         versions["accelerate"] = accelerate.__version__
     except ImportError:
         versions["accelerate"] = "NOT_INSTALLED"
-    
+
     # PEFT
     try:
         import peft
         versions["peft"] = peft.__version__
     except ImportError:
         versions["peft"] = "NOT_INSTALLED"
-    
+
     # Ray
     try:
         import ray
         versions["ray"] = ray.__version__
     except ImportError:
         versions["ray"] = "NOT_INSTALLED"
-    
+
     return versions
 
 
@@ -218,7 +218,7 @@ class TestPyTorchImportAndVersion:
         import torch
         version_parts = torch.__version__.split('.')
         major, minor = int(version_parts[0]), int(version_parts[1])
-        
+
         # Expect torch >= 2.6 and < 3.0
         assert major == 2 and minor >= 6, \
             f"PyTorch version {torch.__version__} outside expected range [2.6, 3.0)"
@@ -226,7 +226,7 @@ class TestPyTorchImportAndVersion:
     def test_torch_core_modules(self):
         """Test that core PyTorch modules are available."""
         import torch
-        
+
         # Verify key modules exist
         assert hasattr(torch, 'nn'), "torch.nn not available"
         assert hasattr(torch, 'optim'), "torch.optim not available"
@@ -240,10 +240,10 @@ class TestPyTorchCUDADetection:
     def test_cuda_detection(self):
         """Test that CUDA availability can be detected."""
         import torch
-        
+
         cuda_available = torch.cuda.is_available()
         device_count = torch.cuda.device_count() if cuda_available else 0
-        
+
         # Just verify the methods work, don't require CUDA
         assert isinstance(cuda_available, bool), \
             f"Expected bool from torch.cuda.is_available(), got {type(cuda_available)}"
@@ -253,16 +253,16 @@ class TestPyTorchCUDADetection:
     def test_torch_device_creation(self):
         """Test that torch devices can be created."""
         import torch
-        
+
         # Create CPU device (should always work)
         cpu_device = torch.device("cpu")
-        assert str(cpu_device) == "cpu"
-        
+        assert str(cpu_device) == "cpu", "Condition must be true"
+
         # Try to create CUDA device (may fail on CPU-only systems)
         try:
             if torch.cuda.is_available():
                 cuda_device = torch.device("cuda")
-                assert "cuda" in str(cuda_device)
+                assert "cuda" in str(cuda_device), "Condition must be true"
         except RuntimeError:
             # CUDA not available, which is fine
             pass
@@ -270,14 +270,14 @@ class TestPyTorchCUDADetection:
     def test_torch_tensor_operations(self):
         """Test basic tensor creation and operations on available device."""
         import torch
-        
+
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+
         # Create a simple tensor
         x = torch.randn(2, 3, device=device)
         assert x.shape == (2, 3), f"Expected shape (2, 3), got {x.shape}"
         assert str(x.device) == device, f"Expected device {device}, got {x.device}"
-        
+
         # Test basic operations
         y = torch.randn(2, 3, device=device)
         z = x + y
@@ -301,7 +301,7 @@ class TestTransformersImportAndVersion:
         import transformers
         version_parts = transformers.__version__.split('.')
         major, minor = int(version_parts[0]), int(version_parts[1])
-        
+
         # Expect transformers >= 5.12 and < 6.0
         assert major == 5 and minor >= 12, \
             f"transformers version {transformers.__version__} outside expected range [5.12, 6.0)"
@@ -309,7 +309,7 @@ class TestTransformersImportAndVersion:
     def test_transformers_core_modules(self):
         """Test that core transformers modules are available."""
         import transformers
-        
+
         # Verify key classes exist
         assert hasattr(transformers, 'AutoTokenizer'), \
             "transformers.AutoTokenizer not available"
@@ -326,9 +326,9 @@ class TestTransformersModelLoading:
     def test_small_model_tokenizer_loading(self, temp_model_cache):
         """Test loading a small pre-trained tokenizer."""
         from transformers import AutoTokenizer
-        
+
         model_name = "distilbert-base-uncased"
-        
+
         try:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
             assert tokenizer is not None, "Tokenizer is None"
@@ -340,14 +340,14 @@ class TestTransformersModelLoading:
     def test_small_model_loading(self, temp_model_cache):
         """Test loading a small pre-trained model."""
         from transformers import AutoModel, AutoTokenizer
-        
+
         model_name = "distilbert-base-uncased"
-        
+
         try:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
             model = AutoModel.from_pretrained(model_name)
             assert model is not None, "Model is None"
-            
+
             # Verify model can process tokens
             inputs = tokenizer("Test input", return_tensors="pt")
             assert "input_ids" in inputs, "Missing input_ids in tokenizer output"
@@ -360,20 +360,20 @@ class TestTransformersModelLoading:
     ):
         """Test model inference on synthetic text data."""
         from transformers import AutoModel, AutoTokenizer
-        
+
         model_name = "distilbert-base-uncased"
-        
+
         try:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
             model = AutoModel.from_pretrained(model_name)
-            
+
             # Run inference on synthetic data
             for text in synthetic_text_data[:2]:  # Test on first 2 samples
                 inputs = tokenizer(text, return_tensors="pt", truncation=True)
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     outputs = model(**inputs)
-                
+
                 # Check output shape
                 assert hasattr(outputs, 'last_hidden_state'), \
                     "Model output missing last_hidden_state"
@@ -400,7 +400,7 @@ class TestScikitLearnImportAndFunctionality:
         import sklearn
         version_parts = sklearn.__version__.split('.')
         major, minor = int(version_parts[0]), int(version_parts[1])
-        
+
         # Expect sklearn >= 1.9 and < 2.0
         assert major == 1 and minor >= 9, \
             f"scikit-learn version {sklearn.__version__} outside expected range [1.9, 2.0)"
@@ -410,33 +410,33 @@ class TestScikitLearnImportAndFunctionality:
         from sklearn.linear_model import LogisticRegression
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import StandardScaler
-        
+
         X, y = synthetic_numerical_data
-        
+
         # Create a pipeline
         pipeline = Pipeline([
             ('scaler', StandardScaler()),
             ('classifier', LogisticRegression(max_iter=100))
         ])
-        
+
         # Fit the pipeline
         pipeline.fit(X, y)
-        
+
         # Make predictions
         predictions = pipeline.predict(X)
-        assert predictions is not None
-        assert len(predictions) == len(X)
+        assert predictions is not None, "predictions must be initialized"
+        assert len(predictions) == len(X), "Predictions must not be empty"
 
     def test_sklearn_cross_validation(self, synthetic_numerical_data):
         """Test scikit-learn cross-validation functionality."""
         from sklearn.ensemble import RandomForestClassifier
         from sklearn.model_selection import cross_val_score
-        
+
         X, y = synthetic_numerical_data
-        
+
         clf = RandomForestClassifier(n_estimators=10, random_state=42)
         scores = cross_val_score(clf, X, y, cv=3)
-        
+
         assert len(scores) == 3, "Expected 3 cross-validation scores"
         assert all(0 <= score <= 1 for score in scores), \
             "Cross-validation scores should be between 0 and 1"
@@ -448,7 +448,7 @@ class TestMemoryRequirements:
     def test_system_memory_detection(self, get_system_memory):
         """Test detection of available system memory."""
         available_memory_gb = get_system_memory
-        
+
         assert available_memory_gb > 0, \
             f"Could not detect system memory: {available_memory_gb} GB"
         assert available_memory_gb >= 2, \
@@ -457,16 +457,16 @@ class TestMemoryRequirements:
     def test_torch_memory_allocation(self):
         """Test PyTorch memory allocation."""
         import torch
-        
+
         # Create a tensor and check memory allocation
         try:
             device = "cuda" if torch.cuda.is_available() else "cpu"
             x = torch.randn(1000, 1000, device=device)
-            
+
             if device == "cuda":
                 allocated = torch.cuda.memory_allocated() / (1024 ** 2)
                 assert allocated > 0, "No GPU memory allocated"
-            
+
             del x
             if device == "cuda":
                 torch.cuda.empty_cache()
@@ -482,23 +482,23 @@ class TestDependencyConflictDetection:
         import numpy as np
 
         import torch
-        
+
         # Create numpy array and convert to torch
         np_array = np.array([1.0, 2.0, 3.0])
         torch_tensor = torch.from_numpy(np_array)
-        
-        assert torch_tensor.shape == np_array.shape
-        assert torch_tensor.dtype == torch.float64
+
+        assert torch_tensor.shape == np_array.shape, "shape is not valid"
+        assert torch_tensor.dtype == torch.float64, "dtype is not valid"
 
     def test_pandas_numpy_compatibility(self):
         """Test compatibility between pandas and numpy."""
         import numpy as np
         import pandas as pd
-        
+
         # Create dataframe from numpy
         data = np.random.randn(5, 3)
         df = pd.DataFrame(data, columns=['A', 'B', 'C'])
-        
+
         assert df.shape == (5, 3)
         assert list(df.columns) == ['A', 'B', 'C']
 
@@ -506,13 +506,13 @@ class TestDependencyConflictDetection:
         """Test compatibility between scikit-learn and numpy."""
         import numpy as np
         from sklearn.preprocessing import StandardScaler
-        
+
         # Create data and scale it
         X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
-        
-        assert X_scaled.shape == X.shape
+
+        assert X_scaled.shape == X.shape, "shape is not valid"
         assert np.isclose(X_scaled.mean(), 0.0, atol=1e-10)
 
 
@@ -566,11 +566,11 @@ class TestDependencyVersions:
             'numpy',
             'pandas',
         ]
-        
+
         missing = [
             dep for dep in critical_deps
             if dependency_versions[dep] == "NOT_INSTALLED"
         ]
-        
+
         assert not missing, \
             f"Missing critical dependencies: {', '.join(missing)}"

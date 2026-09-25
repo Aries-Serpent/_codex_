@@ -41,9 +41,9 @@ class TestTrainLoopExceptionHandlers:
             # The fallback function should return a safe default
             def fallback_prune(*args, **kwargs):
                 return {"dry_run": True}
-            
+
             result = fallback_prune()
-            assert result == {"dry_run": True}
+            assert result == {"dry_run": True}, "Result must not be empty"
 
     def test_reasoning_adapters_import_failure(self):
         """Test graceful handling when reasoning adapters are unavailable.
@@ -57,7 +57,7 @@ class TestTrainLoopExceptionHandlers:
         try:
             from codex_ml.train_loop import attach_reasoning_adapters
             # If import succeeds, adapters are available
-            assert attach_reasoning_adapters is not None or True
+            assert attach_reasoning_adapters is not None or True, "attach_reasoning_adapters must be initialized"
         except ImportError:
             # Expected - adapters may not be available
             pass
@@ -70,7 +70,7 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         from codex_ml.config import ConfigError
-        
+
         with pytest.raises(ConfigError):
             raise ConfigError("Invalid training configuration")
 
@@ -82,14 +82,14 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         from codex_ml.train_loop import ToyDataset
-        
+
         # If torch is available, dataset should work
         try:
             dataset = ToyDataset(num_samples=10, seq_len=5, vocab_size=100, seed=42)
-            assert len(dataset) == 10
+            assert len(dataset) == 10, "Dataset must not be empty"
         except IndexError as e:
             # If torch is not available, we get IndexError from fallback
-            assert "Torch is required" in str(e)
+            assert "Torch is required" in str(e), "Torch is not valid"
 
     @patch('codex_ml.train_loop.logger')
     def test_trace_capture_exception_handling(self, mock_logger):
@@ -102,7 +102,7 @@ class TestTrainLoopExceptionHandlers:
         # Test that trace capture errors are logged but don't crash training
         mock_harness = Mock()
         mock_harness.capture_trace.side_effect = ValueError("Invalid trace config")
-        
+
         # Simulate exception handling pattern
         try:
             raise ValueError("Invalid trace config")
@@ -111,7 +111,7 @@ class TestTrainLoopExceptionHandlers:
             mock_logger.warning(
                 "Failed to capture trace: %s", exc
             )
-            assert mock_logger.warning.called
+            assert mock_logger.warning.called, "Condition must be true"
 
     def test_checkpoint_saving_exception(self):
         """Test exception handling when saving checkpoints fails.
@@ -123,7 +123,7 @@ class TestTrainLoopExceptionHandlers:
         # Test checkpoint save error handling
         with tempfile.TemporaryDirectory() as tmpdir:
             checkpoint_dir = Path(tmpdir) / "invalid/path/that/doesnt/exist"
-            
+
             # Verify that invalid paths raise appropriate errors
             with pytest.raises((FileNotFoundError, OSError)):
                 checkpoint_dir.mkdir(parents=False)
@@ -136,13 +136,13 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         from codex_ml.monitoring import metrics_enabled
-        
+
         # Test that metrics collection is optional
         # If metrics fail, training should continue
         try:
             # This should not raise even if metrics are disabled
-            assert metrics_enabled is not None or True
-        except Exception:
+            assert metrics_enabled is not None or True, "metrics_enabled must be initialized"
+        except Exception as _err:
             # Expected if metrics module is unavailable
             pass
 
@@ -156,7 +156,7 @@ class TestTrainLoopExceptionHandlers:
         # Test that drift detection failures don't crash training
         mock_drift_detector = Mock()
         mock_drift_detector.detect.side_effect = RuntimeError("Drift detection failed")
-        
+
         try:
             mock_drift_detector.detect()
         except RuntimeError:
@@ -175,7 +175,7 @@ class TestTrainLoopExceptionHandlers:
             from codex_ml.codex_structured_logging import get_session_logger
             logger = get_session_logger()
             # Should not raise even if logging is unavailable
-            assert logger is not None or True
+            assert logger is not None or True, "logger must be initialized"
         except (ImportError, AttributeError):
             # Expected if structured logging is unavailable
             pass
@@ -188,7 +188,7 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         from codex_ml.training.dp_config import DifferentialPrivacyConfig
-        
+
         # Test that invalid DP config raises appropriate error
         with pytest.raises((ValueError, TypeError)):
             # Creating with invalid parameters should fail gracefully
@@ -205,16 +205,16 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         from codex_ml.utils.checksum import sha256sum
-        
+
         # Test that checksum errors don't crash training
         with tempfile.TemporaryDirectory() as tmpdir:
             nonexistent = Path(tmpdir) / "nonexistent.pt"
-            
+
             try:
                 # This should raise if file doesn't exist
                 with pytest.raises((FileNotFoundError, OSError)):
                     sha256sum(nonexistent)
-            except Exception:
+            except Exception as _err:
                 # Expected - checksum is non-critical
                 pass
 
@@ -228,7 +228,7 @@ class TestTrainLoopExceptionHandlers:
         try:
             from codex_ml.utils.seeding import set_reproducible
             # Should not raise - graceful degradation if unavailable
-            assert set_reproducible is not None or True
+            assert set_reproducible is not None or True, "set_reproducible must be initialized"
         except (ImportError, AttributeError):
             # Expected if seeding module is unavailable
             pass
@@ -243,7 +243,7 @@ class TestTrainLoopExceptionHandlers:
         try:
             from codex.alerting import TrainingAlertManager
             # Alerts are optional - should not crash training
-            assert TrainingAlertManager is not None or True
+            assert TrainingAlertManager is not None or True, "TrainingAlertManager must be initialized"
         except (ImportError, AttributeError):
             # Expected if alerting is unavailable
             pass
@@ -269,8 +269,8 @@ class TestExceptionHandlerDocumentation:
         # except SpecificError as exc:
         #     logger.warning("Safe to continue because...", exc)
         #     # fallback_value or continue
-        
-        assert True  # Placeholder for documentation
+
+        assert True, "True is not valid"
 
     def test_exception_handler_recovery_paths(self):
         """Document recovery paths for major exception handlers.
@@ -288,9 +288,9 @@ class TestExceptionHandlerDocumentation:
             "RuntimeError": "log_and_skip",
             "IOError": "retry_or_degrade",
         }
-        
+
         for error_type, recovery in handlers.items():
-            assert recovery in ["use_fallback_function", "raise_with_context", 
+            assert recovery in ["use_fallback_function", "raise_with_context",
                                "log_and_skip", "retry_or_degrade"]
 
 
@@ -334,9 +334,9 @@ class TestExceptionCoverageMetrics:
             "test_reproducibility_seeding_exception",
             "test_alert_manager_exception",
         ]
-        
+
         # We've created 12+ tests, targeting the major exception types
-        assert len(test_methods) >= 12
-        
+        assert len(test_methods) >= 12, "Test_methods must not be empty"
+
         logger.info(f"\nException handler test coverage: {len(test_methods)} tests created")
         logger.info("Coverage improvement: 0% → ~85%")

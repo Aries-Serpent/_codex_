@@ -102,7 +102,7 @@ class TestCascadeTimeoutHandling:
             timestamp="2026-07-01T10:00:00Z",
             exit_code=124  # Timeout exit code
         )
-        
+
         # Simulate timeout scenario
         with patch('phase_9_2_cascade_orchestrator.run_command') as mock_cmd:
             mock_cmd.return_value = (-1, "", "TIMEOUT: Command exceeded 30s")
@@ -112,8 +112,8 @@ class TestCascadeTimeoutHandling:
                 matched_text="test failure",
                 line_number=1
             ))
-            assert result is not None
-            assert result.failure_log == failure
+            assert result is not None, "result must be initialized"
+            assert result.failure_log == failure, "Result must not be empty"
 
     def test_cascade_timeout_partial_results(self, executor):
         """Partial fix attempt results on timeout"""
@@ -130,9 +130,9 @@ class TestCascadeTimeoutHandling:
             matched_text="F401",
             line_number=1
         ))
-        
-        assert result is not None
-        assert len(result.fix_attempts) >= 0
+
+        assert result is not None, "result must be initialized"
+        assert len(result.fix_attempts) >= 0, "Collection must not be empty"
 
 
 class TestFailureRecoveryPaths:
@@ -147,7 +147,7 @@ class TestFailureRecoveryPaths:
             timestamp="2026-07-01T10:02:00Z",
             exit_code=1
         )
-        
+
         # Execute with pattern that will fail
         result = executor.execute_fix(failure, PatternMatch(
             pattern=PATTERN_CATALOG[0],
@@ -155,9 +155,9 @@ class TestFailureRecoveryPaths:
             matched_text="ImportError",
             line_number=1
         ))
-        
-        assert result is not None
-        assert result.failure_log.exit_code == 1
+
+        assert result is not None, "result must be initialized"
+        assert result.failure_log.exit_code == 1, "Result must not be empty"
 
     def test_failure_recovery_state_consistency(self, executor):
         """State remains consistent after failure"""
@@ -168,17 +168,17 @@ class TestFailureRecoveryPaths:
             timestamp="2026-07-01T10:03:00Z",
             exit_code=1
         )
-        
+
         result = executor.execute_fix(failure, PatternMatch(
             pattern=PATTERN_CATALOG[1],  # Type error pattern
             confidence=0.70,
             matched_text="incompatible type",
             line_number=1
         ))
-        
-        assert result is not None
-        assert result.failure_log.raw_log == failure.raw_log
-        assert result.failure_log.job_name == failure.job_name
+
+        assert result is not None, "result must be initialized"
+        assert result.failure_log.raw_log == failure.raw_log, "Result must not be empty"
+        assert result.failure_log.job_name == failure.job_name, "Result must not be empty"
 
 
 class TestPatternDetectionErrors:
@@ -195,7 +195,7 @@ class TestPatternDetectionErrors:
             timestamp="2026-07-01T10:04:00Z",
             exit_code=1
         )
-        
+
         # Should not raise exception
         try:
             matches = detector.detect(failure)
@@ -212,7 +212,7 @@ class TestPatternDetectionErrors:
             timestamp="2026-07-01T10:05:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         # May have matches with low confidence
         assert isinstance(matches, list)
@@ -226,11 +226,11 @@ class TestPatternDetectionErrors:
             timestamp="2026-07-01T10:06:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         assert isinstance(matches, list)
         # Should find F401 pattern despite UTF-8 chars
-        assert any(m.pattern.id == "RP-001" for m in matches)
+        assert any(m.pattern.id == "RP-001" for m in matches), "id is not valid"
 
 
 class TestOrchestratorStateManagement:
@@ -245,11 +245,11 @@ class TestOrchestratorStateManagement:
             timestamp="2026-07-01T10:07:00Z",
             exit_code=1
         )
-        
+
         original_log = failure.raw_log
         result = orchestrator.orchestrate(failure)
-        
-        assert result.failure_log.raw_log == original_log
+
+        assert result.failure_log.raw_log == original_log, "Result must not be empty"
 
     def test_orchestrator_memory_cleanup_after_failure(self, executor):
         """Memory is cleaned up after failed fix"""
@@ -260,16 +260,16 @@ class TestOrchestratorStateManagement:
             timestamp="2026-07-01T10:08:00Z",
             exit_code=1
         )
-        
+
         result = executor.execute_fix(failure, PatternMatch(
             pattern=PATTERN_CATALOG[0],
             confidence=0.7,
             matched_text="test",
             line_number=1
         ))
-        
+
         # Verify result doesn't retain excessive state
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert hasattr(result, 'fix_attempts')
 
     def test_exception_in_pattern_detection(self, detector):
@@ -283,7 +283,7 @@ class TestOrchestratorStateManagement:
             timestamp="2026-07-01T10:09:00Z",
             exit_code=1
         )
-        
+
         # Should complete without exception
         try:
             matches = detector.detect(failure)
@@ -307,10 +307,10 @@ class TestErrorLogParsing:
             timestamp="2026-07-01T10:10:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         assert isinstance(matches, list)
-        assert len(matches) > 0  # Should find pattern despite size
+        assert len(matches) > 0, "Matches must not be empty"
 
     def test_error_log_parsing_special_chars(self, detector):
         """Log parsing with regex special characters"""
@@ -321,7 +321,7 @@ class TestErrorLogParsing:
             timestamp="2026-07-01T10:11:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         assert isinstance(matches, list)
 
@@ -334,10 +334,10 @@ class TestErrorLogParsing:
             timestamp="2026-07-01T10:12:00Z",
             exit_code=1
         )
-        
+
         with patch('phase_9_2_cascade_orchestrator.run_command') as mock_cmd:
             mock_cmd.side_effect = KeyboardInterrupt()
-            
+
             try:
                 result = executor.execute_fix(failure, PatternMatch(
                     pattern=PATTERN_CATALOG[0],
@@ -363,10 +363,10 @@ class TestFailureClassification:
             timestamp="2026-07-01T10:13:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         assert isinstance(matches, list)
-        assert len(matches) >= 0
+        assert len(matches) >= 0, "Matches must not be empty"
 
     def test_routing_failure_with_invalid_agent(self, router):
         """Routing with invalid/nonexistent agent"""
@@ -376,9 +376,9 @@ class TestFailureClassification:
             primary_regex=r"test",
             agent="nonexistent-agent"
         )
-        
+
         agent = router.get_agent(pattern)
-        assert agent == "nonexistent-agent"  # Router doesn't validate agent existence
+        assert agent == "nonexistent-agent", "agent is not valid"
 
 
 class TestCascadeStateConsistency:
@@ -402,15 +402,15 @@ class TestCascadeStateConsistency:
                 exit_code=1
             ),
         ]
-        
+
         results = []
         for failure in failures:
             result = orchestrator.orchestrate(failure)
             results.append(result)
-        
-        assert len(results) == 2
-        assert results[0].failure_log == failures[0]
-        assert results[1].failure_log == failures[1]
+
+        assert len(results) == 2, "Results must not be empty"
+        assert results[0].failure_log == failures[0], "Result must not be empty"
+        assert results[1].failure_log == failures[1], "Result must not be empty"
 
 
 # ============================================================================
@@ -424,21 +424,21 @@ class TestPatternRouterEdgeCases:
         """Router with no patterns configured"""
         router_empty = PatternMatcher(config={"patterns": {}})
         matches = router_empty.match("Any failure log")
-        
+
         assert isinstance(matches, list)
-        assert len(matches) == 0
+        assert len(matches) == 0, "Matches must not be empty"
 
     def test_router_with_empty_failure_log(self, pattern_matcher):
         """Router with empty failure log"""
         matches = pattern_matcher.match("")
-        
+
         assert isinstance(matches, list)
 
     def test_pattern_matching_special_characters(self, pattern_matcher):
         """Pattern matching with regex special characters"""
         log = r"Error: [name] {value} (test) C:\path\to\file"
         matches = pattern_matcher.match(log)
-        
+
         assert isinstance(matches, list)
 
     def test_router_score_edge_cases(self, pattern_matcher):
@@ -448,7 +448,7 @@ class TestPatternRouterEdgeCases:
             ("some random text", None, None),  # Low/none
             ("error:", None, None),  # Minimal info
         ]
-        
+
         for log, expected_pattern_id, _ in test_cases:
             matches = pattern_matcher.match(log, top_k=1)
             assert isinstance(matches, list)
@@ -464,16 +464,16 @@ class TestPatternRouterEdgeCases:
                 "agent": f"agent-{i}",
                 "keywords": [f"keyword_{i}"]
             }
-        
+
         router = PatternMatcher(config={"patterns": patterns})
-        
+
         # Time the match operation
         start = time.time()
         matches = router.match("keyword_500 F401 unused import")
         elapsed = time.time() - start
-        
+
         # Should complete in reasonable time
-        assert elapsed < 5.0  # 5 second max
+        assert elapsed < 5.0, "elapsed is not valid"
         assert isinstance(matches, list)
 
     def test_router_with_conflicting_patterns(self, pattern_matcher):
@@ -481,16 +481,16 @@ class TestPatternRouterEdgeCases:
         # Log with multiple pattern keywords
         log = "F401 unused import with ImportError in mypy type check"
         matches = pattern_matcher.match(log, top_k=5)
-        
+
         assert isinstance(matches, list)
         # May have multiple matches with different confidence
-        assert len(matches) >= 0
+        assert len(matches) >= 0, "Matches must not be empty"
 
     def test_router_unicode_handling(self, pattern_matcher):
         """Router with non-ASCII pattern and log content"""
         log = "错误: F401 unused import 日本語"
         matches = pattern_matcher.match(log)
-        
+
         assert isinstance(matches, list)
         # Should still find F401 pattern
         assert any(pid == "RP-001" for pid, _ in matches)
@@ -507,7 +507,7 @@ class TestPatternRouterEdgeCases:
                 }
             }
         }
-        
+
         router = PatternMatcher(config=config)
         matches = router.match("test log")
         assert isinstance(matches, list)
@@ -524,7 +524,7 @@ class TestPatternRouterEdgeCases:
                 }
             }
         }
-        
+
         router = PatternMatcher(config=config)
         matches = router.match("test log")
         assert isinstance(matches, list)
@@ -541,7 +541,7 @@ class TestPatternConfidenceBoundaries:
             ("F401", "partial match"),
             ("F401 unused import", "full match"),
         ]
-        
+
         for log, desc in test_logs:
             matches = pattern_matcher.match(log, top_k=1)
             assert isinstance(matches, list), f"Failed for {desc}"
@@ -557,7 +557,7 @@ class TestPatternConfidenceBoundaries:
             (0.95, PatternConfidence.VERY_HIGH),
             (1.0, PatternConfidence.VERY_HIGH),
         ]
-        
+
         for score, expected_level in test_cases:
             level = get_confidence_level(score)
             assert isinstance(level, PatternConfidence)
@@ -579,11 +579,11 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:16:00Z",
             exit_code=1
         )
-        
+
         result = orchestrator.orchestrate(failure)
-        
-        assert result is not None
-        assert result.failure_log == failure
+
+        assert result is not None, "result must be initialized"
+        assert result.failure_log == failure, "Result must not be empty"
         assert isinstance(result.pattern_match, (PatternMatch, type(None)))
 
     def test_router_adapter_state_sync(self, orchestrator):
@@ -595,9 +595,9 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:17:00Z",
             exit_code=1
         )
-        
+
         result = orchestrator.orchestrate(failure)
-        assert result.failure_log.job_name == failure.job_name
+        assert result.failure_log.job_name == failure.job_name, "Result must not be empty"
 
     def test_failure_log_flow_through_pipeline(self, detector, router, executor):
         """Full log flow through detection → routing → execution"""
@@ -608,19 +608,19 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:18:00Z",
             exit_code=1
         )
-        
+
         # Detection
         matches = detector.detect(failure)
         assert isinstance(matches, list)
-        
+
         if matches:
             # Routing
             agent = router.get_agent(matches[0].pattern)
-            assert agent is not None
-            
+            assert agent is not None, "agent must be initialized"
+
             # Execution
             result = executor.execute_fix(failure, matches[0])
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_pattern_detection_to_agent_routing(self, detector):
         """Pattern detection flows to agent routing"""
@@ -631,11 +631,11 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:19:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         # Should find test assertion pattern
         test_patterns = [m for m in matches if m.pattern.id == "RP-003"]
-        assert len(test_patterns) >= 0
+        assert len(test_patterns) >= 0, "Test_patterns must not be empty"
 
     def test_agent_result_aggregation_in_orchestrator(self, orchestrator):
         """Result aggregation from multiple patterns"""
@@ -655,9 +655,9 @@ class TestCascadeOrchestratorIntegration:
                 exit_code=1
             ),
         ]
-        
+
         results = [orchestrator.orchestrate(f) for f in failures]
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     def test_cascade_state_persistence_across_modules(self, detector, executor):
         """State persists correctly through module boundaries"""
@@ -668,14 +668,14 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:22:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         original_log = failure.raw_log
-        
+
         if matches:
             result = executor.execute_fix(failure, matches[0])
             # Original failure preserved through modules
-            assert result.failure_log.raw_log == original_log
+            assert result.failure_log.raw_log == original_log, "Result must not be empty"
 
     def test_multi_pattern_detection_ordering(self, detector):
         """Multiple pattern detection with proper ordering"""
@@ -687,11 +687,11 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:23:00Z",
             exit_code=1
         )
-        
+
         matches = detector.detect(failure)
         # Should be ordered by confidence
         for i in range(len(matches) - 1):
-            assert matches[i].confidence >= matches[i + 1].confidence
+            assert matches[i].confidence >= matches[i + 1].confidence, "confidence must be greater than zero"
 
     def test_orchestrator_adapter_error_propagation(self, orchestrator):
         """Error propagation through orchestrator layers"""
@@ -702,10 +702,10 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:24:00Z",
             exit_code=1
         )
-        
+
         # Should handle gracefully
         result = orchestrator.orchestrate(failure)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_orchestrator_router_adapter_concurrent_requests(self):
         """Concurrent orchestration requests"""
@@ -720,16 +720,16 @@ class TestCascadeOrchestratorIntegration:
             )
             for i in range(10)
         ]
-        
+
         results = [orchestrator.orchestrate(f) for f in failures]
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
         assert all(r.failure_log == f for r, f in zip(results, failures))
 
     @pytest.mark.skipif(not HAS_ADAPTER, reason="Adapter not available")
     def test_state_consistency_after_fix_application(self):
         """State consistency after fix application"""
         adapter = CascadeToRouterAdapter()
-        
+
         context = CascadeContext(
             session_id="test_123",
             pr_number=42,
@@ -740,15 +740,15 @@ class TestCascadeOrchestratorIntegration:
             workflow_name="ci",
             run_id="12345"
         )
-        
-        assert context.session_id == "test_123"
-        assert context.pr_number == 42
+
+        assert context.session_id == "test_123", "session_id is not valid"
+        assert context.pr_number == 42, "pr_number is not valid"
 
     @pytest.mark.skipif(not HAS_ADAPTER, reason="Adapter not available")
     def test_adapter_graceful_degradation_missing_router(self):
         """Graceful degradation when router unavailable"""
         adapter = CascadeToRouterAdapter()
-        
+
         context = CascadeContext(
             session_id="test_456",
             pr_number=43,
@@ -759,15 +759,15 @@ class TestCascadeOrchestratorIntegration:
             workflow_name="ci",
             run_id="12346"
         )
-        
+
         # Should not raise exception even if router unavailable
-        assert context is not None
+        assert context is not None, "context must be initialized"
 
     @pytest.mark.skipif(not HAS_ADAPTER, reason="Adapter not available")
     def test_integration_performance_under_load(self):
         """Performance with many concurrent operations"""
         adapter = CascadeToRouterAdapter()
-        
+
         contexts = [
             CascadeContext(
                 session_id=f"session_{i}",
@@ -781,16 +781,16 @@ class TestCascadeOrchestratorIntegration:
             )
             for i in range(50)
         ]
-        
+
         # Should create all contexts without performance degradation
-        assert len(contexts) == 50
+        assert len(contexts) == 50, "Contexts must not be empty"
 
     @pytest.mark.skipif(not HAS_ADAPTER, reason="Adapter not available")
     def test_state_isolation_between_orchestration_instances(self):
         """State isolation between orchestrator instances"""
         orch1 = CascadeOrchestrator()
         orch2 = CascadeOrchestrator()
-        
+
         failure1 = FailureLog(
             raw_log="Error A",
             job_name="test1",
@@ -798,7 +798,7 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:25:00Z",
             exit_code=1
         )
-        
+
         failure2 = FailureLog(
             raw_log="Error B",
             job_name="test2",
@@ -806,14 +806,14 @@ class TestCascadeOrchestratorIntegration:
             timestamp="2026-07-01T10:26:00Z",
             exit_code=1
         )
-        
+
         result1 = orch1.orchestrate(failure1)
         result2 = orch2.orchestrate(failure2)
-        
+
         # Results should be independent
-        assert result1.failure_log == failure1
-        assert result2.failure_log == failure2
-        assert result1.failure_log != result2.failure_log
+        assert result1.failure_log == failure1, "Result must not be empty"
+        assert result2.failure_log == failure2, "Result must not be empty"
+        assert result1.failure_log != result2.failure_log, "Result must not be empty"
 
 
 # ============================================================================
@@ -829,7 +829,7 @@ class TestUtilityFunctions:
             ["sleep", "0.1"],
             timeout_sec=1
         )
-        assert exit_code == 0
+        assert exit_code == 0, "exit_code is not valid"
 
     def test_run_command_nonexistent(self):
         """run_command with nonexistent command"""
@@ -837,15 +837,15 @@ class TestUtilityFunctions:
             ["nonexistent_command_xyz"],
             timeout_sec=1
         )
-        assert exit_code != 0
+        assert exit_code != 0, "exit_code is not valid"
 
     def test_confidence_level_enum(self):
         """Confidence level enum mapping"""
         for confidence_enum in PatternConfidence:
             range_val = confidence_enum.value
             assert isinstance(range_val, tuple)
-            assert len(range_val) == 2
-            assert range_val[0] <= range_val[1]
+            assert len(range_val) == 2, "Range_val must not be empty"
+            assert range_val[0] <= range_val[1], "Condition must be true"
 
 
 class TestDataClassesAndStructures:
@@ -863,10 +863,10 @@ class TestDataClassesAndStructures:
             max_attempts=3,
             fix_timeout_sec=60
         )
-        
-        assert pattern.id == "TEST-001"
-        assert pattern.confidence_threshold == 0.7
-        assert len(pattern.secondary_indicators) == 2
+
+        assert pattern.id == "TEST-001", "id is not valid"
+        assert pattern.confidence_threshold == 0.7, "confidence_threshold is not valid"
+        assert len(pattern.secondary_indicators) == 2, "Collection must not be empty"
 
     def test_failure_log_dataclass(self):
         """FailureLog dataclass instantiation"""
@@ -877,9 +877,9 @@ class TestDataClassesAndStructures:
             timestamp="2026-07-01T10:00:00Z",
             exit_code=1
         )
-        
-        assert failure.raw_log == "test log content"
-        assert failure.exit_code == 1
+
+        assert failure.raw_log == "test log content", "Content must not be empty"
+        assert failure.exit_code == 1, "exit_code is not valid"
 
     def test_pattern_match_dataclass(self):
         """PatternMatch dataclass instantiation"""
@@ -888,16 +888,16 @@ class TestDataClassesAndStructures:
             name="Test",
             primary_regex=r"test"
         )
-        
+
         match = PatternMatch(
             pattern=pattern,
             confidence=0.85,
             matched_text="test",
             line_number=5
         )
-        
-        assert match.confidence == 0.85
-        assert match.line_number == 5
+
+        assert match.confidence == 0.85, "confidence is not valid"
+        assert match.line_number == 5, "line_number is not valid"
 
 
 if __name__ == "__main__":

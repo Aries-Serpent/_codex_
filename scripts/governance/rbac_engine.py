@@ -23,11 +23,12 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import threading
 import time
 
 import yaml
-import os
+
 
 class PolicyEnforcer:
     def __init__(self, rules_path=".codex/rbac_adaptive_rules.yaml"):
@@ -46,7 +47,7 @@ class PolicyEnforcer:
             'incident_severity': getattr(ooda_context, 'incident_severity', 'LOW'),
             'None': None
         }
-        
+
         def safe_eval(expr):
             expr = expr.replace("AND", "and").replace("OR", "or")
             try:
@@ -64,7 +65,7 @@ class PolicyEnforcer:
                     if not safe_eval(r):
                         all_passed = False
                         break
-                
+
                 if all_passed:
                     return rule.get('action')
                 else:
@@ -72,7 +73,7 @@ class PolicyEnforcer:
         return None
 
 from collections import OrderedDict
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
@@ -506,19 +507,19 @@ class RBACEngine:
         """Check OODA-driven adaptive rules."""
         if not hasattr(self, '_policy_enforcer'):
             self._policy_enforcer = PolicyEnforcer()
-            
+
         result = self._policy_enforcer.evaluate(action.value, resource.value, ooda_context)
-        
+
         if result and result.startswith("DENY"):
             logger.warning(f"OODA Policy denied action: {result}")
             return False
-            
+
         if result == "grant_auto":
             return True
-            
+
         if result in ("require_both", "require"):
             return True
-            
+
         if action == Action.DELEGATE:
             if ooda_context.confidence < 0.95:
                 return False

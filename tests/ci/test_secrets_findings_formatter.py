@@ -56,7 +56,7 @@ def test_parse_secret_type_aws():
         "cwe": "CWE-798",
         "tool": "detect-secrets",
     }
-    assert _parse_secret_type(finding) == "AWS_API_KEY"
+    assert _parse_secret_type(finding) == "AWS_API_KEY", "Condition must be true"
     print("✓ test_parse_secret_type_aws")
 
 
@@ -67,7 +67,7 @@ def test_parse_secret_type_github():
         "cwe": "CWE-798",
         "tool": "gitLeaks",
     }
-    assert _parse_secret_type(finding) == "GITHUB_PAT"
+    assert _parse_secret_type(finding) == "GITHUB_PAT", "Condition must be true"
     print("✓ test_parse_secret_type_github")
 
 
@@ -77,7 +77,7 @@ def test_parse_secret_type_openai():
         "description": "OpenAI secret key",
         "cwe": "CWE-798",
     }
-    assert _parse_secret_type(finding) == "OPENAI_KEY"
+    assert _parse_secret_type(finding) == "OPENAI_KEY", "Condition must be true"
     print("✓ test_parse_secret_type_openai")
 
 
@@ -88,7 +88,7 @@ def test_parse_secret_type_private_key():
         "cwe": "CWE-798",
         "tool": "truffleHog",
     }
-    assert _parse_secret_type(finding) == "PRIVATE_KEY"
+    assert _parse_secret_type(finding) == "PRIVATE_KEY", "Condition must be true"
     print("✓ test_parse_secret_type_private_key")
 
 
@@ -98,7 +98,7 @@ def test_parse_secret_type_db_password():
         "description": "PostgreSQL connection string",
         "cwe": "CWE-798",
     }
-    assert _parse_secret_type(finding) == "DB_PASSWORD"
+    assert _parse_secret_type(finding) == "DB_PASSWORD", "Condition must be true"
     print("✓ test_parse_secret_type_db_password")
 
 
@@ -108,28 +108,28 @@ def test_parse_secret_type_stripe():
         "description": "Stripe API key exposed",
         "cwe": "CWE-798",
     }
-    assert _parse_secret_type(finding) == "STRIPE_KEY"
+    assert _parse_secret_type(finding) == "STRIPE_KEY", "Condition must be true"
     print("✓ test_parse_secret_type_stripe")
 
 
 def test_convert_confidence_to_percent_float():
     """Test confidence conversion from float."""
-    assert _convert_confidence_to_percent(0.95) == "95%"
-    assert _convert_confidence_to_percent(1.0) == "100%"
+    assert _convert_confidence_to_percent(0.95) == "95%", "Condition must be true"
+    assert _convert_confidence_to_percent(1.0) == "100%", "Condition must be true"
     print("✓ test_convert_confidence_to_percent_float")
 
 
 def test_convert_confidence_to_percent_int():
     """Test confidence conversion from int."""
-    assert _convert_confidence_to_percent(95) == "95%"
-    assert _convert_confidence_to_percent(100) == "100%"
+    assert _convert_confidence_to_percent(95) == "95%", "Condition must be true"
+    assert _convert_confidence_to_percent(100) == "100%", "Condition must be true"
     print("✓ test_convert_confidence_to_percent_int")
 
 
 def test_convert_confidence_to_percent_string():
     """Test confidence conversion from string."""
-    assert _convert_confidence_to_percent("95%") == "95%"
-    assert _convert_confidence_to_percent("95") == "95%"
+    assert _convert_confidence_to_percent("95%") == "95%", "Condition must be true"
+    assert _convert_confidence_to_percent("95") == "95%", "Condition must be true"
     print("✓ test_convert_confidence_to_percent_string")
 
 
@@ -137,8 +137,8 @@ def test_calculate_rotation_deadline():
     """Test rotation deadline calculation."""
     deadline = _calculate_rotation_deadline("CRITICAL")
     # Deadline should be a valid ISO 8601 string
-    assert deadline.endswith("Z")
-    assert "T" in deadline
+    assert deadline.endswith("Z"), "Condition must be true"
+    assert "T" in deadline, "Condition must be true"
     print("✓ test_calculate_rotation_deadline")
 
 
@@ -163,18 +163,18 @@ def test_filter_secret_findings():
     ]
 
     filtered = _filter_secret_findings(all_findings)
-    assert len(filtered) == 2
-    assert all(f.get("cwe") == "CWE-798" for f in filtered)
+    assert len(filtered) == 2, "Filtered must not be empty"
+    assert all(f.get("cwe") == "CWE-798" for f in filtered), "Condition must be true"
     print("✓ test_filter_secret_findings")
 
 
 def test_generate_remediation_steps_aws():
     """Test AWS key remediation steps."""
     steps = _generate_remediation_steps("AWS_API_KEY", "config/.env:15")
-    assert "Revoke" in steps or "revoke" in steps
-    assert "IAM" in steps or "iam" in steps
-    assert "Rotate" in steps or "rotate" in steps
-    assert "MESSAGE" in steps
+    assert "Revoke" in steps or "revoke" in steps, "Condition must be true"
+    assert "IAM" in steps or "iam" in steps, "Condition must be true"
+    assert "Rotate" in steps or "rotate" in steps, "Condition must be true"
+    assert "MESSAGE" in steps, "Condition must be true"
     print("✓ test_generate_remediation_steps_aws")
 
 
@@ -182,7 +182,7 @@ def test_generate_remediation_steps_github():
     """Test GitHub PAT remediation steps."""
     steps = _generate_remediation_steps("GITHUB_PAT", ".env:5")
     assert "GitHub" in steps or "github" in steps or "PAT" in steps
-    assert "MESSAGE" in steps
+    assert "MESSAGE" in steps, "Condition must be true"
     print("✓ test_generate_remediation_steps_github")
 
 
@@ -211,11 +211,11 @@ def test_categorize_secret_findings_basic():
     try:
         result = categorize_secret_findings(str(test_file))
 
-        assert "secret_categories" in result
-        assert "metadata" in result
-        assert result["metadata"]["total_secrets"] == 2
-        assert result["metadata"]["critical_count"] == 2
-        assert len(result["secret_categories"]) == 2
+        assert "secret_categories" in result, "Result must not be empty"
+        assert "metadata" in result, "Result must not be empty"
+        assert result["metadata"]["total_secrets"] == 2, "Result must not be empty"
+        assert result["metadata"]["critical_count"] == 2, "Result must not be empty"
+        assert len(result["secret_categories"]) == 2, "Collection must not be empty"
         print("✓ test_categorize_secret_findings_basic")
     finally:
         test_file.unlink()
@@ -247,10 +247,10 @@ def test_categorize_secret_findings_metadata():
         result = categorize_secret_findings(str(test_file))
         meta = result["metadata"]
 
-        assert "generated_at" in meta
-        assert "Z" in meta["generated_at"]
-        assert meta["total_secrets"] == 2
-        assert "secret_types" in meta
+        assert "generated_at" in meta, "Condition must be true"
+        assert "Z" in meta["generated_at"], "Condition must be true"
+        assert meta["total_secrets"] == 2, "Condition must be true"
+        assert "secret_types" in meta, "Condition must be true"
         print("✓ test_categorize_secret_findings_metadata")
     finally:
         test_file.unlink()
@@ -273,8 +273,8 @@ def test_categorize_secret_findings_empty():
     try:
         result = categorize_secret_findings(str(test_file))
 
-        assert result["metadata"]["total_secrets"] == 0
-        assert len(result["secret_categories"]) == 0
+        assert result["metadata"]["total_secrets"] == 0, "Result must not be empty"
+        assert len(result["secret_categories"]) == 0, "Collection must not be empty"
         print("✓ test_categorize_secret_findings_empty")
     finally:
         test_file.unlink()
@@ -298,9 +298,9 @@ def test_categorize_secret_findings_rotation_deadlines():
         result = categorize_secret_findings(str(test_file))
         category = result["secret_categories"][0]
 
-        assert "rotation_deadline" in category
-        assert "Z" in category["rotation_deadline"]
-        assert "rotation_urgency" in category
+        assert "rotation_deadline" in category, "Condition must be true"
+        assert "Z" in category["rotation_deadline"], "Condition must be true"
+        assert "rotation_urgency" in category, "Condition must be true"
         print("✓ test_categorize_secret_findings_rotation_deadlines")
     finally:
         test_file.unlink()
@@ -373,9 +373,9 @@ def test_categorize_secret_findings_mixed_tools():
             for cat in result["secret_categories"]
             for finding in cat["findings"]
         }
-        assert "detect-secrets" in tools_found
-        assert "truffleHog" in tools_found
-        assert "gitLeaks" in tools_found
+        assert "detect-secrets" in tools_found, "Condition must be true"
+        assert "truffleHog" in tools_found, "Condition must be true"
+        assert "gitLeaks" in tools_found, "Condition must be true"
         print("✓ test_categorize_secret_findings_mixed_tools")
     finally:
         test_file.unlink()

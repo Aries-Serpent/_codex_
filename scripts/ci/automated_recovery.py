@@ -10,20 +10,19 @@ Implements:
 """
 
 import json
-import time
-import sys
+import logging
 import os
 import subprocess
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional, Tuple
+import sys
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
-import logging
+from typing import Dict, List, Optional, Tuple
 
 # Import error classifier
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from error_classifier import ErrorClassifier, RecoveryMetrics, RecoverySeverity
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -411,7 +410,7 @@ def main():
                 print("Suggestions:")
                 for s in report["suggestions"]:
                     print(f"  - {s}")
-            print(f"\nMetrics:")
+            print("\nMetrics:")
             print(f"  Success Rate: {full_report['success_rate_pct']:.1f}%")
             print(f"  MTTR: {full_report['mttr_seconds']:.1f}s")
             print(f"{'='*60}\n")

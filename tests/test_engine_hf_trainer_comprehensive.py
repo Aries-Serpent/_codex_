@@ -21,7 +21,7 @@ class TestHFTrainerImport:
         """Test importing engine_hf_trainer module."""
         try:
             from training import engine_hf_trainer
-            assert engine_hf_trainer is not None
+            assert engine_hf_trainer is not None, "engine_hf_trainer must be initialized"
         except ImportError:
             pytest.skip("training module not available")
 
@@ -29,9 +29,9 @@ class TestHFTrainerImport:
         """Test that module has documentation."""
         try:
             from training import engine_hf_trainer
-            
-            assert engine_hf_trainer.__doc__ is not None
-            assert len(engine_hf_trainer.__doc__) > 0
+
+            assert engine_hf_trainer.__doc__ is not None, "__doc__ must be initialized"
+            assert len(engine_hf_trainer.__doc__) > 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("training module not available")
 
@@ -43,9 +43,9 @@ class TestHFTrainerLogging:
         """Test that logger is properly configured."""
         try:
             from training import engine_hf_trainer
-            
+
             logger = engine_hf_trainer.logger
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
             assert isinstance(logger, logging.Logger)
         except ImportError:
             pytest.skip("engine_hf_trainer module not available")
@@ -58,7 +58,7 @@ class TestHFTrainerStructure:
         """Test that module exists and can be accessed."""
         try:
             import training.engine_hf_trainer as trainer_module
-            assert trainer_module is not None
+            assert trainer_module is not None, "trainer_module must be initialized"
         except ImportError:
             pytest.skip("training.engine_hf_trainer not available")
 
@@ -67,7 +67,7 @@ class TestHFTrainerStructure:
         try:
             from training import engine_hf_trainer
             assert hasattr(engine_hf_trainer, "__name__")
-            assert "engine_hf_trainer" in engine_hf_trainer.__name__
+            assert "engine_hf_trainer" in engine_hf_trainer.__name__, "Condition must be true"
         except ImportError:
             pytest.skip("training module not available")
 
@@ -87,7 +87,7 @@ class TestTrainingImports:
         """Test that logger is created."""
         try:
             from training.engine_hf_trainer import logger
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
         except ImportError:
             pytest.skip("logger not available in engine_hf_trainer")
 
@@ -100,12 +100,12 @@ class TestHFTrainerOptionalDependencies:
         try:
             # Try to import the module
             from training import engine_hf_trainer
-            
+
             # The module should exist regardless of transformers availability
-            assert engine_hf_trainer is not None
+            assert engine_hf_trainer is not None, "engine_hf_trainer must be initialized"
         except ImportError as e:
             # If it fails, it should be due to missing optional dependency
-            assert "transformers" in str(e).lower() or "training" in str(e).lower()
+            assert "transformers" in str(e).lower() or "training" in str(e).lower(), "Condition must be true"
 
 
 class TestHFTrainerConstants:
@@ -127,7 +127,7 @@ class TestHFTrainerTypeHints:
         """Test that module may have type annotations."""
         try:
             from training import engine_hf_trainer
-            
+
             # Module may or may not have annotations, just check it doesn't error
             annotations = getattr(engine_hf_trainer, "__annotations__", {})
             assert isinstance(annotations, dict)
@@ -142,7 +142,7 @@ class TestHFTrainerImportPath:
         """Test importing as module."""
         try:
             from training.engine_hf_trainer import logger
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -162,11 +162,11 @@ class TestHFTrainerBasicStructure:
         """Test that module contains definitions."""
         try:
             from training import engine_hf_trainer
-            
+
             # Module should have some content
             attrs = dir(engine_hf_trainer)
             # At least logger and __name__ should exist
-            assert len(attrs) > 2
+            assert len(attrs) > 2, "Attrs must not be empty"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -174,7 +174,7 @@ class TestHFTrainerBasicStructure:
         """Test that module has common Python attributes."""
         try:
             from training import engine_hf_trainer
-            
+
             # Check for common module attributes
             assert hasattr(engine_hf_trainer, "__doc__")
             assert hasattr(engine_hf_trainer, "__name__")
@@ -190,9 +190,9 @@ class TestHFTrainerDocumentation:
         """Test that docstring contains useful information."""
         try:
             from training import engine_hf_trainer
-            
+
             doc = engine_hf_trainer.__doc__
-            assert doc is not None
+            assert doc is not None, "doc must be initialized"
             # Docstring should mention training or HuggingFace
             doc_lower = doc.lower()
             assert "train" in doc_lower or "hugging" in doc_lower or "hf" in doc_lower.replace("def", "")
@@ -203,8 +203,8 @@ class TestHFTrainerDocumentation:
         """Test that module name is consistent."""
         try:
             from training import engine_hf_trainer
-            
-            assert engine_hf_trainer.__name__ == "training.engine_hf_trainer"
+
+            assert engine_hf_trainer.__name__ == "training.engine_hf_trainer", "__name__ is not valid"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -216,10 +216,10 @@ class TestHFTrainerErrorHandling:
         """Test that logger can handle error messages."""
         try:
             from training.engine_hf_trainer import logger
-            
+
             # Log a test message (should not raise)
             logger.debug("Test message")
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -231,11 +231,11 @@ class TestHFTrainerModuleRepr:
         """Test module representation."""
         try:
             from training import engine_hf_trainer
-            
+
             # Get string representation
             repr_str = repr(engine_hf_trainer)
             assert isinstance(repr_str, str)
-            assert "module" in repr_str.lower()
+            assert "module" in repr_str.lower(), "Condition must be true"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -247,13 +247,13 @@ class TestHFTrainerPublicAPI:
         """Test that public functions are callable."""
         try:
             from training import engine_hf_trainer
-            
+
             # Get all public names (not starting with _)
-            public_names = [name for name in dir(engine_hf_trainer) 
+            public_names = [name for name in dir(engine_hf_trainer)
                            if not name.startswith("_")]
-            
+
             # Should have some public names
-            assert len(public_names) > 0
+            assert len(public_names) > 0, "Public_names must not be empty"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -261,13 +261,13 @@ class TestHFTrainerPublicAPI:
         """Test that module attributes are valid."""
         try:
             from training import engine_hf_trainer
-            
+
             # Get all attributes
             for attr_name in dir(engine_hf_trainer):
                 if not attr_name.startswith("__"):
                     attr = getattr(engine_hf_trainer, attr_name)
                     # Should be callable or a constant
-                    assert attr is not None
+                    assert attr is not None, "attr must be initialized"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -281,9 +281,9 @@ class TestHFTrainerPathHandling:
             from pathlib import Path
 
             from training import engine_hf_trainer
-            
+
             module_file = engine_hf_trainer.__file__
-            assert module_file is not None
+            assert module_file is not None, "module_file must be initialized"
             assert isinstance(module_file, str)
             # Path should be valid (may be .py or .pyc)
             assert module_file.endswith((".py", ".pyc", ".pyi"))
@@ -301,9 +301,9 @@ class TestHFTrainerCaching:
 
             from training import engine_hf_trainer as hf1
             from training import engine_hf_trainer as hf2
-            
+
             # Should be the same object (cached)
-            assert hf1 is hf2
+            assert hf1 is hf2, "hf1 is not valid"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -315,9 +315,9 @@ class TestHFTrainerEncodingHandling:
         """Test that module has valid encoding."""
         try:
             from training import engine_hf_trainer
-            
+
             # Module should be importable without encoding errors
-            assert engine_hf_trainer is not None
+            assert engine_hf_trainer is not None, "engine_hf_trainer must be initialized"
         except UnicodeDecodeError:
             pytest.fail("Module has encoding issues")
         except ImportError:
@@ -334,12 +334,12 @@ def test_module_import_paths(import_path):
     try:
         parts = import_path.split(".")
         module = __import__(import_path)
-        
+
         # Traverse to the actual module
         for part in parts[1:]:
             module = getattr(module, part)
-        
-        assert module is not None
+
+        assert module is not None, "module must be initialized"
     except ImportError:
         pytest.skip(f"Module {import_path} not available")
 
@@ -353,9 +353,9 @@ class TestHFTrainerVersionCompatibility:
             import sys
 
             from training import engine_hf_trainer
-            
+
             # Should work regardless of Python version (3.11+)
-            assert engine_hf_trainer is not None
+            assert engine_hf_trainer is not None, "engine_hf_trainer must be initialized"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
@@ -368,23 +368,23 @@ class TestHFTrainerComplexStructure:
         try:
             from training import engine_hf_trainer as m1
             from training import engine_hf_trainer as m2
-            
+
             # Same attributes
             attrs1 = set(dir(m1))
             attrs2 = set(dir(m2))
-            assert attrs1 == attrs2
+            assert attrs1 == attrs2, "attrs1 is not valid"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")
 
     def test_logger_is_logger_instance(self):
         """Test that logger is proper logger instance."""
         try:
-            import logging
+            pass  # removed redundant `import logging` (top-level import used)
 
             from training.engine_hf_trainer import logger
-            
+
             assert isinstance(logger, logging.Logger)
-            assert logger.name == "training.engine_hf_trainer"
+            assert logger.name == "training.engine_hf_trainer", "name is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -396,12 +396,12 @@ class TestHFTrainerNameMangling:
         """Test that private attributes are properly namespaced."""
         try:
             from training import engine_hf_trainer
-            
+
             # Get attributes
-            public_attrs = [a for a in dir(engine_hf_trainer) 
+            public_attrs = [a for a in dir(engine_hf_trainer)
                           if not a.startswith("_")]
-            
+
             # Should have mostly public attributes
-            assert len(public_attrs) > 0
+            assert len(public_attrs) > 0, "Public_attrs must not be empty"
         except ImportError:
             pytest.skip("engine_hf_trainer not available")

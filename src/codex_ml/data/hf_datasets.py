@@ -53,9 +53,7 @@ def load_hf_dataset(name: str, split: str = "train", fallback_path: str | None =
     try:
         revision, extra = ensure_pinned_kwargs(name)
         if revision is None:
-            return _load_dataset(
-                name, split=split, streaming=True, **extra
-            )  # nosec B615: local path
+            return _load_dataset(name, split=split, streaming=True, **extra)  # nosec B615: local path
         return _load_dataset(
             name,
             split=split,

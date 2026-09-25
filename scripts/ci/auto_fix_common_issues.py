@@ -82,7 +82,6 @@ from scripts.ci._token_resolver import (
     get_token,
 )
 
-
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------

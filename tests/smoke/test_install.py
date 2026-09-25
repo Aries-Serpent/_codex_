@@ -97,7 +97,7 @@ class TestInstallation:
             import_warnings = [
                 warning for warning in w if issubclass(warning.category, ImportWarning)
             ]
-            assert (
+            assert (, "Condition must be true"
                 len(import_warnings) == 0
             ), f"Import warnings detected: {import_warnings}"
 
@@ -129,7 +129,7 @@ class TestInstallation:
         # Verify logging module exists
         logging_mod = importlib.import_module("aries_serpent_core.logging")
         assert logging_mod is not None, "Failed to import aries_serpent_core.logging"
-        
+
         # Verify import_ndjson submodule can be imported
         try:
             import_ndjson_mod = importlib.import_module(
@@ -138,7 +138,7 @@ class TestInstallation:
             assert hasattr(import_ndjson_mod, "main"), (
                 "aries_serpent_core.logging.import_ndjson missing main function (entry point requirement)"
             )
-            
+
             # Verify main is callable (entry point must be callable)
             assert callable(import_ndjson_mod.main), (
                 "aries_serpent_core.logging.import_ndjson.main is not callable"
@@ -168,7 +168,7 @@ class TestEntryPointsAvailability:
                 text=True,
             )
             assert result.returncode == 0, f"{entry_point} --help returned {result.returncode}"
-            assert (
+            assert (, "Condition must be true"
                 expected_help_text.lower() in result.stdout.lower()
             ), f"Help text doesn't contain '{expected_help_text}'"
         except FileNotFoundError:
@@ -202,7 +202,7 @@ class TestEntryPointsAvailability:
                 text=True,
             )
             assert result.returncode == 0, f"Entry point returned {result.returncode}"
-            assert "usage:" in result.stdout.lower()
+            assert "usage:" in result.stdout.lower(), "Result must not be empty"
         except FileNotFoundError:
             pytest.skip("codex-import-ndjson entry point not installed")
 

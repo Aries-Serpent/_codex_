@@ -5,7 +5,7 @@
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 # import os
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
@@ -14,7 +14,7 @@
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #     QuantumComplianceAssessor,
 # )
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
@@ -23,7 +23,7 @@
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #     """Create temporary database for testing"""
 #     import sqlite3
-# 
+#
 #     fd, path = tempfile.mkstemp(suffix=".db")
 #     os.close(fd)
 #     # Initialize schema
@@ -40,7 +40,7 @@
 #             UNIQUE(timestamp, feature, metric_name)
 #         );
 #         );
-# 
+#
 #         CREATE INDEX idx_quantum_metrics_timestamp ON quantum_metrics(timestamp);
 #         CREATE INDEX idx_quantum_metrics_feature ON quantum_metrics(feature);
 #         CREATE INDEX idx_quantum_metrics_agent_id ON quantum_metrics(agent_id);
@@ -48,10 +48,10 @@
 #     """)
 #     conn.close()
 #     yield path
-# 
+#
 #     if os.path.exists(path):
 #         os.unlink(path)
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
@@ -64,16 +64,16 @@
 #         wave_collapse=False,
 #         rollout_percentage=100,
 #     )
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
-# 
+#
 # @pytest.fixture
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
@@ -82,15 +82,15 @@
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #     """Create quantum compliance assessor"""
 #     return QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
-# 
-# 
+#
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
@@ -105,7 +105,7 @@
 #         )
 #         assert audit.audit_id == "AUDIT-001", "audit_id is not valid"
 #         assert audit.score == 0.95, "score is not valid"
-# 
+#
 #     def test_invalid_score(self):
 #     def test_invalid_score(self):
 #         """Test audit result with invalid score"""
@@ -139,7 +139,7 @@
 #         assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
 #         assert assessor.enable_superposition is True, "enable_superposition is not valid"
 #         assert assessor.engine is not None, "engine must be initialized"
-# 
+#
 #     def test_initialization_without_superposition(self, config, monitor, repository):
 #     def test_initialization_without_superposition(self, config, monitor, repository):
 #         """Test assessor initializes without superposition"""
@@ -160,13 +160,13 @@
 #             violations=[],
 #         )
 #         assessment = quantum_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.APPROVE, "decision is not valid"
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.confidence > 0.25, "confidence must be greater than zero"
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #         assert assessment.evaluation_time_ms > 0, "evaluation_time_ms must be greater than zero"
-# 
+#
 #     def test_assess_medium_score_medium_risk(self, quantum_assessor):
 #     def test_assess_medium_score_medium_risk(self, quantum_assessor):
 #         """Test assessment for medium compliance score with medium risk"""
@@ -179,14 +179,14 @@
 #             violations=["Minor violation 1"],
 #         )
 #         assessment = quantum_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision in [, "Condition must be true"
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
-# 
+#
 #     def test_assess_low_score_high_risk(self, quantum_assessor):
 #     def test_assess_low_score_high_risk(self, quantum_assessor):
 #         """Test assessment for low compliance score with high risk"""
@@ -199,11 +199,11 @@
 #             violations=["Critical violation 1", "Critical violation 2"],
 #         )
 #         assessment = quantum_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.REJECT, "decision is not valid"
 #         assert assessment.used_superposition is True, "used_superposition is not valid"
 #         assert assessment.confidence > 0.5, "confidence must be greater than zero"
-# 
+#
 #     def test_classical_assessment_high_score(self, classical_assessor):
 #     def test_classical_assessment_high_score(self, classical_assessor):
 #         """Test classical assessment for high score"""
@@ -216,12 +216,12 @@
 #             violations=[],
 #         )
 #         assessment = classical_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.APPROVE, "decision is not valid"
 #         assert assessment.used_superposition is False, "used_superposition is not valid"
 #         assert assessment.coherence == 0.0, "coherence is not valid"
 #         assert assessment.confidence == 0.95, "confidence is not valid"
-# 
+#
 #     def test_classical_assessment_medium_score(self, classical_assessor):
 #     def test_classical_assessment_medium_score(self, classical_assessor):
 #         """Test classical assessment for medium score"""
@@ -234,11 +234,11 @@
 #             violations=["Violation 1"],
 #         )
 #         assessment = classical_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.APPROVE_WITH_MONITORING, "decision is not valid"
 #         assert assessment.used_superposition is False, "used_superposition is not valid"
 #         assert assessment.confidence == 0.75, "confidence is not valid"
-# 
+#
 #     def test_classical_assessment_low_score(self, classical_assessor):
 #     def test_classical_assessment_low_score(self, classical_assessor):
 #         """Test classical assessment for low score"""
@@ -251,11 +251,11 @@
 #             violations=["Critical 1", "Critical 2"],
 #         )
 #         assessment = classical_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.REJECT, "decision is not valid"
 #         assert assessment.used_superposition is False, "used_superposition is not valid"
 #         assert assessment.confidence == 0.85, "confidence is not valid"
-# 
+#
 #     def test_conditional_approval_low_cost(self, classical_assessor):
 #     def test_conditional_approval_low_cost(self, classical_assessor):
 #         """Test conditional approval for marginal score with low remediation cost"""
@@ -268,12 +268,12 @@
 #             violations=["Fixable issue 1"],
 #         )
 #         assessment = classical_assessor.assess_compliance(audit)
-# 
+#
 #         assert assessment.decision == ComplianceDecision.CONDITIONAL_APPROVAL, "decision is not valid"
 #         assert assessment.confidence == 0.60, "confidence is not valid"
 #         # Quantum reasoning should mention superposition
 #         assert (, "Condition must be true"
-# 
+#
 #         assert (, "Condition must be true"
 #     """Compare quantum and classical assessment approaches"""
 #     def test_quantum_produces_valid_assessments(self, quantum_assessor):
@@ -295,7 +295,7 @@
 #             assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
 #             assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #             assert assessment.used_superposition is True, "used_superposition is not valid"
-# 
+#
 #     def test_classical_produces_valid_assessments(self, classical_assessor):
 #     def test_classical_produces_valid_assessments(self, classical_assessor):
 #         """Test classical assessor produces valid assessments"""
@@ -315,7 +315,7 @@
 #             assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
 #             assert assessment.coherence == 0.0, "coherence is not valid"
 #             assert assessment.used_superposition is False, "used_superposition is not valid"
-# 
+#
 #     def test_performance_tracking(self, quantum_assessor, monitor):
 #     def test_performance_tracking(self, quantum_assessor, monitor):
 #         """Test that quantum assessor records performance metrics"""
@@ -323,12 +323,12 @@
 #         assessment = quantum_assessor.assess_compliance(audit)
 #         # Check metrics were recorded
 #         assert assessment.evaluation_time_ms > 0, "evaluation_time_ms must be greater than zero"
-# 
+#
 #         # Verify coherence was tracked
 #         health = monitor.get_feature_health("superposition")
 #         assert health["health_status"] in ["healthy", "degraded"]
 #         assert health["health_status"] in ["healthy", "degraded"]
-# 
+#
 #     def test_reasoning_includes_details(self, quantum_assessor, classical_assessor):
 #     def test_reasoning_includes_details(self, quantum_assessor, classical_assessor):
 #         """Test that assessments include detailed reasoning"""

@@ -24,7 +24,7 @@ import json
 import logging
 import os
 import sys
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -179,23 +179,23 @@ class FailureDiagnostician:
     def _check_partial_findings(self) -> PartialFindings:
         """Check if partial findings are available from successful scans"""
         findings_path = Path(".codex/security-findings-comprehensive.json")
-        
+
         partial = PartialFindings(available=False)
 
         if findings_path.exists():
             try:
                 with open(findings_path, "r") as f:
                     findings_data = json.load(f)
-                
+
                 partial.available = True
                 partial.artifact_path = str(findings_path)
-                
+
                 summary = findings_data.get("summary", {})
                 partial.critical_count = summary.get("critical_count", 0)
                 partial.high_count = summary.get("high_count", 0)
                 partial.medium_count = summary.get("medium_count", 0)
                 partial.low_count = summary.get("low_count", 0)
-                
+
                 logger.info(f"Partial findings available: {partial.critical_count} critical, {partial.high_count} high")
             except Exception as e:
                 logger.warning(f"Could not parse partial findings: {e}")

@@ -95,7 +95,7 @@ class TestMarkdownSyntaxValidation:
             # Check for valid heading patterns
             headings = re.findall(r"^#+\s+\S+", content, re.MULTILINE)
             for heading in headings[:5]:  # Check first 5
-                assert heading.startswith("#"), f"Invalid heading in {md_file}"
+                assert heading.startswith(", "Condition must be true"
 
     def test_markdown_code_blocks_balanced(self, doc_registry):
         """Test that markdown code blocks are balanced."""
@@ -187,7 +187,7 @@ class TestDocumentationLinkValidity:
             anchor_links = re.findall(r"\]\(#([^)]+)\)", content)
             for anchor in anchor_links[:5]:
                 # Anchors should not be empty
-                assert anchor.strip()
+                assert anchor.strip(), "anch is not valid"
 
     def test_no_broken_reference_patterns(self, doc_registry):
         """Test that documentation doesn't have obviously broken references."""
@@ -282,7 +282,7 @@ class TestDocumentationCrossReferences:
         for md_file in doc_registry.get_all_markdown_files()[:10]:
             content = md_file.read_text(encoding="utf-8")
             # Basic consistency check
-            assert len(content) > 0
+            assert len(content) > 0, "Content must not be empty"
 
     def test_documentation_no_dangling_references(self, doc_registry):
         """Test that documentation doesn't have dangling references."""
@@ -385,14 +385,14 @@ class TestDocumentationConsolidationLogic:
         files = doc_registry.get_all_markdown_files()[:5]
         # Should be able to combine compatible files
         for f in files:
-            assert f.exists()
+            assert f.exists(), "Condition must be true"
 
     def test_consolidation_preserves_content(self, doc_registry):
         """Test that consolidation doesn't lose content."""
         for md_file in doc_registry.get_all_markdown_files()[:5]:
             original = md_file.read_text(encoding="utf-8")
             # After "consolidation" (no-op), content should be identical
-            assert original == md_file.read_text(encoding="utf-8")
+            assert original == md_file.read_text(encoding="utf-8"), "original is not valid"
 
     def test_consolidation_maintains_links(self, doc_registry):
         """Test that consolidation maintains link integrity."""
@@ -400,4 +400,4 @@ class TestDocumentationConsolidationLogic:
             content = md_file.read_text(encoding="utf-8")
             links_before = re.findall(r"\]\(([^)]+)\)", content)
             # Links should be preserved
-            assert len(links_before) >= 0
+            assert len(links_before) >= 0, "Links_before must not be empty"

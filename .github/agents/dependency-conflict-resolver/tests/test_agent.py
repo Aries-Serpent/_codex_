@@ -101,7 +101,7 @@ class TestVersionMatrixGenerator:
         gen = VersionMatrixGenerator()
         versions = ["1.0.0", "1.1.0", "1.2.0"]
         matrix = gen.generate_matrix("pytest", versions)
-        
+
         assert matrix.package_name == "pytest"
         assert matrix.versions_analyzed == versions
         assert matrix.recommended_version is not None
@@ -110,7 +110,7 @@ class TestVersionMatrixGenerator:
         gen = VersionMatrixGenerator()
         versions = ["1.0.0", "2.0.0", "3.0.0"]
         matrix = gen.generate_matrix("coverage", versions)
-        
+
         assert len(matrix.versions_analyzed) == 3
         assert matrix.compatibility_matrix["1.0.0"]["2.0.0"] is False
 
@@ -118,21 +118,21 @@ class TestVersionMatrixGenerator:
         gen = VersionMatrixGenerator()
         versions = ["1.0.0", "1.1.0", "2.0.0"]
         matrix = gen.generate_matrix("requests", versions)
-        
+
         assert len(matrix.safe_version_ranges) > 0
 
     def test_recommend_latest_version(self):
         gen = VersionMatrixGenerator()
         versions = ["0.9.0", "1.0.0", "1.5.0", "1.2.0"]
         matrix = gen.generate_matrix("flask", versions)
-        
+
         assert matrix.recommended_version == "1.5.0"
 
     def test_same_version_compatibility(self):
         gen = VersionMatrixGenerator()
         versions = ["1.0.0", "1.5.0", "2.0.0"]
         matrix = gen.generate_matrix("django", versions)
-        
+
         assert matrix.compatibility_matrix["1.0.0"]["1.0.0"] is True
         assert matrix.compatibility_matrix["2.0.0"]["2.0.0"] is True
 
@@ -175,7 +175,7 @@ class TestSchemaValidator:
         validator = SchemaValidator()
         packages = {"pytest": "6.0", "coverage": "5.0"}
         compat = validator.validate_package_compatibility("schema_v1", "1.0.0", packages)
-        
+
         assert compat.schema_name == "schema_v1"
         assert len(compat.compatible_packages) > 0
 
@@ -190,13 +190,13 @@ class TestSchemaValidator:
         }
         packages = {"old_lib": "1.0.0"}
         compat = validator.validate_package_compatibility("test_schema", "1.0.0", packages)
-        
+
         assert len(compat.incompatibilities) == 1
 
     def test_validate_empty_packages(self):
         validator = SchemaValidator()
         compat = validator.validate_package_compatibility("schema", "1.0.0", {})
-        
+
         assert len(compat.compatible_packages) == 0
         assert len(compat.incompatibilities) == 0
 
@@ -249,10 +249,10 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\ncoverage>=5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert isinstance(result, ResolutionResult)
             assert result.success is True
 
@@ -260,10 +260,10 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\npytest<5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.success is False
             assert result.conflicts_found > 0
 
@@ -271,10 +271,10 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("# Comment\npytest>=6.0\n# Another\ncoverage>=5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             reqs = resolver._load_requirements(req_file)
-            
+
             assert len(reqs) == 2
 
     def test_load_nonexistent_file(self):
@@ -286,10 +286,10 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.validate_schema_compatibility("test", req_file)
-            
+
             assert "schema_name" in result
             assert "is_compatible" in result
 
@@ -300,9 +300,9 @@ class TestDependencyConflictResolver:
             "pytest": ["5.0.0", "6.0.0"],
             "coverage": ["4.0.0", "5.0.0"]
         }
-        
+
         matrices = resolver.generate_version_matrix(packages, versions)
-        
+
         assert len(matrices) == 2
         assert "pytest" in matrices
 
@@ -310,13 +310,13 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\npytest<5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             resolver.analyze_requirements(req_file)
-            
+
             output_file = Path(tmpdir) / "report.json"
             resolver.export_analysis_report(output_file)
-            
+
             assert output_file.exists()
             report = json.loads(output_file.read_text())
             assert "timestamp" in report
@@ -325,7 +325,7 @@ class TestDependencyConflictResolver:
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = Path(tmpdir) / "config.yaml"
             config_file.write_text("conflict_detection:\n  enabled: true\n")
-            
+
             resolver = DependencyConflictResolver(config_file)
             assert resolver.config is not None
 
@@ -343,10 +343,10 @@ class TestEndToEndWorkflows:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("requests>=2.25.0\nrequests<2.20.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.success is False
             assert result.conflicts_found == 1
 
@@ -354,20 +354,20 @@ class TestEndToEndWorkflows:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\npytest<5.0\ncoverage>=5.0\ncoverage<4.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.conflicts_found >= 2
 
     def test_clean_workflow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\ncoverage>=5.0\nrequests>=2.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.success is True
             assert result.conflicts_found == 0
 
@@ -375,39 +375,39 @@ class TestEndToEndWorkflows:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\npytest[invalid\ncoverage>=5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.conflicts_found > 0
 
     def test_schema_validation_workflow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\ncoverage>=5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.validate_schema_compatibility("schema", req_file)
-            
+
             assert result["schema_name"] == "schema"
 
     def test_complete_analysis_flow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\ncoverage>=5.0\n")
-            
+
             resolver = DependencyConflictResolver()
-            
+
             # Analyze
             result = resolver.analyze_requirements(req_file)
             assert result.success is True
-            
+
             # Generate matrices
             matrices = resolver.generate_version_matrix(
                 ["pytest"], {"pytest": ["5.0.0", "6.0.0"]}
             )
             assert "pytest" in matrices
-            
+
             # Export
             report_file = Path(tmpdir) / "report.json"
             resolver.export_analysis_report(report_file)
@@ -417,10 +417,10 @@ class TestEndToEndWorkflows:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("# No packages\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert result.success is True
             assert result.conflicts_found == 0
 
@@ -429,23 +429,23 @@ class TestEndToEndWorkflows:
             req_file = Path(tmpdir) / "requirements.txt"
             lines = "\n".join([f"package{i}>=1.0" for i in range(50)])
             req_file.write_text(lines)
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert isinstance(result, ResolutionResult)
 
     def test_report_contains_all_fields(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\n")
-            
+
             resolver = DependencyConflictResolver()
             resolver.analyze_requirements(req_file)
-            
+
             report_file = Path(tmpdir) / "report.json"
             resolver.export_analysis_report(report_file)
-            
+
             report = json.loads(report_file.read_text())
             assert "timestamp" in report
             assert "total_issues" in report
@@ -500,10 +500,10 @@ class TestEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             req_file = Path(tmpdir) / "requirements.txt"
             req_file.write_text("pytest>=6.0\npytest<5.0\n")
-            
+
             resolver = DependencyConflictResolver()
             result = resolver.analyze_requirements(req_file)
-            
+
             assert len(result.recommendations) > 0
 
     def test_resolution_result_defaults(self):
@@ -533,11 +533,11 @@ if __name__ == "__main__":
 
 class TestAdditionalCoverage:
     """Additional tests for code coverage improvement"""
-    
+
     def test_version_matrix_with_all_severities(self):
         gen = VersionMatrixGenerator()
         # Test that compatibility report includes proper severity analysis
         matrix = gen.generate_matrix("test-pkg", ["1.0.0", "2.0.0", "3.0.0"])
         assert matrix is not None
         assert "1.0.0" in matrix.versions_analyzed
-    
+

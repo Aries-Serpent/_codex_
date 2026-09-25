@@ -308,9 +308,7 @@ def create_auth_router(
                 totp_code=body.totp_code,
             )
         except InvalidCredentialsError as exc:
-            logger.warning(
-                "Login failed from %s: %s", _safe_log_value(ip_address), str(exc)
-            )
+            logger.warning("Login failed from %s: %s", _safe_log_value(ip_address), str(exc))
             raise HTTPException(status_code=401, detail="Invalid credentials") from exc
         except (ConnectionError, TimeoutError) as exc:
             code = getattr(exc, "code", "")

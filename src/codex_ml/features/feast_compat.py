@@ -563,7 +563,7 @@ class DuckDBBackend:
         backend.write("user_features", "user_42", {"age": 30, "score": 0.9})
         assert backend.read("user_features", "user_42")["age"] == 30
         parquet_path = backend.materialize_to_parquet("user_features", os.path.join(tempfile.gettempdir(), "uf.parquet"))
-    """
+    """  # noqa: E501
 
     def __init__(
         self,

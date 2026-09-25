@@ -51,7 +51,7 @@ class TestReasoningParamImpossibleByConstruction:
             model_id,
             {"reasoning_effort": "high", "max_tokens": 1024},
         )
-        assert (
+        assert (, "Condition must be true"
             "reasoning_effort" not in result.safe_config
         ), f"Model {model_id!r} must not receive reasoning_effort in safe_config"
 
@@ -62,7 +62,7 @@ class TestReasoningParamImpossibleByConstruction:
             model_id,
             {"thinking": {"type": "enabled"}, "max_tokens": 1024},
         )
-        assert (
+        assert (, "Condition must be true"
             "thinking" not in result.safe_config
         ), f"Model {model_id!r} must not receive 'thinking' in safe_config"
 
@@ -84,13 +84,13 @@ class TestNegotiatorInterception:
             {"reasoning_effort": "medium"},
         )
         # If negotiator was bypassed, stripped_params would be empty.
-        assert "reasoning_effort" in result.params_stripped
+        assert "reasoning_effort" in result.params_stripped, "Result must not be empty"
 
     def test_negotiation_result_model_key_always_set(self) -> None:
         guard = SessionGuard()
         for model in ["claude-haiku-4.5", "claude-sonnet-5", "gpt-5-mini"]:
             result = guard.create_session(model, {"max_tokens": 512})
-            assert (
+            assert (, "Condition must be true"
                 "model" in result.safe_config
             ), f"'model' key missing from safe_config for {model!r}"
 
@@ -100,7 +100,7 @@ class TestNegotiatorInterception:
             "claude-haiku-4.5",
             {"reasoning_effort": "low", "max_tokens": 2048},
         )
-        assert "reasoning_effort" not in negotiation.safe_config
+        assert "reasoning_effort" not in negotiation.safe_config, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -118,21 +118,21 @@ class TestKernelAutoLoadGuard:
     def test_assert_loaded_auto_boots_when_not_loaded(self) -> None:
         """assert_loaded must auto-boot the kernel (default: failsafe=off)."""
         k = CognitiveBrainKernel(config=KernelConfig())
-        assert not k.is_loaded
+        assert not k.is_loaded, "Condition must be true"
         k.assert_loaded()
-        assert k.is_loaded
+        assert k.is_loaded, "Condition must be true"
 
     def test_assert_loaded_on_already_booted_kernel(self) -> None:
         k = CognitiveBrainKernel(config=KernelConfig())
         k.boot()
         k.assert_loaded()  # must not raise
-        assert k.is_loaded
+        assert k.is_loaded, "Condition must be true"
 
     def test_assert_loaded_raises_when_failsafe_off(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """With COGNITIVE_BRAIN_FAILSAFE_OFF=true, assert_loaded must raise."""
         monkeypatch.setenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "true")
         k = CognitiveBrainKernel(config=KernelConfig())
-        assert not k.is_loaded
+        assert not k.is_loaded, "Condition must be true"
         with pytest.raises(RuntimeError, match="assert_loaded"):
             k.assert_loaded()
 
@@ -142,14 +142,14 @@ class TestKernelAutoLoadGuard:
         from codex.cognitive_brain.kernel import auto_load
 
         result = auto_load()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_auto_load_disabled_by_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("COGNITIVE_BRAIN_AUTO_LOAD", "false")
         from codex.cognitive_brain.kernel import auto_load
 
         result = auto_load()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -162,19 +162,19 @@ class TestShellPolicyBypass:
         """Shell policy must deny unknown commands by default."""
         policy = ShellPolicy(default_shell_enabled=False)
         decision = policy.gate("evil_command --exploit")
-        assert decision.verdict == PolicyVerdict.DENY
+        assert decision.verdict == PolicyVerdict.DENY, "verdict is not valid"
 
     def test_deny_always_overrides_allow_for_dangerous_commands(self) -> None:
         policy = ShellPolicy()
         # sudo is in deny patterns — must not be allowed even if someone adds
         # "sudo *" to the allow list.
         decision = policy.gate("sudo apt-get update")
-        assert decision.verdict == PolicyVerdict.DENY
+        assert decision.verdict == PolicyVerdict.DENY, "verdict is not valid"
 
     def test_cwd_allowlist_prevents_traversal(self) -> None:
         policy = ShellPolicy(working_dir_allowlist=["/repo"])
         decision = policy.gate("cat /etc/passwd", cwd="/etc")
-        assert decision.verdict == PolicyVerdict.DENY
+        assert decision.verdict == PolicyVerdict.DENY, "verdict is not valid"
 
     def test_kernel_allow_shell_false_means_no_shell_in_plan(self) -> None:
         """Kernel with allow_shell=False must not select shell as primary tool."""
@@ -182,7 +182,7 @@ class TestShellPolicyBypass:
         k.boot()
         plan = k.plan_tools("local_build")
         # Shell must not be the primary tool when allow_shell=False.
-        assert plan.primary_tool != "shell"
+        assert plan.primary_tool != "shell", "primary_tool is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -213,8 +213,8 @@ class TestModelCapabilityOutage:
             required_capabilities=["reasoning_effort"],
         )
         # Can't find a fallback, but must not raise.
-        assert result.fallback_used is False
-        assert "reasoning_effort" not in result.safe_config
+        assert result.fallback_used is False, "Result must not be empty"
+        assert "reasoning_effort" not in result.safe_config, "Result must not be empty"
 
     def test_registry_with_injected_no_reasoning_profile(self) -> None:
         """Injected profile overrides built-in; negotiator must use override."""
@@ -229,7 +229,7 @@ class TestModelCapabilityOutage:
             "custom-model-v1",
             {"reasoning_effort": "low"},
         )
-        assert "reasoning_effort" not in result.safe_config
+        assert "reasoning_effort" not in result.safe_config, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -241,9 +241,9 @@ class TestStaleCapabilityCache:
     def test_invalidate_all_forces_rebuild(self) -> None:
         registry = CapabilityRegistry(ttl_seconds=3600)
         registry.get("claude-haiku-4.5")
-        assert len(registry.all_known()) == 1
+        assert len(registry.all_known()) == 1, "Collection must not be empty"
         registry.invalidate()
-        assert len(registry.all_known()) == 0
+        assert len(registry.all_known()) == 0, "Collection must not be empty"
 
     def test_invalidate_single_model_clears_only_that(self) -> None:
         registry = CapabilityRegistry(ttl_seconds=3600)
@@ -251,8 +251,8 @@ class TestStaleCapabilityCache:
         registry.get("claude-sonnet-5")
         registry.invalidate("claude-haiku-4.5")
         known = registry.all_known()
-        assert "claude-haiku-4.5" not in known
-        assert "claude-sonnet-5" in known
+        assert "claude-haiku-4.5" not in known, "Condition must be true"
+        assert "claude-sonnet-5" in known, "Condition must be true"
 
     def test_expired_cache_rebuilds_on_get(self) -> None:
         """TTL=0 means every get rebuilds the profile."""
@@ -260,8 +260,8 @@ class TestStaleCapabilityCache:
         p1 = registry.get("claude-haiku-4.5")
         p2 = registry.get("claude-haiku-4.5")
         # Both must be valid profiles even though cache always expires.
-        assert p1.model_id == "claude-haiku-4.5"
-        assert p2.model_id == "claude-haiku-4.5"
+        assert p1.model_id == "claude-haiku-4.5", "model_id is not valid"
+        assert p2.model_id == "claude-haiku-4.5", "model_id is not valid"
 
     def test_register_overrides_ttl(self) -> None:
         """Injected profile must persist through the normal TTL window."""
@@ -272,4 +272,4 @@ class TestStaleCapabilityCache:
         )
         registry.register(override)
         profile = registry.get("new-model-v2")
-        assert profile.supports_reasoning_effort is True
+        assert profile.supports_reasoning_effort is True, "supports_reasoning_effort is not valid"

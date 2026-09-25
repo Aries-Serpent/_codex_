@@ -166,7 +166,7 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
         print(f"{i}. Secret: {secret_name}")
         # Security: Use generic placeholder instead of exposing any token characters
         # to prevent clear-text token exposure in logs/output
-        print(f"   [Token fingerprint]")
+        print("   [Token fingerprint]")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for wf in sorted(info['workflows']):
@@ -238,9 +238,9 @@ Examples:
         # This prevents clear-text exposure of secret names
         if decoded and not decoded.startswith("["):
             # Secret was successfully decoded - mask it completely
-            print(f"Decoded: [Secret content redacted]")
+            print("Decoded: [Secret content redacted]")
         else:
-            print(f"Decoded: [Decode error - check audit log]")
+            print("Decoded: [Decode error - check audit log]")
         return
 
     # Handle token listing (safe, no decoding)

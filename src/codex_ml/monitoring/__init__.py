@@ -16,10 +16,10 @@ Installation:
 
 Quick Start:
     from codex_ml.monitoring.codex_logging import CodexLogger
-    
+
     logger = CodexLogger(experiment_name="training")
     logger.log_event("training_start", {"epoch": 0})
-    
+
     # Query learned patterns across sessions
     patterns = logger.query_patterns("training_*")
 
@@ -45,7 +45,7 @@ Functions:
 
 Configuration:
     Set environment variables to control monitoring:
-    
+
     CODEX_EXPERIMENTS_DIR: Directory for experiment logs (default: .codex/experiments)
     CODEX_LOG_LEVEL: Logging level (default: INFO)
     CODEX_METRICS_ENABLED: Enable metrics (default: true)
@@ -54,11 +54,11 @@ Configuration:
 Integration with Training:
     from codex_ml.monitoring.codex_logging import CodexLogger
     from codex_ml.training.trainer import Trainer
-    
+
     logger = CodexLogger(experiment_name="model_training")
     trainer = Trainer(config=config, logger=logger)
     trainer.train()
-    
+
     # Patterns automatically consolidated from STM to LTM
     patterns = logger.query_patterns("*")
 

@@ -18,9 +18,7 @@ class TelemetryMetric:
 
     metric_name: str
     value: float
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -38,9 +36,7 @@ class Anomaly:
     anomaly_type: str
     severity: str
     message: str
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -163,8 +159,7 @@ class ObservabilityPlane:
         report.quarantine = self.check_quarantine(transfer_id)
         if report.quarantine:
             report.quarantine_reason = (
-                f"{self.transfer_failures.get(transfer_id, 0)} failures "
-                "on this transfer"
+                f"{self.transfer_failures.get(transfer_id, 0)} failures on this transfer"
             )
 
         logger.info(

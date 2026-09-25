@@ -12,8 +12,8 @@ import logging
 import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, List, Optional, Callable, Any
 from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class SLAMonitor:
     Triggers escalations and generates compliance reports.
     Integrates with approval service state changes.
     """
-    
+
     # SLA Thresholds (in seconds)
     THRESHOLDS = {
         "D": (4 * 3600, 12 * 3600),      # Deployment: 4h per-stage, 12h total
@@ -58,7 +58,7 @@ class SLAMonitor:
         "A": (8 * 3600, 24 * 3600),      # Audit: 8h per-stage, 24h total
         "E": (4 * 3600, None),           # Escalation: 4h per level
     }
-    
+
     def __init__(
         self,
         telemetry_collector,
@@ -75,13 +75,13 @@ class SLAMonitor:
         self.collector = telemetry_collector
         self.escalation_callback = escalation_callback
         self.lock = threading.RLock()
-        
+
         # Track in-flight approvals for SLA monitoring
         self.in_flight: Dict[str, Dict[str, Any]] = {}
-        
+
         # SLA violation log
         self.violations: List[SLAViolation] = []
-        
+
         # Statistics
         self.stats = {
             "total_requests": 0,
@@ -90,9 +90,9 @@ class SLAMonitor:
             "sla_approaching": 0,
             "escalations_triggered": 0,
         }
-        
+
         logger.info("SLAMonitor initialized")
-    
+
     def track_approval_request(
         self,
         approval_id: str,
@@ -110,7 +110,7 @@ class SLAMonitor:
                 "sla_status": SLAStatus.MET.value,
             }
             self.stats["total_requests"] += 1
-    
+
     def record_stage_decision(
         self,
         approval_id: str,
@@ -132,16 +132,16 @@ class SLAMonitor:
             if approval_id not in self.in_flight:
                 logger.warning(f"Unknown approval {approval_id} in stage decision")
                 return {"sla_status": "unknown", "exceeded_by": 0}
-            
+
             # Get SLA threshold
             per_stage_sla, total_sla = self.THRESHOLDS.get(policy_category, (14400, 86400))
-            
+
             # Check per-stage SLA
             if decision_time_seconds > per_stage_sla:
                 status = SLAStatus.BREACHED
                 exceeded = decision_time_seconds - per_stage_sla
                 self.stats["sla_breached"] += 1
-                
+
                 # Log violation
                 violation = SLAViolation(
                     approval_id=approval_id,
@@ -153,7 +153,7 @@ class SLAMonitor:
                     timestamp=datetime.now(timezone.utc),
                 )
                 self.violations.append(violation)
-                
+
                 # Trigger escalation if configured
                 escalation_triggered = False
                 if self.escalation_callback:
@@ -164,13 +164,13 @@ class SLAMonitor:
                     )
                     escalation_triggered = True
                     self.stats["escalations_triggered"] += 1
-                
+
                 result = {
                     "sla_status": SLAStatus.BREACHED.value,
                     "exceeded_by": exceeded,
                     "escalation_triggered": escalation_triggered,
                 }
-            
+
             elif decision_time_seconds > per_stage_sla * 0.8:
                 status = SLAStatus.APPROACHING
                 self.stats["sla_approaching"] += 1
@@ -179,7 +179,7 @@ class SLAMonitor:
                     "exceeded_by": 0,
                     "escalation_triggered": False,
                 }
-            
+
             else:
                 status = SLAStatus.MET
                 self.stats["sla_met"] += 1
@@ -188,7 +188,7 @@ class SLAMonitor:
                     "exceeded_by": 0,
                     "escalation_triggered": False,
                 }
-            
+
             # Update in-flight record
             self.in_flight[approval_id]["stages"].append({
                 "stage": stage,
@@ -196,15 +196,15 @@ class SLAMonitor:
                 "sla_status": status.value,
             })
             self.in_flight[approval_id]["sla_status"] = status.value
-            
+
             return result
-    
+
     def complete_approval(self, approval_id: str) -> None:
         """Mark approval as complete; remove from in-flight tracking."""
         with self.lock:
             if approval_id in self.in_flight:
                 del self.in_flight[approval_id]
-    
+
     def get_sla_compliance_report(self) -> Dict[str, Any]:
         """Generate SLA compliance report by policy category."""
         with self.lock:
@@ -221,7 +221,7 @@ class SLAMonitor:
                 "violations": [],
                 "by_category": {},
             }
-            
+
             # Violations in detail
             report["violations"] = [
                 {
@@ -235,7 +235,7 @@ class SLAMonitor:
                 }
                 for v in self.violations[-100:]  # Last 100 violations
             ]
-            
+
             # Breakdown by category
             violations_by_cat = {}
             for v in self.violations:
@@ -243,7 +243,7 @@ class SLAMonitor:
                 if cat not in violations_by_cat:
                     violations_by_cat[cat] = []
                 violations_by_cat[cat].append(v)
-            
+
             for cat, violations in violations_by_cat.items():
                 report["by_category"][cat] = {
                     "violations": len(violations),
@@ -252,9 +252,9 @@ class SLAMonitor:
                     ),
                     "max_exceeded_by_seconds": max(v.exceeded_by_seconds for v in violations),
                 }
-            
+
             return report
-    
+
     def get_in_flight_approvals(self) -> List[Dict[str, Any]]:
         """Get all in-flight approvals and their current SLA status."""
         with self.lock:
@@ -269,12 +269,12 @@ class ComplianceReporter:
     Identifies patterns and trends.
     Produces reportable metrics for compliance teams.
     """
-    
+
     def __init__(self, sla_monitor: SLAMonitor):
         """Initialize reporter."""
         self.sla_monitor = sla_monitor
         self.reports_generated: List[Dict[str, Any]] = []
-    
+
     def generate_hourly_report(self) -> Dict[str, Any]:
         """Generate hourly compliance report."""
         report = {
@@ -283,24 +283,24 @@ class ComplianceReporter:
             "sla_compliance": self.sla_monitor.get_sla_compliance_report(),
             "metric_snapshots": {},
         }
-        
+
         self.reports_generated.append(report)
-        
+
         # Keep last 24 reports
         if len(self.reports_generated) > 24:
             self.reports_generated.pop(0)
-        
+
         return report
-    
+
     def generate_daily_report(self) -> Dict[str, Any]:
         """Generate daily compliance report."""
         if len(self.reports_generated) < 24:
             hourly_data = self.reports_generated
         else:
             hourly_data = self.reports_generated[-24:]
-        
+
         compliance_data = [h["sla_compliance"] for h in hourly_data]
-        
+
         report = {
             "period": "24h",
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -312,13 +312,13 @@ class ComplianceReporter:
             "by_category": self._aggregate_by_category(compliance_data),
             "recommendations": self._generate_recommendations(compliance_data),
         }
-        
+
         return report
-    
+
     def _aggregate_by_category(self, compliance_data: List[Dict]) -> Dict[str, Any]:
         """Aggregate compliance data by policy category."""
         by_cat = {}
-        
+
         for data in compliance_data:
             for cat, cat_data in data["by_category"].items():
                 if cat not in by_cat:
@@ -327,14 +327,14 @@ class ComplianceReporter:
                         "avg_exceeded_seconds": [],
                         "max_exceeded_seconds": 0,
                     }
-                
+
                 by_cat[cat]["total_violations"] += cat_data["violations"]
                 by_cat[cat]["avg_exceeded_seconds"].append(cat_data["avg_exceeded_by_seconds"])
                 by_cat[cat]["max_exceeded_seconds"] = max(
                     by_cat[cat]["max_exceeded_seconds"],
                     cat_data["max_exceeded_by_seconds"],
                 )
-        
+
         # Average the exceeded seconds
         for cat, data in by_cat.items():
             if data["avg_exceeded_seconds"]:
@@ -343,29 +343,29 @@ class ComplianceReporter:
                 )
             else:
                 data["avg_exceeded_seconds"] = 0
-        
+
         return by_cat
-    
+
     def _generate_recommendations(self, compliance_data: List[Dict]) -> List[str]:
         """Generate recommendations based on compliance trends."""
         recommendations = []
-        
+
         avg_compliance = (
             sum(c["sla_compliance_pct"] for c in compliance_data) / len(compliance_data)
         )
-        
+
         if avg_compliance < 95:
             recommendations.append(
                 "SLA compliance <95%. Review approval process and authority capacity."
             )
-        
+
         total_violations = sum(c["sla_breached_count"] for c in compliance_data)
         if total_violations > 10:
             recommendations.append(
                 f"High violation rate ({total_violations} in 24h). "
                 "Escalate to approval authority managers."
             )
-        
+
         return recommendations
 
 
@@ -376,13 +376,13 @@ class ApprovalServiceIntegration:
     Listens to approval state changes and updates telemetry.
     Coordinates SLA monitoring with approval workflow engine.
     """
-    
+
     def __init__(self, telemetry_collector, sla_monitor: SLAMonitor):
         """Initialize integration."""
         self.collector = telemetry_collector
         self.sla_monitor = sla_monitor
         self.logger = logging.getLogger(__name__)
-    
+
     def on_request_submitted(
         self,
         approval_id: str,
@@ -401,16 +401,16 @@ class ApprovalServiceIntegration:
             requester_role=requester_role,
             sla_seconds=sla_seconds,
         )
-        
+
         self.sla_monitor.track_approval_request(
             approval_id=approval_id,
             policy_category=policy_category,
             policy_id=policy_id,
             submitted_at=datetime.now(timezone.utc),
         )
-        
+
         self.logger.info(f"Approval request tracked: {approval_id}")
-    
+
     def on_decision_made(
         self,
         approval_id: str,
@@ -435,19 +435,19 @@ class ApprovalServiceIntegration:
             stage=stage,
             sla_seconds=sla_seconds,
         )
-        
+
         result = self.sla_monitor.record_stage_decision(
             approval_id=approval_id,
             stage=stage,
             decision_time_seconds=decision_time_seconds,
             policy_category=policy_category,
         )
-        
+
         self.logger.info(
             f"Decision recorded for {approval_id}: {sla_status} "
             f"({decision_time_seconds:.0f}s vs {sla_seconds:.0f}s SLA)"
         )
-    
+
     def on_approval_completed(self, approval_id: str) -> None:
         """Handle approval completion event."""
         self.sla_monitor.complete_approval(approval_id)
@@ -457,18 +457,18 @@ class ApprovalServiceIntegration:
 if __name__ == "__main__":
     # Quick integration test
     logging.basicConfig(level=logging.INFO)
-    
+
     from approval_telemetry_collector import ApprovalTelemetryCollector
-    
+
     collector = ApprovalTelemetryCollector()
-    
+
     def escalation_callback(approval_id, policy_cat, reason):
         print(f"ESCALATION: {approval_id} ({policy_cat}) - {reason}")
-    
+
     sla_monitor = SLAMonitor(collector, escalation_callback=escalation_callback)
     integration = ApprovalServiceIntegration(collector, sla_monitor)
     reporter = ComplianceReporter(sla_monitor)
-    
+
     # Simulate approval workflow
     integration.on_request_submitted(
         approval_id="apr-001",
@@ -478,7 +478,7 @@ if __name__ == "__main__":
         requester_role="release-operator",
         sla_seconds=14400,
     )
-    
+
     # Simulate decision (within SLA)
     integration.on_decision_made(
         approval_id="apr-001",
@@ -491,7 +491,7 @@ if __name__ == "__main__":
         stage=1,
         sla_seconds=14400,
     )
-    
+
     # Generate report
     report = reporter.generate_hourly_report()
     print(f"\nCompliance Report:\n{report}")

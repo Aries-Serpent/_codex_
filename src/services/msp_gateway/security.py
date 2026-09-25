@@ -75,7 +75,9 @@ class PolicyEnforcer:
                 with open(safelist_path, "r") as f:
                     self.safelist = yaml.safe_load(f) or {}
             else:
-                logger.warning("Safelist not found at %s, using empty policy", safelist_path)  # codeql[py/log-injection]
+                logger.warning(
+                    "Safelist not found at %s, using empty policy", safelist_path
+                )  # codeql[py/log-injection]
                 self.safelist = {}
 
             if denylist_path.exists():
@@ -141,7 +143,7 @@ class PolicyEnforcer:
             if term.lower() in redacted.lower():
                 # Case-insensitive replacement, but not inside brackets []
                 # Use negative lookbehind and lookahead to avoid matching inside [REDACTED] markers
-                pattern = r'(?<!\[)' + re.escape(term) + r'(?![^\[]*\])'
+                pattern = r"(?<!\[)" + re.escape(term) + r"(?![^\[]*\])"
                 redacted = re.sub(pattern, "[REDACTED]", redacted, flags=re.IGNORECASE)
                 redactions_applied.append(f"term:{term}")
 

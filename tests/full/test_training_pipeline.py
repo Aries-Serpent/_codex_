@@ -41,19 +41,19 @@ class TestDataLoading:
         total_batches = 0
 
         for batch in train_dataloader:
-            assert "input_ids" in batch
-            assert "attention_mask" in batch
-            assert "labels" in batch
+            assert "input_ids" in batch, "Condition must be true"
+            assert "attention_mask" in batch, "Condition must be true"
+            assert "labels" in batch, "Condition must be true"
 
             # Verify batch size
-            assert batch["input_ids"].shape[0] <= batch_size
-            assert batch["attention_mask"].shape[0] <= batch_size
-            assert batch["labels"].shape[0] <= batch_size
+            assert batch["input_ids"].shape[0] <= batch_size, "Condition must be true"
+            assert batch["attention_mask"].shape[0] <= batch_size, "Condition must be true"
+            assert batch["labels"].shape[0] <= batch_size, "Condition must be true"
 
             total_batches += 1
 
         # Verify we got batches
-        assert total_batches > 0
+        assert total_batches > 0, "total_batches must be greater than zero"
 
     def test_data_loading_correct_shapes(
         self,
@@ -65,14 +65,14 @@ class TestDataLoading:
 
         for batch in train_dataloader:
             # Verify sequence length
-            assert batch["input_ids"].shape[1] == seq_length
-            assert batch["attention_mask"].shape[1] == seq_length
-            assert batch["labels"].shape[1] == seq_length
+            assert batch["input_ids"].shape[1] == seq_length, "Length must be greater than zero"
+            assert batch["attention_mask"].shape[1] == seq_length, "Length must be greater than zero"
+            assert batch["labels"].shape[1] == seq_length, "Length must be greater than zero"
 
             # Verify data types
-            assert batch["input_ids"].dtype == torch.long
-            assert batch["attention_mask"].dtype == torch.long
-            assert batch["labels"].dtype == torch.long
+            assert batch["input_ids"].dtype == torch.long, "dtype is not valid"
+            assert batch["attention_mask"].dtype == torch.long, "dtype is not valid"
+            assert batch["labels"].dtype == torch.long, "dtype is not valid"
             break  # Just check first batch
 
     def test_validation_data_loading(
@@ -84,7 +84,7 @@ class TestDataLoading:
         for batch in val_dataloader:
             batches.append(batch)
 
-        assert len(batches) > 0
+        assert len(batches) > 0, "Batches must not be empty"
 
     def test_train_val_datasets_different(
         self,
@@ -93,7 +93,7 @@ class TestDataLoading:
     ):
         """Test that training and validation datasets are different."""
         # Different number of samples
-        assert (
+        assert (, "Condition must be true"
             len(synthetic_train_dataset)
             != len(synthetic_val_dataset)
         )
@@ -112,8 +112,8 @@ class TestPreprocessing:
 
         for batch in train_dataloader:
             input_ids = batch["input_ids"]
-            assert input_ids.dim() == 2
-            assert input_ids.shape[1] == seq_length
+            assert input_ids.dim() == 2, "Condition must be true"
+            assert input_ids.shape[1] == seq_length, "Length must be greater than zero"
             break
 
     def test_attention_mask_creation(
@@ -124,7 +124,7 @@ class TestPreprocessing:
         for batch in train_dataloader:
             attention_mask = batch["attention_mask"]
             # All values should be 0 or 1
-            assert torch.all((attention_mask == 0) | (attention_mask == 1))
+            assert torch.all((attention_mask == 0) | (attention_mask == 1)), "attention_mask is not valid"
             break
 
     def test_labels_preparation(
@@ -135,7 +135,7 @@ class TestPreprocessing:
         for batch in train_dataloader:
             labels = batch["labels"]
             # Labels should be non-negative
-            assert torch.all(labels >= 0)
+            assert torch.all(labels >= 0), "labels must be greater than zero"
             break
 
 
@@ -147,7 +147,7 @@ class TestModelInitialization:
         model: MiniTransformerModel,
     ):
         """Test model initializes correctly."""
-        assert model is not None
+        assert model is not None, "model must be initialized"
         assert isinstance(model, nn.Module)
 
     def test_model_parameters_exist(
@@ -156,11 +156,11 @@ class TestModelInitialization:
     ):
         """Test that model has trainable parameters."""
         params = list(model.parameters())
-        assert len(params) > 0
+        assert len(params) > 0, "Params must not be empty"
 
         # Verify parameters have gradients enabled
         for param in params:
-            assert param.requires_grad
+            assert param.requires_grad, "Condition must be true"
 
     def test_model_on_device(
         self,
@@ -169,7 +169,7 @@ class TestModelInitialization:
     ):
         """Test model is on correct device."""
         for param in model.parameters():
-            assert param.device == device
+            assert param.device == device, "device is not valid"
 
     def test_model_forward_pass(
         self,
@@ -191,10 +191,10 @@ class TestModelInitialization:
 
         logits, loss = model(input_ids, labels=labels)
 
-        assert logits is not None
-        assert loss is not None
+        assert logits is not None, "logits must be initialized"
+        assert loss is not None, "loss must be initialized"
         assert logits.shape == (batch_size, seq_length, vocab_size)
-        assert loss.item() > 0
+        assert loss.item() > 0, "Value must be greater than zero"
 
 
 class TestTrainingLoop:
@@ -216,7 +216,7 @@ class TestTrainingLoop:
 
         # Forward pass
         logits, loss = model(input_ids, labels=labels)
-        assert loss is not None
+        assert loss is not None, "loss must be initialized"
 
         # Backward pass
         optimizer.zero_grad()
@@ -225,7 +225,7 @@ class TestTrainingLoop:
         # Check gradients exist
         for param in model.parameters():
             if param.requires_grad:
-                assert param.grad is not None
+                assert param.grad is not None, "grad must be initialized"
 
         # Optimizer step
         optimizer.step()
@@ -257,8 +257,8 @@ class TestTrainingLoop:
             if batch_idx >= 2:  # Just a few batches for test
                 break
 
-        assert len(losses) > 0
-        assert all(loss > 0 for loss in losses)
+        assert len(losses) > 0, "Losses must not be empty"
+        assert all(loss > 0 for loss in losses), "loss must be greater than zero"
 
     def test_loss_decreases_over_steps(
         self,
@@ -291,7 +291,7 @@ class TestTrainingLoop:
         avg_second_half = sum(losses[2:]) / len(losses[2:])
 
         # At least show some improvement trend
-        assert len(losses) >= 3
+        assert len(losses) >= 3, "Losses must not be empty"
 
 
 class TestGradientFlow:
@@ -313,7 +313,7 @@ class TestGradientFlow:
         # Before backward, gradients should be None
         for param in model.parameters():
             if param.requires_grad:
-                assert param.grad is None
+                assert param.grad is None, "grad is not valid"
 
         # Forward and backward
         logits, loss = model(input_ids, labels=labels)
@@ -326,7 +326,7 @@ class TestGradientFlow:
                 has_gradients = True
                 break
 
-        assert has_gradients
+        assert has_gradients, "has_gradients is not valid"
 
     def test_gradient_magnitudes_reasonable(
         self,
@@ -351,7 +351,7 @@ class TestGradientFlow:
                 max_grad = max(max_grad, param.grad.abs().max().item())
 
         # Gradients should be non-zero and reasonable
-        assert 0 < max_grad < 1e6
+        assert 0 < max_grad < 1e6, "0 is not valid"
 
 
 class TestOptimizerUpdates:
@@ -389,7 +389,7 @@ class TestOptimizerUpdates:
                 params_changed = True
                 break
 
-        assert params_changed
+        assert params_changed, "params_changed is not valid"
 
     def test_learning_rate_scheduler_step(
         self,
@@ -403,7 +403,7 @@ class TestOptimizerUpdates:
         updated_lr = optimizer.param_groups[0]["lr"]
 
         # Learning rate should be updated
-        assert initial_lr == updated_lr or updated_lr > 0
+        assert initial_lr == updated_lr or updated_lr > 0, "initial_lr must be greater than zero"
 
 
 class TestValidation:
@@ -430,8 +430,8 @@ class TestValidation:
                 if len(val_losses) >= 2:
                     break
 
-        assert len(val_losses) > 0
-        assert all(loss > 0 for loss in val_losses)
+        assert len(val_losses) > 0, "Val_losses must not be empty"
+        assert all(loss > 0 for loss in val_losses), "loss must be greater than zero"
 
     def test_no_gradients_during_validation(
         self,
@@ -451,7 +451,7 @@ class TestValidation:
         # No gradients should be computed
         for param in model.parameters():
             if param.requires_grad:
-                assert param.grad is None
+                assert param.grad is None, "grad is not valid"
 
 
 class TestCheckpointing:
@@ -469,7 +469,7 @@ class TestCheckpointing:
 
         training_state.save_checkpoint(checkpoint_path)
 
-        assert checkpoint_path.exists()
+        assert checkpoint_path.exists(), "Condition must be true"
 
     def test_load_checkpoint(
         self,
@@ -493,8 +493,8 @@ class TestCheckpointing:
         )
         new_state.load_checkpoint(checkpoint_path)
 
-        assert new_state.epoch == 5
-        assert new_state.global_step == 200
+        assert new_state.epoch == 5, "epoch is not valid"
+        assert new_state.global_step == 200, "global_step is not valid"
 
     def test_checkpoint_contains_metrics(
         self,
@@ -509,8 +509,8 @@ class TestCheckpointing:
 
         # Load and verify
         checkpoint = torch.load(checkpoint_path)
-        assert "metrics" in checkpoint
-        assert checkpoint["metrics"]["loss"] == 2.5
+        assert "metrics" in checkpoint, "Condition must be true"
+        assert checkpoint["metrics"]["loss"] == 2.5, "Condition must be true"
 
 
 class TestMetricsLogging:
@@ -524,8 +524,8 @@ class TestMetricsLogging:
         training_metrics["train_loss"].append(2.5)
         training_metrics["train_loss"].append(2.3)
 
-        assert len(training_metrics["train_loss"]) == 2
-        assert training_metrics["train_loss"][0] == 2.5
+        assert len(training_metrics["train_loss"]) == 2, "Collection must not be empty"
+        assert training_metrics["train_loss"][0] == 2.5, "Condition must be true"
 
     def test_metrics_computation(
         self,
@@ -548,7 +548,7 @@ class TestMetricsLogging:
                 break
 
         avg_loss = sum(losses) / len(losses)
-        assert 0 < avg_loss < 1e6
+        assert 0 < avg_loss < 1e6, "0 is not valid"
 
     def test_perplexity_computation(
         self,
@@ -558,7 +558,7 @@ class TestMetricsLogging:
         loss = 2.5
         perplexity = 2.718 ** loss  # e^loss
 
-        assert perplexity > 1.0
+        assert perplexity > 1.0, "perplexity must be greater than zero"
 
 
 class TestConvergence:
@@ -599,7 +599,7 @@ class TestConvergence:
             epoch_losses.append(avg_epoch_loss)
 
         # We should have losses for both epochs
-        assert len(epoch_losses) == 2
+        assert len(epoch_losses) == 2, "Epoch_losses must not be empty"
 
 
 class TestFullPipeline:
@@ -677,10 +677,10 @@ class TestFullPipeline:
         elapsed_time = time.time() - start_time
 
         # Verify complete pipeline executed
-        assert len(training_metrics["train_loss"]) > 0
-        assert len(training_metrics["val_loss"]) > 0
-        assert training_state.epoch > 0
-        assert elapsed_time > 0
+        assert len(training_metrics["train_loss"]) > 0, "Collection must not be empty"
+        assert len(training_metrics["val_loss"]) > 0, "Collection must not be empty"
+        assert training_state.epoch > 0, "epoch must be greater than zero"
+        assert elapsed_time > 0, "elapsed_time must be greater than zero"
 
     def test_checkpoint_restore(
         self,
@@ -701,8 +701,8 @@ class TestFullPipeline:
         new_state = TrainingState(model, optimizer, device)
         metrics = new_state.load_checkpoint(checkpoint_path)
 
-        assert new_state.epoch == 2
-        assert new_state.global_step == 500
+        assert new_state.epoch == 2, "epoch is not valid"
+        assert new_state.global_step == 500, "global_step is not valid"
 
     def test_pipeline_performance_metrics(
         self,
@@ -735,4 +735,4 @@ class TestFullPipeline:
         elapsed_time = time.time() - start_time
         throughput = sample_count / elapsed_time if elapsed_time > 0 else 0
 
-        assert throughput > 0
+        assert throughput > 0, "throughput must be greater than zero"

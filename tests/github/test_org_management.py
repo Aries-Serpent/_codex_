@@ -19,7 +19,7 @@ class TestOrganizationTeams:
     def test_list_org_teams(self, org_name: str):
         """Test listing organization teams."""
         endpoint = f"/orgs/{org_name}/teams"
-        assert org_name in endpoint
+        assert org_name in endpoint, "Condition must be true"
 
     def test_create_team(self, org_name: str):
         """Test creating a team."""

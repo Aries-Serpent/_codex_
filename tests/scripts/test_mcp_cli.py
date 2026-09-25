@@ -1,11 +1,11 @@
 #         )
 # Test module for mcp cli.
-# 
+#
 #     def test_cli_respects_github_tmp_for_temp_files(self, mcp_package_cli, mock_repo):
 # """
 #         )
 # Test suite for scripts/mcp/mcp-package CLI
-# 
+#
 #     def test_cli_respects_github_tmp_for_temp_files(self, mcp_package_cli, mock_repo):
 # Tests command-line interface and integration
 #         """Test that CLI uses .github/tmp for temporary files (anti-/tmp/ protection)"""
@@ -13,7 +13,7 @@
 #         # The script should create temp files in .github/tmp
 #         github_tmp = mock_repo / ".github" / "tmp"
 #         assert github_tmp.exists(), ".github/tmp should exist in mock repo"
-# 
+#
 #             capture_output=True,
 #             text=True,
 #             cwd=str(mock_repo),
@@ -30,7 +30,7 @@
 # @pytest.fixture
 #         )
 #     repo.mkdir()
-# 
+#
 #     # Initialize git repository (required by mcp-package CLI)
 #     subprocess.run(
 #         ["git", "init"],
@@ -50,28 +50,28 @@
 #         capture_output=True,
 #         check=True,
 #     )
-# 
+#
 #     # Create topics.json
 #     scripts_mcp = repo / "scripts" / "mcp"
 #     scripts_mcp.mkdir(parents=True)
 #     scripts_mcp.mkdir(parents=True)
-# 
+#
 #     topics = {"test_topic": ["**/*.py"], "docs": ["**/*.md"]}
 #     (scripts_mcp / "topics.json").write_text(json.dumps(topics))
 #     # Create select_components.py placeholder
 #     (scripts_mcp / "select_components.py").write_text("#!/usr/bin/env python3\nlogger.info('mock')")
-# 
+#
 #     # Create package_flatten.sh placeholder
 #     (scripts_mcp / "package_flatten.sh").write_text("#!/bin/bash\necho 'mock'")
 #     (scripts_mcp / "package_flatten.sh").chmod(0o755)
-# 
+#
 #     # Create .github/tmp for temp files
 #     (repo / ".github" / "tmp").mkdir(parents=True)
-# 
+#
 #     # Create some test files
 #     (repo / "test.py").write_text("# test")
 #     (repo / "README.md").write_text("# readme")
-# 
+#
 #     # Commit initial files so git ls-files works
 #     subprocess.run(
 #         ["git", "add", "."],
@@ -86,13 +86,13 @@
 #         check=True,
 #     )
 #     )
-# 
+#
 #     return repo
 #             cwd=str(mock_repo),
 #         )
 #     """Tests for mcp-package command-line interface"""
 #     """Tests for mcp-package command-line interface"""
-# 
+#
 #     def test_cli_exists_and_executable(self, mcp_package_cli):
 #     def test_cli_exists_and_executable(self, mcp_package_cli):
 #         """Test that CLI script exists and is executable"""
@@ -110,7 +110,7 @@
 #         assert "--list" in result.stdout, "Result must not be empty"
 #         assert "--topic" in result.stdout, "Result must not be empty"
 #         assert "--custom" in result.stdout, "Result must not be empty"
-# 
+#
 #     def test_cli_list_topics_flag(self, mcp_package_cli, mock_repo, monkeypatch):
 #     def test_cli_list_topics_flag(self, mcp_package_cli, mock_repo, monkeypatch):
 #         """Test --list flag shows available topics"""
@@ -126,7 +126,7 @@
 #         if result.returncode == 0:
 #             assert "topic" in result.stdout.lower() or "available" in result.stdout.lower(), "Result must not be empty"
 #             assert "topic" in result.stdout.lower() or "available" in result.stdout.lower(), "Result must not be empty"
-# 
+#
 #     def test_cli_requires_topic_or_custom(self, mcp_package_cli):
 #     def test_cli_requires_topic_or_custom(self, mcp_package_cli):
 #         """Test that CLI requires either --topic or --custom"""
@@ -135,7 +135,7 @@
 #         )
 #         assert result.returncode != 0 or "--topic" in result.stdout, "Result must not be empty"
 #         assert result.returncode != 0 or "--topic" in result.stdout, "Result must not be empty"
-# 
+#
 #     def test_cli_topic_flag_validation(self, mcp_package_cli, mock_repo):
 #     def test_cli_topic_flag_validation(self, mcp_package_cli, mock_repo):
 #         """Test --topic flag with valid topic"""
@@ -156,7 +156,7 @@
 #         assert "Topic:" in result.stdout or result.returncode in (0, 1)
 #         # May fail due to missing dependencies, but syntax should be OK
 #         assert "Topic:" in result.stdout or result.returncode in (0, 1)
-# 
+#
 #     def test_cli_custom_flag_validation(self, mcp_package_cli, mock_repo):
 #     def test_cli_custom_flag_validation(self, mcp_package_cli, mock_repo):
 #         """Test --custom flag with glob patterns"""
@@ -170,7 +170,7 @@
 #         )
 #         assert "Custom" in result.stdout or result.returncode in (0, 1)
 #         assert "Custom" in result.stdout or result.returncode in (0, 1)
-# 
+#
 #     def test_cli_output_flag_adds_zip_extension(self, mcp_package_cli, mock_repo):
 #     def test_cli_output_flag_adds_zip_extension(self, mcp_package_cli, mock_repo):
 #         """Test that --output flag automatically adds .zip extension"""
@@ -193,7 +193,7 @@
 #         if result.returncode == 0:
 #             assert ".zip" in result.stdout, "Result must not be empty"
 #             assert ".zip" in result.stdout, "Result must not be empty"
-# 
+#
 #     def test_cli_dry_run_flag(self, mcp_package_cli, mock_repo):
 #     def test_cli_dry_run_flag(self, mcp_package_cli, mock_repo):
 #         """Test --dry-run flag prevents actual packaging"""
@@ -214,7 +214,7 @@
 #         if result.returncode == 0:
 #             assert "DRY RUN" in result.stdout or "dry" in result.stdout.lower(), "Result must not be empty"
 #             assert "DRY RUN" in result.stdout or "dry" in result.stdout.lower(), "Result must not be empty"
-# 
+#
 #     def test_cli_verbose_flag(self, mcp_package_cli, mock_repo):
 #     def test_cli_verbose_flag(self, mcp_package_cli, mock_repo):
 #         """Test --verbose flag increases output detail"""
@@ -236,7 +236,7 @@
 #         if result.returncode == 0:
 #             assert len(result.stdout) > 0, "Collection must not be empty"
 #             assert len(result.stdout) > 0, "Collection must not be empty"
-# 
+#
 #     def test_cli_generates_timestamped_output_name(self, mcp_package_cli, mock_repo):
 #     def test_cli_generates_timestamped_output_name(self, mcp_package_cli, mock_repo):
 #         """Test automatic timestamp-based output naming"""
@@ -262,7 +262,7 @@
 #         )
 #     """Tests for CLI edge cases and error handling"""
 #     """Tests for CLI edge cases and error handling"""
-# 
+#
 #     def test_cli_handles_missing_topics_file(self, mcp_package_cli, tmp_path):
 #     def test_cli_handles_missing_topics_file(self, mcp_package_cli, tmp_path):
 #         """Test error handling when topics.json is missing"""
@@ -282,7 +282,7 @@
 #             or "git repository" in result.stdout.lower()
 #         )
 #         )
-# 
+#
 #     def test_cli_handles_invalid_topic_name(self, mcp_package_cli, mock_repo):
 #     def test_cli_handles_invalid_topic_name(self, mcp_package_cli, mock_repo):
 #         """Test error handling for unknown topic"""
@@ -326,7 +326,7 @@
 #             )
 #             assert package_result.returncode in (0, 1)
 #             assert package_result.returncode in (0, 1)
-# 
+#
 #     def test_cli_respects_github_tmp_for_temp_files(self, mcp_package_cli, mock_repo):
 #     def test_cli_respects_github_tmp_for_temp_files(self, mcp_package_cli, mock_repo):
 #         """Test that CLI uses .github/tmp for temporary files (anti-/tmp/ protection)"""

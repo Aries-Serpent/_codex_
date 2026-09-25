@@ -36,7 +36,7 @@ class TestPhase10CrossServiceCommunication:
             {"name": "ml-service", "host": "localhost", "port": 8001},
             {"name": "cache-service", "host": "localhost", "port": 6379},
         ]
-        
+
         # Act
         for service in services_to_register:
             service_mesh["service_registry"][service["name"]] = {
@@ -45,10 +45,10 @@ class TestPhase10CrossServiceCommunication:
                 "healthy": True,
                 "registered_at": "2026-07-16T16:00:00Z",
             }
-        
+
         # Assert
-        assert len(service_mesh["service_registry"]) == 3
-        assert "api-service" in service_mesh["service_registry"]
+        assert len(service_mesh["service_registry"]) == 3, "Collection must not be empty"
+        assert "api-service" in service_mesh["service_registry"], "Condition must be true"
 
     def test_inter_service_api_call(self, service_mesh):
         """Test inter-service API call."""
@@ -57,7 +57,7 @@ class TestPhase10CrossServiceCommunication:
         callee = "ml-service"
         endpoint = "/predict"
         payload = {"data": [1, 2, 3]}
-        
+
         # Act
         call_info = {
             "caller": caller,
@@ -70,10 +70,10 @@ class TestPhase10CrossServiceCommunication:
             "latency_ms": 145,
         }
         service_mesh["call_log"].append(call_info)
-        
+
         # Assert
-        assert len(service_mesh["call_log"]) == 1
-        assert service_mesh["call_log"][0]["status_code"] == 200
+        assert len(service_mesh["call_log"]) == 1, "Collection must not be empty"
+        assert service_mesh["call_log"][0]["status_code"] == 200, "Condition must be true"
 
     def test_message_queue_integration(self, service_mesh):
         """Test message queue integration."""
@@ -83,7 +83,7 @@ class TestPhase10CrossServiceCommunication:
             {"topic": "data_events", "data": {"event_type": "ingestion"}},
             {"topic": "alerts", "data": {"severity": "high"}},
         ]
-        
+
         # Act
         for message in messages:
             service_mesh["message_queue"].append({
@@ -92,9 +92,9 @@ class TestPhase10CrossServiceCommunication:
                 "timestamp": "2026-07-16T16:01:00Z",
                 "processed": False,
             })
-        
+
         # Assert
-        assert len(service_mesh["message_queue"]) == 3
+        assert len(service_mesh["message_queue"]) == 3, "Collection must not be empty"
 
     def test_service_health_propagation(self, service_mesh):
         """Test service health status propagation."""
@@ -105,20 +105,20 @@ class TestPhase10CrossServiceCommunication:
         service_mesh["service_registry"]["ml-service"] = {
             "host": "localhost", "port": 8001, "healthy": True
         }
-        
+
         # Act
         # Simulate health check update
         service_mesh["service_registry"]["ml-service"]["healthy"] = False
-        
+
         # Propagate status
         dependent_services = ["api-service"]
         for service in dependent_services:
             if service_mesh["service_registry"]["ml-service"]["healthy"] is False:
                 service_mesh["services"][service] = {"status": "degraded"}
-        
+
         # Assert
-        assert service_mesh["service_registry"]["ml-service"]["healthy"] is False
-        assert service_mesh["services"]["api-service"]["status"] == "degraded"
+        assert service_mesh["service_registry"]["ml-service"]["healthy"] is False, "Condition must be true"
+        assert service_mesh["services"]["api-service"]["status"] == "degraded", "Condition must be true"
 
     def test_circuit_breaker_pattern(self, service_mesh):
         """Test circuit breaker pattern."""
@@ -126,16 +126,16 @@ class TestPhase10CrossServiceCommunication:
         failure_count = 0
         failure_threshold = 5
         circuit_open = False
-        
+
         # Act
         for i in range(6):
             failure_count += 1
             if failure_count >= failure_threshold:
                 circuit_open = True
-        
+
         # Assert
-        assert circuit_open is True
-        assert failure_count >= failure_threshold
+        assert circuit_open is True, "circuit_open is not valid"
+        assert failure_count >= failure_threshold, "failure_count must be positive"
 
     def test_retry_logic_with_exponential_backoff(self, service_mesh):
         """Test retry logic with exponential backoff."""
@@ -143,14 +143,14 @@ class TestPhase10CrossServiceCommunication:
         max_retries = 3
         retry_delays = []
         base_delay = 100  # ms
-        
+
         # Act
         for retry_attempt in range(max_retries):
             delay = base_delay * (2 ** retry_attempt)
             retry_delays.append(delay)
-        
+
         # Assert
-        assert len(retry_delays) == max_retries
+        assert len(retry_delays) == max_retries, "Retry_delays must not be empty"
         assert retry_delays == [100, 200, 400]
 
     def test_request_timeout_handling(self, service_mesh):
@@ -158,12 +158,12 @@ class TestPhase10CrossServiceCommunication:
         # Arrange
         timeout_ms = 5000
         response_time_ms = 5500
-        
+
         # Act
         timed_out = response_time_ms > timeout_ms
-        
+
         # Assert
-        assert timed_out is True
+        assert timed_out is True, "timed_out is not valid"
 
 
 @pytest.mark.integration
@@ -176,17 +176,17 @@ class TestPhase10ServiceLoadBalancing:
         # Arrange
         instances = ["instance_1", "instance_2", "instance_3"]
         requests = 9
-        
+
         # Act
         load_distribution = {}
         for i in range(requests):
             instance = instances[i % len(instances)]
             load_distribution[instance] = load_distribution.get(instance, 0) + 1
-        
+
         # Assert
-        assert load_distribution["instance_1"] == 3
-        assert load_distribution["instance_2"] == 3
-        assert load_distribution["instance_3"] == 3
+        assert load_distribution["instance_1"] == 3, "Condition must be true"
+        assert load_distribution["instance_2"] == 3, "Condition must be true"
+        assert load_distribution["instance_3"] == 3, "Condition must be true"
 
     def test_weighted_load_balancing(self):
         """Test weighted load balancing."""
@@ -195,12 +195,12 @@ class TestPhase10ServiceLoadBalancing:
             "instance_1": {"weight": 3},
             "instance_2": {"weight": 1},
         }
-        
+
         # Act
         total_weight = sum(i["weight"] for i in instances.values())
-        
+
         # Assert
-        assert total_weight == 4
+        assert total_weight == 4, "total_weight is not valid"
 
     def test_instance_health_aware_routing(self):
         """Test instance health-aware routing."""
@@ -210,16 +210,16 @@ class TestPhase10ServiceLoadBalancing:
             "instance_2": {"healthy": False},
             "instance_3": {"healthy": True},
         }
-        
+
         # Act
         healthy_instances = {
             name: inst for name, inst in instances.items()
             if inst["healthy"]
         }
-        
+
         # Assert
-        assert len(healthy_instances) == 2
-        assert "instance_1" in healthy_instances
+        assert len(healthy_instances) == 2, "Healthy_instances must not be empty"
+        assert "instance_1" in healthy_instances, "Condition must be true"
 
 
 if __name__ == "__main__":

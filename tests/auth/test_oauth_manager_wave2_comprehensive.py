@@ -165,8 +165,8 @@ class TestTokenExchange:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert result.access_token == "test_token"
-                    assert result.token_type == "Bearer"
+                    assert result.access_token == "test_token", "Result must not be empty"
+                    assert result.token_type == "Bearer", "Result must not be empty"
 
     def test_token_includes_access_token(self, oauth_manager):
         """Test that token response includes access token."""
@@ -307,8 +307,8 @@ class TestTokenRefresh:
 
                 result = oauth_manager.refresh_token("refresh_token_value")
                 if result:
-                    assert result.access_token == "new_token"
-                    assert result.token_type == "bearer"
+                    assert result.access_token == "new_token", "Result must not be empty"
+                    assert result.token_type == "bearer", "Result must not be empty"
 
     def test_refresh_token_expiration(self, oauth_manager):
         """Test that refreshed token has expiration."""

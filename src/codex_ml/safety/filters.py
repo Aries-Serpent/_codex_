@@ -150,7 +150,12 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         return None
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive
         logger.warning("Unable to read safety policy %s: %s", path, exc)
         return None
 
@@ -160,7 +165,12 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
             data = yaml.safe_load(text)
             if isinstance(data, Mapping):
                 return data
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - defensive
             logger.warning("Failed to parse YAML policy %s: %s", path, exc)
 
     # Try JSON

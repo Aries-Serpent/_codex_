@@ -129,7 +129,7 @@ class CanaryDrillOrchestrator:
             # This is NOT security-critical; it simulates variable test execution times.
             # See: Security Finding B311 - Random number generation
             test.execution_time_seconds = random.uniform(0.1, 5.0)  # noqa: S311
-            
+
             # PHASE 3 HARDENING: random.random() used for FAILURE INJECTION SIMULATION
             # This is NOT security-critical; it simulates a 90% system health baseline.
             # See: Security Finding B311 - Random number generation
@@ -207,7 +207,7 @@ class CanaryDrillOrchestrator:
             # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY (Rollback timing)
             # This is NOT security-critical; it simulates variable rollback execution times.
             test.execution_time_seconds = random.uniform(2.0, 10.0)  # noqa: S311
-            
+
             # PHASE 3 HARDENING: random.random() used for ROLLBACK SIMULATION
             # This is NOT security-critical; it simulates a 95% rollback success rate.
             if random.random() > 0.05:  # noqa: S311  # 95% success rate for rollback
@@ -238,7 +238,9 @@ class CanaryDrillOrchestrator:
         self.drills[drill_id] = report
         return report
 
-    def execute_failover_drill(self, drill_id: str, source_lane: str, target_lane: str) -> DrillReport:
+    def execute_failover_drill(
+        self, drill_id: str, source_lane: str, target_lane: str
+    ) -> DrillReport:
         """
         Execute failover drill — verify lane switching works.
 
@@ -284,7 +286,7 @@ class CanaryDrillOrchestrator:
             # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY (Failover timing)
             # This is NOT security-critical; it simulates variable failover execution times.
             test.execution_time_seconds = random.uniform(1.0, 8.0)  # noqa: S311
-            
+
             # PHASE 3 HARDENING: random.random() used for FAILOVER SIMULATION
             # This is NOT security-critical; it simulates a 92% failover success rate.
             if random.random() > 0.08:  # noqa: S311  # 92% success rate for failover

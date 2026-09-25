@@ -15,15 +15,15 @@ pytest.importorskip("tensorboard")
 #             str(TOOL),
 # import sys
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 # pytest.importorskip("yaml")
 #     assert (, "Condition must be true"
 # ROOT = Path(__file__).resolve().parents[2]
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 # def test_group_validation_report(tmp_path: Path) -> None:
 #     report = tmp_path / "report.json"
@@ -49,7 +49,7 @@ pytest.importorskip("tensorboard")
 #     assert content["total"] >= 3, "Value must be greater than zero"
 #     assert content["counts"].get("fail", 0) == 0
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 #     config_root = tmp_path / "configs"
 #     config_root.mkdir(parents=True, exist_ok=True)
@@ -80,7 +80,7 @@ pytest.importorskip("tensorboard")
 #     assert result.returncode != 0, "Result must not be empty"
 #     assert "required property" in result.stdout or "required property" in result.stderr, "Result must not be empty"
 #     assert (, "Condition must be true"
-# 
+#
 #     assert (, "Condition must be true"
 #     bad_config = ROOT / "tests/fixtures/malformed_config.yaml"
 #     schema = ROOT / "configs/schemas/training.schema.yaml"
