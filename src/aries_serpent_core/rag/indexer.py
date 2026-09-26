@@ -13,6 +13,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from aries_serpent_core.security_utils import sanitize_log_message
+
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - exercised in readiness smoke tests
@@ -30,6 +32,14 @@ except ImportError:  # pragma: no cover - exercised in readiness smoke tests
     np = _NumpyFallback()
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_log_value(value: object) -> str:
+    """Normalize dynamic values for safe logging."""
+    if value is None:
+        return "[NONE]"
+    return sanitize_log_message(str(value)).replace("\r", " ").replace("\n", " ").strip() or "[EMPTY]"
+
 
 try:
     import faiss
@@ -581,10 +591,20 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 created.append(index_name)
-                logger.info("Created index '%s' at %s", index_name, index_path)
+                safe_index_name = _safe_log_value(index_name)
+                safe_index_path = _safe_log_value(index_path)
+                logger.info(
+                    "Created index '%s' at %s",
+                    safe_index_name,
+                    safe_index_path,
+                )
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error("Failed to create index '%s': %s", index_name, error_type)
+                logger.error(
+                    "Failed to create index '%s': %s",
+                    _safe_log_value(index_name),
+                    _safe_log_value(error_type),
+                )
 
         if created:
             return TenantOperationResult(
@@ -622,7 +642,7 @@ def manage_tenant_indices(
                 old_path = tenant_dir / index_name
                 if old_path.exists():
                     shutil.rmtree(old_path)
-                    logger.info("Removed old index '%s'", index_name)
+                    logger.info("Removed old index '%s'", _safe_log_value(index_name))
 
                 # Create new index
                 index_path = build_index_from_files(
@@ -634,10 +654,20 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 updated.append(index_name)
-                logger.info("Updated index '%s' at %s", index_name, index_path)
+                safe_index_name = sanitize_log_message(str(index_name))
+                safe_index_path = sanitize_log_message(str(index_path))
+                logger.info(
+                    "Updated index '%s' at %s",
+                    sanitize_log_message(str(index_name)),
+                    sanitize_log_message(str(index_path)),
+                )
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error("Failed to update index '%s': %s", index_name, error_type)
+                logger.error(
+                    "Failed to update index '%s': %s",
+                    sanitize_log_message(str(index_name)),
+                    sanitize_log_message(error_type),
+                )
 
         if updated:
             return TenantOperationResult(
@@ -665,12 +695,24 @@ def manage_tenant_indices(
                 if index_path.exists():
                     shutil.rmtree(index_path)
                     deleted.append(index_name)
-                    logger.info("Deleted index '%s' from %s", index_name, tenant_dir)
+                    logger.info(
+                        "Deleted index '%s' from %s",
+                        sanitize_log_message(str(index_name)),
+                        sanitize_log_message(str(tenant_dir)),
+                    )
                 else:
-                    logger.warning("Index '%s' not found for tenant '%s'", index_name, tenant_id)
+                    logger.warning(
+                        "Index '%s' not found for tenant '%s'",
+                        sanitize_log_message(str(index_name)),
+                        sanitize_log_message(str(tenant_id)),
+                    )
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error("Failed to delete index '%s': %s", index_name, error_type)
+                logger.error(
+                    "Failed to delete index '%s': %s",
+                    sanitize_log_message(str(index_name)),
+                    sanitize_log_message(error_type),
+                )
 
         if deleted:
             return TenantOperationResult(
@@ -721,10 +763,19 @@ def manage_tenant_indices(
                         all_chunks.extend([(c["start"], c["end"], c["text"]) for c in chunks])
                         all_metadata.append(metadata)
 
-                    logger.info("Loaded %d vectors from '%s'", index.ntotal, index_name)
+                    logger.info(
+                        "Loaded %d vectors from '%s'",
+                        index.ntotal,
+                        sanitize_log_message(str(index_name)),
+                    )
                 except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.error("Failed to load index '%s': %s: %s", index_name, error_type, str(e))
+                    logger.error(
+                        "Failed to load index '%s': %s: %s",
+                        sanitize_log_message(str(index_name)),
+                        sanitize_log_message(error_type),
+                        sanitize_log_message(str(e)),
+                    )
 
             if not all_embeddings:
                 return TenantOperationResult(

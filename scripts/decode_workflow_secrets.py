@@ -60,12 +60,20 @@ except ImportError:
         return result
 
 
+def _safe_log_value(value: object) -> str:
+    """Normalize input so it is safe to print in logs or user output."""
+    if value is None:
+        return "[NONE]"
+    rendered = str(value).replace("\r", " ").replace("\n", " ")
+    return sanitize_log_message(rendered).strip()
+
+
 def decode_secret_name(encoded: str) -> str:
     """Decode a base64-encoded secret name."""
     try:
         return base64.b64decode(encoded.encode('ascii')).decode('utf-8')
-    except Exception as e:
-        return f"[DECODE_ERROR: {e}]"
+    except Exception:
+        return "[DECODE_ERROR]"
 
 
 def _fingerprint_secret(value: str) -> str:
@@ -77,7 +85,7 @@ def _fingerprint_secret(value: str) -> str:
 def list_secret_tokens(inventory_path: Path) -> None:
     """List secret tokens and hints from inventory (safe for display)."""
     if not inventory_path.exists():
-        print(f"❌ Inventory file not found: {inventory_path}")
+        print(f"❌ Inventory file not found: {_safe_log_value(inventory_path)}")
         return
 
     with open(inventory_path) as f:
@@ -110,7 +118,7 @@ def list_secret_tokens(inventory_path: Path) -> None:
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
         fingerprint = _fingerprint_secret(token)
         print(f"{i}. [Token fingerprint] {fingerprint}")
-        print(f"   Hint: {sanitize_log_message(info['hint'])}")
+        print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
 
@@ -132,7 +140,7 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
         sys.exit(1)
 
     if not inventory_path.exists():
-        print(f"❌ Inventory file not found: {inventory_path}")
+        print(f"❌ Inventory file not found: {_safe_log_value(inventory_path)}")
         return
 
     with open(inventory_path) as f:
@@ -173,12 +181,12 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
         fingerprint = _fingerprint_secret(secret_name)
-        print(f"{i}. Secret: {redact_secret_name(secret_name)}")
+        print(f"{i}. Secret: [REDACTED_SECRET_NAME]")
         print(f"   Token fingerprint: {fingerprint}")
-        print(f"   Hint: {sanitize_log_message(info['hint'])}")
+        print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
-        for wf in sorted(info['workflows']):
-            print(f"      - {sanitize_log_message(wf)}")
+        for _ in sorted(info['workflows']):
+            print("      - [REDACTED_WORKFLOW]")
         print()
 
     print("=" * 70)
