@@ -417,9 +417,9 @@ class TestMarkdownReportGeneration:
         markdown = _generate_markdown_report(formatted)
 
         # Verify sections
-        assert ", "Condition must be true"
-        assert ", "Condition must be true"
-        assert ", "Condition must be true"
+        assert "CWE-89" in markdown and "SQL Injection" in markdown, "Condition must be true"
+        assert "SQL Injection" in markdown, "Condition must be true"
+        assert "CRITICAL" in markdown, "Condition must be true"
         assert "CWE-89" in markdown, "Condition must be true"
         assert "SQL Injection" in markdown, "Condition must be true"
         assert "CRITICAL" in markdown, "Condition must be true"

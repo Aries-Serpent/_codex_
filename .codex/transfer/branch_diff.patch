@@ -1,0 +1,285 @@
+diff --git a/.github/agents/ci-optimizer-agent/src/__init__.py b/.github/agents/ci-optimizer-agent/src/__init__.py
+index fa040c2b..4115f37c 100644
+--- a/.github/agents/ci-optimizer-agent/src/__init__.py
++++ b/.github/agents/ci-optimizer-agent/src/__init__.py
+@@ -1,12 +1,12 @@
+ """CI Optimizer Agent - Main Module"""
+ import os
+ import random
+-from typing import Any, Dict, Optional
++from typing import Any, Optional
+ 
+ try:
+-    from .test_prioritizer import TestPrioritizer, create_prioritizer
++    from .test_prioritizer import create_prioritizer
+ except ImportError:
+-    from test_prioritizer import TestPrioritizer, create_prioritizer
++    from test_prioritizer import create_prioritizer
+ 
+ RANDOM_SEED = 49
+ 
+diff --git a/.github/agents/core/config.py b/.github/agents/core/config.py
+index 125eb849..1c752661 100644
+--- a/.github/agents/core/config.py
++++ b/.github/agents/core/config.py
+@@ -127,8 +127,8 @@ def from_file(cls, config_file: Path) -> "FrameworkConfig":
+             try:
+                 import yaml
+                 data = yaml.safe_load(content)
+-            except ImportError:
+-                raise ImportError("PyYAML required for YAML config files")
++            except ImportError as err:
++                raise ImportError("PyYAML required for YAML config files") from err
+         else:
+             raise ValueError(f"Unsupported config format: {config_file.suffix}")
+ 
+@@ -171,8 +171,8 @@ def save(self, config_file: Path):
+             try:
+                 import yaml
+                 config_file.write_text(yaml.dump(self.to_dict()))
+-            except ImportError:
+-                raise ImportError("PyYAML required for YAML config files")
++            except ImportError as err:
++                raise ImportError("PyYAML required for YAML config files") from err
+         else:
+             raise ValueError(f"Unsupported config format: {config_file.suffix}")
+ 
+diff --git a/.github/agents/documentation-agent/src/__init__.py b/.github/agents/documentation-agent/src/__init__.py
+index b35df836..5537bef6 100644
+--- a/.github/agents/documentation-agent/src/__init__.py
++++ b/.github/agents/documentation-agent/src/__init__.py
+@@ -4,18 +4,18 @@
+ """
+ import os
+ import random
+-from typing import Any, Dict, List, Optional
++from typing import Any, Optional
+ 
+ try:
+-    from .api_doc_generator import APIDocGenerator, create_generator
+-    from .changelog_generator import ChangelogGenerator, create_changelog_generator
+-    from .diagram_generator import DiagramGenerator, create_diagram_generator
+-    from .tutorial_generator import TutorialGenerator, create_tutorial_generator
++    from .api_doc_generator import create_generator
++    from .changelog_generator import create_changelog_generator
++    from .diagram_generator import create_diagram_generator
++    from .tutorial_generator import create_tutorial_generator
+ except ImportError:
+-    from api_doc_generator import APIDocGenerator, create_generator
+-    from changelog_generator import ChangelogGenerator, create_changelog_generator
+-    from diagram_generator import DiagramGenerator, create_diagram_generator
+-    from tutorial_generator import TutorialGenerator, create_tutorial_generator
++    from api_doc_generator import create_generator
++    from changelog_generator import create_changelog_generator
++    from diagram_generator import create_diagram_generator
++    from tutorial_generator import create_tutorial_generator
+ 
+ RANDOM_SEED = 48  # Documentation Agent seed
+ 
+diff --git a/.github/agents/ecosystem-coordinator-agent/src/__init__.py b/.github/agents/ecosystem-coordinator-agent/src/__init__.py
+index f6edfe4e..f6b395bf 100644
+--- a/.github/agents/ecosystem-coordinator-agent/src/__init__.py
++++ b/.github/agents/ecosystem-coordinator-agent/src/__init__.py
+@@ -1,12 +1,12 @@
+ """Ecosystem Coordinator Agent - Main Module"""
+ import os
+ import random
+-from typing import Any, Dict, Optional
++from typing import Any, Optional
+ 
+ try:
+-    from .task_decomposer import TaskDecomposer, create_decomposer
++    from .task_decomposer import create_decomposer
+ except ImportError:
+-    from task_decomposer import TaskDecomposer, create_decomposer
++    from task_decomposer import create_decomposer
+ 
+ RANDOM_SEED = 51
+ 
+diff --git a/.github/agents/performance-monitor-agent/src/__init__.py b/.github/agents/performance-monitor-agent/src/__init__.py
+index cfd6b00a..11c5178d 100644
+--- a/.github/agents/performance-monitor-agent/src/__init__.py
++++ b/.github/agents/performance-monitor-agent/src/__init__.py
+@@ -4,21 +4,21 @@
+ """
+ import os
+ import random
+-from typing import Any, Dict, List, Optional
++from typing import Any, Optional
+ 
+ try:
+-    from .alert_manager import AlertManager, AlertSeverity, create_alert_manager
+-    from .latency_monitor import LatencyMonitor, create_monitor
+-    from .regression_detector import RegressionDetector, create_detector
+-    from .resource_predictor import ResourcePredictor, create_predictor
+-    from .throughput_optimizer import ThroughputOptimizer, create_optimizer
++    from .alert_manager import create_alert_manager
++    from .latency_monitor import create_monitor
++    from .regression_detector import create_detector
++    from .resource_predictor import create_predictor
++    from .throughput_optimizer import create_optimizer
+ except ImportError:
+     # Fallback for direct execution
+-    from alert_manager import AlertManager, AlertSeverity, create_alert_manager
+-    from latency_monitor import LatencyMonitor, create_monitor
+-    from regression_detector import RegressionDetector, create_detector
+-    from resource_predictor import ResourcePredictor, create_predictor
+-    from throughput_optimizer import ThroughputOptimizer, create_optimizer
++    from alert_manager import create_alert_manager
++    from latency_monitor import create_monitor
++    from regression_detector import create_detector
++    from resource_predictor import create_predictor
++    from throughput_optimizer import create_optimizer
+ 
+ RANDOM_SEED = 47  # Performance Monitor Agent seed
+ 
+diff --git a/.github/agents/reasoning-advisor-agent/src/__init__.py b/.github/agents/reasoning-advisor-agent/src/__init__.py
+index 7ac240f4..5abea690 100644
+--- a/.github/agents/reasoning-advisor-agent/src/__init__.py
++++ b/.github/agents/reasoning-advisor-agent/src/__init__.py
+@@ -1,12 +1,12 @@
+ """Reasoning Advisor Agent - Main Module"""
+ import os
+ import random
+-from typing import Any, Dict, List, Optional
++from typing import Any, Optional
+ 
+ try:
+-    from .causal_analyzer import CausalAnalyzer, create_analyzer
++    from .causal_analyzer import create_analyzer
+ except ImportError:
+-    from causal_analyzer import CausalAnalyzer, create_analyzer
++    from causal_analyzer import create_analyzer
+ 
+ RANDOM_SEED = 50
+ 
+diff --git a/tests/analysis/test_docs_links_audit.py b/tests/analysis/test_docs_links_audit.py
+index d5d32e97..1555d1ae 100644
+--- a/tests/analysis/test_docs_links_audit.py
++++ b/tests/analysis/test_docs_links_audit.py
+@@ -45,9 +45,7 @@ def test_audit_flags_missing_nav_and_links(tmp_path: Path) -> None:
+ 
+     payload = run_audit(repo)
+ 
+-    assert (payload["pytest_ini"], "Condition must be true"
+-        == "replace --cov=src with --cov=src/codex_ml in configs/development/pytest.ini"
+-    )
++    assert payload["pytest_ini"] == "replace --cov=src with --cov=src/codex_ml in configs/development/pytest.ini", "Condition must be true"
+     assert "docs/index.md" in payload["mkdocs_nav"], "Condition must be true"
+     assert "docs/guide.md" in payload["mkdocs_nav"], "Condition must be true"
+ 
+diff --git a/tests/api/test_app_auth_router_mount.py b/tests/api/test_app_auth_router_mount.py
+index fe592515..a065f162 100644
+--- a/tests/api/test_app_auth_router_mount.py
++++ b/tests/api/test_app_auth_router_mount.py
+@@ -48,17 +48,14 @@ def test_register_endpoint_reachable(self):
+         client = _make_client()
+         resp = client.post("/api/auth/register", json={})
+         # A 422 (validation error) proves the route exists; 404 would mean unmounted.
+-        assert (resp.status_code != 404, "status_code is not valid"
+-        ), "POST /api/auth/register returned 404 — auth router may not be mounted."
+-        assert (resp.status_code != 405, "status_code is not valid"
+-        ), "POST /api/auth/register returned 405 — unexpected method restriction."
++        assert resp.status_code != 404, "POST /api/auth/register returned 404 — auth router may not be mounted."
++        assert resp.status_code != 405, "POST /api/auth/register returned 405 — unexpected method restriction."
+ 
+     def test_login_endpoint_reachable(self):
+         """POST /api/auth/login is reachable (returns 4xx, not 404/405)."""
+         client = _make_client()
+         resp = client.post("/api/auth/login", json={})
+-        assert (resp.status_code != 404, "status_code is not valid"
+-        ), "POST /api/auth/login returned 404 — auth router may not be mounted."
++        assert resp.status_code != 404, "POST /api/auth/login returned 404 — auth router may not be mounted."
+         assert resp.status_code != 405, "status_code is not valid"
+ 
+     def test_health_endpoint_unaffected(self):
+@@ -66,8 +63,7 @@ def test_health_endpoint_unaffected(self):
+         client = _make_client()
+         resp = client.get("/health")
+         # Accept 200 or 404 (endpoint may not be defined); reject 500.
+-        assert (resp.status_code < 500, "status_code is not valid"
+-        ), f"Health endpoint returned unexpected server error: {resp.status_code}"
++        assert resp.status_code < 500, f"Health endpoint returned unexpected server error: {resp.status_code}"
+ 
+     def test_auth_router_tag_present_in_openapi(self):
+         """The auth router is tagged 'auth' in the OpenAPI spec."""
+diff --git a/tests/ci/test_codeql_findings_formatter.py b/tests/ci/test_codeql_findings_formatter.py
+index b14474fc..b9839fe6 100644
+--- a/tests/ci/test_codeql_findings_formatter.py
++++ b/tests/ci/test_codeql_findings_formatter.py
+@@ -417,9 +417,9 @@ def test_markdown_report_structure(self) -> None:
+         markdown = _generate_markdown_report(formatted)
+ 
+         # Verify sections
+-        assert ", "Condition must be true"
+-        assert ", "Condition must be true"
+-        assert ", "Condition must be true"
++        assert "CWE-89" in markdown and "SQL Injection" in markdown, "Condition must be true"
++        assert "SQL Injection" in markdown, "Condition must be true"
++        assert "CRITICAL" in markdown, "Condition must be true"
+         assert "CWE-89" in markdown, "Condition must be true"
+         assert "SQL Injection" in markdown, "Condition must be true"
+         assert "CRITICAL" in markdown, "Condition must be true"
+diff --git a/tests/ci/test_pattern_recorder.py b/tests/ci/test_pattern_recorder.py
+index aca57b8a..a60fcc89 100644
+--- a/tests/ci/test_pattern_recorder.py
++++ b/tests/ci/test_pattern_recorder.py
+@@ -58,10 +58,8 @@ def _inner():
+ 
+         fixer.run_all_patterns()
+ 
+-        assert ("fix_unused_imports" in called, "Condition must be true"
+-        ), "Pattern 1 (fix_unused_imports) should have been called"
+-        assert ("fix_merge_readiness_dims" not in called, "Condition must be true"
+-        ), "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
++        assert "fix_unused_imports" in called, "Pattern 1 (fix_unused_imports) should have been called"
++        assert "fix_merge_readiness_dims" not in called, "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
+ 
+     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
+         """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference
+diff --git a/tests/ci/test_post_rescue_comment.py b/tests/ci/test_post_rescue_comment.py
+index 17dd2681..45292c5e 100644
+--- a/tests/ci/test_post_rescue_comment.py
++++ b/tests/ci/test_post_rescue_comment.py
+@@ -61,11 +61,9 @@ def _mock_gh(method, path, token):
+         assert len(calls) == 1, "Calls must not be empty"
+         path_lower = calls[0].lower()
+         # Spaces in the branch name must be percent-encoded as %20.
+-        assert ("%20" in path_lower, "Condition must be true"
+-        ), f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
++        assert "%20" in path_lower, f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
+         # Slashes in branch names must also be percent-encoded as %2f (%2F).
+-        assert ("%2f" in path_lower, "Condition must be true"
+-        ), f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
++        assert "%2f" in path_lower, f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
+ 
+ 
+ class TestRescueCommentUpsert:
+diff --git a/tests/test_security_vulnerabilities.py b/tests/test_security_vulnerabilities.py
+index ee06ec3f..8e140652 100644
+--- a/tests/test_security_vulnerabilities.py
++++ b/tests/test_security_vulnerabilities.py
+@@ -445,7 +445,7 @@ def validate_input(value: str, strict: bool = False) -> bool:
+             validate_input("invalid@", strict=True)
+ 
+         # Test non-strict mode branch
+-        assert validate_input("any input!@, "Condition must be true"
++        assert validate_input("any input!@") is True, "Condition must be true"
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/tests/zendesk/test_json_generator.py b/tests/zendesk/test_json_generator.py
+index e16f086c..08d86bfe 100644
+--- a/tests/zendesk/test_json_generator.py
++++ b/tests/zendesk/test_json_generator.py
+@@ -119,9 +119,7 @@ def test_list_templates_by_tags(self, generator: ZendeskJSONGenerator) -> None:
+         """Test listing templates by tags."""
+         create_templates = generator.list_templates(tags=["create"])
+         assert len(create_templates) >= 2, "Create_templates must not be empty"
+-        assert all(, "Condition must be true"
+-            any("create" in t.tags for t in create_templates) for t in create_templates
+-        ), "Condition must be true"
++        assert all(any("create" in t.tags for t in create_templates) for t in create_templates), "Condition must be true"
+ 
+     def test_list_templates_with_combined_filters(self, generator: ZendeskJSONGenerator) -> None:
+         """Test listing templates with both category and tags filters."""
