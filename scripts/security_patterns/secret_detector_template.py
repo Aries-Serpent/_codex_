@@ -85,7 +85,7 @@ class SecretDetector:
             return {
                 "filepath": filepath,
                 "status": "error",
-                "error": str(e),
+                "error": type(e).__name__,
                 "secrets": []
             }
 

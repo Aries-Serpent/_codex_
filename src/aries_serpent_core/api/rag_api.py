@@ -360,7 +360,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
         if metadata_file.exists():
             import json
 
-            with open(metadata_file) as f:
+            with open(metadata_file, "r", encoding="utf-8") as f:
                 metadata = json.load(f)
                 chunks_count = metadata.get("num_chunks")
 

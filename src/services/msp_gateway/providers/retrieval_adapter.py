@@ -58,7 +58,9 @@ class RetrievalAdapter:
             )
         except Exception as e:
             logger.error(
-                f"Error querying knowledge base for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(str(e))}"
+                "Error querying knowledge base for tenant %s: %s",
+                sanitize_log_input(tenant_id),
+                sanitize_log_input(str(e)),
             )
             return []
 

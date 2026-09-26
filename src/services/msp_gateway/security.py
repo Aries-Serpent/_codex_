@@ -72,19 +72,23 @@ class PolicyEnforcer:
             denylist_path = self.policy_dir / "denylist.yaml"
 
             if safelist_path.exists():
-                with open(safelist_path, "r") as f:
+                with open(safelist_path, "r", encoding="utf-8") as f:
                     self.safelist = yaml.safe_load(f) or {}
             else:
                 logger.warning(
-                    "Safelist not found at %s, using empty policy", safelist_path
-                )  # codeql[py/log-injection]
+                    "Safelist not found at %s, using empty policy",
+                    sanitize_log_input(str(safelist_path)),
+                )
                 self.safelist = {}
 
             if denylist_path.exists():
-                with open(denylist_path, "r") as f:
+                with open(denylist_path, "r", encoding="utf-8") as f:
                     self.denylist = yaml.safe_load(f) or {}
             else:
-                logger.warning("Denylist not found at %s, using empty policy", denylist_path)
+                logger.warning(
+                    "Denylist not found at %s, using empty policy",
+                    sanitize_log_input(str(denylist_path)),
+                )
                 self.denylist = {}
 
             logger.info("Policies loaded successfully")
@@ -102,7 +106,7 @@ class PolicyEnforcer:
         blocked_patterns = self.denylist.get("blocked_prompt_patterns", [])
         for pattern in blocked_patterns:
             if pattern.lower() in text.lower():
-                return f"Blocked pattern detected: {pattern}"
+                return "Blocked pattern detected"
         return None
 
     def check_blocked_actions(self, action: str) -> bool:

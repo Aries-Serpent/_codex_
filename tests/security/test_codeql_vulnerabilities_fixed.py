@@ -24,6 +24,7 @@ from aries_serpent_core.config_secure import (
     DatabaseConfig,
     SecureConfig,
 )
+from aries_serpent_core.db.queries import UserQueryExecutor
 
 # Import secure implementations
 from aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
@@ -39,7 +40,6 @@ class TestCWE89SQLInjection:
             db_path = f.name
 
         try:
-            # Create database with test data
             conn = sqlite3.connect(db_path)
             conn.execute('CREATE TABLE users (id INTEGER, email TEXT)')
             conn.execute('INSERT INTO users VALUES (1, "admin@example.com")')
@@ -47,16 +47,9 @@ class TestCWE89SQLInjection:
             conn.commit()
             conn.close()
 
-            # Attempt SQL injection
             executor = SecureUserQueryExecutor(db_path)
-
-            # SQL injection attempt: "1 OR 1=1--"
-            # Vulnerable code would return ALL users
-            # Secure code raises TypeError because string is not int
             with pytest.raises(TypeError, match="user_id must be int"):
                 executor.get_user_by_id("1 OR 1=1--")
-
-            # Close the connection properly
             executor.conn.close()
 
         finally:
@@ -68,7 +61,6 @@ class TestCWE89SQLInjection:
             db_path = f.name
 
         try:
-            # Create test database
             conn = sqlite3.connect(db_path)
             conn.execute('CREATE TABLE users (id INTEGER, email TEXT)')
             conn.execute('INSERT INTO users VALUES (1, "admin@example.com")')
@@ -76,8 +68,6 @@ class TestCWE89SQLInjection:
             conn.close()
 
             executor = SecureUserQueryExecutor(db_path)
-
-            # Type checking prevents injection
             with pytest.raises(TypeError):
                 executor.get_user_by_id("1; DROP TABLE users;--")
 
@@ -90,7 +80,6 @@ class TestCWE89SQLInjection:
             db_path = f.name
 
         try:
-            # Create test database
             conn = sqlite3.connect(db_path)
             conn.execute('CREATE TABLE users (id INTEGER, email TEXT)')
             conn.execute('INSERT INTO users VALUES (1, "admin@example.com")')
@@ -98,10 +87,37 @@ class TestCWE89SQLInjection:
             conn.close()
 
             executor = SecureUserQueryExecutor(db_path)
-
-            # Valid integer query works
             result = executor.get_user_by_id(1)
-            assert result['email'] == 'admin@example.com', "Result must not be empty"
+            assert result['email'] == 'admin@example.com'
+
+        finally:
+            Path(db_path).unlink(missing_ok=True)
+
+    def test_dynamic_update_user_uses_allowlist_and_parameters(self):
+        """Verify the live update path does not interpolate SQL field names."""
+        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+            db_path = f.name
+
+        try:
+            conn = sqlite3.connect(db_path)
+            conn.execute('CREATE TABLE users (id INTEGER, name TEXT, email TEXT, phone TEXT, bio TEXT)')
+            conn.execute('INSERT INTO users VALUES (1, "alice", "alice@example.com", "123", "hello")')
+            conn.commit()
+            conn.close()
+
+            executor = UserQueryExecutor(db_path)
+            assert executor.update_user(1, email='new@example.com', name='alice2', bio='updated') is True
+
+            row = executor.conn.execute('SELECT name, email, bio FROM users WHERE id = 1').fetchone()
+            assert row[0] == 'alice2'
+            assert row[1] == 'new@example.com'
+            assert row[2] == 'updated'
+            executor.conn.close()
+
+            with pytest.raises(ValueError, match="Field 'admin' not allowed for update"):
+                bad_executor = UserQueryExecutor(db_path)
+                bad_executor.update_user(1, admin='oops')
+                bad_executor.conn.close()
 
         finally:
             Path(db_path).unlink(missing_ok=True)

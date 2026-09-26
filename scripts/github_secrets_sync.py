@@ -104,7 +104,7 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             if value:
                 backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # codeql[py/clear-text-storage-sensitive-data]
+                    'hash': hashlib.sha256(value.encode()).hexdigest(),
                     'length': len(value)
                 }
 
@@ -132,7 +132,7 @@ class GitHubSecretsManager:
                     print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))
                 print("✗ Failed to rotate secret")
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 

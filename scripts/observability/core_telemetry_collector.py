@@ -20,6 +20,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Set
 
+from src.utils.log_sanitizer import sanitize_log_input
+
 # ============================================================================
 # CONFIGURATION & ENUMS
 # ============================================================================
@@ -100,7 +102,11 @@ class CoreTelemetryCollector:
 
         if key not in self.timeseries_keys:
             if len(self.timeseries_keys) >= self.cardinality_limit:
-                self.logger.warning(f"Cardinality limit ({self.cardinality_limit}) reached! Dropping metric: {key}")
+                self.logger.warning(
+                    "Cardinality limit (%s) reached! Dropping metric: %s",
+                    self.cardinality_limit,
+                    sanitize_log_input(key),
+                )
                 return ""
             self.timeseries_keys.add(key)
 
