@@ -116,11 +116,14 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
         replacement = r'cur.execute(f"PRAGMA table_info({table})")  # nosec B608 - PRAGMA doesn\'t support params'
         if re.search(pattern, content):
             new_content = re.sub(pattern, replacement, content)
-            file_path_str = str(file_path)  # sanitize path for logging
+            file_path_str = file_path.name  # only log the file name to avoid path disclosure
             if dry_run:
                 print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
-                file_path.write_text(new_content)  # codeql[py/path-injection]
+                safe_target = file_path.resolve(strict=False)
+                if safe_target.parent != file_path.parent.resolve(strict=False):
+                    raise ValueError("Refusing to write outside the configured directory")
+                safe_target.write_text(new_content)
                 print(f"  ✅ Fixed B608 in {file_path_str}")
             fixes += 1
 
