@@ -82,6 +82,11 @@ def _fingerprint_secret(value: str) -> str:
     return f"sha256:{digest[:12]}"
 
 
+def _redacted_secret_label() -> str:
+    """Return a safe, non-secret label for reporting."""
+    return "[REDACTED_SECRET_LABEL]"
+
+
 def list_secret_tokens(inventory_path: Path) -> None:
     """List secret tokens and hints from inventory (safe for display)."""
     if not inventory_path.exists():
@@ -115,9 +120,8 @@ def list_secret_tokens(inventory_path: Path) -> None:
         print("No secrets found in inventory.")
         return
 
-    for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        fingerprint = _fingerprint_secret(token)
-        print(f"{i}. [Token fingerprint] {fingerprint}")
+    for i, (_, info) in enumerate(sorted(all_secrets.items(), key=lambda item: item[0]), 1):
+        print(f"{i}. { _redacted_secret_label() }")
         print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
@@ -179,10 +183,9 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
     print(f"Total unique secrets: {len(all_secrets)}")
     print()
 
-    for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
-        fingerprint = _fingerprint_secret(secret_name)
+    for i, (_, info) in enumerate(sorted(all_secrets.items(), key=lambda item: item[0]), 1):
         print(f"{i}. Secret: [REDACTED_SECRET_NAME]")
-        print(f"   Token fingerprint: {fingerprint}")
+        print("   Token fingerprint: [REDACTED]")
         print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for _ in sorted(info['workflows']):
