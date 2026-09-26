@@ -28,6 +28,7 @@ class TestE2ECampaignSimulation:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_single_lane_complete_workflow(
         self, valid_decision_payload, valid_auth_header, generate_decision_ids
     ):
@@ -43,6 +44,7 @@ class TestE2ECampaignSimulation:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_two_lane_parallel_execution(
         self, valid_decision_payload, valid_auth_header, all_lanes
     ):
@@ -54,6 +56,7 @@ class TestE2ECampaignSimulation:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_five_lane_full_campaign(
         self, valid_decision_payload, valid_auth_header, all_lanes
@@ -68,6 +71,7 @@ class TestE2ECampaignSimulation:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_five_lane_with_conflicts(
         self, valid_decision_payload, valid_auth_header, all_lanes
     ):
@@ -77,6 +81,7 @@ class TestE2ECampaignSimulation:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_with_memory_pattern_reuse(
         self, valid_pattern_payload, valid_auth_header, all_lanes
@@ -89,6 +94,7 @@ class TestE2ECampaignSimulation:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_lane_communication_via_memory(
         self, valid_auth_header, all_lanes
@@ -110,6 +116,7 @@ class TestMemoryTransfer:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_store_pattern_in_session_a_retrieve_in_session_b(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -120,6 +127,7 @@ class TestMemoryTransfer:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_pattern_reuse_reduces_decision_count(
         self, valid_pattern_payload, valid_decision_payload, valid_auth_header
@@ -132,6 +140,7 @@ class TestMemoryTransfer:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_memory_cache_hit_rate_improves_over_campaigns(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -142,6 +151,7 @@ class TestMemoryTransfer:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_high_confidence_pattern_priority(
         self, valid_pattern_payload, valid_auth_header
@@ -154,6 +164,7 @@ class TestMemoryTransfer:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_pattern_usage_count_increments(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -164,6 +175,7 @@ class TestMemoryTransfer:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_compression_ratio_tracked(
         self, valid_pattern_payload, valid_auth_header
@@ -185,6 +197,7 @@ class TestWECCompliance:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_gate_check_all_required_workflows_pass(
         self, valid_gate_payload, valid_auth_header
     ):
@@ -203,6 +216,7 @@ class TestWECCompliance:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_gate_check_one_required_workflow_fails(
         self, valid_gate_payload, valid_auth_header
     ):
@@ -215,6 +229,7 @@ class TestWECCompliance:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_gate_check_enforces_all_required(
         self, valid_gate_payload, valid_auth_header
     ):
@@ -225,6 +240,7 @@ class TestWECCompliance:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_gate_enforcement_prevents_merge(
         self, valid_gate_payload, valid_auth_header
     ):
@@ -234,6 +250,7 @@ class TestWECCompliance:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_gate_report_lists_all_status(
         self, valid_gate_payload, valid_auth_header
@@ -254,6 +271,7 @@ class TestConcurrentOperations:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_concurrent_decision_submissions(
         self, valid_decision_payload, valid_auth_header, all_lanes
     ):
@@ -264,6 +282,7 @@ class TestConcurrentOperations:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_concurrent_pattern_storage(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -273,6 +292,7 @@ class TestConcurrentOperations:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_concurrent_reads_and_writes(
         self, valid_decision_payload, valid_pattern_payload, valid_auth_header
@@ -286,6 +306,7 @@ class TestConcurrentOperations:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_stm_concurrent_pushes_and_retrieval(
         self, valid_stm_payload, valid_auth_header
     ):
@@ -297,6 +318,7 @@ class TestConcurrentOperations:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_race_condition_on_pattern_usage_update(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -307,6 +329,7 @@ class TestConcurrentOperations:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_concurrent_gate_checks_on_same_pr(
         self, valid_gate_payload, valid_auth_header
@@ -327,6 +350,7 @@ class TestRateLimitQuota:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_rate_limit_after_n_requests(
         self, valid_decision_payload, valid_auth_header
     ):
@@ -337,6 +361,7 @@ class TestRateLimitQuota:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_rate_limit_reset_after_window(self, valid_auth_header):
         """Test rate limit resets after time window."""
         # Exhaust rate limit
@@ -345,6 +370,7 @@ class TestRateLimitQuota:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_quota_budget_tracking(self, valid_auth_header):
         """Test quota budget is tracked across lanes."""
@@ -355,6 +381,7 @@ class TestRateLimitQuota:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_backoff_strategy_on_rate_limit(
         self, valid_decision_payload, valid_auth_header
     ):
@@ -364,6 +391,7 @@ class TestRateLimitQuota:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_safe_to_proceed_flag_accuracy(self, valid_auth_header):
         """Test safe_to_proceed flag accuracy."""
@@ -382,6 +410,7 @@ class TestDataConsistency:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_decision_data_persists_across_retrievals(
         self, valid_decision_payload, valid_auth_header, generate_decision_ids
     ):
@@ -394,6 +423,7 @@ class TestDataConsistency:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_pattern_compression_consistency(
         self, valid_pattern_payload, valid_auth_header
     ):
@@ -405,6 +435,7 @@ class TestDataConsistency:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_aggregate_calculations_accuracy(self, valid_auth_header):
         """Test aggregate statistics are accurate."""
         # Store 10 decisions with known confidence values
@@ -413,6 +444,7 @@ class TestDataConsistency:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_cache_stats_consistency(
         self, valid_pattern_payload, valid_auth_header
@@ -424,6 +456,7 @@ class TestDataConsistency:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_timestamp_consistency(self, valid_decision_payload, valid_auth_header):
         """Test timestamps are consistent and increasing."""
@@ -443,6 +476,7 @@ class TestEdgeCasesAndFailureRecovery:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_handle_malformed_response_from_github_api(self, valid_auth_header):
         """Test handling of malformed GitHub API responses."""
         # GitHub API returns invalid JSON
@@ -450,6 +484,7 @@ class TestEdgeCasesAndFailureRecovery:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_handle_missing_optional_fields(
         self, valid_decision_payload, valid_auth_header
@@ -463,6 +498,7 @@ class TestEdgeCasesAndFailureRecovery:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_recover_from_database_connection_error(self, valid_auth_header):
         """Test recovery from database connection failure."""
         # Simulate DB connection error
@@ -470,6 +506,7 @@ class TestEdgeCasesAndFailureRecovery:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_handle_auth_token_expiry_during_operation(
         self, valid_decision_payload
@@ -480,6 +517,7 @@ class TestEdgeCasesAndFailureRecovery:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_partial_failure_in_batch_operation(
         self, valid_decision_payload, valid_auth_header
@@ -492,6 +530,7 @@ class TestEdgeCasesAndFailureRecovery:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_stm_item_expiration_handling(self, valid_stm_payload, valid_auth_header):
         """Test handling of expired STM items."""
@@ -511,6 +550,7 @@ class TestCampaignLifecycle:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_campaign_initialization_phase(
         self, valid_decision_payload, valid_auth_header, all_lanes
     ):
@@ -521,6 +561,7 @@ class TestCampaignLifecycle:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_execution_phase(
         self, valid_decision_payload, valid_auth_header, all_lanes
@@ -533,6 +574,7 @@ class TestCampaignLifecycle:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_campaign_monitoring_and_feedback_phase(
         self, valid_auth_header, all_lanes
     ):
@@ -543,6 +585,7 @@ class TestCampaignLifecycle:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_completion_and_reporting_phase(
         self, valid_auth_header, all_lanes
@@ -565,6 +608,7 @@ class TestGitHubWorkflowIntegration:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_campaign_respects_workflow_health(
         self, valid_auth_header, all_lanes
     ):
@@ -575,6 +619,7 @@ class TestGitHubWorkflowIntegration:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_campaign_waits_for_rate_limit_reset(self, valid_auth_header):
         """Test campaign waits for GitHub API rate limit reset."""
         # Track remaining API quota
@@ -583,6 +628,7 @@ class TestGitHubWorkflowIntegration:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_enforces_wec_compliance(
         self, valid_gate_payload, valid_auth_header
@@ -594,6 +640,7 @@ class TestGitHubWorkflowIntegration:
         pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_campaign_notifications_on_milestone(self, valid_auth_header):
         """Test campaign sends notifications at milestones."""

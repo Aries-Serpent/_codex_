@@ -100,6 +100,7 @@ class TestPhase10E2EWorkflowValidation:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_workflow_coordination(self, workflow_context):
         """Test asynchronous workflow coordination."""
         # Arrange

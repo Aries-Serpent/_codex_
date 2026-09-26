@@ -135,6 +135,7 @@ class TestResourceManagementImprovements:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_context_manager_cleanup(self):
         """Verify async context managers properly clean up resources."""
         from codex.consolidation.async_utils import AsyncResourceManager
@@ -150,6 +151,7 @@ class TestResourceManagementImprovements:
         assert mock_resource.close.called, "Resource should be closed after context"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_pool_manager_connection_release(self):
         """Verify AsyncPoolManager releases connections properly."""
@@ -421,6 +423,7 @@ class TestRegressionPrevention:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_context_no_hang(self):
         """Verify async context managers don't cause hangs."""
         from codex.consolidation.async_utils import async_timeout_context
@@ -449,6 +452,7 @@ class TestIntegration:
     """Integration tests for code quality fixes."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_full_async_workflow(self):
         """Test a complete async resource workflow."""

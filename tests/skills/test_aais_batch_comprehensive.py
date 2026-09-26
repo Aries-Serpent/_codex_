@@ -326,6 +326,7 @@ class TestConcurrency:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_max_concurrency_semaphore_limit(self):
         """Test that max_concurrency limits concurrent execution."""
         items = [{"id": f"i{i}", "text": "text"} for i in range(20)]

@@ -238,6 +238,7 @@ class TestMCPServerCommunication:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_server_list_tools(self, mcp_server):
         """Test MCP server list tools command."""
         request = {
@@ -252,6 +253,7 @@ class TestMCPServerCommunication:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_server_negotiate_version_compatible(self, mcp_server):
         """Test MCP server version negotiation with compatible version."""
         request = {
@@ -265,6 +267,7 @@ class TestMCPServerCommunication:
         assert response["result"] == "1.0", "Response must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_server_negotiate_version_incompatible(self, mcp_server):
         """Test MCP server version negotiation with incompatible version."""
@@ -281,6 +284,7 @@ class TestMCPServerCommunication:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_server_unknown_method(self, mcp_server):
         """Test MCP server handles unknown methods."""
         request = {
@@ -295,6 +299,7 @@ class TestMCPServerCommunication:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_server_notification_no_response(self, mcp_server):
         """Test MCP server handles notifications (no response)."""
         request = {
@@ -305,6 +310,7 @@ class TestMCPServerCommunication:
         assert response is None, "Response must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_server_multiple_sequential_requests(self, mcp_server):
         """Test MCP server handles multiple sequential requests."""
@@ -333,6 +339,7 @@ class TestMCPServerCommunication:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_server_tool_registry_operations(self, mcp_server):
         """Test MCP server tool registry operations."""
         tools = mcp_server.tool_registry.list_tools()
@@ -341,6 +348,7 @@ class TestMCPServerCommunication:
         assert any(t["name"] == "github-issues" for t in tools), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_server_json_rpc_response_format(self, mcp_server):
         """Test MCP server JSON-RPC response format compliance."""
@@ -676,6 +684,7 @@ class TestEndToEndIntegrationScenarios:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_authenticated_server_request(self, mcp_server, mcp_authenticator, mcp_authorizer):
         """Test authenticated end-to-end server request."""
         # Authenticate principal
@@ -695,6 +704,7 @@ class TestEndToEndIntegrationScenarios:
         assert response["result"] is not None, "Value must be initialized"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_rate_limited_server_requests(self, mcp_server):
         """Test rate-limited server requests."""

@@ -4597,6 +4597,13 @@ pip install codex-ml==0.1.0
 # OR with specific profile:
 
 
+
+
+## SESSION SUMMARY — 2026-09-26T17:06Z [auto-generated]
+
+**Session:** auto-20260926T1706-run6798 | **Run:** 36257647573 | **Date:** 2026-09-26
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-09-25T09:25Z [auto-generated]
 
 **Session:** auto-20260925T0925-run6777 | **Run:** 36117842880 | **Date:** 2026-09-25

@@ -353,6 +353,7 @@ class TestFastAPIEndpointAvailability:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_request_handling(self):
         """Test handling HTTP requests."""
         server = MockFastAPIServer()

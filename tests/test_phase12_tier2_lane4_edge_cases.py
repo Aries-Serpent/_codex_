@@ -401,6 +401,7 @@ class TestConcurrencyEdgeCases:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_race_condition(self):
         """Test async race conditions."""
         counter = 0

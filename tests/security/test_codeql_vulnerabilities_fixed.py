@@ -87,7 +87,7 @@ class TestCWE89SQLInjection:
 
             executor = SecureUserQueryExecutor(db_path)
             result = executor.get_user_by_id(1)
-            assert result['email'] == 'admin@example.com'
+            assert result['email'] == 'admin@example.com', "Result must not be empty"
 
         finally:
             Path(db_path).unlink(missing_ok=True)
@@ -108,9 +108,9 @@ class TestCWE89SQLInjection:
             assert executor.update_user(1, email='new@example.com', name='alice2', bio='updated') is True
 
             row = executor.conn.execute('SELECT name, email, bio FROM users WHERE id = 1').fetchone()
-            assert row[0] == 'alice2'
-            assert row[1] == 'new@example.com'
-            assert row[2] == 'updated'
+            assert row[0] == 'alice2', "Condition must be true"
+            assert row[1] == 'new@example.com', "Condition must be true"
+            assert row[2] == 'updated', "Condition must be true"
             executor.conn.close()
 
             with pytest.raises(ValueError, match="Field 'admin' not allowed for update"):

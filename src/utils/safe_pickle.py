@@ -270,7 +270,7 @@ def safe_pickle_load_bytes(
         return RestrictedUnpickler(io.BytesIO(data)).load()
 
     logger.warning(
-        "Loading pickle WITHOUT restriction (potential security risk): %s. Use use_restricted_unpickler=True unless the file is fully trusted.",
+        "Loading pickle WITHOUT restriction (potential security risk): %s. Use use_restricted_unpickler=True unless the file is fully trusted.",  # noqa: E501
         source,
     )
     # SECURITY JUSTIFICATION:

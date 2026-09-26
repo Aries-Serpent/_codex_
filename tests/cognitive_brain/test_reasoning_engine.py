@@ -304,6 +304,7 @@ class TestFeedbackLayer:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_collect_outcome_basic(self, knowledge_base, calibrator):
         """Test basic outcome collection."""
         from codex.cognitive_brain.reasoning_engine import Decision
@@ -334,6 +335,7 @@ class TestFeedbackLayer:
         assert outcome.confidence_was_accurate is True, "confidence_was_accurate is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_outcome_confidence_accuracy_check(self, knowledge_base, calibrator):
         """Test confidence accuracy validation in outcomes."""
@@ -471,6 +473,7 @@ class TestReasoningEngineIntegration:
         assert p99_latency < 500.0, f"p99 latency {p99_latency}ms exceeds 500ms target"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_record_outcome_and_calibration(self, reasoning_engine, sample_context):
         """Test outcome recording updates calibration."""
@@ -876,6 +879,7 @@ class TestReasoningEngineAdvanced:
         assert metrics["latency_ms"]["p99"] > 0, "Value must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_reasoning_engine_async_outcome_pipeline(self, reasoning_engine):
         """Test complete async outcome collection pipeline."""

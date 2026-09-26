@@ -229,6 +229,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_generator_workflow(self):
         """Test async generator workflow."""
         import asyncio
