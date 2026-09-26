@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5634 auto-approve churn trigger loop (2026-09-26)
+- Updated `.github/workflows/agent-auth-delegation.yml` pull_request triggers to remove `edited` and include `synchronize`.
+- This prevents PR-body self-edits from re-triggering/canceling in-progress delegation runs, allowing auto-approve dispatch stages to complete.
+
+### Fixed — PR #5634 docs relative-link rescue follow-up (2026-09-26)
+- Corrected broken relative links in `docs/examples/training-configs.md` (`../../examples/train_toy.py`, `../../examples/chat_finetune.py`).
+- Corrected broken relative links in `docs/bridge/README.md` to `../../copilot/app/README.md` and `../../ops/threat_model/STRIDE.md`.
+- Added `docs/accountability/.codex/archive/reports/chunks/README.md` to satisfy archive index links validated by Fast Validation.
+
 ### Fixed — PR #5634 Validation Pipeline archive-link rescue (2026-09-26)
 - Added missing archived chunk placeholders under `docs/accountability/.codex/archive/reports/chunks/` (`AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md` … `AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md`) to satisfy historical cross-references emitted by the archived accountability report index.
 - This removes the code-fixable Fast Validation failure mode shown in run `36213744378` (`File not found: ./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_11.md` and related chunk targets).
