@@ -156,7 +156,7 @@ class TestScriptGeneration:
         assert script["ticket"]["subject"] == "Test Subject", "Condition must be true"
         assert script["ticket"]["description"] == "Test Description", "Condition must be true"
         assert script["ticket"]["priority"] == "high", "Condition must be true"
-        assert (, "Condition must be true"
+        assert (
             script["ticket"]["requester"]["email"] == "test@example.com"
         ), "Condition must be true"
 
@@ -501,7 +501,7 @@ class TestSLAPolicyTemplate:
 
         assert "sla_policy" in script, "Condition must be true"
         assert script["sla_policy"]["title"] == "Premium Support", "Condition must be true"
-        assert (, "Condition must be true"
+        assert (
             script["sla_policy"]["filter"]["all"][0]["value"] == "urgent"
         ), "Value must be initialized"
         assert script["sla_policy"]["policy_metrics"][0]["target"] == 30, "Condition must be true"

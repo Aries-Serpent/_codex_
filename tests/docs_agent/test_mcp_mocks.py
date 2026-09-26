@@ -310,7 +310,7 @@ class TestGetWorkflowRunMocks:
         """Test run conclusion is valid"""
         response = mock_mcp_tools.GetWorkflowRunMockGenerator.generate_response(12345)
         if response['conclusion']:
-            assert response['conclusion'] in [, "Response must not be empty"
+            assert response['conclusion'] in [
                 'success', 'failure', 'neutral', 'cancelled', 'skipped', 'action_required'
             ]
 
@@ -362,7 +362,7 @@ class TestSearchRepositoriesMocks:
         """Test repo has language"""
         for _ in range(5):
             repo = mock_mcp_tools.SearchRepositoriesMockGenerator.generate_repo()
-            assert repo['language'] in [, "Condition must be true"
+            assert repo['language'] in [
                 "Python", "JavaScript", "Go", "Rust", "Java", "C++"
             ]
 

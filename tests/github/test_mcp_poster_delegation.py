@@ -106,7 +106,7 @@ def test_create_ref_and_pr_roundtrip(poster, monkeypatch):
     assert pr_result["state"] == "open", "Result must not be empty"
 
     # Verify both API calls were made in the correct order
-    assert call_order == [, "call_order is not valid"
+    assert call_order == [
         "create_ref",
         "create_pull_request",
     ], f"Expected ['create_ref', 'create_pull_request'], got {call_order}"

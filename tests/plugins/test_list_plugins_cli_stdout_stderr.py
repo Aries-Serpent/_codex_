@@ -1,11 +1,11 @@
-#     assert (, "Condition must be true"
+#     assert (
 #         proc.stderr.strip() == ""
 #         or "WARNING" in proc.stderr
 #         or "Exception occurred" in proc.stderr
 #         or "psutil import failed; falling back to minimal sampler" in proc.stderr
 # from __future__ import annotations
 #     # Allow warnings but check that critical output is on stdout
-#     assert (, "Condition must be true"
+#     assert (
 #         proc.stderr.strip() == ""
 #         or "WARNING" in proc.stderr
 #         or "Exception occurred" in proc.stderr
@@ -27,7 +27,7 @@
 #     data = json.loads(proc.stdout)
 #     assert isinstance(data, dict)
 #     # Allow warnings but check that critical output is on stdout
-#     assert (, "Condition must be true"
+#     assert (
 #         proc.stderr.strip() == ""
 #         or "WARNING" in proc.stderr
 #         or "Exception occurred" in proc.stderr

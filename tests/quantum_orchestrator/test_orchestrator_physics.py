@@ -434,7 +434,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Components should be high precision complex numbers
         for component in spinor.components:
-            assert isinstance(, "Condition must be true"
+            assert isinstance(
                 component, (complex, np.complexfloating)
             ), "Components should be complex"
 

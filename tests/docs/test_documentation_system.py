@@ -357,7 +357,7 @@
 #         assert isinstance(index["documents"], list)
 #         assert len(index["documents"]) > 0, "Collection must not be empty"
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
 #
@@ -392,7 +392,7 @@
 #         assert "deprecated_in" in deprecation, "Condition must be true"
 #         assert "replacement" in deprecation, "Condition must be true"
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
 #
@@ -423,7 +423,7 @@
 #         ]
 #         # At least one should exist
 #         assert any(s.exists() for s in scripts), "Condition must be true"
-#         assert (, "Condition must be true"
+#         assert (
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
 #
@@ -442,7 +442,7 @@
 #             "broken_links": 2,
 #             "warnings": ["Link timeout: https://example.com"],
 #         }
-#         assert (, "Condition must be true"
+#         assert (
 #             validation_result["valid_links"] + validation_result["broken_links"]
 #             <= validation_result["total_links"]
 #

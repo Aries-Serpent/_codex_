@@ -15,7 +15,7 @@
 #     QuantumComplianceAssessor,
 # )
 #
-#         assert assessment.decision in [, "Condition must be true"
+#         assert assessment.decision in [
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
@@ -74,7 +74,7 @@
 #
 # @pytest.fixture
 #
-#         assert assessment.decision in [, "Condition must be true"
+#         assert assessment.decision in [
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
@@ -91,7 +91,7 @@
 #         assert assessment.coherence > 0.0, "coherence must be greater than zero"
 #
 #
-#         assert assessment.decision in [, "Condition must be true"
+#         assert assessment.decision in [
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
@@ -130,7 +130,7 @@
 #                 business_impact=1.5,  # Invalid
 #                 violations=[],
 #             )
-#         assert assessment.decision in [, "Condition must be true"
+#         assert assessment.decision in [
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
@@ -180,7 +180,7 @@
 #         )
 #         assessment = quantum_assessor.assess_compliance(audit)
 #
-#         assert assessment.decision in [, "Condition must be true"
+#         assert assessment.decision in [
 #             ComplianceDecision.APPROVE_WITH_MONITORING,
 #             ComplianceDecision.CONDITIONAL_APPROVAL,
 #         ]
@@ -272,9 +272,9 @@
 #         assert assessment.decision == ComplianceDecision.CONDITIONAL_APPROVAL, "decision is not valid"
 #         assert assessment.confidence == 0.60, "confidence is not valid"
 #         # Quantum reasoning should mention superposition
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #     """Compare quantum and classical assessment approaches"""
 #     def test_quantum_produces_valid_assessments(self, quantum_assessor):
 #     def test_quantum_produces_valid_assessments(self, quantum_assessor):
@@ -338,9 +338,9 @@
 #         quantum_assessment = quantum_assessor.assess_compliance(audit)
 #         classical_assessment = classical_assessor.assess_compliance(audit)
 #         # Quantum reasoning should mention superposition
-#         assert (, "Condition must be true"
+#         assert (
 #         # Quantum reasoning should mention superposition
-#         assert (, "Condition must be true"
+#         assert (
 #             "superposition" in quantum_assessment.reasoning.lower()
 #             or "quantum" in quantum_assessment.reasoning.lower()
 #         ), "Condition must be true"

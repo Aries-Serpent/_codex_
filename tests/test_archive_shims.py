@@ -279,9 +279,9 @@
 #             assert csv1.exists(), "Condition must be true"
 #             assert csv2.exists(), "Condition must be true"
 #             # Should have forward slashes in JSON
-#             assert (, "Condition must be true"
+#             assert (
 #
-#             assert (, "Condition must be true"
+#             assert (
 #     """Test suite for _PY_WARN constant."""
 #     def test_py_warn_contains_warning_import(self):
 #     def test_py_warn_contains_warning_import(self):
@@ -303,9 +303,9 @@
 #     def test_py_warn_is_string(self):
 #         """Test that _PY_WARN is a string."""
 #         assert isinstance(_PY_WARN, str)
-#             assert (, "Condition must be true"
+#             assert (
 #
-#             assert (, "Condition must be true"
+#             assert (
 #     """Integration tests for shim functions."""
 #     def test_all_shim_types_in_temp_directory(self):
 #     def test_all_shim_types_in_temp_directory(self):
@@ -335,9 +335,9 @@
 #             assert (deep_path / "module.py").parent == deep_path, "parent is not valid"
 #             assert deep_path.parent == Path(tmpdir) / "a" / "b" / "c" / "d", "parent is not valid"
 #             # Should have forward slashes in JSON
-#             assert (, "Condition must be true"
+#             assert (
 #
-#             assert (, "Condition must be true"
+#             assert (
 #     """Test edge cases for shim functions."""
 #     def test_write_python_shim_with_dots_in_path(self):
 #     def test_write_python_shim_with_dots_in_path(self):
@@ -365,6 +365,6 @@
 #             write_json_pointer(duplicate, canonical_path)
 #             content = duplicate.read_text()
 #             # Should have forward slashes in JSON
-#             assert (, "Condition must be true"
+#             assert (
 #                 "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
 #             ), "Condition must be true"

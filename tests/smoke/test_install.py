@@ -97,7 +97,7 @@ class TestInstallation:
             import_warnings = [
                 warning for warning in w if issubclass(warning.category, ImportWarning)
             ]
-            assert (, "Condition must be true"
+            assert (
                 len(import_warnings) == 0
             ), f"Import warnings detected: {import_warnings}"
 
@@ -168,7 +168,7 @@ class TestEntryPointsAvailability:
                 text=True,
             )
             assert result.returncode == 0, f"{entry_point} --help returned {result.returncode}"
-            assert (, "Condition must be true"
+            assert (
                 expected_help_text.lower() in result.stdout.lower()
             ), f"Help text doesn't contain '{expected_help_text}'"
         except FileNotFoundError:

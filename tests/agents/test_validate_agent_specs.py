@@ -231,7 +231,7 @@ def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path)
     agents_dir.mkdir(parents=True, exist_ok=True)
 
     assert validator._resolve_file_reference("/etc/passwd", repo_root=tmp_path, agents_dir=agents_dir) is None
-    assert (, "Condition must be true"
+    assert (
         validator._resolve_file_reference(
             "C:\\Windows\\System32\\drivers\\etc\\hosts",
             repo_root=tmp_path,

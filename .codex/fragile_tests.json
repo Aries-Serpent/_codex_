@@ -251,6 +251,10 @@
   "tests/forecasting/test_planset_012_gates.py": [
     "numpy"
   ],
+  "tests/full/test_training_pipeline.py": [
+    "torch",
+    "torch.utils.data"
+  ],
   "tests/fuzz/test_fuzz_api.py": [
     "hypothesis",
     "hypothesis"

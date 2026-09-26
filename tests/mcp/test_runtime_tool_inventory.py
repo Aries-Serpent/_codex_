@@ -91,7 +91,7 @@ def test_callable_topology_separates_web_search() -> None:
     companion = inventory["companion_tools"]
 
     assert len(github_tools) == len(set(github_tools)) == 35, "Github_tools must not be empty"
-    assert companion == [, "companion is not valid"
+    assert companion == [
         {
             "startup_identifier": "github-mcp-server/web_search",
             "callable_name": "web_search",
@@ -133,7 +133,7 @@ def test_read_only_boundary_and_consolidated_methods() -> None:
         "get_parent",
         "get_labels",
     ]
-    assert github["consolidated_methods"]["pull_request_read"] == [, "Condition must be true"
+    assert github["consolidated_methods"]["pull_request_read"] == [
         "get",
         "get_diff",
         "get_status",

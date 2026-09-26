@@ -1,4 +1,4 @@
-#             assert (, "Condition must be true"
+#             assert (
 #
 #         """Verify null bytes don't cause crashes or silent failures."""
 #         # Arrange
@@ -8,7 +8,7 @@
 #             pytest.skip("transformers not available")
 #
 #             # It's acceptable to reject null bytes with clear error
-#             assert (, "Condition must be true"
+#             assert (
 # class TestTokenizationEmptyInputs:
 #     """Test tokenization with empty or minimal inputs."""
 #     def test_tokenize_empty_string(self):
@@ -85,9 +85,9 @@
 #         assert len(result["input_ids"]) >= 1, "Single character should produce at least one token"
 #         except ValueError as e:
 #             # It's acceptable to reject null bytes with clear error
-#             assert (, "Condition must be true"
+#             assert (
 #
-#             assert (, "Condition must be true"
+#             assert (
 #     """Test tokenization with special characters and encodings."""
 #     def test_tokenize_null_byte_handling(self):
 #     def test_tokenize_null_byte_handling(self):
@@ -113,10 +113,10 @@
 #             assert "input_ids" in result, "Should produce valid tokenization even with null byte"
 #         except ValueError as e:
 #             # It's acceptable to reject null bytes with clear error
-#             assert (, "Condition must be true"
+#             assert (
 #         except ValueError as e:
 #             # It's acceptable to reject null bytes with clear error
-#             assert (, "Condition must be true"
+#             assert (
 #                 "null" in str(e).lower() or "encoding" in str(e).lower(
 #             ), "Condition must be true"
 #             ), "Should provide clear error for problematic input"
@@ -170,7 +170,7 @@
 #         assert len(result["input_ids"]) > 0, "Should produce tokens for mixed scripts"
 #
 #         # Assert
-#         assert (, "Condition must be true"
+#         assert (
 #             len(result["input_ids"]) <= max_length
 #         ), f"Should truncate to max_length={max_length}, got {len(result['input_ids'])}"
 

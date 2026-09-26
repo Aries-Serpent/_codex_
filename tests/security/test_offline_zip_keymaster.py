@@ -275,10 +275,10 @@ def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(
     extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "recursive_output")
 
     assert extracted.name == "outer_container", "name is not valid"
-    assert (, "Condition must be true"
+    assert (
         extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "hello.txt"
     ).read_text(encoding="utf-8") == "hello offline\n"
-    assert (, "Condition must be true"
+    assert (
         extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "nested" / "hello2.txt"
     ).read_text(encoding="utf-8") == "second file\n"
 

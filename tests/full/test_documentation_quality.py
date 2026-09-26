@@ -51,7 +51,7 @@ class TestDocumentationCompleteness:
         insufficient_docs = [r for r in results if r.get("coverage_pct", 0) < 70]
 
         # Check coverage threshold
-        assert (, "Condition must be true"
+        assert (
             avg_coverage >= 70
         ), f"Average docstring coverage {avg_coverage:.1f}% is below 70% threshold. "
         f"Files with <70% coverage: {len(insufficient_docs)}"
@@ -91,13 +91,13 @@ class TestCodeQualityTypeHints:
         avg_coverage = total_coverage / max(len(results), 1) if results else 0
 
         # Type hint coverage should be good but we're lenient for legacy code
-        assert (, "Condition must be true"
+        assert (
             avg_coverage >= 60
         ), f"Average type hint coverage {avg_coverage:.1f}% is below 60%"
 
         # At least 50% of files should have >80% type hint coverage
         good_coverage = sum(1 for r in results if r.get("coverage_pct", 0) >= 80)
-        assert (, "Condition must be true"
+        assert (
             good_coverage >= len(results) * 0.5
         ), f"Only {good_coverage}/{len(results)} files have good type hint coverage"
 
@@ -138,7 +138,7 @@ class TestLinkValidation:
             ])
         ]
 
-        assert (, "Condition must be true"
+        assert (
             len(critical_broken) == 0
         ), f"Found broken internal documentation links: {critical_broken}"
 
@@ -167,7 +167,7 @@ class TestSecurityCheckCredentials:
                     "findings": result.get("findings", []),
                 })
 
-        assert (, "Condition must be true"
+        assert (
             not files_with_secrets
         ), f"Found potential secrets in source files: {files_with_secrets}"
 

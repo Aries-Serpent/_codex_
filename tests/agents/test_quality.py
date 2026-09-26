@@ -117,7 +117,7 @@ class TestOutputValidation:
         result = agent.execute_agent({})
 
         assert "status" in result, "Output missing 'status' field"
-        assert result["status"] in [, "Result must not be empty"
+        assert result["status"] in [
             "success",
             "partial",
             "error",
@@ -154,11 +154,11 @@ class TestOutputValidation:
         result = agent.execute_agent({})
 
         if "metadata" in result:
-            assert isinstance(, "Condition must be true"
+            assert isinstance(
                 result["metadata"], dict
             ), "Metadata must be dict"
             if "execution_time_ms" in result["metadata"]:
-                assert isinstance(, "Condition must be true"
+                assert isinstance(
                     result["metadata"]["execution_time_ms"], (int, float)
                 ), "execution_time_ms must be numeric"
 
@@ -666,7 +666,7 @@ class TestComparativePerformance:
         slow_benchmark = slow_agent.benchmark_execution({}, iterations=5)
 
         # Fast agent should be faster
-        assert (, "Condition must be true"
+        assert (
             fast_benchmark["avg_duration_ms"]
             < slow_benchmark["avg_duration_ms"]
         )

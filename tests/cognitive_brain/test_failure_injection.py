@@ -51,7 +51,7 @@ class TestReasoningParamImpossibleByConstruction:
             model_id,
             {"reasoning_effort": "high", "max_tokens": 1024},
         )
-        assert (, "Condition must be true"
+        assert (
             "reasoning_effort" not in result.safe_config
         ), f"Model {model_id!r} must not receive reasoning_effort in safe_config"
 
@@ -62,7 +62,7 @@ class TestReasoningParamImpossibleByConstruction:
             model_id,
             {"thinking": {"type": "enabled"}, "max_tokens": 1024},
         )
-        assert (, "Condition must be true"
+        assert (
             "thinking" not in result.safe_config
         ), f"Model {model_id!r} must not receive 'thinking' in safe_config"
 
@@ -90,7 +90,7 @@ class TestNegotiatorInterception:
         guard = SessionGuard()
         for model in ["claude-haiku-4.5", "claude-sonnet-5", "gpt-5-mini"]:
             result = guard.create_session(model, {"max_tokens": 512})
-            assert (, "Condition must be true"
+            assert (
                 "model" in result.safe_config
             ), f"'model' key missing from safe_config for {model!r}"
 

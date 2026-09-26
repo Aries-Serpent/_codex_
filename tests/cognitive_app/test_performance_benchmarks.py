@@ -77,7 +77,7 @@ class TestLatencyBenchmarks:
             results.append(timer.ms)
 
         p99_latency = sorted(results)[99]
-        assert (, "Condition must be true"
+        assert (
             p99_latency < 100.0
         ), f"p99 latency {p99_latency}ms exceeds 100ms (filtering adds overhead)"
 
@@ -105,7 +105,7 @@ class TestLatencyBenchmarks:
             results.append(timer.ms)
 
         p99_latency = sorted(results)[99]
-        assert (, "Condition must be true"
+        assert (
             p99_latency < 20.0
         ), f"p99 latency {p99_latency}ms exceeds 20ms (should be cached)"
 
@@ -145,7 +145,7 @@ class TestLatencyBenchmarks:
             results.append(timer.ms)
 
         p99_latency = sorted(results)[99]
-        assert (, "Condition must be true"
+        assert (
             p99_latency < 100.0
         ), f"p99 latency {p99_latency}ms exceeds 100ms (GitHub API call)"
 
