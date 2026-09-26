@@ -93,9 +93,7 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> list[tu
         # Move start position for next chunk, accounting for overlap
         start = end - overlap if end < text_len else text_len
 
-    logger.debug(
-        f"Created {len(chunks)} chunks from {text_len} characters"
-    )  # codeql[py/clear-text-logging-sensitive-data]
+    logger.debug("Created %d chunks from %d characters", len(chunks), text_len)
     return chunks
 
 
@@ -222,9 +220,7 @@ def persist_index(
         raise ValueError(f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks")
 
     if faiss is None:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
         raise ImportError("faiss-cpu not installed")
 
     # Create tenant directory
@@ -302,9 +298,7 @@ def load_index(
         Tuple of (faiss_index, chunks_metadata, index_metadata)
     """
     if faiss is None:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
         raise ImportError("faiss-cpu not installed")
 
     index_path = Path(index_dir) / tenant_id / index_name
@@ -587,14 +581,10 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 created.append(index_name)
-                logger.info(
-                    f"Created index '{index_name}' at {index_path}"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info("Created index '%s' at %s", index_name, index_path)
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error(
-                    f"Failed to create index '{index_name}': <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error("Failed to create index '%s': %s", index_name, error_type)
 
         if created:
             return TenantOperationResult(
@@ -632,9 +622,7 @@ def manage_tenant_indices(
                 old_path = tenant_dir / index_name
                 if old_path.exists():
                     shutil.rmtree(old_path)
-                    logger.info(
-                        f"Removed old index '{index_name}'"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.info("Removed old index '%s'", index_name)
 
                 # Create new index
                 index_path = build_index_from_files(
@@ -646,14 +634,10 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 updated.append(index_name)
-                logger.info(
-                    f"Updated index '{index_name}' at {index_path}"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info("Updated index '%s' at %s", index_name, index_path)
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error(
-                    f"Failed to update index '{index_name}': <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error("Failed to update index '%s': %s", index_name, error_type)
 
         if updated:
             return TenantOperationResult(
@@ -681,18 +665,12 @@ def manage_tenant_indices(
                 if index_path.exists():
                     shutil.rmtree(index_path)
                     deleted.append(index_name)
-                    logger.info(
-                        f"Deleted index '{index_name}' from {tenant_dir}"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.info("Deleted index '%s' from %s", index_name, tenant_dir)
                 else:
-                    logger.warning(
-                        f"Index '{index_name}' not found for tenant '{tenant_id}'"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning("Index '%s' not found for tenant '%s'", index_name, tenant_id)
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
-                logger.error(
-                    f"Failed to delete index '{index_name}': <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error("Failed to delete index '%s': %s", index_name, error_type)
 
         if deleted:
             return TenantOperationResult(
@@ -743,14 +721,10 @@ def manage_tenant_indices(
                         all_chunks.extend([(c["start"], c["end"], c["text"]) for c in chunks])
                         all_metadata.append(metadata)
 
-                    logger.info(
-                        f"Loaded {index.ntotal} vectors from '{index_name}'"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.info("Loaded %d vectors from '%s'", index.ntotal, index_name)
                 except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.error(
-                        f"Failed to load index '{index_name}': {error_type}: {str(e)}"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.error("Failed to load index '%s': %s: %s", index_name, error_type, str(e))
 
             if not all_embeddings:
                 return TenantOperationResult(
@@ -797,9 +771,7 @@ def manage_tenant_indices(
 
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
-            logger.error(
-                "Merge operation failed: <ERROR_TYPE>"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("Merge operation failed: %s", type(e).__name__)
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,
@@ -858,9 +830,7 @@ def manage_tenant_indices(
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error(
-                "List operation failed: <ERROR_TYPE>"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("List operation failed: %s", type(e).__name__)
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,

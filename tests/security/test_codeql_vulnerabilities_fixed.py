@@ -26,7 +26,7 @@ from aries_serpent_core.config_secure import (
 )
 
 # Import secure implementations
-from aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
+from aries_serpent_core.db.queries_secure import SecureUserQueryExecutor, UserQueryExecutor
 from codex_ml.utils.serialization_secure import SecureSerializer, SerializationError, UserData
 
 

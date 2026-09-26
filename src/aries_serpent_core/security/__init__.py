@@ -24,6 +24,7 @@ Usage:
 """
 
 import hashlib
+import ipaddress
 import re
 from typing import Any, Optional
 from urllib.parse import urlparse
@@ -150,7 +151,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
     Validate that a URL belongs to an allowed domain.
 
     This function prevents URL substring sanitization vulnerabilities by
-    properly parsing the URL and checking the domain component, not just
+    properly parsing the URL and checking the hostname component, not just
     searching for the domain string anywhere in the URL.
 
     Args:
@@ -160,46 +161,36 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
 
     Returns:
         True if URL is from an allowed domain, False otherwise
-
-    Example:
-        >>> sanitize_url("http://example.com/path", ["example.com"])
-        True
-        >>> sanitize_url("http://evil.com/example.com", ["example.com"])
-        False
-        >>> sanitize_url("http://example.com.evil.com", ["example.com"])
-        False
-        >>> sanitize_url("http://evilexample.com", ["example.com"])
-        False
-
-    Security Note:
-        This prevents attacks where malicious URLs contain the allowed domain
-        as a substring in the path, query parameters, or as part of a different
-        domain name.
     """
     if not url:
         return False
 
     try:
         parsed = urlparse(url)
-        netloc = parsed.netloc.lower()
+        hostname = parsed.hostname
+        if not parsed.scheme or not hostname:
+            return False
 
-        # Remove port if present
-        if ":" in netloc:
-            netloc = netloc.split(":", 1)[0]
+        # Reject private/loopback/metadata targets to prevent SSRF.
+        try:
+            addr = ipaddress.ip_address(hostname)
+            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast:
+                return False
+        except ValueError:
+            pass
 
-        # If no allowed domains specified, just check that we have a valid domain
+        host = hostname.lower().rstrip(".")
+
         if allowed_domains is None:
-            return bool(netloc)
+            return bool(host)
 
-        # Check if domain matches exactly or is a subdomain
         for allowed_domain in allowed_domains:
-            allowed_lower = allowed_domain.lower()
-            if netloc == allowed_lower or netloc.endswith("." + allowed_lower):
+            allowed_lower = allowed_domain.lower().rstrip(".")
+            if host == allowed_lower or host.endswith("." + allowed_lower):
                 return True
 
         return False
-    except (ConnectionError, TimeoutError):
-        # If URL parsing fails, consider it invalid
+    except (ConnectionError, TimeoutError, ValueError):
         return False
 
 

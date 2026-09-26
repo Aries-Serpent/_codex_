@@ -42,40 +42,31 @@ class SecureSerializer:
 
     @staticmethod
     def deserialize_untrusted(data: bytes) -> Dict[str, Any]:
-        """
-        Deserialize untrusted data safely.
-
-        ✅ VULNERABILITY FIXED: CWE-502 Insecure Deserialization
-
-        Previous vulnerable code:
-            import pickle
-            obj = pickle.loads(untrusted_data)  # ❌ REMOTE CODE EXECUTION!
-
-        Secure implementation:
-            obj = json.loads(untrusted_data)  # ✅ SAFE
-
-        JSON deserialization is safe because:
-        - Only creates basic types (dict, list, str, int, float, bool, None)
-        - No code execution or object instantiation
-        - Predictable and auditable
-
-        Args:
-            data: Untrusted bytes from network/untrusted source
-
-        Returns:
-            Deserialized dictionary
-
-        Raises:
-            SerializationError: If deserialization fails
-        """
+        """Deserialize untrusted data safely and reject malformed user payloads."""
         try:
-            # SECURE: JSON only accepts safe types
-            # Malicious pickle opcodes will raise JSONDecodeError
             decoded_str = data.decode("utf-8")
             obj = json.loads(decoded_str)
-            return obj
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             raise SerializationError(f"Failed to deserialize untrusted data: {e}") from e
+
+        if not isinstance(obj, dict):
+            raise SerializationError("Deserialized payload must be a JSON object")
+
+        # Require the minimum fields that represent a user payload, while still allowing
+        # safe partial payloads to be accepted by the generic deserializer.
+        if "user_id" in obj or "username" in obj or "email" in obj:
+            if "user_id" not in obj:
+                raise SerializationError("Missing required field: user_id")
+            if "username" not in obj:
+                raise SerializationError("Missing required field: username")
+            if not isinstance(obj["user_id"], int):
+                raise SerializationError("Field user_id has wrong type. Expected int")
+            if not isinstance(obj["username"], str):
+                raise SerializationError("Field username has wrong type. Expected str")
+            if "email" in obj and not isinstance(obj["email"], str):
+                raise SerializationError("Field email has wrong type. Expected str")
+
+        return obj
 
     @staticmethod
     def deserialize_trusted(data: bytes) -> Any:

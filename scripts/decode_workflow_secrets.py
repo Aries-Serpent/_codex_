@@ -41,9 +41,12 @@ import yaml
 
 # Import security utilities for sanitizing sensitive data
 try:
-    from aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import redact_secret_name, sanitize_log_message
 except ImportError:
     # Fallback: simple sanitization if security_utils not available
+    def redact_secret_name(secret_name: str) -> str:
+        return "[REDACTED_SECRET_NAME]" if secret_name else "[UNNAMED_SECRET]"
+
     def sanitize_log_message(msg: str) -> str:
         """Fallback message sanitization."""
         import re
@@ -63,6 +66,12 @@ def decode_secret_name(encoded: str) -> str:
         return base64.b64decode(encoded.encode('ascii')).decode('utf-8')
     except Exception as e:
         return f"[DECODE_ERROR: {e}]"
+
+
+def _fingerprint_secret(value: str) -> str:
+    """Return a stable, non-sensitive fingerprint for a secret name."""
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return f"sha256:{digest[:12]}"
 
 
 def list_secret_tokens(inventory_path: Path) -> None:
@@ -99,10 +108,9 @@ def list_secret_tokens(inventory_path: Path) -> None:
         return
 
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        # Security: Use generic placeholder instead of exposing any token characters
-        # to prevent clear-text token exposure in logs/output
-        print(f"{i}. [Token fingerprint] (SHA256)")
-        print(f"   Hint: {info['hint']}")
+        fingerprint = _fingerprint_secret(token)
+        print(f"{i}. [Token fingerprint] {fingerprint}")
+        print(f"   Hint: {sanitize_log_message(info['hint'])}")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
 
@@ -164,14 +172,13 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
     print()
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. Secret: {secret_name}")
-        # Security: Use generic placeholder instead of exposing any token characters
-        # to prevent clear-text token exposure in logs/output
-        print("   [Token fingerprint]")
-        print(f"   Hint: {info['hint']}")
+        fingerprint = _fingerprint_secret(secret_name)
+        print(f"{i}. Secret: {redact_secret_name(secret_name)}")
+        print(f"   Token fingerprint: {fingerprint}")
+        print(f"   Hint: {sanitize_log_message(info['hint'])}")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for wf in sorted(info['workflows']):
-            print(f"      - {wf}")
+            print(f"      - {sanitize_log_message(wf)}")
         print()
 
     print("=" * 70)

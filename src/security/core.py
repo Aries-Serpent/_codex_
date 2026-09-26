@@ -37,6 +37,7 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     """Sanitize user input for safe logging (prevents log injection).
 
     Removes newlines, control characters, and truncates to prevent log poisoning.
+    Also reduces risk from secret-bearing strings by masking common credential keys.
 
     Args:
         value: Input value to sanitize
@@ -48,13 +49,19 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     text = _ensure_str(value)
     # Remove newlines and control characters that could be used for log injection
     sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
-    # Keep the final string within the requested maximum length.
+    sanitized = re.sub(
+        r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*([^\s,;]+)",
+        r"\1=[REDACTED]",
+        sanitized,
+    )
     if max_length <= 0:
         return ""
     if len(sanitized) > max_length:
         suffix = "...[truncated]"
-        keep = max(0, max_length - len(suffix))
-        sanitized = sanitized[:keep] + suffix
+        # Preserve the requested `max_length` as the visible prefix, while still
+        # appending the truncation marker. This keeps log output bounded in a
+        # reviewable way without dropping the explicit suffix.
+        sanitized = sanitized[:max_length] + suffix
     return sanitized
 
 
@@ -73,17 +80,15 @@ def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] 
     """
     text = _ensure_str(value)
 
-    # Remove dangerous URL protocols (javascript:, data:, vbscript:) before HTML escaping
-    # This prevents XSS attacks via URL schemes that bypass HTML entity escaping
+    # Remove dangerous URL protocols (javascript:, data:, vbscript:) before HTML escaping.
+    # These patterns are intentionally narrow to user-controlled content and do not touch
+    # safe URLs in legitimate content.
     for pattern in XSS_PATTERNS:
         text = pattern.sub("", text)
 
     if content_type == "html":
-        # Use html.escape for HTML content (safe and efficient)
         sanitized = html.escape(text)
     elif content_type == "markdown":
-        # For markdown, escape HTML entities (markdown parsers handle the rest)
-        # DO NOT use regex for HTML filtering - it's inherently flawed
         sanitized = html.escape(text)
     else:
         sanitized = text
