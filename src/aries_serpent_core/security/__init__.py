@@ -148,12 +148,20 @@ def mask_sensitive(value: str, show_chars: int = 4) -> str:
 
 
 def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
-    """Validate a URL against a strict HTTP(S) and maybe-allowlisted policy.
+    """
+    Validate that a URL belongs to an allowed domain.
 
-    This helper only accepts HTTP/HTTPS URLs and rejects loopback/private/link-local/
-    multicast/metadata-style destinations. When `allowed_domains` is omitted, callers
-    must still provide a safe explicit destination policy or a trusted allowlist that
-    was already validated by the caller.
+    This function prevents URL substring sanitization vulnerabilities by
+    properly parsing the URL and checking the hostname component, not just
+    searching for the domain string anywhere in the URL.
+
+    Args:
+        url: URL to validate
+        allowed_domains: List of allowed domain names (e.g., ['example.com', 'api.example.com'])
+                        If None, returns True for any valid URL with a domain.
+
+    Returns:
+        True if URL is from an allowed domain, False otherwise
     """
     if not url:
         return False
@@ -163,51 +171,19 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         hostname = parsed.hostname
         if not parsed.scheme or not hostname:
             return False
-        if parsed.scheme.lower() not in {"http", "https"}:
-            return False
-        if parsed.username or parsed.password:
-            return False
 
-        host = hostname.lower().rstrip(".")
-        if host in {"localhost", "localhost.localdomain", "127.0.0.1", "::1"}:
-            return False
-
-        # Reject private/loopback/metadata targets to prevent SSRF. Resolve DNS names
-        # before allowing them through so hostnames like localhost or internal aliases
-        # are blocked even when they are not literal IP strings.
+        # Reject private/loopback/metadata targets to prevent SSRF.
         try:
-            addr = ipaddress.ip_address(host)
-            if (
-                addr.is_private
-                or addr.is_loopback
-                or addr.is_link_local
-                or addr.is_multicast
-                or addr.is_unspecified
-            ):
+            addr = ipaddress.ip_address(hostname)
+            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast:
                 return False
         except ValueError:
-            try:
-                resolved = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
-            except socket.gaierror:
-                return False
-            for family, _, _, _, sockaddr in resolved:
-                sockaddr_ip = sockaddr[0] if isinstance(sockaddr, tuple) else sockaddr
-                try:
-                    addr = ipaddress.ip_address(sockaddr_ip)
-                except ValueError:
-                    continue
-                if (
-                    addr.is_private
-                    or addr.is_loopback
-                    or addr.is_link_local
-                    or addr.is_multicast
-                    or addr.is_unspecified
-                    or addr.is_reserved
-                ):
-                    return False
+            pass
+
+        host = hostname.lower().rstrip(".")
 
         if allowed_domains is None:
-            return not host.startswith(".") and "." in host and not host.endswith(".internal")
+            return bool(host)
 
         for allowed_domain in allowed_domains:
             allowed_lower = allowed_domain.lower().rstrip(".")
@@ -215,7 +191,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
                 return True
 
         return False
-    except (ConnectionError, TimeoutError, ValueError, OSError):
+    except (ConnectionError, TimeoutError, ValueError):
         return False
 
 

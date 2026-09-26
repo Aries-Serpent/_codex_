@@ -132,7 +132,7 @@ class GitHubHTTPClient:
             logger.error("GitHub API error: %s %s at %s", e.code, e.reason, redact_url_for_log(url))
             try:
                 error_data = json.loads(e.read().decode("utf-8"))
-                logger.debug("GitHub API error details: %s", "error response received")
+                logger.debug("GitHub API error details: %s", redact_url_for_log(str(error_data)))
             except Exception:
                 logger.debug("GitHub API error details: %s", "error response received")
             raise

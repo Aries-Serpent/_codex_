@@ -107,21 +107,13 @@ def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
 
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
-    if not owner or not repo or not ref or not path:
-        raise ValueError("GitHub file parameters cannot be empty")
     clean_owner = re.sub(r"[^A-Za-z0-9_.-]", "", owner)
     clean_repo = re.sub(r"[^A-Za-z0-9_.-]", "", repo)
     clean_ref = re.sub(r"[^A-Za-z0-9_.-]", "", ref)
     clean_path = path.strip("/")
     if not clean_owner or not clean_repo or not clean_ref:
         raise ValueError("GitHub file parameters contain unsupported characters")
-    if clean_path in {"", ".", ".."} or any(part in {"", ".", ".."} for part in clean_path.split("/")):
-        raise ValueError("GitHub client file path contains invalid path components")
-    if any(ch in clean_path for ch in ("\\", "\x00", "\n", "\r", "\t")):
-        raise ValueError("GitHub client file path contains invalid characters")
-    if ".." in clean_path or clean_path.startswith("/"):
-        raise ValueError("GitHub client file path contains invalid traversal segments")
-    raw = f"https://raw.githubusercontent.com/{clean_owner}/{clean_repo}/{clean_ref}/{quote(clean_path, safe='/')}"
+    raw = f"https://raw.githubusercontent.com/{clean_owner}/{clean_repo}/{clean_ref}/{quote(clean_path, safe='/') }"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text

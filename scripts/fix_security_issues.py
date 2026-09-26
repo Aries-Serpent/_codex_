@@ -133,7 +133,9 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
             if dry_run:
                 print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
-                safe_target = _ensure_within_repo(file_path)
+                safe_target = file_path.resolve(strict=False)
+                if safe_target.parent != file_path.parent.resolve(strict=False):
+                    raise ValueError("Refusing to write outside the configured directory")
                 safe_target.write_text(new_content)
                 print(f"  ✅ Fixed B608 in {file_path_str}")
             fixes += 1

@@ -58,11 +58,10 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
         return ""
     suffix = "...[truncated]"
     if len(sanitized) > max_length:
-        if max_length <= len(suffix):
-            return suffix[:max_length]
-        # Preserve the historical truncation contract: keep the requested prefix
-        # length and append the explicit marker so the output remains bounded and
-        # readable without silently dropping the suffix.
+        suffix = "...[truncated]"
+        # Preserve the requested `max_length` as the visible prefix, while still
+        # appending the truncation marker. This keeps log output bounded in a
+        # reviewable way without dropping the explicit suffix.
         sanitized = sanitized[:max_length] + suffix
     return sanitized
 

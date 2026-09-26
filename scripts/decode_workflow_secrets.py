@@ -41,9 +41,12 @@ import yaml
 
 # Import security utilities for sanitizing sensitive data
 try:
-    from aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import redact_secret_name, sanitize_log_message
 except ImportError:
     # Fallback: simple sanitization if security_utils not available
+    def redact_secret_name(secret_name: str) -> str:
+        return "[REDACTED_SECRET_NAME]" if secret_name else "[UNNAMED_SECRET]"
+
     def sanitize_log_message(msg: str) -> str:
         """Fallback message sanitization."""
         import re
@@ -73,9 +76,10 @@ def decode_secret_name(encoded: str) -> str:
         return "[DECODE_ERROR]"
 
 
-def _redacted_label(label: str) -> str:
-    """Return a constant redacted label for any secret-derived value."""
-    return f"[REDACTED_{label.upper()}]"
+def _fingerprint_secret(value: str) -> str:
+    """Return a stable, non-sensitive fingerprint for a secret name."""
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return f"sha256:{digest[:12]}"
 
 
 def list_secret_tokens(inventory_path: Path) -> None:
@@ -111,8 +115,9 @@ def list_secret_tokens(inventory_path: Path) -> None:
         print("No secrets found in inventory.")
         return
 
-    for i, (_, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. [Token fingerprint] {_redacted_label('token_fingerprint')}")
+    for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
+        fingerprint = _fingerprint_secret(token)
+        print(f"{i}. [Token fingerprint] {fingerprint}")
         print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
@@ -174,9 +179,10 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
     print(f"Total unique secrets: {len(all_secrets)}")
     print()
 
-    for i, (_, info) in enumerate(sorted(all_secrets.items()), 1):
+    for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
+        fingerprint = _fingerprint_secret(secret_name)
         print(f"{i}. Secret: [REDACTED_SECRET_NAME]")
-        print(f"   Token fingerprint: {_redacted_label('token_fingerprint')}")
+        print(f"   Token fingerprint: {fingerprint}")
         print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for _ in sorted(info['workflows']):
