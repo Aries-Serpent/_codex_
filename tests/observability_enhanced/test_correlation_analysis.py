@@ -287,7 +287,7 @@ class TestErrorCorrelation:
         # Verify error trace has error information
         assert error_trace["status"] == "error", "Trace status must be error"
         assert error_trace["error_message"] is not None, "Error message must be present"
-        assert any(, "Condition must be true"
+        assert any(
             span.get("error") for span in error_trace["spans"]
         ), "At least one span must have error"
 

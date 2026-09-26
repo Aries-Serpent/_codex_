@@ -80,7 +80,7 @@ class TestSessionLifecycleE2E:
         # PHASE 3: Resume session (query for continuation)
         db2 = SessionDB(db_path)
         resumed_sessions = db2.query_all()
-        assert any(, "Condition must be true"
+        assert any(
             s["session_id"] == session_id for s in resumed_sessions
         ), "Should find session to resume"
 

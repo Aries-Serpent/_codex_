@@ -135,9 +135,9 @@ def test_create_ref_and_pr_uses_correct_endpoints(poster, monkeypatch):
     poster.create_ref(repo, "test-branch", "abc123")
     poster.create_pull_request(repo, "title", "body", "test-branch", "main")
 
-    assert any(, "Condition must be true"
+    assert any(
         f"/repos/{repo}/git/refs" in u for u in captured_urls
     ), "create_ref should POST to /repos/{repo}/git/refs"
-    assert any(, "Condition must be true"
+    assert any(
         f"/repos/{repo}/pulls" in u for u in captured_urls
     ), "create_pull_request should POST to /repos/{repo}/pulls"

@@ -38,7 +38,7 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
     workflow = _load_workflow()
 
     build_entries = _distribution_entries(workflow["jobs"]["build"])
-    assert any(, "Condition must be true"
+    assert any(
         entry["name"] == "codex-cognitive-sdk" and entry["path"] == "packages/cognitive_sdk"
         for entry in build_entries
     )
@@ -54,7 +54,7 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
         assert any(entry["name"] == "codex-cognitive-sdk" for entry in entries), "Condition must be true"
 
     verify_entries = _distribution_entries(workflow["jobs"]["verify-installation"])
-    assert any(, "Condition must be true"
+    assert any(
         entry["name"] == "codex-cognitive-sdk" and entry["import"] == "codex_cognitive_sdk"
         for entry in verify_entries
     )

@@ -265,7 +265,7 @@ class TestSelfHealingEngineCore:
         assert isinstance(issues, list)
         if len(issues) > 0:
             # Check if import error was detected
-            assert any(, "Condition must be true"
+            assert any(
                 "import" in str(issue).lower() or "numpy" in str(issue).lower() for issue in issues
             ), "Condition must be true"
 
