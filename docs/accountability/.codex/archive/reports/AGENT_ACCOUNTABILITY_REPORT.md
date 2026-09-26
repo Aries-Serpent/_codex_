@@ -12588,7 +12588,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 > **Format:** Chunked into 32 groups for improved GitHub rendering
 > **Date:** 2026-06-23
 > **Total Sessions:** 317
-> **Archive:** [Old Monolithic Report](../../.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak)
+> **Archive:** `../../.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak` (historical path; file no longer present)
 
 ---
 
@@ -13931,7 +13931,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 > **Format:** Chunked into 32 groups for improved GitHub rendering
 > **Date:** 2026-06-23
 > **Total Sessions:** 317
-> **Archive:** [Old Monolithic Report](../../.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak)
+> **Archive:** `../../.codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak` (historical path; file no longer present)
 
 ---
 

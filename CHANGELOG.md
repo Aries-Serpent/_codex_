@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5634 stale scorecard and validation follow-up (2026-09-26)
+- Fixed two broken links in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` that referenced a missing archived monolithic report file and were blocking Validation Pipeline cross-reference checks.
+- Refreshed daily governance evidence (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + PDA entry) so `accountability report today` and `PDA entry today` are no longer stale for the current session.
+
 ### Fixed — PR #5634 validation-pipeline CI rescue (2026-09-25)
 - Removed two broken markdown links in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` that pointed to a non-existent archived monolithic report path and were failing the `check-cross-references` gate in Validation Pipeline.
 - Preserved the historical archive path as inline code text (non-link) so accountability context remains documented without tripping link validation.
