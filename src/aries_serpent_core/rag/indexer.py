@@ -654,19 +654,19 @@ def manage_tenant_indices(
                     overlap=kwargs.get("overlap", 128),
                 )
                 updated.append(index_name)
-                safe_index_name = sanitize_log_message(str(index_name))
-                safe_index_path = sanitize_log_message(str(index_path))
+                safe_index_name = _safe_log_value(index_name)
+                safe_index_path = _safe_log_value(index_path)
                 logger.info(
                     "Updated index '%s' at %s",
-                    sanitize_log_message(str(index_name)),
-                    sanitize_log_message(str(index_path)),
+                    safe_index_name,
+                    safe_index_path,
                 )
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
                 logger.error(
                     "Failed to update index '%s': %s",
-                    sanitize_log_message(str(index_name)),
-                    sanitize_log_message(error_type),
+                    _safe_log_value(index_name),
+                    _safe_log_value(error_type),
                 )
 
         if updated:
@@ -697,21 +697,21 @@ def manage_tenant_indices(
                     deleted.append(index_name)
                     logger.info(
                         "Deleted index '%s' from %s",
-                        sanitize_log_message(str(index_name)),
-                        sanitize_log_message(str(tenant_dir)),
+                        _safe_log_value(index_name),
+                        _safe_log_value(tenant_dir),
                     )
                 else:
                     logger.warning(
                         "Index '%s' not found for tenant '%s'",
-                        sanitize_log_message(str(index_name)),
-                        sanitize_log_message(str(tenant_id)),
+                        _safe_log_value(index_name),
+                        _safe_log_value(tenant_id),
                     )
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
                 logger.error(
                     "Failed to delete index '%s': %s",
-                    sanitize_log_message(str(index_name)),
-                    sanitize_log_message(error_type),
+                    _safe_log_value(index_name),
+                    _safe_log_value(error_type),
                 )
 
         if deleted:
@@ -766,15 +766,15 @@ def manage_tenant_indices(
                     logger.info(
                         "Loaded %d vectors from '%s'",
                         index.ntotal,
-                        sanitize_log_message(str(index_name)),
+                        _safe_log_value(index_name),
                     )
                 except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
                     logger.error(
                         "Failed to load index '%s': %s: %s",
-                        sanitize_log_message(str(index_name)),
-                        sanitize_log_message(error_type),
-                        sanitize_log_message(str(e)),
+                        _safe_log_value(index_name),
+                        _safe_log_value(error_type),
+                        _safe_log_value(e),
                     )
 
             if not all_embeddings:
