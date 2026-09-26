@@ -24,7 +24,6 @@ from aries_serpent_core.config_secure import (
     DatabaseConfig,
     SecureConfig,
 )
-from aries_serpent_core.db.queries import UserQueryExecutor
 
 # Import secure implementations
 from aries_serpent_core.db.queries_secure import SecureUserQueryExecutor
