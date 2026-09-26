@@ -32,9 +32,13 @@ def redact_url_for_log(url: str) -> str:
         return ""
     parts = urlsplit(url)
     host = parts.hostname or ""
-    if ":" in host and not host.startswith("["):
+    if host and ":" in host and not host.startswith("["):
         host = f"[{host}]"
-    netloc = f"{host}:{parts.port}" if parts.port else host
+    try:
+        port = parts.port
+    except ValueError:
+        port = None
+    netloc = f"{host}:{port}" if port is not None else host
     return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
 
 
@@ -42,6 +46,8 @@ def validated_github_api_url(url: str) -> str:
     """Allow only credential-free HTTPS calls to api.github.com."""
     if not url:
         raise ValueError("GitHub API URL cannot be empty")
+    if any(ch in url for ch in ("\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub API URL contains control characters")
     parts = urlsplit(url)
     if parts.scheme != "https" or parts.hostname != "api.github.com":
         raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
@@ -131,10 +137,10 @@ class GitHubHTTPClient:
             # Log safe error details without exposing request or response secrets.
             logger.error("GitHub API error: %s %s at %s", e.code, e.reason, redact_url_for_log(url))
             try:
-                error_data = json.loads(e.read().decode("utf-8"))
-                logger.debug("GitHub API error details: %s", redact_url_for_log(str(error_data)))
+                json.loads(e.read().decode("utf-8"))
             except Exception:
-                logger.debug("GitHub API error details: %s", "error response received")
+                pass
+            logger.debug("GitHub API error details: status=%s reason=%s", e.code, e.reason)
             raise
         except urllib.error.URLError as e:
             logger.error("Network error: %s at %s", e.reason, redact_url_for_log(url))

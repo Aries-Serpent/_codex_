@@ -77,6 +77,11 @@ class ConsistentHashRing:
             virtual_nodes: Virtual nodes per shard (prevents hotspots)
             hash_function: Optional custom hash function
         """
+        if num_shards <= 0:
+            raise ValueError("num_shards must be positive")
+        if virtual_nodes <= 0:
+            raise ValueError("virtual_nodes must be positive")
+
         self.num_shards = num_shards
         self.virtual_nodes = virtual_nodes
         self.hash_function = hash_function or self._default_hash
@@ -89,9 +94,10 @@ class ConsistentHashRing:
         self._build_ring()
 
         logger.info(
-            f"Consistent hash ring initialized: "
-            f"{num_shards} shards, {virtual_nodes} virtual nodes each, "
-            f"{len(self._ring)} total positions"
+            "Consistent hash ring initialized: %s shards, %s virtual nodes each, %s total positions",
+            num_shards,
+            virtual_nodes,
+            len(self._ring),
         )
 
     def _default_hash(self, key: str) -> int:
@@ -204,7 +210,7 @@ class ConsistentHashRing:
             self._ring.insert(idx, hash_value)
             self._ring_map[hash_value] = new_shard_id
 
-        logger.info(f"Added shard {new_shard_id} to ring")
+        logger.info("Added shard %s to ring", new_shard_id)
         return new_shard_id
 
     def remove_shard(self, shard_id: int) -> bool:
@@ -226,7 +232,7 @@ class ConsistentHashRing:
             self._ring.remove(pos)
             del self._ring_map[pos]
 
-        logger.info(f"Removed shard {shard_id} from ring")
+        logger.info("Removed shard %s from ring", shard_id)
         return True
 
 

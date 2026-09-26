@@ -147,6 +147,31 @@ def mask_sensitive(value: str, show_chars: int = 4) -> str:
     return f"{value[:show_chars]}***{value[-show_chars:]}"
 
 
+def _is_local_or_reserved_hostname(hostname: str | None) -> bool:
+    """Reject localhost and other non-public hosts that are unsafe for outbound requests."""
+    if not hostname:
+        return True
+
+    host = hostname.lower().rstrip(".")
+    if host in {"localhost", "localhost.localdomain", "ip6-localhost", "ip6-loopback"}:
+        return True
+    if host.endswith(".localhost") or host.endswith(".localhost.localdomain") or host.endswith(".local"):
+        return True
+
+    try:
+        addr = ipaddress.ip_address(host)
+        return (
+            addr.is_private
+            or addr.is_loopback
+            or addr.is_link_local
+            or addr.is_multicast
+            or addr.is_unspecified
+            or addr.is_reserved
+        )
+    except ValueError:
+        return False
+
+
 def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
     """
     Validate that a URL belongs to an allowed domain.
@@ -172,13 +197,8 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         if not parsed.scheme or not hostname:
             return False
 
-        # Reject private/loopback/metadata targets to prevent SSRF.
-        try:
-            addr = ipaddress.ip_address(hostname)
-            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast:
-                return False
-        except ValueError:
-            pass
+        if _is_local_or_reserved_hostname(hostname):
+            return False
 
         host = hostname.lower().rstrip(".")
 

@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 import requests
 
@@ -54,6 +54,10 @@ def _cache_path(key: str) -> str:
 
 
 def _validated_url(url: str) -> str:
+    if not isinstance(url, str) or not url:
+        raise ValueError("GitHub client URL must be a non-empty string")
+    if any(ch in url for ch in ("\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub client URL contains invalid control characters")
     parsed = urlsplit(url)
     if parsed.scheme != "https" or not parsed.netloc:
         raise ValueError("GitHub client only allows absolute https URLs")
@@ -65,6 +69,8 @@ def _validated_url(url: str) -> str:
     hostname_lower = hostname.lower()
     if hostname_lower not in _ALLOWED_HTTP_HOSTS:
         raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
+    if hostname_lower in {"localhost", "localhost.localdomain", "127.0.0.1", "0.0.0.0"}:
+        raise ValueError(f"GitHub client URL host is not public: {hostname_lower}")
     if any(ch in parsed.path for ch in ("\x00", "\n", "\r", "\t")):
         raise ValueError("GitHub client URL contains invalid control characters")
     return url
@@ -76,6 +82,8 @@ def _safe_repo_component(value: str, *, field_name: str) -> str:
         raise ValueError(f"GitHub client URL {field_name} cannot be empty")
     if value.startswith("/") or value.endswith("/"):
         raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
+    if value in {".", ".."}:
+        raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
     if any(sep in value for sep in ("..", "\\", "\x00", "\n", "\r", "\t")):
         raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
     return value
@@ -99,7 +107,8 @@ def cache_set(key: str, data: Any) -> None:
 
 
 def gh_get(url: str) -> Any:
-    r = requests.get(_validated_url(url), headers=_auth_headers(), timeout=30)
+    validated = _validated_url(url)
+    r = requests.get(validated, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
@@ -149,7 +158,9 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
     """
     import datetime
 
-    branches = list_branches(owner, repo)
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    branches = list_branches(safe_owner, safe_repo)
     best_name = "main"
     best_ts: datetime.datetime | None = None
     for b in branches:
@@ -158,7 +169,9 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
         sha = commit.get("sha")
         if not sha or not name:
             continue
-        url = f"{BASE}/repos/{owner}/{repo}/commits/{sha}"
+        if not re.fullmatch(r"[0-9a-fA-F]{40,64}", str(sha)):
+            continue
+        url = f"{BASE}/repos/{safe_owner}/{safe_repo}/commits/{sha}"
         data = gh_get(url)
         # Prefer committer date, fall back to author
         commit_obj = data.get("commit", {})

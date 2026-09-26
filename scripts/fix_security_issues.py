@@ -31,6 +31,14 @@ def _ensure_within_repo(file_path: Path) -> Path:
     return resolved
 
 
+def _safe_repo_target(file_path: Path) -> Path:
+    """Guard the target file path against traversal when making in-place edits."""
+    resolved = _ensure_within_repo(file_path)
+    if file_path.is_absolute():
+        return resolved
+    return REPO_ROOT / resolved.relative_to(REPO_ROOT)
+
+
 def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
     """
     Fix B105: hardcoded_password_string for 'False' literals.
