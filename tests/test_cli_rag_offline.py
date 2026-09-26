@@ -12,14 +12,14 @@
 #
 #
 #         # Should succeed or gracefully handle
-#         assert result.exit_code in [, "Result must not be empty"
+#         assert result.exit_code in [
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 #     return CliRunner()
 #
 #         # Should succeed or gracefully handle
-#         assert result.exit_code in [, "Result must not be empty"
+#         assert result.exit_code in [
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
@@ -45,7 +45,7 @@
 #     )
 #     return docs_dir
 #         # Should succeed or gracefully handle
-#         assert result.exit_code in [, "Result must not be empty"
+#         assert result.exit_code in [
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
@@ -69,7 +69,7 @@
 #             ],
 #             env={"RAG_EMBEDDING_PROVIDER": "tfidf"},
 #         )
-#         assert result.exit_code in [, "Result must not be empty"
+#         assert result.exit_code in [
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
@@ -153,7 +153,7 @@ class TestProviderSelection:
             assert provider is not None, "provider must be initialized"
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert (, "Condition must be true"
+            assert (
                 "CachedEmbeddingProvider" in provider.__class__.__name__
                 or "TfidfEmbeddingProvider" in provider.__class__.__name__
             ), "Condition must be true"

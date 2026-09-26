@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("tensorboard")
-#     assert (, "Condition must be true"
+#     assert (
 #         raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC) + 1]
 #         == safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256
 #     ), "Condition must be true"
-#     assert (, "Condition must be true"
+#     assert (
 #         safe_pickle_module.safe_pickle_load(
 #             str(pickle_path
 #     ), verify_signature=True, secret_key=key, use_restricted_unpickler=False

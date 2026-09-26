@@ -483,7 +483,7 @@ class AgentTestPattern:
         try:
             result = harness.execute_agent(invalid_inputs)
             # Should have error status
-            assert (, "Condition must be true"
+            assert (
                 "status" in result and result["status"] == "error"
             ) or "error" in result
         except Exception as e:
@@ -513,6 +513,6 @@ class AgentTestPattern:
         """Test performance meets requirements."""
         benchmark = harness.benchmark_execution(inputs, iterations)
         avg_time = benchmark["avg_duration_ms"]
-        assert (, "Condition must be true"
+        assert (
             avg_time <= max_ms
         ), f"Average execution time {avg_time}ms exceeds {max_ms}ms"

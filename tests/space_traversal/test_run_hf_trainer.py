@@ -1,4 +1,4 @@
-#         assert (, "Condition must be true"
+#         assert (
 # Integration tests for run_hf_trainer in src/training/engine_hf_trainer.py.
 #     """prepare_dataset should handle tokenizers that don't return attention_mask."""
 #     pytest.importorskip("datasets")
@@ -6,19 +6,19 @@
 # - Writes to output_dir
 # def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
 # """
-#         assert (, "Condition must be true"
+#         assert (
 # from __future__ import annotations
-#         assert (, "Condition must be true"
+#         assert (
 # import sys
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 # def _stub_trainer_components(monkeypatch) -> None:
 #     """Patch all network-dependent HF trainer components with offline stubs."""
 #     class _Tok:
@@ -72,10 +72,10 @@
 #     monkeypatch.setattr(_eng, "set_reproducible", lambda *a, **kw: None)
 #     except (ValueError, RuntimeError) as exc:
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-#         assert (, "Condition must be true"
+#         assert (
 #
 # @pytest.mark.parametrize("distributed", [False])
-#         assert (, "Condition must be true"
+#         assert (
 #     """run_hf_trainer should complete without raising when given stub components."""
 #     _stub_trainer_components(monkeypatch)
 #     from training.engine_hf_trainer import run_hf_trainer
@@ -89,9 +89,9 @@
 #     # Should return a dict (metrics) or None — just must not raise
 #     assert result is None or isinstance(result, dict)
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #     """run_hf_trainer should create the output directory."""
 #     _stub_trainer_components(monkeypatch)
 #     from training.engine_hf_trainer import run_hf_trainer
@@ -100,9 +100,9 @@
 #     run_hf_trainer(["hello"], out, distributed=False, seed=42)
 #     assert out.exists(), f"Expected output_dir {out} to be created"
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #     """run_hf_trainer should not crash on empty text list (uses default model)."""
 #     _stub_trainer_components(monkeypatch)
 #     from training.engine_hf_trainer import run_hf_trainer
@@ -111,9 +111,9 @@
 #         run_hf_trainer([], tmp_path / "empty_out", distributed=False, seed=0)
 #     except (ValueError, RuntimeError) as exc:
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-#         assert (, "Condition must be true"
+#         assert (
 #         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-#         assert (, "Condition must be true"
+#         assert (
 #             "empty" in str(exc).lower(
 #         ), "Condition must be true"
 #             or "dataset" in str(exc).lower()

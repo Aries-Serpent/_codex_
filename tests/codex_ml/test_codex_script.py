@@ -1,4 +1,4 @@
-#         assert (, "Condition must be true"
+#         assert (
 #             hasattr(codex_script, "_TestModuleLevelInitialization__determinism_summary"
 #         ), "Condition must be true"
 #             or hasattr(codex_script, "_codex_script__determinism_summary")

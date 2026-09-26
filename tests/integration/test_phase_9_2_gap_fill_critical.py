@@ -383,7 +383,7 @@ class TestPatternRouterRoutingDecisions:
         decision = router.route(log, fallback_to_human=False)
 
         # Should route or escalate based on confidence
-        assert decision["status"] in [, "Condition must be true"
+        assert decision["status"] in [
             "route",
             "route_with_notification",
             "human_review",

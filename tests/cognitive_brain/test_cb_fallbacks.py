@@ -1,22 +1,22 @@
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # import pytest
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     rate_limited_call,
 #     with_fallback,
 # )
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # # ---------------------------------------------------------------------------
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     def test_returns_module_when_available(self):
@@ -41,12 +41,12 @@
 #         result = import_optional("_nonexistent_xyz_", attr="something")
 #         assert result is None, "Result must not be empty"
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # # with_fallback
 # # ---------------------------------------------------------------------------
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     def test_returns_func_result_on_success(self):
@@ -76,12 +76,12 @@
 #     def test_false_default(self):
 #         assert with_fallback(lambda: 1 / 0, default=False) is False
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # # rate_limited_call
 # # ---------------------------------------------------------------------------
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     def test_calls_func_when_quota_ok(self):
@@ -155,12 +155,12 @@
 #         ):
 #             result = rate_limited_call(mock_func, resource="search", min_remaining=5)
 #         assert result == "search_result", "Result must not be empty"
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # # Integration: cognitive_brain_core uses cb_fallbacks
 # # ---------------------------------------------------------------------------
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     def test_perception_tolerates_missing_psutil(self):
@@ -196,12 +196,12 @@
 #         assert result["tasks_completed"] == 2, "Result must not be empty"
 #         assert result["success_rate"] == 1.0, "Result must not be empty"
 #         assert result["failures"] == [], "Result must not be empty"
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 # # S898: PerceptionLayer expanded sensors, MemoryLayer LTM, ActionExecutor targets
 # # ---------------------------------------------------------------------------
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     """Tests for S898 expanded PerceptionLayer sensor set."""
@@ -265,7 +265,7 @@
 #
 #         assert PerceptionLayer._read_ci_failure_count() is None, "Count must be greater than zero"
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     """Tests for S898 MemoryLayer SQLite LTM persistence."""
@@ -356,7 +356,7 @@
 #         assert "deleted_since_compaction" in stats, "Condition must be true"
 #         assert "compaction_delete_threshold" in stats, "Condition must be true"
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #     """Tests for S898 ActionExecutor expanded dispatch targets."""
@@ -428,7 +428,7 @@
 #     def test_rerun_failed_jobs_requires_run_id(self):
 #         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #                 {
@@ -440,7 +440,7 @@
 #         ), "Condition must be true"
 #             == True
 #         )
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {"agent": 1, "task": "rerun", "target": "rerun_failed_jobs", "payload": {}}
 #
@@ -451,7 +451,7 @@
 #     def test_set_repo_variable_requires_name_and_value(self):
 #         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {
 #                 {
@@ -463,7 +463,7 @@
 #         ), "Condition must be true"
 #             == True
 #         )
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X"}}
 #
@@ -474,14 +474,14 @@
 #     def test_cancel_run_requires_run_id(self):
 #         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 #
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {"run_id": 99}}
 #
 #         ), "Condition must be true"
 #             == True
 #         )
-#         assert (, "Condition must be true"
+#         assert (
 #             ActionExecutor._dispatch_task(
 #                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {}}
 #

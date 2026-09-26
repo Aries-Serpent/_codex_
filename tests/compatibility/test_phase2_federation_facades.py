@@ -133,7 +133,7 @@ def test_telemetry_root_delegates_with_legacy_fallback_modules() -> None:
         assert legacy.track_time is metrics.track_time, "track_time is not valid"
         assert legacy.start_metrics_server is server.start_metrics_server, "start_metrics_server is not valid"
         assert metrics._standalone_track_time is codex_ml_telemetry.track_time, "_standalone_track_time is not valid"
-        assert (, "Condition must be true"
+        assert (
             server._standalone_start_metrics_server
             is codex_ml_telemetry.start_metrics_server
         )

@@ -1,4 +1,4 @@
-#         assert (, "Condition must be true"
+#         assert (
 # PHASE 7 LANE 3 TASK 3.1 — CLI Completeness Closure Tests
 # Successfully reaching 95% → 100% CLI completeness target.
 #
@@ -14,40 +14,40 @@
 # import pytest
 #     def test_cli_help_includes_all_groups(self, cli_runner):
 # import tempfile
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 # from click.testing import CliRunner
-#         assert (, "Condition must be true"
+#         assert (
 # # Import directly from cli.py module since duplication_group is not in __init__
-#         assert (, "Condition must be true"
+#         assert (
 #
 # # Import duplication_group directly from cli module
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #
 # _cli_module_path = Path(__file__).resolve().parent.parent.parent / "src" / "codex" / "cli.py"
 # _spec = importlib.util.spec_from_file_location("_cli_module", _cli_module_path)
 # _cli_module = importlib.util.module_from_spec(_spec)
 # _spec.loader.exec_module(_cli_module)
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 # @pytest.fixture
-#         assert (, "Condition must be true"
+#         assert (
 #     """Create Click CLI test runner."""
 #     return CliRunner()
-#         assert (, "Condition must be true"
+#         assert (
 #
 # @pytest.fixture
-#         assert (, "Condition must be true"
+#         assert (
 #     """Create temporary directory for test artifacts."""
 #     with tempfile.TemporaryDirectory() as tmpdir:
 #         yield Path(tmpdir)
-#         assert (, "Condition must be true"
+#         assert (
 #
-#         assert (, "Condition must be true"
+#         assert (
 #     """Test CLI completeness — 7 missing variants + documentation + error messages."""
 #     def test_tokenizer_list_models_command_exists(self, cli_runner):
 #     # ==========================================================================
@@ -222,7 +222,7 @@
 #         result = cli_runner.invoke(cli, ["--help"])
 #         assert result.exit_code == 0, "Result must not be empty"
 #         # Should show available commands (look for Commands section in Click output)
-#         assert (, "Condition must be true"
+#         assert (
 #             "Commands:" in result.output
 #             or "commands:" in result.output.lower()
 #             or len(result.output) > 100

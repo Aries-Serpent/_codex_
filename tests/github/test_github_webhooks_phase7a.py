@@ -92,7 +92,7 @@ class TestComputeSignature:
     def test_different_secrets_produce_different_signatures(self):
         """The same payload with different secrets must produce different signatures."""
         payload = b"shared payload"
-        assert (, "Condition must be true"
+        assert (
             WebhookVerifier("secret-one").compute_signature(payload)
             != WebhookVerifier("secret-two").compute_signature(payload)
         )

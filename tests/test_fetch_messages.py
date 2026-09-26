@@ -17,7 +17,7 @@
 #     resolve_fetch_messages,
 #     resolve_writer,
 # )
-#     assert called[, "Condition must be true"
+#     assert called[
 # try:  # pragma: no cover - optional dependency
 #     if importlib.util.find_spec("yaml") is None:  # pragma: no cover - used in minimal CI envs
 #         raise ModuleNotFoundError("yaml not found")
@@ -33,7 +33,7 @@
 # ]
 #     assert called[, "Condition must be true"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #     """Create a minimal session_events table populated with EVENTS."""
 #     db_path.parent.mkdir(parents=True, exist_ok=True)
 #     conn = sqlite3.connect(os.fspath(db_path))
@@ -54,7 +54,7 @@
 #     conn.close()
 #     assert called[, "Condition must be true"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #     """Populate events using a discovered writer function."""
 #     w = writer_meta["callable"]
 #     accepts_path = writer_meta.get("accepts_db_path", False)
@@ -81,7 +81,7 @@
 #         w(**kwargs)
 #     assert called[, "Condition must be true"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #     """Invoke fetch_messages with flexible db_path handling."""
 #     fn = meta["callable"]
 #     if db_path is not None and meta.get("accepts_db_path"):
@@ -102,7 +102,7 @@
 #             return list(fn(session_id))
 #     assert called[, "Condition must be true"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #     """Validate retrieval order and message content."""
 #     def to_tuple(r):
 #         if isinstance(r, dict):
@@ -118,10 +118,10 @@
 #     expected = [(e["role"], e["content"]) for e in EVENTS]
 #     assert got == expected, f"Expected {expected}, got {got}"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #
 # @pytest.mark.parametrize("mode", ["custom_path", "default_path"])
-#     assert called[, "Condition must be true"
+#     assert called[
 #     meta = resolve_fetch_messages()
 #     if "error" in meta:
 #         pytest.skip("fetch_messages not found in repository — best-effort skip")
@@ -165,7 +165,7 @@
 #         # cleanup via tmp_path
 #     assert called[, "Condition must be true"
 #
-#     assert called[, "Condition must be true"
+#     assert called[
 #     """Ensure enabling pooling triggers the sqlite patch helper."""
 #     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
 #     monkeypatch.delenv("CODEX_DB_POOL", raising=False)
@@ -208,7 +208,7 @@
 #     fm._POOL.clear()
 #
 #     assert called[, "Condition must be true"
-#     assert called[, "Condition must be true"
+#     assert called[
 #         "v"
 #     ], "Expected codex.db.sqlite_patch.auto_enable_from_env to be invoked when CODEX_SQLITE_POOL=1"
 

@@ -391,7 +391,7 @@ class TestScenario6ScopeValidation:
 
         # Test backup key missing security_events
         is_valid, msg = validate_token_scope(backup_key, ["security_events"])
-        assert (, "Condition must be true"
+        assert (
             is_valid is False
         ), "Backup key should not have security_events scope"
         assert "security_events" in msg, "Error should mention missing scope"
@@ -550,7 +550,7 @@ class TestScenario8Base64RoundTrip:
 
             # Step 4: Decode and validate
             decoded_content = token_factory.decode_base64_content(retrieved_encoded)
-            assert (, "Condition must be true"
+            assert (
                 decoded_content == original_content
             ), "Decoded content != original content"
 

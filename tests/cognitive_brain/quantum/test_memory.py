@@ -1,4 +1,4 @@
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 # 1. Storage: STM/LTM capacity, duplicates, timestamps, access counts (5 tests)
@@ -11,23 +11,23 @@
 #     """Test STM → LTM consolidation."""
 #
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     MemoryAugmentedComplianceAssessor,
 # )
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     """Create quantum configuration for testing."""
@@ -36,19 +36,19 @@
 #     config.superposition = True
 #     return config
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     """Create memory manager for testing."""
 #     return QuantumMemoryManager(quantum_config)
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     """Create pattern compressor for testing."""
 #     return PatternCompressor(target_dimensions=5)
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     """Create sample memory pattern."""
@@ -60,7 +60,7 @@
 #         timestamp=datetime.now(UTC),
 #     )
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #     """Create sample feature dict."""
@@ -72,12 +72,12 @@
 #         "impact": 0.8,
 #         "violation_count": 0.2,
 #     }
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 # # ============================================================================
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
@@ -173,12 +173,12 @@
 #
 #         assert sample_pattern.access_count == 1, "Count must be greater than zero"
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 # # ============================================================================
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
@@ -330,12 +330,12 @@
 #         assert memory_manager.total_patterns_consolidated >= initial_consolidated, "total_patterns_consolidated must be greater than zero"
 #         assert consolidated_count >= 0, "consolidated_count must be positive"
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 # # ============================================================================
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
@@ -445,12 +445,12 @@
 #         assert sample_pattern.last_accessed is not None, "last_accessed must be initialized"
 #
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 # # ============================================================================
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #
@@ -500,7 +500,7 @@
 #         assessment2 = assessor.assess_with_memory(audit2)
 #
 #         # Second assessment should be faster (cache hit)
-#         assert (, "Condition must be true"
+#         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #         ), "Condition must be true"

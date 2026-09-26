@@ -50,7 +50,7 @@ def test_detect_missing_runtime_dependencies_uses_runtime_package_names(monkeypa
         "faiss-cpu>=1.15.0,<2.0.0",
     ])
 
-    assert missing == [, "missing is not valid"
+    assert missing == [
         "numpy>=2.5.2,<3",
         "torch>=2.6.1,<3.0.0; platform_system != 'Windows'",
         "faiss-cpu>=1.15.0,<2.0.0",

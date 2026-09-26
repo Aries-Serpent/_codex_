@@ -1,4 +1,4 @@
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # - Workflow file syntax
@@ -8,19 +8,19 @@
 # - Matrix configurations
 #     def test_no_hardcoded_secrets(self) -> None:
 # """
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # import pytest
 #
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 #     HAS_YAML = True
 #     HAS_YAML = True
 # except ImportError:
 #     HAS_YAML = False
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # # =============================================================================
@@ -28,7 +28,7 @@
 import re
 from pathlib import Path
 
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 #
@@ -82,12 +82,12 @@ from pathlib import Path
 #
 #             assert len(files_without_name) == 0, f"Workflows without name: {files_without_name}"
 #
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # # =============================================================================
 #
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 #
@@ -106,7 +106,7 @@ from pathlib import Path
 #                 except OSError:
 #                     continue
 #
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 #
@@ -136,12 +136,12 @@ from pathlib import Path
 #                     assert has_push_or_pr, f"{workflow} should trigger on push or PR"
 #                 except OSError:
 #                     continue
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
 # # =============================================================================
 #             # Some workflows might be valid without explicit jobs section
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
 #
@@ -159,7 +159,7 @@ from pathlib import Path
 #                 except OSError:
 #                     continue
 #             # Some workflows might be valid without explicit jobs section
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
 #             ), f"Workflows without jobs section: {files_without_jobs}"
@@ -175,7 +175,7 @@ from pathlib import Path
 #                     content = workflow.read_text()
 #                     if "jobs:" in content:
 #                         # Jobs should either run on a local runner or call a reusable workflow.
-#                         assert (, "Condition must be true"
+#                         assert (
 #                             "runs-on" in content or "uses:" in content
 #                         ), f"{workflow} jobs should have runs-on or reusable workflow uses"
 #                 except OSError:
@@ -191,7 +191,7 @@ from pathlib import Path
 #                     content = workflow.read_text()
 #                     if "jobs:" in content:
 #                         # Jobs should either define local steps or call a reusable workflow.
-#                         assert (, "Condition must be true"
+#                         assert (
 #                             "steps:" in content or "uses:" in content
 #                         ), f"{workflow} jobs should have steps or reusable workflow uses"
 #                 except OSError:

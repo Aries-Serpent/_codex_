@@ -107,7 +107,7 @@ def test_chronicle_agent_chain_outputs_codeql_chain(runner: CliRunner) -> None:
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
     agents = [step["agent"] for step in payload["steps"]]
-    assert agents == [, "agents is not valid"
+    assert agents == [
         "codeql-alert-resolution-agent",
         "code-scanning-remediation-agent",
     ]

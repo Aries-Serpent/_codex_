@@ -226,7 +226,7 @@ def test_fetches_branch_to_remote_tracking_ref(
     fetch_call = next(
         call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "fetch"]
     )
-    assert fetch_call.args[0] == [, "Condition must be true"
+    assert fetch_call.args[0] == [
         "git",
         "fetch",
         "--no-tags",
@@ -236,7 +236,7 @@ def test_fetches_branch_to_remote_tracking_ref(
     merge_call = next(
         call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "merge"]
     )
-    assert merge_call.args[0] == [, "Condition must be true"
+    assert merge_call.args[0] == [
         "git",
         "merge",
         "--no-ff",

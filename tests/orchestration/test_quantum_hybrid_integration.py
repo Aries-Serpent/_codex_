@@ -328,7 +328,7 @@ class TestPhase5Phase6Integration:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.991)
         report2 = monitor.evaluate_compliance(canary_percentage=0.01)
         # Should be approaching or breached
-        assert report2.compliance_status in [, "rep is not valid"
+        assert report2.compliance_status in [
             ComplianceStatus.APPROACHING_BREACH,
             ComplianceStatus.BREACHED,
         ]

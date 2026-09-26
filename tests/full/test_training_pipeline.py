@@ -93,7 +93,7 @@ class TestDataLoading:
     ):
         """Test that training and validation datasets are different."""
         # Different number of samples
-        assert (, "Condition must be true"
+        assert (
             len(synthetic_train_dataset)
             != len(synthetic_val_dataset)
         )
