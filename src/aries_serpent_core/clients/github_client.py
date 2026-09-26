@@ -113,7 +113,11 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     clean_path = path.strip("/")
     if not clean_owner or not clean_repo or not clean_ref:
         raise ValueError("GitHub file parameters contain unsupported characters")
-    raw = f"https://raw.githubusercontent.com/{clean_owner}/{clean_repo}/{clean_ref}/{quote(clean_path, safe='/') }"
+    if clean_path in {"", ".", ".."} or any(part in {"", ".", ".."} for part in clean_path.split("/")):
+        raise ValueError("GitHub client file path contains invalid path components")
+    if any(ch in clean_path for ch in ("\\", "\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub client file path contains invalid characters")
+    raw = f"https://raw.githubusercontent.com/{clean_owner}/{clean_repo}/{clean_ref}/{quote(clean_path, safe='/')}"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text

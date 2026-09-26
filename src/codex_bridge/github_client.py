@@ -115,11 +115,15 @@ def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
 
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
-    raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    safe_ref = _safe_repo_component(ref, field_name="ref")
+    safe_path = _safe_repo_component(path.strip("/"), field_name="path")
+    raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{safe_path}"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
-    meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{path}?ref={ref}")
+    meta = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}")
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)
@@ -128,7 +132,10 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
 def code_search(owner: str, repo: str, q: str, ref: str = "main") -> dict[str, Any]:
     from urllib.parse import quote
 
-    query = quote(f"{q} repo:{owner}/{repo} ref:{ref}")
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    safe_ref = _safe_repo_component(ref, field_name="ref")
+    query = quote(f"{q} repo:{safe_owner}/{safe_repo} ref:{safe_ref}")
     url = f"{BASE}/search/code?q={query}&per_page=10"
     return gh_get(url)
 

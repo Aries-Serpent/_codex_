@@ -17,6 +17,18 @@ import subprocess
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _ensure_within_repo(file_path: Path) -> Path:
+    """Ensure a file path stays inside the repository root before writing."""
+    resolved = file_path.resolve(strict=False)
+    try:
+        resolved.relative_to(REPO_ROOT)
+    except ValueError as exc:
+        raise ValueError(f"Refusing to write outside repository root: {resolved}") from exc
+    return resolved
+
 
 def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
     """
@@ -51,7 +63,7 @@ def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
         if dry_run:
             print(f"  [DRY RUN] Would fix {fixes} B105 issues in {file_path}")
         else:
-            file_path.write_text(content)
+            _ensure_within_repo(file_path).write_text(content)
             print(f"  ✅ Fixed {fixes} B105 issues in {file_path}")
 
     return fixes
@@ -84,7 +96,7 @@ def fix_subprocess_security(file_path: Path, dry_run: bool = False) -> int:
             if dry_run:
                 print(f"  [DRY RUN] Would fix B603 in {file_path}")
             else:
-                file_path.write_text(new_content)
+                _ensure_within_repo(file_path).write_text(new_content)
                 print(f"  ✅ Fixed B603 in {file_path}")
             fixes += 1
 
@@ -120,9 +132,7 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
             if dry_run:
                 print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
-                safe_target = file_path.resolve(strict=False)
-                if safe_target.parent != file_path.parent.resolve(strict=False):
-                    raise ValueError("Refusing to write outside the configured directory")
+                safe_target = _ensure_within_repo(file_path)
                 safe_target.write_text(new_content)
                 print(f"  ✅ Fixed B608 in {file_path_str}")
             fixes += 1
@@ -156,7 +166,7 @@ def add_subprocess_import_nosec(file_path: Path, dry_run: bool = False) -> int:
         if dry_run:
             print(f"  [DRY RUN] Would fix B404 in {file_path}")
         else:
-            file_path.write_text(new_content)
+            _ensure_within_repo(file_path).write_text(new_content)
             print(f"  ✅ Fixed B404 in {file_path}")
         fixes += 1
 

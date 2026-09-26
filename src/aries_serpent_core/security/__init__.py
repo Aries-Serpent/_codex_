@@ -147,20 +147,12 @@ def mask_sensitive(value: str, show_chars: int = 4) -> str:
 
 
 def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
-    """
-    Validate that a URL belongs to an allowed domain.
+    """Validate a URL against a strict HTTP(S) and maybe-allowlisted policy.
 
-    This function prevents URL substring sanitization vulnerabilities by
-    properly parsing the URL and checking the hostname component, not just
-    searching for the domain string anywhere in the URL.
-
-    Args:
-        url: URL to validate
-        allowed_domains: List of allowed domain names (e.g., ['example.com', 'api.example.com'])
-                        If None, returns True for any valid URL with a domain.
-
-    Returns:
-        True if URL is from an allowed domain, False otherwise
+    This helper only accepts HTTP/HTTPS URLs and rejects loopback/private/link-local/
+    multicast/metadata-style destinations. When `allowed_domains` is omitted, callers
+    must still provide a safe explicit destination policy or a trusted allowlist that
+    was already validated by the caller.
     """
     if not url:
         return False
@@ -170,19 +162,31 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         hostname = parsed.hostname
         if not parsed.scheme or not hostname:
             return False
+        if parsed.scheme.lower() not in {"http", "https"}:
+            return False
+
+        host = hostname.lower().rstrip(".")
+        if host in {"localhost", "localhost.localdomain"}:
+            return False
 
         # Reject private/loopback/metadata targets to prevent SSRF.
         try:
-            addr = ipaddress.ip_address(hostname)
-            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast:
+            addr = ipaddress.ip_address(host)
+            if (
+                addr.is_private
+                or addr.is_loopback
+                or addr.is_link_local
+                or addr.is_multicast
+                or addr.is_unspecified
+            ):
                 return False
         except ValueError:
             pass
 
-        host = hostname.lower().rstrip(".")
-
+        # Explicit allowlist is required for general-purpose validation. Without a
+        # list, only relative-safe public hostnames are accepted.
         if allowed_domains is None:
-            return bool(host)
+            return not host.startswith(".") and "." in host
 
         for allowed_domain in allowed_domains:
             allowed_lower = allowed_domain.lower().rstrip(".")

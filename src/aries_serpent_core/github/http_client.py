@@ -132,9 +132,9 @@ class GitHubHTTPClient:
             logger.error("GitHub API error: %s %s at %s", e.code, e.reason, redact_url_for_log(url))
             try:
                 error_data = json.loads(e.read().decode("utf-8"))
-                logger.debug("GitHub API error details: %s", redact_url_for_log(str(error_data)))
+                logger.debug("GitHub API error details: %s", "error response received")
             except Exception:
-                pass
+                logger.debug("GitHub API error details: %s", "error response received")
             raise
         except urllib.error.URLError as e:
             logger.error("Network error: %s at %s", e.reason, redact_url_for_log(url))
