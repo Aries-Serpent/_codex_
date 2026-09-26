@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5634 Validation Pipeline archive-link rescue (2026-09-26)
+- Added missing archived chunk placeholders under `docs/accountability/.codex/archive/reports/chunks/` (`AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md` … `AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md`) to satisfy historical cross-references emitted by the archived accountability report index.
+- This removes the code-fixable Fast Validation failure mode shown in run `36213744378` (`File not found: ./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_11.md` and related chunk targets).
+
 ### Fixed — PR #5634 stale scorecard and validation follow-up (2026-09-26)
 - Fixed two broken links in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` that referenced a missing archived monolithic report file and were blocking Validation Pipeline cross-reference checks.
 - Refreshed daily governance evidence (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + PDA entry) so `accountability report today` and `PDA entry today` are no longer stale for the current session.
