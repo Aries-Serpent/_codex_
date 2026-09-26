@@ -430,9 +430,8 @@ class TestConcurrentAccessStressE2E:
         all_sessions = db.query_all()
         found_sessions = {s["session_id"] for s in all_sessions}
 
-        assert sessions_written.issubset(, "Condition must be true"
-            found_sessions
-        ), "All written sessions should be retrievable"
+        assert sessions_written.issubset(found_sessions), "Condition must be true"
+        assert sessions_written.issubset(found_sessions), "All written sessions should be retrievable"
 
         logger.info(f"✅ No data loss: {len(sessions_written)} sessions verified")
 
@@ -511,9 +510,7 @@ class TestQuantumOrchestratorWorkflowE2E:
             orch.evolve()
 
         # Verify all completed
-        assert all(, "Condition must be true"
-            tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]
-        )
+        assert all(tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]), "Condition must be true"
         logger.info("✅ Task dependency chain verified")
 
 

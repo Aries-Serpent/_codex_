@@ -71,9 +71,9 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
     assert "Install built wheel in isolated virtualenv" in step_names, "in is not valid"
     assert "Attest release artifacts" not in step_names, "Condition must be true"
     assert "Verify build provenance" not in step_names, "Condition must be true"
-    assert "--require-hashes -r requirements/lock-release.txt" in _step(, "Condition must be true"
+    assert "--require-hashes -r requirements/lock-release.txt" in _step(
         build_job, "Install build dependencies"
-    )["run"]
+    )["run"], "Condition must be true"
     assert "python -m build --no-isolation" in _step(build_job, "Build package")["run"]
     install_command = _step(
         build_job,

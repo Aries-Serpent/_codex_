@@ -141,14 +141,14 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
                 }
             )
         if path == "/git/create-pr":
-            assert json_body == {, "json_body is not valid"
+            assert json_body == {
                 "repo": "owner/repo",
                 "title": "t",
                 "body": "b",
                 "base": "main",
                 "head": "feat",
                 "labels": ["automation"],
-            }
+            }, "json_body is not valid"
             assert params == {"dry_run": True, "confirm": False}
             return _FakeResponse(
                 {
