@@ -77,8 +77,13 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
                     self.cache[fullname] = spec
                     return spec
 
-            # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations
+            # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations.
+            # Some requests (for example ``codex`` itself or a package shim without submodules)
+            # legitimately leave no remaining path segments; fail quietly instead of indexing an empty list.
             target_module_parts = parts[1:]  # Remove 'codex' prefix
+            if not target_module_parts:
+                self.cache[fullname] = None
+                return None
 
             # Search in each alternative location
             for search_root in self.search_roots:

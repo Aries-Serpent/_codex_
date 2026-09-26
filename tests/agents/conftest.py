@@ -350,7 +350,7 @@ def assert_valid_agent_output():
     def _assert_valid_output(output: Dict[str, Any]) -> None:
         # Required fields
         assert "status" in output, "Output must have 'status' field"
-        assert output["status"] in [, "Condition must be true"
+        assert output["status"] in [
             "success",
             "partial",
             "error",
@@ -385,12 +385,12 @@ def measure_execution_time():
             self.duration_ms = (self.end_time - self.start_time) * 1000
 
         def assert_under(self, max_ms: float) -> None:
-            assert (, "Condition must be true"
+            assert (
                 self.duration_ms < max_ms
             ), f"Execution took {self.duration_ms}ms, expected < {max_ms}ms"
 
         def assert_over(self, min_ms: float) -> None:
-            assert (, "Condition must be true"
+            assert (
                 self.duration_ms >= min_ms
             ), f"Execution took {self.duration_ms}ms, expected >= {min_ms}ms"
 
