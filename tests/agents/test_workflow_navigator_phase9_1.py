@@ -288,9 +288,7 @@ class TestWorkflowNavigator:
         navigator = WorkflowNavigator(workspace_dir=tmp_path)
 
         # Navigator should have default workflows registered
-        assert isinstance(, "Condition must be true"
-            navigator.workflows, (list, tuple, set, dict)
-        )  # was: len() >= 0 (always true)
+        assert isinstance(navigator.workflows, (list, tuple, set, dict)), "Condition must be true"
 
     def test_navigator_state_directory_creation(self, tmp_path: Path) -> None:
         """Test state directory is created."""

@@ -1,7 +1,7 @@
 # Accountability Archive Chunks
 
-This directory stores chunked archive pages referenced by:
+This directory stores the chunked archive pages referenced by
 `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.
 
-Files follow:
-`AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_XX.md`.
+The chunk files are historical snapshots for grouped session records and are not
+standalone narrative reports.

@@ -149,7 +149,7 @@ class TestDocumentPreprocessor:
         nfd_text = "cafe\u0301"  # decomposed é
         result = pp.preprocess(nfd_text)
 
-        assert any(, "Condition must be true"
+        assert any(
             "unicode_normalized" in c for c in result.changes
         ), f"Expected 'unicode_normalized_NFKC' in changes, got: {result.changes}"
 
