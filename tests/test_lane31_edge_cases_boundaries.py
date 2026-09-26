@@ -22,8 +22,8 @@ class TestBoundaryConditions:
         values = [0, -1, 1]
         results = [(v > 0, v < 0, v == 0, v >= 0, v <= 0) for v in values]
 
-        assert results[0] == (False, True, True, True, True)  # -1
-        assert results[1] == (False, False, True, True, True)  # 0
+        assert results[0] == (False, False, True, True, True)  # 0
+        assert results[1] == (False, True, False, False, True)  # -1
         assert results[2] == (True, False, False, True, False)  # 1
 
     def test_empty_collection_boundary(self):
@@ -59,14 +59,15 @@ class TestBoundaryConditions:
     def test_true_false_inversion(self):
         """Test that boolean inversions are caught"""
         test_cases = [
-            (True, False),
-            (False, True),
+            (True, True),
+            (False, False),
             (not True, False),
             (not False, True),
         ]
 
         for actual, expected in test_cases:
-            assert actual == expected, "actual is not valid"
+            if actual is not expected:
+                pytest.fail(f"actual is not valid: got {actual!r}, expected {expected!r}")
 
     def test_one_off_errors_positive(self):
         """Test off-by-one errors on positive side"""

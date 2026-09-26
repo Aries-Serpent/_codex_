@@ -222,9 +222,7 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # Verify ranking (highest score first)
         scores = [p.optimization_score for p in ranked]
-        assert scores == sorted(
-            scores, reverse=True
-        ), "Paths should be ranked by optimization score"
+        assert scores == sorted(scores, reverse=True), "scores is not valid"
 
     def test_deliberate_paths_single_action(self, orchestrator, decision_state_standard):
         """Test deliberation with only one option."""

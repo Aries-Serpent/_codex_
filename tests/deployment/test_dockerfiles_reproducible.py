@@ -14,7 +14,7 @@
 #             assert not image.endswith(, "Condition must be true"
 # FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)(?:\s+AS\s+(\w+))?", re.IGNORECASE)
 #             assert not image.endswith(, "Condition must be true"
-# 
+#
 #             assert not image.endswith(, "Condition must be true"
 #     candidates: Iterable[pathlib.Path] = [
 #         pathlib.Path("Dockerfile"),
@@ -22,12 +22,12 @@
 #     ]
 #     return [path for path in candidates if path.exists()]
 #             assert not image.endswith(, "Condition must be true"
-# 
+#
 #             assert not image.endswith(, "Condition must be true"
 #     with path.open("r", encoding="utf-8") as handle:
 #         return [line.rstrip("\n") for line in handle]
 #             assert not image.endswith(, "Condition must be true"
-# 
+#
 #             assert not image.endswith(, "Condition must be true"
 #     dockerfiles = _iter_dockerfiles()
 #     if not dockerfiles:
@@ -46,7 +46,7 @@
 #                     stage_names.add(alias.lower())
 #                 base_images.append(image)
 #                 base_images.append(image)
-# 
+#
 #         assert base_images, f"{dockerfile} must contain at least one FROM instruction"
 #         for image in base_images:
 #             # Skip internal multi-stage build references (e.g. FROM base AS cpu-runtime)

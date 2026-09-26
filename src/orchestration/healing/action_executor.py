@@ -105,9 +105,7 @@ class ActionExecutor:
     _rollback_stack: List[Action] = []
 
     @classmethod
-    def create_execution_plan(
-        cls, strategy: RepairStrategy
-    ) -> ExecutionPlan:
+    def create_execution_plan(cls, strategy: RepairStrategy) -> ExecutionPlan:
         """Create execution plan from strategy.
 
         Args:
@@ -137,9 +135,7 @@ class ActionExecutor:
             rollback_plan="Revert changes in reverse order" if strategy.actions else None,
         )
 
-        logger.info(
-            f"Created execution plan for strategy {strategy.strategy_id}: {tier} tier"
-        )
+        logger.info(f"Created execution plan for strategy {strategy.strategy_id}: {tier} tier")
 
         return plan
 
@@ -210,9 +206,7 @@ class ActionExecutor:
         return results
 
     @classmethod
-    def _execute_actions(
-        cls, actions: List[Action], strategy_id: str
-    ) -> List[ExecutionResult]:
+    def _execute_actions(cls, actions: List[Action], strategy_id: str) -> List[ExecutionResult]:
         """Execute a sequence of actions.
 
         Args:
@@ -264,7 +258,9 @@ class ActionExecutor:
 
                 result = ExecutionResult(
                     action_id=action_id,
-                    status=ExecutionStatus.ROLLED_BACK if rollback_success else ExecutionStatus.FAILURE,
+                    status=ExecutionStatus.ROLLED_BACK
+                    if rollback_success
+                    else ExecutionStatus.FAILURE,
                     strategy_id=strategy_id,
                     duration_sec=duration,
                     error=str(e),

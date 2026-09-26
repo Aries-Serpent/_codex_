@@ -1,7 +1,8 @@
 """Phase 12 System Integration - RBAC, Governance, Observability integration with machine-readable layer."""
 
+from typing import Any, Dict
+
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
-from typing import Dict, Any
 
 
 class Phase12SystemIntegration:

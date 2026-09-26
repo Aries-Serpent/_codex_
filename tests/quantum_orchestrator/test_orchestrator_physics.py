@@ -65,7 +65,7 @@ class TestQuantumOrchestratorPhysicsValidation:
             f"Speed {actual_speed} exceeds limit {max_speed}"
         )
 
-    def test_zero_mass_handling(self, orchestrator: QuantumRelativisticDiracOrchestrator, 
+    def test_zero_mass_handling(self, orchestrator: QuantumRelativisticDiracOrchestrator,
                                constants: PhysicsConstants):
         """Test handling of zero mass (massless particles)."""
         # Create task with zero mass
@@ -78,8 +78,8 @@ class TestQuantumOrchestratorPhysicsValidation:
         )
 
         # Verify zero mass is handled
-        assert task.rest_mass == 0.0
-        assert task.rest_energy == 0.0
+        assert task.rest_mass == 0.0, "rest_mass is not valid"
+        assert task.rest_energy == 0.0, "rest_energy is not valid"
 
         # Lorentz factor should handle zero mass gracefully
         # For massless particles, γ is typically defined specially
@@ -104,8 +104,8 @@ class TestQuantumOrchestratorPhysicsValidation:
         coarse_constants = PhysicsConstants(hbar=10.0, c=100.0)
 
         # Both should be valid but different
-        assert fine_constants.hbar < coarse_constants.hbar
-        assert fine_constants.hbar_squared < coarse_constants.hbar_squared
+        assert fine_constants.hbar < coarse_constants.hbar, "hbar is not valid"
+        assert fine_constants.hbar_squared < coarse_constants.hbar_squared, "hbar_squared is not valid"
 
     def test_energy_positivity_constraint(self, orchestrator: QuantumRelativisticDiracOrchestrator):
         """Test that total energy remains positive."""
@@ -166,7 +166,7 @@ class TestQuantumOrchestratorPhysicsValidation:
         ]:
             # Check Hermiticity: A† = A
             adjoint = np.conj(matrix.T)
-            assert np.allclose(
+            assert np.allclose(, "Condition must be true"
                 matrix, adjoint, atol=1e-10
             ), "Matrix should be Hermitian"
 
@@ -180,7 +180,7 @@ class TestQuantumOrchestratorPhysicsValidation:
             matrices.alpha_x, matrices.alpha_x
         )
         expected = 2 * np.eye(4)
-        assert np.allclose(
+        assert np.allclose(, "Condition must be true"
             result_xx, expected, atol=1e-10
         ), "Anticommutation relation violated"
 
@@ -353,7 +353,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Sample potential at nearby points
         grad1 = potential.gradient("task_potential", orchestrator.state)
-        
+
         # Small perturbation
         task.position.priority += 0.01
         grad2 = potential.gradient("task_potential", orchestrator.state)
@@ -434,7 +434,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Components should be high precision complex numbers
         for component in spinor.components:
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 component, (complex, np.complexfloating)
             ), "Components should be complex"
 
@@ -451,7 +451,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # α_x² should equal identity
         expected = 2 * np.eye(4)  # Due to {α_i, α_i} = 2I
-        assert np.allclose(
+        assert np.allclose(, "Condition must be true"
             result + np.dot(matrices.alpha_x, matrices.alpha_x), expected, atol=1e-10
         ), "Matrix multiplication should be accurate"
 

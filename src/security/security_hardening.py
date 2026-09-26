@@ -122,8 +122,7 @@ def validate_subprocess_command(
     # Security Rule 1: Never accept shell execution with user input
     if isinstance(cmd, str):
         raise SubprocessSecurityError(
-            "Command must be a list, not a string. "
-            "This prevents shell injection attacks."
+            "Command must be a list, not a string. This prevents shell injection attacks."
         )
 
     if not isinstance(cmd, (list, tuple)):
@@ -133,9 +132,7 @@ def validate_subprocess_command(
         raise SubprocessSecurityError("Command cannot be empty")
 
     if len(cmd) > max_args:
-        raise SubprocessSecurityError(
-            f"Command has {len(cmd)} args, max is {max_args}"
-        )
+        raise SubprocessSecurityError(f"Command has {len(cmd)} args, max is {max_args}")
 
     # Security Rule 2: Validate command length to prevent DOS
     total_length = sum(len(str(arg)) for arg in cmd)
@@ -151,12 +148,10 @@ def validate_subprocess_command(
     # Security Rule 3: Check if executable is in whitelist
     if allowed_executables is not None:
         if executable not in allowed_executables and not Path(executable).is_absolute():
-            raise SubprocessSecurityError(
-                f"Executable '{executable}' not in allowed list"
-            )
+            raise SubprocessSecurityError(f"Executable '{executable}' not in allowed list")
 
     # Security Rule 4: Prevent shell metacharacters in arguments
-    dangerous_chars = {'$', '`', '|', '&', ';', '<', '>', '(', ')'}
+    dangerous_chars = {"$", "`", "|", "&", ";", "<", ">", "(", ")"}
     for arg in cmd_list[1:]:  # Skip executable
         arg_str = str(arg)
         if any(char in arg_str for char in dangerous_chars):
@@ -217,9 +212,7 @@ def secure_subprocess_run(
         If process exceeds timeout
     """
     # Validate command
-    validated_cmd = validate_subprocess_command(
-        cmd, allowed_executables=allowed_executables
-    )
+    validated_cmd = validate_subprocess_command(cmd, allowed_executables=allowed_executables)
 
     # Ensure safe execution parameters
     # Never allow shell execution through the subprocess wrapper.
@@ -331,9 +324,7 @@ def secure_exception_handler(
         )
 
         if log_traceback:
-            fallback_logger.exception(
-                f"Error in {func.__name__}", exc_info=True
-            )
+            fallback_logger.exception(f"Error in {func.__name__}", exc_info=True)
 
         return fallback
 
@@ -381,9 +372,7 @@ def validate_input_string(
     if allowed_chars is not None:
         for char in value:
             if char not in allowed_chars:
-                raise InputValidationError(
-                    f"String contains disallowed character: {repr(char)}"
-                )
+                raise InputValidationError(f"String contains disallowed character: {repr(char)}")
 
     return value
 
@@ -427,9 +416,7 @@ def validate_file_path(
             try:
                 path_obj.relative_to(base_path)
             except ValueError:
-                raise InputValidationError(
-                    "Path escapes base directory (path traversal attempt)"
-                )
+                raise InputValidationError("Path escapes base directory (path traversal attempt)")
 
         if must_exist and not path_obj.exists():
             raise InputValidationError(f"Path does not exist: {path_obj}")

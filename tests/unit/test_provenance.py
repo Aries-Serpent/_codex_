@@ -11,9 +11,9 @@ from pathlib import Path
 
 import pytest
 import yaml
+from omegaconf import OmegaConf
 
 from common.provenance import collect_dvc_stage, write_provenance
-from omegaconf import OmegaConf
 
 
 def test_collect_dvc_stage_parses_lock_structure():

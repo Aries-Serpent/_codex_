@@ -81,7 +81,7 @@ def _git_staged_files(repo_root: Path) -> list[str]:
     """Return staged file paths using ``git diff --staged``.
 
     Returns an empty list when git is unavailable or the command fails.
-    
+
     PHASE 3 HARDENING: Uses secure subprocess execution with proper exception handling.
     """
     try:
@@ -96,7 +96,7 @@ def _git_staged_files(repo_root: Path) -> list[str]:
             logger.debug(f"git command failed with code {proc.returncode}")
             return []
         return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
-        
+
     except FileNotFoundError as e:
         # PHASE 3 HARDENING: Proper exception logging instead of silent pass
         logger.debug(f"git executable not found: {e}")

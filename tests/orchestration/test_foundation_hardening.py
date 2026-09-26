@@ -41,15 +41,15 @@ class TestContractGates:
             "description": "Test change",
         }
         result = self.system.validate_gate_1_schema(proposal)
-        assert result.passed
-        assert result.gate_number == 1
+        assert result.passed, "Result must not be empty"
+        assert result.gate_number == 1, "Result must not be empty"
 
     def test_gate_1_schema_validation_fail(self):
         """Test Gate 1 fails with invalid schema."""
         proposal = {}  # Missing required fields
         result = self.system.validate_gate_1_schema(proposal)
-        assert not result.passed
-        assert "Schema validation failed" in result.error_message
+        assert not result.passed, "Result must not be empty"
+        assert "Schema validation failed" in result.error_message, "Result must not be empty"
 
     def test_gate_2_regression_tests_pass(self):
         """Test Gate 2 passes when tests pass."""
@@ -61,8 +61,8 @@ class TestContractGates:
             "regression_tests": {"passed": True, "test_count": 50},
         }
         result = self.system.validate_gate_2_regression_tests(proposal)
-        assert result.passed
-        assert result.details["test_count"] == 50
+        assert result.passed, "Result must not be empty"
+        assert result.details["test_count"] == 50, "Result must not be empty"
 
     def test_gate_2_regression_tests_fail(self):
         """Test Gate 2 fails when tests fail."""
@@ -70,8 +70,8 @@ class TestContractGates:
             "regression_tests": {"passed": False, "test_count": 50}
         }
         result = self.system.validate_gate_2_regression_tests(proposal)
-        assert not result.passed
-        assert "did not pass" in result.error_message
+        assert not result.passed, "Result must not be empty"
+        assert "did not pass" in result.error_message, "Result must not be empty"
 
     def test_gate_3_security_audit_pass(self):
         """Test Gate 3 passes when audit passes."""
@@ -79,7 +79,7 @@ class TestContractGates:
             "security_audit": {"passed": True, "issues": []}
         }
         result = self.system.validate_gate_3_security_audit(proposal)
-        assert result.passed
+        assert result.passed, "Result must not be empty"
 
     def test_gate_3_security_audit_fail(self):
         """Test Gate 3 fails when audit fails."""
@@ -87,21 +87,21 @@ class TestContractGates:
             "security_audit": {"passed": False, "issues": ["sql_injection"]}
         }
         result = self.system.validate_gate_3_security_audit(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_gate_4_policy_tier_valid(self):
         """Test Gate 4 passes with valid tier."""
         for tier in ["T0", "T1", "T2", "T3"]:
             proposal = {"policy_tier": tier}
             result = self.system.validate_gate_4_policy_tier(proposal)
-            assert result.passed
-            assert result.details["policy_tier"] == tier
+            assert result.passed, "Result must not be empty"
+            assert result.details["policy_tier"] == tier, "Result must not be empty"
 
     def test_gate_4_policy_tier_invalid(self):
         """Test Gate 4 fails with invalid tier."""
         proposal = {"policy_tier": "T5"}
         result = self.system.validate_gate_4_policy_tier(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_gate_5_input_lock_signed(self):
         """Test Gate 5 passes when input lock is signed."""
@@ -112,7 +112,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_5_input_lock(proposal)
-        assert result.passed
+        assert result.passed, "Result must not be empty"
 
     def test_gate_5_input_lock_unsigned(self):
         """Test Gate 5 fails when input lock not signed."""
@@ -123,7 +123,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_5_input_lock(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_gate_6_output_contract_valid(self):
         """Test Gate 6 passes with valid output schema."""
@@ -137,7 +137,7 @@ class TestContractGates:
             "output": {"result": "success"},
         }
         result = self.system.validate_gate_6_output_contract(proposal)
-        assert result.passed
+        assert result.passed, "Result must not be empty"
 
     def test_gate_6_output_contract_invalid(self):
         """Test Gate 6 fails with invalid output schema."""
@@ -151,7 +151,7 @@ class TestContractGates:
             "output": {"result": 123},  # Wrong type
         }
         result = self.system.validate_gate_6_output_contract(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_gate_7_decision_trace_valid(self):
         """Test Gate 7 passes with valid decision trace."""
@@ -163,7 +163,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_7_decision_trace(proposal)
-        assert result.passed
+        assert result.passed, "Result must not be empty"
 
     def test_gate_7_decision_trace_unsigned(self):
         """Test Gate 7 fails with unsigned trace."""
@@ -175,7 +175,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_7_decision_trace(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_gate_8_rollback_valid(self):
         """Test Gate 8 passes with valid rollback."""
@@ -188,7 +188,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_8_rollback(proposal)
-        assert result.passed
+        assert result.passed, "Result must not be empty"
 
     def test_gate_8_rollback_invalid(self):
         """Test Gate 8 fails with invalid rollback."""
@@ -199,7 +199,7 @@ class TestContractGates:
             }
         }
         result = self.system.validate_gate_8_rollback(proposal)
-        assert not result.passed
+        assert not result.passed, "Result must not be empty"
 
     def test_validate_all_gates_pass(self):
         """Test all 8 gates pass with valid proposal."""
@@ -227,9 +227,9 @@ class TestContractGates:
             },
         }
         result = self.system.validate_all_gates(proposal)
-        assert result.all_passed
-        assert len(result.gate_results) == 8
-        assert all(r.passed for r in result.gate_results)
+        assert result.all_passed, "Result must not be empty"
+        assert len(result.gate_results) == 8, "Collection must not be empty"
+        assert all(r.passed for r in result.gate_results), "Result must not be empty"
 
     def test_validate_all_gates_single_failure_blocks(self):
         """Test that single gate failure blocks all."""
@@ -255,8 +255,8 @@ class TestContractGates:
             },
         }
         result = self.system.validate_all_gates(proposal)
-        assert not result.all_passed
-        assert result.gate_results[1].passed is False  # Gate 2 failed
+        assert not result.all_passed, "Result must not be empty"
+        assert result.gate_results[1].passed is False, "Result must not be empty"
 
     def test_gate_results_to_dict(self):
         """Test gate result serialization."""
@@ -269,8 +269,8 @@ class TestContractGates:
             }
         )
         result_dict = result.to_dict()
-        assert "gate_number" in result_dict
-        assert result_dict["passed"] is True
+        assert "gate_number" in result_dict, "Result must not be empty"
+        assert result_dict["passed"] is True, "Result must not be empty"
 
 
 class TestPolicyTierEngine:
@@ -282,8 +282,8 @@ class TestPolicyTierEngine:
             "Update README config file",
             affected_modules=["README.md"],
         )
-        assert result.tier == "T0"
-        assert 1 in result.required_gates
+        assert result.tier == "T0", "Result must not be empty"
+        assert 1 in result.required_gates, "Result must not be empty"
 
     def test_classify_tier_1_test(self):
         """Test T1 classification for test changes."""
@@ -291,9 +291,9 @@ class TestPolicyTierEngine:
             "Add unit test for login function",
             affected_modules=["tests/test_auth.py"],
         )
-        assert result.tier == "T1"
-        assert 1 in result.required_gates
-        assert 2 in result.required_gates
+        assert result.tier == "T1", "Result must not be empty"
+        assert 1 in result.required_gates, "Result must not be empty"
+        assert 2 in result.required_gates, "Result must not be empty"
 
     def test_classify_tier_2_security(self):
         """Test T2 classification for security patches."""
@@ -301,8 +301,8 @@ class TestPolicyTierEngine:
             "Security patch for SQL injection vulnerability",
             affected_modules=["src/db/query.py"],
         )
-        assert result.tier == "T2"
-        assert 3 in result.required_gates  # Security gate
+        assert result.tier == "T2", "Result must not be empty"
+        assert 3 in result.required_gates, "Result must not be empty"
 
     def test_classify_tier_3_governance(self):
         """Test T3 classification for governance changes."""
@@ -310,8 +310,8 @@ class TestPolicyTierEngine:
             "Modify tier system and approval chains",
             affected_modules=["src/orchestration/gates/contract_gate.py"],
         )
-        assert result.tier == "T3"
-        assert len(result.required_gates) == 8  # All gates required
+        assert result.tier == "T3", "Result must not be empty"
+        assert len(result.required_gates) == 8, "Collection must not be empty"
 
     def test_escalation_on_high_risk(self):
         """Test escalation when risk exceeds threshold."""
@@ -325,7 +325,7 @@ class TestPolicyTierEngine:
             ],
         )
         # High-risk action should escalate to higher tier
-        assert result.risk_score > 35.0  # High risk detected
+        assert result.risk_score > 35.0, "risk_score must be greater than zero"
 
     def test_batch_classify(self):
         """Test batch classification."""
@@ -335,18 +335,18 @@ class TestPolicyTierEngine:
             {"description": "Security patch", "affected_modules": ["src/"]},
         ]
         results = PolicyTierEngine.batch_classify(actions)
-        assert len(results) == 3
-        assert results[0].tier == "T0"
-        assert results[1].tier == "T1"
-        assert results[2].tier == "T2"
+        assert len(results) == 3, "Results must not be empty"
+        assert results[0].tier == "T0", "Result must not be empty"
+        assert results[1].tier == "T1", "Result must not be empty"
+        assert results[2].tier == "T2", "Result must not be empty"
 
     def test_get_tier_requirements_valid(self):
         """Test getting requirements for valid tier."""
         for tier in ["T0", "T1", "T2", "T3"]:
             reqs = PolicyTierEngine.get_tier_requirements(tier)
-            assert reqs["tier"] == tier
-            assert "name" in reqs
-            assert "required_gates" in reqs
+            assert reqs["tier"] == tier, "Condition must be true"
+            assert "name" in reqs, "Condition must be true"
+            assert "required_gates" in reqs, "Condition must be true"
 
     def test_get_tier_requirements_invalid(self):
         """Test error on invalid tier."""
@@ -356,14 +356,14 @@ class TestPolicyTierEngine:
     def test_risk_score_calculation(self):
         """Test risk score is calculated."""
         result = PolicyTierEngine.classify_action("Delete critical function")
-        assert result.risk_score > 0
+        assert result.risk_score > 0, "risk_score must be greater than zero"
 
     def test_classification_to_dict(self):
         """Test classification serialization."""
         result = PolicyTierEngine.classify_action("Add documentation")
         result_dict = result.to_dict()
-        assert "tier" in result_dict
-        assert "risk_score" in result_dict
+        assert "tier" in result_dict, "Result must not be empty"
+        assert "risk_score" in result_dict, "Result must not be empty"
 
 
 class TestRollbackControls:
@@ -384,7 +384,7 @@ class TestRollbackControls:
                 }
             ],
         }
-        assert RollbackControlSystem.validate_rollback_instruction(instruction)
+        assert RollbackControlSystem.validate_rollback_instruction(instruction), "Condition must be true"
 
     def test_validate_rollback_instruction_missing_id(self):
         """Test validation fails without rollback_id."""
@@ -420,8 +420,8 @@ class TestRollbackControls:
             ],
         }
         result = self.system.execute_rollback(instruction)
-        assert result.success
-        assert len(result.step_results) == 1
+        assert result.success, "Result must not be empty"
+        assert len(result.step_results) == 1, "Collection must not be empty"
 
     def test_execute_rollback_multi_step_success(self):
         """Test executing multiple successful steps."""
@@ -445,8 +445,8 @@ class TestRollbackControls:
             ],
         }
         result = self.system.execute_rollback(instruction)
-        assert result.success
-        assert len(result.step_results) == 2
+        assert result.success, "Result must not be empty"
+        assert len(result.step_results) == 2, "Collection must not be empty"
 
     def test_execute_rollback_failure_aborts(self):
         """Test that non-optional failure aborts rollback."""
@@ -463,7 +463,7 @@ class TestRollbackControls:
             ],
         }
         result = self.system.execute_rollback(instruction)
-        assert not result.success
+        assert not result.success, "Result must not be empty"
 
     def test_execute_rollback_optional_failure_continues(self):
         """Test that optional failure doesn't abort."""
@@ -488,7 +488,7 @@ class TestRollbackControls:
         }
         result = self.system.execute_rollback(instruction)
         # Should complete despite first step failure
-        assert len(result.step_results) == 2
+        assert len(result.step_results) == 2, "Collection must not be empty"
 
     def test_rollback_result_to_dict(self):
         """Test rollback result serialization."""
@@ -506,9 +506,9 @@ class TestRollbackControls:
         }
         result = self.system.execute_rollback(instruction)
         result_dict = result.to_dict()
-        assert "rollback_id" in result_dict
-        assert "success" in result_dict
-        assert "step_results" in result_dict
+        assert "rollback_id" in result_dict, "Result must not be empty"
+        assert "success" in result_dict, "Result must not be empty"
+        assert "step_results" in result_dict, "Result must not be empty"
 
 
 class TestLaneScheduler:
@@ -522,7 +522,7 @@ class TestLaneScheduler:
         """Test registering a single lane."""
         lane = Lane(lane_id="lane_a", name="Phase A")
         self.scheduler.register_lane(lane)
-        assert "lane_a" in self.scheduler.lanes
+        assert "lane_a" in self.scheduler.lanes, "Condition must be true"
 
     def test_register_multiple_lanes(self):
         """Test registering multiple lanes."""
@@ -531,7 +531,7 @@ class TestLaneScheduler:
             Lane(lane_id="lane_b", name="Phase B"),
         ]
         self.scheduler.register_lanes(lanes)
-        assert len(self.scheduler.lanes) == 2
+        assert len(self.scheduler.lanes) == 2, "Collection must not be empty"
 
     def test_lane_dependency_enforcement(self):
         """Test that dependencies are enforced."""
@@ -545,12 +545,12 @@ class TestLaneScheduler:
 
         # lane_a must pass before lane_b can run
         result_b = self.scheduler.schedule_lane("lane_b")
-        assert result_b.state == LaneState.PENDING  # Not ready
+        assert result_b.state == LaneState.PENDING, "Result must not be empty"
 
         # Schedule lane_a first
         self.scheduler.schedule_lane("lane_a")
         result_b = self.scheduler.schedule_lane("lane_b")
-        assert result_b.state == LaneState.PASSED
+        assert result_b.state == LaneState.PASSED, "Result must not be empty"
 
     def test_deterministic_execution_order(self):
         """Test that execution order is deterministic."""
@@ -567,15 +567,15 @@ class TestLaneScheduler:
         result2 = self.scheduler.schedule_all_lanes()
 
         # Both should succeed and have consistent ordering
-        assert all(r.state == LaneState.PASSED for r in result1.values())
-        assert all(r.state == LaneState.PASSED for r in result2.values())
+        assert all(r.state == LaneState.PASSED for r in result1.values()), "Result must not be empty"
+        assert all(r.state == LaneState.PASSED for r in result2.values()), "Result must not be empty"
 
     def test_get_lane_state(self):
         """Test getting lane state."""
         lane = Lane(lane_id="lane_a", name="Phase A")
         self.scheduler.register_lane(lane)
         state = self.scheduler.get_lane_state("lane_a")
-        assert state == LaneState.PENDING
+        assert state == LaneState.PENDING, "state is not valid"
 
     def test_get_all_lane_states(self):
         """Test getting all lane states."""
@@ -585,18 +585,18 @@ class TestLaneScheduler:
         ]
         self.scheduler.register_lanes(lanes)
         states = self.scheduler.get_all_lane_states()
-        assert len(states) == 2
-        assert all(s == "pending" for s in states.values())
+        assert len(states) == 2, "States must not be empty"
+        assert all(s == "pending" for s in states.values()), "Value must be initialized"
 
     def test_reset_single_lane(self):
         """Test resetting a single lane."""
         lane = Lane(lane_id="lane_a", name="Phase A")
         self.scheduler.register_lane(lane)
         self.scheduler.schedule_lane("lane_a")
-        assert self.scheduler.get_lane_state("lane_a") == LaneState.PASSED
+        assert self.scheduler.get_lane_state("lane_a") == LaneState.PASSED, "Condition must be true"
 
         self.scheduler.reset_lane("lane_a")
-        assert self.scheduler.get_lane_state("lane_a") == LaneState.PENDING
+        assert self.scheduler.get_lane_state("lane_a") == LaneState.PENDING, "Condition must be true"
 
     def test_reset_all_lanes(self):
         """Test resetting all lanes."""
@@ -609,7 +609,7 @@ class TestLaneScheduler:
 
         self.scheduler.reset_all_lanes()
         states = self.scheduler.get_all_lane_states()
-        assert all(s == "pending" for s in states.values())
+        assert all(s == "pending" for s in states.values()), "Value must be initialized"
 
     def test_circular_dependency_detection(self):
         """Test that circular dependencies are detected."""
@@ -637,9 +637,9 @@ class TestLaneScheduler:
         self.scheduler.register_lanes(lanes)
 
         schedule = self.scheduler.export_schedule()
-        assert "lanes" in schedule
-        assert "execution_order" in schedule
-        assert len(schedule["lanes"]) == 2
+        assert "lanes" in schedule, "Condition must be true"
+        assert "execution_order" in schedule, "Condition must be true"
+        assert len(schedule["lanes"]) == 2, "Collection must not be empty"
 
 
 class TestIntegration:
@@ -675,7 +675,7 @@ class TestIntegration:
 
         gate_system = ContractGateSystem()
         result = gate_system.validate_all_gates(proposal)
-        assert result.all_passed
+        assert result.all_passed, "Result must not be empty"
 
     def test_scheduler_with_gate_validation(self):
         """Test scheduler coordinating gated lanes."""
@@ -692,4 +692,4 @@ class TestIntegration:
         scheduler.register_lanes(lanes)
 
         results = scheduler.schedule_all_lanes()
-        assert all(r.state == LaneState.PASSED for r in results.values())
+        assert all(r.state == LaneState.PASSED for r in results.values()), "Result must not be empty"

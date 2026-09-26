@@ -122,12 +122,12 @@ class OAuthManager:
         if config is None and config_kwargs:
             config = OAuthConfig(**config_kwargs)
         self.config = config
-        self._state_store: dict[str, dict[str, Any]] = (
-            {}
-        )  # In-memory state storage (use Redis in production)
-        self._token_store: dict[str, OAuthToken] = (
-            {}
-        )  # In-memory token storage (use database in production)
+        self._state_store: dict[
+            str, dict[str, Any]
+        ] = {}  # In-memory state storage (use Redis in production)
+        self._token_store: dict[
+            str, OAuthToken
+        ] = {}  # In-memory token storage (use database in production)
 
     def get_authorization_url(
         self,
@@ -248,9 +248,7 @@ class OAuthManager:
         }
         invalid = [scope for scope in scopes if scope not in allowed_scopes]
         if invalid:
-            raise ValueError(
-                f"Unsupported OAuth scope(s): {', '.join(sorted(invalid))}"
-            )
+            raise ValueError(f"Unsupported OAuth scope(s): {', '.join(sorted(invalid))}")
         return True
 
     def create_github_config(

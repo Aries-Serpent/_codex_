@@ -75,9 +75,7 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
         self.retry_strategy = AdaptiveRetryStrategy(retry_config or RetryConfig())
         self.monitor = get_rag_monitor()
 
-        logger.info(
-            "HardenedRetrievalPipeline initialized with timeout protection"
-        )
+        logger.info("HardenedRetrievalPipeline initialized with timeout protection")
 
     def retrieve(
         self,
@@ -100,9 +98,7 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
 
         # Check circuit breaker
         if self.timeout_manager.is_circuit_open(operation_type):
-            logger.warning(
-                "Circuit breaker open for retrieval, returning empty results"
-            )
+            logger.warning("Circuit breaker open for retrieval, returning empty results")
             metric = OperationMetric(
                 operation_type=operation_type,
                 timestamp=time.time(),
@@ -122,9 +118,7 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
         # Perform retrieval with retry logic
         def retrieve_fn():
             # Call parent's retrieve logic
-            return super(HardenedRetrievalPipeline, self).retrieve(
-                query, top_k, filters
-            )
+            return super(HardenedRetrievalPipeline, self).retrieve(query, top_k, filters)
 
         try:
             result, metrics = self.retry_strategy.execute_with_retries(
@@ -161,9 +155,7 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
                 error_type=type(e).__name__,
             )
             self.monitor.record_metric(metric)
-            self.timeout_manager.record_failure(
-                operation_type, metric, str(e)
-            )
+            self.timeout_manager.record_failure(operation_type, metric, str(e))
 
             # Return graceful degradation
             return RetrievalResponse(
@@ -197,9 +189,7 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
 
         # Check circuit breaker
         if self.timeout_manager.is_circuit_open(operation_type):
-            logger.warning(
-                "Circuit breaker open for add_documents, skipping"
-            )
+            logger.warning("Circuit breaker open for add_documents, skipping")
             return 0
 
         # Generate IDs if not provided
@@ -255,8 +245,6 @@ class HardenedRetrievalPipeline(RetrievalPipeline):
                 error_type=type(e).__name__,
             )
             self.monitor.record_metric(metric)
-            self.timeout_manager.record_failure(
-                operation_type, metric, str(e)
-            )
+            self.timeout_manager.record_failure(operation_type, metric, str(e))
 
             return 0

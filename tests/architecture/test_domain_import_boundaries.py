@@ -411,7 +411,7 @@ def test_compatibility_namespaces_are_classified() -> None:
         "utils.checkpoint": "checkpointing",
         "utils.checkpointing": "checkpointing",
     }
-    assert {module: _domain(module) for module in expected} == expected
+    assert {module: _domain(module) for module in expected} == expected, "Condition must be true"
 
 
 def test_executable_configuration_roots_are_scanned() -> None:
@@ -428,7 +428,7 @@ def test_executable_configuration_roots_are_scanned() -> None:
         for module, path in modules.items()
         if _domain(module) == "configuration"
     }
-    assert expected <= actual
+    assert expected <= actual, "expected is not valid"
 
 
 def test_evaluation_does_not_gain_concrete_training_imports() -> None:

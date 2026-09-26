@@ -1,7 +1,7 @@
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
 # import subprocess
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
@@ -9,7 +9,7 @@
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
 # REPO_ROOT = Path(__file__).resolve().parents[2]
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
 #     quoted_url = shlex.quote(url)
 #     script = textwrap.dedent(f"""
@@ -32,35 +32,35 @@
 #         return tokens[0], ""
 #     return tokens[0], tokens[1]
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
 #         "Aries-Serpent",
 #         "_codex_",
 #     )
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #         "Aries-Serpent",
 #         "_codex_",
 #     )
 #     assert _parse_owner_repo("git@github.com:Aries-Serpent/_codex_.git") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("git@github.com:Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #     assert _parse_owner_repo("git@github.com:Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #         "Aries-Serpent",
 #         "_codex_",
 #     )
 #     assert _parse_owner_repo("ssh://git@github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("ssh://git@github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #     assert _parse_owner_repo("ssh://git@github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
 #         "Aries-Serpent",
 #         "_codex_",
 #     )
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent") == (, "Condition must be true"
-# 
+#
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent") == (, "Condition must be true"
 #     assert _parse_owner_repo("https://github.com/Aries-Serpent") == (, "Condition must be true"
 #         "Aries-Serpent",

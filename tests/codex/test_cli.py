@@ -10,7 +10,7 @@ from pathlib import Path
 # """
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
-# 
+#
 #         assert _sanitize_branch_name("with spaces") == "with-spaces", "Condition must be true"
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
@@ -22,7 +22,7 @@ from pathlib import Path
 #         """Test that CLI module can be imported."""
 #         from codex.cli import main
 #         assert callable(main), "Condition must be true"
-# 
+#
 #     def test_cli_main_function_exists(self):
 #     def test_cli_main_function_exists(self):
 #         """Test that main entry point exists."""
@@ -32,7 +32,7 @@ from pathlib import Path
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
 #     """Tests for PR operator functionality."""
-# 
+#
 #     def test_sanitize_branch_name(self):
 #     def test_sanitize_branch_name(self):
 #         """Test branch name sanitization."""
@@ -41,16 +41,16 @@ from pathlib import Path
 #         assert _sanitize_branch_name("with spaces") == "with-spaces", "Condition must be true"
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
-# 
+#
 #     def test_sanitize_branch_name_length(self):
 #     def test_sanitize_branch_name_length(self):
 #         """Test branch name length limiting."""
 #         from codex.cli.pr_operator import _sanitize_branch_name
 #         long_name = "a" * 200
 #         result = _sanitize_branch_name(long_name)
-# 
+#
 #         assert len(result) <= 100, "Result must not be empty"
-# 
+#
 #     def test_generate_pr_body(self):
 #     def test_generate_pr_body(self):
 #         """Test PR body generation."""
@@ -65,12 +65,12 @@ from pathlib import Path
 #             verification_result="pass",
 #             security_issues=0,
 #         )
-# 
+#
 #         assert "test-123" in body, "Condition must be true"
 #         assert "Test script" in body, "Condition must be true"
 #         assert "85%" in body, "Condition must be true"
 #         assert "✅" in body, "Condition must be true"
-# 
+#
 #     def test_generate_pr_body_with_failures(self):
 #     def test_generate_pr_body_with_failures(self):
 #         """Test PR body generation with failures."""
@@ -85,19 +85,19 @@ from pathlib import Path
 #             verification_result="fail",
 #             security_issues=5,
 #         )
-# 
+#
 #         assert "❌" in body, "Condition must be true"
-# 
+#
 #     def test_pr_config_defaults(self):
 #     def test_pr_config_defaults(self):
 #         """Test PRConfig default values."""
 #         from codex.cli.pr_operator import PRConfig
 #         config = PRConfig(owner="test", repo="repo")
-# 
+#
 #         assert config.base_branch == "main", "base_branch is not valid"
 #         assert config.draft is True, "draft is not valid"
 #         assert "copilot:automated" in config.labels, "Condition must be true"
-# 
+#
 #     def test_pr_content_creation(self):
 #     def test_pr_content_creation(self):
 #         """Test PRContent creation."""
@@ -108,48 +108,48 @@ from pathlib import Path
 #             branch_name="test-branch",
 #             snapshot_id="snap-123",
 #         )
-# 
+#
 #         assert content.title == "Test PR", "Content must not be empty"
 #         assert content.snapshot_id == "snap-123", "Content must not be empty"
-# 
+#
 #     def test_pr_operator_generate_content(self):
 #     def test_pr_operator_generate_content(self):
 #         """Test PROperator.generate_pr_content."""
 #         from codex.cli.pr_operator import PRConfig, PROperator
 #         config = PRConfig(owner="test", repo="repo")
 #         operator = PROperator(config)
-# 
+#
 #         content = operator.generate_pr_content(
 #             snapshot_id="snap-123",
 #             intent_summary="CLI tool for data processing",
 #             confidence=0.9,
 #             tier_a_count=3,
 #         )
-# 
+#
 #         assert "snap-123" in content.branch_name, "Content must not be empty"
 #         assert "CLI tool" in content.title or "snap-123" in content.title, "Content must not be empty"
 #         assert content.snapshot_id == "snap-123", "Content must not be empty"
-# 
+#
 #     def test_pr_operator_save_content(self, tmp_path: Path):
 #     def test_pr_operator_save_content(self, tmp_path: Path):
 #         """Test saving PR content to files."""
 #         from codex.cli.pr_operator import PRConfig, PRContent, PROperator
 #         config = PRConfig(owner="test", repo="repo")
 #         operator = PROperator(config)
-# 
+#
 #         content = PRContent(
 #             title="Test PR",
 #             body="Test body content",
 #             branch_name="test-branch",
 #             snapshot_id="snap-123",
 #         )
-# 
+#
 #         output_dir = tmp_path / "pr-output"
 #         result = operator.save_pr_content(content, output_dir)
-# 
+#
 #         assert result.exists(), "Result must not be empty"
 #         assert (output_dir / "pr-metadata.json").exists(), "Data must not be empty"
-# 
+#
 #     def test_pr_result_success(self):
 #     def test_pr_result_success(self):
 #         """Test PRResult success state."""
@@ -159,11 +159,11 @@ from pathlib import Path
 #             pr_number=123,
 #             pr_url="https://github.com/test/repo/pull/123",
 #         )
-# 
+#
 #         assert result.success, "Result must not be empty"
 #         assert result.pr_number == 123, "Result must not be empty"
 #         assert "123" in result.pr_url, "Result must not be empty"
-# 
+#
 #     def test_pr_result_failure(self):
 #     def test_pr_result_failure(self):
 #         """Test PRResult failure state."""
@@ -172,10 +172,10 @@ from pathlib import Path
 #             success=False,
 #             errors=["Authentication failed"],
 #         )
-# 
+#
 #         assert not result.success, "Result must not be empty"
 #         assert "Authentication failed" in result.errors, "Result must not be empty"
-# 
+#
 #     def test_pr_operator_without_github(self):
 #     def test_pr_operator_without_github(self):
 #         """Test PROperator behavior without GitHub access."""
@@ -183,15 +183,15 @@ from pathlib import Path
 #         with patch.dict("os.environ", {}, clear=True):
 #             config = PRConfig(owner="test", repo="repo")
 #             operator = PROperator(config)
-# 
+#
 #             content = PRContent(
 #                 title="Test",
 #                 body="Body",
 #                 branch_name="branch",
 #             )
-# 
+#
 #             result = operator.create_pr(content)
-# 
+#
 #             assert not result.success, "Result must not be empty"
 #             assert len(result.errors) > 0, "Collection must not be empty"
 

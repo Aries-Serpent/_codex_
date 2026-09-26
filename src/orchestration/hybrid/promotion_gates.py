@@ -106,7 +106,7 @@ class PromotionGates:
                 },
                 notes=(
                     f"Hybrid shows {avg_improvement_pct:+.2f}% improvement "
-                    f"(threshold: >{self.GATE_1_IMPROVEMENT['threshold']*100:.1f}%)"
+                    f"(threshold: >{self.GATE_1_IMPROVEMENT['threshold'] * 100:.1f}%)"
                 ),
             )
         )
@@ -129,7 +129,7 @@ class PromotionGates:
                 },
                 notes=(
                     f"Determinism drift {determinism_drift_pct:.3f}% "
-                    f"(threshold: <{self.GATE_2_DETERMINISM['threshold']*100:.2f}%)"
+                    f"(threshold: <{self.GATE_2_DETERMINISM['threshold'] * 100:.2f}%)"
                 ),
             )
         )
@@ -163,8 +163,7 @@ class PromotionGates:
 
         if ready_for_promotion:
             recommendation = (
-                "✅ READY FOR PHASE 6 PROMOTION: All gates passed, "
-                "sufficient samples collected"
+                "✅ READY FOR PHASE 6 PROMOTION: All gates passed, sufficient samples collected"
             )
         elif all_passed:
             recommendation = (

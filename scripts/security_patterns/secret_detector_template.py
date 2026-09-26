@@ -25,7 +25,7 @@ Example:
 
 import json
 import re
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class SecretDetector:
@@ -85,7 +85,7 @@ class SecretDetector:
             return {
                 "filepath": filepath,
                 "status": "error",
-                "error": str(e),
+                "error": type(e).__name__,
                 "secrets": []
             }
 

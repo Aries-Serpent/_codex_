@@ -74,7 +74,7 @@ _CHAIN_LIBRARY: dict[str, AgentChainPlan] = {
                 agent="codeql-alert-resolution-agent",
                 purpose="Fix open CodeQL findings with targeted code changes.",
                 prompt_template=(
-                    "Fix all open CodeQL alerts for this branch and summarize each " "remediation."
+                    "Fix all open CodeQL alerts for this branch and summarize each remediation."
                 ),
             ),
             AgentChainStep(
@@ -97,7 +97,7 @@ _CHAIN_LIBRARY: dict[str, AgentChainPlan] = {
                 agent="unified-security-scanner",
                 purpose="Collect dependency, secrets, and SAST findings in one pass.",
                 prompt_template=(
-                    "Run a unified security scan and summarize the actionable " "findings only."
+                    "Run a unified security scan and summarize the actionable findings only."
                 ),
             ),
             AgentChainStep(
@@ -120,7 +120,7 @@ _CHAIN_LIBRARY: dict[str, AgentChainPlan] = {
                 agent="ci-auto-healer-agent",
                 purpose="Apply recurring CI fix patterns and produce diagnostics.",
                 prompt_template=(
-                    "Diagnose the failing CI jobs and auto-apply all safe fix " "patterns."
+                    "Diagnose the failing CI jobs and auto-apply all safe fix patterns."
                 ),
             ),
             AgentChainStep(
@@ -143,8 +143,7 @@ _CHAIN_LIBRARY: dict[str, AgentChainPlan] = {
                 agent="unified-coverage-agent",
                 purpose="Prioritize the highest-impact coverage gaps and propose safe tests.",
                 prompt_template=(
-                    "Increase coverage in the touched modules without changing "
-                    "production behavior."
+                    "Increase coverage in the touched modules without changing production behavior."
                 ),
             ),
         ],
@@ -210,7 +209,7 @@ def recommend_task_route(command: str, category: str | None = None) -> TaskRouti
                 "compress success output while preserving failures."
             ),
             prompt_template=(
-                f"Run this deterministically and summarize success/failure: " f'"{command}"'
+                f'Run this deterministically and summarize success/failure: "{command}"'
             ),
         )
 

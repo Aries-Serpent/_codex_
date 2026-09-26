@@ -130,8 +130,8 @@ class RedisCache(CacheBackend):
             # python scripts/cache/migrate_pickle_to_json.py
             # For now, log warning and return None to force cache miss
             logger.warning(
-                "Encountered non-JSON cached data. This is likely pickle-serialized data from an older version. "
-                "Please run: python scripts/cache/migrate_pickle_to_json.py to migrate to secure JSON format."
+                "Encountered non-JSON cached data. This is likely pickle-serialized data from an older version. "  # noqa: E501
+                "Please run: python scripts/cache/migrate_pickle_to_json.py to migrate to secure JSON format."  # noqa: E501
             )
             return None
 

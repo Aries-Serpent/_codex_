@@ -6,7 +6,7 @@
       "exit_code": 4,
       "total_coverage": 0,
       "stdout": "",
-      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "stderr": "MLflow not installed; tracking URI set to file:./artifacts/mlruns\n\u2139\ufe0f  W&B defaulted to offline mode (set WANDB_MODE=online to override)\n\u2713 Determinism bootstrap complete\nERROR: usage: python -m pytest [options] [file_or_dir] [file_or_dir] [...]\npython -m pytest: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
       "test_count": 0
     },
     {
@@ -14,7 +14,7 @@
       "exit_code": 4,
       "total_coverage": 0,
       "stdout": "",
-      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "stderr": "MLflow not installed; tracking URI set to file:./artifacts/mlruns\n\u2139\ufe0f  W&B defaulted to offline mode (set WANDB_MODE=online to override)\n\u2713 Determinism bootstrap complete\nERROR: usage: python -m pytest [options] [file_or_dir] [file_or_dir] [...]\npython -m pytest: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
       "test_count": 0
     },
     {
@@ -22,7 +22,7 @@
       "exit_code": 4,
       "total_coverage": 0,
       "stdout": "",
-      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "stderr": "MLflow not installed; tracking URI set to file:./artifacts/mlruns\n\u2139\ufe0f  W&B defaulted to offline mode (set WANDB_MODE=online to override)\n\u2713 Determinism bootstrap complete\nERROR: usage: python -m pytest [options] [file_or_dir] [file_or_dir] [...]\npython -m pytest: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
       "test_count": 0
     }
   ],

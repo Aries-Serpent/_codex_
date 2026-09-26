@@ -16,9 +16,7 @@ def has_pytest_cov() -> bool:
 
 
 def _strip_coverage_flags(raw: str) -> str:
-    pattern = re.compile(
-        r'(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?'
-    )
+    pattern = re.compile(r'(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?')
     return pattern.sub("", raw).strip()
 
 
@@ -35,9 +33,7 @@ changed = False
 
 def scrub_cov(text: str) -> str:
     """Remove coverage flags without rewriting unrelated Python formatting."""
-    regex = re.compile(
-        r'(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?'
-    )
+    regex = re.compile(r'(?<![\w-])--cov(?:-(?:report|branch|fail-under))?(?:[=\s]+[^\s,\)"]+)?')
     lines: list[str] = []
     for line in text.splitlines(keepends=True):
         if "--cov" not in line:

@@ -51,15 +51,15 @@ def test_evaluation_forwards_contracts_without_replacing_legacy_runner() -> None
             warnings.simplefilter("always", DeprecationWarning)
             import codex_ml.evaluation as legacy
 
-        assert legacy.EvaluationBatch is codex_evaluation.EvaluationBatch
-        assert legacy.EvaluationReport is codex_evaluation.EvaluationReport
-        assert legacy.ScalarEvaluationRunner is codex_evaluation.EvaluationRunner
-        assert legacy.EvaluationRunner is not codex_evaluation.EvaluationRunner
-        assert "model" in inspect.signature(legacy.EvaluationRunner).parameters
-        assert "metrics" in inspect.signature(
+        assert legacy.EvaluationBatch is codex_evaluation.EvaluationBatch, "EvaluationBatch is not valid"
+        assert legacy.EvaluationReport is codex_evaluation.EvaluationReport, "EvaluationReport is not valid"
+        assert legacy.ScalarEvaluationRunner is codex_evaluation.EvaluationRunner, "ScalarEvaluationRunner is not valid"
+        assert legacy.EvaluationRunner is not codex_evaluation.EvaluationRunner, "EvaluationRunner is not valid"
+        assert "model" in inspect.signature(legacy.EvaluationRunner).parameters, "Condition must be true"
+        assert "metrics" in inspect.signature(, "Condition must be true"
             codex_evaluation.EvaluationRunner
         ).parameters
-        assert not [item for item in caught if item.category is DeprecationWarning]
+        assert not [item for item in caught if item.category is DeprecationWarning], "Item must not be empty"
 
         class Model:
             def predict(self, inputs):
@@ -71,8 +71,8 @@ def test_evaluation_forwards_contracts_without_replacing_legacy_runner() -> None
             legacy.EvaluationRunner(Model(), [], [], output_dir="/tmp/codex-eval-warning")
 
         warnings_seen = [item for item in caught if item.category is DeprecationWarning]
-        assert len(warnings_seen) == 1
-        assert "0.5.0" in str(warnings_seen[0].message)
+        assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
+        assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
         """
     )
     assert result.returncode == 0, result.stderr
@@ -89,7 +89,7 @@ def test_lora_forwards_types_and_preserves_legacy_apply_signature() -> None:
             warnings.simplefilter("always", DeprecationWarning)
             import codex_ml.peft as legacy
 
-        assert "codex_lora" not in sys.modules
+        assert "codex_lora" not in sys.modules, "Condition must be true"
         forwarded_config = legacy.LoraConfig
 
         import codex_lora
@@ -99,17 +99,17 @@ def test_lora_forwards_types_and_preserves_legacy_apply_signature() -> None:
             import codex_ml.peft.contracts as contracts
             import codex_ml.peft.service as service
 
-        assert forwarded_config is codex_lora.LoraConfig
-        assert contracts.LoraConfig is codex_lora.LoraConfig
-        assert adapters.PeftBackend is codex_lora.PeftBackend
-        assert service.apply_lora is codex_lora.apply_lora
-        assert legacy.load_lora is codex_lora.load_lora
+        assert forwarded_config is codex_lora.LoraConfig, "forwarded_config is not valid"
+        assert contracts.LoraConfig is codex_lora.LoraConfig, "LoraConfig is not valid"
+        assert adapters.PeftBackend is codex_lora.PeftBackend, "PeftBackend is not valid"
+        assert service.apply_lora is codex_lora.apply_lora, "apply_lora is not valid"
+        assert legacy.load_lora is codex_lora.load_lora, "load_lora is not valid"
         signature = inspect.signature(legacy.apply_lora)
-        assert signature.parameters["cfg"].kind is inspect.Parameter.POSITIONAL_ONLY
+        assert signature.parameters["cfg"].kind is inspect.Parameter.POSITIONAL_ONLY, "kind is not valid"
         warnings_seen = [item for item in caught if item.category is DeprecationWarning]
-        assert len(warnings_seen) == 1
-        assert "0.5.0" in str(warnings_seen[0].message)
-        assert not [item for item in repeated if item.category is DeprecationWarning]
+        assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
+        assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
+        assert not [item for item in repeated if item.category is DeprecationWarning], "Item must not be empty"
         """
     )
     assert result.returncode == 0, result.stderr
@@ -129,19 +129,19 @@ def test_telemetry_root_delegates_with_legacy_fallback_modules() -> None:
             import codex_ml.telemetry.metrics as metrics
             import codex_ml.telemetry.server as server
 
-        assert legacy.MetricsRegistry is codex_ml_telemetry.MetricsRegistry
-        assert legacy.track_time is metrics.track_time
-        assert legacy.start_metrics_server is server.start_metrics_server
-        assert metrics._standalone_track_time is codex_ml_telemetry.track_time
-        assert (
+        assert legacy.MetricsRegistry is codex_ml_telemetry.MetricsRegistry, "MetricsRegistry is not valid"
+        assert legacy.track_time is metrics.track_time, "track_time is not valid"
+        assert legacy.start_metrics_server is server.start_metrics_server, "start_metrics_server is not valid"
+        assert metrics._standalone_track_time is codex_ml_telemetry.track_time, "_standalone_track_time is not valid"
+        assert (, "Condition must be true"
             server._standalone_start_metrics_server
             is codex_ml_telemetry.start_metrics_server
         )
-        assert export.render_prometheus is codex_ml_telemetry.render_prometheus
-        assert health.HealthReport is codex_ml_telemetry.HealthReport
+        assert export.render_prometheus is codex_ml_telemetry.render_prometheus, "render_prometheus is not valid"
+        assert health.HealthReport is codex_ml_telemetry.HealthReport, "HealthReport is not valid"
         warnings_seen = [item for item in caught if item.category is DeprecationWarning]
-        assert len(warnings_seen) == 1
-        assert "0.5.0" in str(warnings_seen[0].message)
+        assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
+        assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
         """
     )
     assert result.returncode == 0, result.stderr
@@ -174,9 +174,9 @@ def test_existing_facades_import_without_standalone_distributions() -> None:
         import codex_ml.peft as peft
         import codex_ml.telemetry as telemetry
 
-        assert callable(evaluation.evaluate_epoch)
-        assert callable(peft.apply_lora)
-        assert callable(telemetry.track_time)
+        assert callable(evaluation.evaluate_epoch), "Condition must be true"
+        assert callable(peft.apply_lora), "Condition must be true"
+        assert callable(telemetry.track_time), "Condition must be true"
         """,
         standalone=False,
     )

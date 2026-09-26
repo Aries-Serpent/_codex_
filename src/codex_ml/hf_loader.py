@@ -173,12 +173,10 @@ def load_tokenizer(
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
-    tokenizer = (
-        AutoTokenizer.from_pretrained(  # nosec B615 - revision enforced via _required_revision
-            repo_id,
-            revision=rev,
-            trust_remote_code=trust_remote_code,
-        )
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615 - revision enforced via _required_revision
+        repo_id,
+        revision=rev,
+        trust_remote_code=trust_remote_code,
     )
     # Ensure pad_token is set; decoder-only models (GPT-2, LLaMA, Mistral …) omit it
     # because they use eos_token to pad — both serve as sequence terminators.
@@ -240,13 +238,13 @@ def _build_loader_kwargs(
     dtype: Optional[str],
 ) -> tuple[str, dict[str, Any]]:
     """Build kwargs for AutoModelForCausalLM.from_pretrained.
-    
+
     Reduces complexity by extracting argument building logic (5+ branches).
     """
     from typing import Any
 
     from codex_ml.hf_loader import _map_amp_dtype, _required_revision
-    
+
     rev = _required_revision(repo_id, revision)
     torch_dtype = _map_amp_dtype(dtype)
     loader_kwargs: dict[str, Any] = {
@@ -255,7 +253,7 @@ def _build_loader_kwargs(
     }
     if torch_dtype is not None:
         loader_kwargs["torch_dtype"] = torch_dtype
-    
+
     return rev, loader_kwargs
 
 
@@ -264,15 +262,15 @@ def _load_model_with_fallback(
     loader_kwargs: dict[str, Any],
 ) -> Any:
     """Load model with fallback for older transformers versions.
-    
+
     Reduces complexity by extracting fallback logic (2 branches).
     """
     import logging
 
     from transformers import AutoModelForCausalLM
-    
+
     logger = logging.getLogger(__name__)
-    
+
     try:
         model = AutoModelForCausalLM.from_pretrained(
             repo_id,
@@ -287,13 +285,13 @@ def _load_model_with_fallback(
             repo_id,
             **loader_kwargs,
         )
-    
+
     return model
 
 
 def _move_model_to_device(model: Any, device: Optional[str]) -> None:
     """Move model to target device (best-effort).
-    
+
     Reduces complexity by extracting device movement (1 branch).
     """
     if device and model is not None:
@@ -305,7 +303,7 @@ def _move_model_to_device(model: Any, device: Optional[str]) -> None:
 
 def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
     """Apply LoRA configuration to model.
-    
+
     Reduces complexity by extracting LoRA setup (5 nested try-except blocks → 1).
     """
     try:
@@ -313,13 +311,13 @@ def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
     except (ImportError, AttributeError) as exc:
         logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
         return
-    
+
     try:
         lora = LoraConfig(**peft_cfg)
     except (ValueError, TypeError, RuntimeError) as exc:
         logger.info("load_causal_lm: LoRA config rejected: %s", exc)
         return
-    
+
     try:
         model = get_peft_model(model, lora)
         logger.info(
@@ -333,7 +331,7 @@ def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
 
 def _load_peft_adapter(model: Any, adapter_path: str | os.PathLike[str]) -> None:
     """Load PEFT adapter from path.
-    
+
     Reduces complexity by extracting adapter loading (2 nested try-except blocks → 1).
     """
     resolved_path = str(adapter_path)
@@ -345,7 +343,7 @@ def _load_peft_adapter(model: Any, adapter_path: str | os.PathLike[str]) -> None
             exc,
         )
         return
-    
+
     try:
         PeftModel.from_pretrained(model, resolved_path)
         logger.info(
@@ -367,12 +365,12 @@ def load_causal_lm(
     peft_path: Optional[str | os.PathLike[str]] = None,
 ) -> PreTrainedModel:  # type: ignore[valid-type]
     """Load a causal language model from HuggingFace Hub.
-    
+
     Reduced complexity through strategic helper extraction.
     """
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
-    
+
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
         if ctor is not None:
@@ -388,7 +386,7 @@ def load_causal_lm(
     # Extract model loading with helper
     _, loader_kwargs = _build_loader_kwargs(repo_id, revision, trust_remote_code, dtype)
     model = _load_model_with_fallback(repo_id, loader_kwargs)
-    
+
     # Move to device (best-effort)
     _move_model_to_device(model, device)
 

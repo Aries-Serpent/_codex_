@@ -319,7 +319,9 @@ def main():
                 severity_icon = (
                     "❌"
                     if issue.severity == Severity.ERROR
-                    else "⚠️" if issue.severity == Severity.WARNING else "💡"
+                    else "⚠️"
+                    if issue.severity == Severity.WARNING
+                    else "💡"
                 )
                 print(f"  {severity_icon} Line {issue.lineno}: [{issue.category}] {issue.message}")
                 if issue.suggestion:

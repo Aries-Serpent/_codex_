@@ -10,11 +10,11 @@ Usage:
 """
 
 import json
+import logging
 import os
 import sys
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-import logging
+from typing import Dict, List, Tuple
 
 logging.basicConfig(
     level=logging.INFO,
@@ -79,7 +79,7 @@ class DashboardGenerator:
     def _sort_workflows(self, metrics: Dict) -> List[Tuple[str, Dict]]:
         """Sort workflows by criticality and status"""
         items = []
-        
+
         for name, data in metrics.get("metrics", {}).items():
             success_rate = data.get("success_rate", 0)
             items.append((name, data, success_rate))
@@ -95,7 +95,7 @@ class DashboardGenerator:
 
     def _generate_critical_section(self, sorted_workflows: List[Tuple[str, Dict]]) -> str:
         """Generate critical issues section"""
-        critical = [(name, data) for name, data in sorted_workflows 
+        critical = [(name, data) for name, data in sorted_workflows
                    if data.get("success_rate", 100) < 80]
 
         if not critical:
@@ -113,14 +113,14 @@ class DashboardGenerator:
             total = data.get("total_runs", 0)
 
             issue = f"{failed}/{total} failed" if total > 0 else "No data"
-            
+
             lines.append(f"| {name} | {status_emoji} | {success_rate}% | {last_status} | {issue} |")
 
         return "\n".join(lines) + "\n"
 
     def _generate_warning_section(self, sorted_workflows: List[Tuple[str, Dict]]) -> str:
         """Generate warning section"""
-        warnings = [(name, data) for name, data in sorted_workflows 
+        warnings = [(name, data) for name, data in sorted_workflows
                    if 80 <= data.get("success_rate", 100) < 95]
 
         if not warnings:
@@ -143,7 +143,7 @@ class DashboardGenerator:
 
     def _generate_healthy_section(self, sorted_workflows: List[Tuple[str, Dict]]) -> str:
         """Generate healthy workflows section"""
-        healthy = [(name, data) for name, data in sorted_workflows 
+        healthy = [(name, data) for name, data in sorted_workflows
                   if data.get("success_rate", 0) >= 95]
 
         if not healthy:
@@ -170,27 +170,27 @@ class DashboardGenerator:
     def _generate_metrics_section(self, summary: Dict) -> str:
         """Generate performance metrics section"""
         lines = ["## 📈 Performance Metrics\n"]
-        
+
         avg_success = summary.get("avg_success_rate", 0)
         min_success = summary.get("min_success_rate", 0)
         total_workflows = summary.get("total_workflows", 0)
         workflows_95 = summary.get("workflows_above_95_percent", 0)
         workflows_80 = summary.get("workflows_below_80_percent", 0)
-        
+
         lines.append(f"- **Total Workflows**: {total_workflows}")
         lines.append(f"- **Average Success Rate**: {avg_success}% (target: >95%)")
         lines.append(f"- **Lowest Success Rate**: {min_success}%")
         lines.append(f"- **Workflows Meeting Target (≥95%)**: {workflows_95}/{total_workflows}")
         lines.append(f"- **Workflows Below 80%**: {workflows_80} ⚠️")
-        
+
         return "\n".join(lines) + "\n"
 
     def _generate_codeql_section(self, sorted_workflows: List[Tuple[str, Dict]]) -> str:
         """Generate CodeQL specific section"""
         lines = ["## 🔒 CodeQL Specific KPIs\n"]
-        
+
         # Find CodeQL workflows
-        codeql_workflows = [(name, data) for name, data in sorted_workflows 
+        codeql_workflows = [(name, data) for name, data in sorted_workflows
                           if "codeql" in name.lower()]
 
         if not codeql_workflows:
@@ -206,15 +206,15 @@ class DashboardGenerator:
             lines.append(f"- **{name}**: {status_emoji} {success_rate}% ({successful}/{total_runs})")
 
         lines.append("\n**Target**: CodeQL success rate ≥99%\n")
-        
+
         return "\n".join(lines) + "\n"
 
     def _generate_actions_section(self) -> str:
         """Generate recommended actions section"""
         lines = ["## 🎯 Recommended Actions\n"]
-        
+
         sorted_workflows = self._sort_workflows(self.metrics)
-        critical = [(name, data) for name, data in sorted_workflows 
+        critical = [(name, data) for name, data in sorted_workflows
                    if data.get("success_rate", 100) < 80]
 
         if critical:
@@ -224,13 +224,13 @@ class DashboardGenerator:
                 lines.append(f"      - Last {data.get('total_runs')} runs: "
                             f"{data.get('failed_runs')} failures, "
                             f"{data.get('cancelled_runs')} cancellations")
-        
+
         return "\n".join(lines) + "\n"
 
     def _generate_footer(self) -> str:
         """Generate footer section"""
         generated_at = self.metrics.get("generated_at", datetime.utcnow().isoformat())
-        
+
         return f"""
 ---
 
@@ -249,11 +249,11 @@ class DashboardGenerator:
             return ""
 
         lines = ["# Workflow Health Dashboard\n"]
-        
+
         generated_at = self.metrics.get("generated_at", datetime.utcnow().isoformat())
         lines.append(f"**Generated**: {generated_at}\n")
-        lines.append(f"**Coverage**: Last 30 days\n")
-        lines.append(f"**Refresh**: Daily at 02:00 UTC\n\n")
+        lines.append("**Coverage**: Last 30 days\n")
+        lines.append("**Refresh**: Daily at 02:00 UTC\n\n")
 
         sorted_workflows = self._sort_workflows(self.metrics)
         summary = self.metrics.get("summary", {})
@@ -272,22 +272,22 @@ class DashboardGenerator:
     def save(self, output_file: str):
         """Save dashboard to file"""
         dashboard_content = self.generate()
-        
+
         os.makedirs(os.path.dirname(output_file) or ".", exist_ok=True)
-        
+
         with open(output_file, 'w') as f:
             f.write(dashboard_content)
-        
+
         logger.info(f"Dashboard saved to {output_file}")
 
 
 def main():
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Generate workflow health dashboard")
     parser.add_argument("--input", type=str, required=True, help="Input metrics JSON file")
     parser.add_argument("--output", type=str, default=".codex/WORKFLOW_HEALTH_DASHBOARD.md", help="Output markdown file")
-    
+
     args = parser.parse_args()
 
     try:

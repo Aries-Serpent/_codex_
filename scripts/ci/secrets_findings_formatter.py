@@ -18,7 +18,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-
 # Secret Type Classification Database
 SECRET_TYPES: Dict[str, Dict[str, Any]] = {
     "AWS_API_KEY": {

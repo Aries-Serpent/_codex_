@@ -8,15 +8,15 @@ Target: 550+ lines, >95% test coverage, 100% type hints
 """
 
 import json
-import time
-import threading
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Callable, Any
-from dataclasses import dataclass
-from enum import Enum
 import logging
-from collections import defaultdict
 import statistics
+import threading
+import time
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

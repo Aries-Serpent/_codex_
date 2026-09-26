@@ -24,6 +24,7 @@ def _finalize_model(model: object | None) -> None:
     except Exception:
         logger.debug("Failed to finalize llama.cpp model", exc_info=True)
 
+
 try:
     from llama_cpp import Llama
 

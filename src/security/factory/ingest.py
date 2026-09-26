@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Set
 
 class FindingSeverity(str, Enum):
     """Finding severity levels."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -31,6 +32,7 @@ class FindingSeverity(str, Enum):
 @dataclass
 class NormalizedFinding:
     """Canonical finding format."""
+
     finding_id: str  # Unique identifier
     title: str
     description: str
@@ -53,6 +55,7 @@ class NormalizedFinding:
 @dataclass
 class IngestMetrics:
     """Metrics for ingest operation."""
+
     total_findings: int
     unique_findings: int
     by_severity: Dict[str, int] = field(default_factory=dict)
@@ -214,9 +217,7 @@ class SecurityIngestor:
         # Count by tool
         tool_counts: Dict[str, int] = {}
         for finding in self.normalized_findings:
-            tool_counts[finding.source_tool] = (
-                tool_counts.get(finding.source_tool, 0) + 1
-            )
+            tool_counts[finding.source_tool] = tool_counts.get(finding.source_tool, 0) + 1
         self.metrics.by_tool = tool_counts
 
         return self.metrics

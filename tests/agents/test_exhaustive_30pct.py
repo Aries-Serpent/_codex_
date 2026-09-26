@@ -166,14 +166,14 @@ class TestDeveloperOrchestratorExhaustive:
 
         # Test all app type values
         for app_type in AppType:
-            assert app_type.value in [
+            assert app_type.value in {, "Value must be initialized"
                 "python_console",
                 "python_cli",
                 "python_api",
                 "python_web",
                 "python_library",
                 "python_script",
-            ]
+            }, "Value must be initialized"
 
 
 class TestMentalMappingExhaustive:

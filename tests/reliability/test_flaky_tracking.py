@@ -2,12 +2,12 @@
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
 # """
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
 # import tempfile
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
@@ -27,12 +27,12 @@
 #         results = [r["result"] for r in test_results]
 #         pass_count = sum(1 for r in results if r == "pass")
 #         fail_count = sum(1 for r in results if r == "fail")
-# 
+#
 #         # A test is flaky if it has both passes and fails
 #         is_flaky = pass_count > 0 and fail_count > 0
 #         assert is_flaky, "Test with mixed results should be identified as flaky"
 #         assert is_flaky, "Test with mixed results should be identified as flaky"
-# 
+#
 #     def test_identify_flaky_by_random_seed_sensitivity(self):
 #     def test_identify_flaky_by_random_seed_sensitivity(self):
 #         """Test identification of tests sensitive to random seed."""
@@ -49,7 +49,7 @@
 #         seed_sensitive = len(unique_results) > 1
 #         assert seed_sensitive, "Random-dependent tests should produce different results"
 #         assert seed_sensitive, "Random-dependent tests should produce different results"
-# 
+#
 #     def test_identify_flaky_by_timing_sensitivity(self):
 #     def test_identify_flaky_by_timing_sensitivity(self):
 #         """Test identification of timing-sensitive tests."""
@@ -61,7 +61,7 @@
 #             is_timing_sensitive = threshold < 0.5  # Lower thresholds are risky
 #             assert isinstance(is_timing_sensitive, bool)
 #             assert isinstance(is_timing_sensitive, bool)
-# 
+#
 #     def test_identify_flaky_by_resource_contention(self):
 #     def test_identify_flaky_by_resource_contention(self):
 #         """Test identification of resource contention issues."""
@@ -83,10 +83,10 @@
 #             resource = entry["resource"]
 #             resource_counts[resource] = resource_counts.get(resource, 0) + 1
 #             resource_counts[resource] = resource_counts.get(resource, 0) + 1
-# 
+#
 #         contention_risk = any(count > 2 for count in resource_counts.values())
 #         assert isinstance(contention_risk, bool)
-# 
+#
 #     def test_identify_flaky_by_environment_dependency(self):
 #     def test_identify_flaky_by_environment_dependency(self):
 #         """Test identification of environment-dependent tests."""
@@ -95,13 +95,13 @@
 #         for var in env_vars_checked:
 #             if os.getenv(var):
 #                 used_env_vars.append(var)
-# 
+#
 #         # Tests using many env vars are potentially flaky
 #         env_dependency_score = len(used_env_vars) / len(env_vars_checked)
 #         assert 0 <= env_dependency_score <= 1, "0 is not valid"
 #             markdown += f"| {test['name']} | {test['flakiness']:.1%} | {test['runs']} |\n"
-# 
-# 
+#
+#
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
@@ -140,7 +140,7 @@
 #             assert loaded["test_name"] == "test_example", "Condition must be true"
 #             assert len(loaded["results"]) == 3, "Collection must not be empty"
 #             assert len(loaded["results"]) == 3, "Collection must not be empty"
-# 
+#
 #     def test_calculate_flakiness_score(self):
 #     def test_calculate_flakiness_score(self):
 #         """Test calculation of flakiness score from history."""
@@ -148,10 +148,10 @@
 #         state_changes = sum(1 for i in range(1, len(results)) if results[i] != results[i - 1])
 #         flakiness_score = state_changes / (len(results) - 1)
 #         flakiness_score = state_changes / (len(results) - 1)
-# 
+#
 #         assert 0 <= flakiness_score <= 1, "0 is not valid"
 #         assert flakiness_score > 0, "Results with changes should have positive flakiness score"
-# 
+#
 #     def test_track_flakiness_trend(self):
 #     def test_track_flakiness_trend(self):
 #         """Test tracking flakiness trend over time."""
@@ -165,9 +165,9 @@
 #         scores = [w["score"] for w in weekly_scores]
 #         trend = scores[-1] - scores[0]  # Simple difference
 #         trend = scores[-1] - scores[0]  # Simple difference
-# 
+#
 #         assert trend < 0, "Flakiness should be decreasing (improving)"
-# 
+#
 #     def test_identify_most_flaky_tests(self):
 #     def test_identify_most_flaky_tests(self):
 #         """Test identifying tests with highest flakiness."""
@@ -181,11 +181,11 @@
 #         sorted_tests = sorted(test_flakiness.items(), key=lambda x: x[1], reverse=True)
 #         top_flaky = sorted_tests[:3]
 #         top_flaky = sorted_tests[:3]
-# 
+#
 #         assert top_flaky[0][0] == "test_d", "Condition must be true"
 #         assert top_flaky[1][0] == "test_b", "Condition must be true"
 #         assert top_flaky[2][0] == "test_c", "Condition must be true"
-# 
+#
 #     def test_calculate_flakiness_window(self):
 #     def test_calculate_flakiness_window(self):
 #         """Test calculating flakiness within a time window."""
@@ -198,7 +198,7 @@
 #         ]
 #         cutoff = datetime.now() - timedelta(days=7)
 #         recent_results = [r for r in results if r["timestamp"] >= cutoff]
-# 
+#
 #         # Calculate flakiness for recent period
 #         if len(recent_results) > 1:
 #             changes = sum(
@@ -210,13 +210,13 @@
 #         else:
 #             window_flakiness = 0
 #             window_flakiness = 0
-# 
+#
 #         assert 0 <= window_flakiness <= 1, "0 is not valid"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
-# 
+#
 #     def test_generate_flaky_test_report(self):
 #     def test_generate_flaky_test_report(self):
 #         """Test generation of flaky test report."""
@@ -234,7 +234,7 @@
 #         assert report["total_flaky"] == 2, "rep is not valid"
 #         assert report["average_flakiness"] == 0.20, "rep is not valid"
 #         assert len(report["tests"]) == 2, "Collection must not be empty"
-# 
+#
 #     def test_flaky_test_alert_threshold(self):
 #     def test_flaky_test_alert_threshold(self):
 #         """Test alerting when flakiness exceeds threshold."""
@@ -242,7 +242,7 @@
 #         test_flakiness = 0.15
 #         should_alert = test_flakiness > threshold
 #         assert should_alert, "Should alert when flakiness exceeds threshold"
-# 
+#
 #     def test_format_flaky_report_markdown(self):
 #     def test_format_flaky_report_markdown(self):
 #         """Test markdown formatting for flaky report."""
@@ -254,11 +254,11 @@
 #         markdown += "|------|-----------|------|\n"
 #         for test in flaky_tests:
 #             markdown += f"| {test['name']} | {test['flakiness']:.1%} | {test['runs']} |\n"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"
-# 
+#
 #     def test_export_flaky_data_json(self):
 #     def test_export_flaky_data_json(self):
 #         """Test JSON export of flaky test data."""
@@ -277,10 +277,10 @@
 #                 },
 #             }
 #             export_file.write_text(json.dumps(data, indent=2))
-# 
+#
 #             loaded = json.loads(export_file.read_text())
 #             assert loaded["summary"]["total_flaky"] == 2, "Condition must be true"
-# 
+#
 #     def test_ci_integration_output(self):
 #     def test_ci_integration_output(self):
 #         """Test CI-friendly output format."""
@@ -289,6 +289,6 @@
 #         for test in flaky_tests:
 #             annotations.append(f"::warning file=tests/{test}.py::Flaky test detected: {test}")
 #             annotations.append(f"::warning file=tests/{test}.py::Flaky test detected: {test}")
-# 
+#
 #         assert len(annotations) == 2, "Annotations must not be empty"
 #         assert "::warning" in annotations[0], "Condition must be true"

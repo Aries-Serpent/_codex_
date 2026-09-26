@@ -130,14 +130,14 @@ class WorkflowOrchestrator:
         Determine priority level based on review results.
 
         Returns:
-            Priority string: critical, high, medium, or low
+            Priority string: high, medium, or low. Critical issues are surfaced
+            as the business-facing priority "high".
         """
-        # Critical if any critical severity issues
-        if any(s.get("severity") == "critical" for s in result.suggestions):
-            return "critical"
+        security_issues = any(s.get("category") == "security" for s in result.suggestions)
+        if security_issues:
+            return "high"
 
-        # High if security issues or many suggestions
-        if any(s.get("category") == "security" for s in result.suggestions):
+        if any(s.get("severity") == "critical" for s in result.suggestions):
             return "high"
 
         if len(result.suggestions) > 10:

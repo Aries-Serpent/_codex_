@@ -255,9 +255,7 @@ class IncidentDetector:
         return sorted(list(modules))
 
     @classmethod
-    def _extract_affected_tests(
-        cls, log: str, test_name: Optional[str] = None
-    ) -> List[str]:
+    def _extract_affected_tests(cls, log: str, test_name: Optional[str] = None) -> List[str]:
         """Extract test names from log."""
         tests = set()
 
@@ -275,9 +273,7 @@ class IncidentDetector:
         return sorted(list(tests))
 
     @classmethod
-    def _generate_hypotheses(
-        cls, log: str, failure_type: FailureType
-    ) -> List[RootCauseHypothesis]:
+    def _generate_hypotheses(cls, log: str, failure_type: FailureType) -> List[RootCauseHypothesis]:
         """Generate root cause hypotheses."""
         hypotheses = []
 
@@ -374,9 +370,7 @@ class IncidentDetector:
         return False
 
     @classmethod
-    def _determine_severity(
-        cls, failure_type: FailureType, is_cascading: bool
-    ) -> Severity:
+    def _determine_severity(cls, failure_type: FailureType, is_cascading: bool) -> Severity:
         """Determine incident severity."""
         # Cascading failures are always high severity
         if is_cascading:

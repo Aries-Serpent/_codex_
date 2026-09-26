@@ -111,9 +111,7 @@ def record_error(step_number_desc: str, err_msg: str, context: str):
 
 def sh(cmd: list[str]) -> tuple[int, str, str]:
     try:
-        proc = subprocess.run(
-            cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=True
-        )  # nosec B603,B607
+        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=True)  # nosec B603,B607
         return proc.returncode, proc.stdout, proc.stderr
     except Exception as e:
         return 127, "", f"{e}"
@@ -175,7 +173,9 @@ def phase1():
         role = (
             "code"
             if ext in {".py", ".sh", ".js", ".ts", ".tsx", ".sql", ".go", ".rs"}
-            else "doc" if ext in {".md", ".rst", ".txt"} else "asset"
+            else "doc"
+            if ext in {".md", ".rst", ".txt"}
+            else "asset"
         )
         files.append({"path": p.as_posix(), "ext": ext, "role": role, "size": p.stat().st_size})
     files_sorted = sorted(files, key=lambda d: d["path"])

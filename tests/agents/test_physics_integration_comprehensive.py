@@ -90,9 +90,7 @@ class TestHybridPhysicsOrchestrator:
 
         assert result is not None, "result must be initialized"
         assert "paradigms_used" in result, "Result must not be empty"
-        assert isinstance(
-            result["paradigms_used"], (list, tuple, set, dict)
-        )  # was: len() >= 0 (always true)
+        assert isinstance(result["paradigms_used"], (list, tuple, set, dict)), "Condition must be true"
 
     def test_orchestrate_tracks_decision_history(self, orchestrator):
         """Test that decisions are tracked in history."""

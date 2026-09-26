@@ -62,7 +62,7 @@ class TestAuthenticationSecurity:
         ]
         for endpoint in endpoints:
             # Each should return 401 without auth
-            assert endpoint
+            assert endpoint, "endpoint is not valid"
 
     def test_valid_auth_token_permits_access(self, valid_decision_payload, valid_auth_header):
         """Test valid token permits access."""

@@ -86,10 +86,11 @@ class UserQueryExecutor:
         return cursor.rowcount > 0
 
     def update_user(self, user_id: int, **kwargs) -> bool:
-        """Update user with arbitrary fields - SECURE WITH PARAMETERIZED QUERY.
+        """Update user with allowlisted fields - SECURE WITH PARAMETERIZED QUERY.
 
-        Uses parameterized queries for dynamic field updates.
-        Carefully constructed to prevent SQL injection.
+        This method only permits a fixed set of database columns and binds all
+        values as parameters. That prevents SQL injection through either the
+        column names or the field values.
 
         Args:
             user_id: User ID (should be validated as integer)
@@ -101,26 +102,29 @@ class UserQueryExecutor:
         Raises:
             ValueError: If inputs are invalid
         """
-        # Validate input type
         if not isinstance(user_id, int):
             raise ValueError(f"user_id must be an integer, got {type(user_id)}")
 
-        # Validate field names to prevent SQL injection through field names
-        allowed_fields = {"name", "email", "phone", "bio"}
-        for field in kwargs.keys():
-            if field not in allowed_fields:
-                raise ValueError(f"Field '{field}' not allowed for update")
+        allowed_fields = ("name", "email", "phone", "bio")
+        unknown_fields = [field for field in kwargs if field not in allowed_fields]
+        if unknown_fields:
+            raise ValueError(f"Field '{unknown_fields[0]}' not allowed for update")
 
         if not kwargs:
             return False
 
-        # Build query with parameterized fields
-        set_clauses = [f"{field} = ?" for field in kwargs.keys()]
-        set_string = ", ".join(set_clauses)
-        query = f"UPDATE users SET {set_string} WHERE id = ?"
+        set_clauses = []
+        values = []
+        for field in allowed_fields:
+            if field in kwargs:
+                set_clauses.append(f"{field} = ?")
+                values.append(kwargs[field])
 
-        # Prepare values with user_id at the end
-        values = list(kwargs.values()) + [user_id]
+        if not set_clauses:
+            return False
+
+        query = f"UPDATE users SET {', '.join(set_clauses)} WHERE id = ?"
+        values.append(user_id)
 
         cursor = self.conn.cursor()
         cursor.execute(query, values)

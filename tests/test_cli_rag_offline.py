@@ -3,28 +3,28 @@
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 # import importlib.util
-# 
+#
 #         # Should succeed or gracefully handle
 #         assert result.exit_code in [, "Result must not be empty"
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
-# 
-# 
+#
+#
 #         # Should succeed or gracefully handle
 #         assert result.exit_code in [, "Result must not be empty"
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 #     return CliRunner()
-# 
+#
 #         # Should succeed or gracefully handle
 #         assert result.exit_code in [, "Result must not be empty"
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 #     docs_dir.mkdir()
-# 
+#
 #     # Create sample markdown files
 #     (docs_dir / "intro.md").write_text(
 #     # Create sample markdown files
@@ -54,7 +54,7 @@
 #         if importlib.util.find_spec("sklearn") is None:
 #             pytest.skip("scikit-learn not installed")
 #             pytest.skip("scikit-learn not installed")
-# 
+#
 #         result = runner.invoke(
 #             app,
 #             [
@@ -73,19 +73,19 @@
 #             0,
 #             1,
 #         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
-# 
+#
 #         # Check output
 #         if result.exit_code == 0:
 #             assert "Index built successfully" in result.stdout or "index" in result.stdout.lower(), "Result must not be empty"
 #             assert "Index built successfully" in result.stdout or "index" in result.stdout.lower(), "Result must not be empty"
-# 
+#
 #     def test_list_command(self, runner):
 #     def test_list_command(self, runner):
 #         """Test list command (should always work)."""
 #         result = runner.invoke(app, ["list", "--tenant-id", "test"])
 #         assert result.exit_code == 0, "Result must not be empty"
 #         assert result.exit_code == 0, "Result must not be empty"
-# 
+#
 #     def test_stats_command(self, runner):
 #     def test_stats_command(self, runner):
 #         """Test stats command error handling."""
@@ -93,7 +93,7 @@
 #         assert result.exit_code == 1, "Result must not be empty"
 #         assert "not found" in result.stdout.lower() or "error" in result.stdout.lower(), "Result must not be empty"
 #         assert "not found" in result.stdout.lower() or "error" in result.stdout.lower(), "Result must not be empty"
-# 
+#
 #     def test_help_commands(self, runner):
 #     def test_help_commands(self, runner):
 #         """Test all help commands work."""
@@ -153,7 +153,7 @@ class TestProviderSelection:
             assert provider is not None, "provider must be initialized"
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert (
+            assert (, "Condition must be true"
                 "CachedEmbeddingProvider" in provider.__class__.__name__
                 or "TfidfEmbeddingProvider" in provider.__class__.__name__
             ), "Condition must be true"

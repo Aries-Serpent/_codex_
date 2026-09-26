@@ -45,7 +45,9 @@ class STMMemory:
         self.entries: list[MemoryEntry] = []
         self.attention_stack: list[MemoryEntry] = []
 
-    def store(self, data: Any, importance: float = 0.5, metadata: dict[str, Any] | None = None) -> int:
+    def store(
+        self, data: Any, importance: float = 0.5, metadata: dict[str, Any] | None = None
+    ) -> int:
         """Store data in short-term memory.
 
         Creates a new MemoryEntry and stores it. If capacity is exceeded,
@@ -65,11 +67,7 @@ class STMMemory:
         if not 0.0 <= importance <= 1.0:
             raise ValueError("importance must be between 0.0 and 1.0")
 
-        entry = MemoryEntry(
-            data=data,
-            importance=importance,
-            metadata=metadata or {}
-        )
+        entry = MemoryEntry(data=data, importance=importance, metadata=metadata or {})
         self.entries.append(entry)
 
         # Remove least important entry if capacity exceeded.

@@ -119,7 +119,12 @@ def train(
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record) + "\n")
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best-effort logging
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - best-effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     # Load tokenizer and model

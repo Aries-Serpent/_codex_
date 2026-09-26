@@ -146,7 +146,8 @@ def inventory() -> str:
 
 
 def render_precommit_yaml(existing: str | None) -> str:
-    base = textwrap.dedent(f"""
+    base = (
+        textwrap.dedent(f"""
     repos:
       - repo: https://github.com/astral-sh/ruff-pre-commit
         rev: {R_RUFF_PRECOMMIT_REV}
@@ -168,7 +169,9 @@ def render_precommit_yaml(existing: str | None) -> str:
           - id: end-of-file-fixer
           - id: check-yaml
           - id: mixed-line-ending
-    """).strip() + "\n"
+    """).strip()
+        + "\n"
+    )
     if not existing:
         return base
     needed = []
@@ -244,20 +247,24 @@ def upsert_pyproject():
     has_black = re.search(r"(?m)^\[tool\.black\]", base) is not None
 
     if not has_ruff:
-        parts.append(textwrap.dedent("""
+        parts.append(
+            textwrap.dedent("""
         [tool.ruff]
         line-length = 88
         target-version = "py312"
 
         [tool.ruff.lint]
         select = ["E", "F", "I"]
-        """).strip())
+        """).strip()
+        )
     if not has_black:
-        parts.append(textwrap.dedent("""
+        parts.append(
+            textwrap.dedent("""
         [tool.black]
         line-length = 88
         target-version = ["py312"]
-        """).strip())
+        """).strip()
+        )
 
     if not parts:
         return base
@@ -267,7 +274,8 @@ def upsert_pyproject():
 
 
 def ensure_smoke_test():
-    return textwrap.dedent("""
+    return (
+        textwrap.dedent("""
         import pathlib
 
         def test_precommit_config_exists():
@@ -275,7 +283,9 @@ def ensure_smoke_test():
             assert (root / ".pre-commit-config.yaml").exists(), (
                 ".pre-commit-config.yaml should exist at repo root"
             )
-        """).strip() + "\n"
+        """).strip()
+        + "\n"
+    )
 
 
 def main():
@@ -309,8 +319,7 @@ def main():
             safe_write(
                 PRECOMMIT_YAML,
                 rendered,
-                "Add/merge pre-commit hooks: ruff-check, ruff-format, "
-                "black(manual), hygiene hooks",
+                "Add/merge pre-commit hooks: ruff-check, ruff-format, black(manual), hygiene hooks",
             )
     except Exception as e:
         log_error("3.2: write .pre-commit-config.yaml", repr(e), "render/merge failure")
@@ -346,7 +355,8 @@ def main():
         log_error("3.4: create smoke test", repr(e), "tests/test_precommit_config_exists.py")
 
     try:
-        results = textwrap.dedent(f"""
+        results = (
+            textwrap.dedent(f"""
                 # Results Summary
 
                 - Implemented:
@@ -371,7 +381,9 @@ def main():
                   - Then: `pre-commit run --all-files`
                   - For manual Black:
                     `pre-commit run --hook-stage manual black --all-files`
-                """).strip() + "\n"
+                """).strip()
+            + "\n"
+        )
         if not dry:
             safe_write(RESULTS_MD, results, "Document results & next steps")
     except Exception as e:

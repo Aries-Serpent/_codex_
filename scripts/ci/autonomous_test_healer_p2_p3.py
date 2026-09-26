@@ -19,11 +19,11 @@ Status: ADVISORY MODE (Days 1-2 analysis, Days 3-4+ deployment)
 Authority: @mbaetiong (D-Tier autonomous)
 """
 
+import logging
 import re
-from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
-import logging
+from typing import Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ class AssertionFailure:
 
 class P2TimeoutDetector:
     """Detect P2 timeout failures."""
-    
+
     PATTERNS = {
         P2Pattern.INFINITE_LOOP: [
             r"(?i)(infinite loop|timeout.*loop)",
@@ -93,12 +93,12 @@ class P2TimeoutDetector:
             r"(?i)(filesystem.*timeout)",
         ],
     }
-    
+
     def __init__(self):
         self.compiled = {}
         for pattern_type, regexes in self.PATTERNS.items():
             self.compiled[pattern_type] = [re.compile(r) for r in regexes]
-    
+
     def detect(self, error_message: str) -> List[Tuple[P2Pattern, float]]:
         """Detect P2 timeout patterns."""
         detections = []
@@ -107,25 +107,25 @@ class P2TimeoutDetector:
                 if regex.search(error_message):
                     confidence = 0.90 if len(regex.pattern) > 30 else 0.80
                     detections.append((pattern_type, confidence))
-        
+
         # Deduplicate
         best = {}
         for pattern_type, confidence in detections:
             if pattern_type not in best or confidence > best[pattern_type]:
                 best[pattern_type] = confidence
-        
+
         return sorted([(p, c) for p, c in best.items()], key=lambda x: x[1], reverse=True)
-    
+
     def classify(self, test_file: str, test_name: str, error_message: str,
                 timeout_seconds: int = 60) -> Optional[TimeoutFailure]:
         """Classify timeout failure."""
         detections = self.detect(error_message)
         if not detections:
             return None
-        
+
         pattern, confidence = detections[0]
         suggested_fix = self._suggest_fix(pattern, test_file, test_name)
-        
+
         return TimeoutFailure(
             test_file=test_file,
             test_name=test_name,
@@ -135,7 +135,7 @@ class P2TimeoutDetector:
             confidence=confidence,
             suggested_fix=suggested_fix,
         )
-    
+
     def _suggest_fix(self, pattern: P2Pattern, test_file: str, test_name: str) -> str:
         """Generate fix suggestion for P2 pattern."""
         suggestions = {
@@ -159,7 +159,7 @@ class P2TimeoutDetector:
 
 class P3AssertionDetector:
     """Detect P3 assertion failures."""
-    
+
     PATTERNS = {
         P3Pattern.MOCK_DRIFT: [
             r"assert.*<MagicMock|assert.*Mock",
@@ -182,12 +182,12 @@ class P3AssertionDetector:
             r"(?i)(async.*await.*assert)",
         ],
     }
-    
+
     def __init__(self):
         self.compiled = {}
         for pattern_type, regexes in self.PATTERNS.items():
             self.compiled[pattern_type] = [re.compile(r) for r in regexes]
-    
+
     def detect(self, error_message: str) -> List[Tuple[P3Pattern, float]]:
         """Detect P3 assertion patterns."""
         detections = []
@@ -196,25 +196,25 @@ class P3AssertionDetector:
                 if regex.search(error_message):
                     confidence = 0.88 if len(regex.pattern) > 30 else 0.78
                     detections.append((pattern_type, confidence))
-        
+
         # Deduplicate
         best = {}
         for pattern_type, confidence in detections:
             if pattern_type not in best or confidence > best[pattern_type]:
                 best[pattern_type] = confidence
-        
+
         return sorted([(p, c) for p, c in best.items()], key=lambda x: x[1], reverse=True)
-    
-    def classify(self, test_file: str, test_name: str, 
+
+    def classify(self, test_file: str, test_name: str,
                 error_message: str) -> Optional[AssertionFailure]:
         """Classify assertion failure."""
         detections = self.detect(error_message)
         if not detections:
             return None
-        
+
         pattern, confidence = detections[0]
         suggested_fix = self._suggest_fix(pattern, test_file, test_name)
-        
+
         return AssertionFailure(
             test_file=test_file,
             test_name=test_name,
@@ -223,7 +223,7 @@ class P3AssertionDetector:
             confidence=confidence,
             suggested_fix=suggested_fix,
         )
-    
+
     def _suggest_fix(self, pattern: P3Pattern, test_file: str, test_name: str) -> str:
         """Generate fix suggestion for P3 pattern."""
         suggestions = {
@@ -249,7 +249,7 @@ class P3AssertionDetector:
 
 class P2P3Healer:
     """Apply fixes for P2 and P3 patterns."""
-    
+
     @staticmethod
     def heal_p2_infinite_loop(failure: TimeoutFailure) -> Dict:
         """Heal infinite loop by adding timeout decorator."""
@@ -268,7 +268,7 @@ def {failure.test_name}():
                 "Consider mocking infinite source"
             ]
         }
-    
+
     @staticmethod
     def heal_p2_deadlock(failure: TimeoutFailure) -> Dict:
         """Heal deadlock by adding lock timeout."""
@@ -290,7 +290,7 @@ finally:
                 "Consider using asyncio.Lock with timeout"
             ]
         }
-    
+
     @staticmethod
     def heal_p2_network_hang(failure: TimeoutFailure) -> Dict:
         """Heal network hang by mocking or adding timeout."""
@@ -315,7 +315,7 @@ socket.setdefaulttimeout(5.0)
                 "Set socket timeout globally"
             ]
         }
-    
+
     @staticmethod
     def heal_p2_io_block(failure: TimeoutFailure) -> Dict:
         """Heal I/O block by using non-blocking I/O or timeout."""
@@ -341,7 +341,7 @@ select.select([fd], [], [], timeout=5.0)
                 "Use os.open with O_NONBLOCK flag"
             ]
         }
-    
+
     @staticmethod
     def heal_p3_mock_drift(failure: AssertionFailure) -> Dict:
         """Heal mock drift by updating mock return value."""
@@ -372,7 +372,7 @@ def test_api_usage():
                 "Use mock.assert_called_with for assertion"
             ]
         }
-    
+
     @staticmethod
     def heal_p3_type_mismatch(failure: AssertionFailure) -> Dict:
         """Heal type mismatch by adding type coercion."""
@@ -398,7 +398,7 @@ def coerce_result(result):
                 "Check actual type and update assertion"
             ]
         }
-    
+
     @staticmethod
     def heal_p3_random_data(failure: AssertionFailure) -> Dict:
         """Heal random data by seeding randomness."""
@@ -428,7 +428,7 @@ def test_random(deterministic):
                 "Use parameterized tests with fixed seeds"
             ]
         }
-    
+
     @staticmethod
     def heal_p3_timing_assertion(failure: AssertionFailure) -> Dict:
         """Heal timing assertion by adding retry logic."""
@@ -467,10 +467,10 @@ def test_flaky_timing():
 
 def main():
     """Demo P2/P3 detection and healing."""
-    
+
     logger.info("Phase 13 Track 13.1: P2 & P3 Pattern Framework")
     logger.info("=" * 60)
-    
+
     # P2 Example
     logger.info("\nP2 Timeout Pattern Detection:")
     p2_detector = P2TimeoutDetector()
@@ -478,7 +478,7 @@ def main():
     p2_detections = p2_detector.detect(p2_error)
     for pattern, confidence in p2_detections:
         logger.info(f"  - {pattern.value}: {confidence*100:.0f}% confidence")
-    
+
     # P3 Example
     logger.info("\nP3 Assertion Pattern Detection:")
     p3_detector = P3AssertionDetector()
@@ -486,7 +486,7 @@ def main():
     p3_detections = p3_detector.detect(p3_error)
     for pattern, confidence in p3_detections:
         logger.info(f"  - {pattern.value}: {confidence*100:.0f}% confidence")
-    
+
     logger.info("\n" + "=" * 60)
     logger.info("Pattern frameworks ready for Days 3-5 deployment")
 

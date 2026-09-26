@@ -34,7 +34,7 @@ class TestGapCoverageFileSystemOperations:
     def test_directory_traversal_nonexistent(self):
         """Test handling of nonexistent directories."""
         nonexistent = REPO_ROOT / "nonexistent_directory_xyz_12345"
-        assert not nonexistent.exists()
+        assert not nonexistent.exists(), "Condition must be true"
 
     def test_file_read_permissions_denied(self):
         """Test file read with permission issues."""
@@ -44,7 +44,7 @@ class TestGapCoverageFileSystemOperations:
         with tempfile.TemporaryDirectory() as tmpdir:
             restricted_file = Path(tmpdir) / "restricted.txt"
             restricted_file.write_text("secret content")
-            
+
             try:
                 os.chmod(restricted_file, 0o000)
                 with pytest.raises(PermissionError):
@@ -61,12 +61,12 @@ class TestGapCoverageFileSystemOperations:
         with tempfile.TemporaryDirectory() as tmpdir:
             target = Path(tmpdir) / "target.txt"
             link = Path(tmpdir) / "link.txt"
-            
+
             target.write_text("content")
             try:
                 link.symlink_to(target)
-                assert link.exists()
-                assert link.is_symlink()
+                assert link.exists(), "Condition must be true"
+                assert link.is_symlink(), "Condition must be true"
             except (OSError, NotImplementedError):
                 pytest.skip("Symlinks not supported on this system")
 
@@ -78,9 +78,9 @@ class TestGapCoverageFileSystemOperations:
             with large_file.open('w') as f:
                 for i in range(100000):
                     f.write("x" * 100 + "\n")
-            
+
             # File should be at least 9MB (accounting for encoding)
-            assert large_file.stat().st_size >= 9 * 1024 * 1024
+            assert large_file.stat().st_size >= 9 * 1024 * 1024, "st_size must be greater than zero"
 
     def test_path_normalization_edge_cases(self):
         """Test path normalization with edge cases."""
@@ -89,7 +89,7 @@ class TestGapCoverageFileSystemOperations:
             Path("/") / ".",
             Path("a") / ".." / "a",
         ]
-        
+
         for p in paths:
             # Should handle gracefully
             _ = str(p)
@@ -101,17 +101,17 @@ class TestGapCoverageStringOperations:
     def test_unicode_handling_emoji(self):
         """Test unicode handling with emoji."""
         emoji_text = "Hello 👋 World 🌍 Test 🎉"
-        assert len(emoji_text) > 5
+        assert len(emoji_text) > 5, "Emoji_text must not be empty"
 
     def test_unicode_normalization(self):
         """Test unicode normalization."""
         import unicodedata
         text1 = "café"  # é as single character
         text2 = "cafe\u0301"  # e + combining acute
-        
+
         norm1 = unicodedata.normalize('NFC', text1)
         norm2 = unicodedata.normalize('NFC', text2)
-        assert norm1 == norm2
+        assert norm1 == norm2, "norm1 is not valid"
 
     def test_string_encoding_edge_cases(self):
         """Test string encoding edge cases."""
@@ -122,11 +122,11 @@ class TestGapCoverageStringOperations:
             "\\x00",  # null-like string
             "a" * 10000,  # very long string
         ]
-        
+
         for text in texts:
             encoded = text.encode('utf-8')
             decoded = encoded.decode('utf-8')
-            assert decoded == text
+            assert decoded == text, "decoded is not valid"
 
     def test_regex_special_characters(self):
         """Test regex with special characters."""
@@ -140,7 +140,7 @@ class TestGapCoverageStringOperations:
         greek = "αβγδ"  # lowercase greek
         upper = greek.upper()
         lower = upper.lower()
-        assert lower == greek
+        assert lower == greek, "lower is not valid"
 
 
 class TestGapCoverageErrorHandling:
@@ -154,13 +154,13 @@ class TestGapCoverageErrorHandling:
             except ValueError as e:
                 raise RuntimeError("wrapped error") from e
         except RuntimeError as e:
-            assert e.__cause__ is not None
+            assert e.__cause__ is not None, "__cause__ must be initialized"
             assert isinstance(e.__cause__, ValueError)
 
     def test_nested_exception_handlers(self):
         """Test nested exception handling."""
         result = []
-        
+
         try:
             try:
                 raise ValueError("inner")
@@ -169,16 +169,16 @@ class TestGapCoverageErrorHandling:
                 raise RuntimeError("outer")
         except RuntimeError:
             result.append("outer caught")
-        
+
         assert result == ["inner caught", "outer caught"]
 
     def test_exception_suppression(self):
         """Test exception suppression with contextlib."""
         from contextlib import suppress
-        
+
         with suppress(ValueError):
             raise ValueError("suppressed")
-        
+
         # Code continues after suppressed exception
 
     def test_custom_exception_init(self):
@@ -187,19 +187,19 @@ class TestGapCoverageErrorHandling:
             def __init__(self, code, message):
                 self.code = code
                 super().__init__(message)
-        
+
         exc = CustomError(500, "server error")
-        assert exc.code == 500
+        assert exc.code == 500, "code is not valid"
 
     def test_traceback_handling(self):
         """Test traceback manipulation."""
         import traceback
-        
+
         try:
             raise ValueError("test error")
         except ValueError:
             tb_lines = traceback.format_exc().split('\n')
-            assert "ValueError" in ''.join(tb_lines)
+            assert "ValueError" in ''.join(tb_lines), "Value must be initialized"
 
 
 class TestGapCoverageCollectionsOperations:
@@ -208,33 +208,33 @@ class TestGapCoverageCollectionsOperations:
     def test_dict_default_factory(self):
         """Test dict with defaultdict."""
         from collections import defaultdict
-        
+
         d = defaultdict(list)
         d['key'].append('value')
-        assert 'key' in d
-        assert d['key'] == ['value']
+        assert 'key' in d, "Condition must be true"
+        assert d['key'] == ['value'], "Value must be initialized"
 
     def test_counter_operations(self):
         """Test Counter operations."""
         from collections import Counter
-        
+
         c = Counter(['a', 'b', 'a', 'c', 'b', 'a'])
-        assert c['a'] == 3
+        assert c['a'] == 3, "Condition must be true"
         assert c.most_common(1) == [('a', 3)]
 
     def test_namedtuple_creation(self):
         """Test namedtuple creation and usage."""
         from collections import namedtuple
-        
+
         Point = namedtuple('Point', ['x', 'y'])
         p = Point(3, 4)
-        assert p.x == 3
-        assert p[1] == 4
+        assert p.x == 3, "x is not valid"
+        assert p[1] == 4, "Condition must be true"
 
     def test_deque_operations(self):
         """Test deque operations."""
         from collections import deque
-        
+
         d = deque([1, 2, 3])
         d.appendleft(0)
         d.extend([4, 5])
@@ -243,7 +243,7 @@ class TestGapCoverageCollectionsOperations:
     def test_ordered_dict_operations(self):
         """Test OrderedDict operations."""
         from collections import OrderedDict
-        
+
         od = OrderedDict()
         od['a'] = 1
         od['b'] = 2
@@ -255,10 +255,10 @@ class TestGapCoverageCollectionsOperations:
         """Test set operations edge cases."""
         s1 = {1, 2, 3}
         s2 = {2, 3, 4}
-        
+
         assert s1 & s2 == {2, 3}  # intersection
         assert s1 | s2 == {1, 2, 3, 4}  # union
-        assert s1 - s2 == {1}  # difference
+        assert s1 - s2 == {1}, "s2 is not valid"
         assert s1 ^ s2 == {1, 4}  # symmetric difference
 
     def test_dict_comprehension_complex(self):
@@ -269,7 +269,7 @@ class TestGapCoverageCollectionsOperations:
     def test_list_slice_edge_cases(self):
         """Test list slicing edge cases."""
         lst = [0, 1, 2, 3, 4, 5]
-        
+
         assert lst[::2] == [0, 2, 4]
         assert lst[::-1] == [5, 4, 3, 2, 1, 0]
         assert lst[1:4] == [1, 2, 3]
@@ -301,35 +301,35 @@ class TestGapCoverageIterationPatterns:
     def test_map_filter_operations(self):
         """Test map and filter."""
         numbers = [1, 2, 3, 4, 5]
-        
+
         squared = list(map(lambda x: x ** 2, numbers))
         assert squared == [1, 4, 9, 16, 25]
-        
+
         evens = list(filter(lambda x: x % 2 == 0, numbers))
         assert evens == [2, 4]
 
     def test_chain_operations(self):
         """Test itertools.chain."""
         from itertools import chain
-        
+
         a = [1, 2]
         b = [3, 4]
         c = [5, 6]
-        
+
         result = list(chain(a, b, c))
         assert result == [1, 2, 3, 4, 5, 6]
 
     def test_combinations_permutations(self):
         """Test combinations and permutations."""
         from itertools import combinations, permutations
-        
+
         items = [1, 2, 3]
-        
+
         combs = list(combinations(items, 2))
-        assert len(combs) == 3
-        
+        assert len(combs) == 3, "Combs must not be empty"
+
         perms = list(permutations(items, 2))
-        assert len(perms) == 6
+        assert len(perms) == 6, "Perms must not be empty"
 
 
 class TestGapCoverageTypeChecking:
@@ -339,51 +339,51 @@ class TestGapCoverageTypeChecking:
         """Test isinstance with multiple types."""
         value = 42
         assert isinstance(value, (int, float))
-        
+
         text = "hello"
         assert isinstance(text, (str, bytes))
 
     def test_type_conversion_edge_cases(self):
         """Test type conversion edge cases."""
-        assert int("42") == 42
-        assert float("3.14") == 3.14
-        assert str(42) == "42"
-        assert bool(1) is True
-        assert bool(0) is False
-        assert bool("") is False
-        assert bool("text") is True
+        assert int("42") == 42, "Condition must be true"
+        assert float("3.14") == 3.14, "Condition must be true"
+        assert str(42) == "42", "Condition must be true"
+        assert bool(1) is True, "Condition must be true"
+        assert bool(0) is False, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("text") is True, "Condition must be true"
 
     def test_hasattr_getattr_setattr(self):
         """Test attribute access functions."""
         class Obj:
             x = 10
-        
+
         obj = Obj()
         assert hasattr(obj, 'x')
         assert getattr(obj, 'x') == 10
         setattr(obj, 'y', 20)
-        assert obj.y == 20
+        assert obj.y == 20, "Object must be initialized"
 
     def test_callable_check(self):
         """Test callable type checking."""
         def func():
             pass
-        
-        assert callable(func)
-        assert callable(lambda: None)
-        assert not callable(42)
-        assert callable(list)
+
+        assert callable(func), "Condition must be true"
+        assert callable(lambda: None), "Condition must be true"
+        assert not callable(42), "Condition must be true"
+        assert callable(list), "Condition must be true"
 
     def test_none_checking_patterns(self):
         """Test None checking patterns."""
         value = None
-        
-        assert value is None
-        assert not value
-        
+
+        assert value is None, "Value must be initialized"
+        assert not value, "Value must be initialized"
+
         value = 0
-        assert value is not None  # 0 is not None
-        assert not value  # but evaluates to False
+        assert value is not None, "value must be initialized"
+        assert not value, "Value must be initialized"
 
 
 class TestGapCoverageComparisonOperations:
@@ -392,41 +392,41 @@ class TestGapCoverageComparisonOperations:
     def test_chained_comparisons(self):
         """Test chained comparison operators."""
         x = 5
-        assert 0 < x < 10
-        assert 1 <= x <= 5
-        assert 0 < x <= 5 < 10
+        assert 0 < x < 10, "0 is not valid"
+        assert 1 <= x <= 5, "1 is not valid"
+        assert 0 < x <= 5 < 10, "0 is not valid"
 
     def test_equality_vs_identity(self):
         """Test == vs is."""
         a = [1, 2, 3]
         b = [1, 2, 3]
         c = a
-        
-        assert a == b  # equal values
-        assert a is not b  # different objects
-        assert a is c  # same object
+
+        assert a == b, "a is not valid"
+        assert a is not b, "a is not valid"
+        assert a is c, "a is not valid"
 
     def test_comparison_with_none(self):
         """Test comparison with None."""
-        assert None is None
-        assert None is None
-        assert None != 0
-        assert None
-        assert None != ""
+        assert None is None, "None is not valid"
+        assert None is None, "None is not valid"
+        assert None != 0, "None is not valid"
+        assert None, "None is not valid"
+        assert None != "", "None is not valid"
 
     def test_comparison_with_different_types(self):
         """Test comparison with different types."""
-        assert 1 == 1.0
-        assert "1" != 1
+        assert 1 == 1.0, "1 is not valid"
+        assert "1" != 1, "Condition must be true"
         assert [1, 2] == [1, 2]
         assert (1, 2) != [1, 2]
 
     def test_boolean_comparison_operations(self):
         """Test boolean operations."""
-        assert True and True
-        assert not (True and False)
-        assert True or False
-        assert not False
+        assert True and True, "True is not valid"
+        assert not (True and False), "Condition must be true"
+        assert True or False, "True is not valid"
+        assert not False, "Condition must be true"
 
 
 class TestGapCoverageDateTimeOperations:
@@ -435,46 +435,46 @@ class TestGapCoverageDateTimeOperations:
     def test_datetime_creation_variants(self):
         """Test various datetime creation methods."""
         from datetime import date, datetime, time
-        
+
         d = date(2024, 1, 15)
-        assert d.year == 2024
-        
+        assert d.year == 2024, "year is not valid"
+
         t = time(14, 30, 45)
-        assert t.hour == 14
-        
+        assert t.hour == 14, "hour is not valid"
+
         dt = datetime(2024, 1, 15, 14, 30, 45)
-        assert dt.date() == d
+        assert dt.date() == d, "Condition must be true"
 
     def test_datetime_arithmetic(self):
         """Test datetime arithmetic."""
         from datetime import datetime, timedelta
-        
+
         dt1 = datetime(2024, 1, 1)
         dt2 = datetime(2024, 1, 5)
-        
+
         delta = dt2 - dt1
-        assert delta.days == 4
-        
+        assert delta.days == 4, "days is not valid"
+
         dt3 = dt1 + timedelta(days=4)
-        assert dt3 == dt2
+        assert dt3 == dt2, "dt3 is not valid"
 
     def test_datetime_formatting(self):
         """Test datetime formatting."""
         from datetime import datetime
-        
+
         dt = datetime(2024, 1, 15, 14, 30, 45)
-        
+
         formatted = dt.strftime("%Y-%m-%d %H:%M:%S")
-        assert formatted == "2024-01-15 14:30:45"
+        assert formatted == "2024-01-15 14:30:45", "formatted is not valid"
 
     def test_timezone_operations(self):
         """Test timezone operations."""
         try:
             from datetime import datetime, timedelta, timezone
-            
+
             tz = timezone(timedelta(hours=5, minutes=30))
             dt = datetime(2024, 1, 15, 14, 30, tzinfo=tz)
-            assert dt.tzinfo == tz
+            assert dt.tzinfo == tz, "tzinfo is not valid"
         except ImportError:
             pytest.skip("timezone not available")
 
@@ -485,24 +485,24 @@ class TestGapCoverageContextManagers:
     def test_with_statement_multiple_contexts(self):
         """Test multiple context managers."""
         import io
-        
+
         f1 = io.StringIO("test1")
         f2 = io.StringIO("test2")
-        
+
         with f1 as file1, f2 as file2:
-            assert file1.read() == "test1"
+            assert file1.read() == "test1", "Condition must be true"
             file2.seek(0)
-            assert file2.read() == "test2"
+            assert file2.read() == "test2", "Condition must be true"
 
     def test_context_manager_exception(self):
         """Test context manager with exception."""
         class MyContext:
             def __enter__(self):
                 return self
-            
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 return False  # don't suppress exceptions
-        
+
         with pytest.raises(ValueError):
             with MyContext():
                 raise ValueError("test")
@@ -512,12 +512,12 @@ class TestGapCoverageContextManagers:
         class ValueContext:
             def __enter__(self):
                 return "context_value"
-            
+
             def __exit__(self, *args):
                 pass
-        
+
         with ValueContext() as value:
-            assert value == "context_value"
+            assert value == "context_value", "Value must be initialized"
 
 
 class TestGapCoverageDecoratorPatterns:
@@ -529,11 +529,11 @@ class TestGapCoverageDecoratorPatterns:
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs) * 2
             return wrapper
-        
+
         @decorator
         def add(a, b):
             return a + b
-        
+
         assert add(2, 3) == 10
 
     def test_decorator_with_arguments(self):
@@ -547,11 +547,11 @@ class TestGapCoverageDecoratorPatterns:
                     return results
                 return wrapper
             return decorator
-        
+
         @repeat(3)
         def get_value():
             return 42
-        
+
         assert get_value() == [42, 42, 42]
 
     def test_class_decorator(self):
@@ -561,13 +561,13 @@ class TestGapCoverageDecoratorPatterns:
                 return "added"
             cls.added_method = new_method
             return cls
-        
+
         @add_method
         class MyClass:
             pass
-        
+
         obj = MyClass()
-        assert obj.added_method() == "added"
+        assert obj.added_method() == "added", "Object must be initialized"
 
 
 class TestGapCoverageInputValidation:
@@ -581,8 +581,8 @@ class TestGapCoverageInputValidation:
             if value <= 0:
                 raise ValueError("Must be positive")
             return value
-        
-        assert validate_positive(5) == 5
+
+        assert validate_positive(5) == 5, "Condition must be true"
         with pytest.raises(ValueError):
             validate_positive(-5)
         with pytest.raises(TypeError):
@@ -596,7 +596,7 @@ class TestGapCoverageInputValidation:
             if not (min_len <= len(s) <= max_len):
                 raise ValueError(f"Length must be {min_len}-{max_len}")
             return s
-        
+
         assert validate_length("test", 2, 10) == "test"
         with pytest.raises(ValueError):
             validate_length("x", 2, 10)
@@ -604,14 +604,14 @@ class TestGapCoverageInputValidation:
     def test_validate_email_format(self):
         """Test basic email format validation."""
         import re
-        
+
         def validate_email(email):
             pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             if not re.match(pattern, email):
                 raise ValueError("Invalid email")
             return email
-        
-        assert validate_email("test@example.com") == "test@example.com"
+
+        assert validate_email("test@example.com") == "test@example.com", "Condition must be true"
         with pytest.raises(ValueError):
             validate_email("invalid.email")
 
@@ -628,27 +628,27 @@ class TestGapCoverageBoundaryConditions:
 
     def test_max_min_values(self):
         """Test maximum and minimum values."""
-        import sys
-        
+        pass  # removed redundant `import sys` (top-level import used)
+
         max_int = sys.maxsize
         min_int = -sys.maxsize - 1
-        
-        assert max_int > 0
-        assert min_int < 0
+
+        assert max_int > 0, "max_int must be greater than zero"
+        assert min_int < 0, "min_int is not valid"
 
     def test_empty_collections_edge_cases(self):
         """Test empty collections."""
-        assert len([]) == 0
-        assert len({}) == 0
-        assert len("") == 0
-        assert len(set()) == 0
-        assert len(tuple()) == 0
+        assert len([]) == 0, "Collection must not be empty"
+        assert len({}) == 0, "Collection must not be empty"
+        assert len("") == 0, "Collection must not be empty"
+        assert len(set()) == 0, "Collection must not be empty"
+        assert len(tuple()) == 0, "Collection must not be empty"
 
     def test_single_element_collections(self):
         """Test single-element collections."""
-        assert len([1]) == 1
-        assert len({1}) == 1
-        assert len("a") == 1
+        assert len([1]) == 1, "Collection must not be empty"
+        assert len({1}) == 1, "Collection must not be empty"
+        assert len("a") == 1, "Collection must not be empty"
         assert len((1,)) == 1
 
 
@@ -658,15 +658,15 @@ class TestGapCoverageMemoryAndPerformance:
     def test_large_list_creation(self):
         """Test creation of large lists."""
         large_list = list(range(100000))
-        assert len(large_list) == 100000
-        assert large_list[0] == 0
-        assert large_list[-1] == 99999
+        assert len(large_list) == 100000, "Large_list must not be empty"
+        assert large_list[0] == 0, "Condition must be true"
+        assert large_list[-1] == 99999, "Condition must be true"
 
     def test_dict_with_many_keys(self):
         """Test dict with many keys."""
         large_dict = {i: i*2 for i in range(10000)}
-        assert len(large_dict) == 10000
-        assert large_dict[5000] == 10000
+        assert len(large_dict) == 10000, "Large_dict must not be empty"
+        assert large_dict[5000] == 10000, "Condition must be true"
 
     def test_string_concatenation_efficiency(self):
         """Test string concatenation."""
@@ -674,7 +674,7 @@ class TestGapCoverageMemoryAndPerformance:
         result = ""
         for i in range(100):
             result += str(i)
-        assert len(result) > 50
+        assert len(result) > 50, "Result must not be empty"
 
     def test_list_comprehension_vs_loop(self):
         """Test list comprehension efficiency."""
@@ -682,5 +682,5 @@ class TestGapCoverageMemoryAndPerformance:
         loop = []
         for x in range(1000):
             loop.append(x*2)
-        
-        assert comp == loop
+
+        assert comp == loop, "comp is not valid"

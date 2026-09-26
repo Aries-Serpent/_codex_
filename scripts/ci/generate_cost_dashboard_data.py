@@ -35,7 +35,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from scripts.ci._token_resolver import get_token
 
-
 # ── Cost-tier constants (kept in sync with cost_estimator.py) ────────────────
 MONTHLY_MINUTES_BUDGET = 3_000
 TIER_GREEN_MAX = 30

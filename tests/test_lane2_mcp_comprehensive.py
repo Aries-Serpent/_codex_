@@ -24,7 +24,7 @@ class TestMCPPackageImports:
         """Test that mcp package can be imported."""
         try:
             from src import mcp
-            assert mcp is not None
+            assert mcp is not None, "mcp must be initialized"
         except ImportError:
             pytest.skip("src.mcp not available")
 
@@ -32,7 +32,7 @@ class TestMCPPackageImports:
         """Test that mcp/__init__.py is importable."""
         try:
             from mcp import __init__
-            assert __init__ is not None
+            assert __init__ is not None, "__init__ must be initialized"
         except ImportError:
             pytest.skip("mcp/__init__.py not available")
 
@@ -44,7 +44,7 @@ class TestMCPConfiguration:
         """Test that mcp.config can be imported."""
         try:
             from mcp import config
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError:
             pytest.skip("mcp.config not available")
 
@@ -52,10 +52,10 @@ class TestMCPConfiguration:
         """Test that mcp.config has expected attributes."""
         try:
             from mcp import config
-            
+
             # Verify module is a valid module
             assert hasattr(config, "__name__")
-            assert config.__name__ is not None
+            assert config.__name__ is not None, "__name__ must be initialized"
         except ImportError:
             pytest.skip("mcp.config not available")
 
@@ -67,7 +67,7 @@ class TestMCPErrors:
         """Test that mcp.errors can be imported."""
         try:
             from mcp import errors
-            assert errors is not None
+            assert errors is not None, "errors must be initialized"
         except ImportError:
             pytest.skip("mcp.errors not available")
 
@@ -75,7 +75,7 @@ class TestMCPErrors:
         """Test that mcp.errors module exists."""
         try:
             from mcp import errors
-            
+
             # Should have error classes or definitions
             assert hasattr(errors, "__name__")
         except ImportError:
@@ -89,7 +89,7 @@ class TestMCPAuth:
         """Test that mcp.auth can be imported."""
         try:
             from mcp import auth
-            assert auth is not None
+            assert auth is not None, "auth must be initialized"
         except ImportError:
             pytest.skip("mcp.auth not available")
 
@@ -97,7 +97,7 @@ class TestMCPAuth:
         """Test that mcp.auth has expected structure."""
         try:
             from mcp import auth
-            
+
             assert hasattr(auth, "__name__")
         except ImportError:
             pytest.skip("mcp.auth not available")
@@ -110,7 +110,7 @@ class TestMCPRateLimiting:
         """Test that mcp.rate_limit can be imported."""
         try:
             from mcp import rate_limit
-            assert rate_limit is not None
+            assert rate_limit is not None, "rate_limit must be initialized"
         except ImportError:
             pytest.skip("mcp.rate_limit not available")
 
@@ -118,7 +118,7 @@ class TestMCPRateLimiting:
         """Test that mcp.rate_limit is a valid module."""
         try:
             from mcp import rate_limit
-            
+
             assert hasattr(rate_limit, "__name__")
         except ImportError:
             pytest.skip("mcp.rate_limit not available")
@@ -131,7 +131,7 @@ class TestMCPRetries:
         """Test that mcp.retries can be imported."""
         try:
             from mcp import retries
-            assert retries is not None
+            assert retries is not None, "retries must be initialized"
         except ImportError:
             pytest.skip("mcp.retries not available")
 
@@ -139,7 +139,7 @@ class TestMCPRetries:
         """Test that mcp.retries is a valid module."""
         try:
             from mcp import retries
-            
+
             assert hasattr(retries, "__name__")
         except ImportError:
             pytest.skip("mcp.retries not available")
@@ -152,7 +152,7 @@ class TestMCPVersioning:
         """Test that mcp.versioning can be imported."""
         try:
             from mcp import versioning
-            assert versioning is not None
+            assert versioning is not None, "versioning must be initialized"
         except ImportError:
             pytest.skip("mcp.versioning not available")
 
@@ -160,7 +160,7 @@ class TestMCPVersioning:
         """Test that mcp.versioning is a valid module."""
         try:
             from mcp import versioning
-            
+
             assert hasattr(versioning, "__name__")
         except ImportError:
             pytest.skip("mcp.versioning not available")
@@ -173,7 +173,7 @@ class TestMCPRegistry:
         """Test that mcp.registry can be imported."""
         try:
             from mcp import registry
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except ImportError:
             pytest.skip("mcp.registry not available")
 
@@ -181,7 +181,7 @@ class TestMCPRegistry:
         """Test that mcp.registry is a valid module."""
         try:
             from mcp import registry
-            
+
             assert hasattr(registry, "__name__")
         except ImportError:
             pytest.skip("mcp.registry not available")
@@ -194,7 +194,7 @@ class TestMCPLifecycle:
         """Test that mcp.lifecycle can be imported."""
         try:
             from mcp import lifecycle
-            assert lifecycle is not None
+            assert lifecycle is not None, "lifecycle must be initialized"
         except ImportError:
             pytest.skip("mcp.lifecycle not available")
 
@@ -202,7 +202,7 @@ class TestMCPLifecycle:
         """Test that mcp.lifecycle is a valid module."""
         try:
             from mcp import lifecycle
-            
+
             assert hasattr(lifecycle, "__name__")
         except ImportError:
             pytest.skip("mcp.lifecycle not available")
@@ -215,7 +215,7 @@ class TestMCPObservability:
         """Test that mcp.observability can be imported."""
         try:
             from mcp import observability
-            assert observability is not None
+            assert observability is not None, "observability must be initialized"
         except ImportError:
             pytest.skip("mcp.observability not available")
 
@@ -223,7 +223,7 @@ class TestMCPObservability:
         """Test that mcp.observability is a valid module."""
         try:
             from mcp import observability
-            
+
             assert hasattr(observability, "__name__")
         except ImportError:
             pytest.skip("mcp.observability not available")
@@ -236,7 +236,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings package can be imported."""
         try:
             from mcp import embeddings
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings not available")
 
@@ -244,7 +244,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.interface can be imported."""
         try:
             from mcp.embeddings import interface
-            assert interface is not None
+            assert interface is not None, "interface must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.interface not available")
 
@@ -252,7 +252,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.batcher can be imported."""
         try:
             from mcp.embeddings import batcher
-            assert batcher is not None
+            assert batcher is not None, "batcher must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.batcher not available")
 
@@ -260,7 +260,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.chunking can be imported."""
         try:
             from mcp.embeddings import chunking
-            assert chunking is not None
+            assert chunking is not None, "chunking must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.chunking not available")
 
@@ -268,7 +268,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.dedupe can be imported."""
         try:
             from mcp.embeddings import dedupe
-            assert dedupe is not None
+            assert dedupe is not None, "dedupe must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.dedupe not available")
 
@@ -276,7 +276,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.mock_embedder can be imported."""
         try:
             from mcp.embeddings import mock_embedder
-            assert mock_embedder is not None
+            assert mock_embedder is not None, "mock_embedder must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.mock_embedder not available")
 
@@ -284,7 +284,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.hf_embedder can be imported."""
         try:
             from mcp.embeddings import hf_embedder
-            assert hf_embedder is not None
+            assert hf_embedder is not None, "hf_embedder must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.hf_embedder not available")
 
@@ -292,7 +292,7 @@ class TestMCPEmbeddings:
         """Test that mcp.embeddings.openai_embedder can be imported."""
         try:
             from mcp.embeddings import openai_embedder
-            assert openai_embedder is not None
+            assert openai_embedder is not None, "openai_embedder must be initialized"
         except ImportError:
             pytest.skip("mcp.embeddings.openai_embedder not available")
 
@@ -304,7 +304,7 @@ class TestMCPWorkers:
         """Test that mcp.workers package can be imported."""
         try:
             from mcp import workers
-            assert workers is not None
+            assert workers is not None, "workers must be initialized"
         except ImportError:
             pytest.skip("mcp.workers not available")
 
@@ -312,7 +312,7 @@ class TestMCPWorkers:
         """Test that mcp.workers.checkpoint can be imported."""
         try:
             from mcp.workers import checkpoint
-            assert checkpoint is not None
+            assert checkpoint is not None, "checkpoint must be initialized"
         except ImportError:
             pytest.skip("mcp.workers.checkpoint not available")
 
@@ -320,7 +320,7 @@ class TestMCPWorkers:
         """Test that mcp.workers.embedder can be imported."""
         try:
             from mcp.workers import embedder
-            assert embedder is not None
+            assert embedder is not None, "embedder must be initialized"
         except ImportError:
             pytest.skip("mcp.workers.embedder not available")
 
@@ -332,7 +332,7 @@ class TestMCPAPI:
         """Test that mcp.api package can be imported."""
         try:
             from mcp import api
-            assert api is not None
+            assert api is not None, "api must be initialized"
         except ImportError:
             pytest.skip("mcp.api not available")
 
@@ -340,7 +340,7 @@ class TestMCPAPI:
         """Test that mcp.api.schemas can be imported."""
         try:
             from mcp.api import schemas
-            assert schemas is not None
+            assert schemas is not None, "schemas must be initialized"
         except ImportError:
             pytest.skip("mcp.api.schemas not available")
 
@@ -353,7 +353,7 @@ class TestMCPIntegration:
         try:
             from mcp import config as config1
             from mcp import config as config2
-            assert config1 is config2
+            assert config1 is config2, "config1 is not valid"
         except ImportError:
             pytest.skip("mcp not available for consistency test")
 
@@ -364,7 +364,7 @@ class TestMCPIntegration:
             "src.mcp.workers",
             "src.mcp.api",
         ]
-        
+
         for package in packages:
             try:
                 __import__(package)
@@ -382,16 +382,16 @@ class TestMCPEdgeCases:
             import sys
 
             from src import mcp as mcp1
-            
+
             if "src.mcp" in sys.modules:
                 del sys.modules["src.mcp"]
-            
+
             from src import mcp as mcp2
             # Should not crash
-            assert mcp2 is not None
+            assert mcp2 is not None, "mcp2 must be initialized"
         except ImportError:
             pytest.skip("mcp not available")
-        except Exception:
+        except Exception as _err:
             # Cleanup if needed
             pass
 
@@ -399,7 +399,7 @@ class TestMCPEdgeCases:
         """Test that mcp has expected attributes."""
         try:
             from src import mcp
-            
+
             # Check that it's a valid module
             assert hasattr(mcp, "__name__")
             assert hasattr(mcp, "__file__") or hasattr(mcp, "__path__")

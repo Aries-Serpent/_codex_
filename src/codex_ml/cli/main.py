@@ -25,7 +25,12 @@ try:  # Optional dependency used for loading curriculum presets
     import yaml as _yaml_module
 
     yaml = _yaml_module
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - PyYAML is optional
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
@@ -59,6 +64,7 @@ if typer is not None:
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
             from codex_ml.cli import tokenizer as tokenizer_cli
+
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
@@ -66,6 +72,7 @@ if typer is not None:
             get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     from codex_ml.cli import _load_training_config
+
     def _value_from_config(
         cli_value: Any,
         default_value: Any,
@@ -366,6 +373,7 @@ if typer is not None:
     ) -> None:
         """Run evaluation using available evaluation modules."""
         from codex_ml.cli import entrypoints as entry
+
         eval_args: list[str] = []
         if dry_run:
             eval_args.append("--dry-run")
@@ -523,7 +531,7 @@ else:
         from codex_digest.error_capture import log_error as _log_error
     except (ImportError, AttributeError):  # pragma: no cover
 
-        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  
+        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
             return None
 
     # Module-level variable to cache functional training main for testing/mocking
@@ -544,7 +552,7 @@ else:
                 _functional_training_main = _functional_training
         return _functional_training_main
 
-    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:  
+    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:
         main_fn = _load_functional_training_main()
         if main_fn is None:  # pragma: no cover - safety fallback
             raise RuntimeError("codex.training.main is unavailable")
@@ -634,7 +642,7 @@ else:
                             )
                             get_default_logger().error(f"{error_msg}\nOriginal error: {e}")
                             raise ImportError(error_msg) from e
-                        
+
                         pipeline_cfg = OmegaConf.select(cfg, "pipeline")
                         pipeline_block = (
                             OmegaConf.to_container(pipeline_cfg, resolve=True)
@@ -727,7 +735,12 @@ else:
             sys.argv = [sys.argv[0], *args, *overrides]
             try:
                 main()
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging path
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - logging path
                 _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="error")
                 raise

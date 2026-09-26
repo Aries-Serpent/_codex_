@@ -33,9 +33,9 @@ class TestPhase5Phase6Integration:
             hybrid_solver="solver2",
         )
 
-        assert compat.domain_id == "test_domain"
+        assert compat.domain_id == "test_domain", "domain_id is not valid"
         mapping = mapper.generate_mapping()
-        assert mapping.total_domains == 1
+        assert mapping.total_domains == 1, "total_domains is not valid"
 
     def test_shadow_execution_with_improvement_threshold(self):
         """Test shadow execution meets improvement threshold for promotion"""
@@ -67,12 +67,12 @@ class TestPhase5Phase6Integration:
         )
 
         # 7% improvement meets the 5% threshold for Phase 5 gates
-        assert comparison.improvement_pct >= 5.0
+        assert comparison.improvement_pct >= 5.0, "improvement_pct must be greater than zero"
 
     def test_shadow_execution_to_promotion_gates(self):
         """Test shadow execution results feed into promotion gates"""
         gates = PromotionGates()
-        
+
         # Simulate shadow execution results
         report = gates.evaluate_shadow_gates(
             avg_improvement_pct=8.0,
@@ -82,8 +82,8 @@ class TestPhase5Phase6Integration:
         )
 
         # All gates should pass
-        assert report.all_passed is True
-        assert report.ready_for_promotion is True
+        assert report.all_passed is True, "all_passed is not valid"
+        assert report.ready_for_promotion is True, "ready_for_promotion is not valid"
 
     def test_cohort_routing_low_risk_domains(self):
         """Test cohort routing identifies low-risk domains"""
@@ -95,7 +95,7 @@ class TestPhase5Phase6Integration:
             risk_indicators={"financial_impact": 0.1, "user_impact": 0.1},
         )
 
-        assert classification.cohort == CohortRisk.LOW
+        assert classification.cohort == CohortRisk.LOW, "cohort is not valid"
 
     def test_cohort_routing_high_risk_domains(self):
         """Test cohort routing identifies high-risk domains"""
@@ -107,7 +107,7 @@ class TestPhase5Phase6Integration:
             risk_indicators={"financial_impact": 0.9, "user_impact": 0.9},
         )
 
-        assert classification.cohort == CohortRisk.HIGH
+        assert classification.cohort == CohortRisk.HIGH, "cohort is not valid"
 
     def test_sla_monitoring_with_canary_stages(self):
         """Test SLA monitoring tracks metrics for different canary stages"""
@@ -119,7 +119,7 @@ class TestPhase5Phase6Integration:
         monitor.record_measurement(SLAMetric.CORRECTNESS, 0.9995)
         report = monitor.evaluate_compliance(canary_percentage=0.01)
 
-        assert report.canary_percentage == 0.01
+        assert report.canary_percentage == 0.01, "canary_percentage is not valid"
 
     def test_end_to_end_phase5_workflow(self):
         """Test complete Phase 5 workflow"""
@@ -132,7 +132,7 @@ class TestPhase5Phase6Integration:
             hybrid_solver="solver_b",
         )
         mapping = mapper.generate_mapping()
-        assert mapping.compatible_domains > 0
+        assert mapping.compatible_domains > 0, "compatible_domains must be greater than zero"
 
         # 2. Shadow execution
         executor = ShadowExecutor()
@@ -164,7 +164,7 @@ class TestPhase5Phase6Integration:
             )
 
         stats = executor.get_statistics()
-        assert stats["successful_executions"] == 10
+        assert stats["successful_executions"] == 10, "Condition must be true"
 
         # 3. Promotion gates
         gates = PromotionGates()
@@ -174,7 +174,7 @@ class TestPhase5Phase6Integration:
             latency_ratio=1.2,
             num_samples=60,
         )
-        assert report.ready_for_promotion is True
+        assert report.ready_for_promotion is True, "ready_for_promotion is not valid"
 
     def test_end_to_end_phase6_workflow(self):
         """Test complete Phase 6 canary promotion workflow"""
@@ -184,7 +184,7 @@ class TestPhase5Phase6Integration:
         router.classify_decision("dec_2", {"financial_impact": 0.5})
         router.classify_decision("dec_3", {"financial_impact": 0.9})
         routes = router.generate_routes()
-        assert routes.total_decisions == 3
+        assert routes.total_decisions == 3, "total_decisions is not valid"
 
         # 2. SLA monitoring setup
         monitor = SLAMonitor()
@@ -201,8 +201,8 @@ class TestPhase5Phase6Integration:
             hours_elapsed=60,
         )
         status = promoter.promote_to_next_stage(gate_eval)
-        assert status is not None
-        assert promoter.get_current_stage() == CanaryStage.STAGE_2_CANARY_5PCT
+        assert status is not None, "status must be initialized"
+        assert promoter.get_current_stage() == CanaryStage.STAGE_2_CANARY_5PCT, "Condition must be true"
 
     def test_multiple_domain_mapping_and_routing(self):
         """Test multiple domains mapped and routed to different cohorts"""
@@ -228,9 +228,9 @@ class TestPhase5Phase6Integration:
 
         mapping = mapper.generate_mapping()
         routes = router.generate_routes()
-        
-        assert mapping.total_domains == 5
-        assert routes.total_decisions == 10
+
+        assert mapping.total_domains == 5, "total_domains is not valid"
+        assert routes.total_decisions == 10, "total_decisions is not valid"
 
     def test_shadow_execution_determinism_verification(self):
         """Test determinism verification in shadow execution"""
@@ -255,7 +255,7 @@ class TestPhase5Phase6Integration:
                 solver_params={},
                 seed=42,
             )
-            assert comparison.deterministic is True
+            assert comparison.deterministic is True, "deterministic is not valid"
 
     def test_gate_progression_requirements(self):
         """Test that gates properly enforce requirements at each level"""
@@ -268,7 +268,7 @@ class TestPhase5Phase6Integration:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report1.ready_for_promotion is False  # Low improvement
+        assert report1.ready_for_promotion is False, "ready_for_promotion is not valid"
 
         # Test with sufficient improvement
         report2 = gates.evaluate_shadow_gates(
@@ -277,7 +277,7 @@ class TestPhase5Phase6Integration:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report2.ready_for_promotion is True
+        assert report2.ready_for_promotion is True, "ready_for_promotion is not valid"
 
         # Test with insufficient samples (< 50)
         report3 = gates.evaluate_shadow_gates(
@@ -286,7 +286,7 @@ class TestPhase5Phase6Integration:
             latency_ratio=1.5,
             num_samples=30,  # Below 50 minimum
         )
-        assert report3.ready_for_promotion is False
+        assert report3.ready_for_promotion is False, "ready_for_promotion is not valid"
 
     def test_cohort_risk_boundary_cases(self):
         """Test cohort classification at risk boundaries"""
@@ -296,23 +296,23 @@ class TestPhase5Phase6Integration:
         low_boundary = router.classify_decision(
             "dec_1", {"financial_impact": 0.32}
         )
-        assert low_boundary.cohort == CohortRisk.LOW
+        assert low_boundary.cohort == CohortRisk.LOW, "cohort is not valid"
 
         mid_boundary = router.classify_decision(
             "dec_2", {"financial_impact": 0.34}
         )
-        assert mid_boundary.cohort == CohortRisk.MEDIUM
+        assert mid_boundary.cohort == CohortRisk.MEDIUM, "cohort is not valid"
 
         # Test boundary: 0.67 (medium/high threshold)
         med_boundary = router.classify_decision(
             "dec_3", {"financial_impact": 0.66}
         )
-        assert med_boundary.cohort == CohortRisk.MEDIUM
+        assert med_boundary.cohort == CohortRisk.MEDIUM, "cohort is not valid"
 
         high_boundary = router.classify_decision(
             "dec_4", {"financial_impact": 0.68}
         )
-        assert high_boundary.cohort == CohortRisk.HIGH
+        assert high_boundary.cohort == CohortRisk.HIGH, "cohort is not valid"
 
     def test_sla_compliance_escalation(self):
         """Test SLA compliance escalation from compliant to breach"""
@@ -322,13 +322,13 @@ class TestPhase5Phase6Integration:
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.995)
         monitor.record_measurement(SLAMetric.LATENCY, 2500.0)
         report1 = monitor.evaluate_compliance(canary_percentage=0.01)
-        assert report1.compliance_status == ComplianceStatus.COMPLIANT
+        assert report1.compliance_status == ComplianceStatus.COMPLIANT, "compliance_status is not valid"
 
         # Record degraded metrics (approaching breach)
         monitor.record_measurement(SLAMetric.SUCCESS_RATE, 0.991)
         report2 = monitor.evaluate_compliance(canary_percentage=0.01)
         # Should be approaching or breached
-        assert report2.compliance_status in [
+        assert report2.compliance_status in [, "rep is not valid"
             ComplianceStatus.APPROACHING_BREACH,
             ComplianceStatus.BREACHED,
         ]
@@ -345,7 +345,7 @@ class TestPhase5Phase6Integration:
             num_samples=50,  # Below minimum
             hours_elapsed=30,
         )
-        assert gate1_fail.ready_for_next_stage is False
+        assert gate1_fail.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
         gate1_pass = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_1_CANARY_1PCT,
@@ -354,7 +354,7 @@ class TestPhase5Phase6Integration:
             num_samples=100,
             hours_elapsed=24,
         )
-        assert gate1_pass.ready_for_next_stage is True
+        assert gate1_pass.ready_for_next_stage is True, "ready_for_next_stage is not valid"
 
         # Stage 2: min 500 samples, 48 hours
         gate2_fail = promoter.evaluate_stage_readiness(
@@ -364,7 +364,7 @@ class TestPhase5Phase6Integration:
             num_samples=500,
             hours_elapsed=30,  # Below minimum
         )
-        assert gate2_fail.ready_for_next_stage is False
+        assert gate2_fail.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
         gate2_pass = promoter.evaluate_stage_readiness(
             stage=CanaryStage.STAGE_2_CANARY_5PCT,
@@ -373,7 +373,7 @@ class TestPhase5Phase6Integration:
             num_samples=500,
             hours_elapsed=48,
         )
-        assert gate2_pass.ready_for_next_stage is True
+        assert gate2_pass.ready_for_next_stage is True, "ready_for_next_stage is not valid"
 
     def test_integrated_accuracy_and_sla_requirements(self):
         """Test that both accuracy and SLA requirements must be met"""
@@ -387,7 +387,7 @@ class TestPhase5Phase6Integration:
             num_samples=100,
             hours_elapsed=24,
         )
-        assert gate_eval.ready_for_next_stage is False
+        assert gate_eval.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
         # Test: good accuracy but poor SLA
         gate_eval2 = promoter.evaluate_stage_readiness(
@@ -397,7 +397,7 @@ class TestPhase5Phase6Integration:
             num_samples=100,
             hours_elapsed=24,
         )
-        assert gate_eval2.ready_for_next_stage is False
+        assert gate_eval2.ready_for_next_stage is False, "ready_for_next_stage is not valid"
 
         # Test: both good
         gate_eval3 = promoter.evaluate_stage_readiness(
@@ -407,7 +407,7 @@ class TestPhase5Phase6Integration:
             num_samples=100,
             hours_elapsed=24,
         )
-        assert gate_eval3.ready_for_next_stage is True
+        assert gate_eval3.ready_for_next_stage is True, "ready_for_next_stage is not valid"
 
     def test_domain_compatibility_scoring(self):
         """Test domain compatibility scoring for different risk levels"""
@@ -424,8 +424,8 @@ class TestPhase5Phase6Integration:
         )
 
         # Low risk should have highest compatibility
-        assert low_risk.compatibility_score > med_risk.compatibility_score
-        assert med_risk.compatibility_score > high_risk.compatibility_score
+        assert low_risk.compatibility_score > med_risk.compatibility_score, "compatibility_score must be greater than zero"
+        assert med_risk.compatibility_score > high_risk.compatibility_score, "compatibility_score must be greater than zero"
 
     def test_shadow_execution_constraint_satisfaction(self):
         """Test shadow execution tracking constraint satisfaction"""
@@ -456,7 +456,7 @@ class TestPhase5Phase6Integration:
             hybrid_solver=feasible_solver,
             solver_params={},
         )
-        assert comparison1.both_feasible is True
+        assert comparison1.both_feasible is True, "both_feasible is not valid"
 
         # One infeasible
         comparison2 = executor.execute_parallel(
@@ -465,4 +465,4 @@ class TestPhase5Phase6Integration:
             hybrid_solver=infeasible_solver,
             solver_params={},
         )
-        assert comparison2.both_feasible is False
+        assert comparison2.both_feasible is False, "both_feasible is not valid"

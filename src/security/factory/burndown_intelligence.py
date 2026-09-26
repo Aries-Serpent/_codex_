@@ -18,6 +18,7 @@ from typing import Any, Dict, List
 @dataclass
 class BurndownMetrics:
     """Metrics at a point in time."""
+
     timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
     findings_closed: int = 0
     findings_remaining: int = 0
@@ -30,6 +31,7 @@ class BurndownMetrics:
 @dataclass
 class BurndownReport:
     """Weekly burndown report."""
+
     week_number: int
     start_date: str
     end_date: str
@@ -168,9 +170,7 @@ class BurndownTracker:
             }
 
         latest = self.snapshots[-1]
-        avg_velocity = (
-            statistics.mean(self.velocity_history) if self.velocity_history else 0
-        )
+        avg_velocity = statistics.mean(self.velocity_history) if self.velocity_history else 0
         eta_days = self.estimate_eta(latest.findings_remaining)
 
         return {
@@ -195,9 +195,7 @@ def compute_metrics(
 ) -> BurndownMetrics:
     """Compute burndown metrics at a point in time."""
     total_findings = findings_closed + findings_remaining
-    completion_percentage = (
-        (findings_closed / total_findings * 100) if total_findings > 0 else 0
-    )
+    completion_percentage = (findings_closed / total_findings * 100) if total_findings > 0 else 0
 
     return BurndownMetrics(
         findings_closed=findings_closed,

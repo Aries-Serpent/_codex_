@@ -154,9 +154,7 @@ class ValidationLoop:
             cls._validation_history[incident_id] = []
         cls._validation_history[incident_id].append(report)
 
-        logger.info(
-            f"Validation {validation_id} for incident {incident_id}: {status.value}"
-        )
+        logger.info(f"Validation {validation_id} for incident {incident_id}: {status.value}")
 
         return report
 
@@ -263,9 +261,7 @@ class ValidationLoop:
         return cascade_info
 
     @classmethod
-    def handle_cascade(
-        cls, validation_report: ValidationReport
-    ) -> Optional[Any]:
+    def handle_cascade(cls, validation_report: ValidationReport) -> Optional[Any]:
         """Handle detected cascading failure.
 
         Args:
@@ -276,7 +272,6 @@ class ValidationLoop:
         """
         if not validation_report.cascade_detected:
             return None
-
 
         # Create new incident for cascade
         cascade_incident_id = f"cascade_{validation_report.incident_id}"
@@ -346,25 +341,11 @@ class ValidationLoop:
         for reports in cls._validation_history.values():
             all_reports.extend(reports)
 
-        success_count = sum(
-            1
-            for r in all_reports
-            if r.status == ValidationStatus.SUCCESS
-        )
-        cascade_count = sum(
-            1
-            for r in all_reports
-            if r.status == ValidationStatus.CASCADE_DETECTED
-        )
-        failure_count = sum(
-            1
-            for r in all_reports
-            if r.status == ValidationStatus.FAILURE
-        )
+        success_count = sum(1 for r in all_reports if r.status == ValidationStatus.SUCCESS)
+        cascade_count = sum(1 for r in all_reports if r.status == ValidationStatus.CASCADE_DETECTED)
+        failure_count = sum(1 for r in all_reports if r.status == ValidationStatus.FAILURE)
         loop_breaker_count = sum(
-            1
-            for r in all_reports
-            if r.status == ValidationStatus.LOOP_BREAKER_HIT
+            1 for r in all_reports if r.status == ValidationStatus.LOOP_BREAKER_HIT
         )
 
         metrics = {
@@ -374,11 +355,11 @@ class ValidationLoop:
             "failures": failure_count,
             "loop_breaker_hits": loop_breaker_count,
             "success_rate": success_count / len(all_reports) if all_reports else 0,
-            "cascade_prevention_rate": 1.0 - (cascade_count / len(all_reports)) if all_reports else 1.0,
+            "cascade_prevention_rate": 1.0 - (cascade_count / len(all_reports))
+            if all_reports
+            else 1.0,
             "average_attempts_per_incident": (
-                len(all_reports) / len(cls._validation_history)
-                if cls._validation_history
-                else 0
+                len(all_reports) / len(cls._validation_history) if cls._validation_history else 0
             ),
         }
 

@@ -32,18 +32,33 @@ try:  # pragma: no cover - optional
     import torch.utils.tensorboard as _tb
 
     SummaryWriter = _tb.SummaryWriter
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - tensorboard not installed
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
 
 try:  # pragma: no cover - optional
     import wandb
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - wandb not installed
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - wandb not installed
     wandb = None
 
 try:  # pragma: no cover - optional
     import mlflow
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - mlflow not installed
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - mlflow not installed
     mlflow = None
 
 
@@ -63,12 +78,23 @@ if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
 else:
     try:  # pragma: no cover - optional
         import pynvml  # type: ignore
-    except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - nvml not installed
+    except (
+        ImportError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ValueError,
+    ):  # pragma: no cover - nvml not installed
         pynvml = None
 
 try:  # pragma: no cover - optional
     import torch
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - torch not installed
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
 SummaryWriter = None
@@ -77,7 +103,13 @@ SummaryWriter = None
 try:  # pragma: no cover - optional
     if torch is not None:
         SummaryWriter = torch.utils.tensorboard.SummaryWriter
-except (IOError, OSError, ModuleNotFoundError, ImportError, AttributeError):  # pragma: no cover - tensorboard not installed
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - tensorboard not installed
     get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
 _ensure_local_mlflow_tracking_uri_default()
@@ -240,7 +272,12 @@ def _try_git_commit() -> str | None:
             [git, "-C", str(root), "rev-parse", "HEAD"],
             text=True,
         ).strip()
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - diagnostic only
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - diagnostic only
         get_default_logger().debug("git commit detection failed", exc_info=exc)
         return None
 
@@ -319,7 +356,12 @@ def _get_safety_filters() -> Any:
             from codex_ml.safety import SafetyFilters
 
             _LOG_SAFETY_FILTERS = SafetyFilters.from_defaults()
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - optional dependency
             _LOG_SAFETY_FILTERS = None
     return _LOG_SAFETY_FILTERS
 
@@ -535,7 +577,12 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:  # pragma: no cover - depends on tensorboard install
                     os.makedirs(logdir, exist_ok=True)
                     tb_handle = SummaryWriter(logdir)
-                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                ) as exc:  # pragma: no cover - optional
                     tb_detail = f"error:{exc.__class__.__name__}"
             component_statuses.append(
                 TelemetryComponentStatus("tensorboard", tb_handle is not None, tb_detail)
@@ -607,7 +654,12 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
             tb_handle = SummaryWriter(logdir)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional
             tb_detail = f"error:{exc.__class__.__name__}"
             tb_handle = None
     component_statuses.append(
@@ -755,7 +807,9 @@ def _codex_sample_system() -> dict[str, Any]:
                     pynvml.nvmlShutdown()
                 except Exception as shutdown_exc:
                     get_default_logger().debug(
-                        "NVML shutdown failed (%s)", type(shutdown_exc).__name__, exc_info=shutdown_exc
+                        "NVML shutdown failed (%s)",
+                        type(shutdown_exc).__name__,
+                        exc_info=shutdown_exc,
                     )
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():

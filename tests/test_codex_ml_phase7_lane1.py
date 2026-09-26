@@ -40,13 +40,13 @@ class TestModelInitializationPatterns:
 
         # Test default initialization
         config = ModelConfig(base_model_path=None)
-        assert config.base_model_path is None
-        assert config.dtype is None
-        assert config.device is None
-        assert config.enable_lora is False
-        assert config.lora_r == 4
-        assert config.lora_alpha == 8
-        assert config.lora_dropout == 0.05
+        assert config.base_model_path is None, "base_model_path is not valid"
+        assert config.dtype is None, "dtype is not valid"
+        assert config.device is None, "device is not valid"
+        assert config.enable_lora is False, "enable_lora is not valid"
+        assert config.lora_r == 4, "lora_r is not valid"
+        assert config.lora_alpha == 8, "lora_alpha is not valid"
+        assert config.lora_dropout == 0.05, "lora_dropout is not valid"
 
     def test_model_config_custom_values(self):
         """Test ModelConfig with custom LoRA and dtype settings."""
@@ -61,11 +61,11 @@ class TestModelInitializationPatterns:
             lora_alpha=16,
             lora_dropout=0.1,
         )
-        assert config.base_model_path == "/path/to/model"
-        assert config.dtype == "float16"
-        assert config.device == "cuda"
-        assert config.enable_lora is True
-        assert config.lora_r == 8
+        assert config.base_model_path == "/path/to/model", "base_model_path is not valid"
+        assert config.dtype == "float16", "dtype is not valid"
+        assert config.device == "cuda", "device is not valid"
+        assert config.enable_lora is True, "enable_lora is not valid"
+        assert config.lora_r == 8, "lora_r is not valid"
 
     def test_to_dtype_torch_float16(self):
         """Test dtype conversion to torch.float16."""
@@ -79,7 +79,7 @@ class TestModelInitializationPatterns:
         from codex_ml.codex_model import _to_dtype
 
         result = _to_dtype(torch, "float16")
-        assert result == torch.float16
+        assert result == torch.float16, "Result must not be empty"
 
     def test_to_dtype_torch_float32(self):
         """Test dtype conversion to torch.float32."""
@@ -93,7 +93,7 @@ class TestModelInitializationPatterns:
         from codex_ml.codex_model import _to_dtype
 
         result = _to_dtype(torch, "float32")
-        assert result == torch.float32
+        assert result == torch.float32, "Result must not be empty"
 
     def test_to_dtype_invalid_raises_error(self):
         """Test that invalid dtype string raises ValueError."""
@@ -121,7 +121,7 @@ class TestModelInitializationPatterns:
         from codex_ml.codex_model import _to_dtype
 
         result = _to_dtype(torch, torch.float32)
-        assert result == torch.float32
+        assert result == torch.float32, "Result must not be empty"
 
 
 # ============================================================================
@@ -137,16 +137,16 @@ class TestCognitiveBrainAPIIntegration:
         from codex_ml.codex_structured_logging import get_session_id
 
         session_id = get_session_id()
-        assert session_id is not None
+        assert session_id is not None, "session_id must be initialized"
         assert isinstance(session_id, str)
-        assert len(session_id) > 0
+        assert len(session_id) > 0, "Session_id must not be empty"
 
     def test_session_logger_creation(self):
         """Test structured logger instantiation."""
         from codex_ml.codex_structured_logging import get_session_logger
 
         logger = get_session_logger()
-        assert logger is not None
+        assert logger is not None, "logger must be initialized"
         assert hasattr(logger, "log_event")
         assert hasattr(logger, "log_error")
         assert hasattr(logger, "iter_events")
@@ -156,7 +156,7 @@ class TestCognitiveBrainAPIIntegration:
         from codex_ml.config import ReasoningConfig
 
         config = ReasoningConfig()
-        assert config is not None
+        assert config is not None, "config must be initialized"
         # Verify it has expected attributes
         assert hasattr(config, "__dict__")
 
@@ -193,19 +193,19 @@ class TestInferencePipelineValidation:
         """Test HuggingFace model loader module import."""
         from codex_ml import hf_loader
 
-        assert hf_loader is not None
+        assert hf_loader is not None, "hf_loader must be initialized"
 
     def test_symbolic_pipeline_import(self):
         """Test symbolic pipeline module import."""
         from codex_ml import symbolic_pipeline
 
-        assert symbolic_pipeline is not None
+        assert symbolic_pipeline is not None, "symbolic_pipeline must be initialized"
 
     def test_pipeline_module_import(self):
         """Test core pipeline module import."""
         try:
             from codex_ml import pipeline
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (ImportError, ModuleNotFoundError):
             pytest.skip("pipeline module has unmet dependencies (tokenizers)")
 
@@ -223,13 +223,13 @@ class TestInferencePipelineValidation:
         output = model(x)
 
         assert output.shape == (2, 2)
-        assert not torch.isnan(output).any()
+        assert not torch.isnan(output).any(), "Condition must be true"
 
     def test_model_registry_import(self):
         """Test model registry module."""
         try:
             from codex_ml import model_registry
-            assert model_registry is not None
+            assert model_registry is not None, "model_registry must be initialized"
         except (ImportError, ModuleNotFoundError):
             pytest.skip("model_registry has unmet torch dependencies")
 
@@ -237,7 +237,7 @@ class TestInferencePipelineValidation:
         """Test deployment infrastructure module."""
         from codex_ml import deployment
 
-        assert deployment is not None
+        assert deployment is not None, "deployment must be initialized"
 
 
 # ============================================================================
@@ -252,7 +252,7 @@ class TestTrainingLoopMechanics:
         """Test train loop module imports successfully."""
         try:
             from codex_ml import train_loop
-            assert train_loop is not None
+            assert train_loop is not None, "train_loop must be initialized"
             assert hasattr(train_loop, "__version__")
         except (ImportError, ModuleNotFoundError):
             pytest.skip("train_loop has unmet torch dependencies")
@@ -261,7 +261,7 @@ class TestTrainingLoopMechanics:
         """Test train loop version is defined."""
         try:
             from codex_ml.train_loop import __version__
-            assert __version__ == "0.1.0"
+            assert __version__ == "0.1.0", "__version__ is not valid"
         except (ImportError, ModuleNotFoundError):
             pytest.skip("train_loop has unmet torch dependencies")
 
@@ -277,15 +277,15 @@ class TestTrainingLoopMechanics:
         """Test checkpoint schema versioning."""
         from codex_ml.checkpointing.checkpoint_core import SCHEMA_VERSION
 
-        assert SCHEMA_VERSION == "2.0"
+        assert SCHEMA_VERSION == "2.0", "SCHEMA_VERSION is not valid"
 
     def test_uuid_generation_in_train_loop(self):
         """Test UUID generation for training session IDs."""
         from uuid import uuid4
 
         uid = uuid4()
-        assert uid is not None
-        assert len(str(uid)) > 0
+        assert uid is not None, "uid must be initialized"
+        assert len(str(uid)) > 0, "Collection must not be empty"
 
     def test_training_config_snapshot_handling(self):
         """Test config snapshot dataclass handling."""
@@ -301,8 +301,8 @@ class TestTrainingLoopMechanics:
         from dataclasses import asdict
 
         config_dict = asdict(config)
-        assert "learning_rate" in config_dict
-        assert config_dict["learning_rate"] == 0.001
+        assert "learning_rate" in config_dict, "Condition must be true"
+        assert config_dict["learning_rate"] == 0.001, "Condition must be true"
 
 
 # ============================================================================
@@ -317,19 +317,19 @@ class TestFeatureExtractionAndNormalization:
         """Test feature store module imports successfully."""
         from codex_ml.features import feature_store
 
-        assert feature_store is not None
+        assert feature_store is not None, "feature_store must be initialized"
 
     def test_feast_compat_module_import(self):
         """Test Feast compatibility layer module."""
         from codex_ml.features import feast_compat
 
-        assert feast_compat is not None
+        assert feast_compat is not None, "feast_compat must be initialized"
 
     def test_feature_monitoring_module_import(self):
         """Test feature monitoring module."""
         from codex_ml.features import monitoring
 
-        assert monitoring is not None
+        assert monitoring is not None, "monitoring must be initialized"
 
     def test_feature_normalization_mock(self):
         """Test feature normalization mock implementation."""
@@ -345,8 +345,8 @@ class TestFeatureExtractionAndNormalization:
         normalized = (features - mean) / (std + 1e-8)
 
         # Normalized features should have mean ≈ 0 and std ≈ 1
-        assert np.abs(np.mean(normalized)) < 0.5
-        assert normalized.shape == features.shape
+        assert np.abs(np.mean(normalized)) < 0.5, "Condition must be true"
+        assert normalized.shape == features.shape, "shape is not valid"
 
     def test_feature_view_entity_mock(self):
         """Test FeatureView and Entity dataclass patterns."""
@@ -359,14 +359,14 @@ class TestFeatureExtractionAndNormalization:
             features: dict[str, Any] = field(default_factory=dict)
 
         fv = FeatureView(name="test_view", entities=["user_id"], features={"score": "float"})
-        assert fv.name == "test_view"
-        assert "user_id" in fv.entities
+        assert fv.name == "test_view", "name is not valid"
+        assert "user_id" in fv.entities, "Condition must be true"
 
     def test_data_utils_import(self):
         """Test data utilities module."""
         from codex_ml import data_utils
 
-        assert data_utils is not None
+        assert data_utils is not None, "data_utils must be initialized"
 
 
 # ============================================================================
@@ -388,8 +388,8 @@ class TestIntegrationScenarios:
                 enable_lora=True,
                 dtype="float32",
             )
-            assert config.base_model_path == str(ckpt_path)
-            assert config.enable_lora is True
+            assert config.base_model_path == str(ckpt_path), "base_model_path is not valid"
+            assert config.enable_lora is True, "enable_lora is not valid"
 
     def test_training_session_flow_mock(self):
         """Test complete training session initialization."""
@@ -398,8 +398,8 @@ class TestIntegrationScenarios:
         session_id = get_session_id()
         logger = get_session_logger()
 
-        assert session_id is not None
-        assert logger is not None
+        assert session_id is not None, "session_id must be initialized"
+        assert logger is not None, "logger must be initialized"
 
     def test_checkpoint_save_mock_flow(self):
         """Test checkpoint save flow with temporary directory."""
@@ -419,9 +419,9 @@ class TestIntegrationScenarios:
             with open(metadata_path, "w") as f:
                 json.dump(meta, f)
 
-            assert metadata_path.exists()
+            assert metadata_path.exists(), "Data must not be empty"
             loaded_meta = json.loads(metadata_path.read_text())
-            assert loaded_meta["epoch"] == 1
+            assert loaded_meta["epoch"] == 1, "Condition must be true"
 
     def test_feature_extraction_pipeline_mock(self):
         """Test feature extraction pipeline with mock data."""
@@ -438,8 +438,8 @@ class TestIntegrationScenarios:
         std = np.std(raw_data, axis=0)
         features = (raw_data - mean) / (std + 1e-8)
 
-        assert features.shape == raw_data.shape
-        assert not np.isnan(features).any()
+        assert features.shape == raw_data.shape, "Data must not be empty"
+        assert not np.isnan(features).any(), "Condition must be true"
 
     def test_inference_with_training_artifacts(self):
         """Test inference using training artifacts."""
@@ -471,10 +471,10 @@ class TestIntegrationScenarios:
             torch.save(weights, weights_file)
 
             # Verify artifacts exist
-            assert config_file.exists()
-            assert weights_file.exists()
+            assert config_file.exists(), "Condition must be true"
+            assert weights_file.exists(), "Condition must be true"
             loaded_config = json.loads(config_file.read_text())
-            assert loaded_config["hidden_size"] == 128
+            assert loaded_config["hidden_size"] == 128, "Condition must be true"
 
 
 # ============================================================================
@@ -489,7 +489,7 @@ class TestModuleSmokeTests:
         """Test codex_ml package imports successfully."""
         import codex_ml
 
-        assert codex_ml is not None
+        assert codex_ml is not None, "codex_ml must be initialized"
 
     def test_all_submodules_importable(self):
         """Test critical submodules can be imported."""
@@ -550,7 +550,7 @@ class TestErrorHandlingAndEdgeCases:
         from codex_ml.codex_model import ModelConfig
 
         config = ModelConfig(base_model_path=None)
-        assert config is not None
+        assert config is not None, "config must be initialized"
 
     def test_dtype_none_handling(self):
         """Test handling of None dtype."""
@@ -562,7 +562,7 @@ class TestErrorHandlingAndEdgeCases:
         from codex_ml.codex_model import _to_dtype
 
         result = _to_dtype(torch, None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_config_error_message_preservation(self):
         """Test that ConfigError preserves error messages."""
@@ -573,7 +573,7 @@ class TestErrorHandlingAndEdgeCases:
         with pytest.raises(ConfigError) as exc_info:
             raise ConfigError(path_val, error_msg)
 
-        assert error_msg in str(exc_info.value)
+        assert error_msg in str(exc_info.value), "Value must be initialized"
 
 
 if __name__ == "__main__":

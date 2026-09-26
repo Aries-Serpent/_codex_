@@ -41,7 +41,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from scripts.ci._token_resolver import get_token
 
-
 logger = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -172,15 +171,15 @@ def detect_cascading_error_comments(comments: list[dict[str, Any]]) -> dict[str,
             "cascade_duration_seconds": float or None,
         }
     """
-    from datetime import datetime
     import re
-    
+    from datetime import datetime
+
     error_comments = [
         c for c in comments
         if "comment-generic-error" in c.get("body", "")
         and c["user"].get("login") == "Copilot"
     ]
-    
+
     if not error_comments:
         return {
             "has_cascade": False,
@@ -190,7 +189,7 @@ def detect_cascading_error_comments(comments: list[dict[str, Any]]) -> dict[str,
             "last_error_time": None,
             "cascade_duration_seconds": None,
         }
-    
+
     # Extract UUIDs from error comments
     uuid_pattern = r"identify so they can better serve you: `([a-f0-9\-]+)`"
     uuids = []
@@ -198,7 +197,7 @@ def detect_cascading_error_comments(comments: list[dict[str, Any]]) -> dict[str,
         match = re.search(uuid_pattern, comment["body"])
         if match:
             uuids.append(match.group(1))
-    
+
     # Calculate duration
     try:
         times = [datetime.fromisoformat(c["created_at"].replace("Z", "+00:00"))
@@ -206,7 +205,7 @@ def detect_cascading_error_comments(comments: list[dict[str, Any]]) -> dict[str,
         duration = (max(times) - min(times)).total_seconds()
     except (ValueError, IndexError):
         duration = None
-    
+
     return {
         "has_cascade": len(error_comments) > 0,
         "error_count": len(error_comments),
@@ -310,11 +309,11 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue  # Copilot's own comments don't need addressing
-        
+
         body = (c.get("body") or "")[:80]
         if should_skip_comment(body, SKIP_BODY_MARKERS, SKIP_TEXT_PATTERNS):
             continue
-        
+
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
         addressed_flag, latency = check_if_addressed(
@@ -331,11 +330,11 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue
-        
+
         # Skip outdated review comments (position is null but original_position exists)
         if c.get("position") is None and c.get("original_position") is not None:
             continue
-        
+
         rec = classify_comment(c)
         rec["comment_type"] = "review_comment"
         addressed_flag, latency = check_if_addressed(
@@ -352,20 +351,20 @@ def find_unaddressed_comments(
         login = (r.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue
-        
+
         body = (r.get("body") or "").strip()
         if not body:
             continue  # Skip empty review bodies
-        
+
         if should_skip_comment(body, SKIP_BODY_MARKERS, SKIP_TEXT_PATTERNS):
             continue
-        
+
         # COMMENTED reviews from blocking bots are informational, not change requests
         state = (r.get("state") or "").upper()
         rec = classify_comment(r)
         if rec["category"] == "blocking_bot" and state != "CHANGES_REQUESTED":
             rec["category"] = "info_bot"
-        
+
         rec["comment_type"] = "review"
         addressed_flag, latency = check_if_addressed(
             r.get("submitted_at", ""),

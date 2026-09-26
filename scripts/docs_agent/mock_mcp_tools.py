@@ -8,30 +8,30 @@ Status: Task 3.3 Implementation
 """
 
 import random
-from typing import Dict, List, Any
-from datetime import datetime, timedelta
 import uuid
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 
 class MockDataGenerator:
     """Base class for mock data generation"""
-    
+
     @staticmethod
     def random_id(prefix: str = "") -> str:
         """Generate random ID"""
         return f"{prefix}{uuid.uuid4().hex[:8]}"
-    
+
     @staticmethod
     def random_sha() -> str:
         """Generate random git SHA"""
         return uuid.uuid4().hex[:40]
-    
+
     @staticmethod
     def random_iso_date(days_ago: int = 0) -> str:
         """Generate random ISO date"""
         dt = datetime.now() - timedelta(days=days_ago)
         return dt.isoformat() + "Z"
-    
+
     @staticmethod
     def random_email() -> str:
         """Generate random email"""
@@ -46,13 +46,13 @@ class MockDataGenerator:
 
 class SearchCodeMockGenerator(MockDataGenerator):
     """Mock generator for search_code tool"""
-    
+
     @staticmethod
     def generate_result() -> Dict[str, Any]:
         """Generate single code search result"""
         languages = ["python", "javascript", "go", "rust", "java"]
         repos = ["codex", "aries-serpent", "platform", "core", "sdk"]
-        
+
         return {
             "path": f"src/{random.choice(repos)}/module_{random.randint(1, 10)}.py",
             "repository": f"org/{random.choice(repos)}",
@@ -68,7 +68,7 @@ class SearchCodeMockGenerator(MockDataGenerator):
                 }
             ]
         }
-    
+
     @staticmethod
     def generate_response(query: str, results: int = 10) -> Dict[str, Any]:
         """Generate search_code response"""
@@ -85,13 +85,13 @@ class SearchCodeMockGenerator(MockDataGenerator):
 
 class SearchIssuesMockGenerator(MockDataGenerator):
     """Mock generator for search_issues tool"""
-    
+
     @staticmethod
     def generate_issue() -> Dict[str, Any]:
         """Generate single issue"""
         states = ["open", "closed"]
         labels = ["bug", "feature", "documentation", "enhancement"]
-        
+
         return {
             "id": random.randint(1000000, 9999999),
             "number": random.randint(1, 500),
@@ -108,7 +108,7 @@ class SearchIssuesMockGenerator(MockDataGenerator):
             "repository_url": "https://api.github.com/repos/org/repo",
             "score": round(random.uniform(1.0, 100.0), 2),
         }
-    
+
     @staticmethod
     def generate_response(query: str, results: int = 10) -> Dict[str, Any]:
         """Generate search_issues response"""
@@ -125,7 +125,7 @@ class SearchIssuesMockGenerator(MockDataGenerator):
 
 class SearchPRsMockGenerator(MockDataGenerator):
     """Mock generator for search_pull_requests tool"""
-    
+
     @staticmethod
     def generate_pr() -> Dict[str, Any]:
         """Generate single PR"""
@@ -152,7 +152,7 @@ class SearchPRsMockGenerator(MockDataGenerator):
             "draft": random.choice([True, False]),
             "score": round(random.uniform(1.0, 100.0), 2),
         }
-    
+
     @staticmethod
     def generate_response(query: str, results: int = 10) -> Dict[str, Any]:
         """Generate search_pull_requests response"""
@@ -169,14 +169,14 @@ class SearchPRsMockGenerator(MockDataGenerator):
 
 class GetFileContentsMockGenerator(MockDataGenerator):
     """Mock generator for get_file_contents tool"""
-    
+
     @staticmethod
     def generate_response(path: str, ref: str = "main") -> Dict[str, Any]:
         """Generate get_file_contents response"""
         file_type = "file"
         if path.endswith("/"):
             file_type = "dir"
-        
+
         content = """#!/usr/bin/env python3
 '''
 Sample Python module
@@ -190,7 +190,7 @@ def main():
 if __name__ == "__main__":
     main()
 """
-        
+
         return {
             "name": path.split("/")[-1],
             "path": path,
@@ -210,7 +210,7 @@ if __name__ == "__main__":
 
 class GetCommitMockGenerator(MockDataGenerator):
     """Mock generator for get_commit tool"""
-    
+
     @staticmethod
     def generate_response(sha: str) -> Dict[str, Any]:
         """Generate get_commit response"""
@@ -250,7 +250,7 @@ class GetCommitMockGenerator(MockDataGenerator):
 
 class ListPRsMockGenerator(MockDataGenerator):
     """Mock generator for list_pull_requests tool"""
-    
+
     @staticmethod
     def generate_pr() -> Dict[str, Any]:
         """Generate single PR item"""
@@ -270,7 +270,7 @@ class ListPRsMockGenerator(MockDataGenerator):
             "mergeable": random.choice([True, False, None]),
             "draft": random.choice([True, False]),
         }
-    
+
     @staticmethod
     def generate_response(per_page: int = 30) -> List[Dict[str, Any]]:
         """Generate list_pull_requests response"""
@@ -283,7 +283,7 @@ class ListPRsMockGenerator(MockDataGenerator):
 
 class PRReadMockGenerator(MockDataGenerator):
     """Mock generator for pull_request_read tool"""
-    
+
     @staticmethod
     def generate_response(pr_number: int) -> Dict[str, Any]:
         """Generate PR details response"""
@@ -330,7 +330,7 @@ class PRReadMockGenerator(MockDataGenerator):
 
 class IssueReadMockGenerator(MockDataGenerator):
     """Mock generator for issue_read tool"""
-    
+
     @staticmethod
     def generate_response(issue_number: int) -> Dict[str, Any]:
         """Generate issue details response"""
@@ -369,12 +369,12 @@ class IssueReadMockGenerator(MockDataGenerator):
 
 class ListWorkflowsMockGenerator(MockDataGenerator):
     """Mock generator for list_workflows tool"""
-    
+
     @staticmethod
     def generate_workflow() -> Dict[str, Any]:
         """Generate workflow item"""
         workflow_names = ["CI", "Tests", "Build", "Security", "Documentation", "Deploy"]
-        
+
         return {
             "id": random.randint(1000000, 9999999),
             "name": random.choice(workflow_names),
@@ -386,7 +386,7 @@ class ListWorkflowsMockGenerator(MockDataGenerator):
             "html_url": "https://github.com/org/repo/blob/main/.github/workflows/test.yml",
             "badge_url": "https://github.com/org/repo/workflows/CI/badge.svg",
         }
-    
+
     @staticmethod
     def generate_response(per_page: int = 30) -> Dict[str, Any]:
         """Generate list_workflows response"""
@@ -402,13 +402,13 @@ class ListWorkflowsMockGenerator(MockDataGenerator):
 
 class GetWorkflowRunMockGenerator(MockDataGenerator):
     """Mock generator for get_workflow_run tool"""
-    
+
     @staticmethod
     def generate_response(run_id: int) -> Dict[str, Any]:
         """Generate workflow run details"""
         statuses = ["queued", "in_progress", "completed"]
         conclusions = ["success", "failure", "neutral", "cancelled", "skipped", "action_required"]
-        
+
         return {
             "id": run_id,
             "name": random.choice(["CI Pipeline", "Tests", "Build & Deploy"]),
@@ -464,7 +464,7 @@ class GetWorkflowRunMockGenerator(MockDataGenerator):
 
 class GetJobLogsMockGenerator(MockDataGenerator):
     """Mock generator for get_job_logs tool"""
-    
+
     @staticmethod
     def generate_response(job_id: int) -> str:
         """Generate job logs"""
@@ -492,7 +492,7 @@ Task completed successfully!
 
 class SearchRepositoriesMockGenerator(MockDataGenerator):
     """Mock generator for search_repositories tool"""
-    
+
     @staticmethod
     def generate_repo() -> Dict[str, Any]:
         """Generate repository item"""
@@ -521,7 +521,7 @@ class SearchRepositoriesMockGenerator(MockDataGenerator):
             "default_branch": "main",
             "score": round(random.uniform(1.0, 100.0), 2),
         }
-    
+
     @staticmethod
     def generate_response(query: str, results: int = 10) -> Dict[str, Any]:
         """Generate search_repositories response"""

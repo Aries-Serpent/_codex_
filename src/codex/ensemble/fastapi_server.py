@@ -169,7 +169,9 @@ class PredictionAPIServer:
                 raise HTTPException(status_code=500, detail=str(e))
 
         @app.post("/batch_predict", response_model=BatchPredictionResponse)
-        async def batch_predict_endpoint(request: BatchPredictionRequest) -> BatchPredictionResponse:
+        async def batch_predict_endpoint(
+            request: BatchPredictionRequest,
+        ) -> BatchPredictionResponse:
             """Make batch predictions."""
             start_time = time.time()
 
@@ -300,7 +302,9 @@ class PredictionAPIServer:
             """Server statistics endpoint."""
             import numpy as np
 
-            request_times_array = np.array(self.request_times) if self.request_times else np.array([0])
+            request_times_array = (
+                np.array(self.request_times) if self.request_times else np.array([0])
+            )
 
             return {
                 "total_requests": self.total_requests,

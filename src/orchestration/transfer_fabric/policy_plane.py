@@ -73,9 +73,7 @@ class PolicyConfig:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            "trust_boundaries": {
-                k: v.to_dict() for k, v in self.trust_boundaries.items()
-            },
+            "trust_boundaries": {k: v.to_dict() for k, v in self.trust_boundaries.items()},
             "routes": [r.to_dict() for r in self.routes],
             "rate_limits": self.rate_limits,
             "data_classifications": self.data_classifications,
@@ -150,9 +148,7 @@ class PolicyPlane:
         self.config.data_classifications[classification_id] = policy
         logger.info(f"Data classification added: {classification_id}")
 
-    def is_route_legal(
-        self, source: str, destination: str, data_type: str = ""
-    ) -> bool:
+    def is_route_legal(self, source: str, destination: str, data_type: str = "") -> bool:
         """Verify if a transfer route is legal."""
         for route in self.config.routes:
             if route.source == source and route.destination == destination:
@@ -160,15 +156,10 @@ class PolicyPlane:
                     return True
         return False
 
-    def validate_trust_boundary(
-        self, source: str, destination: str
-    ) -> bool:
+    def validate_trust_boundary(self, source: str, destination: str) -> bool:
         """Validate transfer against trust boundaries."""
         for boundary in self.config.trust_boundaries.values():
-            if (
-                boundary.source_sandbox == source
-                and boundary.destination_sandbox == destination
-            ):
+            if boundary.source_sandbox == source and boundary.destination_sandbox == destination:
                 return True
             if (
                 boundary.is_bidirectional

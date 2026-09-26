@@ -100,7 +100,7 @@ context = FixContext(
     vulnerability_type="shell_injection",
     risk_score=0.85,
     line_numbers=[10],
-    metadata={}
+    metadata={},
 )
 
 fix = generator.generate_fix(context)
@@ -120,7 +120,7 @@ verifier = FixVerifier()
 result = verifier.verify_fix(
     file_path="example.py",
     original_code='subprocess.run("ls", shell=True)',
-    fixed_code='subprocess.run(["ls"], shell=False)'
+    fixed_code='subprocess.run(["ls"], shell=False)',
 )
 
 print(f"Success: {result.success}")
@@ -138,7 +138,7 @@ config = PRConfig(
     base_branch="main",
     reviewers=["reviewer1"],
     labels=["auto-fix", "security"],
-    run_tests=True
+    run_tests=True,
 )
 
 pr_gen = AutomatedPRGenerator(config)
@@ -150,7 +150,7 @@ fixes = [fix1, fix2, fix3]
 metadata = pr_gen.create_pr(
     fixes=fixes,
     title="[Auto-Fix] Security vulnerabilities",
-    description="Automated fixes for detected vulnerabilities"
+    description="Automated fixes for detected vulnerabilities",
 )
 
 if metadata:
@@ -236,7 +236,7 @@ if prediction["risk_level"] in ["high", "critical"]:
         vulnerability_type=prediction["risk_level"],
         risk_score=prediction["risk_score"],
         line_numbers=[line_num],
-        metadata=prediction["features"]
+        metadata=prediction["features"],
     )
 
     fix = generator.generate_fix(context)

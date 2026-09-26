@@ -39,7 +39,9 @@ class AnomalyCorrelationAdapter(IntegrationAdapter):
             Prediction formatted for anomaly correlation
         """
         return {
-            "anomaly_score": 1.0 - prediction.confidence if prediction.prediction == "negative" else prediction.confidence,
+            "anomaly_score": 1.0 - prediction.confidence
+            if prediction.prediction == "negative"
+            else prediction.confidence,
             "confidence": prediction.confidence,
             "escalated": prediction.escalated,
             "escalation_reason": prediction.escalation_reason,
@@ -81,10 +83,12 @@ class AnomalyCorrelationAdapter(IntegrationAdapter):
                 predictions.append(float(p.prediction))
 
         # Calculate variance as diversity metric
-        conf_variance = sum((c - sum(confidences) / len(confidences)) ** 2 for c in confidences) / len(
-            confidences
-        )
-        pred_variance = sum((p - sum(predictions) / len(predictions)) ** 2 for p in predictions) / len(predictions)
+        conf_variance = sum(
+            (c - sum(confidences) / len(confidences)) ** 2 for c in confidences
+        ) / len(confidences)
+        pred_variance = sum(
+            (p - sum(predictions) / len(predictions)) ** 2 for p in predictions
+        ) / len(predictions)
 
         diversity = (conf_variance + pred_variance) / 2.0
         return min(1.0, diversity)
@@ -108,7 +112,9 @@ class AnomalyCorrelationAdapter(IntegrationAdapter):
             else:
                 predictions.append(float(p.prediction))
 
-        variance = sum((pred - sum(predictions) / len(predictions)) ** 2 for pred in predictions) / len(predictions)
+        variance = sum(
+            (pred - sum(predictions) / len(predictions)) ** 2 for pred in predictions
+        ) / len(predictions)
 
         if variance < 0.05:
             return "low"
@@ -185,7 +191,7 @@ class ForecastingAdapter(IntegrationAdapter):
         variance = sum((c - mean_conf) ** 2 for c in confidences) / len(confidences)
 
         # CI width based on variance
-        ci_width = 1.96 * (variance ** 0.5)
+        ci_width = 1.96 * (variance**0.5)
 
         pred_value = self._normalize_prediction(prediction.prediction)
         lower = max(0.0, pred_value - ci_width / 2)
@@ -206,7 +212,7 @@ class ForecastingAdapter(IntegrationAdapter):
         if p <= 0 or p >= 1:
             return 0.0
 
-        entropy = -p * (p ** 0.5) - (1 - p) * ((1 - p) ** 0.5)
+        entropy = -p * (p**0.5) - (1 - p) * ((1 - p) ** 0.5)
         return min(1.0, max(0.0, entropy))
 
     def _calculate_convergence(self, model_predictions: List[ModelPrediction]) -> float:

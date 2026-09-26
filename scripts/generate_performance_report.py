@@ -16,7 +16,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 
 def load_json_safe(path: Path) -> dict[str, Any]:
@@ -40,7 +40,7 @@ def generate_markdown_report(
         f"**Report Date**: {datetime.now().isoformat()}",
         "",
     ]
-    
+
     # Metrics summary
     if metrics.get("system"):
         lines.append("## System Metrics")
@@ -48,14 +48,14 @@ def generate_markdown_report(
         system = metrics["system"]
         lines.append(f"- **Timestamp**: {system.get('timestamp', 'N/A')}")
         lines.append(f"- **Hostname**: {system.get('hostname', 'N/A')}")
-        
+
         if "memory" in system:
             memory = system["memory"]
             total_gb = memory["total_bytes"] / (1024**3)
             used_gb = memory["used_bytes"] / (1024**3)
             lines.append(f"- **Memory**: {used_gb:.2f} GB / {total_gb:.2f} GB")
         lines.append("")
-    
+
     # Repository metrics
     if metrics.get("repository"):
         lines.append("## Repository Metrics")
@@ -64,7 +64,7 @@ def generate_markdown_report(
         lines.append(f"- **Size**: {repo.get('repo_size', 'N/A')}")
         lines.append(f"- **Python Files**: {repo.get('python_files', 'N/A')}")
         lines.append("")
-    
+
     # Test metrics
     if metrics.get("metrics", {}).get("tests"):
         lines.append("## Test Metrics")
@@ -73,14 +73,14 @@ def generate_markdown_report(
         lines.append(f"- **Test Files**: {tests.get('test_files', 0)}")
         lines.append(f"- **Total Tests**: {tests.get('total_tests', 0)}")
         lines.append("")
-    
+
     # Regressions
     if regressions.get("regressions"):
         lines.append("## Performance Regressions")
         lines.append("")
         lines.append("| Metric | Change | Severity |")
         lines.append("|--------|--------|----------|")
-        
+
         for regression in regressions["regressions"]:
             metric = regression.get("metric", "N/A")
             change = regression.get("percent_change", 0)
@@ -92,7 +92,7 @@ def generate_markdown_report(
         lines.append("")
         lines.append("✅ No performance regressions detected")
         lines.append("")
-    
+
     return "\n".join(lines)
 
 
@@ -141,26 +141,26 @@ def main() -> int:
         default="markdown",
         help="Output format",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Load data
     metrics = load_json_safe(args.metrics)
     regressions = load_json_safe(args.regressions)
-    
+
     # Generate report
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    
+
     if args.format == "markdown":
         content = generate_markdown_report(metrics, regressions)
         with open(args.output, "w") as f:
             f.write(content)
-    
+
     elif args.format == "json":
         content = generate_json_report(metrics, regressions)
         with open(args.output, "w") as f:
             json.dump(content, f, indent=2)
-    
+
     elif args.format == "html":
         # Simple HTML wrapper
         markdown_report = generate_markdown_report(metrics, regressions)
@@ -180,7 +180,7 @@ def main() -> int:
         """
         with open(args.output, "w") as f:
             f.write(html)
-    
+
     print(f"✅ Report generated: {args.output}")
     return 0
 

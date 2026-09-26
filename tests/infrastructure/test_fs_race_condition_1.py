@@ -42,27 +42,27 @@ class TestFSRaceCondition:
     @pytest.mark.timeout(10)
     def test_race_condition(self):
         """Test filesystem race condition with multiple threads."""
-        
+
         def worker(worker_id):
             """Worker that creates and manipulates files."""
             try:
                 # Each worker gets a unique GUID-based dir
                 work_dir = self.create_guid_temp_dir()
-                
+
                 # Create files with barrier
                 for i in range(5):
                     file_path = work_dir / f"file_{i}.txt"
                     # Atomic write
                     file_path.write_text(f"worker_{worker_id}_file_{i}")
                     time.sleep(0.01)  # Small delay
-                
+
                 # Verify all files exist
                 files = list(work_dir.glob("file_*.txt"))
-                assert len(files) == 5
-                
+                assert len(files) == 5, "Files must not be empty"
+
                 with self.lock:
                     self.results.append((worker_id, "success", len(files)))
-                    
+
             except Exception as e:
                 with self.lock:
                     self.results.append((worker_id, "failed", str(e)))
@@ -79,10 +79,10 @@ class TestFSRaceCondition:
             t.join(timeout=10)
 
         # Verify results
-        assert len(self.results) == 3
+        assert len(self.results) == 3, "Collection must not be empty"
         for worker_id, status, data in self.results:
             assert status == "success", f"Worker {worker_id} failed: {data}"
-            assert data == 5  # All files created
+            assert data == 5, "Data must not be empty"
 
         # Verify no directory conflicts (each had unique GUID)
-        assert len(self.test_dirs) == 3
+        assert len(self.test_dirs) == 3, "Collection must not be empty"

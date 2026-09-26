@@ -62,7 +62,7 @@ class SecurityFinding:
     fix_recommendation: str
     confidence: float = 1.0
     timestamp: Optional[str] = None
-    
+
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> 'SecurityFinding':
         """Create Finding from dictionary."""
@@ -92,11 +92,11 @@ def load_findings(findings_path: Path) -> List[SecurityFinding]:
     if not findings_path.exists():
         logger.warning(f"Findings file not found: {findings_path}")
         return []
-    
+
     try:
         with open(findings_path) as f:
             data = json.load(f)
-        
+
         findings_data = data.get('findings', [])
         findings = [SecurityFinding.from_dict(f) for f in findings_data]
         logger.info(f"Loaded {len(findings)} findings from {findings_path}")
@@ -118,28 +118,28 @@ def format_findings_table(findings: List[SecurityFinding]) -> str:
     """
     if not findings:
         return "No findings detected."
-    
+
     # Group by severity
     by_severity = defaultdict(lambda: defaultdict(int))
     tools_by_severity = defaultdict(set)
-    
+
     for finding in findings:
         severity = finding.severity
         by_severity[severity]['count'] += 1
         tools_by_severity[severity].add(finding.tool)
-    
+
     # Sort by severity level
     sorted_severities = sorted(
         by_severity.keys(),
         key=lambda x: SEVERITY_LEVELS.get(x, -1),
         reverse=True
     )
-    
+
     # Build table
     table = "### Severity Distribution\n\n"
     table += "| Severity | Count | Tools | Trend |\n"
     table += "|----------|-------|-------|-------|\n"
-    
+
     for severity in sorted_severities:
         if severity in by_severity:
             count = by_severity[severity]['count']
@@ -147,9 +147,9 @@ def format_findings_table(findings: List[SecurityFinding]) -> str:
             # Determine trend (this would be enhanced with historical data)
             trend = SEVERITY_TREND.get('unknown', 'Unknown')
             emoji = SEVERITY_EMOJIS.get(severity, '⚫')
-            
+
             table += f"| {emoji} {severity} | {count} | {tools} | {trend} |\n"
-    
+
     return table
 
 
@@ -166,7 +166,7 @@ def list_top_issues(findings: List[SecurityFinding], limit: int = 5) -> str:
     """
     if not findings:
         return "No findings to display."
-    
+
     # Sort by severity (high to low), then by confidence (high to low)
     sorted_findings = sorted(
         findings,
@@ -176,15 +176,15 @@ def list_top_issues(findings: List[SecurityFinding], limit: int = 5) -> str:
         ),
         reverse=True
     )
-    
+
     # Take top N
     top_findings = sorted_findings[:limit]
-    
+
     if not top_findings:
         return "No findings to display."
-    
+
     output = "### Top Security Issues\n\n"
-    
+
     for i, finding in enumerate(top_findings, 1):
         emoji = SEVERITY_EMOJIS.get(finding.severity, '⚫')
         output += f"{i}. **[{emoji} {finding.severity}]** {finding.cwe}: {finding.description}\n"
@@ -193,7 +193,7 @@ def list_top_issues(findings: List[SecurityFinding], limit: int = 5) -> str:
         output += f"   - **Confidence**: {finding.confidence:.0%}\n"
         output += f"   - **Fix**: {finding.fix_recommendation}\n"
         output += "\n"
-    
+
     return output
 
 
@@ -209,12 +209,12 @@ def get_agent_assignments(findings: List[SecurityFinding]) -> str:
     """
     if not findings:
         return "No agent assignments needed."
-    
+
     # Count findings by tool/type
     tool_counts = defaultdict(int)
     for finding in findings:
         tool_counts[finding.tool] += 1
-    
+
     # Map tools to recommended agents
     agent_mappings = {
         'CodeQL': {
@@ -242,7 +242,7 @@ def get_agent_assignments(findings: List[SecurityFinding]) -> str:
             'description': 'Python security issues'
         }
     }
-    
+
     # Find relevant agents
     assigned_agents = {}
     for tool, count in tool_counts.items():
@@ -255,15 +255,15 @@ def get_agent_assignments(findings: List[SecurityFinding]) -> str:
                     'description': mapping['description']
                 }
             assigned_agents[agent_name]['count'] += count
-    
+
     if not assigned_agents:
         return "No specific agents needed for remediation."
-    
+
     output = "### Recommended Security Agents\n\n"
     for agent, info in sorted(assigned_agents.items(), key=lambda x: x[1]['count'], reverse=True):
         output += f"- **{agent}** ({info['count']} findings)\n"
         output += f"  - Task: {info['description']}\n"
-    
+
     return output
 
 
@@ -279,12 +279,12 @@ def generate_pr_summary(findings: List[SecurityFinding]) -> str:
     """
     if not findings:
         return "✅ No security findings detected."
-    
+
     # Count by severity
     severity_counts = defaultdict(int)
     for finding in findings:
         severity_counts[finding.severity] += 1
-    
+
     # Build summary line
     summary_parts = []
     for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
@@ -292,11 +292,11 @@ def generate_pr_summary(findings: List[SecurityFinding]) -> str:
             count = severity_counts[severity]
             emoji = SEVERITY_EMOJIS.get(severity, '⚫')
             summary_parts.append(f"{count} {emoji} {severity}")
-    
+
     summary = ", ".join(summary_parts)
     # Format timestamp as UTC Z format (YYYY-MM-DDTHH:MM:SSZ)
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    
+
     return f"**Summary**: {summary}\n\n_Last scan: {timestamp}_"
 
 
@@ -312,29 +312,29 @@ def generate_findings_section(findings_path: Path, limit: int = 5) -> str:
         Complete markdown section
     """
     findings = load_findings(findings_path)
-    
+
     # Generate sections
     output = ""
-    
+
     # Summary
     output += generate_pr_summary(findings) + "\n\n"
-    
+
     if findings:
         # Severity distribution
         output += format_findings_table(findings) + "\n\n"
-        
+
         # Top issues
         output += list_top_issues(findings, limit) + "\n"
-        
+
         # Agent recommendations
         agents_section = get_agent_assignments(findings)
         if agents_section != "No agent assignments needed.":
             output += agents_section + "\n"
-        
+
         # Link to full report
         output += "---\n\n"
         output += "_For detailed analysis, see [Security Findings Report](.codex/security-findings-comprehensive.md) (if available)_\n"
-    
+
     return output
 
 
@@ -365,30 +365,30 @@ def main():
         default=5,
         help='Number of top issues to display'
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.command == 'generate':
         findings_section = generate_findings_section(args.findings, args.limit)
-        
+
         if args.output:
             with open(args.output, 'w') as f:
                 f.write(findings_section)
             logger.info(f"Generated findings section to {args.output}")
         else:
             print(findings_section)
-            
+
     elif args.command == 'summary':
         findings = load_findings(args.findings)
         summary = generate_pr_summary(findings)
         print(summary)
-        
+
     elif args.command == 'validate':
         findings = load_findings(args.findings)
         print(f"Loaded {len(findings)} findings")
         print(f"Valid format: {len(findings) >= 0}")
         return 0  # Validation succeeds even with empty findings
-    
+
     return 0
 
 

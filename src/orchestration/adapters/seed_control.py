@@ -62,8 +62,7 @@ class SeedControlSystem:
 
         if seed < cls.MIN_SEED or seed > cls.MAX_SEED:
             raise SeedControlError(
-                f"Seed must be in range [{cls.MIN_SEED}, {cls.MAX_SEED}], "
-                f"got {seed}"
+                f"Seed must be in range [{cls.MIN_SEED}, {cls.MAX_SEED}], got {seed}"
             )
 
         return True

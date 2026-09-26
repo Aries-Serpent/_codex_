@@ -60,7 +60,7 @@ class TestPerplexityCalculation:
         loss = 10.0
         result = perplexity(loss)
         expected = math.exp(loss)  # e^10 ≈ 22026.47
-        
+
         # Semantic assertion: exponential relationship
         assert_floats_approximately_equal(
             result, expected, tolerance=1e-4, relative=True,
@@ -73,7 +73,7 @@ class TestPerplexityCalculation:
 
         result = perplexity(-1.0)
         expected = math.exp(-1.0)  # e^(-1) ≈ 0.36788
-        
+
         # Semantic assertion: exponential relationship holds
         assert_floats_approximately_equal(
             result, expected, tolerance=1e-6,
@@ -87,7 +87,7 @@ class TestPerplexityCalculation:
 
         tiny_loss = 1e-10
         result = perplexity(tiny_loss)
-        
+
         # Semantic assertion: small loss ≈ small perplexity
         assert_floats_approximately_equal(
             result, 1.0, tolerance=1e-8,
@@ -101,7 +101,7 @@ class TestPerplexityCalculation:
 
         losses = [0.0, 0.5, 1.0, 2.0, 5.0]
         perplexities = [perplexity(loss) for loss in losses]
-        
+
         # Semantic assertion: monotonic property
         for i in range(len(perplexities) - 1):
             assert perplexities[i] < perplexities[i + 1], (
@@ -134,7 +134,7 @@ class TestTokenAccuracy:
 
         monkeypatch.setattr(text_mod, "_HAS_TORCH", False)
         monkeypatch.setattr(text_mod, "_torch", None)
-        
+
         # Semantic assertion: optional dependency error handling
         exc = assert_exception_raised(
             lambda: text_mod.token_accuracy(None, None),
@@ -147,7 +147,7 @@ class TestTokenAccuracy:
         """Token accuracy with empty predictions should handle gracefully."""
         try:
             from codex_ml.metrics.text import token_accuracy
-            
+
             # Semantic assertion: empty input handling
             with pytest.raises((ValueError, IndexError)):
                 token_accuracy([], [])
@@ -159,7 +159,7 @@ class TestTokenAccuracy:
         """Token accuracy with mismatched lengths should raise error."""
         try:
             from codex_ml.metrics.text import token_accuracy
-            
+
             # Semantic assertion: input validation
             with pytest.raises((ValueError, RuntimeError)):
                 token_accuracy([1, 0, 1], [1, 0])  # lengths don't match
@@ -171,12 +171,12 @@ class TestTokenAccuracy:
         """Token accuracy with perfect match should return 1.0."""
         try:
             from codex_ml.metrics.text import token_accuracy
-            
+
             predictions = [1, 0, 1, 1, 0]
             labels = [1, 0, 1, 1, 0]
-            
+
             result = token_accuracy(predictions, labels)
-            
+
             # Semantic assertion: perfect accuracy condition
             assert_floats_approximately_equal(
                 result, 1.0, tolerance=1e-10,
@@ -201,7 +201,7 @@ class TestTextMetricsModuleAvailability:
     def test_perplexity_function_available(self):
         """Perplexity function should be importable."""
         from codex_ml.metrics.text import perplexity
-        
+
         # Semantic assertion: function availability
         assert_not_none(perplexity, context="perplexity_function")
         assert_instance_of(

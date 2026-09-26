@@ -45,9 +45,7 @@ class CohortRoutes:
     low_risk_decisions: list[str]
     medium_risk_decisions: list[str]
     high_risk_decisions: list[str]
-    classifications: dict[str, CohortClassification] = field(
-        default_factory=dict
-    )
+    classifications: dict[str, CohortClassification] = field(default_factory=dict)
 
 
 class CohortRouter:
@@ -92,8 +90,7 @@ class CohortRouter:
 
         self._classifications[decision_id] = classification
         logger.debug(
-            f"Classified {decision_id}: {cohort.value} cohort "
-            f"(risk_score={risk_score:.3f})"
+            f"Classified {decision_id}: {cohort.value} cohort (risk_score={risk_score:.3f})"
         )
 
         return classification
@@ -102,19 +99,10 @@ class CohortRouter:
         """Generate cohort routes from classified decisions"""
 
         routing_id = f"routes_{len(self._routing_history)}"
-        
-        low_risk = [
-            d for d, c in self._classifications.items()
-            if c.cohort == CohortRisk.LOW
-        ]
-        medium_risk = [
-            d for d, c in self._classifications.items()
-            if c.cohort == CohortRisk.MEDIUM
-        ]
-        high_risk = [
-            d for d, c in self._classifications.items()
-            if c.cohort == CohortRisk.HIGH
-        ]
+
+        low_risk = [d for d, c in self._classifications.items() if c.cohort == CohortRisk.LOW]
+        medium_risk = [d for d, c in self._classifications.items() if c.cohort == CohortRisk.MEDIUM]
+        high_risk = [d for d, c in self._classifications.items() if c.cohort == CohortRisk.HIGH]
 
         routes = CohortRoutes(
             routing_id=routing_id,

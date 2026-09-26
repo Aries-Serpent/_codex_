@@ -187,9 +187,7 @@ class DecisionTraceWriter:
                             jsonschema.validate(entry, self.SCHEMA)
                             entries.append(entry)
                         except json.JSONDecodeError as e:
-                            raise DecisionTraceError(
-                                f"Invalid JSON at line {line_num}: {e}"
-                            )
+                            raise DecisionTraceError(f"Invalid JSON at line {line_num}: {e}")
                         except jsonschema.ValidationError as e:
                             raise DecisionTraceError(
                                 f"Schema validation failed at line {line_num}: {e}"

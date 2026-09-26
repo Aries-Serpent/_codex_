@@ -72,7 +72,7 @@ def test_discovers_root_and_nested_markdown_agents(tmp_path: Path) -> None:
         path.relative_to(agents_dir).as_posix() for path in validator.find_agent_specs(agents_dir)
     }
 
-    assert discovered == {
+    assert discovered == {, "discovered is not valid"
         "nested/reviewer-agent.md",
         "nested/specialist.agent.md",
         "pattern-discovery-skill.md",
@@ -91,7 +91,7 @@ def test_discovers_only_strict_custom_agent_filenames(tmp_path: Path) -> None:
         path.relative_to(agents_dir).as_posix() for path in validator.find_agent_specs(agents_dir)
     }
 
-    assert discovered == {
+    assert discovered == {, "discovered is not valid"
         "nested/reviewer-agent.md",
         "real.agent.md",
     }
@@ -129,8 +129,8 @@ def test_description_is_required_and_nonblank(
 
     errors = validator.validate_spec(validator.parse_agent_spec(profile), frontmatter_schema)
 
-    assert errors
-    assert any("description" in error for error in errors)
+    assert errors, "Error should be raised or set"
+    assert any("description" in error for error in errors), "Error should be raised or set"
 
 
 def test_parse_failure_is_reported_in_repository_results(
@@ -151,8 +151,8 @@ def test_parse_failure_is_reported_in_repository_results(
     )
 
     broken = next(result for result in results if result["path"].endswith("broken-agent.md"))
-    assert broken["valid"] is False
-    assert broken["errors"] == ["missing YAML frontmatter"]
+    assert broken["valid"] is False, "Condition must be true"
+    assert broken["errors"] == ["missing YAML frontmatter"], "Error should be raised or set"
 
 
 def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[dict, dict]) -> None:
@@ -179,7 +179,7 @@ def test_registry_ignores_readme_false_positives(tmp_path: Path, schemas: tuple[
     )
 
     messages = "\n".join(error for result in results for error in result["errors"])
-    assert "referenced Markdown file is not a valid agent profile" in messages
+    assert "referenced Markdown file is not a valid agent profile" in messages, "file is not valid"
     assert not all(result["valid"] for result in results), results
 
 
@@ -222,8 +222,8 @@ def test_registry_summary_and_coverage_are_enforced(tmp_path: Path, schemas: tup
     )
 
     messages = "\n".join(error for result in results for error in result["errors"])
-    assert "registry total_agents mismatch" in messages
-    assert "registry is missing agent spec: .github/agents/beta-agent.md" in messages
+    assert "registry total_agents mismatch" in messages, "Condition must be true"
+    assert "registry is missing agent spec: .github/agents/beta-agent.md" in messages, "registry is not valid"
 
 
 def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path) -> None:
@@ -231,7 +231,7 @@ def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path)
     agents_dir.mkdir(parents=True, exist_ok=True)
 
     assert validator._resolve_file_reference("/etc/passwd", repo_root=tmp_path, agents_dir=agents_dir) is None
-    assert (
+    assert (, "Condition must be true"
         validator._resolve_file_reference(
             "C:\\Windows\\System32\\drivers\\etc\\hosts",
             repo_root=tmp_path,
@@ -243,15 +243,15 @@ def test_path_reference_guard_rejects_absolute_and_windows_paths(tmp_path: Path)
 
 
 def test_profile_id_handles_agent_yaml_suffix() -> None:
-    assert validator._profile_id(Path("nested/example.agent.yml")) == "example"
-    assert validator._profile_id(Path("nested/example.agent.yaml")) == "example"
-    assert validator._profile_id(Path("nested/example/agent.yml")) == "example"
-    assert validator._profile_id(Path("nested/example/agent.yaml")) == "example"
+    assert validator._profile_id(Path("nested/example.agent.yml")) == "example", "validat is not valid"
+    assert validator._profile_id(Path("nested/example.agent.yaml")) == "example", "validat is not valid"
+    assert validator._profile_id(Path("nested/example/agent.yml")) == "example", "validat is not valid"
+    assert validator._profile_id(Path("nested/example/agent.yaml")) == "example", "validat is not valid"
 
 
 def test_profile_id_preserves_agent_and_skill_slugs() -> None:
-    assert validator._profile_id(Path("nested/example-agent.md")) == "example-agent"
-    assert validator._profile_id(Path("nested/example-skill.md")) == "example-skill"
+    assert validator._profile_id(Path("nested/example-agent.md")) == "example-agent", "validat is not valid"
+    assert validator._profile_id(Path("nested/example-skill.md")) == "example-skill", "validat is not valid"
 
 
 def test_discovers_directory_level_agent_yaml_specs(tmp_path: Path) -> None:
@@ -274,7 +274,7 @@ def test_discovers_directory_level_agent_yaml_specs(tmp_path: Path) -> None:
         path.relative_to(agents_dir).as_posix() for path in validator.find_agent_specs(agents_dir)
     }
 
-    assert discovered == {"reviewer/agent.yaml"}
+    assert discovered == {"reviewer/agent.yaml"}, "discovered is not valid"
 
 
 def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict]) -> None:
@@ -284,7 +284,7 @@ def test_registry_description_is_required_and_nonblank(schemas: tuple[dict, dict
 
     errors = validator.validate_spec(entry, registry_schema)
 
-    assert any("description" in error for error in errors)
+    assert any("description" in error for error in errors), "Error should be raised or set"
 
 
 def test_registry_file_and_identity_mismatches_fail(
@@ -315,9 +315,9 @@ def test_registry_file_and_identity_mismatches_fail(
     )
     messages = "\n".join(error for result in results for error in result["errors"])
 
-    assert "registry/file id mismatch" in messages
-    assert "registry/file name mismatch" in messages
-    assert "referenced agent file does not exist" in messages
+    assert "registry/file id mismatch" in messages, "Condition must be true"
+    assert "registry/file name mismatch" in messages, "Condition must be true"
+    assert "referenced agent file does not exist" in messages, "Condition must be true"
 
 
 def test_registry_discovers_profile_with_valid_agent_filename(
@@ -340,7 +340,7 @@ def test_registry_discovers_profile_with_valid_agent_filename(
         frontmatter_schema=frontmatter_schema,
     )
 
-    assert any(result["path"].endswith("nested/reviewer.agent.md") for result in results)
+    assert any(result["path"].endswith("nested/reviewer.agent.md") for result in results), "Result must not be empty"
     assert all(result["valid"] for result in results), results
 
 
@@ -367,8 +367,8 @@ def test_duplicate_registry_identifiers_and_names_fail(
     )
     messages = "\n".join(error for result in results for error in result["errors"])
 
-    assert "duplicate registry identifier" in messages
-    assert "duplicate registry name" in messages
+    assert "duplicate registry identifier" in messages, "Condition must be true"
+    assert "duplicate registry name" in messages, "Condition must be true"
 
 
 def test_duplicate_registry_file_references_fail(
@@ -395,7 +395,7 @@ def test_duplicate_registry_file_references_fail(
     )
     messages = "\n".join(error for result in results for error in result["errors"])
 
-    assert "duplicate registry file reference" in messages
+    assert "duplicate registry file reference" in messages, "Condition must be true"
 
 
 def test_handler_manifest_and_selectable_references_are_checked(
@@ -428,9 +428,9 @@ def test_handler_manifest_and_selectable_references_are_checked(
     )
     messages = "\n".join(error for result in results for error in result["errors"])
 
-    assert "referenced handler does not exist" in messages
-    assert "referenced manifest does not exist" in messages
-    assert "selectable status mismatch" in messages
+    assert "referenced handler does not exist" in messages, "Condition must be true"
+    assert "referenced manifest does not exist" in messages, "Condition must be true"
+    assert "selectable status mismatch" in messages, "Condition must be true"
 
 
 @pytest.mark.parametrize(
@@ -476,7 +476,7 @@ def test_affected_skill_profiles_are_valid_regressions(
         frontmatter_schema=frontmatter_schema,
     )
 
-    assert results
+    assert results, "Result must not be empty"
     assert all(result["valid"] for result in results), results
 
 
@@ -502,6 +502,6 @@ def test_strict_cli_generates_machine_readable_report(tmp_path: Path) -> None:
     )
     report = json.loads(report_path.read_text(encoding="utf-8"))
 
-    assert exit_code == 0
-    assert report["summary"]["non_compliant"] == 0
-    assert report["metadata"]["total_records"] == 2
+    assert exit_code == 0, "exit_code is not valid"
+    assert report["summary"]["non_compliant"] == 0, "rep is not valid"
+    assert report["metadata"]["total_records"] == 2, "Data must not be empty"

@@ -121,7 +121,7 @@ class TestOODAOrienter:
         orientation = orienter.orient(observable)
 
         assert orientation.risk_assessment is not None, "risk_assessment must be initialized"
-        assert orientation.risk_assessment.overall_risk_level
+        assert orientation.risk_assessment.overall_risk_level, "Condition must be true"
 
     def test_orienter_detects_opportunities(self):
         """ORIENT should detect opportunities."""

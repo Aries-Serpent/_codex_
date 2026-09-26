@@ -41,9 +41,7 @@ class CognitiveBrain:
             >>> brain.initialize()
         """
         self.config = config or {}
-        self.reasoning_engine = ReasoningEngine(
-            strategy=self.config.get("strategy", "default")
-        )
+        self.reasoning_engine = ReasoningEngine(strategy=self.config.get("strategy", "default"))
         self.context_manager = ContextManager()
         self._initialized = False
 
@@ -95,7 +93,9 @@ class CognitiveBrain:
         self.context_manager.store_context("current_input", input_data)
 
         # Perform reasoning
-        result = self.reasoning_engine.reason_about(input_data, self.context_manager.get_all_context())
+        result = self.reasoning_engine.reason_about(
+            input_data, self.context_manager.get_all_context()
+        )
 
         return result
 

@@ -162,7 +162,7 @@ class TestModelServing:
             "float16": {"bits": 16, "size_reduction": 0.5},
             "float32": {"bits": 32, "size_reduction": 1.0},
         }
-        assert (
+        assert (, "Condition must be true"
             quantization_modes["int8"]["size_reduction"]
             < quantization_modes["float32"]["size_reduction"]
         ), "Condition must be true"

@@ -26,8 +26,8 @@ import logging
 import subprocess
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -66,9 +66,9 @@ class ComplianceReport:
 def run_bandit_security_linting() -> ComplianceReport:
     """Run Bandit Python security linting."""
     logger.info("🐍 Running Bandit Python security linting...")
-    
+
     findings = []
-    
+
     try:
         result = subprocess.run(
             ["bandit", "-r", "src", "-f", "json", "-c", ".bandit.yaml"],
@@ -77,12 +77,12 @@ def run_bandit_security_linting() -> ComplianceReport:
             text=True,
             timeout=120
         )
-        
+
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
                 results = data.get("results", [])
-                
+
                 for issue in results:
                     findings.append(ComplianceFinding(
                         category="Security.Python",
@@ -93,11 +93,11 @@ def run_bandit_security_linting() -> ComplianceReport:
                         line_number=issue.get("line_number"),
                         remediation="See Bandit documentation for remediation"
                     ))
-                
+
                 logger.info(f"✅ Bandit scan complete: {len(findings)} issues")
             except json.JSONDecodeError:
                 logger.debug("Could not parse Bandit JSON output")
-    
+
     except FileNotFoundError:
         logger.warning("   Bandit not installed, skipping")
         logger.info("   Install: pip install bandit")
@@ -105,7 +105,7 @@ def run_bandit_security_linting() -> ComplianceReport:
         logger.error("   Bandit scan timed out")
     except Exception as e:
         logger.error(f"   Error: {e}")
-    
+
     return ComplianceReport(
         timestamp=datetime.utcnow().isoformat(),
         total_issues=len(findings),
@@ -120,9 +120,9 @@ def run_bandit_security_linting() -> ComplianceReport:
 def run_semgrep_scanning() -> ComplianceReport:
     """Run Semgrep security scanning with custom rules."""
     logger.info("🔍 Running Semgrep custom security scanning...")
-    
+
     findings = []
-    
+
     semgrep_config = REPO_ROOT / "semgrep" / "semgrep.yml"
     if not semgrep_config.exists():
         logger.info("   ⏭️  Semgrep config not found, skipping")
@@ -135,7 +135,7 @@ def run_semgrep_scanning() -> ComplianceReport:
             findings=[],
             passing=True
         )
-    
+
     try:
         result = subprocess.run(
             ["semgrep", "--config", str(semgrep_config), "src", "--json"],
@@ -144,12 +144,12 @@ def run_semgrep_scanning() -> ComplianceReport:
             text=True,
             timeout=180
         )
-        
+
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
                 results = data.get("results", [])
-                
+
                 for issue in results:
                     findings.append(ComplianceFinding(
                         category="Security.Semgrep",
@@ -160,11 +160,11 @@ def run_semgrep_scanning() -> ComplianceReport:
                         line_number=issue.get("start", {}).get("line"),
                         remediation=issue.get("extra", {}).get("fix", "See rule documentation")
                     ))
-                
+
                 logger.info(f"✅ Semgrep scan complete: {len(findings)} issues")
             except json.JSONDecodeError:
                 logger.debug("Could not parse Semgrep JSON output")
-    
+
     except FileNotFoundError:
         logger.warning("   Semgrep not installed, skipping")
         logger.info("   Install: pip install semgrep")
@@ -172,7 +172,7 @@ def run_semgrep_scanning() -> ComplianceReport:
         logger.error("   Semgrep scan timed out")
     except Exception as e:
         logger.error(f"   Error: {e}")
-    
+
     return ComplianceReport(
         timestamp=datetime.utcnow().isoformat(),
         total_issues=len(findings),
@@ -187,7 +187,7 @@ def run_semgrep_scanning() -> ComplianceReport:
 def deploy_codeql_workflow() -> bool:
     """Deploy GitHub CodeQL security scanning."""
     logger.info("🛠️  Deploying CodeQL security workflow...")
-    
+
     workflow_content = """# Phase 13.3: Enterprise Compliance Audit - CodeQL
 name: CodeQL Security Analysis
 
@@ -285,13 +285,13 @@ jobs:
           echo "2. Address critical/high severity issues"
           echo "3. Create issues for medium/low severity findings"
 """
-    
+
     workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
-    
+
     workflow_file = workflow_path / "13-3-enterprise-compliance.yml"
     workflow_file.write_text(workflow_content)
-    
+
     logger.info(f"✅ CodeQL workflow deployed: {workflow_file}")
     return True
 
@@ -299,7 +299,7 @@ jobs:
 def generate_compliance_dashboard() -> str:
     """Generate compliance audit dashboard."""
     logger.info("📊 Generating compliance dashboard...")
-    
+
     dashboard_html = """
 <!DOCTYPE html>
 <html>
@@ -426,13 +426,13 @@ def generate_compliance_dashboard() -> str:
 </body>
 </html>
 """
-    
+
     dashboard_path = REPO_ROOT / "docs" / "security"
     dashboard_path.mkdir(parents=True, exist_ok=True)
-    
+
     dashboard_file = dashboard_path / "compliance-dashboard.html"
     dashboard_file.write_text(dashboard_html)
-    
+
     logger.info(f"✅ Compliance dashboard generated: {dashboard_file}")
     return str(dashboard_file)
 
@@ -442,26 +442,26 @@ def main():
     logger.info("=" * 70)
     logger.info("🛡️  Phase 13.3: Enterprise Compliance Audit Suite")
     logger.info("=" * 70)
-    
+
     # Run compliance scans
     logger.info("\n[1/4] Running Bandit Python security linting...")
     bandit_report = run_bandit_security_linting()
-    
+
     logger.info("\n[2/4] Running Semgrep custom rule scanning...")
     semgrep_report = run_semgrep_scanning()
-    
+
     # Deploy workflows
     logger.info("\n[3/4] Deploying CodeQL and compliance workflows...")
     codeql_deployed = deploy_codeql_workflow()
-    
+
     # Generate dashboard
     logger.info("\n[4/4] Generating compliance dashboard...")
     dashboard_file = generate_compliance_dashboard()
-    
+
     # Aggregate results
     total_issues = bandit_report.total_issues + semgrep_report.total_issues
     critical_issues = bandit_report.critical_issues + semgrep_report.critical_issues
-    
+
     # Summary
     logger.info("\n" + "=" * 70)
     logger.info("📊 Phase 13.3.4 Summary: Enterprise Compliance")
@@ -472,9 +472,9 @@ def main():
     logger.info(f"✅ Critical issues: {critical_issues}")
     logger.info(f"✅ CodeQL workflow deployed: {codeql_deployed}")
     logger.info(f"✅ Compliance dashboard: {dashboard_file}")
-    
+
     logger.info("\n✅ Phase 13.3.4 COMPLETE")
-    
+
     # Return failure only if critical issues exist
     return 1 if critical_issues > 0 else 0
 

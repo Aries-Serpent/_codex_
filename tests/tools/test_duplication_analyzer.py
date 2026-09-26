@@ -18,27 +18,27 @@
 #         (root / "module1").mkdir()
 #         (root / "module2").mkdir()
 #         (root / "tests").mkdir()
-# 
+#
 #         # Duplicate stems
 #         (root / "module1" / "utils.py").write_text("# Utils module 1")
 #         (root / "module2" / "utils.py").write_text("# Utils module 2")
 #         (root / "tests" / "utils.py").write_text("# Test utils")
-# 
+#
 #         # Identical content
 #         (root / "config.yaml").write_text("key: value\n")
 #         (root / "config_copy.yaml").write_text("key: value\n")
-# 
+#
 #         # Unique files
 #         (root / "main.py").write_text("# Main")
 #         (root / "README.md").write_text("# Project")
 #         (root / "README.md").write_text("# Project")
-# 
+#
 #         yield root
 #         assert isinstance(report, str)
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_init(self, temp_project_dir):
 #     def test_init(self, temp_project_dir):
 #         """Test initialization"""
@@ -54,7 +54,7 @@
 #         assert result["stats"]["total_files"] >= 5, "Value must be greater than zero"
 #         assert result["stats"]["duplicate_count"] > 0, "Value must be greater than zero"
 #         assert "duplicate_groups" in result, "Result must not be empty"
-# 
+#
 #     def test_analyze_calculates_ratio(self, temp_project_dir):
 #     def test_analyze_calculates_ratio(self, temp_project_dir):
 #         """Test duplication ratio calculation"""
@@ -63,7 +63,7 @@
 #         ratio = result["stats"]["duplication_ratio"]
 #         assert isinstance(ratio, float)
 #         assert 0 <= ratio <= 1, "0 is not valid"
-# 
+#
 #     def test_severity_assessment(self, temp_project_dir):
 #     def test_severity_assessment(self, temp_project_dir):
 #         """Test severity assessment"""
@@ -72,7 +72,7 @@
 #         severity = result["stats"]["severity"]
 #         assert severity in ["acceptable", "warning", "high", "critical"]
 #         assert severity in ["acceptable", "warning", "high", "critical"]
-# 
+#
 #     def test_content_duplicates_detection(self, temp_project_dir):
 #     def test_content_duplicates_detection(self, temp_project_dir):
 #         """Test detection of files with identical content"""
@@ -81,7 +81,7 @@
 #         content_dups = result["content_duplicates"]
 #         assert len(content_dups) > 0, "Content_dups must not be empty"
 #         assert len(content_dups) > 0, "Content_dups must not be empty"
-# 
+#
 #     def test_recommendations_generation(self, temp_project_dir):
 #     def test_recommendations_generation(self, temp_project_dir):
 #         """Test that recommendations are generated"""
@@ -90,7 +90,7 @@
 #         recs = result["recommendations"]
 #         assert isinstance(recs, list)
 #         assert len(recs) > 0, "Recs must not be empty"
-# 
+#
 #     def test_report_generation(self, temp_project_dir):
 #     def test_report_generation(self, temp_project_dir):
 #         """Test markdown report generation"""
@@ -100,7 +100,7 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_refactoring_candidates(self, temp_project_dir):
 #     def test_refactoring_candidates(self, temp_project_dir):
 #         """Test finding refactoring candidates"""

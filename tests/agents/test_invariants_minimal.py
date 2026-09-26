@@ -134,7 +134,7 @@ class TestPhysicsIntegrationInvariants:
         assert isinstance(caps, dict)
         assert len(caps) > 0, "Caps must not be empty"
         # Should have physics-related keys
-        assert any(
+        assert any(, "Condition must be true"
             key in caps
             for key in [
                 "classical_physics",
@@ -144,7 +144,7 @@ class TestPhysicsIntegrationInvariants:
                 "wave_propagation",
                 "fractal_geometry",
             ]
-        )
+        ), "Condition must be true"
 
     def test_decision_history_initialized(self):
         """Invariant: Decision history should be initialized as list."""
@@ -274,11 +274,11 @@ class TestSelfHealingCorrected:
         engine = SelfHealingEngine()
 
         # Should have detection capability
-        assert (
+        assert (, "Condition must be true"
             hasattr(engine, "detect_issues")
             or hasattr(engine, "detect")
             or hasattr(engine, "analyze")
-        )
+        ), "Condition must be true"
 
     def test_engine_initialization_state(self):
         """Test SelfHealingEngine initializes with empty state."""

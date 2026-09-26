@@ -189,7 +189,7 @@ class TestErrorScenarios:
             with pytest.raises(TokenResolutionError) as exc_info:
                 get_token(required_elevated=True)
 
-            assert "elevated" in str(exc_info.value).lower()
+            assert "elevated" in str(exc_info.value).lower(), "Value must be initialized"
 
 
 # ============================================================================
@@ -223,8 +223,8 @@ class TestScopeValidation:
             {"CODEX_MASTER_KEY": "master_token", "CODEX_BACKUP_KEY": "backup_token"},
             clear=True,
         ):
-            assert get_token_scope("master_token") == "elevated"
-            assert get_token_scope("backup_token") == "standard"
+            assert get_token_scope("master_token") == "elevated", "Condition must be true"
+            assert get_token_scope("backup_token") == "standard", "Condition must be true"
             assert validate_token_scope("master_token", ["repo", "workflow", "actions:write"]) == (
                 True,
                 "Token from CODEX_MASTER_KEY has all required scopes",
@@ -246,7 +246,7 @@ class TestScopeValidation:
                 # Token value should NOT appear in logs
                 assert "secret_token_12345" not in call_args, "Token value exposed in logs!"
                 # Source should appear
-                assert "CODEX_MASTER_KEY" in call_args or "source" in call_args.lower()
+                assert "CODEX_MASTER_KEY" in call_args or "source" in call_args.lower(), "Condition must be true"
 
 
 # ============================================================================

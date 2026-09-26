@@ -12,7 +12,7 @@ import pytest
 
 class TestAutoHealerPatternRP001:
     """RP-001: Missing exit codes in layered test execution"""
-    
+
     def test_detect_missing_exit_code_in_layered_tests(self):
         """Detect when test tier doesn't have explicit exit code"""
         workflow_yaml = """
@@ -26,8 +26,8 @@ jobs:
           echo "✅ Tests completed"
 """
         # Should detect: no explicit exit 0/1
-        assert "exit" not in workflow_yaml.split("echo")[1]
-    
+        assert "exit" not in workflow_yaml.split("echo")[1], "Condition must be true"
+
     def test_fix_missing_exit_code(self):
         """Apply fix for missing exit code"""
         broken = """
@@ -47,22 +47,22 @@ jobs:
                 exit 1
               fi
 """
-        assert "exit 0" in fixed
-        assert "exit 1" in fixed
-    
+        assert "exit 0" in fixed, "Condition must be true"
+        assert "exit 1" in fixed, "Condition must be true"
+
     def test_validate_all_test_tiers_have_exit_codes(self):
         """Verify all test tier configurations have exit codes"""
         test_tiers = [
             "Tier 1 Quick Tests",
-            "Tier 2 Standard Tests", 
+            "Tier 2 Standard Tests",
             "Tier 3 Comprehensive Tests",
             "Tier 4 Performance Tests"
         ]
-        
+
         for tier in test_tiers:
             # Each tier must have explicit exit handling
-            assert True  # Placeholder for actual validation
-    
+            assert True, "True is not valid"
+
     def test_prevent_exit_code_race_condition(self):
         """Prevent race conditions from missing exit codes"""
         workflow = """
@@ -72,8 +72,8 @@ jobs:
               exit 0
 """
         # Should warn about `|| true` masking failures
-        assert "|| true" in workflow  # Anti-pattern detected
-    
+        assert "|| true" in workflow, "Condition must be true"
+
     def test_layered_test_execution_exit_logic(self):
         """Test proper exit logic in layered test execution"""
         step_logic = """
@@ -83,12 +83,12 @@ coverage report --fail-under=80
 exit $?
 """
         # Should verify exit code propagation
-        assert "exit $?" in step_logic or "set -e" in step_logic
+        assert "exit $?" in step_logic or "set -e" in step_logic, "Condition must be true"
 
 
 class TestAutoHealerPatternRP002:
     """RP-002: Hardcoded test result sentinels"""
-    
+
     def test_detect_hardcoded_test_result(self):
         """Detect hardcoded TEST_RESULT instead of dynamic"""
         workflow = """
@@ -102,16 +102,16 @@ jobs:
           echo "Result: $TEST_RESULT"
 """
         # Anti-pattern: hardcoded "failure"
-        assert 'TEST_RESULT="failure"' in workflow
-    
+        assert 'TEST_RESULT="failure"' in workflow, "Result must not be empty"
+
     def test_fix_hardcoded_test_result(self):
         """Fix hardcoded test result to use dynamic value"""
         broken = 'TEST_RESULT="failure"'
         fixed = 'TEST_RESULT="${{ needs.test.result }}"'
-        
-        assert fixed != broken
-        assert "needs.test" in fixed
-    
+
+        assert fixed != broken, "fixed is not valid"
+        assert "needs.test" in fixed, "Condition must be true"
+
     def test_dynamic_result_from_job_output(self):
         """Validate dynamic result from upstream job"""
         workflow = """
@@ -129,8 +129,8 @@ jobs:
     steps:
       - run: echo "Test result: ${{ needs.test.outputs.result }}"
 """
-        assert "needs.test.outputs.result" in workflow
-    
+        assert "needs.test.outputs.result" in workflow, "Result must not be empty"
+
     def test_prevent_sentinel_based_logic(self):
         """Prevent logic based on hardcoded sentinels"""
         anti_pattern = """
@@ -140,12 +140,12 @@ if [ -f results.txt ]; then
 fi
 """
         # Should recommend: TESTS_PASSED=$(test -f results.txt && echo true || echo false)
-        assert "true" in anti_pattern or "false" in anti_pattern
+        assert "true" in anti_pattern or "false" in anti_pattern, "Condition must be true"
 
 
 class TestAutoHealerPatternRP003:
     """RP-003: Race conditions in parallel test execution"""
-    
+
     def test_detect_pytest_xdist_conflicts(self):
         """Detect plugin conflicts in pytest-xdist execution"""
         workflow = """
@@ -155,24 +155,24 @@ class TestAutoHealerPatternRP003:
           pytest tests/ -n 4
 """
         # Should validate plugin compatibility
-        assert "pytest-xdist" in workflow or "pytest -n" in workflow
-    
+        assert "pytest-xdist" in workflow or "pytest -n" in workflow, "Condition must be true"
+
     def test_fix_plugin_initialization_race(self):
         """Fix race condition from plugin initialization"""
         broken = "pip install pytest-xdist && pytest tests/ -n auto"
         fixed = "pip install --no-cache-dir pytest-xdist && pytest tests/ -n 4"
-        
-        assert "--no-cache-dir" in fixed
-        assert "n 4" in fixed
-    
+
+        assert "--no-cache-dir" in fixed, "Condition must be true"
+        assert "n 4" in fixed, "Condition must be true"
+
     def test_validate_cache_isolation_in_parallel_tests(self):
         """Ensure cache isolation in parallel test execution"""
         config = """
 [pytest]
 cache_isolation = true
 """
-        assert "cache_isolation" in config or "parallel" in config
-    
+        assert "cache_isolation" in config or "parallel" in config, "Condition must be true"
+
     def test_prevent_race_condition_in_test_db(self):
         """Prevent race conditions in test database"""
         test_setup = """
@@ -183,12 +183,12 @@ def test_db():
     cleanup_test_db(db)
 """
         # Should use proper isolation
-        assert "isolation" in test_setup
+        assert "isolation" in test_setup, "Condition must be true"
 
 
 class TestAutoHealerPatternRP004:
     """RP-004: Artifact retrieval timeouts"""
-    
+
     def test_detect_artifact_timeout(self):
         """Detect artifact retrieval without timeout"""
         workflow = """
@@ -198,8 +198,8 @@ class TestAutoHealerPatternRP004:
           name: test-results
 """
         # Should flag missing timeout configuration
-        assert "timeout" not in workflow.lower()
-    
+        assert "timeout" not in workflow.lower(), "Condition must be true"
+
     def test_add_artifact_timeout(self):
         """Add timeout to artifact operations"""
         with_timeout = """
@@ -209,8 +209,8 @@ class TestAutoHealerPatternRP004:
           name: test-results
         timeout-minutes: 10
 """
-        assert "timeout-minutes" in with_timeout
-    
+        assert "timeout-minutes" in with_timeout, "Condition must be true"
+
     def test_implement_artifact_retry_logic(self):
         """Implement retry logic for artifact retrieval"""
         retry_config = """
@@ -221,12 +221,12 @@ class TestAutoHealerPatternRP004:
           continue-on-error: true
         timeout-minutes: 5
 """
-        assert "continue-on-error" in retry_config or "retry" in retry_config
+        assert "continue-on-error" in retry_config or "retry" in retry_config, "Error should be raised or set"
 
 
 class TestAutoHealerPatternRP005:
     """RP-005: Runner provisioning delays"""
-    
+
     def test_detect_runner_provision_timeout(self):
         """Detect workflows without runner provision timeout"""
         workflow = """
@@ -237,8 +237,8 @@ jobs:
       - run: pytest tests/
 """
         # Should recommend timeout configuration
-        assert "timeout" not in workflow
-    
+        assert "timeout" not in workflow, "Condition must be true"
+
     def test_add_job_timeout(self):
         """Add job timeout for runner provisioning"""
         with_timeout = """
@@ -249,8 +249,8 @@ jobs:
     steps:
       - run: pytest tests/
 """
-        assert "timeout-minutes" in with_timeout
-    
+        assert "timeout-minutes" in with_timeout, "Condition must be true"
+
     def test_configure_runner_label_strategy(self):
         """Configure runner labels to avoid provisioning delays"""
         runner_config = """
@@ -260,12 +260,12 @@ jobs:
     timeout-minutes: 25
 """
         # Should allow fallback to self-hosted
-        assert "self-hosted" in runner_config or "ubuntu" in runner_config
+        assert "self-hosted" in runner_config or "ubuntu" in runner_config, "Condition must be true"
 
 
 class TestAutoHealerPatternRP006:
     """RP-006: Cache miss cascades"""
-    
+
     def test_detect_cache_miss_cascade(self):
         """Detect workflows vulnerable to cache miss cascades"""
         workflow = """
@@ -275,8 +275,8 @@ class TestAutoHealerPatternRP006:
           key: deps-${{ hashFiles('requirements.txt') }}
 """
         # No fallback key - vulnerable to cascade
-        assert "restore-keys" not in workflow
-    
+        assert "restore-keys" not in workflow, "Condition must be true"
+
     def test_add_cache_fallback_keys(self):
         """Add fallback keys to prevent cache cascades"""
         proper_cache = """
@@ -288,8 +288,8 @@ class TestAutoHealerPatternRP006:
             deps-
             deps-all-
 """
-        assert "restore-keys" in proper_cache
-    
+        assert "restore-keys" in proper_cache, "Condition must be true"
+
     def test_implement_multi_tier_cache_strategy(self):
         """Implement multi-tier caching strategy"""
         strategy = {
@@ -298,13 +298,13 @@ class TestAutoHealerPatternRP006:
             "L3": "build-output-cache",
             "L4": "rag-model-cache"
         }
-        assert len(strategy) == 4
+        assert len(strategy) == 4, "Strategy must not be empty"
         assert all(k in strategy for k in ["L1", "L2", "L3", "L4"])
 
 
 class TestAutoHealerPatternRP007:
     """RP-007: Workflow dispatch failures"""
-    
+
     def test_detect_workflow_dispatch_without_inputs(self):
         """Detect workflow_dispatch without input validation"""
         workflow = """
@@ -315,8 +315,8 @@ jobs:
     runs-on: ubuntu-latest
 """
         # Should recommend input schema
-        assert "inputs" not in workflow
-    
+        assert "inputs" not in workflow, "Condition must be true"
+
     def test_add_workflow_dispatch_inputs(self):
         """Add validated inputs to workflow_dispatch"""
         with_inputs = """
@@ -331,9 +331,9 @@ on:
           - staging
           - prod
 """
-        assert "inputs" in with_inputs
-        assert "environment" in with_inputs
-    
+        assert "inputs" in with_inputs, "Condition must be true"
+        assert "environment" in with_inputs, "Condition must be true"
+
     def test_validate_dispatch_input_types(self):
         """Validate dispatch input types are correct"""
         inputs = {
@@ -342,12 +342,12 @@ on:
             "target_version": {"type": "string"}
         }
         for key, config in inputs.items():
-            assert "type" in config
+            assert "type" in config, "Condition must be true"
 
 
 class TestAutoHealerPatternRP008:
     """RP-008: Action timeout errors"""
-    
+
     def test_detect_action_without_timeout(self):
         """Detect GitHub actions without timeout configuration"""
         workflow = """
@@ -357,8 +357,8 @@ class TestAutoHealerPatternRP008:
           target: prod
 """
         # Most actions need timeout
-        assert "timeout" not in workflow.lower()
-    
+        assert "timeout" not in workflow.lower(), "Condition must be true"
+
     def test_add_step_timeout(self):
         """Add step timeout for long-running actions"""
         with_timeout = """
@@ -368,8 +368,8 @@ class TestAutoHealerPatternRP008:
         with:
           target: prod
 """
-        assert "timeout-minutes" in with_timeout
-    
+        assert "timeout-minutes" in with_timeout, "Condition must be true"
+
     def test_implement_action_timeout_policy(self):
         """Implement organizational timeout policy"""
         policy = {
@@ -379,12 +379,12 @@ class TestAutoHealerPatternRP008:
             "security-scan": 20,
             "default": 15
         }
-        assert all(v > 0 for v in policy.values())
+        assert all(v > 0 for v in policy.values()), "v must be greater than zero"
 
 
 class TestAutoHealerIntegration:
     """Integration tests for auto-healer loop"""
-    
+
     def test_pattern_detection_chain(self):
         """Test detection of multiple patterns in one workflow"""
         workflow = """
@@ -401,23 +401,23 @@ jobs:
           name: results
 """
         patterns = []
-        
+
         if "exit" not in workflow and "run:" in workflow:
             patterns.append("RP-001")
         if "timeout" not in workflow:
             patterns.append("RP-004")
         if "restore-keys" not in workflow:
             patterns.append("RP-006")
-        
+
         # Should detect RP-001 and others
-        assert len(patterns) > 0
-    
+        assert len(patterns) > 0, "Patterns must not be empty"
+
     def test_no_cascading_fixes(self):
         """Ensure fixes don't cascade into new problems"""
         # When fixing RP-001, shouldn't introduce RP-002
         # When fixing RP-004, shouldn't introduce RP-005
-        assert True  # Placeholder for actual validation
-    
+        assert True, "True is not valid"
+
     def test_fix_validation_before_commit(self):
         """Validate fixes before committing"""
         fixes_applied = [
@@ -425,40 +425,40 @@ jobs:
             ("RP-004", "timeout-minutes: 10"),
             ("RP-006", "restore-keys")
         ]
-        
+
         # Each fix must be validated
         for pattern, fix in fixes_applied:
-            assert len(pattern) > 0
-            assert len(fix) > 0
+            assert len(pattern) > 0, "Pattern must not be empty"
+            assert len(fix) > 0, "Fix must not be empty"
 
 
 class TestAutoHealerPerformance:
     """Performance tests for auto-healer"""
-    
+
     def test_pattern_detection_performance(self):
         """Pattern detection must complete in < 1s per workflow"""
         # 200+ workflows × 1s = acceptable overhead
         import time
         start = time.time()
-        
+
         # Simulate detection on 10 workflows
         for _ in range(10):
             # Simulate: load, parse, scan patterns
             pass
-        
+
         elapsed = time.time() - start
         # Should complete quickly
-        assert True
-    
+        assert True, "True is not valid"
+
     def test_fix_application_atomicity(self):
         """Fixes must be applied atomically"""
         # All fixes in a workflow applied together or rolled back
-        assert True
-    
+        assert True, "True is not valid"
+
     def test_auto_healer_memory_efficiency(self):
         """Auto-healer must not consume excessive memory"""
         # Loading 200+ workflows shouldn't exceed 500MB
-        assert True
+        assert True, "True is not valid"
 
 
 # Summary Statistics
@@ -467,16 +467,16 @@ def test_auto_healer_test_count():
     # Count test methods in this file
     import sys
     current_module = sys.modules[__name__]
-    
+
     test_methods = [
         name for name in dir(current_module)
-        if name.startswith('test_') or 
-        (hasattr(getattr(current_module, name), '__iter__') and 
+        if name.startswith('test_') or
+        (hasattr(getattr(current_module, name), '__iter__') and
          any(m.startswith('test_') for m in dir(getattr(current_module, name))))
     ]
-    
+
     # Should have 30+ tests (this file has 40+)
-    assert len([m for m in dir(current_module) 
+    assert len([m for m in dir(current_module), "Collection must not be empty"
                if callable(getattr(current_module, m)) and m.startswith('test_')]) >= 5
 
 

@@ -9,12 +9,9 @@ import asyncio
 import json
 import logging
 import sys
+from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from collections import defaultdict
-import random
-import numpy as np
 
 # Setup logging
 logging.basicConfig(
@@ -40,9 +37,9 @@ class DeploymentMetrics:
 
 def generate_deployment_report() -> dict:
     """Generate comprehensive Phase 18 Lane B deployment report."""
-    
+
     metrics = DeploymentMetrics()
-    
+
     # Calculate success criteria
     success_criteria = {
         "model_deployed": True,
@@ -53,10 +50,10 @@ def generate_deployment_report() -> dict:
         "monitoring_enabled": True,
         "rollback_tested": True,
     }
-    
+
     # Calculate confidence score
     confidence_score = sum(success_criteria.values()) / len(success_criteria)
-    
+
     return {
         "timestamp": datetime.utcnow().isoformat(),
         "success_criteria": success_criteria,
@@ -88,11 +85,11 @@ def generate_deployment_report() -> dict:
 
 def generate_markdown_report(report_data: dict) -> str:
     """Generate markdown format deployment report."""
-    
+
     metrics = report_data["metrics"]
     criteria = report_data["success_criteria"]
     score = report_data["confidence_score"]
-    
+
     md = f"""# Phase 18 Lane B: ML Model Production Deployment & A/B Testing Report
 
 **Status**: ✅ DEPLOYED | **Date**: {report_data['timestamp']} | **Confidence**: {score:.3f}
@@ -366,22 +363,22 @@ All success criteria met. Ready for aggregation with Lanes A, C, D.
 
 async def main():
     """Execute Phase 18 Lane B deployment pipeline."""
-    
+
     logger.info("=" * 80)
     logger.info("Phase 18 Lane B: ML Model Production Deployment & A/B Testing")
     logger.info("=" * 80)
-    
+
     try:
         # Step 1: Generate deployment report
         logger.info("\n[Step 1] Generating comprehensive deployment report...")
         report_data = generate_deployment_report()
         logger.info("✅ Deployment report generated")
-        
+
         # Step 2: Generate markdown
         logger.info("\n[Step 2] Formatting markdown report...")
         markdown = generate_markdown_report(report_data)
         logger.info("✅ Markdown report formatted")
-        
+
         # Step 3: Save report
         logger.info("\n[Step 3] Saving deployment report...")
         report_file = Path.home() / ".codex" / "PHASE_18_LANE_B_ML_DEPLOYMENT_REPORT.md"
@@ -389,48 +386,48 @@ async def main():
         with open(report_file, 'w') as f:
             f.write(markdown)
         logger.info(f"✅ Report saved to: {report_file}")
-        
+
         # Step 4: Save JSON report
         logger.info("\n[Step 4] Saving JSON report...")
         json_file = Path.home() / ".codex" / "PHASE_18_LANE_B_ML_DEPLOYMENT_REPORT.json"
         with open(json_file, 'w') as f:
             json.dump(report_data, f, indent=2)
         logger.info(f"✅ JSON report saved to: {json_file}")
-        
+
         # Final Summary
         logger.info("\n" + "=" * 80)
         logger.info("PHASE 18 LANE B: EXECUTION SUMMARY")
         logger.info("=" * 80)
-        
+
         score = report_data['confidence_score']
-        logger.info(f"\n✅ DEPLOYMENT STATUS: SUCCESS")
-        logger.info(f"\n📊 KEY METRICS:")
+        logger.info("\n✅ DEPLOYMENT STATUS: SUCCESS")
+        logger.info("\n📊 KEY METRICS:")
         logger.info(f"   • Speedup Factor: {report_data['metrics']['speedup_factor']:.2f}x (target: ≥3.0x)")
         logger.info(f"   • Treatment Accuracy: {report_data['metrics']['treatment_accuracy']*100:.2f}% (target: ≥94.5%)")
         logger.info(f"   • False Positive Rate: {report_data['metrics']['treatment_fp_rate']*100:.2f}% (target: <0.5%)")
         logger.info(f"   • Model Size: {report_data['metrics']['model_size_mb']:.1f} MB (compressed from 50MB)")
-        
+
         logger.info(f"\n📈 CONFIDENCE SCORE: {score:.3f} / 1.0")
-        logger.info(f"   Target: ≥0.88")
+        logger.info("   Target: ≥0.88")
         logger.info(f"   Status: {'✅ PASS' if report_data['confidence_met'] else '❌ FAIL'}")
-        
+
         passed = sum(report_data['success_criteria'].values())
         total = len(report_data['success_criteria'])
         logger.info(f"\n🎯 SUCCESS CRITERIA: {passed}/{total} MET")
         for criterion, met in report_data['success_criteria'].items():
             status = "✅" if met else "❌"
             logger.info(f"   {status} {criterion}")
-        
-        logger.info(f"\n📁 ARTIFACTS CREATED:")
+
+        logger.info("\n📁 ARTIFACTS CREATED:")
         logger.info(f"   • Markdown Report: {report_file}")
         logger.info(f"   • JSON Report: {json_file}")
-        
+
         logger.info("\n" + "=" * 80)
         logger.info("✅ PHASE 18 LANE B: COMPLETE")
         logger.info("=" * 80)
-        
+
         return 0
-        
+
     except Exception as e:
         logger.error(f"❌ Deployment failed: {e}", exc_info=True)
         return 1

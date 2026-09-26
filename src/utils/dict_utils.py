@@ -143,15 +143,11 @@ def extract_commit_timestamp(commit_dict: dict[str, Any]) -> str:
     Returns:
         ISO-8601 timestamp or empty string
     """
-    committer_ts = safe_get_nested(
-        commit_dict, "commit", "committer", "date", default=""
-    )
+    committer_ts = safe_get_nested(commit_dict, "commit", "committer", "date", default="")
     if committer_ts:
         return committer_ts
-    
-    return safe_get_nested(
-        commit_dict, "commit", "author", "date", default=""
-    )
+
+    return safe_get_nested(commit_dict, "commit", "author", "date", default="")
 
 
 def chunk_list(items: list[Any], chunk_size: int) -> list[list[Any]]:
@@ -165,4 +161,4 @@ def chunk_list(items: list[Any], chunk_size: int) -> list[list[Any]]:
     Returns:
         List of chunks (last chunk may be smaller)
     """
-    return [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
+    return [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]

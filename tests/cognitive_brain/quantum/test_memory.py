@@ -7,14 +7,14 @@
 # 4. Integration: Memory-guided decisions, cache hit rate, novel case detection, performance (5 tests)
 # 5. Compression: Compression ratio (60%), decompression accuracy, speed benchmarks (5 tests)
 # class TestConsolidation:
-# 
+#
 #     """Test STM → LTM consolidation."""
-# 
+#
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
@@ -25,7 +25,7 @@
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
@@ -80,7 +80,7 @@
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #     def test_stm_capacity_limit(self, memory_manager, sample_pattern):
 #     def test_stm_capacity_limit(self, memory_manager, sample_pattern):
 #         """Test 1.1: STM respects capacity limit of 1000 patterns."""
@@ -97,7 +97,7 @@
 #         assert len(memory_manager.stm) <= memory_manager.stm_capacity, "Collection must not be empty"
 #         assert len(memory_manager.stm) == 1000, "Collection must not be empty"
 #         assert len(memory_manager.stm) == 1000, "Collection must not be empty"
-# 
+#
 #     def test_ltm_capacity_management(self, memory_manager):
 #     def test_ltm_capacity_management(self, memory_manager):
 #         """Test 1.2: LTM capacity management with eviction."""
@@ -114,11 +114,11 @@
 #             )
 #             memory_manager.ltm[pattern.pattern_id] = pattern
 #         memory_manager.consolidate()
-# 
+#
 #         # LTM should not exceed capacity significantly
 #         assert len(memory_manager.ltm) <= memory_manager.ltm_capacity + 100, "Collection must not be empty"
 #         assert len(memory_manager.ltm) <= memory_manager.ltm_capacity + 100, "Collection must not be empty"
-# 
+#
 #     def test_duplicate_pattern_storage(self, memory_manager, sample_pattern):
 #     def test_duplicate_pattern_storage(self, memory_manager, sample_pattern):
 #         """Test 1.3: Store duplicate patterns (same ID handled correctly)."""
@@ -126,7 +126,7 @@
 #         # This is intentional for simplicity - STM acts as a buffer
 #         # LTM uses dict which prevents duplicates by key
 #         id1 = memory_manager.store_pattern(sample_pattern)
-# 
+#
 #         # Create duplicate with same ID but different data
 #         duplicate = MemoryPattern(
 #             pattern_id=sample_pattern.pattern_id,
@@ -137,12 +137,12 @@
 #         )
 #         id2 = memory_manager.store_pattern(duplicate)
 #         id2 = memory_manager.store_pattern(duplicate)
-# 
+#
 #         assert id1 == id2, "id1 is not valid"
 #         # STM allows duplicates as a FIFO buffer (both entries present)
 #         # LTM will deduplicate on consolidation
 #         assert len(memory_manager.stm) == 2, "Collection must not be empty"
-# 
+#
 #     def test_timestamp_tracking(self, memory_manager):
 #     def test_timestamp_tracking(self, memory_manager):
 #         """Test 1.4: Timestamps are correctly tracked."""
@@ -155,22 +155,22 @@
 #             timestamp=datetime.now(UTC),
 #         )
 #         memory_manager.store_pattern(pattern)
-# 
+#
 #         after_time = datetime.now(UTC)
 #         # Check timestamp is between before and after
 #         assert before_time <= pattern.timestamp <= after_time, "before_time is not valid"
 #         assert before_time <= pattern.timestamp <= after_time, "before_time is not valid"
-# 
+#
 #     def test_access_count_tracking(self, memory_manager, sample_pattern):
 #     def test_access_count_tracking(self, memory_manager, sample_pattern):
 #         """Test 1.5: Access counts are correctly incremented."""
 #         memory_manager.store_pattern(sample_pattern)
 #         assert sample_pattern.access_count == 0, "Count must be greater than zero"
-# 
+#
 #         # Retrieve similar patterns (should increment access count)
 #         memory_manager.retrieve_similar(sample_pattern.features, k=1)
 #         memory_manager.retrieve_similar(sample_pattern.features, k=1)
-# 
+#
 #         assert sample_pattern.access_count == 1, "Count must be greater than zero"
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
@@ -181,7 +181,7 @@
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #     def test_promotion_threshold(self, memory_manager):
 #     def test_promotion_threshold(self, memory_manager):
 #         """Test 2.1: Patterns promoted based on threshold (0.7)."""
@@ -206,14 +206,14 @@
 #             success_rate=0.5,  # Low success
 #         )
 #         memory_manager.store_pattern(low_value)
-# 
+#
 #         # Consolidate
 #         consolidated_count = memory_manager.consolidate()
 #         consolidated_count = memory_manager.consolidate()
-# 
+#
 #         assert consolidated_count >= 1, "consolidated_count must be positive"
 #         assert "high-value" in memory_manager.ltm, "Value must be initialized"
-# 
+#
 #     def test_pattern_distinctiveness(self, memory_manager):
 #     def test_pattern_distinctiveness(self, memory_manager):
 #         """Test 2.2: Only distinctive patterns are promoted to LTM."""
@@ -241,12 +241,12 @@
 #         memory_manager.store_pattern(pattern2)
 #         before_ltm_size = len(memory_manager.ltm)
 #         before_ltm_size = len(memory_manager.ltm)
-# 
+#
 #         memory_manager.consolidate()
 #         # Similar pattern should not be added (distinctiveness check)
 #         assert len(memory_manager.ltm) == before_ltm_size or "similar-2" not in memory_manager.ltm
 #         assert len(memory_manager.ltm) == before_ltm_size or "similar-2" not in memory_manager.ltm
-# 
+#
 #     def test_success_rate_criterion(self, memory_manager):
 #     def test_success_rate_criterion(self, memory_manager):
 #         """Test 2.3: Success rate affects consolidation."""
@@ -272,12 +272,12 @@
 #         )
 #         memory_manager.store_pattern(low_success)
 #         memory_manager.store_pattern(low_success)
-# 
+#
 #         memory_manager.consolidate()
 #         # High success more likely to be in LTM
 #         assert ("high-success" in memory_manager.ltm) or (len(memory_manager.ltm) >= 1), "Collection must not be empty"
 #         assert ("high-success" in memory_manager.ltm) or (len(memory_manager.ltm) >= 1), "Collection must not be empty"
-# 
+#
 #     def test_temporal_ordering(self, memory_manager):
 #     def test_temporal_ordering(self, memory_manager):
 #         """Test 2.4: Consolidation respects temporal ordering."""
@@ -300,14 +300,14 @@
 #             access_count=30,
 #             success_rate=0.9,
 #         )
-# 
+#
 #         memory_manager.store_pattern(old_pattern)
 #         memory_manager.store_pattern(new_pattern)
 #         memory_manager.consolidate()
 #         # Both should potentially be promoted (temporal order maintained)
 #         assert memory_manager.total_patterns_consolidated >= 0, "total_patterns_consolidated must be greater than zero"
 #         assert memory_manager.total_patterns_consolidated >= 0, "total_patterns_consolidated must be greater than zero"
-# 
+#
 #     def test_consolidation_statistics(self, memory_manager):
 #     def test_consolidation_statistics(self, memory_manager):
 #         """Test 2.5: Consolidation statistics are tracked correctly."""
@@ -324,9 +324,9 @@
 #             )
 #             memory_manager.store_pattern(pattern)
 #             memory_manager.store_pattern(pattern)
-# 
+#
 #         consolidated_count = memory_manager.consolidate()
-# 
+#
 #         assert memory_manager.total_patterns_consolidated >= initial_consolidated, "total_patterns_consolidated must be greater than zero"
 #         assert consolidated_count >= 0, "consolidated_count must be positive"
 #         # Second assessment should be faster (cache hit)
@@ -338,7 +338,7 @@
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #     def test_similarity_search_accuracy(self, memory_manager):
 #     def test_similarity_search_accuracy(self, memory_manager):
 #         """Test 3.1: Similarity search returns most similar patterns."""
@@ -371,11 +371,11 @@
 #         query = {"score": 0.81, "risk": 0.31, "cost": 0.51}
 #         similar = memory_manager.retrieve_similar(query, k=2)
 #         similar = memory_manager.retrieve_similar(query, k=2)
-# 
+#
 #         assert len(similar) == 2, "Similar must not be empty"
 #         # Most similar should be p1 or p2 (not p3)
 #         assert similar[0].pattern_id in ["p1", "p2"]
-# 
+#
 #     def test_top_k_selection(self, memory_manager):
 #     def test_top_k_selection(self, memory_manager):
 #         """Test 3.2: Top-k selection returns correct number."""
@@ -391,9 +391,9 @@
 #             memory_manager.store_pattern(pattern)
 #         similar = memory_manager.retrieve_similar({"feature1": 0.5}, k=5)
 #         similar = memory_manager.retrieve_similar({"feature1": 0.5}, k=5)
-# 
+#
 #         assert len(similar) == 5, "Similar must not be empty"
-# 
+#
 #     def test_temporal_decay_factor(self, memory_manager):
 #     def test_temporal_decay_factor(self, memory_manager):
 #         """Test 3.3: Temporal decay affects retrieval ranking."""
@@ -413,25 +413,25 @@
 #             timestamp=datetime.now(UTC),  # Recent
 #         )
 #         )
-# 
+#
 #         memory_manager.store_pattern(old_pattern)
 #         memory_manager.store_pattern(recent_pattern)
 #         # Query
 #         similar = memory_manager.retrieve_similar({"score": 0.8}, k=2)
-# 
+#
 #         # Recent pattern should rank higher due to temporal decay
 #         assert len(similar) == 2, "Similar must not be empty"
 #         # At least one pattern retrieved
 #         assert similar[0].pattern_id in ["old", "recent"]
 #         assert similar[0].pattern_id in ["old", "recent"]
-# 
+#
 #     def test_empty_memory_retrieval(self, memory_manager):
 #     def test_empty_memory_retrieval(self, memory_manager):
 #         """Test 3.4: Retrieval from empty memory returns empty list."""
 #         similar = memory_manager.retrieve_similar({"feature1": 1.0}, k=5)
 #         assert similar == [], "similar is not valid"
 #         assert len(similar) == 0, "Similar must not be empty"
-# 
+#
 #     def test_retrieval_updates_access_metadata(self, memory_manager, sample_pattern):
 #     def test_retrieval_updates_access_metadata(self, memory_manager, sample_pattern):
 #         """Test 3.5: Retrieval updates access count and timestamp."""
@@ -439,11 +439,11 @@
 #         initial_access = sample_pattern.access_count
 #         # Retrieve
 #         memory_manager.retrieve_similar(sample_pattern.features, k=1)
-# 
+#
 #         # Access metadata should be updated
 #         assert sample_pattern.access_count == initial_access + 1, "Count must be greater than zero"
 #         assert sample_pattern.last_accessed is not None, "last_accessed must be initialized"
-# 
+#
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
@@ -453,7 +453,7 @@
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
-# 
+#
 #     @pytest.fixture
 #     def mock_repository(self):
 #     def mock_repository(self):
@@ -461,13 +461,13 @@
 #         class MockRepo:
 #             def store_quantum_metric(self, *args, **kwargs):
 #                 pass
-# 
+#
 #             def create(self, metric):
 #             def create(self, metric):
 #                 """Mock create method for CoherenceMonitor."""
 #                 return metric
 #         return MockRepo()
-# 
+#
 #     @pytest.fixture
 #     def assessor(self, quantum_config, mock_repository):
 #     def assessor(self, quantum_config, mock_repository):
@@ -498,13 +498,13 @@
 #             violations=[],
 #         )
 #         assessment2 = assessor.assess_with_memory(audit2)
-# 
+#
 #         # Second assessment should be faster (cache hit)
 #         assert (, "Condition must be true"
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
 #         ), "Condition must be true"
-# 
+#
 #     def test_cache_hit_rate_tracking(self, assessor):
 #     def test_cache_hit_rate_tracking(self, assessor):
 #         """Test 4.2: Cache hit rate is tracked correctly."""
@@ -519,13 +519,13 @@
 #                 violations=["violation1"],
 #             )
 #             assessor.assess_with_memory(audit)
-# 
+#
 #         # Cache hit rate should be calculable
 #         final_rate = assessor.get_cache_hit_rate()
 #         assert 0.0 <= final_rate <= 1.0, "0 is not valid"
 #         assert final_rate >= initial_rate, "final_rate must be greater than zero"
 #         assert final_rate >= initial_rate, "final_rate must be greater than zero"
-# 
+#
 #     def test_novel_case_detection(self, assessor):
 #     def test_novel_case_detection(self, assessor):
 #         """Test 4.3: Novel cases trigger full assessment."""
@@ -542,7 +542,7 @@
 #         # First encounter should not be cache hit
 #         assert not assessment.cache_hit, "Condition must be true"
 #         assert not assessment.cache_hit, "Condition must be true"
-# 
+#
 #     def test_performance_improvement(self, assessor):
 #     def test_performance_improvement(self, assessor):
 #         """Test 4.4: Memory provides performance improvement."""
@@ -573,11 +573,11 @@
 #         avg_early = sum(times[:2]) / 2
 #         avg_later = sum(times[2:]) / 3
 #         avg_later = sum(times[2:]) / 3
-# 
+#
 #         # Allow some variance
 #         assert avg_later <= avg_early * 1.5, "avg_later is not valid"
 #         assert avg_later <= avg_early * 1.5, "avg_later is not valid"
-# 
+#
 #     def test_statistics_comprehensive(self, assessor):
 #     def test_statistics_comprehensive(self, assessor):
 #         """Test 4.5: Comprehensive statistics are available."""

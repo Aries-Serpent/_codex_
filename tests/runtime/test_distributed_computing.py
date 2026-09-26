@@ -176,38 +176,38 @@ class TestDistributedComputingClusterStartup:
     def test_cluster_initialization(self):
         """Test cluster initialization."""
         cluster = MockRayCluster()
-        assert cluster.initialize() is True
-        assert cluster.is_initialized is True
+        assert cluster.initialize() is True, "Condition must be true"
+        assert cluster.is_initialized is True, "is_initialized is not valid"
 
     def test_cluster_shutdown(self):
         """Test cluster shutdown."""
         cluster = MockRayCluster()
         cluster.initialize()
-        assert cluster.shutdown() is True
-        assert cluster.is_initialized is False
+        assert cluster.shutdown() is True, "Condition must be true"
+        assert cluster.is_initialized is False, "is_initialized is not valid"
 
     def test_multiple_workers_initialization(self):
         """Test cluster with multiple workers."""
         cluster = MockRayCluster(num_workers=4)
-        assert cluster.initialize() is True
+        assert cluster.initialize() is True, "Condition must be true"
         workers = cluster.list_workers()
-        assert len(workers) == 4
+        assert len(workers) == 4, "Workers must not be empty"
 
     def test_worker_configuration(self):
         """Test worker configuration."""
         cluster = MockRayCluster()
         workers = cluster.list_workers()
-        assert len(workers) > 0
+        assert len(workers) > 0, "Workers must not be empty"
         worker = workers[0]
-        assert worker.num_cpus > 0
+        assert worker.num_cpus > 0, "num_cpus must be greater than zero"
 
     def test_get_cluster_status(self):
         """Test getting cluster status."""
         cluster = MockRayCluster(num_workers=2)
         cluster.initialize()
         status = cluster.get_status()
-        assert status.is_healthy is True
-        assert status.total_workers == 2
+        assert status.is_healthy is True, "is_healthy is not valid"
+        assert status.total_workers == 2, "total_workers is not valid"
 
 
 class TestDistributedComputingTaskExecution:
@@ -223,8 +223,8 @@ class TestDistributedComputingTaskExecution:
 
         task_id = cluster.submit_task(simple_task, 5)
         result = cluster.get_task_result(task_id)
-        assert result.status == "completed"
-        assert result.result == 10
+        assert result.status == "completed", "Result must not be empty"
+        assert result.result == 10, "Result must not be empty"
 
     def test_submit_multiple_tasks(self):
         """Test submitting multiple tasks."""
@@ -239,10 +239,10 @@ class TestDistributedComputingTaskExecution:
             task_id = cluster.submit_task(compute_task, i)
             task_ids.append(task_id)
 
-        assert len(task_ids) == 5
+        assert len(task_ids) == 5, "Task_ids must not be empty"
         for i, task_id in enumerate(task_ids):
             result = cluster.get_task_result(task_id)
-            assert result.result == i ** 2
+            assert result.result == i ** 2, "Result must not be empty"
 
     def test_task_with_kwargs(self):
         """Test submitting task with keyword arguments."""
@@ -254,7 +254,7 @@ class TestDistributedComputingTaskExecution:
 
         task_id = cluster.submit_task(kwarg_task, 5, b=15)
         result = cluster.get_task_result(task_id)
-        assert result.result == 20
+        assert result.result == 20, "Result must not be empty"
 
     def test_task_error_handling(self):
         """Test error handling in task execution."""
@@ -266,8 +266,8 @@ class TestDistributedComputingTaskExecution:
 
         task_id = cluster.submit_task(failing_task)
         result = cluster.get_task_result(task_id)
-        assert result.status == "failed"
-        assert "Test error" in result.error
+        assert result.status == "failed", "Result must not be empty"
+        assert "Test error" in result.error, "Result must not be empty"
 
     @pytest.mark.heavy
     def test_batch_task_submission(self):
@@ -284,7 +284,7 @@ class TestDistributedComputingTaskExecution:
             task_ids.append(task_id)
 
         results = [cluster.get_task_result(tid) for tid in task_ids]
-        assert all(r.status == "completed" for r in results)
+        assert all(r.status == "completed" for r in results), "Result must not be empty"
 
 
 class TestDistributedComputingWorkerManagement:
@@ -296,8 +296,8 @@ class TestDistributedComputingWorkerManagement:
         cluster.initialize()
         initial_count = len(cluster.list_workers())
         new_worker = WorkerConfig(worker_id="worker_new", num_cpus=8)
-        assert cluster.add_worker(new_worker) is True
-        assert len(cluster.list_workers()) == initial_count + 1
+        assert cluster.add_worker(new_worker) is True, "Condition must be true"
+        assert len(cluster.list_workers()) == initial_count + 1, "Collection must not be empty"
 
     def test_remove_worker(self):
         """Test removing a worker."""
@@ -306,23 +306,23 @@ class TestDistributedComputingWorkerManagement:
         workers = cluster.list_workers()
         initial_count = len(workers)
         worker_to_remove = workers[0].worker_id
-        assert cluster.remove_worker(worker_to_remove) is True
-        assert len(cluster.list_workers()) == initial_count - 1
+        assert cluster.remove_worker(worker_to_remove) is True, "Condition must be true"
+        assert len(cluster.list_workers()) == initial_count - 1, "Collection must not be empty"
 
     def test_worker_resource_tracking(self):
         """Test tracking worker resources."""
         cluster = MockRayCluster()
         cluster.initialize()
         status = cluster.get_status()
-        assert "cpu" in status.total_resources
-        assert status.total_resources["cpu"] > 0
+        assert "cpu" in status.total_resources, "Condition must be true"
+        assert status.total_resources["cpu"] > 0, "Value must be greater than zero"
 
     def test_worker_health_check(self):
         """Test worker health status."""
         cluster = MockRayCluster()
         cluster.initialize()
         status = cluster.get_status()
-        assert status.active_workers > 0
+        assert status.active_workers > 0, "active_workers must be greater than zero"
 
 
 class TestFastAPIEndpointAvailability:
@@ -331,15 +331,15 @@ class TestFastAPIEndpointAvailability:
     def test_server_startup(self):
         """Test server startup."""
         server = MockFastAPIServer()
-        assert server.start() is True
-        assert server.is_running is True
+        assert server.start() is True, "Condition must be true"
+        assert server.is_running is True, "is_running is not valid"
 
     def test_server_shutdown(self):
         """Test server shutdown."""
         server = MockFastAPIServer()
         server.start()
-        assert server.stop() is True
-        assert server.is_running is False
+        assert server.stop() is True, "Condition must be true"
+        assert server.is_running is False, "is_running is not valid"
 
     def test_route_registration(self):
         """Test route registration."""
@@ -349,9 +349,11 @@ class TestFastAPIEndpointAvailability:
             return {"prediction": data.get("value", 0) * 2}
 
         server.add_route("/predict", predict_handler)
-        assert "/predict" in server.routes
+        assert "/predict" in server.routes, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_request_handling(self):
         """Test handling HTTP requests."""
         server = MockFastAPIServer()
@@ -362,15 +364,15 @@ class TestFastAPIEndpointAvailability:
 
         server.add_route("/add", handler)
         response = await server.handle_request("/add", {"x": 5})
-        assert response["result"] == 15
+        assert response["result"] == 15, "Response must not be empty"
 
     def test_server_health_endpoint(self):
         """Test server health endpoint."""
         server = MockFastAPIServer()
         server.start()
         health = server.get_health()
-        assert health["status"] == "healthy"
-        assert health["port"] == 8000
+        assert health["status"] == "healthy", "Condition must be true"
+        assert health["port"] == 8000, "Condition must be true"
 
 
 class TestDistributedComputingIntegration:
@@ -380,10 +382,10 @@ class TestDistributedComputingIntegration:
         """Test Ray[serve] setup."""
         cluster = MockRayCluster()
         server = MockFastAPIServer()
-        assert cluster.initialize() is True
-        assert server.start() is True
+        assert cluster.initialize() is True, "Condition must be true"
+        assert server.start() is True, "Condition must be true"
         status = cluster.get_status()
-        assert status.is_healthy is True
+        assert status.is_healthy is True, "is_healthy is not valid"
 
     @pytest.mark.heavy
     def test_cluster_server_integration(self):
@@ -406,7 +408,7 @@ class TestDistributedComputingIntegration:
 
         # Simulate request
         response = server.routes["/infer"]({"value": 5})
-        assert response["prediction"] == 25
+        assert response["prediction"] == 25, "Response must not be empty"
 
     def test_basic_request_response_cycle(self):
         """Test basic request/response cycle."""
@@ -418,7 +420,7 @@ class TestDistributedComputingIntegration:
 
         server.add_route("/echo", echo_handler)
         response = server.routes["/echo"]({"message": "hello"})
-        assert response["echo"]["message"] == "hello"
+        assert response["echo"]["message"] == "hello", "Response must not be empty"
 
 
 class TestDistributedComputingMetrics:
@@ -435,14 +437,14 @@ class TestDistributedComputingMetrics:
         server.add_route("/test", handler)
         for _ in range(5):
             asyncio.run(server.handle_request("/test", {}))
-        assert server.request_count == 5
+        assert server.request_count == 5, "Count must be greater than zero"
 
     def test_cluster_resource_tracking(self):
         """Test resource tracking."""
         cluster = MockRayCluster(num_workers=3)
         cluster.initialize()
         status = cluster.get_status()
-        assert status.total_resources["cpu"] == 12  # 3 workers * 4 CPUs
+        assert status.total_resources["cpu"] == 12, "Condition must be true"
 
 
 if __name__ == "__main__":

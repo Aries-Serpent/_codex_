@@ -220,7 +220,9 @@ class CognitiveBrain:
         status = (
             "healthy"
             if last_coherence >= 0.750 and self._error_count == 0
-            else "degraded" if last_coherence >= 0.650 else "critical"
+            else "degraded"
+            if last_coherence >= 0.650
+            else "critical"
         )
         return AgentHealthSnapshot(
             coherence=last_coherence,

@@ -248,7 +248,12 @@ def vocab(
             vocab_size = int(vocab_attr)
         else:
             raise AttributeError("Tokenizer does not expose a vocab_size attribute.")
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive casting guards
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive casting guards
         _fail(
             "vocab",
             f"Unable to determine vocabulary size: {exc}",
@@ -270,7 +275,12 @@ def vocab(
     for idx in range(sample_count):
         try:
             token = converter(idx)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional backend failures
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional backend failures
             _append_error_block(
                 "vocab",
                 f"Failed to preview token {idx}: {exc}",
@@ -314,7 +324,12 @@ def inspect(tokenizer_path: Path) -> None:
     if callable(getter):
         try:
             special_tokens = list(getter())
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - backend specific guard
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - backend specific guard
             _append_error_block(
                 "inspect",
                 f"Failed to collect special tokens: {exc}",
@@ -524,7 +539,12 @@ def decode(
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             decoded = decode_fn(id_list)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - backend guard
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - backend guard
             _fail(
                 "decode",
                 f"Tokenizer decode failed: {exc}",

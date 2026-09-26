@@ -315,8 +315,8 @@ def main():
     === Codex Offline Execution Summary ({utcnow()}) ===
     Root: {ROOT}
     Changelog: {CHANGELOG}
-    Errors (md): {ERRORS_MD if ERRORS_MD.exists() else 'none'}
-    Errors (ndjson): {ERRORS_NDJSON if ERRORS_NDJSON.exists() else 'none'}
+    Errors (md): {ERRORS_MD if ERRORS_MD.exists() else "none"}
+    Errors (ndjson): {ERRORS_NDJSON if ERRORS_NDJSON.exists() else "none"}
     Artifacts: {ARTIFACTS}
     """
     print(summary.strip())

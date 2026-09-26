@@ -124,7 +124,12 @@ def load_model_with_optional_lora(
                 model = model.to(dtype=torch_dtype)
             if device_map is not None:
                 model = model.to(device_map)
-        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback to HF
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ):  # pragma: no cover - fallback to HF
             model = load_from_pretrained(
                 AutoModelForCausalLM,
                 name_or_path,

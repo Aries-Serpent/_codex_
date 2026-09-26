@@ -32,7 +32,7 @@ class TestUninitializedVariablesFixed:
         # All module-level variables should be properly initialized or typed
         assert hasattr(cli_module, "app"), "app should be defined"
         assert hasattr(cli_module, "main"), "main should be defined"
-        
+
         # These should all exist after module load
         assert hasattr(cli_module, "__all__"), "__all__ export list should exist"
 
@@ -73,10 +73,10 @@ class TestUninitializedVariablesFixed:
             viewer_cmd,
             ALLOWED_TASKS,
         ]
-        
+
         # Verify all can be accessed without errors
         for var in variables:
-            assert var is None or var is not None  # Tautology but ensures no AttributeError
+            assert var is None or var is not None, "var must be initialized"
 
     def test_github_api_client_elevated_token_initialized(self):
         """Verify APIClient properly initializes token variables."""
@@ -84,7 +84,7 @@ class TestUninitializedVariablesFixed:
             from codex.github.api_client import APIClient
 
             client = APIClient()
-            
+
             # Token should always be set (either from param, env, or None)
             # But the key is it's not a dangling uninitialized variable
             assert hasattr(client, "_token"), "Token should be initialized"
@@ -115,7 +115,7 @@ class TestUnusedGlobalsRemoved:
         # Check that __all__ only contains actually exported symbols
         defined_attrs = set(dir(cli))
         exported_attrs = set(cli.__all__)
-        
+
         # All exported attributes should be defined
         undefined = exported_attrs - defined_attrs
         if undefined:
@@ -126,14 +126,16 @@ class TestUnusedGlobalsRemoved:
         import codex.cli
 
         # Should be able to access primary exports without issues
-        assert codex.cli.app is not None or codex.cli.app is None
-        assert codex.cli.main is not None or codex.cli.main is None
+        assert codex.cli.app is not None or codex.cli.app is None, "app must be initialized"
+        assert codex.cli.main is not None or codex.cli.main is None, "main must be initialized"
 
 
 class TestResourceManagementImprovements:
     """Test resource consumption improvements in nested loops and allocations."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_context_manager_cleanup(self):
         """Verify async context managers properly clean up resources."""
         from codex.consolidation.async_utils import AsyncResourceManager
@@ -149,6 +151,8 @@ class TestResourceManagementImprovements:
         assert mock_resource.close.called, "Resource should be closed after context"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_pool_manager_connection_release(self):
         """Verify AsyncPoolManager releases connections properly."""
         from codex.consolidation.async_utils import AsyncPoolManager
@@ -170,14 +174,14 @@ class TestResourceManagementImprovements:
         # Simulate nested loop with optimization checks
         iterations = 1000
         start = time.perf_counter()
-        
+
         result = 0
         for i in range(iterations):
             for j in range(10):
                 result += i * j
-        
+
         elapsed = time.perf_counter() - start
-        
+
         # Should complete quickly (< 1 second for 10k operations)
         assert elapsed < 1.0, f"Nested loop took too long: {elapsed}s"
         assert result > 0, "Computation should produce results"
@@ -196,7 +200,7 @@ class TestResourceManagementImprovements:
         # Generators should be more memory efficient
         list_size = sys.getsizeof(inefficient_list_builder())
         gen_size = sys.getsizeof(efficient_generator())
-        
+
         # Generator should be much smaller (only stores state, not full list)
         assert gen_size < list_size / 100, "Generator should be much smaller than list"
 
@@ -213,11 +217,11 @@ class TestTypeConversionSafety:
             except (ValueError, TypeError):
                 return None
 
-        assert safe_int_convert("42") == 42
-        assert safe_int_convert(42) == 42
-        assert safe_int_convert(42.0) == 42
-        assert safe_int_convert("invalid") is None
-        assert safe_int_convert(None) is None
+        assert safe_int_convert("42") == 42, "Condition must be true"
+        assert safe_int_convert(42) == 42, "Condition must be true"
+        assert safe_int_convert(42.0) == 42, "Condition must be true"
+        assert safe_int_convert("invalid") is None, "Condition must be true"
+        assert safe_int_convert(None) is None, "Condition must be true"
 
     def test_safe_float_conversion(self):
         """Test safe conversion of values to float."""
@@ -228,10 +232,10 @@ class TestTypeConversionSafety:
             except (ValueError, TypeError):
                 return None
 
-        assert safe_float_convert("3.14") == 3.14
-        assert safe_float_convert(3.14) == 3.14
-        assert safe_float_convert(3) == 3.0
-        assert safe_float_convert("invalid") is None
+        assert safe_float_convert("3.14") == 3.14, "Condition must be true"
+        assert safe_float_convert(3.14) == 3.14, "Condition must be true"
+        assert safe_float_convert(3) == 3.0, "Condition must be true"
+        assert safe_float_convert("invalid") is None, "Condition must be true"
 
     def test_type_checking_before_operations(self):
         """Ensure type checking before arithmetic operations."""
@@ -253,15 +257,15 @@ class TestIntegerOverflowProtection:
 
     def test_safe_integer_addition(self):
         """Test safe addition with overflow detection."""
-        import sys
+        pass  # removed redundant `import sys` (top-level import used)
 
         max_int = sys.maxsize
-        
+
         def safe_add(a: int, b: int) -> Optional[int]:
             """Safely add two integers with overflow detection."""
             # Python handles arbitrary precision, but we can check for overflow
             result = a + b
-            
+
             # Verify result is within expected range
             if result > sys.maxsize or result < -sys.maxsize - 1:
                 return None
@@ -278,9 +282,9 @@ class TestIntegerOverflowProtection:
             # Check for potential overflow before operation
             if a == 0 or b == 0:
                 return 0
-            
+
             result = a * b
-            
+
             # Verify operands and result are reasonable
             if abs(result) > 10**18:  # Reasonable limit for most operations
                 return None
@@ -337,7 +341,7 @@ class TestPerformanceBenchmarks:
 
         # Should handle 6000 conversions in < 0.1s
         assert elapsed < 0.1, f"Type conversion too slow: {elapsed}s"
-        assert len(results) == len(test_values)
+        assert len(results) == len(test_values), "Results must not be empty"
 
     def test_resource_management_overhead(self):
         """Measure performance impact of resource management."""
@@ -400,7 +404,7 @@ class TestCodeQualityMetrics:
 
             # Should handle missing token gracefully
             client = APIClient(token="test_token")
-            assert client._token == "test_token"
+            assert client._token == "test_token", "_token is not valid"
             assert hasattr(client, "_token_source")
 
 
@@ -415,9 +419,11 @@ class TestRegressionPrevention:
         assert app is not None, "Typer app should be available"
         assert main is not None, "main function should be available"
         # cli might be None if Click module fails to load, which is acceptable
-        assert cli is None or cli is not None
+        assert cli is None or cli is not None, "cli must be initialized"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_context_no_hang(self):
         """Verify async context managers don't cause hangs."""
         from codex.consolidation.async_utils import async_timeout_context
@@ -446,6 +452,8 @@ class TestIntegration:
     """Integration tests for code quality fixes."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_full_async_workflow(self):
         """Test a complete async resource workflow."""
         from codex.consolidation.async_utils import async_managed_resource
@@ -457,7 +465,7 @@ class TestIntegration:
         async with async_managed_resource(mock_resource) as res:
             result = await res.do_work()
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_cli_initialization_idempotence(self):
         """Verify CLI module can be imported multiple times safely."""
@@ -467,7 +475,7 @@ class TestIntegration:
 
         # Re-import should not cause issues
         importlib.reload(codex.cli)
-        
+
         # Should still have all exports
         assert hasattr(codex.cli, "app")
         assert hasattr(codex.cli, "main")

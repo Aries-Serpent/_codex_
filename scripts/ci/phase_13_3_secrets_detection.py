@@ -50,15 +50,15 @@ class SecretDetectionResult:
 def validate_gitleaks_config() -> bool:
     """Validate gitleaks configuration exists and is valid."""
     logger.info("📋 Validating gitleaks configuration...")
-    
+
     # Use relative path from current working directory (repo root)
     config_path = Path(".gitleaks.toml")
     if not config_path.exists():
         logger.error(f"❌ Gitleaks config not found at {config_path.resolve()}")
         return False
-    
+
     logger.info(f"✅ Gitleaks config exists: {config_path.resolve()}")
-    
+
     # Validate config format
     try:
         import tomllib
@@ -80,14 +80,14 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
     Python, JavaScript, YAML, and config files.
     """
     logger.info("🔍 Scanning workspace for high-entropy secrets (E-09 patterns)...")
-    
+
     import time
     start_time = time.time()
-    
+
     try:
         from detect_secrets import SecretsCollection
-        from detect_secrets.settings import transient_settings
         from detect_secrets.core.secrets_collection import SecretsCollection as SC
+        from detect_secrets.settings import transient_settings
     except ImportError:
         logger.warning("⚠️  detect-secrets not installed, skipping entropy scan")
         logger.info("   Install: pip install detect-secrets")
@@ -99,7 +99,7 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
             scan_duration_seconds=0,
             status="partial"
         )
-    
+
     # File patterns to scan
     patterns = [
         "src/**/*.py",
@@ -114,22 +114,22 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
         "requirements*.txt",
         "Dockerfile*",
     ]
-    
+
     scanned_count = 0
     high_entropy_secrets = []
-    
+
     # Scan files matching patterns
     for pattern in patterns:
         from glob import glob
         files = glob(pattern, recursive=True)[:max_files]
         scanned_count += len(files)
-        
+
         for filepath in files:
             try:
                 if Path(filepath).is_file():
                     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
-                        
+
                     # Check for high-entropy strings (E-09 pattern)
                     entropy_score = calculate_entropy(content)
                     if entropy_score > 4.0:
@@ -140,20 +140,20 @@ def scan_current_tree_for_secrets(max_files: int = 1000) -> SecretDetectionResul
                         })
             except Exception as e:
                 logger.debug(f"Skipped {filepath}: {e}")
-    
+
     elapsed = time.time() - start_time
-    
+
     logger.info("✅ Workspace scan complete")
     logger.info(f"   - Files scanned: {scanned_count}")
     logger.info(f"   - High-entropy findings: {len(high_entropy_secrets)}")
     logger.info(f"   - Scan duration: {elapsed:.1f}s")
-    
+
     # Log summary of high-entropy findings (individual findings not logged to avoid exposing sensitive data)
     if high_entropy_secrets:
         high_count = len([f for f in high_entropy_secrets if f['severity'] == 'HIGH'])
         medium_count = len([f for f in high_entropy_secrets if f['severity'] == 'MEDIUM'])
         logger.warning(f"⚠️  Found {len(high_entropy_secrets)} high-entropy anomalies: {high_count} HIGH, {medium_count} MEDIUM")
-    
+
     return SecretDetectionResult(
         total_scanned=scanned_count,
         secrets_found=len(high_entropy_secrets),
@@ -176,18 +176,18 @@ def calculate_entropy(text: str) -> float:
     """
     import math
     from collections import Counter
-    
+
     if not text or len(text) < 10:
         return 0.0
-    
+
     # Count character frequencies
     freq = Counter(text)
     entropy = 0
-    
+
     for count in freq.values():
         p = count / len(text)
         entropy -= p * math.log2(p)
-    
+
     return entropy
 
 
@@ -200,7 +200,7 @@ def deploy_secrets_remediation_workflow() -> bool:
     4. Enable one-click credential rotation
     """
     logger.info("🛠️  Deploying secrets remediation workflow...")
-    
+
     workflow_content = """# Phase 13.3: Secrets Detection & Remediation Workflow
 name: Secrets Detection & Remediation
 
@@ -263,13 +263,13 @@ jobs:
               body: '🔐 **Automated Security Response**\\n\\nSecrets detected. This PR has been blocked from merging.\\n\\nIf this is a false positive, maintainers can dismiss the alert.'
             })
 """
-    
+
     workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
-    
+
     workflow_file = workflow_path / "13-3-secrets-detection.yml"
     workflow_file.write_text(workflow_content)
-    
+
     logger.info(f"✅ Deployed secrets detection workflow: {workflow_file}")
     return True
 
@@ -282,7 +282,7 @@ def audit_historical_commits() -> dict:
     """
     logger.info("📜 Auditing git history for leaked secrets...")
     logger.info("   (scanning last 100 commits for performance)")
-    
+
     try:
         # Get last 100 commits
         result = subprocess.run(
@@ -292,10 +292,10 @@ def audit_historical_commits() -> dict:
             text=True,
             timeout=30
         )
-        
+
         commits = result.stdout.strip().split('\n')
         logger.info(f"✅ Audit scope: {len(commits)} recent commits")
-        
+
         # Check for common secret patterns (non-invasive)
         secret_patterns = {
             "AWS_KEY": r"AKIA[0-9A-Z]{16}",
@@ -303,15 +303,15 @@ def audit_historical_commits() -> dict:
             "PRIVATE_KEY": r"-----BEGIN (RSA|EC|OPENSSH|PGP) PRIVATE KEY",
             "DATABASE_URL": r"(mysql|postgres)://.*:.*@",
         }
-        
+
         findings = {pattern: 0 for pattern in secret_patterns}
-        
+
         logger.info("✅ Git history audit complete")
         logger.info(f"   - Patterns checked: {len(secret_patterns)}")
         logger.info("   - No critical patterns detected in recent commits")
-        
+
         return findings
-    
+
     except Exception as e:
         logger.error(f"❌ Git audit failed: {e}")
         return {}
@@ -322,26 +322,26 @@ def main():
     logger.info("=" * 70)
     logger.info("🔐 Phase 13.3: Secrets Detection & Remediation System")
     logger.info("=" * 70)
-    
+
     # Step 1: Validate configuration
     logger.info("\n[1/4] Validating gitleaks configuration...")
     config_valid = validate_gitleaks_config()
     if not config_valid:
         logger.error("❌ Config validation failed")
         return 1
-    
+
     # Step 2: Scan workspace
     logger.info("\n[2/4] Scanning workspace for high-entropy secrets...")
     scan_result = scan_current_tree_for_secrets()
-    
+
     # Step 3: Deploy remediation workflow
     logger.info("\n[3/4] Deploying secrets remediation workflow...")
     workflow_deployed = deploy_secrets_remediation_workflow()
-    
+
     # Step 4: Audit git history
     logger.info("\n[4/4] Auditing git history for leaked secrets...")
     history_audit = audit_historical_commits()
-    
+
     # Summary
     logger.info("\n" + "=" * 70)
     logger.info("📊 Phase 13.3.1 Summary: Secrets Detection")
@@ -351,7 +351,7 @@ def main():
     logger.info(f"✅ High-entropy findings: {scan_result.high_entropy_finds}")
     logger.info(f"✅ Remediation workflow deployed: {'yes' if workflow_deployed else 'no'}")
     logger.info(f"✅ Git history audit complete: {len(history_audit)} patterns checked")
-    
+
     logger.info("\n✅ Phase 13.3.1 COMPLETE")
     return 0
 

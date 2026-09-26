@@ -9,11 +9,11 @@
     "coverage": null
   },
   "junit": {
-    "tests": 0,
+    "tests": 6,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "duration_seconds": 0.0,
+    "duration_seconds": 2.328,
     "failed_cases": []
   }
 }

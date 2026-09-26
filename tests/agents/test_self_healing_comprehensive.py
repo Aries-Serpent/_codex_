@@ -265,9 +265,9 @@ class TestSelfHealingEngineCore:
         assert isinstance(issues, list)
         if len(issues) > 0:
             # Check if import error was detected
-            assert any(
+            assert any(, "Condition must be true"
                 "import" in str(issue).lower() or "numpy" in str(issue).lower() for issue in issues
-            )
+            ), "Condition must be true"
 
     def test_detect_dependency_conflict(self):
         """Test detecting dependency conflicts."""

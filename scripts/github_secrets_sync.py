@@ -39,8 +39,8 @@ import secrets
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 try:
     from github import Github
@@ -104,7 +104,7 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             if value:
                 backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # codeql[py/clear-text-storage-sensitive-data]
+                    'hash': hashlib.sha256(value.encode()).hexdigest(),
                     'length': len(value)
                 }
 
@@ -132,9 +132,10 @@ class GitHubSecretsManager:
                     print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # codeql[py/clear-text-logging-sensitive-data]
+                error_reason = _safe_error(e)
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, error_reason)
                 print("✗ Failed to rotate secret")
-                results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
+                results['failed'].append({'secret_ref': secret_ref, 'reason': error_reason})
 
         # Save results
         results_file = Path('rotation_results.json')

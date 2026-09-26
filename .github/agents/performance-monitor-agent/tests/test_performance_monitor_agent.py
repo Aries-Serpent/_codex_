@@ -7,13 +7,12 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
+from __init__ import RANDOM_SEED, create_agent
 from alert_manager import AlertSeverity, create_alert_manager
 from latency_monitor import create_monitor
 from regression_detector import create_detector
 from resource_predictor import create_predictor
 from throughput_optimizer import create_optimizer
-
-from __init__ import RANDOM_SEED, create_agent
 
 # Test seed
 TEST_SEED = 47

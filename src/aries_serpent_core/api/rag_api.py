@@ -110,49 +110,51 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
 
 def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
     """Join user-controlled path segments under *base_dir* and enforce containment.
-    
+
     CWE-22 Fix: Validate that segments are relative paths and don't contain
     traversal patterns. This prevents directory traversal attacks.
     """
     if any("\x00" in segment for segment in segments):
         raise HTTPException(status_code=400, detail="Invalid path")
-    
+
     try:
         # CWE-22: Validate each segment is a safe relative path component
         for segment in segments:
             # Reject empty segments
             if not segment:
                 raise HTTPException(status_code=400, detail="Empty path segment not allowed")
-            
+
             # Reject absolute paths (Unix and Windows formats)
             if segment.startswith("/") or segment.startswith("\\"):
-                raise HTTPException(status_code=400, detail="Path must be relative (cannot start with / or \\)")
-            
+                raise HTTPException(
+                    status_code=400, detail="Path must be relative (cannot start with / or \\)"
+                )
+
             # Reject Windows drive letters (C:, D:, etc.) and UNC paths
             if (len(segment) >= 2 and segment[1] == ":") or segment.startswith("\\\\"):
                 raise HTTPException(status_code=400, detail="Absolute paths not allowed")
-            
+
             # Use pathlib.Path to normalize and check for parent references
             # This catches .. patterns and other traversal attempts
             segment_path = Path(segment)
             if ".." in segment_path.parts:
                 raise HTTPException(status_code=400, detail="Path traversal not allowed")
-        
+
         # Build candidate path safely using Path operations
         base_resolved = base_dir.resolve()
         candidate = base_resolved
-        
+
         for segment in segments:
             candidate = candidate / segment
-        
+
         candidate_resolved = candidate.resolve()
-        
+
         # Use strict parent check: candidate must be base_resolved or a descendant
         try:
             candidate_resolved.relative_to(base_resolved)
         except ValueError:
             raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
-            
+
     except HTTPException:
         raise
     except (OSError, ValueError) as err:
@@ -342,7 +344,10 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
 
         # Validate every supplied path stays within _RAG_FILES_BASE to prevent
         # path-traversal attacks (e.g. a client passing "/etc/passwd").
-        safe_files = [_ensure_subpath(_RAG_FILES_BASE, Path(f)) for f in build_request.files]
+        safe_files = []
+        for file_value in build_request.files:
+            candidate = Path(file_value)
+            safe_files.append(_ensure_subpath(_RAG_FILES_BASE, candidate))
 
         index_path = build_index_from_files(
             files=safe_files,
@@ -358,7 +363,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
         if metadata_file.exists():
             import json
 
-            with open(metadata_file) as f:
+            with open(metadata_file, "r", encoding="utf-8") as f:
                 metadata = json.load(f)
                 chunks_count = metadata.get("num_chunks")
 

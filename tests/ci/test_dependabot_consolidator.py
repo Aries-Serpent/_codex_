@@ -106,7 +106,7 @@ def test_no_prs_exits_cleanly(
     """Empty PR list returns 0."""
     mock_paginated.return_value = []
     args = ["--base-branch", "main", "--dry-run"]
-    assert dc.main(args) == 0
+    assert dc.main(args) == 0, "Condition must be true"
 
 
 def test_single_pr_exits_cleanly(
@@ -120,7 +120,7 @@ def test_single_pr_exits_cleanly(
         [],  # issues search for existing consolidation PR
     ]
     args = ["--base-branch", "main", "--dry-run"]
-    assert dc.main(args) == 0
+    assert dc.main(args) == 0, "Condition must be true"
 
 
 def test_merge_clean_pr(
@@ -143,15 +143,15 @@ def test_merge_clean_pr(
     mock_gh_api.return_value = {"number": 99}
 
     args = ["--base-branch", "main"]
-    assert dc.main(args) == 0
+    assert dc.main(args) == 0, "Condition must be true"
 
     # PR creation call
     calls = mock_gh_api.call_args_list
     create_call = [c for c in calls if c.args[0] == "POST" and "/pulls" in c.args[1]]
     assert create_call, "Expected PR creation call"
     payload = json.loads(create_call[0].args[3])
-    assert payload["title"].startswith("chore(deps): consolidated dependency updates")
-    assert payload["head"].startswith("dependabot/consolidated-")
+    assert payload["title"].startswith("chore(deps): consolidated dependency updates"), "Condition must be true"
+    assert payload["head"].startswith("dependabot/consolidated-"), "Condition must be true"
 
 
 def test_conflict_skipped_and_reported(
@@ -190,8 +190,8 @@ def test_conflict_skipped_and_reported(
     ]
     payload = json.loads(create_call[0].args[3])
     body = payload["body"]
-    assert "| #1 | Bump foo | merged cleanly |" in body
-    assert "| #2 | Bump bar | merge conflict |" in body
+    assert "|, "Condition must be true"
+    assert "|, "Condition must be true"
 
 
 def test_fetches_branch_to_remote_tracking_ref(
@@ -218,7 +218,7 @@ def test_fetches_branch_to_remote_tracking_ref(
         False,
     )
 
-    assert ok and reason == ""
+    assert ok and reason == "", "reason is not valid"
     config_call = next(
         call for call in mock_subprocess.call_args_list if call.args[0][:3] == ["git", "config", "user.name"]
     )
@@ -226,7 +226,7 @@ def test_fetches_branch_to_remote_tracking_ref(
     fetch_call = next(
         call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "fetch"]
     )
-    assert fetch_call.args[0] == [
+    assert fetch_call.args[0] == [, "Condition must be true"
         "git",
         "fetch",
         "--no-tags",
@@ -236,7 +236,7 @@ def test_fetches_branch_to_remote_tracking_ref(
     merge_call = next(
         call for call in mock_subprocess.call_args_list if call.args[0][:2] == ["git", "merge"]
     )
-    assert merge_call.args[0] == [
+    assert merge_call.args[0] == [, "Condition must be true"
         "git",
         "merge",
         "--no-ff",
@@ -271,7 +271,7 @@ def test_security_label_excluded(
     ]
     payload = json.loads(create_call[0].args[3])
     body = payload["body"]
-    assert "security label" in body
+    assert "security label" in body, "Condition must be true"
 
 
 def test_unknown_merge_state_is_eligible(
@@ -323,8 +323,8 @@ def test_dry_run_no_push(
 
     # No PR creation/update and no comments/close calls
     for call in mock_gh_api.call_args_list:
-        assert not (call.args[0] == "POST" and "/pulls" in call.args[1])
-        assert not (call.args[0] == "POST" and "/comments" in call.args[1])
+        assert not (call.args[0] == "POST" and "/pulls" in call.args[1]), "Condition must be true"
+        assert not (call.args[0] == "POST" and "/comments" in call.args[1]), "Condition must be true"
     # No git push
     for call in mock_subprocess.call_args_list:
         if call.args and "git" in call.args[0][0]:

@@ -2,28 +2,28 @@
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
 #         assert "stale1" in report_str, "Condition must be true"
-# 
-# 
+#
+#
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
 #         assert "stale1" in report_str, "Condition must be true"
-# 
-# 
+#
+#
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
 #         assert "stale1" in report_str, "Condition must be true"
 #     def monitor(self):
 #         return FeatureHealthMonitor(freshness_threshold_minutes=5)
-# 
+#
 #     def test_record_feature_update(self, monitor):
 #     def test_record_feature_update(self, monitor):
 #         """Test recording feature updates."""
 #         monitor.record_feature_update("test_feature")
 #         assert "test_feature" in monitor.feature_updates, "Condition must be true"
 #         assert monitor.feature_updates["test_feature"] is not None, "monit must be initialized"
-# 
+#
 #     def test_check_healthy_feature(self, monitor):
 #     def test_check_healthy_feature(self, monitor):
 #         """Test checking a healthy feature."""
@@ -32,7 +32,7 @@
 #         assert status.is_healthy, "Condition must be true"
 #         assert status.feature_name == "healthy_feature", "feature_name is not valid"
 #         assert status.freshness_level == "FRESH", "freshness_level is not valid"
-# 
+#
 #     def test_check_stale_feature(self, monitor):
 #     def test_check_stale_feature(self, monitor):
 #         """Test checking a stale feature."""
@@ -42,7 +42,7 @@
 #         assert not status.is_healthy, "Condition must be true"
 #         assert status.freshness_minutes > 360, "freshness_minutes must be greater than zero"
 #         assert status.freshness_level in ["STALE", "VERY_STALE"]
-# 
+#
 #     def test_check_never_updated_feature(self, monitor):
 #     def test_check_never_updated_feature(self, monitor):
 #         """Test checking a feature that was never updated."""
@@ -51,7 +51,7 @@
 #         assert status.last_updated == "never", "last_updated is not valid"
 #         assert status.freshness_level == "UNKNOWN", "freshness_level is not valid"
 #         assert len(status.warnings) > 0, "Collection must not be empty"
-# 
+#
 #     def test_record_feature_error(self, monitor):
 #     def test_record_feature_error(self, monitor):
 #         """Test recording feature errors."""
@@ -59,7 +59,7 @@
 #         monitor.record_feature_error("error_feature")
 #         monitor.record_feature_error("error_feature")
 #         assert monitor.error_counts["error_feature"] == 3, "Error should be raised or set"
-# 
+#
 #     def test_check_feature_with_errors(self, monitor):
 #     def test_check_feature_with_errors(self, monitor):
 #         """Test checking feature with errors."""
@@ -67,26 +67,26 @@
 #         for _ in range(7):
 #             monitor.record_feature_error("error_feature")
 #             monitor.record_feature_error("error_feature")
-# 
+#
 #         status = monitor.check_feature_health("error_feature")
 #         assert not status.is_healthy, "Condition must be true"
 #         assert status.error_count == 7, "Error should be raised or set"
 #         assert len(status.warnings) > 0, "Collection must not be empty"
-# 
+#
 #     def test_freshness_levels(self, monitor):
 #     def test_freshness_levels(self, monitor):
 #         """Test freshness level classification."""
 #         # Fresh (< 1 hour)
 #         assert monitor.get_freshness_level(30) == "FRESH", "monit is not valid"
 #         assert monitor.get_freshness_level(120) == "ACCEPTABLE", "monit is not valid"
-# 
+#
 #         # Stale (6-24 hours)
 #         assert monitor.get_freshness_level(600) == "STALE", "monit is not valid"
-# 
+#
 #         # Very stale (> 24 hours)
 #         assert monitor.get_freshness_level(1500) == "VERY_STALE", "monit is not valid"
 #         assert monitor.get_freshness_level(1500) == "VERY_STALE", "monit is not valid"
-# 
+#
 #     def test_check_all_features(self, monitor):
 #     def test_check_all_features(self, monitor):
 #         """Test checking all features at once."""
@@ -94,10 +94,10 @@
 #         monitor.record_feature_update("feat2")
 #         monitor.record_feature_update("feat3")
 #         results = monitor.check_all_features(["feat1", "feat2", "feat3"])
-# 
+#
 #         assert len(results) == 3, "Results must not be empty"
 #         assert all(isinstance(status, FeatureHealthStatus) for status in results.values())
-# 
+#
 #     def test_freshness_report(self, monitor):
 #     def test_freshness_report(self, monitor):
 #         """Test freshness distribution report."""
@@ -105,32 +105,32 @@
 #         monitor.record_feature_update("fresh2")
 #         monitor.feature_updates["stale1"] = datetime.now(UTC) - timedelta(hours=12)
 #         report = monitor.get_freshness_report()
-# 
+#
 #         assert "FRESH" in report, "Condition must be true"
 #         assert "STALE" in report, "Condition must be true"
 #         assert report["FRESH"] >= 2, "rep must be greater than zero"
-# 
+#
 #     def test_alert_stale_features(self, monitor):
 #     def test_alert_stale_features(self, monitor):
 #         """Test alerting for stale features."""
 #         monitor.record_feature_update("fresh")
 #         monitor.feature_updates["stale"] = datetime.now(UTC) - timedelta(hours=25)
 #         stale_features = monitor.alert_stale_features(threshold_hours=24)
-# 
+#
 #         assert "stale" in stale_features, "Condition must be true"
 #         assert "fresh" not in stale_features, "Condition must be true"
-# 
+#
 #     def test_reset_error_counts(self, monitor):
 #     def test_reset_error_counts(self, monitor):
 #         """Test resetting error counts."""
 #         monitor.record_feature_error("feat1")
 #         monitor.record_feature_error("feat2")
 #         assert len(monitor.error_counts) == 2, "Collection must not be empty"
-# 
+#
 #         monitor.reset_error_counts()
-# 
+#
 #         assert len(monitor.error_counts) == 0, "Collection must not be empty"
-# 
+#
 #     def test_time_until_stale(self, monitor):
 #     def test_time_until_stale(self, monitor):
 #         """Test calculating time until feature becomes stale."""
@@ -140,7 +140,7 @@
 #         assert time_left > 23, "time_left must be greater than zero"
 #         assert time_left <= 24, "time_left is not valid"
 #         assert time_left <= 24, "time_left is not valid"
-# 
+#
 #     def test_freshness_distribution(self, monitor):
 #     def test_freshness_distribution(self, monitor):
 #         """Test freshness distribution as percentages."""
@@ -148,11 +148,11 @@
 #         monitor.record_feature_update("f2")
 #         monitor.feature_updates["f3"] = datetime.now(UTC) - timedelta(hours=12)
 #         distribution = monitor.get_freshness_distribution()
-# 
+#
 #         assert "FRESH" in distribution, "Condition must be true"
 #         assert "STALE" in distribution, "Condition must be true"
 #         assert sum(distribution.values()) == pytest.approx(100.0), "Value must be initialized"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
@@ -160,7 +160,7 @@
 #     @pytest.fixture
 #     def monitor(self):
 #         return FeatureHealthMonitor(freshness_threshold_minutes=120)
-# 
+#
 #     def test_generate_alerts_critical(self, monitor):
 #     def test_generate_alerts_critical(self, monitor):
 #         """Test generating critical alerts."""
@@ -174,10 +174,10 @@
 #             ),
 #         }
 #         alerts = monitor.generate_alerts(health_statuses)
-# 
+#
 #         assert len(alerts) > 0, "Alerts must not be empty"
 #         assert any(alert.severity == "CRITICAL" for alert in alerts), "severity is not valid"
-# 
+#
 #     def test_generate_alerts_warning(self, monitor):
 #     def test_generate_alerts_warning(self, monitor):
 #         """Test generating warning alerts."""
@@ -191,10 +191,10 @@
 #             ),
 #         }
 #         alerts = monitor.generate_alerts(health_statuses, sla_minutes=120)
-# 
+#
 #         assert len(alerts) > 0, "Alerts must not be empty"
 #         assert any(alert.severity == "WARNING" for alert in alerts), "severity is not valid"
-# 
+#
 #     def test_generate_alerts_high_errors(self, monitor):
 #     def test_generate_alerts_high_errors(self, monitor):
 #         """Test generating alerts for high error rates."""
@@ -209,10 +209,10 @@
 #             ),
 #         }
 #         alerts = monitor.generate_alerts(health_statuses)
-# 
+#
 #         assert len(alerts) > 0, "Alerts must not be empty"
 #         assert any("error" in alert.message.lower() for alert in alerts), "Error should be raised or set"
-# 
+#
 #     def test_alert_to_dict(self):
 #     def test_alert_to_dict(self):
 #         """Test converting alert to dictionary."""
@@ -224,11 +224,11 @@
 #             metric_value=50.0,
 #         )
 #         alert_dict = alert.to_dict()
-# 
+#
 #         assert alert_dict["feature_name"] == "test", "Condition must be true"
 #         assert alert_dict["severity"] == "WARNING", "Condition must be true"
 #         assert alert_dict["metric_value"] == 50.0, "Value must be initialized"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
@@ -236,7 +236,7 @@
 #     @pytest.fixture
 #     def monitor(self):
 #         return FeatureHealthMonitor()
-# 
+#
 #     @pytest.fixture
 #     def sample_statuses(self):
 #         return {
@@ -265,16 +265,16 @@
 #             format="json",
 #             include_recommendations=True,
 #         )
-# 
+#
 #         report = json.loads(report_str)
-# 
+#
 #         assert "timestamp" in report, "Condition must be true"
 #         assert "summary" in report, "Condition must be true"
 #         assert "features" in report, "Condition must be true"
 #         assert "alerts" in report, "Condition must be true"
 #         assert "recommendations" in report, "Condition must be true"
 #         assert report["summary"]["total_features"] == 2, "rep is not valid"
-# 
+#
 #     def test_generate_markdown_report(self, monitor, sample_statuses):
 #     def test_generate_markdown_report(self, monitor, sample_statuses):
 #         """Test generating Markdown health report."""
@@ -287,7 +287,7 @@
 #         assert ", "Condition must be true"
 #         assert "healthy1" in report_str, "Condition must be true"
 #         assert "stale1" in report_str, "Condition must be true"
-# 
+#
 #     def test_generate_recommendations(self, monitor, sample_statuses):
 #     def test_generate_recommendations(self, monitor, sample_statuses):
 #         """Test generating recommendations."""

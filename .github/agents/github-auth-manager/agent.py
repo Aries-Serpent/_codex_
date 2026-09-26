@@ -16,9 +16,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'scripts'))
 
 try:
     import rotate_jwt_secret
-    from github import Github
-
     from codex.auth import MFAProvider, OAuthManager, TokenManager
+    from github import Github
 except ImportError as e:
     print(f"Error: {e}")  # codeql[py/clear-text-logging-sensitive-data]
     sys.exit(1)

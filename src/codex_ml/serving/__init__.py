@@ -15,7 +15,7 @@ Installation:
 
 Quick Start:
     from codex_ml.serving import ModelServer, ServerConfig
-    
+
     config = ServerConfig(
         host="0.0.0.0",
         port=8000,

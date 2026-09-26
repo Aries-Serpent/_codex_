@@ -18,14 +18,14 @@ def find_all_python_scripts(root: str, exclude_dirs: Set[str] = None) -> List[Pa
             '__pycache__', '.git', '.venv', 'venv', 'node_modules',
             '.pytest_cache', '.mypy_cache', 'build', 'dist', 'eggs'
         }
-    
+
     scripts = []
     for root_dir, dirs, files in os.walk(root):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for file in files:
             if file.endswith('.py'):
                 scripts.append(Path(root_dir) / file)
-    
+
     return sorted(scripts)
 
 def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
@@ -40,9 +40,9 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
             'error': str(e),
             'current_pattern': 'error'
         }
-    
+
     lines = content.split('\n')
-    
+
     # Define token patterns to detect
     patterns = {
         'direct_env_vars': r'os\.environ\.get\([\'"]([A-Z_]*TOKEN[A-Z_]*)[\'"]',
@@ -52,7 +52,7 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
         'codex_master_key': r'CODEX_MASTER_KEY|CODEX_BACKUP_KEY',
         'existing_import': r'from scripts\.ci\._token_resolver import',
     }
-    
+
     findings = {
         'file': str(script_path.relative_to(repo_root)),
         'status': 'analyzed',
@@ -67,20 +67,20 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
         'before_example': None,
         'after_example': None
     }
-    
+
     # Search for patterns
     for pattern_name, pattern_regex in patterns.items():
         matches = []
         for line_num, line in enumerate(lines, 1):
             if re.search(pattern_regex, line):
                 matches.append(line_num)
-        
+
         if matches:
             findings['patterns_found'][pattern_name] = matches
-    
+
     # Determine if already has import
     has_utility_import = 'existing_import' in findings['patterns_found']
-    
+
     # Determine current pattern and refactoring type
     if has_utility_import:
         findings['status'] = 'already_refactored'
@@ -92,33 +92,33 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
         findings['needs_token_utility'] = True
         findings['lines_changed'] = len(findings['patterns_found'].get('inline_fallbacks', []))
         findings['effort_estimate'] = 'low'
-        
+
         # Extract example
         line_num = findings['patterns_found']['inline_fallbacks'][0]
         if line_num - 1 < len(lines):
             findings['before_example'] = lines[line_num - 1].strip()
-    
+
     elif 'hardcoded_github' in findings['patterns_found']:
         findings['current_pattern'] = 'hardcoded_github_token'
         findings['refactoring_type'] = 'replace_hardcoded'
         findings['needs_token_utility'] = True
         findings['lines_changed'] = len(findings['patterns_found'].get('hardcoded_github', []))
         findings['effort_estimate'] = 'low'
-        
+
         line_num = findings['patterns_found']['hardcoded_github'][0]
         if line_num - 1 < len(lines):
             findings['before_example'] = lines[line_num - 1].strip()
-    
+
     elif 'direct_env_vars' in findings['patterns_found'] or 'getenv_calls' in findings['patterns_found']:
         env_matches = findings['patterns_found'].get('direct_env_vars', []) + findings['patterns_found'].get('getenv_calls', [])
-        
+
         # Check if it's elevated operations
         for line_num in env_matches:
             if line_num - 1 < len(lines):
                 line = lines[line_num - 1]
                 if any(keyword in line for keyword in ['actions', 'workflow', 'security', 'admin', 'org_hook']):
                     findings['elevation_required'] = True
-        
+
         if findings['elevation_required']:
             findings['current_pattern'] = 'direct_env_elevated_ops'
             findings['refactoring_type'] = 'add_utility_elevated'
@@ -127,15 +127,15 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
             findings['current_pattern'] = 'direct_env_calls'
             findings['refactoring_type'] = 'add_utility_basic'
             findings['effort_estimate'] = 'low'
-        
+
         findings['needs_token_utility'] = True
         findings['lines_changed'] = len(env_matches)
-        
+
         # Extract example
         line_num = env_matches[0]
         if line_num - 1 < len(lines):
             findings['before_example'] = lines[line_num - 1].strip()
-    
+
     # Also check for patterns that imply elevated operations
     if not findings['elevation_required']:
         elevated_keywords = ['actions:write', 'workflow', 'security_events', 'admin:', 'org_hook']
@@ -143,49 +143,49 @@ def analyze_token_patterns(script_path: Path, repo_root: str) -> Dict:
             if keyword in content:
                 findings['elevation_required'] = True
                 break
-    
+
     return findings
 
 def main():
     """Execute Phase 4.1 analysis and generate reports."""
     repo_root = REPO_ROOT
     codex_dir = Path(repo_root) / '.codex'
-    
+
     print("📊 PHASE 4.1: Generating comprehensive refactoring reports...")
-    
+
     # Find all Python scripts
     print("📝 Finding all Python scripts...")
     scripts = find_all_python_scripts(repo_root)
     print(f"✅ Found {len(scripts)} Python scripts")
-    
+
     # Analyze each script
     print("🔬 Analyzing token patterns...")
     analysis_results = []
-    
+
     for i, script in enumerate(scripts, 1):
         if i % 500 == 0:
             print(f"  Progress: {i}/{len(scripts)} scripts analyzed...")
-        
+
         result = analyze_token_patterns(script, repo_root)
         if result['needs_token_utility'] or result['status'] == 'already_refactored':
             analysis_results.append(result)
-    
+
     # Categorize results
     print("📋 Categorizing results...")
     categories = defaultdict(list)
     refactoring_patterns = defaultdict(list)
-    
+
     for result in analysis_results:
         if result['refactoring_type'] != 'none':
             categories[result['refactoring_type']].append(result)
             refactoring_patterns[result['current_pattern']].append(result)
-    
+
     # Calculate statistics
     total_analyzed = len(scripts)
     scripts_needing_refactoring = sum(1 for r in analysis_results if r['needs_token_utility'])
     already_refactored = sum(1 for r in analysis_results if r['status'] == 'already_refactored')
     total_lines_changed = sum(r.get('lines_changed', 0) for r in analysis_results if r['needs_token_utility'])
-    
+
     # Generate summary statistics
     summary = {
         'phase': 'PHASE_4.1',
@@ -200,7 +200,7 @@ def main():
         'estimated_effort_hours': scripts_needing_refactoring * 0.5,
         'coverage_percentage': (scripts_needing_refactoring + already_refactored) / total_analyzed * 100 if total_analyzed > 0 else 0
     }
-    
+
     # Refactoring breakdown
     refactoring_breakdown = {
         'add_utility_basic': {
@@ -228,7 +228,7 @@ def main():
             'files': categories.get('replace_hardcoded', [])
         }
     }
-    
+
     # Generate JSON report
     json_report = {
         'summary': summary,
@@ -247,7 +247,7 @@ def main():
             'all_tests_pass': 'PENDING'
         }
     }
-    
+
     # Generate Markdown report
     markdown_report = f"""# PHASE 4.1: Python Script Token Utility Refactoring
 
@@ -483,31 +483,31 @@ For each script in the refactoring list:
 **Phase**: PHASE 4.1
 **Campaign**: CODEX_MASTER_KEY
 """
-    
+
     # Create file listing sections
     basic_files = '\n'.join([f"- `{f['file']}`" for f in categories.get('add_utility_basic', [])][:30])
     elevated_files = '\n'.join([f"- `{f['file']}`" for f in categories.get('add_utility_elevated', [])][:30])
     chain_files = '\n'.join([f"- `{f['file']}`" for f in categories.get('replace_inline_chains', [])][:30])
     hardcoded_files = '\n'.join([f"- `{f['file']}`" for f in categories.get('replace_hardcoded', [])][:10])
-    
+
     markdown_report = markdown_report.replace('{{BASIC_FILES}}', basic_files or 'No files in this category')
     markdown_report = markdown_report.replace('{{ELEVATED_FILES}}', elevated_files or 'No files in this category')
     markdown_report = markdown_report.replace('{{CHAIN_FILES}}', chain_files or 'No files in this category')
     markdown_report = markdown_report.replace('{{HARDCODED_FILES}}', hardcoded_files or 'No files in this category')
-    
+
     # Write reports
     print("\n💾 Writing reports...")
-    
+
     json_path = codex_dir / 'PHASE_4_SCRIPT_REFACTORING.json'
     with open(json_path, 'w') as f:
         json.dump(json_report, f, indent=2)
     print(f"✅ JSON report: {json_path}")
-    
+
     md_path = codex_dir / 'PHASE_4_SCRIPT_REFACTORING.md'
     with open(md_path, 'w') as f:
         f.write(markdown_report)
     print(f"✅ Markdown report: {md_path}")
-    
+
     # Print summary
     print("\n" + "="*80)
     print("PHASE 4.1 ANALYSIS COMPLETE")
@@ -519,13 +519,13 @@ For each script in the refactoring list:
     print(f"  Total Lines to Change: {summary['total_lines_to_change']}")
     print(f"  Estimated Effort: {summary['estimated_effort_hours']:.1f} hours")
     print(f"  Coverage: {summary['coverage_percentage']:.2f}%")
-    
+
     print("\n📋 Refactoring Breakdown:")
     print(f"  Add Utility Basic: {refactoring_breakdown['add_utility_basic']['count']}")
     print(f"  Add Utility Elevated: {refactoring_breakdown['add_utility_elevated']['count']}")
     print(f"  Replace Inline Chains: {refactoring_breakdown['replace_inline_chains']['count']}")
     print(f"  Replace Hardcoded: {refactoring_breakdown['replace_hardcoded']['count']}")
-    
+
     print("\n✅ Reports generated successfully!")
     print("  📄 JSON: .codex/PHASE_4_SCRIPT_REFACTORING.json")
     print("  📄 Markdown: .codex/PHASE_4_SCRIPT_REFACTORING.md")

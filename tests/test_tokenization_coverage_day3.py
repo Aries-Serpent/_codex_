@@ -189,7 +189,7 @@ class TestSpecialTokenEdgeCases:
             # Get BOS/EOS IDs multiple times
             bos1 = tokenizer.bos_token_id if hasattr(tokenizer, "bos_token_id") else None
             bos2 = tokenizer.bos_token_id if hasattr(tokenizer, "bos_token_id") else None
-            
+
             if bos1 is not None:
                 assert bos1 == bos2, "BOS ID inconsistent"
         except (NotImplementedError, AttributeError):
@@ -726,7 +726,7 @@ class TestTokenizerCaching:
             tokens1 = tokenizer.encode(text)
             tokens2 = tokenizer.encode(text)
             tokens3 = tokenizer.encode(text)
-            
+
             assert tokens1 == tokens2 == tokens3, "Encoding must be consistent"
         except (NotImplementedError, ValueError):
             pytest.skip("Encoding consistency incomplete")

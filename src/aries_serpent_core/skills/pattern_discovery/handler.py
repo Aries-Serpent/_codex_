@@ -89,14 +89,10 @@ def run(
                 "pending_review": pending_review,
                 "metrics": {
                     "avg_confidence": (
-                        sum(p["confidence"] for p in scored) / len(scored)
-                        if scored
-                        else 0.0
+                        sum(p["confidence"] for p in scored) / len(scored) if scored else 0.0
                     ),
                     "avg_frequency": (
-                        sum(p["frequency"] for p in scored) / len(scored)
-                        if scored
-                        else 0.0
+                        sum(p["frequency"] for p in scored) / len(scored) if scored else 0.0
                     ),
                     "coverage_pct": (len(scored) / max(len(memory_data), 1)) * 100,
                 },

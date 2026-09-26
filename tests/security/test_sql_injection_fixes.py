@@ -99,8 +99,8 @@ class TestArchiveManagerSQLInjectionFix:
             db_path.write_text("")  # Create empty file
 
             # The fix validates that the path exists and is readable
-            assert db_path.exists()
-            assert os.path.isabs(os.path.abspath(str(db_path)))
+            assert db_path.exists(), "Condition must be true"
+            assert os.path.isabs(os.path.abspath(str(db_path))), "Condition must be true"
 
 
 if __name__ == "__main__":

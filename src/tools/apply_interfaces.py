@@ -190,7 +190,9 @@ __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 
 # ---------------- Tests ----------------
 S_TESTS = "# BEGIN: CODEX_IFACE_TESTS"
-TESTS = S_TESTS + """
+TESTS = (
+    S_TESTS
+    + """
 import importlib, json, os, types, pytest, yaml
 from typing import Any, Mapping, Optional
 from codex_ml.interfaces import TokenizerAdapter, RewardModel, RLAgent
@@ -313,10 +315,13 @@ def test_rl_agent_abc(tmp_path):
 
 # END: CODEX_IFACE_TESTS
 """
+)
 
 # ---------------- Config example ----------------
 S_CFG = "# BEGIN: CODEX_IFACE_CONFIG"
-CFG = S_CFG + """
+CFG = (
+    S_CFG
+    + """
 # Example mapping of interface groups to concrete implementations
 tokenizer:
   path: yourpkg.tokenizers.hf:HFTokenizer   # TODO: replace with actual module:class
@@ -329,6 +334,7 @@ rl_agent:
   kwargs: {}
 # END: CODEX_IFACE_CONFIG
 """
+)
 
 # ---------------- Docs ----------------
 S_DOCS = "<!-- BEGIN: CODEX_IFACE_DOCS -->"

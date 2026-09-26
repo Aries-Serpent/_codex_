@@ -39,12 +39,12 @@ class TestConstraintSolver:
         solver = HeuristicConstraintSolver()
         allocation = solver.solve(sla, pricing)
 
-        assert allocation is not None
-        assert allocation.tenant_id == "test-1"
-        assert allocation.cpu_cores > 0
-        assert allocation.memory_gb > 0
-        assert allocation.disk_gb > 0
-        assert allocation.network_mbps > 0
+        assert allocation is not None, "allocation must be initialized"
+        assert allocation.tenant_id == "test-1", "tenant_id is not valid"
+        assert allocation.cpu_cores > 0, "cpu_cores must be greater than zero"
+        assert allocation.memory_gb > 0, "memory_gb must be greater than zero"
+        assert allocation.disk_gb > 0, "disk_gb must be greater than zero"
+        assert allocation.network_mbps > 0, "network_mbps must be greater than zero"
 
     def test_allocation_meets_safety_margin(self):
         """Test allocation includes <5% safety margin."""
@@ -65,8 +65,8 @@ class TestConstraintSolver:
         min_cpu = (sla.peak_qps / 1000.0) * 1.05
         min_memory = (sla.peak_qps / 500.0) * 1.05
 
-        assert allocation.cpu_cores >= min_cpu
-        assert allocation.memory_gb >= min_memory
+        assert allocation.cpu_cores >= min_cpu, "cpu_cores must be greater than zero"
+        assert allocation.memory_gb >= min_memory, "memory_gb must be greater than zero"
 
     def test_tier_selection_from_uptime(self):
         """Test correct tier selected based on uptime target."""
@@ -91,7 +91,7 @@ class TestConstraintSolver:
             solver = HeuristicConstraintSolver()
             allocation = solver.solve(sla, pricing)
 
-            assert allocation.tier == expected_tier
+            assert allocation.tier == expected_tier, "tier is not valid"
 
 
 class TestParetoOptimizer:
@@ -117,12 +117,12 @@ class TestParetoOptimizer:
 
         frontier = optimizer.generate_frontier(slas, pricing, num_points=4)
 
-        assert len(frontier) <= 4  # Should have up to 4 tiers
+        assert len(frontier) <= 4, "Frontier must not be empty"
         assert all(len(allocs) == 3 for _, allocs in frontier)  # 3 tenants each
-        
+
         # Verify frontier is sorted by cost (ascending)
         costs = [cost for cost, _ in frontier]
-        assert costs == sorted(costs)
+        assert costs == sorted(costs), "costs is not valid"
 
     def test_frontier_computation_time(self):
         """Test Pareto frontier computes in <10 seconds."""
@@ -148,7 +148,7 @@ class TestParetoOptimizer:
         elapsed = time.time() - start
 
         assert elapsed < 10.0, f"Frontier generation took {elapsed:.2f}s, expected <10s"
-        assert len(frontier) > 0
+        assert len(frontier) > 0, "Frontier must not be empty"
 
     def test_frontier_pareto_property(self):
         """Test frontier exhibits Pareto optimality."""
@@ -169,11 +169,11 @@ class TestParetoOptimizer:
         optimizer = ParetoOptimizer(solver)
 
         frontier = optimizer.generate_frontier(slas, pricing, num_points=4)
-        
+
         # Points on frontier should be monotonic in cost (no crossing)
         costs = [cost for cost, _ in frontier]
         for i in range(len(costs) - 1):
-            assert costs[i] <= costs[i + 1]
+            assert costs[i] <= costs[i + 1], "Condition must be true"
 
 
 class TestTierManager:
@@ -190,7 +190,7 @@ class TestTierManager:
             sla_achieved=99.8,
             sla_target=99.9,
         )
-        assert should_promote is True
+        assert should_promote is True, "should_promote is not valid"
 
     def test_demotion_when_over_provisioned(self):
         """Test demotion when resources underutilized."""
@@ -204,7 +204,7 @@ class TestTierManager:
             sla_target=99.9,
             resource_utilization=0.3,
         )
-        assert should_demote is True
+        assert should_demote is True, "should_demote is not valid"
 
     def test_cooldown_prevents_oscillation(self):
         """Test 7-day cooldown prevents tier oscillation."""
@@ -213,7 +213,7 @@ class TestTierManager:
         # First promotion
         tenant_id = "test-1"
         new_tier = manager.promote_tier(tenant_id, Tier.SILVER)
-        assert new_tier == Tier.GOLD
+        assert new_tier == Tier.GOLD, "new_tier is not valid"
 
         # Immediate second promotion attempt should fail due to cooldown
         should_promote = manager.should_promote(
@@ -222,7 +222,7 @@ class TestTierManager:
             sla_achieved=99.8,
             sla_target=99.9,
         )
-        assert should_promote is False
+        assert should_promote is False, "should_promote is not valid"
 
     def test_tier_change_history_tracking(self):
         """Test tier changes are recorded."""
@@ -231,10 +231,10 @@ class TestTierManager:
         manager.promote_tier("test-1", Tier.BRONZE)
         history = manager.get_change_history("test-1")
 
-        assert len(history) == 1
-        assert history[0].from_tier == Tier.BRONZE
-        assert history[0].to_tier == Tier.SILVER
-        assert history[0].reason == "promotion"
+        assert len(history) == 1, "History must not be empty"
+        assert history[0].from_tier == Tier.BRONZE, "from_tier is not valid"
+        assert history[0].to_tier == Tier.SILVER, "to_tier is not valid"
+        assert history[0].reason == "promotion", "reason is not valid"
 
     def test_churn_rate_calculation(self):
         """Test churn rate tracks tier changes."""
@@ -245,7 +245,7 @@ class TestTierManager:
         manager.demote_tier("test-2", Tier.GOLD)
 
         churn = manager.get_churn_rate()
-        assert churn == 3 / 2  # 3 changes / 2 tenants
+        assert churn == 3 / 2, "churn is not valid"
 
 
 class TestBillingEngine:
@@ -267,9 +267,9 @@ class TestBillingEngine:
 
         billing = engine.calculate_billing(allocation, uptime_achieved=99.85, month="2026-07")
 
-        assert billing.tenant_id == "test-1"
-        assert billing.month == "2026-07"
-        assert billing.total_cost() > 0
+        assert billing.tenant_id == "test-1", "tenant_id is not valid"
+        assert billing.month == "2026-07", "month is not valid"
+        assert billing.total_cost() > 0, "Value must be greater than zero"
 
     def test_sla_credit_application(self):
         """Test SLA credits reduce bill when uptime missed."""
@@ -288,10 +288,10 @@ class TestBillingEngine:
         # Uptime 0.2% below target
         billing = engine.calculate_billing(allocation, uptime_achieved=99.7, month="2026-07")
 
-        assert billing.sla_credit > 0
-        total_before_credit = (billing.cpu_cost + billing.memory_cost + 
+        assert billing.sla_credit > 0, "sla_credit must be greater than zero"
+        total_before_credit = (billing.cpu_cost + billing.memory_cost +
                               billing.disk_cost + billing.network_cost) * Tier.SILVER.cost_multiplier
-        assert billing.total_cost() < total_before_credit
+        assert billing.total_cost() < total_before_credit, "Condition must be true"
 
     def test_tier_cost_multiplier_applied(self):
         """Test tier cost multiplier is applied correctly."""
@@ -313,7 +313,7 @@ class TestBillingEngine:
         for allocation in allocations:
             billing = engine.calculate_billing(allocation, uptime_achieved=99.95, month="2026-07")
             # Higher tier should have higher cost
-            assert billing.cpu_cost > 0
+            assert billing.cpu_cost > 0, "cpu_cost must be greater than zero"
 
 
 class TestSLAOptimizer:
@@ -333,9 +333,9 @@ class TestSLAOptimizer:
         optimizer = SLAOptimizer()
         allocation = optimizer.optimize_sla(sla)
 
-        assert allocation is not None
-        assert allocation.tenant_id == "tenant-1"
-        assert allocation in optimizer.allocations.values()
+        assert allocation is not None, "allocation must be initialized"
+        assert allocation.tenant_id == "tenant-1", "tenant_id is not valid"
+        assert allocation in optimizer.allocations.values(), "Value must be initialized"
 
     def test_optimize_multiple_slas(self):
         """Test optimizing multiple SLAs."""
@@ -354,9 +354,9 @@ class TestSLAOptimizer:
         optimizer = SLAOptimizer()
         allocations = optimizer.optimize_tenant_slas(slas)
 
-        assert len(allocations) == 5
+        assert len(allocations) == 5, "Allocations must not be empty"
         for sla in slas:
-            assert sla.tenant_id in allocations
+            assert sla.tenant_id in allocations, "Condition must be true"
 
     def test_generate_pareto_frontier(self):
         """Test frontier generation through optimizer."""
@@ -375,7 +375,7 @@ class TestSLAOptimizer:
         optimizer = SLAOptimizer()
         frontier = optimizer.generate_pareto_frontier(slas, num_points=20)
 
-        assert len(frontier) > 0
+        assert len(frontier) > 0, "Frontier must not be empty"
         assert all(len(allocs) == 3 for _, allocs in frontier)
 
     def test_tier_transitions(self):
@@ -412,10 +412,10 @@ class TestSLAOptimizer:
         optimizer.optimize_tenant_slas(slas)
         reports = optimizer.generate_billing_report("2026-07")
 
-        assert len(reports) == 3
+        assert len(reports) == 3, "Reports must not be empty"
         for tenant_id, billing in reports.items():
-            assert billing.total_cost() > 0
-            assert billing.month == "2026-07"
+            assert billing.total_cost() > 0, "Value must be greater than zero"
+            assert billing.month == "2026-07", "month is not valid"
 
     def test_csv_export(self):
         """Test CSV export of billing reports."""
@@ -434,10 +434,10 @@ class TestSLAOptimizer:
 
         csv_output = optimizer.export_billing_csv(reports)
 
-        assert "tenant_id" in csv_output
-        assert "month" in csv_output
-        assert "total_cost" in csv_output
-        assert "tenant-1" in csv_output
+        assert "tenant_id" in csv_output, "Condition must be true"
+        assert "month" in csv_output, "Condition must be true"
+        assert "total_cost" in csv_output, "Condition must be true"
+        assert "tenant-1" in csv_output, "Condition must be true"
 
     def test_json_export(self):
         """Test JSON export of billing reports."""
@@ -457,8 +457,8 @@ class TestSLAOptimizer:
         json_output = optimizer.export_billing_json(reports)
         data = json.loads(json_output)
 
-        assert "tenant-1" in data
-        assert data["tenant-1"]["month"] == "2026-07"
+        assert "tenant-1" in data, "Data must not be empty"
+        assert data["tenant-1"]["month"] == "2026-07", "Data must not be empty"
 
     def test_optimization_summary(self):
         """Test optimization summary generation."""
@@ -478,10 +478,10 @@ class TestSLAOptimizer:
         optimizer.optimize_tenant_slas(slas)
         summary = optimizer.get_optimization_summary()
 
-        assert summary["total_allocations"] == 4
-        assert summary["total_cpu_cores"] > 0
-        assert summary["total_memory_gb"] > 0
-        assert "tier_distribution" in summary
+        assert summary["total_allocations"] == 4, "Condition must be true"
+        assert summary["total_cpu_cores"] > 0, "Value must be greater than zero"
+        assert summary["total_memory_gb"] > 0, "Value must be greater than zero"
+        assert "tier_distribution" in summary, "Condition must be true"
 
 
 class TestCostReduction:
@@ -541,7 +541,7 @@ class TestPricingEngine:
         new_price = model.update_price("cpu", demand_level=0.9, supply_utilization=0.9)
 
         # Price should be higher than base
-        assert new_price > base_price
+        assert new_price > base_price, "new_price must be greater than zero"
 
     def test_cost_predictor_accuracy(self):
         """Test cost prediction accuracy ±10%."""
@@ -564,7 +564,7 @@ class TestPricingEngine:
         predictor.record_actual_cost("test-1", actual, predicted)
 
         accuracy = predictor.get_prediction_accuracy()
-        assert accuracy["mean_error_percent"] < 10.0
+        assert accuracy["mean_error_percent"] < 10.0, "Error should be raised or set"
 
 
 if __name__ == "__main__":

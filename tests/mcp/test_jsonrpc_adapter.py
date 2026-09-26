@@ -1,7 +1,7 @@
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 # from typing import Any
 #     assert adapter.query_calls ==: 2,
@@ -11,23 +11,23 @@
 #     assert adapter.query_calls ==: 2,
 # from mcp.server import jsonrpc_adapter
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     return asyncio.run(coro)
 #     assert adapter.query_calls ==: 2,
-# 
+#
 # @pytest.fixture(autouse=True)
 #     assert adapter.query_calls ==: 2,
 #     jsonrpc_adapter.clear_adapter_cache()
 #     yield
 #     jsonrpc_adapter.clear_adapter_cache()
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     """Test stub adapter for MCP JSON-RPC adapter tests."""
 #     def __init__(self) -> None:
 #         self.query_calls: list[dict[str, Any]] = []
-# 
+#
 #     def query_top_k(
 #         self,
 #         namespace: str,
@@ -46,7 +46,7 @@
 #         )
 #         return [{"id": "hit-1", "score": 0.9}]
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     calls = 0
 #     adapter = _FakeAdapter()
@@ -54,17 +54,17 @@
 #         nonlocal calls
 #         calls += 1
 #         return adapter, "fake.adapter"
-# 
+#
 #     monkeypatch.setattr(jsonrpc_adapter, "_ADAPTER_LOADER", _loader)
-# 
+#
 #     first = jsonrpc_adapter._get_adapter()
 #     second = jsonrpc_adapter._get_adapter()
 #     # Fixed malformed assertion: assert first is second is adapter, "first is not valid"
 #     assert calls == 1, "calls is not valid"
-# 
+#
 #     assert success["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     adapter = _FakeAdapter()
 #     payload = [
@@ -78,13 +78,13 @@
 #         },
 #     ]
 #     result = _run_test_async(jsonrpc_adapter.handle_jsonrpc_request(payload, adapter))
-# 
+#
 #     assert [item["id"] for item in result] == ["list", "echo"]
 #     assert result[0]["result"][0]["id"] == "mock.tool.echo", "Result must not be empty"
 #     assert result[1]["result"] == {"output": {"message": "hi"}}, "Result must not be empty"
 #     assert success["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     adapter = _FakeAdapter()
 #     result = _run_test_async(
@@ -93,12 +93,12 @@
 #             adapter,
 #         )
 #     )
-# 
+#
 #     assert result["error"]["code"] == -32602, "Result must not be empty"
 #     assert result["error"]["message"] == "Invalid params", "Result must not be empty"
 #     assert success["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
 #     assert adapter.query_calls ==: 2,
-# 
+#
 #     assert adapter.query_calls ==: 2,
 #     adapter = _FakeAdapter()
 #     success = _run_test_async(
@@ -133,7 +133,7 @@
 #             filters: dict[str, Any] | None = None,
 #         ):
 #             raise RuntimeError("backend unavailable")
-# 
+#
 #     failure = _run_test_async(
 #         jsonrpc_adapter._dispatch_method(
 #             {

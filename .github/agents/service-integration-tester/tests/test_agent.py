@@ -71,7 +71,7 @@ class TestMCPToolContract:
             schema_name="search_response",
             version="1.0.0",
         )
-        
+
         contract = MCPToolContract(
             tool_name="search_docs",
             version="1.0.0",
@@ -80,7 +80,7 @@ class TestMCPToolContract:
             request_schema=request_schema,
             response_schema=response_schema,
         )
-        
+
         assert contract.tool_name == "search_docs"
         assert contract.endpoint == "/api/v1/search"
         assert contract.http_method == HTTPMethod.POST
@@ -91,7 +91,7 @@ class TestMCPToolContract:
         """Test contract requiring authentication"""
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="secure_tool",
             version="1.0.0",
@@ -101,14 +101,14 @@ class TestMCPToolContract:
             response_schema=response_schema,
             requires_auth=True,
         )
-        
+
         assert contract.requires_auth is True
 
     def test_contract_without_auth(self):
         """Test contract that doesn't require authentication"""
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="public_tool",
             version="1.0.0",
@@ -118,14 +118,14 @@ class TestMCPToolContract:
             response_schema=response_schema,
             requires_auth=False,
         )
-        
+
         assert contract.requires_auth is False
 
     def test_contract_with_custom_timeout(self):
         """Test contract with custom timeout"""
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="slow_tool",
             version="1.0.0",
@@ -135,7 +135,7 @@ class TestMCPToolContract:
             response_schema=response_schema,
             timeout_seconds=60,
         )
-        
+
         assert contract.timeout_seconds == 60
 
 
@@ -151,7 +151,7 @@ class TestMCPToolContractValidator:
     def test_validate_valid_contract(self):
         """Test validating a valid contract"""
         validator = MCPToolContractValidator()
-        
+
         request_schema = JSONSchema(
             schema_name="req",
             version="1.0.0",
@@ -160,7 +160,7 @@ class TestMCPToolContractValidator:
             schema_name="resp",
             version="1.0.0",
         )
-        
+
         contract = MCPToolContract(
             tool_name="valid_tool",
             version="1.0.0",
@@ -169,7 +169,7 @@ class TestMCPToolContractValidator:
             request_schema=request_schema,
             response_schema=response_schema,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is True
         assert contract.validation_status == ContractValidationStatus.VALID
@@ -177,10 +177,10 @@ class TestMCPToolContractValidator:
     def test_validate_contract_without_tool_name(self):
         """Test validation fails without tool name"""
         validator = MCPToolContractValidator()
-        
+
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="",
             version="1.0.0",
@@ -189,7 +189,7 @@ class TestMCPToolContractValidator:
             request_schema=request_schema,
             response_schema=response_schema,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is False
         assert "tool_name is required" in contract.issues
@@ -197,10 +197,10 @@ class TestMCPToolContractValidator:
     def test_validate_contract_without_endpoint(self):
         """Test validation fails without endpoint"""
         validator = MCPToolContractValidator()
-        
+
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="test_tool",
             version="1.0.0",
@@ -209,7 +209,7 @@ class TestMCPToolContractValidator:
             request_schema=request_schema,
             response_schema=response_schema,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is False
         assert "endpoint is required" in contract.issues
@@ -217,10 +217,10 @@ class TestMCPToolContractValidator:
     def test_validate_contract_with_invalid_timeout(self):
         """Test validation fails with invalid timeout"""
         validator = MCPToolContractValidator()
-        
+
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="slow_tool",
             version="1.0.0",
@@ -230,7 +230,7 @@ class TestMCPToolContractValidator:
             response_schema=response_schema,
             timeout_seconds=-1,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is False
         assert any("timeout" in issue for issue in contract.issues)
@@ -238,10 +238,10 @@ class TestMCPToolContractValidator:
     def test_validate_contract_with_invalid_retry(self):
         """Test validation fails with invalid retry count"""
         validator = MCPToolContractValidator()
-        
+
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="bad_tool",
             version="1.0.0",
@@ -251,7 +251,7 @@ class TestMCPToolContractValidator:
             response_schema=response_schema,
             retry_count=-1,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is False
         assert any("retry" in issue for issue in contract.issues)
@@ -271,7 +271,7 @@ class TestMockHTTPClientFactory:
         """Test creating a mock client"""
         factory = MockHTTPClientFactory()
         client = factory.create_client("search_docs", "http://localhost:8000")
-        
+
         assert client is not None
         assert client.tool_name == "search_docs"
         assert client.endpoint == "http://localhost:8000"
@@ -283,7 +283,7 @@ class TestMockHTTPClientFactory:
         factory = MockHTTPClientFactory()
         created = factory.create_client("test_tool", "http://localhost:8000")
         retrieved = factory.get_client("test_tool", "http://localhost:8000")
-        
+
         assert retrieved is not None
         assert retrieved.tool_name == created.tool_name
 
@@ -302,17 +302,17 @@ class TestMockHTTPClientFactory:
             service_name="test_service",
             description="Test service",
         )
-        
+
         factory.register_endpoint(endpoint)
         assert "ep1" in factory.endpoints
 
     def test_register_contract(self):
         """Test registering an MCP tool contract"""
         factory = MockHTTPClientFactory()
-        
+
         request_schema = JSONSchema(schema_name="req", version="1.0.0")
         response_schema = JSONSchema(schema_name="resp", version="1.0.0")
-        
+
         contract = MCPToolContract(
             tool_name="test_tool",
             version="1.0.0",
@@ -321,7 +321,7 @@ class TestMockHTTPClientFactory:
             request_schema=request_schema,
             response_schema=response_schema,
         )
-        
+
         factory.register_contract(contract)
         assert "test_tool" in factory.contracts
 
@@ -336,7 +336,7 @@ class TestMockHTTPRequest:
             method=HTTPMethod.POST,
             body={"query": "test"},
         )
-        
+
         assert request.url == "http://localhost:8000/api/test"
         assert request.method == HTTPMethod.POST
         assert request.body == {"query": "test"}
@@ -348,7 +348,7 @@ class TestMockHTTPRequest:
             method=HTTPMethod.GET,
             headers={"Authorization": "******"},
         )
-        
+
         assert "Authorization" in request.headers
 
     def test_request_with_query_params(self):
@@ -358,7 +358,7 @@ class TestMockHTTPRequest:
             method=HTTPMethod.GET,
             query_params={"page": "1", "limit": "10"},
         )
-        
+
         assert request.query_params["page"] == "1"
         assert request.query_params["limit"] == "10"
 
@@ -372,7 +372,7 @@ class TestMockHTTPResponse:
             status_code=200,
             body={"results": []},
         )
-        
+
         assert response.status_code == 200
         assert response.body == {"results": []}
 
@@ -383,7 +383,7 @@ class TestMockHTTPResponse:
             headers={"Content-Type": "application/json"},
             body={},
         )
-        
+
         assert response.headers["Content-Type"] == "application/json"
 
     def test_response_with_latency(self):
@@ -393,7 +393,7 @@ class TestMockHTTPResponse:
             body={},
             latency_ms=150,
         )
-        
+
         assert response.latency_ms == 150
 
     def test_error_response(self):
@@ -402,7 +402,7 @@ class TestMockHTTPResponse:
             status_code=400,
             body={"error": "Bad request"},
         )
-        
+
         assert response.status_code == 400
         assert "error" in response.body
 
@@ -418,7 +418,7 @@ class TestServiceEndpoint:
             service_name="test_service",
             description="Test service endpoint",
         )
-        
+
         assert endpoint.endpoint_id == "ep1"
         assert endpoint.url == "http://localhost:8000"
         assert endpoint.service_name == "test_service"
@@ -432,7 +432,7 @@ class TestServiceEndpoint:
             description="Test",
             mcp_tools=["search_docs", "get_document"],
         )
-        
+
         assert "search_docs" in endpoint.mcp_tools
         assert "get_document" in endpoint.mcp_tools
 
@@ -443,7 +443,7 @@ class TestServiceIntegrationTester:
     def test_agent_initialization(self):
         """Test agent initialization"""
         agent = ServiceIntegrationTester()
-        
+
         assert agent is not None
         assert agent.config is not None
         assert agent.mock_client_factory is not None
@@ -454,7 +454,7 @@ class TestServiceIntegrationTester:
         """Test registering an MCP tool contract"""
         agent = ServiceIntegrationTester()
         contract = agent.register_mcp_tool_contract("search_docs")
-        
+
         assert contract is not None
         assert contract.tool_name == "search_docs"
         assert "search_docs" in agent.contracts
@@ -462,16 +462,16 @@ class TestServiceIntegrationTester:
     def test_register_all_mcp_tools(self):
         """Test registering all MCP tools"""
         agent = ServiceIntegrationTester()
-        
+
         for tool_name in list(agent.MCP_TOOLS.keys())[:12]:
             agent.register_mcp_tool_contract(tool_name)
-        
+
         assert len(agent.contracts) >= 10
 
     def test_register_invalid_tool(self):
         """Test registering an invalid tool"""
         agent = ServiceIntegrationTester()
-        
+
         with pytest.raises(ValueError):
             agent.register_mcp_tool_contract("invalid_tool")
 
@@ -480,9 +480,9 @@ class TestServiceIntegrationTester:
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
         agent.register_mcp_tool_contract("get_document")
-        
+
         results = agent.validate_all_contracts()
-        
+
         assert "search_docs" in results
         assert "get_document" in results
         assert results["search_docs"] is True
@@ -491,9 +491,9 @@ class TestServiceIntegrationTester:
         """Test generating mock clients"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         clients = agent.generate_mock_clients("http://localhost:8000")
-        
+
         assert len(clients) > 0
         assert "search_docs" in clients
 
@@ -501,14 +501,14 @@ class TestServiceIntegrationTester:
         """Test running an integration test"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         result = agent.run_integration_test(
             test_name="test_search",
             tool_name="search_docs",
             request_data={"query": "test"},
             expected_response={"results": []},
         )
-        
+
         assert result is not None
         assert result.test_name == "test_search"
         assert result.passed is True
@@ -518,7 +518,7 @@ class TestServiceIntegrationTester:
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
         agent.register_mcp_tool_contract("validate_schema")
-        
+
         for i in range(20):
             agent.run_integration_test(
                 test_name=f"test_{i}",
@@ -526,15 +526,15 @@ class TestServiceIntegrationTester:
                 request_data={"query": f"test_{i}"},
                 expected_response={"results": []},
             )
-        
+
         assert len(agent.test_results) == 20
 
     def test_end_to_end_workflow(self):
         """Test end-to-end workflow"""
         agent = ServiceIntegrationTester()
-        
+
         result = agent.test_end_to_end_workflow()
-        
+
         assert "test_id" in result
         assert "steps" in result
         assert "passed" in result
@@ -544,16 +544,16 @@ class TestServiceIntegrationTester:
         """Test getting test summary"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         agent.run_integration_test(
             "test_1",
             "search_docs",
             {"query": "test"},
             {"results": []},
         )
-        
+
         summary = agent.get_test_summary()
-        
+
         assert "total_tests" in summary
         assert "passed_tests" in summary
         assert summary["total_tests"] >= 1
@@ -562,16 +562,16 @@ class TestServiceIntegrationTester:
         """Test generating a report"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         agent.run_integration_test(
             "test_1",
             "search_docs",
             {"query": "test"},
             {"results": []},
         )
-        
+
         report = agent.generate_report()
-        
+
         assert "timestamp" in report
         assert "agent_name" in report
         assert "summary" in report
@@ -589,7 +589,7 @@ class TestIntegrationTestResult:
             method=HTTPMethod.POST,
         )
         response = MockHTTPResponse(status_code=200)
-        
+
         result = IntegrationTestResult(
             test_id="test_1",
             test_name="test_sample",
@@ -598,7 +598,7 @@ class TestIntegrationTestResult:
             request=request,
             response=response,
         )
-        
+
         assert result.test_id == "test_1"
         assert result.test_name == "test_sample"
         assert result.passed is True
@@ -611,7 +611,7 @@ class TestIntegrationTestResult:
             method=HTTPMethod.POST,
         )
         response = MockHTTPResponse(status_code=500)
-        
+
         result = IntegrationTestResult(
             test_id="test_1",
             test_name="test_error",
@@ -621,7 +621,7 @@ class TestIntegrationTestResult:
             response=response,
             errors=["Server error", "Connection timeout"],
         )
-        
+
         assert result.passed is False
         assert len(result.errors) == 2
 
@@ -644,27 +644,27 @@ class TestEdgeCases:
         """Test integration test with empty response"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         result = agent.run_integration_test(
             "test_empty",
             "search_docs",
             {"query": ""},
             {},
         )
-        
+
         assert result is not None
 
     def test_workflow_with_unregistered_tool(self):
         """Test workflow handling unregistered tool"""
         agent = ServiceIntegrationTester()
-        
+
         result = agent.test_end_to_end_workflow()
         assert "passed" in result
 
     def test_validator_with_multiple_issues(self):
         """Test validator with multiple validation issues"""
         validator = MCPToolContractValidator()
-        
+
         contract = MCPToolContract(
             tool_name="",
             version="1.0.0",
@@ -675,7 +675,7 @@ class TestEdgeCases:
             timeout_seconds=-1,
             retry_count=-1,
         )
-        
+
         is_valid = validator.validate_contract(contract)
         assert is_valid is False
         assert len(contract.issues) > 0
@@ -693,10 +693,10 @@ class TestConcurrency:
     def test_multiple_clients(self):
         """Test creating multiple mock clients"""
         factory = MockHTTPClientFactory()
-        
+
         for i in range(20):
             factory.create_client(f"tool_{i}", f"http://localhost:800{i}")
-        
+
         assert len(factory.clients) == 20
 
 
@@ -707,7 +707,7 @@ class TestAPICompliance:
         """Test search_docs MCP tool contract"""
         agent = ServiceIntegrationTester()
         contract = agent.register_mcp_tool_contract("search_docs")
-        
+
         assert contract.endpoint == "/api/v1/search_docs"
         assert contract.http_method == HTTPMethod.POST
 
@@ -715,14 +715,14 @@ class TestAPICompliance:
         """Test get_document MCP tool contract"""
         agent = ServiceIntegrationTester()
         contract = agent.register_mcp_tool_contract("get_document")
-        
+
         assert contract.endpoint == "/api/v1/documents/{id}"
         assert contract.http_method == HTTPMethod.GET
 
     def test_all_tools_have_auth(self):
         """Test all tools require authentication"""
         agent = ServiceIntegrationTester()
-        
+
         for tool_name in agent.MCP_TOOLS.keys():
             contract = agent.register_mcp_tool_contract(tool_name)
             assert contract.requires_auth is True
@@ -730,7 +730,7 @@ class TestAPICompliance:
     def test_all_tools_have_valid_timeout(self):
         """Test all tools have valid timeout"""
         agent = ServiceIntegrationTester()
-        
+
         for tool_name in agent.MCP_TOOLS.keys():
             contract = agent.register_mcp_tool_contract(tool_name)
             assert contract.timeout_seconds > 0
@@ -738,14 +738,14 @@ class TestAPICompliance:
     def test_http_methods_compliance(self):
         """Test HTTP method compliance"""
         agent = ServiceIntegrationTester()
-        
+
         post_tools = ["search_docs", "validate_schema", "impact_analysis"]
         get_tools = ["get_document", "get_task_brief", "get_recommendations"]
-        
+
         for tool_name in post_tools:
             contract = agent.register_mcp_tool_contract(tool_name)
             assert contract.http_method == HTTPMethod.POST
-        
+
         for tool_name in get_tools:
             contract = agent.register_mcp_tool_contract(tool_name)
             assert contract.http_method == HTTPMethod.GET
@@ -758,7 +758,7 @@ class TestLoadAndReporting:
         """Test running large batch of tests"""
         agent = ServiceIntegrationTester()
         agent.register_mcp_tool_contract("search_docs")
-        
+
         for i in range(50):
             agent.run_integration_test(
                 f"batch_test_{i}",
@@ -766,7 +766,7 @@ class TestLoadAndReporting:
                 {"query": f"batch_query_{i}"},
                 {"results": [f"result_{i}"]},
             )
-        
+
         assert len(agent.test_results) == 50
         summary = agent.get_test_summary()
         assert summary["total_tests"] == 50
@@ -774,10 +774,10 @@ class TestLoadAndReporting:
     def test_report_generation_with_multiple_tools(self):
         """Test report generation with multiple tools"""
         agent = ServiceIntegrationTester()
-        
+
         for tool_name in list(agent.MCP_TOOLS.keys())[:5]:
             agent.register_mcp_tool_contract(tool_name)
-        
+
         for tool_name in agent.contracts.keys():
             agent.run_integration_test(
                 f"test_{tool_name}",
@@ -785,6 +785,6 @@ class TestLoadAndReporting:
                 {"data": "test"},
                 {"status": "ok"},
             )
-        
+
         report = agent.generate_report()
         assert len(report["contracts"]) >= 5

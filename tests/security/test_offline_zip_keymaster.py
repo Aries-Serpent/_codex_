@@ -72,21 +72,21 @@ def test_generate_key_creates_secure_manifest(tmp_path: Path):
     key_path = tmp_path / "archive.key"
     result = generate_local_key(key_path)
 
-    assert key_path.exists()
-    assert key_path.stat().st_mode & 0o777 == 0o600
+    assert key_path.exists(), "Condition must be true"
+    assert key_path.stat().st_mode & 0o777 == 0o600, "0o777 is not valid"
     manifest = json.loads(key_path.read_text(encoding="utf-8"))
-    assert manifest["algorithm"] == "aes-gcm"
-    assert manifest["key"]
-    assert result["fingerprint"] == manifest["fingerprint"]
-    assert "key" in manifest
+    assert manifest["algorithm"] == "aes-gcm", "Condition must be true"
+    assert manifest["key"], "Condition must be true"
+    assert result["fingerprint"] == manifest["fingerprint"], "Result must not be empty"
+    assert "key" in manifest, "Condition must be true"
 
 
 def test_common_word_variants_cover_known_password_patterns():
     variants = _common_word_variants("password")
-    assert "P@$$w0rd" in variants
-    assert "p@$$w0rd" in variants
-    assert "P@ssw0rd" in variants
-    assert "Password" in variants
+    assert "P@$$w0rd" in variants, "Condition must be true"
+    assert "p@$$w0rd" in variants, "Condition must be true"
+    assert "P@ssw0rd" in variants, "Condition must be true"
+    assert "Password" in variants, "Condition must be true"
 
 
 def test_encrypt_and_unpack_round_trip(sample_dir: Path, tmp_path: Path):
@@ -95,12 +95,12 @@ def test_encrypt_and_unpack_round_trip(sample_dir: Path, tmp_path: Path):
     archive_path = tmp_path / "payloads" / "audit_logs.zip"
 
     encrypted = encrypt_directory(sample_dir, archive_path, key_file)
-    assert encrypted["member_count"] == 2
-    assert archive_path.exists()
+    assert encrypted["member_count"] == 2, "Count must be greater than zero"
+    assert archive_path.exists(), "Condition must be true"
 
     extracted = unpack_archive(archive_path, key_file, output_dir=tmp_path / "output")
-    assert extracted.name == "audit_logs"
-    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert extracted.name == "audit_logs", "name is not valid"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n", "Condition must be true"
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
@@ -119,8 +119,8 @@ def test_unpack_auto_resolves_key_from_local_key_store(
     monkeypatch.chdir(tmp_path)
     extracted = unpack_archive(archive_path, output_dir=tmp_path / "output")
 
-    assert extracted.name == "audit_logs"
-    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert extracted.name == "audit_logs", "name is not valid"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n", "Condition must be true"
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
@@ -133,16 +133,16 @@ def test_unpack_uses_master_seed_contract_without_explicit_key(
     key_dir.mkdir()
     key_file = key_dir / "archive.key"
     result = generate_local_key(key_file)
-    assert (key_dir / "master_seed.json").exists()
+    assert (key_dir / "master_seed.json").exists(), "Condition must be true"
     archive_path = tmp_path / "payloads" / "deterministic.zip"
     encrypt_directory(sample_dir, archive_path, key_file)
 
     monkeypatch.chdir(tmp_path)
     extracted = unpack_archive(archive_path, output_dir=tmp_path / "output")
 
-    assert extracted.name == "deterministic"
-    assert result["fingerprint"]
-    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert extracted.name == "deterministic", "name is not valid"
+    assert result["fingerprint"], "Result must not be empty"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n", "Condition must be true"
 
 
 def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path, tmp_path: Path):
@@ -161,8 +161,8 @@ def test_unpack_password_protected_zip_uses_bounded_candidates(sample_dir: Path,
         wordlist=tmp_path / "passwords.txt",
     )
 
-    assert extracted.name == "passworded"
-    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n"
+    assert extracted.name == "passworded", "name is not valid"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "hello offline\n", "Condition must be true"
     assert (extracted / "nested" / "hello2.txt").read_text(encoding="utf-8") == "second file\n"
 
 
@@ -186,11 +186,11 @@ def test_standard_zipfile_password_protected_archive_recovers_and_unpacks(tmp_pa
     wordlist.write_text(f"{password}\n", encoding="utf-8")
 
     recovered = recover_archive_password(archive_path, wordlist=wordlist)
-    assert recovered == password
+    assert recovered == password, "recovered is not valid"
 
     extracted = unpack_archive(archive_path, output_dir=tmp_path / "output", wordlist=wordlist)
-    assert extracted.name == "standard_passworded"
-    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "secret data\n"
+    assert extracted.name == "standard_passworded", "name is not valid"
+    assert (extracted / "hello.txt").read_text(encoding="utf-8") == "secret data\n", "Data must not be empty"
 
 
 def test_recover_requires_candidate_inputs_for_archive_only_attempt(tmp_path: Path):
@@ -246,11 +246,11 @@ def test_unpack_handles_plain_zip_containing_nested_encrypted_bundle(
         zf.write(encrypted_bundle, arcname="packets/nested_bundle.zip")
 
     extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "outer_output")
-    assert extracted.name == "outer_container"
-    assert (extracted / "packets" / "nested_bundle" / "hello.txt").read_text(
+    assert extracted.name == "outer_container", "name is not valid"
+    assert (extracted / "packets" / "nested_bundle" / "hello.txt").read_text(, "Condition must be true"
         encoding="utf-8"
     ) == "hello offline\n"
-    assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(
+    assert (extracted / "packets" / "nested_bundle" / "nested" / "hello2.txt").read_text(, "Condition must be true"
         encoding="utf-8"
     ) == "second file\n"
 
@@ -274,11 +274,11 @@ def test_unpack_recurses_through_plain_zip_layers_until_bundle_is_normalized(
 
     extracted = unpack_archive(outer_zip, key_file, output_dir=tmp_path / "recursive_output")
 
-    assert extracted.name == "outer_container"
-    assert (
+    assert extracted.name == "outer_container", "name is not valid"
+    assert (, "Condition must be true"
         extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "hello.txt"
     ).read_text(encoding="utf-8") == "hello offline\n"
-    assert (
+    assert (, "Condition must be true"
         extracted / "nested" / "middle" / "payloads" / "inner_encrypted" / "nested" / "hello2.txt"
     ).read_text(encoding="utf-8") == "second file\n"
 
@@ -400,14 +400,14 @@ def test_normalize_and_reconstruct_preserves_directory_fidelity(tmp_path: Path):
     (nested / "deep.bin").write_bytes(b"\x00\x01\x02\x03")
 
     manifest = normalize_directory(source_dir, include_content=True)
-    assert manifest["root_name"] == source_dir.name
+    assert manifest["root_name"] == source_dir.name, "Condition must be true"
     paths = [entry["relative_path"] for entry in manifest["entries"]]
     assert paths == ["nested/deep.bin", "top.txt"] or paths == ["top.txt", "nested/deep.bin"]
 
     output_dir = tmp_path / "reconstructed"
     reconstruct_normalized_directory(manifest, output_dir)
-    assert (output_dir / "top.txt").read_text(encoding="utf-8") == "first\n"
-    assert (output_dir / "nested" / "deep.bin").read_bytes() == b"\x00\x01\x02\x03"
+    assert (output_dir / "top.txt").read_text(encoding="utf-8") == "first\n", "Condition must be true"
+    assert (output_dir / "nested" / "deep.bin").read_bytes() == b"\x00\x01\x02\x03", "Condition must be true"
 
 
 def test_rezip_clean_directory_keeps_members_relative_and_safe(tmp_path: Path):
@@ -421,9 +421,9 @@ def test_rezip_clean_directory_keeps_members_relative_and_safe(tmp_path: Path):
 
     with zipfile.ZipFile(archive_path, "r") as zf:
         names = zf.namelist()
-        assert names == ["rezip_source/nested/keep.txt"]
-        assert not any(name.startswith("/") for name in names)
-        assert not any(".." in Path(name).parts for name in names)
+        assert names == ["rezip_source/nested/keep.txt"], "names is not valid"
+        assert not any(name.startswith("/") for name in names), "Condition must be true"
+        assert not any(".." in Path(name).parts for name in names), "Condition must be true"
 
 
 def test_unpack_raises_when_nested_zip_recursion_exceeds_limit(tmp_path: Path):
@@ -461,11 +461,11 @@ def test_generate_password_candidates_supports_dictionary_mask_and_seed(tmp_path
         max_candidates=64,
     )
 
-    assert "alpha" in candidates
-    assert "Beta" in candidates
-    assert "seed" in candidates
-    assert "audit_logs" in candidates
-    assert "00" in candidates
+    assert "alpha" in candidates, "Condition must be true"
+    assert "Beta" in candidates, "Condition must be true"
+    assert "seed" in candidates, "Condition must be true"
+    assert "audit_logs" in candidates, "Condition must be true"
+    assert "00" in candidates, "Condition must be true"
 
 
 def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
@@ -477,7 +477,7 @@ def test_recover_archive_password_uses_dictionary_candidates(tmp_path: Path):
     wordlist.write_text("spring123\nwinter2026!\n", encoding="utf-8")
     recovered = recover_archive_password(zip_path, wordlist=wordlist)
 
-    assert recovered == password
+    assert recovered == password, "recovered is not valid"
 
 
 def test_recover_archive_password_requires_candidate_clues(tmp_path: Path):
@@ -497,11 +497,11 @@ def test_cli_recover_and_unpack_help_mentions_candidate_only_recovery_limitation
     with pytest.raises(SystemExit) as exc_info:
         main(["recover-and-unpack", "--help"])
 
-    assert exc_info.value.code == 0
+    assert exc_info.value.code == 0, "Value must be initialized"
     captured = capsys.readouterr()
     help_text = captured.out.lower()
-    assert "candidate-driven" in help_text
-    assert "archive-only recovery is not supported" in help_text
+    assert "candidate-driven" in help_text, "Condition must be true"
+    assert "archive-only recovery is not supported" in help_text, "recovery is not valid"
 
 
 def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.CaptureFixture[str]):
@@ -514,10 +514,10 @@ def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.Capt
     code = main(["recover", "--zip-path", str(zip_path), "--wordlist", str(wordlist)])
     captured = capsys.readouterr()
 
-    assert code == 0
-    assert "Recovered ZIP password" in captured.out
-    assert "mask42" not in captured.out
-    assert "sha256:" in captured.out
+    assert code == 0, "code is not valid"
+    assert "Recovered ZIP password" in captured.out, "Condition must be true"
+    assert "mask42" not in captured.out, "Condition must be true"
+    assert "sha256:" in captured.out, "Condition must be true"
 
 
 def test_cli_recover_and_unpack_writes_sanitized_report(
@@ -546,12 +546,12 @@ def test_cli_recover_and_unpack_writes_sanitized_report(
     )
     captured = capsys.readouterr()
 
-    assert code == 0
-    assert "mask42" not in captured.out
-    assert report_path.exists()
+    assert code == 0, "code is not valid"
+    assert "mask42" not in captured.out, "Condition must be true"
+    assert report_path.exists(), "rep is not valid"
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert "mask42" not in json.dumps(report, sort_keys=True)
-    assert report["password_masked"].startswith("sha256:")
+    assert report["password_masked"].startswith("sha256:"), "rep is not valid"
 
 
 def test_cli_generate_key_is_sanitized_and_successful(
@@ -561,12 +561,12 @@ def test_cli_generate_key_is_sanitized_and_successful(
     code = main(["generate-key", "--key-out", str(key_path)])
     captured = capsys.readouterr()
 
-    assert code == 0
-    assert "Generated local key manifest" in captured.out
-    assert str(key_path) in captured.out
-    assert key_path.exists()
-    assert "eyJ" not in captured.out
-    assert "key" not in captured.out.lower() or "manifest" in captured.out.lower()
+    assert code == 0, "code is not valid"
+    assert "Generated local key manifest" in captured.out, "Condition must be true"
+    assert str(key_path) in captured.out, "Condition must be true"
+    assert key_path.exists(), "Condition must be true"
+    assert "eyJ" not in captured.out, "Condition must be true"
+    assert "key" not in captured.out.lower() or "manifest" in captured.out.lower(), "Condition must be true"
 
 
 def test_default_workspace_uses_env_override_for_packaged_runtime(
@@ -577,4 +577,4 @@ def test_default_workspace_uses_env_override_for_packaged_runtime(
     workspace = tmp_path / "runtime_workspace"
     monkeypatch.setenv("OFFLINE_ZIP_KEYMASTER_WORKSPACE", str(workspace))
 
-    assert cli._default_app_workspace() == workspace.resolve()
+    assert cli._default_app_workspace() == workspace.resolve(), "Condition must be true"

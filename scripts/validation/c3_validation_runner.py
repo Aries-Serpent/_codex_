@@ -8,16 +8,14 @@ Comprehensive Metrics Unified API Validation Suite
 - C3.5: Performance Analysis
 """
 
+import inspect
 import json
 import sys
 import time
-import inspect
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-from typing import Any, Callable, Optional
-import io
-import contextlib
+from typing import Callable
 
 # ============================================================================
 # C3.1: METRICS INVENTORY EXTRACTION
@@ -102,7 +100,7 @@ def validate_metrics() -> dict:
         score = unified_api.compute_bleu(preds, refs)
         assert isinstance(score, float), f"BLEU should return float, got {type(score)}"
         assert 0.0 <= score <= 1.0, f"BLEU should be in [0,1], got {score}"
-        
+
         # Edge case: empty
         try:
             unified_api.compute_bleu([], [])
@@ -171,11 +169,11 @@ def validate_metrics() -> dict:
         assert isinstance(f1, float), f"F1 should return float, got {type(f1)}"
         assert 0.0 <= f1 <= 1.0, f"F1 should be in [0,1], got {f1}"
         results["tests"]["compute_f1_micro"] = {"status": "PASS", "f1": f1}
-        
+
         f1_macro = unified_api.compute_f1(preds, targets, average="macro")
         assert isinstance(f1_macro, float), f"F1 macro should return float, got {type(f1_macro)}"
         results["tests"]["compute_f1_macro"] = {"status": "PASS", "f1": f1_macro}
-        
+
         f1_weighted = unified_api.compute_f1(preds, targets, average="weighted")
         assert isinstance(f1_weighted, float), f"F1 weighted should return float, got {type(f1_weighted)}"
         results["tests"]["compute_f1_weighted"] = {"status": "PASS", "f1": f1_weighted}
@@ -201,7 +199,7 @@ def validate_metrics() -> dict:
         class MockOutput:
             loss = 2.5
             logits = [[1.0, 2.0], [2.0, 3.0]]
-            
+
         batch = {"labels": [0, 1], "references": ["hello", "world"]}
         metrics = unified_api.batch_metrics_from_outputs(MockOutput(), batch)
         assert isinstance(metrics, dict), f"Should return dict, got {type(metrics)}"
@@ -230,11 +228,11 @@ def test_integration() -> dict:
     print("  Test 1: Metric import and callable", file=sys.stderr)
     try:
         from codex_ml.metrics.unified_api import (
-            compute_bleu,
-            compute_rouge_l,
-            compute_perplexity,
             compute_accuracy,
+            compute_bleu,
             compute_f1,
+            compute_perplexity,
+            compute_rouge_l,
         )
         assert callable(compute_bleu)
         assert callable(compute_rouge_l)
@@ -344,7 +342,6 @@ def generate_coverage_report() -> str:
 def analyze_performance() -> dict:
     """Measure execution time for each metric at different scales."""
     from codex_ml.metrics import unified_api
-    import numpy as np
 
     results = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),

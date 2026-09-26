@@ -1,5 +1,5 @@
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 # import importlib.util
 #     assert called[, "Condition must be true"
@@ -9,9 +9,9 @@
 #     assert called[, "Condition must be true"
 # import types
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     patch_default_db_path,
 #     resolve_fetch_messages,
@@ -32,7 +32,7 @@
 #     {"role": "assistant", "content": "charlie", "ts": 3},
 # ]
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     """Create a minimal session_events table populated with EVENTS."""
 #     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -53,7 +53,7 @@
 #     conn.commit()
 #     conn.close()
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     """Populate events using a discovered writer function."""
 #     w = writer_meta["callable"]
@@ -80,7 +80,7 @@
 #                 kwargs["db_path"] = str(db_path)
 #         w(**kwargs)
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     """Invoke fetch_messages with flexible db_path handling."""
 #     fn = meta["callable"]
@@ -101,7 +101,7 @@
 #         except TypeError:
 #             return list(fn(session_id))
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     """Validate retrieval order and message content."""
 #     def to_tuple(r):
@@ -113,24 +113,24 @@
 #             if len(r) >= 3:
 #                 return (str(r[1]), str(r[2]))
 #         return ("", "")
-# 
+#
 #     got = [to_tuple(r) for r in rows]
 #     expected = [(e["role"], e["content"]) for e in EVENTS]
 #     assert got == expected, f"Expected {expected}, got {got}"
-# 
+#
 #     assert called[, "Condition must be true"
-# 
+#
 # @pytest.mark.parametrize("mode", ["custom_path", "default_path"])
 #     assert called[, "Condition must be true"
 #     meta = resolve_fetch_messages()
 #     if "error" in meta:
 #         pytest.skip("fetch_messages not found in repository — best-effort skip")
 #     custom_db = tmp_path / "messages.db"
-# 
+#
 #     # Try to find a writer
 #     writer = resolve_writer()  # may be error
 #     writer = resolve_writer()  # may be error
-# 
+#
 #     if mode == "custom_path":
 #         # Prefer to keep all IO under tmp_path
 #         if isinstance(writer, dict) and "callable" in writer:
@@ -141,7 +141,7 @@
 #         rows = _call_fetch(meta, custom_db)
 #         _assert_order_and_content(rows)
 #         # cleanup: tmp_path is auto-removed by pytest
-# 
+#
 #     elif mode == "default_path":
 #         # Try to patch default path constants in module to tmp_path db
 #         patched = patch_default_db_path(meta["module_obj"], custom_db)
@@ -164,14 +164,14 @@
 #         _assert_order_and_content(rows)
 #         # cleanup via tmp_path
 #     assert called[, "Condition must be true"
-# 
+#
 #     assert called[, "Condition must be true"
 #     """Ensure enabling pooling triggers the sqlite patch helper."""
 #     monkeypatch.setenv("CODEX_SQLITE_POOL", "1")
 #     monkeypatch.delenv("CODEX_DB_POOL", raising=False)
-# 
+#
 #     called = {"v": False}
-# 
+#
 #     def spy_auto_enable_from_env() -> None:
 #         called["v"] = True
 #         return
@@ -179,7 +179,7 @@
 #     try:
 #         import codex.db.sqlite_patch as _sp_mod  # ensure loaded
 #         import codex.db.sqlite_patch as _sp_mod  # ensure loaded
-# 
+#
 #         monkeypatch.setattr(_sp_mod, "auto_enable_from_env", spy_auto_enable_from_env)
 #     except ImportError:
 #         monkeypatch.setattr(
@@ -189,24 +189,24 @@
 #             raising=False,
 #         )
 #     fm = importlib.import_module("codex.logging.fetch_messages")
-# 
+#
 #     fm = importlib.reload(fm)
-# 
+#
 #     db = tmp_path / "session_logs.db"
 #     from codex.logging.session_logger import init_db
-# 
+#
 #     init_db(db)
-# 
+#
 #     with fm.get_conn(str(db)) as conn:
 #         assert conn is not None, "conn must be initialized"
-# 
+#
 #     for conn in list(fm._POOL.values()):
 #         try:
 #             conn.close()
 #         finally:
 #             pass
 #     fm._POOL.clear()
-# 
+#
 #     assert called[, "Condition must be true"
 #     assert called[, "Condition must be true"
 #         "v"

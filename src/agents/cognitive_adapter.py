@@ -6,6 +6,7 @@ cognitive architecture without requiring immediate full refactoring.
 
 Part of Phase 1.4: ABC Enforcement
 """
+
 from __future__ import annotations
 
 import logging
@@ -73,10 +74,7 @@ class SimpleDictMemory(MemoryInterface):
         for key, value in self._storage.items():
             # Simple matching: check if query items match metadata
             metadata = self._metadata.get(key, {})
-            match = all(
-                metadata.get(q_key) == q_value
-                for q_key, q_value in query.items()
-            )
+            match = all(metadata.get(q_key) == q_value for q_key, q_value in query.items())
 
             if match:
                 results.append((key, value))
@@ -154,7 +152,7 @@ class LegacyAgentAdapter(Planner):
             timestamp=datetime.now(UTC),
             source="legacy_agent",
             data=input_data,
-            metadata={"agent_type": type(self.legacy_agent).__name__}
+            metadata={"agent_type": type(self.legacy_agent).__name__},
         )
 
     def orient(self, observation: ObservationData) -> OrientationResult:
@@ -170,7 +168,7 @@ class LegacyAgentAdapter(Planner):
             context={"observation": observation.data},
             analysis="Legacy agent - no explicit orientation",
             confidence=1.0,
-            alternatives=[]
+            alternatives=[],
         )
 
     def decide(self, orientation: OrientationResult) -> Decision:
@@ -184,7 +182,7 @@ class LegacyAgentAdapter(Planner):
             parameters=orientation.context,
             reasoning="Execute legacy agent process method",
             confidence=1.0,
-            timestamp=datetime.now(UTC)
+            timestamp=datetime.now(UTC),
         )
 
     def act(self, decision: Decision) -> ActionResult:
@@ -209,19 +207,13 @@ class LegacyAgentAdapter(Planner):
                 output = self.legacy_agent(input_data)
 
             return ActionResult(
-                success=True,
-                output=output,
-                metrics={"execution_time": 0.0},
-                errors=[]
+                success=True, output=output, metrics={"execution_time": 0.0}, errors=[]
             )
 
         except Exception as e:
             logger.error(f"Legacy agent execution failed: {e}")
             return ActionResult(
-                success=False,
-                output=None,
-                metrics={"execution_time": 0.0},
-                errors=[str(e)]
+                success=False, output=None, metrics={"execution_time": 0.0}, errors=[str(e)]
             )
 
 

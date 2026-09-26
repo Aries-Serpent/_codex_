@@ -76,7 +76,7 @@ except ImportError as e:
 
         def __pow__(self, other: Any) -> "_StubArray":
             if isinstance(other, (int, float)):
-                return _StubArray(x ** other for x in self)
+                return _StubArray(x**other for x in self)
             return NotImplemented
 
         def copy(self) -> "_StubArray":
@@ -537,7 +537,6 @@ class ChaoticNeuralNetwork:
         # Extract output from last output_size neurons
         return evolved_state[-self.output_size :].tolist()
 
-
     def evolve(self, steps: int = 10) -> np.ndarray:
         """
         Evolve the chaotic neural network.
@@ -701,7 +700,6 @@ class FractalAnalyzer:
 
         slope = (n * sum_xy - sum_x * sum_y) / denominator
         return -slope  # Negative slope is the dimension
-
 
     def analyze_code_tree(
         self, tree_structure: dict[str, Any], current_depth: int = 0
@@ -1628,7 +1626,6 @@ class RelativityScheduler:
         beta = v_magnitude / self.c
         return 1.0 / math.sqrt(1.0 - beta**2)
 
-
     def time_dilation(self, agent_id: str, coordinate_time: float) -> float:
         """
         Calculate proper time accounting for time dilation.
@@ -1644,7 +1641,6 @@ class RelativityScheduler:
         gamma = self.lorentz_factor(agent["velocity"])
 
         return coordinate_time / gamma
-
 
     def communication_delay(self, agent_a_id: str, agent_b_id: str) -> float:
         """
@@ -1662,7 +1658,6 @@ class RelativityScheduler:
 
         distance = np.linalg.norm(pos_a - pos_b)
         return distance / self.c
-
 
     def synchronize_clocks(self) -> dict[str, float]:
         """

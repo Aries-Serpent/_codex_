@@ -38,27 +38,27 @@ class TestToolSurfaceRegistry:
     def test_registry_cached_singleton(self) -> None:
         r1 = get_tool_surface_registry()
         r2 = get_tool_surface_registry()
-        assert r1 is r2
+        assert r1 is r2, "r1 is not valid"
 
     def test_github_mcp_tool_count(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert gh.tool_count == 35
+        assert gh.tool_count == 35, "Count must be greater than zero"
 
     def test_playwright_tool_count(self) -> None:
         registry = get_tool_surface_registry()
         pw = registry[ToolSurfaceCategory.PLAYWRIGHT]
-        assert pw.tool_count == 21
+        assert pw.tool_count == 21, "Count must be greater than zero"
 
     def test_web_search_tool_count(self) -> None:
         registry = get_tool_surface_registry()
         ws = registry[ToolSurfaceCategory.WEB_SEARCH]
-        assert ws.tool_count == 1
+        assert ws.tool_count == 1, "Count must be greater than zero"
 
     def test_shell_tool_count(self) -> None:
         registry = get_tool_surface_registry()
         sh = registry[ToolSurfaceCategory.SHELL]
-        assert sh.tool_count == 1
+        assert sh.tool_count == 1, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -70,42 +70,42 @@ class TestCapabilityAttributes:
     def test_github_mcp_is_read_only(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert gh.read_only is True
+        assert gh.read_only is True, "read_only is not valid"
 
     def test_github_mcp_requires_auth(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert gh.requires_auth is True
+        assert gh.requires_auth is True, "requires_auth is not valid"
 
     def test_github_mcp_network_access(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert gh.network_access is True
+        assert gh.network_access is True, "network_access is not valid"
 
     def test_github_mcp_not_shell_access(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert gh.shell_access is False
+        assert gh.shell_access is False, "shell_access is not valid"
 
     def test_playwright_not_read_only(self) -> None:
         registry = get_tool_surface_registry()
         pw = registry[ToolSurfaceCategory.PLAYWRIGHT]
-        assert pw.read_only is False
+        assert pw.read_only is False, "read_only is not valid"
 
     def test_shell_is_policy_gated(self) -> None:
         registry = get_tool_surface_registry()
         sh = registry[ToolSurfaceCategory.SHELL]
-        assert sh.policy_gated is True
+        assert sh.policy_gated is True, "policy_gated is not valid"
 
     def test_shell_has_shell_access(self) -> None:
         registry = get_tool_surface_registry()
         sh = registry[ToolSurfaceCategory.SHELL]
-        assert sh.shell_access is True
+        assert sh.shell_access is True, "shell_access is not valid"
 
     def test_web_search_not_policy_gated(self) -> None:
         registry = get_tool_surface_registry()
         ws = registry[ToolSurfaceCategory.WEB_SEARCH]
-        assert ws.policy_gated is False
+        assert ws.policy_gated is False, "policy_gated is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -117,22 +117,22 @@ class TestAvailableToolsList:
     def test_github_mcp_available_tools_non_empty(self) -> None:
         registry = get_tool_surface_registry()
         gh = registry[ToolSurfaceCategory.GITHUB_MCP]
-        assert len(gh.available_tools) > 0
+        assert len(gh.available_tools) > 0, "Collection must not be empty"
 
     def test_playwright_available_tools_match_count(self) -> None:
         registry = get_tool_surface_registry()
         pw = registry[ToolSurfaceCategory.PLAYWRIGHT]
-        assert len(pw.available_tools) == pw.tool_count
+        assert len(pw.available_tools) == pw.tool_count, "Collection must not be empty"
 
     def test_web_search_in_available_tools(self) -> None:
         registry = get_tool_surface_registry()
         ws = registry[ToolSurfaceCategory.WEB_SEARCH]
-        assert "web_search" in ws.available_tools
+        assert "web_search" in ws.available_tools, "Condition must be true"
 
     def test_bash_in_shell_available_tools(self) -> None:
         registry = get_tool_surface_registry()
         sh = registry[ToolSurfaceCategory.SHELL]
-        assert "bash" in sh.available_tools
+        assert "bash" in sh.available_tools, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +144,7 @@ class TestCapabilitySchemaVersion:
     _SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 
     def test_schema_version_is_semver(self) -> None:
-        assert self._SEMVER_RE.match(
+        assert self._SEMVER_RE.match(, "Condition must be true"
             CAPABILITY_SCHEMA_VERSION
         ), f"CAPABILITY_SCHEMA_VERSION '{CAPABILITY_SCHEMA_VERSION}' is not semver"
 
@@ -152,24 +152,24 @@ class TestCapabilitySchemaVersion:
         registry = get_tool_surface_registry()
         for cat, profile in registry.items():
             assert profile.schema_version, f"{cat} profile missing schema_version"
-            assert self._SEMVER_RE.match(
+            assert self._SEMVER_RE.match(, "Condition must be true"
                 profile.schema_version
             ), f"{cat} schema_version '{profile.schema_version}' is not semver"
 
     def test_check_capability_schema_version_same_major(self) -> None:
-        assert check_capability_schema_version(CAPABILITY_SCHEMA_VERSION) is True
+        assert check_capability_schema_version(CAPABILITY_SCHEMA_VERSION) is True, "Condition must be true"
 
     def test_check_capability_schema_version_different_major(self) -> None:
         # Major version 99 must be incompatible with current (2.x.x).
-        assert check_capability_schema_version("99.0.0") is False
+        assert check_capability_schema_version("99.0.0") is False, "Condition must be true"
 
     def test_check_capability_schema_version_same_major_different_minor(self) -> None:
         # Same major, different minor → compatible.
         major = CAPABILITY_SCHEMA_VERSION.split(".")[0]
-        assert check_capability_schema_version(f"{major}.999.0") is True
+        assert check_capability_schema_version(f"{major}.999.0") is True, "Condition must be true"
 
     def test_check_capability_schema_version_invalid_string(self) -> None:
-        assert check_capability_schema_version("not-a-version") is False
+        assert check_capability_schema_version("not-a-version") is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ class TestToolSurfaceProfileCompatibility:
             tool_count=35,
             schema_version="2.0.0",
         )
-        assert profile.is_compatible_with("2.5.3") is True
+        assert profile.is_compatible_with("2.5.3") is True, "Condition must be true"
 
     def test_incompatible_different_major(self) -> None:
         profile = ToolSurfaceProfile(
@@ -192,7 +192,7 @@ class TestToolSurfaceProfileCompatibility:
             tool_count=35,
             schema_version="2.0.0",
         )
-        assert profile.is_compatible_with("3.0.0") is False
+        assert profile.is_compatible_with("3.0.0") is False, "Condition must be true"
 
     def test_incompatible_invalid_version(self) -> None:
         profile = ToolSurfaceProfile(
@@ -200,7 +200,7 @@ class TestToolSurfaceProfileCompatibility:
             tool_count=21,
             schema_version="2.0.0",
         )
-        assert profile.is_compatible_with("invalid") is False
+        assert profile.is_compatible_with("invalid") is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -210,10 +210,10 @@ class TestToolSurfaceProfileCompatibility:
 
 class TestToolSurfaceCategoryEnum:
     def test_category_values(self) -> None:
-        assert ToolSurfaceCategory.GITHUB_MCP.value == "github_mcp"
-        assert ToolSurfaceCategory.PLAYWRIGHT.value == "playwright"
-        assert ToolSurfaceCategory.WEB_SEARCH.value == "web_search"
-        assert ToolSurfaceCategory.SHELL.value == "shell"
+        assert ToolSurfaceCategory.GITHUB_MCP.value == "github_mcp", "Value must be initialized"
+        assert ToolSurfaceCategory.PLAYWRIGHT.value == "playwright", "Value must be initialized"
+        assert ToolSurfaceCategory.WEB_SEARCH.value == "web_search", "Value must be initialized"
+        assert ToolSurfaceCategory.SHELL.value == "shell", "Value must be initialized"
 
     def test_four_categories_defined(self) -> None:
-        assert len(ToolSurfaceCategory) == 4
+        assert len(ToolSurfaceCategory) == 4, "Toolsurfacecategory must not be empty"

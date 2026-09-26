@@ -74,7 +74,7 @@ class TestDependencyTracking:
             project_section = content.split("[project]")[1]
             if "[" in project_section:
                 project_section = project_section.split("[")[0]
-            assert "dependencies" in project_section or len(project_section) > 100
+            assert "dependencies" in project_section or len(project_section) > 100, "Project_section must not be empty"
 
 
 class TestDependencyVersioning:
@@ -125,7 +125,7 @@ class TestDependencyVersioning:
         version_specs = re.findall(r"[><=!~]+[0-9]+\.[0-9]+(\.[0-9]+)?", content)
         if not version_specs:
             pytest.skip("No version specs to validate")
-            
+
         for spec in version_specs[:10]:
             # Verify format is reasonable
             parts = spec.replace(">=", "").replace("<=", "").replace("==", "").replace("<", "").replace(">", "").replace("!", "").replace("~", "").split(".")

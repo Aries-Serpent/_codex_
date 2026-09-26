@@ -67,10 +67,10 @@ def test_config_defaults() -> None:
     from restore_pipeline import PipelineConfig
 
     cfg = PipelineConfig()
-    assert cfg.algorithm == "auto"
-    assert not cfg.deblur
-    assert not cfg.colorize
-    assert cfg.saturation_scale > 1.0
+    assert cfg.algorithm == "auto", "algorithm is not valid"
+    assert not cfg.deblur, "Condition must be true"
+    assert not cfg.colorize, "Condition must be true"
+    assert cfg.saturation_scale > 1.0, "saturation_scale must be greater than zero"
 
 
 # ── I/O ───────────────────────────────────────────────────────────────────────
@@ -83,9 +83,9 @@ def test_save_and_load_roundtrip(clean_image: np.ndarray, tmp_dir: Path) -> None
     save_image(clean_image, out)
     loaded = load_image(out)
 
-    assert loaded.shape == clean_image.shape
-    assert loaded.dtype == np.float32
-    assert 0.0 <= loaded.min() <= loaded.max() <= 1.0
+    assert loaded.shape == clean_image.shape, "shape is not valid"
+    assert loaded.dtype == np.float32, "dtype is not valid"
+    assert 0.0 <= loaded.min() <= loaded.max() <= 1.0, "0 is not valid"
     # Pixel values should be close (PNG is lossless)
     np.testing.assert_allclose(loaded, clean_image, atol=1 / 255)
 
@@ -114,14 +114,14 @@ def test_psnr_identical_images(clean_image: np.ndarray) -> None:
 
     score = psnr(clean_image, clean_image)
     # Identical images → capped at 100 dB
-    assert score >= 100.0
+    assert score >= 100.0, "score must be greater than zero"
 
 
 def test_ssim_identical_images(clean_image: np.ndarray) -> None:
     from restore_pipeline.metrics import ssim
 
     score = ssim(clean_image, clean_image)
-    assert score > 0.99
+    assert score > 0.99, "score must be greater than zero"
 
 
 def test_metrics_show_improvement(clean_image: np.ndarray, noisy_image: np.ndarray) -> None:
@@ -129,11 +129,11 @@ def test_metrics_show_improvement(clean_image: np.ndarray, noisy_image: np.ndarr
 
     clean_psnr = psnr(clean_image, clean_image)
     noisy_psnr = psnr(clean_image, noisy_image)
-    assert clean_psnr > noisy_psnr
+    assert clean_psnr > noisy_psnr, "clean_psnr must be greater than zero"
 
     clean_ssim = ssim(clean_image, clean_image)
     noisy_ssim = ssim(clean_image, noisy_image)
-    assert clean_ssim > noisy_ssim
+    assert clean_ssim > noisy_ssim, "clean_ssim must be greater than zero"
 
 
 # ── Pipeline — default (nl_means / bm3d fallback) ────────────────────────────
@@ -143,15 +143,15 @@ def test_pipeline_returns_uint8(noisy_image: np.ndarray) -> None:
     from restore_pipeline import process
 
     restored, _metrics = process(noisy_image)
-    assert restored.dtype == np.uint8
-    assert restored.shape == noisy_image.shape
+    assert restored.dtype == np.uint8, "dtype is not valid"
+    assert restored.shape == noisy_image.shape, "shape is not valid"
 
 
 def test_pipeline_output_has_same_spatial_shape(noisy_image: np.ndarray) -> None:
     from restore_pipeline import process
 
     restored, _ = process(noisy_image)
-    assert restored.shape[:2] == noisy_image.shape[:2]
+    assert restored.shape[:2] == noisy_image.shape[:2], "rest is not valid"
 
 
 def test_pipeline_with_uint8_input(noisy_image: np.ndarray) -> None:
@@ -159,7 +159,7 @@ def test_pipeline_with_uint8_input(noisy_image: np.ndarray) -> None:
 
     u8 = (noisy_image * 255).astype(np.uint8)
     restored, _ = process(u8)
-    assert restored.dtype == np.uint8
+    assert restored.dtype == np.uint8, "dtype is not valid"
 
 
 def test_pipeline_psnr_improves_over_degraded(
@@ -177,10 +177,10 @@ def test_pipeline_psnr_improves_over_degraded(
     )
     _restored_u8, metrics = process(noisy_image, reference=clean_image, config=cfg)
 
-    assert "psnr_restored" in metrics
-    assert "psnr_degraded" in metrics
+    assert "psnr_restored" in metrics, "Condition must be true"
+    assert "psnr_degraded" in metrics, "Condition must be true"
     # The pipeline should not make PSNR worse than the degraded input
-    assert metrics["psnr_restored"] >= metrics["psnr_degraded"] - 1.0
+    assert metrics["psnr_restored"] >= metrics["psnr_degraded"] - 1.0, "Value must be greater than zero"
 
 
 def test_pipeline_ssim_reasonable(clean_image: np.ndarray, noisy_image: np.ndarray) -> None:
@@ -194,7 +194,7 @@ def test_pipeline_ssim_reasonable(clean_image: np.ndarray, noisy_image: np.ndarr
         sharpen_amount=0.0,
     )
     _, metrics = process(noisy_image, reference=clean_image, config=cfg)
-    assert metrics["ssim_restored"] > 0.4
+    assert metrics["ssim_restored"] > 0.4, "Value must be greater than zero"
 
 
 # ── Pipeline — deblur stage ───────────────────────────────────────────────────
@@ -205,7 +205,7 @@ def test_pipeline_deblur_flag(blurry_noisy_image: np.ndarray) -> None:
 
     cfg = PipelineConfig(deblur=True, algorithm="nl_means")
     restored, _ = process(blurry_noisy_image, config=cfg)
-    assert restored.dtype == np.uint8
+    assert restored.dtype == np.uint8, "dtype is not valid"
 
 
 # ── Pipeline — inpaint stage ─────────────────────────────────────────────────
@@ -218,7 +218,7 @@ def test_pipeline_inpaint(clean_image: np.ndarray) -> None:
     mask[20:30, 20:30] = 255  # small inpaint region
 
     restored, _ = process(clean_image, mask=mask)
-    assert restored.dtype == np.uint8
+    assert restored.dtype == np.uint8, "dtype is not valid"
     # The masked region should be filled (not all zeros)
     assert restored[20:30, 20:30].mean() > 0
 
@@ -232,8 +232,8 @@ def test_pipeline_with_reference_for_color_transfer(
     from restore_pipeline import process
 
     restored, metrics = process(noisy_image, reference=clean_image)
-    assert restored.dtype == np.uint8
-    assert "psnr_restored" in metrics
+    assert restored.dtype == np.uint8, "dtype is not valid"
+    assert "psnr_restored" in metrics, "Condition must be true"
 
 
 # ── Pipeline — opencv algorithm ──────────────────────────────────────────────
@@ -244,7 +244,7 @@ def test_pipeline_opencv_algorithm(noisy_image: np.ndarray) -> None:
 
     cfg = PipelineConfig(algorithm="opencv")
     restored, _ = process(noisy_image, config=cfg)
-    assert restored.dtype == np.uint8
+    assert restored.dtype == np.uint8, "dtype is not valid"
 
 
 # ── File-based integration: save input → run pipeline → check output ─────────
@@ -277,10 +277,10 @@ def test_pipeline_file_integration(clean_image: np.ndarray, tmp_dir: Path) -> No
     out_path = tmp_dir / "restored.png"
     save_image(restored_u8, out_path)
 
-    assert out_path.exists()
-    assert out_path.stat().st_size > 0
+    assert out_path.exists(), "Condition must be true"
+    assert out_path.stat().st_size > 0, "st_size must be greater than zero"
     # Noise=0.10 → degraded PSNR ~20 dB; restored should be at least 15 dB
-    assert metrics["psnr_restored"] > 15.0
+    assert metrics["psnr_restored"] > 15.0, "Value must be greater than zero"
 
 
 # ── CLI smoke test ────────────────────────────────────────────────────────────
@@ -337,4 +337,4 @@ def test_cli_missing_input_exits_nonzero(tmp_dir: Path) -> None:
         text=True,
         timeout=30,
     )
-    assert result.returncode != 0
+    assert result.returncode != 0, "Result must not be empty"

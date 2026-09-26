@@ -74,9 +74,7 @@ class TransferResult:
     total_bytes: int = 0
     chunks_verified: int = 0
     status: TransferStatus = TransferStatus.PENDING
-    started_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    started_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     completed_at: Optional[str] = None
     error_message: Optional[str] = None
 
@@ -122,9 +120,7 @@ class DataPlane:
         logger.info(f"Payload split into {len(chunks)} chunks")
         return chunks
 
-    def transfer_chunks(
-        self, transfer_id: str, chunks: List[Chunk]
-    ) -> TransferResult:
+    def transfer_chunks(self, transfer_id: str, chunks: List[Chunk]) -> TransferResult:
         """Execute chunked transfer."""
         result = TransferResult(transfer_id=transfer_id)
         result.status = TransferStatus.IN_PROGRESS
@@ -136,8 +132,7 @@ class DataPlane:
             result.total_bytes += len(chunk.data)
 
         logger.info(
-            f"Transfer {transfer_id} started: {len(chunks)} chunks, "
-            f"{result.total_bytes} bytes"
+            f"Transfer {transfer_id} started: {len(chunks)} chunks, {result.total_bytes} bytes"
         )
         return result
 
@@ -175,9 +170,7 @@ class DataPlane:
             raise ValueError(f"Transfer not found: {transfer_id}")
 
         if result.status != TransferStatus.SUCCESS:
-            result.error_message = (
-                f"Cannot commit: transfer status is {result.status.value}"
-            )
+            result.error_message = f"Cannot commit: transfer status is {result.status.value}"
             logger.error(result.error_message)
             return result
 

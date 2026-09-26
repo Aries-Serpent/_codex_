@@ -29,7 +29,7 @@ def q5(step: str, err: str, ctx: str) -> None:
     with ERRORS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry) + "\n")
     rq = textwrap.dedent(f"""
-        Question for ChatGPT @codex {entry['ts']}:
+        Question for ChatGPT @codex {entry["ts"]}:
         While performing {step}, encountered the following error:
         {err}
         Context: {ctx}

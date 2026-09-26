@@ -181,9 +181,7 @@ class SecurityAuditLogger:
             Event to sanitize (modified in place)
         """
         # Actor should be anonymized (e.g., user_id not username)
-        if event.actor and any(
-            char in event.actor.lower() for char in ["@", ".", "user", "admin"]
-        ):
+        if event.actor and any(char in event.actor.lower() for char in ["@", ".", "user", "admin"]):
             event.actor = self._anonymize_identifier(event.actor)
 
         # Resource should not contain full paths with usernames
@@ -297,7 +295,7 @@ class SecurityAuditLogger:
         """
         if not self.audit_log_path:
             return
-        
+
         try:
             with open(self.audit_log_path, "a", encoding="utf-8") as f:
                 f.write(event.to_json() + "\n")
@@ -353,13 +351,9 @@ class SecurityAuditLogger:
         dict
             Compliance report
         """
-        critical_events = [
-            e for e in self.events if e.severity == SecurityEventSeverity.CRITICAL
-        ]
+        critical_events = [e for e in self.events if e.severity == SecurityEventSeverity.CRITICAL]
         high_events = [e for e in self.events if e.severity == SecurityEventSeverity.HIGH]
-        auth_failures = [
-            e for e in self.events if e.event_type == SecurityEventType.AUTH_FAILURE
-        ]
+        auth_failures = [e for e in self.events if e.event_type == SecurityEventType.AUTH_FAILURE]
         rbac_violations = [
             e for e in self.events if e.event_type == SecurityEventType.RBAC_VIOLATION
         ]
@@ -402,7 +396,9 @@ class SecurityAuditLogger:
         recommendations = []
 
         if len(critical_events) > 5:
-            recommendations.append("Multiple critical security events detected. Review immediately.")
+            recommendations.append(
+                "Multiple critical security events detected. Review immediately."
+            )
 
         if len(auth_failures) > 10:
             recommendations.append(

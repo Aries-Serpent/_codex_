@@ -412,10 +412,9 @@ class QuantumGameState:
         # Vectorised: pair each index i with its mirror partner (n-1-i)
         partner = self.joint_wavefunction[::-1]
         # Result is always complex (physically correct for entangled state)
-        self.joint_wavefunction = (
-            cos_a * self.joint_wavefunction.astype(complex)
-            + 1j * sin_a * partner.astype(complex)
-        )
+        self.joint_wavefunction = cos_a * self.joint_wavefunction.astype(
+            complex
+        ) + 1j * sin_a * partner.astype(complex)
         self.entanglement_strength = float(min(1.0, self.entanglement_strength + strength))
         self.normalize()
 

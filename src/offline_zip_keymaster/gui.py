@@ -86,17 +86,25 @@ class OfflineZipKeymasterGUI:
         tk.Entry(frame, textvariable=self.key_var).grid(row=1, column=1, sticky="ew", columnspan=2)
 
         tk.Label(frame, text="Input dir").grid(row=2, column=0, sticky="w")
-        tk.Entry(frame, textvariable=self.input_var).grid(row=2, column=1, sticky="ew", columnspan=2)
+        tk.Entry(frame, textvariable=self.input_var).grid(
+            row=2, column=1, sticky="ew", columnspan=2
+        )
 
         tk.Label(frame, text="Archive path").grid(row=3, column=0, sticky="w")
         tk.Entry(frame, textvariable=self.zip_var).grid(row=3, column=1, sticky="ew", columnspan=2)
 
         tk.Label(frame, text="Output dir").grid(row=4, column=0, sticky="w")
-        tk.Entry(frame, textvariable=self.output_var).grid(row=4, column=1, sticky="ew", columnspan=2)
+        tk.Entry(frame, textvariable=self.output_var).grid(
+            row=4, column=1, sticky="ew", columnspan=2
+        )
 
-        tk.Button(frame, text="Run", command=self.run_action).grid(row=5, column=0, columnspan=3, sticky="ew", pady=(10, 0))
+        tk.Button(frame, text="Run", command=self.run_action).grid(
+            row=5, column=0, columnspan=3, sticky="ew", pady=(10, 0)
+        )
         self.status = tk.StringVar(value="Ready")
-        tk.Label(frame, textvariable=self.status, justify="left", wraplength=460).grid(row=6, column=0, columnspan=3, sticky="ew")
+        tk.Label(frame, textvariable=self.status, justify="left", wraplength=460).grid(
+            row=6, column=0, columnspan=3, sticky="ew"
+        )
 
         frame.columnconfigure(1, weight=1)
 
@@ -105,7 +113,14 @@ class OfflineZipKeymasterGUI:
             return []
         action = self.action_var.get()
         if action == "generate-key":
-            return [sys.executable, "-m", "offline_zip_keymaster", "generate-key", "--key-out", self.key_var.get()]
+            return [
+                sys.executable,
+                "-m",
+                "offline_zip_keymaster",
+                "generate-key",
+                "--key-out",
+                self.key_var.get(),
+            ]
         if action == "encrypt":
             return [
                 sys.executable,
@@ -144,12 +159,16 @@ class OfflineZipKeymasterGUI:
             if action == "encrypt":
                 if encrypt_directory is None:
                     raise RuntimeError("offline_zip_keymaster backend is unavailable")
-                result = encrypt_directory(self.input_var.get(), self.zip_var.get(), self.key_var.get())
+                result = encrypt_directory(
+                    self.input_var.get(), self.zip_var.get(), self.key_var.get()
+                )
                 self.status.set(f"Encrypted archive created: {result['zip_path']}")
                 return
             if decrypt_and_unpack is None:
                 raise RuntimeError("offline_zip_keymaster backend is unavailable")
-            extracted = decrypt_and_unpack(self.zip_var.get(), self.key_var.get(), output_dir=self.output_var.get())
+            extracted = decrypt_and_unpack(
+                self.zip_var.get(), self.key_var.get(), output_dir=self.output_var.get()
+            )
             self.status.set(f"Extracted archive into: {extracted}")
         except Exception as exc:  # pragma: no cover - GUI safety surface
             self.status.set(f"Error: {exc}")

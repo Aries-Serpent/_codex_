@@ -415,7 +415,7 @@ class TestCaching:
             max_wait = 3.0
             poll_interval = 0.1
             start_time = time.time()
-            
+
             while (time.time() - start_time) < max_wait:
                 # Check if cache has expired by looking at cache state
                 if hasattr(db._cache, 'get'):
@@ -647,11 +647,11 @@ class TestThreadSafety:
         """
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(f"{tmpdir}/test.db")
-            
+
             # Track errors from threads
             errors = []
             insert_lock = threading.Lock()
-            
+
             def insert_sessions(start_id: int, count: int):
                 try:
                     timestamp = datetime.utcnow().isoformat() + "Z"
@@ -680,10 +680,10 @@ class TestThreadSafety:
 
             # Check for any errors from threads
             assert not errors, f"Thread errors occurred: {errors}"
-            
+
             # STABILIZATION V4: Invalidate cache to ensure fresh query
             db._invalidate_cache()
-            
+
             # Verify all sessions inserted
             results = db.query_sessions(limit=1000)
             assert len(results) == 50, f"Expected 50 sessions, got {len(results)}"
@@ -709,7 +709,7 @@ class TestThreadSafety:
                     "status": "complete",
                 }
                 db.insert_session(session)
-            
+
             # STABILIZATION V4: Invalidate cache to ensure fresh queries
             db._invalidate_cache()
 
@@ -739,10 +739,10 @@ class TestThreadSafety:
 
             # Check for errors
             assert not errors, f"Query errors occurred: {errors}"
-            
+
             # Verify all queries succeeded
             assert len(results_list) == 5, f"Expected 5 query results, got {len(results_list)}"
-            
+
             # Validate each query result has correct count
             for i, result in enumerate(results_list):
                 assert len(result) == 20, f"Query {i}: Expected 20 results, got {len(result)}"

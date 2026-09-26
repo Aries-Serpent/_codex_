@@ -29,7 +29,7 @@ class TestCLIArgumentParsing:
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
         assert result.exit_code == 0, f"Help should display without error. Got: {result.output}"
-        assert "Usage:" in result.output or "usage:" in result.output.lower()
+        assert "Usage:" in result.output or "usage:" in result.output.lower(), "Result must not be empty"
 
     def test_cli_version_display(self):
         """Test that CLI can display version information."""
@@ -79,7 +79,7 @@ class TestCLIExitCodes:
             pytest.skip("CLI module not available")
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_cli_help_exit_code(self):
         """Test that help flag returns exit code 0."""
@@ -96,7 +96,7 @@ class TestCLIExitCodes:
             pytest.skip("CLI module not available")
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--nonexistent-flag"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_cli_exit_code_consistency(self):
         """Test that exit codes are consistent across runs."""
@@ -106,7 +106,7 @@ class TestCLIExitCodes:
         # Multiple runs should have consistent exit codes
         result1 = runner.invoke(main_cli, ["--help"])
         result2 = runner.invoke(main_cli, ["--help"])
-        assert result1.exit_code == result2.exit_code
+        assert result1.exit_code == result2.exit_code, "Result must not be empty"
 
 
 class TestCLIEnvironmentVariables:
@@ -288,8 +288,8 @@ class TestCLIOutputFormatting:
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
         # Help should be readable and not contain control characters
-        assert "\n" in result.output or result.output
-        assert "\x00" not in result.output
+        assert "\n" in result.output or result.output, "Result must not be empty"
+        assert "\x00" not in result.output, "Result must not be empty"
 
     def test_cli_error_output_formatting(self):
         """Test that CLI error messages are properly formatted."""
@@ -307,7 +307,7 @@ class TestCLIOutputFormatting:
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
         # Should be able to encode to UTF-8
-        assert result.output.encode("utf-8")
+        assert result.output.encode("utf-8"), "Result must not be empty"
 
     def test_cli_output_consistency(self):
         """Test that CLI output is consistent across runs."""
@@ -317,7 +317,7 @@ class TestCLIOutputFormatting:
         result1 = runner.invoke(main_cli, ["--help"])
         result2 = runner.invoke(main_cli, ["--help"])
         # Same commands should produce same output
-        assert result1.output == result2.output
+        assert result1.output == result2.output, "Result must not be empty"
 
 
 class TestCLIPythonModuleExecution:
@@ -327,15 +327,15 @@ class TestCLIPythonModuleExecution:
         """Test that CLI module imports without errors."""
         if main_cli is None:
             pytest.skip("CLI module not available")
-        assert main_cli is not None
-        assert callable(main_cli)
+        assert main_cli is not None, "main_cli must be initialized"
+        assert callable(main_cli), "Condition must be true"
 
     def test_cli_module_has_help_attribute(self):
         """Test that CLI command has help documentation."""
         if main_cli is None:
             pytest.skip("CLI module not available")
         # CLI should be callable
-        assert callable(main_cli)
+        assert callable(main_cli), "Condition must be true"
 
     def test_cli_supports_subcommands(self):
         """Test that CLI supports subcommand structure."""
@@ -387,7 +387,7 @@ class TestCLIIntegration:
         original_cwd = os.getcwd()
         runner = CliRunner()
         result = runner.invoke(main_cli, ["--help"])
-        assert os.getcwd() == original_cwd
+        assert os.getcwd() == original_cwd, "Condition must be true"
 
     def test_cli_handles_concurrent_invocations(self):
         """Test that CLI can be invoked concurrently."""

@@ -46,8 +46,8 @@ class TestRepositoryScopeVariables:
         }
         endpoint = f"{gh_api_base}{repo_vars_endpoint}"
         # Verify endpoint structure
-        assert "actions/variables" in repo_vars_endpoint
-        assert repo_vars_endpoint.startswith("/repos/")
+        assert "actions/variables" in repo_vars_endpoint, "Condition must be true"
+        assert repo_vars_endpoint.startswith("/repos/"), "Condition must be true"
 
     def test_get_repo_variable(
         self,
@@ -60,7 +60,7 @@ class TestRepositoryScopeVariables:
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{var_name}"
         expected_response = mock_variable_response(var_name, "test_value")
         # Verify endpoint structure
-        assert var_name in endpoint
+        assert var_name in endpoint, "Condition must be true"
 
     def test_create_repo_variable(
         self,
@@ -75,9 +75,9 @@ class TestRepositoryScopeVariables:
         }
         endpoint = f"{gh_api_base}{repo_vars_endpoint}"
         # Verify payload structure
-        assert payload["name"]
-        assert payload["value"]
-        assert payload["name"].startswith("CODEX_API_TEST")
+        assert payload["name"], "Condition must be true"
+        assert payload["value"], "Value must be initialized"
+        assert payload["name"].startswith("CODEX_API_TEST"), "Condition must be true"
 
     def test_update_repo_variable(
         self,
@@ -92,7 +92,7 @@ class TestRepositoryScopeVariables:
         }
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{test_var_name_base}"
         # Verify update payload
-        assert payload["value"] == "updated_value"
+        assert payload["value"] == "updated_value", "Value must be initialized"
 
     def test_delete_repo_variable(
         self,
@@ -103,7 +103,7 @@ class TestRepositoryScopeVariables:
         """Test deleting a repository variable."""
         endpoint = f"{gh_api_base}{repo_vars_endpoint}/{test_var_name_base}"
         # Verify endpoint structure for DELETE
-        assert test_var_name_base in endpoint
+        assert test_var_name_base in endpoint, "Condition must be true"
 
     def test_repo_variable_lifecycle(
         self,
@@ -113,19 +113,19 @@ class TestRepositoryScopeVariables:
         """Test complete lifecycle: create → read → update → delete."""
         # Step 1: Create
         created = mock_variable_response(test_var_name_base, "initial")
-        assert created["value"] == "initial"
+        assert created["value"] == "initial", "Value must be initialized"
 
         # Step 2: Read
         retrieved = mock_variable_response(test_var_name_base, "initial")
-        assert retrieved["name"] == test_var_name_base
+        assert retrieved["name"] == test_var_name_base, "Condition must be true"
 
         # Step 3: Update
         updated = mock_variable_response(test_var_name_base, "updated")
-        assert updated["value"] == "updated"
+        assert updated["value"] == "updated", "Value must be initialized"
 
         # Step 4: Delete (would return 204 No Content)
         # Verify state transition
-        assert created["name"] == retrieved["name"]
+        assert created["name"] == retrieved["name"], "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -149,8 +149,8 @@ class TestOrganizationScopeVariables:
     ):
         """Test listing organization variables."""
         endpoint = f"{gh_api_base}{org_vars_endpoint}"
-        assert "orgs/" in org_vars_endpoint
-        assert "actions/variables" in org_vars_endpoint
+        assert "orgs/" in org_vars_endpoint, "Condition must be true"
+        assert "actions/variables" in org_vars_endpoint, "Condition must be true"
 
     def test_create_org_variable(
         self,
@@ -180,7 +180,7 @@ class TestOrganizationScopeVariables:
                 "value": "value",
                 "visibility": vis,
             }
-            assert payload["visibility"] in visibilities
+            assert payload["visibility"] in visibilities, "Condition must be true"
 
     def test_org_variable_repository_selection(self):
         """Test setting selected repositories for org variable."""
@@ -188,7 +188,7 @@ class TestOrganizationScopeVariables:
         payload = {
             "selected_repository_ids": [123456, 789012],
         }
-        assert "repository_ids" in json.dumps(payload)
+        assert "repository_ids" in json.dumps(payload), "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -212,8 +212,8 @@ class TestEnvironmentScopeVariables:
     ):
         """Test listing environment variables."""
         endpoint = f"{gh_api_base}{env_vars_endpoint}"
-        assert "environments/" in env_vars_endpoint
-        assert "variables" in env_vars_endpoint
+        assert "environments/" in env_vars_endpoint, "Condition must be true"
+        assert "variables" in env_vars_endpoint, "Condition must be true"
 
     def test_create_env_variable(
         self,
@@ -226,14 +226,14 @@ class TestEnvironmentScopeVariables:
             "value": "env_value",
         }
         endpoint = f"{gh_api_base}{env_vars_endpoint}"
-        assert payload["name"].startswith("ENV_")
+        assert payload["name"].startswith("ENV_"), "Condition must be true"
 
     def test_env_variable_scope_isolation(self):
         """Test that env variables are scoped to their environment."""
         environments = ["development", "staging", "production"]
         for env in environments:
             endpoint = f"/repos/owner/repo/environments/{env}/variables"
-            assert env in endpoint
+            assert env in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -256,7 +256,7 @@ class TestBatchVariableOperations:
                 {"name": "VAR_3", "value": "val3"},
             ],
         }
-        assert len(batch_payload["variables"]) == 3
+        assert len(batch_payload["variables"]) == 3, "Collection must not be empty"
 
     def test_batch_delete_variables(self):
         """Test deleting multiple variables."""
@@ -264,7 +264,7 @@ class TestBatchVariableOperations:
         # Each would require individual DELETE request
         for var_name in var_names:
             endpoint = f"/repos/owner/repo/actions/variables/{var_name}"
-            assert var_name in endpoint
+            assert var_name in endpoint, "Condition must be true"
 
     def test_batch_operation_atomicity(self):
         """Test that batch operations maintain consistency.
@@ -278,7 +278,7 @@ class TestBatchVariableOperations:
             {"status": 409, "name": "VAR_3"},  # Conflict
         ]
         success_count = sum(1 for r in results if r["status"] == 201)
-        assert success_count >= 0
+        assert success_count >= 0, "success_count must be positive"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -300,7 +300,7 @@ class TestVariableStateSynchronization:
         # Read
         read_back = mock_variable_response(test_var_name_base, "test_value")
         # Verify consistency
-        assert written["value"] == read_back["value"]
+        assert written["value"] == read_back["value"], "Value must be initialized"
 
     def test_variable_update_consistency(
         self,
@@ -313,9 +313,9 @@ class TestVariableStateSynchronization:
         # Update
         updated = mock_variable_response(test_var_name_base, "value_2")
         # Verify transition
-        assert initial["value"] == "value_1"
-        assert updated["value"] == "value_2"
-        assert initial["name"] == updated["name"]
+        assert initial["value"] == "value_1", "Value must be initialized"
+        assert updated["value"] == "value_2", "Value must be initialized"
+        assert initial["name"] == updated["name"], "Condition must be true"
 
     def test_variable_isolation_per_scope(self):
         """Test that variables in different scopes don't interfere."""
@@ -325,8 +325,8 @@ class TestVariableStateSynchronization:
         env_var = {"scope": "env", "name": "SHARED_VAR", "value": "env_value"}
 
         # Each scope should have independent values
-        assert repo_var["value"] != org_var["value"]
-        assert org_var["value"] != env_var["value"]
+        assert repo_var["value"] != org_var["value"], "Value must be initialized"
+        assert org_var["value"] != env_var["value"], "Value must be initialized"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -340,17 +340,17 @@ class TestVariableErrorHandling:
     def test_missing_token_error(self):
         """Test 401 response when token is missing."""
         error_response = {"message": "Bad credentials"}
-        assert error_response["message"] == "Bad credentials"
+        assert error_response["message"] == "Bad credentials", "Response must not be empty"
 
     def test_insufficient_scope_error(self):
         """Test 403 response for insufficient scope."""
         error_response = {"message": "Resource not accessible by integration"}
-        assert "not accessible" in error_response["message"]
+        assert "not accessible" in error_response["message"], "Response must not be empty"
 
     def test_variable_not_found_error(self):
         """Test 404 response when variable doesn't exist."""
         error_response = {"message": "Not Found"}
-        assert error_response["message"] == "Not Found"
+        assert error_response["message"] == "Not Found", "Response must not be empty"
 
     def test_variable_already_exists_error(self):
         """Test 409 response when variable already exists."""
@@ -358,7 +358,7 @@ class TestVariableErrorHandling:
             "message": "Resource conflict",
             "documentation_url": "https://docs.github.com/...",
         }
-        assert "conflict" in error_response["message"].lower()
+        assert "conflict" in error_response["message"].lower(), "Response must not be empty"
 
     def test_invalid_variable_format_error(self):
         """Test 422 response for invalid variable format."""
@@ -368,7 +368,7 @@ class TestVariableErrorHandling:
                 {"resource": "Variable", "field": "name", "code": "invalid"}
             ],
         }
-        assert "Validation" in error_response["message"]
+        assert "Validation" in error_response["message"], "Response must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -383,7 +383,7 @@ class TestVariableAPIResponses:
         """Test that variable responses have required fields."""
         response = mock_variable_response("TEST_VAR", "test_value")
         required_fields = {"name", "value", "created_at", "updated_at"}
-        assert required_fields.issubset(response.keys())
+        assert required_fields.issubset(response.keys()), "Response must not be empty"
 
     def test_list_variables_response_schema(self):
         """Test that list responses have required structure."""
@@ -393,8 +393,8 @@ class TestVariableAPIResponses:
                 {"name": "VAR1", "value": "val1", "created_at": "2026-01-01T00:00:00Z", "updated_at": "2026-01-01T00:00:00Z"},
             ],
         }
-        assert "total_count" in response
-        assert "variables" in response
+        assert "total_count" in response, "Response must not be empty"
+        assert "variables" in response, "Response must not be empty"
         assert isinstance(response["variables"], list)
 
     def test_pagination_response(self):
@@ -404,4 +404,4 @@ class TestVariableAPIResponses:
             "variables": [],  # Would contain 30 items
         }
         # Links would be in headers: Link: <url?page=2>; rel="next"
-        assert response["total_count"] > 0
+        assert response["total_count"] > 0, "Value must be greater than zero"

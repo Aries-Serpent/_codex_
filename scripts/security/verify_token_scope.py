@@ -35,9 +35,10 @@ import os
 import sys
 from datetime import UTC, datetime
 from typing import Optional
-from scripts.ci._token_resolver import get_token
+
 from codex.logging_safe import sanitize_for_log
 
+from scripts.ci._token_resolver import get_token
 
 # Configure logging (token values are NEVER logged)
 logging.basicConfig(

@@ -6,26 +6,26 @@ Automated daily validation and reporting for documentation ecosystem
 Phase 4D Planset 006 - Deliverable
 """
 
+import hashlib
+import json
 import os
 import re
-import json
-import hashlib
-from pathlib import Path
-from datetime import datetime, timedelta
 from collections import defaultdict
+from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Dict, List, Set, Tuple
-import subprocess
+
 
 class DocHealthMonitor:
     """Monitor documentation health, freshness, and quality"""
-    
+
     def __init__(self, docs_root: str = "docs"):
         self.docs_root = Path(docs_root)
         self.reports = {}
         self.issues = defaultdict(list)
         self.metrics = {}
         self.timestamp = datetime.now()
-        
+
     def scan_all_files(self) -> Dict[str, dict]:
         """Scan all markdown files and extract metadata"""
         files = {}
@@ -34,7 +34,7 @@ class DocHealthMonitor:
             try:
                 content = md_file.read_text(encoding='utf-8', errors='ignore')
                 stat = os.stat(md_file)
-                
+
                 files[rel_path] = {
                     'path': str(md_file),
                     'size': stat.st_size,
@@ -46,9 +46,9 @@ class DocHealthMonitor:
                 }
             except Exception as e:
                 self.issues['scan_errors'].append(f"{rel_path}: {e}")
-        
+
         return files
-    
+
     def _extract_links(self, content: str) -> List[str]:
         """Extract all markdown links from content"""
         pattern = r'\[([^\]]+)\]\(([^)]+)\)'
@@ -56,42 +56,42 @@ class DocHealthMonitor:
         for match in re.finditer(pattern, content):
             links.append(match.group(2))
         return links
-    
+
     def validate_links(self, files: Dict[str, dict]) -> Dict[str, list]:
         """Validate all internal links"""
         issues = defaultdict(list)
         file_paths = set(files.keys())
-        
+
         for filepath, data in files.items():
             for link in data['links']:
                 # Skip external links and anchors
                 if '://' in link or link.startswith('#'):
                     continue
-                
+
                 link_clean = link.split('#')[0]
                 if link_clean and not link_clean.startswith('http'):
                     # Check if link target exists
                     target = link_clean if link_clean.endswith('.md') else link_clean + '.md'
-                    
+
                     if target not in file_paths and not self._check_github_link(link_clean):
                         issues['broken_links'].append({
                             'file': filepath,
                             'link': link,
                             'target': target
                         })
-        
+
         return dict(issues)
-    
+
     def _check_github_link(self, link: str) -> bool:
         """Check if link is a valid GitHub reference"""
         return link.startswith('https://github.com/Aries-Serpent/_codex_/')
-    
-    def check_freshness(self, files: Dict[str, dict], 
+
+    def check_freshness(self, files: Dict[str, dict],
                        stale_threshold_days: int = 90) -> Dict[str, list]:
         """Check content freshness"""
         issues = defaultdict(list)
         cutoff_date = datetime.now() - timedelta(days=stale_threshold_days)
-        
+
         for filepath, data in files.items():
             if data['modified'] < cutoff_date:
                 age_days = (datetime.now() - data['modified']).days
@@ -100,33 +100,33 @@ class DocHealthMonitor:
                     'last_modified': data['modified'].isoformat(),
                     'age_days': age_days
                 })
-        
+
         return dict(issues)
-    
+
     def detect_orphaned_pages(self, mkdocs_path: str = "mkdocs.yml") -> Set[str]:
         """Detect pages not in mkdocs.yml navigation"""
         import yaml
-        
+
         with open(mkdocs_path) as f:
             content = yaml.safe_load(f)
-        
+
         nav_files = self._collect_nav_files(content.get('nav', []))
-        
+
         all_files = set()
         for md_file in self.docs_root.rglob("*.md"):
             rel_path = str(md_file.relative_to(self.docs_root))
             if rel_path != "index.md":
                 all_files.add(rel_path)
-        
+
         orphaned = all_files - nav_files
         return orphaned
-    
+
     def _collect_nav_files(self, nav_list: list) -> set:
         """Collect all files referenced in nav structure"""
         files = set()
         if not nav_list:
             return files
-        
+
         for item in nav_list:
             if isinstance(item, dict):
                 for key, value in item.items():
@@ -134,13 +134,13 @@ class DocHealthMonitor:
                         files.add(value)
                     elif isinstance(value, list):
                         files.update(self._collect_nav_files(value))
-        
+
         return files
-    
+
     def check_structure_compliance(self, files: Dict[str, dict]) -> Dict[str, list]:
         """Check documentation structure compliance"""
         issues = defaultdict(list)
-        
+
         for filepath, data in files.items():
             # Check for headers
             if not data['has_headers']:
@@ -148,14 +148,14 @@ class DocHealthMonitor:
                     'file': filepath,
                     'reason': 'No markdown headers found'
                 })
-            
+
             # Check for minimum content
             if data['lines'] < 3:
                 issues['minimal_content'].append({
                     'file': filepath,
                     'lines': data['lines']
                 })
-            
+
             # Check for common issues
             if '```' in data['content']:
                 blocks = re.findall(r'```(\w*)', data['content'])
@@ -164,49 +164,49 @@ class DocHealthMonitor:
                         'file': filepath,
                         'issue': 'Code fence without language'
                     })
-        
+
         return dict(issues)
-    
-    def detect_duplicates(self, files: Dict[str, dict], 
+
+    def detect_duplicates(self, files: Dict[str, dict],
                          similarity_threshold: float = 0.8) -> List[Tuple]:
         """Detect duplicate or near-duplicate content"""
         duplicates = []
         processed = set()
-        
+
         file_items = list(files.items())
         for i, (path1, data1) in enumerate(file_items):
             if path1 in processed:
                 continue
-            
+
             for path2, data2 in file_items[i+1:]:
                 if path2 in processed:
                     continue
-                
+
                 # Quick hash check
                 hash1 = hashlib.md5(data1['content'].encode()).hexdigest()
                 hash2 = hashlib.md5(data2['content'].encode()).hexdigest()
-                
+
                 if hash1 == hash2:
                     duplicates.append((path1, path2, 1.0))
                     processed.add(path2)
-                elif self._calculate_similarity(data1['content'], 
+                elif self._calculate_similarity(data1['content'],
                                                data2['content']) > similarity_threshold:
                     duplicates.append((path1, path2, 0.85))
-        
+
         return duplicates
-    
+
     def _calculate_similarity(self, text1: str, text2: str) -> float:
         """Simple similarity calculation using common lines"""
         lines1 = set(text1.split('\n'))
         lines2 = set(text2.split('\n'))
-        
+
         if not lines1 or not lines2:
             return 0.0
-        
+
         intersection = len(lines1 & lines2)
         union = len(lines1 | lines2)
         return intersection / union if union > 0 else 0.0
-    
+
     def generate_health_report(self, files: Dict[str, dict]) -> dict:
         """Generate comprehensive health report"""
         report = {
@@ -226,27 +226,27 @@ class DocHealthMonitor:
             },
             'summary': {}
         }
-        
+
         # Calculate summary stats
         link_issues = len(report['checks']['link_validation'].get('broken_links', []))
         stale_docs = len(report['checks']['freshness'].get('stale_content', []))
         orphaned = len(report['checks']['orphaned_pages'])
-        
+
         report['summary'] = {
             'broken_links': link_issues,
             'stale_documents': stale_docs,
             'orphaned_pages': orphaned,
             'status': 'PASS' if link_issues == 0 and orphaned == 0 else 'WARN'
         }
-        
+
         return report
-    
+
     def generate_dashboard_html(self, report: dict) -> str:
         """Generate HTML health dashboard"""
         summary = report['summary']
         metrics = report['metrics']
         checks = report['checks']
-        
+
         html = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -352,32 +352,32 @@ class DocHealthMonitor:
 def main():
     """Run documentation health check"""
     monitor = DocHealthMonitor()
-    
+
     print("🔍 Scanning documentation files...")
     files = monitor.scan_all_files()
     print(f"✅ Scanned {len(files)} files")
-    
+
     print("\n📊 Generating health report...")
     report = monitor.generate_health_report(files)
-    
+
     print("\n📈 Health Check Results:")
     print(f"  Total Files: {report['total_files']}")
     print(f"  Broken Links: {report['summary']['broken_links']}")
     print(f"  Stale Documents: {report['summary']['stale_documents']}")
     print(f"  Orphaned Pages: {report['summary']['orphaned_pages']}")
     print(f"  Status: {report['summary']['status']}")
-    
+
     # Generate HTML dashboard
     html = monitor.generate_dashboard_html(report)
     dashboard_path = Path("docs/DOC_HEALTH_DASHBOARD.html")
     dashboard_path.write_text(html)
     print(f"\n✅ Dashboard generated: {dashboard_path}")
-    
+
     # Save JSON report
     report_path = Path("docs/.doc-health-report.json")
     report_path.write_text(json.dumps(report, indent=2, default=str))
     print(f"✅ Report saved: {report_path}")
-    
+
     return report['summary']['status'] == 'PASS'
 
 

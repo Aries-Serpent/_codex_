@@ -95,8 +95,28 @@ class RestrictedUnpickler(pickle.Unpickler):
             "MutableSequence",
         },
         "numpy": {"ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
-        "numpy.core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
-        "numpy._core.numeric": {"_frombuffer", "ndarray", "dtype", "generic", "number", "int_", "float_", "complex_", "bool_"},
+        "numpy.core.numeric": {
+            "_frombuffer",
+            "ndarray",
+            "dtype",
+            "generic",
+            "number",
+            "int_",
+            "float_",
+            "complex_",
+            "bool_",
+        },
+        "numpy._core.numeric": {
+            "_frombuffer",
+            "ndarray",
+            "dtype",
+            "generic",
+            "number",
+            "int_",
+            "float_",
+            "complex_",
+            "bool_",
+        },
         "numpy.core.multiarray": {"_reconstruct", "scalar"},
         "numpy._core.multiarray": {"_reconstruct", "scalar"},
         "torch": {"Tensor", "Size", "dtype", "device"},
@@ -195,7 +215,7 @@ def safe_pickle_load(
         - NEVER use use_restricted_unpickler=False in production
         - ALWAYS verify signatures for external sources
         - Prefer safetensors or torch.save(weights_only=True) for new code
-    """
+    """  # noqa: E501
     file_path = Path(file_path)
 
     if not file_path.exists():
@@ -242,16 +262,16 @@ def safe_pickle_load_bytes(
             )
 
         data = pickled_data
-        logger.info(f"✅ HMAC signature verified for {source}")
+        logger.info("✅ HMAC signature verified for %s", source)
 
     # Unpickle with appropriate unpickler
     if use_restricted_unpickler:
-        logger.debug(f"Loading pickle with RestrictedUnpickler: {source}")
+        logger.debug("Loading pickle with RestrictedUnpickler: %s", source)
         return RestrictedUnpickler(io.BytesIO(data)).load()
 
     logger.warning(
-        f"Loading pickle WITHOUT restriction (potential security risk): {source}. "
-        f"Use use_restricted_unpickler=True unless the file is fully trusted."
+        "Loading pickle WITHOUT restriction (potential security risk): %s. Use use_restricted_unpickler=True unless the file is fully trusted.",  # noqa: E501
+        source,
     )
     # SECURITY JUSTIFICATION:
     # Caller explicitly set use_restricted_unpickler=False, accepting full responsibility.
@@ -333,7 +353,7 @@ def safe_pickle_dump(
         signature = hmac.new(key_to_use, pickled_data, hashlib.sha256).digest()
 
         data = pickled_data + signature
-        logger.info(f"Added HMAC signature to {file_path}")
+        logger.info("Added HMAC signature to %s", file_path)
     else:
         data = pickled_data
 
@@ -341,7 +361,7 @@ def safe_pickle_dump(
     with open(file_path, "wb") as f:
         f.write(data)
 
-    logger.debug(f"Saved pickle to {file_path} ({len(data)} bytes)")
+    logger.debug("Saved pickle to %s (%d bytes)", file_path, len(data))
 
 
 def _get_secret_key() -> bytes:
@@ -367,7 +387,7 @@ def _get_secret_key() -> bytes:
         return key_file.read_bytes()
 
     # Generate new key
-    logger.info(f"Generating new pickle signing key file at {key_file}")
+    logger.info("Generating new pickle signing key file at %s", key_file)
     new_key = secrets.token_bytes(32)
     key_file.parent.mkdir(parents=True, exist_ok=True)
     key_file.write_bytes(new_key)

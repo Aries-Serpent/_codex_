@@ -537,17 +537,17 @@ def _extract_dataset_config_section(
         "train_texts": [],
         "eval_texts": [],
     }
-    
+
     maybe_dataset = mapping.get("dataset", {})
     if isinstance(maybe_dataset, Mapping):
         _merge_dataset_config(dataset_cfg, maybe_dataset)
-    
+
     if isinstance(training_section, Mapping):
         _merge_dataset_config(dataset_cfg, training_section)
         nested_dataset = training_section.get("dataset")
         if isinstance(nested_dataset, Mapping):
             _merge_dataset_config(dataset_cfg, nested_dataset)
-    
+
     return dataset_cfg
 
 
@@ -560,12 +560,12 @@ def _extract_checkpoint_config_section(
     maybe_checkpoint = mapping.get("checkpoint")
     if isinstance(maybe_checkpoint, Mapping):
         checkpoint_section = maybe_checkpoint
-    
+
     if isinstance(training_section, Mapping):
         nested_checkpoint = training_section.get("checkpoint")
         if isinstance(nested_checkpoint, Mapping):
             checkpoint_section = nested_checkpoint
-    
+
     return dict(checkpoint_section) if checkpoint_section else None
 
 
@@ -622,7 +622,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
     checkpoint_every_value: Any = _scalar(
         base.checkpoint_every_n_steps, "checkpoint_every_n_steps", "save_every"
     )
-    
+
     # Use helper to extract checkpoint config
     checkpoint_section = _extract_checkpoint_config_section(mapping, training_section)
     if checkpoint_section is not None:
@@ -985,7 +985,12 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore[attr-defined]
         from transformers import AutoTokenizer
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependencies
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ):  # pragma: no cover - optional dependencies
         # Track failed optional dependencies
         if "datasets" not in missing_optional:
             missing_optional = list(missing_optional) + ["datasets"]
@@ -1273,7 +1278,12 @@ def run_functional_training(
         from transformers import DataCollatorWithPadding  # type: ignore
 
         data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional path
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - optional path
         logger.debug("DataCollatorWithPadding unavailable: %s", exc)
         data_collator = None
 

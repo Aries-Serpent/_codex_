@@ -13,9 +13,9 @@ import json
 import re
 import subprocess
 import sys
-from pathlib import Path
-from typing import Dict, List, Set
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
 
 
 def get_root_files(root_dir: Path) -> Dict[str, List[Path]]:
@@ -40,7 +40,7 @@ def get_root_files(root_dir: Path) -> Dict[str, List[Path]]:
                 continue
 
         # Categorize
-        if item.name in {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", 
+        if item.name in {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md",
                          "CODE_OF_CONDUCT.md", "LICENSE", "pyproject.toml", "package.json",
                          "noxfile.py", "pytest.ini", "Cargo.toml", "Cargo.lock", "CITATION.cff"}:
             categories["critical_keep"].append(item)
@@ -146,10 +146,10 @@ def find_references(root_dir: Path, filename: str) -> Dict[str, List[Dict]]:
 def assess_risk(refs: Dict) -> str:
     """Assess risk level based on number and type of references."""
     total_refs = sum(len(v) for v in refs.values() if isinstance(v, list))
-    
+
     # Count critical reference types
     critical_count = len(refs.get("workflows", [])) + len(refs.get("scripts", []))
-    
+
     if critical_count > 5:
         return "CRITICAL"
     elif critical_count > 0 or total_refs > 5:
@@ -163,7 +163,7 @@ def assess_risk(refs: Dict) -> str:
 def generate_dependency_map(root_dir: Path, output_dir: Path) -> None:
     """Generate comprehensive dependency map."""
     categories = get_root_files(root_dir)
-    
+
     dependency_map = {
         "generated_at": datetime.now().isoformat() + "Z",
         "repository": "Aries-Serpent/_codex_",
@@ -186,11 +186,11 @@ def generate_dependency_map(root_dir: Path, output_dir: Path) -> None:
     # Analyze each file
     for category, files in categories.items():
         dependency_map["files_by_category"][category] = []
-        
+
         for file_path in sorted(files):
             references = find_references(root_dir, file_path.name)
             risk_level = assess_risk(references)
-            
+
             file_info = {
                 "name": file_path.name,
                 "size_bytes": file_path.stat().st_size,
@@ -199,13 +199,13 @@ def generate_dependency_map(root_dir: Path, output_dir: Path) -> None:
                 "references": references,
                 "target_directory": get_target_directory(category, file_path.name),
             }
-            
+
             dependency_map["files_by_category"][category].append(file_info)
-            
+
             if risk_level not in dependency_map["files_by_risk"]:
                 dependency_map["files_by_risk"][risk_level] = []
             dependency_map["files_by_risk"][risk_level].append(file_info["name"])
-            
+
             if risk_level in {"CRITICAL", "HIGH", "MEDIUM"}:
                 if file_path.name not in {"coverage.json", ".coverage_baseline.json", "coverage_cache.json"}:
                     dependency_map["files_needing_link_updates"].append(file_info["name"])
@@ -214,9 +214,9 @@ def generate_dependency_map(root_dir: Path, output_dir: Path) -> None:
     output_file = output_dir / "ROOT_FOLDER_ORGANIZATION_DEPENDENCY_MAP.json"
     with open(output_file, 'w') as f:
         json.dump(dependency_map, f, indent=2)
-    
+
     print(f"✅ Generated {output_file}")
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"   Total files: {dependency_map['summary']['total']}")
     print(f"   Critical (keep): {dependency_map['summary']['critical_keep']}")
     print(f"   Active baselines: {dependency_map['summary']['active_baselines']}")
@@ -251,15 +251,15 @@ def get_target_directory(category: str, filename: str) -> str:
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Audit root folder and generate dependency map")
     parser.add_argument("--root", default=".", help="Repository root directory")
     parser.add_argument("--output-dir", default=".codex", help="Output directory for reports")
-    
+
     args = parser.parse_args()
-    
+
     root_dir = Path(args.root)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     generate_dependency_map(root_dir, output_dir)

@@ -1,15 +1,15 @@
 #         assert ", "Condition must be true"
-# 
+#
 #         """Test cache lookup performance (target: <1ms per lookup)."""
 #         cache = UnifiedCache(max_size=10000)
 # - Stage 4: End-to-End CI Validation
-# 
+#
 #     def test_cache_lookup_performance(self) -> None:
-# 
+#
 #         """Test cache lookup performance (target: <1ms per lookup)."""
 #         cache = UnifiedCache(max_size=10000)
 # import json
-#         
+#
 #         # BuildKit features to check
 #         assert ", "Condition must be true"
 # import sys
@@ -22,7 +22,7 @@
 #         assert ", "Condition must be true"
 # from src.codex.caching.unified_cache import CacheSegment, UnifiedCache
 #         assert ", "Condition must be true"
-# 
+#
 #         assert ", "Condition must be true"
 #     """Stage 1: Docker Build Cache Validation (35% reduction target)."""
 #     def test_dockerfile_optimized_exists(self) -> None:
@@ -36,7 +36,7 @@
 #         assert "RUN pip install" in content or "pip" in content.lower(), "Content must not be empty"
 #         assert "COPY" in content, "COPY instruction not found"
 #         assert "COPY" in content, "COPY instruction not found"
-#         
+#
 #     def test_dockerfile_layer_ordering(self) -> None:
 #     def test_dockerfile_layer_ordering(self) -> None:
 #         """Verify optimal layer ordering (stable -> frequently changing)."""
@@ -46,12 +46,12 @@
 #         base_idx = next(i for i, l in enumerate(lines) if "base-deps" in l or "base" in l.lower())
 #         deps_idx = next((i for i in range(base_idx, len(lines)) if "python-deps" in lines[i] or "pip install" in lines[i]), -1)
 #         code_idx = next((i for i in range(base_idx, len(lines)) if "COPY src" in lines[i] or "application code" in lines[i].lower()), -1)
-#         
+#
 #         # Verify ordering: base < deps < code
 #         if deps_idx > 0 and code_idx > 0:
 #             assert base_idx < deps_idx < code_idx, "Layer ordering not optimal"
 #             assert base_idx < deps_idx < code_idx, "Layer ordering not optimal"
-# 
+#
 #     def test_docker_buildkit_config(self) -> None:
 #     def test_docker_buildkit_config(self) -> None:
 #         """Verify Docker BuildKit configuration."""
@@ -62,7 +62,7 @@
 #         assert ", "Condition must be true"
 #             "Docker BuildKit syntax not detected"
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
-# 
+#
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
 #     """Stage 2: GitHub Actions Cache Integration (7-layer hierarchy)."""
 #     def test_cache_layer_strategy_defined(self) -> None:
@@ -73,7 +73,7 @@
 #         content = brief.read_text()
 #         assert "7-layer" in content or "Layer" in content, "Content must not be empty"
 #         assert "hit rate" in content.lower(), "Content must not be empty"
-# 
+#
 #     def test_cache_layer_configs_exist(self) -> None:
 #     def test_cache_layer_configs_exist(self) -> None:
 #         """Verify GitHub Actions workflow cache configs exist."""
@@ -98,7 +98,7 @@
 #             assert "hashFiles" in content or "hash" in content.lower(), \
 #                 "Cache key doesn't include file hash for invalidation"
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
-# 
+#
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
 #     """Stage 3: Runtime Performance Testing (>90% hit rate target)."""
 #     def test_unified_cache_initialization(self) -> None:
@@ -110,7 +110,7 @@
 #         assert stats["hits"] == 0, "Condition must be true"
 #         assert stats["misses"] == 0, "Condition must be true"
 #         assert stats["total_entries"] == 0, "Condition must be true"
-# 
+#
 #     def test_cache_segmentation(self) -> None:
 #     def test_cache_segmentation(self) -> None:
 #         """Test cache segmentation (HOT/WARM/COLD)."""
@@ -119,13 +119,13 @@
 #         cache.set("warm_key", "warm_value", CacheSegment.WARM)
 #         cache.set("cold_key", "cold_value", CacheSegment.COLD)
 #         cache.set("cold_key", "cold_value", CacheSegment.COLD)
-#         
+#
 #         stats = cache.get_stats()
 #         assert stats["hot_entries"] == 1, "Condition must be true"
 #         assert stats["warm_entries"] == 1, "Condition must be true"
 #         assert stats["cold_entries"] == 1, "Condition must be true"
 #         assert stats["total_entries"] == 3, "Condition must be true"
-# 
+#
 #     def test_cache_hit_rate_tracking(self) -> None:
 #     def test_cache_hit_rate_tracking(self) -> None:
 #         """Test cache hit rate tracking."""
@@ -135,17 +135,17 @@
 #         # Two hits
 #         assert cache.get("key1") == "value1", "Value must be initialized"
 #         assert cache.get("key2") == "value2", "Value must be initialized"
-#         
+#
 #         # One miss
 #         assert cache.get("key3") is None, "Condition must be true"
 #         assert cache.get("key3") is None, "Condition must be true"
-#         
+#
 #         stats = cache.get_stats()
 #         assert stats["hits"] == 2, "Condition must be true"
 #         assert stats["misses"] == 1, "Condition must be true"
 #         # Hit rate: 2 / (2+1) = 66.7%
 #         assert "66" in stats["hit_rate"], "Condition must be true"
-# 
+#
 #     def test_adaptive_ttl_extension(self) -> None:
 #     def test_adaptive_ttl_extension(self) -> None:
 #         """Test adaptive TTL extension on access."""
@@ -154,28 +154,28 @@
 #         # First access should extend TTL
 #         value = cache.get("key1")
 #         assert value == "value1", "Value must be initialized"
-#         
+#
 #         # Multiple accesses should promote to HOT after 5 accesses
 #         for i in range(5):
 #             cache.get("key1")
 #             cache.get("key1")
-#         
+#
 #         stats = cache.get_stats()
 #         assert stats["hot_entries"] >= 1, "Value must be greater than zero"
-# 
+#
 #     def test_cache_warming(self) -> None:
 #     def test_cache_warming(self) -> None:
 #         """Test cache warming functionality."""
 #         warm_keys = {"key1": "value1", "key2": "value2", "key3": "value3"}
 #         def warm_callback():
 #             return warm_keys
-#         
+#
 #         cache = UnifiedCache(max_size=1000, enable_warming=True, warming_callback=warm_callback)
-#         
+#
 #         stats = cache.get_stats()
 #         # Should have warmed cache with 3 keys
 #         assert stats["total_entries"] >= 1, "Value must be greater than zero"
-# 
+#
 #     def test_lru_eviction(self) -> None:
 #     def test_lru_eviction(self) -> None:
 #         """Test LRU eviction when cache exceeds max_size."""
@@ -184,24 +184,24 @@
 #         cache.set("key2", "value2")
 #         cache.set("key3", "value3")
 #         cache.set("key4", "value4")  # Should trigger eviction
-#         
+#
 #         stats = cache.get_stats()
 #         # Total entries should not exceed max_size
 #         assert stats["total_entries"] <= 3, "Condition must be true"
 #         assert stats["evictions"] >= 1, "Value must be greater than zero"
-# 
+#
 #     def test_cache_invalidation(self) -> None:
 #     def test_cache_invalidation(self) -> None:
 #         """Test manual cache invalidation."""
 #         cache = UnifiedCache(max_size=1000)
 #         cache.set("key1", "value1")
 #         cache.invalidate("key1")
-#         
+#
 #         assert cache.get("key1") is None, "Condition must be true"
-#         
+#
 #         stats = cache.get_stats()
 #         assert stats["total_entries"] == 0, "Condition must be true"
-# 
+#
 #     def test_bulk_cache_invalidation(self) -> None:
 #     def test_bulk_cache_invalidation(self) -> None:
 #         """Test bulk cache invalidation."""
@@ -210,19 +210,19 @@
 #         cache.set("key2", "value2")
 #         cache.set("key3", "value3")
 #         cache.invalidate_all()
-#         
+#
 #         stats = cache.get_stats()
 #         assert stats["total_entries"] == 0, "Condition must be true"
 #         assert stats["hits"] == 0, "Condition must be true"
 #         assert stats["misses"] == 0, "Condition must be true"
-# 
+#
 #     def test_concurrent_cache_access(self) -> None:
 #     def test_concurrent_cache_access(self) -> None:
 #         """Test thread-safe concurrent cache access."""
 #         import threading
 #         cache = UnifiedCache(max_size=10000)
 #         results = []
-#         
+#
 #         def worker(thread_id: int) -> None:
 #             for i in range(100):
 #                 key = f"key_{thread_id}_{i}"
@@ -230,7 +230,7 @@
 #                 value = cache.get(key)
 #                 if value:
 #                     results.append(value)
-#         
+#
 #         threads = [threading.Thread(target=worker, args=(i,)) for i in range(5)]
 #         for t in threads:
 #             t.start()
@@ -242,7 +242,7 @@
 #         content = report.read_text()
 #         # Check for key report indicators
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
-# 
+#
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
 #     """Stage 4: End-to-End CI Validation (<30 min target)."""
 #     def test_cache_metrics_available(self) -> None:
@@ -263,7 +263,7 @@
 #         assert "layer1" in json_str, "Condition must be true"
 #         assert "complete" in json_str, "Condition must be true"
 #         assert "complete" in json_str, "Condition must be true"
-# 
+#
 #     def test_integration_test_suite_structure(self) -> None:
 #     def test_integration_test_suite_structure(self) -> None:
 #         """Verify integration test suite has all stages."""
@@ -274,7 +274,7 @@
 #         assert "TestGitHubActionsCache" in content, "Content must not be empty"
 #         assert "TestRuntimePerformance" in content, "Content must not be empty"
 #         assert "TestEndToEndCI" in content, "Content must not be empty"
-# 
+#
 #     @pytest.mark.parametrize("metric,target", [
 #         ("docker_build_time", 15),  # minutes
 #         ("cache_hit_rate", 85),  # percent
@@ -288,7 +288,7 @@
 #         assert metric in ["docker_build_time", "cache_hit_rate", "ci_total_time"]
 #         assert target > 0, "target must be greater than zero"
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
-# 
+#
 #         assert any(keyword in content.lower() for keyword in [, "Content must not be empty"
 #     """Verify cache strategy is properly documented."""
 #     def test_cache_strategy_guide_exists(self) -> None:
@@ -299,7 +299,7 @@
 #         content = guide.read_text()
 #         assert "Layer" in content or "layer" in content, "Content must not be empty"
 #         assert "cache" in content.lower(), "Content must not be empty"
-# 
+#
 #     def test_final_report_exists(self) -> None:
 #     def test_final_report_exists(self) -> None:
 #         """Verify Wave 5 final report exists."""
@@ -337,17 +337,17 @@ class TestCachePerformanceBenchmarks:
     def test_cache_lookup_performance(self) -> None:
         """Test cache lookup performance (target: <1ms per lookup)."""
         cache = UnifiedCache(max_size=10000)
-        
+
         # Pre-populate cache
         for i in range(1000):
             cache.set(f"key_{i}", f"value_{i}")
-        
+
         # Benchmark lookups
         start = time.time()
         for i in range(1000):
             _ = cache.get(f"key_{i}")
         elapsed = time.time() - start
-        
+
         # Should complete 1000 lookups quickly
         avg_time_ms = (elapsed / 1000) * 1000
         assert avg_time_ms < 5, f"Lookup too slow: {avg_time_ms}ms per operation"
@@ -355,13 +355,13 @@ class TestCachePerformanceBenchmarks:
     def test_cache_write_performance(self) -> None:
         """Test cache write performance (target: <1ms per write)."""
         cache = UnifiedCache(max_size=10000)
-        
+
         # Benchmark writes
         start = time.time()
         for i in range(1000):
             cache.set(f"key_{i}", f"value_{i}")
         elapsed = time.time() - start
-        
+
         # Should complete 1000 writes quickly
         avg_time_ms = (elapsed / 1000) * 1000
         assert avg_time_ms < 5, f"Write too slow: {avg_time_ms}ms per operation"

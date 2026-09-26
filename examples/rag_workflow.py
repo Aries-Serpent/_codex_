@@ -12,6 +12,8 @@ from pathlib import Path
 
 # Try proper import first, fall back to path manipulation for development
 try:
+    from codex.rag.monitoring import get_metrics
+
     from codex.rag import (
         CachedRetriever,
         ProvenanceMetadata,
@@ -19,10 +21,11 @@ try:
         build_index_from_files,
         manage_tenant_indices,
     )
-    from codex.rag.monitoring import get_metrics
 except ImportError:
     # Development mode: add src to path
     sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+    from codex.rag.monitoring import get_metrics
+
     from codex.rag import (
         CachedRetriever,
         ProvenanceMetadata,
@@ -30,7 +33,6 @@ except ImportError:
         build_index_from_files,
         manage_tenant_indices,
     )
-    from codex.rag.monitoring import get_metrics
 
 import glob
 import time

@@ -36,33 +36,33 @@ class TestServiceRestartRecovery:
     def test_healthy_service_restart(self, mock_service):
         """Test restarting a healthy service."""
         # Arrange
-        assert mock_service.state == ServiceState.HEALTHY
+        assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
         initial_restart_count = mock_service.restart_count
 
         # Act
         result = mock_service.restart()
 
         # Assert
-        assert result is True
-        assert mock_service.state == ServiceState.HEALTHY
-        assert mock_service.restart_count == initial_restart_count + 1
-        assert mock_service.failure_count == 0
+        assert result is True, "Result must not be empty"
+        assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
+        assert mock_service.restart_count == initial_restart_count + 1, "Count must be greater than zero"
+        assert mock_service.failure_count == 0, "Count must be greater than zero"
 
     def test_unhealthy_service_restart(self, mock_service):
         """Test restarting an unhealthy service."""
         # Arrange
         mock_service.inject_failure("connection_error")
-        assert mock_service.state == ServiceState.UNHEALTHY
-        assert mock_service.failure_count == 1
+        assert mock_service.state == ServiceState.UNHEALTHY, "state is not valid"
+        assert mock_service.failure_count == 1, "Count must be greater than zero"
 
         # Act
         result = mock_service.restart()
 
         # Assert
-        assert result is True
-        assert mock_service.state == ServiceState.HEALTHY
-        assert mock_service.failure_count == 0
-        assert mock_service.metrics["error_rate"] == 0.0
+        assert result is True, "Result must not be empty"
+        assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
+        assert mock_service.failure_count == 0, "Count must be greater than zero"
+        assert mock_service.metrics["error_rate"] == 0.0, "Error should be raised or set"
 
     def test_restart_resets_error_rate(self, mock_service):
         """Test that restart resets error rate to zero."""
@@ -70,40 +70,40 @@ class TestServiceRestartRecovery:
         mock_service.inject_failure()
         mock_service.inject_failure()
         initial_error_rate = mock_service.metrics["error_rate"]
-        assert initial_error_rate > 0.0
+        assert initial_error_rate > 0.0, "initial_error_rate must be greater than zero"
 
         # Act
         mock_service.restart()
 
         # Assert
-        assert mock_service.metrics["error_rate"] == 0.0
+        assert mock_service.metrics["error_rate"] == 0.0, "Error should be raised or set"
 
     def test_restart_restores_uptime_metrics(self, mock_service):
         """Test that restart restores uptime metrics."""
         # Arrange
         mock_service.inject_failure()
-        assert mock_service.metrics["uptime"] < 100.0
+        assert mock_service.metrics["uptime"] < 100.0, "Condition must be true"
 
         # Act
         mock_service.restart()
 
         # Assert
-        assert mock_service.metrics["uptime"] == 100.0
+        assert mock_service.metrics["uptime"] == 100.0, "Condition must be true"
 
     def test_multiple_restarts(self, mock_service):
         """Test multiple successive restarts."""
         # Arrange
         for _ in range(3):
             mock_service.inject_failure()
-            
+
         # Act
         for i in range(3):
             result = mock_service.restart()
-            assert result is True
-            assert mock_service.state == ServiceState.HEALTHY
+            assert result is True, "Result must not be empty"
+            assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
 
         # Assert
-        assert mock_service.restart_count == 3
+        assert mock_service.restart_count == 3, "Count must be greater than zero"
 
     def test_restart_audit_trail(self, mock_service, recovery_context):
         """Test audit trail for restart operations."""
@@ -116,9 +116,9 @@ class TestServiceRestartRecovery:
         audit_log.append(f"[{datetime.now().isoformat()}] Service restart completed: {result}")
 
         # Assert
-        assert len(audit_log) >= 2
-        assert "restart initiated" in audit_log[0]
-        assert "restart completed" in audit_log[1]
+        assert len(audit_log) >= 2, "Audit_log must not be empty"
+        assert "restart initiated" in audit_log[0], "Condition must be true"
+        assert "restart completed" in audit_log[1], "Condition must be true"
 
 
 # ============================================================================
@@ -132,15 +132,15 @@ class TestDatabaseFailover:
         """Test failover when database is disconnected."""
         # Arrange
         mock_database.connected = False
-        assert not mock_database.check_connection()
+        assert not mock_database.check_connection(), "Data must not be empty"
 
         # Act
         result = mock_database.failover_to_replica()
 
         # Assert
-        assert result is True
-        assert mock_database.connected is True
-        assert mock_database.state == ServiceState.HEALTHY
+        assert result is True, "Result must not be empty"
+        assert mock_database.connected is True, "Data must not be empty"
+        assert mock_database.state == ServiceState.HEALTHY, "Data must not be empty"
 
     def test_failover_increments_counter(self, mock_database):
         """Test that failover increments failover counter."""
@@ -152,7 +152,7 @@ class TestDatabaseFailover:
         mock_database.failover_to_replica()
 
         # Assert
-        assert mock_database.failover_count == initial_failover_count + 1
+        assert mock_database.failover_count == initial_failover_count + 1, "Data must not be empty"
 
     def test_no_failover_when_connected(self, mock_database):
         """Test that failover doesn't happen when already connected."""
@@ -164,8 +164,8 @@ class TestDatabaseFailover:
         result = mock_database.failover_to_replica()
 
         # Assert
-        assert result is False
-        assert mock_database.failover_count == initial_failover_count
+        assert result is False, "Result must not be empty"
+        assert mock_database.failover_count == initial_failover_count, "Data must not be empty"
 
     def test_replica_sync_after_failover(self, mock_database):
         """Test replica synchronization after failover."""
@@ -178,8 +178,8 @@ class TestDatabaseFailover:
         sync_result = mock_database.sync_replicas()
 
         # Assert
-        assert sync_result is True
-        assert mock_database.replication_lag_ms == 0.0
+        assert sync_result is True, "Result must not be empty"
+        assert mock_database.replication_lag_ms == 0.0, "Data must not be empty"
 
     def test_data_persistence_after_failover(self, mock_database):
         """Test data is preserved after failover."""
@@ -194,7 +194,7 @@ class TestDatabaseFailover:
 
         # Assert
         for key, value in test_data.items():
-            assert mock_database.read_data(key) == value
+            assert mock_database.read_data(key) == value, "Data must not be empty"
 
 
 # ============================================================================
@@ -210,15 +210,15 @@ class TestCacheInvalidationRebuild:
         mock_cache.set("key1", "value1")
         mock_cache.set("key2", "value2")
         mock_cache.set("key3", "value3")
-        assert len(mock_cache.cache) == 3
+        assert len(mock_cache.cache) == 3, "Collection must not be empty"
 
         # Act
         invalidated_count = mock_cache.invalidate(pattern="*")
 
         # Assert
-        assert invalidated_count == 3
-        assert len(mock_cache.cache) == 0
-        assert mock_cache.invalidation_count == 1
+        assert invalidated_count == 3, "Count must be greater than zero"
+        assert len(mock_cache.cache) == 0, "Collection must not be empty"
+        assert mock_cache.invalidation_count == 1, "Count must be greater than zero"
 
     def test_cache_invalidation_updates_metrics(self, mock_cache):
         """Test cache invalidation updates metrics."""
@@ -230,7 +230,7 @@ class TestCacheInvalidationRebuild:
         mock_cache.invalidate()
 
         # Assert
-        assert mock_cache.invalidation_count == initial_invalidation + 1
+        assert mock_cache.invalidation_count == initial_invalidation + 1, "Count must be greater than zero"
 
     def test_cache_rebuild_operation(self, mock_cache):
         """Test cache rebuild clears all data."""
@@ -244,11 +244,11 @@ class TestCacheInvalidationRebuild:
         result = mock_cache.rebuild()
 
         # Assert
-        assert result is True
-        assert len(mock_cache.cache) == 0
-        assert mock_cache.hit_count == 0
-        assert mock_cache.miss_count == 0
-        assert mock_cache.invalidation_count == 0
+        assert result is True, "Result must not be empty"
+        assert len(mock_cache.cache) == 0, "Collection must not be empty"
+        assert mock_cache.hit_count == 0, "Count must be greater than zero"
+        assert mock_cache.miss_count == 0, "Count must be greater than zero"
+        assert mock_cache.invalidation_count == 0, "Count must be greater than zero"
 
     def test_cache_recovery_hit_rate_restoration(self, mock_cache):
         """Test cache recovery restores hit rate."""
@@ -265,8 +265,8 @@ class TestCacheInvalidationRebuild:
         mock_cache.get("key1")  # hit
 
         # Assert
-        assert mock_cache.hit_count == 1
-        assert mock_cache.miss_count == 0
+        assert mock_cache.hit_count == 1, "Count must be greater than zero"
+        assert mock_cache.miss_count == 0, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -287,8 +287,8 @@ class TestStateSynchronizationRecovery:
         restored = state_manager.restore_state(service_name)
 
         # Assert
-        assert restored is not None
-        assert restored == state_data
+        assert restored is not None, "restored must be initialized"
+        assert restored == state_data, "Data must not be empty"
 
     def test_multiple_state_snapshots(self, state_manager):
         """Test multiple state snapshots for same service."""
@@ -305,9 +305,9 @@ class TestStateSynchronizationRecovery:
             state_manager.save_state(service_name, state)
 
         # Assert
-        assert len(state_manager.state_snapshots) == 3
+        assert len(state_manager.state_snapshots) == 3, "Collection must not be empty"
         latest = state_manager.restore_state(service_name)
-        assert latest["version"] == "1.2"
+        assert latest["version"] == "1.2", "Condition must be true"
 
     def test_state_consistency_verification(self, state_manager):
         """Test state consistency verification."""
@@ -323,7 +323,7 @@ class TestStateSynchronizationRecovery:
         )
 
         # Assert
-        assert is_consistent is True
+        assert is_consistent is True, "is_consistent is not valid"
 
     def test_state_consistency_failure(self, state_manager):
         """Test state consistency verification failure."""
@@ -339,7 +339,7 @@ class TestStateSynchronizationRecovery:
         )
 
         # Assert
-        assert is_consistent is False
+        assert is_consistent is False, "is_consistent is not valid"
 
     def test_recovery_checkpoint_creation(self, state_manager):
         """Test creating recovery checkpoints."""
@@ -351,9 +351,9 @@ class TestStateSynchronizationRecovery:
         result = state_manager.create_checkpoint(checkpoint_name, state_data)
 
         # Assert
-        assert result is True
-        assert len(state_manager.recovery_checkpoints) == 1
-        assert state_manager.recovery_checkpoints[0]["name"] == checkpoint_name
+        assert result is True, "Result must not be empty"
+        assert len(state_manager.recovery_checkpoints) == 1, "Collection must not be empty"
+        assert state_manager.recovery_checkpoints[0]["name"] == checkpoint_name, "Condition must be true"
 
 
 # ============================================================================
@@ -367,28 +367,28 @@ class TestConnectionPoolReset:
         """Test connection pool reset after service failure."""
         # Arrange
         mock_service.inject_failure()
-        assert mock_service.state == ServiceState.UNHEALTHY
+        assert mock_service.state == ServiceState.UNHEALTHY, "state is not valid"
 
         # Act
         result = mock_service.reset_connection_pool()
 
         # Assert
-        assert result is True
-        assert mock_service.state == ServiceState.HEALTHY
-        assert mock_service.metrics["error_rate"] == 0.0
+        assert result is True, "Result must not be empty"
+        assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
+        assert mock_service.metrics["error_rate"] == 0.0, "Error should be raised or set"
 
     def test_connection_pool_reset_clears_errors(self, mock_service):
         """Test connection pool reset clears error metrics."""
         # Arrange
         mock_service.inject_failure()
         mock_service.inject_failure()
-        assert mock_service.metrics["error_rate"] > 0.0
+        assert mock_service.metrics["error_rate"] > 0.0, "Value must be greater than zero"
 
         # Act
         mock_service.reset_connection_pool()
 
         # Assert
-        assert mock_service.metrics["error_rate"] == 0.0
+        assert mock_service.metrics["error_rate"] == 0.0, "Error should be raised or set"
 
 
 # ============================================================================
@@ -411,9 +411,9 @@ class TestExponentialBackoffRetry:
         result = retry_policy.execute(successful_func)
 
         # Assert
-        assert result == "success"
-        assert call_count == 1
-        assert retry_policy.retry_count == 0
+        assert result == "success", "Result must not be empty"
+        assert call_count == 1, "Count must be greater than zero"
+        assert retry_policy.retry_count == 0, "Count must be greater than zero"
 
     def test_retry_with_exponential_backoff(self, retry_policy):
         """Test exponential backoff delay increases."""
@@ -430,9 +430,9 @@ class TestExponentialBackoffRetry:
         result = retry_policy.execute(fail_then_succeed)
 
         # Assert
-        assert result == "success"
-        assert call_count == 2
-        assert retry_policy.retry_count == 1
+        assert result == "success", "Result must not be empty"
+        assert call_count == 2, "Count must be greater than zero"
+        assert retry_policy.retry_count == 1, "Count must be greater than zero"
 
     def test_retry_exhaustion(self, retry_policy):
         """Test retry exhaustion after max retries."""
@@ -446,7 +446,7 @@ class TestExponentialBackoffRetry:
         # Act & Assert
         with pytest.raises(ConnectionError):
             retry_policy.execute(always_fail)
-        assert call_count == 4  # 1 initial + 3 retries
+        assert call_count == 4, "Count must be greater than zero"
 
     def test_backoff_delay_calculation(self, retry_policy):
         """Test exponential backoff delay calculation."""
@@ -469,7 +469,7 @@ class TestExponentialBackoffRetry:
             pass
 
         # Assert - verify backoff was applied (total delay > 0)
-        assert retry_policy.total_delay_ms > 0
+        assert retry_policy.total_delay_ms > 0, "total_delay_ms must be greater than zero"
 
     def test_max_delay_ceiling(self, retry_policy):
         """Test that backoff respects max delay ceiling."""
@@ -491,7 +491,7 @@ class TestExponentialBackoffRetry:
             pass
 
         # Assert - delay shouldn't exceed max
-        assert retry_policy.total_delay_ms <= retry_policy.max_delay_ms * 5
+        assert retry_policy.total_delay_ms <= retry_policy.max_delay_ms * 5, "total_delay_ms is not valid"
 
 
 # ============================================================================
@@ -515,8 +515,8 @@ class TestCircuitBreakerRecovery:
                 pass
 
         # Assert
-        assert circuit_breaker.state == "open"
-        assert circuit_breaker.failure_count == 3
+        assert circuit_breaker.state == "open", "state is not valid"
+        assert circuit_breaker.failure_count == 3, "Count must be greater than zero"
 
     def test_circuit_breaker_blocked_when_open(self, circuit_breaker):
         """Test circuit breaker blocks calls when open."""
@@ -548,7 +548,7 @@ class TestCircuitBreakerRecovery:
             except:
                 pass
 
-        assert circuit_breaker.state == "open"
+        assert circuit_breaker.state == "open", "state is not valid"
 
         # Act - manipulate time and attempt reset
         circuit_breaker.open_time = datetime.now() - timedelta(seconds=10)
@@ -560,9 +560,9 @@ class TestCircuitBreakerRecovery:
         result = circuit_breaker.call(working_func)
 
         # Assert
-        assert result == "success"
-        assert circuit_breaker.state == "closed"
-        assert circuit_breaker.failure_count == 0
+        assert result == "success", "Result must not be empty"
+        assert circuit_breaker.state == "closed", "state is not valid"
+        assert circuit_breaker.failure_count == 0, "Count must be greater than zero"
 
     def test_circuit_breaker_success_resets(self, circuit_breaker):
         """Test successful calls reset circuit breaker."""
@@ -574,8 +574,8 @@ class TestCircuitBreakerRecovery:
         result = circuit_breaker.call(lambda: "success")
 
         # Assert
-        assert result == "success"
-        assert circuit_breaker.failure_count == 0
+        assert result == "success", "Result must not be empty"
+        assert circuit_breaker.failure_count == 0, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -603,8 +603,8 @@ class TestGracefulDegradation:
             degraded_functionality = None
 
         # Assert
-        assert degraded_functionality is not None
-        assert degraded_functionality["cache_enabled"] is False
+        assert degraded_functionality is not None, "degraded_functionality must be initialized"
+        assert degraded_functionality["cache_enabled"] is False, "Condition must be true"
 
     def test_graceful_degrade_partial_availability(self, mock_cache):
         """Test graceful degradation with partial availability."""
@@ -620,8 +620,8 @@ class TestGracefulDegradation:
         }
 
         # Assert
-        assert available_features["read_critical"] is True
-        assert available_features["write"] is False
+        assert available_features["read_critical"] is True, "Condition must be true"
+        assert available_features["write"] is False, "Condition must be true"
 
     def test_degradation_metrics_tracking(self, recovery_context):
         """Test degradation mode metrics tracking."""
@@ -637,7 +637,7 @@ class TestGracefulDegradation:
         degradation_level = 1.0 - (degradation_metrics["degraded_capacity"] / degradation_metrics["original_capacity"])
 
         # Assert
-        assert degradation_level == degradation_metrics["degradation_level"]
+        assert degradation_level == degradation_metrics["degradation_level"], "degradation_level is not valid"
 
 
 # ============================================================================
@@ -663,8 +663,8 @@ class TestIncidentResolutionWorkflows:
         })
 
         # Assert
-        assert len(incidents) == 1
-        assert incidents[0]["severity"] == "high"
+        assert len(incidents) == 1, "Incidents must not be empty"
+        assert incidents[0]["severity"] == "high", "Condition must be true"
 
     def test_recovery_procedure_coordination(self, recovery_context):
         """Test recovery procedure coordination."""
@@ -691,8 +691,8 @@ class TestIncidentResolutionWorkflows:
         procedures.append(recovery_procedure)
 
         # Assert
-        assert len(procedures) == 1
-        assert procedures[0].success is True
+        assert len(procedures) == 1, "Procedures must not be empty"
+        assert procedures[0].success is True, "success is not valid"
 
     def test_incident_resolution_time_tracking(self, recovery_context):
         """Test incident resolution time tracking."""
@@ -702,7 +702,7 @@ class TestIncidentResolutionWorkflows:
 
         incident_start = datetime.now()
         service.inject_failure()
-        
+
         # Recovery actions
         service.restart()
         incident_end = datetime.now()
@@ -716,8 +716,8 @@ class TestIncidentResolutionWorkflows:
         })
 
         # Assert
-        assert len(incidents) == 1
-        assert incidents[0]["resolution_time_seconds"] >= 0
+        assert len(incidents) == 1, "Incidents must not be empty"
+        assert incidents[0]["resolution_time_seconds"] >= 0, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -739,7 +739,7 @@ class TestDataConsistencyVerification:
 
         # Assert
         for key, value in test_data.items():
-            assert mock_database.read_data(key) == value
+            assert mock_database.read_data(key) == value, "Data must not be empty"
 
     def test_cross_service_consistency(self, recovery_context):
         """Test consistency across multiple services."""
@@ -760,7 +760,7 @@ class TestDataConsistencyVerification:
         # Assert
         service_restored = state_manager.restore_state("service")
         db_restored = state_manager.restore_state("database")
-        assert service_restored == db_restored
+        assert service_restored == db_restored, "service_restored is not valid"
 
     def test_eventual_consistency_validation(self, mock_database, recovery_context):
         """Test eventual consistency after recovery."""
@@ -772,8 +772,8 @@ class TestDataConsistencyVerification:
         mock_database.sync_replicas()
 
         # Assert
-        assert mock_database.replication_lag_ms == 0.0
-        assert mock_database.read_data("key1") == "value1"
+        assert mock_database.replication_lag_ms == 0.0, "Data must not be empty"
+        assert mock_database.read_data("key1") == "value1", "Data must not be empty"
 
 
 # ============================================================================
@@ -810,9 +810,9 @@ class TestRecoveryIntegration:
         cache.rebuild()
 
         # Assert
-        assert service.state == ServiceState.HEALTHY
-        assert database.connected is True
-        assert len(cache.cache) == 0
+        assert service.state == ServiceState.HEALTHY, "state is not valid"
+        assert database.connected is True, "Data must not be empty"
+        assert len(cache.cache) == 0, "Collection must not be empty"
 
     def test_multi_service_failover_recovery(self, recovery_context):
         """Test recovery with multiple service failover."""
@@ -827,11 +827,11 @@ class TestRecoveryIntegration:
         for service_name, service in services.items():
             service.inject_failure()
             result = service.restart()
-            assert result is True
+            assert result is True, "Result must not be empty"
 
         # Assert
         for service_name, service in services.items():
-            assert service.state == ServiceState.HEALTHY
+            assert service.state == ServiceState.HEALTHY, "state is not valid"
 
     def test_cascading_recovery_prevention(self, circuit_breaker):
         """Test prevention of cascading failures during recovery."""
@@ -855,7 +855,7 @@ class TestRecoveryIntegration:
                     call_attempts.append("failed")
 
         # Assert
-        assert "blocked" in call_attempts  # Circuit breaker protected against cascade
+        assert "blocked" in call_attempts, "Condition must be true"
 
 
 # ============================================================================
@@ -873,8 +873,8 @@ class TestRecoveryStress:
             mock_service.restart()
 
         # Assert
-        assert mock_service.state == ServiceState.HEALTHY
-        assert mock_service.restart_count == 10
+        assert mock_service.state == ServiceState.HEALTHY, "state is not valid"
+        assert mock_service.restart_count == 10, "Count must be greater than zero"
 
     def test_concurrent_recovery_procedures(self, recovery_context):
         """Test concurrent recovery procedures."""
@@ -884,13 +884,13 @@ class TestRecoveryStress:
         # Act
         for service in services:
             service.inject_failure()
-        
+
         for service in services:
             service.restart()
 
         # Assert
         for service in services:
-            assert service.state == ServiceState.HEALTHY
+            assert service.state == ServiceState.HEALTHY, "state is not valid"
 
     def test_high_volume_state_snapshots(self, state_manager):
         """Test handling high volume of state snapshots."""
@@ -899,7 +899,7 @@ class TestRecoveryStress:
             state_manager.save_state(f"service_{i % 5}", {"iteration": i})
 
         # Assert
-        assert len(state_manager.state_snapshots) == 100
+        assert len(state_manager.state_snapshots) == 100, "Collection must not be empty"
 
     def test_retry_under_load(self, retry_policy):
         """Test retry logic under load."""
@@ -921,7 +921,7 @@ class TestRecoveryStress:
                 failure_count += 1
 
         # Assert
-        assert success_count + failure_count == 20
+        assert success_count + failure_count == 20, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

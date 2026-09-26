@@ -367,7 +367,12 @@ def cmd_summary(args: argparse.Namespace) -> int:
 def cmd_validate(args: argparse.Namespace) -> int:
     try:
         import jsonschema
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - import guard
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - import guard
         print(
             f"[metrics-cli] jsonschema not installed; cannot validate ({exc!r})",
             file=sys.stderr,

@@ -112,14 +112,14 @@ def test_start_run_disabled_returns_noop():
 def test_start_run_and_logging(monkeypatch, tmp_path):
     """Test comprehensive MLflow step logging with proper step parameter handling."""
     dummy = DummyMLF()
-    
+
     # Monkeypatch importlib.import_module to return DummyMLF instead of real mlflow
     real_import = importlib.import_module
     def fake_import(name, *args, **kwargs):
         if name == "mlflow":
             return dummy
         return real_import(name, *args, **kwargs)
-    
+
     monkeypatch.setattr(importlib, "import_module", fake_import)
     MU._HAS_MLFLOW = True
 
@@ -206,17 +206,17 @@ def test_start_run_disabled():
 def test_start_run_no_tracking(monkeypatch):
     """Test start_run without tracking URI but with MLflow available."""
     dummy = DummyMLF()
-    
+
     # Monkeypatch importlib.import_module to return DummyMLF instead of real mlflow
     real_import = importlib.import_module
     def fake_import(name, *args, **kwargs):
         if name == "mlflow":
             return dummy
         return real_import(name, *args, **kwargs)
-    
+
     monkeypatch.setattr(importlib, "import_module", fake_import)
     MU._HAS_MLFLOW = True
-    
+
     with MU.start_run(MU.MlflowConfig(enable=True, tracking_uri=None)) as ctx:
         assert ctx == "run", "ctx is not valid"
 
@@ -242,7 +242,7 @@ def test_ensure_mlflow_available(monkeypatch):
         if name == "mlflow":
             return dummy
         return real_import(name, *args, **kwargs)
-    
+
     monkeypatch.setattr(importlib, "import_module", fake_import_success)
     result = MU._ensure_mlflow_available()
     assert result is dummy, "_ensure_mlflow_available should return the imported module"
@@ -252,7 +252,7 @@ def test_ensure_mlflow_available(monkeypatch):
         if name == "mlflow":
             raise ImportError("mlflow not available")
         return real_import(name, *args, **kwargs)
-    
+
     monkeypatch.setattr(importlib, "import_module", fake_import_fail)
     with pytest.raises(ImportError):
         MU._ensure_mlflow_available()

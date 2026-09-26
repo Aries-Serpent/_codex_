@@ -233,7 +233,7 @@ class MockOrchestrationEngine:
     def _execute_task(self, task: Task) -> TaskResult:
         """Execute a single task."""
         start_time = datetime.utcnow()
-        
+
         try:
             # Simulate task execution
             result = TaskResult(

@@ -313,7 +313,7 @@ class MemorySyncEngine:
                 AND confidence < 0.3
                 AND policy != '{RetentionPolicy.EVERGREEN.value}'
                 ORDER BY confidence ASC
-                LIMIT {self.config['max_prune_per_cycle']}
+                LIMIT {self.config["max_prune_per_cycle"]}
                 """).fetchall()
 
             conn.close()
@@ -447,7 +447,7 @@ class MemorySyncEngine:
                     (key, value, pattern_type, frequency, success_rate,
                      confidence, created_at, last_accessed, metadata, tags, policy, improvement_areas)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    """,  # noqa: E501
                     (
                         entry.key,
                         entry.value,

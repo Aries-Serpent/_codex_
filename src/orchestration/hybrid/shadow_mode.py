@@ -73,9 +73,9 @@ class ShadowExecutor:
         seed: Optional[int] = None,
     ) -> ShadowComparison:
         """Execute classical and hybrid solvers in parallel"""
-        
-        comparison_id = f"shadow_{decision_id}_{int(time.time()*1000)}"
-        
+
+        comparison_id = f"shadow_{decision_id}_{int(time.time() * 1000)}"
+
         try:
             # Run both solvers with timeout
             classical_start = time.time()
@@ -114,8 +114,7 @@ class ShadowExecutor:
 
             # Check determinism: same seed should yield same result
             deterministic = seed is not None and (
-                classical_result.execution_seed == seed
-                and hybrid_result.execution_seed == seed
+                classical_result.execution_seed == seed and hybrid_result.execution_seed == seed
             )
 
             comparison = ShadowComparison(
@@ -126,8 +125,7 @@ class ShadowExecutor:
                 improvement_pct=improvement_pct,
                 latency_ratio=latency_ratio,
                 both_feasible=(
-                    classical_result.constraints_satisfied
-                    and hybrid_result.constraints_satisfied
+                    classical_result.constraints_satisfied and hybrid_result.constraints_satisfied
                 ),
                 deterministic=deterministic,
                 notes=(
@@ -184,7 +182,7 @@ class ShadowExecutor:
         solver_name: str = "solver",
     ) -> SolverResult:
         """Safely execute a solver with timeout"""
-        
+
         try:
             # Add seed if provided
             if seed is not None:
@@ -219,27 +217,28 @@ class ShadowExecutor:
                 execution_seed=seed,
             )
 
-    def _calculate_improvement(
-        self, classical_quality: float, hybrid_quality: float
-    ) -> float:
+    def _calculate_improvement(self, classical_quality: float, hybrid_quality: float) -> float:
         """Calculate improvement percentage"""
-        
+
         if classical_quality == 0:
             return 0.0
-        
+
         # Assume higher quality is better
         improvement = (hybrid_quality - classical_quality) / abs(classical_quality)
         return improvement * 100
 
     def get_statistics(self) -> dict[str, float]:
         """Get aggregate statistics from shadow executions"""
-        
+
         if not self._executions:
             return {}
 
-        successful = [e for e in self._executions
-                     if e.classical_result.status == ExecutionStatus.COMPLETED
-                     and e.hybrid_result.status == ExecutionStatus.COMPLETED]
+        successful = [
+            e
+            for e in self._executions
+            if e.classical_result.status == ExecutionStatus.COMPLETED
+            and e.hybrid_result.status == ExecutionStatus.COMPLETED
+        ]
 
         if not successful:
             return {}
@@ -256,10 +255,12 @@ class ShadowExecutor:
             "avg_latency_ratio": sum(latency_ratios) / len(latency_ratios),
             "deterministic_pct": (
                 sum(1 for e in successful if e.deterministic) / len(successful) * 100
-                if successful else 0
+                if successful
+                else 0
             ),
             "feasibility_pct": (
                 sum(1 for e in successful if e.both_feasible) / len(successful) * 100
-                if successful else 0
+                if successful
+                else 0
             ),
         }

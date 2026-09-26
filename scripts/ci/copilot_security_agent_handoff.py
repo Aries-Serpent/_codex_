@@ -105,21 +105,21 @@ def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
     # Check if this is a scan-summary command
     if '@copilot scan-summary' not in comment_body.lower():
         return None
-    
+
     # Extract the command pattern
     pattern = r'@copilot\s+scan-summary(?:\s+(.*))?'
     match = re.search(pattern, comment_body, re.IGNORECASE)
-    
+
     if not match:
         return None
-    
+
     raw_filters = (match.group(1) or '').strip()
-    
+
     # Initialize query components
     query_type = None
     value = None
     scope = None
-    
+
     if not raw_filters:
         # No filters - basic summary
         return ScanSummaryQuery(
@@ -129,33 +129,33 @@ def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
             scope=None,
             raw_filters=''
         )
-    
+
     # Parse filters
     parts = raw_filters.split()
     i = 0
     while i < len(parts):
         part = parts[i]
-        
+
         # Check for "for" keyword (file scope)
         if part.lower() == 'for' and i + 1 < len(parts):
             # Collect all remaining parts as scope
             scope = ' '.join(parts[i+1:]).strip()
             break
-        
+
         # Check for cwe: prefix
         if part.lower().startswith('cwe:'):
             query_type = 'cwe'
             value = part[4:].strip()
             i += 1
             continue
-        
+
         # Check for package: prefix
         if part.lower().startswith('package:'):
             query_type = 'package'
             value = part[8:].strip()
             i += 1
             continue
-        
+
         # Check for severity: prefix or plain severity name
         if part.lower().startswith('severity:'):
             query_type = 'severity'
@@ -168,9 +168,9 @@ def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
             value = part.upper()
             i += 1
             continue
-        
+
         i += 1
-    
+
     return ScanSummaryQuery(
         command='scan-summary',
         query_type=query_type,
@@ -180,7 +180,7 @@ def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
     )
 
 
-def generate_scan_summary_response(findings: List[Dict[str, Any]], 
+def generate_scan_summary_response(findings: List[Dict[str, Any]],
                                   query_info: Optional[ScanSummaryQuery] = None,
                                   cache_age_minutes: Optional[int] = None) -> str:
     """
@@ -210,25 +210,25 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
             "Good news! The security scan found no issues matching your criteria.\n\n"
             "[View Full Report](.codex/security-findings-comprehensive.md)"
         )
-    
+
     # Get repository name from environment
     repo = os.environ.get('GITHUB_REPOSITORY', 'Aries-Serpent/_codex_')
-    
+
     # Count findings by severity
     severity_counts = {severity: 0 for severity in SEVERITY_LEVELS}
     for finding in findings:
         severity = finding.get('severity', 'INFO')
         if severity in severity_counts:
             severity_counts[severity] += 1
-    
+
     # Count findings by tool
     tool_counts = {}
     for finding in findings:
         tool = finding.get('tool', 'Unknown')
         tool_counts[tool] = tool_counts.get(tool, 0) + 1
-    
+
     tools_list = ', '.join(sorted(tool_counts.keys()))
-    
+
     # Build query description
     query_desc = "All findings"
     if query_info:
@@ -240,7 +240,7 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
             query_desc = f"findings in `{query_info.value}`"
         elif query_info.query_type == 'package':
             query_desc = f"{query_info.value} vulnerabilities"
-    
+
     # Build cache age indicator
     cache_indicator = ""
     if cache_age_minutes is not None:
@@ -254,7 +254,7 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
         else:
             days = cache_age_minutes // 1440
             cache_indicator = f" ({days}d ago)"
-    
+
     # Start building markdown response
     lines = [
         "## 🔍 Security Scan Summary\n",
@@ -263,18 +263,18 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
         f"**Source**: {len(tool_counts)} tool{'s' if len(tool_counts) != 1 else ''} ({tools_list})",
         f"**Scan Time**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}{cache_indicator}\n",
     ]
-    
+
     # Add summary table
     lines.extend([
         "### Summary\n",
         "| Severity | Count | Status |",
         "|----------|-------|--------|",
     ])
-    
+
     for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO']:
         count = severity_counts.get(severity, 0)
         emoji = SEVERITY_EMOJI.get(severity, '❓')
-        
+
         if count == 0:
             status = "✅ None"
         elif severity == 'CRITICAL':
@@ -285,11 +285,11 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
             status = "🟢 Monitor"
         else:
             status = "⚪ Info"
-        
+
         lines.append(f"| {emoji} {severity} | {count} | {status} |")
-    
+
     lines.append("")
-    
+
     # Add top issues
     top_n = 3
     sorted_findings = sorted(
@@ -299,13 +299,13 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
             -f.get('_recency_score', 0)  # Optional recency score
         )
     )
-    
+
     top_findings = sorted_findings[:top_n]
-    
+
     lines.extend([
         f"### Top Issues (showing {len(top_findings)} of {len(findings)})\n",
     ])
-    
+
     for idx, finding in enumerate(top_findings, 1):
         severity = finding.get('severity', 'INFO')
         title = finding.get('title', 'Untitled Finding')
@@ -314,49 +314,49 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
         file_path = finding.get('file', '')
         line_num = finding.get('line', '')
         description = finding.get('description', '')
-        
+
         # Build finding header
         severity_emoji = SEVERITY_EMOJI.get(severity, '❓')
         cwe_str = f"{cwe}: " if cwe else ""
         lines.append(f"{idx}. **[{severity_emoji} {severity}]** {cwe_str}{title}")
-        
+
         # Add details
         if file_path:
             file_ref = f"`{file_path}`"
             if line_num:
                 file_ref += f" (line {line_num})"
             lines.append(f"   - **File**: {file_ref}")
-        
+
         if finding.get('package'):
             pkg_ref = finding['package']
             if finding.get('version'):
                 pkg_ref += f" v{finding['version']}"
             lines.append(f"   - **Package**: {pkg_ref}")
-        
+
         lines.append(f"   - **Tool**: {tool}")
-        
+
         if description:
             # Truncate long descriptions
             if len(description) > 100:
                 description = description[:97] + "..."
             lines.append(f"   - **Issue**: {description}")
-        
+
         # Add remediation hint
         if finding.get('fix_recommendation'):
             lines.append(f"   - **Fix**: {finding['fix_recommendation']}")
-        
+
         lines.append("")
-    
+
     # Recommended agents
     lines.extend([
         "### Recommended Actions\n",
     ])
-    
+
     # Count findings by type and recommend agents
     cwe_count = len([f for f in findings if f.get('cwe_id')])
     pkg_count = len([f for f in findings if f.get('package')])
     secret_count = len([f for f in findings if f.get('type', '').lower() in ['secret', 'credential']])
-    
+
     recommendations = []
     if cwe_count > 0:
         recommendations.append(f"- **@codeql-alert-resolution-agent** — CWE/SAST remediation ({cwe_count} findings)")
@@ -364,15 +364,15 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
         recommendations.append(f"- **@dependency-security-review-agent** — Dependency updates ({pkg_count} findings)")
     if secret_count > 0:
         recommendations.append(f"- **@secret-detection-agent** — Secrets rotation ({secret_count} findings)")
-    
+
     if not recommendations:
         recommendations.append("- Review findings and plan remediation strategy")
-    
+
     for rec in recommendations:
         lines.append(rec)
-    
+
     lines.append("")
-    
+
     # Trending section (placeholder for future trending data)
     lines.extend([
         "### Resources\n",
@@ -380,12 +380,12 @@ def generate_scan_summary_response(findings: List[Dict[str, Any]],
         "- [📋 View Full Report](.codex/security-findings-comprehensive.md)",
         "- [🔧 View Security Remediation Guide](SECURITY_REMEDIATION_GUIDE.md)\n"
     ])
-    
+
     return "\n".join(lines)
 
 
 class CopilotSecurityAgentHandoff:
-    
+
     def __init__(self, findings_json: Path):
         """Initialize with findings JSON file path"""
         self.findings_json = findings_json
@@ -619,7 +619,7 @@ class CopilotSecurityAgentHandoff:
                 "## Summary",
                 f"- **Total Findings:** {handoff.findings_count}",
             ]
-            
+
             for key, value in handoff.summary.items():
                 if isinstance(value, dict):
                     md_lines.append(f"- **{key}:** {value}")
@@ -627,29 +627,29 @@ class CopilotSecurityAgentHandoff:
                     md_lines.append(f"- **{key}:** {len(value)} items")
                 else:
                     md_lines.append(f"- **{key}:** {value}")
-            
+
             md_lines.extend([
                 "",
                 "## Recommendations",
                 "",
             ])
-            
+
             for rec in handoff.recommendations:
                 md_lines.append(f"- {rec}")
-            
+
             md_lines.extend([
                 "",
                 "## Findings",
                 "",
             ])
-            
+
             for finding in handoff.findings:
                 md_lines.append(f"### {finding.get('title', 'Untitled')}")
                 md_lines.append(f"- **Severity:** {finding.get('severity', 'UNKNOWN')}")
                 md_lines.append(f"- **File:** `{finding.get('file', 'N/A')}`")
                 md_lines.append(f"- **Tool:** {finding.get('tool', 'N/A')}")
                 md_lines.append("")
-            
+
             with open(output_file, "w") as f:
                 f.write("\n".join(md_lines))
 
@@ -661,7 +661,7 @@ def main():
         description="Copilot security agent handoff and command handler"
     )
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
-    
+
     # Handoff subcommand (for agent-specific handoff)
     handoff_parser = subparsers.add_parser('handoff', help='Prepare security findings handoff for Copilot agents')
     handoff_parser.add_argument(
@@ -684,7 +684,7 @@ def main():
         "--output",
         help="Output file path (defaults to agent-specific path)",
     )
-    
+
     # Parse-command subcommand
     parse_parser = subparsers.add_parser('parse-command', help='Parse @copilot scan-summary command')
     parse_parser.add_argument(
@@ -696,7 +696,7 @@ def main():
         "--output",
         help="Output file for parsed command (JSON)",
     )
-    
+
     # Generate-response subcommand
     response_parser = subparsers.add_parser('generate-response', help='Generate response for scan-summary command')
     response_parser.add_argument(
@@ -726,28 +726,28 @@ def main():
         type=int,
         help="Age of findings cache in minutes",
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return 1
-    
+
     try:
         if args.command == 'handoff':
             # Legacy handoff subcommand
             if not args.output:
                 args.output = f".codex/security-handoff-{args.agent}.{args.format}"
-            
+
             handoff = CopilotSecurityAgentHandoff(args.findings_json)
             handoff.save_handoff(args.agent, args.output, args.format)
             logger.info("✅ Handoff preparation complete")
             return 0
-        
+
         elif args.command == 'parse-command':
             # Parse @copilot scan-summary command
             query = parse_scan_summary_command(args.comment)
-            
+
             if not query:
                 logger.warning("❌ No @copilot scan-summary command found in comment")
                 output = json.dumps({'valid': False, 'message': 'No scan-summary command found'})
@@ -761,18 +761,18 @@ def main():
                     'scope': query.scope,
                     'raw_filters': query.raw_filters
                 })
-            
+
             if args.output:
                 Path(args.output).write_text(output)
                 logger.info(f"Parsed command saved to {args.output}")
             else:
                 print(output)
-            
+
             return 0 if query else 1
-        
+
         elif args.command == 'generate-response':
             # Generate response for scan-summary command
-            
+
             # Load query info
             query_info = None
             if args.query_json:
@@ -794,14 +794,14 @@ def main():
                     scope=query_data.get('scope'),
                     raw_filters=query_data.get('raw_filters', '')
                 )
-            
+
             # Load findings (would need to query via security_findings_api.py)
             findings = []
             findings_file = Path(args.findings_json)
             if findings_file.exists():
                 data = json.loads(findings_file.read_text())
                 findings = data.get('findings', [])
-            
+
             # Filter findings based on query
             if query_info and query_info.query_type and query_info.value:
                 filtered_findings = []
@@ -819,16 +819,16 @@ def main():
                         if finding.get('package', '').lower() == query_info.value.lower():
                             filtered_findings.append(finding)
                 findings = filtered_findings
-            
+
             # Generate response markdown
-            # lgtm[py/clear-text-storage]: Response contains only finding metadata (title, 
+            # lgtm[py/clear-text-storage]: Response contains only finding metadata (title,
             # description, location), not actual secret values or sensitive data
             response = generate_scan_summary_response(
                 findings,
                 query_info,
                 args.cache_age_minutes
             )
-            
+
             if args.output:
                 # lgtm[py/clear-text-storage]: Metadata-only findings written for agent handoff
                 Path(args.output).write_text(response)
@@ -837,15 +837,15 @@ def main():
             else:
                 # lgtm[py/clear-text-logging]: Response contains only finding metadata
                 print(response)
-            
+
             # lgtm[py/clear-text-logging]: Status message only, no sensitive data
             logger.info("✅ Response generation complete")
             return 0
-        
+
         else:
             logger.error(f"Unknown command: {args.command}")
             return 1
-    
+
     except Exception as e:
         logger.error(f"❌ Operation failed: {e}")
         import traceback
