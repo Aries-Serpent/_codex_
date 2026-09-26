@@ -36,7 +36,8 @@ def test_sanitize_for_logging_truncates_long_input() -> None:
     long_str = "a" * 300
     result = core.sanitize_for_logging(long_str, max_length=200)
     assert result.endswith("...[truncated]"), "Result must not be empty"
-    assert len(result) == 200 + len("...[truncated]"), "Result must not be empty"
+    assert len(result) <= 200, "Result must not exceed the configured max length"
+    assert len(result) == 200, "Result must reserve room for the truncation suffix"
 
 
 def test_sanitize_for_logging_accepts_bytes() -> None:

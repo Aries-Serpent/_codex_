@@ -105,11 +105,13 @@ def gh_get(url: str) -> Any:
 
 
 def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
-    key = f"branches:{owner}/{repo}"
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    key = f"branches:{safe_owner}/{safe_repo}"
     c = cache_get(key, ttl=60)
     if c is not None:
         return c
-    data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
+    data = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/branches?per_page=100")
     cache_set(key, data)
     return data
 
@@ -119,7 +121,7 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     safe_repo = _safe_repo_component(repo, field_name="repo")
     safe_ref = _safe_repo_component(ref, field_name="ref")
     safe_path = _safe_repo_component(path.strip("/"), field_name="path")
-    raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{safe_path}"
+    raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{quote(safe_path, safe='/')}"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text

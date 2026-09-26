@@ -26,6 +26,7 @@ Usage:
 import hashlib
 import ipaddress
 import re
+import socket
 from typing import Any, Optional
 from urllib.parse import urlparse
 
@@ -164,12 +165,16 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
             return False
         if parsed.scheme.lower() not in {"http", "https"}:
             return False
-
-        host = hostname.lower().rstrip(".")
-        if host in {"localhost", "localhost.localdomain"}:
+        if parsed.username or parsed.password:
             return False
 
-        # Reject private/loopback/metadata targets to prevent SSRF.
+        host = hostname.lower().rstrip(".")
+        if host in {"localhost", "localhost.localdomain", "127.0.0.1", "::1"}:
+            return False
+
+        # Reject private/loopback/metadata targets to prevent SSRF. Resolve DNS names
+        # before allowing them through so hostnames like localhost or internal aliases
+        # are blocked even when they are not literal IP strings.
         try:
             addr = ipaddress.ip_address(host)
             if (
@@ -181,12 +186,28 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
             ):
                 return False
         except ValueError:
-            pass
+            try:
+                resolved = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+            except socket.gaierror:
+                return False
+            for family, _, _, _, sockaddr in resolved:
+                sockaddr_ip = sockaddr[0] if isinstance(sockaddr, tuple) else sockaddr
+                try:
+                    addr = ipaddress.ip_address(sockaddr_ip)
+                except ValueError:
+                    continue
+                if (
+                    addr.is_private
+                    or addr.is_loopback
+                    or addr.is_link_local
+                    or addr.is_multicast
+                    or addr.is_unspecified
+                    or addr.is_reserved
+                ):
+                    return False
 
-        # Explicit allowlist is required for general-purpose validation. Without a
-        # list, only relative-safe public hostnames are accepted.
         if allowed_domains is None:
-            return not host.startswith(".") and "." in host
+            return not host.startswith(".") and "." in host and not host.endswith(".internal")
 
         for allowed_domain in allowed_domains:
             allowed_lower = allowed_domain.lower().rstrip(".")
@@ -194,7 +215,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
                 return True
 
         return False
-    except (ConnectionError, TimeoutError, ValueError):
+    except (ConnectionError, TimeoutError, ValueError, OSError):
         return False
 
 
