@@ -344,7 +344,10 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
 
         # Validate every supplied path stays within _RAG_FILES_BASE to prevent
         # path-traversal attacks (e.g. a client passing "/etc/passwd").
-        safe_files = [_ensure_subpath(_RAG_FILES_BASE, Path(f)) for f in build_request.files]
+        safe_files = []
+        for file_value in build_request.files:
+            candidate = Path(file_value)
+            safe_files.append(_ensure_subpath(_RAG_FILES_BASE, candidate))
 
         index_path = build_index_from_files(
             files=safe_files,

@@ -58,10 +58,10 @@ class RetrievalAdapter:
             )
         except Exception as e:
             logger.error(
-                "Error querying knowledge base for tenant %s: %s",
+                "Error querying knowledge base for tenant %s",
                 sanitize_log_input(tenant_id),
-                sanitize_log_input(str(e)),
             )
+            logger.debug("Query failure detail: %s", sanitize_log_input(str(e)))
             return []
 
     def build_index(
@@ -89,8 +89,8 @@ class RetrievalAdapter:
             logger.info("Built index for tenant %s", sanitize_log_input(tenant_id))
         except Exception as e:
             logger.error(
-                "Error building index for tenant %s: %s",
+                "Error building index for tenant %s",
                 sanitize_log_input(tenant_id),
-                sanitize_log_input(str(e)),
             )
+            logger.debug("Index build failure detail: %s", sanitize_log_input(str(e)))
             raise

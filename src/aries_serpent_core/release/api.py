@@ -27,6 +27,7 @@ import io  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import shutil  # noqa: E402
+import stat  # noqa: E402
 import tarfile  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any
@@ -150,7 +151,7 @@ def _clean_path(path: Path) -> None:
 
         def _onerror(func, p, exc_info) -> None:  # pragma: no cover - defensive cleanup
             with contextlib.suppress(OSError):
-                os.chmod(p, 0o700)  # nosec B103 -- nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- temporary owner-only mode applied to force-delete locked tree entries before immediately removing them
+                os.chmod(p, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
             func(p)
 
         shutil.rmtree(path, onerror=_onerror)

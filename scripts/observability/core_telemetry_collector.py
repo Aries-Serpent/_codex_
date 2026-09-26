@@ -103,9 +103,9 @@ class CoreTelemetryCollector:
         if key not in self.timeseries_keys:
             if len(self.timeseries_keys) >= self.cardinality_limit:
                 self.logger.warning(
-                    "Cardinality limit (%s) reached! Dropping metric: %s",
+                    "Cardinality limit (%s) reached! Dropping metric for %s",
                     self.cardinality_limit,
-                    sanitize_log_input(key),
+                    sanitize_log_input(metric_name),
                 )
                 return ""
             self.timeseries_keys.add(key)

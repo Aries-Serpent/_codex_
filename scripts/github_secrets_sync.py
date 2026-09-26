@@ -132,9 +132,10 @@ class GitHubSecretsManager:
                     print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))
+                error_reason = _safe_error(e)
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, error_reason)
                 print("✗ Failed to rotate secret")
-                results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
+                results['failed'].append({'secret_ref': secret_ref, 'reason': error_reason})
 
         # Save results
         results_file = Path('rotation_results.json')
