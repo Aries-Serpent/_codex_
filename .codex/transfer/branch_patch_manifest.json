@@ -1,0 +1,75 @@
+{
+  "source_branch": "copilot/broad-merge-readiness-cleanup",
+  "target_branch": "0D_base_",
+  "generated_at": "2026-09-26T20:00:00Z",
+  "change_count": 13,
+  "files": [
+    {
+      "path": ".github/agents/ci-optimizer-agent/src/__init__.py",
+      "sha256": "ed015b087d3c6b4f8518a70b9156ba610b49d81175740e8b449a684c523d3f0d",
+      "status": "modified"
+    },
+    {
+      "path": ".github/agents/core/config.py",
+      "sha256": "dbfb22157fda294c4fc56aaf760969fe27afa37a769e0c1a3ccd445dd71dc1af",
+      "status": "modified"
+    },
+    {
+      "path": ".github/agents/documentation-agent/src/__init__.py",
+      "sha256": "ebf63886a8ecc42ae98f2f2c6b4283dcbbede26d2a5ea9ef4e90e60bbf9b78fb",
+      "status": "modified"
+    },
+    {
+      "path": ".github/agents/ecosystem-coordinator-agent/src/__init__.py",
+      "sha256": "9f3c8baf90aa6a86bde398eb02538f875bc9f80942f74f634435edd9b9e98381",
+      "status": "modified"
+    },
+    {
+      "path": ".github/agents/performance-monitor-agent/src/__init__.py",
+      "sha256": "5c0e0539e114265acafa3adbe9f9d799cd0271ace3e44c6332e706e659a76d02",
+      "status": "modified"
+    },
+    {
+      "path": ".github/agents/reasoning-advisor-agent/src/__init__.py",
+      "sha256": "af6415d8da2964dab57b888763ff31292dd08754992c98824fc0e0add46e0862",
+      "status": "modified"
+    },
+    {
+      "path": "tests/analysis/test_docs_links_audit.py",
+      "sha256": "660462ec886179ff5e7623131b20cdf42346baaf6a0350f9304240ed4ced8453",
+      "status": "modified"
+    },
+    {
+      "path": "tests/api/test_app_auth_router_mount.py",
+      "sha256": "04653ab700709ed4b58fe907d91833c66e3fd194a7c5e25efdae74e3fcbcee73",
+      "status": "modified"
+    },
+    {
+      "path": "tests/ci/test_codeql_findings_formatter.py",
+      "sha256": "591a6c530bc16a9065c14fe4699bb9bf49da0bbee4aee8f610a164e13691bedd",
+      "status": "modified"
+    },
+    {
+      "path": "tests/ci/test_pattern_recorder.py",
+      "sha256": "44175ef00e71727a54352a20ba1ae19dbaa6ed5c989f1e04d63239eff47ab80d",
+      "status": "modified"
+    },
+    {
+      "path": "tests/ci/test_post_rescue_comment.py",
+      "sha256": "787ecc46df1a6e679a50216de21d4068139a369362b33cbf29d4d68389480912",
+      "status": "modified"
+    },
+    {
+      "path": "tests/test_security_vulnerabilities.py",
+      "sha256": "905571e3677c4f92c5bfcc8f6e4786935e12f2e7913677d15bc244e898ef673c",
+      "status": "modified"
+    },
+    {
+      "path": "tests/zendesk/test_json_generator.py",
+      "sha256": "915322347abb76f21d46b828aabd5e45bcf280e3e25b4abac31b007366f80f58",
+      "status": "modified"
+    }
+  ],
+  "patch_sha256": "ba363fd09fc9e7ade232708523ca3440a1ba7f5c63885d286aa11674296506d7",
+  "transfer_method": "git diff --binary HEAD / reversible base64 bundle"
+}

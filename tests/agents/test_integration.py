@@ -552,7 +552,7 @@ class TestStatePreservation:
         )
 
         # State should accumulate
-        assert len(orchestrator.workflow_state["agents_executed"]) >= len(
+        assert len(orchestrator.workflow_state["agents_executed"]) >= len(, "Collection must not be empty"
             first_state["agents_executed"]
         )
 

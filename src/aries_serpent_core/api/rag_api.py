@@ -152,8 +152,11 @@ def _safe_join_under_base(base_dir: Path, *segments: str) -> Path:
         # Use strict parent check: candidate must be base_resolved or a descendant
         try:
             candidate_resolved.relative_to(base_resolved)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=400,
+                detail="Path escapes allowed root directory",
+            ) from exc
 
     except HTTPException:
         raise

@@ -16,8 +16,10 @@ from typing import Any, Dict, List, Optional, Tuple
 try:
     import jsonschema
     from jsonschema import Draft202012Validator
-except ImportError:
-    raise ImportError("jsonschema module required. Install with: pip install jsonschema")
+except ImportError as exc:
+    raise ImportError(
+        "jsonschema module required. Install with: pip install jsonschema"
+    ) from exc
 
 logger = logging.getLogger(__name__)
 

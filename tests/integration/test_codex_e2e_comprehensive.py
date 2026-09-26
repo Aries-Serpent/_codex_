@@ -80,7 +80,7 @@ class TestSessionLifecycleE2E:
         # PHASE 3: Resume session (query for continuation)
         db2 = SessionDB(db_path)
         resumed_sessions = db2.query_all()
-        assert any(
+        assert any(, "Condition must be true"
             s["session_id"] == session_id for s in resumed_sessions
         ), "Should find session to resume"
 
@@ -430,8 +430,9 @@ class TestConcurrentAccessStressE2E:
         all_sessions = db.query_all()
         found_sessions = {s["session_id"] for s in all_sessions}
 
-        assert sessions_written.issubset(found_sessions), "Condition must be true"
-        assert sessions_written.issubset(found_sessions), "All written sessions should be retrievable"
+        assert sessions_written.issubset(, "Condition must be true"
+            found_sessions
+        ), "All written sessions should be retrievable"
 
         logger.info(f"✅ No data loss: {len(sessions_written)} sessions verified")
 
@@ -510,7 +511,9 @@ class TestQuantumOrchestratorWorkflowE2E:
             orch.evolve()
 
         # Verify all completed
-        assert all(tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]), "Condition must be true"
+        assert all(, "Condition must be true"
+            tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]
+        )
         logger.info("✅ Task dependency chain verified")
 
 

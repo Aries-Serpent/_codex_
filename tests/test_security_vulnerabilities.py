@@ -445,7 +445,7 @@ class TestSecurityTestCoverage:
             validate_input("invalid@", strict=True)
 
         # Test non-strict mode branch
-        assert validate_input("any input!@, "Condition must be true"
+        assert validate_input("any input!@") is True, "Condition must be true"
 
 
 if __name__ == "__main__":

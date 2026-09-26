@@ -4,21 +4,21 @@ Integrates all performance monitoring capabilities with Cognitive Brain PDA Loop
 """
 import os
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
-    from .alert_manager import AlertManager, AlertSeverity, create_alert_manager
-    from .latency_monitor import LatencyMonitor, create_monitor
-    from .regression_detector import RegressionDetector, create_detector
-    from .resource_predictor import ResourcePredictor, create_predictor
-    from .throughput_optimizer import ThroughputOptimizer, create_optimizer
+    from .alert_manager import create_alert_manager
+    from .latency_monitor import create_monitor
+    from .regression_detector import create_detector
+    from .resource_predictor import create_predictor
+    from .throughput_optimizer import create_optimizer
 except ImportError:
     # Fallback for direct execution
-    from alert_manager import AlertManager, AlertSeverity, create_alert_manager
-    from latency_monitor import LatencyMonitor, create_monitor
-    from regression_detector import RegressionDetector, create_detector
-    from resource_predictor import ResourcePredictor, create_predictor
-    from throughput_optimizer import ThroughputOptimizer, create_optimizer
+    from alert_manager import create_alert_manager
+    from latency_monitor import create_monitor
+    from regression_detector import create_detector
+    from resource_predictor import create_predictor
+    from throughput_optimizer import create_optimizer
 
 RANDOM_SEED = 47  # Performance Monitor Agent seed
 

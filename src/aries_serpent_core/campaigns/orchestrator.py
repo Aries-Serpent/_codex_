@@ -466,8 +466,8 @@ class CampaignRegistryLoader:
         try:
             with open(registry_path, "r") as f:
                 registry = yaml.safe_load(f)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-            raise ValueError(f"Failed to load campaign registry: {e}")
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+            raise ValueError(f"Failed to load campaign registry: {exc}") from exc
 
         campaigns = {}
         for campaign_data in registry.get("campaigns", []):

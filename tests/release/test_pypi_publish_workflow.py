@@ -38,7 +38,7 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
     workflow = _load_workflow()
 
     build_entries = _distribution_entries(workflow["jobs"]["build"])
-    assert any(
+    assert any(, "Condition must be true"
         entry["name"] == "codex-cognitive-sdk" and entry["path"] == "packages/cognitive_sdk"
         for entry in build_entries
     )
@@ -54,7 +54,7 @@ def test_all_release_jobs_include_cognitive_sdk_distribution() -> None:
         assert any(entry["name"] == "codex-cognitive-sdk" for entry in entries), "Condition must be true"
 
     verify_entries = _distribution_entries(workflow["jobs"]["verify-installation"])
-    assert any(
+    assert any(, "Condition must be true"
         entry["name"] == "codex-cognitive-sdk" and entry["import"] == "codex_cognitive_sdk"
         for entry in verify_entries
     )
@@ -71,9 +71,9 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
     assert "Install built wheel in isolated virtualenv" in step_names, "in is not valid"
     assert "Attest release artifacts" not in step_names, "Condition must be true"
     assert "Verify build provenance" not in step_names, "Condition must be true"
-    assert "--require-hashes -r requirements/lock-release.txt" in _step(
+    assert "--require-hashes -r requirements/lock-release.txt" in _step(, "Condition must be true"
         build_job, "Install build dependencies"
-    )["run"], "Condition must be true"
+    )["run"]
     assert "python -m build --no-isolation" in _step(build_job, "Build package")["run"]
     install_command = _step(
         build_job,

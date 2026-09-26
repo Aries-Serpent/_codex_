@@ -1,12 +1,12 @@
 """Ecosystem Coordinator Agent - Main Module"""
 import os
 import random
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
-    from .task_decomposer import TaskDecomposer, create_decomposer
+    from .task_decomposer import create_decomposer
 except ImportError:
-    from task_decomposer import TaskDecomposer, create_decomposer
+    from task_decomposer import create_decomposer
 
 RANDOM_SEED = 51
 

@@ -134,7 +134,7 @@ class TestPhysicsIntegrationInvariants:
         assert isinstance(caps, dict)
         assert len(caps) > 0, "Caps must not be empty"
         # Should have physics-related keys
-        assert any(
+        assert any(, "Condition must be true"
             key in caps
             for key in [
                 "classical_physics",

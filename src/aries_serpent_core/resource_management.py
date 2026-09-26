@@ -67,9 +67,11 @@ def safe_int_conversion(
             logger.warning(f"Integer conversion resulted in very large value: {result}")
 
         return result
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError) as exc:
         if strict:
-            raise TypeConversionError(f"Cannot convert {type(value).__name__} to int: {e}")
+            raise TypeConversionError(
+                f"Cannot convert {type(value).__name__} to int: {exc}"
+            ) from exc
         return default
 
 
@@ -114,9 +116,11 @@ def safe_float_conversion(
             logger.warning("Conversion resulted in negative infinity")
 
         return result
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError) as exc:
         if strict:
-            raise TypeConversionError(f"Cannot convert {type(value).__name__} to float: {e}")
+            raise TypeConversionError(
+                f"Cannot convert {type(value).__name__} to float: {exc}"
+            ) from exc
         return default
 
 
