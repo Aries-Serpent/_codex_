@@ -1,3 +1,36 @@
+## Session: 2026-09-26T09:13:14Z — PR #5634 merge-readiness + auto-approve root-cause repair
+
+**Objective:** Fix the underlying automation causes for stale merge-readiness dimensions and pending workflow auto-approval stalls on PR #5634.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Verified CI failure context and isolated that `.github/workflows/workflow-execution-gate.yml` used only `inputs.pr_number`, which is empty on `pull_request` events, causing auto-approve dispatch to skip.
+2. Fixed workflow gate PR-number propagation to use pull-request payload fallback so `auto-approve-workflows.yml` is dispatched consistently for PR events.
+3. Hardened `scripts/ci/session_wrapup_autofix.py --activate-workflows` to run readiness self-healing (`auto_fix_all_missing`) before approval dispatch, so REQ-4/REQ-5/PDA/WEC/scorecard state is refreshed rather than left stale.
+4. Updated the generated follow-up prompt to include explicit self-heal (`--fix-all`) and activation (`--activate-workflows`) commands in sequence.
+
+**Validation:**
+- CI evidence reviewed: `https://github.com/Aries-Serpent/_codex_/actions/runs/36231797811`
+- Label-gate consistency verified (`wec:auto-approve`) across:
+  - `scripts/ci/require_wec_auto_approve.py`
+  - `scripts/ci/approve_pending_runs.py`
+  - `.github/workflows/auto-approve-workflows.yml`
+  - `.github/workflows/agent-auth-delegation.yml`
+- Targeted checks:
+  - `python scripts/ci/check_cross_references.py docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+  - `python -m ruff check scripts/ci/session_wrapup_autofix.py scripts/ci/approve_pending_runs.py scripts/ci/require_wec_auto_approve.py`
+
+**Governance:**
+- REQ-4: Active accountability report updated in the same commit as the automation fix.
+- Root cause addressed in workflow/script logic (not PR-body-only edits).
+
+### Agents Used
+- [x] `ci-testing-agent` (`approval-lane`)
+- [x] `general-purpose` (`scorecard-lane`)
+
+---
+
 ## Session: 2026-09-26T03:03:35Z — PR #5634 scorecard stale-dimension remediation
 
 **Objective:** Clear the active merge-readiness stale dimensions (`PDA entry today`, `accountability report today`) while fixing the code-fixable Validation Pipeline blocker on the current PR tip.

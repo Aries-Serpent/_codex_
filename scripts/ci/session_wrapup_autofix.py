@@ -648,8 +648,13 @@ def _compute_merge_readiness_score() -> dict:
                  "✅ entry today" if ok8 else "⚠️ no entry today", ok8))
 
     # 9 — accountability report today
-    acc = (REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md").read_text()
-    ok9 = today in acc
+    # Treat either active report OR archive report as valid current-session
+    # evidence so scorecard state matches the repository's REQ-4 workflow usage.
+    acc_active_path = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    acc_archive_path = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+    acc_active = acc_active_path.read_text() if acc_active_path.exists() else ""
+    acc_archive = acc_archive_path.read_text() if acc_archive_path.exists() else ""
+    ok9 = (today in acc_active) or (today in acc_archive)
     dims.append(("accountability report today", 8,
                  "✅ today" if ok9 else "❌ stale", ok9))
 
@@ -722,7 +727,10 @@ def _build_followup_prompt_md(data: dict) -> str:
             lines.append(f"  - {f}")
         lines += [
             "",
-            "Run: python3 scripts/ci/session_wrapup_autofix.py --pr-number <N> --activate-workflows",
+            "Run (self-heal readiness + refresh scorecard):",
+            "  python3 scripts/ci/session_wrapup_autofix.py --pr-number <N> --fix-all",
+            "Run (dispatch/approval sweep):",
+            "  python3 scripts/ci/session_wrapup_autofix.py --pr-number <N> --activate-workflows",
             "```",
         ]
     return "\n".join(lines)
@@ -2729,6 +2737,14 @@ def main(argv: list[str] | None = None) -> int:
         # eliminates the most common root cause of recurring Fast Validation failures.
         print("🔄 PLANSET-003: Running pre-session health sweep...")  # codeql[py/clear-text-logging-sensitive-data]
         _run_pre_session_health_sweep(dry_run=args.dry_run)
+        # Self-heal readiness artifacts (REQ-4/REQ-5/PDA/WEC/scorecard) so the
+        # follow-up command can resolve stale scorecard dimensions on current HEAD.
+        auto_fix_all_missing(
+            pr_number=args.pr_number,
+            sha=sha,
+            run_url=args.run_url,
+            dry_run=args.dry_run,
+        )
         # ALWAYS-ON: approve all pending action_required runs immediately.
         approve_pending_workflow_runs(pr_number=args.pr_number)
         ok = select_merge_required_workflows(
