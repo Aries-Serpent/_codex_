@@ -41,7 +41,7 @@ def test_repo_root_stubs_do_not_mask_real_installs(
         loaded = importlib.import_module(module_name)
     except ModuleNotFoundError as exc:
         message = str(exc)
-        assert (, "Condition must be true"
+        assert (
             "pytest.importorskip" in message
             or "repo-local" in message
             or "not a Python package" in message

@@ -286,9 +286,10 @@ class TestAuthMiddlewareErrorResponses:
             response = middleware.handle_missing_token(request)
 
             if response and hasattr(response, 'headers'):
-                assert 'WWW-Authenticate' in response.headers or \, "Response must not be empty"
-                       'www-authenticate' in response.headers, \
-                       "401 response should include WWW-Authenticate header"
+                assert (
+                    'WWW-Authenticate' in response.headers or
+                    'www-authenticate' in response.headers
+                ), "401 response should include WWW-Authenticate header"
         except (AttributeError, OSError, RuntimeError):
             pass
 
