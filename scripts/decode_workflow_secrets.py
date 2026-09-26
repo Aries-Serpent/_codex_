@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import sys
 from pathlib import Path
 
@@ -40,9 +41,12 @@ import yaml
 
 # Import security utilities for sanitizing sensitive data
 try:
-    from aries_serpent_core.security_utils import sanitize_log_message
+    from aries_serpent_core.security_utils import redact_secret_name, sanitize_log_message
 except ImportError:
     # Fallback: simple sanitization if security_utils not available
+    def redact_secret_name(secret_name: str) -> str:
+        return "[REDACTED_SECRET_NAME]" if secret_name else "[UNNAMED_SECRET]"
+
     def sanitize_log_message(msg: str) -> str:
         """Fallback message sanitization."""
         import re
@@ -56,18 +60,32 @@ except ImportError:
         return result
 
 
+def _safe_log_value(value: object) -> str:
+    """Normalize input so it is safe to print in logs or user output."""
+    if value is None:
+        return "[NONE]"
+    rendered = str(value).replace("\r", " ").replace("\n", " ")
+    return sanitize_log_message(rendered).strip()
+
+
 def decode_secret_name(encoded: str) -> str:
     """Decode a base64-encoded secret name."""
     try:
         return base64.b64decode(encoded.encode('ascii')).decode('utf-8')
-    except Exception as e:
-        return f"[DECODE_ERROR: {e}]"
+    except Exception:
+        return "[DECODE_ERROR]"
+
+
+def _fingerprint_secret(value: str) -> str:
+    """Return a stable, non-sensitive fingerprint for a secret name."""
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return f"sha256:{digest[:12]}"
 
 
 def list_secret_tokens(inventory_path: Path) -> None:
     """List secret tokens and hints from inventory (safe for display)."""
     if not inventory_path.exists():
-        print(f"❌ Inventory file not found: {inventory_path}")
+        print(f"❌ Inventory file not found: {_safe_log_value(inventory_path)}")
         return
 
     with open(inventory_path) as f:
@@ -98,10 +116,9 @@ def list_secret_tokens(inventory_path: Path) -> None:
         return
 
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        # Security: Use generic placeholder instead of exposing any token characters
-        # to prevent clear-text token exposure in logs/output
-        print(f"{i}. [Token fingerprint] (SHA256)")
-        print(f"   Hint: {info['hint']}")
+        fingerprint = _fingerprint_secret(token)
+        print(f"{i}. [Token fingerprint] {fingerprint}")
+        print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
 
@@ -123,7 +140,7 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
         sys.exit(1)
 
     if not inventory_path.exists():
-        print(f"❌ Inventory file not found: {inventory_path}")
+        print(f"❌ Inventory file not found: {_safe_log_value(inventory_path)}")
         return
 
     with open(inventory_path) as f:
@@ -163,14 +180,13 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
     print()
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. Secret: {secret_name}")
-        # Security: Use generic placeholder instead of exposing any token characters
-        # to prevent clear-text token exposure in logs/output
-        print("   [Token fingerprint]")
-        print(f"   Hint: {info['hint']}")
+        fingerprint = _fingerprint_secret(secret_name)
+        print(f"{i}. Secret: [REDACTED_SECRET_NAME]")
+        print(f"   Token fingerprint: {fingerprint}")
+        print("   Hint: [REDACTED]")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
-        for wf in sorted(info['workflows']):
-            print(f"      - {wf}")
+        for _ in sorted(info['workflows']):
+            print("      - [REDACTED_WORKFLOW]")
         print()
 
     print("=" * 70)

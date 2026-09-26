@@ -16,17 +16,9 @@ def redact_url_for_log(url: str) -> str:
 
     Strips usernames, passwords, query parameters, and fragments from URLs
     while preserving the scheme, host, port, and path for safe logging output.
-
-    Parameters
-    ----------
-    url : str
-        URL to redact
-
-    Returns
-    -------
-    str
-        Redacted URL safe for logging
     """
+    if not url:
+        return ""
     parts = urlsplit(url)
     host = parts.hostname or ""
     if ":" in host and not host.startswith("["):

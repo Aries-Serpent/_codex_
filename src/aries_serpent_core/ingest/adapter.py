@@ -124,16 +124,16 @@ def _validate_path(path: Path, base_dir: Optional[Path] = None) -> None:
     Raises:
         ValueError: If path is invalid or attempts traversal
     """
-    # Check for path traversal attempts
     try:
-        resolved = path.resolve()
-        if base_dir:
-            base_resolved = base_dir.resolve()
-            if not str(resolved).startswith(str(base_resolved)):
-                raise ValueError(f"Path traversal detected: {path}")
+        resolved = path.resolve(strict=False)
+        if base_dir is not None:
+            base_resolved = base_dir.resolve(strict=False)
+            try:
+                resolved.relative_to(base_resolved)
+            except ValueError as exc:
+                raise ValueError(f"Path traversal detected: {path}") from exc
     except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.debug("Exception: %s", type(e).__name__)
         raise ValueError(f"Invalid path: {path} - {e}") from e
 
 

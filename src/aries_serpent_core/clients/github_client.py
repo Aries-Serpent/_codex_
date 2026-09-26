@@ -22,9 +22,10 @@ import hashlib
 import json
 import logging
 import os
+import re
 import time
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 import requests
 
@@ -54,6 +55,8 @@ def _cache_path(key: str) -> str:
 
 
 def _validated_url(url: str) -> str:
+    if not isinstance(url, str) or not url:
+        raise ValueError("GitHub client URL must be a non-empty string")
     parsed = urlsplit(url)
     if parsed.scheme != "https" or not parsed.netloc:
         raise ValueError("GitHub client only allows absolute https URLs")
@@ -65,6 +68,8 @@ def _validated_url(url: str) -> str:
     hostname_lower = hostname.lower()
     if hostname_lower not in _ALLOWED_HTTP_HOSTS:
         raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
+    if re.search(r"[\\\x00-\x1f\x7f]", parsed.path):
+        raise ValueError("GitHub client URL path contains control characters")
     return url
 
 
@@ -102,20 +107,27 @@ def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
 
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
-    raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
+    clean_owner = re.sub(r"[^A-Za-z0-9_.-]", "", owner)
+    clean_repo = re.sub(r"[^A-Za-z0-9_.-]", "", repo)
+    clean_ref = re.sub(r"[^A-Za-z0-9_.-]", "", ref)
+    clean_path = path.strip("/")
+    if not clean_owner or not clean_repo or not clean_ref:
+        raise ValueError("GitHub file parameters contain unsupported characters")
+    raw = f"https://raw.githubusercontent.com/{clean_owner}/{clean_repo}/{clean_ref}/{quote(clean_path, safe='/') }"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
-    meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{path}?ref={ref}")
+    meta = gh_get(f"{BASE}/repos/{clean_owner}/{clean_repo}/contents/{quote(clean_path, safe='/')}?ref={quote(clean_ref)}")
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)
 
 
 def code_search(owner: str, repo: str, q: str, ref: str = "main") -> dict[str, Any]:
-    from urllib.parse import quote
-
-    query = quote(f"{q} repo:{owner}/{repo} ref:{ref}")
+    safe_owner = re.sub(r"[^A-Za-z0-9_.-]", "", owner)
+    safe_repo = re.sub(r"[^A-Za-z0-9_.-]", "", repo)
+    safe_ref = re.sub(r"[^A-Za-z0-9_.-]", "", ref)
+    query = quote(f"{q} repo:{safe_owner}/{safe_repo} ref:{safe_ref}")
     url = f"{BASE}/search/code?q={query}&per_page=10"
     return gh_get(url)
 
