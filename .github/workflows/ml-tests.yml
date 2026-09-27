@@ -61,13 +61,14 @@ jobs:
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -e '.[runtime]'
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          "$PYTHON_BIN" -m pip install --upgrade pip
+          "$PYTHON_BIN" -m pip install -e '.[runtime]'
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
-          python - <<'PY'
+          "$PYTHON_BIN" - <<'PY'
           import importlib
           for name in [
               "numpy",
@@ -133,13 +134,14 @@ jobs:
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -e '.[runtime]'
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          "$PYTHON_BIN" -m pip install --upgrade pip
+          "$PYTHON_BIN" -m pip install -e '.[runtime]'
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
-          python - <<'PY'
+          "$PYTHON_BIN" - <<'PY'
           import importlib
           for name in [
               "numpy",

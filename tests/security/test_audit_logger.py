@@ -66,7 +66,7 @@ def test_audit_logger_emits_canonical_envelope_with_extensions_in_payload(
     record = al.append({"action": "create", "tenant": "example"}, ts=0)
 
     event = record["event"]
-    assert set(event) == {, "Condition must be true"
+    assert set(event) == {
         "schema_version",
         "event_id",
         "emitted_at",
@@ -76,10 +76,10 @@ def test_audit_logger_emits_canonical_envelope_with_extensions_in_payload(
         "correlation_id",
         "payload",
     }
-    assert event["schema_version"] == "1.0", "Condition must be true"
-    assert event["kind"] == "security.audit", "Condition must be true"
+    assert event["schema_version"] == "1.0"
+    assert event["kind"] == "security.audit"
     assert event["payload"] == {"action": "create", "tenant": "example"}
-    assert "tenant" not in event, "Condition must be true"
+    assert "tenant" not in event
 
 
 def test_verify_chain_accepts_legacy_event_dictionary(tmp_path: Path) -> None:
@@ -92,7 +92,7 @@ def test_verify_chain_accepts_legacy_event_dictionary(tmp_path: Path) -> None:
     _rehash(record)
     log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
 
-    assert AuditLogger(log_path).verify_chain() is True, "Condition must be true"
+    assert AuditLogger(log_path).verify_chain() is True
 
 
 def test_verify_chain_accepts_legacy_payload_schema_version(tmp_path: Path) -> None:
@@ -105,7 +105,7 @@ def test_verify_chain_accepts_legacy_payload_schema_version(tmp_path: Path) -> N
     _rehash(record)
     log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
 
-    assert AuditLogger(log_path).verify_chain() is True, "Condition must be true"
+    assert AuditLogger(log_path).verify_chain() is True
 
 
 def test_verify_chain_negotiates_versions_and_rejects_envelope_extensions(
@@ -122,7 +122,7 @@ def test_verify_chain_negotiates_versions_and_rejects_envelope_extensions(
     _rehash(record)
     log_path.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
 
-    assert logger.verify_chain() is False, "Condition must be true"
+    assert logger.verify_chain() is False
 
 
 def test_audit_logger_detects_tampering(tmp_path: Path) -> None:
@@ -209,11 +209,11 @@ def test_concurrent_appends_preserve_every_record_and_chain(tmp_path: Path) -> N
     records = [
         json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()
     ]
-    assert len(records) == event_count, "Records must not be empty"
-    assert {record["event"]["payload"]["sequence"] for record in records} == set(, "Condition must be true"
+    assert len(records) == event_count
+    assert {record["event"]["payload"]["sequence"] for record in records} == set(
         range(event_count)
     )
-    assert AuditLogger(log_path).verify_chain() is True, "Condition must be true"
+    assert AuditLogger(log_path).verify_chain() is True
 
 
 def test_separate_process_appends_preserve_every_record_and_chain(tmp_path: Path) -> None:
@@ -296,9 +296,9 @@ for sequence in range(event_count):
         for worker_id in range(process_count)
         for sequence in range(events_per_process)
     }
-    assert len(records) == process_count * events_per_process, "Records must not be empty"
-    assert observed == expected, "observed is not valid"
-    assert AuditLogger(log_path).verify_chain() is True, "Condition must be true"
+    assert len(records) == process_count * events_per_process
+    assert observed == expected
+    assert AuditLogger(log_path).verify_chain() is True
 
 
 @pytest.mark.parametrize(
@@ -316,7 +316,7 @@ def test_verify_chain_returns_false_for_corrupt_content(
     log_path = tmp_path / "audit.log"
     log_path.write_bytes(corrupt_content)
 
-    assert AuditLogger(log_path).verify_chain() is False, "Condition must be true"
+    assert AuditLogger(log_path).verify_chain() is False
 
 
 def test_verify_chain_propagates_io_errors(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

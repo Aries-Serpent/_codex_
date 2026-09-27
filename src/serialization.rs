@@ -60,7 +60,7 @@ impl AgentState {
 fn serialize_state<'py>(py: Python<'py>, state: &AgentState) -> PyResult<Bound<'py, PyBytes>> {
     let bytes = rmp_serde::to_vec(state)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
-    Ok(PyBytes::new_bound(py, &bytes))
+    Ok(PyBytes::new(py, &bytes))
 }
 
 /// Deserialize agent state from MessagePack bytes
@@ -72,13 +72,13 @@ fn deserialize_state(data: &[u8]) -> PyResult<AgentState> {
 
 /// Serialize any Python-compatible data to MessagePack
 #[pyfunction]
-fn serialize_bytes<'py>(py: Python<'py>, obj: PyObject) -> PyResult<Bound<'py, PyBytes>> {
+fn serialize_bytes<'py>(py: Python<'py>, obj: Py<PyAny>) -> PyResult<Bound<'py, PyBytes>> {
     // For generic Python objects, we'd need to use PyO3's pickle or JSON
     // For now, use a simpler approach with string representation
     let json_str: String = obj.extract(py)?;
     let bytes = rmp_serde::to_vec(&json_str)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
-    Ok(PyBytes::new_bound(py, &bytes))
+    Ok(PyBytes::new(py, &bytes))
 }
 
 /// Deserialize MessagePack bytes to string

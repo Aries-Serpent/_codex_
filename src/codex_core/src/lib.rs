@@ -3,20 +3,20 @@ use std::time::Duration;
 
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
-use pyo3::{Bound, PyObject};
+use pyo3::{Bound, Py};
 use pyo3_async_runtimes::tokio::{future_into_py, into_future};
 use tokio::sync::Mutex;
 
 #[pyclass]
 pub struct Orchestrator {
-    callback: PyObject,
+    callback: Py<PyAny>,
     state: Arc<Mutex<String>>,
 }
 
 #[pymethods]
 impl Orchestrator {
     #[new]
-    fn new(callback: PyObject, py: Python<'_>) -> PyResult<Self> {
+    fn new(callback: Py<PyAny>, py: Python<'_>) -> PyResult<Self> {
         if !callback.bind(py).is_callable() {
             return Err(PyTypeError::new_err(
                 "Orchestrator callback must be a callable async function",
@@ -47,14 +47,14 @@ impl Orchestrator {
             tokio::time::sleep(Duration::from_millis(150)).await;
 
             // Re-acquire GIL only to build the Python coroutine and convert it to a Rust future.
-            let py_future = Python::with_gil(|py| -> PyResult<_> {
+            let py_future = Python::attach(|py| -> PyResult<_> {
                 let coroutine = callback.call1(py, (error_type.clone(),))?;
                 into_future(coroutine.into_bound(py))
             })?;
 
             // Await Python callback outside the GIL to avoid deadlocks.
             let patch_obj = py_future.await?;
-            let patch_text = Python::with_gil(|py| -> PyResult<String> { patch_obj.extract(py) })?;
+            let patch_text = Python::attach(|py| -> PyResult<String> { patch_obj.extract(py) })?;
 
             {
                 let mut guard = state.lock().await;

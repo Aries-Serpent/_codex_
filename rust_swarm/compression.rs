@@ -77,12 +77,12 @@ impl PyCompression {
     fn compress(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
         // `Vec<u8>` owns the copied Python buffer, so it remains valid after
         // releasing the GIL for the blocking compression operation.
-        py.allow_threads(move || Compression::compress(&data))
+        py.detach(move || Compression::compress(&data))
     }
 
     #[staticmethod]
     fn decompress(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
-        py.allow_threads(move || Compression::decompress(&data))
+        py.detach(move || Compression::decompress(&data))
     }
 
     #[staticmethod]
@@ -92,17 +92,17 @@ impl PyCompression {
         data: Vec<u8>,
         max_output_bytes: usize,
     ) -> PyResult<Vec<u8>> {
-        py.allow_threads(move || Compression::decompress_with_limit(&data, max_output_bytes))
+        py.detach(move || Compression::decompress_with_limit(&data, max_output_bytes))
     }
 
     #[staticmethod]
     fn compress_tasks(py: Python<'_>, tasks_json: Vec<u8>) -> PyResult<Vec<u8>> {
-        py.allow_threads(move || Compression::compress_tasks(&tasks_json))
+        py.detach(move || Compression::compress_tasks(&tasks_json))
     }
 
     #[staticmethod]
     fn decompress_tasks(py: Python<'_>, data: Vec<u8>) -> PyResult<Vec<u8>> {
-        py.allow_threads(move || Compression::decompress_tasks(&data))
+        py.detach(move || Compression::decompress_tasks(&data))
     }
 
     #[staticmethod]
@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn test_decompression_limit() {
-        pyo3::prepare_freethreaded_python();
+        pyo3::Python::initialize();
         let compressed = Compression::compress(&vec![b'x'; 1024]).unwrap();
         let error = Compression::decompress_with_limit(&compressed, 128).unwrap_err();
         assert!(error.to_string().contains("exceeds 128 byte limit"));

@@ -597,16 +597,24 @@ class OAuthManager:
             error_msg = sanitize_log_message(f"GitHub API request failed: {e!s}")
             raise ValueError(error_msg) from e
 
-    def revoke_token(self, access_token: str, config: Optional[OAuthConfig] = None) -> bool:
+    def revoke_token(
+        self,
+        access_token: str,
+        config: Optional[OAuthConfig] = None,
+        token_type: str = "access_token",
+    ) -> bool:
         """
-        Revoke an access token.
+        Revoke an access or refresh token.
 
         Note: GitHub doesn't have a standard token revocation endpoint,
         so this marks the token as revoked locally.
 
         Args:
-            access_token: Token to revoke
+            access_token: Token value to revoke
             config: OAuth configuration
+            token_type: Which credential to revoke — ``"access_token"``
+                (default, matches :attr:`OAuthToken.access_token`) or
+                ``"refresh_token"`` (matches :attr:`OAuthToken.refresh_token`).
 
         Returns:
             True if revocation successful
@@ -617,7 +625,11 @@ class OAuthManager:
 
         # Find and remove token from storage
         for token_id, token in list(self._token_store.items()):
-            if token.access_token == access_token:
+            if token_type == "refresh_token":
+                matches = token.refresh_token is not None and token.refresh_token == access_token
+            else:
+                matches = token.access_token == access_token
+            if matches:
                 del self._token_store[token_id]
                 return True
 

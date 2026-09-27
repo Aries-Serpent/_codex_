@@ -209,7 +209,18 @@ runs:
         REQUESTED_MINOR=$(echo "${{ inputs.python-version }}" | cut -d. -f1,2)
         PYTHON_BIN=".venv_ci/bin/python"
         ACTUAL_MINOR=$("$PYTHON_BIN" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
-        if ! "$PYTHON_BIN" --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ]; then
+        # Cross-patch safety: a venv cached on Python 3.12.N can break when the
+        # runner image moves to 3.12.(N+1) because the cache key only pins the
+        # minor version (see step comment at line ~150). If the interpreter that
+        # CREATED the venv differs from the one the runner now provides, the
+        # venv's console scripts and .pth wiring can point at a stale toolcache
+        # path. Detect by checking whether the venv python actually imports from
+        # its own site-packages; rebuild if it cannot.
+        VENV_OK=true
+        if ! "$PYTHON_BIN" -c "import sys, site; sp=site.getsitepackages(); assert any('site-packages' in p for p in sp), sp" &>/dev/null; then
+          VENV_OK=false
+        fi
+        if ! "$PYTHON_BIN" --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ] || [ "${VENV_OK}" != "true" ]; then
           echo "::warning::Stale venv — Python version mismatch (venv=${ACTUAL_MINOR}, requested=${REQUESTED_MINOR}). Rebuilding."
           chmod -R u+w .venv_ci 2>/dev/null || true
           rm -rf .venv_ci

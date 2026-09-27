@@ -95,13 +95,17 @@ class GitHubAppConfig:
     """
 
     app_id: int
-    private_key_pem: str
+    private_key_pem: str | bytes
     webhook_secret: Optional[str] = None
     api_base_url: str = _GITHUB_API_URL
 
     def __post_init__(self) -> None:
         if not self.app_id or self.app_id <= 0:
             raise ValueError("app_id must be a positive integer")
+        # Accept PEM material as either ``str`` or ``bytes``; normalize to
+        # ``str`` so downstream checks and ``generate_jwt`` stay type-stable.
+        if isinstance(self.private_key_pem, bytes):
+            self.private_key_pem = self.private_key_pem.decode("utf-8", errors="replace")
         if not self.private_key_pem or "PRIVATE KEY" not in self.private_key_pem:
             raise ValueError("private_key_pem must be a valid PEM-encoded RSA private key")
         # Validate api_base_url to prevent open-redirect / SSRF.
@@ -207,7 +211,7 @@ class GitHubApp:
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         webhook_secret: Optional[str] = None,
-        private_key: Optional[str] = None,
+        private_key: Optional[str | bytes] = None,
     ) -> None:
         # ``config`` takes precedence over keyword args when both are supplied.
         # At least one initialisation path must be provided.
@@ -217,6 +221,10 @@ class GitHubApp:
                 "app_id keyword argument is required. When both are "
                 "supplied, config takes precedence."
             )
+        # Accept the private key as ``str`` or ``bytes`` (PEM material); the
+        # config normalizes it to ``str`` internally.
+        if isinstance(private_key, bytes):
+            private_key = private_key.decode("utf-8", errors="replace")
         if config is None and app_id and private_key is not None:
             config = GitHubAppConfig(
                 app_id=int(app_id),
@@ -385,8 +393,20 @@ class GitHubApp:
             raise RuntimeError("GitHub installation token response was not a JSON object")
         return data
 
-    def verify_webhook_signature(self, payload: bytes, signature_header: str) -> bool:
-        """Verify a webhook signature using the configured secret."""
+    def verify_webhook_signature(
+        self,
+        payload: bytes | str,
+        signature_header: str | bytes = "",
+    ) -> bool:
+        """Verify a webhook signature using the configured secret.
+
+        Accepts arguments in either ``(payload, signature_header)`` or the
+        legacy-swapped ``(signature_header, payload)`` order, and tolerates
+        ``bytes``/``str`` for either value.  Types are normalized at the
+        boundary so ``hmac.compare_digest`` always operates on ``str``.
+        """
+        payload, signature_header = self._normalize_webhook_args(payload, signature_header)
+
         if not self.webhook_secret:
             raise ValueError("Webhook secret is not configured")
         if not signature_header:
@@ -396,6 +416,39 @@ class GitHubApp:
                 return False
             raise ValueError("Unexpected signature format")
         return WebhookVerifier(self.webhook_secret).verify(payload, signature_header)
+
+    @staticmethod
+    def _normalize_webhook_args(
+        first: bytes | str,
+        second: str | bytes,
+    ) -> tuple[bytes, str]:
+        """Normalize ``(payload, signature)`` arguments regardless of order/type.
+
+        Callers have historically passed these in both orders; detect the
+        signature by type/content and decode any ``bytes`` header to ``str``
+        so downstream ``startswith``/``compare_digest`` calls never mix types.
+        """
+        prefix = WebhookVerifier._HEADER_PREFIX
+
+        def _looks_like_signature(value: bytes | str) -> bool:
+            if isinstance(value, bytes):
+                return value.startswith(prefix.encode("ascii"))
+            return value.startswith(prefix)
+
+        # Swapped-order call: first arg is the signature, second is the payload.
+        if _looks_like_signature(first) and not _looks_like_signature(second):
+            first, second = second, first
+
+        payload_raw, signature_raw = first, second
+        if isinstance(payload_raw, str):
+            payload = payload_raw.encode("utf-8")
+        else:
+            payload = payload_raw
+        if isinstance(signature_raw, bytes):
+            signature_header = signature_raw.decode("utf-8", errors="replace")
+        else:
+            signature_header = signature_raw
+        return payload, signature_header
 
     def parse_webhook_payload(self, payload: bytes) -> dict[str, Any]:
         """Parse a webhook payload."""
@@ -482,8 +535,11 @@ class GitHubApp:
             from cryptography.hazmat.primitives.asymmetric import padding
             from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
+            private_key_pem = self._config.private_key_pem
+            if isinstance(private_key_pem, str):
+                private_key_pem = private_key_pem.encode("utf-8")
             private_key = serialization.load_pem_private_key(
-                self._config.private_key_pem.encode("utf-8"),
+                private_key_pem,
                 password=None,
             )
 
