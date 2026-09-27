@@ -163,11 +163,7 @@ class TestGitHubAppWebhookValidation:
         payload = b'{"action":"opened"}'
 
         # Generate valid signature
-        signature = "sha256=" + hmac.new(
-            secret.encode(),
-            payload,
-            hashlib.sha256
-        ).hexdigest()
+        signature = "sha256=" + hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
 
         app = GitHubApp(
             app_id="123",
@@ -267,9 +263,7 @@ class TestGitHubAppRateLimiting:
             mock_response = Mock()
             mock_response.status_code = 403
             mock_response.headers = {"X-RateLimit-Remaining": "0"}
-            mock_response.json.return_value = {
-                "message": "API rate limit exceeded"
-            }
+            mock_response.json.return_value = {"message": "API rate limit exceeded"}
             mock_requests.post.return_value = mock_response
 
             from codex.auth.github_app import GitHubApp
@@ -315,7 +309,7 @@ class TestGitHubAppErrorRecovery:
             # First call fails with 502, second succeeds
             responses = [
                 Mock(status_code=502, text="Bad Gateway"),
-                Mock(status_code=200, json=Mock(return_value={"id": 12345}))
+                Mock(status_code=200, json=Mock(return_value={"id": 12345})),
             ]
             mock_requests.get.side_effect = responses
 
