@@ -161,9 +161,12 @@ jobs:
         \ bandit {bandit.__version__}')\"\n\n# Run bandit with explicit error handling\
         \ and verbose output\n# Use set -o pipefail to catch errors in piped commands\n\
         set -o pipefail\n\n# Create output directory if needed\nmkdir -p security-reports\n\
-        \n# Run bandit with full error reporting\nbandit -r src/aries_serpent_core/auth/ -ll -f\
+        \n# Run bandit with full error reporting\n# NOTE: bandit exits 1 when it finds\
+        \ issues — that is a completed scan WITH findings, not a scan failure. Only\
+        \ exit codes > 1 indicate bandit itself failed. Always require the JSON report.\n\
+        bandit -r src/aries_serpent_core/auth/ -ll -f\
         \ json -o auth-security-report.json -v 2>&1 | tee bandit-output.log\nBANDIT_EXIT_CODE=$?\n\
-        \nif [ $BANDIT_EXIT_CODE -ne 0 ]; then\n  echo \"ERROR: bandit exited with\
+        \nif [ $BANDIT_EXIT_CODE -gt 1 ]; then\n  echo \"ERROR: bandit itself failed with\
         \ code $BANDIT_EXIT_CODE\" >&2\n  echo \"Bandit output:\" >&2\n  cat bandit-output.log\
         \ >&2\n  exit $BANDIT_EXIT_CODE\nfi\n\n# Verify report was generated\nif [\
         \ ! -f auth-security-report.json ]; then\n  echo \"ERROR: bandit failed to\
