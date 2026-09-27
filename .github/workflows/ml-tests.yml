@@ -49,6 +49,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
@@ -57,6 +58,14 @@ jobs:
           install-preflight-extras: false
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Export venv interpreter
+        run: |
+          set -euo pipefail
+          VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          echo "[SETUP] venv-python: ${VENV_PYTHON}"
+          "${VENV_PYTHON}" --version
 
       - name: Install project and ML runtime dependencies
         run: |
@@ -122,6 +131,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python with caching
+        id: setup-python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
@@ -130,6 +140,14 @@ jobs:
           install-preflight-extras: false
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Export venv interpreter
+        run: |
+          set -euo pipefail
+          VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          echo "[SETUP] venv-python: ${VENV_PYTHON}"
+          "${VENV_PYTHON}" --version
 
       - name: Install project and ML runtime dependencies
         run: |

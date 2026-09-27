@@ -86,9 +86,29 @@ runs:
     # 1. Python interpreter
     # ─────────────────────────────────────────────────────────────────
     - name: Set up Python ${{ inputs.python-version }}
+      id: setup-python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
+
+    # Resolve the FULL patch version (e.g. input '3.12' -> '3.12.14') so the
+    # L3 venv cache key can pin the exact interpreter. A venv created under
+    # 3.12.N is NOT portable to 3.12.(N+1): its console scripts and .pth wiring
+    # reference the original toolcache path, which breaks import of installed
+    # packages. Keying the venv cache on the resolved patch version guarantees
+    # a cross-patch runner image is a cache MISS (fresh build) rather than a
+    # stale restore.
+    - name: Resolve full Python version for cache keys
+      id: pyver
+      shell: bash
+      run: |
+        RESOLVED="${{ steps.setup-python.outputs.python-version }}"
+        # Fallback to the raw input if the output is unavailable for any reason.
+        if [ -z "${RESOLVED}" ]; then
+          RESOLVED="${{ inputs.python-version }}"
+        fi
+        echo "resolved=${RESOLVED}" >> "$GITHUB_OUTPUT"
+        echo "[setup] Requested python-version='${{ inputs.python-version }}' -> resolved='${RESOLVED}'"
 
     # ─────────────────────────────────────────────────────────────────
     # 2. LAYER 1 — pip download cache (~/.cache/pip)
@@ -135,11 +155,16 @@ runs:
       uses: actions/cache@v5
       with:
         path: .venv_ci
-        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        # Exact-match key pins the FULL resolved patch version (py3.12.14), so a
+        # venv built under 3.12.13 is never restored when the runner moves to
+        # 3.12.14. Restore-keys stay at minor granularity (py3.12) — a partial
+        # hit only seeds the build and the cross-patch self-healing rebuild below
+        # discards any stale interpreter wiring.
+        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-
           ${{ runner.os }}-live-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-
 
     # ─────────────────────────────────────────────────────────────────
