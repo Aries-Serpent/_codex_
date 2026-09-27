@@ -1,3 +1,31 @@
+## SESSION SUMMARY — 2026-09-27T03:30:00Z — PR #5634 interrupted-session recovery + branch continuation
+
+### Objective
+Recover the interrupted CI remediation branch after the prior agent timed out, verify the staged fix remains intact, and refresh the required governance evidence so the session can continue without reintroducing generated-artifact drift.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Re-read the live branch state and confirmed the previous CI remediation remained on the open `copilot/fix-failing-gates` head without introducing unrelated scope changes.
+2. Restored the tracked `.codex/session_startup_packet.json` baseline to eliminate timestamp-only churn left by the interrupted session.
+3. Refreshed the accountability archive evidence required by REQ-4 so the resumed branch satisfies the current session-close gate.
+
+### Validation
+- `git status --short --branch` → clean aside from the expected generated-artifact recovery edits
+- `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 5634` → pass after the refreshed accountability entry
+
+### Governance
+- REQ-4: Active accountability evidence refreshed for the resumed 2026-09-27 session.
+- REQ-5: Root `CHANGELOG.md` remains compliant and requires no additional change.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the recovery session evidence.
+
+### Agents Used
+- [x] `ci-testing-agent` (`ci-recovery-check`)
+- [x] `workflow-compliance-guardian` (`governance-recovery-check`)
+
+---
+
 ## SESSION SUMMARY — 2026-09-23T07:49:00Z — PR #5625 repo-lint contract repair
 
 ### Objective
