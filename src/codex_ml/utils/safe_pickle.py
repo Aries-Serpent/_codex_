@@ -368,17 +368,34 @@ def _encrypt_pickle_payload(payload: bytes, secret_key: bytes) -> bytes:
 def _decrypt_pickle_payload(data: bytes, secret_key: bytes) -> bytes:
     """Decrypt an encrypted payload produced by _encrypt_pickle_payload."""
     token = data[len(ENCRYPTED_PICKLE_HEADER) :]
+    try:
+        # Reject malformed or tampered token values before decrypting. Fernet
+        # accepts trailing bytes in the current implementation, so we validate the
+        # canonical base64url representation explicitly to detect appended garbage.
+        base64.b64decode(token, altchars=b"-_", validate=True)
+    except (ValueError, binascii.Error) as exc:
+        raise ValueError("HMAC signature verification failed - file may be tampered. "
+                         "Ensure the same secret key was used for saving and loading.") from exc
+
     fernet = Fernet(_coerce_fernet_key(secret_key))
     try:
         return fernet.decrypt(token)
     except InvalidToken as exc:
-        raise ValueError("Encrypted pickle payload could not be decrypted") from exc
+        raise ValueError("HMAC signature verification failed - file may be tampered. "
+                         "Ensure the same secret key was used for saving and loading.") from exc
 
 
 def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:
     """Build a versioned signed pickle payload."""
     signature = hmac.new(secret_key, pickled_data, hashlib.sha256).digest()
     return SIGNED_PICKLE_HEADER + signature + pickled_data
+
+
+def _strip_encrypted_pickle_header(data: bytes) -> bytes:
+    """Return the raw payload bytes for encrypted pickles, else original data."""
+    if data.startswith(ENCRYPTED_PICKLE_HEADER):
+        return data[len(ENCRYPTED_PICKLE_HEADER) :]
+    return data
 
 
 def _split_signed_pickle(data: bytes) -> tuple[bytes, bytes]:

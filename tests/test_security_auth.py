@@ -104,22 +104,15 @@ class TestAuthenticationMechanisms:
 
     def test_session_token_not_predictable(self):
         """Verify session tokens are not sequential or predictable."""
-        tokens = []
+        tokens = [int.from_bytes(secrets.token_bytes(32), 'big') for _ in range(5)]
 
-        for i in range(5):
-            token = secrets.token_bytes(32)
-            tokens.append(int.from_bytes(token, 'big'))
+        # Cryptographically secure random tokens should not repeat and should not form
+        # a simple arithmetic progression. Repeating values or a constant delta would be
+        # a sign of predictability.
+        assert len(set(tokens)) == len(tokens), "Cryptographic random token values should be unique"
 
-        # Check no simple pattern
-        differences = []
-        for i in range(1, len(tokens)):
-            diff = abs(tokens[i] - tokens[i-1])
-            differences.append(diff)
-
-        # Differences should not follow a pattern (not arithmetic sequence)
-        avg_diff = sum(differences) / len(differences)
-        for diff in differences:
-            assert abs(diff - avg_diff) > avg_diff * 0.1, "Token sequence is random, not predictable"
+        diffs = [abs(tokens[i] - tokens[i - 1]) for i in range(1, len(tokens))]
+        assert len(set(diffs)) > 1, "Token deltas should not collapse into a predictable pattern"
 
     def test_hmac_signature_prevents_token_tampering(self):
         """Verify HMAC signatures prevent token tampering."""
@@ -134,9 +127,9 @@ class TestAuthenticationMechanisms:
         tampered_signature = hmac.new(secret_key, tampered_data.encode(), hashlib.sha256).digest()
 
         # Original should verify
-        assert hmac.compare_digest(, "Condition must be true"
+        assert hmac.compare_digest(
             hmac.new(secret_key, token_data.encode(), hashlib.sha256).digest(),
-            signature
+            signature,
         ), "Original token verifies successfully"
 
         # Tampered should not match

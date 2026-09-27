@@ -78,15 +78,41 @@ def _validated_url(url: str) -> str:
 
 def _safe_repo_component(value: str, *, field_name: str) -> str:
     """Reject path traversal and injection characters in GitHub path components."""
-    if not value:
+    if not isinstance(value, str):
         raise ValueError(f"GitHub client URL {field_name} cannot be empty")
-    if value.startswith("/") or value.endswith("/"):
+
+    cleaned = value.strip()
+    if not cleaned:
+        raise ValueError(f"GitHub client URL {field_name} cannot be empty")
+
+    rejected_chars = {"\x00", "\n", "\r", "\t", "\\", "?", "#", "%", "@", ":", ";", " "}
+    if any(ch in cleaned for ch in rejected_chars):
+        raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+
+    if cleaned.startswith("/") or cleaned.endswith("/") or "//" in cleaned:
         raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
-    if value in {".", ".."}:
+    if cleaned in {".", ".."} or ".." in cleaned:
         raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
-    if any(sep in value for sep in ("..", "\\", "\x00", "\n", "\r", "\t")):
-        raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
-    return value
+
+    if field_name == "path":
+        segments = [segment for segment in cleaned.split("/") if segment]
+        if not segments:
+            raise ValueError(f"GitHub client URL {field_name} cannot be empty")
+        for segment in segments:
+            if segment in {".", ".."}:
+                raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+            if any(ch in segment for ch in rejected_chars):
+                raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+        return "/".join(segments)
+
+    if field_name in {"owner", "repo"}:
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", cleaned):
+            raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+        return cleaned
+
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", cleaned):
+        raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+    return cleaned
 
 
 def cache_get(key: str, ttl: int) -> Any | None:
