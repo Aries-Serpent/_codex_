@@ -108,16 +108,15 @@ __all__ = [
 def _ensure_mlflow_available() -> Any:
     """Ensure mlflow is importable at call time.
 
-    Tries a runtime import if the top-level import failed. Raises a
-    RuntimeError with installation guidance when MLflow is unavailable.
+    Tries a runtime import if the top-level import failed. Raises an
+    ImportError with installation guidance when MLflow is unavailable.
     """
     try:
         return importlib.import_module("mlflow")
     except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-        type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.debug("mlflow import failed: %s", exc)
         err = build_optional_dependency_error("mlflow", "experiment tracking")
-        raise RuntimeError(err.args[0]) from exc
+        raise err from exc
 
 
 def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = None) -> str:
