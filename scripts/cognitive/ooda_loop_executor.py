@@ -19,14 +19,14 @@ Target Performance:
 import asyncio
 import json
 import logging
+import threading
 import uuid
-from dataclasses import dataclass, asdict, field
+from abc import ABC, abstractmethod
+from collections import deque
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
-from abc import ABC, abstractmethod
-import threading
-from collections import deque
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -67,7 +67,7 @@ class ObservationData:
     agent_state: Dict[str, Any]
     environment: Dict[str, Any]
     events: List[Dict[str, Any]] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         data = asdict(self)
@@ -82,7 +82,7 @@ class ContextData:
     sessions: List[Dict[str, Any]] = field(default_factory=list)
     external: Dict[str, Any] = field(default_factory=dict)
     degradation_level: DegradationLevel = DegradationLevel.FULL_CONTEXT
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
@@ -97,7 +97,7 @@ class OrientationData:
     urgency: float  # 0-1
     confidence: float  # 0-1
     risk_level: RiskLevel
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -120,7 +120,7 @@ class Strategy:
     estimated_duration_ms: int
     risk_level: RiskLevel
     guardrail_status: str  # "pass", "warn", "fail"
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -142,7 +142,7 @@ class DecisionData:
     selected_strategy: Optional[Dict[str, Any]] = None
     confidence_score: float = 0.0
     success_probability: float = 0.0
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -162,7 +162,7 @@ class ActionResult:
     errors: List[str] = field(default_factory=list)
     execution_time_ms: float = 0.0
     metrics: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
@@ -179,7 +179,7 @@ class OODAState:
     decision: Optional[DecisionData] = None
     action_result: Optional[ActionResult] = None
     metrics: Dict[str, float] = field(default_factory=dict)  # Phase timings
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -196,22 +196,22 @@ class OODAState:
 
 class StateProvider(ABC):
     """Abstract base for state providers (repo, agent, environment)."""
-    
+
     @abstractmethod
     def get_repo_state(self) -> Dict[str, Any]:
         """Get current repository state."""
         pass
-    
+
     @abstractmethod
     def get_agent_state(self) -> Dict[str, Any]:
         """Get agent ecosystem state."""
         pass
-    
+
     @abstractmethod
     def get_environment_state(self) -> Dict[str, Any]:
         """Get system environment state."""
         pass
-    
+
     @abstractmethod
     def get_task_context(self, task_id: str) -> Dict[str, Any]:
         """Get task-specific context."""
@@ -220,17 +220,17 @@ class StateProvider(ABC):
 
 class ContextProvider(ABC):
     """Abstract base for context providers."""
-    
+
     @abstractmethod
     async def get_patterns(self, observation: ObservationData, top_k: int = 5) -> List[Dict[str, Any]]:
         """Get similar patterns from LTM."""
         pass
-    
+
     @abstractmethod
     async def get_sessions(self, task_type: str, limit: int = 3) -> List[Dict[str, Any]]:
         """Get relevant session contexts."""
         pass
-    
+
     @abstractmethod
     async def get_external_context(self) -> Dict[str, Any]:
         """Get external context (GitHub, CI health, etc.)."""
@@ -239,7 +239,7 @@ class ContextProvider(ABC):
 
 class OODAExecutor:
     """Main OODA loop executor with 4 phases and concurrency support."""
-    
+
     def __init__(
         self,
         state_provider: StateProvider,
@@ -257,12 +257,12 @@ class OODAExecutor:
         self.state_provider = state_provider
         self.context_provider = context_provider
         self.max_concurrent_loops = max_concurrent_loops
-        
+
         # State management
         self.active_cycles: Dict[str, OODAState] = {}
         self.cycle_history: deque = deque(maxlen=1000)
         self.lock = threading.RLock()
-        
+
         # Metrics
         self.metrics = {
             "total_cycles": 0,
@@ -274,7 +274,7 @@ class OODAExecutor:
                 "act": [],
             },
         }
-    
+
     async def execute_cycle(
         self,
         task_id: str,
@@ -294,49 +294,49 @@ class OODAExecutor:
         """
         cycle_id = str(uuid.uuid4())
         state = OODAState(cycle_id=cycle_id, phase=OODAPhase.OBSERVE, start_time=datetime.now())
-        
+
         try:
             # Enforce concurrency limit
             while len(self.active_cycles) >= self.max_concurrent_loops:
                 await asyncio.sleep(0.01)
-            
+
             with self.lock:
                 self.active_cycles[cycle_id] = state
-            
+
             # Phase 1: Observe (target < 50ms)
             logger.info(f"[{cycle_id}] Starting OBSERVE phase")
             state.observation = await self._observe(task_id, task_type)
             state.metrics["observe_ms"] = (datetime.now() - state.start_time).total_seconds() * 1000
             logger.info(f"[{cycle_id}] OBSERVE phase: {state.metrics['observe_ms']:.1f}ms")
-            
+
             # Phase 2: Orient (target < 50ms)
             state.phase = OODAPhase.ORIENT
             state.orientation = await self._orient(state.observation)
             state.metrics["orient_ms"] = (
-                (datetime.now() - state.start_time).total_seconds() * 1000 - 
+                (datetime.now() - state.start_time).total_seconds() * 1000 -
                 state.metrics["observe_ms"]
             )
             logger.info(f"[{cycle_id}] ORIENT phase: {state.metrics['orient_ms']:.1f}ms")
-            
+
             # Phase 3: Decide (target < 50ms)
             state.phase = OODAPhase.DECIDE
             state.decision = await self._decide(state.orientation, priority)
             state.metrics["decide_ms"] = (
-                (datetime.now() - state.start_time).total_seconds() * 1000 - 
+                (datetime.now() - state.start_time).total_seconds() * 1000 -
                 state.metrics["observe_ms"] - state.metrics["orient_ms"]
             )
             logger.info(f"[{cycle_id}] DECIDE phase: {state.metrics['decide_ms']:.1f}ms")
-            
+
             # Phase 4: Act (target < 50ms)
             state.phase = OODAPhase.ACT
             state.action_result = await self._act(state.decision)
             state.metrics["act_ms"] = (
-                (datetime.now() - state.start_time).total_seconds() * 1000 - 
+                (datetime.now() - state.start_time).total_seconds() * 1000 -
                 state.metrics["observe_ms"] - state.metrics["orient_ms"] - state.metrics["decide_ms"]
             )
             total_ms = state.metrics["observe_ms"] + state.metrics["orient_ms"] + state.metrics["decide_ms"] + state.metrics["act_ms"]
             logger.info(f"[{cycle_id}] ACT phase: {state.metrics['act_ms']:.1f}ms (total cycle: {total_ms:.1f}ms)")
-            
+
             # Record metrics
             with self.lock:
                 self.metrics["total_cycles"] += 1
@@ -347,10 +347,10 @@ class OODAExecutor:
                     self.metrics["phase_timings"]["decide"].append(state.metrics["decide_ms"])
                     self.metrics["phase_timings"]["act"].append(state.metrics["act_ms"])
                 self.cycle_history.append(state)
-            
+
             state.phase = OODAPhase.FEEDBACK
             return state
-            
+
         except Exception as e:
             logger.error(f"[{cycle_id}] OODA cycle failed: {e}", exc_info=True)
             state.action_result = ActionResult(
@@ -362,18 +362,18 @@ class OODAExecutor:
         finally:
             with self.lock:
                 self.active_cycles.pop(cycle_id, None)
-    
+
     async def _observe(self, task_id: str, task_type: str) -> ObservationData:
         """Phase 1: Collect current state (target < 50ms)."""
         start_time = datetime.now()
-        
+
         # Collect state from providers
         repo_state = self.state_provider.get_repo_state()
         agent_state = self.state_provider.get_agent_state()
         environment = self.state_provider.get_environment_state()
         task = self.state_provider.get_task_context(task_id)
         task["type"] = task_type
-        
+
         observation = ObservationData(
             timestamp=datetime.now(),
             repo_state=repo_state,
@@ -382,21 +382,21 @@ class OODAExecutor:
             environment=environment,
             events=[],  # Would be populated from session log in production
         )
-        
+
         elapsed = (datetime.now() - start_time).total_seconds() * 1000
         if elapsed > 50:
             logger.warning(f"OBSERVE phase exceeded 50ms target: {elapsed:.1f}ms")
-        
+
         return observation
-    
+
     async def _orient(self, observation: ObservationData) -> OrientationData:
         """Phase 2: Inject context and assess situation (target < 50ms)."""
         start_time = datetime.now()
-        
+
         # Determine degradation level and get context
         context = ContextData()
         degradation_level = DegradationLevel.FULL_CONTEXT
-        
+
         try:
             # Try to get context from all sources
             if self.context_provider:
@@ -405,13 +405,13 @@ class OODAExecutor:
                     timeout=0.03
                 )
                 context.patterns = patterns
-                
+
                 sessions = await asyncio.wait_for(
                     self.context_provider.get_sessions(observation.task.get("type", ""), limit=3),
                     timeout=0.03
                 )
                 context.sessions = sessions
-                
+
                 external = await asyncio.wait_for(
                     self.context_provider.get_external_context(),
                     timeout=0.02
@@ -425,15 +425,15 @@ class OODAExecutor:
         except Exception as e:
             logger.warning(f"Context injection failed: {e} - degrading to no-context mode")
             degradation_level = DegradationLevel.NO_CONTEXT
-        
+
         context.degradation_level = degradation_level
-        
+
         # Assess situation
         improvement_area = observation.task.get("type", "unknown")
         urgency = float(observation.agent_state.get("queue_depth", 0) > 10)
         confidence = float(len(context.patterns) > 0) * 0.6 + float(len(context.sessions) > 0) * 0.4
         risk_level = RiskLevel.LOW if confidence > 0.7 else RiskLevel.MEDIUM if confidence > 0.4 else RiskLevel.HIGH
-        
+
         orientation = OrientationData(
             observation=observation,
             context=context,
@@ -442,19 +442,19 @@ class OODAExecutor:
             confidence=confidence,
             risk_level=risk_level,
         )
-        
+
         elapsed = (datetime.now() - start_time).total_seconds() * 1000
         if elapsed > 50:
             logger.warning(f"ORIENT phase exceeded 50ms target: {elapsed:.1f}ms")
-        
+
         return orientation
-    
+
     async def _decide(self, orientation: OrientationData, priority: str) -> DecisionData:
         """Phase 3: Select strategy with confidence scoring (target < 50ms)."""
         start_time = datetime.now()
-        
+
         decision = DecisionData(orientation=orientation)
-        
+
         # Generate candidate strategies based on degradation level
         if orientation.context.degradation_level == DegradationLevel.FULL_CONTEXT:
             strategies = self._generate_full_context_strategies(orientation)
@@ -464,9 +464,9 @@ class OODAExecutor:
             strategies = self._generate_default_strategies(orientation)
         else:
             strategies = self._generate_emergency_strategy(orientation)
-        
+
         decision.strategies = strategies
-        
+
         # Select best strategy
         if strategies:
             selected = strategies[0]  # First strategy (already sorted by success rate)
@@ -485,24 +485,24 @@ class OODAExecutor:
             decision.success_probability = selected.expected_success_rate
         else:
             decision.selected_strategy = self._create_fallback_strategy()
-        
+
         elapsed = (datetime.now() - start_time).total_seconds() * 1000
         if elapsed > 50:
             logger.warning(f"DECIDE phase exceeded 50ms target: {elapsed:.1f}ms")
-        
+
         return decision
-    
+
     async def _act(self, decision: DecisionData) -> ActionResult:
         """Phase 4: Execute strategy and collect feedback (target < 50ms)."""
         start_time = datetime.now()
-        
+
         if not decision.selected_strategy:
             return ActionResult(status="failure", errors=["No strategy selected"])
-        
+
         # In production, this would dispatch to semantic router and execute agents
         # For now, simulate execution
         await asyncio.sleep(0.001)  # Minimal overhead
-        
+
         result = ActionResult(
             status="success",
             output={
@@ -515,17 +515,17 @@ class OODAExecutor:
                 "confidence": decision.confidence_score,
             },
         )
-        
+
         elapsed = result.execution_time_ms
         if elapsed > 50:
             logger.warning(f"ACT phase exceeded 50ms target: {elapsed:.1f}ms")
-        
+
         return result
-    
+
     def _generate_full_context_strategies(self, orientation: OrientationData) -> List[Strategy]:
         """Generate strategies using full context."""
         strategies = []
-        
+
         # Strategy 1: Follow top pattern
         if orientation.context.patterns:
             pattern = orientation.context.patterns[0]
@@ -538,7 +538,7 @@ class OODAExecutor:
                 risk_level=RiskLevel.LOW if pattern.get("success_rate", 0) > 0.8 else RiskLevel.MEDIUM,
                 guardrail_status="pass",
             ))
-        
+
         # Strategy 2: Session replay
         if orientation.context.sessions:
             session = orientation.context.sessions[0]
@@ -551,7 +551,7 @@ class OODAExecutor:
                 risk_level=RiskLevel.LOW,
                 guardrail_status="pass",
             ))
-        
+
         # Strategy 3: Combined approach
         strategies.append(Strategy(
             id="combined",
@@ -562,15 +562,15 @@ class OODAExecutor:
             risk_level=RiskLevel.LOW,
             guardrail_status="pass",
         ))
-        
+
         # Sort by expected success rate (descending)
         strategies.sort(key=lambda s: s.expected_success_rate, reverse=True)
         return strategies
-    
+
     def _generate_pattern_only_strategies(self, orientation: OrientationData) -> List[Strategy]:
         """Generate strategies using pattern context only."""
         strategies = []
-        
+
         if orientation.context.patterns:
             pattern = orientation.context.patterns[0]
             strategies.append(Strategy(
@@ -582,7 +582,7 @@ class OODAExecutor:
                 risk_level=RiskLevel.MEDIUM,
                 guardrail_status="pass",
             ))
-        
+
         strategies.append(Strategy(
             id="conservative",
             name="Conservative safe strategy",
@@ -592,10 +592,10 @@ class OODAExecutor:
             risk_level=RiskLevel.LOW,
             guardrail_status="pass",
         ))
-        
+
         strategies.sort(key=lambda s: s.expected_success_rate, reverse=True)
         return strategies
-    
+
     def _generate_default_strategies(self, orientation: OrientationData) -> List[Strategy]:
         """Generate default strategies without context."""
         return [
@@ -609,7 +609,7 @@ class OODAExecutor:
                 guardrail_status="pass",
             ),
         ]
-    
+
     def _generate_emergency_strategy(self, orientation: OrientationData) -> List[Strategy]:
         """Generate emergency fallback strategy."""
         return [
@@ -623,7 +623,7 @@ class OODAExecutor:
                 guardrail_status="warn",
             ),
         ]
-    
+
     def _create_fallback_strategy(self) -> Dict[str, Any]:
         """Create fallback strategy when none available."""
         return {
@@ -637,13 +637,13 @@ class OODAExecutor:
             "success_probability": 0.2,
             "estimated_duration_ms": 50,
         }
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get aggregated OODA metrics."""
         with self.lock:
             metrics = dict(self.metrics)
             metrics["active_cycles"] = len(self.active_cycles)
-            
+
             # Calculate percentiles for phase timings
             for phase in ["observe", "orient", "decide", "act"]:
                 timings = metrics["phase_timings"][phase]
@@ -652,49 +652,49 @@ class OODAExecutor:
                     metrics[f"{phase}_p50_ms"] = timings_sorted[len(timings_sorted) // 2]
                     metrics[f"{phase}_p99_ms"] = timings_sorted[int(len(timings_sorted) * 0.99)]
                     metrics[f"{phase}_max_ms"] = max(timings)
-        
+
         return metrics
 
 
 def main():
     """Demo OODA executor usage."""
-    
+
     # Mock state provider
     class MockStateProvider(StateProvider):
         def get_repo_state(self) -> Dict[str, Any]:
             return {"branch": "main", "uncommitted_changes": 0, "test_status": "passing"}
-        
+
         def get_agent_state(self) -> Dict[str, Any]:
             return {"health": 0.95, "queue_depth": 5, "performance": {"success_rate": 0.9}}
-        
+
         def get_environment_state(self) -> Dict[str, Any]:
             return {"ci_health": 0.8, "resource_utilization": {"cpu": 0.4, "memory": 0.6}}
-        
+
         def get_task_context(self, task_id: str) -> Dict[str, Any]:
             return {"id": task_id, "priority": "P1", "dependencies": []}
-    
+
     # Initialize executor
     executor = OODAExecutor(state_provider=MockStateProvider())
-    
+
     # Run sample cycle
     async def demo():
         print("=" * 60)
         print("OODA Loop Executor Demo")
         print("=" * 60)
-        
+
         state = await executor.execute_cycle(
             task_id="sample_task_001",
             task_type="ci_fix",
             priority="P1",
         )
-        
+
         print(f"\nCycle ID: {state.cycle_id}")
         print(f"Phase: {state.phase.value}")
         print(f"Metrics: {state.metrics}")
         print(f"Final Result: {state.action_result.status}")
         print("\nAggregate Metrics:")
         print(json.dumps(executor.get_metrics(), indent=2, default=str))
-    
+
     asyncio.run(demo())
 
 

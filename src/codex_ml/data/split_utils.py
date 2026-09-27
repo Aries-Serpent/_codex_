@@ -70,9 +70,7 @@ def split_dataset(
     ]
     if not lines:
         raise ValueError(f"dataset {source} is empty")
-    rng = random.Random(
-        ensure_split_seed(seed)
-    )  # nosec B311 — non-cryptographic ML sampling/shuffling
+    rng = random.Random(ensure_split_seed(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(lines)
     total = len(lines)
     train_n = int(total * ratios[0])
@@ -99,7 +97,12 @@ def split_dataset(
     manifest_path = source.parent / DEFAULT_CHECKSUMS_NAME
     try:
         record_dataset_checksums([train_path, val_path, test_path], manifest_path)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - manifest is best-effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - manifest is best-effort
         LOGGER.warning("Failed to record dataset checksums at %s: %s", manifest_path, exc)
 
     return SplitPaths(train=train_path, val=val_path, test=test_path)
@@ -133,9 +136,7 @@ def deterministic_split(
         raise ValueError("validation and test fractions must leave room for train split")
 
     indices = list(range(n_items))
-    rng = random.Random(
-        ensure_split_seed(seed)
-    )  # nosec B311 — non-cryptographic ML sampling/shuffling
+    rng = random.Random(ensure_split_seed(seed))  # nosec B311 — non-cryptographic ML sampling/shuffling
     rng.shuffle(indices)
 
     n_test = int(n_items * float(test_fraction))

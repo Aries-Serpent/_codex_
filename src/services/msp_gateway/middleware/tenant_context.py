@@ -31,7 +31,7 @@ def _looks_hashed_api_key(value: str) -> bool:
         return True
     prefix = "pbkdf2_sha256$"
     if normalized.startswith(prefix):
-        digest = normalized[len(prefix):]
+        digest = normalized[len(prefix) :]
         return len(digest) == 64 and all(ch in "0123456789abcdef" for ch in digest)
     return False
 
@@ -223,6 +223,7 @@ class TenantRegistry:
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
+
             # legacy SHA-256 for backward-compat
             # lookup only; any SHA-256 match is immediately re-hashed to PBKDF2 below.
             api_key_hashes = candidate_api_key_hashes(api_key)  # (pbkdf2_hash, sha256_hash)
@@ -459,7 +460,9 @@ class TenantRegistry:
         logger.info(
             "Tenant %s updated with fields: %s",
             sanitize_log_input(tenant_id),
-            sanitize_log_input(", ".join(updated_fields.keys()) if updated_fields else "updated_at"),
+            sanitize_log_input(
+                ", ".join(updated_fields.keys()) if updated_fields else "updated_at"
+            ),
         )
 
         return tenant

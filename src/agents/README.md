@@ -44,8 +44,8 @@ Tokenized workflow execution engine.
 from agents.workflow_navigator import WorkflowNavigator
 
 navigator = WorkflowNavigator()
-navigator.execute('AUDIT_EXEC')  # Run full audit pipeline
-navigator.execute('DOC_GEN')     # Generate documentation
+navigator.execute("AUDIT_EXEC")  # Run full audit pipeline
+navigator.execute("DOC_GEN")  # Generate documentation
 ```
 
 **Tokens**: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
@@ -179,7 +179,7 @@ Quick access tokens for common operations:
 **Files**: Use `snake_case.py`
 ```python
 workflow_navigator.py  # ✅ Correct
-WorkflowNavigator.py   # ❌ Wrong
+WorkflowNavigator.py  # ❌ Wrong
 ```
 
 **Classes**: Use `PascalCase`
@@ -208,10 +208,8 @@ def ExecuteWorkflow():   # ❌ Wrong
 ```python
 from typing import Optional, List, Dict, Union
 
-def execute_workflow(
-    workflow_id: str,
-    context: Optional[Dict[str, Any]] = None
-) -> WorkflowResult:
+
+def execute_workflow(workflow_id: str, context: Optional[Dict[str, Any]] = None) -> WorkflowResult:
     """Execute workflow with context."""
     ...
 ```
@@ -277,6 +275,7 @@ def execute_workflow(workflow_id: str, context: Optional[Dict] = None) -> Workfl
 **Example**:
 ```python
 from agents.mental_mapping import set_clock, reset_clock
+
 
 def test_agent_with_timestamp():
     set_clock("2025-01-01T00:00:00Z")

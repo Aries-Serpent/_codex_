@@ -47,7 +47,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from scripts.ci._token_resolver import get_token
 
-
 # ── Config ─────────────────────────────────────────────────────────────────────
 
 CHECKPOINT_FILE = Path(".codex/rate_limit_checkpoint.json")

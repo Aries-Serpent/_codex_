@@ -237,8 +237,8 @@ class TestMetricCollection:
         collector.inc(1.0)
         collector.inc(1.0)
 
-        assert len(mock_registry.collectors) == 1
-        assert mock_registry.collectors[0].name == "requests_total"
+        assert len(mock_registry.collectors) == 1, "Collection must not be empty"
+        assert mock_registry.collectors[0].name == "requests_total", "name is not valid"
 
     def test_application_metric_collection_gauge(self, mock_registry: MockPrometheusRegistry) -> None:
         """Test application-level gauge metric collection."""
@@ -250,7 +250,7 @@ class TestMetricCollection:
         collector.set(150.0)
         collector.set(120.0)
 
-        assert mock_registry.collectors[0].name == "active_connections"
+        assert mock_registry.collectors[0].name == "active_connections", "name is not valid"
 
     def test_infrastructure_metric_collection_cpu(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test infrastructure CPU metric collection."""
@@ -260,8 +260,8 @@ class TestMetricCollection:
             mock_metrics_store.write("node_cpu_percent", cpu_val)
 
         metrics = mock_metrics_store.query("node_cpu_percent")
-        assert len(metrics) == 5
-        assert all(15 < v[1] < 50 for v in metrics)
+        assert len(metrics) == 5, "Metrics must not be empty"
+        assert all(15 < v[1] < 50 for v in metrics), "15 is not valid"
 
     def test_infrastructure_metric_collection_memory(
         self, mock_metrics_store: MockMetricsStore
@@ -273,8 +273,8 @@ class TestMetricCollection:
             mock_metrics_store.write("node_memory_bytes", mem_val)
 
         metrics = mock_metrics_store.query("node_memory_bytes")
-        assert len(metrics) == 3
-        assert all(m[1] > 0 for m in metrics)
+        assert len(metrics) == 3, "Metrics must not be empty"
+        assert all(m[1] > 0 for m in metrics), "Value must be greater than zero"
 
 
 # ============================================================================
@@ -293,9 +293,9 @@ class TestMetricScraping:
 
         for interval in valid_intervals:
             config = MockScrapeConfig(job_name="test", scrape_interval=interval)
-            assert config.scrape_interval == interval
+            assert config.scrape_interval == interval, "scrape_interval is not valid"
             config_dict = config.to_dict()
-            assert config_dict["scrape_interval"] == interval
+            assert config_dict["scrape_interval"] == interval, "Condition must be true"
 
     def test_scrape_target_discovery(self, mock_scrape_config: MockScrapeConfig) -> None:
         """Test scrape target discovery and validation."""
@@ -307,9 +307,9 @@ class TestMetricScraping:
         ]
 
         config = MockScrapeConfig(job_name="codex", targets=targets)
-        assert config.targets == targets
-        assert len(config.targets) == 4
-        assert all(":" in t for t in config.targets)
+        assert config.targets == targets, "targets is not valid"
+        assert len(config.targets) == 4, "Collection must not be empty"
+        assert all(":" in t for t in config.targets), "Condition must be true"
 
     def test_scrape_configuration_validation(
         self, mock_scrape_config: MockScrapeConfig
@@ -318,11 +318,11 @@ class TestMetricScraping:
         config = mock_scrape_config
         config_dict = config.to_dict()
 
-        assert "job_name" in config_dict
-        assert "scrape_interval" in config_dict
-        assert "scrape_timeout" in config_dict
-        assert "static_configs" in config_dict
-        assert config_dict["job_name"] == "codex_app"
+        assert "job_name" in config_dict, "Condition must be true"
+        assert "scrape_interval" in config_dict, "Condition must be true"
+        assert "scrape_timeout" in config_dict, "Condition must be true"
+        assert "static_configs" in config_dict, "Condition must be true"
+        assert config_dict["job_name"] == "codex_app", "Condition must be true"
 
 
 # ============================================================================
@@ -346,7 +346,7 @@ class TestMetricLabeling:
             label_sets.append({"instance": "prod-1", "job": "codex"})
 
         # Verify all collectors have same label scheme
-        assert all(ls == label_sets[0] for ls in label_sets)
+        assert all(ls == label_sets[0] for ls in label_sets), "ls is not valid"
 
     def test_reserved_label_validation(self) -> None:
         """Test validation of reserved Prometheus labels."""
@@ -374,7 +374,7 @@ class TestAggregationPipeline:
             mock_metrics_store.write("raw_metric", val)
 
         result = mock_metrics_store.aggregate("raw_metric", operation="sum")
-        assert result == 150.0
+        assert result == 150.0, "Result must not be empty"
 
     def test_timeseries_aggregation(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test time-series metric aggregation."""
@@ -384,9 +384,9 @@ class TestAggregationPipeline:
             mock_metrics_store.write("ts_metric", float(i * 10), timestamp=base_time + i)
 
         metrics = mock_metrics_store.query("ts_metric")
-        assert len(metrics) == 5
+        assert len(metrics) == 5, "Metrics must not be empty"
         # Verify timestamps are ordered
-        assert all(
+        assert all(, "Condition must be true"
             metrics[i][0] <= metrics[i + 1][0] for i in range(len(metrics) - 1)
         )
 
@@ -397,7 +397,7 @@ class TestAggregationPipeline:
             mock_metrics_store.write("sum_metric", val)
 
         result = mock_metrics_store.aggregate("sum_metric", operation="sum")
-        assert result == 600.0
+        assert result == 600.0, "Result must not be empty"
 
     def test_average_aggregation(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test average aggregation of metrics."""
@@ -406,7 +406,7 @@ class TestAggregationPipeline:
             mock_metrics_store.write("avg_metric", val)
 
         result = mock_metrics_store.aggregate("avg_metric", operation="avg")
-        assert result == 25.0
+        assert result == 25.0, "Result must not be empty"
 
 
 # ============================================================================
@@ -419,11 +419,11 @@ class TestMetricStoreIntegration:
 
     def test_prometheus_connectivity(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test Prometheus connectivity and availability."""
-        assert mock_metrics_store.connected is True
+        assert mock_metrics_store.connected is True, "connected is not valid"
 
         # Simulate connection loss
         mock_metrics_store.disconnect()
-        assert mock_metrics_store.connected is False
+        assert mock_metrics_store.connected is False, "connected is not valid"
 
         # Should raise error when writing without connection
         with pytest.raises(RuntimeError, match="not connected"):
@@ -431,7 +431,7 @@ class TestMetricStoreIntegration:
 
         # Restore connection
         mock_metrics_store.connect()
-        assert mock_metrics_store.connected is True
+        assert mock_metrics_store.connected is True, "connected is not valid"
 
     def test_victoriaMetrics_compatibility(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test VictoriaMetrics compatibility (uses same write protocol)."""
@@ -445,7 +445,7 @@ class TestMetricStoreIntegration:
         # Verify all metrics are stored
         for metric in metrics:
             stored = mock_metrics_store.query(metric)
-            assert len(stored) == 3
+            assert len(stored) == 3, "Stored must not be empty"
 
     def test_metric_storage_verification(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test metric storage and retrieval verification."""
@@ -462,8 +462,8 @@ class TestMetricStoreIntegration:
         # Verify storage
         for metric_name, expected_value in test_metrics.items():
             stored = mock_metrics_store.query(metric_name)
-            assert len(stored) == 1
-            assert stored[0][1] == expected_value
+            assert len(stored) == 1, "Stored must not be empty"
+            assert stored[0][1] == expected_value, "Value must be initialized"
 
 
 # ============================================================================
@@ -487,8 +487,8 @@ class TestQueryValidation:
         for query in valid_promql_queries:
             # Validate query structure (simplified)
             assert isinstance(query, str)
-            assert len(query) > 0
-            assert not query.startswith(" ")
+            assert len(query) > 0, "Query must not be empty"
+            assert not query.startswith(" "), "Condition must be true"
 
     def test_query_result_validation(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test query result validation."""
@@ -500,7 +500,7 @@ class TestQueryValidation:
         # Query and validate results
         results = mock_metrics_store.query("test_metric")
         assert isinstance(results, list)
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         assert all(isinstance(r, tuple) and len(r) == 2 for r in results)
         assert all(isinstance(r[0], float) and isinstance(r[1], float) for r in results)
 
@@ -529,11 +529,11 @@ class TestCardinalityManagement:
         for metric_name, cardinality in metrics.items():
             if cardinality >= max_cardinality * cardinality_warning_threshold:
                 warnings.append(f"Warning: {metric_name} approaching cardinality limit")
-            assert cardinality <= max_cardinality
+            assert cardinality <= max_cardinality, "cardinality is not valid"
 
         # Verify high cardinality metric triggers warning
-        assert len(warnings) == 1
-        assert "high_cardinality" in warnings[0]
+        assert len(warnings) == 1, "Warnings must not be empty"
+        assert "high_cardinality" in warnings[0], "Condition must be true"
 
 
 # ============================================================================
@@ -550,13 +550,13 @@ class TestAlertEvaluation:
         """Test alert rule evaluation against collected metrics."""
         # Write metrics that trigger alert
         mock_metrics_store.write("latency_seconds", 0.5)  # Below threshold
-        assert not mock_alert_rule.evaluate(0.5)
+        assert not mock_alert_rule.evaluate(0.5), "Condition must be true"
 
         mock_metrics_store.write("latency_seconds", 1.5)  # Above threshold
-        assert mock_alert_rule.evaluate(1.5)
+        assert mock_alert_rule.evaluate(1.5), "Condition must be true"
 
         # Verify alert state
-        assert mock_alert_rule.triggered is True
+        assert mock_alert_rule.triggered is True, "triggered is not valid"
 
 
 # ============================================================================
@@ -586,8 +586,8 @@ class TestMetricsPipelineIntegration:
         mock_metrics_store.write("e2e_metric", 5.0)
 
         # Verify pipeline
-        assert len(mock_registry.collectors) == 1
-        assert mock_metrics_store.query("e2e_metric")[0][1] == 5.0
+        assert len(mock_registry.collectors) == 1, "Collection must not be empty"
+        assert mock_metrics_store.query("e2e_metric")[0][1] == 5.0, "mock_metrics_st is not valid"
 
     def test_metrics_collection_with_duration_tracking(
         self, mock_metrics_store: MockMetricsStore
@@ -600,8 +600,8 @@ class TestMetricsPipelineIntegration:
             time.sleep(0.01)  # Simulate work
 
         # Verify observation was recorded
-        assert len(collector.observations) > 0
-        assert all(obs > 0 for obs in collector.observations)
+        assert len(collector.observations) > 0, "Collection must not be empty"
+        assert all(obs > 0 for obs in collector.observations), "obs must be greater than zero"
 
     def test_multiple_metrics_concurrent_collection(
         self, mock_metrics_store: MockMetricsStore
@@ -617,7 +617,7 @@ class TestMetricsPipelineIntegration:
         # Verify all metrics collected
         for metric in metric_names:
             results = mock_metrics_store.query(metric)
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
 
     def test_metrics_aggregation_accuracy(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test accuracy of metrics aggregation operations."""
@@ -646,12 +646,12 @@ class TestMetricsPipelineErrorHandling:
         # Negative values should still be recordable
         mock_metrics_store.write("negative_metric", -10.0)
         result = mock_metrics_store.query("negative_metric")
-        assert result[0][1] == -10.0
+        assert result[0][1] == -10.0, "Result must not be empty"
 
         # Zero value should be valid
         mock_metrics_store.write("zero_metric", 0.0)
         result = mock_metrics_store.query("zero_metric")
-        assert result[0][1] == 0.0
+        assert result[0][1] == 0.0, "Result must not be empty"
 
     def test_invalid_aggregation_operation(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test handling of invalid aggregation operations."""
@@ -663,13 +663,13 @@ class TestMetricsPipelineErrorHandling:
     def test_query_nonexistent_metric(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test querying non-existent metric."""
         result = mock_metrics_store.query("nonexistent_metric")
-        assert result == []
+        assert result == [], "Result must not be empty"
         assert isinstance(result, list)
 
     def test_empty_metrics_aggregation(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test aggregation on empty metrics."""
         result = mock_metrics_store.aggregate("empty_metric", "sum")
-        assert result == 0.0
+        assert result == 0.0, "Result must not be empty"
 
     def test_metrics_store_disconnection_error(self, mock_metrics_store: MockMetricsStore) -> None:
         """Test error handling when metrics store is disconnected."""
@@ -681,7 +681,7 @@ class TestMetricsPipelineErrorHandling:
         # Reconnection should restore functionality
         mock_metrics_store.connect()
         mock_metrics_store.write("test", 1.0)
-        assert mock_metrics_store.query("test")[0][1] == 1.0
+        assert mock_metrics_store.query("test")[0][1] == 1.0, "mock_metrics_st is not valid"
 
 
 # ============================================================================
@@ -716,7 +716,7 @@ class TestMetricsPipelinePerformance:
         duration = time.perf_counter() - start_time
 
         assert duration < 0.1, f"Query took {duration}s, expected < 0.1s"
-        assert len(result) == 100
+        assert len(result) == 100, "Result must not be empty"
 
 
 # ============================================================================
@@ -739,31 +739,31 @@ class TestMetricsPipelineValidation:
 
         for name in valid_names:
             # Names should contain only alphanumeric and underscore
-            assert all(c.isalnum() or c == "_" for c in name)
+            assert all(c.isalnum() or c == "_" for c in name), "c is not valid"
             # Should start with letter or underscore
-            assert name[0].isalpha() or name[0] == "_"
+            assert name[0].isalpha() or name[0] == "_", "Condition must be true"
 
     def test_metric_type_correctness(self) -> None:
         """Test metric type correctness."""
         # Counter: always increases
         counter_values = [10, 15, 20, 25]
         for i in range(len(counter_values) - 1):
-            assert counter_values[i] <= counter_values[i + 1]
+            assert counter_values[i] <= counter_values[i + 1], "Value must be initialized"
 
         # Gauge: can go up or down
         gauge_values = [10, 25, 15, 30, 20]
-        assert gauge_values != sorted(gauge_values)
+        assert gauge_values != sorted(gauge_values), "Value must be initialized"
 
     def test_label_count_limits(self) -> None:
         """Test label count limits for metrics."""
         max_labels = 10
 
         collector = MockMetricCollector("test", label_names=[f"label_{i}" for i in range(8)])
-        assert len(collector.label_names) <= max_labels
+        assert len(collector.label_names) <= max_labels, "Collection must not be empty"
 
         # Verify labels don't exceed limit
         collector2 = MockMetricCollector("test2", label_names=[f"label_{i}" for i in range(10)])
-        assert len(collector2.label_names) == max_labels
+        assert len(collector2.label_names) == max_labels, "Collection must not be empty"
 
 
 if __name__ == "__main__":

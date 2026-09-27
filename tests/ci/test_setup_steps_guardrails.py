@@ -9,8 +9,8 @@ def test_lfs_configuration_accepts_single_quoted_skip_smudge(tmp_path: Path) -> 
 
     result = test_lfs_configuration(str(workflow))
 
-    assert result.passed is True
-    assert "LFS configuration correct" in result.message
+    assert result.passed is True, "Result must not be empty"
+    assert "LFS configuration correct" in result.message, "Result must not be empty"
 
 
 def test_complexity_analysis_ignores_reasonable_step_count(tmp_path: Path) -> None:
@@ -104,13 +104,13 @@ def test_complexity_analysis_ignores_reasonable_step_count(tmp_path: Path) -> No
 
     result = test_complexity_analysis(str(workflow))
 
-    assert result.passed is True
+    assert result.passed is True, "Result must not be empty"
 
 
 def test_validate_workflow_ignores_empty_yaml_diffs() -> None:
     workflow = Path(__file__).resolve().parents[2] / ".github" / "workflows" / "validate.yml"
     text = workflow.read_text(encoding="utf-8")
 
-    assert "yaml_files=()" in text
-    assert "if [ \"${#yaml_files[@]}\" -eq 0 ] || [ -z \"${yaml_files[*]}\" ]; then" in text
-    assert "yamllint -c .yamllint.yml --strict -f parsable \"${yaml_files[@]}\"" in text
+    assert "yaml_files=()" in text, "Condition must be true"
+    assert "if [ \"${, "Condition must be true"
+    assert "yamllint -c .yamllint.yml --strict -f parsable \"${yaml_files[@]}\"" in text, "Condition must be true"

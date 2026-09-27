@@ -87,7 +87,7 @@ jobs:
     - name: Trigger auto-approve workflows (optional)
       continue-on-error: true
       env:
-        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}
       run: "set -e\nif [ -z \"${PR_NUMBER:-}\" ]; then\n  echo \"\u26A0\uFE0F  No\
         \ PR number provided, skipping auto-approve trigger\"\n  exit 0\nfi\n\necho\
         \ \"Attempting to trigger auto-approve workflow for PR #$PR_NUMBER\"\ngh workflow\

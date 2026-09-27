@@ -25,7 +25,7 @@
 #         assert len(train) + len(val) == len(, "Train must not be empty"
 #             items
 #         ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
-# 
+#
 #         train, val = split_dataset(items, train_ratio=0.8, seed=42)
 #         assert len(train) + len(val) == len(, "Train must not be empty"
 #             items
@@ -40,7 +40,7 @@
 #         assert len(train) + len(val) == len(, "Train must not be empty"
 #             items
 #         ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
-# 
+#
 #     def test_split_same_seed_produces_same_train(self):
 #     def test_split_same_seed_produces_same_train(self):
 #         """Same corpus + seed must return identical train sets."""
@@ -49,7 +49,7 @@
 #         train1, _ = split_dataset(items, train_ratio=0.8, seed=0)
 #         train2, _ = split_dataset(items, train_ratio=0.8, seed=0)
 #         assert train1 == train2, "train split not reproducible with fixed seed"
-# 
+#
 #     def test_split_same_seed_produces_same_val(self):
 #     def test_split_same_seed_produces_same_val(self):
 #         """Same corpus + seed must return identical validation sets."""
@@ -58,7 +58,7 @@
 #         _, val1 = split_dataset(items, train_ratio=0.8, seed=0)
 #         _, val2 = split_dataset(items, train_ratio=0.8, seed=0)
 #         assert val1 == val2, "val split not reproducible with fixed seed"
-# 
+#
 #     def test_different_seeds_produce_different_splits(self):
 #     def test_different_seeds_produce_different_splits(self):
 #         """Different seeds should (with high probability) produce different orderings."""
@@ -78,16 +78,16 @@
 #         assert len(train) + len(val) == len(, "Train must not be empty"
 #             items
 #         ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
-# 
+#
 #     def test_split_sizes_sum_to_total(self):
 #         from codex_ml.data_utils import split_dataset
-# 
+#
 #         items = [f"item {i}" for i in range(100)]
 #         train, val = split_dataset(items, train_ratio=0.8, seed=42)
 #         assert len(train) + len(val) == len(, "Train must not be empty"
 #             items
 #         ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
-# 
+#
 #     def test_split_train_ratio_approximately_correct(self):
 #     def test_split_train_ratio_approximately_correct(self):
 #         """Train set should contain roughly the requested fraction."""
@@ -98,7 +98,7 @@
 #         # Allow ±5 % tolerance
 #         assert (abs(len(train) / n - 0.9) < 0.05, "Train must not be empty"
 #         ), f"train ratio {len(train)/n:.3f} deviates from requested 0.9"
-# 
+#
 #     def test_split_no_overlap_between_train_and_val(self):
 #     def test_split_no_overlap_between_train_and_val(self):
 #         """Train and val sets must be disjoint (no item in both partitions)."""
@@ -116,7 +116,7 @@
 #         assert _sha256(items_a) != _sha256(, "Item must not be empty"
 #             items_b
 #         ), "Checksum did not change after content mutation"
-# 
+#
 #     def test_repeated_split_is_idempotent(self):
 #     def test_repeated_split_is_idempotent(self):
 #         """Calling split_dataset multiple times must produce identical partitions."""
@@ -136,7 +136,7 @@
 #         assert _sha256(items_a) != _sha256(, "Item must not be empty"
 #             items_b
 #         ), "Checksum did not change after content mutation"
-# 
+#
 #     def test_checksum_stable_for_identical_content(self):
 #     def test_checksum_stable_for_identical_content(self):
 #         """SHA-256 of identical item lists must be identical."""

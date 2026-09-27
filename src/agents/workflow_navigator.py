@@ -627,9 +627,9 @@ class WorkflowNavigator(Planner):
         if not workflow:
             return {"success": False, "error": f"Workflow not found: {identifier}"}
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"EXECUTING WORKFLOW: {workflow.name}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Description: {workflow.description}")
         print(f"Frequency: {workflow.frequency.value}")
         print(f"Steps: {len(workflow.steps)}")
@@ -666,9 +666,9 @@ class WorkflowNavigator(Planner):
 
             if not result["success"] and not step.optional:
                 print(f"  ✗ Failed: {result.get('error', 'Unknown error')}")
-                print(f"\n{'='*60}")
+                print(f"\n{'=' * 60}")
                 print(f"WORKFLOW FAILED at step: {step.action}")
-                print(f"{'='*60}")
+                print(f"{'=' * 60}")
 
                 # Save failure state
                 self._save_workflow_state(workflow, results, success=False)
@@ -685,9 +685,9 @@ class WorkflowNavigator(Planner):
             else:
                 print("  ⊘ Skipped (optional)")
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"WORKFLOW COMPLETED: {workflow.name}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         # Save success state
         self._save_workflow_state(workflow, results, success=True)
@@ -698,9 +698,9 @@ class WorkflowNavigator(Planner):
         self, workflow_ids: list[str], context: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         """Execute multiple workflows in sequence"""
-        print(f"\n{'#'*60}")
+        print(f"\n{'#' * 60}")
         print("EXECUTING WORKFLOW CHAIN")
-        print(f"{'#'*60}")
+        print(f"{'#' * 60}")
         print(f"Workflows: {' → '.join(workflow_ids)}")
 
         context = context or {}
@@ -711,9 +711,9 @@ class WorkflowNavigator(Planner):
             chain_results.append(result)
 
             if not result["success"]:
-                print(f"\n{'#'*60}")
+                print(f"\n{'#' * 60}")
                 print(f"CHAIN ABORTED at: {workflow_id}")
-                print(f"{'#'*60}")
+                print(f"{'#' * 60}")
 
                 return {"success": False, "aborted_at": workflow_id, "chain_results": chain_results}
 
@@ -722,9 +722,9 @@ class WorkflowNavigator(Planner):
                 for step_result in result["results"]:
                     context.update(step_result.get("result", {}))
 
-        print(f"\n{'#'*60}")
+        print(f"\n{'#' * 60}")
         print("WORKFLOW CHAIN COMPLETED")
-        print(f"{'#'*60}")
+        print(f"{'#' * 60}")
 
         return {"success": True, "chain_results": chain_results}
 
@@ -747,7 +747,9 @@ class WorkflowNavigator(Planner):
 
         return workflows
 
-    def _save_workflow_state(self, workflow: Workflow, results: list[dict[str, Any]], success: bool) -> None:
+    def _save_workflow_state(
+        self, workflow: Workflow, results: list[dict[str, Any]], success: bool
+    ) -> None:
         """Save workflow execution state"""
         timestamp = datetime.now(UTC).isoformat()
 
@@ -779,7 +781,9 @@ class WorkflowNavigator(Planner):
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)
 
-    def get_workflow_suggestions(self, current_state: dict[str, Any] | None = None) -> list[Workflow]:
+    def get_workflow_suggestions(
+        self, current_state: dict[str, Any] | None = None
+    ) -> list[Workflow]:
         """
         Suggest workflows based on current state
 
@@ -817,7 +821,6 @@ class WorkflowNavigator(Planner):
 
         return suggestions
 
-
     def observe(self, input_data: dict[str, Any]) -> ObservationData:
         """
         Observe: Capture trigger event + context
@@ -840,7 +843,7 @@ class WorkflowNavigator(Planner):
             },
             timestamp=datetime.now(UTC),
             source="workflow_navigator_trigger",
-            metadata={"confidence": 0.95 if trigger_event else 0.5}
+            metadata={"confidence": 0.95 if trigger_event else 0.5},
         )
 
     def orient(self, observation: ObservationData) -> OrientationResult:
@@ -871,7 +874,7 @@ class WorkflowNavigator(Planner):
                 "next_token": next_token,
             },
             confidence=0.8,
-            alternatives=[]
+            alternatives=[],
         )
 
     def decide(self, orientation: OrientationResult) -> Decision:
@@ -885,7 +888,7 @@ class WorkflowNavigator(Planner):
             parameters={"step": next_token, "context": orientation.context},
             reasoning=f"Executing workflow token: {next_token}",
             confidence=0.9,
-            timestamp=datetime.now(UTC)
+            timestamp=datetime.now(UTC),
         )
 
     def act(self, decision: Decision) -> ActionResult:
@@ -898,15 +901,11 @@ class WorkflowNavigator(Planner):
                 success=True,
                 output={"status": "step_executed", "step": decision.parameters.get("step")},
                 metrics={},
-                errors=[]
+                errors=[],
             )
         except Exception as e:
-            return ActionResult(
-                success=False,
-                output=None,
-                metrics={},
-                errors=[str(e)]
-            )
+            return ActionResult(success=False, output=None, metrics={}, errors=[str(e)])
+
 
 # Example usage
 if __name__ == "__main__":

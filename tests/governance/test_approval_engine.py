@@ -30,9 +30,9 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        assert exec_id.startswith("test-")
-        assert exec_id in engine.workflows
-        assert engine.workflows[exec_id].status == WorkflowStatus.RUNNING
+        assert exec_id.startswith("test-"), "Condition must be true"
+        assert exec_id in engine.workflows, "Condition must be true"
+        assert engine.workflows[exec_id].status == WorkflowStatus.RUNNING, "status is not valid"
 
     def test_approval_grant(self, engine):
         """Verify approval can be granted and recorded."""
@@ -40,13 +40,13 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        
+
         result = engine.grant_approval(exec_id, "stage1", "alice", "Alice", reason="LGTM")
-        assert result is True
-        
+        assert result is True, "Result must not be empty"
+
         state = engine.get_workflow_state(exec_id)
-        assert "stage1" in state["stage_decisions"]
-        assert len(state["stage_decisions"]["stage1"]) == 1
+        assert "stage1" in state["stage_decisions"], "Condition must be true"
+        assert len(state["stage_decisions"]["stage1"]) == 1, "Collection must not be empty"
 
     def test_approval_rejection(self, engine):
         """Verify rejection marks workflow as rejected."""
@@ -54,10 +54,10 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        
+
         engine.reject_approval(exec_id, "stage1", "bob", "Bob", reason="Needs fixes")
         state = engine.get_workflow_state(exec_id)
-        assert state["status"] == "rejected"
+        assert state["status"] == "rejected", "Condition must be true"
 
     def test_delegation_creation(self, engine):
         """Verify delegation can be created and recorded."""
@@ -65,7 +65,7 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        
+
         del_id = engine.create_delegation(
             exec_id,
             "stage1",
@@ -74,10 +74,10 @@ class TestApprovalEngine:
             reason="Vacation",
             expiry="2026-07-15T23:59:59Z"
         )
-        assert del_id.startswith("del-")
-        
+        assert del_id.startswith("del-"), "Condition must be true"
+
         state = engine.get_workflow_state(exec_id)
-        assert state["delegations"]["alice"] == "bob"
+        assert state["delegations"]["alice"] == "bob", "Condition must be true"
 
     def test_escalation_handling(self, engine):
         """Verify escalation can be triggered."""
@@ -85,44 +85,44 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        
+
         from scripts.governance.approval_engine import EscalationAction
         engine.escalate_workflow(
             exec_id, "stage1", "Timeout", EscalationAction.AUTO_APPROVE
         )
-        
+
         state = engine.get_workflow_state(exec_id)
-        assert "stage1" in state["escalations"]
+        assert "stage1" in state["escalations"], "Condition must be true"
 
     def test_p99_latency_tracking(self, engine):
         """Verify latency tracking works and p99 calculation."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        
+
         # Generate multiple workflow operations
         for i in range(100):
             exec_id = engine.start_workflow(
                 "test", definition, {"type": "pr", "id": i}, "user", ["admin"]
             )
             engine.grant_approval(exec_id, f"stage{i}", "alice", "Alice")
-        
+
         p99 = engine.get_p99_latency()
-        assert p99 > 0
-        assert p99 < 100  # Should be well under 100ms
+        assert p99 > 0, "p99 must be greater than zero"
+        assert p99 < 100, "p99 is not valid"
 
     def test_concurrent_workflows(self, engine):
         """Verify engine handles multiple concurrent workflows."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        
+
         exec_ids = []
         for i in range(10):
             exec_id = engine.start_workflow(
                 "test", definition, {"type": "pr", "id": i}, "user", ["admin"]
             )
             exec_ids.append(exec_id)
-        
+
         # All should exist
         for exec_id in exec_ids:
-            assert exec_id in engine.workflows
+            assert exec_id in engine.workflows, "Condition must be true"
 
     def test_workflow_completion(self, engine):
         """Verify workflow can be marked complete."""
@@ -130,11 +130,11 @@ class TestApprovalEngine:
         exec_id = engine.start_workflow(
             "test", definition, {"type": "pr"}, "user1", ["admin"]
         )
-        
+
         engine.complete_workflow(exec_id, WorkflowStatus.APPROVED)
         state = engine.get_workflow_state(exec_id)
-        assert state["status"] == "approved"
-        assert state["completed_at"] is not None
+        assert state["status"] == "approved", "Condition must be true"
+        assert state["completed_at"] is not None, "Value must be initialized"
 
 
 class TestAuditLogger:
@@ -156,8 +156,8 @@ class TestAuditLogger:
             {},
             {"status": "started"}
         )
-        assert event_id.startswith("aud-")
-        assert len(logger.events) == 1
+        assert event_id.startswith("aud-"), "Condition must be true"
+        assert len(logger.events) == 1, "Collection must not be empty"
 
     def test_event_querying(self, logger):
         """Verify events can be queried."""
@@ -171,9 +171,9 @@ class TestAuditLogger:
                 {},
                 {}
             )
-        
+
         events = logger.get_events(workflow_id="workflow1")
-        assert len(events) == 5
+        assert len(events) == 5, "Events must not be empty"
 
     def test_immutability_verification(self, logger):
         """Verify immutability check passes with valid events."""
@@ -186,7 +186,7 @@ class TestAuditLogger:
             {},
             {}
         )
-        assert logger.verify_immutability() is True
+        assert logger.verify_immutability() is True, "Condition must be true"
 
     def test_event_filtering_by_type(self, logger):
         """Verify filtering by event type."""
@@ -196,9 +196,9 @@ class TestAuditLogger:
         logger.log_event(
             AuditEventType.APPROVAL_GRANTED, "u2", [], "w1", {}, {}, {}
         )
-        
+
         started_events = logger.get_events(event_type=AuditEventType.WORKFLOW_STARTED)
-        assert len(started_events) == 1
+        assert len(started_events) == 1, "Started_events must not be empty"
 
 
 class TestSuccessCriteria:
@@ -214,7 +214,7 @@ class TestSuccessCriteria:
         """SC2: Verify <100ms p99 latency, 0 deadlocks."""
         audit_logger = AuditLogger()
         engine = ApprovalWorkflowEngine(audit_logger)
-        
+
         # Generate load
         for i in range(50):
             definition = {"id": "test", "name": "Test", "stages": []}
@@ -222,16 +222,16 @@ class TestSuccessCriteria:
                 "test", definition, {"type": "pr", "id": i}, "user", ["admin"]
             )
             engine.grant_approval(exec_id, f"stage{i}", "alice", "Alice")
-        
+
         p99 = engine.get_p99_latency()
         assert p99 < 100, f"p99 latency {p99}ms exceeds 100ms target"
 
     def test_compliance_monitoring(self):
         """SC3: Verify 99%+ compliance rate, 100% audit logging."""
         from scripts.governance.compliance_monitor import ComplianceMonitor
-        
+
         monitor = ComplianceMonitor()
-        
+
         # Test resource with all policies passing
         resource = {
             "has_rbac_grant": True,
@@ -254,10 +254,10 @@ class TestSuccessCriteria:
             "tenant_isolation": True,
             "deployment_window_ok": True,
         }
-        
+
         status = monitor.check_compliance(resource)
         score = monitor.get_compliance_score()
-        
+
         assert score.compliance_rate >= 0.99, f"Compliance rate {score.compliance_rate:.2%} below 99%"
 
     def test_rbac_integration(self):
@@ -274,7 +274,7 @@ class TestSuccessCriteria:
     def test_documentation_completeness(self):
         """SC5: Verify complete documentation."""
         import os
-        
+
         # Check all deliverables exist
         docs = [
             ".codex/GOVERNANCE_POLICY_FRAMEWORK.md",
@@ -282,7 +282,7 @@ class TestSuccessCriteria:
             "scripts/governance/compliance_monitor.py",
             ".codex/PHASE_12_2_COMPLIANCE_DASHBOARD.md",
         ]
-        
+
         for doc in docs:
             full_path = os.path.join("/home/runner/work/_codex_/_codex_", doc)
             assert os.path.exists(full_path), f"Missing deliverable: {doc}"

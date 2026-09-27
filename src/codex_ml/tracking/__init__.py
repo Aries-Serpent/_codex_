@@ -14,7 +14,7 @@ Features:
 
 Example:
     >>> from codex_ml.tracking import init_experiment, log_metrics, start_run
-    >>> 
+    >>>
     >>> ctx = init_experiment(cfg)
     >>> with start_run(cfg.experiment.name):
     ...     log_metrics({"loss": 0.12}, step=1, enabled=cfg.tracking.mlflow.enable)
@@ -26,7 +26,7 @@ Installation:
 
 Configuration:
     Set environment variables:
-    
+
     MLFLOW_TRACKING_URI: MLflow server URI (default: file:./artifacts/mlruns)
     CODEX_OFFLINE_MODE: Force offline mode (default: auto-detect)
     CODEX_CHECKPOINT_DIR: Checkpoint directory (default: .codex/checkpoints)
@@ -47,12 +47,12 @@ Integration with Memory Systems:
 Memory Consolidation:
     >>> from codex_ml.tracking import log_metrics
     >>> from codex_ml.monitoring.codex_logging import CodexLogger
-    >>> 
+    >>>
     >>> logger = CodexLogger(experiment_name="training")
     >>> for epoch in range(100):
     ...     log_metrics({"epoch": epoch, "loss": compute_loss()})
     ...     # Events automatically consolidated to LTM every 10 events
-    >>> 
+    >>>
     >>> patterns = logger.query_patterns("*")  # Access learned patterns
 
 See Also:

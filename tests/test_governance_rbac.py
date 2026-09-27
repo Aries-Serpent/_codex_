@@ -25,37 +25,37 @@ class TestCodexRoles:
     def test_system_admin_role_exists(self):
         """Test SYSTEM_ADMIN role exists."""
         assert hasattr(CodexRole, "SYSTEM_ADMIN")
-        assert CodexRole.SYSTEM_ADMIN == "system_admin"
+        assert CodexRole.SYSTEM_ADMIN == "system_admin", "SYSTEM_ADMIN is not valid"
 
     def test_agent_operator_role_exists(self):
         """Test AGENT_OPERATOR role exists."""
         assert hasattr(CodexRole, "AGENT_OPERATOR")
-        assert CodexRole.AGENT_OPERATOR == "agent_operator"
+        assert CodexRole.AGENT_OPERATOR == "agent_operator", "AGENT_OPERATOR is not valid"
 
     def test_security_reviewer_role_exists(self):
         """Test SECURITY_REVIEWER role exists."""
         assert hasattr(CodexRole, "SECURITY_REVIEWER")
-        assert CodexRole.SECURITY_REVIEWER == "security_reviewer"
+        assert CodexRole.SECURITY_REVIEWER == "security_reviewer", "SECURITY_REVIEWER is not valid"
 
     def test_ci_operator_role_exists(self):
         """Test CI_OPERATOR role exists."""
         assert hasattr(CodexRole, "CI_OPERATOR")
-        assert CodexRole.CI_OPERATOR == "ci_operator"
+        assert CodexRole.CI_OPERATOR == "ci_operator", "CI_OPERATOR is not valid"
 
     def test_doc_maintainer_role_exists(self):
         """Test DOC_MAINTAINER role exists."""
         assert hasattr(CodexRole, "DOC_MAINTAINER")
-        assert CodexRole.DOC_MAINTAINER == "doc_maintainer"
+        assert CodexRole.DOC_MAINTAINER == "doc_maintainer", "DOC_MAINTAINER is not valid"
 
     def test_agent_reader_role_exists(self):
         """Test AGENT_READER role exists."""
         assert hasattr(CodexRole, "AGENT_READER")
-        assert CodexRole.AGENT_READER == "agent_reader"
+        assert CodexRole.AGENT_READER == "agent_reader", "AGENT_READER is not valid"
 
     def test_guest_role_exists(self):
         """Test GUEST role exists."""
         assert hasattr(CodexRole, "GUEST")
-        assert CodexRole.GUEST == "guest"
+        assert CodexRole.GUEST == "guest", "GUEST is not valid"
 
     def test_all_roles_are_strings(self):
         """Test all roles are string enum values."""
@@ -68,35 +68,35 @@ class TestResourceTypes:
 
     def test_agents_resource_type(self):
         """Test AGENTS resource type."""
-        assert ResourceType.AGENTS == "agents"
+        assert ResourceType.AGENTS == "agents", "AGENTS is not valid"
 
     def test_workflows_resource_type(self):
         """Test WORKFLOWS resource type."""
-        assert ResourceType.WORKFLOWS == "workflows"
+        assert ResourceType.WORKFLOWS == "workflows", "WORKFLOWS is not valid"
 
     def test_secrets_resource_type(self):
         """Test SECRETS resource type."""
-        assert ResourceType.SECRETS == "secrets"
+        assert ResourceType.SECRETS == "secrets", "SECRETS is not valid"
 
     def test_docs_resource_type(self):
         """Test DOCS resource type."""
-        assert ResourceType.DOCS == "docs"
+        assert ResourceType.DOCS == "docs", "DOCS is not valid"
 
     def test_code_resource_type(self):
         """Test CODE resource type."""
-        assert ResourceType.CODE == "code"
+        assert ResourceType.CODE == "code", "CODE is not valid"
 
     def test_reports_resource_type(self):
         """Test REPORTS resource type."""
-        assert ResourceType.REPORTS == "reports"
+        assert ResourceType.REPORTS == "reports", "REPORTS is not valid"
 
     def test_roles_resource_type(self):
         """Test ROLES resource type."""
-        assert ResourceType.ROLES == "roles"
+        assert ResourceType.ROLES == "roles", "ROLES is not valid"
 
     def test_audit_logs_resource_type(self):
         """Test AUDIT_LOGS resource type."""
-        assert ResourceType.AUDIT_LOGS == "audit_logs"
+        assert ResourceType.AUDIT_LOGS == "audit_logs", "AUDIT_LOGS is not valid"
 
     def test_all_resource_types_are_strings(self):
         """Test all resource types are string enum values."""
@@ -112,7 +112,7 @@ class TestActions:
         assert hasattr(Action, "__members__")
         # Should have at least basic CRUD operations
         members = list(Action.__members__.keys())
-        assert len(members) > 0
+        assert len(members) > 0, "Members must not be empty"
 
     def test_action_values_are_strings(self):
         """Test all actions are string values."""
@@ -126,12 +126,12 @@ class TestRBACEnforcer:
     def test_rbac_enforcer_creation(self):
         """Test creating RBACEnforcer."""
         enforcer = RBACEnforcer()
-        assert enforcer is not None
+        assert enforcer is not None, "enforcer must be initialized"
 
     def test_check_permission_system_admin(self):
         """Test system admin has all permissions."""
         enforcer = RBACEnforcer()
-        
+
         # System admin should have access to everything
         has_access = enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
@@ -139,12 +139,12 @@ class TestRBACEnforcer:
             resource=ResourceType.AGENTS
         )
         # Should not raise exception
-        assert True  # If no exception, permission check passed
+        assert True, "True is not valid"
 
     def test_check_permission_guest_limited(self):
         """Test guest has limited permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Guest should have limited access
         try:
             enforcer.check_permission(
@@ -153,63 +153,63 @@ class TestRBACEnforcer:
                 resource=ResourceType.AGENTS
             )
             # If check passes for guest delete, verify it's expected
-            assert True
+            assert True, "True is not valid"
         except Exception as e:
             # Guest should not have delete permissions
-            assert True  # Expected behavior
+            assert True, "True is not valid"
 
     def test_check_permission_agent_operator(self):
         """Test AGENT_OPERATOR permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Agent operator should deploy agents
         enforcer.check_permission(
             role=CodexRole.AGENT_OPERATOR,
             action=Action.WRITE,
             resource=ResourceType.AGENTS
         )
-        assert True
+        assert True, "True is not valid"
 
     def test_check_permission_ci_operator(self):
         """Test CI_OPERATOR permissions."""
         enforcer = RBACEnforcer()
-        
+
         # CI operator should manage workflows
         enforcer.check_permission(
             role=CodexRole.CI_OPERATOR,
             action=Action.READ,
             resource=ResourceType.WORKFLOWS
         )
-        assert True
+        assert True, "True is not valid"
 
     def test_check_permission_security_reviewer(self):
         """Test SECURITY_REVIEWER permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Security reviewer should access security resources
         enforcer.check_permission(
             role=CodexRole.SECURITY_REVIEWER,
             action=Action.READ,
             resource=ResourceType.CODE
         )
-        assert True
+        assert True, "True is not valid"
 
     def test_check_permission_doc_maintainer(self):
         """Test DOC_MAINTAINER permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Doc maintainer should manage docs
         enforcer.check_permission(
             role=CodexRole.DOC_MAINTAINER,
             action=Action.WRITE,
             resource=ResourceType.DOCS
         )
-        assert True
+        assert True, "True is not valid"
 
     def test_permission_denied_error_on_unauthorized(self):
         """Test PermissionDeniedError raised on unauthorized action."""
         enforcer = RBACEnforcer()
-        
+
         # Guest should not be able to write to agents
         with pytest.raises(Exception):  # PermissionDeniedError
             enforcer.check_permission(
@@ -221,21 +221,21 @@ class TestRBACEnforcer:
     def test_multiple_permissions_check(self):
         """Test checking multiple permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Agent reader should have read permissions on multiple resources
         enforcer.check_permission(
             role=CodexRole.AGENT_READER,
             action=Action.READ,
             resource=ResourceType.AGENTS
         )
-        
+
         enforcer.check_permission(
             role=CodexRole.AGENT_READER,
             action=Action.READ,
             resource=ResourceType.REPORTS
         )
-        
-        assert True
+
+        assert True, "True is not valid"
 
 
 class TestRoleHierarchy:
@@ -250,7 +250,7 @@ class TestRoleHierarchy:
             ResourceType.SECRETS,
             ResourceType.ROLES
         ]
-        
+
         for resource in resources:
             enforcer.check_permission(
                 role=CodexRole.SYSTEM_ADMIN,
@@ -261,14 +261,14 @@ class TestRoleHierarchy:
     def test_agent_operator_hierarchy(self):
         """Test AGENT_OPERATOR role permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Should have agent and workflow access
         enforcer.check_permission(
             role=CodexRole.AGENT_OPERATOR,
             action=Action.WRITE,
             resource=ResourceType.AGENTS
         )
-        
+
         enforcer.check_permission(
             role=CodexRole.AGENT_OPERATOR,
             action=Action.READ,
@@ -278,14 +278,14 @@ class TestRoleHierarchy:
     def test_guest_has_minimal_access(self):
         """Test GUEST role has minimal access."""
         enforcer = RBACEnforcer()
-        
+
         # Guest should have read access to public resources
         enforcer.check_permission(
             role=CodexRole.GUEST,
             action=Action.READ,
             resource=ResourceType.REPORTS
         )
-        
+
         enforcer.check_permission(
             role=CodexRole.GUEST,
             action=Action.READ,
@@ -299,7 +299,7 @@ class TestPermissionMatrix:
     def test_permission_matrix_is_consistent(self):
         """Test permission matrix has consistent rules."""
         enforcer = RBACEnforcer()
-        
+
         # Each role should have defined permissions
         for role in CodexRole:
             # Should be able to check at least one permission
@@ -309,20 +309,20 @@ class TestPermissionMatrix:
                     action=Action.READ,
                     resource=ResourceType.REPORTS
                 )
-            except Exception:
+            except Exception as _err:
                 pass  # Some roles may not have this permission
 
     def test_write_requires_higher_privilege(self):
         """Test write operations require higher privilege than read."""
         enforcer = RBACEnforcer()
-        
+
         # Agent reader should have read but not write
         enforcer.check_permission(
             role=CodexRole.AGENT_READER,
             action=Action.READ,
             resource=ResourceType.AGENTS
         )
-        
+
         # Should fail on write
         with pytest.raises(Exception):
             enforcer.check_permission(
@@ -334,7 +334,7 @@ class TestPermissionMatrix:
     def test_delete_requires_admin_privilege(self):
         """Test delete operations require admin privilege."""
         enforcer = RBACEnforcer()
-        
+
         # Most roles should not have delete permission
         with pytest.raises(Exception):
             enforcer.check_permission(
@@ -350,21 +350,21 @@ class TestAuditLogging:
     def test_permission_check_can_be_logged(self):
         """Test permission checks can be logged."""
         enforcer = RBACEnforcer()
-        
+
         # Should be able to check permission
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
             action=Action.READ,
             resource=ResourceType.AGENTS
         )
-        
+
         # Audit trail should exist (implementation specific)
-        assert True
+        assert True, "True is not valid"
 
     def test_denied_permission_logged(self):
         """Test denied permissions are logged."""
         enforcer = RBACEnforcer()
-        
+
         # Denied permission should be logged
         with pytest.raises(Exception):
             enforcer.check_permission(
@@ -372,8 +372,8 @@ class TestAuditLogging:
                 action=Action.DELETE,
                 resource=ResourceType.ROLES
             )
-        
-        assert True
+
+        assert True, "True is not valid"
 
 
 class TestErrorHandling:
@@ -382,7 +382,7 @@ class TestErrorHandling:
     def test_invalid_role_handling(self):
         """Test handling of invalid role."""
         enforcer = RBACEnforcer()
-        
+
         with pytest.raises((ValueError, AttributeError, TypeError)):
             enforcer.check_permission(
                 role="invalid_role",
@@ -393,7 +393,7 @@ class TestErrorHandling:
     def test_invalid_resource_handling(self):
         """Test handling of invalid resource."""
         enforcer = RBACEnforcer()
-        
+
         with pytest.raises((ValueError, AttributeError, TypeError)):
             enforcer.check_permission(
                 role=CodexRole.SYSTEM_ADMIN,
@@ -404,7 +404,7 @@ class TestErrorHandling:
     def test_none_role_handling(self):
         """Test handling of None role."""
         enforcer = RBACEnforcer()
-        
+
         with pytest.raises((ValueError, TypeError, AttributeError)):
             enforcer.check_permission(
                 role=None,
@@ -415,7 +415,7 @@ class TestErrorHandling:
     def test_none_resource_handling(self):
         """Test handling of None resource."""
         enforcer = RBACEnforcer()
-        
+
         with pytest.raises((ValueError, TypeError, AttributeError)):
             enforcer.check_permission(
                 role=CodexRole.SYSTEM_ADMIN,
@@ -430,7 +430,7 @@ class TestResourceSpecificAccess:
     def test_agent_resource_access(self):
         """Test agent resource access control."""
         enforcer = RBACEnforcer()
-        
+
         # Agent operator can write to agents
         enforcer.check_permission(
             role=CodexRole.AGENT_OPERATOR,
@@ -441,7 +441,7 @@ class TestResourceSpecificAccess:
     def test_workflow_resource_access(self):
         """Test workflow resource access control."""
         enforcer = RBACEnforcer()
-        
+
         # CI operator can manage workflows
         enforcer.check_permission(
             role=CodexRole.CI_OPERATOR,
@@ -452,7 +452,7 @@ class TestResourceSpecificAccess:
     def test_secrets_resource_access(self):
         """Test secrets resource access control."""
         enforcer = RBACEnforcer()
-        
+
         # Only admin and specific roles should access secrets
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
@@ -463,14 +463,14 @@ class TestResourceSpecificAccess:
     def test_docs_resource_access(self):
         """Test docs resource access control."""
         enforcer = RBACEnforcer()
-        
+
         # Doc maintainer can manage docs
         enforcer.check_permission(
             role=CodexRole.DOC_MAINTAINER,
             action=Action.WRITE,
             resource=ResourceType.DOCS
         )
-        
+
         # Guest can read docs
         enforcer.check_permission(
             role=CodexRole.GUEST,
@@ -481,7 +481,7 @@ class TestResourceSpecificAccess:
     def test_roles_resource_access(self):
         """Test roles resource access control."""
         enforcer = RBACEnforcer()
-        
+
         # Only admin can manage roles
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
@@ -492,7 +492,7 @@ class TestResourceSpecificAccess:
     def test_audit_logs_resource_access(self):
         """Test audit logs resource access."""
         enforcer = RBACEnforcer()
-        
+
         # Admin can read audit logs
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
@@ -507,7 +507,7 @@ class TestActionPermissions:
     def test_read_action_permissions(self):
         """Test READ action permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Multiple roles should have READ permission
         for role in [CodexRole.SYSTEM_ADMIN, CodexRole.AGENT_READER, CodexRole.GUEST]:
             enforcer.check_permission(
@@ -519,7 +519,7 @@ class TestActionPermissions:
     def test_write_action_permissions(self):
         """Test WRITE action permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Only higher privilege roles should have WRITE
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,
@@ -530,7 +530,7 @@ class TestActionPermissions:
     def test_delete_action_permissions(self):
         """Test DELETE action permissions."""
         enforcer = RBACEnforcer()
-        
+
         # Only admin should have DELETE
         enforcer.check_permission(
             role=CodexRole.SYSTEM_ADMIN,

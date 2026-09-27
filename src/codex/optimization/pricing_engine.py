@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class PricingTier(Enum):
     """Pricing strategies."""
+
     ON_DEMAND = "on_demand"
     RESERVED = "reserved"
     BURST = "burst"
@@ -28,6 +29,7 @@ class PricingTier(Enum):
 @dataclass
 class ResourcePrice:
     """Price for a specific resource type."""
+
     resource_type: str
     base_price: float  # $/unit/hour
     burst_premium: float = 0.30  # 30% surcharge for burst
@@ -52,6 +54,7 @@ class ResourcePrice:
 @dataclass
 class CostForecast:
     """Cost forecast for a given period."""
+
     resource_type: str
     baseline_cost: float
     best_case_cost: float  # -10% variance
@@ -63,6 +66,7 @@ class CostForecast:
 @dataclass
 class HourlyDemandForecast:
     """Hourly demand forecast."""
+
     timestamp: str
     cpu_demand: float
     memory_demand: float
@@ -84,8 +88,9 @@ class DynamicPricingModel:
         self.demand_history: Dict[str, List[float]] = {}
         self.price_history: Dict[str, List[Tuple[str, float]]] = {}
 
-    def update_price(self, resource_type: str, demand_level: float,
-                    supply_utilization: float) -> float:
+    def update_price(
+        self, resource_type: str, demand_level: float, supply_utilization: float
+    ) -> float:
         """
         Update price dynamically based on demand and supply.
         Formula: price = base_price * (1 + demand_factor) * (1 + supply_factor)
@@ -114,8 +119,9 @@ class DynamicPricingModel:
 
         return new_price
 
-    def forecast_cost(self, resource_type: str, quantity: float,
-                     forecast_demand: List[float], days: int = 30) -> CostForecast:
+    def forecast_cost(
+        self, resource_type: str, quantity: float, forecast_demand: List[float], days: int = 30
+    ) -> CostForecast:
         """
         Forecast cost based on demand patterns.
         Returns forecast with confidence interval.
@@ -151,8 +157,9 @@ class DynamicPricingModel:
             confidence=min(0.95, 0.5 + (avg_demand * 0.4)),
         )
 
-    def calculate_price_for_tier(self, resource_type: str, quantity: float,
-                                hours: float, tier: PricingTier) -> float:
+    def calculate_price_for_tier(
+        self, resource_type: str, quantity: float, hours: float, tier: PricingTier
+    ) -> float:
         """Calculate price for specified pricing tier."""
         if resource_type not in self.resource_prices:
             return 0.0
@@ -171,8 +178,9 @@ class DynamicPricingModel:
         else:
             return resource_price.calculate_on_demand_price(quantity, hours)
 
-    def get_price_history(self, resource_type: str,
-                         lookback_hours: int = 168) -> List[Tuple[str, float]]:
+    def get_price_history(
+        self, resource_type: str, lookback_hours: int = 168
+    ) -> List[Tuple[str, float]]:
         """Get price history for a resource type."""
         if resource_type not in self.price_history:
             return []
@@ -180,10 +188,7 @@ class DynamicPricingModel:
         history = self.price_history[resource_type]
         cutoff = datetime.now() - timedelta(hours=lookback_hours)
 
-        return [
-            (ts, price) for ts, price in history
-            if datetime.fromisoformat(ts) >= cutoff
-        ]
+        return [(ts, price) for ts, price in history if datetime.fromisoformat(ts) >= cutoff]
 
 
 class CostPredictor:
@@ -347,9 +352,12 @@ class ReservedCapacityPlanner:
         self.reserved_commitments: Dict[str, float] = {}
         self.commitment_start_dates: Dict[str, str] = {}
 
-    def calculate_optimal_reservation(self, avg_usage: Dict[str, float],
-                                     peak_usage: Dict[str, float],
-                                     pricing_model: DynamicPricingModel) -> Dict[str, float]:
+    def calculate_optimal_reservation(
+        self,
+        avg_usage: Dict[str, float],
+        peak_usage: Dict[str, float],
+        pricing_model: DynamicPricingModel,
+    ) -> Dict[str, float]:
         """
         Calculate optimal reserved capacity.
         Strategy: reserve at 70th percentile to balance cost and flexibility.
@@ -374,9 +382,7 @@ class ReservedCapacityPlanner:
             )
 
             savings_percent = (
-                ((ondemand_cost - reserved_cost) / ondemand_cost * 100)
-                if ondemand_cost > 0
-                else 0
+                ((ondemand_cost - reserved_cost) / ondemand_cost * 100) if ondemand_cost > 0 else 0
             )
             logger.info(
                 "Reservation recommendation for %s: %.1f units, %.1f%% savings",
@@ -389,8 +395,9 @@ class ReservedCapacityPlanner:
 
         return optimal_reservations
 
-    def commit_reservation(self, resource_type: str, quantity: float,
-                          commitment_term_months: int = 12):
+    def commit_reservation(
+        self, resource_type: str, quantity: float, commitment_term_months: int = 12
+    ):
         """Commit to reserved capacity."""
         self.reserved_commitments[resource_type] = quantity
         self.commitment_start_dates[resource_type] = datetime.now().isoformat()

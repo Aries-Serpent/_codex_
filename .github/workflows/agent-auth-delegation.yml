@@ -3,9 +3,9 @@ name: Agent Token Delegation
   pull_request:
     types:
     - opened
-    - edited
     - reopened
     - ready_for_review
+    - synchronize
     - closed
   pull_request_review:
     types:

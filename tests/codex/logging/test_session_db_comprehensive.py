@@ -90,7 +90,7 @@ class TestSessionDBCriticalEdgeCases:
                 )
                 # Force error before commit
                 raise Exception("Simulated error")
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         # Verify incomplete transaction didn't persist
@@ -272,7 +272,7 @@ class TestSessionDBCriticalEdgeCases:
 
         # Verify reads were consistent
         assert len(read_results) > 0, "Read operations should complete"
-        assert all(
+        assert all(, "Condition must be true"
             r >= 10 for r in read_results
         ), "Read results should include initial data"
 
@@ -282,7 +282,7 @@ class TestSessionDBCriticalEdgeCases:
 
         # Populate cache
         results1 = db.query_all()
-        assert len(results1) == 0
+        assert len(results1) == 0, "Results1 must not be empty"
 
         # Start write in another thread
         write_done = threading.Event()
@@ -465,7 +465,7 @@ class TestSessionDBCriticalEdgeCases:
         # Verify session can be retrieved
         sessions = db.query_all()
         assert len(sessions) == 1, "Session should be retrievable"
-        assert sessions[0]["session_id"] == "sess_schema_v1"
+        assert sessions[0]["session_id"] == "sess_schema_v1", "Condition must be true"
 
     # ========================================================================
     # Additional Coverage for Edge Cases
@@ -518,16 +518,16 @@ class TestSessionDBCriticalEdgeCases:
         cache_entry = CacheEntry(data={"test": "data"}, timestamp=time.time())
 
         # Should not be expired immediately
-        assert not cache_entry.is_expired(ttl=300)
+        assert not cache_entry.is_expired(ttl=300), "Condition must be true"
 
         # Should expire with short TTL
-        assert cache_entry.is_expired(ttl=-1)
+        assert cache_entry.is_expired(ttl=-1), "Condition must be true"
 
         # Create old entry
         old_entry = CacheEntry(
             data={"old": "data"}, timestamp=time.time() - 400
         )
-        assert old_entry.is_expired(ttl=300)
+        assert old_entry.is_expired(ttl=300), "Condition must be true"
 
 
 class TestSessionDBPerformanceUnderLoad:

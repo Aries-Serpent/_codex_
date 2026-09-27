@@ -1,7 +1,7 @@
 """
 Predictive Capacity Planning Module
 
-Provides time-series forecasting, bottleneck prediction, and automated 
+Provides time-series forecasting, bottleneck prediction, and automated
 provisioning recommendations for proactive capacity management.
 
 Planset 012 core modules:

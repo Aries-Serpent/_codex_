@@ -24,7 +24,9 @@ _SENSITIVE_KEYS = {
 
 def _redact_env_value(key: str, value: str) -> str:
     upper = key.upper()
-    if upper in _SENSITIVE_KEYS or any(marker in upper for marker in ("TOKEN", "SECRET", "PASSWORD", "API_KEY")):
+    if upper in _SENSITIVE_KEYS or any(
+        marker in upper for marker in ("TOKEN", "SECRET", "PASSWORD", "API_KEY")
+    ):
         return "[REDACTED]"
     return value
 

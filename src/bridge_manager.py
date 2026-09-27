@@ -45,8 +45,8 @@ from typing import Any, Optional
 
 # Import Bridge Protocol v2 for enhanced features
 try:
-    from bridge_protocol_v2 import MAGIC_BYTES  # Import magic bytes constant for consistency
     from bridge_protocol_v2 import (
+        MAGIC_BYTES,  # Import magic bytes constant for consistency
         MultiClientBridge,
     )
     from bridge_protocol_v2 import decode_message as v2_decode
@@ -171,15 +171,11 @@ class BridgeLock:
 
             # Try to acquire lock with timeout
             fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            logger.debug(
-                f"Lock acquired: {self.lock_path}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug("Lock acquired for bridge artifact")
             return True
 
         except BlockingIOError:
-            logger.warning(
-                f"Failed to acquire lock (timeout): {self.lock_path}"
-            )  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Failed to acquire lock (timeout) for bridge artifact")
             if self.lock_fd:
                 os.close(self.lock_fd)
                 self.lock_fd = None
@@ -206,18 +202,14 @@ class BridgeLock:
                     _msvcrt.LK_NBLCK,  # type: ignore[attr-defined]
                     1,
                 )  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
-                logger.debug(
-                    f"Lock acquired (msvcrt): {self.lock_path}"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.debug("Lock acquired for bridge artifact (msvcrt)")
                 return True
             except OSError:
                 if self.lock_fd is not None:
                     os.close(self.lock_fd)
                     self.lock_fd = None
                 time.sleep(0.05)  # 50 ms retry interval
-        logger.warning(
-            f"Failed to acquire lock (timeout): {self.lock_path}"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Failed to acquire lock (timeout) for bridge artifact")
         return False
 
     def release(self) -> None:
@@ -229,20 +221,14 @@ class BridgeLock:
                 if _HAS_MSVCRT and not _HAS_FCNTL:
                     _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
                     os.close(self.lock_fd)
-                    logger.debug(
-                        f"Lock released (msvcrt): {self.lock_path}"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug("Lock released for bridge artifact (msvcrt)")
                 else:
                     # POSIX path (_HAS_FCNTL is True here per acquire() guard)
                     fcntl.flock(self.lock_fd, fcntl.LOCK_UN)
                     os.close(self.lock_fd)
-                    logger.debug(
-                        f"Lock released: {self.lock_path}"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug("Lock released for bridge artifact")
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-                logger.error(
-                    f"Lock release error: {type(e).__name__}"
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error("Lock release error for bridge artifact: %s", type(e).__name__)
             finally:
                 self.lock_fd = None
 

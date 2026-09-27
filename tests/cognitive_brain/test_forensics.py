@@ -30,21 +30,21 @@ from codex.cognitive_brain.telemetry import (
 class TestTelemetryEventForensicsFields:
     def test_telemetry_event_has_decision_id(self) -> None:
         event = TelemetryEvent(event_type="test", decision_id="d-001")
-        assert event.decision_id == "d-001"
+        assert event.decision_id == "d-001", "decision_id is not valid"
 
     def test_telemetry_event_has_turn_id(self) -> None:
         event = TelemetryEvent(event_type="test", turn_id="t-42")
-        assert event.turn_id == "t-42"
+        assert event.turn_id == "t-42", "turn_id is not valid"
 
     def test_telemetry_event_has_task_id(self) -> None:
         event = TelemetryEvent(event_type="test", task_id="task-99")
-        assert event.task_id == "task-99"
+        assert event.task_id == "task-99", "task_id is not valid"
 
     def test_defaults_are_none(self) -> None:
         event = TelemetryEvent(event_type="test")
-        assert event.decision_id is None
-        assert event.turn_id is None
-        assert event.task_id is None
+        assert event.decision_id is None, "decision_id is not valid"
+        assert event.turn_id is None, "turn_id is not valid"
+        assert event.task_id is None, "task_id is not valid"
 
     def test_to_dict_includes_forensics_fields(self) -> None:
         event = TelemetryEvent(
@@ -54,9 +54,9 @@ class TestTelemetryEventForensicsFields:
             task_id="task-5",
         )
         data = event.to_dict()
-        assert data["decision_id"] == "d-001"
-        assert data["turn_id"] == "t-1"
-        assert data["task_id"] == "task-5"
+        assert data["decision_id"] == "d-001", "Data must not be empty"
+        assert data["turn_id"] == "t-1", "Data must not be empty"
+        assert data["task_id"] == "task-5", "Data must not be empty"
 
     def test_to_json_includes_forensics_fields(self) -> None:
         event = TelemetryEvent(
@@ -65,8 +65,8 @@ class TestTelemetryEventForensicsFields:
             turn_id="t-7",
         )
         payload = json.loads(event.to_json())
-        assert payload["decision_id"] == "d-007"
-        assert payload["turn_id"] == "t-7"
+        assert payload["decision_id"] == "d-007", "Condition must be true"
+        assert payload["turn_id"] == "t-7", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class TestForensicsEmit:
             negotiation_outcome="No fallback needed",
         )
         events = tel.query(event_type="forensics")
-        assert len(events) == 1
+        assert len(events) == 1, "Events must not be empty"
 
     def test_forensics_event_has_decision_id(self) -> None:
         backend = InMemoryTelemetryBackend()
@@ -101,7 +101,7 @@ class TestForensicsEmit:
             negotiation_outcome=None,
         )
         events = tel.query(event_type="forensics")
-        assert events[0].decision_id == "d-abc"
+        assert events[0].decision_id == "d-abc", "decision_id is not valid"
 
     def test_forensics_event_payload_selected_toolchain(self) -> None:
         backend = InMemoryTelemetryBackend()
@@ -115,8 +115,8 @@ class TestForensicsEmit:
             negotiation_outcome="shell policy allowed",
         )
         event = tel.query(event_type="forensics")[0]
-        assert event.payload["selected_toolchain"] == "shell"
-        assert "github_mcp" in event.payload["rejected_alternatives"]
+        assert event.payload["selected_toolchain"] == "shell", "Condition must be true"
+        assert "github_mcp" in event.payload["rejected_alternatives"], "Condition must be true"
 
     def test_forensics_event_extra_payload(self) -> None:
         backend = InMemoryTelemetryBackend()
@@ -131,7 +131,7 @@ class TestForensicsEmit:
             extra={"custom_key": "custom_value"},
         )
         event = tel.query(event_type="forensics")[0]
-        assert event.payload.get("custom_key") == "custom_value"
+        assert event.payload.get("custom_key") == "custom_value", "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -154,12 +154,12 @@ class TestNDJSONBackwardCompat:
         ndjson_path.write_text(json.dumps(old_record) + "\n")
         backend = NDJSONTelemetryBackend(ndjson_path)
         events = backend.read_all()
-        assert len(events) == 1
-        assert events[0].event_type == "negotiation"
+        assert len(events) == 1, "Events must not be empty"
+        assert events[0].event_type == "negotiation", "event_type is not valid"
         # New fields must default to None (not raise).
-        assert events[0].decision_id is None
-        assert events[0].turn_id is None
-        assert events[0].task_id is None
+        assert events[0].decision_id is None, "decision_id is not valid"
+        assert events[0].turn_id is None, "turn_id is not valid"
+        assert events[0].task_id is None, "task_id is not valid"
 
     def test_record_with_unknown_field_loaded(self, tmp_path: Path) -> None:
         """Records with extra future fields must not cause errors."""
@@ -174,8 +174,8 @@ class TestNDJSONBackwardCompat:
         ndjson_path.write_text(json.dumps(future_record) + "\n")
         backend = NDJSONTelemetryBackend(ndjson_path)
         events = backend.read_all()
-        assert len(events) == 1
-        assert events[0].event_type == "startup"
+        assert len(events) == 1, "Events must not be empty"
+        assert events[0].event_type == "startup", "event_type is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -199,33 +199,33 @@ class TestKernelPlanToolsForensics:
         k = self._fresh_kernel()
         k.plan_tools("repo_introspection")
         events = k.telemetry.query(event_type="forensics")
-        assert len(events) >= 1
+        assert len(events) >= 1, "Events must not be empty"
 
     def test_forensics_event_has_decision_id(self) -> None:
         k = self._fresh_kernel()
         k.plan_tools("repo_introspection")
         events = k.telemetry.query(event_type="forensics")
-        assert events[-1].decision_id is not None
+        assert events[-1].decision_id is not None, "decision_id must be initialized"
 
     def test_forensics_event_selected_toolchain(self) -> None:
         k = self._fresh_kernel()
         k.plan_tools("repo_introspection")
         events = k.telemetry.query(event_type="forensics")
         payload = events[-1].payload
-        assert "selected_toolchain" in payload
-        assert payload["selected_toolchain"] == "github_mcp"
+        assert "selected_toolchain" in payload, "Condition must be true"
+        assert payload["selected_toolchain"] == "github_mcp", "Condition must be true"
 
     def test_forensics_event_with_turn_id(self) -> None:
         k = self._fresh_kernel()
         k.plan_tools("code_search", turn_id="t-001", task_id="pr-42")
         events = k.telemetry.query(event_type="forensics")
         last = events[-1]
-        assert last.turn_id == "t-001"
-        assert last.task_id == "pr-42"
+        assert last.turn_id == "t-001", "turn_id is not valid"
+        assert last.task_id == "pr-42", "task_id is not valid"
 
     def test_forensics_event_rejected_alternatives_present(self) -> None:
         k = self._fresh_kernel()
         k.plan_tools("repo_introspection")
         events = k.telemetry.query(event_type="forensics")
         payload = events[-1].payload
-        assert "rejected_alternatives" in payload
+        assert "rejected_alternatives" in payload, "Condition must be true"

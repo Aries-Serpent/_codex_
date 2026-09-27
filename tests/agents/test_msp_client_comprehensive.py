@@ -241,7 +241,7 @@ class TestMSPClientAuthentication:
                 assert (
                     "Bearer" in headers["Authorization"]
                     or "bearer_token" in headers["Authorization"]
-                )
+                ), "Condition must be true"
 
 
 class TestMSPClientConfiguration:

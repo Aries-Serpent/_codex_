@@ -97,7 +97,7 @@ class LocalSentenceTransformerProvider:
             raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
-                "Local embedding model failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",
+                "Local embedding model failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",  # noqa: E501
                 type(e).__name__,
             )
             raise

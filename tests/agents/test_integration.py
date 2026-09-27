@@ -249,11 +249,11 @@ class TestMultiAgentOrchestration:
             }
         )
 
-        assert result["status"] == "success"
-        assert result["orchestration"]["workflow"] == "sequential"
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["orchestration"]["workflow"] == "sequential", "Result must not be empty"
         assert result["orchestration"]["agents_executed"] == ["agent1", "agent2"]
-        assert "agent1" in result["results"]
-        assert "agent2" in result["results"]
+        assert "agent1" in result["results"], "Result must not be empty"
+        assert "agent2" in result["results"], "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -286,9 +286,9 @@ class TestMultiAgentOrchestration:
             }
         )
 
-        assert result["status"] == "success"
-        assert result["orchestration"]["workflow"] == "parallel"
-        assert len(result["orchestration"]["agents_executed"]) == 2
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["orchestration"]["workflow"] == "parallel", "Result must not be empty"
+        assert len(result["orchestration"]["agents_executed"]) == 2, "Collection must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -321,9 +321,9 @@ class TestMultiAgentOrchestration:
             }
         )
 
-        assert len(orchestrator.workflow_state["agents_executed"]) == 2
-        assert "agent1" in orchestrator.workflow_state["results"]
-        assert "agent2" in orchestrator.workflow_state["results"]
+        assert len(orchestrator.workflow_state["agents_executed"]) == 2, "Collection must not be empty"
+        assert "agent1" in orchestrator.workflow_state["results"], "Result must not be empty"
+        assert "agent2" in orchestrator.workflow_state["results"], "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -348,8 +348,8 @@ class TestMultiAgentOrchestration:
             }
         )
 
-        assert result["status"] == "error"
-        assert "not found" in result["error"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "not found" in result["error"], "Result must not be empty"
 
         orchestrator.teardown()
 
@@ -380,10 +380,10 @@ class TestAgentHandoff:
             "agent1", "agent2", {"key": "value"}
         )
 
-        assert result["status"] == "success"
-        assert result["handoff"]["from_agent"] == "agent1"
-        assert result["handoff"]["to_agent"] == "agent2"
-        assert "result" in result
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["handoff"]["from_agent"] == "agent1", "Result must not be empty"
+        assert result["handoff"]["to_agent"] == "agent2", "Result must not be empty"
+        assert "result" in result, "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -411,8 +411,8 @@ class TestAgentHandoff:
         test_data = {"key": "value"}
         result = orchestrator.handoff_data("agent1", "agent2", test_data)
 
-        assert result["handoff"]["data_passed"] is not None
-        assert len(orchestrator.handoff_log) == 1
+        assert result["handoff"]["data_passed"] is not None, "Value must be initialized"
+        assert len(orchestrator.handoff_log) == 1, "Collection must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -440,9 +440,9 @@ class TestAgentHandoff:
         orchestrator.handoff_data("agent1", "agent2", {"test": "data"})
         orchestrator.handoff_data("agent2", "agent1", {"test": "data2"})
 
-        assert len(orchestrator.handoff_log) == 2
-        assert orchestrator.handoff_log[0]["from"] == "agent1"
-        assert orchestrator.handoff_log[1]["from"] == "agent2"
+        assert len(orchestrator.handoff_log) == 2, "Collection must not be empty"
+        assert orchestrator.handoff_log[0]["from"] == "agent1", "orchestrat is not valid"
+        assert orchestrator.handoff_log[1]["from"] == "agent2", "orchestrat is not valid"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -475,7 +475,7 @@ class TestDataPassing:
         result = orchestrator.handoff_data("agent1", "agent2", test_data)
 
         # Data should be passed to the result
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -505,7 +505,7 @@ class TestDataPassing:
 
         result = orchestrator.handoff_data("agent1", "agent2", large_data)
 
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -552,7 +552,7 @@ class TestStatePreservation:
         )
 
         # State should accumulate
-        assert len(orchestrator.workflow_state["agents_executed"]) >= len(
+        assert len(orchestrator.workflow_state["agents_executed"]) >= len(, "Collection must not be empty"
             first_state["agents_executed"]
         )
 
@@ -586,8 +586,8 @@ class TestStatePreservation:
             }
         )
 
-        assert len(orch1.workflow_state["agents_executed"]) == 1
-        assert len(orch2.workflow_state["agents_executed"]) == 0
+        assert len(orch1.workflow_state["agents_executed"]) == 1, "Collection must not be empty"
+        assert len(orch2.workflow_state["agents_executed"]) == 0, "Collection must not be empty"
 
         orch1.teardown()
         orch2.teardown()
@@ -622,7 +622,7 @@ class TestErrorPropagation:
             }
         )
 
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -654,7 +654,7 @@ class TestErrorPropagation:
             }
         )
 
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -694,8 +694,8 @@ class TestComplexWorkflows:
             }
         )
 
-        assert result["status"] == "success"
-        assert len(result["orchestration"]["agents_executed"]) == 3
+        assert result["status"] == "success", "Result must not be empty"
+        assert len(result["orchestration"]["agents_executed"]) == 3, "Collection must not be empty"
 
         orchestrator.teardown()
         agent1.teardown()
@@ -729,9 +729,9 @@ class TestComplexWorkflows:
             }
         )
 
-        assert result["status"] == "success"
-        assert "transformer" in result["results"]
-        assert "aggregator" in result["results"]
+        assert result["status"] == "success", "Result must not be empty"
+        assert "transformer" in result["results"], "Result must not be empty"
+        assert "aggregator" in result["results"], "Result must not be empty"
 
         orchestrator.teardown()
         transform_agent.teardown()

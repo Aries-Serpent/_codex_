@@ -85,7 +85,7 @@ class OfflineBootstrapConfig:
 def mock_network_calls():
     """Mock network-related calls to detect if any modules try to make network calls."""
     mocks = {}
-    
+
     # Create mocks for network libraries/functions
     network_targets = [
         ("socket.socket", None),
@@ -93,16 +93,16 @@ def mock_network_calls():
         ("urllib.request.urlopen", None),
         ("urllib.request.open", None),
     ]
-    
+
     patchers = []
     for target, replacement in network_targets:
         patcher = patch(target, side_effect=RuntimeError(f"Network call blocked: {target}"))
         mock_obj = patcher.start()
         patchers.append(patcher)
         mocks[target] = mock_obj
-    
+
     yield mocks
-    
+
     # Cleanup
     for patcher in patchers:
         try:
@@ -133,32 +133,32 @@ class TestCoreAPIImports:
     def test_import_observationdata(self):
         """ObservationData should import cleanly."""
         from cognitive_brain.base import ObservationData
-        assert ObservationData is not None
+        assert ObservationData is not None, "ObservationData must be initialized"
         # Verify it's a dataclass
         assert hasattr(ObservationData, "__dataclass_fields__")
 
     def test_import_orientationresult(self):
         """OrientationResult should import cleanly."""
         from cognitive_brain.base import OrientationResult
-        assert OrientationResult is not None
+        assert OrientationResult is not None, "OrientationResult must be initialized"
         assert hasattr(OrientationResult, "__dataclass_fields__")
 
     def test_import_decision(self):
         """Decision should import cleanly."""
         from cognitive_brain.base import Decision
-        assert Decision is not None
+        assert Decision is not None, "Decision must be initialized"
         assert hasattr(Decision, "__dataclass_fields__")
 
     def test_import_actionresult(self):
         """ActionResult should import cleanly."""
         from cognitive_brain.base import ActionResult
-        assert ActionResult is not None
+        assert ActionResult is not None, "ActionResult must be initialized"
         assert hasattr(ActionResult, "__dataclass_fields__")
 
     def test_import_planner(self):
         """Planner should import cleanly."""
         from cognitive_brain.base import Planner
-        assert Planner is not None
+        assert Planner is not None, "Planner must be initialized"
         # Verify it's an ABC
         from abc import ABC
         assert issubclass(Planner, ABC)
@@ -166,20 +166,20 @@ class TestCoreAPIImports:
     def test_import_memoryinterface(self):
         """MemoryInterface should import cleanly."""
         from cognitive_brain.base import MemoryInterface
-        assert MemoryInterface is not None
+        assert MemoryInterface is not None, "MemoryInterface must be initialized"
         from abc import ABC
         assert issubclass(MemoryInterface, ABC)
 
     def test_import_memorypattern(self):
         """MemoryPattern should import cleanly."""
         from cognitive_brain.quantum.memory import MemoryPattern
-        assert MemoryPattern is not None
+        assert MemoryPattern is not None, "MemoryPattern must be initialized"
         assert hasattr(MemoryPattern, "__dataclass_fields__")
 
     def test_import_quantummemorymanager(self):
         """QuantumMemoryManager should import cleanly."""
         from cognitive_brain.quantum.memory import QuantumMemoryManager
-        assert QuantumMemoryManager is not None
+        assert QuantumMemoryManager is not None, "QuantumMemoryManager must be initialized"
         # Verify basic methods exist
         assert hasattr(QuantumMemoryManager, "store")
         assert hasattr(QuantumMemoryManager, "retrieve")
@@ -187,13 +187,13 @@ class TestCoreAPIImports:
     def test_import_pattern(self):
         """Pattern should import cleanly."""
         from cognitive_brain.models.learning_outcome import Pattern
-        assert Pattern is not None
+        assert Pattern is not None, "Pattern must be initialized"
         assert hasattr(Pattern, "__dataclass_fields__")
 
     def test_import_patternset(self):
         """PatternSet should import cleanly."""
         from cognitive_brain.models.learning_outcome import PatternSet
-        assert PatternSet is not None
+        assert PatternSet is not None, "PatternSet must be initialized"
         assert hasattr(PatternSet, "__dataclass_fields__")
 
     def test_import_all_core_apis(self):
@@ -228,8 +228,8 @@ class TestCoreAPIImports:
             Pattern,
             PatternSet,
         ]
-        assert len(apis) == 10
-        assert all(api is not None for api in apis)
+        assert len(apis) == 10, "Apis must not be empty"
+        assert all(api is not None for api in apis), "api must be initialized"
 
 
 # ============================================================================
@@ -314,9 +314,9 @@ class TestOODALoopExecution:
             data={"test": "value"},
         )
 
-        assert obs.timestamp is not None
-        assert obs.source == "test"
-        assert obs.data == {"test": "value"}
+        assert obs.timestamp is not None, "timestamp must be initialized"
+        assert obs.source == "test", "source is not valid"
+        assert obs.data == {"test": "value"}, "Data must not be empty"
 
     def test_decision_creation(self):
         """Decision should be creatable with valid data."""
@@ -332,9 +332,9 @@ class TestOODALoopExecution:
             timestamp=datetime.now(timezone.utc),
         )
 
-        assert decision.action == "test_action"
-        assert decision.confidence == 0.95
-        assert decision.reasoning == "Test reasoning"
+        assert decision.action == "test_action", "action is not valid"
+        assert decision.confidence == 0.95, "confidence is not valid"
+        assert decision.reasoning == "Test reasoning", "reasoning is not valid"
 
     def test_action_result_creation(self):
         """ActionResult should be creatable with valid data."""
@@ -347,10 +347,10 @@ class TestOODALoopExecution:
             errors=[],
         )
 
-        assert result.success is True
-        assert result.output == {"result": "test"}
-        assert result.metrics["execution_time"] == 0.5
-        assert len(result.errors) == 0
+        assert result.success is True, "Result must not be empty"
+        assert result.output == {"result": "test"}, "Result must not be empty"
+        assert result.metrics["execution_time"] == 0.5, "Result must not be empty"
+        assert len(result.errors) == 0, "Collection must not be empty"
 
     def test_memory_pattern_creation(self):
         """MemoryPattern should be creatable with valid data."""
@@ -363,9 +363,9 @@ class TestOODALoopExecution:
             confidence=0.85,
         )
 
-        assert pattern.pattern_id == "test_pattern_1"
-        assert pattern.confidence == 0.85
-        assert "feature1" in pattern.features
+        assert pattern.pattern_id == "test_pattern_1", "pattern_id is not valid"
+        assert pattern.confidence == 0.85, "confidence is not valid"
+        assert "feature1" in pattern.features, "Condition must be true"
 
     def test_pattern_creation(self):
         """Pattern should be creatable with valid data."""
@@ -379,9 +379,9 @@ class TestOODALoopExecution:
             support_count=5,
         )
 
-        assert pattern.pattern_id == "learn_pattern_1"
-        assert pattern.category == PatternCategory.TEMPORAL
-        assert pattern.confidence == 0.9
+        assert pattern.pattern_id == "learn_pattern_1", "pattern_id is not valid"
+        assert pattern.category == PatternCategory.TEMPORAL, "category is not valid"
+        assert pattern.confidence == 0.9, "confidence is not valid"
 
 
 # ============================================================================
@@ -416,30 +416,30 @@ class TestConfigurationMatrix:
             Planner,
         )
 
-        assert ObservationData is not None
-        assert OrientationResult is not None
-        assert Decision is not None
-        assert ActionResult is not None
-        assert Planner is not None
-        assert MemoryInterface is not None
+        assert ObservationData is not None, "ObservationData must be initialized"
+        assert OrientationResult is not None, "OrientationResult must be initialized"
+        assert Decision is not None, "Decision must be initialized"
+        assert ActionResult is not None, "ActionResult must be initialized"
+        assert Planner is not None, "Planner must be initialized"
+        assert MemoryInterface is not None, "MemoryInterface must be initialized"
 
     def test_matrix_coverage(self):
         """Verify test matrix covers all required OS/Python combinations."""
         test_matrix = OfflineBootstrapConfig.TEST_MATRIX
 
         # Should have 6 configurations (3 OS × 2 Python versions)
-        assert len(test_matrix) == 6
+        assert len(test_matrix) == 6, "Test_matrix must not be empty"
 
         # Verify OS coverage
         os_names = {config[0] for config in test_matrix}
-        assert "Linux" in os_names
-        assert "Darwin" in os_names  # macOS
-        assert "Windows" in os_names
+        assert "Linux" in os_names, "Condition must be true"
+        assert "Darwin" in os_names, "Condition must be true"
+        assert "Windows" in os_names, "Condition must be true"
 
         # Verify Python version coverage
         python_versions = {config[1] for config in test_matrix}
-        assert "3.12" in python_versions
-        assert "3.13" in python_versions
+        assert "3.12" in python_versions, "Condition must be true"
+        assert "3.13" in python_versions, "Condition must be true"
 
 
 # ============================================================================
@@ -454,9 +454,9 @@ class TestSafetyProfileCompliance:
         from cognitive_brain.base import MemoryInterface, Planner
         from cognitive_brain.quantum.memory import QuantumMemoryManager
 
-        assert Planner is not None
-        assert MemoryInterface is not None
-        assert QuantumMemoryManager is not None
+        assert Planner is not None, "Planner must be initialized"
+        assert MemoryInterface is not None, "MemoryInterface must be initialized"
+        assert QuantumMemoryManager is not None, "QuantumMemoryManager must be initialized"
 
     def test_core_modules_use_stdlib_only(self):
         """Core modules should use only stdlib + numpy (no network libs)."""
@@ -465,13 +465,13 @@ class TestSafetyProfileCompliance:
         import cognitive_brain.quantum.memory
 
         # Verify modules loaded successfully
-        assert cognitive_brain.base is not None
-        assert cognitive_brain.quantum.memory is not None
-        assert cognitive_brain.models.learning_outcome is not None
+        assert cognitive_brain.base is not None, "base must be initialized"
+        assert cognitive_brain.quantum.memory is not None, "memory must be initialized"
+        assert cognitive_brain.models.learning_outcome is not None, "learning_outcome must be initialized"
 
         # Check module imports (simplified check)
         base_imports = dir(cognitive_brain.base)
-        assert "dataclass" in base_imports or "abc" in base_imports
+        assert "dataclass" in base_imports or "abc" in base_imports, "Data must not be empty"
 
 
 # ============================================================================
@@ -487,24 +487,24 @@ class TestOfflineBootstrapIntegration:
 
         # Step 1: Import base module
         from cognitive_brain import base
-        assert base is not None
+        assert base is not None, "base must be initialized"
 
         # Step 2: Import quantum memory
         from cognitive_brain.quantum import memory
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
         # Step 3: Import learning models
         from cognitive_brain.models import learning_outcome
-        assert learning_outcome is not None
+        assert learning_outcome is not None, "learning_outcome must be initialized"
 
         # Step 4: Verify key classes
         from cognitive_brain.base import Planner
         from cognitive_brain.models.learning_outcome import Pattern
         from cognitive_brain.quantum.memory import QuantumMemoryManager
 
-        assert Planner is not None
-        assert QuantumMemoryManager is not None
-        assert Pattern is not None
+        assert Planner is not None, "Planner must be initialized"
+        assert QuantumMemoryManager is not None, "QuantumMemoryManager must be initialized"
+        assert Pattern is not None, "Pattern must be initialized"
 
     def test_comprehensive_api_verification(self):
         """Comprehensive verification of all 10 core APIs."""
@@ -539,8 +539,8 @@ class TestOfflineBootstrapIntegration:
             PatternSet,
         ]
 
-        assert len(apis) == 10
-        assert all(api is not None for api in apis)
+        assert len(apis) == 10, "Apis must not be empty"
+        assert all(api is not None for api in apis), "api must be initialized"
         logger.info("✅ All 10 core APIs verified offline-safe")
 
     def test_bootstrap_readiness(self, sys_info):
@@ -548,13 +548,13 @@ class TestOfflineBootstrapIntegration:
         logger.info(f"System Info: {sys_info}")
 
         # Should have Python 3.12+
-        assert sys_info["python_version_info"].major == 3
-        assert sys_info["python_version_info"].minor >= 12
+        assert sys_info["python_version_info"].major == 3, "major is not valid"
+        assert sys_info["python_version_info"].minor >= 12, "minor must be greater than zero"
 
         # Should be able to import core modules
         import cognitive_brain
 
-        assert cognitive_brain is not None
+        assert cognitive_brain is not None, "cognitive_brain must be initialized"
 
         logger.info(
             f"✅ Bootstrap ready on {sys_info['platform']} / "

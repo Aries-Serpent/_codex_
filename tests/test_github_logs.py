@@ -399,10 +399,10 @@ class TestGitHubLogsMCPTools:
         with caplog.at_level("ERROR"):
             result = list_check_runs({"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"})
 
-        assert result["success"] is False
-        assert result["error_type"] == "RuntimeError"
-        assert "RuntimeError" in caplog.text
-        assert "<ERROR_TYPE>" not in caplog.text
+        assert result["success"] is False, "Result must not be empty"
+        assert result["error_type"] == "RuntimeError", "Result must not be empty"
+        assert "RuntimeError" in caplog.text, "Error should be raised or set"
+        assert "<ERROR_TYPE>" not in caplog.text, "Error should be raised or set"
 
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_mcp_tool_error_handling(self, mock_get_client):

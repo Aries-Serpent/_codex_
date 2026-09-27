@@ -17,7 +17,7 @@ _torch = None
 
 
 def _get_torch():
-    """Lazy import torch with caching to allow module to be imported in environments without torch."""
+    """Lazy import torch with caching to allow module to be imported in environments without torch."""  # noqa: E501
     global _torch
     if _torch is not None:
         return _torch

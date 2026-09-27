@@ -3,9 +3,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from task_decomposer import create_decomposer
-
 from __init__ import RANDOM_SEED, create_agent
+from task_decomposer import create_decomposer
 
 TEST_SEED = 51
 

@@ -14,8 +14,10 @@ except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
         from codex_ml.tracking.mlflow_guard import (
             bootstrap_offline_tracking,
         )
-    except ModuleNotFoundError:
-        raise exc
+    except ModuleNotFoundError as exc2:
+        raise ModuleNotFoundError(
+            "codex_ml.tracking.mlflow_guard is unavailable in this environment"
+        ) from exc2
 
 __all__ = ["bootstrap_mlflow_env", "mlflow_offline_session"]
 

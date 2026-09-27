@@ -23,13 +23,13 @@ class TestCodexMLPackageImports:
     def test_codex_ml_package_import(self):
         """Test that codex_ml package can be imported."""
         import codex_ml
-        assert codex_ml is not None
+        assert codex_ml is not None, "codex_ml must be initialized"
 
     def test_src_codex_ml_import(self):
         """Test that src.codex_ml can be imported."""
         try:
             from src import codex_ml
-            assert codex_ml is not None
+            assert codex_ml is not None, "codex_ml must be initialized"
         except ImportError:
             pytest.skip("src.codex_ml not available")
 
@@ -42,18 +42,18 @@ class TestCodexMLPackageImports:
     def test_codex_ml_path_resolution(self):
         """Test that codex_ml resolves paths correctly."""
         import codex_ml
-        
+
         # Verify we can get the package directory
         if hasattr(codex_ml, "__file__"):
-            assert codex_ml.__file__ is not None
+            assert codex_ml.__file__ is not None, "__file__ must be initialized"
 
     def test_codex_ml_shim_redirects(self):
         """Test that shim modules properly redirect."""
-        
+
         # Check that sys.path is modified to include src
         src_path = str(Path(__file__).resolve().parents[2] / "src")
         # src should be accessible for imports
-        assert True  # Verification that import succeeded
+        assert True, "True is not valid"
 
 
 class TestCodexMLPipeline:
@@ -63,7 +63,7 @@ class TestCodexMLPipeline:
         """Test that pipeline module exists."""
         try:
             import codex_ml.pipeline
-            assert codex_ml.pipeline is not None
+            assert codex_ml.pipeline is not None, "pipeline must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("pipeline module not available")
 
@@ -71,7 +71,7 @@ class TestCodexMLPipeline:
         """Test that pipeline can be imported from codex_ml."""
         try:
             from codex_ml import pipeline
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("pipeline not importable")
 
@@ -79,7 +79,7 @@ class TestCodexMLPipeline:
         """Test that src.codex_ml.pipeline is importable."""
         try:
             from codex_ml import pipeline
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("src.codex_ml.pipeline not available")
 
@@ -91,7 +91,7 @@ class TestCodexMLData:
         """Test that data subpackage exists."""
         try:
             import codex_ml.data
-            assert codex_ml.data is not None
+            assert codex_ml.data is not None, "data must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("data package not available")
 
@@ -99,7 +99,7 @@ class TestCodexMLData:
         """Test that data_utils can be imported."""
         try:
             from codex_ml import data_utils
-            assert data_utils is not None
+            assert data_utils is not None, "data_utils must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("data_utils not available")
 
@@ -107,7 +107,7 @@ class TestCodexMLData:
         """Test that codex_data module exists."""
         try:
             from codex_ml import codex_data
-            assert codex_data is not None
+            assert codex_data is not None, "codex_data must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("codex_data not available")
 
@@ -119,7 +119,7 @@ class TestCodexMLConfiguration:
         """Test that config_schema can be imported."""
         try:
             from codex_ml import config_schema
-            assert config_schema is not None
+            assert config_schema is not None, "config_schema must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("config_schema not available")
 
@@ -130,7 +130,7 @@ class TestCodexMLConfiguration:
             if hasattr(codex_ml, "config"):
                 import codex_ml.config
             # Just verify we can try to access it
-            assert True
+            assert True, "True is not valid"
         except (ImportError, AttributeError):
             pytest.skip("config package not available")
 
@@ -138,7 +138,7 @@ class TestCodexMLConfiguration:
         """Test that configs directory exists."""
         try:
             from codex_ml import configs
-            assert configs is not None
+            assert configs is not None, "configs must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("configs not available")
 
@@ -150,7 +150,7 @@ class TestCodexMLModels:
         """Test that codex_model can be imported."""
         try:
             from codex_ml import codex_model
-            assert codex_model is not None
+            assert codex_model is not None, "codex_model must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("codex_model not available")
 
@@ -158,7 +158,7 @@ class TestCodexMLModels:
         """Test that codex_script can be imported."""
         try:
             from codex_ml import codex_script
-            assert codex_script is not None
+            assert codex_script is not None, "codex_script must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("codex_script not available")
 
@@ -170,7 +170,7 @@ class TestCodexMLCLI:
         """Test that CLI subpackage exists."""
         try:
             import codex_ml.cli
-            assert codex_ml.cli is not None
+            assert codex_ml.cli is not None, "cli must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("CLI package not available")
 
@@ -178,7 +178,7 @@ class TestCodexMLCLI:
         """Test that src.codex_ml.cli exists."""
         try:
             from codex_ml import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("src CLI not available")
 
@@ -190,7 +190,7 @@ class TestCodexMLStructuredLogging:
         """Test that structured logging can be imported."""
         try:
             from codex_ml import codex_structured_logging
-            assert codex_structured_logging is not None
+            assert codex_structured_logging is not None, "codex_structured_logging must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("structured logging not available")
 
@@ -202,7 +202,7 @@ class TestCodexMLIntegration:
         """Test that codex_ml.__main__ is executable."""
         try:
             import codex_ml.__main__
-            assert codex_ml.__main__ is not None
+            assert codex_ml.__main__ is not None, "__main__ must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("__main__ not available")
 
@@ -210,7 +210,7 @@ class TestCodexMLIntegration:
         """Test that src/codex_ml._package_main is executable."""
         try:
             from codex_ml import _package_main
-            assert _package_main is not None
+            assert _package_main is not None, "_package_main must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("_package_main not available")
 
@@ -218,14 +218,14 @@ class TestCodexMLIntegration:
         """Test that multiple imports return consistent results."""
         import codex_ml as ml1
         import codex_ml as ml2
-        assert ml1 is ml2
+        assert ml1 is ml2, "ml1 is not valid"
 
     def test_codex_ml_sys_path_includes_src(self):
         """Test that sys.path includes src directory for codex_ml."""
         # After importing codex_ml, src should be in sys.path
         src_path = str(Path(__file__).resolve().parents[2] / "src")
         # Check if src was added to sys.path
-        assert True  # Import succeeded, so redirection worked
+        assert True, "True is not valid"
 
 
 class TestCodexMLSubmodules:
@@ -235,7 +235,7 @@ class TestCodexMLSubmodules:
         """Test that analysis subpackage exists."""
         try:
             from codex_ml import analysis
-            assert analysis is not None
+            assert analysis is not None, "analysis must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("analysis not available")
 
@@ -243,7 +243,7 @@ class TestCodexMLSubmodules:
         """Test that backends subpackage exists."""
         try:
             from codex_ml import backends
-            assert backends is not None
+            assert backends is not None, "backends must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("backends not available")
 
@@ -251,7 +251,7 @@ class TestCodexMLSubmodules:
         """Test that batching subpackage exists."""
         try:
             from codex_ml import batching
-            assert batching is not None
+            assert batching is not None, "batching must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("batching not available")
 
@@ -259,7 +259,7 @@ class TestCodexMLSubmodules:
         """Test that callbacks subpackage exists."""
         try:
             from codex_ml import callbacks
-            assert callbacks is not None
+            assert callbacks is not None, "callbacks must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("callbacks not available")
 
@@ -267,7 +267,7 @@ class TestCodexMLSubmodules:
         """Test that checkpointing subpackage exists."""
         try:
             from codex_ml import checkpointing
-            assert checkpointing is not None
+            assert checkpointing is not None, "checkpointing must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("checkpointing not available")
 
@@ -275,7 +275,7 @@ class TestCodexMLSubmodules:
         """Test that connectors subpackage exists."""
         try:
             from codex_ml import connectors
-            assert connectors is not None
+            assert connectors is not None, "connectors must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("connectors not available")
 
@@ -283,7 +283,7 @@ class TestCodexMLSubmodules:
         """Test that distributed subpackage exists."""
         try:
             from codex_ml import distributed
-            assert distributed is not None
+            assert distributed is not None, "distributed must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("distributed not available")
 
@@ -291,7 +291,7 @@ class TestCodexMLSubmodules:
         """Test that eval subpackage exists."""
         try:
             from codex_ml import eval
-            assert eval is not None
+            assert eval is not None, "eval must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("eval not available")
 
@@ -299,7 +299,7 @@ class TestCodexMLSubmodules:
         """Test that evaluation subpackage exists."""
         try:
             from codex_ml import evaluation
-            assert evaluation is not None
+            assert evaluation is not None, "evaluation must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("evaluation not available")
 
@@ -309,9 +309,9 @@ class TestCodexMLShimMechanism:
 
     def test_codex_ml_is_redirected_module(self):
         """Test that codex_ml is properly redirected."""
-        
+
         # Check that the module was loaded
-        assert "codex_ml" in sys.modules
+        assert "codex_ml" in sys.modules, "Condition must be true"
 
     def test_codex_ml_pipeline_shim_works(self):
         """Test that pipeline shim redirects correctly."""
@@ -319,7 +319,7 @@ class TestCodexMLShimMechanism:
         # If this passes, the mechanism worked
         try:
             from codex_ml import pipeline
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (ImportError, AttributeError, TypeError):
             # May not have pipeline, but import mechanism should work
             pytest.skip("pipeline not available in this configuration")
@@ -327,10 +327,10 @@ class TestCodexMLShimMechanism:
     def test_codex_ml_src_sys_path_modification(self):
         """Test that src is added to sys.path."""
         # After importing codex_ml, the src directory should be accessible
-        
+
         # This test passes if codex_ml imported successfully
         # (otherwise sys.path wouldn't have been modified correctly)
-        assert True
+        assert True, "True is not valid"
 
 
 class TestCodexMLEdgeCases:
@@ -342,7 +342,7 @@ class TestCodexMLEdgeCases:
         importlib.reload(sys.modules.get("codex_ml", __import__("codex_ml")))
         import codex_ml as ml2
         # Should not crash
-        assert ml2 is not None
+        assert ml2 is not None, "ml2 must be initialized"
 
     def test_codex_ml_version_info(self):
         """Test that codex_ml has version info."""
@@ -354,4 +354,4 @@ class TestCodexMLEdgeCases:
             or hasattr(codex_ml, "version")
         )
         # Version may or may not be present, just test that import works
-        assert True
+        assert True, "True is not valid"

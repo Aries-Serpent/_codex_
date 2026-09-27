@@ -308,7 +308,7 @@ class StateManager:
         """Restore service state from latest snapshot."""
         if service_name in self.current_state:
             return self.current_state[service_name].copy()
-        
+
         # Find latest snapshot for this service
         for snapshot in reversed(self.state_snapshots):
             if snapshot["service"] == service_name:

@@ -126,7 +126,7 @@ def test_model_factory_list():
         from codex_ml.models.factory import load_model
 
         # Function should exist and be callable
-        assert callable(load_model)
+        assert callable(load_model), "Condition must be true"
 
         # Should accept a config dict (basic smoke test)
         # Don't actually load - just verify interface

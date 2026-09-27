@@ -89,7 +89,8 @@ def append_change(file_path: pathlib.Path, action: str, rationale: str, before: 
         )
     )
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
-        f.write(textwrap.dedent(f"""
+        f.write(
+            textwrap.dedent(f"""
         ## {now_iso()} — {file_path.relative_to(ROOT)}
         - **Action:** {action}
         - **Rationale:** {rationale}
@@ -101,7 +102,9 @@ def append_change(file_path: pathlib.Path, action: str, rationale: str, before: 
         ```
 
         </details>
-        """).strip() + "\n\n")
+        """).strip()
+            + "\n\n"
+        )
 
 
 def sha256_text(s: str) -> str:
@@ -325,9 +328,7 @@ def main():
     # Safety: require clean git worktree for non-dry runs
     try:
         dirty = (
-            subprocess.check_output(
-                ["git", "status", "--porcelain"], cwd=str(ROOT)
-            )  # nosec B603,B607
+            subprocess.check_output(["git", "status", "--porcelain"], cwd=str(ROOT))  # nosec B603,B607
             .decode()
             .strip()
         )
@@ -373,7 +374,8 @@ def main():
     - Next steps: strengthen smoke tests for invalid `--table` & forced retry paths.
 
     **DO NOT ACTIVATE ANY GitHub Actions files.**
-    """).strip() + "\n",
+    """).strip()
+        + "\n",
         encoding="utf-8",
     )
 

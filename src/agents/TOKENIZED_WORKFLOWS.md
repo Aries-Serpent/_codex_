@@ -424,7 +424,7 @@ from agents.workflow_navigator import WorkflowNavigator
 navigator = WorkflowNavigator()
 
 # Execute workflow by token
-result = navigator.execute('AUDIT_EXEC')
+result = navigator.execute("AUDIT_EXEC")
 
 # Or by natural language
 result = navigator.find_and_execute("Run audit pipeline")
@@ -440,25 +440,24 @@ from agents.physics_orchestrator import DecisionState
 navigator = WorkflowNavigator()
 
 # Provide state
-state = DecisionState(
-    current_position="code_changes_made",
-    goal_position="pr_approved"
-)
+state = DecisionState(current_position="code_changes_made", goal_position="pr_approved")
 
 # Execute decision workflow
-result = navigator.execute('PHYS_DECIDE', state=state)
+result = navigator.execute("PHYS_DECIDE", state=state)
 ```
 
 ### Example 3: Chained Workflows
 
 ```python
 # Execute multiple workflows in sequence
-navigator.execute_chain([
-    'AUDIT_EXEC',      # Run audit first
-    'MENTAL_REVIEW',   # Review past decisions
-    'PHYS_DECIDE',     # Make new decision
-    'PRE_RELEASE'      # Deploy if decision is positive
-])
+navigator.execute_chain(
+    [
+        "AUDIT_EXEC",  # Run audit first
+        "MENTAL_REVIEW",  # Review past decisions
+        "PHYS_DECIDE",  # Make new decision
+        "PRE_RELEASE",  # Deploy if decision is positive
+    ]
+)
 ```
 
 ## Integration with Existing Systems
@@ -467,7 +466,7 @@ navigator.execute_chain([
 
 ```python
 # Workflow automatically uses physics orchestrator for decisions
-workflow = navigator.get_workflow('PHYS_DECIDE')
+workflow = navigator.get_workflow("PHYS_DECIDE")
 workflow.configure(deliberation_time=10)  # 10 seconds thinking
 workflow.execute()
 ```
@@ -476,8 +475,8 @@ workflow.execute()
 
 ```python
 # Workflow records reasoning in mental map
-workflow = navigator.get_workflow('AUDIT_EXEC')
-workflow.enable_mental_mapping(agent_id='my_agent')
+workflow = navigator.get_workflow("AUDIT_EXEC")
+workflow.enable_mental_mapping(agent_id="my_agent")
 workflow.execute()  # Reasoning automatically stored
 ```
 
@@ -500,13 +499,13 @@ from agents.workflow_navigator import Workflow, Step
 
 # Define custom workflow
 custom = Workflow(
-    workflow_id='custom-analysis',
-    name='Custom Analysis',
-    frequency='medium',
+    workflow_id="custom-analysis",
+    name="Custom Analysis",
+    frequency="medium",
     steps=[
-        Step(id='analyze', command='python analyze.py'),
-        Step(id='report', command='python report.py')
-    ]
+        Step(id="analyze", command="python analyze.py"),
+        Step(id="report", command="python report.py"),
+    ],
 )
 
 # Register with navigator

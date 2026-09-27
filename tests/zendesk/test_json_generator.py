@@ -119,9 +119,7 @@ class TestTemplateListing:
         """Test listing templates by tags."""
         create_templates = generator.list_templates(tags=["create"])
         assert len(create_templates) >= 2, "Create_templates must not be empty"
-        assert all(
-            any("create" in t.tags for t in create_templates) for t in create_templates
-        ), "Condition must be true"
+        assert all(any("create" in t.tags for t in create_templates) for t in create_templates), "Condition must be true"
 
     def test_list_templates_with_combined_filters(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates with both category and tags filters."""

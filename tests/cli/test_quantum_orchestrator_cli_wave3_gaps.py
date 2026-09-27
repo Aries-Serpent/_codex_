@@ -28,7 +28,7 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
     def test_initialize_quantum_workflow(self):
         """Test initializing a quantum workflow."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = os.path.join(tmpdir, "workflow.json")
             config = {
@@ -38,19 +38,19 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
             }
             with open(config_file, 'w') as f:
                 json.dump(config, f)
-            
+
             try:
                 from codex.quantum_orchestrator.cli import init_command
-                
+
                 result = runner.invoke(init_command, ['--config', config_file])
-                assert result.exit_code == 0 or result.exit_code is not None
+                assert result.exit_code == 0 or result.exit_code is not None, "exit_code must be initialized"
             except ImportError:
                 pytest.skip("Quantum Orchestrator CLI not available")
 
     def test_workflow_validation_on_init(self):
         """Test workflow validation during initialization."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             invalid_config = os.path.join(tmpdir, "invalid.json")
             config = {
@@ -60,10 +60,10 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
             }
             with open(invalid_config, 'w') as f:
                 json.dump(config, f)
-            
+
             try:
                 from codex.quantum_orchestrator.cli import init_command
-                
+
                 result = runner.invoke(init_command, ['--config', invalid_config])
                 # Should reject invalid config
             except ImportError:
@@ -72,7 +72,7 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
     def test_workflow_resource_constraints(self):
         """Test workflow respects resource constraints."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = os.path.join(tmpdir, "workflow.json")
             config = {
@@ -83,10 +83,10 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
             }
             with open(config_file, 'w') as f:
                 json.dump(config, f)
-            
+
             try:
                 from codex.quantum_orchestrator.cli import init_command
-                
+
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should handle resource constraints
             except ImportError:
@@ -99,44 +99,44 @@ class TestQuantumOrchestratorCliJobSubmission:
     def test_submit_job(self):
         """Test submitting a quantum job."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import submit_command
-            
+
             result = runner.invoke(submit_command, ['--name', 'test_job'])
-            assert result.exit_code is not None
+            assert result.exit_code is not None, "exit_code must be initialized"
         except ImportError:
             pytest.skip("Quantum Orchestrator CLI not available")
 
     def test_submit_job_with_dependencies(self):
         """Test submitting job with dependencies on other jobs."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import submit_command
-            
+
             result = runner.invoke(submit_command, [
                 '--name', 'dependent_job',
                 '--depends-on', 'job_1',
                 '--depends-on', 'job_2'
             ])
-            assert result.exit_code is not None
+            assert result.exit_code is not None, "exit_code must be initialized"
         except ImportError:
             pytest.skip("Quantum Orchestrator CLI not available")
 
     def test_submit_job_duplicate_name(self):
         """Test submitting job with duplicate name (should fail or create new)."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import submit_command
-            
+
             # Submit first job
             result1 = runner.invoke(submit_command, ['--name', 'duplicate_job'])
-            
+
             # Submit second job with same name
             result2 = runner.invoke(submit_command, ['--name', 'duplicate_job'])
-            
+
             # Implementation-dependent: either fails or creates new job with suffix
         except ImportError:
             pytest.skip("Quantum Orchestrator CLI not available")
@@ -144,20 +144,20 @@ class TestQuantumOrchestratorCliJobSubmission:
     def test_submit_job_invalid_circuit(self):
         """Test submitting job with invalid quantum circuit."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             circuit_file = os.path.join(tmpdir, "invalid_circuit.qasm")
             with open(circuit_file, 'w') as f:
                 f.write("INVALID QASM SYNTAX {{{")
-            
+
             try:
                 from codex.quantum_orchestrator.cli import submit_command
-                
+
                 result = runner.invoke(submit_command, [
                     '--name', 'invalid_circuit_job',
                     '--circuit', circuit_file
                 ])
-                
+
                 # Should reject invalid circuit
             except ImportError:
                 pytest.skip("Quantum Orchestrator CLI not available")
@@ -169,56 +169,56 @@ class TestQuantumOrchestratorCliResultRetrieval:
     def test_get_job_result_completed(self):
         """Test retrieving result of completed job."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.get_job") as mock_get:
             mock_get.return_value = {
                 "id": "job_123",
                 "status": "completed",
                 "result": {"counts": {"00": 512, "11": 512}},
             }
-            
+
             try:
                 from codex.quantum_orchestrator.cli import result_command
-                
+
                 result = runner.invoke(result_command, ['--job-id', 'job_123'])
-                assert result.exit_code == 0 or 'completed' in result.output.lower()
+                assert result.exit_code == 0 or 'completed' in result.output.lower(), "Result must not be empty"
             except ImportError:
                 pytest.skip("Quantum Orchestrator CLI not available")
 
     def test_get_job_result_pending(self):
         """Test retrieving result of pending job."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.get_job") as mock_get:
             mock_get.return_value = {
                 "id": "job_456",
                 "status": "pending",
                 "result": None,
             }
-            
+
             try:
                 from codex.quantum_orchestrator.cli import result_command
-                
+
                 result = runner.invoke(result_command, ['--job-id', 'job_456'])
                 # Should indicate pending status
-                assert 'pending' in result.output.lower() or result.exit_code is not None
+                assert 'pending' in result.output.lower() or result.exit_code is not None, "exit_code must be initialized"
             except ImportError:
                 pytest.skip("Quantum Orchestrator CLI not available")
 
     def test_get_job_result_failed(self):
         """Test retrieving result of failed job."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.get_job") as mock_get:
             mock_get.return_value = {
                 "id": "job_789",
                 "status": "failed",
                 "error": "Quantum coherence timeout",
             }
-            
+
             try:
                 from codex.quantum_orchestrator.cli import result_command
-                
+
                 result = runner.invoke(result_command, ['--job-id', 'job_789'])
                 # Should display error information
             except ImportError:
@@ -227,10 +227,10 @@ class TestQuantumOrchestratorCliResultRetrieval:
     def test_get_nonexistent_job(self):
         """Test retrieving result of non-existent job."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import result_command
-            
+
             result = runner.invoke(result_command, ['--job-id', 'nonexistent_job'])
             # Should error or indicate not found
         except ImportError:
@@ -243,14 +243,14 @@ class TestQuantumOrchestratorCliErrorHandling:
     def test_network_error_handling(self):
         """Test handling of network errors during job submission."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.submit_job") as mock_submit:
             from requests.exceptions import ConnectionError
             mock_submit.side_effect = ConnectionError("Network unreachable")
-            
+
             try:
                 from codex.quantum_orchestrator.cli import submit_command
-                
+
                 result = runner.invoke(submit_command, ['--name', 'test_job'])
                 # Should handle network error gracefully
             except ImportError:
@@ -259,14 +259,14 @@ class TestQuantumOrchestratorCliErrorHandling:
     def test_timeout_handling(self):
         """Test handling of operation timeouts."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.wait_for_job") as mock_wait:
             from requests.exceptions import Timeout
             mock_wait.side_effect = Timeout("Operation timeout")
-            
+
             try:
                 from codex.quantum_orchestrator.cli import wait_command
-                
+
                 result = runner.invoke(wait_command, [
                     '--job-id', 'job_123',
                     '--timeout', '1'  # 1 second timeout
@@ -278,13 +278,13 @@ class TestQuantumOrchestratorCliErrorHandling:
     def test_authentication_error(self):
         """Test handling of authentication errors."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.submit_job") as mock_submit:
             mock_submit.side_effect = PermissionError("Invalid credentials")
-            
+
             try:
                 from codex.quantum_orchestrator.cli import submit_command
-                
+
                 result = runner.invoke(submit_command, ['--name', 'test_job'])
                 # Should indicate authentication failure
             except ImportError:
@@ -297,7 +297,7 @@ class TestQuantumOrchestratorCliResourceValidation:
     def test_qubit_count_validation(self):
         """Test validation of qubit count against available resources."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = os.path.join(tmpdir, "high_qubit.json")
             config = {
@@ -307,10 +307,10 @@ class TestQuantumOrchestratorCliResourceValidation:
             }
             with open(config_file, 'w') as f:
                 json.dump(config, f)
-            
+
             try:
                 from codex.quantum_orchestrator.cli import init_command
-                
+
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should validate against system limits
             except ImportError:
@@ -319,7 +319,7 @@ class TestQuantumOrchestratorCliResourceValidation:
     def test_circuit_depth_validation(self):
         """Test validation of circuit depth."""
         runner = CliRunner()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = os.path.join(tmpdir, "deep_circuit.json")
             config = {
@@ -329,10 +329,10 @@ class TestQuantumOrchestratorCliResourceValidation:
             }
             with open(config_file, 'w') as f:
                 json.dump(config, f)
-            
+
             try:
                 from codex.quantum_orchestrator.cli import init_command
-                
+
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should validate circuit depth
             except ImportError:
@@ -341,10 +341,10 @@ class TestQuantumOrchestratorCliResourceValidation:
     def test_memory_requirement_check(self):
         """Test checking memory requirements."""
         runner = CliRunner()
-        
+
         with patch("src.codex.quantum_orchestrator.cli.get_available_memory") as mock_mem:
             mock_mem.return_value = 2 * 1024**3  # 2GB
-            
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 config_file = os.path.join(tmpdir, "memory_intensive.json")
                 config = {
@@ -355,10 +355,10 @@ class TestQuantumOrchestratorCliResourceValidation:
                 }
                 with open(config_file, 'w') as f:
                     json.dump(config, f)
-                
+
                 try:
                     from codex.quantum_orchestrator.cli import init_command
-                    
+
                     result = runner.invoke(init_command, ['--config', config_file])
                     # Should warn about insufficient memory
                 except ImportError:
@@ -371,12 +371,12 @@ class TestQuantumOrchestratorCliOutputFormatting:
     def test_json_output_format(self):
         """Test JSON output formatting."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import list_command
-            
+
             result = runner.invoke(list_command, ['--format', 'json'])
-            
+
             if result.exit_code == 0:
                 # Try to parse as JSON
                 try:
@@ -390,12 +390,12 @@ class TestQuantumOrchestratorCliOutputFormatting:
     def test_table_output_format(self):
         """Test table output formatting."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import list_command
-            
+
             result = runner.invoke(list_command, ['--format', 'table'])
-            
+
             # Should contain table-like output
             if result.exit_code == 0:
                 # Check for table markers (|, -, etc)
@@ -406,12 +406,12 @@ class TestQuantumOrchestratorCliOutputFormatting:
     def test_verbose_output(self):
         """Test verbose output mode."""
         runner = CliRunner()
-        
+
         try:
             from codex.quantum_orchestrator.cli import list_command
-            
+
             result = runner.invoke(list_command, ['--verbose'])
-            
+
             # Verbose mode should provide more details
         except ImportError:
             pytest.skip("Quantum Orchestrator CLI not available")

@@ -62,9 +62,7 @@ class ConfidenceCalibrator:
             )
             self.brier_history.append(brier)
 
-    def update_category(
-        self, category: str, confidence: float, outcome: bool
-    ) -> None:
+    def update_category(self, category: str, confidence: float, outcome: bool) -> None:
         """Update calibration for specific decision category.
 
         Args:
@@ -123,9 +121,7 @@ class ConfidenceCalibrator:
 
         return float(np.mean(outcomes))
 
-    def _calculate_brier_score(
-        self, confidences: List[float], outcomes: List[bool]
-    ) -> float:
+    def _calculate_brier_score(self, confidences: List[float], outcomes: List[bool]) -> float:
         """Calculate Brier score (mean squared error).
 
         Args:
@@ -200,9 +196,7 @@ class ConfidenceCalibrator:
                 self.confidences_by_category = defaultdict(
                     list, data.get("confidences_by_category", {})
                 )
-                self.outcomes_by_category = defaultdict(
-                    list, data.get("outcomes_by_category", {})
-                )
+                self.outcomes_by_category = defaultdict(list, data.get("outcomes_by_category", {}))
                 self.total_predictions = data.get("total_predictions", 0)
                 self.brier_history = data.get("brier_history", [])
         except Exception:

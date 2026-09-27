@@ -19,11 +19,11 @@ class TestSourceLocation:
             column_start=0,
             column_end=50,
         )
-        assert loc.file_path == Path("test.py")
-        assert loc.line_start == 10
-        assert loc.line_end == 20
-        assert loc.column_start == 0
-        assert loc.column_end == 50
+        assert loc.file_path == Path("test.py"), "file_path is not valid"
+        assert loc.line_start == 10, "line_start is not valid"
+        assert loc.line_end == 20, "line_end is not valid"
+        assert loc.column_start == 0, "column_start is not valid"
+        assert loc.column_end == 50, "column_end is not valid"
 
     def test_source_location_str(self) -> None:
         """Test string representation."""
@@ -32,28 +32,28 @@ class TestSourceLocation:
             line_start=10,
             line_end=20,
         )
-        assert str(loc) == "test.py:10:0"
+        assert str(loc) == "test.py:10:0", "Condition must be true"
 
     def test_from_string_full(self) -> None:
         """Test parsing full location string."""
         loc = SourceLocation.from_string("path/to/file.py:42:10")
-        assert loc.file_path == Path("path/to/file.py")
-        assert loc.line_start == 42
-        assert loc.column_start == 10
+        assert loc.file_path == Path("path/to/file.py"), "file_path is not valid"
+        assert loc.line_start == 42, "line_start is not valid"
+        assert loc.column_start == 10, "column_start is not valid"
 
     def test_from_string_partial(self) -> None:
         """Test parsing partial location string."""
         loc = SourceLocation.from_string("file.py:5")
-        assert loc.file_path == Path("file.py")
-        assert loc.line_start == 5
-        assert loc.column_start == 0
+        assert loc.file_path == Path("file.py"), "file_path is not valid"
+        assert loc.line_start == 5, "line_start is not valid"
+        assert loc.column_start == 0, "column_start is not valid"
 
     def test_from_string_file_only(self) -> None:
         """Test parsing file-only location string."""
         loc = SourceLocation.from_string("file.py")
-        assert loc.file_path == Path("file.py")
-        assert loc.line_start == 1
-        assert loc.column_start == 0
+        assert loc.file_path == Path("file.py"), "file_path is not valid"
+        assert loc.line_start == 1, "line_start is not valid"
+        assert loc.column_start == 0, "column_start is not valid"
 
     def test_to_dict(self) -> None:
         """Test dictionary serialization."""
@@ -65,9 +65,9 @@ class TestSourceLocation:
             column_end=15,
         )
         d = loc.to_dict()
-        assert d["file_path"] == "test.py"
-        assert d["line_start"] == 10
-        assert d["line_end"] == 20
+        assert d["file_path"] == "test.py", "Condition must be true"
+        assert d["line_start"] == 10, "Condition must be true"
+        assert d["line_end"] == 20, "Condition must be true"
 
     def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
@@ -79,8 +79,8 @@ class TestSourceLocation:
             "column_end": 15,
         }
         loc = SourceLocation.from_dict(data)
-        assert loc.file_path == Path("test.py")
-        assert loc.line_start == 10
+        assert loc.file_path == Path("test.py"), "file_path is not valid"
+        assert loc.line_start == 10, "line_start is not valid"
 
 
 class TestStandardizedASTNode:
@@ -93,21 +93,21 @@ class TestStandardizedASTNode:
             type="function",
             name="test_func",
         )
-        assert node.node_id == "test-001"
-        assert node.type == "function"
-        assert node.name == "test_func"
-        assert node.children == []
-        assert node.parent is None
+        assert node.node_id == "test-001", "node_id is not valid"
+        assert node.type == "function", "type is not valid"
+        assert node.name == "test_func", "name is not valid"
+        assert node.children == [], "children is not valid"
+        assert node.parent is None, "parent is not valid"
 
     def test_auto_generate_id(self) -> None:
         """Test auto-generated node ID."""
         node = StandardizedASTNode(node_id="", type="class", name="TestClass")
-        assert node.node_id  # Should be non-empty UUID
+        assert node.node_id, "Condition must be true"
 
     def test_depth_root(self) -> None:
         """Test depth calculation for root node."""
         root = StandardizedASTNode(node_id="root", type="module", name="module")
-        assert root.depth == 0
+        assert root.depth == 0, "depth is not valid"
 
     def test_depth_nested(self) -> None:
         """Test depth calculation for nested nodes."""
@@ -118,9 +118,9 @@ class TestStandardizedASTNode:
         root.add_child(child)
         child.add_child(grandchild)
 
-        assert root.depth == 0
-        assert child.depth == 1
-        assert grandchild.depth == 2
+        assert root.depth == 0, "depth is not valid"
+        assert child.depth == 1, "depth is not valid"
+        assert grandchild.depth == 2, "depth is not valid"
 
     def test_is_leaf(self) -> None:
         """Test leaf node detection."""
@@ -128,8 +128,8 @@ class TestStandardizedASTNode:
         child = StandardizedASTNode(node_id="child", type="function", name="method")
         parent.add_child(child)
 
-        assert not parent.is_leaf
-        assert child.is_leaf
+        assert not parent.is_leaf, "Condition must be true"
+        assert child.is_leaf, "Condition must be true"
 
     def test_is_root(self) -> None:
         """Test root node detection."""
@@ -137,8 +137,8 @@ class TestStandardizedASTNode:
         child = StandardizedASTNode(node_id="child", type="function", name="method")
         parent.add_child(child)
 
-        assert parent.is_root
-        assert not child.is_root
+        assert parent.is_root, "Condition must be true"
+        assert not child.is_root, "Condition must be true"
 
     def test_add_child(self) -> None:
         """Test adding child node."""
@@ -147,9 +147,9 @@ class TestStandardizedASTNode:
 
         parent.add_child(child)
 
-        assert len(parent.children) == 1
-        assert parent.children[0] == child
-        assert child.parent == parent
+        assert len(parent.children) == 1, "Collection must not be empty"
+        assert parent.children[0] == child, "Condition must be true"
+        assert child.parent == parent, "parent is not valid"
 
     def test_remove_child(self) -> None:
         """Test removing child node."""
@@ -159,9 +159,9 @@ class TestStandardizedASTNode:
         parent.add_child(child)
         result = parent.remove_child(child)
 
-        assert result is True
-        assert len(parent.children) == 0
-        assert child.parent is None
+        assert result is True, "Result must not be empty"
+        assert len(parent.children) == 0, "Collection must not be empty"
+        assert child.parent is None, "parent is not valid"
 
     def test_find_by_type(self) -> None:
         """Test finding nodes by type."""
@@ -175,9 +175,9 @@ class TestStandardizedASTNode:
         cls.add_child(func2)
 
         functions = root.find_by_type("function")
-        assert len(functions) == 2
-        assert func1 in functions
-        assert func2 in functions
+        assert len(functions) == 2, "Functions must not be empty"
+        assert func1 in functions, "Condition must be true"
+        assert func2 in functions, "Condition must be true"
 
     def test_find_by_name(self) -> None:
         """Test finding nodes by name."""
@@ -189,7 +189,7 @@ class TestStandardizedASTNode:
         root.add_child(child2)
 
         results = root.find_by_name("target")
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     def test_walk(self) -> None:
         """Test tree traversal."""
@@ -203,11 +203,11 @@ class TestStandardizedASTNode:
         child1.add_child(grandchild)
 
         all_nodes = root.walk()
-        assert len(all_nodes) == 4
-        assert root in all_nodes
-        assert child1 in all_nodes
-        assert child2 in all_nodes
-        assert grandchild in all_nodes
+        assert len(all_nodes) == 4, "All_nodes must not be empty"
+        assert root in all_nodes, "Condition must be true"
+        assert child1 in all_nodes, "Condition must be true"
+        assert child2 in all_nodes, "Condition must be true"
+        assert grandchild in all_nodes, "gr is not valid"
 
     def test_to_dict(self) -> None:
         """Test dictionary serialization."""
@@ -218,10 +218,10 @@ class TestStandardizedASTNode:
             metadata={"docstring": "Test function"},
         )
         d = node.to_dict()
-        assert d["node_id"] == "test"
-        assert d["type"] == "function"
-        assert d["name"] == "test_func"
-        assert d["metadata"]["docstring"] == "Test function"
+        assert d["node_id"] == "test", "Condition must be true"
+        assert d["type"] == "function", "Condition must be true"
+        assert d["name"] == "test_func", "Condition must be true"
+        assert d["metadata"]["docstring"] == "Test function", "Data must not be empty"
 
     def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
@@ -233,10 +233,10 @@ class TestStandardizedASTNode:
             "children": [],
         }
         node = StandardizedASTNode.from_dict(data)
-        assert node.node_id == "test"
-        assert node.type == "function"
-        assert node.name == "test_func"
-        assert node.metadata["complexity"] == 5
+        assert node.node_id == "test", "node_id is not valid"
+        assert node.type == "function", "type is not valid"
+        assert node.name == "test_func", "name is not valid"
+        assert node.metadata["complexity"] == 5, "Data must not be empty"
 
 
 class TestFinding:
@@ -250,21 +250,21 @@ class TestFinding:
             message="Function is too complex",
             analyzer="complexity",
         )
-        assert finding.type == "high_complexity"
-        assert finding.severity == "warning"
-        assert finding.message == "Function is too complex"
-        assert finding.finding_id  # Should be auto-generated
+        assert finding.type == "high_complexity", "type is not valid"
+        assert finding.severity == "warning", "severity is not valid"
+        assert finding.message == "Function is too complex", "message is not valid"
+        assert finding.finding_id, "Condition must be true"
 
     def test_invalid_severity_normalized(self) -> None:
         """Test that invalid severity is normalized."""
         finding = Finding(type="test", severity="invalid", message="Test")
-        assert finding.severity == "info"  # Normalized to info
+        assert finding.severity == "info", "severity is not valid"
 
     def test_valid_severities(self) -> None:
         """Test all valid severity levels."""
         for severity in ["info", "warning", "error", "critical"]:
             finding = Finding(type="test", severity=severity, message="Test")
-            assert finding.severity == severity
+            assert finding.severity == severity, "severity is not valid"
 
     def test_to_dict(self) -> None:
         """Test dictionary serialization."""
@@ -276,9 +276,9 @@ class TestFinding:
             analyzer="unused_code",
         )
         d = finding.to_dict()
-        assert d["finding_id"] == "f-001"
-        assert d["type"] == "unused_import"
-        assert d["severity"] == "info"
+        assert d["finding_id"] == "f-001", "Condition must be true"
+        assert d["type"] == "unused_import", "Condition must be true"
+        assert d["severity"] == "info", "Condition must be true"
 
     def test_from_dict(self) -> None:
         """Test dictionary deserialization."""
@@ -291,6 +291,6 @@ class TestFinding:
             "metadata": {"import_name": "os"},
         }
         finding = Finding.from_dict(data)
-        assert finding.finding_id == "f-001"
-        assert finding.type == "unused_import"
-        assert finding.metadata["import_name"] == "os"
+        assert finding.finding_id == "f-001", "finding_id is not valid"
+        assert finding.type == "unused_import", "type is not valid"
+        assert finding.metadata["import_name"] == "os", "Data must not be empty"

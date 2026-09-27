@@ -115,8 +115,8 @@ class TestProcess8RepositoryWebhooks:
         """Test: List all repository webhooks."""
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
 
-        assert "/repos/" in endpoint
-        assert "/hooks" in endpoint
+        assert "/repos/" in endpoint, "Condition must be true"
+        assert "/hooks" in endpoint, "Condition must be true"
 
     def test_process8_list_repo_webhooks_empty(
         self,
@@ -127,9 +127,9 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}"
         expected_response = []
 
-        assert "/repos/" in endpoint
-        assert "/hooks" in endpoint
-        assert len(expected_response) == 0
+        assert "/repos/" in endpoint, "Condition must be true"
+        assert "/hooks" in endpoint, "Condition must be true"
+        assert len(expected_response) == 0, "Expected_response must not be empty"
 
     def test_process8_list_repo_webhooks_pagination(
         self,
@@ -138,8 +138,8 @@ class TestProcess8RepositoryWebhooks:
     ):
         """Test: List webhooks supports pagination."""
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}?per_page=10&page=1"
-        assert "per_page=10" in endpoint
-        assert "page=1" in endpoint
+        assert "per_page=10" in endpoint, "Condition must be true"
+        assert "page=1" in endpoint, "Condition must be true"
 
     def test_process8_get_repo_webhook_success(
         self,
@@ -152,9 +152,9 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}"
         response = mock_webhook_response(hook_id=hook_id)
 
-        assert str(hook_id) in endpoint
-        assert response["id"] == hook_id
-        assert response["config"]["url"]
+        assert str(hook_id) in endpoint, "Condition must be true"
+        assert response["id"] == hook_id, "Response must not be empty"
+        assert response["config"]["url"], "Response must not be empty"
 
     def test_process8_create_repo_webhook_success(
         self,
@@ -176,11 +176,11 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
-        assert "/repos/" in endpoint
-        assert "/hooks" in endpoint
-        assert payload["name"] == "web"
-        assert payload["active"] is True
-        assert test_webhook_url in payload["config"]["url"]
+        assert "/repos/" in endpoint, "Condition must be true"
+        assert "/hooks" in endpoint, "Condition must be true"
+        assert payload["name"] == "web", "Condition must be true"
+        assert payload["active"] is True, "Condition must be true"
+        assert test_webhook_url in payload["config"]["url"], "Condition must be true"
 
     def test_process8_create_webhook_with_secret(
         self,
@@ -201,7 +201,7 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
-        assert payload["config"]["secret"]
+        assert payload["config"]["secret"], "Condition must be true"
 
     def test_process8_create_webhook_event_types(
         self,
@@ -229,7 +229,7 @@ class TestProcess8RepositoryWebhooks:
                 },
             }
 
-            assert payload["events"] == events
+            assert payload["events"] == events, "Condition must be true"
 
     def test_process8_update_repo_webhook_success(
         self,
@@ -249,8 +249,8 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
-        assert str(hook_id) in endpoint
-        assert payload["active"] is False
+        assert str(hook_id) in endpoint, "Condition must be true"
+        assert payload["active"] is False, "Condition must be true"
 
     def test_process8_delete_repo_webhook_success(
         self,
@@ -262,7 +262,7 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}"
 
         # DELETE returns 204 No Content
-        assert str(hook_id) in endpoint
+        assert str(hook_id) in endpoint, "Condition must be true"
 
     def test_process8_webhook_not_found_error(
         self,
@@ -272,7 +272,7 @@ class TestProcess8RepositoryWebhooks:
     ):
         """Test: 404 Not Found when webhook doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Webhook Delivery
@@ -287,7 +287,7 @@ class TestProcess8RepositoryWebhooks:
         hook_id = 12345
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}/deliveries"
 
-        assert "deliveries" in endpoint
+        assert "deliveries" in endpoint, "Condition must be true"
 
     def test_process8_webhook_delivery_details(
         self,
@@ -314,7 +314,7 @@ class TestProcess8RepositoryWebhooks:
             },
         }
 
-        assert f"/deliveries/{delivery_id}" in endpoint
+        assert f"/deliveries/{delivery_id}" in endpoint, "Condition must be true"
         assert expected_response["status"] in ["delivered", "failed", "pending"]
 
     # ───────────────────────────────────────────────────────────────────────
@@ -331,7 +331,7 @@ class TestProcess8RepositoryWebhooks:
         endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}/tests"
 
         # POST to trigger test delivery
-        assert "tests" in endpoint
+        assert "tests" in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -345,7 +345,7 @@ class TestProcess8RepositoryWebhooks:
     ):
         """Test: 422 when webhook URL is invalid."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
     def test_process8_webhook_limit_exceeded(
         self,
@@ -355,7 +355,7 @@ class TestProcess8RepositoryWebhooks:
     ):
         """Test: 422 when webhook limit exceeded."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -379,8 +379,8 @@ class TestProcess9OrganizationWebhooks:
         """Test: List all organization webhooks."""
         endpoint = f"{gh_api_base}{org_webhooks_endpoint}"
 
-        assert "/orgs/" in endpoint
-        assert "/hooks" in endpoint
+        assert "/orgs/" in endpoint, "Condition must be true"
+        assert "/hooks" in endpoint, "Condition must be true"
 
     def test_process9_get_org_webhook_success(
         self,
@@ -393,8 +393,8 @@ class TestProcess9OrganizationWebhooks:
         endpoint = f"{gh_api_base}{org_webhooks_endpoint}/{hook_id}"
         response = mock_webhook_response(hook_id=hook_id)
 
-        assert str(hook_id) in endpoint
-        assert response["id"] == hook_id
+        assert str(hook_id) in endpoint, "Condition must be true"
+        assert response["id"] == hook_id, "Response must not be empty"
 
     def test_process9_create_org_webhook_success(
         self,
@@ -415,8 +415,8 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
-        assert "/orgs/" in endpoint or "/repos/" in endpoint
-        assert payload["name"]
+        assert "/orgs/" in endpoint or "/repos/" in endpoint, "Condition must be true"
+        assert payload["name"], "Condition must be true"
 
     def test_process9_create_org_webhook_with_secret(
         self,
@@ -439,8 +439,8 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
-        assert "/orgs/" in endpoint or "/repos/" in endpoint
-        assert payload["config"]["secret"]
+        assert "/orgs/" in endpoint or "/repos/" in endpoint, "Condition must be true"
+        assert payload["config"]["secret"], "Condition must be true"
 
     def test_process9_update_org_webhook_success(
         self,
@@ -459,8 +459,8 @@ class TestProcess9OrganizationWebhooks:
             },
         }
 
-        assert str(hook_id) in endpoint
-        assert payload["active"]
+        assert str(hook_id) in endpoint, "Condition must be true"
+        assert payload["active"], "Condition must be true"
 
     def test_process9_delete_org_webhook_success(
         self,
@@ -471,7 +471,7 @@ class TestProcess9OrganizationWebhooks:
         hook_id = 12345
         endpoint = f"{gh_api_base}{org_webhooks_endpoint}/{hook_id}"
 
-        assert str(hook_id) in endpoint
+        assert str(hook_id) in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -485,7 +485,7 @@ class TestProcess9OrganizationWebhooks:
     ):
         """Test: 403 when token lacks admin:org_hook scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
     def test_process9_org_not_found_error(
         self,
@@ -494,7 +494,7 @@ class TestProcess9OrganizationWebhooks:
     ):
         """Test: 404 when organization doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -518,8 +518,8 @@ class TestWebhookSignatureValidation:
             hashlib.sha256,
         ).hexdigest()
 
-        assert expected_signature.startswith("sha256=")
-        assert len(expected_signature) > 10
+        assert expected_signature.startswith("sha256="), "Condition must be true"
+        assert len(expected_signature) > 10, "Expected_signature must not be empty"
 
     def test_webhook_signature_validation_success(
         self,
@@ -577,7 +577,7 @@ class TestWebhookSignatureValidation:
         computed = signature
 
         result = hmac.compare_digest(signature, computed)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_webhook_signature_different_secret_fails(
         self,
@@ -627,8 +627,8 @@ class TestWebhookSignatureValidation:
 
         # May differ if formatting differs
         # This illustrates why raw body is important
-        assert sig_raw  # Valid
-        assert sig_parsed  # Also valid, but may differ
+        assert sig_raw, "sig_raw is not valid"
+        assert sig_parsed, "sig_parsed is not valid"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -651,13 +651,13 @@ class TestWebhookEventProcessing:
 
         for event in events:
             # In real implementation, would filter by event type
-            assert event
+            assert event, "event is not valid"
 
     def test_webhook_payload_structure(self, webhook_payload_sample: dict):
         """Test: Webhook payload contains expected fields."""
-        assert "action" in webhook_payload_sample
-        assert "repository" in webhook_payload_sample
-        assert webhook_payload_sample["repository"]["name"] == "_codex_"
+        assert "action" in webhook_payload_sample, "Condition must be true"
+        assert "repository" in webhook_payload_sample, "Condition must be true"
+        assert webhook_payload_sample["repository"]["name"] == "_codex_", "Condition must be true"
 
     def test_webhook_event_filtering(self):
         """Test: Filter webhooks by event type."""
@@ -666,10 +666,10 @@ class TestWebhookEventProcessing:
         }
 
         # If webhook configured for push, it should receive push events
-        assert "push" in webhook_config["events"]
+        assert "push" in webhook_config["events"], "Condition must be true"
 
         # If webhook not configured for issues, should not receive issues events
-        assert "issues" not in webhook_config["events"]
+        assert "issues" not in webhook_config["events"], "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -699,7 +699,7 @@ class TestWebhookBatchOperations:
                 "config": {"url": url},
             }
 
-            assert payload["config"]["url"] == url
+            assert payload["config"]["url"] == url, "Condition must be true"
 
     def test_batch_delete_webhooks(
         self,
@@ -711,7 +711,7 @@ class TestWebhookBatchOperations:
 
         for hook_id in hook_ids:
             endpoint = f"{gh_api_base}{repo_webhooks_endpoint}/{hook_id}"
-            assert str(hook_id) in endpoint
+            assert str(hook_id) in endpoint, "Condition must be true"
 
     def test_batch_update_webhook_events(
         self,
@@ -727,5 +727,5 @@ class TestWebhookBatchOperations:
                 "events": ["push", "pull_request", "issues"],
             }
 
-            assert str(hook_id) in endpoint
-            assert len(payload["events"]) == 3
+            assert str(hook_id) in endpoint, "Condition must be true"
+            assert len(payload["events"]) == 3, "Collection must not be empty"

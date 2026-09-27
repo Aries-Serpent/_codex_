@@ -202,16 +202,26 @@ Example agent workflow:
 import subprocess
 import json
 
+
 def set_repository_secret(repo, name, value):
     """Set a repository secret via GitHub Secrets CLI."""
-    result = subprocess.run([
-        "github-secrets-cli", "set",
-        "--scope", "repo",
-        "--repo", repo,
-        "--name", name,
-        "--value", value,
-        "--json"
-    ], capture_output=True, text=True)
+    result = subprocess.run(
+        [
+            "github-secrets-cli",
+            "set",
+            "--scope",
+            "repo",
+            "--repo",
+            repo,
+            "--name",
+            name,
+            "--value",
+            value,
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
+    )
 
     if result.returncode != 0:
         raise RuntimeError(f"Failed to set secret: {result.stderr}")

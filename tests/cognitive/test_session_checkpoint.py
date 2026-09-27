@@ -133,13 +133,13 @@ class TestCheckpointCreation:
             compress=True,
         )
 
-        assert meta.checkpoint_id.startswith("cp_")
-        assert meta.session_id == "S001"
-        assert meta.compressed is True
-        assert meta.compression_ratio > 1.0
-        assert meta.uncompressed_size_bytes > 0
-        assert meta.compressed_size_bytes > 0
-        assert len(meta.checksum_sha256) == 64  # SHA256 hex length
+        assert meta.checkpoint_id.startswith("cp_"), "Condition must be true"
+        assert meta.session_id == "S001", "session_id is not valid"
+        assert meta.compressed is True, "compressed is not valid"
+        assert meta.compression_ratio > 1.0, "compression_ratio must be greater than zero"
+        assert meta.uncompressed_size_bytes > 0, "uncompressed_size_bytes must be greater than zero"
+        assert meta.compressed_size_bytes > 0, "compressed_size_bytes must be greater than zero"
+        assert len(meta.checksum_sha256) == 64, "Collection must not be empty"
 
     def test_checkpoint_compression_ratio(self, checkpoint_manager, sample_checkpoint_state):
         """Test that compression achieves target ratio."""
@@ -165,9 +165,9 @@ class TestCheckpointCreation:
             compress=False,
         )
 
-        assert meta.compressed is False
-        assert meta.compression_ratio == 1.0
-        assert meta.compressed_size_bytes == meta.uncompressed_size_bytes
+        assert meta.compressed is False, "compressed is not valid"
+        assert meta.compression_ratio == 1.0, "compression_ratio is not valid"
+        assert meta.compressed_size_bytes == meta.uncompressed_size_bytes, "compressed_size_bytes is not valid"
 
     def test_checkpoint_with_tags(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint creation with custom tags."""
@@ -179,8 +179,8 @@ class TestCheckpointCreation:
             metadata={"milestone": "phase1", "priority": "high"},
         )
 
-        assert meta.tags.get("milestone") == "phase1"
-        assert meta.tags.get("priority") == "high"
+        assert meta.tags.get("milestone") == "phase1", "Condition must be true"
+        assert meta.tags.get("priority") == "high", "Condition must be true"
 
     def test_checkpoint_keeps_lane_and_cost_metadata_fidelity(self, checkpoint_manager, sample_checkpoint_state):
         """Lane/cost metadata must round-trip without losing valid zeroes."""
@@ -199,14 +199,14 @@ class TestCheckpointCreation:
             resume_from_checkpoint_id="cp_prev",
         )
 
-        assert meta.lane_bucket == "P2"
-        assert meta.checkpoint_state == "verified"
-        assert meta.budget_remaining == 0
-        assert meta.estimated_cost == 0
-        assert meta.cost_score == 0
-        assert meta.tags["budget_remaining"] == 0
-        assert meta.tags["estimated_cost"] == 0
-        assert meta.tags["cost_score"] == 0
+        assert meta.lane_bucket == "P2", "lane_bucket is not valid"
+        assert meta.checkpoint_state == "verified", "checkpoint_state is not valid"
+        assert meta.budget_remaining == 0, "budget_remaining is not valid"
+        assert meta.estimated_cost == 0, "estimated_cost is not valid"
+        assert meta.cost_score == 0, "cost_score is not valid"
+        assert meta.tags["budget_remaining"] == 0, "Condition must be true"
+        assert meta.tags["estimated_cost"] == 0, "Condition must be true"
+        assert meta.tags["cost_score"] == 0, "Condition must be true"
 
     def test_list_checkpoints_normalizes_double_suffix_checkpoint_ids(self, checkpoint_manager, sample_checkpoint_state):
         """List output should return the canonical cp_* ID, even for .json.zst files."""
@@ -220,7 +220,7 @@ class TestCheckpointCreation:
 
         listed = checkpoint_manager.list_checkpoints(session_id=sample_checkpoint_state["session_id"])
 
-        assert [item.checkpoint_id for item in listed] == [meta.checkpoint_id]
+        assert [item.checkpoint_id for item in listed] == [meta.checkpoint_id], "Item must not be empty"
 
     def test_checkpoint_with_full_state(self, checkpoint_manager, sample_checkpoint_state):
         """Test checkpoint with all optional fields."""
@@ -234,8 +234,8 @@ class TestCheckpointCreation:
             context_state=sample_checkpoint_state["context_state"],
         )
 
-        assert meta.checkpoint_id is not None
-        assert len(meta.checksum_sha256) == 64
+        assert meta.checkpoint_id is not None, "checkpoint_id must be initialized"
+        assert len(meta.checksum_sha256) == 64, "Collection must not be empty"
 
     def test_checkpoint_uniqueness(self, checkpoint_manager, sample_checkpoint_state):
         """Test that each checkpoint gets a unique ID."""
@@ -253,7 +253,7 @@ class TestCheckpointCreation:
             execution_progress={},
         )
 
-        assert meta1.checkpoint_id != meta2.checkpoint_id
+        assert meta1.checkpoint_id != meta2.checkpoint_id, "checkpoint_id is not valid"
 
     @pytest.mark.parametrize(
         "malicious_session_id",
@@ -304,9 +304,9 @@ class TestCheckpointRestore:
 
         restored = checkpoint_manager.restore_checkpoint(meta.checkpoint_id)
 
-        assert restored["session_id"] == "S001"
-        assert restored["agent_state"]["status"] == "in_progress"
-        assert len(restored["memory_snapshot"]["short_term_memory"]) == 1
+        assert restored["session_id"] == "S001", "rest is not valid"
+        assert restored["agent_state"]["status"] == "in_progress", "rest is not valid"
+        assert len(restored["memory_snapshot"]["short_term_memory"]) == 1, "Collection must not be empty"
 
     def test_warm_start_preserves_zero_cost_metadata(self, resume_engine, checkpoint_manager, sample_checkpoint_state):
         """Warm start must retain valid zero values for budget and cost fields."""
@@ -323,11 +323,11 @@ class TestCheckpointRestore:
         )
 
         context = resume_engine.warm_start(checkpoint_id=meta.checkpoint_id)
-        assert context.lane_bucket == "S1"
-        assert context.checkpoint_state == "verified"
-        assert context.budget_remaining == 0
-        assert context.estimated_cost == 0
-        assert context.cost_score == 0
+        assert context.lane_bucket == "S1", "lane_bucket is not valid"
+        assert context.checkpoint_state == "verified", "checkpoint_state is not valid"
+        assert context.budget_remaining == 0, "budget_remaining is not valid"
+        assert context.estimated_cost == 0, "estimated_cost is not valid"
+        assert context.cost_score == 0, "cost_score is not valid"
 
     def test_restore_nonexistent_checkpoint(self, checkpoint_manager):
         """Test restoring nonexistent checkpoint raises error."""
@@ -348,7 +348,7 @@ class TestCheckpointRestore:
             meta.checkpoint_id,
             session_id="S001"
         )
-        assert restored["session_id"] == "S001"
+        assert restored["session_id"] == "S001", "rest is not valid"
 
     def test_restore_preserves_memory_state(self, checkpoint_manager, sample_checkpoint_state):
         """Test that memory state is fully preserved."""
@@ -364,9 +364,9 @@ class TestCheckpointRestore:
         restored = checkpoint_manager.restore_checkpoint(meta.checkpoint_id)
         restored_memory = restored["memory_snapshot"]
 
-        assert restored_memory["total_patterns"] == original_memory["total_patterns"]
+        assert restored_memory["total_patterns"] == original_memory["total_patterns"], "restored_mem is not valid"
         assert len(restored_memory["short_term_memory"]) == len(original_memory["short_term_memory"])
-        assert restored_memory["short_term_memory"][0]["pattern_id"] == "p_001"
+        assert restored_memory["short_term_memory"][0]["pattern_id"] == "p_001", "restored_mem is not valid"
 
     def test_restore_preserves_execution_progress(self, checkpoint_manager, sample_checkpoint_state):
         """Test that execution progress is fully preserved."""
@@ -382,9 +382,9 @@ class TestCheckpointRestore:
         restored = checkpoint_manager.restore_checkpoint(meta.checkpoint_id)
         restored_progress = restored["execution_progress"]
 
-        assert restored_progress["current_task"] == "refactor_search"
+        assert restored_progress["current_task"] == "refactor_search", "rest is not valid"
         assert restored_progress["completed_tasks"] == ["analyze", "design"]
-        assert restored_progress["task_completion_percent"] == 40.0
+        assert restored_progress["task_completion_percent"] == 40.0, "rest is not valid"
 
 
 # ============================================================================
@@ -405,19 +405,19 @@ class TestCheckpointValidation:
 
         result = checkpoint_manager.validate_checkpoint(meta.checkpoint_id)
 
-        assert result.is_valid is True
-        assert result.integrity_score >= 0.95
-        assert len(result.errors) == 0
-        assert result.recommended_action == "restore"
+        assert result.is_valid is True, "Result must not be empty"
+        assert result.integrity_score >= 0.95, "integrity_score must be greater than zero"
+        assert len(result.errors) == 0, "Collection must not be empty"
+        assert result.recommended_action == "restore", "Result must not be empty"
 
     def test_validate_nonexistent_checkpoint(self, checkpoint_manager):
         """Test validating nonexistent checkpoint."""
         result = checkpoint_manager.validate_checkpoint("cp_nonexistent")
 
-        assert result.is_valid is False
-        assert result.integrity_score == 0.0
-        assert len(result.errors) > 0
-        assert result.recoverable is False
+        assert result.is_valid is False, "Result must not be empty"
+        assert result.integrity_score == 0.0, "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
+        assert result.recoverable is False, "Result must not be empty"
 
     def test_validate_quick_check(self, checkpoint_manager, sample_checkpoint_state):
         """Test quick validation mode."""
@@ -433,7 +433,7 @@ class TestCheckpointValidation:
             quick_check=True
         )
 
-        assert result.validation_time_ms < 100  # Should be fast
+        assert result.validation_time_ms < 100, "Result must not be empty"
 
     def test_validate_unreadable_checkpoint_returns_failure(self, checkpoint_manager, monkeypatch):
         """Validation should fail gracefully for unreadable checkpoint files."""
@@ -444,7 +444,7 @@ class TestCheckpointValidation:
             execution_progress={"current_task": "run validation"},
         )
         checkpoint_file = checkpoint_manager._find_checkpoint(meta.checkpoint_id)
-        assert checkpoint_file is not None
+        assert checkpoint_file is not None, "checkpoint_file must be initialized"
 
         def crashy_read_bytes(self):
             raise OSError("simulated unreadable checkpoint")
@@ -453,10 +453,10 @@ class TestCheckpointValidation:
 
         result = checkpoint_manager.validate_checkpoint(meta.checkpoint_id)
 
-        assert result.is_valid is False
-        assert result.checks_passed == 0
-        assert any(error.category == "file_read" for error in result.errors)
-        assert not any(error.category == "empty" for error in result.errors)
+        assert result.is_valid is False, "Result must not be empty"
+        assert result.checks_passed == 0, "Result must not be empty"
+        assert any(error.category == "file_read" for error in result.errors), "Result must not be empty"
+        assert not any(error.category == "empty" for error in result.errors), "Result must not be empty"
 
 
 # ============================================================================
@@ -469,7 +469,7 @@ class TestCheckpointListing:
     def test_list_empty_checkpoints(self, checkpoint_manager):
         """Test listing when no checkpoints exist."""
         checkpoints = checkpoint_manager.list_checkpoints()
-        assert len(checkpoints) == 0
+        assert len(checkpoints) == 0, "Checkpoints must not be empty"
 
     def test_list_checkpoints_by_session(self, checkpoint_manager):
         """Test listing checkpoints for specific session."""
@@ -485,8 +485,8 @@ class TestCheckpointListing:
 
         # List for S001
         checkpoints = checkpoint_manager.list_checkpoints(session_id="S001")
-        assert len(checkpoints) == 3
-        assert all(cp.session_id == "S001" for cp in checkpoints)
+        assert len(checkpoints) == 3, "Checkpoints must not be empty"
+        assert all(cp.session_id == "S001" for cp in checkpoints), "session_id is not valid"
 
     def test_list_with_limit_and_offset(self, checkpoint_manager):
         """Test pagination in listing."""
@@ -501,16 +501,16 @@ class TestCheckpointListing:
 
         # Get first 3
         page1 = checkpoint_manager.list_checkpoints(limit=3, offset=0)
-        assert len(page1) == 3
+        assert len(page1) == 3, "Page1 must not be empty"
 
         # Get next 3
         page2 = checkpoint_manager.list_checkpoints(limit=3, offset=3)
-        assert len(page2) == 3
+        assert len(page2) == 3, "Page2 must not be empty"
 
         # Ensure different checkpoints
         ids1 = {cp.checkpoint_id for cp in page1}
         ids2 = {cp.checkpoint_id for cp in page2}
-        assert len(ids1 & ids2) == 0
+        assert len(ids1 & ids2) == 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -531,9 +531,9 @@ class TestCheckpointDeletion:
 
         result = checkpoint_manager.delete_checkpoint(meta.checkpoint_id)
 
-        assert result.success is True
-        assert result.checkpoint_id == meta.checkpoint_id
-        assert result.bytes_freed > 0
+        assert result.success is True, "Result must not be empty"
+        assert result.checkpoint_id == meta.checkpoint_id, "Result must not be empty"
+        assert result.bytes_freed > 0, "bytes_freed must be greater than zero"
 
         # Verify it's deleted
         with pytest.raises(CheckpointNotFoundError):
@@ -558,7 +558,7 @@ class TestCheckpointDeletion:
             audit_reason="Exceeded retention window"
         )
 
-        assert result.reason == "Exceeded retention window"
+        assert result.reason == "Exceeded retention window", "Result must not be empty"
 
 
 # ============================================================================
@@ -579,10 +579,10 @@ class TestSessionResume:
 
         context = resume_engine.warm_start(checkpoint_id=meta.checkpoint_id)
 
-        assert context.is_valid() is True
-        assert context.session_id == "S001"
-        assert context.checkpoint_id == meta.checkpoint_id
-        assert context.warmup_complete is True
+        assert context.is_valid() is True, "Condition must be true"
+        assert context.session_id == "S001", "session_id is not valid"
+        assert context.checkpoint_id == meta.checkpoint_id, "checkpoint_id is not valid"
+        assert context.warmup_complete is True, "warmup_complete is not valid"
 
     def test_warm_start_with_context_provider(
         self,
@@ -604,9 +604,9 @@ class TestSessionResume:
             context_provider=provider
         )
 
-        assert context.observation_data is not None
-        assert context.orientation_data is not None
-        assert context.decision_context is not None
+        assert context.observation_data is not None, "observation_data must be initialized"
+        assert context.orientation_data is not None, "orientation_data must be initialized"
+        assert context.decision_context is not None, "decision_context must be initialized"
 
     def test_warm_start_preserves_decision_history(
         self,
@@ -625,8 +625,8 @@ class TestSessionResume:
 
         context = resume_engine.warm_start(checkpoint_id=meta.checkpoint_id)
 
-        assert len(context.decision_history) == 1
-        assert context.decision_history[0]["decision_id"] == "d_001"
+        assert len(context.decision_history) == 1, "Collection must not be empty"
+        assert context.decision_history[0]["decision_id"] == "d_001", "Condition must be true"
 
     def test_validate_and_recover(self, resume_engine, checkpoint_manager, sample_checkpoint_state):
         """Test validate_and_recover with valid checkpoint."""
@@ -639,8 +639,8 @@ class TestSessionResume:
 
         doc = resume_engine.validate_and_recover(checkpoint_id=meta.checkpoint_id)
 
-        assert doc["session_id"] == "S001"
-        assert "_recovery_metadata" in doc or doc["session_id"] == "S001"
+        assert doc["session_id"] == "S001", "Condition must be true"
+        assert "_recovery_metadata" in doc or doc["session_id"] == "S001", "Data must not be empty"
 
 
 # ============================================================================
@@ -711,11 +711,11 @@ class TestPerformance:
         )
 
         # Should compress efficiently
-        assert meta.compression_ratio > 3.0
+        assert meta.compression_ratio > 3.0, "compression_ratio must be greater than zero"
 
         # Should restore without issues
         restored = checkpoint_manager.restore_checkpoint(meta.checkpoint_id)
-        assert len(restored["memory_snapshot"]["short_term_memory"]) == 100
+        assert len(restored["memory_snapshot"]["short_term_memory"]) == 100, "Collection must not be empty"
 
 
 # ============================================================================
@@ -743,17 +743,17 @@ class TestIntegration:
 
         # 2. Validate checkpoint
         validation = checkpoint_manager.validate_checkpoint(meta.checkpoint_id)
-        assert validation.is_valid is True
+        assert validation.is_valid is True, "is_valid is not valid"
 
         # 3. Warm-start from checkpoint
         context = resume_engine.warm_start(checkpoint_id=meta.checkpoint_id)
-        assert context.is_valid() is True
+        assert context.is_valid() is True, "Condition must be true"
 
         # 4. Verify all state is present
-        assert context.agent_state["status"] == "in_progress"
-        assert context.memory_snapshot["total_patterns"] == 1
-        assert context.execution_progress["current_task"] == "refactor_search"
-        assert len(context.decision_history) == 1
+        assert context.agent_state["status"] == "in_progress", "Condition must be true"
+        assert context.memory_snapshot["total_patterns"] == 1, "Condition must be true"
+        assert context.execution_progress["current_task"] == "refactor_search", "Condition must be true"
+        assert len(context.decision_history) == 1, "Collection must not be empty"
 
     def test_multiple_sessions_isolation(
         self,
@@ -781,10 +781,10 @@ class TestIntegration:
         doc_s2 = checkpoint_manager.restore_checkpoint(meta_s2.checkpoint_id)
 
         # Verify isolation
-        assert doc_s1["session_id"] == "S001"
-        assert doc_s2["session_id"] == "S002"
-        assert doc_s1["execution_progress"]["current_task"] == "task_s1"
-        assert doc_s2["execution_progress"]["current_task"] == "task_s2"
+        assert doc_s1["session_id"] == "S001", "Condition must be true"
+        assert doc_s2["session_id"] == "S002", "Condition must be true"
+        assert doc_s1["execution_progress"]["current_task"] == "task_s1", "Condition must be true"
+        assert doc_s2["execution_progress"]["current_task"] == "task_s2", "Condition must be true"
 
 
 # ============================================================================

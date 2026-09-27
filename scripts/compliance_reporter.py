@@ -36,8 +36,8 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # Add src directory to path for development mode (if package not installed)
 # Proper usage: Install package with 'pip install -e .' to avoid this workaround
@@ -46,10 +46,9 @@ if SRC_PATH.exists() and str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
 try:
+    from codex.auth import MFAProvider, TokenManager
     from cryptography.fernet import Fernet
     from github import Github
-
-    from codex.auth import MFAProvider, TokenManager
 except ImportError as e:
     error_type = type(e).__name__
     print("Error: Missing required dependencies: <ERROR_TYPE>", file=sys.stderr)

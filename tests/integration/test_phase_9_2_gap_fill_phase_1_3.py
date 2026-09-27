@@ -43,7 +43,7 @@ class TestFixExecutionRetryLogic:
         )
         detector = PatternDetector()
         matches = detector.detect(failure)
-        
+
         assert len(matches) > 0, "Should detect pattern"
         result = executor.execute_fix(failure, matches[0])
         assert result is not None, "Should return result"
@@ -62,7 +62,7 @@ class TestFixExecutionRetryLogic:
         )
         detector = PatternDetector()
         matches = detector.detect(failure)
-        
+
         if matches:
             result = executor.execute_fix(failure, matches[0])
             assert result.failure_log.raw_log == original_log, "Raw log should be preserved"
@@ -81,23 +81,23 @@ class TestFixExecutionRetryLogic:
         )
         detector = PatternDetector()
         matches = detector.detect(failure)
-        
+
         if matches:
             result = executor.execute_fix(failure, matches[0])
             assert result.failure_log is not None, "Should have failure log"
-            assert result.pattern_match is not None or result.final_status == FixStatus.PENDING
+            assert result.pattern_match is not None or result.final_status == FixStatus.PENDING, "pattern_match must be initialized"
             assert result.fix_attempts is not None, "Should have attempts list"
 
     def test_fix_execution_multiple_patterns(self):
         """Test fix execution with different pattern types"""
         executor = FixExecutor(max_attempts=1)
-        
+
         test_cases = [
             ("F401 unused import", "RP-001"),
             ("error: incompatible type", "RP-002"),
             ("AssertionError", "RP-003"),
         ]
-        
+
         for log_content, expected_pattern in test_cases:
             failure = FailureLog(
                 raw_log=log_content,
@@ -108,7 +108,7 @@ class TestFixExecutionRetryLogic:
             )
             detector = PatternDetector()
             matches = detector.detect(failure)
-            
+
             if matches:
                 assert matches[0].pattern.id == expected_pattern, \
                     f"Should detect {expected_pattern} for '{log_content}'"
@@ -193,10 +193,10 @@ class TestPatternMatchingEdgeCases:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         matches1 = detector.detect(failure)
         matches2 = detector.detect(failure)
-        
+
         assert len(matches1) == len(matches2), "Should get same number of matches"
         if matches1 and matches2:
             assert matches1[0].confidence == matches2[0].confidence, \
@@ -210,7 +210,7 @@ class TestPatternMatchingEdgeCases:
             "error type",
             "failed test",
         ]
-        
+
         for log_content in test_cases:
             failure = FailureLog(
                 raw_log=log_content,
@@ -262,7 +262,7 @@ class TestPatternRoutingFallback:
             "ResolutionImpossible: numpy conflict",
             "FAILED test with AssertionError",
         ]
-        
+
         for log in test_logs:
             result = router.route(log)
             # Should route to some agent or fallback
@@ -304,7 +304,7 @@ class TestErrorPathsCoverage:
         """Test performance with large log input"""
         detector = PatternDetector()
         large_log = "F401 unused import\n" * 100
-        
+
         failure = FailureLog(
             raw_log=large_log,
             job_name="test",
@@ -312,11 +312,11 @@ class TestErrorPathsCoverage:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         start_time = time.time()
         matches = detector.detect(failure)
         duration = time.time() - start_time
-        
+
         assert duration < 1.0, f"Should complete <1s, took {duration:.3f}s"
 
     def test_performance_with_all_patterns(self):
@@ -329,11 +329,11 @@ class TestErrorPathsCoverage:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         start_time = time.time()
         matches = detector.detect(failure)
         duration = time.time() - start_time
-        
+
         # Should evaluate all 12 patterns quickly
         assert duration < 0.5, "Should complete <500ms with 12 patterns"
 
@@ -351,7 +351,7 @@ class TestAdvancedScenarios:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         result = orchestrator.orchestrate(failure)
         assert result is not None, "Should complete orchestration"
         assert result.failure_log == failure, "Should preserve log"
@@ -359,7 +359,7 @@ class TestAdvancedScenarios:
     def test_pattern_confidence_varies_with_context(self):
         """Test that confidence changes with log context"""
         detector = PatternDetector()
-        
+
         # Simple log
         failure1 = FailureLog(
             raw_log="F401",
@@ -368,7 +368,7 @@ class TestAdvancedScenarios:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         # Rich log with context
         failure2 = FailureLog(
             raw_log="error: F401 unused import 'sys' in module test",
@@ -377,10 +377,10 @@ class TestAdvancedScenarios:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         matches1 = detector.detect(failure1)
         matches2 = detector.detect(failure2)
-        
+
         # Both should detect F401, but confidence may differ
         assert len(matches1) >= 0, "Should handle simple log"
         assert len(matches2) >= 0, "Should handle rich log"
@@ -395,10 +395,10 @@ class TestAdvancedScenarios:
             timestamp="2026-06-30T10:00:00Z",
             exit_code=1
         )
-        
+
         result1 = orchestrator.orchestrate(failure)
         result2 = orchestrator.orchestrate(failure)
-        
+
         # Both results should detect same pattern
         if result1.pattern_match and result2.pattern_match:
             assert result1.pattern_match.pattern.id == result2.pattern_match.pattern.id, \
@@ -411,7 +411,7 @@ class TestAdvancedScenarios:
 # Total Gap-Filling Tests: 24 tests (Phase 1-3 roadmap)
 # Coverage improvements:
 #   - Fix Execution: 4 tests
-#   - Pattern Matching: 6 tests  
+#   - Pattern Matching: 6 tests
 #   - Routing: 4 tests
 #   - Error Paths: 4 tests
 #   - Advanced Scenarios: 3 tests

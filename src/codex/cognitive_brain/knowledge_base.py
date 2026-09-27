@@ -90,9 +90,7 @@ class QueryInterface:
         """
         return self.by_tag.get(tag, [])
 
-    def find_best_pattern(
-        self, category: str, min_success_rate: float = 0.85
-    ) -> Optional[Pattern]:
+    def find_best_pattern(self, category: str, min_success_rate: float = 0.85) -> Optional[Pattern]:
         """Find best performing pattern for category.
 
         Args:
@@ -103,8 +101,7 @@ class QueryInterface:
             Best pattern or None
         """
         candidates = [
-            p for p in self.by_category.get(category, [])
-            if p.success_rate >= min_success_rate
+            p for p in self.by_category.get(category, []) if p.success_rate >= min_success_rate
         ]
 
         if not candidates:
@@ -251,9 +248,7 @@ class KnowledgeBase:
 
         return pattern
 
-    def update_pattern(
-        self, pattern_id: str, **kwargs: Any
-    ) -> Optional[Pattern]:
+    def update_pattern(self, pattern_id: str, **kwargs: Any) -> Optional[Pattern]:
         """Update existing pattern.
 
         Args:
@@ -285,9 +280,7 @@ class KnowledgeBase:
 
         return pattern
 
-    def parse_accountability_report(
-        self, report_path: Path
-    ) -> Dict[str, Any]:
+    def parse_accountability_report(self, report_path: Path) -> Dict[str, Any]:
         """Parse AGENT_ACCOUNTABILITY_REPORT.md for patterns.
 
         Args:
@@ -403,9 +396,7 @@ class KnowledgeBase:
 
         categories = set(p.category for p in self.patterns)
         decision_types = set(p.decision_type for p in self.patterns)
-        avg_success_rate = sum(p.success_rate for p in self.patterns) / len(
-            self.patterns
-        )
+        avg_success_rate = sum(p.success_rate for p in self.patterns) / len(self.patterns)
 
         return {
             "total_patterns": len(self.patterns),

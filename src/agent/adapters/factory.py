@@ -14,11 +14,14 @@ class GenerationProviderFactory:
     """Resolve a generation provider and gracefully fall back across providers."""
 
     def __init__(self, providers: Sequence[BaseGenerationProvider] | None = None) -> None:
-        self.providers = list(providers or [
-            OpenAICompatibleAdapter(),
-            SparkAdapter(),
-            MockAdapter(),
-        ])
+        self.providers = list(
+            providers
+            or [
+                OpenAICompatibleAdapter(),
+                SparkAdapter(),
+                MockAdapter(),
+            ]
+        )
 
     def add_provider(self, provider: BaseGenerationProvider) -> None:
         self.providers.append(provider)

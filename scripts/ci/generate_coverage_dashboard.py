@@ -20,12 +20,12 @@ Usage:
     - Writes to .codex/coverage/COVERAGE_DASHBOARD.md
 """
 
+import argparse
 import json
 import sys
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
-import argparse
+from pathlib import Path
+from typing import Any, Dict, List
 
 
 def load_baseline_tracking(input_dir: Path) -> Dict[str, Any]:

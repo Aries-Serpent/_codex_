@@ -33,11 +33,11 @@ from packaging.version import parse as SemanticVersion
 #         assert ", "Condition must be true"
 #         assert "Add feature" in output, "Condition must be true"
 #     """Semantic version representation."""
-# 
+#
 #     VERSION_PATTERN = re.compile(
 #         r"^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9.-]+))?(?:\+([a-zA-Z0-9.-]+))?$"
 #     )
-# 
+#
 #     def __init__(
 #         self,
 #         major: int,
@@ -51,7 +51,7 @@ from packaging.version import parse as SemanticVersion
 #         self.patch = patch
 #         self.prerelease = prerelease
 #         self.build = build
-# 
+#
 #     @classmethod
 #     def parse(cls, version_str: str) -> "SemanticVersion":
 #     def parse(cls, version_str: str) -> "SemanticVersion":
@@ -104,7 +104,7 @@ from packaging.version import parse as SemanticVersion
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "Add feature" in output, "Condition must be true"
-# 
+#
 #     def test_parse_simple(self):
 #     def test_parse_simple(self):
 #         """Parse simple version."""
@@ -164,7 +164,7 @@ from packaging.version import parse as SemanticVersion
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "Add feature" in output, "Condition must be true"
-# 
+#
 #         output = changelog.generate("1.0.0", "2024-01-01")
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
@@ -174,7 +174,7 @@ from packaging.version import parse as SemanticVersion
 #         self.scope = scope
 #         self.breaking = False
 #         self.pr_number: int | None = None
-# 
+#
 #     def to_markdown(self) -> str:
 #     def to_markdown(self) -> str:
 #         """Convert to markdown."""
@@ -185,7 +185,7 @@ from packaging.version import parse as SemanticVersion
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "Add feature" in output, "Condition must be true"
-# 
+#
 #     TYPES = {
 #     TYPES = {
 #         "feat": "Features",
@@ -197,7 +197,7 @@ from packaging.version import parse as SemanticVersion
 #     }
 #     def __init__(self):
 #         self.entries: dict[str, list[ChangelogEntry]] = {t: [] for t in self.TYPES}
-# 
+#
 #     def add_entry(self, entry: ChangelogEntry) -> None:
 #     def add_entry(self, entry: ChangelogEntry) -> None:
 #         """Add entry to changelog."""
@@ -215,13 +215,13 @@ from packaging.version import parse as SemanticVersion
 #             for entry in entries:
 #                 lines.append(entry.to_markdown())
 #             lines.append("")
-# 
+#
 #         return "\n".join(lines)
 #         output = changelog.generate("1.0.0", "2024-01-01")
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "Add feature" in output, "Condition must be true"
-# 
+#
 #     def test_add_entry(self):
 #     def test_add_entry(self):
 #         """Add entry to changelog."""

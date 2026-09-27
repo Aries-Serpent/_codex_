@@ -30,7 +30,7 @@ class TestCliConfig:
         """Test that config module imports successfully."""
         try:
             from codex_ml.cli import config
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.config not available")
 
@@ -38,7 +38,7 @@ class TestCliConfig:
         """Test that config module has expected functions."""
         try:
             from codex_ml.cli import config
-            
+
             # Check for common config functions
             assert hasattr(config, "__file__")
         except ImportError:
@@ -52,7 +52,7 @@ class TestCliEnvironment:
         """Test environment checking functionality."""
         try:
             from codex_ml.cli import env_check
-            assert env_check is not None
+            assert env_check is not None, "env_check must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.env_check not available")
 
@@ -60,14 +60,14 @@ class TestCliEnvironment:
         """Test codex environment module."""
         try:
             from codex_ml.cli import codex_env
-            assert codex_env is not None
+            assert codex_env is not None, "codex_env must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_env not available")
 
     def test_env_variable_handling(self) -> None:
         """Test environment variable handling."""
         with mock.patch.dict(os.environ, {"TEST_VAR": "test_value"}):
-            assert os.environ.get("TEST_VAR") == "test_value"
+            assert os.environ.get("TEST_VAR") == "test_value", "Value must be initialized"
 
 
 class TestCliEntrypoints:
@@ -77,7 +77,7 @@ class TestCliEntrypoints:
         """Test entrypoints module exists and imports."""
         try:
             from codex_ml.cli import entrypoints
-            assert entrypoints is not None
+            assert entrypoints is not None, "entrypoints must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.entrypoints not available")
 
@@ -89,7 +89,7 @@ class TestCliCodexCli:
         """Test that codex_cli module imports."""
         try:
             from codex_ml.cli import codex_cli
-            assert codex_cli is not None
+            assert codex_cli is not None, "codex_cli must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -97,7 +97,7 @@ class TestCliCodexCli:
         """Test that codex_cli has main function."""
         try:
             from codex_ml.cli import codex_cli
-            
+
             # Should have some kind of entry point
             assert hasattr(codex_cli, "__file__")
         except ImportError:
@@ -111,7 +111,7 @@ class TestCliAuditPipeline:
         """Test audit_pipeline module."""
         try:
             from codex_ml.cli import audit_pipeline
-            assert audit_pipeline is not None
+            assert audit_pipeline is not None, "audit_pipeline must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.audit_pipeline not available")
 
@@ -123,7 +123,7 @@ class TestCliEvaluate:
         """Test evaluate module."""
         try:
             from codex_ml.cli import evaluate
-            assert evaluate is not None
+            assert evaluate is not None, "evaluate must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.evaluate not available")
 
@@ -135,7 +135,7 @@ class TestCliGenerate:
         """Test generate module."""
         try:
             from codex_ml.cli import generate
-            assert generate is not None
+            assert generate is not None, "generate must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.generate not available")
 
@@ -147,7 +147,7 @@ class TestCliFeatureStore:
         """Test feature_store module."""
         try:
             from codex_ml.cli import feature_store
-            assert feature_store is not None
+            assert feature_store is not None, "feature_store must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.feature_store not available")
 
@@ -159,7 +159,7 @@ class TestCliDeploy:
         """Test deploy module."""
         try:
             from codex_ml.cli import deploy
-            assert deploy is not None
+            assert deploy is not None, "deploy must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.deploy not available")
 
@@ -171,7 +171,7 @@ class TestCliDetectors:
         """Test detectors module."""
         try:
             from codex_ml.cli import detectors
-            assert detectors is not None
+            assert detectors is not None, "detectors must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.detectors not available")
 
@@ -183,7 +183,7 @@ class TestCliCheckpointValidate:
         """Test checkpoint_validate module."""
         try:
             from codex_ml.cli import checkpoint_validate
-            assert checkpoint_validate is not None
+            assert checkpoint_validate is not None, "checkpoint_validate must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.checkpoint_validate not available")
 
@@ -195,7 +195,7 @@ class TestCliInit:
         """Test that CLI __init__ module loads."""
         try:
             from codex_ml import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli not available")
 
@@ -203,7 +203,7 @@ class TestCliInit:
         """Test that CLI package has expected submodules."""
         try:
             from codex_ml import cli
-            
+
             # Should have __path__ attribute
             assert hasattr(cli, "__path__") or hasattr(cli, "__file__")
         except ImportError:
@@ -219,9 +219,9 @@ class TestCliErrorHandling:
             # Create a temporary directory without config
             config_dir = Path(tmpdir) / "no_config"
             config_dir.mkdir()
-            
+
             # Should handle missing config gracefully
-            assert not config_dir.exists() or config_dir.is_dir()
+            assert not config_dir.exists() or config_dir.is_dir(), "Condition must be true"
 
     def test_invalid_argument_handling(self) -> None:
         """Test handling of invalid arguments."""
@@ -237,7 +237,7 @@ class TestCliIntegration:
         """Test that all CLI submodules can be imported."""
         try:
             from codex_ml import cli
-            
+
             # List of expected submodules
             expected_modules = [
                 "config",
@@ -245,7 +245,7 @@ class TestCliIntegration:
                 "deploy",
                 "detectors",
             ]
-            
+
             # Try to get references to submodules
             for module_name in expected_modules:
                 try:
@@ -260,7 +260,7 @@ class TestCliIntegration:
         """Test CLI features module."""
         try:
             from codex_ml.cli import features
-            assert features is not None
+            assert features is not None, "features must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.features not available")
 
@@ -302,11 +302,11 @@ def test_env_variable_defaults(env_var: str, default_value: str | None) -> None:
     """Test environment variable defaults."""
     # Remove the variable if it exists
     old_val = os.environ.pop(env_var, None)
-    
+
     try:
         # Check that we can retrieve with default
         value = os.environ.get(env_var, default_value)
-        assert value == default_value or value is not None
+        assert value == default_value or value is not None, "value must be initialized"
     finally:
         # Restore if it was set
         if old_val is not None:

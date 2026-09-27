@@ -78,7 +78,7 @@ from codex.cognitive.quantum_planset_engine import (
 #             step.physics.amplitude(),
 #             rel_tol=1e-9,
 #         )
-# 
+#
 #         step = _make_step(decoherence_sessions=0)
 #         assert math.isclose(, "Condition must be true"
 #             step.effective_amplitude(),
@@ -87,21 +87,21 @@ from codex.cognitive.quantum_planset_engine import (
 #         )
 #         expected = (0.9 * 0.9 * 9.0) / (5.0 * 1.1 * 1.1)
 #         assert math.isclose(p.score(), expected, rel_tol=1e-9)
-# 
+#
 #     def test_score_zero_energy(self):
 #         p = PhysicsParams(energy=0.0)
 #         assert p.score() == 0.0, "Condition must be true"
-# 
+#
 #     def test_score_negative_energy_guarded(self):
 #         p = PhysicsParams(energy=-1.0)
 #         assert p.score() == 0.0, "Condition must be true"
-# 
+#
 #     def test_amplitude_is_sqrt_of_score(self):
 #         p = PhysicsParams(
 #             impact=1.0, confidence=1.0, momentum=4.0, energy=4.0, risk=0.0, friction=0.0
 #         )
 #         assert math.isclose(p.amplitude(), math.sqrt(p.score()), rel_tol=1e-9)
-# 
+#
 #     def test_amplitude_non_negative(self):
 #         p = PhysicsParams(impact=0.0)
 #         assert p.amplitude() == 0.0, "Condition must be true"
@@ -111,7 +111,7 @@ from codex.cognitive.quantum_planset_engine import (
 #             step.physics.amplitude(),
 #             rel_tol=1e-9,
 #         )
-# 
+#
 #         step = _make_step(decoherence_sessions=0)
 #         assert math.isclose(, "Condition must be true"
 #             step.effective_amplitude(),
@@ -121,7 +121,7 @@ from codex.cognitive.quantum_planset_engine import (
 #             step.physics.amplitude(),
 #             rel_tol=1e-9,
 #         )
-# 
+#
 #     def test_effective_amplitude_decays(self):
 #         step_fresh = _make_step(decoherence_sessions=0)
 #         step_aged = _make_step(decoherence_sessions=5)  # one half-life
@@ -131,16 +131,16 @@ from codex.cognitive.quantum_planset_engine import (
 #             step_fresh.effective_amplitude() * 0.5,
 #             rel_tol=1e-6,
 #         )
-# 
+#
 #     def test_is_viable_fresh(self):
 #         step = _make_step()
 #         assert step.is_viable(), "Condition must be true"
-# 
+#
 #     def test_is_viable_over_decohered(self):
 #         # After 100 half-lives amplitude → 0
 #         step = _make_step(decoherence_sessions=500)
 #         assert not step.is_viable(), "Condition must be true"
-# 
+#
 #     def test_serialise_round_trip(self):
 #         step = _make_step(step_id="ROUND-01", entangled_with=["ROUND-02"])
 #         restored = PlanStep.from_dict(step.to_dict())
@@ -149,14 +149,14 @@ from codex.cognitive.quantum_planset_engine import (
 #         assert restored.status == step.status, "status is not valid"
 #         assert math.isclose(restored.physics.impact, step.physics.impact, rel_tol=1e-9)
 #         assert restored.entangled_with == ["ROUND-02"], "entangled_with is not valid"
-# 
+#
 #     def test_to_dict_contains_amplitude_and_score(self):
 #         step = _make_step()
 #         d = step.to_dict()
 #         assert "effective_amplitude" in d, "Condition must be true"
 #         assert "physics_score" in d, "Condition must be true"
 #         assert d["effective_amplitude"] >= 0.0, "Value must be greater than zero"
-# 
+#
 #     def test_status_roundtrip(self):
 #         step = _make_step(status=StepStatus.COMPLETE)
 #         restored = PlanStep.from_dict(step.to_dict())
@@ -166,7 +166,7 @@ from codex.cognitive.quantum_planset_engine import (
 #             ps.total_amplitude(),
 #             s1.effective_amplitude() + s2.effective_amplitude(),
 #         )
-# 
+#
 #         ps = self._planset_with_steps(s1, s2)
 #         assert math.isclose(, "Condition must be true"
 #             ps.total_amplitude(),
@@ -176,13 +176,13 @@ from codex.cognitive.quantum_planset_engine import (
 #             area="CUSTOM",
 #             steps=list(steps),
 #         )
-# 
+#
 #     def test_viable_steps_excludes_dead(self):
 #         live = _make_step("A")
 #         dead = _make_step("B", decoherence_sessions=500)
 #         ps = self._planset_with_steps(live, dead)
 #         assert ps.viable_steps() == [live], "Condition must be true"
-# 
+#
 #     def test_total_amplitude(self):
 #         s1 = _make_step(
 #         s1 = _make_step(
@@ -201,12 +201,12 @@ from codex.cognitive.quantum_planset_engine import (
 #         ps = self._planset_with_steps(*steps)
 #         total_prob = sum(ps.probability(s) for s in ps.viable_steps())
 #         assert math.isclose(total_prob, 1.0, rel_tol=1e-9)
-# 
+#
 #     def test_probability_zero_when_no_viable(self):
 #         dead = _make_step("X", decoherence_sessions=500)
 #         ps = self._planset_with_steps(dead)
 #         assert ps.probability(dead) == 0.0, "Condition must be true"
-# 
+#
 #     def test_serialise_round_trip(self):
 #         step = _make_step("RT-01", entangled_with=["RT-02"])
 #         bond = EntanglementBond("RT-01", "RT-02", 0.9)

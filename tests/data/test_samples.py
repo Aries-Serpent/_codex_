@@ -13,8 +13,9 @@ Test module for samples.
 from pathlib import Path
 from shutil import copyfile
 
-from hhg_logistics.pipeline import run_pipeline
 from omegaconf import OmegaConf
+
+from hhg_logistics.pipeline import run_pipeline
 
 
 def test_pipeline_with_sample_data(tmp_path: Path, monkeypatch) -> None:

@@ -118,7 +118,9 @@ def validate_filters(filters: Optional[dict]) -> dict[str, Any]:
         # Validate filter value
         if isinstance(value, str):
             if len(value) > MAX_FILTER_VALUE_LENGTH:
-                raise ValueError(f"Filter value exceeds maximum length of {MAX_FILTER_VALUE_LENGTH}")
+                raise ValueError(
+                    f"Filter value exceeds maximum length of {MAX_FILTER_VALUE_LENGTH}"
+                )
 
             if _contains_code_injection(value):
                 logger.warning(f"Potential code injection detected in filter value: {value[:100]}")

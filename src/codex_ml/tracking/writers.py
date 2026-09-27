@@ -539,7 +539,12 @@ class TensorBoardWriter(BaseWriter):
                 "enabled",
                 extra={"dependencies": _collect_dependency_flags()},
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional
             get_default_logger().debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
             if isinstance(exc, ImportError):
@@ -634,7 +639,12 @@ class MLflowWriter(BaseWriter):
                 "enabled",
                 extra=summary_extra,
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional
             self._mlflow = None
             self._run = None
             get_default_logger().debug("MLflow writer disabled", exc_info=exc)
@@ -702,7 +712,12 @@ class WandbWriter(BaseWriter):
                     "mode": mode,
                 },
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - optional
             self._run = None
             get_default_logger().debug("Weights & Biases writer disabled", exc_info=exc)
             if isinstance(exc, ImportError):
@@ -754,7 +769,12 @@ class CompositeWriter(BaseWriter):
             if callable(status_getter):
                 try:
                     reason = status_getter()
-                except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                ):  # pragma: no cover - defensive
                     reason = getattr(writer, "_disabled_reason", None)
             else:
                 reason = getattr(writer, "_disabled_reason", None)
@@ -772,14 +792,24 @@ class CompositeWriter(BaseWriter):
         for w in self._writers:
             try:
                 w.log(row)
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robustness
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - robustness
                 get_default_logger().debug("Writer log error", exc_info=exc)
 
     def close(self) -> None:
         for w in self._writers:
             try:
                 w.close()
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robustness
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - robustness
                 get_default_logger().debug("Writer close error", exc_info=exc)
 
     @property

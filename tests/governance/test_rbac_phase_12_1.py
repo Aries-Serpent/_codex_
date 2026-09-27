@@ -25,17 +25,17 @@ import pytest
 # Simplified test structure (full implementation in actual test file)
 class TestRBACEngine:
     """Basic RBAC engine tests."""
-    
+
     def test_placeholder(self):
         """Placeholder test."""
-        assert True
+        assert True, "True is not valid"
 
 class TestAccessController:
     """Basic access controller tests."""
-    
+
     def test_placeholder(self):
         """Placeholder test."""
-        assert True
+        assert True, "True is not valid"
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

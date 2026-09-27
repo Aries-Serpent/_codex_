@@ -28,12 +28,12 @@ class TestRandomnessFlakiness:
         """
         # FIXED: Use deterministic seed
         random.seed(42)
-        
+
         # Generate deterministic random value
         rand_val = random.random()
-        
+
         # This assertion will now always pass with seed=42
-        assert 0.0 <= rand_val <= 1.0
+        assert 0.0 <= rand_val <= 1.0, "0 is not valid"
         assert rand_val > 0.1, "With seed 42, this specific assertion passes"
 
     def test_list_shuffle_determinism(self):
@@ -43,11 +43,11 @@ class TestRandomnessFlakiness:
         """
         # FIXED: Use deterministic seed
         random.seed(42)
-        
+
         original = [1, 2, 3, 4, 5]
         shuffled = original.copy()
         random.shuffle(shuffled)
-        
+
         # With seed 42, this specific order is guaranteed
         expected_order = [4, 2, 3, 5, 1]  # Exact output with seed 42
         assert shuffled == expected_order, "Shuffle with seed=42 produces deterministic output"
@@ -56,10 +56,10 @@ class TestRandomnessFlakiness:
         """Test that random choice returns consistent results."""
         # FIXED: Use deterministic seed
         random.seed(42)
-        
+
         choices = [10, 20, 30, 40, 50]
         selected = random.choice(choices)
-        
+
         # With seed 42, choice always returns 10
         assert selected == 10, "Choice with seed=42 is deterministic"
 
@@ -74,7 +74,7 @@ class TestRaceConditionFlakiness:
         """
         counter = {"value": 0}
         barrier = threading.Barrier(3)  # FIXED: Synchronize threads
-        
+
         def increment():
             """Increment counter in thread."""
             barrier.wait()  # Ensure all threads start simultaneously
@@ -82,13 +82,13 @@ class TestRaceConditionFlakiness:
                 # FIXED: Use atomic increment with lock (simulated)
                 count = counter["value"]
                 counter["value"] = count + 1
-        
+
         threads = [threading.Thread(target=increment) for _ in range(3)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # With proper synchronization, count should be 300
         assert counter["value"] == 300, "Counter with barrier sync is deterministic"
 
@@ -99,25 +99,25 @@ class TestRaceConditionFlakiness:
         This test ensures proper isolation of thread-local resources.
         """
         # FIXED: Use thread-local storage
-        import threading
-        
+        pass  # removed redundant `import threading` (top-level import used)
+
         thread_local = threading.local()
         results = []
-        
+
         def set_and_read(thread_id):
             """Set value in thread-local storage."""
             thread_local.value = thread_id * 100
             time.sleep(0.01)  # Allow time for potential race
             results.append(thread_local.value)
-        
+
         threads = [threading.Thread(target=set_and_read, args=(i,)) for i in range(3)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Each thread should have its own value
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         assert set(results) == {0, 100, 200}, "Thread-local values properly isolated"
 
 
@@ -132,11 +132,11 @@ class TestTimingFlakiness:
         # FIXED: Mock time.time() for determinism
         with patch('time.time') as mock_time:
             mock_time.side_effect = [100.0, 100.5]  # Deterministic time progression
-            
+
             start = time.time()
             # Simulated work
             elapsed = time.time() - start
-            
+
             # With mocked time, elapsed is exactly 0.5
             assert abs(elapsed - 0.5) < 0.01, "Mocked time is deterministic"
 
@@ -148,12 +148,12 @@ class TestTimingFlakiness:
         # FIXED: Mock sleep to avoid actual waiting
         with patch('time.sleep') as mock_sleep:
             start = time.time()
-            
+
             # This will not actually sleep
             time.sleep(10)
-            
+
             elapsed = time.time() - start
-            
+
             # Should complete almost instantly (not actually sleep 10 seconds)
             assert elapsed < 1.0, "Sleep was mocked, test runs fast"
             mock_sleep.assert_called_once_with(10)
@@ -169,7 +169,7 @@ class TestStateContaminationFlakiness:
         # FIXED: Explicitly isolate state
         self.shared_state.clear()
         self.shared_state['value'] = 42
-        assert self.shared_state['value'] == 42
+        assert self.shared_state['value'] == 42, "Value must be initialized"
 
     def test_state_cleanup_second(self):
         """Second test - should not see previous test's state.
@@ -178,11 +178,11 @@ class TestStateContaminationFlakiness:
         """
         # FIXED: Clear state at start
         self.shared_state.clear()
-        
+
         # State should be clean
-        assert 'value' not in self.shared_state
+        assert 'value' not in self.shared_state, "Value must be initialized"
         self.shared_state['value'] = 99
-        assert self.shared_state['value'] == 99
+        assert self.shared_state['value'] == 99, "Value must be initialized"
 
 
 class TestAsyncFlakiness:
@@ -194,18 +194,18 @@ class TestAsyncFlakiness:
         Demonstrates fixing tests that depend on event timing.
         """
         import asyncio
-        
+
         async def wait_and_signal():
             """Wait and signal an event."""
             event = asyncio.Event()
-            
+
             async def signal_later():
                 await asyncio.sleep(0.01)  # Short delay
                 event.set()
-            
+
             # Run signaler concurrently
             task = asyncio.create_task(signal_later())
-            
+
             # FIXED: Use timeout to prevent indefinite wait
             try:
                 await asyncio.wait_for(event.wait(), timeout=1.0)
@@ -214,9 +214,9 @@ class TestAsyncFlakiness:
                 result = False
             finally:
                 task.cancel()
-            
+
             return result
-        
+
         # Run the async test
         result = asyncio.run(wait_and_signal())
         assert result is True, "Event was signaled within timeout"
@@ -231,19 +231,19 @@ class TestFileIOFlakiness:
         Demonstrates fixing file I/O race conditions.
         """
         import os
-        
+
         file_path = tmp_path / "test_file.txt"
-        
+
         # FIXED: Use explicit sync and proper error handling
         with open(str(file_path), 'w') as f:
             f.write("test data")
             f.flush()  # Ensure data is written
             os.fsync(f.fileno())  # Sync to disk
-        
+
         # Now read should definitely work
         with open(str(file_path), 'r') as f:
             content = f.read()
-        
+
         assert content == "test data", "File content written and read correctly"
 
 
@@ -256,9 +256,9 @@ class TestFlakynessMarkersAndReasons:
         # FIXED: Use mock to prevent timing dependency
         with patch('time.sleep'):
             time.sleep(100)  # Won't actually sleep
-        
+
         # Test completes quickly and deterministically
-        assert True
+        assert True, "True is not valid"
 
 
 @pytest.fixture(autouse=True)

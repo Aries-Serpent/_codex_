@@ -175,9 +175,9 @@ class TestHTTPHealthCheck:
         service = MockService("api")
         checker = HTTPHealthChecker(service)
         result = checker.check()
-        assert result.status == ServiceState.HEALTHY
-        assert result.error_message is None
-        assert "response_time_ms" in result.metrics
+        assert result.status == ServiceState.HEALTHY, "Result must not be empty"
+        assert result.error_message is None, "Result must not be empty"
+        assert "response_time_ms" in result.metrics, "Response must not be empty"
 
     def test_http_health_check_unhealthy(self):
         """Test HTTP health check for unhealthy service."""
@@ -185,16 +185,16 @@ class TestHTTPHealthCheck:
         service.inject_failure()
         checker = HTTPHealthChecker(service)
         result = checker.check()
-        assert result.status == ServiceState.UNHEALTHY
-        assert result.error_message is not None
+        assert result.status == ServiceState.UNHEALTHY, "Result must not be empty"
+        assert result.error_message is not None, "error_message must be initialized"
 
     def test_http_response_time_metric(self):
         """Test HTTP response time metric."""
         service = MockService("api")
         checker = HTTPHealthChecker(service)
         result = checker.check()
-        assert "response_time_ms" in result.metrics
-        assert result.metrics["response_time_ms"] > 0
+        assert "response_time_ms" in result.metrics, "Response must not be empty"
+        assert result.metrics["response_time_ms"] > 0, "Value must be greater than zero"
 
 
 class TestDatabaseHealthCheck:
@@ -205,9 +205,9 @@ class TestDatabaseHealthCheck:
         database = MockDatabase()
         checker = DatabaseHealthChecker(database)
         result = checker.check()
-        assert result.status == ServiceState.HEALTHY
-        assert result.error_message is None
-        assert result.metrics["connected"] is True
+        assert result.status == ServiceState.HEALTHY, "Result must not be empty"
+        assert result.error_message is None, "Result must not be empty"
+        assert result.metrics["connected"] is True, "Result must not be empty"
 
     def test_database_connection_check_disconnected(self):
         """Test database connection check when disconnected."""
@@ -215,8 +215,8 @@ class TestDatabaseHealthCheck:
         database.connected = False
         checker = DatabaseHealthChecker(database)
         result = checker.check()
-        assert result.status == ServiceState.UNHEALTHY
-        assert result.error_message is not None
+        assert result.status == ServiceState.UNHEALTHY, "Result must not be empty"
+        assert result.error_message is not None, "error_message must be initialized"
 
     def test_database_replication_lag_metric(self):
         """Test database replication lag metric."""
@@ -224,8 +224,8 @@ class TestDatabaseHealthCheck:
         database.replication_lag_ms = 50.0
         checker = DatabaseHealthChecker(database)
         result = checker.check()
-        assert "replication_lag_ms" in result.metrics
-        assert result.metrics["replication_lag_ms"] == 50.0
+        assert "replication_lag_ms" in result.metrics, "Result must not be empty"
+        assert result.metrics["replication_lag_ms"] == 50.0, "Result must not be empty"
 
 
 class TestCacheHealthCheck:
@@ -240,7 +240,7 @@ class TestCacheHealthCheck:
         checker = CacheHealthChecker(cache)
         result = checker.check()
         assert result.status in [ServiceState.HEALTHY, ServiceState.DEGRADED]
-        assert "hit_rate" in result.metrics
+        assert "hit_rate" in result.metrics, "Result must not be empty"
 
     def test_cache_hit_rate_metric(self):
         """Test cache hit rate metric."""
@@ -252,7 +252,7 @@ class TestCacheHealthCheck:
             cache.get("nonexistent")  # 5 misses
         checker = CacheHealthChecker(cache)
         result = checker.check()
-        assert "hit_rate" in result.metrics
+        assert "hit_rate" in result.metrics, "Result must not be empty"
         assert result.metrics["hit_rate"] == pytest.approx(0.5, abs=0.01)
 
 
@@ -267,8 +267,8 @@ class TestHealthCheckAggregation:
         aggregator.register_check(CacheHealthChecker(MockCache()))
         result = aggregator.run_all_checks()
         assert result["overall_status"] in ["healthy", "degraded"]
-        assert result["total_checks"] == 3
-        assert result["healthy"] >= 1
+        assert result["total_checks"] == 3, "Result must not be empty"
+        assert result["healthy"] >= 1, "Value must be greater than zero"
 
     def test_aggregate_with_failure(self):
         """Test aggregating with one failure."""
@@ -279,9 +279,9 @@ class TestHealthCheckAggregation:
         aggregator.register_check(HTTPHealthChecker(healthy_service))
         aggregator.register_check(HTTPHealthChecker(unhealthy_service))
         result = aggregator.run_all_checks()
-        assert result["healthy"] >= 1
-        assert result["unhealthy"] >= 1
-        assert result["total_checks"] == 2
+        assert result["healthy"] >= 1, "Value must be greater than zero"
+        assert result["unhealthy"] >= 1, "Value must be greater than zero"
+        assert result["total_checks"] == 2, "Result must not be empty"
 
     def test_aggregate_health_counts(self):
         """Test health check counts aggregation."""
@@ -290,7 +290,7 @@ class TestHealthCheckAggregation:
             service = MockService(f"service_{i}")
             aggregator.register_check(HTTPHealthChecker(service))
         result = aggregator.run_all_checks()
-        assert result["healthy"] + result["degraded"] + result["unhealthy"] == 5
+        assert result["healthy"] + result["degraded"] + result["unhealthy"] == 5, "Result must not be empty"
 
 
 class TestAlertTriggering:
@@ -307,7 +307,7 @@ class TestAlertTriggering:
             aggregator.register_check(HTTPHealthChecker(service))
         aggregator.run_all_checks()
         should_alert = aggregator.should_trigger_alert()
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
     def test_no_alert_on_single_failure(self):
         """Test no alert with single failure."""
@@ -320,7 +320,7 @@ class TestAlertTriggering:
         aggregator.register_check(HTTPHealthChecker(unhealthy_service))
         aggregator.run_all_checks()
         should_alert = aggregator.should_trigger_alert()
-        assert should_alert is False
+        assert should_alert is False, "should_alert is not valid"
 
     def test_alert_threshold_configuration(self):
         """Test configurable alert threshold."""
@@ -333,7 +333,7 @@ class TestAlertTriggering:
             aggregator.register_check(HTTPHealthChecker(service))
         aggregator.run_all_checks()
         should_alert = aggregator.should_trigger_alert()
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
 
 class TestGracePeriod:
@@ -345,7 +345,7 @@ class TestGracePeriod:
         aggregator.grace_period_seconds = 60
         start_time = datetime.now()
         is_in_grace = aggregator.apply_grace_period(start_time)
-        assert is_in_grace is True
+        assert is_in_grace is True, "is_in_grace is not valid"
 
     def test_grace_period_expired(self):
         """Test grace period expiration."""
@@ -353,7 +353,7 @@ class TestGracePeriod:
         aggregator.grace_period_seconds = 1
         start_time = datetime.now() - timedelta(seconds=2)
         is_in_grace = aggregator.apply_grace_period(start_time)
-        assert is_in_grace is False
+        assert is_in_grace is False, "is_in_grace is not valid"
 
     def test_grace_period_configuration(self):
         """Test configurable grace period."""
@@ -361,7 +361,7 @@ class TestGracePeriod:
         aggregator.grace_period_seconds = 5
         start_time = datetime.now() - timedelta(seconds=3)
         is_in_grace = aggregator.apply_grace_period(start_time)
-        assert is_in_grace is True
+        assert is_in_grace is True, "is_in_grace is not valid"
 
 
 class TestHealthCheckStress:
@@ -373,7 +373,7 @@ class TestHealthCheckStress:
         aggregator.register_check(HTTPHealthChecker(MockService("api")))
         for _ in range(100):
             result = aggregator.run_all_checks()
-        assert result["total_checks"] >= 1
+        assert result["total_checks"] >= 1, "Value must be greater than zero"
 
     def test_many_checks_aggregation(self):
         """Test aggregating many checks."""
@@ -382,7 +382,7 @@ class TestHealthCheckStress:
             service = MockService(f"service_{i}")
             aggregator.register_check(HTTPHealthChecker(service))
         result = aggregator.run_all_checks()
-        assert result["total_checks"] == 20
+        assert result["total_checks"] == 20, "Result must not be empty"
 
     def test_mixed_check_types(self):
         """Test mixed check types aggregation."""
@@ -392,7 +392,7 @@ class TestHealthCheckStress:
         aggregator.register_check(CacheHealthChecker(MockCache()))
         aggregator.register_check(HTTPHealthChecker(MockService("web")))
         result = aggregator.run_all_checks()
-        assert result["total_checks"] == 4
+        assert result["total_checks"] == 4, "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -16,8 +16,8 @@ from typing import Any
 
 from performance_regression_analysis import (
     PerformanceAnalyzer,
-    run_regression_analysis,
     generate_performance_report,
+    run_regression_analysis,
 )
 
 __all__ = ["BenchmarkRunner", "run_all_benchmarks"]

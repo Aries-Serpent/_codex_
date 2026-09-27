@@ -2,24 +2,24 @@
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
 # OpenAPI schema validation, and endpoint documentation completeness.
-# 
-# 
+#
+#
 # Created: 2026-01-18
 #             if not content.strip().startswith('"""') and not content.strip().startswith("'''"):
 #                 missing_docs.append(router.name)
 # import json
-# 
+#
 #         # Allow some without docstrings
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
-# 
+#
 # # Repository root
 #         # Allow some without docstrings
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
-# 
+#
 #         # Allow some without docstrings
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
@@ -52,7 +52,7 @@
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
-# 
+#
 #     def _find_openapi_files(self) -> list[Path]:
 #     def _find_openapi_files(self) -> list[Path]:
 #         """Find OpenAPI/Swagger schema files."""
@@ -99,7 +99,7 @@
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
-# 
+#
 #     def _find_fastapi_routers(self) -> list[Path]:
 #     def _find_fastapi_routers(self) -> list[Path]:
 #         """Find FastAPI router files."""
@@ -128,7 +128,7 @@
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
-# 
+#
 #     def test_endpoints_have_response_models(self):
 #     def test_endpoints_have_response_models(self):
 #         """Spot-check that endpoints define response models."""
@@ -137,7 +137,7 @@
 #             pytest.skip("No FastAPI router files found")
 #         endpoints_found = 0
 #         endpoints_with_response = 0
-# 
+#
 #         for router in routers[:5]:  # Sample first 5
 #             content = router.read_text(encoding="utf-8", errors="ignore")
 #             # Count endpoint decorators
@@ -148,7 +148,7 @@
 #             response_pattern = r"response_model\s*="
 #             response_models = re.findall(response_pattern, content)
 #             endpoints_with_response += len(response_models)
-# 
+#
 #         # Just verify we found some endpoints
 #         if endpoints_found > 0:
 #             pass  # Log but don't fail (not all endpoints need response models)

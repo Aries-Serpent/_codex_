@@ -314,22 +314,24 @@ def _ensure_hf_trainer_imports() -> None:
     global log_env_info
     global MissingPyYAMLError
     global YAMLError
-    
+
     if split_dataset is not None:
         return  # Already loaded
-    
+
     try:
         from codex_ml.data_utils import split_dataset as _split_dataset
+
         split_dataset = _split_dataset
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.monitoring.async_writer import AsyncLogFile as _AsyncLogFile
+
         AsyncLogFile = _AsyncLogFile
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.monitoring.codex_logging import (
             CodexLoggers as _CodexLoggers,
@@ -338,6 +340,7 @@ def _ensure_hf_trainer_imports() -> None:
             _codex_patch_argparse as _CODEX_PATCH,
             _codex_sample_system as _CODEX_SAMPLE,
         )
+
         CodexLoggers = _CodexLoggers
         _codex_log_all = _CODEX_LOG_ALL
         _codex_logging_bootstrap = _CODEX_BOOTSTRAP
@@ -345,80 +348,99 @@ def _ensure_hf_trainer_imports() -> None:
         _codex_sample_system = _CODEX_SAMPLE
     except (ImportError, AttributeError):
         CodexLoggers = None
+
         def _codex_log_all(*args, **kwargs):
             pass
+
         def _codex_logging_bootstrap(*args, **kwargs):
             return {}
+
         def _codex_patch_argparse(*args, **kwargs):
             pass
+
         def _codex_sample_system(*args, **kwargs):
             return {}
-    
+
     try:
         from codex_ml.monitoring.schema import LogRecord as _LogRecord
+
         LogRecord = _LogRecord
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.peft.peft_adapter import apply_lora as _apply_lora
+
         apply_lora = _apply_lora
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
             build_payload_bytes as _build_payload_bytes,
             load_payload as _load_payload,
             set_seed as _set_seed,
         )
+
         build_payload_bytes = _build_payload_bytes
         load_payload = _load_payload
         set_seed = _set_seed
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.error_log import log_error as _log_error
+
         log_error = _log_error
     except (ImportError, AttributeError):
+
         def log_error(*args, **kwargs):
             pass
-    
+
     try:
         from codex_ml.utils.hf_pinning import (
             ensure_pinned_kwargs as _ensure_pinned_kwargs,
             load_from_pretrained as _load_from_pretrained,
         )
+
         ensure_pinned_kwargs = _ensure_pinned_kwargs
         load_from_pretrained = _load_from_pretrained
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.provenance import snapshot_hydra_config as _snapshot_hydra_config
+
         snapshot_hydra_config = _snapshot_hydra_config
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.repro import set_reproducible as _set_reproducible
+
         set_reproducible = _set_reproducible
     except (ImportError, AttributeError):
         pass
-    
+
     try:
-        from codex_ml.utils.yaml_support import safe_load as _safe_load, MissingPyYAMLError as _MissingPyYAMLError, YAMLError as _YAMLError
+        from codex_ml.utils.yaml_support import (
+            safe_load as _safe_load,
+            MissingPyYAMLError as _MissingPyYAMLError,
+            YAMLError as _YAMLError,
+        )
+
         safe_load = _safe_load
         MissingPyYAMLError = _MissingPyYAMLError
         YAMLError = _YAMLError
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_utils.repro import log_env_info as _log_env_info
+
         log_env_info = _log_env_info
     except (ImportError, AttributeError):
+
         def log_env_info(*args, **kwargs):
             pass
 
@@ -428,7 +450,12 @@ from omegaconf import OmegaConf
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
-except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - missing in some envs
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+) as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[misc,assignment]
     if log_error is not None:
         log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
@@ -520,7 +547,12 @@ def _log_mlflow_metrics(
             for key, value in metrics.items():
                 if isinstance(value, (int, float)):
                     mlflow_module.log_metric(key, float(value))
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive logging
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive logging
         type(exc).__name__
         print("[codex][mlflow] skipped logging: <ERROR_TYPE>")
 
@@ -1158,7 +1190,7 @@ def run_hf_trainer(
     """Train a causal LM using HuggingFace ``Trainer``."""
     # Ensure lazy imports are loaded before use
     _ensure_hf_trainer_imports()
-    
+
     resolved_det = True if deterministic is None else bool(deterministic)
 
     # set deterministic seeds
@@ -1173,11 +1205,21 @@ def run_hf_trainer(
         raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging best effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - logging best effort
         log_error("env_log", str(exc), "env")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging best effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - logging best effort
         log_error("hydra_snapshot", str(exc), "env")
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
@@ -1405,7 +1447,12 @@ def run_hf_trainer(
             os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
             try:
                 loggers = _codex_logging_bootstrap(log_args)
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - bootstrap is best-effort
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - bootstrap is best-effort
                 type(exc).__name__
                 print("[telemetry] bootstrap skipped: <ERROR_TYPE>")
 

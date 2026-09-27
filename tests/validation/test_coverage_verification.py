@@ -1,4 +1,4 @@
-#         assert (, "Condition must be true"
+#         assert (
 # Phase 18.0: Coverage Verification Tests
 #         """Test that coverage upload is configured (optional)."""
 #         workflows_dir = Path(".github/workflows")

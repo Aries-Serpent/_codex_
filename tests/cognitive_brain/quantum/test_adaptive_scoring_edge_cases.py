@@ -48,13 +48,13 @@
 #             cost_weight = 1.0 - compliance_score_weight - risk_weight - impact_weight
 #         elif impact_weight is None:
 #             impact_weight = 1.0 - compliance_score_weight - risk_weight - cost_weight
-# 
+#
 #         # Validate sum
 #         total = compliance_score_weight + risk_weight + cost_weight + impact_weight
 #         if abs(total - 1.0) > _WEIGHT_SUM_TOLERANCE:
 #             raise ValueError(f"Weights must sum to 1.0 (got {total})")
 #             raise ValueError(f"Weights must sum to 1.0 (got {total})")
-# 
+#
 #         self.optimizer = AdaptiveScoringOptimizer(learning_rate=learning_rate)
 #         self.optimizer.weights = ScoringWeights(
 #             compliance_score_weight=compliance_score_weight,
@@ -63,24 +63,24 @@
 #             impact_weight=impact_weight,
 #         )
 #         self.learning_rate = learning_rate
-# 
+#
 #     @property
 #     def compliance_score_weight(self):
 #         return self.optimizer.weights.compliance_score_weight
-# 
+#
 #     @property
 #     def risk_weight(self):
 #         return self.optimizer.weights.risk_weight
-# 
+#
 #     @property
 #     def impact_weight(self):
 #         return self.optimizer.weights.impact_weight
-# 
+#
 #     @property
 #     def mitigation_weight(self):
 #         # cost_weight acts as the mitigation/remediation weight in this schema
 #         return self.optimizer.weights.cost_weight
-# 
+#
 #     def compute_score(self, scenario):
 #     def compute_score(self, scenario):
 #         """Compute score from scenario tuple or dict."""
@@ -125,7 +125,7 @@
 #             score = engine.compute_score(scenario)
 #             assert isinstance(score, (int, float))
 #             assert score >= 0.0, "score must be greater than zero"
-# 
+#
 #     def test_weights_at_upper_boundary(self):
 #     def test_weights_at_upper_boundary(self):
 #         """Test weights at maximum boundary (1.0)."""
@@ -160,7 +160,7 @@
 #         # Weights should not change with zero learning rate
 #         assert initial_weights == final_weights, "initial_weights is not valid"
 #         assert initial_weights == final_weights, "initial_weights is not valid"
-# 
+#
 #     def test_max_iterations_convergence(self):
 #     def test_max_iterations_convergence(self):
 #         """Test behavior at maximum training iterations."""
@@ -169,7 +169,7 @@
 #         )
 #         scenarios = generate_complex_scenarios(50, seed=42)
 #         engine.train(scenarios, epochs=100)
-# 
+#
 #         # Weights should still be valid
 #         assert 0.0 <= engine.compliance_score_weight <= 1.0, "0 is not valid"
 #         assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
@@ -185,14 +185,14 @@
 #             < 1e-6
 #         )
 #         )
-# 
+#
 #     def test_empty_scenarios_list(self):
 #     def test_empty_scenarios_list(self):
 #         """Test error handling for empty scenarios."""
 #         engine = AdaptiveScoringEngine()
 #         with pytest.raises(ValueError, match="Cannot train on empty scenarios"):
 #             engine.train([], epochs=10)
-# 
+#
 #     def test_single_scenario_training(self):
 #     def test_single_scenario_training(self):
 #         """Test training with minimal data (1 scenario)."""
@@ -201,7 +201,7 @@
 #         engine.train(scenarios, epochs=5)
 #         assert engine.compliance_score_weight > 0, "compliance_score_weight must be greater than zero"
 #         assert engine.compliance_score_weight > 0, "compliance_score_weight must be greater than zero"
-# 
+#
 #     def test_duplicate_scenario_ids(self):
 #     def test_duplicate_scenario_ids(self):
 #         """Test handling of duplicate scenario IDs."""
@@ -214,7 +214,7 @@
 #         # Should handle duplicates gracefully (deduplicate or process both)
 #         engine.train(scenarios, epochs=5)
 #         assert engine.compliance_score_weight > 0, "compliance_score_weight must be greater than zero"
-# 
+#
 #     def test_missing_features_in_scenario(self):
 #     def test_missing_features_in_scenario(self):
 #         """Test integration with scenarios missing expected features."""
@@ -230,7 +230,7 @@
 #         except AttributeError:
 #             # Expected if no fallback mechanism
 #             _ = None  # suppressed: no action needed
-# 
+#
 #     def test_nan_in_scenario_features(self):
 #     def test_nan_in_scenario_features(self):
 #         """Test handling of NaN values in features."""
@@ -243,7 +243,7 @@
 #         # Should not return NaN
 #         assert not np.isnan(score, "Condition must be true"
 #         ), "Condition must be true"
-# 
+#
 #     def test_inf_in_scenario_features(self):
 #     def test_inf_in_scenario_features(self):
 #         """Test handling of infinite values in features."""
@@ -255,7 +255,7 @@
 #         score = engine.compute_score(scenarios[0])
 #         # Should clamp or handle infinity
 #         assert np.isfinite(score), "Condition must be true"
-# 
+#
 #     def test_very_high_ambiguity_score(self):
 #     def test_very_high_ambiguity_score(self):
 #         """Test scenarios with maximum ambiguity."""
@@ -266,7 +266,7 @@
 #         score = engine.compute_score(scenarios[0])
 #         # Should produce valid score even at max ambiguity
 #         assert 0.0 <= score <= 100.0, "0 is not valid"
-# 
+#
 #     def test_convergence_with_conflicting_data(self):
 #     def test_convergence_with_conflicting_data(self):
 #         """Test training on conflicting scenario patterns."""
@@ -287,7 +287,7 @@
 #         assert 0.0 <= engine.compliance_score_weight <= 1.0, "0 is not valid"
 #         assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
 #         assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
-# 
+#
 #     def test_weight_normalization_after_training(self):
 #     def test_weight_normalization_after_training(self):
 #         """Test that weights remain normalized after training."""

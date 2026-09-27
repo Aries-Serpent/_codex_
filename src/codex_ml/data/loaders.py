@@ -464,7 +464,12 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
         if policy_path:
             try:
                 return SafetyFilters.from_policy_file(policy_path)
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - defensive
                 return None
 
         if enabled:

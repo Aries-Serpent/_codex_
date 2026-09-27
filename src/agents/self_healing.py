@@ -376,7 +376,9 @@ class SelfHealingEngine(Planner):
                 )
             except Exception as e:
                 logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)  # Other errors are not import-related
+                logger.warning(
+                    f"Exception: {e}", exc_info=True
+                )  # Other errors are not import-related
 
         return issues
 
@@ -488,7 +490,9 @@ class SelfHealingEngine(Planner):
 
         return max(0.0, 1.0 - min(total_penalty, 1.0))
 
-    def detect_issues(self, log_output: str | None = None, run_checks: bool = True) -> list[DetectedIssue]:
+    def detect_issues(
+        self, log_output: str | None = None, run_checks: bool = True
+    ) -> list[DetectedIssue]:
         """
         Detect issues in the codebase.
 
@@ -617,7 +621,7 @@ class SelfHealingEngine(Planner):
             },
             timestamp=datetime.now(UTC),
             source="self_healing_detector",
-            metadata={"confidence": confidence}
+            metadata={"confidence": confidence},
         )
 
     def orient(self, observation: ObservationData) -> OrientationResult:
@@ -642,10 +646,10 @@ class SelfHealingEngine(Planner):
             context={
                 "by_category": classified_issues,
                 "total_count": observation.data.get("count", 0),
-                "patterns": patterns
+                "patterns": patterns,
             },
             confidence=0.8,
-            alternatives=[]
+            alternatives=[],
         )
 
     def decide(self, orientation: OrientationResult) -> Decision:
@@ -659,7 +663,7 @@ class SelfHealingEngine(Planner):
             parameters={"issues_by_category": by_category},
             reasoning=f"Severity: {orientation.analysis}, Patterns: {orientation.context.get('patterns')}",
             confidence=0.8,
-            timestamp=datetime.now(UTC)
+            timestamp=datetime.now(UTC),
         )
 
     def act(self, decision: Decision) -> ActionResult:
@@ -668,18 +672,10 @@ class SelfHealingEngine(Planner):
         """
         try:
             return ActionResult(
-                success=True,
-                output={"remediation_status": "planned"},
-                metrics={},
-                errors=[]
+                success=True, output={"remediation_status": "planned"}, metrics={}, errors=[]
             )
         except Exception as e:
-            return ActionResult(
-                success=False,
-                output=None,
-                metrics={},
-                errors=[str(e)]
-            )
+            return ActionResult(success=False, output=None, metrics={}, errors=[str(e)])
 
 
 # Convenience function for quick diagnostics

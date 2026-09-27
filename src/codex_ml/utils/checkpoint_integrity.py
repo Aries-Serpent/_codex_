@@ -135,7 +135,12 @@ def attach_integrity(
                     items = [dict(data)]
                 else:  # pragma: no cover - defensive branch
                     items = []
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - tolerate malformed manifests
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - tolerate malformed manifests
                 items = []
         else:
             items = []

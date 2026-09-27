@@ -225,4 +225,4 @@ def test_module_stability():
     detector = RegressionDetector()
     report = detector.validate_module_stability()
     # Will be fully implemented in Phase 1
-    assert report is not None
+    assert report is not None, "report must be initialized"

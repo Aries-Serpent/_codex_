@@ -24,11 +24,11 @@ from codex.cognitive.task_router import (
 class TestRoutingRequest:
     def test_minimal_construction(self) -> None:
         req = RoutingRequest(task_description="Fix failing CI")
-        assert req.task_description == "Fix failing CI"
-        assert req.tags == []
-        assert req.urgency == "normal"
-        assert req.preferred_agent is None
-        assert req.exclude_agents == []
+        assert req.task_description == "Fix failing CI", "task_description is not valid"
+        assert req.tags == [], "tags is not valid"
+        assert req.urgency == "normal", "urgency is not valid"
+        assert req.preferred_agent is None, "preferred_agent is not valid"
+        assert req.exclude_agents == [], "exclude_agents is not valid"
 
     def test_full_construction(self) -> None:
         req = RoutingRequest(
@@ -38,10 +38,10 @@ class TestRoutingRequest:
             preferred_agent="security-audit-agent",
             exclude_agents=["ci-testing-agent"],
         )
-        assert req.urgency == "critical"
-        assert "security" in req.tags
-        assert req.preferred_agent == "security-audit-agent"
-        assert req.exclude_agents == ["ci-testing-agent"]
+        assert req.urgency == "critical", "urgency is not valid"
+        assert "security" in req.tags, "Condition must be true"
+        assert req.preferred_agent == "security-audit-agent", "preferred_agent is not valid"
+        assert req.exclude_agents == ["ci-testing-agent"], "exclude_agents is not valid"
 
 
 class TestRoutingResult:
@@ -51,11 +51,11 @@ class TestRoutingResult:
             confidence=0.85,
             reasoning="Matched 2/2 tags",
         )
-        assert result.selected_agent == "ci-testing-agent"
-        assert result.confidence == pytest.approx(0.85)
-        assert result.alternative_agents == []
-        assert result.matched_tags == []
-        assert result.fallback_used is False
+        assert result.selected_agent == "ci-testing-agent", "Result must not be empty"
+        assert result.confidence == pytest.approx(0.85), "Result must not be empty"
+        assert result.alternative_agents == [], "Result must not be empty"
+        assert result.matched_tags == [], "Result must not be empty"
+        assert result.fallback_used is False, "Result must not be empty"
 
     def test_fallback_flag(self) -> None:
         result = RoutingResult(
@@ -64,7 +64,7 @@ class TestRoutingResult:
             reasoning="No tags matched",
             fallback_used=True,
         )
-        assert result.fallback_used is True
+        assert result.fallback_used is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -92,13 +92,13 @@ class TestTaskRouterEmptyRegistry:
         req = RoutingRequest(task_description="Unknown task", tags=["unknown_tag"])
         result = router.route(req)
         # Without a registry every request hits the fallback path
-        assert result.fallback_used is True
-        assert result.confidence <= 0.5
+        assert result.fallback_used is True, "Result must not be empty"
+        assert result.confidence <= 0.5, "Result must not be empty"
 
     def test_route_confidence_between_0_and_1(self, router: TaskRouter) -> None:
         req = RoutingRequest(task_description="Any task")
         result = router.route(req)
-        assert 0.0 <= result.confidence <= 1.0
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
     def test_route_many_returns_list(self, router: TaskRouter) -> None:
         requests = [
@@ -106,17 +106,17 @@ class TestTaskRouterEmptyRegistry:
             RoutingRequest("Task B", tags=["security"]),
         ]
         results = router.route_many(requests)
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
         assert all(isinstance(r, RoutingResult) for r in results)
 
     def test_available_agents_empty_when_no_registry(self, router: TaskRouter) -> None:
         agents = router.available_agents()
         assert isinstance(agents, list)
-        assert agents == []
+        assert agents == [], "agents is not valid"
 
     def test_available_agents_with_tag_empty(self, router: TaskRouter) -> None:
         agents = router.available_agents(tag="ci_failure")
-        assert agents == []
+        assert agents == [], "agents is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -159,15 +159,15 @@ class TestTaskRouterWithRegistry:
 
     def test_available_agents_all_active(self, router: TaskRouter) -> None:
         agents = router.available_agents()
-        assert "ci-testing-agent" in agents
-        assert "security-audit-agent" in agents
+        assert "ci-testing-agent" in agents, "Condition must be true"
+        assert "security-audit-agent" in agents, "Condition must be true"
         # deprecated agent must be excluded
-        assert "old-agent" not in agents
+        assert "old-agent" not in agents, "Condition must be true"
 
     def test_available_agents_filtered_by_tag(self, router: TaskRouter) -> None:
         agents = router.available_agents(tag="security")
-        assert "security-audit-agent" in agents
-        assert "ci-testing-agent" not in agents
+        assert "security-audit-agent" in agents, "Condition must be true"
+        assert "ci-testing-agent" not in agents, "Condition must be true"
 
     def test_route_matches_ci_agent(self, router: TaskRouter) -> None:
         req = RoutingRequest(
@@ -175,9 +175,9 @@ class TestTaskRouterWithRegistry:
             tags=["ci_failure", "python"],
         )
         result = router.route(req)
-        assert result.selected_agent == "ci-testing-agent"
-        assert result.fallback_used is False
-        assert len(result.matched_tags) > 0
+        assert result.selected_agent == "ci-testing-agent", "Result must not be empty"
+        assert result.fallback_used is False, "Result must not be empty"
+        assert len(result.matched_tags) > 0, "Collection must not be empty"
 
     def test_route_security_tags(self, router: TaskRouter) -> None:
         req = RoutingRequest(
@@ -185,7 +185,7 @@ class TestTaskRouterWithRegistry:
             tags=["security", "cve"],
         )
         result = router.route(req)
-        assert result.selected_agent == "security-audit-agent"
+        assert result.selected_agent == "security-audit-agent", "Result must not be empty"
 
     def test_route_preferred_agent_respected(self, router: TaskRouter) -> None:
         req = RoutingRequest(
@@ -195,7 +195,7 @@ class TestTaskRouterWithRegistry:
         )
         result = router.route(req)
         # Preferred agent should be prioritised even if tag match is weaker
-        assert result.selected_agent == "ci-testing-agent"
+        assert result.selected_agent == "ci-testing-agent", "Result must not be empty"
 
     def test_route_exclude_agents(self, router: TaskRouter) -> None:
         req = RoutingRequest(
@@ -204,7 +204,7 @@ class TestTaskRouterWithRegistry:
             exclude_agents=["ci-testing-agent"],
         )
         result = router.route(req)
-        assert result.selected_agent != "ci-testing-agent"
+        assert result.selected_agent != "ci-testing-agent", "Result must not be empty"
 
     def test_route_many_batch(self, router: TaskRouter) -> None:
         requests = [
@@ -213,9 +213,9 @@ class TestTaskRouterWithRegistry:
             RoutingRequest("Unknown work"),
         ]
         results = router.route_many(requests)
-        assert len(results) == 3
-        assert results[0].selected_agent == "ci-testing-agent"
-        assert results[1].selected_agent == "security-audit-agent"
+        assert len(results) == 3, "Results must not be empty"
+        assert results[0].selected_agent == "ci-testing-agent", "Result must not be empty"
+        assert results[1].selected_agent == "security-audit-agent", "Result must not be empty"
 
     def test_route_high_confidence_for_strong_match(self, router: TaskRouter) -> None:
         req = RoutingRequest(
@@ -224,7 +224,7 @@ class TestTaskRouterWithRegistry:
         )
         result = router.route(req)
         # All 3 tags match ci-testing-agent → high confidence
-        assert result.confidence >= 0.5
+        assert result.confidence >= 0.5, "confidence must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -239,7 +239,7 @@ class TestLoadPatternSuccess:
             pattern_store_path=tmp_path / "missing.json",
         )
         # Access internal dict directly to verify empty
-        assert router._pattern_success == {}
+        assert router._pattern_success == {}, "_pattern_success is not valid"
 
     def test_valid_pattern_store_parsed(self, tmp_path: Path) -> None:
         store_path = tmp_path / "pattern_store.json"
@@ -260,4 +260,4 @@ class TestLoadPatternSuccess:
             pattern_store_path=store_path,
         )
         rate = router._pattern_success.get("ci-testing-agent", 0.0)
-        assert rate == pytest.approx(2 / 3)
+        assert rate == pytest.approx(2 / 3), "rate is not valid"

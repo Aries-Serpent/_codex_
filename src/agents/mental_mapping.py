@@ -480,9 +480,9 @@ class MentalMappingModel:
 
         Returns the problem node and the reasoning steps
         """
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("THINKING THROUGH PROBLEM")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Problem: {problem}")
 
         # Create problem node
@@ -588,9 +588,9 @@ class MentalMappingModel:
 
         This creates a decision node connected to the problem
         """
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("MAKING DECISION")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Decision: {decision_content}")
         print(f"Confidence: {confidence:.2f}")
 
@@ -647,9 +647,9 @@ class MentalMappingModel:
             actual_impact: Numerical impact (0-1)
             learned_lessons: Optional list of lessons learned from this outcome
         """
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("RECORDING OUTCOME")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Outcome: {outcome_content}")
         print(f"Success: {success}")
         print(f"Impact: {actual_impact:.2f}")
@@ -705,9 +705,9 @@ class MentalMappingModel:
         """
         Perform self-appraisal of a decision based on its outcome
         """
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("SELF-APPRAISAL")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         decision_node = self.nodes[decision_node_id]
         outcome_node = self.nodes[outcome_node_id]
@@ -826,9 +826,9 @@ class MentalMappingModel:
 
         Returns list of node IDs that were reviewed
         """
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("ITERATIVE REVIEW")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Quality Threshold: {review_threshold:.2f}")
 
         # Find nodes needing review
@@ -1027,7 +1027,9 @@ class MentalMappingModel:
 
         return clusters
 
-    def get_subgraph(self, node_ids: list[str] | None = None, nodes: list[str] | None = None) -> dict[str, Any]:
+    def get_subgraph(
+        self, node_ids: list[str] | None = None, nodes: list[str] | None = None
+    ) -> dict[str, Any]:
         """
         Extract a subgraph containing only specified nodes.
 
@@ -1248,7 +1250,9 @@ class MentalMappingModel:
 
         # Reconstruct edges
         for edge_data in data["edges"].values():
-            edge_data["edge_type"] = EdgeType(edge_data["edge_type"]) if edge_data.get("edge_type") else None
+            edge_data["edge_type"] = (
+                EdgeType(edge_data["edge_type"]) if edge_data.get("edge_type") else None
+            )
             edge = MentalEdge(**edge_data)
             self.edges[edge.edge_id] = edge
 
@@ -1349,9 +1353,9 @@ if __name__ == "__main__":
     # Create mental mapping model
     mental_map = MentalMappingModel(agent_id="codex_agent_001")
 
-    print(f"\n{'#'*60}")
+    print(f"\n{'#' * 60}")
     print("# MENTAL MAPPING MODEL DEMONSTRATION")
-    print(f"{'#'*60}")
+    print(f"{'#' * 60}")
 
     # Think through a problem
     problem_node, reasoning_steps = mental_map.think_through_problem(
@@ -1384,9 +1388,9 @@ if __name__ == "__main__":
     print(f"Reviewed nodes: {mental_map.iterative_review(review_threshold=0.6)}")
 
     # Show summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("MENTAL MAP SUMMARY")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     summary = mental_map.get_mental_map_summary()
     for key, value in summary.items():
         if isinstance(value, dict):
@@ -1397,18 +1401,18 @@ if __name__ == "__main__":
             print(f"{key}: {value}")
 
     # Visualize reasoning path
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("REASONING PATH VISUALIZATION")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(mental_map.visualize_reasoning_path(problem_node.node_id))
 
     # Save mental map
     output_path = Path("mental_map.json")
     mental_map.save_mental_map(output_path)
 
-    print(f"\n{'#'*60}")
+    print(f"\n{'#' * 60}")
     print("# DEMONSTRATION COMPLETE")
-    print(f"{'#'*60}")
+    print(f"{'#' * 60}")
 
 
 # Create MentalMap as an alias for backward compatibility

@@ -58,7 +58,7 @@ def mlflow_experiment(mlflow_client):
         experiment = None
         try:
             experiment = mlflow_client.get_experiment_by_name(experiment_name)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         if experiment is None:
@@ -93,7 +93,7 @@ def mlflow_run(mlflow_client, mlflow_experiment):
         # Cleanup: end the run
         try:
             mlflow_client.set_terminated(run.info.run_id)
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("MLflow not installed")
@@ -182,7 +182,7 @@ def mlflow_tracker_instance(mlflow_tracking_uri: str):
         try:
             if tracker._active:
                 tracker.end_run()
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
     except ImportError:
         pytest.skip("codex_ml.tracking.mlflow_wrapper not available")

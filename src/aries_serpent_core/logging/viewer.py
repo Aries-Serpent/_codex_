@@ -51,7 +51,12 @@ from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback for direct execution
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - fallback for direct execution
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 from .db_utils import get_columns, list_tables, resolve_db_path  # noqa: E402

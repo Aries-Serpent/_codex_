@@ -15,7 +15,13 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency 
 
 try:  # pragma: no cover - optional dependency
     import pynvml
-except (ImportError, AttributeError, OSError, RuntimeError, ValueError):  # pragma: no cover - optional dependency may be absent
+except (
+    ImportError,
+    AttributeError,
+    OSError,
+    RuntimeError,
+    ValueError,
+):  # pragma: no cover - optional dependency may be absent
     pynvml = None
 else:  # pragma: no cover - NVML initialisation best effort
     try:

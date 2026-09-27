@@ -11,7 +11,7 @@ Implements comprehensive observability for all agent-to-agent handoffs:
 
 Usage:
   from orchestration.tracing import HandoffTracer, TraceContext
-  
+
   tracer = HandoffTracer()
   with tracer.trace_handoff(
       from_agent="orchestrator-agent",
@@ -48,6 +48,7 @@ METRICS_DIR.mkdir(exist_ok=True, parents=True)
 
 class SpanStatus(Enum):
     """Trace span status."""
+
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCESS = "SUCCESS"
@@ -59,10 +60,11 @@ class SpanStatus(Enum):
 @dataclass
 class TraceEvent:
     """Single event in a trace."""
+
     name: str
     timestamp: str
     attributes: dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
@@ -70,59 +72,58 @@ class TraceEvent:
 @dataclass
 class TraceSpan:
     """OpenTelemetry-style trace span."""
+
     span_id: str
     trace_id: str
     parent_span_id: Optional[str]
-    
+
     operation: str  # e.g., "handoff", "execution", "validation"
     from_agent: str
     to_agent: str
     task_id: str
-    
+
     start_time: str
     end_time: Optional[str] = None
     status: SpanStatus = SpanStatus.PENDING
-    
+
     attributes: dict[str, Any] = field(default_factory=dict)
     events: list[TraceEvent] = field(default_factory=list)
-    
+
     # Metrics
     duration_ms: Optional[float] = None
     queue_wait_ms: Optional[float] = None
     execution_ms: Optional[float] = None
-    
+
     # SLA tracking
     sla_target_ms: float = 500.0
     sla_compliant: bool = False
-    
+
     # Error tracking
     error_code: Optional[str] = None
     error_message: Optional[str] = None
     retry_count: int = 0
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dict, handling enums and timestamps."""
         data = asdict(self)
-        data['status'] = self.status.value
-        data['events'] = [e.to_dict() for e in self.events]
+        data["status"] = self.status.value
+        data["events"] = [e.to_dict() for e in self.events]
         return data
-    
+
     def add_event(self, name: str, **attributes: Any) -> None:
         """Add an event to the span."""
         event = TraceEvent(
-            name=name,
-            timestamp=datetime.now(timezone.utc).isoformat(),
-            attributes=attributes
+            name=name, timestamp=datetime.now(timezone.utc).isoformat(), attributes=attributes
         )
         self.events.append(event)
-    
+
     def mark_success(self) -> None:
         """Mark span as successful."""
         self.status = SpanStatus.SUCCESS
         self.end_time = datetime.now(timezone.utc).isoformat()
         self._compute_metrics()
         self.sla_compliant = (self.duration_ms or 0) <= self.sla_target_ms
-    
+
     def mark_failed(self, error_code: str, error_message: str) -> None:
         """Mark span as failed."""
         self.status = SpanStatus.FAILED
@@ -130,14 +131,14 @@ class TraceSpan:
         self.error_message = error_message
         self.end_time = datetime.now(timezone.utc).isoformat()
         self._compute_metrics()
-    
+
     def mark_timeout(self) -> None:
         """Mark span as timed out."""
         self.status = SpanStatus.TIMEOUT
         self.end_time = datetime.now(timezone.utc).isoformat()
         self._compute_metrics()
         self.sla_compliant = False
-    
+
     def _compute_metrics(self) -> None:
         """Compute duration metrics."""
         if self.start_time and self.end_time:
@@ -148,28 +149,28 @@ class TraceSpan:
 
 class TraceContext:
     """Context manager for propagating trace information."""
-    
+
     _current_trace_id: Optional[str] = None
     _current_span_id: Optional[str] = None
-    
+
     @classmethod
     def set_trace_id(cls, trace_id: str) -> None:
         cls._current_trace_id = trace_id
-    
+
     @classmethod
     def get_trace_id(cls) -> str:
         if cls._current_trace_id is None:
             cls._current_trace_id = str(uuid.uuid4())
         return cls._current_trace_id
-    
+
     @classmethod
     def set_span_id(cls, span_id: Optional[str]) -> None:
         cls._current_span_id = span_id
-    
+
     @classmethod
     def get_span_id(cls) -> Optional[str]:
         return cls._current_span_id
-    
+
     @classmethod
     def new_trace(cls) -> str:
         """Start a new trace."""
@@ -180,11 +181,11 @@ class TraceContext:
 
 class HandoffTracer:
     """Tracer for agent handoff operations."""
-    
+
     def __init__(self):
         self._spans: dict[str, TraceSpan] = {}
         self._trace_samples: list[dict[str, Any]] = []
-    
+
     @contextmanager
     def trace_handoff(
         self,
@@ -196,7 +197,7 @@ class HandoffTracer:
     ) -> Iterator[TraceSpan]:
         """
         Context manager for tracing a handoff operation.
-        
+
         Example:
             with tracer.trace_handoff("orchestrator", "ci-testing", "PR-123") as span:
                 span.add_event("validation_started")
@@ -206,7 +207,7 @@ class HandoffTracer:
         trace_id = TraceContext.get_trace_id()
         span_id = str(uuid.uuid4())
         parent_span_id = TraceContext.get_span_id()
-        
+
         span = TraceSpan(
             span_id=span_id,
             trace_id=trace_id,
@@ -218,10 +219,10 @@ class HandoffTracer:
             start_time=datetime.now(timezone.utc).isoformat(),
             sla_target_ms=sla_target_ms,
         )
-        
+
         TraceContext.set_span_id(span_id)
         self._spans[span_id] = span
-        
+
         try:
             yield span
             span.mark_success()
@@ -240,18 +241,15 @@ class HandoffTracer:
             TraceContext.set_span_id(parent_span_id)
             # Save trace
             self._save_span(span)
-    
+
     def _save_span(self, span: TraceSpan) -> None:
         """Save span to disk."""
         trace_file = TRACES_DIR / f"{span.trace_id}_{span.span_id}.json"
         try:
-            trace_file.write_text(
-                json.dumps(span.to_dict(), indent=2),
-                encoding="utf-8"
-            )
+            trace_file.write_text(json.dumps(span.to_dict(), indent=2), encoding="utf-8")
         except Exception as e:
             logger.error(f"Failed to save span: {e}")
-    
+
     def get_trace(self, trace_id: str) -> dict[str, Any]:
         """Retrieve all spans for a trace."""
         spans = [s.to_dict() for s in self._spans.values() if s.trace_id == trace_id]
@@ -260,14 +258,11 @@ class HandoffTracer:
             "span_count": len(spans),
             "spans": spans,
         }
-    
+
     def get_metrics_summary(self) -> dict[str, Any]:
         """Compute metrics across all spans."""
-        successful_spans = [
-            s for s in self._spans.values()
-            if s.status == SpanStatus.SUCCESS
-        ]
-        
+        successful_spans = [s for s in self._spans.values() if s.status == SpanStatus.SUCCESS]
+
         if not successful_spans:
             return {
                 "handoff_success_rate": 0.0,
@@ -275,13 +270,13 @@ class HandoffTracer:
                 "avg_latency_ms": 0.0,
                 "p99_latency_ms": 0.0,
             }
-        
+
         durations = [s.duration_ms for s in successful_spans if s.duration_ms]
         sla_compliant = sum(1 for s in successful_spans if s.sla_compliant)
-        
+
         durations.sort()
         p99_idx = max(0, int(len(durations) * 0.99))
-        
+
         return {
             "handoff_success_rate": len(successful_spans) / len(self._spans),
             "sla_compliance_rate": sla_compliant / len(successful_spans),
@@ -289,10 +284,14 @@ class HandoffTracer:
             "p99_latency_ms": durations[p99_idx] if durations else 0.0,
             "total_handoffs": len(self._spans),
             "successful_handoffs": len(successful_spans),
-            "failed_handoffs": sum(1 for s in self._spans.values() if s.status == SpanStatus.FAILED),
-            "timeout_handoffs": sum(1 for s in self._spans.values() if s.status == SpanStatus.TIMEOUT),
+            "failed_handoffs": sum(
+                1 for s in self._spans.values() if s.status == SpanStatus.FAILED
+            ),
+            "timeout_handoffs": sum(
+                1 for s in self._spans.values() if s.status == SpanStatus.TIMEOUT
+            ),
         }
-    
+
     def export_traces(self, format: str = "json") -> str:
         """Export all traces in specified format."""
         if format == "json":
@@ -324,10 +323,10 @@ class HandoffTracer:
 
 class MetricsCollector:
     """Collect and aggregate handoff metrics."""
-    
+
     def __init__(self):
         self._metrics: list[dict[str, Any]] = []
-    
+
     def record_handoff(
         self,
         from_agent: str,
@@ -348,29 +347,29 @@ class MetricsCollector:
             "error_code": error_code,
         }
         self._metrics.append(metric)
-    
+
     def percentile_latency(self, percentile: float) -> float:
         """Get latency at specified percentile."""
         if not self._metrics:
             return 0.0
-        
+
         latencies = sorted([m["latency_ms"] for m in self._metrics if m["success"]])
         if not latencies:
             return 0.0
-        
+
         idx = int(len(latencies) * (percentile / 100.0))
         return latencies[min(idx, len(latencies) - 1)]
-    
+
     def agent_load_profile(self, agent_id: str) -> dict[str, Any]:
         """Get load profile for an agent."""
         agent_handoffs = [m for m in self._metrics if m["to_agent"] == agent_id]
-        
+
         if not agent_handoffs:
             return {"agent": agent_id, "handoff_count": 0}
-        
+
         successful = sum(1 for m in agent_handoffs if m["success"])
         sla_compliant = sum(1 for m in agent_handoffs if m["sla_compliant"])
-        
+
         return {
             "agent": agent_id,
             "handoff_count": len(agent_handoffs),
@@ -379,24 +378,27 @@ class MetricsCollector:
             "avg_latency_ms": sum(m["latency_ms"] for m in agent_handoffs) / len(agent_handoffs),
             "max_latency_ms": max(m["latency_ms"] for m in agent_handoffs),
         }
-    
+
     def export_metrics(self) -> str:
         """Export metrics as JSON."""
-        return json.dumps({
-            "metric_count": len(self._metrics),
-            "metrics": self._metrics,
-            "summary": {
-                "p50_latency": self.percentile_latency(50),
-                "p95_latency": self.percentile_latency(95),
-                "p99_latency": self.percentile_latency(99),
-            }
-        }, indent=2)
+        return json.dumps(
+            {
+                "metric_count": len(self._metrics),
+                "metrics": self._metrics,
+                "summary": {
+                    "p50_latency": self.percentile_latency(50),
+                    "p95_latency": self.percentile_latency(95),
+                    "p99_latency": self.percentile_latency(99),
+                },
+            },
+            indent=2,
+        )
 
 
 if __name__ == "__main__":
     # Demo usage
     tracer = HandoffTracer()
-    
+
     # Example: Trace a handoff
     TraceContext.new_trace()
     try:
@@ -407,7 +409,7 @@ if __name__ == "__main__":
             span.add_event("handoff_complete")
     except Exception as e:
         print(f"Handoff failed: {e}")
-    
+
     # Print metrics
     metrics = tracer.get_metrics_summary()
     print("Handoff Metrics:")

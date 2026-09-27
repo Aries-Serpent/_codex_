@@ -553,7 +553,12 @@ def _run_minilm_training(
                     target_path, interval=max(0.1, metrics_interval)
                 )
                 system_metrics_logger.start()  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - monitoring optional
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ) as exc:  # pragma: no cover - monitoring optional
                 logger.error(
                     f"[monitoring-error] failed to start system metrics logger: {exc}",
                 )

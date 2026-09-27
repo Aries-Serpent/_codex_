@@ -16,7 +16,7 @@ _state_lock = asyncio.Lock()
 async def managed_async_context(context_id):
     """Properly managed async context with cleanup."""
     global _global_state
-    
+
     # Acquire lock before modifying global state
     async with _state_lock:
         # Initialize context state
@@ -24,7 +24,7 @@ async def managed_async_context(context_id):
             "active": True,
             "data": [],
         }
-    
+
     try:
         yield _global_state[context_id]
     finally:
@@ -39,27 +39,27 @@ class TestAsyncStateLeaks:
 
     async def async_test_state_leak(self):
         """Test async state leak prevention with context managers."""
-        
+
         async def async_worker(worker_id):
             """Async worker that uses managed context."""
             async with managed_async_context(worker_id) as ctx:
                 # Simulate async work
                 ctx["data"].append("item_1")
                 await asyncio.sleep(0.01)
-                
+
                 ctx["data"].append("item_2")
                 await asyncio.sleep(0.01)
-                
+
                 ctx["data"].append("item_3")
-                
+
                 # Context should be active
-                assert ctx["active"] is True
-                assert len(ctx["data"]) == 3
-        
+                assert ctx["active"] is True, "Condition must be true"
+                assert len(ctx["data"]) == 3, "Collection must not be empty"
+
         # Run multiple concurrent workers
         tasks = [async_worker(i) for i in range(5)]
         await asyncio.gather(*tasks)
-        
+
         # Verify no state leaks - global state should be empty
         async with _state_lock:
             assert len(_global_state) == 0, f"State leaked: {_global_state}"
@@ -70,12 +70,12 @@ class TestAsyncStateLeaks:
         # Clear global state before test
         global _global_state
         _global_state.clear()
-        
+
         # Run async test
         asyncio.run(self.async_test_state_leak())
-        
+
         # Verify cleanup
-        assert len(_global_state) == 0
+        assert len(_global_state) == 0, "_global_state must not be empty"
 
 
 class TestAsyncStateLeaksWithExceptions:
@@ -83,26 +83,26 @@ class TestAsyncStateLeaksWithExceptions:
 
     async def async_test_with_exceptions(self):
         """Test state leak prevention even with exceptions."""
-        
+
         async def failing_worker(worker_id):
             """Async worker that may raise exceptions."""
             try:
                 async with managed_async_context(worker_id) as ctx:
                     ctx["data"].append("item_1")
                     await asyncio.sleep(0.01)
-                    
+
                     if worker_id == 2:
                         raise ValueError(f"Simulated error in worker {worker_id}")
-                    
+
                     ctx["data"].append("item_2")
                     await asyncio.sleep(0.01)
             except ValueError:
                 pass  # Expected for worker 2
-        
+
         # Run multiple concurrent workers
         tasks = [failing_worker(i) for i in range(5)]
         await asyncio.gather(*tasks)
-        
+
         # Verify no state leaks even after exceptions
         async with _state_lock:
             assert len(_global_state) == 0, f"State leaked: {_global_state}"
@@ -113,9 +113,9 @@ class TestAsyncStateLeaksWithExceptions:
         # Clear global state before test
         global _global_state
         _global_state.clear()
-        
+
         # Run async test
         asyncio.run(self.async_test_with_exceptions())
-        
+
         # Verify cleanup
-        assert len(_global_state) == 0
+        assert len(_global_state) == 0, "_global_state must not be empty"

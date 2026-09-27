@@ -303,7 +303,7 @@ class AuthMiddleware:
             raise ValueError("AUTH_SECRET_KEY or CODEX_AUTH_SECRET_KEY environment variable required")
         token_manager = TokenManager(secret_key=secret_key)
         app.add_middleware(AuthMiddleware, token_manager=token_manager)
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -320,9 +320,7 @@ class AuthMiddleware:
         compatibility path ``AuthMiddleware()`` used by the auth suite.
         """
         self.app = app
-        secret_key = (
-            os.environ.get("AUTH_SECRET_KEY") or os.environ.get("CODEX_AUTH_SECRET_KEY")
-        )
+        secret_key = os.environ.get("AUTH_SECRET_KEY") or os.environ.get("CODEX_AUTH_SECRET_KEY")
         if token_manager is None:
             if not secret_key:
                 secret_key = secrets.token_urlsafe(32)

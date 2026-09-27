@@ -22,10 +22,10 @@ class TestGitHubActionsIntegration:
             "runner": {"os": "Linux"},
             "job": {"id": "12345"}
         }
-        
-        assert "github" in context
+
+        assert "github" in context, "Condition must be true"
         assert context["runner"]["os"] in ["Linux", "Windows", "macOS"]
-    
+
     def test_workflow_trigger_event_data(self):
         """Verify workflow trigger event data"""
         trigger = {
@@ -33,9 +33,9 @@ class TestGitHubActionsIntegration:
             "pull_request": {"action": "opened", "number": 123},
             "workflow_dispatch": {"inputs": {"env": "prod"}}
         }
-        
-        assert "push" in trigger or "pull_request" in trigger
-    
+
+        assert "push" in trigger or "pull_request" in trigger, "Condition must be true"
+
     def test_action_output_capture(self):
         """Capture and use action outputs"""
         outputs = {
@@ -43,10 +43,10 @@ class TestGitHubActionsIntegration:
             "coverage": "85.5",
             "artifact_id": "456"
         }
-        
-        assert "test_result" in outputs
-        assert float(outputs["coverage"]) > 0
-    
+
+        assert "test_result" in outputs, "Result must not be empty"
+        assert float(outputs["coverage"]) > 0, "Value must be greater than zero"
+
     def test_workflow_environment_variable_propagation(self):
         """Propagate environment variables between steps"""
         env_vars = {
@@ -54,20 +54,20 @@ class TestGitHubActionsIntegration:
             "BUILD_DATE": "2024-06-30",
             "ENVIRONMENT": "production"
         }
-        
-        assert all(len(v) > 0 for v in env_vars.values())
-    
+
+        assert all(len(v) > 0 for v in env_vars.values()), "V must not be empty"
+
     def test_action_matrix_expansion(self):
         """Verify action matrix expansion"""
         matrix = {
             "python": ["3.9", "3.10", "3.11"],
             "os": ["ubuntu", "macos"]
         }
-        
+
         # Should expand to 6 jobs
         jobs = len(matrix["python"]) * len(matrix["os"])
-        assert jobs == 6
-    
+        assert jobs == 6, "jobs is not valid"
+
     def test_github_actions_version_pinning(self):
         """Verify actions use pinned versions"""
         actions = [
@@ -75,16 +75,16 @@ class TestGitHubActionsIntegration:
             {"name": "actions/setup-python", "version": "v5"},
             {"name": "actions/cache", "version": "v4"}
         ]
-        
+
         # All should use v4 or higher
         for action in actions:
             major_version = int(action["version"][1])
-            assert major_version >= 4
+            assert major_version >= 4, "major_version must be greater than zero"
 
 
 class TestWorkflowFileValidation:
     """Workflow file validation"""
-    
+
     def test_workflow_yaml_syntax_validation(self):
         """Validate workflow YAML syntax"""
         workflow = """
@@ -97,8 +97,8 @@ jobs:
       - run: pytest tests/
 """
         # Should parse without errors
-        assert "jobs:" in workflow
-    
+        assert "jobs:" in workflow, "Condition must be true"
+
     def test_workflow_required_fields(self):
         """Verify required workflow fields"""
         workflow = {
@@ -106,21 +106,21 @@ jobs:
             "on": {"push": None},
             "jobs": {"test": {}}
         }
-        
+
         required = ["name", "on", "jobs"]
         for field in required:
-            assert field in workflow
-    
+            assert field in workflow, "Condition must be true"
+
     def test_workflow_step_structure(self):
         """Validate workflow step structure"""
         step = {
             "name": "Run Tests",
             "run": "pytest tests/ --tb=short"
         }
-        
-        assert "name" in step
-        assert "run" in step or "uses" in step
-    
+
+        assert "name" in step, "Condition must be true"
+        assert "run" in step or "uses" in step, "Condition must be true"
+
     def test_workflow_job_dependencies(self):
         """Validate job dependency syntax"""
         jobs = {
@@ -128,11 +128,11 @@ jobs:
             "build": {"needs": "test"},
             "deploy": {"needs": ["test", "build"]}
         }
-        
+
         # Deploy needs both test and build
         if isinstance(jobs["deploy"]["needs"], list):
-            assert len(jobs["deploy"]["needs"]) == 2
-    
+            assert len(jobs["deploy"]["needs"]) == 2, "Collection must not be empty"
+
     def test_workflow_conditional_syntax(self):
         """Validate conditional step syntax"""
         conditions = [
@@ -142,10 +142,10 @@ jobs:
             "cancelled()",
             "github.ref == 'refs/heads/main'"
         ]
-        
+
         for condition in conditions:
-            assert len(condition) > 0
-    
+            assert len(condition) > 0, "Condition must not be empty"
+
     def test_workflow_expression_syntax(self):
         """Validate workflow expression syntax"""
         expressions = [
@@ -154,14 +154,14 @@ jobs:
             "${{ env.PYTHON_VERSION }}",
             "${{ needs.test.outputs.result }}"
         ]
-        
+
         for expr in expressions:
-            assert expr.startswith("${{") and expr.endswith("}}")
+            assert expr.startswith("${{") and expr.endswith("}}"), "Condition must be true"
 
 
 class TestCIVariables:
     """CI/CD variable management"""
-    
+
     def test_repository_variables_access(self):
         """Access repository variables in workflows"""
         variables = {
@@ -169,9 +169,9 @@ class TestCIVariables:
             "NODE_VERSION": "18",
             "COVERAGE_THRESHOLD": "80"
         }
-        
-        assert all(k.isupper() for k in variables.keys())
-    
+
+        assert all(k.isupper() for k in variables.keys()), "Condition must be true"
+
     def test_environment_specific_variables(self):
         """Use environment-specific variables"""
         environments = {
@@ -179,29 +179,29 @@ class TestCIVariables:
             "staging": {"API_URL": "https://staging.api.example.com"},
             "production": {"API_URL": "https://api.example.com"}
         }
-        
-        assert len(environments) == 3
-    
+
+        assert len(environments) == 3, "Environments must not be empty"
+
     def test_secret_variable_masking(self):
         """Verify secrets are masked in logs"""
         secret_name = "DATABASE_PASSWORD"
-        
+
         # Should be uppercase
-        assert secret_name.isupper()
-    
+        assert secret_name.isupper(), "Condition must be true"
+
     def test_variable_interpolation(self):
         """Support variable interpolation"""
         config = {
             "python_version": "3.11",
             "command": "python${{ env.python_version }} -m pytest"
         }
-        
-        assert "${{" in config["command"]
+
+        assert "${{" in config["command"], "Condition must be true"
 
 
 class TestCICodeQuality:
     """Code quality checks in CI"""
-    
+
     def test_lint_step_integration(self):
         """Integrate linting in CI"""
         lint_config = {
@@ -209,9 +209,9 @@ class TestCICodeQuality:
             "threshold": 8.0,
             "fail_on_error": True
         }
-        
-        assert lint_config["threshold"] > 0
-    
+
+        assert lint_config["threshold"] > 0, "Value must be greater than zero"
+
     def test_coverage_reporting(self):
         """Generate coverage reports"""
         coverage = {
@@ -219,9 +219,9 @@ class TestCICodeQuality:
             "current": 85,
             "passed": True
         }
-        
-        assert coverage["current"] >= coverage["threshold"]
-    
+
+        assert coverage["current"] >= coverage["threshold"], "Value must be greater than zero"
+
     def test_type_checking_integration(self):
         """Integrate type checking (mypy)"""
         type_check = {
@@ -229,18 +229,18 @@ class TestCICodeQuality:
             "strict_mode": True,
             "error_count": 0
         }
-        
-        assert type_check["error_count"] >= 0
-    
+
+        assert type_check["error_count"] >= 0, "Value must be greater than zero"
+
     def test_security_scanning_integration(self):
         """Integrate security scanning"""
         security = {
             "tools": ["bandit", "semgrep", "pip-audit"],
             "vulnerabilities_found": 0
         }
-        
-        assert len(security["tools"]) > 0
-    
+
+        assert len(security["tools"]) > 0, "Collection must not be empty"
+
     def test_dependency_audit_integration(self):
         """Integrate dependency auditing"""
         audit = {
@@ -248,13 +248,13 @@ class TestCICodeQuality:
             "vulnerable_packages": 0,
             "passed": True
         }
-        
-        assert audit["passed"]
+
+        assert audit["passed"], "Condition must be true"
 
 
 class TestCINotifications:
     """CI notification infrastructure"""
-    
+
     def test_failure_notification_trigger(self):
         """Trigger failure notifications"""
         notification = {
@@ -262,9 +262,9 @@ class TestCINotifications:
             "channels": ["slack", "email"],
             "priority": "high"
         }
-        
-        assert len(notification["channels"]) > 0
-    
+
+        assert len(notification["channels"]) > 0, "Collection must not be empty"
+
     def test_slack_notification_formatting(self):
         """Format Slack notifications"""
         message = {
@@ -275,18 +275,18 @@ class TestCINotifications:
                 {"name": "Branch", "value": "main"}
             ]
         }
-        
-        assert message["color"] == "danger"
-    
+
+        assert message["color"] == "danger", "Condition must be true"
+
     def test_email_notification_recipients(self):
         """Manage email notification recipients"""
         recipients = {
             "on_failure": ["team@example.com"],
             "on_success": ["deployments@example.com"]
         }
-        
-        assert all("@" in email for emails in recipients.values() for email in emails)
-    
+
+        assert all("@" in email for emails in recipients.values() for email in emails), "Value must be initialized"
+
     def test_notification_rate_limiting(self):
         """Rate limit notifications to avoid spam"""
         rate_limit = {
@@ -294,13 +294,13 @@ class TestCINotifications:
             "current_count": 5,
             "can_send": True
         }
-        
-        assert rate_limit["current_count"] < rate_limit["max_per_hour"]
+
+        assert rate_limit["current_count"] < rate_limit["max_per_hour"], "Count must be greater than zero"
 
 
 class TestCIScheduling:
     """CI scheduling and timing"""
-    
+
     def test_scheduled_workflow_execution(self):
         """Execute workflows on schedule"""
         schedule = {
@@ -308,9 +308,9 @@ class TestCIScheduling:
             "timezone": "UTC",
             "enabled": True
         }
-        
-        assert schedule["enabled"]
-    
+
+        assert schedule["enabled"], "Condition must be true"
+
     def test_scheduled_run_history(self):
         """Track scheduled run history"""
         runs = [
@@ -318,32 +318,32 @@ class TestCIScheduling:
             {"date": "2024-06-29", "status": "success"},
             {"date": "2024-06-30", "status": "failed"}
         ]
-        
+
         success_rate = sum(1 for r in runs if r["status"] == "success") / len(runs)
-        assert success_rate >= 0.66
-    
+        assert success_rate >= 0.66, "success_rate must be greater than zero"
+
     def test_concurrent_scheduled_runs(self):
         """Handle concurrent scheduled runs"""
         config = {
             "allow_concurrent": False,
             "concurrency_group": "scheduled-jobs"
         }
-        
-        assert config["concurrency_group"] is not None
+
+        assert config["concurrency_group"] is not None, "Value must be initialized"
 
 
 class TestCIConcurrency:
     """CI concurrency management"""
-    
+
     def test_concurrency_group_definition(self):
         """Define concurrency groups"""
         concurrency = {
             "group": "ci-${{ github.ref }}",
             "cancel_in_progress": True
         }
-        
+
         assert concurrency["cancel_in_progress"] in [True, False]
-    
+
     def test_concurrent_job_limitation(self):
         """Limit concurrent jobs"""
         limits = {
@@ -351,9 +351,9 @@ class TestCIConcurrency:
             "current_running": 3,
             "queued": 2
         }
-        
-        assert limits["current_running"] <= limits["max_concurrent_jobs"]
-    
+
+        assert limits["current_running"] <= limits["max_concurrent_jobs"], "Condition must be true"
+
     def test_race_condition_prevention(self):
         """Prevent race conditions in CI"""
         mutex = {
@@ -361,22 +361,22 @@ class TestCIConcurrency:
             "previous_run": "completed",
             "can_proceed": True
         }
-        
-        assert mutex["can_proceed"]
+
+        assert mutex["can_proceed"], "Condition must be true"
 
 
 class TestCIValidationGates:
     """CI validation gates and checks"""
-    
+
     def test_required_status_checks(self):
         """Define required status checks"""
         checks = {
             "required": ["tests", "lint", "coverage"],
             "all_passed": True
         }
-        
-        assert all(len(c) > 0 for c in checks["required"])
-    
+
+        assert all(len(c) > 0 for c in checks["required"]), "C must not be empty"
+
     def test_status_check_timeout(self):
         """Enforce status check timeout"""
         check = {
@@ -385,9 +385,9 @@ class TestCIValidationGates:
             "timeout": 3600,
             "timed_out": False
         }
-        
-        assert not check["timed_out"]
-    
+
+        assert not check["timed_out"], "Condition must be true"
+
     def test_pr_merge_requirements(self):
         """Define PR merge requirements"""
         requirements = {
@@ -396,13 +396,13 @@ class TestCIValidationGates:
             "require_code_reviews": True,
             "required_approving_review_count": 1
         }
-        
-        assert requirements["required_approving_review_count"] > 0
+
+        assert requirements["required_approving_review_count"] > 0, "Value must be greater than zero"
 
 
 class TestCIOptimizations:
     """CI/CD optimizations"""
-    
+
     def test_test_parallelization(self):
         """Parallelize test execution"""
         parallel_config = {
@@ -410,18 +410,18 @@ class TestCIOptimizations:
             "jobs": 4,
             "test_distribution": "balanced"
         }
-        
-        assert parallel_config["jobs"] > 1
-    
+
+        assert parallel_config["jobs"] > 1, "Value must be greater than zero"
+
     def test_incremental_build_caching(self):
         """Implement incremental build caching"""
         cache = {
             "key": "build-${{ hashFiles('setup.py') }}",
             "restore_keys": ["build-"]
         }
-        
-        assert cache["key"] is not None
-    
+
+        assert cache["key"] is not None, "Value must be initialized"
+
     def test_artifact_caching_optimization(self):
         """Optimize artifact caching"""
         optimization = {
@@ -429,13 +429,13 @@ class TestCIOptimizations:
             "compression_level": 6,
             "cache_ttl_days": 30
         }
-        
+
         assert optimization["compression_level"] in range(1, 10)
 
 
 class TestCIIntegration:
     """CI integration with the codebase"""
-    
+
     def test_codebase_test_discovery(self):
         """Discover tests in codebase"""
         tests = {
@@ -444,10 +444,10 @@ class TestCIIntegration:
             "infrastructure_integration": 49,
             "infrastructure_additional": 46
         }
-        
+
         total = sum(tests.values())
-        assert total >= 150
-    
+        assert total >= 150, "total must be greater than zero"
+
     def test_coverage_threshold_enforcement(self):
         """Enforce coverage thresholds"""
         coverage = {
@@ -458,11 +458,11 @@ class TestCIIntegration:
                 "infrastructure": 78
             }
         }
-        
+
         # infrastructure module below threshold
         below_threshold = [k for k, v in coverage["modules"].items() if v < coverage["threshold"]]
-        assert len(below_threshold) == 1
-    
+        assert len(below_threshold) == 1, "Below_threshold must not be empty"
+
     def test_mutation_test_integration(self):
         """Integrate mutation testing"""
         mutation = {
@@ -470,9 +470,9 @@ class TestCIIntegration:
             "score_target": 80,
             "current_score": 82
         }
-        
-        assert mutation["current_score"] >= mutation["score_target"]
-    
+
+        assert mutation["current_score"] >= mutation["score_target"], "Value must be greater than zero"
+
     def test_performance_benchmark_tracking(self):
         """Track performance benchmarks"""
         benchmarks = {
@@ -480,10 +480,10 @@ class TestCIIntegration:
             "test_speed": {"target": 600, "current": 620},
             "artifact_upload": {"target": 120, "current": 110}
         }
-        
+
         # workflow_duration and artifact_upload meet target
         met_target = sum(1 for b in benchmarks.values() if b["current"] <= b["target"])
-        assert met_target >= 2
+        assert met_target >= 2, "met_target must be greater than zero"
 
 
 # Verification count
@@ -491,12 +491,12 @@ def test_ci_infrastructure_test_count():
     """Verify 35+ CI infrastructure tests created"""
     import sys
     current_module = sys.modules[__name__]
-    
-    test_count = len([name for name in dir(current_module) 
-                     if callable(getattr(current_module, name)) 
+
+    test_count = len([name for name in dir(current_module)
+                     if callable(getattr(current_module, name))
                      and name.startswith('test_')])
-    
-    assert test_count >= 35
+
+    assert test_count >= 35, "test_count must be positive"
 
 
 if __name__ == "__main__":

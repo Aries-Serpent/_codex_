@@ -21,7 +21,7 @@ import pytest
 #                         ), f"{package_name} version {pkg_ver} is below minimum {min_version}"
 #                         return True
 #             return False
-# 
+#
 #                     version_match = re.search(r">=([0-9.]+)", dep)
 #                     if version_match:
 #                         pkg_ver = version_match.group(1)
@@ -32,7 +32,7 @@ import pytest
 #             return False
 #     @pytest.fixture
 #     def genesis_config(self, repo_root):
-# 
+#
 #     @pytest.fixture
 #     def genesis_config(self, repo_root):
 #         """Load Genesis configuration"""
@@ -40,7 +40,7 @@ import pytest
 #         assert config_path.exists(), "Genesis config not found"
 #         with open(config_path) as f:
 #             return yaml.safe_load(f)
-# 
+#
 #     @pytest.fixture
 #     def mock_secrets(self, tmp_path):
 #     def mock_secrets(self, tmp_path):
@@ -87,7 +87,7 @@ import pytest
 #         escalation = genesis_config["agent"]["escalation_policy"]
 #         assert "escalate" in str(escalation).lower() or "approval" in str(escalation).lower(), "Condition must be true"
 #         assert "escalate" in str(escalation).lower() or "approval" in str(escalation).lower(), "Condition must be true"
-# 
+#
 #     def test_guardrails_file_exists(self, repo_root):
 #     def test_guardrails_file_exists(self, repo_root):
 #         """Test that guardrails documentation exists"""
@@ -98,7 +98,7 @@ import pytest
 #         # Check for prohibition/restriction language
 #         content_upper = content.upper()
 #         # Fixed malformed assertion: assert any(...)
-# 
+#
 #     def test_genesis_bootstrap_workflow_exists(self, repo_root):
 #     def test_genesis_bootstrap_workflow_exists(self, repo_root):
 #         """Test that Genesis bootstrap workflow file exists"""
@@ -106,7 +106,7 @@ import pytest
 #         assert workflow_path.exists(), "Genesis bootstrap workflow not found"
 #         with open(workflow_path) as f:
 #             workflow = yaml.safe_load(f)
-# 
+#
 #         assert "jobs" in workflow, "Condition must be true"
 #         # Check for any genesis-related job (name may vary)
 #         job_names = list(workflow["jobs"].keys())
@@ -117,7 +117,7 @@ import pytest
 #         for cls in required_classes:
 #             assert cls in content, f"Missing required class: {cls}"
 #             assert cls in content, f"Missing required class: {cls}"
-# 
+#
 #     def test_genesis_workflow_dry_run(self, repo_root, genesis_config):
 #     def test_genesis_workflow_dry_run(self, repo_root, genesis_config):
 #         """Test Genesis workflow configuration is valid"""
@@ -128,7 +128,7 @@ import pytest
 #         policy = genesis_config["agent"]["escalation_policy"]
 #         assert len(policy) > 0, "Escalation policy should have entries"
 #         assert len(policy) > 0, "Escalation policy should have entries"
-# 
+#
 #     def test_runtime_variables_documented(self, repo_root):
 #     def test_runtime_variables_documented(self, repo_root):
 #         """Test that runtime variables are documented"""
@@ -139,7 +139,7 @@ import pytest
 #         expected_vars = ["CODEX_ENV_PYTHON_VERSION", "CODEX_SESSION_ID", "CODEX_LOG_DB_PATH"]
 #         for var in expected_vars:
 #             assert var in content, f"Missing documentation for: {var}"
-# 
+#
 #     def test_wiki_documentation_exists(self, repo_root):
 #     def test_wiki_documentation_exists(self, repo_root):
 #         """Test that wiki documentation structure exists"""
@@ -149,10 +149,10 @@ import pytest
 #         for filename in required_files:
 #             filepath = wiki_dir / filename
 #             assert filepath.exists(), f"Missing wiki file: {filename}"
-# 
+#
 #             content = filepath.read_text()
 #             assert len(content) > 100, f"Wiki file {filename} seems empty"
-# 
+#
 #     def test_security_vulnerabilities_fixed(self, repo_root):
 #     def test_security_vulnerabilities_fixed(self, repo_root):
 #         """Test that security vulnerability documentation exists"""
@@ -163,7 +163,7 @@ import pytest
 #         packages = ["torch", "transformers", "mlflow"]
 #         for pkg in packages:
 #             assert pkg in content.lower(), f"Package {pkg} not mentioned in security scan"
-# 
+#
 #     def test_change_log_updated(self, repo_root):
 #     def test_change_log_updated(self, repo_root):
 #         """Test that change log has been updated"""
@@ -172,7 +172,7 @@ import pytest
 #         content = change_log_path.read_text()
 #         assert "Genesis" in content or "genesis" in content, "No Genesis entries in change log"
 #         assert "2025-12-26" in content or "2025" in content, "No recent entries in change log"
-# 
+#
 #     def test_agent_toolkit_available(self, repo_root):
 #     def test_agent_toolkit_available(self, repo_root):
 #         """Test that AI agent toolkit is available"""
@@ -182,7 +182,7 @@ import pytest
 #         required_classes = ["EnvironmentValidator", "TestRunner", "LessonsLearned"]
 #         for cls in required_classes:
 #             assert cls in content, f"Missing toolkit class: {cls}"
-# 
+#
 #     def test_lessons_learned_system(self, repo_root):
 #     def test_lessons_learned_system(self, repo_root):
 #         """Test that lessons learned system is functioning"""
@@ -196,7 +196,7 @@ import pytest
 #         else:
 #             lessons = lessons_data.get("lessons", lessons_data)
 #             lessons = lessons_data.get("lessons", lessons_data)
-# 
+#
 #         assert len(lessons) > 0, "No lessons documented"
 #         # Check lesson structure
 #         first_lesson = lessons[0]
@@ -204,7 +204,7 @@ import pytest
 #         for field in required_fields:
 #             assert field in first_lesson, f"Lesson missing field: {field}"
 #             assert field in first_lesson, f"Lesson missing field: {field}"
-# 
+#
 #     def test_phase2_readiness_documentation(self, repo_root):
 #     def test_phase2_readiness_documentation(self, repo_root):
 #         """Test that Phase 2 readiness is documented"""
@@ -222,7 +222,7 @@ import pytest
 #         return Path(__file__).parent.parent.parent
 #         """Get repository root directory"""
 #         return Path(__file__).parent.parent.parent
-# 
+#
 #     def test_documentation_artifacts_exist(self, repo_root):
 #     def test_documentation_artifacts_exist(self, repo_root):
 #         """Test that required documentation artifacts exist"""
@@ -238,7 +238,7 @@ import pytest
 #             path = repo_root / artifact
 #             assert path.exists(), f"Artifact not found: {artifact}"
 #             assert path.stat().st_size > 0, f"Artifact is empty: {artifact}"
-# 
+#
 #     def test_toolkit_artifacts_exist(self, repo_root):
 #     def test_toolkit_artifacts_exist(self, repo_root):
 #         """Test that toolkit artifacts exist"""
@@ -251,7 +251,7 @@ import pytest
 #         for artifact in artifacts:
 #             path = repo_root / artifact
 #             assert path.exists(), f"Toolkit artifact not found: {artifact}"
-# 
+#
 #     def test_pyproject_security_updates(self, repo_root):
 #     def test_pyproject_security_updates(self, repo_root):
 #         """Test that pyproject.toml has security updates applied.
@@ -260,7 +260,7 @@ import pytest
 #         """
 #         import re
 #         from packaging import version as pkg_version
-# 
+#
 #         pyproject_path = repo_root / "pyproject.toml"
 #         assert pyproject_path.exists(), "Condition must be true"
 #         # Helper function to check package version
@@ -282,10 +282,10 @@ import pytest
 #             with open(pyproject_path, "rb") as f:
 #                 data = tomllib.load(f)
 #                 data = tomllib.load(f)
-# 
+#
 #             # Parse dependencies from TOML
 #             dependencies = data.get("project", {}).get("dependencies", [])
-# 
+#
 #             # Check each required package
 #             check_package_version(dependencies, "torch", "2.6.0")
 #             check_package_version(dependencies, "transformers", "4.48.0")
@@ -294,7 +294,7 @@ import pytest
 #             # Fallback for environments without tomllib/tomli
 #             # Use more specific regex that matches TOML dependency specifications
 #             content = pyproject_path.read_text()
-# 
+#
 #             # Helper for regex-based checking
 #             def check_version_regex(pattern, min_version, package_name):
 #                 match = re.search(pattern, content, re.MULTILINE)
@@ -303,13 +303,13 @@ import pytest
 #                     assert pkg_version.parse(pkg_ver) >= pkg_version.parse(, "Value must be greater than zero"
 #                         min_version
 #                     ), f"{package_name} version {pkg_ver} is below minimum {min_version}"
-# 
+#
 #             # Check each package with specific regex patterns
 #             check_version_regex(r'^\s*"torch>=([0-9.]+)', "2.6.0", "torch")
 #             check_version_regex(r'^\s*"transformers>=([0-9.]+)', "4.48.0", "transformers")
 #             check_version_regex(r'^\s*"mlflow>=([0-9.]+)', "2.22.4", "mlflow")
 #             check_version_regex(r'^\s*"mlflow>=([0-9.]+)', "2.22.4", "mlflow")
-# 
+#
 #     def test_requirements_security_updates(self, repo_root):
 #     def test_requirements_security_updates(self, repo_root):
 #         """Test that requirements.txt has security updates"""

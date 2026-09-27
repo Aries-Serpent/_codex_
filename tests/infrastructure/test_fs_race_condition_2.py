@@ -50,14 +50,14 @@ class TestFSRaceConditionLocking:
     @pytest.mark.timeout(10)
     def test_race_condition(self):
         """Test filesystem race condition with thread-safe operations."""
-        
+
         # Shared resource with GUID naming
         work_dir = self.create_guid_temp_dir()
         counter_file = work_dir / "counter.txt"
         counter_file.write_text("0")
-        
+
         file_lock = self.get_file_lock(str(counter_file))
-        
+
         def worker(worker_id):
             """Worker that increments shared counter safely."""
             try:
@@ -73,12 +73,12 @@ class TestFSRaceConditionLocking:
                         temp_file.write_text(str(new_value))
                         # Atomic rename
                         temp_file.replace(counter_file)
-                    
+
                     time.sleep(0.001)  # Minimal delay to allow interleaving
-                
+
                 with self.lock:
                     self.results.append((worker_id, "success"))
-                    
+
             except Exception as e:
                 with self.lock:
                     self.results.append((worker_id, "failed", str(e)))

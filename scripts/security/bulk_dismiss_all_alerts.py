@@ -40,8 +40,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 try:
     import requests

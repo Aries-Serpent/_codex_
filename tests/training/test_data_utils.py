@@ -7,27 +7,27 @@ pytest.importorskip("mlflow")
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
 # """
-# 
+#
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
 # from functools import lru_cache
-# 
+#
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
-# 
-# 
+#
+#
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
-# 
-# 
+#
+#
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
-# 
-# 
+#
+#
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
@@ -40,9 +40,9 @@ pytest.importorskip("mlflow")
 #         seq = [1, 2, 3, "a", "b"]
 #         result1 = data_utils._stable_checksum_of_seq_repr(seq)
 #         result2 = data_utils._stable_checksum_of_seq_repr(seq)
-# 
+#
 #         assert result1 == result2, "Result must not be empty"
-# 
+#
 #     def test_checksum_different_for_different_sequences(self):
 #     def test_checksum_different_for_different_sequences(self):
 #         """Test different sequences produce different checksums."""
@@ -51,7 +51,7 @@ pytest.importorskip("mlflow")
 #         assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
 #             seq1
 #         ) != data_utils._stable_checksum_of_seq_repr(seq2)
-# 
+#
 #     def test_checksum_empty_sequence(self):
 #     def test_checksum_empty_sequence(self):
 #         """Test checksum for empty sequence."""

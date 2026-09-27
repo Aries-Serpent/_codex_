@@ -15,9 +15,9 @@ _DEFAULT_SEED = 42
 
 def _set_seed(seed: int, *, deterministic: bool = True) -> None:
     """Set random seed. Tries codex_ml implementation, falls back to basic torch/numpy.
-    
+
     This function uses lazy import to break circular dependencies with codex_ml.
-    
+
     PHASE 3 HARDENING: All fallback paths now include logging instead of silent pass.
     """
     try:
@@ -27,7 +27,7 @@ def _set_seed(seed: int, *, deterministic: bool = True) -> None:
     except (ImportError, AttributeError, TypeError) as e:
         # Fallback if codex_ml not available or has different signature
         logger.debug(f"codex_ml not available, using fallback seed methods: {e}")
-        
+
         # PHASE 3 HARDENING: Log failures instead of silent pass
         try:
             import random
@@ -35,14 +35,14 @@ def _set_seed(seed: int, *, deterministic: bool = True) -> None:
             random.seed(seed)
         except Exception as e:  # noqa: BLE001 - Broad exception for robustness
             logger.warning(f"Failed to set Python random seed: {e}")
-        
+
         try:
             import numpy as np
 
             np.random.seed(seed)
         except Exception as e:  # noqa: BLE001 - Broad exception for robustness
             logger.warning(f"Failed to set NumPy random seed: {e}")
-        
+
         try:
             import torch
 

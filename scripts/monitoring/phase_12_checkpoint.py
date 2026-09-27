@@ -10,17 +10,15 @@ Campaign: Phase 12 Post-Release Monitoring (24-hour window, 2026-07-16T20:00Z �
 """
 
 import argparse
-import json
-import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 
 class Phase12Checkpoint:
     """Phase 12 hourly checkpoint validator."""
-    
+
     # Baseline metrics from Phase 11 completion
     BASELINE_METRICS = {
         'uptime': 99.97,
@@ -35,7 +33,7 @@ class Phase12Checkpoint:
         'db_pool_size': 500,
         'request_rate': 1847,
     }
-    
+
     # Target thresholds for validation
     THRESHOLDS = {
         'uptime_min': 99.9,
@@ -48,7 +46,7 @@ class Phase12Checkpoint:
         'cache_hit_min': 97,
         'db_pool_utilization_max': 70,
     }
-    
+
     def __init__(self, hour: int, output_path: str, dashboard_path: str, incident_log_path: str):
         """Initialize checkpoint validator."""
         self.hour = hour
@@ -59,7 +57,7 @@ class Phase12Checkpoint:
         self.checkpoint_time = self.timestamp.replace(minute=0, second=0, microsecond=0)
         self.incidents: List[Dict] = []
         self.anomalies: List[str] = []
-        
+
     def collect_metrics(self) -> Dict:
         """Collect current production metrics."""
         # In a real scenario, this would fetch from Prometheus, CloudWatch, etc.
@@ -83,17 +81,17 @@ class Phase12Checkpoint:
             'instances_total': 32,
         }
         return metrics
-    
+
     def validate_metrics(self, metrics: Dict) -> Tuple[str, List[str]]:
         """Validate metrics against thresholds and baseline."""
         status = 'PASS'
         anomalies = []
-        
+
         # Uptime check
         if metrics['uptime_percent'] < self.THRESHOLDS['uptime_min']:
             status = 'CRITICAL'
             anomalies.append(f"Uptime {metrics['uptime_percent']:.2f}% < {self.THRESHOLDS['uptime_min']}% threshold")
-        
+
         # Error rate check
         if metrics['error_rate_percent'] > self.THRESHOLDS['error_rate_critical']:
             status = 'CRITICAL'
@@ -102,11 +100,11 @@ class Phase12Checkpoint:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"Error rate {metrics['error_rate_percent']:.3f}% > {self.THRESHOLDS['error_rate_max']}% threshold")
-        
+
         # Latency baseline check (±variance)
         latency_variance = abs(metrics['latency_p95_ms'] - self.BASELINE_METRICS['latency_p95'])
         latency_variance_pct = (latency_variance / self.BASELINE_METRICS['latency_p95']) * 100
-        
+
         if latency_variance_pct > self.THRESHOLDS['latency_variance_critical']:
             status = 'CRITICAL'
             anomalies.append(f"Latency p95 variance {latency_variance_pct:.1f}% > {self.THRESHOLDS['latency_variance_critical']}% CRITICAL")
@@ -114,33 +112,33 @@ class Phase12Checkpoint:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"Latency p95 variance {latency_variance_pct:.1f}% > {self.THRESHOLDS['latency_variance_max']}% threshold")
-        
+
         # Resource utilization checks
         if metrics['cpu_peak_percent'] > self.THRESHOLDS['cpu_peak_max']:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"CPU peak {metrics['cpu_peak_percent']}% > {self.THRESHOLDS['cpu_peak_max']}% threshold")
-        
+
         if metrics['memory_peak_percent'] > self.THRESHOLDS['memory_peak_max']:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"Memory peak {metrics['memory_peak_percent']}% > {self.THRESHOLDS['memory_peak_max']}% threshold")
-        
+
         # Cache hit rate check
         if metrics['cache_hit_rate_percent'] < self.THRESHOLDS['cache_hit_min']:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"Cache hit rate {metrics['cache_hit_rate_percent']:.1f}% < {self.THRESHOLDS['cache_hit_min']}% threshold")
-        
+
         # Database pool check
         db_utilization = (metrics['db_connections_active'] / metrics['db_pool_size']) * 100
         if db_utilization > self.THRESHOLDS['db_pool_utilization_max']:
             if status != 'CRITICAL':
                 status = 'DEGRADED'
             anomalies.append(f"DB pool utilization {db_utilization:.1f}% > {self.THRESHOLDS['db_pool_utilization_max']}% threshold")
-        
+
         return status, anomalies
-    
+
     def generate_checkpoint_report(self, metrics: Dict, status: str, anomalies: List[str]) -> str:
         """Generate hourly checkpoint report."""
         status_emoji = {
@@ -148,10 +146,10 @@ class Phase12Checkpoint:
             'DEGRADED': '🟡',
             'CRITICAL': '🔴',
         }.get(status, '❓')
-        
+
         latency_variance = abs(metrics['latency_p95_ms'] - self.BASELINE_METRICS['latency_p95'])
         latency_variance_pct = (latency_variance / self.BASELINE_METRICS['latency_p95']) * 100
-        
+
         report = f"""
 📊 PHASE 12 HOURLY CHECKPOINT [HOUR {self.hour}]
 Time: {metrics['timestamp']}
@@ -179,38 +177,38 @@ Status: {status_emoji} {status}
 ---
 """
         return report.strip()
-    
+
     def execute(self) -> bool:
         """Execute hourly checkpoint."""
         print(f"[Phase 12] Executing checkpoint {self.hour}...")
-        
+
         # Collect metrics
         metrics = self.collect_metrics()
-        
+
         # Validate metrics
         status, anomalies = self.validate_metrics(metrics)
         self.anomalies = anomalies
-        
+
         # Generate report
         report = self.generate_checkpoint_report(metrics, status, anomalies)
-        
+
         # Append to checkpoint log
         if not self.output_path.exists():
-            self.output_path.write_text(f"# Phase 12 Hourly Checkpoint Log\n\n")
-        
+            self.output_path.write_text("# Phase 12 Hourly Checkpoint Log\n\n")
+
         with open(self.output_path, 'a') as f:
             f.write(report + "\n\n")
-        
+
         # Update dashboard
         self.update_dashboard(metrics, status)
-        
+
         # Handle escalation if needed
         if status in ['CRITICAL', 'DEGRADED']:
             self.escalate_incident(metrics, status, anomalies)
-        
+
         print(f"✅ Checkpoint {self.hour} complete: {status}")
         return status != 'CRITICAL'
-    
+
     def update_dashboard(self, metrics: Dict, status: str):
         """Update live dashboard."""
         status_emoji = {
@@ -218,7 +216,7 @@ Status: {status_emoji} {status}
             'DEGRADED': '🟡',
             'CRITICAL': '🔴',
         }.get(status, '❓')
-        
+
         if not self.dashboard_path.exists():
             self.dashboard_path.write_text(f"""# Phase 12 Live Monitoring Dashboard
 
@@ -229,10 +227,10 @@ Status: {status_emoji} {status}
 ## Current Status
 
 """)
-        
+
         # In real scenario, would update dashboard with live metrics
         print(f"📊 Dashboard updated for checkpoint {self.hour}")
-    
+
     def escalate_incident(self, metrics: Dict, status: str, anomalies: List[str]):
         """Escalate incident if critical."""
         incident = {
@@ -243,22 +241,22 @@ Status: {status_emoji} {status}
             'anomalies': anomalies,
             'metrics': metrics,
         }
-        
+
         self.incidents.append(incident)
-        
+
         # Log incident
         if not self.incident_log_path.exists():
-            self.incident_log_path.write_text(f"# Phase 12 Incident Log\n\n")
-        
+            self.incident_log_path.write_text("# Phase 12 Incident Log\n\n")
+
         with open(self.incident_log_path, 'a') as f:
             f.write(f"## Incident [{incident['severity']}] - Hour {self.hour}\n")
             f.write(f"**Time:** {incident['timestamp']}\n")
             f.write(f"**Status:** {incident['status']}\n")
-            f.write(f"**Anomalies:**\n")
+            f.write("**Anomalies:**\n")
             for anomaly in incident['anomalies']:
                 f.write(f"  - {anomaly}\n")
-            f.write(f"\n---\n\n")
-        
+            f.write("\n---\n\n")
+
         print(f"🚨 Incident escalated: {status}")
 
 
@@ -269,18 +267,18 @@ def main():
     parser.add_argument('--output', default='.codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md')
     parser.add_argument('--dashboard', default='.codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md')
     parser.add_argument('--incident-log', default='.codex/PHASE_12_INCIDENT_LOG_2026_07_17.md')
-    
+
     args = parser.parse_args()
-    
+
     checkpoint = Phase12Checkpoint(
         hour=args.hour,
         output_path=args.output,
         dashboard_path=args.dashboard,
         incident_log_path=args.incident_log,
     )
-    
+
     success = checkpoint.execute()
-    
+
     return 0 if success else 1
 
 

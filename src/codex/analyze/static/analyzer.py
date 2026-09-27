@@ -228,8 +228,12 @@ def analyze(
         "lint_error_count": len([issue for issue in lint_issues if issue.severity == "error"]),
         "lint_warning_count": len([issue for issue in lint_issues if issue.severity == "warning"]),
         "security_issue_count": len(security_issues),
-        "security_critical_count": len([issue for issue in security_issues if issue.severity == "critical"]),
-        "security_high_count": len([issue for issue in security_issues if issue.severity == "high"]),
+        "security_critical_count": len(
+            [issue for issue in security_issues if issue.severity == "critical"]
+        ),
+        "security_high_count": len(
+            [issue for issue in security_issues if issue.severity == "high"]
+        ),
     }
 
     return StaticReport(

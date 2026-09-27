@@ -111,7 +111,7 @@ class TestAPIVersioning:
                 if doc and doc.exists():
                     content = doc.read_text(encoding="utf-8", errors="ignore").lower()
                     if "version" in content or "v1" in content:
-                        assert True
+                        assert True, "True is not valid"
                         return
 
         # If no docs found, mark as skip
@@ -198,7 +198,7 @@ class TestAPIVersioning:
                 content = changelog.read_text(encoding="utf-8", errors="ignore")
                 # Should mention versions or changes
                 if "v0." in content or "v1." in content or "## [" in content:
-                    assert True
+                    assert True, "True is not valid"
                     return
 
         pytest.skip("CHANGELOG not found or empty")
@@ -220,7 +220,7 @@ class TestAPIVersioning:
 
         # Should support at least some versioning
         if api_files:
-            assert version_routes > 0 or any(
+            assert version_routes > 0 or any(, "version_routes must be greater than zero"
                 "version" in Path(f).read_text(encoding="utf-8", errors="ignore").lower()
                 for f in api_files[:5]
             ), "API should support multiple versions"

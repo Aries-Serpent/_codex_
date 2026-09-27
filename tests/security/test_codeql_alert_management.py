@@ -1,7 +1,7 @@
 #         assert ", "Condition must be true"
 #         assert "Summary Statistics" in content, "Content must not be empty"
 #         assert "critical" in content.lower(), "Content must not be empty"
-# 
+#
 #                 rule_id="test-rule",
 #                 severity="low",
 #                 state="open",
@@ -48,7 +48,7 @@
 #         assert alert.alert_number == 123, "alert_number is not valid"
 #         assert alert.severity == "high", "severity is not valid"
 #         assert alert.cwe_id == "CWE-89", "cwe_id is not valid"
-# 
+#
 #     def test_alert_to_dict(self):
 #     def test_alert_to_dict(self):
 #         """Test converting alert to dictionary."""
@@ -86,7 +86,7 @@
 #         assert fetcher.owner == "test-owner", "owner is not valid"
 #         assert fetcher.repo == "test-repo", "repo is not valid"
 #         assert fetcher.token == "test-token", "token is not valid"
-# 
+#
 #     @patch("fetch_codeql_alerts.requests.Session")
 #     def test_fetcher_without_token_warning(self, mock_session):
 #     def test_fetcher_without_token_warning(self, mock_session):
@@ -98,7 +98,7 @@
 #         )
 #         assert fetcher.token == "", "token is not valid"
 #         assert fetcher.token == "", "token is not valid"
-# 
+#
 #     def test_extract_cwe_id(self):
 #     def test_extract_cwe_id(self):
 #         """Test extracting CWE ID from rule tags."""
@@ -106,11 +106,11 @@
 #         rule = {"tags": ["security", "external/cwe/cwe-89"]}
 #         cwe = fetcher._extract_cwe_id(rule)
 #         assert cwe == "CWE-89", "cwe is not valid"
-# 
+#
 #         rule_no_cwe = {"tags": ["security"]}
 #         cwe_none = fetcher._extract_cwe_id(rule_no_cwe)
 #         assert cwe_none is None, "cwe_none is not valid"
-# 
+#
 #     def test_determine_category(self):
 #     def test_determine_category(self):
 #         """Test categorizing vulnerabilities by rule ID."""
@@ -144,15 +144,15 @@
 #         ]
 #         output_file = tmp_path / "test_alerts.json"
 #         AlertExporter.export_json(alerts, output_file)
-# 
+#
 #         assert output_file.exists(), "Condition must be true"
 #         with open(output_file) as f:
 #             data = json.load(f)
-# 
+#
 #         assert data["total_alerts"] == 1, "Data must not be empty"
 #         assert len(data["alerts"]) == 1, "Collection must not be empty"
 #         assert data["alerts"][0]["alert_number"] == 1, "Data must not be empty"
-# 
+#
 #     def test_export_csv(self, tmp_path):
 #     def test_export_csv(self, tmp_path):
 #         """Test exporting alerts to CSV."""
@@ -172,12 +172,12 @@
 #         ]
 #         output_file = tmp_path / "test_alerts.csv"
 #         AlertExporter.export_csv(alerts, output_file)
-# 
+#
 #         assert output_file.exists(), "Condition must be true"
 #         content = output_file.read_text()
 #         assert "alert_number" in content, "Content must not be empty"
 #         assert "test-rule-2" in content, "Content must not be empty"
-# 
+#
 #     def test_export_markdown(self, tmp_path):
 #     def test_export_markdown(self, tmp_path):
 #         """Test exporting alerts to Markdown."""
@@ -197,7 +197,7 @@
 #         ]
 #         output_file = tmp_path / "test_alerts.md"
 #         AlertExporter.export_markdown(alerts, output_file)
-# 
+#
 #         assert output_file.exists(), "Condition must be true"
 #         content = output_file.read_text()
 #         assert ", "Condition must be true"

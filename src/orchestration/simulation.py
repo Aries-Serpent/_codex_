@@ -307,9 +307,9 @@ class ScenarioBuilder:
 
     def __init__(self):
         self.agents: dict[str, tuple[int, float]] = {}  # agent_id -> (max_concurrent, failure_rate)
-        self.workloads: list[tuple[WorkloadProfile, float, float, float, float]] = (
-            []
-        )  # (profile, rate, avg_duration_ms, duration, failure_rate)
+        self.workloads: list[
+            tuple[WorkloadProfile, float, float, float, float]
+        ] = []  # (profile, rate, avg_duration_ms, duration, failure_rate)
         self.failure_injections: dict[str, float] = {}
 
     def add_agent(

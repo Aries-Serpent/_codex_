@@ -114,12 +114,12 @@ def print_report(stats: dict[str, dict], min_accuracy: float = 0.95) -> bool:
                 f"({data['failures']} failures / ~{data['estimated_total']} total)"
             )
             for ex in data["examples"][:3]:
-                print(f"    seed={ex.get('seed','?')} | {ex.get('audit_id','?')}")
-                print(f"      Expected: {ex.get('expected','?')}  Got: {ex.get('predicted','?')}")
+                print(f"    seed={ex.get('seed', '?')} | {ex.get('audit_id', '?')}")
+                print(f"      Expected: {ex.get('expected', '?')}  Got: {ex.get('predicted', '?')}")
                 print(
                     f"      score={ex.get('score', '?'):.3f}  "
-                    f"risk={ex.get('risk','?')}  "
-                    f"cost={ex.get('cost','?'):.0f}"
+                    f"risk={ex.get('risk', '?')}  "
+                    f"cost={ex.get('cost', '?'):.0f}"
                 )
     else:
         print(f"\n✅ All patterns at ≥{min_accuracy:.0%} accuracy")

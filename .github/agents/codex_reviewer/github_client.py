@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import re
 import urllib.parse
 from dataclasses import dataclass
 from typing import Any, Optional
@@ -58,14 +59,38 @@ class GitHubAPIClient:
     and retry logic for GitHub API interactions.
     """
 
-    def __init__(self, config: Optional[GitHubConfig] = None):
+    def __init__(
+        self,
+        config: Optional[GitHubConfig] = None,
+        token: Optional[str] = None,
+        base_url: Optional[str] = None,
+        timeout: Optional[int] = None,
+    ):
         """
         Initialize GitHub API client.
 
         Args:
             config: GitHub configuration (defaults to environment-based config)
+            token: Optional token override for simple test/config usage.
+            base_url: Optional base URL override.
         """
-        self.config = config or GitHubConfig.from_env()
+        if config is None:
+            config = GitHubConfig(
+                token=token or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN"),
+                base_url=base_url or os.environ.get("GITHUB_API_URL", "https://api.github.com"),
+                timeout=timeout or 30,
+            )
+        elif token is not None or base_url is not None:
+            config = GitHubConfig(
+                token=token if token is not None else config.token,
+                base_url=base_url or config.base_url,
+                timeout=timeout if timeout is not None else getattr(config, "timeout", 30),
+                max_retries=getattr(config, "max_retries", 3),
+            )
+
+        self.config = config
+        self.token = self.config.token
+        self.base_url = self.config.base_url
 
         if not self.config.token:
             logger.warning("No GitHub token configured - API requests will fail")  # codeql[py/clear-text-logging-sensitive-data]
@@ -82,6 +107,54 @@ class GitHubAPIClient:
 
         return headers
 
+    @staticmethod
+    def _normalize_repo_name(repo: str) -> str:
+        """Normalize a repository identifier to owner/repo and reject malformed inputs."""
+        if not isinstance(repo, str):
+            raise ValueError("Repository must be a string in the format 'owner/repo'")
+
+        candidate = repo.strip().strip("/")
+        if not candidate:
+            raise ValueError("Repository must not be empty")
+        if "://" in candidate or candidate.startswith(("//", "http://", "https://")):
+            raise ValueError("Repository must be 'owner/repo', not a URL")
+        if any(part in ("", ".", "..") for part in candidate.split("/")):
+            raise ValueError("Repository path contains empty or traversal segments")
+        if candidate.startswith(".") or candidate.endswith("."):
+            raise ValueError("Repository name must not start or end with a dot")
+        if "?" in candidate or "#" in candidate or "\\" in candidate:
+            raise ValueError("Repository name must not include query strings or path separators")
+
+        if len(candidate.split("/")) != 2:
+            raise ValueError("Repository must be in the format 'owner/repo'")
+
+        owner, name = candidate.split("/", 1)
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", owner) or not re.fullmatch(r"[A-Za-z0-9._-]+", name):
+            raise ValueError("Repository owner and name may only use GitHub-safe characters")
+        return f"{owner}/{name}"
+
+    @staticmethod
+    def _has_unsafe_path_segments(path: str) -> bool:
+        """Reject empty, dot, or traversal path segments after URL-decoding."""
+        decoded = urllib.parse.unquote(path).replace("\\", "/").lstrip("/")
+        if not decoded:
+            return True
+        segments = decoded.split("/")
+        return any(segment in ("", ".", "..") for segment in segments)
+
+    def _build_github_api_url(self, repo: str, api_path: str) -> str:
+        """Build a GitHub API URL only from validated repo and API path segments."""
+        repo_name = self._normalize_repo_name(repo)
+        normalized_path = api_path.strip().lstrip("/")
+        if not normalized_path:
+            raise ValueError("GitHub API path must not be empty")
+        if self._has_unsafe_path_segments(normalized_path):
+            raise ValueError("GitHub API path contains empty or traversal segments")
+        if "?" in normalized_path or "#" in normalized_path or "\\" in normalized_path:
+            raise ValueError("GitHub API path must not include query strings or fragments")
+        url = f"{self.config.base_url.rstrip('/')}/repos/{repo_name}/{normalized_path}"
+        return self._validated_request_url(url)
+
     def _validated_request_url(self, url: str) -> str:
         """Enforce scheme/host parity with configured GitHub API base URL."""
         base = urllib.parse.urlsplit(self.config.base_url.rstrip("/"))
@@ -94,6 +167,15 @@ class GitHubAPIClient:
             raise ValueError(
                 f"GitHub request host mismatch: expected {base.hostname}, got {target.hostname}"
             )
+        if target.query or target.fragment:
+            raise ValueError("GitHub request URL must not include query parameters or fragments")
+
+        base_path = (base.path or "").rstrip("/")
+        expected_prefix = f"{base_path}/repos/" if base_path else "/repos/"
+        if not target.path.startswith(expected_prefix):
+            raise ValueError("GitHub request URL must target a GitHub repos API endpoint")
+        if self._has_unsafe_path_segments(target.path):
+            raise ValueError("GitHub request URL path contains traversal")
         return url
 
     async def post_review(
@@ -120,7 +202,7 @@ class GitHubAPIClient:
         Raises:
             Exception: If API request fails
         """
-        url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}/reviews"
+        url = self._build_github_api_url(repo, f"pulls/{pr_number}/reviews")
 
         payload = {
             "body": body,
@@ -131,7 +213,10 @@ class GitHubAPIClient:
             payload["comments"] = comments
 
         logger.info(f"Posting {event} review to {repo}#{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        return await self._make_request(url, payload)
 
+    async def _make_request(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Core request logic, exposed for tests and compatibility wrappers."""
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
         return await self._post_with_urllib(url, payload)
@@ -186,7 +271,7 @@ class GitHubAPIClient:
 
         for attempt in range(self.config.max_retries):
             try:
-                with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- request URL is derived from validated GitHubConfig.base_url
+                with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
                     request, timeout=self.config.timeout
                 ) as response:
                     return json.loads(response.read().decode('utf-8'))
@@ -226,7 +311,7 @@ class GitHubAPIClient:
         Returns:
             GitHub API response
         """
-        url = f"{self.config.base_url}/repos/{repo}/issues/{pr_number}/comments"
+        url = self._build_github_api_url(repo, f"issues/{pr_number}/comments")
 
         payload = {"body": body}
 
@@ -247,8 +332,7 @@ class GitHubAPIClient:
         Returns:
             PR details from GitHub API
         """
-        url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}"
-        url = self._validated_request_url(url)
+        url = self._build_github_api_url(repo, f"pulls/{pr_number}")
 
         headers = self._get_headers()
 
@@ -259,7 +343,7 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
                 request, timeout=self.config.timeout
             ) as response:
                 return json.loads(response.read().decode('utf-8'))
@@ -275,8 +359,7 @@ class GitHubAPIClient:
         Returns:
             List of changed files from GitHub API
         """
-        url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}/files"
-        url = self._validated_request_url(url)
+        url = self._build_github_api_url(repo, f"pulls/{pr_number}/files")
 
         headers = self._get_headers()
 
@@ -287,7 +370,7 @@ class GitHubAPIClient:
                 return response.json()
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
                 request, timeout=self.config.timeout
             ) as response:
                 return json.loads(response.read().decode('utf-8'))
@@ -303,8 +386,7 @@ class GitHubAPIClient:
         Returns:
             Unified diff string
         """
-        url = f"{self.config.base_url}/repos/{repo}/pulls/{pr_number}"
-        url = self._validated_request_url(url)
+        url = self._build_github_api_url(repo, f"pulls/{pr_number}")
 
         headers = self._get_headers()
         headers["Accept"] = "application/vnd.github.v3.diff"
@@ -316,7 +398,7 @@ class GitHubAPIClient:
                 return response.text
         else:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- request URL is derived from validated GitHubConfig.base_url
+            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
                 request, timeout=self.config.timeout
             ) as response:
                 return response.read().decode('utf-8')

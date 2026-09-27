@@ -65,7 +65,20 @@ def _validated_url(url: str) -> str:
     hostname_lower = hostname.lower()
     if hostname_lower not in _ALLOWED_HTTP_HOSTS:
         raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
+    if any(ch in parsed.path for ch in ("\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub client URL contains invalid control characters")
     return url
+
+
+def _safe_repo_component(value: str, *, field_name: str) -> str:
+    """Reject path traversal and injection characters in GitHub path components."""
+    if not value:
+        raise ValueError(f"GitHub client URL {field_name} cannot be empty")
+    if value.startswith("/") or value.endswith("/"):
+        raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
+    if any(sep in value for sep in ("..", "\\", "\x00", "\n", "\r", "\t")):
+        raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+    return value
 
 
 def cache_get(key: str, ttl: int) -> Any | None:

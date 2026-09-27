@@ -96,10 +96,10 @@ class SecurityCacheManager:
         """Create cache directory structure if it doesn't exist"""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.runs_dir.mkdir(parents=True, exist_ok=True)
-        
+
         if not self.index_file.exists():
             self.index_file.write_text(json.dumps({"runs": []}, indent=2))
-        
+
         if not self.dedup_ledger.exists():
             self.dedup_ledger.touch()
 
@@ -142,7 +142,7 @@ class SecurityCacheManager:
 
         # Extract summary
         summary = findings_data.get("summary", {})
-        
+
         # Create cache entry
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         cache_entry = {
@@ -160,13 +160,13 @@ class SecurityCacheManager:
         # Write cache file with timestamp
         cache_filename = f"run-{run_id}-{timestamp}.json"
         cache_path = self.runs_dir / cache_filename
-        
+
         cache_data = {
             "metadata": cache_entry,
             "findings": findings_data.get("finding_index", []),
             "summary": summary,
         }
-        
+
         cache_path.write_text(json.dumps(cache_data, indent=2))
         logger.info(f"Cached findings to {cache_path}")
 
@@ -191,16 +191,16 @@ class SecurityCacheManager:
 
         # Remove duplicate run_id if exists
         index["runs"] = [r for r in index["runs"] if r["run_id"] != metadata["run_id"]]
-        
+
         # Add new entry (newest first)
         index["runs"].insert(0, metadata)
-        
+
         # Keep only recent entries in index
         index["runs"] = index["runs"][:MAX_CACHED_RUNS]
 
         with open(self.index_file, "w") as f:
             json.dump(index, f, indent=2)
-        
+
         logger.info(f"Updated index with run {metadata['run_id']}")
 
     def _record_dedup_hashes(
@@ -208,7 +208,7 @@ class SecurityCacheManager:
     ) -> None:
         """Record deduplication hashes for findings"""
         findings = findings_data.get("finding_index", [])
-        
+
         for finding in findings:
             hash_value = self._compute_finding_hash(finding)
             entry = {
@@ -224,7 +224,7 @@ class SecurityCacheManager:
     def _prune_old_runs(self) -> None:
         """Keep only the 30 most recent cached runs"""
         cache_files = sorted(self.runs_dir.glob("run-*.json"), reverse=True)
-        
+
         if len(cache_files) > MAX_CACHED_RUNS:
             for old_file in cache_files[MAX_CACHED_RUNS:]:
                 old_file.unlink()

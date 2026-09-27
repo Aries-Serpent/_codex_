@@ -196,8 +196,8 @@ class TestConcurrentLoad:
             with ThreadPoolExecutor(max_workers=100) as executor:
                 results = list(executor.map(lambda _: submit_decision(), range(100)))
 
-        assert len(results) == 100
-        assert all(results)
+        assert len(results) == 100, "Results must not be empty"
+        assert all(results), "Result must not be empty"
         print(f"100 concurrent submissions completed in {timer.ms}ms")
 
     def test_concurrent_decision_retrievals_100(
@@ -213,7 +213,7 @@ class TestConcurrentLoad:
             with ThreadPoolExecutor(max_workers=100) as executor:
                 results = list(executor.map(lambda _: retrieve_decision(), range(100)))
 
-        assert len(results) == 100
+        assert len(results) == 100, "Results must not be empty"
         print(f"100 concurrent retrievals completed in {timer.ms}ms")
 
     def test_concurrent_pattern_storage_100(
@@ -232,7 +232,7 @@ class TestConcurrentLoad:
             with ThreadPoolExecutor(max_workers=100) as executor:
                 results = list(executor.map(lambda _: store_pattern(), range(100)))
 
-        assert len(results) == 100
+        assert len(results) == 100, "Results must not be empty"
         print(f"100 concurrent pattern storage completed in {timer.ms}ms")
 
     def test_concurrent_memory_retrieval_100(self, valid_auth_header, timer):
@@ -245,7 +245,7 @@ class TestConcurrentLoad:
             with ThreadPoolExecutor(max_workers=100) as executor:
                 results = list(executor.map(lambda _: retrieve_patterns(), range(100)))
 
-        assert all(results)
+        assert all(results), "Result must not be empty"
         print(f"100 concurrent pattern retrievals completed in {timer.ms}ms")
 
     def test_mixed_concurrent_operations_100(
@@ -269,7 +269,7 @@ class TestConcurrentLoad:
             with ThreadPoolExecutor(max_workers=100) as executor:
                 results = list(executor.map(mixed_operation, range(100)))
 
-        assert all(results)
+        assert all(results), "Result must not be empty"
         print(f"100 mixed concurrent operations completed in {timer.ms}ms")
 
 
@@ -288,7 +288,7 @@ class TestMemoryEfficiency:
         uncompressed_size = 500
         compression_ratio = 0.62
         compressed_size = int(uncompressed_size * compression_ratio)
-        assert compressed_size < uncompressed_size * 0.65
+        assert compressed_size < uncompressed_size * 0.65, "compressed_size is not valid"
 
     def test_ltm_storage_capacity(self, valid_pattern_payload, valid_auth_header):
         """Test LTM can store 1000+ patterns efficiently."""
@@ -440,7 +440,7 @@ class TestStress:
                 try:
                     # Mock: Random operation
                     request_count += 1
-                except Exception:
+                except Exception as _err:
                     errors += 1
 
         error_rate = errors / request_count if request_count > 0 else 0

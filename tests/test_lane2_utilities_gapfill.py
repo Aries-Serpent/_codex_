@@ -25,7 +25,7 @@ class TestConfigSchema:
         """Test config_schema module."""
         try:
             from codex_ml import config_schema
-            assert config_schema is not None
+            assert config_schema is not None, "config_schema must be initialized"
         except ImportError:
             pytest.skip("codex_ml.config_schema not available")
 
@@ -37,7 +37,7 @@ class TestUtilsEnvironment:
         """Test env module."""
         try:
             from codex_ml.utils import env
-            assert env is not None
+            assert env is not None, "env must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.env not available")
 
@@ -49,7 +49,7 @@ class TestUtilsDeterminism:
         """Test determinism module."""
         try:
             from codex_ml.utils import determinism
-            assert determinism is not None
+            assert determinism is not None, "determinism must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.determinism not available")
 
@@ -61,7 +61,7 @@ class TestUtilsJsonL:
         """Test JSONL module."""
         try:
             from codex_ml.utils import jsonl
-            assert jsonl is not None
+            assert jsonl is not None, "jsonl must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.jsonl not available")
 
@@ -73,7 +73,7 @@ class TestUtilsChecksum:
         """Test checksum module."""
         try:
             from codex_ml.utils import checksum
-            assert checksum is not None
+            assert checksum is not None, "checksum must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.checksum not available")
 
@@ -81,7 +81,7 @@ class TestUtilsChecksum:
         """Test checksums module."""
         try:
             from codex_ml.utils import checksums
-            assert checksums is not None
+            assert checksums is not None, "checksums must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.checksums not available")
 
@@ -93,7 +93,7 @@ class TestUtilsCheckpoint:
         """Test checkpoint module."""
         try:
             from codex_ml.utils import checkpoint
-            assert checkpoint is not None
+            assert checkpoint is not None, "checkpoint must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.checkpoint not available")
 
@@ -101,7 +101,7 @@ class TestUtilsCheckpoint:
         """Test checkpoint_event module."""
         try:
             from codex_ml.utils import checkpoint_event
-            assert checkpoint_event is not None
+            assert checkpoint_event is not None, "checkpoint_event must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.checkpoint_event not available")
 
@@ -113,7 +113,7 @@ class TestUtilsOptional:
         """Test optional module."""
         try:
             from codex_ml.utils import optional
-            assert optional is not None
+            assert optional is not None, "optional must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.optional not available")
 
@@ -125,7 +125,7 @@ class TestUtilsSeeding:
         """Test seeding module."""
         try:
             from codex_ml.utils import seeding
-            assert seeding is not None
+            assert seeding is not None, "seeding must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.seeding not available")
 
@@ -133,7 +133,7 @@ class TestUtilsSeeding:
         """Test seed module."""
         try:
             from codex_ml.utils import seed
-            assert seed is not None
+            assert seed is not None, "seed must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.seed not available")
 
@@ -145,7 +145,7 @@ class TestUtilsYamlSupport:
         """Test yaml_support module."""
         try:
             from codex_ml.utils import yaml_support
-            assert yaml_support is not None
+            assert yaml_support is not None, "yaml_support must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.yaml_support not available")
 
@@ -157,7 +157,7 @@ class TestUtilsHfRevision:
         """Test hf_revision module."""
         try:
             from codex_ml.utils import hf_revision
-            assert hf_revision is not None
+            assert hf_revision is not None, "hf_revision must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.hf_revision not available")
 
@@ -169,7 +169,7 @@ class TestUtilsTorchChecks:
         """Test torch_checks module."""
         try:
             from codex_ml.utils import torch_checks
-            assert torch_checks is not None
+            assert torch_checks is not None, "torch_checks must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.torch_checks not available")
 
@@ -181,7 +181,7 @@ class TestUtilsArtifacts:
         """Test artifacts module."""
         try:
             from codex_ml.utils import artifacts
-            assert artifacts is not None
+            assert artifacts is not None, "artifacts must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.artifacts not available")
 
@@ -193,7 +193,7 @@ class TestUtilsRepro:
         """Test repro module."""
         try:
             from codex_ml.utils import repro
-            assert repro is not None
+            assert repro is not None, "repro must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.repro not available")
 
@@ -205,7 +205,7 @@ class TestUtilsProvenance:
         """Test provenance module."""
         try:
             from codex_ml.utils import provenance
-            assert provenance is not None
+            assert provenance is not None, "provenance must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.provenance not available")
 
@@ -217,7 +217,7 @@ class TestUtilsErrorLog:
         """Test error_log module."""
         try:
             from codex_ml.utils import error_log
-            assert error_log is not None
+            assert error_log is not None, "error_log must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.error_log not available")
 
@@ -229,7 +229,7 @@ class TestUtilsHfPinning:
         """Test hf_pinning module."""
         try:
             from codex_ml.utils import hf_pinning
-            assert hf_pinning is not None
+            assert hf_pinning is not None, "hf_pinning must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.hf_pinning not available")
 
@@ -241,7 +241,7 @@ class TestUtilsRetention:
         """Test retention module."""
         try:
             from codex_ml.utils import retention
-            assert retention is not None
+            assert retention is not None, "retention must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.retention not available")
 
@@ -253,7 +253,7 @@ class TestUtilsSubproc:
         """Test subproc module."""
         try:
             from codex_ml.utils import subproc
-            assert subproc is not None
+            assert subproc is not None, "subproc must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.subproc not available")
 
@@ -265,7 +265,7 @@ class TestUtilsTrainHelpers:
         """Test train_helpers module."""
         try:
             from codex_ml.utils import train_helpers
-            assert train_helpers is not None
+            assert train_helpers is not None, "train_helpers must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.train_helpers not available")
 
@@ -277,7 +277,7 @@ class TestUtilsModeling:
         """Test modeling module."""
         try:
             from codex_ml.utils import modeling
-            assert modeling is not None
+            assert modeling is not None, "modeling must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.modeling not available")
 
@@ -289,7 +289,7 @@ class TestRegistryBase:
         """Test registry base module."""
         try:
             from codex_ml.registry import base
-            assert base is not None
+            assert base is not None, "base must be initialized"
         except ImportError:
             pytest.skip("codex_ml.registry.base not available")
 
@@ -301,7 +301,7 @@ class TestCallbacks:
         """Test callbacks module."""
         try:
             from codex_ml import callbacks
-            assert callbacks is not None
+            assert callbacks is not None, "callbacks must be initialized"
         except ImportError:
             pytest.skip("codex_ml.callbacks not available")
 
@@ -313,7 +313,7 @@ class TestTraining:
         """Test training module."""
         try:
             from codex_ml import training
-            assert training is not None
+            assert training is not None, "training must be initialized"
         except ImportError:
             pytest.skip("codex_ml.training not available")
 
@@ -321,7 +321,7 @@ class TestTraining:
         """Test training callbacks."""
         try:
             from codex_ml.training import callbacks
-            assert callbacks is not None
+            assert callbacks is not None, "callbacks must be initialized"
         except ImportError:
             pytest.skip("codex_ml.training.callbacks not available")
 
@@ -329,7 +329,7 @@ class TestTraining:
         """Test training dataloader utils."""
         try:
             from codex_ml.training import dataloader_utils
-            assert dataloader_utils is not None
+            assert dataloader_utils is not None, "dataloader_utils must be initialized"
         except ImportError:
             pytest.skip("codex_ml.training.dataloader_utils not available")
 
@@ -341,7 +341,7 @@ class TestMetrics:
         """Test metrics curves module."""
         try:
             from codex_ml.metrics import curves
-            assert curves is not None
+            assert curves is not None, "curves must be initialized"
         except ImportError:
             pytest.skip("codex_ml.metrics.curves not available")
 
@@ -353,7 +353,7 @@ class TestMonitoring:
         """Test monitoring schema module."""
         try:
             from codex_ml.monitoring import schema
-            assert schema is not None
+            assert schema is not None, "schema must be initialized"
         except ImportError:
             pytest.skip("codex_ml.monitoring.schema not available")
 
@@ -361,7 +361,7 @@ class TestMonitoring:
         """Test monitoring prometheus module."""
         try:
             from codex_ml.monitoring import prometheus
-            assert prometheus is not None
+            assert prometheus is not None, "prometheus must be initialized"
         except ImportError:
             pytest.skip("codex_ml.monitoring.prometheus not available")
 
@@ -373,7 +373,7 @@ class TestTelemetry:
         """Test telemetry metrics module."""
         try:
             from codex_ml.telemetry import metrics
-            assert metrics is not None
+            assert metrics is not None, "metrics must be initialized"
         except ImportError:
             pytest.skip("codex_ml.telemetry.metrics not available")
 
@@ -381,7 +381,7 @@ class TestTelemetry:
         """Test telemetry server module."""
         try:
             from codex_ml.telemetry import server
-            assert server is not None
+            assert server is not None, "server must be initialized"
         except ImportError:
             pytest.skip("codex_ml.telemetry.server not available")
 
@@ -393,7 +393,7 @@ class TestSafety:
         """Test safety sandbox module."""
         try:
             from codex_ml.safety import sandbox
-            assert sandbox is not None
+            assert sandbox is not None, "sandbox must be initialized"
         except ImportError:
             pytest.skip("codex_ml.safety.sandbox not available")
 
@@ -401,7 +401,7 @@ class TestSafety:
         """Test safety filters module."""
         try:
             from codex_ml.safety import filters
-            assert filters is not None
+            assert filters is not None, "filters must be initialized"
         except ImportError:
             pytest.skip("codex_ml.safety.filters not available")
 
@@ -409,7 +409,7 @@ class TestSafety:
         """Test safety risk_score module."""
         try:
             from codex_ml.safety import risk_score
-            assert risk_score is not None
+            assert risk_score is not None, "risk_score must be initialized"
         except ImportError:
             pytest.skip("codex_ml.safety.risk_score not available")
 
@@ -417,7 +417,7 @@ class TestSafety:
         """Test safety sanitizers module."""
         try:
             from codex_ml.safety import sanitizers
-            assert sanitizers is not None
+            assert sanitizers is not None, "sanitizers must be initialized"
         except ImportError:
             pytest.skip("codex_ml.safety.sanitizers not available")
 

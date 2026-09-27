@@ -373,9 +373,7 @@ class HyperparameterTuner:
 
         for _ in range(n_iterations):
             # Sample random parameters
-            params = {
-                name: random.choice(values) for name, values in param_distributions.items()
-            }  # nosec B311 — non-cryptographic ML sampling/shuffling
+            params = {name: random.choice(values) for name, values in param_distributions.items()}  # nosec B311 — non-cryptographic ML sampling/shuffling
 
             model = model_factory(**params)
             metrics = self.validator.validate(model, X, y)
@@ -735,9 +733,7 @@ class ModelRegistry:
             return None
 
         # Random routing based on traffic split
-        if (
-            random.random() < test["traffic_split"]
-        ):  # nosec B311 — non-cryptographic ML sampling/shuffling
+        if random.random() < test["traffic_split"]:  # nosec B311 — non-cryptographic ML sampling/shuffling
             test["results"]["a_samples"] += 1
             return test["version_a"]
         test["results"]["b_samples"] += 1

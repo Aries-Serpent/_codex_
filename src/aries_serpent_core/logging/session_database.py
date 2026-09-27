@@ -118,9 +118,7 @@ class SessionDatabase:
         """Add missing session columns for older databases created from the legacy schema."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            existing = {
-                row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()
-            }
+            existing = {row[1] for row in cursor.execute("PRAGMA table_info(sessions)").fetchall()}
             required_columns = {
                 "lane_bucket": "TEXT",
                 "checkpoint_state": "TEXT",
@@ -137,9 +135,7 @@ class SessionDatabase:
             }
             for column_name, column_type in required_columns.items():
                 if column_name not in existing:
-                    cursor.execute(
-                        f"ALTER TABLE sessions ADD COLUMN {column_name} {column_type}"
-                    )
+                    cursor.execute(f"ALTER TABLE sessions ADD COLUMN {column_name} {column_type}")
             conn.commit()
 
     def _create_inline_schema(self) -> None:

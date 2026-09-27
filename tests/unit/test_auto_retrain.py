@@ -9,24 +9,24 @@
 #   T-08  prepare_retrain_config merges base_config and extra_config
 #   T-09  run with base_config=None does not raise
 #   T-10  RetrainResult.to_dict returns serialisable structure
-# 
+#
 #     assert cfg["js_divergence"] == pytest.approx(0.12), "Condition must be true"
 #     assert isinstance(cfg["reasons"], list)
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
 # import re
-# 
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
 # from codex_ml.training.auto_retrain import AutoRetrainPipeline, RetrainResult
-# 
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 # @dataclass
 #     result = pipeline.run(_drifted(0.10))
 # class _FakeDriftResult:
@@ -36,7 +36,7 @@
 #     js_divergence: Optional[float] = None
 #     confidence_stats: object = None
 #     reasons: list[str] = field(default_factory=list)
-# 
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
@@ -45,8 +45,8 @@
 #         reasons=reasons or [f"JSD={js_div:.4f} exceeds threshold=0.05"],
 #     )
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
@@ -54,12 +54,12 @@
 #         reasons=[],
 #     )
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
 # def test_should_retrain_true_when_above_threshold():
 # def test_should_retrain_true_when_above_threshold():
@@ -70,17 +70,17 @@
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
@@ -91,12 +91,12 @@
 #     result = pipeline.should_retrain(dr)
 #     assert result is False, "Result must not be empty"
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
 # def test_prepare_retrain_config_valid_dict():
 # def test_prepare_retrain_config_valid_dict():
@@ -113,24 +113,24 @@
 #     assert "samples_count" in cfg, "Count must be greater than zero"
 #     assert "retrain_timestamp" in cfg, "Condition must be true"
 #     assert "js_divergence" in cfg, "Condition must be true"
-# 
+#
 #     # Values
 #     assert cfg["model_id"] == "test-model", "Condition must be true"
 #     assert cfg["triggered_by"] == "auto_retrain_pipeline", "Condition must be true"
 #     assert cfg["samples_count"] == 1000, "Count must be greater than zero"
 #     assert cfg["js_divergence"] == pytest.approx(0.12), "Condition must be true"
 #     assert isinstance(cfg["reasons"], list)
-# 
+#
 #     # Base config preserved
 #     assert cfg["epochs"] == 5, "Condition must be true"
 #     assert cfg["lr"] == pytest.approx(1e-4), "Condition must be true"
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
 # def test_run_triggered_true_on_drift():
 # def test_run_triggered_true_on_drift():
@@ -142,14 +142,14 @@
 #     assert result.reason != "", "Result must not be empty"
 #     assert isinstance(result.config_snapshot, dict)
 #     assert "drift_score" in result.config_snapshot, "Result must not be empty"
-# 
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
@@ -157,23 +157,23 @@
 #     assert result.triggered is False, "Result must not be empty"
 #     assert result.config_snapshot == {}, "Result must not be empty"
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
 # _UTC_ISO_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?\+00:00$")
 #     result = pipeline.run(_drifted(0.10))
-# 
-# 
+#
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-# 
+#
 #     # Verify it can be parsed back to a timezone-aware datetime
 #     parsed = datetime.fromisoformat(result.timestamp)
 #     assert parsed.tzinfo is not None, "tzinfo must be initialized"

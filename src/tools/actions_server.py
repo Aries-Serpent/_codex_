@@ -106,8 +106,7 @@ def _auth_headers() -> dict[str, str]:
 def _cache_path(key: str) -> str:
     return os.path.join(
         CACHE_DIR,
-        hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest()
-        + ".json",  # nosec B324 - Not for security, cache key only
+        hashlib.sha256(key.encode("utf-8")).hexdigest() + ".json",
     )
 
 

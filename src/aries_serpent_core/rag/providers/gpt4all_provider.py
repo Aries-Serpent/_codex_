@@ -28,6 +28,7 @@ def _finalize_embedder(embedder: object | None) -> None:
     except Exception:
         logger.debug("Failed to finalize GPT4All embedder", exc_info=True)
 
+
 try:
     from gpt4all import Embed4All
 

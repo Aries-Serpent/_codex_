@@ -164,9 +164,7 @@ class RollbackControlSystem:
         except Exception as e:
             return False, str(e), ""
 
-    def _execute_step(
-        self, step: RollbackStep
-    ) -> RollbackStepResult:
+    def _execute_step(self, step: RollbackStep) -> RollbackStepResult:
         """Execute a single rollback step.
 
         Args:
@@ -223,9 +221,7 @@ class RollbackControlSystem:
                 execution_time_ms=execution_time_ms,
             )
 
-    def execute_rollback(
-        self, rollback_instruction: Dict[str, Any]
-    ) -> RollbackExecutionResult:
+    def execute_rollback(self, rollback_instruction: Dict[str, Any]) -> RollbackExecutionResult:
         """Execute rollback steps in order.
 
         Args:

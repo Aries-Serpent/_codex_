@@ -105,7 +105,7 @@ class TestModelRegistryRegistration:
             model_name="Test Model",
             version="1.0.0",
         )
-        assert registry.register_model(metadata) is True
+        assert registry.register_model(metadata) is True, "Data must not be empty"
 
     def test_register_multiple_models(self):
         """Test registering multiple models."""
@@ -116,7 +116,7 @@ class TestModelRegistryRegistration:
                 model_name=f"Test Model {i}",
                 version="1.0.0",
             )
-            assert registry.register_model(metadata) is True
+            assert registry.register_model(metadata) is True, "Data must not be empty"
 
     def test_duplicate_model_registration_fails(self):
         """Test that duplicate registration fails."""
@@ -139,7 +139,7 @@ class TestModelRegistryRegistration:
             version="1.0.0",
             tags=["production", "v1", "tested"],
         )
-        assert registry.register_model(metadata) is True
+        assert registry.register_model(metadata) is True, "Data must not be empty"
         retrieved = registry.lookup_model("model_1")
         assert retrieved.tags == ["production", "v1", "tested"]
 
@@ -157,14 +157,14 @@ class TestModelRegistryLookup:
         )
         registry.register_model(metadata)
         retrieved = registry.lookup_model("model_1")
-        assert retrieved is not None
-        assert retrieved.model_id == "model_1"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.model_id == "model_1", "model_id is not valid"
 
     def test_lookup_nonexistent_model(self):
         """Test looking up a nonexistent model."""
         registry = MockModelRegistry()
         retrieved = registry.lookup_model("nonexistent")
-        assert retrieved is None
+        assert retrieved is None, "retrieved is not valid"
 
     def test_list_all_models(self):
         """Test listing all registered models."""
@@ -176,7 +176,7 @@ class TestModelRegistryLookup:
         for metadata in models_to_register:
             registry.register_model(metadata)
         all_models = registry.list_models()
-        assert len(all_models) == 3
+        assert len(all_models) == 3, "All_models must not be empty"
 
 
 class TestModelRegistryVersioning:
@@ -209,7 +209,7 @@ class TestModelRegistryVersioning:
 
         # For this test, we verify versions are tracked when registered
         all_models = registry.list_models()
-        assert len(all_models) == len(versions)
+        assert len(all_models) == len(versions), "All_models must not be empty"
 
     def test_version_ordering(self):
         """Test that versions are tracked correctly."""
@@ -221,7 +221,7 @@ class TestModelRegistryVersioning:
         )
         registry.register_model(metadata)
         versions = registry.get_model_versions("model_1")
-        assert "1.0.0" in versions
+        assert "1.0.0" in versions, "Condition must be true"
 
 
 class TestModelRegistryCheckpoints:
@@ -237,7 +237,7 @@ class TestModelRegistryCheckpoints:
             path="/models/model_1_v1.0.0.pt",
             size_bytes=1024 * 1024,
         )
-        assert registry.save_checkpoint(checkpoint) is True
+        assert registry.save_checkpoint(checkpoint) is True, "Condition must be true"
 
     def test_load_checkpoint(self):
         """Test loading a model checkpoint."""
@@ -252,9 +252,9 @@ class TestModelRegistryCheckpoints:
         )
         registry.save_checkpoint(checkpoint)
         retrieved = registry.load_checkpoint("ckpt_1")
-        assert retrieved is not None
-        assert retrieved.checkpoint_id == "ckpt_1"
-        assert retrieved.metrics["accuracy"] == 0.95
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.checkpoint_id == "ckpt_1", "checkpoint_id is not valid"
+        assert retrieved.metrics["accuracy"] == 0.95, "Condition must be true"
 
     def test_checkpoint_with_metrics(self):
         """Test checkpoint with performance metrics."""
@@ -274,7 +274,7 @@ class TestModelRegistryCheckpoints:
         )
         registry.save_checkpoint(checkpoint)
         retrieved = registry.load_checkpoint("ckpt_best")
-        assert len(retrieved.metrics) == 4
+        assert len(retrieved.metrics) == 4, "Collection must not be empty"
 
 
 class TestModelRegistrySerialization:
@@ -296,7 +296,7 @@ class TestModelRegistrySerialization:
             "tags": metadata.tags,
         }
         serialized = json.dumps(data)
-        assert "model_1" in serialized
+        assert "model_1" in serialized, "Condition must be true"
 
     def test_model_metadata_deserialization(self):
         """Test deserializing model metadata."""
@@ -306,7 +306,7 @@ class TestModelRegistrySerialization:
             "version": "1.0.0",
         }
         metadata = ModelMetadata(**data)
-        assert metadata.model_id == "model_1"
+        assert metadata.model_id == "model_1", "Data must not be empty"
 
     def test_checkpoint_serialization(self):
         """Test checkpoint serialization."""
@@ -324,7 +324,7 @@ class TestModelRegistrySerialization:
             "path": checkpoint.path,
         }
         serialized = json.dumps(data)
-        assert "ckpt_1" in serialized
+        assert "ckpt_1" in serialized, "Condition must be true"
 
 
 class TestModelRegistryOperations:
@@ -339,8 +339,8 @@ class TestModelRegistryOperations:
             version="1.0.0",
         )
         registry.register_model(metadata)
-        assert registry.delete_model("model_1") is True
-        assert registry.lookup_model("model_1") is None
+        assert registry.delete_model("model_1") is True, "Condition must be true"
+        assert registry.lookup_model("model_1") is None, "Condition must be true"
 
     def test_update_model_metadata(self):
         """Test updating model metadata."""
@@ -353,7 +353,7 @@ class TestModelRegistryOperations:
         registry.register_model(metadata)
         registry.update_model_metadata("model_1", model_name="Updated Model")
         retrieved = registry.lookup_model("model_1")
-        assert retrieved.model_name == "Updated Model"
+        assert retrieved.model_name == "Updated Model", "model_name is not valid"
 
     def test_model_framework_tracking(self):
         """Test tracking model framework."""
@@ -369,7 +369,7 @@ class TestModelRegistryOperations:
 
         for framework in ["pytorch", "tensorflow", "jax"]:
             model = registry.lookup_model(f"model_{framework}")
-            assert model.framework == framework
+            assert model.framework == framework, "framework is not valid"
 
 
 if __name__ == "__main__":

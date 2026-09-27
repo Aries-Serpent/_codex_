@@ -542,10 +542,10 @@ def main() -> None:
     logger.info("Quantum-Enhanced Retrieval Results:")
     logger.info("=" * 60)
     for i, result in enumerate(results, 1):
-       logger.info(f"\n{i}. Score: {result.score:.4f}")
-       logger.info(f"   Content: {result.content}")
-       logger.info(f"   Energy: {result.metadata['energy_state']:.4f}")
-       logger.info(f"   Entropy: {result.metadata['entropy_contribution']:.4f}")
+        logger.info(f"\n{i}. Score: {result.score:.4f}")
+        logger.info(f"   Content: {result.content}")
+        logger.info(f"   Energy: {result.metadata['energy_state']:.4f}")
+        logger.info(f"   Entropy: {result.metadata['entropy_contribution']:.4f}")
 
     # Record pattern for future learning
     record_scoring_pattern(retriever.quantum_scorer, "optimization algorithms", results)

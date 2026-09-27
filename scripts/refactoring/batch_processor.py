@@ -92,10 +92,10 @@ class BatchProcessor:
         logger.info(f"{'='*70}\n")
 
         current_batch = []
-        
+
         for filepath, lines in file_list:
             current_batch.append((filepath, lines))
-            
+
             # Process batch when it reaches size
             if len(current_batch) >= batch_size:
                 batch_results = self._process_files_batch(current_batch, phase)
@@ -104,14 +104,14 @@ class BatchProcessor:
                 results["modules_created"] += batch_results["modules_created"]
                 results["batches_completed"] += 1
                 results["files"].extend(batch_results["files"])
-                
+
                 # Validate batch
                 if not self._validate_batch(current_batch):
                     logger.warning("Batch validation failed!")
                     results["failed"] += len(current_batch)
-                
+
                 current_batch = []
-        
+
         # Process remaining files
         if current_batch:
             batch_results = self._process_files_batch(current_batch, phase)
@@ -119,12 +119,12 @@ class BatchProcessor:
             results["failed"] += batch_results["failed"]
             results["modules_created"] += batch_results["modules_created"]
             results["files"].extend(batch_results["files"])
-        
+
         # Save progress
         self.progress_data[phase_key]["completed"] = results["processed"]
         self.progress_data[phase_key]["files"] = results["files"]
         self._save_progress()
-        
+
         return results
 
     def _process_files_batch(self, file_list: list[tuple[str, int]], phase: int) -> dict:
@@ -137,7 +137,7 @@ class BatchProcessor:
         }
 
         logger.info(f"Processing batch of {len(file_list)} files...")
-        
+
         for filepath, lines in file_list:
             try:
                 # Simulate refactoring (in real implementation, call module_extractor)
@@ -165,13 +165,13 @@ class BatchProcessor:
     def _validate_batch(self, file_list: list[tuple[str, int]]) -> bool:
         """Validate batch after processing."""
         logger.info(f"\n  Validating batch ({len(file_list)} files)...")
-        
+
         # In real implementation, would run:
         # - ruff check --select E,F,I
         # - mypy --strict
         # - pytest tests/
         # - circular import check
-        
+
         logger.info("  ✓ Validation passed")
         return True
 
@@ -179,7 +179,7 @@ class BatchProcessor:
         """Generate progress report for a phase."""
         phase_key = f"phase_{phase}"
         phase_data = self.progress_data[phase_key]
-        
+
         report = f"""# GATE 2 Track 1 — Phase {phase} Progress Report
 
 **Status:** IN PROGRESS  
@@ -219,22 +219,22 @@ def main():
         sys.exit(1)
 
     phase = int(sys.argv[1])
-    
+
     processor = BatchProcessor()
-    
+
     # Example file list for demonstration
     demo_files = [
         (str(get_repo_root() / "analysis/intuitive_aptitude.py"), 722),
         (str(get_repo_root() / "src/codex/autonomy/token_broker.py"), 720),
         (str(get_repo_root() / "tests/cli/test_cli_edge_cases_phase26.py"), 745),
     ]
-    
+
     print(f"\n{'='*70}")
     print(f"PHASE {phase} BATCH PROCESSOR")
     print(f"{'='*70}\n")
-    
+
     results = processor.process_batch(phase, demo_files, batch_size=3)
-    
+
     print(f"\n{'='*70}")
     print("BATCH PROCESSING RESULTS")
     print(f"{'='*70}")
@@ -243,7 +243,7 @@ def main():
     print(f"Total Modules Created: {results['modules_created']}")
     print(f"Batches Completed: {results['batches_completed']}")
     print(f"{'='*70}\n")
-    
+
     # Generate report
     report = processor.generate_report(phase)
     print(report)

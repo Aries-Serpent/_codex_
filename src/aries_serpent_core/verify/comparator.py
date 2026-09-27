@@ -117,7 +117,9 @@ def _coerce_mode(mode: ComparisonMode | str) -> ComparisonMode:
             return ComparisonMode(normalized)
         except ValueError as exc:
             valid = ", ".join(item.value for item in ComparisonMode)
-            raise ValueError(f"Unsupported comparison mode {mode!r}; expected one of: {valid}") from exc
+            raise ValueError(
+                f"Unsupported comparison mode {mode!r}; expected one of: {valid}"
+            ) from exc
     raise TypeError(f"Expected ComparisonMode or str, got {type(mode).__name__}")
 
 

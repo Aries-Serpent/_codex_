@@ -24,7 +24,6 @@ The script will:
 
 from __future__ import annotations
 
-import datetime
 import hashlib
 import json
 import os
@@ -32,7 +31,6 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from typing import Any, Optional
 
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 MAX_COMMENT_LEN = 65_536
@@ -57,7 +55,7 @@ def _extract_uuid_from_error(comment_body: str) -> str:
         uuid = match.group(1).strip()
         if uuid:
             return uuid
-    
+
     # Fall back to looking for any hex string that might be a UUID
     # Matches two formats: (1) Standard UUID 8-4-4-4-12 hex digits, OR (2) 32 continuous hex digits
     hex_match = re.search(
@@ -66,7 +64,7 @@ def _extract_uuid_from_error(comment_body: str) -> str:
     )
     if hex_match:
         return hex_match.group(1)
-    
+
     return "unknown"
 
 
@@ -240,9 +238,9 @@ def main() -> None:
     if len(error_comments) >= CASCADE_THRESHOLD:
         # Consolidate the cascade
         if _consolidate_cascade(token, repo, pr_number, error_comments):
-            print(f"✅ Consolidation successful")
+            print("✅ Consolidation successful")
         else:
-            print(f"⚠️  Consolidation failed — cascade still active", file=sys.stderr)
+            print("⚠️  Consolidation failed — cascade still active", file=sys.stderr)
             sys.exit(1)
     else:
         print(

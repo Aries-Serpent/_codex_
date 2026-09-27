@@ -3,7 +3,7 @@
 #         assert fixed_content == (, "Content must not be empty"
 # import pytest
 #         assert fixed_content == (, "Content must not be empty"
-# 
+#
 #         assert fixed_content == (, "Content must not be empty"
 # class TestCheckTableSpacing:
 #     """Tests for check_table_spacing function"""
@@ -22,7 +22,7 @@
 #         assert len(issues) == 1, "Issues must not be empty"
 #         assert issues[0]["line"] == 2, "Condition must be true"
 #         assert "Some text" in issues[0]["text"], "in is not valid"
-# 
+#
 #     def test_no_issues_with_blank_line(self, tmp_path):
 #     def test_no_issues_with_blank_line(self, tmp_path):
 #         """Test that properly spaced table passes"""
@@ -37,7 +37,7 @@
 #         )
 #         issues = check_table_spacing(test_file)
 #         assert len(issues) == 0, "Issues must not be empty"
-# 
+#
 #     def test_skips_code_blocks(self, tmp_path):
 #     def test_skips_code_blocks(self, tmp_path):
 #         """Test that tables inside code blocks are ignored"""
@@ -56,7 +56,7 @@
 #         )
 #         issues = check_table_spacing(test_file)
 #         assert len(issues) == 0, "Issues must not be empty"
-# 
+#
 #     def test_skips_indented_code_blocks(self, tmp_path):
 #     def test_skips_indented_code_blocks(self, tmp_path):
 #         """Test that tables inside indented code blocks are ignored"""
@@ -75,7 +75,7 @@
 #         )
 #         issues = check_table_spacing(test_file)
 #         assert len(issues) == 0, "Issues must not be empty"
-# 
+#
 #     def test_detects_multiple_issues(self, tmp_path):
 #     def test_detects_multiple_issues(self, tmp_path):
 #         """Test detection of multiple table spacing issues"""
@@ -85,7 +85,7 @@
 #         assert len(issues) == 2, "Issues must not be empty"
 #         assert issues[0]["line"] == 1, "Condition must be true"
 #         assert issues[1]["line"] == 4, "Condition must be true"
-# 
+#
 #     def test_handles_empty_file(self, tmp_path):
 #     def test_handles_empty_file(self, tmp_path):
 #         """Test handling of empty file"""
@@ -93,7 +93,7 @@
 #         test_file.write_text("")
 #         issues = check_table_spacing(test_file)
 #         assert len(issues) == 0, "Issues must not be empty"
-# 
+#
 #     def test_handles_table_after_table(self, tmp_path):
 #     def test_handles_table_after_table(self, tmp_path):
 #         """Test that consecutive table rows are not flagged"""
@@ -108,7 +108,7 @@
 #         assert len(issues) == 0, "Issues must not be empty"
 #         fixed_content = test_file.read_text()
 #         assert fixed_content == (, "Content must not be empty"
-# 
+#
 #         assert fixed_content == (, "Content must not be empty"
 #     """Tests for fix_table_spacing function"""
 #     def test_fixes_missing_blank_line(self, tmp_path):
@@ -119,7 +119,7 @@
 #         test_file.write_text(content)
 #         issues = check_table_spacing(test_file)
 #         result = fix_table_spacing(test_file, issues, dry_run=False)
-# 
+#
 #         assert result is True, "Result must not be empty"
 #         fixed_content = test_file.read_text()
 #         assert fixed_content == (, "Content must not be empty"
@@ -133,11 +133,11 @@
 #         test_file.write_text("Text\n| Table |\n")
 #         issues = check_table_spacing(test_file)
 #         result = fix_table_spacing(test_file, issues, dry_run=True)
-# 
+#
 #         assert result is True, "Result must not be empty"
 #         # Verify file wasn't modified
 #         assert test_file.read_text() == "Text\n| Table |\n", "Condition must be true"
-# 
+#
 #     def test_fixes_multiple_issues(self, tmp_path):
 #     def test_fixes_multiple_issues(self, tmp_path):
 #         """Test fixing multiple issues in one file"""
@@ -145,14 +145,14 @@
 #         test_file.write_text("First\n| Table 1 |\n\nSecond\n| Table 2 |\n")
 #         issues = check_table_spacing(test_file)
 #         result = fix_table_spacing(test_file, issues, dry_run=False)
-# 
+#
 #         assert result is True, "Result must not be empty"
 #         fixed_content = test_file.read_text()
 #         lines = fixed_content.split("\n")
 #         # Blank lines should be inserted at correct positions
 #         assert lines[1] == "", "Condition must be true"
 #         assert lines[5] == "", "Condition must be true"
-# 
+#
 #     def test_handles_no_issues(self, tmp_path):
 #     def test_handles_no_issues(self, tmp_path):
 #         """Test handling when no issues to fix"""

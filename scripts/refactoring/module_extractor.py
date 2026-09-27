@@ -54,13 +54,13 @@ class FileStructureAnalyzer:
             self.content = f.read()
         self.lines = self.content.splitlines()
         self.tree = ast.parse(self.content)
-        
+
     def analyze(self) -> dict:
         """Return analysis of file structure."""
         classes = []
         functions = []
         imports = []
-        
+
         for node in self.tree.body:
             if isinstance(node, ast.ClassDef):
                 classes.append({
@@ -77,7 +77,7 @@ class FileStructureAnalyzer:
                 })
             elif isinstance(node, (ast.Import, ast.ImportFrom)):
                 imports.append(node.lineno)
-        
+
         return {
             "total_lines": len(self.lines),
             "classes": classes,
@@ -92,7 +92,7 @@ class FileStructureAnalyzer:
         analysis = self.analyze()
         classes = analysis["num_classes"]
         functions = analysis["num_functions"]
-        
+
         if classes >= 5:
             return "module-per-class"
         elif functions >= 20:
@@ -118,10 +118,10 @@ class ModuleRefactorer:
         """Execute refactoring. Returns True if successful."""
         try:
             logger.info(f"Refactoring {Path(self.filepath).name} using {self.strategy}")
-            
+
             # Create output directory
             self.output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Execute strategy-specific refactoring
             if self.strategy == "module-per-class":
                 return self._refactor_module_per_class()
@@ -133,7 +133,7 @@ class ModuleRefactorer:
                 return self._refactor_test_split()
             else:
                 return self._refactor_split_by_size()
-                
+
         except Exception as e:
             logger.error(f"Refactoring failed: {e}")
             return False
@@ -142,18 +142,18 @@ class ModuleRefactorer:
         """Extract each class to its own module."""
         with open(self.filepath) as f:
             content = f.read()
-        
+
         tree = ast.parse(content)
         lines = content.splitlines()
-        
+
         # Find imports section
         import_end = 0
         for node in tree.body:
             if isinstance(node, (ast.Import, ast.ImportFrom)):
                 import_end = node.end_lineno or node.lineno
-        
+
         import_section = "\n".join(lines[:import_end]) if import_end > 0 else ""
-        
+
         # Extract each class
         created_modules = []
         for node in tree.body:
@@ -162,17 +162,17 @@ class ModuleRefactorer:
                 start = node.lineno - 1
                 end = (node.end_lineno or node.lineno)
                 class_code = "\n".join(lines[start:end])
-                
+
                 # Create module file
                 module_file = self.output_dir / f"{node.name.lower()}.py"
                 with open(module_file, "w") as f:
                     f.write(f'"""{node.name} module."""\n\n')
                     f.write(import_section + "\n\n")
                     f.write(class_code + "\n")
-                
+
                 created_modules.append(node.name)
                 logger.info(f"  Created: {module_file.name}")
-        
+
         # Create __init__.py
         init_file = self.output_dir / "__init__.py"
         with open(init_file, "w") as f:
@@ -180,7 +180,7 @@ class ModuleRefactorer:
             for class_name in created_modules:
                 f.write(f"from .{class_name.lower()} import {class_name}\n")
             f.write(f"\n__all__ = {created_modules}\n")
-        
+
         logger.info("  Created: __init__.py")
         return True
 
@@ -212,23 +212,23 @@ class ModuleRefactorer:
 def main():
     """Command-line interface."""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: module_extractor.py <filepath> [output_dir]")
         sys.exit(1)
-    
+
     filepath = sys.argv[1]
     output_dir = sys.argv[2] if len(sys.argv) > 2 else None
-    
+
     if not Path(filepath).exists():
         print(f"Error: File not found: {filepath}")
         sys.exit(1)
-    
+
     # Analyze file
     analyzer = FileStructureAnalyzer(filepath)
     analysis = analyzer.analyze()
     strategy = analyzer.recommend_strategy()
-    
+
     print(f"\n{'='*70}")
     print(f"File Analysis: {Path(filepath).name}")
     print(f"{'='*70}")
@@ -237,7 +237,7 @@ def main():
     print(f"Functions: {analysis['num_functions']}")
     print(f"Recommended strategy: {strategy}")
     print(f"{'='*70}\n")
-    
+
     # Refactor if output_dir specified
     if output_dir:
         refactorer = ModuleRefactorer(filepath, output_dir)

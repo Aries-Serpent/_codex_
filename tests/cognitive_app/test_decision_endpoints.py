@@ -37,117 +37,117 @@ class TestDecisionSubmit:
         """Test successful decision submission for all lanes."""
         payload = {**valid_decision_payload, "lane": lane}
         # Expected response structure validation
-        assert payload["lane"] == lane
-        assert 0.0 <= payload["confidence_score"] <= 1.0
-        assert payload["candidate"]
+        assert payload["lane"] == lane, "Condition must be true"
+        assert 0.0 <= payload["confidence_score"] <= 1.0, "0 is not valid"
+        assert payload["candidate"], "Condition must be true"
 
     def test_submit_decision_happy_path(self, valid_decision_payload, valid_auth_header):
         """Test successful decision submission."""
         payload = valid_decision_payload
-        assert payload["lane"] == "security"
-        assert payload["confidence_score"] == 0.92
-        assert len(payload["superposition_state"]) == 2
+        assert payload["lane"] == "security", "Condition must be true"
+        assert payload["confidence_score"] == 0.92, "Condition must be true"
+        assert len(payload["superposition_state"]) == 2, "Collection must not be empty"
 
     def test_submit_decision_min_confidence(self, valid_decision_payload):
         """Test submission with minimum confidence (0.0)."""
         payload = {**valid_decision_payload, "confidence_score": 0.0}
-        assert payload["confidence_score"] == 0.0
+        assert payload["confidence_score"] == 0.0, "Condition must be true"
 
     def test_submit_decision_max_confidence(self, valid_decision_payload):
         """Test submission with maximum confidence (1.0)."""
         payload = {**valid_decision_payload, "confidence_score": 1.0}
-        assert payload["confidence_score"] == 1.0
+        assert payload["confidence_score"] == 1.0, "Condition must be true"
 
     def test_submit_decision_k1_factor_boundary_min(self, valid_decision_payload):
         """Test k1_factor at minimum boundary (0.0)."""
         payload = {**valid_decision_payload, "k1_factor": 0.0}
-        assert payload["k1_factor"] == 0.0
+        assert payload["k1_factor"] == 0.0, "Condition must be true"
 
     def test_submit_decision_k1_factor_boundary_max(self, valid_decision_payload):
         """Test k1_factor at maximum boundary (1.0)."""
         payload = {**valid_decision_payload, "k1_factor": 1.0}
-        assert payload["k1_factor"] == 1.0
+        assert payload["k1_factor"] == 1.0, "Condition must be true"
 
     def test_submit_decision_coherence_boundary_min(self, valid_decision_payload):
         """Test coherence_metric at minimum boundary (0.0)."""
         payload = {**valid_decision_payload, "coherence_metric": 0.0}
-        assert payload["coherence_metric"] == 0.0
+        assert payload["coherence_metric"] == 0.0, "Condition must be true"
 
     def test_submit_decision_coherence_boundary_max(self, valid_decision_payload):
         """Test coherence_metric at maximum boundary (1.0)."""
         payload = {**valid_decision_payload, "coherence_metric": 1.0}
-        assert payload["coherence_metric"] == 1.0
+        assert payload["coherence_metric"] == 1.0, "Condition must be true"
 
     def test_submit_decision_long_candidate_string(self, valid_decision_payload):
         """Test submission with maximum-length candidate string."""
         long_candidate = "A" * 500
         payload = {**valid_decision_payload, "candidate": long_candidate}
-        assert len(payload["candidate"]) == 500
+        assert len(payload["candidate"]) == 500, "Collection must not be empty"
 
     def test_submit_decision_min_candidate_string(self, valid_decision_payload):
         """Test submission with minimum-length candidate string."""
         short_candidate = "Fix CVE"
         payload = {**valid_decision_payload, "candidate": short_candidate}
-        assert len(payload["candidate"]) == 7
+        assert len(payload["candidate"]) == 7, "Collection must not be empty"
 
     def test_submit_decision_many_superposition_states(self, valid_decision_payload):
         """Test submission with multiple superposition states."""
         states = ["APPROVED", "NEEDS_REVIEW", "PENDING", "EXECUTING", "COMPLETED"]
         payload = {**valid_decision_payload, "superposition_state": states}
-        assert len(payload["superposition_state"]) == 5
+        assert len(payload["superposition_state"]) == 5, "Collection must not be empty"
 
     def test_submit_decision_single_superposition_state(self, valid_decision_payload):
         """Test submission with single superposition state."""
         payload = {**valid_decision_payload, "superposition_state": ["APPROVED"]}
-        assert len(payload["superposition_state"]) == 1
+        assert len(payload["superposition_state"]) == 1, "Collection must not be empty"
 
     def test_submit_decision_no_superposition_states(self, valid_decision_payload):
         """Test submission with empty superposition_state (invalid)."""
         payload = {**valid_decision_payload, "superposition_state": []}
-        assert payload["superposition_state"] == []
+        assert payload["superposition_state"] == [], "Condition must be true"
 
     def test_submit_decision_missing_lane_field(self, valid_decision_payload):
         """Test submission without required 'lane' field."""
         payload = {**valid_decision_payload}
         del payload["lane"]
-        assert "lane" not in payload
+        assert "lane" not in payload, "Condition must be true"
 
     def test_submit_decision_missing_candidate_field(self, valid_decision_payload):
         """Test submission without required 'candidate' field."""
         payload = {**valid_decision_payload}
         del payload["candidate"]
-        assert "candidate" not in payload
+        assert "candidate" not in payload, "Condition must be true"
 
     def test_submit_decision_missing_confidence_score(self, valid_decision_payload):
         """Test submission without required 'confidence_score' field."""
         payload = {**valid_decision_payload}
         del payload["confidence_score"]
-        assert "confidence_score" not in payload
+        assert "confidence_score" not in payload, "Condition must be true"
 
     def test_submit_decision_invalid_lane_value(self, valid_decision_payload):
         """Test submission with invalid lane value."""
         payload = {**valid_decision_payload, "lane": "invalid_lane"}
-        assert payload["lane"] == "invalid_lane"
+        assert payload["lane"] == "invalid_lane", "Condition must be true"
 
     def test_submit_decision_confidence_below_range(self, valid_decision_payload):
         """Test submission with confidence < 0.0 (invalid)."""
         payload = {**valid_decision_payload, "confidence_score": -0.1}
-        assert payload["confidence_score"] == -0.1
+        assert payload["confidence_score"] == -0.1, "Condition must be true"
 
     def test_submit_decision_confidence_above_range(self, valid_decision_payload):
         """Test submission with confidence > 1.0 (invalid)."""
         payload = {**valid_decision_payload, "confidence_score": 1.5}
-        assert payload["confidence_score"] == 1.5
+        assert payload["confidence_score"] == 1.5, "Condition must be true"
 
     def test_submit_decision_k1_factor_below_range(self, valid_decision_payload):
         """Test submission with k1_factor < 0.0 (invalid)."""
         payload = {**valid_decision_payload, "k1_factor": -0.5}
-        assert payload["k1_factor"] == -0.5
+        assert payload["k1_factor"] == -0.5, "Condition must be true"
 
     def test_submit_decision_k1_factor_above_range(self, valid_decision_payload):
         """Test submission with k1_factor > 1.0 (invalid)."""
         payload = {**valid_decision_payload, "k1_factor": 2.0}
-        assert payload["k1_factor"] == 2.0
+        assert payload["k1_factor"] == 2.0, "Condition must be true"
 
     def test_submit_decision_no_auth_header(self, valid_decision_payload):
         """Test submission without authorization header."""
@@ -168,23 +168,23 @@ class TestDecisionSubmit:
         """Test submission with special characters in candidate."""
         special_candidate = "Fix CVE-2026-XXXXX! @#$%^&*()"
         payload = {**valid_decision_payload, "candidate": special_candidate}
-        assert payload["candidate"] == special_candidate
+        assert payload["candidate"] == special_candidate, "Condition must be true"
 
     def test_submit_decision_with_unicode_in_candidate(self, valid_decision_payload):
         """Test submission with Unicode characters in candidate."""
         unicode_candidate = "Fix CVE-2026 → token rotation 🔐"
         payload = {**valid_decision_payload, "candidate": unicode_candidate}
-        assert payload["candidate"] == unicode_candidate
+        assert payload["candidate"] == unicode_candidate, "Condition must be true"
 
     def test_submit_decision_with_null_values(self, valid_decision_payload):
         """Test submission with null values."""
         payload = {**valid_decision_payload, "candidate": None}
-        assert payload["candidate"] is None
+        assert payload["candidate"] is None, "Condition must be true"
 
     def test_submit_decision_with_empty_string_candidate(self, valid_decision_payload):
         """Test submission with empty string candidate."""
         payload = {**valid_decision_payload, "candidate": ""}
-        assert payload["candidate"] == ""
+        assert payload["candidate"] == "", "Condition must be true"
 
     def test_submit_decision_float_precision(self, valid_decision_payload):
         """Test submission with high-precision float values."""
@@ -194,7 +194,7 @@ class TestDecisionSubmit:
             "k1_factor": 0.987654321,
             "coherence_metric": 0.5,
         }
-        assert payload["confidence_score"] == 0.123456789
+        assert payload["confidence_score"] == 0.123456789, "Condition must be true"
 
     def test_submit_decision_rate_limit_exceeded(self, valid_decision_payload):
         """Test submission when rate limit exceeded."""
@@ -219,7 +219,7 @@ class TestDecisionRetrieve:
         """Test successful decision retrieval."""
         decision_id = generate_decision_ids()
         # Mock: decision exists in database
-        assert decision_id.startswith("dec_")
+        assert decision_id.startswith("dec_"), "Condition must be true"
 
     def test_retrieve_decision_not_found(self, valid_auth_header):
         """Test retrieval of non-existent decision (404)."""
@@ -243,14 +243,14 @@ class TestDecisionRetrieve:
         """Test retrieval of decision with feedback."""
         decision_id = generate_decision_ids()
         # Mock: decision has feedback
-        assert decision_id
+        assert decision_id, "decision_id is not valid"
 
     def test_retrieve_decision_all_statuses(self, generate_decision_ids, all_statuses):
         """Test retrieval of decisions in all possible statuses."""
         for status in all_statuses:
             decision_id = generate_decision_ids()
             # Verify status can be retrieved
-            assert decision_id
+            assert decision_id, "decision_id is not valid"
 
     def test_retrieve_decision_response_structure(self, generate_decision_ids):
         """Test response contains all required fields."""
@@ -264,19 +264,19 @@ class TestDecisionRetrieve:
             "confidence_score",
         ]
         for field in required_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_retrieve_decision_timestamp_format(self, generate_decision_ids):
         """Test timestamp is in valid ISO format."""
         decision_id = generate_decision_ids()
         # Timestamp should be ISO 8601 format
-        assert decision_id
+        assert decision_id, "decision_id is not valid"
 
     def test_retrieve_decision_id_url_encoding(self, valid_auth_header):
         """Test retrieval with URL-encoded decision ID."""
         decision_id = "dec_security_12345"
         # Should handle URL encoding correctly
-        assert decision_id
+        assert decision_id, "decision_id is not valid"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -327,7 +327,7 @@ class TestDecisionRecent:
         """Test filtering by status parameter."""
         for status in all_statuses:
             # Should return only decisions with specified status
-            assert status
+            assert status, "status is not valid"
 
     def test_recent_decisions_filter_by_lane_and_status(self, valid_auth_header):
         """Test filtering by both lane and status."""
@@ -397,13 +397,13 @@ class TestDecisionHistory:
         """Test filtering by lane."""
         for lane in all_lanes:
             # Should return only decisions from lane
-            assert lane
+            assert lane, "lane is not valid"
 
     def test_history_filter_by_status(self, valid_auth_header, all_statuses):
         """Test filtering by status."""
         for status in all_statuses:
             # Should return only decisions with status
-            assert status
+            assert status, "status is not valid"
 
     def test_history_confidence_min_filter(self, valid_auth_header):
         """Test filtering by minimum confidence."""

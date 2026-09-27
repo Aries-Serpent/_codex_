@@ -28,6 +28,8 @@ _API_VERSION = "2022-11-28"
 
 def redact_url_for_log(url: str) -> str:
     """Return URL without credentials, query, or fragment for safe logging."""
+    if not url:
+        return ""
     parts = urlsplit(url)
     host = parts.hostname or ""
     if ":" in host and not host.startswith("["):
@@ -38,6 +40,8 @@ def redact_url_for_log(url: str) -> str:
 
 def validated_github_api_url(url: str) -> str:
     """Allow only credential-free HTTPS calls to api.github.com."""
+    if not url:
+        raise ValueError("GitHub API URL cannot be empty")
     parts = urlsplit(url)
     if parts.scheme != "https" or parts.hostname != "api.github.com":
         raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
@@ -124,16 +128,16 @@ class GitHubHTTPClient:
                 return {}
 
         except urllib.error.HTTPError as e:
-            # Log safe error details
-            logger.error(f"GitHub API error: {e.code} {e.reason} at {redact_url_for_log(url)}")
+            # Log safe error details without exposing request or response secrets.
+            logger.error("GitHub API error: %s %s at %s", e.code, e.reason, redact_url_for_log(url))
             try:
                 error_data = json.loads(e.read().decode("utf-8"))
-                logger.debug(f"Error details: {error_data}")
+                logger.debug("GitHub API error details: %s", redact_url_for_log(str(error_data)))
             except Exception:
                 pass
             raise
         except urllib.error.URLError as e:
-            logger.error(f"Network error: {e.reason} at {redact_url_for_log(url)}")
+            logger.error("Network error: %s at %s", e.reason, redact_url_for_log(url))
             raise
 
     def get(

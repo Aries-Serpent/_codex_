@@ -71,9 +71,7 @@ class CrossLaneOrchestrator:
     _deduplication_map: Dict[str, CrossLaneIncident] = {}
 
     @classmethod
-    def register_incident_lane_c(
-        cls, report: IncidentReport
-    ) -> CrossLaneIncident:
+    def register_incident_lane_c(cls, report: IncidentReport) -> CrossLaneIncident:
         """Register incident detected by Lane C.
 
         Args:
@@ -86,9 +84,7 @@ class CrossLaneOrchestrator:
         existing = cls._find_deduplicate(report)
 
         if existing:
-            logger.info(
-                f"Deduplicated incident {report.incident_id} with {existing.incident_id}"
-            )
+            logger.info(f"Deduplicated incident {report.incident_id} with {existing.incident_id}")
             existing.lane_c_detected = True
             existing.lane_c_report = report
             return existing
@@ -112,9 +108,7 @@ class CrossLaneOrchestrator:
         return cross_incident
 
     @classmethod
-    def register_incident_lane_j(
-        cls, incident_data: Dict[str, Any]
-    ) -> CrossLaneIncident:
+    def register_incident_lane_j(cls, incident_data: Dict[str, Any]) -> CrossLaneIncident:
         """Register incident detected by Lane J (SRE).
 
         Args:
@@ -129,9 +123,7 @@ class CrossLaneOrchestrator:
         existing = cls._find_deduplicate_lane_j(incident_data)
 
         if existing:
-            logger.info(
-                f"Deduplicated Lane J incident with {existing.incident_id}"
-            )
+            logger.info(f"Deduplicated Lane J incident with {existing.incident_id}")
             existing.lane_j_detected = True
             existing.lane_j_report = incident_data
 
@@ -149,9 +141,7 @@ class CrossLaneOrchestrator:
 
         cls._incidents_by_lane["J"].append(cross_incident)
 
-        logger.info(
-            f"Registered Lane J incident: {incident_data.get('type', 'unknown')}"
-        )
+        logger.info(f"Registered Lane J incident: {incident_data.get('type', 'unknown')}")
 
         return cross_incident
 
@@ -174,19 +164,14 @@ class CrossLaneOrchestrator:
             if (
                 incident.lane_c_report
                 and incident.lane_c_report.failure_type == report.failure_type
-                and (
-                    set(incident.lane_c_report.affected_modules)
-                    & set(report.affected_modules)
-                )
+                and (set(incident.lane_c_report.affected_modules) & set(report.affected_modules))
             ):
                 return incident
 
         return None
 
     @classmethod
-    def _find_deduplicate_lane_j(
-        cls, incident_data: Dict[str, Any]
-    ) -> Optional[CrossLaneIncident]:
+    def _find_deduplicate_lane_j(cls, incident_data: Dict[str, Any]) -> Optional[CrossLaneIncident]:
         """Check if Lane J incident duplicates existing.
 
         Args:
@@ -200,9 +185,7 @@ class CrossLaneOrchestrator:
 
         for incident in cls._incidents_by_lane["C"]:
             if incident.lane_c_report:
-                if any(
-                    mod in affected for mod in incident.lane_c_report.affected_modules
-                ):
+                if any(mod in affected for mod in incident.lane_c_report.affected_modules):
                     return incident
 
         return None
@@ -242,9 +225,7 @@ class CrossLaneOrchestrator:
         logger.info(f"Triaged incident {incident.incident_id} to Lane {incident.assigned_lane}")
 
     @classmethod
-    def get_cross_lane_incidents(
-        cls, status: Optional[str] = None
-    ) -> List[CrossLaneIncident]:
+    def get_cross_lane_incidents(cls, status: Optional[str] = None) -> List[CrossLaneIncident]:
         """Get cross-lane incidents.
 
         Args:
@@ -296,11 +277,7 @@ class CrossLaneOrchestrator:
         """
         all_incidents = cls._incidents_by_lane["C"] + cls._incidents_by_lane["J"]
 
-        both_lanes = sum(
-            1
-            for i in all_incidents
-            if i.lane_c_detected and i.lane_j_detected
-        )
+        both_lanes = sum(1 for i in all_incidents if i.lane_c_detected and i.lane_j_detected)
 
         metrics = CrossLaneMetrics(
             total_incidents=len(all_incidents),

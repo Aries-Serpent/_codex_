@@ -32,35 +32,35 @@ class TestDataDeserializer:
         """Test deserializing a JSON integer."""
         data = json.dumps(42).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result == 42
+        assert result == 42, "Result must not be empty"
         assert isinstance(result, int)
 
     def test_deserialize_data_primitive_str(self):
         """Test deserializing a JSON string."""
         data = json.dumps("hello").encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result == "hello"
+        assert result == "hello", "Result must not be empty"
         assert isinstance(result, str)
 
     def test_deserialize_data_primitive_float(self):
         """Test deserializing a JSON float."""
         data = json.dumps(3.14).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result == 3.14
+        assert result == 3.14, "Result must not be empty"
         assert isinstance(result, float)
 
     def test_deserialize_data_primitive_bool(self):
         """Test deserializing a JSON boolean."""
         data = json.dumps(True).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result is True
+        assert result is True, "Result must not be empty"
         assert isinstance(result, bool)
 
     def test_deserialize_data_primitive_none(self):
         """Test deserializing a JSON null."""
         data = json.dumps(None).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     # Collection tests
     def test_deserialize_data_list(self):
@@ -75,7 +75,7 @@ class TestDataDeserializer:
         test_dict = {"name": "test", "value": 42, "nested": {"key": "val"}}
         data = json.dumps(test_dict).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result == test_dict
+        assert result == test_dict, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_deserialize_data_nested_structure(self):
@@ -89,7 +89,7 @@ class TestDataDeserializer:
         }
         data = json.dumps(complex_data).encode("utf-8")
         result = self.deserializer.deserialize_data(data)
-        assert result == complex_data
+        assert result == complex_data, "Result must not be empty"
 
     # Error handling tests
     def test_deserialize_data_invalid_json(self):
@@ -120,7 +120,7 @@ class TestDataDeserializer:
 
         try:
             result = self.deserializer.load_cached_object(temp_path)
-            assert result == test_obj
+            assert result == test_obj, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -147,7 +147,7 @@ class TestDataDeserializer:
         test_data = {"user_id": 123, "name": "Alice", "email": "alice@example.com"}
         data = json.dumps(test_data).encode("utf-8")
         result = self.deserializer.deserialize_user_data(data)
-        assert result == test_data
+        assert result == test_data, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_deserialize_user_data_non_dict_list(self):
@@ -182,7 +182,7 @@ class TestDataDeserializer:
         }
         data = json.dumps(test_data).encode("utf-8")
         result = self.deserializer.deserialize_user_data(data)
-        assert result == test_data
+        assert result == test_data, "Result must not be empty"
 
 
 class TestConfigLoader:
@@ -204,7 +204,7 @@ class TestConfigLoader:
 
         try:
             result = self.loader.load_json_config(temp_path)
-            assert result == config
+            assert result == config, "Result must not be empty"
             assert isinstance(result, dict)
         finally:
             Path(temp_path).unlink()
@@ -264,7 +264,7 @@ class TestConfigLoader:
 
         try:
             result = self.loader.load_json_config(temp_path)
-            assert result == config
+            assert result == config, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -277,7 +277,7 @@ class TestConfigLoader:
 
         try:
             result = self.loader.load_json_config(temp_path)
-            assert result == {}
+            assert result == {}, "Result must not be empty"
             assert isinstance(result, dict)
         finally:
             Path(temp_path).unlink()
@@ -292,7 +292,7 @@ class TestSerializationRoundTrip:
         serialized = json.dumps(original).encode("utf-8")
         deserializer = DataDeserializer()
         deserialized = deserializer.deserialize_data(serialized)
-        assert deserialized == original
+        assert deserialized == original, "deserialized is not valid"
 
     def test_roundtrip_complex_nested(self):
         """Test round-trip with complex nested structures."""
@@ -307,7 +307,7 @@ class TestSerializationRoundTrip:
         serialized = json.dumps(original).encode("utf-8")
         deserializer = DataDeserializer()
         deserialized = deserializer.deserialize_data(serialized)
-        assert deserialized == original
+        assert deserialized == original, "deserialized is not valid"
 
     def test_roundtrip_config_loader(self):
         """Test round-trip: dict → JSON file → load → dict."""
@@ -322,7 +322,7 @@ class TestSerializationRoundTrip:
         try:
             loader = ConfigLoader()
             loaded = loader.load_json_config(temp_path)
-            assert loaded == original
+            assert loaded == original, "loaded is not valid"
         finally:
             Path(temp_path).unlink()
 
@@ -370,8 +370,8 @@ class TestSecurityImprovements:
         result = deserializer.deserialize_data(malicious_json)
         assert isinstance(result, dict)
         # The __reduce__ key is just a string key in the dict, not a magic method
-        assert "__reduce__" in result
-        assert "__class__" in result
+        assert "__reduce__" in result, "Result must not be empty"
+        assert "__class__" in result, "Result must not be empty"
 
     def test_json_no_object_instantiation(self):
         """Verify that JSON cannot instantiate arbitrary classes.
@@ -397,7 +397,7 @@ class TestSecurityImprovements:
             json.dumps({"type": "subprocess.Popen"}).encode("utf-8")
         )
         assert isinstance(result, dict)
-        assert result == {"type": "subprocess.Popen"}
+        assert result == {"type": "subprocess.Popen"}, "Result must not be empty"
 
 
 if __name__ == "__main__":

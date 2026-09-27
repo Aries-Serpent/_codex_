@@ -299,28 +299,77 @@ class ChronicleStore:
             if (value := _first(row, columns, "tool_name", "name", "tool_start_name"))
         ]
         text = self._extract_event_text(session_rows, columns)
-        input_tokens = self._sum_token_metric(session_rows, columns, "input_tokens", "usage_input_tokens")
-        output_tokens = self._sum_token_metric(session_rows, columns, "output_tokens", "usage_output_tokens")
-        lane_bucket = _first(
-            session_rows[0] if session_rows else sqlite3.Row, columns, "lane_bucket", "lane", "lane_name", "lane_id"
-        ) if session_rows else None
-        checkpoint_state = _first(
-            session_rows[0] if session_rows else sqlite3.Row, columns, "checkpoint_state", "checkpoint_status", "checkpoint"
-        ) if session_rows else None
-        budget_remaining = _first(
-            session_rows[0] if session_rows else sqlite3.Row, columns, "budget_remaining", "remaining_budget", "remaining_credits"
-        ) if session_rows else None
-        estimated_cost = _first(
-            session_rows[0] if session_rows else sqlite3.Row, columns, "estimated_cost", "cost_estimate", "session_cost"
-        ) if session_rows else None
-        cost_score = _first(
-            session_rows[0] if session_rows else sqlite3.Row, columns, "cost_score", "budget_score", "cost"
-        ) if session_rows else None
+        input_tokens = self._sum_token_metric(
+            session_rows, columns, "input_tokens", "usage_input_tokens"
+        )
+        output_tokens = self._sum_token_metric(
+            session_rows, columns, "output_tokens", "usage_output_tokens"
+        )
+        lane_bucket = (
+            _first(
+                session_rows[0] if session_rows else sqlite3.Row,
+                columns,
+                "lane_bucket",
+                "lane",
+                "lane_name",
+                "lane_id",
+            )
+            if session_rows
+            else None
+        )
+        checkpoint_state = (
+            _first(
+                session_rows[0] if session_rows else sqlite3.Row,
+                columns,
+                "checkpoint_state",
+                "checkpoint_status",
+                "checkpoint",
+            )
+            if session_rows
+            else None
+        )
+        budget_remaining = (
+            _first(
+                session_rows[0] if session_rows else sqlite3.Row,
+                columns,
+                "budget_remaining",
+                "remaining_budget",
+                "remaining_credits",
+            )
+            if session_rows
+            else None
+        )
+        estimated_cost = (
+            _first(
+                session_rows[0] if session_rows else sqlite3.Row,
+                columns,
+                "estimated_cost",
+                "cost_estimate",
+                "session_cost",
+            )
+            if session_rows
+            else None
+        )
+        cost_score = (
+            _first(
+                session_rows[0] if session_rows else sqlite3.Row,
+                columns,
+                "cost_score",
+                "budget_score",
+                "cost",
+            )
+            if session_rows
+            else None
+        )
         return {
             "tool_calls": len(tool_rows),
             "repeated_tool_calls": len(tool_names) - len(set(tool_names)),
-            "input_tokens": input_tokens if self._has_token_value(session_rows, columns, "input_tokens", "usage_input_tokens") else None,
-            "output_tokens": output_tokens if self._has_token_value(session_rows, columns, "output_tokens", "usage_output_tokens") else None,
+            "input_tokens": input_tokens
+            if self._has_token_value(session_rows, columns, "input_tokens", "usage_input_tokens")
+            else None,
+            "output_tokens": output_tokens
+            if self._has_token_value(session_rows, columns, "output_tokens", "usage_output_tokens")
+            else None,
             "credits": self._sum_credits(session_rows, columns),
             "commits": len(set(_COMMIT_RE.findall(text))),
             "tests": len(_TEST_RE.findall(text)),
@@ -360,17 +409,11 @@ class ChronicleStore:
     def _sum_token_metric(
         session_rows: list[sqlite3.Row], columns: set[str], *names: str
     ) -> int | float:
-        return sum(
-            (_as_number(_first(row, columns, *names)) or 0) for row in session_rows
-        )
+        return sum((_as_number(_first(row, columns, *names)) or 0) for row in session_rows)
 
     @staticmethod
-    def _has_token_value(
-        session_rows: list[sqlite3.Row], columns: set[str], *names: str
-    ) -> bool:
-        return any(
-            _as_number(_first(row, columns, *names)) is not None for row in session_rows
-        )
+    def _has_token_value(session_rows: list[sqlite3.Row], columns: set[str], *names: str) -> bool:
+        return any(_as_number(_first(row, columns, *names)) is not None for row in session_rows)
 
     @staticmethod
     def _sum_credits(session_rows: list[sqlite3.Row], columns: set[str]) -> int | float | None:
@@ -419,7 +462,9 @@ class ChronicleStore:
                 return []
 
             rows = self._fetch_session_rows(connection, columns, id_column, session_id, start, end)
-            matched_rows = self._match_session_rows(connection, tables, columns, id_column, rows, task_id)
+            matched_rows = self._match_session_rows(
+                connection, tables, columns, id_column, rows, task_id
+            )
             event_data = (
                 self._event_data(
                     connection,
@@ -579,9 +624,7 @@ class ChronicleStore:
                 _first(row, columns, "output_tokens"), data.get("output_tokens")
             ),
             credits=_prefer_number(
-                _first(
-                    row, columns, "credits", "ai_credits", "credit_usage", "total_credits"
-                ),
+                _first(row, columns, "credits", "ai_credits", "credit_usage", "total_credits"),
                 data.get("credits"),
             ),
             duration_minutes=_as_number(
@@ -598,11 +641,7 @@ class ChronicleStore:
             blockers=list(data.get("blockers", [])),
             uncommitted_changes=(
                 int(value)
-                if (
-                    value := _as_number(
-                        _first(row, columns, "uncommitted_changes", "dirty_files")
-                    )
-                )
+                if (value := _as_number(_first(row, columns, "uncommitted_changes", "dirty_files")))
                 is not None
                 else None
             ),
@@ -837,7 +876,9 @@ def analyze_costs(
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
     lane_filter = _normalize_lane(lane)
     if lane is not None:
-        sessions = [record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter]
+        sessions = [
+            record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter
+        ]
     ctx = _CostContext(sessions, diagnostics, warning_budget, hard_budget)
 
     strategies: list[_TipStrategy] = [
@@ -879,7 +920,9 @@ def analyze_costs(
                 entry["budget_remaining"] += float(record.budget_remaining)
         if record.tool_calls >= max(500, int(ctx.median_calls * 3 if ctx.median_calls else 500)):
             entry["heavy_sessions"].append(record.session_id)
-        if record.checkpoints == 0 and record.tool_calls >= max(500, int(ctx.median_calls * 3 if ctx.median_calls else 500)):
+        if record.checkpoints == 0 and record.tool_calls >= max(
+            500, int(ctx.median_calls * 3 if ctx.median_calls else 500)
+        ):
             entry["checkpoint_gap"] += 1
 
     heavy_by_lane = {
@@ -892,7 +935,10 @@ def analyze_costs(
             "warning_budget": details["warning_budget"],
             "hard_budget": details["hard_budget"],
             "budget_remaining": details["budget_remaining"],
-            "status": "warning" if details["budget_remaining"] is not None and details["budget_remaining"] <= details["warning_budget"] else "healthy",
+            "status": "warning"
+            if details["budget_remaining"] is not None
+            and details["budget_remaining"] <= details["warning_budget"]
+            else "healthy",
         }
         for bucket, details in lane_summary.items()
     }
@@ -930,7 +976,9 @@ def analyze_costs(
     if lane is not None:
         report["lane_focus"] = lane_filter
         lane_cost_proxy = sum(
-            float(record.credits) if record.credits is not None else float(record.estimated_cost or 0.0)
+            float(record.credits)
+            if record.credits is not None
+            else float(record.estimated_cost or 0.0)
             for record in sessions
         )
         report["lane_pattern"] = (
@@ -990,7 +1038,9 @@ def build_standup_report(
     sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id))
     if lane is not None:
         lane_filter = _normalize_lane(lane)
-        sessions = [record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter]
+        sessions = [
+            record for record in sessions if _normalize_lane(record.lane_bucket) == lane_filter
+        ]
     completed_statuses = {"complete", "completed", "succeeded", "success"}
     completed = [
         record for record in sessions if (record.status or "").lower() in completed_statuses
@@ -1015,7 +1065,11 @@ def build_standup_report(
     if not sessions:
         missing_work.append("No linked session records were found; completion cannot be confirmed.")
 
-    lane_pattern = "fragmented" if len(sessions) > 1 and sum(r.tool_calls for r in sessions) >= 500 else "batchable"
+    lane_pattern = (
+        "fragmented"
+        if len(sessions) > 1 and sum(r.tool_calls for r in sessions) >= 500
+        else "batchable"
+    )
     return {
         "schema_version": "1.0",
         "generated_at": _now(),
@@ -1071,7 +1125,9 @@ def build_chronicle_index(
 ) -> dict[str, Any]:
     """Build a deterministic, searchable summary from normalized sessions."""
 
-    sessions = sorted(records, key=lambda item: (item.created_at or "", item.session_id), reverse=True)
+    sessions = sorted(
+        records, key=lambda item: (item.created_at or "", item.session_id), reverse=True
+    )
     status_counts: dict[str, int] = defaultdict(int)
     branch_counts: dict[str, int] = defaultdict(int)
     for record in sessions:

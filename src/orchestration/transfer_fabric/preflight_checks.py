@@ -129,9 +129,7 @@ class PreflightValidator:
             blocking=True,
         )
 
-    def validate_storage_capacity(
-        self, destination: str, required_bytes: int
-    ) -> PreflightCheck:
+    def validate_storage_capacity(self, destination: str, required_bytes: int) -> PreflightCheck:
         """Check 4: Verify sufficient storage capacity at destination."""
         available = self.storage_capacity.get(destination, 1024 * 1024 * 1024 * 100)
 

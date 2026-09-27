@@ -4,7 +4,6 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-
 _repo_root = Path(__file__).resolve().parents[1]
 _spec = importlib.util.spec_from_file_location(
     "src.tools.template_lint",

@@ -1269,6 +1269,22 @@ class TestMCPStreamingTransport:
                 {"jsonrpc": "2.0", "method": "tools/test"},
             )
 
+    def test_validated_network_url_rejects_local_private_targets_by_default(self):
+        """Private and loopback endpoints require explicit opt-in."""
+        from mcp_server import _validated_network_url
+
+        with pytest.raises(ValueError, match="Refusing|non-public|localhost"):
+            _validated_network_url("http://127.0.0.1:8000/", allow_http=True)
+        with pytest.raises(ValueError, match="Refusing|non-public"):
+            _validated_network_url("http://10.0.0.5:8000/", allow_http=True)
+
+    def test_validated_network_url_allows_explicit_local_opt_in(self, monkeypatch):
+        """Allow explicit local testing only when CODEX_MCP_ALLOW_LOCAL is set."""
+        from mcp_server import _validated_network_url
+
+        monkeypatch.setenv("CODEX_MCP_ALLOW_LOCAL", "true")
+        assert _validated_network_url("http://127.0.0.1:8000/", allow_http=True) == "http://127.0.0.1:8000/"
+
     def test_http_post_json_streaming_sends_accept_sse_header(self, monkeypatch):
         """_http_post_json_streaming sends Accept: text/event-stream header."""
         import json
@@ -1441,6 +1457,8 @@ class TestMCPStreamingIntegration:
             result = http_post_json_streaming(
                 url,
                 {"jsonrpc": "2.0", "id": "int-1", "method": "tools/repo", "params": {}},
+                allow_http=True,
+                allow_local=True,
             )
         finally:
             httpd.server_close()
@@ -1469,6 +1487,8 @@ class TestMCPStreamingIntegration:
             result = MCPIntegration._http_post_json_streaming(
                 url,
                 {"jsonrpc": "2.0", "id": "int-2", "method": "tools/repo", "params": {}},
+                allow_http=True,
+                allow_local=True,
             )
         finally:
             httpd.server_close()
@@ -1517,6 +1537,8 @@ class TestMCPStreamingIntegration:
             result = MCPIntegration._http_post_json_streaming(
                 url,
                 {"jsonrpc": "2.0", "id": "int-3", "method": "tools/test", "params": {}},
+                allow_http=True,
+                allow_local=True,
             )
         finally:
             httpd.server_close()
@@ -1537,6 +1559,7 @@ class TestMCPStreamingIntegration:
             {"jsonrpc": "2.0", "id": "int-4", "result": {"env_routed": True}},
         ]
         httpd, url = self._make_sse_server(frames)
+        monkeypatch.setenv("CODEX_MCP_ALLOW_LOCAL", "true")
         monkeypatch.setenv("CODEX_MCP_ENDPOINT", url)
 
         mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)

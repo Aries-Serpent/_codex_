@@ -18,6 +18,7 @@ from .ingest import FindingSeverity, NormalizedFinding
 @dataclass
 class FindingFamily:
     """A group of similar findings with common root cause."""
+
     family_id: str
     root_cwe: Optional[str] = None
     findings: List[NormalizedFinding] = field(default_factory=list)
@@ -49,9 +50,9 @@ class FindingFamily:
             FindingSeverity.LOW: 0.25,
             FindingSeverity.INFO: 0.1,
         }
-        avg_severity = sum(
-            severity_scores.get(f.severity, 0.5) for f in self.findings
-        ) / len(self.findings)
+        avg_severity = sum(severity_scores.get(f.severity, 0.5) for f in self.findings) / len(
+            self.findings
+        )
         return avg_severity * len(self.findings)  # Scale by count
 
 
@@ -167,18 +168,14 @@ class FindingClusterer:
         """Compute clustering metrics."""
         total_families = len(self.families)
         total_findings = sum(len(f.findings) for f in self.families.values())
-        avg_findings_per_family = (
-            total_findings / total_families if total_families > 0 else 0
-        )
+        avg_findings_per_family = total_findings / total_families if total_families > 0 else 0
 
         return {
             "total_families": total_families,
             "total_findings": total_findings,
             "avg_findings_per_family": avg_findings_per_family,
             "largest_family_size": (
-                max(len(f.findings) for f in self.families.values())
-                if self.families
-                else 0
+                max(len(f.findings) for f in self.families.values()) if self.families else 0
             ),
         }
 

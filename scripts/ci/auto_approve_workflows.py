@@ -8,12 +8,13 @@ This script:
 3. Logs the approvals for accountability tracking
 """
 
-import os
-import sys
 import json
+import os
 import subprocess
+import sys
 from datetime import datetime
-from typing import List, Dict
+from typing import Dict, List
+
 
 # Token chain: CODEX_MASTER_KEY -> CODEX_BACKUP_KEY -> GH_TOKEN
 def get_auth_token() -> str:

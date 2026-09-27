@@ -10,7 +10,6 @@ Demonstrates:
 """
 
 import numpy as np
-
 from codex.quantum_orchestrator.orchestrator import create_orchestrator
 
 

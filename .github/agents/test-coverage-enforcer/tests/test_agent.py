@@ -730,11 +730,11 @@ class TestCoverageDataLoading:
     def test_load_coverage_data_with_valid_coverage_file(self):
         """Test loading coverage data from existing .coverage file"""
         agent = TestCoverageEnforcer()
-        
+
         # Create a mock .coverage file
         with tempfile.NamedTemporaryFile(suffix='.coverage', delete=False) as f:
             coverage_file = Path(f.name)
-        
+
         try:
             # Mock the Coverage import inside the method
             with patch('coverage.Coverage') as mock_coverage:
@@ -749,7 +749,7 @@ class TestCoverageDataLoading:
                     [4, 5],     # missing_lines
                     []          # excluded_lines
                 )
-                
+
                 data = agent._load_coverage_data(coverage_file)
                 assert isinstance(data, dict)
                 assert len(data) > 0
@@ -760,7 +760,7 @@ class TestCoverageDataLoading:
         """Test loading from non-existent coverage file returns empty dict"""
         agent = TestCoverageEnforcer()
         non_existent = Path(tempfile.gettempdir()) / 'nonexistent.coverage'
-        
+
         with patch('coverage.Coverage') as mock_coverage:
             mock_coverage.side_effect = FileNotFoundError()
             data = agent._load_coverage_data(non_existent)
@@ -773,7 +773,7 @@ class TestReportGeneration:
     def test_generate_text_coverage_report(self):
         """Test generating text format coverage report"""
         agent = TestCoverageEnforcer()
-        
+
         report1 = CoverageReport(
             file_path=Path('src/module1.py'),
             line_coverage=85.0,
@@ -785,9 +785,9 @@ class TestReportGeneration:
             partial_branches=[],
             uncovered_functions=['helper_func']
         )
-        
+
         agent.reports = {Path('src/module1.py'): report1}
-        
+
         report = agent.generate_coverage_report('text')
         assert isinstance(report, str)
         assert 'module1.py' in report or '85.0' in report
@@ -795,7 +795,7 @@ class TestReportGeneration:
     def test_generate_json_coverage_report(self):
         """Test generating JSON format coverage report"""
         agent = TestCoverageEnforcer()
-        
+
         report1 = CoverageReport(
             file_path=Path('src/module1.py'),
             line_coverage=85.0,
@@ -807,12 +807,12 @@ class TestReportGeneration:
             partial_branches=[],
             uncovered_functions=['helper_func']
         )
-        
+
         agent.reports = {Path('src/module1.py'): report1}
-        
+
         report = agent.generate_coverage_report('json')
         assert isinstance(report, str)
-        
+
         # Verify it's valid JSON
         data = json.loads(report)
         assert 'reports' in data
@@ -820,7 +820,7 @@ class TestReportGeneration:
     def test_generate_html_coverage_report(self):
         """Test generating HTML format coverage report"""
         agent = TestCoverageEnforcer()
-        
+
         report1 = CoverageReport(
             file_path=Path('src/module1.py'),
             line_coverage=85.0,
@@ -832,9 +832,9 @@ class TestReportGeneration:
             partial_branches=[],
             uncovered_functions=['helper_func']
         )
-        
+
         agent.reports = {Path('src/module1.py'): report1}
-        
+
         report = agent.generate_coverage_report('html')
         assert isinstance(report, str)
         assert '<html>' in report.lower()
@@ -848,27 +848,27 @@ class TestDetermineTestFile:
     def test_determine_test_file_src_to_tests_conversion(self):
         """Test converting src/module.py to tests/test_module.py"""
         agent = TestCoverageEnforcer()
-        
+
         test_file = agent._determine_test_file(Path('src/auth/login.py'))
-        
+
         assert 'tests' in str(test_file)
         assert 'test_login.py' in str(test_file)
 
     def test_determine_test_file_with_nested_paths(self):
         """Test determining test file for nested module paths"""
         agent = TestCoverageEnforcer()
-        
+
         test_file = agent._determine_test_file(Path('src/utils/helpers.py'))
-        
+
         assert 'test_helpers.py' in str(test_file)
         assert 'src' not in str(test_file) or 'tests' in str(test_file)
 
     def test_determine_test_file_with_string_input(self):
         """Test that string inputs are converted to Path objects"""
         agent = TestCoverageEnforcer()
-        
+
         test_file = agent._determine_test_file('src/module.py')
-        
+
         assert isinstance(test_file, Path)
 
 
@@ -878,7 +878,7 @@ class TestCoverageImpactEstimation:
     def test_estimate_coverage_impact_reasonable_range(self):
         """Test that coverage impact estimates are in reasonable range"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('src/module.py'),
             line_coverage=50.0,
@@ -890,7 +890,7 @@ class TestCoverageImpactEstimation:
             partial_branches=[],
             uncovered_functions=['func1', 'func2']
         )
-        
+
         # Test various coverage impact estimates
         for func_name in ['func1', 'func2']:
             impact = agent._estimate_coverage_impact(report, func_name)
@@ -903,7 +903,7 @@ class TestEstimateTestCompileResult:
     def test_estimate_test_compilation_success_rate(self):
         """Test estimating success rate of generated tests"""
         agent = TestCoverageEnforcer()
-        
+
         # Successful test generation should have high success rate
         suggestion = TestGenerationSuggestion(
             target_file=Path('src/module.py'),
@@ -913,7 +913,7 @@ class TestEstimateTestCompileResult:
             coverage_impact=0.25,
             priority=1
         )
-        
+
         # The agent should be able to handle suggestions
         assert suggestion.priority in [1, 2, 3, 4, 5]
         assert 0 < suggestion.coverage_impact <= 1.0
@@ -925,7 +925,7 @@ class TestAgentConfiguration:
     def test_agent_respects_cognitive_brain_settings(self):
         """Test that agent respects cognitive brain configuration"""
         agent = TestCoverageEnforcer()
-        
+
         config = agent.config
         assert 'cognitive_brain' in config
         assert config['cognitive_brain']['enabled'] is True
@@ -941,11 +941,11 @@ class TestAgentConfiguration:
             },
             'cognitive_brain': {'enabled': True, 'metrics': []}
         }
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(custom_config, f)
             config_path = Path(f.name)
-        
+
         try:
             agent = TestCoverageEnforcer(config_path=config_path)
             assert agent.line_threshold == 95
@@ -962,7 +962,7 @@ class TestMultipleIssueHandling:
         """Test that agent properly tracks multiple coverage issues"""
         agent = TestCoverageEnforcer()
         agent.line_threshold = 80
-        
+
         # Create multiple reports with issues
         reports = {
             Path('src/module1.py'): CoverageReport(
@@ -988,11 +988,11 @@ class TestMultipleIssueHandling:
                 uncovered_functions=['func2', 'func3']
             )
         }
-        
+
         # Check each report
         for report in reports.values():
             agent._check_coverage_thresholds(report)
-        
+
         # Should have recorded multiple issues
         assert len(agent.issues) > 0
 
@@ -1004,7 +1004,7 @@ class TestEnforcementActionGeneration:
         """Test that enforcement actions include actionable messages"""
         agent = TestCoverageEnforcer()
         agent.line_threshold = 80
-        
+
         result = EnforcementResult(
             passed=False,
             current_coverage=70.0,
@@ -1017,7 +1017,7 @@ class TestEnforcementActionGeneration:
                 'Suggested 3 tests to fill gaps'
             ]
         )
-        
+
         assert not result.passed
         assert result.current_coverage < result.threshold
         assert len(result.enforcement_actions) > 0
@@ -1030,12 +1030,12 @@ class TestEdgeCases:
     def test_coverage_with_empty_files(self):
         """Test handling of empty Python files"""
         agent = TestCoverageEnforcer()
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
             # Empty file
             f.write('')
             file_path = Path(f.name)
-        
+
         try:
             functions = agent._extract_functions(file_path)
             assert functions == []
@@ -1045,11 +1045,11 @@ class TestEdgeCases:
     def test_coverage_with_syntax_errors(self):
         """Test handling of files with syntax errors"""
         agent = TestCoverageEnforcer()
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
             f.write('def func(\n  # Missing closing paren')
             file_path = Path(f.name)
-        
+
         try:
             functions = agent._extract_functions(file_path)
             # Should handle gracefully, not raise exception
@@ -1060,7 +1060,7 @@ class TestEdgeCases:
     def test_zero_total_lines_handling(self):
         """Test handling of edge case with zero total lines"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('empty.py'),
             line_coverage=0.0,
@@ -1072,7 +1072,7 @@ class TestEdgeCases:
             partial_branches=[],
             uncovered_functions=[]
         )
-        
+
         # Should handle gracefully
         agent._check_coverage_thresholds(report)
         assert isinstance(agent.issues, list)
@@ -1080,7 +1080,7 @@ class TestEdgeCases:
     def test_100_percent_coverage(self):
         """Test handling of perfect coverage"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('perfect.py'),
             line_coverage=100.0,
@@ -1092,7 +1092,7 @@ class TestEdgeCases:
             partial_branches=[],
             uncovered_functions=[]
         )
-        
+
         initial_issue_count = len(agent.issues)
         agent._check_coverage_thresholds(report)
         # Should not add issues for perfect coverage
@@ -1142,7 +1142,7 @@ class TestParametrizedThresholdChecking:
     def test_threshold_checking_scenarios(self, line_cov, branch_cov, func_cov, should_fail):
         """Test various threshold checking scenarios"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('test.py'),
             line_coverage=line_cov,
@@ -1154,10 +1154,10 @@ class TestParametrizedThresholdChecking:
             partial_branches=[],
             uncovered_functions=[]
         )
-        
+
         initial_issues = len(agent.issues)
         agent._check_coverage_thresholds(report)
-        
+
         if should_fail:
             assert len(agent.issues) > initial_issues
         else:
@@ -1171,7 +1171,7 @@ class TestParametrizedReportFormats:
     def test_generate_report_all_formats(self, report_format):
         """Test report generation for all supported formats"""
         agent = TestCoverageEnforcer()
-        
+
         agent.reports = {
             Path('src/module.py'): CoverageReport(
                 file_path=Path('src/module.py'),
@@ -1185,12 +1185,12 @@ class TestParametrizedReportFormats:
                 uncovered_functions=[]
             )
         }
-        
+
         report = agent.generate_coverage_report(report_format)
-        
+
         assert isinstance(report, str)
         assert len(report) > 0
-        
+
         if report_format == 'json':
             data = json.loads(report)
             assert 'reports' in data
@@ -1214,7 +1214,7 @@ class TestParametrizedFilePathConversions:
         """Test test file determination for various path patterns"""
         agent = TestCoverageEnforcer()
         test_file = agent._determine_test_file(source_path)
-        
+
         assert expected_contains in str(test_file)
 
 
@@ -1229,7 +1229,7 @@ class TestParametrizedCoverageImpactEstimation:
     def test_coverage_impact_scaling(self, coverage_level, func_count, expected_min_impact):
         """Test that coverage impact scales with coverage levels"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('test.py'),
             line_coverage=coverage_level,
@@ -1241,7 +1241,7 @@ class TestParametrizedCoverageImpactEstimation:
             partial_branches=[],
             uncovered_functions=['func1', 'func2', 'func3'][:func_count]
         )
-        
+
         for func in report.uncovered_functions:
             impact = agent._estimate_coverage_impact(report, func)
             assert isinstance(impact, float)
@@ -1260,7 +1260,7 @@ class TestParametrizedPriorityCalculation:
     def test_priority_scales_with_coverage(self, coverage_pct, priority_range):
         """Test that priority increases as coverage decreases"""
         agent = TestCoverageEnforcer()
-        
+
         report = CoverageReport(
             file_path=Path('test.py'),
             line_coverage=coverage_pct,
@@ -1272,7 +1272,7 @@ class TestParametrizedPriorityCalculation:
             partial_branches=[],
             uncovered_functions=['test_func']
         )
-        
+
         priority = agent._calculate_priority(report, 'test_func')
         assert priority_range[0] <= priority <= priority_range[1]
 
@@ -1284,7 +1284,7 @@ class TestErrorHandling:
         """Test that agent handles missing files gracefully"""
         agent = TestCoverageEnforcer()
         non_existent = Path('/nonexistent/path/file.py')
-        
+
         functions = agent._extract_functions(non_existent)
         assert functions == []
 
@@ -1292,7 +1292,7 @@ class TestErrorHandling:
         """Test that agent handles missing config gracefully"""
         # Use a config path that doesn't exist
         non_existent = Path('/nonexistent/config.yaml')
-        
+
         # Should use defaults when config file not found
         agent = TestCoverageEnforcer(config_path=non_existent)
         assert agent.config is not None
@@ -1301,10 +1301,10 @@ class TestErrorHandling:
     def test_agent_handles_empty_coverage_data(self):
         """Test handling of empty coverage data"""
         agent = TestCoverageEnforcer()
-        
+
         # Empty reports dictionary
         result = agent.enforce_thresholds(Path('.'))
-        
+
         assert isinstance(result, EnforcementResult)
 
 

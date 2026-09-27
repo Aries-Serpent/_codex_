@@ -50,7 +50,9 @@ class IssueGenerator:
         self.generated_issues: List[GeneratedIssue] = []
         self.created_at = datetime.now(timezone.utc)
 
-    def generate_slo_breach_issue(self, slo_name: str, current_pct: float, target_pct: float) -> GeneratedIssue:
+    def generate_slo_breach_issue(
+        self, slo_name: str, current_pct: float, target_pct: float
+    ) -> GeneratedIssue:
         """Generate issue for SLO breach."""
         issue_id = f"slo-breach-{datetime.now(timezone.utc).timestamp()}"
 
@@ -93,7 +95,9 @@ This SLO breach affects production reliability and may impact customers.
         logger.info(f"Generated SLO breach issue: {issue.title}")
         return issue
 
-    def generate_drift_issue(self, metric_name: str, drift_magnitude_pct: float, observed: float, expected: float) -> GeneratedIssue:
+    def generate_drift_issue(
+        self, metric_name: str, drift_magnitude_pct: float, observed: float, expected: float
+    ) -> GeneratedIssue:
         """Generate issue for detected drift."""
         issue_id = f"drift-{datetime.now(timezone.utc).timestamp()}"
 
@@ -137,7 +141,9 @@ Baseline drift detection identified a significant deviation from expected behavi
         logger.info(f"Generated drift issue: {issue.title}")
         return issue
 
-    def generate_regression_issue(self, metric_name: str, regression_pct: float, baseline: float, current: float) -> GeneratedIssue:
+    def generate_regression_issue(
+        self, metric_name: str, regression_pct: float, baseline: float, current: float
+    ) -> GeneratedIssue:
         """Generate issue for regression >5%."""
         issue_id = f"regression-{datetime.now(timezone.utc).timestamp()}"
 
@@ -181,7 +187,9 @@ Performance regression detected that exceeds 5% threshold.
         logger.info(f"Generated regression issue: {issue.title}")
         return issue
 
-    def generate_canary_drill_failure_issue(self, drill_type: str, failure_count: int, success_rate_pct: float) -> GeneratedIssue:
+    def generate_canary_drill_failure_issue(
+        self, drill_type: str, failure_count: int, success_rate_pct: float
+    ) -> GeneratedIssue:
         """Generate issue for canary drill failures."""
         issue_id = f"canary-{datetime.now(timezone.utc).timestamp()}"
 

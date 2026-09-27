@@ -85,9 +85,9 @@ class TestProcess7WorkflowOperations:
             "inputs": test_workflow_inputs,
         }
 
-        assert "/dispatches" in endpoint
-        assert payload["ref"] == test_workflow_ref
-        assert payload["inputs"]["environment"] == "staging"
+        assert "/dispatches" in endpoint, "Condition must be true"
+        assert payload["ref"] == test_workflow_ref, "Condition must be true"
+        assert payload["inputs"]["environment"] == "staging", "Condition must be true"
 
     def test_process7_dispatch_workflow_minimal(
         self,
@@ -103,8 +103,8 @@ class TestProcess7WorkflowOperations:
             "ref": test_workflow_ref,
         }
 
-        assert "/dispatches" in endpoint
-        assert payload["ref"]
+        assert "/dispatches" in endpoint, "Condition must be true"
+        assert payload["ref"], "Condition must be true"
 
     def test_process7_dispatch_workflow_with_inputs(
         self,
@@ -125,8 +125,8 @@ class TestProcess7WorkflowOperations:
             },
         }
 
-        assert "/dispatches" in endpoint
-        assert payload["inputs"]["string_input"] == "test_value"
+        assert "/dispatches" in endpoint, "Condition must be true"
+        assert payload["inputs"]["string_input"] == "test_value", "Value must be initialized"
         # Note: all inputs are strings in workflow_dispatch
 
     def test_process7_dispatch_workflow_by_id(
@@ -141,8 +141,8 @@ class TestProcess7WorkflowOperations:
 
         payload = {"ref": test_workflow_ref}
 
-        assert workflow_id in endpoint
-        assert payload["ref"] == test_workflow_ref
+        assert workflow_id in endpoint, "w is not valid"
+        assert payload["ref"] == test_workflow_ref, "Condition must be true"
 
     def test_process7_dispatch_workflow_invalid_ref(
         self,
@@ -153,7 +153,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 404 when dispatching with non-existent branch/tag."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     def test_process7_dispatch_workflow_invalid_workflow(
         self,
@@ -163,7 +163,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 404 when workflow file doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Workflow Run Querying
@@ -185,8 +185,8 @@ class TestProcess7WorkflowOperations:
             ],
         }
 
-        assert "/actions/runs" in endpoint
-        assert expected_response["total_count"] == 2
+        assert "/actions/runs" in endpoint, "Condition must be true"
+        assert expected_response["total_count"] == 2, "Response must not be empty"
 
     def test_process7_list_workflow_runs_with_filters(
         self,
@@ -196,12 +196,12 @@ class TestProcess7WorkflowOperations:
         """Test: List workflow runs with status and event filters."""
         # Filter by status
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}?status=completed&conclusion=success"
-        assert "status=completed" in endpoint
-        assert "conclusion=success" in endpoint
+        assert "status=completed" in endpoint, "Condition must be true"
+        assert "conclusion=success" in endpoint, "Condition must be true"
 
         # Filter by event
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}?event=push"
-        assert "event=push" in endpoint
+        assert "event=push" in endpoint, "Condition must be true"
 
     def test_process7_get_workflow_run_success(
         self,
@@ -214,10 +214,10 @@ class TestProcess7WorkflowOperations:
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}"
         response = mock_workflow_run_response(run_id=run_id, status="completed", conclusion="success")
 
-        assert str(run_id) in endpoint
-        assert response["id"] == run_id
-        assert response["status"] == "completed"
-        assert response["conclusion"] == "success"
+        assert str(run_id) in endpoint, "Condition must be true"
+        assert response["id"] == run_id, "Response must not be empty"
+        assert response["status"] == "completed", "Response must not be empty"
+        assert response["conclusion"] == "success", "Response must not be empty"
 
     def test_process7_workflow_run_status_polling(
         self,
@@ -231,7 +231,7 @@ class TestProcess7WorkflowOperations:
         # Simulate polling: first in_progress, then completed
         statuses = ["in_progress", "in_progress", "completed"]
 
-        assert str(run_id) in endpoint
+        assert str(run_id) in endpoint, "Condition must be true"
         for i, status in enumerate(statuses):
             # Poll loop implementation would go here
             assert status in ["in_progress", "completed", "queued"]
@@ -250,7 +250,7 @@ class TestProcess7WorkflowOperations:
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}/cancel"
 
         # DELETE or POST to cancel endpoint
-        assert "cancel" in endpoint
+        assert "cancel" in endpoint, "Condition must be true"
 
     def test_process7_cancel_completed_workflow_error(
         self,
@@ -260,7 +260,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 422 when canceling already-completed workflow."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
     def test_process7_cancel_workflow_not_found(
         self,
@@ -270,7 +270,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 404 when workflow run doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Workflow Run Logs
@@ -286,7 +286,7 @@ class TestProcess7WorkflowOperations:
         endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}/logs"
 
         # Returns zip file of logs
-        assert "logs" in endpoint
+        assert "logs" in endpoint, "Condition must be true"
 
     def test_process7_list_workflow_run_artifacts(
         self,
@@ -315,8 +315,8 @@ class TestProcess7WorkflowOperations:
             ],
         }
 
-        assert "/artifacts" in endpoint
-        assert expected_response["total_count"] == 2
+        assert "/artifacts" in endpoint, "Condition must be true"
+        assert expected_response["total_count"] == 2, "Response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Workflow Run Timing
@@ -331,9 +331,9 @@ class TestProcess7WorkflowOperations:
             "run_started_at": now,
         }
 
-        assert response["created_at"]
-        assert response["updated_at"]
-        assert response.get("run_started_at")
+        assert response["created_at"], "Response must not be empty"
+        assert response["updated_at"], "Response must not be empty"
+        assert response.get("run_started_at"), "Response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -347,7 +347,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 429 Too Many Requests when rate limited."""
         error = api_errors.rate_limited()
-        assert error.code == 429
+        assert error.code == 429, "Error should be raised or set"
 
     def test_process7_insufficient_scope_error(
         self,
@@ -357,7 +357,7 @@ class TestProcess7WorkflowOperations:
     ):
         """Test: 403 Forbidden when token lacks required scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -379,7 +379,7 @@ class TestWorkflowDispatchIntegration:
         }
 
         # ref is required
-        assert payload["ref"]
+        assert payload["ref"], "Condition must be true"
 
         # inputs must be dict of strings
         for key, value in payload["inputs"].items():
@@ -395,7 +395,7 @@ class TestWorkflowDispatchIntegration:
 
         for ref in refs:
             payload = {"ref": ref}
-            assert payload["ref"]
+            assert payload["ref"], "Condition must be true"
 
     def test_workflow_dispatch_input_sanitization(self):
         """Test: Workflow inputs don't expose sensitive data in URLs."""
@@ -408,7 +408,7 @@ class TestWorkflowDispatchIntegration:
         payload = {"inputs": inputs}
 
         # Body should not be logged with sensitive values
-        assert payload["inputs"]
+        assert payload["inputs"], "Condition must be true"
 
     def test_workflow_run_conclusion_values(self, mock_workflow_run_response):
         """Test: Workflow run conclusion has valid values."""
@@ -416,7 +416,7 @@ class TestWorkflowDispatchIntegration:
 
         for conclusion in valid_conclusions:
             response = mock_workflow_run_response(conclusion=conclusion)
-            assert response["conclusion"] == conclusion or conclusion is None
+            assert response["conclusion"] == conclusion or conclusion is None, "Response must not be empty"
 
     def test_workflow_run_status_values(self, mock_workflow_run_response):
         """Test: Workflow run status has valid values."""
@@ -424,7 +424,7 @@ class TestWorkflowDispatchIntegration:
 
         for status in valid_statuses:
             response = mock_workflow_run_response(status=status)
-            assert response["status"] == status
+            assert response["status"] == status, "Response must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -447,8 +447,8 @@ class TestWorkflowBatchOperations:
             endpoint = f"{gh_api_base}{workflows_endpoint}/{workflow}/dispatches"
             payload = {"ref": "main"}
 
-            assert "/dispatches" in endpoint
-            assert payload["ref"]
+            assert "/dispatches" in endpoint, "Condition must be true"
+            assert payload["ref"], "Condition must be true"
 
     def test_batch_cancel_workflow_runs(
         self,
@@ -460,7 +460,7 @@ class TestWorkflowBatchOperations:
 
         for run_id in run_ids:
             endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}/cancel"
-            assert str(run_id) in endpoint
+            assert str(run_id) in endpoint, "Condition must be true"
 
     def test_batch_poll_workflow_runs(
         self,
@@ -473,4 +473,4 @@ class TestWorkflowBatchOperations:
         for run_id in run_ids:
             endpoint = f"{gh_api_base}{workflow_runs_endpoint}/{run_id}"
             # In real implementation, would fetch status
-            assert str(run_id) in endpoint
+            assert str(run_id) in endpoint, "Condition must be true"

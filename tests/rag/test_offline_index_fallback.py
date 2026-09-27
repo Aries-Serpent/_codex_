@@ -49,9 +49,9 @@ def test_build_index_from_files_falls_back_to_tfidf(monkeypatch: pytest.MonkeyPa
         )
 
         metadata = json.loads((index_path / "metadata.json").read_text(encoding="utf-8"))
-        assert metadata["embedding_provider"] == "TfidfEmbeddingProvider"
-        assert metadata["num_vectors"] >= 1
-        assert (index_path / "index.faiss").exists()
+        assert metadata["embedding_provider"] == "TfidfEmbeddingProvider", "Data must not be empty"
+        assert metadata["num_vectors"] >= 1, "Value must be greater than zero"
+        assert (index_path / "index.faiss").exists(), "Condition must be true"
     finally:
         shutil.rmtree(workspace, ignore_errors=True)
 
@@ -97,8 +97,8 @@ def test_retriever_uses_tfidf_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
         )
         results = retriever.query("python semantic retrieval", top_k=2)
 
-        assert retriever.model.__class__.__name__ == "TfidfEmbeddingProvider"
-        assert results
-        assert "Python" in results[0]["text"]
+        assert retriever.model.__class__.__name__ == "TfidfEmbeddingProvider", "__name__ is not valid"
+        assert results, "Result must not be empty"
+        assert "Python" in results[0]["text"], "Result must not be empty"
     finally:
         shutil.rmtree(workspace, ignore_errors=True)

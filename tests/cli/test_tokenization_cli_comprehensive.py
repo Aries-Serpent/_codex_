@@ -34,7 +34,7 @@ except ImportError:
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
-# 
+#
 #     HAS_TYPER = True
 #     HAS_TYPER = True
 # except ImportError:
@@ -44,7 +44,7 @@ except ImportError:
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
-# 
+#
 # @pytest.fixture
 #         # Should complete without error
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
@@ -58,7 +58,7 @@ except ImportError:
 #     """Create temporary corpus files for tokenizer training."""
 #     corpus_dir = tmp_path / "corpus"
 #     corpus_dir.mkdir()
-# 
+#
 #     (corpus_dir / "train.txt").write_text(
 #     (corpus_dir / "train.txt").write_text(
 #         "This is a training corpus.\n"
@@ -66,13 +66,13 @@ except ImportError:
 #         "Used for training tokenizers.\n"
 #     )
 #     (corpus_dir / "valid.txt").write_text("Validation text for tokenizer.\n")
-# 
+#
 #     return corpus_dir
 #         # Should complete without error
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
-# 
+#
 #     def test_format_context_none(self):
 #     def test_format_context_none(self):
 #         """Verify None context formatting."""
@@ -105,7 +105,7 @@ except ImportError:
 #         context = {"timestamp": datetime(2024, 1, 1, 12, 0, 0)}
 #         result = _format_context(context)
 #         assert "2024" in result, "Result must not be empty"
-# 
+#
 #     def test_format_context_unserializable_fallback(self):
 #     def test_format_context_unserializable_fallback(self):
 #         """Verify fallback for unserializable objects."""
@@ -115,12 +115,12 @@ except ImportError:
 #         # Should not crash - falls back to str()
 #         result = _format_context({"obj": CustomObj()})
 #         assert isinstance(result, str)
-# 
+#
 #         # Should complete without error
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
-# 
+#
 #     def test_append_error_block_basic(self, tmp_path: Path, monkeypatch):
 #     def test_append_error_block_basic(self, tmp_path: Path, monkeypatch):
 #         """Verify basic error block appending."""
@@ -128,7 +128,7 @@ except ImportError:
 #         error_dir.mkdir()
 #         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
 #         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
-# 
+#
 #         _append_error_block(
 #             step="TEST_STEP", message="Test error message", context={"test": "context"}
 #         )
@@ -136,7 +136,7 @@ except ImportError:
 #         error_files = list(error_dir.glob("errors_*.md"))
 #         assert len(error_files) >= 1, "Error_files must not be empty"
 #         assert len(error_files) >= 1, "Error_files must not be empty"
-# 
+#
 #     def test_append_error_block_with_custom_question(self, tmp_path: Path, monkeypatch):
 #     def test_append_error_block_with_custom_question(self, tmp_path: Path, monkeypatch):
 #         """Verify custom question in error block."""
@@ -144,7 +144,7 @@ except ImportError:
 #         error_dir.mkdir()
 #         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
 #         _append_error_block(step="TEST", message="Error", context=None, question="Custom question?")
-# 
+#
 #         error_files = list(error_dir.glob("errors_*.md"))
 #         if error_files:
 #             content = error_files[0].read_text()
@@ -153,7 +153,7 @@ except ImportError:
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
-# 
+#
 #     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
 #     @patch("tokenization.cli.build_tokenizer")
 #     def test_inspect_command(self, mock_build, runner):
@@ -169,7 +169,7 @@ except ImportError:
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
 #         ), "Result must not be empty"
-# 
+#
 #     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
 #     @patch("tokenization.cli.build_tokenizer")
 #     def test_vocab_size_command(self, mock_build, runner):

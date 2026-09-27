@@ -196,7 +196,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # Check request rate limit
         if not rate_limiter.check_request_limit(tenant_id, quota):
-            logger.warning("Request rate limit exceeded for tenant: %s", sanitize_log_input(tenant_id))
+            logger.warning(
+                "Request rate limit exceeded for tenant: %s", sanitize_log_input(tenant_id)
+            )
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"detail": "Request rate limit exceeded. Please try again later."},
@@ -338,8 +340,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         # Drain remaining tokens to enforce blocking on subsequent requests
                         token_bucket.tokens = 0
                         logger.warning(
-                            "Usage limit exceeded after inference for tenant: %s "
-                            "(usage_units=%s)",
+                            "Usage limit exceeded after inference for tenant: %s (usage_units=%s)",
                             hashlib.sha256(str(tenant_id).encode()).hexdigest()[:8],
                             tokens_used,
                         )

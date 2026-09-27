@@ -28,7 +28,7 @@ class TestDataLoaderInit:
         """Test loader registry module."""
         try:
             from codex_ml.data import registry
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.registry not available")
 
@@ -36,7 +36,7 @@ class TestDataLoaderInit:
         """Test that data package imports."""
         try:
             from codex_ml import data
-            assert data is not None
+            assert data is not None, "data must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data not available")
 
@@ -48,7 +48,7 @@ class TestDataLoader:
         """Test data loader module."""
         try:
             from codex_ml.data import loaders
-            assert loaders is not None
+            assert loaders is not None, "loaders must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.loaders not available")
 
@@ -56,7 +56,7 @@ class TestDataLoader:
         """Test JSONL loader module."""
         try:
             from codex_ml.data import jsonl_loader
-            assert jsonl_loader is not None
+            assert jsonl_loader is not None, "jsonl_loader must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.jsonl_loader not available")
 
@@ -64,7 +64,7 @@ class TestDataLoader:
         """Test JSONL stream module."""
         try:
             from codex_ml.data import jsonl_stream
-            assert jsonl_stream is not None
+            assert jsonl_stream is not None, "jsonl_stream must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.jsonl_stream not available")
 
@@ -76,7 +76,7 @@ class TestDataSharding:
         """Test data sharding module."""
         try:
             from codex_ml.data import sharding
-            assert sharding is not None
+            assert sharding is not None, "sharding must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.sharding not available")
 
@@ -88,7 +88,7 @@ class TestDataSplitting:
         """Test split module."""
         try:
             from codex_ml.data import split
-            assert split is not None
+            assert split is not None, "split must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.split not available")
 
@@ -96,7 +96,7 @@ class TestDataSplitting:
         """Test split_utils module."""
         try:
             from codex_ml.data import split_utils
-            assert split_utils is not None
+            assert split_utils is not None, "split_utils must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.split_utils not available")
 
@@ -104,7 +104,7 @@ class TestDataSplitting:
         """Test splits module."""
         try:
             from codex_ml.data import splits
-            assert splits is not None
+            assert splits is not None, "splits must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.splits not available")
 
@@ -116,7 +116,7 @@ class TestDataCache:
         """Test data cache module."""
         try:
             from codex_ml.data import cache
-            assert cache is not None
+            assert cache is not None, "cache must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.cache not available")
 
@@ -128,7 +128,7 @@ class TestDataIntegrity:
         """Test integrity module."""
         try:
             from codex_ml.data import integrity
-            assert integrity is not None
+            assert integrity is not None, "integrity must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.integrity not available")
 
@@ -140,7 +140,7 @@ class TestDataChecksums:
         """Test checksums module."""
         try:
             from codex_ml.data import checksums
-            assert checksums is not None
+            assert checksums is not None, "checksums must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.checksums not available")
 
@@ -152,7 +152,7 @@ class TestDataCli:
         """Test data CLI module."""
         try:
             from codex_ml.data import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.cli not available")
 
@@ -164,7 +164,7 @@ class TestHuggingFaceDatasets:
         """Test HF datasets module."""
         try:
             from codex_ml.data import hf_datasets
-            assert hf_datasets is not None
+            assert hf_datasets is not None, "hf_datasets must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.hf_datasets not available")
 
@@ -176,7 +176,7 @@ class TestTokenizationAdapter:
         """Test tokenization adapter module."""
         try:
             from codex_ml.tokenization import adapter
-            assert adapter is not None
+            assert adapter is not None, "adapter must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.adapter not available")
 
@@ -185,7 +185,7 @@ class TestTokenizationAdapter:
         try:
             from codex_ml.tokenization.adapter import _TokenizerAdapter
             # Check that class exists
-            assert _TokenizerAdapter is not None
+            assert _TokenizerAdapter is not None, "_TokenizerAdapter must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer adapter class not available")
 
@@ -197,7 +197,7 @@ class TestTokenizationPipeline:
         """Test tokenization pipeline module."""
         try:
             from codex_ml.tokenization import pipeline
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.pipeline not available")
 
@@ -209,7 +209,7 @@ class TestTokenizationCli:
         """Test tokenization CLI module."""
         try:
             from codex_ml.tokenization import cli
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.cli not available")
 
@@ -221,7 +221,7 @@ class TestTokenizationHFTokenizer:
         """Test HF tokenizer module."""
         try:
             from codex_ml.tokenization import hf_tokenizer
-            assert hf_tokenizer is not None
+            assert hf_tokenizer is not None, "hf_tokenizer must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.hf_tokenizer not available")
 
@@ -233,7 +233,7 @@ class TestTokenizationSentencePiece:
         """Test SentencePiece adapter module."""
         try:
             from codex_ml.tokenization import sentencepiece_adapter
-            assert sentencepiece_adapter is not None
+            assert sentencepiece_adapter is not None, "sentencepiece_adapter must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.sentencepiece_adapter not available")
 
@@ -245,7 +245,7 @@ class TestTokenizationOfflineVocab:
         """Test offline vocab module."""
         try:
             from codex_ml.tokenization import offline_vocab
-            assert offline_vocab is not None
+            assert offline_vocab is not None, "offline_vocab must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.offline_vocab not available")
 
@@ -257,7 +257,7 @@ class TestTokenizationTraining:
         """Test train_tokenizer module."""
         try:
             from codex_ml.tokenization import train_tokenizer
-            assert train_tokenizer is not None
+            assert train_tokenizer is not None, "train_tokenizer must be initialized"
         except ImportError:
             pytest.skip("codex_ml.tokenization.train_tokenizer not available")
 
@@ -270,9 +270,9 @@ class TestDataEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             empty_file = Path(tmpdir) / "empty.jsonl"
             empty_file.touch()
-            
+
             # Should handle empty files
-            assert empty_file.stat().st_size == 0
+            assert empty_file.stat().st_size == 0, "st_size is not valid"
 
     def test_large_file_handling(self) -> None:
         """Test handling of large files."""
@@ -280,8 +280,8 @@ class TestDataEdgeCases:
             large_file = Path(tmpdir) / "large.bin"
             # Create a file with some data
             large_file.write_bytes(b"x" * 1000)
-            
-            assert large_file.stat().st_size == 1000
+
+            assert large_file.stat().st_size == 1000, "st_size is not valid"
 
     def test_corrupted_data_handling(self) -> None:
         """Test handling of corrupted data."""
@@ -289,9 +289,9 @@ class TestDataEdgeCases:
             # Create a file with invalid JSON
             invalid_file = Path(tmpdir) / "invalid.jsonl"
             invalid_file.write_text("{ invalid json")
-            
+
             # File should exist even if content is invalid
-            assert invalid_file.exists()
+            assert invalid_file.exists(), "Condition must be true"
 
 
 class TestTokenizationEdgeCases:
@@ -300,17 +300,17 @@ class TestTokenizationEdgeCases:
     def test_empty_string_tokenization(self) -> None:
         """Test tokenizing empty string."""
         # Most tokenizers should handle empty strings
-        assert "" == ""
+        assert "" == "", "Condition must be true"
 
     def test_special_characters(self) -> None:
         """Test special character handling."""
         special_chars = "!@#$%^&*()"
-        assert len(special_chars) > 0
+        assert len(special_chars) > 0, "Special_chars must not be empty"
 
     def test_unicode_handling(self) -> None:
         """Test unicode string handling."""
         unicode_str = "你好世界🚀"
-        assert len(unicode_str) > 0
+        assert len(unicode_str) > 0, "Unicode_str must not be empty"
 
 
 class TestDataIntegration:
@@ -320,7 +320,7 @@ class TestDataIntegration:
         """Test data package structure."""
         try:
             from codex_ml import data
-            
+
             # Should be a package
             assert hasattr(data, "__path__") or hasattr(data, "__file__")
         except ImportError:
@@ -330,7 +330,7 @@ class TestDataIntegration:
         """Test tokenization package structure."""
         try:
             from codex_ml import tokenization
-            
+
             # Should be a package
             assert hasattr(tokenization, "__path__") or hasattr(tokenization, "__file__")
         except ImportError:

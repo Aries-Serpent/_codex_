@@ -36,8 +36,8 @@ except ImportError:
     print("ERROR: PyTorch not installed")
     sys.exit(1)
 
-from codex_ml.models.minilm import MiniLM, MiniLMConfig
 from codex_ml.models.decoder_only import DecoderOnlyLM, ModelConfig
+from codex_ml.models.minilm import MiniLM, MiniLMConfig
 
 logger = logging.getLogger(__name__)
 
@@ -457,7 +457,7 @@ def run_ml_benchmarks(
     print(f"{'='*80}")
     print(f"Device: {suite.device}")
     print(f"Repeats per benchmark: {num_repeats}")
-    print(f"Warmup iterations: 2")
+    print("Warmup iterations: 2")
 
     # =========================================================================
     # Benchmark 1: MiniLM Model Initialization

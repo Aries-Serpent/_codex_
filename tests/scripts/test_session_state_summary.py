@@ -12,7 +12,7 @@ ROOT = Path(__file__).parent.parent.parent
 def _load_module(module_name: str, path: Path):
     spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)
     return module
 
@@ -37,10 +37,10 @@ def test_context_window_summary_is_compact() -> None:
         }
     )
 
-    assert summary["context_summary"].endswith("limit]")
-    assert summary["decisions_made_and_rationale"].endswith("limit]")
-    assert summary["completed"].count("\n") <= 8
-    assert summary["file_list_with_line_counts"].count("\n") <= 8
+    assert summary["context_summary"].endswith("limit]"), "Condition must be true"
+    assert summary["decisions_made_and_rationale"].endswith("limit]"), "Condition must be true"
+    assert summary["completed"].count("\n") <= 8, "Count must be greater than zero"
+    assert summary["file_list_with_line_counts"].count("\n") <= 8, "Count must be greater than zero"
 
 
 def test_session_manager_end_session_remains_bounded(tmp_path) -> None:
@@ -68,6 +68,6 @@ def test_session_manager_end_session_remains_bounded(tmp_path) -> None:
     summary = manager.end_session()
     payload = json.dumps(summary)
 
-    assert len(payload) < 8_000
-    assert "done-0" in payload
-    assert "done-49" not in payload
+    assert len(payload) < 8_000, "Payload must not be empty"
+    assert "done-0" in payload, "Condition must be true"
+    assert "done-49" not in payload, "Condition must be true"

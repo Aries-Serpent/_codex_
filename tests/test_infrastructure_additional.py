@@ -13,7 +13,7 @@ import pytest
 
 class TestWorkflowAnalytics:
     """Workflow analytics and reporting"""
-    
+
     def test_workflow_duration_tracking(self):
         """Track workflow execution duration"""
         run = {
@@ -21,9 +21,9 @@ class TestWorkflowAnalytics:
             "completed_at": time.time(),
             "duration_seconds": 3600
         }
-        
-        assert run["duration_seconds"] == 3600
-    
+
+        assert run["duration_seconds"] == 3600, "Condition must be true"
+
     def test_workflow_success_rate_calculation(self):
         """Calculate workflow success rate"""
         runs = [
@@ -32,11 +32,11 @@ class TestWorkflowAnalytics:
             {"conclusion": "failure"},
             {"conclusion": "success"}
         ]
-        
+
         success_count = sum(1 for r in runs if r["conclusion"] == "success")
         success_rate = success_count / len(runs)
-        assert success_rate == 0.75
-    
+        assert success_rate == 0.75, "success_rate is not valid"
+
     def test_workflow_failure_analysis(self):
         """Analyze workflow failure patterns"""
         failures = [
@@ -44,17 +44,17 @@ class TestWorkflowAnalytics:
             {"job": "test", "error": "timeout"},
             {"job": "build", "error": "out_of_memory"}
         ]
-        
+
         timeout_failures = [f for f in failures if f["error"] == "timeout"]
-        assert len(timeout_failures) == 2
-    
+        assert len(timeout_failures) == 2, "Timeout_failures must not be empty"
+
     def test_workflow_trend_analysis(self):
         """Analyze trends in workflow metrics"""
         daily_durations = [300, 310, 305, 320, 315]  # seconds
-        
+
         average = sum(daily_durations) / len(daily_durations)
-        assert average > 300
-    
+        assert average > 300, "average must be greater than zero"
+
     def test_workflow_cost_tracking(self):
         """Track workflow execution cost"""
         job_costs = {
@@ -62,10 +62,10 @@ class TestWorkflowAnalytics:
             "ubuntu-large": 0.016,
             "macos-latest": 0.016
         }
-        
+
         total_cost = sum(job_costs.values())
-        assert total_cost > 0
-    
+        assert total_cost > 0, "total_cost must be greater than zero"
+
     def test_workflow_resource_utilization(self):
         """Track resource utilization"""
         metrics = {
@@ -73,13 +73,13 @@ class TestWorkflowAnalytics:
             "memory_usage_percent": 60,
             "disk_usage_percent": 40
         }
-        
-        assert all(0 <= v <= 100 for v in metrics.values())
+
+        assert all(0 <= v <= 100 for v in metrics.values()), "Value must be initialized"
 
 
 class TestPerformanceMonitoring:
     """Performance monitoring infrastructure"""
-    
+
     def test_job_execution_time_tracking(self):
         """Track individual job execution time"""
         job = {
@@ -88,9 +88,9 @@ class TestPerformanceMonitoring:
             "end_time": time.time(),
             "duration": 600
         }
-        
-        assert job["duration"] > 0
-    
+
+        assert job["duration"] > 0, "Value must be greater than zero"
+
     def test_step_performance_profiling(self):
         """Profile individual step performance"""
         steps = [
@@ -99,10 +99,10 @@ class TestPerformanceMonitoring:
             {"name": "test", "duration": 300},
             {"name": "upload", "duration": 15}
         ]
-        
+
         total = sum(s["duration"] for s in steps)
-        assert total == 370
-    
+        assert total == 370, "total is not valid"
+
     def test_slowest_steps_identification(self):
         """Identify slowest workflow steps"""
         steps = [
@@ -111,27 +111,27 @@ class TestPerformanceMonitoring:
             {"name": "test", "duration": 300},
             {"name": "upload", "duration": 15}
         ]
-        
+
         slowest = max(steps, key=lambda x: x["duration"])
-        assert slowest["name"] == "test"
-    
+        assert slowest["name"] == "test", "Condition must be true"
+
     def test_performance_regression_detection(self):
         """Detect performance regressions"""
         baseline = 300  # seconds
         current = 450   # seconds
         threshold = 0.1  # 10% threshold
-        
+
         regression = (current - baseline) / baseline > threshold
-        assert regression
-    
+        assert regression, "regression is not valid"
+
     def test_performance_improvement_tracking(self):
         """Track performance improvements"""
         previous = 400
         current = 350
         improvement_percent = (previous - current) / previous * 100
-        
-        assert improvement_percent > 0
-    
+
+        assert improvement_percent > 0, "improvement_percent must be greater than zero"
+
     def test_bottleneck_analysis(self):
         """Identify workflow bottlenecks"""
         job_times = [
@@ -139,14 +139,14 @@ class TestPerformanceMonitoring:
             {"job": "lint", "duration": 100},
             {"job": "build", "duration": 200}
         ]
-        
+
         bottleneck = max(job_times, key=lambda x: x["duration"])
-        assert bottleneck["job"] == "test"
+        assert bottleneck["job"] == "test", "Condition must be true"
 
 
 class TestDeploymentInfrastructure:
     """Deployment infrastructure tests"""
-    
+
     def test_deployment_trigger_validation(self):
         """Validate deployment trigger conditions"""
         trigger = {
@@ -154,10 +154,10 @@ class TestDeploymentInfrastructure:
             "branch": "main",
             "status": "success"
         }
-        
+
         can_deploy = trigger["status"] == "success"
-        assert can_deploy
-    
+        assert can_deploy, "can_deploy is not valid"
+
     def test_deployment_approval_workflow(self):
         """Support manual approval for deployments"""
         approval = {
@@ -166,10 +166,10 @@ class TestDeploymentInfrastructure:
             "approved": True,
             "approved_at": time.time()
         }
-        
+
         can_proceed = approval["required"] == approval["approved"]
-        assert can_proceed
-    
+        assert can_proceed, "can_proceed is not valid"
+
     def test_deployment_rollback_capability(self):
         """Support deployment rollback"""
         deployment = {
@@ -178,9 +178,9 @@ class TestDeploymentInfrastructure:
             "status": "failed",
             "rollback_available": True
         }
-        
-        assert deployment["rollback_available"]
-    
+
+        assert deployment["rollback_available"], "Condition must be true"
+
     def test_blue_green_deployment_support(self):
         """Support blue-green deployments"""
         deployment = {
@@ -188,9 +188,9 @@ class TestDeploymentInfrastructure:
             "green": {"version": "1.0.1", "status": "staged"},
             "traffic_split": {"blue": 100, "green": 0}
         }
-        
-        assert deployment["blue"]["status"] == "active"
-    
+
+        assert deployment["blue"]["status"] == "active", "Condition must be true"
+
     def test_canary_deployment_gradual_rollout(self):
         """Support canary deployment rollout"""
         canary = {
@@ -201,9 +201,9 @@ class TestDeploymentInfrastructure:
                 {"percent": 100, "duration_minutes": 0}
             ]
         }
-        
-        assert len(canary["rollout_stages"]) == 3
-    
+
+        assert len(canary["rollout_stages"]) == 3, "Collection must not be empty"
+
     def test_deployment_health_checks(self):
         """Verify deployment health"""
         health_checks = {
@@ -211,14 +211,14 @@ class TestDeploymentInfrastructure:
             "database": "healthy",
             "cache": "healthy"
         }
-        
+
         all_healthy = all(v == "healthy" for v in health_checks.values())
-        assert all_healthy
+        assert all_healthy, "all_healthy is not valid"
 
 
 class TestWorkflowVersioning:
     """Workflow versioning and upgrades"""
-    
+
     def test_workflow_version_tracking(self):
         """Track workflow versions"""
         workflow_version = {
@@ -226,9 +226,9 @@ class TestWorkflowVersioning:
             "version": "1.2.3",
             "last_modified": time.time()
         }
-        
-        assert workflow_version["version"] is not None
-    
+
+        assert workflow_version["version"] is not None, "w must be initialized"
+
     def test_action_version_upgrade_detection(self):
         """Detect outdated action versions"""
         action = {
@@ -237,9 +237,9 @@ class TestWorkflowVersioning:
             "latest": "v4",
             "outdated": True
         }
-        
-        assert action["outdated"]
-    
+
+        assert action["outdated"], "Condition must be true"
+
     def test_workflow_backward_compatibility(self):
         """Maintain backward compatibility"""
         workflows = [
@@ -247,14 +247,14 @@ class TestWorkflowVersioning:
             {"version": "2.0.0", "status": "stable"},
             {"version": "2.1.0", "status": "latest"}
         ]
-        
+
         stable = [w for w in workflows if w["status"] in ["stable", "latest"]]
-        assert len(stable) >= 2
+        assert len(stable) >= 2, "Stable must not be empty"
 
 
 class TestErrorHandling:
     """Error handling in infrastructure"""
-    
+
     def test_network_error_handling(self):
         """Handle network errors gracefully"""
         error = {
@@ -263,10 +263,10 @@ class TestErrorHandling:
             "retry_count": 0,
             "max_retries": 3
         }
-        
+
         can_retry = error["retry_count"] < error["max_retries"]
-        assert can_retry
-    
+        assert can_retry, "can_retry is not valid"
+
     def test_timeout_error_handling(self):
         """Handle timeout errors"""
         error = {
@@ -275,9 +275,9 @@ class TestErrorHandling:
             "timeout_seconds": 1800,
             "exceeded": True
         }
-        
-        assert error["exceeded"]
-    
+
+        assert error["exceeded"], "Error should be raised or set"
+
     def test_disk_space_error_handling(self):
         """Handle out of disk space errors"""
         error = {
@@ -285,10 +285,10 @@ class TestErrorHandling:
             "available_bytes": 0,
             "required_bytes": 1000000000
         }
-        
+
         needs_cleanup = error["available_bytes"] < error["required_bytes"]
-        assert needs_cleanup
-    
+        assert needs_cleanup, "needs_cleanup is not valid"
+
     def test_memory_error_handling(self):
         """Handle out of memory errors"""
         error = {
@@ -296,10 +296,10 @@ class TestErrorHandling:
             "used_mb": 7200,
             "available_mb": 0
         }
-        
+
         is_oom = error["available_mb"] == 0
-        assert is_oom
-    
+        assert is_oom, "is_oom is not valid"
+
     def test_permission_error_handling(self):
         """Handle permission errors"""
         error = {
@@ -307,13 +307,13 @@ class TestErrorHandling:
             "path": "/etc/sensitive",
             "required_permission": "write"
         }
-        
+
         assert error["required_permission"] in ["read", "write", "execute"]
 
 
 class TestSecurityInfrastructure:
     """Security infrastructure tests"""
-    
+
     def test_secret_injection_security(self):
         """Verify secrets injected securely"""
         secret_injection = {
@@ -321,10 +321,10 @@ class TestSecurityInfrastructure:
             "encrypted": True,
             "masked": True
         }
-        
+
         is_secure = not secret_injection["exposed_in_logs"]
-        assert is_secure
-    
+        assert is_secure, "is_secure is not valid"
+
     def test_token_expiration_handling(self):
         """Handle token expiration"""
         token = {
@@ -332,9 +332,9 @@ class TestSecurityInfrastructure:
             "expires_at": time.time(),
             "expired": True
         }
-        
-        assert token["expired"]
-    
+
+        assert token["expired"], "Condition must be true"
+
     def test_permission_boundary_enforcement(self):
         """Enforce permission boundaries"""
         permissions = {
@@ -342,11 +342,11 @@ class TestSecurityInfrastructure:
             "delete_artifacts": False,
             "modify_secrets": False
         }
-        
+
         # Only write allowed, not delete or modify
-        assert permissions["write_artifacts"]
-        assert not permissions["delete_artifacts"]
-    
+        assert permissions["write_artifacts"], "Condition must be true"
+        assert not permissions["delete_artifacts"], "Condition must be true"
+
     def test_audit_logging_for_sensitive_operations(self):
         """Log sensitive operations for audit"""
         audit_log = {
@@ -355,13 +355,13 @@ class TestSecurityInfrastructure:
             "timestamp": time.time(),
             "status": "success"
         }
-        
-        assert audit_log["operation"] is not None
+
+        assert audit_log["operation"] is not None, "Value must be initialized"
 
 
 class TestResourceManagement:
     """Resource management in infrastructure"""
-    
+
     def test_memory_limit_enforcement(self):
         """Enforce memory limits"""
         memory = {
@@ -369,10 +369,10 @@ class TestResourceManagement:
             "used_mb": 6000,
             "available_mb": 1168
         }
-        
+
         at_limit = memory["used_mb"] / memory["limit_mb"] > 0.9
-        assert not at_limit
-    
+        assert not at_limit, "Condition must be true"
+
     def test_disk_quota_enforcement(self):
         """Enforce disk quota"""
         disk = {
@@ -380,10 +380,10 @@ class TestResourceManagement:
             "used_gb": 40,
             "available_gb": 10
         }
-        
+
         usage_percent = (disk["used_gb"] / disk["limit_gb"]) * 100
-        assert usage_percent == 80
-    
+        assert usage_percent == 80, "usage_percent is not valid"
+
     def test_cpu_limit_enforcement(self):
         """Enforce CPU limits"""
         cpu = {
@@ -391,9 +391,9 @@ class TestResourceManagement:
             "usage_cores": 3.2,
             "utilization_percent": 80
         }
-        
-        assert cpu["utilization_percent"] > 0
-    
+
+        assert cpu["utilization_percent"] > 0, "Value must be greater than zero"
+
     def test_concurrent_job_limit(self):
         """Limit concurrent jobs"""
         limits = {
@@ -401,14 +401,14 @@ class TestResourceManagement:
             "current_jobs": 8,
             "jobs_queued": 3
         }
-        
+
         can_queue = limits["current_jobs"] < limits["max_concurrent_jobs"]
-        assert can_queue
+        assert can_queue, "can_queue is not valid"
 
 
 class TestInfrastructureOptimization:
     """Infrastructure optimization"""
-    
+
     def test_cache_effectiveness_monitoring(self):
         """Monitor cache effectiveness"""
         cache_stats = {
@@ -416,9 +416,9 @@ class TestInfrastructureOptimization:
             "misses": 100,
             "effectiveness": 0.9
         }
-        
-        assert cache_stats["effectiveness"] > 0.8
-    
+
+        assert cache_stats["effectiveness"] > 0.8, "Value must be greater than zero"
+
     def test_parallel_execution_efficiency(self):
         """Monitor parallel execution efficiency"""
         parallel_metrics = {
@@ -427,9 +427,9 @@ class TestInfrastructureOptimization:
             "speedup": 4.0,
             "efficiency": 1.0  # 4 parallel jobs, 4x speedup = 100% efficiency
         }
-        
-        assert parallel_metrics["speedup"] > 1
-    
+
+        assert parallel_metrics["speedup"] > 1, "Value must be greater than zero"
+
     def test_runner_utilization_optimization(self):
         """Optimize runner utilization"""
         utilization = {
@@ -438,9 +438,9 @@ class TestInfrastructureOptimization:
             "idle_runners": 2,
             "utilization_percent": 80
         }
-        
-        assert utilization["utilization_percent"] > 70
-    
+
+        assert utilization["utilization_percent"] > 70, "Value must be greater than zero"
+
     def test_artifact_storage_optimization(self):
         """Optimize artifact storage"""
         storage = {
@@ -448,13 +448,13 @@ class TestInfrastructureOptimization:
             "compressed": 950,
             "compression_ratio": 0.35
         }
-        
-        assert storage["compression_ratio"] > 0.3
+
+        assert storage["compression_ratio"] > 0.3, "st must be greater than zero"
 
 
 class TestDisasterRecovery:
     """Disaster recovery infrastructure"""
-    
+
     def test_workflow_state_backup(self):
         """Backup workflow state"""
         backup = {
@@ -462,9 +462,9 @@ class TestDisasterRecovery:
             "backed_up_workflows": 207,
             "backup_location": "s3://backups"
         }
-        
-        assert backup["backed_up_workflows"] > 0
-    
+
+        assert backup["backed_up_workflows"] > 0, "Value must be greater than zero"
+
     def test_artifact_recovery(self):
         """Support artifact recovery"""
         recovery = {
@@ -472,9 +472,9 @@ class TestDisasterRecovery:
             "recovered": True,
             "recovery_time": 30  # seconds
         }
-        
-        assert recovery["recovered"]
-    
+
+        assert recovery["recovered"], "Condition must be true"
+
     def test_failover_workflow_activation(self):
         """Activate failover workflows"""
         failover = {
@@ -482,9 +482,9 @@ class TestDisasterRecovery:
             "failover_active": True,
             "status": "operational"
         }
-        
-        assert failover["status"] == "operational"
-    
+
+        assert failover["status"] == "operational", "Condition must be true"
+
     def test_data_consistency_verification(self):
         """Verify data consistency after recovery"""
         verification = {
@@ -492,13 +492,13 @@ class TestDisasterRecovery:
             "all_artifacts_present": True,
             "consistent": True
         }
-        
-        assert verification["consistent"]
+
+        assert verification["consistent"], "Condition must be true"
 
 
 class TestMonitoringAndAlerting:
     """Monitoring and alerting infrastructure"""
-    
+
     def test_metric_collection(self):
         """Collect infrastructure metrics"""
         metrics = {
@@ -507,16 +507,16 @@ class TestMonitoringAndAlerting:
             "disk_usage": 71.3,
             "timestamp": time.time()
         }
-        
+
         assert all(0 <= v <= 100 for k, v in metrics.items() if k != "timestamp")
-    
+
     def test_threshold_alert_triggering(self):
         """Trigger alerts on threshold exceedance"""
         metric = {"value": 92, "threshold": 80}
-        
+
         should_alert = metric["value"] > metric["threshold"]
-        assert should_alert
-    
+        assert should_alert, "should_alert is not valid"
+
     def test_alert_deduplication(self):
         """Deduplicate alerts"""
         alerts = [
@@ -524,10 +524,10 @@ class TestMonitoringAndAlerting:
             {"id": 2, "type": "cpu_high", "time": time.time() - 10},
             {"id": 3, "type": "memory_high", "time": time.time()}
         ]
-        
+
         cpu_alerts = [a for a in alerts if a["type"] == "cpu_high"]
-        assert len(cpu_alerts) == 2
-    
+        assert len(cpu_alerts) == 2, "Cpu_alerts must not be empty"
+
     def test_alert_escalation(self):
         """Escalate alerts after duration"""
         alert = {
@@ -535,9 +535,9 @@ class TestMonitoringAndAlerting:
             "escalation_timeout": 1800,  # 30 minutes
             "escalated": True
         }
-        
+
         should_escalate = (time.time() - alert["created_at"]) > alert["escalation_timeout"]
-        assert should_escalate
+        assert should_escalate, "should_escalate is not valid"
 
 
 # Summary count
@@ -545,12 +545,12 @@ def test_additional_infrastructure_tests_count():
     """Verify at least 60 additional infrastructure tests"""
     import sys
     current_module = sys.modules[__name__]
-    
-    test_count = len([name for name in dir(current_module) 
-                     if callable(getattr(current_module, name)) 
+
+    test_count = len([name for name in dir(current_module)
+                     if callable(getattr(current_module, name))
                      and name.startswith('test_')])
-    
-    assert test_count >= 60
+
+    assert test_count >= 60, "test_count must be positive"
 
 
 if __name__ == "__main__":

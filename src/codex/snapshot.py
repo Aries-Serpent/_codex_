@@ -15,7 +15,9 @@ def _snapshot_root(root: str | Path | None = None) -> Path:
     return Path.cwd() / "artifacts"
 
 
-def list_snapshots(root: str | Path | None = None, *, status: str | None = None) -> list[dict[str, Any]]:
+def list_snapshots(
+    root: str | Path | None = None, *, status: str | None = None
+) -> list[dict[str, Any]]:
     """Return snapshot metadata dictionaries from an artifacts directory."""
     base = _snapshot_root(root)
     if not base.exists():

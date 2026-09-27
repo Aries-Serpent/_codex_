@@ -25,6 +25,7 @@ import numpy as np
 # Optional OR-Tools import with graceful fallback
 try:
     from ortools.linear_solver import pywraplp
+
     HAS_ORTOOLS = True
 except ImportError:
     HAS_ORTOOLS = False
@@ -35,6 +36,7 @@ logger = logging.getLogger(__name__)
 
 class ResourceType(Enum):
     """Resource types for allocation."""
+
     CPU = "cpu"
     MEMORY = "memory"
     DISK = "disk"
@@ -44,9 +46,10 @@ class ResourceType(Enum):
 
 class Tier(Enum):
     """Service tiers with SLA and cost profiles."""
-    BRONZE = ("bronze", 0.99, 1.0)      # 99% uptime, baseline cost
-    SILVER = ("silver", 0.999, 1.35)    # 99.9% uptime, 35% premium
-    GOLD = ("gold", 0.9999, 2.0)        # 99.99% uptime, 2x cost
+
+    BRONZE = ("bronze", 0.99, 1.0)  # 99% uptime, baseline cost
+    SILVER = ("silver", 0.999, 1.35)  # 99.9% uptime, 35% premium
+    GOLD = ("gold", 0.9999, 2.0)  # 99.99% uptime, 2x cost
     PLATINUM = ("platinum", 0.99999, 3.5)  # 99.999% uptime, 3.5x cost
 
     def __init__(self, name: str, target_uptime: float, cost_multiplier: float):
@@ -61,6 +64,7 @@ class Tier(Enum):
 @dataclass
 class SLASpec:
     """SLA specification for a tenant."""
+
     tenant_id: str
     target_uptime_percent: float  # e.g., 99.9
     max_response_time_ms: float
@@ -73,6 +77,7 @@ class SLASpec:
 @dataclass
 class ResourceAllocation:
     """Allocated resources for a tenant."""
+
     tenant_id: str
     cpu_cores: float
     memory_gb: float
@@ -96,6 +101,7 @@ class ResourceAllocation:
 @dataclass
 class PricingModel:
     """Resource pricing model."""
+
     cpu_per_core_hour: float = 0.05
     memory_per_gb_hour: float = 0.01
     disk_per_gb_month: float = 0.10
@@ -107,6 +113,7 @@ class PricingModel:
 @dataclass
 class BillingRecord:
     """Monthly billing record for a tenant."""
+
     tenant_id: str
     month: str  # YYYY-MM format
     cpu_cost: float = 0.0
@@ -121,8 +128,14 @@ class BillingRecord:
 
     def total_cost(self) -> float:
         """Calculate total cost after credits."""
-        subtotal = (self.cpu_cost + self.memory_cost + self.disk_cost +
-                   self.network_cost + self.burst_cost - self.reserved_discount)
+        subtotal = (
+            self.cpu_cost
+            + self.memory_cost
+            + self.disk_cost
+            + self.network_cost
+            + self.burst_cost
+            - self.reserved_discount
+        )
         return max(0, subtotal - self.sla_credit)
 
     def to_dict(self) -> Dict:
@@ -132,12 +145,15 @@ class BillingRecord:
 @dataclass
 class TierChange:
     """Record of tier promotion/demotion."""
+
     tenant_id: str
     from_tier: Tier
     to_tier: Tier
     reason: str
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    next_eligible_change: str = field(default_factory=lambda: (datetime.now() + timedelta(days=7)).isoformat())
+    next_eligible_change: str = field(
+        default_factory=lambda: (datetime.now() + timedelta(days=7)).isoformat()
+    )
 
 
 class ConstraintSolver(ABC):
@@ -162,16 +178,16 @@ class ORToolsConstraintSolver(ConstraintSolver):
             return HeuristicConstraintSolver().solve(sla_spec, pricing)
 
         # Create solver
-        solver = pywraplp.Solver.CreateSolver('GLOP')
+        solver = pywraplp.Solver.CreateSolver("GLOP")
         if not solver:
             logger.error("Could not create OR-Tools solver")
             return None
 
         # Decision variables
-        cpu = solver.NumVar(0.5, 128, 'cpu')
-        memory = solver.NumVar(1, 1024, 'memory')
-        disk = solver.NumVar(10, 100000, 'disk')
-        network = solver.NumVar(10, 100000, 'network')
+        cpu = solver.NumVar(0.5, 128, "cpu")
+        memory = solver.NumVar(1, 1024, "memory")
+        disk = solver.NumVar(10, 100000, "disk")
+        network = solver.NumVar(10, 100000, "network")
 
         # Constraints based on SLA
         target_uptime = sla_spec.target_uptime_percent / 100.0
@@ -184,7 +200,10 @@ class ORToolsConstraintSolver(ConstraintSolver):
         solver.Add(memory >= (sla_spec.peak_qps / 500.0) * safety_margin)
 
         # Min disk: based on retention
-        solver.Add(disk >= (sla_spec.peak_qps * 86400 * sla_spec.data_retention_days * 0.001) * safety_margin)
+        solver.Add(
+            disk
+            >= (sla_spec.peak_qps * 86400 * sla_spec.data_retention_days * 0.001) * safety_margin
+        )
 
         # Min network: peak throughput
         solver.Add(network >= (sla_spec.peak_qps * 0.1) * safety_margin)
@@ -194,11 +213,13 @@ class ORToolsConstraintSolver(ConstraintSolver):
         min_redundancy = tier.required_redundancy
 
         # Objective: minimize cost
-        base_cost = (cpu * pricing.cpu_per_core_hour * 730 +  # 730 hours/month
-                    memory * pricing.memory_per_gb_hour * 730 +
-                    disk * pricing.disk_per_gb_month +
-                    network * pricing.network_per_mbps_month)
-        
+        base_cost = (
+            cpu * pricing.cpu_per_core_hour * 730  # 730 hours/month
+            + memory * pricing.memory_per_gb_hour * 730
+            + disk * pricing.disk_per_gb_month
+            + network * pricing.network_per_mbps_month
+        )
+
         solver.Minimize(base_cost)
 
         # Solve
@@ -273,8 +294,9 @@ class ParetoOptimizer:
     def __init__(self, constraint_solver: ConstraintSolver):
         self.constraint_solver = constraint_solver
 
-    def generate_frontier(self, sla_specs: List[SLASpec], pricing: PricingModel,
-                         num_points: int = 25) -> List[Tuple[float, List[ResourceAllocation]]]:
+    def generate_frontier(
+        self, sla_specs: List[SLASpec], pricing: PricingModel, num_points: int = 25
+    ) -> List[Tuple[float, List[ResourceAllocation]]]:
         """
         Generate Pareto frontier with cost-SLA tradeoff points.
         Returns list of (total_cost, allocations) tuples.
@@ -322,10 +344,12 @@ class ParetoOptimizer:
     def _calculate_cost(self, allocation: ResourceAllocation, pricing: PricingModel) -> float:
         """Calculate monthly cost for an allocation."""
         monthly_hours = 730
-        return (allocation.cpu_cores * pricing.cpu_per_core_hour * monthly_hours +
-                allocation.memory_gb * pricing.memory_per_gb_hour * monthly_hours +
-                allocation.disk_gb * pricing.disk_per_gb_month +
-                allocation.network_mbps * pricing.network_per_mbps_month)
+        return (
+            allocation.cpu_cores * pricing.cpu_per_core_hour * monthly_hours
+            + allocation.memory_gb * pricing.memory_per_gb_hour * monthly_hours
+            + allocation.disk_gb * pricing.disk_per_gb_month
+            + allocation.network_mbps * pricing.network_per_mbps_month
+        )
 
 
 class TierManager:
@@ -335,8 +359,9 @@ class TierManager:
         self.cooldown_days = cooldown_days
         self.tier_history: Dict[str, List[TierChange]] = {}
 
-    def should_promote(self, tenant_id: str, current_tier: Tier,
-                       sla_achieved: float, sla_target: float) -> bool:
+    def should_promote(
+        self, tenant_id: str, current_tier: Tier, sla_achieved: float, sla_target: float
+    ) -> bool:
         """Check if tenant should be promoted to higher tier."""
         if self._in_cooldown(tenant_id):
             return False
@@ -344,18 +369,21 @@ class TierManager:
         # Promote if SLA at risk (achieved < target, indicating pressure)
         return sla_achieved < sla_target and current_tier != Tier.PLATINUM
 
-    def should_demote(self, tenant_id: str, current_tier: Tier,
-                      sla_achieved: float, sla_target: float,
-                      resource_utilization: float) -> bool:
+    def should_demote(
+        self,
+        tenant_id: str,
+        current_tier: Tier,
+        sla_achieved: float,
+        sla_target: float,
+        resource_utilization: float,
+    ) -> bool:
         """Check if tenant should be demoted to lower tier."""
         if self._in_cooldown(tenant_id):
             return False
 
         # Demote if SLA exceeded and resources underutilized
         sla_surplus = sla_achieved - sla_target
-        return (sla_surplus > 0 and
-                resource_utilization < 0.4 and
-                current_tier != Tier.BRONZE)
+        return sla_surplus > 0 and resource_utilization < 0.4 and current_tier != Tier.BRONZE
 
     def promote_tier(self, tenant_id: str, current_tier: Tier) -> Optional[Tier]:
         """Promote to next higher tier."""
@@ -404,7 +432,9 @@ class TierManager:
             reason=reason,
         )
         self.tier_history[tenant_id].append(change)
-        logger.info(f"Tier change for {tenant_id}: {from_tier.tier_name} → {to_tier.tier_name} ({reason})")
+        logger.info(
+            f"Tier change for {tenant_id}: {from_tier.tier_name} → {to_tier.tier_name} ({reason})"
+        )
 
     def get_change_history(self, tenant_id: str) -> List[TierChange]:
         """Get tier change history."""
@@ -425,8 +455,9 @@ class BillingEngine:
     def __init__(self, pricing: PricingModel):
         self.pricing = pricing
 
-    def calculate_billing(self, allocation: ResourceAllocation,
-                         uptime_achieved: float, month: str) -> BillingRecord:
+    def calculate_billing(
+        self, allocation: ResourceAllocation, uptime_achieved: float, month: str
+    ) -> BillingRecord:
         """
         Calculate monthly billing with SLA credits.
         SLA credits: 10% discount for each 0.1% below target uptime (capped at 30%).
@@ -470,11 +501,14 @@ class BillingEngine:
 class SLAOptimizer:
     """Main orchestrator for SLA-driven resource optimization."""
 
-    def __init__(self, pricing: Optional[PricingModel] = None,
-                 constraint_solver: Optional[ConstraintSolver] = None,
-                 use_ortools: bool = True):
+    def __init__(
+        self,
+        pricing: Optional[PricingModel] = None,
+        constraint_solver: Optional[ConstraintSolver] = None,
+        use_ortools: bool = True,
+    ):
         self.pricing = pricing or PricingModel()
-        
+
         # Select constraint solver
         if use_ortools and HAS_ORTOOLS:
             self.constraint_solver = ORToolsConstraintSolver()
@@ -499,9 +533,11 @@ class SLAOptimizer:
 
         if allocation:
             self.allocations[sla_spec.tenant_id] = allocation
-            logger.info(f"Optimized SLA for {sla_spec.tenant_id} in {elapsed:.3f}s: "
-                       f"{allocation.cpu_cores:.1f} CPU, {allocation.memory_gb:.1f} GB memory, "
-                       f"{allocation.tier.tier_name} tier")
+            logger.info(
+                f"Optimized SLA for {sla_spec.tenant_id} in {elapsed:.3f}s: "
+                f"{allocation.cpu_cores:.1f} CPU, {allocation.memory_gb:.1f} GB memory, "
+                f"{allocation.tier.tier_name} tier"
+            )
         else:
             logger.error(f"Failed to optimize SLA for {sla_spec.tenant_id}")
 
@@ -516,21 +552,30 @@ class SLAOptimizer:
                 allocations[sla_spec.tenant_id] = alloc
         return allocations
 
-    def generate_pareto_frontier(self, sla_specs: List[SLASpec],
-                                num_points: int = 25) -> List[Tuple[float, List[ResourceAllocation]]]:
+    def generate_pareto_frontier(
+        self, sla_specs: List[SLASpec], num_points: int = 25
+    ) -> List[Tuple[float, List[ResourceAllocation]]]:
         """
         Generate Pareto frontier.
         Returns list of (total_cost, allocations) tuples sorted by cost.
         """
         return self.pareto_optimizer.generate_frontier(sla_specs, self.pricing, num_points)
 
-    def check_tier_transitions(self, tenant_id: str, current_tier: Tier,
-                              sla_achieved: float, sla_target: float,
-                              resource_utilization: float) -> Optional[Tier]:
+    def check_tier_transitions(
+        self,
+        tenant_id: str,
+        current_tier: Tier,
+        sla_achieved: float,
+        sla_target: float,
+        resource_utilization: float,
+    ) -> Optional[Tier]:
         """Check and apply tier changes."""
-        should_promote = self.tier_manager.should_promote(tenant_id, current_tier, sla_achieved, sla_target)
-        should_demote = self.tier_manager.should_demote(tenant_id, current_tier, sla_achieved, 
-                                                        sla_target, resource_utilization)
+        should_promote = self.tier_manager.should_promote(
+            tenant_id, current_tier, sla_achieved, sla_target
+        )
+        should_demote = self.tier_manager.should_demote(
+            tenant_id, current_tier, sla_achieved, sla_target, resource_utilization
+        )
 
         if should_promote:
             new_tier = self.tier_manager.promote_tier(tenant_id, current_tier)
@@ -558,13 +603,17 @@ class SLAOptimizer:
 
     def export_billing_csv(self, reports: Dict[str, BillingRecord]) -> str:
         """Export billing records as CSV."""
-        lines = ["tenant_id,month,cpu_cost,memory_cost,disk_cost,network_cost,burst_cost,reserved_discount,sla_credit,total_cost,uptime_achieved"]
+        lines = [
+            "tenant_id,month,cpu_cost,memory_cost,disk_cost,network_cost,burst_cost,reserved_discount,sla_credit,total_cost,uptime_achieved"
+        ]
         for tenant_id, record in reports.items():
-            line = (f"{record.tenant_id},{record.month},{record.cpu_cost:.2f},"
-                   f"{record.memory_cost:.2f},{record.disk_cost:.2f},"
-                   f"{record.network_cost:.2f},{record.burst_cost:.2f},"
-                   f"{record.reserved_discount:.2f},{record.sla_credit:.2f},"
-                   f"{record.total_cost():.2f},{record.uptime_achieved:.2f}")
+            line = (
+                f"{record.tenant_id},{record.month},{record.cpu_cost:.2f},"
+                f"{record.memory_cost:.2f},{record.disk_cost:.2f},"
+                f"{record.network_cost:.2f},{record.burst_cost:.2f},"
+                f"{record.reserved_discount:.2f},{record.sla_credit:.2f},"
+                f"{record.total_cost():.2f},{record.uptime_achieved:.2f}"
+            )
             lines.append(line)
         return "\n".join(lines)
 
@@ -591,14 +640,18 @@ class SLAOptimizer:
             "total_memory_gb": total_memory,
             "estimated_monthly_cost": total_cost,
             "tier_distribution": tier_counts,
-            "avg_tier_cost_multiplier": np.mean([a.tier.cost_multiplier for a in self.allocations.values()]),
+            "avg_tier_cost_multiplier": np.mean(
+                [a.tier.cost_multiplier for a in self.allocations.values()]
+            ),
             "churn_rate": self.tier_manager.get_churn_rate(),
         }
 
     def _estimate_monthly_cost(self, allocation: ResourceAllocation) -> float:
         """Estimate monthly cost for an allocation."""
         monthly_hours = 730
-        return (allocation.cpu_cores * self.pricing.cpu_per_core_hour * monthly_hours +
-                allocation.memory_gb * self.pricing.memory_per_gb_hour * monthly_hours +
-                allocation.disk_gb * self.pricing.disk_per_gb_month +
-                allocation.network_mbps * self.pricing.network_per_mbps_month) * allocation.tier.cost_multiplier
+        return (
+            allocation.cpu_cores * self.pricing.cpu_per_core_hour * monthly_hours
+            + allocation.memory_gb * self.pricing.memory_per_gb_hour * monthly_hours
+            + allocation.disk_gb * self.pricing.disk_per_gb_month
+            + allocation.network_mbps * self.pricing.network_per_mbps_month
+        ) * allocation.tier.cost_multiplier

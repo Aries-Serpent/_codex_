@@ -71,19 +71,25 @@ class SQLiteMemory(MemoryInterface):
             metadata_json = json.dumps(metadata) if metadata else None
 
             with closing(sqlite3.connect(self.db_path)) as conn:
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT INTO memory (key, value_json, created_at, updated_at, metadata_json)
                     VALUES (?, ?, ?, ?, ?)
                     ON CONFLICT(key) DO UPDATE SET
                         value_json = excluded.value_json,
                         updated_at = excluded.updated_at,
                         metadata_json = excluded.metadata_json
-                """, (key, value_json, now, now, metadata_json))
+                """,
+                    (key, value_json, now, now, metadata_json),
+                )
 
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT INTO memory_history (key, value_json, timestamp)
                     VALUES (?, ?, ?)
-                """, (key, value_json, now))
+                """,
+                    (key, value_json, now),
+                )
 
                 conn.commit()
 
@@ -104,10 +110,7 @@ class SQLiteMemory(MemoryInterface):
         """
         try:
             with closing(sqlite3.connect(self.db_path)) as conn:
-                cursor = conn.execute(
-                    "SELECT value_json FROM memory WHERE key = ?",
-                    (key,)
-                )
+                cursor = conn.execute("SELECT value_json FROM memory WHERE key = ?", (key,))
                 row = cursor.fetchone()
 
                 if row:
@@ -175,13 +178,16 @@ class SQLiteMemory(MemoryInterface):
     def get_history(self, key: str, limit: int = 10) -> list[tuple[datetime, Any]]:
         try:
             with closing(sqlite3.connect(self.db_path)) as conn:
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT timestamp, value_json
                     FROM memory_history
                     WHERE key = ?
                     ORDER BY timestamp DESC
                     LIMIT ?
-                """, (key, limit))
+                """,
+                    (key, limit),
+                )
 
                 results = []
                 for row in cursor.fetchall():
@@ -200,12 +206,15 @@ class SQLiteMemory(MemoryInterface):
         """
         try:
             with closing(sqlite3.connect(self.db_path)) as conn:
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT key, updated_at
                     FROM memory
                     ORDER BY updated_at DESC
                     LIMIT ?
-                """, (last_n,))
+                """,
+                    (last_n,),
+                )
 
                 summary = "## Memory Summary\n\n"
                 for key, updated_at in cursor.fetchall():

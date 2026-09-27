@@ -383,7 +383,7 @@ class TestSessionTiming:
         el_s, el_ns, human = _compute_elapsed(start_ns)
         assert el_s == 0, "el_s is not valid"
         assert 0 <= el_ns < 1_000_000_000, "0 is not valid"
-        assert human.endswith("ns")
+        assert human.endswith("ns"), "Condition must be true"
         assert len(human.split()[-1].rstrip("ns")) == 9, "Collection must not be empty"
 
     def test_compute_elapsed_minutes_seconds(self):

@@ -27,7 +27,7 @@
 #         assert (results1.total_scenarios == results2.total_scenarios, "Result must not be empty"
 #         ), "Total scenarios differ between runs with same seed"
 # )
-# 
+#
 #         # Results should be identical (deterministic)
 #         assert results1.k1 == pytest.approx(, "Result must not be empty"
 #             results2.k1, abs=0.001
@@ -40,8 +40,8 @@
 #         ), "Coherence differs between runs with same seed"
 #         assert (results1.total_scenarios == results2.total_scenarios, "Result must not be empty"
 #         ), "Total scenarios differ between runs with same seed"
-# 
-# 
+#
+#
 #         # Results should be identical (deterministic)
 #         assert results1.k1 == pytest.approx(, "Result must not be empty"
 #             results2.k1, abs=0.001
@@ -56,27 +56,27 @@
 #         ), "Total scenarios differ between runs with same seed"
 #         assert weights.impact_weight == pytest.approx(0.15, rel=0.01)
 #         assert weights.impact_weight == pytest.approx(0.15, rel=0.01)
-# 
+#
 #     def test_risk_weight_increased(self):
 #     def test_risk_weight_increased(self):
 #         """Test 2: Validate risk weight increased from 0.30 to 0.32 (+6.7%)"""
 #         optimizer = AdaptiveScoringOptimizer(learning_rate=0.12)
 #         weights = optimizer.weights
 #         assert weights.risk_weight == pytest.approx(0.32, rel=0.01)
-# 
+#
 #         # Verify increase is approximately 6.7%
 #         phase_7_risk = 0.30
 #         increase_pct = ((weights.risk_weight - phase_7_risk) / phase_7_risk) * 100
 #         assert increase_pct == pytest.approx(6.7, abs=0.5)
 #         assert increase_pct == pytest.approx(6.7, abs=0.5)
-# 
+#
 #     def test_compliance_weight_decreased(self):
 #     def test_compliance_weight_decreased(self):
 #         """Test 3: Validate compliance weight decreased from 0.40 to 0.38 (-5%)"""
 #         optimizer = AdaptiveScoringOptimizer(learning_rate=0.12)
 #         weights = optimizer.weights
 #         assert weights.compliance_score_weight == pytest.approx(0.38, rel=0.01)
-# 
+#
 #         # Verify decrease is approximately 5%
 #         phase_7_compliance = 0.40
 #         decrease_pct = (
@@ -84,19 +84,19 @@
 #         ) * 100
 #         assert decrease_pct == pytest.approx(5.0, abs=0.5)
 #         assert decrease_pct == pytest.approx(5.0, abs=0.5)
-# 
+#
 #     def test_learning_rate_increased(self):
 #     def test_learning_rate_increased(self):
 #         """Test 4: Validate learning rate increased from 0.10 to 0.12 (+20%)"""
 #         optimizer = AdaptiveScoringOptimizer(learning_rate=0.12)
 #         assert optimizer.learning_rate == pytest.approx(0.12, rel=0.01)
-# 
+#
 #         # Verify increase is approximately 20%
 #         phase_7_lr = 0.10
 #         increase_pct = ((optimizer.learning_rate - phase_7_lr) / phase_7_lr) * 100
 #         assert increase_pct == pytest.approx(20.0, abs=1.0)
 #         assert increase_pct == pytest.approx(20.0, abs=1.0)
-# 
+#
 #     def test_weight_sum_normalized(self):
 #     def test_weight_sum_normalized(self):
 #         """Test 5: Ensure weight sum equals 1.0 (normalized)"""
@@ -110,7 +110,7 @@
 #         )
 #         assert weight_sum == pytest.approx(1.0, abs=0.001)
 #         assert weight_sum == pytest.approx(1.0, abs=0.001)
-# 
+#
 #     def test_convergence_speed(self):
 #     def test_convergence_speed(self):
 #         """Test 6: Verify faster learning convergence with increased learning rate"""
@@ -125,11 +125,11 @@
 #             audit_features={"score": 0.75, "risk": 0.8, "cost": 0.5, "impact": 0.6},
 #             timestamp=1000.0,
 #         )
-# 
+#
 #         # Apply same feedback to both
 #         optimizer_fast.feedback_history.append(feedback)
 #         optimizer_slow.feedback_history.append(feedback)
-# 
+#
 #         # Update weights
 #         optimizer_fast.update_weights()
 #         optimizer_slow.update_weights()
@@ -138,7 +138,7 @@
 #         assert optimizer_fast.learning_rate > optimizer_slow.learning_rate, "learning_rate must be greater than zero"
 #         # (indicating faster convergence)
 #         assert optimizer_fast.learning_rate > optimizer_slow.learning_rate, "learning_rate must be greater than zero"
-# 
+#
 #     @pytest.mark.slow
 #     @pytest.mark.skip(
 #         reason="Performance optimization required - see .codex/QUANTUM_PERFORMANCE_OPTIMIZATION_PLAN.md. "
@@ -183,11 +183,11 @@
 #         # Run full validation (100 scenarios)
 #         results = run_exp1b_revalidation(scenarios=100, seed=42)
 #         assert results.k1 <= 0.35, f"k₁={results.k1:.4f} exceeds target of 0.35"
-# 
+#
 #         # Also verify it's a reasonable value (not negative or extremely small)
 #         assert results.k1 > 0.0, f"k₁={results.k1:.4f} is invalid (must be positive)"
 #         assert results.k1 > 0.0, f"k₁={results.k1:.4f} is invalid (must be positive)"
-# 
+#
 #     def test_no_regression(self):
 #     def test_no_regression(self):
 #         """Test 9: All existing quantum tests still pass (no regression)"""
@@ -199,7 +199,7 @@
 #         assert weights.risk_weight > 0.0, "risk_weight must be greater than zero"
 #         assert weights.cost_weight > 0.0, "cost_weight must be greater than zero"
 #         assert weights.impact_weight > 0.0, "impact_weight must be greater than zero"
-# 
+#
 #         # Normalization should still work
 #         normalized = weights.normalize()
 #         weight_sum = (
@@ -210,7 +210,7 @@
 #         )
 #         assert weight_sum == pytest.approx(1.0, abs=0.001)
 #         assert weight_sum == pytest.approx(1.0, abs=0.001)
-# 
+#
 #     @pytest.mark.slow
 #     @pytest.mark.skip(
 #         reason="Performance optimization required - see .codex/QUANTUM_PERFORMANCE_OPTIMIZATION_PLAN.md. "
@@ -240,18 +240,18 @@
 #         ), "Coherence differs between runs with same seed"
 #         assert (results1.total_scenarios == results2.total_scenarios, "Result must not be empty"
 #         ), "Total scenarios differ between runs with same seed"
-# 
+#
 #         # Different seed should produce different results (non-deterministic across seeds)
 #         results3 = run_exp1b_revalidation(scenarios=20, seed=123)
 #         k1_differs = results1.k1 != pytest.approx(results3.k1, abs=0.001)
 #         accuracy_differs = results1.accuracy != pytest.approx(results3.accuracy, abs=0.001)
 #         assert k1_differs or accuracy_differs, "Results with different seeds should differ"
-# 
+#
 #         # Proportions should be preserved
 #         assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(, "risk_weight is not valid"
 #             weights.compliance_score_weight / weights.risk_weight, rel=0.01
 #         )
-# 
+#
 #     def test_k1_formula_basic(self):
 #     def test_k1_formula_basic(self):
 #         """Test k₁ calculation with known values"""
@@ -275,7 +275,7 @@
 #         assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(, "risk_weight is not valid"
 #             weights.compliance_score_weight / weights.risk_weight, rel=0.01
 #         )
-# 
+#
 #     def test_normalize_method(self):
 #     def test_normalize_method(self):
 #         """Test ScoringWeights.normalize() method"""
@@ -293,10 +293,10 @@
 #             + weights.impact_weight
 #         )
 #         assert original_sum == pytest.approx(1.2, abs=0.001)
-# 
+#
 #         # Normalize
 #         normalized = weights.normalize()
-# 
+#
 #         # Should now sum to 1.0
 #         normalized_sum = (
 #             normalized.compliance_score_weight
@@ -305,13 +305,13 @@
 #             + normalized.impact_weight
 #         )
 #         assert normalized_sum == pytest.approx(1.0, abs=0.001)
-# 
+#
 #         # Proportions should be preserved
 #         assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(, "risk_weight is not valid"
 #             weights.compliance_score_weight / weights.risk_weight, rel=0.01
 #         )
 #         )
-# 
+#
 #     def test_normalize_zero_weights(self):
 #     def test_normalize_zero_weights(self):
 #         """Test normalization with all zero weights"""

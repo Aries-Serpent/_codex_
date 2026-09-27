@@ -34,20 +34,20 @@ class TestL1RequestCache:
         """Test basic get/set operations."""
         cache = L1RequestCache()
         cache.set("key1", {"data": "value1"})
-        assert cache.get("key1") == {"data": "value1"}
+        assert cache.get("key1") == {"data": "value1"}, "Data must not be empty"
 
     def test_cache_miss(self):
         """Test cache miss returns None."""
         cache = L1RequestCache()
-        assert cache.get("nonexistent") is None
+        assert cache.get("nonexistent") is None, "Condition must be true"
 
     def test_ttl_expiration(self):
         """Test TTL expiration."""
         cache = L1RequestCache(default_ttl=1)
         cache.set("key1", "value1", ttl=1)
-        assert cache.get("key1") == "value1"
+        assert cache.get("key1") == "value1", "Value must be initialized"
         time.sleep(1.1)
-        assert cache.get("key1") is None
+        assert cache.get("key1") is None, "Condition must be true"
 
     def test_lru_eviction(self):
         """Test LRU eviction when max_size exceeded."""
@@ -57,8 +57,8 @@ class TestL1RequestCache:
         cache.set("key3", "value3")
         cache.set("key4", "value4")  # Should evict key1 (oldest)
 
-        assert cache.get("key1") is None
-        assert cache.get("key4") == "value4"
+        assert cache.get("key1") is None, "Condition must be true"
+        assert cache.get("key4") == "value4", "Value must be initialized"
 
     def test_thread_isolation(self):
         """Test thread-local isolation."""
@@ -79,8 +79,8 @@ class TestL1RequestCache:
 
         # Each thread should see its own data
         for i in range(3):
-            assert results[i] == f"value_{i}"
-            assert results[f"{i}_other"] is None
+            assert results[i] == f"value_{i}", "Result must not be empty"
+            assert results[f"{i}_other"] is None, "Result must not be empty"
 
     def test_decorator(self):
         """Test caching decorator."""
@@ -97,14 +97,14 @@ class TestL1RequestCache:
 
         # First call should execute function
         result1 = expensive_func(5)
-        assert result1 == 10
-        assert call_count == 1
+        assert result1 == 10, "Result must not be empty"
+        assert call_count == 1, "Count must be greater than zero"
 
         # Second call should be cached
         before_second_call = call_count
         result2 = expensive_func(5)
-        assert result2 == 10
-        assert call_count == before_second_call  # Not incremented
+        assert result2 == 10, "Result must not be empty"
+        assert call_count == before_second_call, "Count must be greater than zero"
 
 
 class TestL2SessionCache:
@@ -117,14 +117,14 @@ class TestL2SessionCache:
 
         # Should fall back to local cache
         cache.set("key1", {"data": "value1"})
-        assert cache.get("key1") == {"data": "value1"}
+        assert cache.get("key1") == {"data": "value1"}, "Data must not be empty"
 
     def test_set_get(self):
         """Test basic set/get operations."""
         cache = L2SessionCache(enable_local_fallback=True)
         cache.set("session:user123", {"user_id": 123, "name": "Alice"})
         result = cache.get("session:user123")
-        assert result["user_id"] == 123
+        assert result["user_id"] == 123, "Result must not be empty"
 
     def test_serialization(self):
         """Test JSON and pickle serialization."""
@@ -133,7 +133,7 @@ class TestL2SessionCache:
         # Test JSON-serializable data
         json_data = {"key": "value", "number": 42}
         cache.set("json_key", json_data)
-        assert cache.get("json_key") == json_data
+        assert cache.get("json_key") == json_data, "Data must not be empty"
 
         # Test non-JSON data (falls back to pickle)
         class CustomClass:
@@ -146,23 +146,23 @@ class TestL2SessionCache:
         custom_data = CustomClass(123)
         cache.set("custom_key", custom_data)
         result = cache.get("custom_key")
-        assert result == custom_data
+        assert result == custom_data, "Result must not be empty"
 
     def test_delete(self):
         """Test delete operation."""
         cache = L2SessionCache(enable_local_fallback=True)
         cache.set("key1", "value1")
         deleted = cache.delete("key1")
-        assert deleted
-        assert cache.get("key1") is None
+        assert deleted, "deleted is not valid"
+        assert cache.get("key1") is None, "Condition must be true"
 
     def test_exists(self):
         """Test exists check."""
         cache = L2SessionCache(enable_local_fallback=True)
         cache.set("key1", "value1")
-        assert cache.exists("key1")
+        assert cache.exists("key1"), "Condition must be true"
         cache.delete("key1")
-        assert not cache.exists("key1")
+        assert not cache.exists("key1"), "Condition must be true"
 
 
 class TestL3KnowledgeCache:
@@ -184,9 +184,9 @@ class TestL3KnowledgeCache:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache = L3KnowledgeCache(cache_dir=tmpdir, default_ttl=1)
             cache.set("key1", "value1", ttl=1)
-            assert cache.get("key1") == "value1"
+            assert cache.get("key1") == "value1", "Value must be initialized"
             time.sleep(1.1)
-            assert cache.get("key1") is None
+            assert cache.get("key1") is None, "Condition must be true"
 
     def test_large_data(self):
         """Test caching large data."""
@@ -195,7 +195,7 @@ class TestL3KnowledgeCache:
             large_data = {"embeddings": [[i * 0.1 for i in range(768)] for _ in range(100)]}
             cache.set("large_embedding", large_data)
             result = cache.get("large_embedding")
-            assert len(result["embeddings"]) == 100
+            assert len(result["embeddings"]) == 100, "Collection must not be empty"
 
     def test_stats(self):
         """Test cache statistics."""
@@ -206,9 +206,9 @@ class TestL3KnowledgeCache:
             cache.get("nonexistent")
 
             stats = cache.get_stats()
-            assert stats["hits"] == 1
-            assert stats["misses"] == 1
-            assert stats["entries"] == 1
+            assert stats["hits"] == 1, "Condition must be true"
+            assert stats["misses"] == 1, "Condition must be true"
+            assert stats["entries"] == 1, "Condition must be true"
 
 
 class TestL4ModelCache:
@@ -228,13 +228,13 @@ class TestL4ModelCache:
                 # Store model
                 metadata = {"architecture": "bert", "parameters": 123456}
                 success = cache.put_model("bert", "v1.0", weights_path, metadata)
-                assert success
+                assert success, "success is not valid"
 
                 # Retrieve model
                 result = cache.get_model("bert", "v1.0")
-                assert result is not None
-                assert result["metadata"]["architecture"] == "bert"
-                assert Path(result["weights_path"]).exists()
+                assert result is not None, "result must be initialized"
+                assert result["metadata"]["architecture"] == "bert", "Result must not be empty"
+                assert Path(result["weights_path"]).exists(), "Result must not be empty"
 
             finally:
                 Path(weights_path).unlink()
@@ -257,7 +257,7 @@ class TestL4ModelCache:
 
             # Should only keep 2 versions
             versions = cache.list_versions("model")
-            assert len(versions) <= 2
+            assert len(versions) <= 2, "Versions must not be empty"
 
     def test_artifact_storage(self):
         """Test arbitrary artifact storage."""
@@ -275,8 +275,8 @@ class TestL4ModelCache:
 
                 # Retrieve artifact
                 result = cache.get_artifact("preprocessor", "v1")
-                assert result is not None
-                assert Path(result["path"]).exists()
+                assert result is not None, "result must be initialized"
+                assert Path(result["path"]).exists(), "Result must not be empty"
 
             finally:
                 Path(artifact_path).unlink()
@@ -298,10 +298,10 @@ class TestUnifiedOrchestrator:
 
             # Get should find in L3 and promote to L1+L2
             result = orchestrator.get("key1")
-            assert result == {"data": "test"}
+            assert result == {"data": "test"}, "Result must not be empty"
 
             # Should now be in L1 for fast access
-            assert l1.get("key1") == {"data": "test"}
+            assert l1.get("key1") == {"data": "test"}, "Data must not be empty"
 
     def test_stats_aggregation(self):
         """Test statistics aggregation from all tiers."""
@@ -311,11 +311,11 @@ class TestUnifiedOrchestrator:
             orchestrator.get("key1")
 
             stats = orchestrator.get_stats()
-            assert "overall" in stats
-            assert "l1" in stats
-            assert "l2" in stats
-            assert "l3" in stats
-            assert "l4" in stats
+            assert "overall" in stats, "Condition must be true"
+            assert "l1" in stats, "Condition must be true"
+            assert "l2" in stats, "Condition must be true"
+            assert "l3" in stats, "Condition must be true"
+            assert "l4" in stats, "Condition must be true"
 
 
 if __name__ == "__main__":

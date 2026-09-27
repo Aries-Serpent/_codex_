@@ -48,7 +48,7 @@ class TestPackageDiscovery:
     ):
         """Test listing packages in a repository."""
         endpoint = f"{gh_api_base}{packages_endpoint}"
-        assert "packages" in endpoint
+        assert "packages" in endpoint, "Condition must be true"
 
     def test_list_packages_with_filters(self):
         """Test filtering packages by type and visibility."""
@@ -68,7 +68,7 @@ class TestPackageDiscovery:
             "rubygems",
             "python",
         }
-        assert len(supported_types) >= 5
+        assert len(supported_types) >= 5, "Supported_types must not be empty"
 
     def test_get_package_details(
         self,
@@ -78,7 +78,7 @@ class TestPackageDiscovery:
         """Test retrieving details for a specific package."""
         package_id = 12345
         endpoint = f"{gh_api_base}{packages_endpoint}/{package_id}"
-        assert f"{package_id}" in endpoint
+        assert f"{package_id}" in endpoint, "Condition must be true"
 
     def test_package_response_structure(self):
         """Test package response contains required fields."""
@@ -94,7 +94,7 @@ class TestPackageDiscovery:
             "updated_at": "2026-01-01T00:00:00Z",
         }
         required_fields = {"id", "name", "package_type", "version_count"}
-        assert required_fields.issubset(response.keys())
+        assert required_fields.issubset(response.keys()), "Response must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ class TestPackageVersions:
         """Test listing versions of a package."""
         package_id = 12345
         endpoint = f"{gh_api_base}{packages_endpoint}/{package_id}/versions"
-        assert "versions" in endpoint
+        assert "versions" in endpoint, "Condition must be true"
 
     def test_get_package_version_details(
         self,
@@ -124,7 +124,7 @@ class TestPackageVersions:
         package_id = 12345
         version_id = 67890
         endpoint = f"{gh_api_base}{packages_endpoint}/{package_id}/versions/{version_id}"
-        assert f"{version_id}" in endpoint
+        assert f"{version_id}" in endpoint, "Condition must be true"
 
     def test_version_response_structure(self):
         """Test version response structure."""
@@ -141,14 +141,14 @@ class TestPackageVersions:
             "html_url": "https://github.com/...",
         }
         required_fields = {"id", "version", "created_at"}
-        assert required_fields.issubset(response.keys())
+        assert required_fields.issubset(response.keys()), "Response must not be empty"
 
     def test_version_semver_format(self):
         """Test semantic versioning format validation."""
         versions = ["1.0.0", "2.1.3", "0.1.0-alpha", "1.0.0-beta+123"]
         for version in versions:
             # Would validate semver pattern
-            assert len(version) > 0
+            assert len(version) > 0, "Version must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -163,12 +163,12 @@ class TestPublishPackages:
         """Test npm package publishing endpoint."""
         # npm packages use the npm registry endpoint
         endpoint = "https://npm.pkg.github.com"
-        assert "npm" in endpoint
+        assert "npm" in endpoint, "Condition must be true"
 
     def test_publish_docker_image_endpoint(self):
         """Test Docker image publishing endpoint."""
         endpoint = "https://ghcr.io"
-        assert endpoint.startswith("https://ghcr.io")
+        assert endpoint.startswith("https://ghcr.io"), "Condition must be true"
 
     def test_package_publication_payload_npm(self):
         """Test npm package publication payload."""
@@ -178,15 +178,15 @@ class TestPublishPackages:
             "description": "Package description",
             "main": "index.js",
         }
-        assert payload["version"] == "1.0.0"
+        assert payload["version"] == "1.0.0", "Condition must be true"
 
     def test_package_publication_payload_docker(self):
         """Test Docker image publication payload."""
         # Docker images use container registry format
         image = "ghcr.io/org/repo/image:v1.0.0"
         parsed = urlparse(f"https://{image}")
-        assert parsed.hostname == "ghcr.io"
-        assert parsed.path.startswith("/org/repo/image:")
+        assert parsed.hostname == "ghcr.io", "hostname is not valid"
+        assert parsed.path.startswith("/org/repo/image:"), "Condition must be true"
 
     def test_publish_with_authentication(self):
         """Test publishing with GitHub token authentication."""
@@ -239,7 +239,7 @@ class TestDeletePackages:
             "status": 404,
             "message": "Not Found",
         }
-        assert error["status"] == 404
+        assert error["status"] == 404, "Error should be raised or set"
 
     def test_delete_package_version_strategy(self):
         """Test strategy for cleaning up old versions."""
@@ -296,19 +296,19 @@ class TestPackageInstallation:
         """Test npm package installation."""
         # npm install @org/package-name
         command = "npm install @org/package-name"
-        assert "npm install" in command
+        assert "npm install" in command, "Condition must be true"
 
     def test_install_docker_image(self):
         """Test Docker image pull."""
         # docker pull ghcr.io/org/repo/image:v1.0.0
         command = "docker pull ghcr.io/org/repo/image:v1.0.0"
-        assert "docker pull" in command
+        assert "docker pull" in command, "Condition must be true"
 
     def test_install_python_package(self):
         """Test Python package installation."""
         # pip install --index-url https://token@github.com/org/package package-name
         command = "pip install --index-url https://token@github.com/org/package package-name"
-        assert "pip install" in command
+        assert "pip install" in command, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -357,7 +357,7 @@ class TestPackageErrorHandling:
             "message": "Validation Failed",
             "errors": [{"message": "Invalid package name"}],
         }
-        assert error["status"] == 422
+        assert error["status"] == 422, "Error should be raised or set"
 
     def test_package_already_exists_error(self):
         """Test error when publishing duplicate package."""
@@ -365,7 +365,7 @@ class TestPackageErrorHandling:
             "status": 409,
             "message": "Package already exists",
         }
-        assert error["status"] == 409
+        assert error["status"] == 409, "Error should be raised or set"
 
     def test_insufficient_permissions_error(self):
         """Test error for insufficient permissions."""
@@ -373,4 +373,4 @@ class TestPackageErrorHandling:
             "status": 403,
             "message": "Resource not accessible by integration",
         }
-        assert error["status"] == 403
+        assert error["status"] == 403, "Error should be raised or set"

@@ -112,7 +112,9 @@ class ErrorBudgetSystem:
         self.allocations: Dict[str, BudgetAllocation] = {}
         self.incidents: List[BudgetIncident] = []
         self.created_at = datetime.now(timezone.utc)
-        self.year_start = datetime.now(timezone.utc).replace(month=1, day=1, hour=0, minute=0, second=0)
+        self.year_start = datetime.now(timezone.utc).replace(
+            month=1, day=1, hour=0, minute=0, second=0
+        )
         self._initialize_lanes()
 
     def _initialize_lanes(self) -> None:
@@ -141,7 +143,12 @@ class ErrorBudgetSystem:
             logger.info(f"Lane {lane_id} ({risk_profile.value}): {budget:.2f} min allocated")
 
     def consume_budget(
-        self, lane_id: str, duration_minutes: float, incident_type: str, severity: str, description: str = ""
+        self,
+        lane_id: str,
+        duration_minutes: float,
+        incident_type: str,
+        severity: str,
+        description: str = "",
     ) -> Tuple[bool, str]:
         """
         Consume budget for an incident.
@@ -177,7 +184,9 @@ class ErrorBudgetSystem:
             return False, f"Lane {lane_id} budget exhausted - reverting to classical fallback"
 
         allocation.consume_budget(duration_minutes)
-        allocation.burn_rate_per_hour += duration_minutes / (duration_minutes / 60) if duration_minutes > 0 else 0
+        allocation.burn_rate_per_hour += (
+            duration_minutes / (duration_minutes / 60) if duration_minutes > 0 else 0
+        )
         self.incidents.append(incident)
 
         return True, f"Budget consumed: {duration_minutes:.2f} min from lane {lane_id}"
@@ -210,10 +219,14 @@ class ErrorBudgetSystem:
 
         # Calculate burn rate
         time_elapsed_minutes = (datetime.now(timezone.utc) - self.created_at).total_seconds() / 60
-        burn_rate_per_hour = (total_consumed / time_elapsed_minutes * 60) if time_elapsed_minutes > 0 else 0
+        burn_rate_per_hour = (
+            (total_consumed / time_elapsed_minutes * 60) if time_elapsed_minutes > 0 else 0
+        )
 
         # Find exhausted lanes
-        exhausted_lanes = [lane_id for lane_id, alloc in self.allocations.items() if alloc.budget_exhausted]
+        exhausted_lanes = [
+            lane_id for lane_id, alloc in self.allocations.items() if alloc.budget_exhausted
+        ]
 
         # Estimate recovery time
         estimated_recovery_hours = None

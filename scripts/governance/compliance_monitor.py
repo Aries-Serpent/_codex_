@@ -14,15 +14,14 @@ Author: Phase 12.2 Track Lead
 Version: 1.0.0
 """
 
-import logging
 import json
-import time
-from dataclasses import dataclass, asdict, field
-from datetime import datetime, timezone, timedelta
-from enum import Enum
-from typing import Dict, List, Optional, Any, Callable
+import logging
 import threading
-
+import time
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timedelta, timezone
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
 # ==================== ENUMS ====================
 
@@ -126,7 +125,7 @@ class PolicyLibrary:
             PolicyRule(id="ac-006", name="Role-Based Resource Access", description="Roles grant action/resource permissions per RBAC matrix", severity=PolicySeverity.P0_CRITICAL, category="access-control", check_function=lambda ctx: ctx.get("rbac_enforced", False)),
             PolicyRule(id="ac-007", name="Delegation Audit Trail", description="All role delegations logged immutably", severity=PolicySeverity.P1_HIGH, category="access-control", check_function=lambda ctx: ctx.get("delegation_audited", False)),
             PolicyRule(id="ac-008", name="Emergency Access Override", description="Owner can override approvals in P0 emergency with post-incident review", severity=PolicySeverity.P1_HIGH, category="access-control", check_function=lambda ctx: ctx.get("emergency_override_logged", False)),
-            
+
             # Code Quality Policies (CQ) - 6 policies
             PolicyRule(id="cq-001", name="Test Coverage Minimum", description="New code must have ≥80% coverage", severity=PolicySeverity.P1_HIGH, category="code-quality", check_function=lambda ctx: ctx.get("coverage", 0) >= 0.80),
             PolicyRule(id="cq-002", name="Linting Compliance", description="Code must pass pylint, flake8, black", severity=PolicySeverity.P2_MEDIUM, category="code-quality", check_function=lambda ctx: ctx.get("lint_pass", False)),
@@ -134,14 +133,14 @@ class PolicyLibrary:
             PolicyRule(id="cq-004", name="Security Scanning", description="CodeQL must complete with zero critical findings", severity=PolicySeverity.P0_CRITICAL, category="code-quality", check_function=lambda ctx: ctx.get("codeql_critical", 0) == 0),
             PolicyRule(id="cq-005", name="Documentation Standards", description="Docstrings required on all public functions", severity=PolicySeverity.P2_MEDIUM, category="code-quality", check_function=lambda ctx: ctx.get("docstrings_valid", False)),
             PolicyRule(id="cq-006", name="README Updates", description="README must be updated for new features", severity=PolicySeverity.P2_MEDIUM, category="code-quality", check_function=lambda ctx: ctx.get("readme_updated", False)),
-            
+
             # Secret Management Policies (SM) - 5 policies
             PolicyRule(id="sm-001", name="No Secrets Committed", description="Zero tolerance: no API keys, tokens, or passwords", severity=PolicySeverity.P0_CRITICAL, category="secret-management", check_function=lambda ctx: ctx.get("no_secrets", False)),
             PolicyRule(id="sm-002", name="Secret Rotation SLA", description="Exposed secrets rotated within 4 hours", severity=PolicySeverity.P0_CRITICAL, category="secret-management", check_function=lambda ctx: ctx.get("secrets_rotated", False)),
             PolicyRule(id="sm-003", name="Secret Storage", description="Secrets stored in vault, not environment files", severity=PolicySeverity.P0_CRITICAL, category="secret-management", check_function=lambda ctx: ctx.get("secrets_vaulted", False)),
             PolicyRule(id="sm-004", name="Secret Scanning Cadence", description="All PRs scanned on push, main weekly", severity=PolicySeverity.P1_HIGH, category="secret-management", check_function=lambda ctx: ctx.get("secret_scan_complete", False)),
             PolicyRule(id="sm-005", name="Credential Expiration", description="Short-lived credentials max 24h TTL, permanent rotated quarterly", severity=PolicySeverity.P1_HIGH, category="secret-management", check_function=lambda ctx: ctx.get("credentials_expired", False)),
-            
+
             # Change Control Policies (CC) - 8 policies
             PolicyRule(id="cc-001", name="P0 Emergency Approval", description="Auto fast-track for security fixes, post-merge review within 1h", severity=PolicySeverity.P0_CRITICAL, category="change-control", check_function=lambda ctx: ctx.get("p0_approved", True)),
             PolicyRule(id="cc-002", name="P1 Sequential Approval", description="Code review → Owner review → Merge (24h SLA)", severity=PolicySeverity.P1_HIGH, category="change-control", check_function=lambda ctx: ctx.get("p1_approved", False)),
@@ -151,13 +150,13 @@ class PolicyLibrary:
             PolicyRule(id="cc-006", name="Database Migration Gate", description="Schema changes require DBA review + rollback procedure", severity=PolicySeverity.P1_HIGH, category="change-control", check_function=lambda ctx: ctx.get("migrations_approved", True)),
             PolicyRule(id="cc-007", name="Dependency Upgrade Policy", description="Patch auto, minor needs review, major needs owner approval", severity=PolicySeverity.P1_HIGH, category="change-control", check_function=lambda ctx: ctx.get("dependencies_secure", False)),
             PolicyRule(id="cc-008", name="Revert Policy", description="Reverts within 24h auto-approved, older need justification", severity=PolicySeverity.P2_MEDIUM, category="change-control", check_function=lambda ctx: ctx.get("reverts_tracked", False)),
-            
+
             # Audit & Compliance Policies (AU) - 4 policies
             PolicyRule(id="au-001", name="Audit Trail Completeness", description="100% of events must be logged immutably", severity=PolicySeverity.P0_CRITICAL, category="audit", check_function=lambda ctx: ctx.get("audit_complete", False)),
             PolicyRule(id="au-002", name="Audit Trail Immutability", description="Audit logs must be append-only, tamper-proof", severity=PolicySeverity.P0_CRITICAL, category="audit", check_function=lambda ctx: ctx.get("audit_immutable", False)),
             PolicyRule(id="au-003", name="Session Accountability", description="Every session must have summary documentation", severity=PolicySeverity.P2_MEDIUM, category="audit", check_function=lambda ctx: ctx.get("session_documented", False)),
             PolicyRule(id="au-004", name="Compliance Reporting", description="Daily/weekly/monthly compliance reports generated", severity=PolicySeverity.P2_MEDIUM, category="audit", check_function=lambda ctx: ctx.get("reports_generated", False)),
-            
+
             # Enterprise Policies (EN) - 17+ policies
             PolicyRule(id="en-001", name="SLA Compliance", description="All gates must complete within 5 minutes (p95)", severity=PolicySeverity.P1_HIGH, category="enterprise", check_function=lambda ctx: ctx.get("sla_met", False)),
             PolicyRule(id="en-002", name="Multi-Tenant Resource Isolation", description="Database-level tenant isolation enforced", severity=PolicySeverity.P0_CRITICAL, category="enterprise", check_function=lambda ctx: ctx.get("tenant_isolation", False)),

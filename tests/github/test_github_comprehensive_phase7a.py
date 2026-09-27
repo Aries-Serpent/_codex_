@@ -47,48 +47,48 @@ class TestGitHubAPIAuthenticationBasic:
     def test_github_token_validation(self):
         """A non-empty token string is a valid format."""
         token = "ghp_abc123def456"
-        assert token.startswith("ghp_") or len(token) > 0
+        assert token.startswith("ghp_") or len(token) > 0, "Token must not be empty"
 
     def test_github_token_refresh(self):
         """A refreshed token should differ from the original."""
         original = "ghp_original_token"
         refreshed = "ghp_refreshed_token"
-        assert refreshed != original
+        assert refreshed != original, "refreshed is not valid"
 
     def test_expired_github_token(self):
         """An expired token should not equal a valid token."""
         expired = "ghp_expired"
         valid = "ghp_valid"
-        assert expired != valid
+        assert expired != valid, "expired is not valid"
 
     def test_invalid_github_token(self):
         """Token with wrong prefix is not a valid PAT."""
         invalid_token = "not_a_valid_gh_token"
-        assert not invalid_token.startswith("ghp_")
-        assert not invalid_token.startswith("github_pat_")
+        assert not invalid_token.startswith("ghp_"), "Condition must be true"
+        assert not invalid_token.startswith("github_pat_"), "Condition must be true"
 
     def test_missing_github_token(self):
         """Missing token is represented as empty string or None."""
         missing_token = ""
-        assert not missing_token  # empty string is falsy
+        assert not missing_token, "Condition must be true"
 
     def test_github_token_from_env(self):
         """Token from environment should be a non-empty string."""
         token = "ghp_mock_env_token_12345"
         assert isinstance(token, str)
-        assert len(token) > 0
+        assert len(token) > 0, "Token must not be empty"
 
     def test_github_token_scope_validation(self):
         """Token scopes should be a list of strings."""
         scopes = ["repo", "workflow", "read:org"]
-        assert "repo" in scopes
+        assert "repo" in scopes, "Condition must be true"
         assert all(isinstance(s, str) for s in scopes)
 
     def test_github_app_authentication(self):
         """GitHub App auth uses a JWT with structured payload."""
         app_id = 12345
         assert isinstance(app_id, int)
-        assert app_id > 0
+        assert app_id > 0, "app_id must be greater than zero"
 
     @pytest.mark.parametrize(
         "token_format",
@@ -101,8 +101,8 @@ class TestGitHubAPIAuthenticationBasic:
     def test_various_github_token_formats(self, token_format: str):
         """Various GitHub token formats should have the expected prefix."""
         token = token_format + "a" * 36
-        assert token.startswith(token_format)
-        assert len(token) > len(token_format)
+        assert token.startswith(token_format), "Condition must be true"
+        assert len(token) > len(token_format), "Token must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -117,25 +117,25 @@ class TestGitHubActionsWorkflowOperations:
         """Dispatch returns a workflow run ID."""
         run_id = 9876543210
         assert isinstance(run_id, int)
-        assert run_id > 0
+        assert run_id > 0, "run_id must be greater than zero"
 
     def test_workflow_status_check(self):
         """Workflow status is one of the expected values."""
         valid_statuses = {"queued", "in_progress", "completed"}
         status = "in_progress"
-        assert status in valid_statuses
+        assert status in valid_statuses, "Condition must be true"
 
     def test_workflow_artifact_retrieval(self):
         """Artifact list is non-empty when artifacts exist."""
         artifacts = [{"id": 1, "name": "test-results", "size_in_bytes": 1024}]
-        assert len(artifacts) > 0
-        assert artifacts[0]["name"] == "test-results"
+        assert len(artifacts) > 0, "Artifacts must not be empty"
+        assert artifacts[0]["name"] == "test-results", "Result must not be empty"
 
     def test_workflow_log_retrieval(self):
         """Log content is a non-empty string."""
         log = "2026-01-01T00:00:00Z Step completed"
         assert isinstance(log, str)
-        assert len(log) > 0
+        assert len(log) > 0, "Log must not be empty"
 
     def test_workflow_error_handling(self):
         """Workflow error has an error conclusion."""
@@ -145,18 +145,18 @@ class TestGitHubActionsWorkflowOperations:
     def test_workflow_timeout_handling(self):
         """Timed-out workflow has timeout conclusion."""
         run = {"conclusion": "timed_out", "status": "completed"}
-        assert run["conclusion"] == "timed_out"
+        assert run["conclusion"] == "timed_out", "Condition must be true"
 
     def test_workflow_cancellation(self):
         """Cancelled workflow has cancelled conclusion."""
         run = {"conclusion": "cancelled", "status": "completed"}
-        assert run["conclusion"] == "cancelled"
+        assert run["conclusion"] == "cancelled", "Condition must be true"
 
     def test_workflow_rerun(self):
         """Rerun creates a new run ID different from the original."""
         original_run_id = 100
         rerun_id = 101
-        assert rerun_id != original_run_id
+        assert rerun_id != original_run_id, "rerun_id is not valid"
 
     def test_multiple_workflow_runs(self):
         """Multiple concurrent runs have distinct IDs."""
@@ -167,7 +167,7 @@ class TestGitHubActionsWorkflowOperations:
     def test_workflow_status_transitions(self, status: str):
         """Workflow status string is a non-empty lowercase string."""
         assert isinstance(status, str)
-        assert status == status.lower()
+        assert status == status.lower(), "status is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -186,66 +186,66 @@ class TestRepositoryOperationsPhase7A:
             "private": False,
             "default_branch": "main",
         }
-        assert "full_name" in metadata
-        assert "/" in metadata["full_name"]
+        assert "full_name" in metadata, "Data must not be empty"
+        assert "/" in metadata["full_name"], "Data must not be empty"
 
     def test_update_repository_settings(self):
         """Updated settings are reflected in returned metadata."""
         updated = {"has_wiki": False, "allow_merge_commit": True}
-        assert updated["has_wiki"] is False
+        assert updated["has_wiki"] is False, "Condition must be true"
 
     def test_list_repositories(self):
         """Repository list is a list type."""
         repos = [{"name": "repo-1"}, {"name": "repo-2"}]
         assert isinstance(repos, list)
-        assert len(repos) == 2
+        assert len(repos) == 2, "Repos must not be empty"
 
     def test_create_repository(self):
         """Created repository has the expected name."""
         repo = {"id": 987654, "name": "new-repo", "full_name": "owner/new-repo"}
-        assert repo["name"] == "new-repo"
-        assert "owner" in repo["full_name"]
+        assert repo["name"] == "new-repo", "Condition must be true"
+        assert "owner" in repo["full_name"], "Condition must be true"
 
     def test_delete_repository(self):
         """Successful deletion returns True."""
         deleted = True
-        assert deleted is True
+        assert deleted is True, "deleted is not valid"
 
     def test_repository_permissions(self):
         """Permissions dict contains expected keys."""
         perms = {"admin": False, "push": True, "pull": True}
-        assert "admin" in perms
-        assert "push" in perms
-        assert "pull" in perms
+        assert "admin" in perms, "Condition must be true"
+        assert "push" in perms, "Condition must be true"
+        assert "pull" in perms, "Condition must be true"
 
     def test_repository_collaborators(self):
         """Collaborators list contains user logins."""
         collaborators = [{"login": "alice"}, {"login": "bob"}]
         logins = [c["login"] for c in collaborators]
-        assert "alice" in logins
+        assert "alice" in logins, "Condition must be true"
 
     def test_repository_branches(self):
         """Branches include at least the default branch."""
         branches = [{"name": "main"}, {"name": "develop"}]
         names = [b["name"] for b in branches]
-        assert "main" in names
+        assert "main" in names, "Condition must be true"
 
     def test_repository_tags(self):
         """Tags follow semantic versioning."""
         tags = [{"name": "v1.0.0"}, {"name": "v1.1.0"}]
-        assert all(t["name"].startswith("v") for t in tags)
+        assert all(t["name"].startswith("v") for t in tags), "Condition must be true"
 
     def test_repository_releases(self):
         """Releases have tag_name and body fields."""
         release = {"tag_name": "v2.0.0", "body": "Release notes", "draft": False}
-        assert release["tag_name"].startswith("v")
-        assert release["draft"] is False
+        assert release["tag_name"].startswith("v"), "Condition must be true"
+        assert release["draft"] is False, "Condition must be true"
 
     def test_repository_commit_history(self):
         """Commit history is a list of commits."""
         commits = [{"sha": "abc123"}, {"sha": "def456"}]
         assert isinstance(commits, list)
-        assert all("sha" in c for c in commits)
+        assert all("sha" in c for c in commits), "Condition must be true"
 
     @pytest.mark.parametrize("visibility", ["public", "private"])
     def test_repository_visibility(self, visibility: str):
@@ -264,7 +264,7 @@ class TestPRIssueOperationsAdditional:
     def test_get_pr_metadata(self):
         """PR metadata includes number, title, and state."""
         pr = {"number": 42, "title": "feat: add feature", "state": "open"}
-        assert pr["number"] == 42
+        assert pr["number"] == 42, "Condition must be true"
         assert pr["state"] in {"open", "closed"}
 
     def test_list_pull_requests(self):
@@ -275,32 +275,32 @@ class TestPRIssueOperationsAdditional:
     def test_list_pull_requests_with_filters(self):
         """Filtered PR list respects state filter."""
         prs = [{"number": 1, "state": "open"}, {"number": 2, "state": "open"}]
-        assert all(pr["state"] == "open" for pr in prs)
+        assert all(pr["state"] == "open" for pr in prs), "Condition must be true"
 
     def test_create_pull_request(self):
         """Created PR has expected title and base branch."""
         pr = {"number": 99, "title": "fix: bug", "base": {"ref": "main"}}
-        assert pr["base"]["ref"] == "main"
+        assert pr["base"]["ref"] == "main", "Condition must be true"
 
     def test_update_pull_request(self):
         """Updated PR reflects new title."""
         updated = {"number": 99, "title": "fix: updated bug"}
-        assert "updated" in updated["title"]
+        assert "updated" in updated["title"], "Condition must be true"
 
     def test_close_pull_request(self):
         """Closed PR has state 'closed'."""
         pr = {"number": 99, "state": "closed"}
-        assert pr["state"] == "closed"
+        assert pr["state"] == "closed", "Condition must be true"
 
     def test_merge_pull_request(self):
         """Merged PR returns merged=True."""
         merge_result = {"merged": True, "sha": "abc123merge"}
-        assert merge_result["merged"] is True
+        assert merge_result["merged"] is True, "Result must not be empty"
 
     def test_get_pull_request_reviews(self):
         """Reviews list contains review objects."""
         reviews = [{"state": "APPROVED", "user": {"login": "reviewer"}}]
-        assert reviews[0]["state"] == "APPROVED"
+        assert reviews[0]["state"] == "APPROVED", "Condition must be true"
 
     def test_post_pr_review(self):
         """Posted review has expected state."""
@@ -310,14 +310,14 @@ class TestPRIssueOperationsAdditional:
     def test_post_pr_comment(self):
         """Posted comment has an id and body."""
         comment = {"id": 55555, "body": "LGTM!"}
-        assert comment["id"] > 0
-        assert len(comment["body"]) > 0
+        assert comment["id"] > 0, "Value must be greater than zero"
+        assert len(comment["body"]) > 0, "Collection must not be empty"
 
     def test_list_pr_comments(self):
         """Comments list is a list."""
         comments = [{"id": 1, "body": "Nice PR"}, {"id": 2, "body": "One nit"}]
         assert isinstance(comments, list)
-        assert len(comments) == 2
+        assert len(comments) == 2, "Comments must not be empty"
 
     def test_get_issue_metadata(self):
         """Issue metadata includes number, title, and state."""
@@ -332,34 +332,34 @@ class TestPRIssueOperationsAdditional:
     def test_create_issue(self):
         """Created issue has a positive number."""
         issue = {"number": 100, "title": "New issue"}
-        assert issue["number"] > 0
+        assert issue["number"] > 0, "Value must be greater than zero"
 
     def test_close_issue(self):
         """Closed issue has state 'closed'."""
         issue = {"number": 7, "state": "closed"}
-        assert issue["state"] == "closed"
+        assert issue["state"] == "closed", "Condition must be true"
 
     def test_reopen_issue(self):
         """Reopened issue has state 'open'."""
         issue = {"number": 7, "state": "open"}
-        assert issue["state"] == "open"
+        assert issue["state"] == "open", "Condition must be true"
 
     def test_add_issue_labels(self):
         """Labels added to issue are in the labels list."""
         issue_labels = ["bug", "priority:high"]
-        assert "bug" in issue_labels
-        assert len(issue_labels) == 2
+        assert "bug" in issue_labels, "in is not valid"
+        assert len(issue_labels) == 2, "Issue_labels must not be empty"
 
     def test_remove_issue_labels(self):
         """After removal, label is absent from list."""
         labels = ["bug", "enhancement"]
         labels.remove("bug")
-        assert "bug" not in labels
+        assert "bug" not in labels, "Condition must be true"
 
     def test_assign_issue_to_user(self):
         """Assigned issue contains the assignee login."""
         issue = {"number": 7, "assignee": {"login": "alice"}}
-        assert issue["assignee"]["login"] == "alice"
+        assert issue["assignee"]["login"] == "alice", "Condition must be true"
 
     @pytest.mark.parametrize("state", ["open", "closed"])
     def test_pr_state_filtering(self, state: str):
@@ -398,13 +398,13 @@ class TestWebhookHandlingCore:
 
         payload = b'{"action": "opened", "number": 5}'
         data = json.loads(payload)
-        assert data["action"] == "opened"
-        assert data["number"] == 5
+        assert data["action"] == "opened", "Data must not be empty"
+        assert data["number"] == 5, "Data must not be empty"
 
     def test_webhook_missing_signature(self):
         """Missing signature header is an empty string."""
         sig_header = ""
-        assert not sig_header  # empty is falsy
+        assert not sig_header, "Condition must be true"
 
     def test_webhook_invalid_signature(self):
         """Invalid signature does not match valid computed signature."""
@@ -430,8 +430,8 @@ class TestWebhookHandlingCore:
             "pull_request": "handle_pull_request",
             "issues": "handle_issues",
         }
-        assert routing["push"] == "handle_push"
-        assert routing["pull_request"] == "handle_pull_request"
+        assert routing["push"] == "handle_push", "Condition must be true"
+        assert routing["pull_request"] == "handle_pull_request", "Condition must be true"
 
     def test_webhook_retry_logic(self):
         """Retry logic retries on 5xx errors up to max_retries."""
@@ -439,20 +439,20 @@ class TestWebhookHandlingCore:
         attempt = 0
         while attempt < max_retries:
             attempt += 1
-        assert attempt == max_retries
+        assert attempt == max_retries, "attempt is not valid"
 
     def test_webhook_timeout_handling(self):
         """Timeout value is a positive integer."""
         timeout_seconds = 30
         assert isinstance(timeout_seconds, int)
-        assert timeout_seconds > 0
+        assert timeout_seconds > 0, "timeout_seconds must be greater than zero"
 
     def test_multiple_webhooks_concurrently(self):
         """Processing multiple webhooks produces independent results."""
         payloads = [b'{"id":1}', b'{"id":2}', b'{"id":3}']
         results = [len(p) for p in payloads]
-        assert len(results) == 3
-        assert all(r > 0 for r in results)
+        assert len(results) == 3, "Results must not be empty"
+        assert all(r > 0 for r in results), "r must be greater than zero"
 
     @pytest.mark.parametrize(
         "event_type",
@@ -467,8 +467,8 @@ class TestWebhookHandlingCore:
     def test_various_webhook_event_types(self, event_type: str):
         """Event type string is a non-empty lowercase string."""
         assert isinstance(event_type, str)
-        assert len(event_type) > 0
-        assert event_type == event_type.lower()
+        assert len(event_type) > 0, "Event_type must not be empty"
+        assert event_type == event_type.lower(), "event_type is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -482,53 +482,53 @@ class TestGitHubRateLimitingPhase7A:
     def test_rate_limit_header_parsing_exhausted(self):
         """is_rate_limited returns True when remaining is 0."""
         headers = {"x-ratelimit-remaining": "0"}
-        assert is_rate_limited(headers) is True
+        assert is_rate_limited(headers) is True, "Condition must be true"
 
     def test_rate_limit_header_parsing_available(self):
         """is_rate_limited returns False when remaining is above 0."""
         headers = {"x-ratelimit-remaining": "100"}
-        assert is_rate_limited(headers) is False
+        assert is_rate_limited(headers) is False, "Condition must be true"
 
     def test_rate_limit_retry_after_triggers(self):
         """Presence of Retry-After header signals rate limiting."""
         headers = {"retry-after": "60"}
-        assert is_rate_limited(headers) is True
+        assert is_rate_limited(headers) is True, "Condition must be true"
 
     def test_rate_limit_reset_time_parsed(self):
         """get_rate_limit_reset_time extracts integer reset timestamp."""
         headers = {"x-ratelimit-reset": "1700000000"}
         reset = get_rate_limit_reset_time(headers)
-        assert reset == 1700000000
+        assert reset == 1700000000, "reset is not valid"
 
     def test_rate_limit_reset_time_missing(self):
         """get_rate_limit_reset_time returns None when header absent."""
         headers: dict = {}
-        assert get_rate_limit_reset_time(headers) is None
+        assert get_rate_limit_reset_time(headers) is None, "Condition must be true"
 
     def test_rate_limit_reset_time_invalid(self):
         """get_rate_limit_reset_time returns None for non-integer header."""
         headers = {"x-ratelimit-reset": "not-a-number"}
-        assert get_rate_limit_reset_time(headers) is None
+        assert get_rate_limit_reset_time(headers) is None, "Condition must be true"
 
     def test_burst_handling_retry_after(self):
         """Retry-After header indicates rate limit even with remaining > 0."""
         headers = {"x-ratelimit-remaining": "50", "retry-after": "30"}
-        assert is_rate_limited(headers) is True
+        assert is_rate_limited(headers) is True, "Condition must be true"
 
     def test_rate_limit_backoff_strategy_attempt_0(self):
         """Backoff at attempt 0 equals base delay (1.0 second)."""
         delay = get_backoff_delay(0, base=1.0)
-        assert delay == pytest.approx(1.0)
+        assert delay == pytest.approx(1.0), "delay is not valid"
 
     def test_rate_limit_backoff_strategy_attempt_3(self):
         """Backoff at attempt 3 equals base * 2^3 = 8 seconds."""
         delay = get_backoff_delay(3, base=1.0)
-        assert delay == pytest.approx(8.0)
+        assert delay == pytest.approx(8.0), "delay is not valid"
 
     def test_rate_limit_backoff_capped_at_max(self):
         """Backoff does not exceed max_delay."""
         delay = get_backoff_delay(100, base=1.0, max_delay=60.0)
-        assert delay == pytest.approx(60.0)
+        assert delay == pytest.approx(60.0), "delay is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -586,14 +586,14 @@ class TestGitHubAPIErrorHandlingPhase7A:
     def test_format_error_message_basic(self):
         """format_error_message includes error type and message."""
         msg = format_error_message("ConnectionError", "timeout after 30s")
-        assert "ConnectionError" in msg
-        assert "timeout after 30s" in msg
+        assert "ConnectionError" in msg, "Error should be raised or set"
+        assert "timeout after 30s" in msg, "Condition must be true"
 
     def test_format_error_message_with_operation(self):
         """format_error_message includes operation when provided."""
         msg = format_error_message("ParseError", "invalid JSON", operation="fetch_pr")
-        assert "fetch_pr" in msg
-        assert "ParseError" in msg
+        assert "fetch_pr" in msg, "Condition must be true"
+        assert "ParseError" in msg, "Error should be raised or set"
 
     def test_backoff_delay_increases(self):
         """Backoff delay increases with each attempt."""
@@ -614,30 +614,30 @@ class TestGitHubAPIDataConsistencyBasic:
         """PR number must be a positive integer."""
         pr = {"number": 42, "title": "feat: add feature"}
         assert isinstance(pr["number"], int)
-        assert pr["number"] > 0
+        assert pr["number"] > 0, "Value must be greater than zero"
 
     def test_issue_data_consistency(self):
         """Issue number must be a positive integer."""
         issue = {"number": 7, "state": "open"}
         assert isinstance(issue["number"], int)
-        assert issue["number"] > 0
+        assert issue["number"] > 0, "Value must be greater than zero"
 
     def test_user_data_consistency(self):
         """User login must be a non-empty string."""
         user = {"login": "octocat", "id": 583231}
         assert isinstance(user["login"], str)
-        assert len(user["login"]) > 0
+        assert len(user["login"]) > 0, "Collection must not be empty"
 
     def test_repository_data_consistency(self):
         """Repository full_name must contain '/'."""
         repo = {"full_name": "owner/repo", "id": 123}
-        assert "/" in repo["full_name"]
+        assert "/" in repo["full_name"], "Condition must be true"
 
     def test_workflow_data_consistency(self):
         """Workflow run_id must be a positive integer."""
         run = {"id": 9999999, "status": "completed"}
         assert isinstance(run["id"], int)
-        assert run["id"] > 0
+        assert run["id"] > 0, "Value must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -652,35 +652,35 @@ class TestGitHubAPIPaginationBasics:
         """Page 1 of repos is a non-empty list."""
         page = [{"name": "repo-a"}, {"name": "repo-b"}]
         assert isinstance(page, list)
-        assert len(page) > 0
+        assert len(page) > 0, "Page must not be empty"
 
     def test_paginated_list_issues(self):
         """Each page of issues contains positive issue numbers."""
         page = [{"number": 1}, {"number": 2}, {"number": 3}]
-        assert all(i["number"] > 0 for i in page)
+        assert all(i["number"] > 0 for i in page), "Value must be greater than zero"
 
     def test_paginated_list_pull_requests(self):
         """Each page of PRs contains positive PR numbers."""
         page = [{"number": 10}, {"number": 11}]
-        assert all(p["number"] > 0 for p in page)
+        assert all(p["number"] > 0 for p in page), "Value must be greater than zero"
 
     def test_pagination_cursor_handling(self):
         """Cursor is a non-empty string."""
         cursor = "Y3Vyc29yOnYyOpHOAAFtxQ=="
         assert isinstance(cursor, str)
-        assert len(cursor) > 0
+        assert len(cursor) > 0, "Cursor must not be empty"
 
     def test_pagination_link_headers(self):
         """Link header contains 'next' and 'last' relations."""
         link_header = '<https://api.github.com/repos?page=2>; rel="next", <https://api.github.com/repos?page=5>; rel="last"'
-        assert 'rel="next"' in link_header
-        assert 'rel="last"' in link_header
+        assert 'rel="next"' in link_header, "Condition must be true"
+        assert 'rel="last"' in link_header, "Condition must be true"
 
     def test_pagination_total_count(self):
         """Total count from pagination is a non-negative integer."""
         total_count = 42
         assert isinstance(total_count, int)
-        assert total_count >= 0
+        assert total_count >= 0, "total_count must be positive"
 
 
 # ---------------------------------------------------------------------------
@@ -701,19 +701,19 @@ class TestGitHubAPIConcurrencyWave2:
         """Concurrent PR operation results have unique PR numbers."""
         results = [{"number": i} for i in range(1, 4)]
         numbers = [r["number"] for r in results]
-        assert len(numbers) == len(set(numbers))
+        assert len(numbers) == len(set(numbers)), "Numbers must not be empty"
 
     def test_concurrent_issue_operations(self):
         """Concurrent issue results have unique issue numbers."""
         results = [{"number": i * 10} for i in range(1, 4)]
         numbers = [r["number"] for r in results]
-        assert len(numbers) == len(set(numbers))
+        assert len(numbers) == len(set(numbers)), "Numbers must not be empty"
 
     def test_concurrent_workflow_checks(self):
         """Concurrent workflow check results are all valid statuses."""
         statuses = ["completed", "in_progress", "queued"]
         valid = {"queued", "in_progress", "completed"}
-        assert all(s in valid for s in statuses)
+        assert all(s in valid for s in statuses), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -727,20 +727,20 @@ class TestGitHubAPIIntegration:
     def test_end_to_end_pr_workflow(self):
         """PR workflow progresses through expected state sequence."""
         states = ["open", "open", "closed"]  # open → reviews → merged/closed
-        assert states[0] == "open"
-        assert states[-1] == "closed"
+        assert states[0] == "open", "Condition must be true"
+        assert states[-1] == "closed", "Condition must be true"
 
     def test_end_to_end_issue_workflow(self):
         """Issue workflow transitions from open to closed."""
         issue = {"state": "open"}
         issue["state"] = "closed"
-        assert issue["state"] == "closed"
+        assert issue["state"] == "closed", "Condition must be true"
 
     def test_end_to_end_workflow_execution(self):
         """Workflow execution moves through queued → in_progress → completed."""
         transitions = ["queued", "in_progress", "completed"]
-        assert transitions[0] == "queued"
-        assert transitions[-1] == "completed"
+        assert transitions[0] == "queued", "Condition must be true"
+        assert transitions[-1] == "completed", "Condition must be true"
 
     def test_pr_with_multiple_reviews(self):
         """PR with multiple reviews includes all reviewer logins."""
@@ -749,18 +749,18 @@ class TestGitHubAPIIntegration:
             {"user": {"login": "bob"}, "state": "CHANGES_REQUESTED"},
         ]
         logins = [r["user"]["login"] for r in reviews]
-        assert "alice" in logins
-        assert "bob" in logins
+        assert "alice" in logins, "Condition must be true"
+        assert "bob" in logins, "Condition must be true"
 
     def test_issue_with_multiple_comments(self):
         """Issue with multiple comments has correct count."""
         comments = [{"id": 1, "body": "First"}, {"id": 2, "body": "Second"}]
-        assert len(comments) == 2
+        assert len(comments) == 2, "Comments must not be empty"
 
     def test_linked_pr_and_issue(self):
         """Linked PR references the issue number in its body."""
         pr = {"number": 99, "body": "Closes #42"}
-        assert "#42" in pr["body"]
+        assert ", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -775,13 +775,13 @@ class TestGitHubAPISecurity:
         """redact_url_for_log strips credentials from the URL."""
         url_with_creds = "******api.github.com/repos"
         redacted = redact_url_for_log(url_with_creds)
-        assert "ghp_secret" not in redacted
+        assert "ghp_secret" not in redacted, "Condition must be true"
 
     def test_token_not_exposed_in_errors(self):
         """format_error_message should not expose token values."""
         token = "ghp_supersecret123"
         msg = format_error_message("AuthError", "request failed", operation="list_repos")
-        assert token not in msg  # token was never passed in — should not appear
+        assert token not in msg, "Condition must be true"
 
     def test_webhook_secret_validation(self):
         """validate_github_api_url rejects non-HTTPS URLs."""
@@ -791,7 +791,7 @@ class TestGitHubAPISecurity:
     def test_webhook_signature_required(self):
         """Webhook request with no signature header is rejected."""
         sig_header = ""
-        assert not sig_header  # missing signature is falsy
+        assert not sig_header, "Condition must be true"
 
     def test_api_request_sanitization(self):
         """validate_github_api_url rejects URLs with embedded credentials."""
@@ -802,7 +802,7 @@ class TestGitHubAPISecurity:
         """validate_github_api_url accepts a valid GitHub API URL."""
         url = "https://api.github.com/repos/owner/repo"
         result = validate_github_api_url(url)
-        assert result == url
+        assert result == url, "Result must not be empty"
 
 
 
@@ -819,20 +819,20 @@ class TestURLUtilsEdgeCases:
         """redact_url_for_log removes query parameters."""
         url = "https://api.github.com/repos?access_token=secret"
         redacted = redact_url_for_log(url)
-        assert "access_token" not in redacted
-        assert "secret" not in redacted
+        assert "access_token" not in redacted, "Condition must be true"
+        assert "secret" not in redacted, "Condition must be true"
 
     def test_redact_url_strips_fragment(self):
         """redact_url_for_log removes URL fragments."""
         url = "https://api.github.com/repos/owner/repo#readme"
         redacted = redact_url_for_log(url)
-        assert "#readme" not in redacted
+        assert ", "Condition must be true"
 
     def test_redact_url_preserves_path(self):
         """redact_url_for_log preserves the URL path."""
         url = "https://api.github.com/repos/owner/my-repo"
         redacted = redact_url_for_log(url)
-        assert "/repos/owner/my-repo" in redacted
+        assert "/repos/owner/my-repo" in redacted, "Condition must be true"
 
     def test_validate_github_url_rejects_non_api_host(self):
         """validate_github_api_url rejects URLs targeting non-api.github.com."""
@@ -842,20 +842,20 @@ class TestURLUtilsEdgeCases:
     def test_validate_github_url_accepts_valid(self):
         """validate_github_api_url accepts a properly formed HTTPS URL."""
         url = "https://api.github.com/repos/owner/repo/pulls"
-        assert validate_github_api_url(url) == url
+        assert validate_github_api_url(url) == url, "Condition must be true"
 
     def test_get_url_for_display_truncates_long_url(self):
         """get_url_for_display truncates URLs longer than max_length."""
         url = "https://api.github.com/" + "a" * 200
         display = get_url_for_display(url, max_length=50)
-        assert len(display) <= 50
-        assert display.endswith("...")
+        assert len(display) <= 50, "Display must not be empty"
+        assert display.endswith("..."), "Condition must be true"
 
     def test_get_url_for_display_short_url_unchanged(self):
         """get_url_for_display leaves short URLs intact."""
         url = "https://api.github.com/repos"
         display = get_url_for_display(url, max_length=100)
-        assert "api.github.com/repos" in display
+        assert "api.github.com/repos" in display, "Condition must be true"
 
 
 class TestErrorUtilsBoundaries:
@@ -869,8 +869,8 @@ class TestErrorUtilsBoundaries:
         """Backoff stops increasing once it hits max_delay."""
         delay_high = get_backoff_delay(20, base=1.0, max_delay=30.0)
         delay_very_high = get_backoff_delay(30, base=1.0, max_delay=30.0)
-        assert delay_high == pytest.approx(30.0)
-        assert delay_very_high == pytest.approx(30.0)
+        assert delay_high == pytest.approx(30.0), "delay_high is not valid"
+        assert delay_very_high == pytest.approx(30.0), "delay_very_high is not valid"
 
     def test_should_retry_respects_max_retries_boundary(self):
         """should_retry is False exactly at max_retries, True just below."""
@@ -879,7 +879,7 @@ class TestErrorUtilsBoundaries:
 
     def test_is_rate_limited_missing_headers(self):
         """is_rate_limited returns False when relevant headers are absent."""
-        assert is_rate_limited({}) is False
+        assert is_rate_limited({}) is False, "Condition must be true"
 
     def test_format_error_message_with_context(self):
         """format_error_message includes context key-value pairs."""
@@ -888,20 +888,20 @@ class TestErrorUtilsBoundaries:
             "bad JSON",
             context={"url": "https://api.github.com/repos", "attempt": "2"},
         )
-        assert "ParseError" in msg
-        assert "bad JSON" in msg
-        assert "url" in msg
+        assert "ParseError" in msg, "Error should be raised or set"
+        assert "bad JSON" in msg, "Condition must be true"
+        assert "url" in msg, "Condition must be true"
 
     def test_rate_limit_error_has_reset_at(self):
         """RateLimitError stores the reset_at timestamp."""
         exc = RateLimitError("Rate limit exceeded", reset_at=1700000000)
-        assert exc.reset_at == 1700000000
-        assert "Rate limit exceeded" in str(exc)
+        assert exc.reset_at == 1700000000, "reset_at is not valid"
+        assert "Rate limit exceeded" in str(exc), "Condition must be true"
 
     def test_rate_limit_error_without_reset_at(self):
         """RateLimitError reset_at is None when not provided."""
         exc = RateLimitError("Rate limit exceeded")
-        assert exc.reset_at is None
+        assert exc.reset_at is None, "reset_at is not valid"
 
 
 if __name__ == "__main__":

@@ -34,7 +34,9 @@ class LTMMemory:
         self.storage: dict[int, MemoryEntry] = {}
         self.index_counter = 0
 
-    def store(self, data: Any, importance: float = 0.7, metadata: dict[str, Any] | None = None) -> int:
+    def store(
+        self, data: Any, importance: float = 0.7, metadata: dict[str, Any] | None = None
+    ) -> int:
         """Store data in long-term memory.
 
         Creates a persistent memory entry with an auto-generated ID.
@@ -53,11 +55,7 @@ class LTMMemory:
         if not 0.0 <= importance <= 1.0:
             raise ValueError("importance must be between 0.0 and 1.0")
 
-        entry = MemoryEntry(
-            data=data,
-            importance=importance,
-            metadata=metadata or {}
-        )
+        entry = MemoryEntry(data=data, importance=importance, metadata=metadata or {})
         entry_id = self.index_counter
         self.storage[entry_id] = entry
         self.index_counter += 1

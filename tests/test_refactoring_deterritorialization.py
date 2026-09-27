@@ -22,31 +22,31 @@ class TestRigidityType:
 
     def test_deep_nesting_rigidity_type(self):
         """Test DEEP_NESTING rigidity type."""
-        assert RigidityType.DEEP_NESTING == "deep_nesting"
+        assert RigidityType.DEEP_NESTING == "deep_nesting", "DEEP_NESTING is not valid"
 
     def test_long_method_rigidity_type(self):
         """Test LONG_METHOD rigidity type."""
-        assert RigidityType.LONG_METHOD == "long_method"
+        assert RigidityType.LONG_METHOD == "long_method", "LONG_METHOD is not valid"
 
     def test_god_class_rigidity_type(self):
         """Test GOD_CLASS rigidity type."""
-        assert RigidityType.GOD_CLASS == "god_class"
+        assert RigidityType.GOD_CLASS == "god_class", "GOD_CLASS is not valid"
 
     def test_tight_coupling_rigidity_type(self):
         """Test TIGHT_COUPLING rigidity type."""
-        assert RigidityType.TIGHT_COUPLING == "tight_coupling"
+        assert RigidityType.TIGHT_COUPLING == "tight_coupling", "TIGHT_COUPLING is not valid"
 
     def test_hardcoded_values_rigidity_type(self):
         """Test HARDCODED_VALUES rigidity type."""
-        assert RigidityType.HARDCODED_VALUES == "hardcoded_values"
+        assert RigidityType.HARDCODED_VALUES == "hardcoded_values", "Value must be initialized"
 
     def test_repeated_patterns_rigidity_type(self):
         """Test REPEATED_PATTERNS rigidity type."""
-        assert RigidityType.REPEATED_PATTERNS == "repeated_patterns"
+        assert RigidityType.REPEATED_PATTERNS == "repeated_patterns", "REPEATED_PATTERNS is not valid"
 
     def test_overly_complex_rigidity_type(self):
         """Test OVERLY_COMPLEX rigidity type."""
-        assert RigidityType.OVERLY_COMPLEX == "overly_complex"
+        assert RigidityType.OVERLY_COMPLEX == "overly_complex", "OVERLY_COMPLEX is not valid"
 
 
 class TestDeterritorializationEngine:
@@ -55,7 +55,7 @@ class TestDeterritorializationEngine:
     def test_engine_initialization(self):
         """Test engine initialization."""
         engine = DeterritorializationEngine()
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_detect_deep_nesting(self):
         """Test detection of deep nesting."""
@@ -157,13 +157,13 @@ def process():
     result = None
     try:
         result = operation1()
-    except Exception:
+    except Exception as _err:
         result = None
     
     result2 = None
     try:
         result2 = operation2()
-    except Exception:
+    except Exception as _err:
         result2 = None
     
     return result, result2
@@ -196,7 +196,7 @@ def simple():
         engine = DeterritorializationEngine()
         score = engine.calculate_rigidity_score(code)
         assert isinstance(score, (int, float))
-        assert score >= 0
+        assert score >= 0, "score must be greater than zero"
 
     def test_empty_code_handling(self):
         """Test handling of empty code."""
@@ -211,10 +211,10 @@ def simple():
         # Should handle gracefully
         try:
             rigidities = engine.analyze(code)
-            assert True
+            assert True, "True is not valid"
         except SyntaxError:
             # Expected for invalid code
-            assert True
+            assert True, "True is not valid"
 
 
 class TestDetectedRigidities:
@@ -235,7 +235,7 @@ class TestDetectedRigidities:
         rigidities = engine.analyze(code)
         for r in rigidities:
             # Should have location info
-            assert True
+            assert True, "True is not valid"
 
     def test_rigidity_result_has_severity(self):
         """Test rigidity result has severity."""
@@ -244,7 +244,7 @@ class TestDetectedRigidities:
         rigidities = engine.analyze(code)
         for r in rigidities:
             # Should have severity level
-            assert True
+            assert True, "True is not valid"
 
 
 class TestSuggestions:
@@ -275,7 +275,7 @@ def nested():
         suggestions = engine.generate_suggestions(code)
         for suggestion in suggestions:
             # Each suggestion should describe an action
-            assert True
+            assert True, "True is not valid"
 
 
 class TestLineOfFlight:
@@ -326,7 +326,7 @@ def rigid():
         original_code = "def get_user(): return None"
         refactored = engine.apply_deterritorialization(original_code)
         # Refactored code should preserve functionality
-        assert True
+        assert True, "True is not valid"
 
 
 class TestPhilosophicalFramework:
@@ -351,7 +351,7 @@ def process():
 """
         suggestions = engine.generate_suggestions(code)
         # Suggestions should enable productivity
-        assert True
+        assert True, "True is not valid"
 
     def test_creativity_enablement(self):
         """Test creativity enablement."""
@@ -423,20 +423,20 @@ def process_data(data):
                 result = None
                 try:
                     result = expensive_operation()
-                except Exception:
+                except (AttributeError, OSError, RuntimeError):
                     pass
                 return result
 """
         engine = DeterritorializationEngine()
-        
+
         # 1. Analyze
         rigidities = engine.analyze(code)
         assert isinstance(rigidities, list)
-        
+
         # 2. Generate suggestions
         suggestions = engine.generate_suggestions(code)
         assert isinstance(suggestions, list)
-        
+
         # 3. Identify lines of flight
         flights = engine.identify_lines_of_flight(code)
         assert isinstance(flights, list)
@@ -450,11 +450,11 @@ def original():
             x = 1
 """
         engine = DeterritorializationEngine()
-        
+
         # First iteration
         suggestions1 = engine.generate_suggestions(code)
         assert isinstance(suggestions1, list)
-        
+
         # Apply first suggestion (if any)
         # Then analyze again
         rigidities = engine.analyze(code)

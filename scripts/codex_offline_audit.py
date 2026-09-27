@@ -59,6 +59,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from experiments import manager as experiment_manager  # noqa: E402
 from scripts import repo_audit  # type: ignore  # noqa: E402
+from tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
 from training.simple_trainer import (
     SimpleTrainer,  # noqa: E402  # src. prefix required: root ./training/ shadow
 )
@@ -69,7 +70,6 @@ from utils.checkpoint import (  # noqa: E402  # src. prefix required: root ./uti
 from utils.logging_factory import (
     init_logging,  # noqa: E402  # src. prefix required: root ./utils/ shadow
 )
-from tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
 
 
 @dataclass

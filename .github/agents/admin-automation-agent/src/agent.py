@@ -17,8 +17,8 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Optional
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))

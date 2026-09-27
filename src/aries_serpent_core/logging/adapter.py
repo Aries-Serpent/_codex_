@@ -29,7 +29,7 @@ def _render_message(msg: Any, args: tuple[Any, ...], kwargs: dict[str, Any]) -> 
 
 class LoggerAdapter(ABC):
     """Abstract base class for logger injection - zero dependencies.
-    
+
     This interface defines the contract for logger implementations that can be
     injected into codex_ml and other packages without creating hard dependencies.
     """
@@ -87,10 +87,10 @@ class LoggerAdapter(ABC):
 
 class NullLogger(LoggerAdapter):
     """No-op logger for decoupled operations (zero overhead).
-    
+
     This logger ignores all log calls, making it suitable for packages
     that want to avoid logging overhead when no logger is injected.
-    
+
     Example:
         >>> logger = NullLogger()
         >>> logger.info("This message is silently ignored")
@@ -123,7 +123,7 @@ _default_logger: LoggerAdapter = NullLogger()
 
 def get_default_logger() -> LoggerAdapter:
     """Get the global default logger instance.
-    
+
     Returns:
         The currently configured default logger adapter
     """
@@ -132,10 +132,10 @@ def get_default_logger() -> LoggerAdapter:
 
 def set_default_logger(logger: LoggerAdapter) -> None:
     """Set the global default logger instance.
-    
+
     This function allows setting a custom logger implementation globally.
     Useful for bootstrapping actual logging when codex.logging is available.
-    
+
     Args:
         logger: The logger adapter to use as the default
     """

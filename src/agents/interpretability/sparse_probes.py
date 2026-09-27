@@ -88,8 +88,7 @@ class SparseLinearProbe:
 
             random.seed(seed)
             weights_list = [
-                [random.gauss(0, 0.1) for _ in range(input_dim)]
-                for _ in range(num_concepts)
+                [random.gauss(0, 0.1) for _ in range(input_dim)] for _ in range(num_concepts)
             ]
             bias_list = [random.gauss(0, 0.01) for _ in range(num_concepts)]
 
@@ -126,9 +125,7 @@ class SparseLinearProbe:
             concepts = weights_array @ vec_array + bias_array
 
             # L1 soft-thresholding (sparsity)
-            concepts = np.sign(concepts) * np.maximum(
-                np.abs(concepts) - self.sparsity_threshold, 0
-            )
+            concepts = np.sign(concepts) * np.maximum(np.abs(concepts) - self.sparsity_threshold, 0)
 
             return concepts.tolist()
         # Pure Python fallback
@@ -140,9 +137,7 @@ class SparseLinearProbe:
 
             # L1 soft-thresholding
             if abs(score) > self.sparsity_threshold:
-                score = math.copysign(
-                    abs(score) - self.sparsity_threshold, score
-                )
+                score = math.copysign(abs(score) - self.sparsity_threshold, score)
             else:
                 score = 0.0
 
@@ -237,8 +232,7 @@ class UnembeddingHead:
 
             random.seed(seed)
             weights_list = [
-                [random.gauss(0, 0.1) for _ in range(input_dim)]
-                for _ in range(num_labels)
+                [random.gauss(0, 0.1) for _ in range(input_dim)] for _ in range(num_labels)
             ]
             bias_list = [random.gauss(0, 0.01) for _ in range(num_labels)]
 
@@ -348,9 +342,7 @@ def interpret_state_vector(
 
             # Calculate confidence from concept magnitudes
             if concepts:
-                result["confidence"] = sum(abs(score) for _, score in concepts) / len(
-                    concepts
-                )
+                result["confidence"] = sum(abs(score) for _, score in concepts) / len(concepts)
         except Exception as e:
             logger.error(f"Failed to extract concepts: {e}")
 

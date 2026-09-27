@@ -21,8 +21,9 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from codex_ml.utils.optional import optional_import
 from omegaconf import DictConfig
+
+from codex_ml.utils.optional import optional_import
 
 from .clean import clean_rows, write_clean_csv
 from .features import build_features, write_features_csv

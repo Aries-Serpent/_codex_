@@ -84,7 +84,13 @@ class Option:
         for idx, (_, keywords) in enumerate(OPTION_PRIORITY_KEYWORDS):
             priority_scores.append(1 if any(keyword in label_lower for keyword in keywords) else 0)
         if len(priority_scores) >= 4:
-            return (priority_scores[0], priority_scores[1], priority_scores[2], priority_scores[3], self.label.lower())
+            return (
+                priority_scores[0],
+                priority_scores[1],
+                priority_scores[2],
+                priority_scores[3],
+                self.label.lower(),
+            )
         return (0, 0, 0, 0, self.label.lower())
 
     def has_preferred_status(self) -> bool:
@@ -437,11 +443,11 @@ def _compose_next_prompt(
     decisions_line = f"**Decisions** — {decision_text}"
     tests_line = "**Tests** — " + "; ".join(tests_list)
     docs_line = "**Docs** — " + "; ".join(docs_list)
-    rollback_line = "**Rollback** — Revert the commit locally (e.g., `git revert HEAD`) and restore touched files."
+    rollback_line = "**Rollback** — Revert the commit locally (e.g., `git revert HEAD`) and restore touched files."  # noqa: E501
     non_goals_line = (
         "**Non-Goals** — Avoid expanding beyond the summarized scope or unrelated refactors."
     )
-    acceptance_line = "**Acceptance Criteria** — Preserve offline safety, deterministic execution, and bounded artifacts."
+    acceptance_line = "**Acceptance Criteria** — Preserve offline safety, deterministic execution, and bounded artifacts."  # noqa: E501
     return [
         scope_line,
         decisions_line,

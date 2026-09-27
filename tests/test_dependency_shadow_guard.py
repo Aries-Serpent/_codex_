@@ -45,7 +45,7 @@ def test_repo_root_stubs_do_not_mask_real_installs(
             "pytest.importorskip" in message
             or "repo-local" in message
             or "not a Python package" in message
-        )
+        ), "Condition must be true"
         return
 
     imported_file = getattr(loaded, "__file__", "")

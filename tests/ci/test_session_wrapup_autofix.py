@@ -24,7 +24,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #             - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 #             - [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
 #             - [x] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-# 
+#
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
@@ -61,7 +61,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #         block = swa._build_wec_block()
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
@@ -69,7 +69,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_new_format_checked(self):
 #         body = textwrap.dedent("""\
 #             ## 🔄 Workflow Execution Checklist
@@ -87,7 +87,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #     def test_legacy_format_checked(self):
 #         body = textwrap.dedent("""\
 #             **🔄 Workflow Execution Checklist**:
-# 
+#
 #             🔐 Agent Token Delegation
 #             - [x] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)
 #             - [x] 💰 Cost Proposal Approved
@@ -101,16 +101,16 @@ from scripts.ci import session_wrapup_autofix as swa
 #         body = "- [X] security-scanning-suite.yml — Full security audit\n"
 #         state = swa._extract_wec_state(body)
 #         assert state.get("security-scanning-suite.yml") is True, "Condition must be true"
-# 
+#
 #     def test_auto_approve_item(self):
 #         body = "- [x] auto-approve-workflows — Auto-Approve workflow to run\n"
 #         state = swa._extract_wec_state(body)
 #         assert state.get("auto-approve-workflows") is True, "Condition must be true"
-# 
+#
 #     def test_mixed_section_body(self):
 #         body = textwrap.dedent("""\
 #             Some preamble text.
-# 
+#
 #             - [x] comment-review-gate.yml — Comment review gate (always required)
 #             - [ ] documentation-link-checker.yml — Documentation link checker
 #             - [x] cost-gate.yml — Cost governance gate
@@ -135,7 +135,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         block = swa._build_wec_block(existing_state={})
 #         for fname in swa._WEC_ALWAYS_REQUIRED:
 #             assert f"- [x] {fname}" in block, "Condition must be true"
-# 
+#
 #     def test_optional_items_unchecked_by_default(self):
 #         # Patch _auth_enabled_in_env to False for determinism: we want to verify
 #         # genuinely-optional items (not autonomous-auto-check items) default to [ ].
@@ -186,7 +186,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         block = swa._build_wec_block(existing_state={})
 #         for fname in swa._WEC_NEVER_CHECK:
 #             assert f"- [ ] {fname}" in block, f"{fname} should default unchecked"
-# 
+#
 #     def test_existing_state_preserves_maintainer_selections(self):
 #         existing = {
 #         existing = {
@@ -205,7 +205,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         block = swa._build_wec_block(existing_state=existing)
 #         for fname in swa._WEC_ALWAYS_REQUIRED:
 #             assert f"- [x] {fname}" in block, "Condition must be true"
-# 
+#
 #     def test_sections_present(self):
 #         block = swa._build_wec_block()
 #         assert ", "Condition must be true"
@@ -214,18 +214,18 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_instructions_footer_present(self):
 #         block = swa._build_wec_block()
 #         assert "HARDENED AGENT INSTRUCTION" in block, "Condition must be true"
 #         assert "report_progress" in block, "Condition must be true"
 #         # New instruction directs agents to use --print-wec-block CLI
 #         assert "print-wec-block" in block.lower() or "never reconstruct" in block.lower(), "Condition must be true"
-# 
+#
 #     def test_heading_marker_present(self):
 #         block = swa._build_wec_block()
 #         assert swa._WEC_MARKER in block, "Condition must be true"
-# 
+#
 #     def test_no_duplicate_entries(self):
 #         block = swa._build_wec_block()
 #         for fname, _, _ in swa._WEC_ITEMS:
@@ -234,7 +234,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #             pattern = re.compile(r"(?<![a-zA-Z0-9/-])" + re.escape(fname))
 #             count = len(pattern.findall(block))
 #             assert count == 1, f"{fname} appears more than once in WEC block"
-# 
+#
 #     def test_none_existing_state_same_as_empty(self):
 #         assert swa._build_wec_block(None) == swa._build_wec_block({}), "Condition must be true"
 #         block = swa._REQUIRED_PR_CHECKBOXES
@@ -250,7 +250,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         r.stdout = stdout
 #         r.returncode = returncode
 #         return r
-# 
+#
 #     def test_no_update_needed_when_wec_present(self):
 #         body = "## intro\n\n" + swa._build_wec_block()
 #         with patch("subprocess.run") as mock_run:
@@ -260,7 +260,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         # gh pr edit should NOT have been called
 #         edit_calls = [c for c in mock_run.call_args_list if "edit" in str(c)]
 #         assert len(edit_calls) == 0, "Edit_calls must not be empty"
-# 
+#
 #     def test_update_called_when_wec_missing(self):
 #         body = "## My PR\n\nSome content without WEC block.\n"
 #         with patch("subprocess.run") as mock_run:
@@ -269,7 +269,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert result is True, "Result must not be empty"
 #         calls_str = str(mock_run.call_args_list)
 #         assert "edit" in calls_str, "Condition must be true"
-# 
+#
 #     def test_dry_run_does_not_call_edit(self):
 #         body = "## My PR\n\nNo WEC here.\n"
 #         with patch("subprocess.run") as mock_run:
@@ -278,13 +278,13 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert result is True, "Result must not be empty"
 #         edit_calls = [c for c in mock_run.call_args_list if "edit" in str(c)]
 #         assert len(edit_calls) == 0, "Edit_calls must not be empty"
-# 
+#
 #     def test_legacy_format_replaced_with_canonical(self):
 #         body = textwrap.dedent("""\
 #             ## PR body
-# 
+#
 #             **🔄 Workflow Execution Checklist**:
-# 
+#
 #             🔐 Agent Token Delegation
 #             - [x] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)
 #             - [x] 💰 Cost Proposal Approved
@@ -298,16 +298,16 @@ from scripts.ci import session_wrapup_autofix as swa
 #                 body_idx = cmd.index("--body") + 1
 #                 captured_body.append(cmd[body_idx])
 #             return self._make_run(body)
-# 
+#
 #         with patch("subprocess.run", side_effect=fake_run):
 #             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
-# 
+#
 #         assert result is True, "Result must not be empty"
 #         if captured_body:
 #             assert swa._WEC_MARKER in captured_body[0], "Condition must be true"
 #             # Legacy marker should be gone
 #             assert swa._WEC_MARKER_LEGACY not in captured_body[0], "Condition must be true"
-# 
+#
 #     def test_maintainer_checked_items_preserved_on_update(self):
 #     def test_maintainer_checked_items_preserved_on_update(self):
 #         """Existing [x] items must survive a WEC rebuild triggered by legacy format."""
@@ -318,7 +318,7 @@ from scripts.ci import session_wrapup_autofix as swa
 #             - [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
 #             - [x] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
 #             - [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-# 
+#
 #             ### ⚡ Auto-Approve
 #             - [x] auto-approve-workflows — Auto-Approve workflow to run
 #             ### ⚡ Auto-Approve
@@ -330,10 +330,10 @@ from scripts.ci import session_wrapup_autofix as swa
 #                 body_idx = cmd.index("--body") + 1
 #                 captured_body.append(cmd[body_idx])
 #             return self._make_run(body)
-# 
+#
 #         with patch("subprocess.run", side_effect=fake_run):
 #             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
-# 
+#
 #         assert result is True, "Result must not be empty"
 #         assert captured_body, "captured_body is not valid"
 #         assert "- [x] resilient_validation.yml" in captured_body[0], "Condition must be true"
@@ -354,10 +354,10 @@ def test_append_session_evidence_strips_values_and_uses_full_second_timestamp(tm
 
     record = json.loads(evidence_path.read_text(encoding="utf-8").strip().splitlines()[-1])
     assert record["affected_files"] == ["scripts/ci/foo.py", "bar.py"]
-    assert record["commands"] == ["python -m pytest"]
-    assert record["evidence_refs"] == ["https://example.test"]
-    assert record["timestamp"].endswith("Z")
-    assert record["timestamp"].count(":") == 2
+    assert record["commands"] == ["python -m pytest"], "rec is not valid"
+    assert record["evidence_refs"] == ["https://example.test"], "rec is not valid"
+    assert record["timestamp"].endswith("Z"), "rec is not valid"
+    assert record["timestamp"].count(":") == 2, "Count must be greater than zero"
 
 
 def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
@@ -394,7 +394,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
         )
 
     assert evidence_path.read_text(encoding="utf-8").count('"phase": "duplicate-check"') == 1
-# 
+#
 #     def test_gh_cli_failure_returns_false(self):
 #         with patch("subprocess.run", side_effect=FileNotFoundError("gh not found")):
 #             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
@@ -415,7 +415,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         p.stdout = ""
 #         p.stderr = ""
 #         return p
-# 
+#
 #     def _make_repo(self, tmp_path: Path) -> Path:
 #     def _make_repo(self, tmp_path: Path) -> Path:
 #         """Create a fake repo root with sync_tracked_files.py present."""
@@ -505,7 +505,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         mock_act.assert_called_once()
 #         mock_req14.assert_called_once()
 #         assert all(results.values()), "Result must not be empty"
-# 
+#
 #     def test_skips_pr_body_when_pr_unknown(self):
 #         with (
 #             patch.object(swa, "_last_commit_changed", return_value=True),
@@ -520,7 +520,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         mock_desc.assert_not_called()
 #         mock_wec.assert_not_called()
 #         mock_act.assert_not_called()
-# 
+#
 #     def test_dry_run_passed_through(self):
 #         with (
 #             patch.object(swa, "_last_commit_changed", return_value=False),
@@ -549,7 +549,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #             rc = swa.main(["--pr-number", "42", "--fix-all"])
 #         mock_fn.assert_called_once()
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_check_mode_returns_0_when_both_ok(self):
 #         with (
 #             patch.object(swa, "_last_commit_changed", return_value=True),
@@ -560,15 +560,15 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #             with patch.object(Path, "exists", return_value=True):
 #                 rc = swa.main(["--pr-number", "42", "--check"])
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_check_mode_returns_1_when_acct_missing(self):
 #         def fake_last_commit(p: Path) -> bool:
 #             return "CHANGELOG" in str(p)  # CHANGELOG OK, accountability NOT
-# 
+#
 #         with patch.object(swa, "_last_commit_changed", side_effect=fake_last_commit):
 #             rc = swa.main(["--pr-number", "42", "--check"])
 #         assert rc == 1, "rc is not valid"
-# 
+#
 #     def test_fix_manifest_flag(self):
 #         with patch.object(swa, "fix_manifest_baseline", return_value=False) as mock_fn:
 #             with (
@@ -579,7 +579,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #                 rc = swa.main(["--pr-number", "42", "--fix-manifest"])
 #         mock_fn.assert_called_once()
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_fix_pr_body_flag(self):
 #         with (
 #             patch.object(swa, "fix_pr_body_checkboxes", return_value=True) as mock_fn,
@@ -590,7 +590,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #             rc = swa.main(["--pr-number", "42", "--fix-pr-body"])
 #         mock_fn.assert_called_once()
 #         assert rc == 0, "rc is not valid"
-# 
+#
 #     def test_dry_run_propagated(self):
 #         with (
 #             patch.object(swa, "fix_accountability_report", return_value=True) as mock_acct,
@@ -640,11 +640,11 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         filenames = {item[0] for item in swa._WEC_ITEMS}
 #         for fname in swa._WEC_ALWAYS_REQUIRED:
 #             assert fname in filenames, f"{fname} missing from _WEC_ITEMS"
-# 
+#
 #     def test_auto_approve_item_present(self):
 #         filenames = [item[0] for item in swa._WEC_ITEMS]
 #         assert "auto-approve-workflows" in filenames, "Condition must be true"
-# 
+#
 #     def test_new_wec_drift_workflows_present(self):
 #         filenames = {item[0] for item in swa._WEC_ITEMS}
 #         expected = {
@@ -659,7 +659,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         )
 #     def test_never_check_items_are_not_always_required(self):
 #         assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED), "Condition must be true"
-# 
+#
 #     def test_merge_required_disjoint_from_never_check(self):
 #     def test_merge_required_disjoint_from_never_check(self):
 #         """S178 hardening: a never-check workflow must NEVER appear in the
@@ -706,7 +706,7 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #             assert f"- [x] {fname}" in block, f"maintainer [x] for {fname!r} was not preserved"
 #     def test_required_pr_checkboxes_contains_auto_approve(self):
 #         assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES, "Condition must be true"
-# 
+#
 #     def test_required_pr_checkboxes_contains_all_sections(self):
 #         block = swa._REQUIRED_PR_CHECKBOXES
 #         assert ", "Condition must be true"
@@ -715,10 +715,10 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_wec_marker_is_heading_format(self):
 #         assert swa._WEC_MARKER.startswith(", "Condition must be true"
-# 
+#
 #     def test_legacy_marker_different_from_current(self):
 #         assert swa._WEC_MARKER != swa._WEC_MARKER_LEGACY, "_WEC_MARKER is not valid"
 
@@ -815,7 +815,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
-        import json
+        pass  # removed redundant `import json` (top-level import used)
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
@@ -842,7 +842,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
-        import json
+        pass  # removed redundant `import json` (top-level import used)
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
@@ -889,7 +889,7 @@ class TestHumanGrantTracking:
                 }
             },
         }
-        import json
+        pass  # removed redundant `import json` (top-level import used)
 
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)

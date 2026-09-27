@@ -109,7 +109,11 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
         return load_fn(source, **kwargs)
     except TypeError as exc:
         logger.debug("torch.load rejected payload: %s", exc)
-        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
+        if (
+            _TORCH_SUPPORTS_WEIGHTS_ONLY
+            and "weights_only" in kwargs
+            and _can_retry_without_weights_only(exc)
+        ):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)
         raise
@@ -120,7 +124,12 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
 
 try:  # pragma: no cover - numpy is optional for deployments
     import numpy as _np
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - gracefully handle absence
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - gracefully handle absence
     _np = None
 
 __all__ = ["load_checkpoint", "prune_best_k", "restore_into", "save_checkpoint"]
@@ -443,7 +452,7 @@ def save_checkpoint(
     2. Full keyword-only form (original API)::
 
            save_checkpoint(model=m, optimizer=opt, scheduler=sch, out_dir=os.path.join(tempfile.gettempdir(), "ckpt/"))
-    """
+    """  # noqa: E501
     # --- Simple positional API: save_checkpoint(state, path) -----------------
     if state_or_model is not None and path is not None and model is None and out_dir is None:
         p = Path(path)
@@ -565,7 +574,7 @@ def load_checkpoint(
     2. Full keyword-only form (original API)::
 
            load_checkpoint(model=m, optimizer=opt, ckpt_dir=os.path.join(tempfile.gettempdir(), "ckpt/"))
-    """
+    """  # noqa: E501
     # --- Simple positional API: load_checkpoint(path) -----------------------
     if path_or_ckpt_dir is not None and model is None and ckpt_dir is None:
         p = Path(path_or_ckpt_dir)

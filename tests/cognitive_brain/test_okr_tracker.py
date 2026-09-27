@@ -22,10 +22,10 @@ from codex.cognitive.okr_tracker import (
 
 class TestTaskStatus:
     def test_values_exist(self) -> None:
-        assert TaskStatus.COMPLETE == "complete"
-        assert TaskStatus.IN_PROGRESS == "in_progress"
-        assert TaskStatus.PENDING == "pending"
-        assert TaskStatus.BLOCKED == "blocked"
+        assert TaskStatus.COMPLETE == "complete", "COMPLETE is not valid"
+        assert TaskStatus.IN_PROGRESS == "in_progress", "IN_PROGRESS is not valid"
+        assert TaskStatus.PENDING == "pending", "PENDING is not valid"
+        assert TaskStatus.BLOCKED == "blocked", "BLOCKED is not valid"
 
     def test_is_str_enum(self) -> None:
         assert isinstance(TaskStatus.COMPLETE, str)
@@ -39,7 +39,7 @@ class TestTaskStatus:
 class TestOKRTask:
     def test_default_status(self) -> None:
         task = OKRTask(task_id="T-001", description="Fix CI")
-        assert task.status == TaskStatus.PENDING
+        assert task.status == TaskStatus.PENDING, "status is not valid"
 
     def test_custom_status(self) -> None:
         task = OKRTask(
@@ -47,20 +47,20 @@ class TestOKRTask:
             description="Write docs",
             status=TaskStatus.COMPLETE,
         )
-        assert task.status == TaskStatus.COMPLETE
+        assert task.status == TaskStatus.COMPLETE, "status is not valid"
 
     def test_notes_default_empty(self) -> None:
         task = OKRTask(task_id="T-003", description="Deploy")
-        assert task.notes == ""
+        assert task.notes == "", "notes is not valid"
 
     def test_completed_at_default_none(self) -> None:
         task = OKRTask(task_id="T-004", description="Review")
-        assert task.completed_at is None
+        assert task.completed_at is None, "completed_at is not valid"
 
     def test_completed_at_set(self) -> None:
         ts = "2026-01-01T00:00:00+00:00"
         task = OKRTask(task_id="T-005", description="Merge", completed_at=ts)
-        assert task.completed_at == ts
+        assert task.completed_at == ts, "completed_at is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -75,9 +75,9 @@ class TestKeyResult:
             description="Coverage > 80%",
             metric="coverage_pct",
         )
-        assert kr.status == TaskStatus.PENDING
-        assert kr.current_value == ""
-        assert kr.target_value == ""
+        assert kr.status == TaskStatus.PENDING, "status is not valid"
+        assert kr.current_value == "", "Value must be initialized"
+        assert kr.target_value == "", "Value must be initialized"
 
     def test_values_set(self) -> None:
         kr = KeyResult(
@@ -88,8 +88,8 @@ class TestKeyResult:
             target_value="0",
             status=TaskStatus.COMPLETE,
         )
-        assert kr.current_value == "0"
-        assert kr.status == TaskStatus.COMPLETE
+        assert kr.current_value == "0", "Value must be initialized"
+        assert kr.status == TaskStatus.COMPLETE, "status is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -122,10 +122,10 @@ class TestObjective:
         )
 
     def test_pct_complete_no_tasks(self, obj_no_tasks: Objective) -> None:
-        assert obj_no_tasks.pct_complete == 0.0
+        assert obj_no_tasks.pct_complete == 0.0, "Object must be initialized"
 
     def test_pct_complete_partial(self, obj_with_tasks: Objective) -> None:
-        assert obj_with_tasks.pct_complete == 50.0
+        assert obj_with_tasks.pct_complete == 50.0, "Object must be initialized"
 
     def test_pct_complete_all_done(self) -> None:
         tasks = [
@@ -139,10 +139,10 @@ class TestObjective:
             deadline="2099-12-31",
             tasks=tasks,
         )
-        assert obj.pct_complete == 100.0
+        assert obj.pct_complete == 100.0, "Object must be initialized"
 
     def test_is_complete_false_when_pending(self, obj_with_tasks: Objective) -> None:
-        assert obj_with_tasks.is_complete is False
+        assert obj_with_tasks.is_complete is False, "Object must be initialized"
 
     def test_is_complete_true_when_all_done(self) -> None:
         tasks = [OKRTask("T-X", "done", TaskStatus.COMPLETE)]
@@ -153,11 +153,11 @@ class TestObjective:
             deadline="2099-12-31",
             tasks=tasks,
         )
-        assert obj.is_complete is True
+        assert obj.is_complete is True, "Object must be initialized"
 
     def test_is_complete_no_tasks(self, obj_no_tasks: Objective) -> None:
         # vacuously True: all() over empty iterable
-        assert obj_no_tasks.is_complete is True
+        assert obj_no_tasks.is_complete is True, "Object must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -182,7 +182,7 @@ class TestOKRSummary:
         )
 
     def test_pct_complete(self, summary: OKRSummary) -> None:
-        assert summary.pct_complete == 80.0
+        assert summary.pct_complete == 80.0, "pct_complete is not valid"
 
     def test_pct_complete_zero_total(self) -> None:
         s = OKRSummary(
@@ -197,10 +197,10 @@ class TestOKRSummary:
             tasks_remaining=[],
             next_admin_actions=[],
         )
-        assert s.pct_complete == 0.0
+        assert s.pct_complete == 0.0, "pct_complete is not valid"
 
     def test_tasks_remaining_list(self, summary: OKRSummary) -> None:
-        assert len(summary.tasks_remaining) == 1
+        assert len(summary.tasks_remaining) == 1, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -225,19 +225,19 @@ class TestOKRTracker:
     def test_get_summary_has_objectives(self, tracker: OKRTracker) -> None:
         summary = tracker.get_summary()
         # Must have at least one objective from the hard-coded build methods
-        assert summary.tasks_total > 0
+        assert summary.tasks_total > 0, "tasks_total must be greater than zero"
 
     def test_get_objective_found(self, tracker: OKRTracker) -> None:
         obj = tracker.get_objective("OBJ-001")
-        assert obj is not None
-        assert obj.obj_id.upper() == "OBJ-001"
+        assert obj is not None, "obj must be initialized"
+        assert obj.obj_id.upper() == "OBJ-001", "Object must be initialized"
 
     def test_get_objective_case_insensitive(self, tracker: OKRTracker) -> None:
-        assert tracker.get_objective("obj-001") is not None
+        assert tracker.get_objective("obj-001") is not None, "Value must be initialized"
 
     def test_get_objective_missing_returns_none(self, tracker: OKRTracker) -> None:
         result = tracker.get_objective("OBJ-NONEXISTENT-999")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_mark_task_complete_valid(self, tracker: OKRTracker) -> None:
         obj = tracker.get_objective("OBJ-001")
@@ -245,33 +245,33 @@ class TestOKRTracker:
         # Get the first task ID
         first_task_id = obj.tasks[0].task_id
         result = tracker.mark_task_complete("OBJ-001", first_task_id, notes="automated test")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_mark_task_complete_notes_saved(self, tracker: OKRTracker) -> None:
         obj = tracker.get_objective("OBJ-001")
-        assert obj is not None
+        assert obj is not None, "obj must be initialized"
         first_task_id = obj.tasks[0].task_id
         tracker.mark_task_complete("OBJ-001", first_task_id, notes="test note")
         # Re-fetch and verify
         updated_obj = tracker.get_objective("OBJ-001")
-        assert updated_obj is not None
+        assert updated_obj is not None, "updated_obj must be initialized"
         task = next(t for t in updated_obj.tasks if t.task_id == first_task_id)
-        assert task.notes == "test note"
+        assert task.notes == "test note", "notes is not valid"
 
     def test_mark_task_complete_nonexistent_obj(self, tracker: OKRTracker) -> None:
         result = tracker.mark_task_complete("OBJ-GHOST", "T-000")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_mark_task_complete_nonexistent_task(self, tracker: OKRTracker) -> None:
         result = tracker.mark_task_complete("OBJ-001", "T-NOPE-9999")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_save_creates_progress_file(self, tracker: OKRTracker, tmp_path) -> None:
         tracker.save()
         progress_file = tmp_path / "okr_progress.json"
-        assert progress_file.exists()
+        assert progress_file.exists(), "Condition must be true"
 
     def test_pct_complete_float(self, tracker: OKRTracker) -> None:
         summary = tracker.get_summary()
         assert isinstance(summary.pct_complete, float)
-        assert 0.0 <= summary.pct_complete <= 100.0
+        assert 0.0 <= summary.pct_complete <= 100.0, "0 is not valid"

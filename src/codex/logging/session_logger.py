@@ -50,7 +50,9 @@ except (ImportError, AttributeError, ModuleNotFoundError):
     _shared_DB_LOCK = None  # type: ignore[assignment]
     _shared_init_db = None  # type: ignore[assignment]
     try:
-        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]
+        from codex.monkeypatch.log_adapters import (
+            log_event as _shared_log_event,  # type: ignore[no-redef]
+        )
     except (IOError, OSError, ModuleNotFoundError, ImportError):
         try:
             from aries_serpent_core.monkeypatch.log_adapters import (  # type: ignore[no-redef]
@@ -228,7 +230,10 @@ def log_event(
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
         module_name = getattr(_shared_log_event, "__module__", "")
-        if module_name in {"codex.monkeypatch.log_adapters", "aries_serpent_core.monkeypatch.log_adapters"}:
+        if module_name in {
+            "codex.monkeypatch.log_adapters",
+            "aries_serpent_core.monkeypatch.log_adapters",
+        }:
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
             adapter_meta: dict[str, Any] = {"session_id": session_id}
             if meta is not None:
@@ -286,7 +291,7 @@ def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> list[dict
     conn = sqlite3.connect(path)
     try:
         rows = conn.execute(
-            "SELECT ts, role, message, seq, meta FROM session_events WHERE session_id=? ORDER BY ts, seq",
+            "SELECT ts, role, message, seq, meta FROM session_events WHERE session_id=? ORDER BY ts, seq",  # noqa: E501
             (session_id,),
         ).fetchall()
     finally:

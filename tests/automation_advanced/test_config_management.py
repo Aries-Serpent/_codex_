@@ -53,11 +53,11 @@ class ConfigChange:
 
 class ConfigValidator:
     """Validates configuration against schema."""
-    
+
     def __init__(self, schema: Dict[str, Any]):
         self.schema = schema
         self.errors = []
-    
+
     def validate(self, config: Dict[str, Any]) -> bool:
         """Validate config against schema."""
         self.errors = []
@@ -73,7 +73,7 @@ class ConfigValidator:
                         f"got {type(value).__name__}"
                     )
         return len(self.errors) == 0
-    
+
     def get_errors(self) -> List[str]:
         """Get validation errors."""
         return self.errors
@@ -81,21 +81,21 @@ class ConfigValidator:
 
 class ConfigTemplateRenderer:
     """Renders configuration templates with variable substitution."""
-    
+
     def __init__(self):
         self.variables = {}
-    
+
     def set_variable(self, name: str, value: str) -> None:
         """Set a template variable."""
         self.variables[name] = value
-    
+
     def render(self, template: str) -> str:
         """Render template with variables."""
         result = template
         for var_name, var_value in self.variables.items():
             result = result.replace(f"${{{var_name}}}", str(var_value))
         return result
-    
+
     def render_dict(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """Render all string values in a dictionary."""
         result = {}
@@ -106,7 +106,7 @@ class ConfigTemplateRenderer:
                 result[key] = self.render_dict(value)
             elif isinstance(value, list):
                 result[key] = [
-                    self.render(item) if isinstance(item, str) 
+                    self.render(item) if isinstance(item, str)
                     else self.render_dict(item) if isinstance(item, dict)
                     else item
                     for item in value
@@ -118,17 +118,17 @@ class ConfigTemplateRenderer:
 
 class ConfigDriftDetector:
     """Detects configuration drift between current and desired state."""
-    
+
     def __init__(self, desired_config: Dict[str, Any]):
         self.desired_config = desired_config
         self.drift_items = []
-    
+
     def detect(self, current_config: Dict[str, Any]) -> bool:
         """Detect if current config drifts from desired."""
         self.drift_items = []
         self._compare_dicts(self.desired_config, current_config, "")
         return len(self.drift_items) == 0
-    
+
     def _compare_dicts(self, desired: Dict, current: Dict, prefix: str) -> None:
         """Recursively compare nested dictionaries."""
         all_keys = set(desired.keys()) | set(current.keys())
@@ -144,7 +144,7 @@ class ConfigDriftDetector:
                 self.drift_items.append(
                     (full_path, desired[key], current[key], "changed")
                 )
-    
+
     def get_drift_items(self) -> List[tuple]:
         """Get detected drift items."""
         return self.drift_items
@@ -152,10 +152,10 @@ class ConfigDriftDetector:
 
 class ConfigAuditTrail:
     """Maintains audit trail of configuration changes."""
-    
+
     def __init__(self):
         self.changes: List[ConfigChange] = []
-    
+
     def record_change(
         self,
         change_type: str,
@@ -169,7 +169,7 @@ class ConfigAuditTrail:
         checksum = hashlib.sha256(
             f"{key}{new_value}".encode()
         ).hexdigest()[:8]
-        
+
         change = ConfigChange(
             timestamp=datetime.now().isoformat(),
             user=user,
@@ -180,11 +180,11 @@ class ConfigAuditTrail:
             checksum=checksum
         )
         self.changes.append(change)
-    
+
     def get_changes_for_key(self, key: str) -> List[ConfigChange]:
         """Get all changes for a specific key."""
         return [c for c in self.changes if c.key == key]
-    
+
     def get_all_changes(self) -> List[ConfigChange]:
         """Get all recorded changes."""
         return self.changes
@@ -192,28 +192,28 @@ class ConfigAuditTrail:
 
 class SecretManager:
     """Manages configuration secrets with encryption."""
-    
+
     def __init__(self):
         self.secrets = {}
         self.encryption_key = "default-test-key"
-    
+
     def store_secret(self, name: str, value: str) -> None:
         """Store a secret value using bcrypt for secure hashing."""
         # Use bcrypt for secure password hashing (resistant to brute-force attacks)
         salt = bcrypt.gensalt(rounds=12)
         encrypted = bcrypt.hashpw(value.encode('utf-8'), salt).decode('utf-8')
         self.secrets[name] = {"encrypted": encrypted, "original": value}
-    
+
     def retrieve_secret(self, name: str) -> Optional[str]:
         """Retrieve a secret value."""
         if name in self.secrets:
             return self.secrets[name]["original"]
         return None
-    
+
     def is_encrypted(self, name: str) -> bool:
         """Check if secret is encrypted."""
         return name in self.secrets
-    
+
     def rotate_secret(self, name: str, new_value: str) -> None:
         """Rotate a secret to a new value."""
         if name in self.secrets:
@@ -222,22 +222,22 @@ class SecretManager:
 
 class MultiEnvironmentConfigManager:
     """Manages configurations across multiple environments."""
-    
+
     def __init__(self):
         self.environments: Dict[str, ConfigEnvironment] = {}
-    
+
     def add_environment(self, env: ConfigEnvironment) -> None:
         """Add an environment configuration."""
         self.environments[env.name] = env
-    
+
     def get_environment(self, name: str) -> Optional[ConfigEnvironment]:
         """Get environment configuration."""
         return self.environments.get(name)
-    
+
     def get_all_environments(self) -> List[str]:
         """Get all environment names."""
         return list(self.environments.keys())
-    
+
     def validate_environment(self, name: str, config: Dict[str, Any]) -> bool:
         """Validate config against environment schema."""
         env = self.get_environment(name)
@@ -249,23 +249,23 @@ class MultiEnvironmentConfigManager:
 
 class ConfigHotReloader:
     """Enables hot-reload of configuration changes."""
-    
+
     def __init__(self):
         self.current_config = {}
         self.reload_listeners = []
         self.config_version = 0
-    
+
     def register_listener(self, callback) -> None:
         """Register a callback for config changes."""
         self.reload_listeners.append(callback)
-    
+
     def reload_config(self, new_config: Dict[str, Any]) -> None:
         """Reload configuration and notify listeners."""
         self.current_config = new_config
         self.config_version += 1
         for listener in self.reload_listeners:
             listener(new_config, self.config_version)
-    
+
     def get_config_version(self) -> int:
         """Get current config version."""
         return self.config_version
@@ -277,7 +277,7 @@ class ConfigHotReloader:
 
 class TestConfigValidation:
     """Test configuration validation engine."""
-    
+
     def test_validate_config_success(self):
         """Test successful configuration validation."""
         schema = {
@@ -289,11 +289,11 @@ class TestConfigValidation:
             "database": {"host": "localhost"},
             "port": 5432,
         }
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
-        assert len(validator.get_errors()) == 0
-    
+        assert validator.validate(config) is True, "validat is not valid"
+        assert len(validator.get_errors()) == 0, "Collection must not be empty"
+
     def test_validate_config_missing_required(self):
         """Test validation fails when required field is missing."""
         schema = {
@@ -301,22 +301,22 @@ class TestConfigValidation:
             "port": {"type": int, "required": True},
         }
         config = {"database": {}}
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is False
-        assert any("port" in error for error in validator.get_errors())
-    
+        assert validator.validate(config) is False, "validat is not valid"
+        assert any("port" in error for error in validator.get_errors()), "Error should be raised or set"
+
     def test_validate_config_type_mismatch(self):
         """Test validation fails on type mismatch."""
         schema = {
             "port": {"type": int, "required": True},
         }
         config = {"port": "5432"}
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is False
-        assert any("port" in error for error in validator.get_errors())
-    
+        assert validator.validate(config) is False, "validat is not valid"
+        assert any("port" in error for error in validator.get_errors()), "Error should be raised or set"
+
     def test_validate_nested_config(self):
         """Test validation of nested configuration."""
         schema = {
@@ -330,49 +330,49 @@ class TestConfigValidation:
             },
             "port": 5432,
         }
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
+        assert validator.validate(config) is True, "validat is not valid"
 
 
 class TestConfigTemplateRendering:
     """Test configuration template rendering with variable substitution."""
-    
+
     def test_render_simple_template(self):
         """Test rendering a simple template."""
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("host", "localhost")
         renderer.set_variable("port", "5432")
-        
+
         template = "postgresql://${host}:${port}/mydb"
         result = renderer.render(template)
-        
-        assert result == "postgresql://localhost:5432/mydb"
-    
+
+        assert result == "postgresql://localhost:5432/mydb", "Result must not be empty"
+
     def test_render_dict_template(self):
         """Test rendering template dictionary."""
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("env", "production")
         renderer.set_variable("region", "us-east-1")
-        
+
         template_dict = {
             "environment": "${env}",
             "region": "${region}",
             "bucket": "config-${env}-${region}",
         }
-        
+
         result = renderer.render_dict(template_dict)
-        
-        assert result["environment"] == "production"
-        assert result["region"] == "us-east-1"
-        assert result["bucket"] == "config-production-us-east-1"
-    
+
+        assert result["environment"] == "production", "Result must not be empty"
+        assert result["region"] == "us-east-1", "Result must not be empty"
+        assert result["bucket"] == "config-production-us-east-1", "Result must not be empty"
+
     def test_render_nested_template(self):
         """Test rendering nested template structures."""
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("db_host", "postgres.internal")
         renderer.set_variable("db_port", "5432")
-        
+
         template_dict = {
             "database": {
                 "primary": {
@@ -385,77 +385,77 @@ class TestConfigTemplateRendering:
                 }
             }
         }
-        
+
         result = renderer.render_dict(template_dict)
-        
-        assert result["database"]["primary"]["host"] == "postgres.internal"
-        assert result["database"]["replica"]["host"] == "replica-postgres.internal"
-    
+
+        assert result["database"]["primary"]["host"] == "postgres.internal", "Result must not be empty"
+        assert result["database"]["replica"]["host"] == "replica-postgres.internal", "Result must not be empty"
+
     def test_render_list_with_variables(self):
         """Test rendering lists containing variables."""
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("replicas", "3")
-        
+
         template_dict = {
             "services": [
                 "${replicas}",
                 "service-${replicas}",
             ]
         }
-        
+
         result = renderer.render_dict(template_dict)
-        
-        assert result["services"][0] == "3"
-        assert result["services"][1] == "service-3"
+
+        assert result["services"][0] == "3", "Result must not be empty"
+        assert result["services"][1] == "service-3", "Result must not be empty"
 
 
 class TestConfigDriftDetection:
     """Test configuration drift detection."""
-    
+
     def test_detect_no_drift(self):
         """Test when desired and current configs match."""
         desired = {"host": "localhost", "port": 5432}
         current = {"host": "localhost", "port": 5432}
-        
+
         detector = ConfigDriftDetector(desired)
-        assert detector.detect(current) is True
-        assert len(detector.get_drift_items()) == 0
-    
+        assert detector.detect(current) is True, "detect is not valid"
+        assert len(detector.get_drift_items()) == 0, "Collection must not be empty"
+
     def test_detect_value_drift(self):
         """Test detection of changed values."""
         desired = {"host": "localhost", "port": 5432}
         current = {"host": "remotehost", "port": 5432}
-        
+
         detector = ConfigDriftDetector(desired)
-        assert detector.detect(current) is False
-        
+        assert detector.detect(current) is False, "detect is not valid"
+
         drift = detector.get_drift_items()
-        assert len(drift) == 1
-        assert drift[0][0] == "host"
-        assert drift[0][3] == "changed"
-    
+        assert len(drift) == 1, "Drift must not be empty"
+        assert drift[0][0] == "host", "Condition must be true"
+        assert drift[0][3] == "changed", "Condition must be true"
+
     def test_detect_missing_key(self):
         """Test detection of missing keys."""
         desired = {"host": "localhost", "port": 5432}
         current = {"host": "localhost"}
-        
+
         detector = ConfigDriftDetector(desired)
-        assert detector.detect(current) is False
-        
+        assert detector.detect(current) is False, "detect is not valid"
+
         drift = detector.get_drift_items()
-        assert any(item[3] == "missing" for item in drift)
-    
+        assert any(item[3] == "missing" for item in drift), "Item must not be empty"
+
     def test_detect_extra_key(self):
         """Test detection of extra keys."""
         desired = {"host": "localhost"}
         current = {"host": "localhost", "port": 5432}
-        
+
         detector = ConfigDriftDetector(desired)
-        assert detector.detect(current) is False
-        
+        assert detector.detect(current) is False, "detect is not valid"
+
         drift = detector.get_drift_items()
-        assert any(item[3] == "extra" for item in drift)
-    
+        assert any(item[3] == "extra" for item in drift), "Item must not be empty"
+
     def test_detect_nested_drift(self):
         """Test detection of drift in nested structures."""
         desired = {
@@ -470,98 +470,98 @@ class TestConfigDriftDetection:
                 "replica": {"host": "replica-changed"}
             }
         }
-        
+
         detector = ConfigDriftDetector(desired)
-        assert detector.detect(current) is False
-        
+        assert detector.detect(current) is False, "detect is not valid"
+
         drift = detector.get_drift_items()
-        assert any("replica" in item[0] for item in drift)
+        assert any("replica" in item[0] for item in drift), "Item must not be empty"
 
 
 class TestConfigAuditTrail:
     """Test configuration audit trail tracking."""
-    
+
     def test_record_single_change(self):
         """Test recording a single configuration change."""
         trail = ConfigAuditTrail()
         trail.record_change("updated", "database.host", "localhost", "remotehost", "admin")
-        
+
         changes = trail.get_all_changes()
-        assert len(changes) == 1
-        assert changes[0].key == "database.host"
-        assert changes[0].old_value == "localhost"
-        assert changes[0].new_value == "remotehost"
-    
+        assert len(changes) == 1, "Changes must not be empty"
+        assert changes[0].key == "database.host", "Data must not be empty"
+        assert changes[0].old_value == "localhost", "Value must be initialized"
+        assert changes[0].new_value == "remotehost", "Value must be initialized"
+
     def test_record_multiple_changes(self):
         """Test recording multiple configuration changes."""
         trail = ConfigAuditTrail()
         trail.record_change("created", "api.key", None, "secret123", "system")
         trail.record_change("updated", "database.port", 5432, 5433, "admin")
         trail.record_change("deleted", "deprecated.option", "value", None, "admin")
-        
+
         changes = trail.get_all_changes()
-        assert len(changes) == 3
-        assert changes[0].change_type == "created"
-        assert changes[1].change_type == "updated"
-        assert changes[2].change_type == "deleted"
-    
+        assert len(changes) == 3, "Changes must not be empty"
+        assert changes[0].change_type == "created", "change_type is not valid"
+        assert changes[1].change_type == "updated", "change_type is not valid"
+        assert changes[2].change_type == "deleted", "change_type is not valid"
+
     def test_get_changes_for_key(self):
         """Test retrieving changes for a specific key."""
         trail = ConfigAuditTrail()
         trail.record_change("created", "database.host", None, "localhost", "admin")
         trail.record_change("updated", "database.host", "localhost", "remotehost", "admin")
         trail.record_change("updated", "database.port", 5432, 5433, "admin")
-        
+
         changes = trail.get_changes_for_key("database.host")
-        assert len(changes) == 2
-        assert all(c.key == "database.host" for c in changes)
-    
+        assert len(changes) == 2, "Changes must not be empty"
+        assert all(c.key == "database.host" for c in changes), "Data must not be empty"
+
     def test_change_checksum_generation(self):
         """Test that change checksums are generated correctly."""
         trail = ConfigAuditTrail()
         trail.record_change("updated", "api.key", "old", "new", "admin")
-        
+
         changes = trail.get_all_changes()
-        assert len(changes[0].checksum) == 8
-        assert changes[0].checksum.isalnum()
+        assert len(changes[0].checksum) == 8, "Collection must not be empty"
+        assert changes[0].checksum.isalnum(), "Condition must be true"
 
 
 class TestSecretManagement:
     """Test secret management and encryption."""
-    
+
     def test_store_retrieve_secret(self):
         """Test storing and retrieving secrets."""
         manager = SecretManager()
         manager.store_secret("db_password", "super_secret_123")
-        
+
         retrieved = manager.retrieve_secret("db_password")
-        assert retrieved == "super_secret_123"
-    
+        assert retrieved == "super_secret_123", "retrieved is not valid"
+
     def test_secret_encryption_status(self):
         """Test checking encryption status of secrets."""
         manager = SecretManager()
-        assert manager.is_encrypted("nonexistent") is False
-        
+        assert manager.is_encrypted("nonexistent") is False, "Condition must be true"
+
         manager.store_secret("api_key", "key123")
-        assert manager.is_encrypted("api_key") is True
-    
+        assert manager.is_encrypted("api_key") is True, "Condition must be true"
+
     def test_retrieve_nonexistent_secret(self):
         """Test retrieving a secret that doesn't exist."""
         manager = SecretManager()
-        assert manager.retrieve_secret("nonexistent") is None
-    
+        assert manager.retrieve_secret("nonexistent") is None, "Condition must be true"
+
     def test_rotate_secret(self):
         """Test rotating a secret to a new value."""
         manager = SecretManager()
         manager.store_secret("db_password", "old_password")
         old_value = manager.retrieve_secret("db_password")
-        
+
         manager.rotate_secret("db_password", "new_password")
         new_value = manager.retrieve_secret("db_password")
-        
-        assert old_value == "old_password"
-        assert new_value == "new_password"
-    
+
+        assert old_value == "old_password", "Value must be initialized"
+        assert new_value == "new_password", "Value must be initialized"
+
     def test_multiple_secrets(self):
         """Test managing multiple secrets."""
         manager = SecretManager()
@@ -570,35 +570,35 @@ class TestSecretManagement:
             "api_key": "api_secret",
             "jwt_token": "jwt_secret",
         }
-        
+
         for name, value in secrets.items():
             manager.store_secret(name, value)
-        
+
         for name, expected_value in secrets.items():
-            assert manager.retrieve_secret(name) == expected_value
+            assert manager.retrieve_secret(name) == expected_value, "Value must be initialized"
 
 
 class TestMultiEnvironmentConfig:
     """Test multi-environment configuration management."""
-    
+
     def test_add_environment(self):
         """Test adding environment configurations."""
         manager = MultiEnvironmentConfigManager()
-        
+
         env = ConfigEnvironment(
             name="production",
             variables={"LOG_LEVEL": "info"},
             secrets={"DB_PASSWORD": "prod_secret"},
             schema={"database": {"type": dict, "required": True}}
         )
-        
+
         manager.add_environment(env)
-        assert manager.get_environment("production") is not None
-    
+        assert manager.get_environment("production") is not None, "Value must be initialized"
+
     def test_get_all_environments(self):
         """Test retrieving all environment names."""
         manager = MultiEnvironmentConfigManager()
-        
+
         envs = ["development", "staging", "production"]
         for env_name in envs:
             env = ConfigEnvironment(
@@ -608,64 +608,64 @@ class TestMultiEnvironmentConfig:
                 schema={}
             )
             manager.add_environment(env)
-        
+
         all_envs = manager.get_all_environments()
-        assert set(all_envs) == set(envs)
-    
+        assert set(all_envs) == set(envs), "Condition must be true"
+
     def test_validate_environment_config(self):
         """Test validating config against environment schema."""
         manager = MultiEnvironmentConfigManager()
-        
+
         schema = {
             "database": {"type": dict, "required": True},
             "port": {"type": int, "required": True},
         }
-        
+
         env = ConfigEnvironment(
             name="production",
             variables={},
             secrets={},
             schema=schema
         )
-        
+
         manager.add_environment(env)
-        
+
         valid_config = {"database": {}, "port": 5432}
         invalid_config = {"database": {}}
-        
+
         assert manager.validate_environment("production", valid_config) is True
         assert manager.validate_environment("production", invalid_config) is False
-    
+
     def test_environment_specific_validation(self):
         """Test different validation rules per environment."""
         manager = MultiEnvironmentConfigManager()
-        
+
         dev_schema = {
             "database": {"type": dict, "required": False},
         }
-        
+
         prod_schema = {
             "database": {"type": dict, "required": True},
             "backup": {"type": dict, "required": True},
         }
-        
+
         manager.add_environment(ConfigEnvironment(
             name="development",
             variables={},
             secrets={},
             schema=dev_schema
         ))
-        
+
         manager.add_environment(ConfigEnvironment(
             name="production",
             variables={},
             secrets={},
             schema=prod_schema
         ))
-        
+
         minimal_config = {}
         prod_config = {"database": {}, "backup": {}}
-        
+
         assert manager.validate_environment("development", minimal_config) is True
         assert manager.validate_environment("production", minimal_config) is False
         assert manager.validate_environment("production", prod_config) is True
@@ -673,75 +673,75 @@ class TestMultiEnvironmentConfig:
 
 class TestConfigHotReload:
     """Test configuration hot-reload capability."""
-    
+
     def test_reload_config(self):
         """Test reloading configuration."""
         reloader = ConfigHotReloader()
-        
+
         new_config = {"database": "localhost", "port": 5432}
         reloader.reload_config(new_config)
-        
-        assert reloader.current_config == new_config
-        assert reloader.get_config_version() == 1
-    
+
+        assert reloader.current_config == new_config, "current_config is not valid"
+        assert reloader.get_config_version() == 1, "Condition must be true"
+
     def test_register_and_notify_listeners(self):
         """Test registering listeners and notifying on reload."""
         reloader = ConfigHotReloader()
         listener_called = {"count": 0, "config": None, "version": None}
-        
+
         def listener(config, version):
             listener_called["count"] += 1
             listener_called["config"] = config
             listener_called["version"] = version
-        
+
         reloader.register_listener(listener)
-        
+
         new_config = {"debug": True}
         reloader.reload_config(new_config)
-        
-        assert listener_called["count"] == 1
-        assert listener_called["config"] == new_config
-        assert listener_called["version"] == 1
-    
+
+        assert listener_called["count"] == 1, "Count must be greater than zero"
+        assert listener_called["config"] == new_config, "Condition must be true"
+        assert listener_called["version"] == 1, "Condition must be true"
+
     def test_multiple_listeners(self):
         """Test multiple listeners are notified."""
         reloader = ConfigHotReloader()
         calls = {"listener1": 0, "listener2": 0}
-        
+
         def listener1(config, version):
             calls["listener1"] += 1
-        
+
         def listener2(config, version):
             calls["listener2"] += 1
-        
+
         reloader.register_listener(listener1)
         reloader.register_listener(listener2)
-        
+
         reloader.reload_config({"key": "value"})
         reloader.reload_config({"key": "value2"})
-        
-        assert calls["listener1"] == 2
-        assert calls["listener2"] == 2
-    
+
+        assert calls["listener1"] == 2, "Condition must be true"
+        assert calls["listener2"] == 2, "Condition must be true"
+
     def test_config_version_increment(self):
         """Test that config version increments on reload."""
         reloader = ConfigHotReloader()
-        
-        assert reloader.get_config_version() == 0
-        
+
+        assert reloader.get_config_version() == 0, "Condition must be true"
+
         reloader.reload_config({"v": 1})
-        assert reloader.get_config_version() == 1
-        
+        assert reloader.get_config_version() == 1, "Condition must be true"
+
         reloader.reload_config({"v": 2})
-        assert reloader.get_config_version() == 2
-        
+        assert reloader.get_config_version() == 2, "Condition must be true"
+
         reloader.reload_config({"v": 3})
-        assert reloader.get_config_version() == 3
+        assert reloader.get_config_version() == 3, "Condition must be true"
 
 
 class TestConfigIntegration:
     """Integration tests for configuration management system."""
-    
+
     def test_full_config_workflow(self):
         """Test complete configuration management workflow."""
         # 1. Define schema
@@ -749,12 +749,12 @@ class TestConfigIntegration:
             "database": {"type": dict, "required": True},
             "cache": {"type": dict, "required": False},
         }
-        
+
         # 2. Validate initial config
         validator = ConfigValidator(schema)
         initial_config = {"database": {"host": "localhost"}}
-        assert validator.validate(initial_config) is True
-        
+        assert validator.validate(initial_config) is True, "validat is not valid"
+
         # 3. Render template
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("env", "production")
@@ -767,22 +767,22 @@ class TestConfigIntegration:
             }
         }
         rendered = renderer.render_dict(template_config)
-        assert "production" in rendered["database"]["host"]
-        
+        assert "production" in rendered["database"]["host"], "Data must not be empty"
+
         # 4. Track changes
         trail = ConfigAuditTrail()
         trail.record_change("created", "database.host", None, "db-production.internal", "admin")
-        assert len(trail.get_all_changes()) == 1
-        
+        assert len(trail.get_all_changes()) == 1, "Collection must not be empty"
+
         # 5. Detect drift
         current = {"database": {"host": "db-dev.internal"}, "cache": {"host": "cache-production.internal"}}
         detector = ConfigDriftDetector(rendered)
-        assert detector.detect(current) is False
-    
+        assert detector.detect(current) is False, "detect is not valid"
+
     def test_multi_environment_workflow(self):
         """Test configuration across environments."""
         manager = MultiEnvironmentConfigManager()
-        
+
         # Setup environments
         for env_name in ["dev", "staging", "prod"]:
             schema = {
@@ -796,26 +796,26 @@ class TestConfigIntegration:
                 schema=schema
             )
             manager.add_environment(env)
-        
+
         # Validate configs for each environment
         dev_config = {"database": {}, "log_level": "debug"}
         prod_config = {"database": {}, "log_level": "error"}
-        
+
         assert manager.validate_environment("dev", dev_config) is True
         assert manager.validate_environment("prod", prod_config) is True
-    
+
     def test_secret_and_template_integration(self):
         """Test integrating secrets with template rendering."""
         secrets = SecretManager()
         secrets.store_secret("db_password", "secret123")
-        
+
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("password", secrets.retrieve_secret("db_password"))
-        
+
         template = {"database": {"password": "${password}"}}
         rendered = renderer.render_dict(template)
-        
-        assert rendered["database"]["password"] == "secret123"
+
+        assert rendered["database"]["password"] == "secret123", "Data must not be empty"
 
 
 # ============================================================================
@@ -848,7 +848,7 @@ def secret_manager():
 def environment_manager():
     """Provide a multi-environment manager."""
     manager = MultiEnvironmentConfigManager()
-    
+
     for env_name in ["development", "staging", "production"]:
         schema = {
             "database": {"type": dict, "required": True},
@@ -861,7 +861,7 @@ def environment_manager():
             schema=schema
         )
         manager.add_environment(env)
-    
+
     return manager
 
 
@@ -877,34 +877,34 @@ if __name__ == "__main__":
 
 class TestHydraIntegration:
     """Test Hydra configuration framework integration."""
-    
+
     def test_hydra_config_composition(self):
         """Test basic Hydra config composition."""
         # Simulate Hydra config composition
         base_config = {"database": {"host": "localhost", "port": 5432}}
         override_config = {"database": {"host": "remotehost"}}
-        
+
         # Manual merge to simulate Hydra composition
         result = {**base_config}
         result["database"] = {**result["database"], **override_config["database"]}
-        
-        assert result["database"]["host"] == "remotehost"
-        assert result["database"]["port"] == 5432
-    
+
+        assert result["database"]["host"] == "remotehost", "Result must not be empty"
+        assert result["database"]["port"] == 5432, "Result must not be empty"
+
     def test_hydra_interpolation(self):
         """Test Hydra value interpolation (similar to template rendering)."""
         renderer = ConfigTemplateRenderer()
         renderer.set_variable("db_user", "admin")
         renderer.set_variable("db_pass", "secret")
-        
+
         config = {
             "connection_string": "postgresql://${db_user}:${db_pass}@localhost/mydb"
         }
-        
+
         result = renderer.render_dict(config)
-        assert "admin" in result["connection_string"]
-        assert "secret" in result["connection_string"]
-    
+        assert "admin" in result["connection_string"], "Result must not be empty"
+        assert "secret" in result["connection_string"], "Result must not be empty"
+
     def test_structured_config_schema(self):
         """Test Hydra structured config with schema validation."""
         schema = {
@@ -917,7 +917,7 @@ class TestHydraIntegration:
                 "required": False,
             }
         }
-        
+
         config = {
             "defaults": ["_self_", "db/mysql"],
             "database": {
@@ -925,14 +925,14 @@ class TestHydraIntegration:
                 "host": "localhost"
             }
         }
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
+        assert validator.validate(config) is True, "validat is not valid"
 
 
 class TestConfigurationEncryption:
     """Test configuration encryption and decryption."""
-    
+
     def test_secret_field_encryption(self):
         """Test encrypting specific config fields."""
         manager = SecretManager()
@@ -942,67 +942,67 @@ class TestConfigurationEncryption:
                 "password": "secret_pass"
             }
         }
-        
+
         # Store password as secret
         manager.store_secret("db_password", config["database"]["password"])
-        assert manager.is_encrypted("db_password") is True
-    
+        assert manager.is_encrypted("db_password") is True, "Condition must be true"
+
     def test_config_with_encrypted_fields(self):
         """Test working with configs containing encrypted fields."""
         manager = SecretManager()
-        
+
         encrypted_fields = ["password", "api_key", "jwt_secret"]
         for field in encrypted_fields:
             manager.store_secret(field, f"{field}_value")
-        
+
         for field in encrypted_fields:
-            assert manager.retrieve_secret(field) == f"{field}_value"
-    
+            assert manager.retrieve_secret(field) == f"{field}_value", "Value must be initialized"
+
     def test_secret_rotation_audit(self):
         """Test audit trail for secret rotation."""
         trail = ConfigAuditTrail()
         manager = SecretManager()
-        
+
         manager.store_secret("api_key", "old_key")
         trail.record_change("created", "api_key", None, "old_key", "admin")
-        
+
         manager.rotate_secret("api_key", "new_key")
         trail.record_change("rotated", "api_key", "old_key", "new_key", "admin")
-        
+
         changes = trail.get_changes_for_key("api_key")
-        assert len(changes) == 2
-        assert changes[1].change_type == "rotated"
+        assert len(changes) == 2, "Changes must not be empty"
+        assert changes[1].change_type == "rotated", "change_type is not valid"
 
 
 class TestConfigurationValidationEdgeCases:
     """Test edge cases in configuration validation."""
-    
+
     def test_validate_empty_config(self):
         """Test validation of empty configuration."""
         schema = {
             "optional_field": {"type": str, "required": False}
         }
         config = {}
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
-    
+        assert validator.validate(config) is True, "validat is not valid"
+
     def test_validate_config_with_none_values(self):
         """Test validation with None values."""
         schema = {
             "field": {"type": type(None), "required": False}
         }
         config = {"field": None}
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
-    
+        assert validator.validate(config) is True, "validat is not valid"
+
     def test_validate_deeply_nested_config(self):
         """Test validation of deeply nested configurations."""
         schema = {
             "level1": {"type": dict, "required": True}
         }
-        
+
         config = {
             "level1": {
                 "level2": {
@@ -1014,31 +1014,31 @@ class TestConfigurationValidationEdgeCases:
                 }
             }
         }
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
-    
+        assert validator.validate(config) is True, "validat is not valid"
+
     def test_validate_config_list_values(self):
         """Test validation with list type values."""
         schema = {
             "servers": {"type": list, "required": True}
         }
-        
+
         config = {
             "servers": ["server1", "server2", "server3"]
         }
-        
+
         validator = ConfigValidator(schema)
-        assert validator.validate(config) is True
+        assert validator.validate(config) is True, "validat is not valid"
 
 
 class TestConfigurationChangeTracking:
     """Test detailed configuration change tracking."""
-    
+
     def test_track_bulk_changes(self):
         """Test tracking multiple configuration changes."""
         trail = ConfigAuditTrail()
-        
+
         changes = [
             ("created", "app.name", None, "MyApp", "deploy_system"),
             ("created", "app.version", None, "1.0.0", "deploy_system"),
@@ -1046,40 +1046,40 @@ class TestConfigurationChangeTracking:
             ("updated", "app.debug", False, True, "developer"),
             ("updated", "database.port", 5432, 5433, "admin"),
         ]
-        
+
         for change_type, key, old_val, new_val, user in changes:
             trail.record_change(change_type, key, old_val, new_val, user)
-        
-        assert len(trail.get_all_changes()) == 5
-    
+
+        assert len(trail.get_all_changes()) == 5, "Collection must not be empty"
+
     def test_track_deletions(self):
         """Test tracking configuration deletions."""
         trail = ConfigAuditTrail()
         trail.record_change("deleted", "deprecated.setting", "old_value", None, "admin")
-        
+
         changes = trail.get_all_changes()
-        assert len(changes) == 1
-        assert changes[0].new_value is None
-        assert changes[0].change_type == "deleted"
-    
+        assert len(changes) == 1, "Changes must not be empty"
+        assert changes[0].new_value is None, "Value must be initialized"
+        assert changes[0].change_type == "deleted", "change_type is not valid"
+
     def test_change_filtering(self):
         """Test filtering changes by key."""
         trail = ConfigAuditTrail()
-        
+
         # Add changes to different keys
         trail.record_change("updated", "app.debug", False, True, "admin")
         trail.record_change("updated", "app.version", "1.0", "1.1", "admin")
         trail.record_change("updated", "db.host", "old", "new", "admin")
         trail.record_change("updated", "app.debug", True, False, "admin")
-        
+
         app_debug_changes = trail.get_changes_for_key("app.debug")
-        assert len(app_debug_changes) == 2
-        assert all(c.key == "app.debug" for c in app_debug_changes)
+        assert len(app_debug_changes) == 2, "App_debug_changes must not be empty"
+        assert all(c.key == "app.debug" for c in app_debug_changes), "key is not valid"
 
 
 class TestMultiEnvironmentDriftDetection:
     """Test drift detection across environments."""
-    
+
     def test_environment_specific_drift(self):
         """Test detecting drift in environment-specific configs."""
         # Define desired config for each environment
@@ -1087,84 +1087,84 @@ class TestMultiEnvironmentDriftDetection:
             "dev": {"log_level": "debug", "debug": True},
             "prod": {"log_level": "error", "debug": False},
         }
-        
+
         # Current configs that may have drifted
         current_configs = {
             "dev": {"log_level": "info", "debug": True},
             "prod": {"log_level": "error", "debug": False},
         }
-        
+
         detectors = {}
         for env in ["dev", "prod"]:
             detector = ConfigDriftDetector(desired_configs[env])
             detectors[env] = detector
-        
+
         # Check drift
         dev_drift = detectors["dev"].detect(current_configs["dev"])
         prod_drift = detectors["prod"].detect(current_configs["prod"])
-        
-        assert dev_drift is False  # dev drifted
-        assert prod_drift is True  # prod is in sync
+
+        assert dev_drift is False, "dev_drift is not valid"
+        assert prod_drift is True, "prod_drift is not valid"
 
 
 class TestConfigurationConsistency:
     """Test configuration consistency checks."""
-    
+
     def test_cross_field_consistency(self):
         """Test validating consistency between related fields."""
         config = {
             "min_workers": 2,
             "max_workers": 4,
         }
-        
+
         # Validate cross-field constraint
-        assert config["min_workers"] <= config["max_workers"]
-    
+        assert config["min_workers"] <= config["max_workers"], "Condition must be true"
+
     def test_dependent_field_validation(self):
         """Test validation of dependent configuration fields."""
         schema = {
             "enable_cache": {"type": bool, "required": True},
             "cache_ttl": {"type": int, "required": False},
         }
-        
+
         # Valid: cache enabled with TTL
         config1 = {"enable_cache": True, "cache_ttl": 3600}
         validator = ConfigValidator(schema)
-        assert validator.validate(config1) is True
-        
+        assert validator.validate(config1) is True, "validat is not valid"
+
         # Valid: cache disabled without TTL
         config2 = {"enable_cache": False}
-        assert validator.validate(config2) is True
+        assert validator.validate(config2) is True, "validat is not valid"
 
 
 class TestSecretManagementAdvanced:
     """Advanced secret management tests."""
-    
+
     def test_secret_metadata(self):
         """Test storing and retrieving secret metadata."""
         manager = SecretManager()
         manager.store_secret("db_password", "secure_value")
-        
+
         # Verify secret exists and is encrypted
-        assert manager.is_encrypted("db_password") is True
-        assert manager.retrieve_secret("db_password") == "secure_value"
-    
+        assert manager.is_encrypted("db_password") is True, "Condition must be true"
+        assert manager.retrieve_secret("db_password") == "secure_value", "Value must be initialized"
+
     def test_bulk_secret_management(self):
         """Test managing multiple secrets."""
         manager = SecretManager()
-        
+
         secrets_config = {
             "prod_db_password": "prod_pass_123",
             "staging_db_password": "staging_pass_456",
             "dev_db_password": "dev_pass_789",
         }
-        
+
         for name, value in secrets_config.items():
             manager.store_secret(name, value)
-        
+
         for name, expected_value in secrets_config.items():
             actual_value = manager.retrieve_secret(name)
-            assert actual_value == expected_value
+            assert actual_value == expected_value, "Value must be initialized"
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from codex.logging.structured_logger import logger
 # Test Metadata Calculation
 #     """Run all tests."""
 #     logger.info("Running property-based tests for metadata calculations...\n")
-# 
+#
 # #!/usr/bin/env python3
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
@@ -37,20 +37,20 @@ from codex.logging.structured_logger import logger
 #         def decorator(func):
 #             return func
 #             return func
-# 
+#
 #         return decorator
-# 
+#
 #     class st:
 #         @staticmethod
 #         def integers(*args, **kwargs):
 #             return None
-# 
+#
 #         @staticmethod
 #         def lists(*args, **kwargs):
 #             return None
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 #     assert not is_valid_sha256(, "not is not valid"
 #     """
 #     Calculate total space in MB format.
@@ -61,12 +61,12 @@ from codex.logging.structured_logger import logger
 #     total_mb = total_bytes / (1024 * 1024)
 #     return f"{total_mb:.2f}MB"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 #     assert not is_valid_sha256(, "not is not valid"
 #     """Check if a path is relative (not absolute)."""
 #     return not Path(path_str).is_absolute()
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 #     assert not is_valid_sha256(, "not is not valid"
 #     """Validate SHA256 hash format."""
 #     if not isinstance(hash_str, str):
@@ -79,7 +79,7 @@ from codex.logging.structured_logger import logger
 #     except ValueError:
 #         return False
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 # # Property-based tests
 # @pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 # @given(sizes=st.lists(st.integers(min_value=0, max_value=100000000), min_size=1, max_size=100))
@@ -90,13 +90,13 @@ from codex.logging.structured_logger import logger
 #     result = calculate_total_space_archived(sizes)
 #     assert result.endswith("MB"), "Result must not be empty"
 #     result_mb = float(result[:-2])
-# 
+#
 #     # Should match within floating point precision
 #     assert (abs(result_mb - expected_mb) < 0.01), f"Expected {expected_mb:.2f}MB, got {result_mb:.2f}MB"
 #     # Invalid formats
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 # @pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 # @given(sizes=st.lists(st.integers(min_value=0, max_value=1000000), min_size=1))
 #     assert not is_valid_sha256(, "not is not valid"
@@ -105,7 +105,7 @@ from codex.logging.structured_logger import logger
 #     result_mb = float(result[:-2])
 #     assert result_mb >= 0, "result_mb must be greater than zero"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 # @pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 # @given(sizes=st.lists(st.integers(min_value=0, max_value=1000000), min_size=2))
 #     assert not is_valid_sha256(, "not is not valid"
@@ -118,13 +118,13 @@ from codex.logging.structured_logger import logger
 #     bytes1 = sum(part1)
 #     bytes2 = sum(part2)
 #     total_parts = calculate_total_space_archived([bytes1, bytes2])
-# 
+#
 #     # Should be equal
 #     assert total_combined == total_parts, "total_combined is not valid"
 #     # Invalid formats
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 #     assert not is_valid_sha256(, "not is not valid"
 #     """Test relative path detection."""
 #     # Relative paths
@@ -137,7 +137,7 @@ from codex.logging.structured_logger import logger
 #     # Invalid formats
 #     assert not is_valid_sha256("not_a_hash"), "not is not valid"
 #     assert not is_valid_sha256(, "not is not valid"
-# 
+#
 #     assert not is_valid_sha256(, "not is not valid"
 #     """Test SHA256 hash format validation."""
 #     # Valid SHA256
@@ -155,25 +155,25 @@ from codex.logging.structured_logger import logger
 #     )  # Too long
 #     assert not is_valid_sha256("g" * 64), "not is not valid"
 # def run_tests():
-# 
+#
 # def run_tests():
 #     """Test actual metadata.json if it exists."""
 #     metadata_path = Path(__file__).parent.parent / "misc" / "repo-owner-review" / "metadata.json"
 #     if not metadata_path.exists():
 #         logger.info(f"⚠️  Metadata file not found: {metadata_path}")
 #         return
-# 
+#
 #     with open(metadata_path) as f:
 #         metadata = json.load(f)
 #     # Check structure
 #     assert "files_archived" in metadata, "Data must not be empty"
 #     assert "total_space_archived" in metadata, "Data must not be empty"
-# 
+#
 #     # Validate total_space_archived format
 #     total_space = metadata["total_space_archived"]
 #     assert isinstance(total_space, str)
 #     assert total_space.endswith("MB"), "Condition must be true"
-# 
+#
 #     # Validate it matches sum of size_bytes
 #     files = metadata["files_archived"]
 #     if files:
@@ -183,14 +183,14 @@ from codex.logging.structured_logger import logger
 #         actual_mb_str = total_space[:-2].lstrip("~")
 #         actual_mb = float(actual_mb_str)
 #         actual_mb = float(actual_mb_str)
-# 
+#
 #         assert (abs(actual_mb - expected_mb) < 0.01), f"total_space_archived ({actual_mb:.2f}MB) doesn't match sum of size_bytes ({expected_mb:.2f}MB)"
 #     # Validate paths are relative
 #     for file_entry in files:
 #         original_path = file_entry.get("original_path", "")
 #         archived_path = file_entry.get("archived_path", "")
 #         archived_path = file_entry.get("archived_path", "")
-# 
+#
 #         assert is_relative_path(original_path), f"original_path should be relative: {original_path}"
 #         assert is_relative_path(archived_path), f"archived_path should be relative: {archived_path}"
 #         # Validate SHA256 if present

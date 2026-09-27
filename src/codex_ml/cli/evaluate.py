@@ -33,7 +33,12 @@ from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLErrorType, safe_
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency
     SafetyConfig = None
     sanitize_prompt = None
 
@@ -287,7 +292,12 @@ def evaluate(
                 dtype=None,
                 local_files_only=True,
             )
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - defensive
             return {"error": f"Failed to load model: {exc}"}
 
     ckpt_dir = epoch_dir

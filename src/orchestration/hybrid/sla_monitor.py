@@ -114,7 +114,7 @@ class SLAMonitor:
         metadata: dict[str, Any] | None = None,
     ) -> None:
         """Record an SLA measurement"""
-        
+
         measurement = SLAMeasurement(
             metric=metric,
             value=value,
@@ -134,10 +134,7 @@ class SLAMonitor:
         window_start = now - window_seconds
 
         # Filter measurements in window
-        recent = [
-            m for m in self._measurements
-            if m.timestamp >= window_start
-        ]
+        recent = [m for m in self._measurements if m.timestamp >= window_start]
 
         metrics_summary = {}
         breaches = []
@@ -152,9 +149,7 @@ class SLAMonitor:
                 continue
 
             # Calculate average for this metric
-            avg_value = sum(m.value for m in metric_measurements) / len(
-                metric_measurements
-            )
+            avg_value = sum(m.value for m in metric_measurements) / len(metric_measurements)
             metrics_summary[metric_type.value] = avg_value
 
             # Check thresholds
@@ -164,9 +159,7 @@ class SLAMonitor:
                     f"(threshold: {threshold.breach_threshold:.3f})"
                 )
             elif avg_value < threshold.warning_threshold:
-                logger.warning(
-                    f"{metric_type.value} approaching breach: {avg_value:.3f}"
-                )
+                logger.warning(f"{metric_type.value} approaching breach: {avg_value:.3f}")
 
         # Determine compliance status
         if not recent:
@@ -189,7 +182,7 @@ class SLAMonitor:
             fallback_triggered = False
         else:
             compliance_status = ComplianceStatus.COMPLIANT
-            recommendation = f"SLA COMPLIANT at {canary_percentage*100:.0f}% canary"
+            recommendation = f"SLA COMPLIANT at {canary_percentage * 100:.0f}% canary"
             fallback_triggered = False
 
         report = SLAReport(

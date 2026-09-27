@@ -77,8 +77,13 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
                     self.cache[fullname] = spec
                     return spec
 
-            # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations
+            # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations.
+            # Some requests (for example ``codex`` itself or a package shim without submodules)
+            # legitimately leave no remaining path segments; fail quietly instead of indexing an empty list.
             target_module_parts = parts[1:]  # Remove 'codex' prefix
+            if not target_module_parts:
+                self.cache[fullname] = None
+                return None
 
             # Search in each alternative location
             for search_root in self.search_roots:
@@ -108,7 +113,7 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
                     self.cache[fullname] = spec
                     return spec
 
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
         self.cache[fullname] = None
@@ -120,7 +125,7 @@ try:
     _hook_src_root = _ImportHookPath(__file__).parent / "src"
     if _hook_src_root.exists():
         sys.meta_path.insert(0, _CodexNamespaceFinder(_hook_src_root))
-except Exception:
+except (ImportError, AttributeError, ModuleNotFoundError):
     pass
 
 import asyncio
@@ -362,7 +367,7 @@ def _torch_available() -> bool:
         importlib.import_module("torch")
         nn_mod = importlib.import_module("torch.nn")
         optim_mod = importlib.import_module("torch.optim")
-    except Exception:  # pragma: no cover - defensive guard for import errors
+    except Exception as _err:  # pragma: no cover - defensive guard for import errors
         return False
 
     required_nn_attrs = ("Module", "Linear")
@@ -388,7 +393,7 @@ def _fix_torch_stubs_for_cli_tests():
     they don't load torch stubs. This is needed for tests like
     test_evaluate_cli.py which run CLI subprocesses that import torch modules.
     """
-    import sys
+    pass  # removed redundant `import sys` (top-level import used)
 
     # Check if torch is a stub
     torch_mod = sys.modules.get("torch")
@@ -415,7 +420,7 @@ def _fix_torch_stubs_for_cli_tests():
                 del sys.modules[mod_name]
 
         importlib.import_module("torch")
-    except Exception:
+    except Exception as _err:
         # If real torch not available, just continue with stub
         pass
 
@@ -616,7 +621,7 @@ def _gpu_available() -> bool:
         import torch  # type: ignore
 
         return bool(getattr(torch, "cuda", None) and torch.cuda.is_available())
-    except Exception:
+    except Exception as _err:
         return False
 
 
@@ -697,7 +702,7 @@ for _mod in _safe_modules:
             try:
                 _actual = _imp.import_module(_mod)
                 _sys.modules[_alias] = _actual
-            except Exception:
+            except Exception as _err:
                 pass  # Skip modules with import errors
 
 

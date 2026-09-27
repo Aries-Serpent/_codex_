@@ -38,35 +38,35 @@ class TestBatchCreation:
         """Test creating a batch with exactly 1 item."""
         payload = {"items": [{"id": "item-1", "text": "Single document."}]}
         result = run(payload)
-        assert len(result["scores"]) == 1
-        assert result["summary"]["total"] == 1
-        assert result["scores"][0]["id"] == "item-1"
+        assert len(result["scores"]) == 1, "Collection must not be empty"
+        assert result["summary"]["total"] == 1, "Result must not be empty"
+        assert result["scores"][0]["id"] == "item-1", "Result must not be empty"
 
     def test_create_batch_with_ten_items(self):
         """Test creating a batch with 10 items."""
         items = [{"id": f"item-{i}", "text": f"Document {i}."} for i in range(10)]
         payload = {"items": items}
         result = run(payload)
-        assert len(result["scores"]) == 10
-        assert result["summary"]["total"] == 10
+        assert len(result["scores"]) == 10, "Collection must not be empty"
+        assert result["summary"]["total"] == 10, "Result must not be empty"
 
     def test_create_batch_with_hundred_items(self):
         """Test creating a batch with 100 items."""
         items = [{"id": f"item-{i}", "text": f"Doc {i}."} for i in range(100)]
         payload = {"items": items}
         result = run(payload)
-        assert len(result["scores"]) == 100
-        assert result["summary"]["total"] == 100
+        assert len(result["scores"]) == 100, "Collection must not be empty"
+        assert result["summary"]["total"] == 100, "Result must not be empty"
 
     def test_empty_batch_handling(self):
         """Test that empty batch returns empty results with correct structure."""
         payload = {"items": []}
         result = run(payload)
-        assert result["scores"] == []
-        assert result["summary"]["total"] == 0
-        assert result["summary"]["passed"] == 0
-        assert result["summary"]["failed"] == 0
-        assert result["summary"]["avg_score"] is None
+        assert result["scores"] == [], "Result must not be empty"
+        assert result["summary"]["total"] == 0, "Result must not be empty"
+        assert result["summary"]["passed"] == 0, "Result must not be empty"
+        assert result["summary"]["failed"] == 0, "Result must not be empty"
+        assert result["summary"]["avg_score"] is None, "Result must not be empty"
 
     def test_duplicate_item_detection(self):
         """Test that duplicate IDs are both processed (no deduplication)."""
@@ -76,10 +76,10 @@ class TestBatchCreation:
         ]
         payload = {"items": items}
         result = run(payload)
-        assert len(result["scores"]) == 2
+        assert len(result["scores"]) == 2, "Collection must not be empty"
         # Both should have the same ID
         ids = [s["id"] for s in result["scores"]]
-        assert ids.count("dup-id") == 2
+        assert ids.count("dup-id") == 2, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -98,17 +98,17 @@ class TestScoreComputation:
         }
         result = run(payload)
         dims = result["scores"][0]["dimensions"]
-        assert "concision" in dims
-        assert "acronym_discipline" in dims
-        assert "structure" in dims
-        assert "clarity" in dims
-        assert "citation_lineage" in dims
+        assert "concision" in dims, "Condition must be true"
+        assert "acronym_discipline" in dims, "Condition must be true"
+        assert "structure" in dims, "Condition must be true"
+        assert "clarity" in dims, "Condition must be true"
+        assert "citation_lineage" in dims, "Condition must be true"
 
     def test_score_bounds_lower_zero(self):
         """Test that scores respect lower bound of 0."""
         payload = {"items": [{"id": "x", "text": ""}]}
         result = run(payload)
-        assert result["scores"][0]["total"] >= 0.0
+        assert result["scores"][0]["total"] >= 0.0, "Value must be greater than zero"
 
     def test_score_bounds_upper_one(self):
         """Test that scores respect upper bound of 1."""
@@ -118,23 +118,23 @@ class TestScoreComputation:
         }
         result = run(payload)
         s = result["scores"][0]
-        assert s["total"] <= 1.0
+        assert s["total"] <= 1.0, "Condition must be true"
         dims = s["dimensions"]
-        assert dims["concision"] <= 1.0
-        assert dims["clarity"] <= 1.0
-        assert dims["acronym_discipline"] <= 1.0
+        assert dims["concision"] <= 1.0, "Condition must be true"
+        assert dims["clarity"] <= 1.0, "Condition must be true"
+        assert dims["acronym_discipline"] <= 1.0, "Condition must be true"
 
     def test_empty_text_scores_zero_total(self):
         """Test that empty text produces total score of 0."""
         payload = {"items": [{"id": "x", "text": ""}]}
         result = run(payload)
-        assert result["scores"][0]["total"] == 0.0
+        assert result["scores"][0]["total"] == 0.0, "Result must not be empty"
 
     def test_whitespace_only_scores_zero_total(self):
         """Test that whitespace-only text produces total score of 0."""
         payload = {"items": [{"id": "x", "text": "   \n\t  "}]}
         result = run(payload)
-        assert result["scores"][0]["total"] == 0.0
+        assert result["scores"][0]["total"] == 0.0, "Result must not be empty"
 
     def test_well_structured_text_scores_high(self):
         """Test that well-structured text scores higher."""
@@ -157,7 +157,7 @@ print("hello")
 """
         payload = {"items": [{"id": "x", "text": text}]}
         result = run(payload)
-        assert result["scores"][0]["total"] > 0.3
+        assert result["scores"][0]["total"] > 0.3, "Value must be greater than zero"
 
     def test_score_precision_four_decimals(self):
         """Test that scores are rounded to 4 decimal places."""
@@ -165,7 +165,7 @@ print("hello")
         result = run(payload)
         total = result["scores"][0]["total"]
         # Check that it's rounded to 4 decimal places
-        assert len(str(total).split(".")[-1]) <= 4
+        assert len(str(total).split(".")[-1]) <= 4, "Collection must not be empty"
 
     def test_summary_avg_score_precision(self):
         """Test that summary avg_score is rounded to 4 decimal places."""
@@ -173,7 +173,7 @@ print("hello")
         payload = {"items": items}
         result = run(payload)
         avg = result["summary"]["avg_score"]
-        assert len(str(avg).split(".")[-1]) <= 4
+        assert len(str(avg).split(".")[-1]) <= 4, "Collection must not be empty"
 
     def test_pass_fail_threshold_boundary(self):
         """Test that threshold boundary is correctly applied."""
@@ -183,7 +183,7 @@ print("hello")
             "threshold": 0.0,
         }
         result = run(payload)
-        assert result["scores"][0]["pass"] is True
+        assert result["scores"][0]["pass"] is True, "Result must not be empty"
 
     def test_pass_fail_above_threshold(self):
         """Test that high-quality text passes high threshold."""
@@ -194,7 +194,7 @@ print("hello")
         }
         result = run(payload)
         # This text should score above 0.5
-        assert result["scores"][0]["total"] > 0.3
+        assert result["scores"][0]["total"] > 0.3, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -213,10 +213,10 @@ class TestResultsRetrieval:
         }
         result = run(payload)
         score = result["scores"][0]
-        assert "id" in score
-        assert "total" in score
-        assert "pass" in score
-        assert "dimensions" in score
+        assert "id" in score, "Condition must be true"
+        assert "total" in score, "Condition must be true"
+        assert "pass" in score, "Condition must be true"
+        assert "dimensions" in score, "Condition must be true"
 
     def test_partial_results_structure(self):
         """Test results structure when dimensions not requested."""
@@ -226,10 +226,10 @@ class TestResultsRetrieval:
         }
         result = run(payload)
         score = result["scores"][0]
-        assert "id" in score
-        assert "total" in score
-        assert "pass" in score
-        assert "dimensions" not in score
+        assert "id" in score, "Condition must be true"
+        assert "total" in score, "Condition must be true"
+        assert "pass" in score, "Condition must be true"
+        assert "dimensions" not in score, "Condition must be true"
 
     def test_error_summaries_per_agent(self):
         """Test that summary captures passed/failed counts."""
@@ -239,8 +239,8 @@ class TestResultsRetrieval:
         payload = {"items": items, "threshold": 0.9}
         result = run(payload)
         summary = result["summary"]
-        assert summary["total"] == 5
-        assert summary["passed"] + summary["failed"] == 5
+        assert summary["total"] == 5, "Condition must be true"
+        assert summary["passed"] + summary["failed"] == 5, "Condition must be true"
 
     def test_summary_with_all_passing(self):
         """Test summary when all items pass threshold."""
@@ -250,8 +250,8 @@ class TestResultsRetrieval:
         }
         result = run(payload)
         summary = result["summary"]
-        assert summary["passed"] == 5
-        assert summary["failed"] == 0
+        assert summary["passed"] == 5, "Condition must be true"
+        assert summary["failed"] == 0, "Condition must be true"
 
     def test_summary_with_all_failing(self):
         """Test summary when all items fail threshold."""
@@ -261,8 +261,8 @@ class TestResultsRetrieval:
         }
         result = run(payload)
         summary = result["summary"]
-        assert summary["passed"] == 0
-        assert summary["failed"] == 5
+        assert summary["passed"] == 0, "Condition must be true"
+        assert summary["failed"] == 5, "Condition must be true"
 
     def test_result_id_preservation(self):
         """Test that item IDs are preserved in results."""
@@ -271,13 +271,13 @@ class TestResultsRetrieval:
         payload = {"items": items}
         result = run(payload)
         result_ids = [s["id"] for s in result["scores"]]
-        assert result_ids == ids
+        assert result_ids == ids, "Result must not be empty"
 
     def test_result_id_string_conversion(self):
         """Test that non-string IDs are converted to strings."""
         payload = {"items": [{"id": 123, "text": "text"}]}
         result = run(payload)
-        assert result["scores"][0]["id"] == "123"
+        assert result["scores"][0]["id"] == "123", "Result must not be empty"
         assert isinstance(result["scores"][0]["id"], str)
 
     def test_missing_text_defaults_to_empty_string(self):
@@ -285,7 +285,7 @@ class TestResultsRetrieval:
         payload = {"items": [{"id": "x"}]}  # No 'text' field
         result = run(payload)
         # Should not crash; score should be 0.0
-        assert result["scores"][0]["total"] == 0.0
+        assert result["scores"][0]["total"] == 0.0, "Result must not be empty"
 
 
 # ============================================================================
@@ -301,7 +301,7 @@ class TestConcurrency:
         items = [{"id": f"doc-{i}", "text": f"text {i}"} for i in range(10)]
         payload = {"items": items, "max_concurrency": 4}
         result = asyncio.run(run_async(payload))
-        assert len(result["scores"]) == 10
+        assert len(result["scores"]) == 10, "Collection must not be empty"
 
     def test_race_condition_detection_async_ordering(self):
         """Test that async processing produces consistent results."""
@@ -311,8 +311,8 @@ class TestConcurrency:
         result1 = asyncio.run(run_async(payload))
         result2 = asyncio.run(run_async(payload))
         for s1, s2 in zip(result1["scores"], result2["scores"]):
-            assert s1["id"] == s2["id"]
-            assert s1["total"] == s2["total"]
+            assert s1["id"] == s2["id"], "Condition must be true"
+            assert s1["total"] == s2["total"], "Condition must be true"
 
     def test_thread_safe_state_management_sync(self):
         """Test that sync processing maintains consistent state."""
@@ -320,48 +320,50 @@ class TestConcurrency:
         payload = {"items": items}
         result = run(payload)
         # Verify all items were scored
-        assert len(result["scores"]) == 5
+        assert len(result["scores"]) == 5, "Collection must not be empty"
         # Verify summary matches scores count
-        assert result["summary"]["total"] == 5
+        assert result["summary"]["total"] == 5, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_max_concurrency_semaphore_limit(self):
         """Test that max_concurrency limits concurrent execution."""
         items = [{"id": f"i{i}", "text": "text"} for i in range(20)]
         payload = {"items": items, "max_concurrency": 2}
         result = await run_async(payload)
-        assert len(result["scores"]) == 20
+        assert len(result["scores"]) == 20, "Collection must not be empty"
 
     def test_sync_chunking_with_max_concurrency(self):
         """Test that sync processing with max_concurrency chunks correctly."""
         items = [{"id": f"i{i}", "text": "text"} for i in range(10)]
         payload = {"items": items, "max_concurrency": 3}
         result = run(payload)
-        assert len(result["scores"]) == 10
+        assert len(result["scores"]) == 10, "Collection must not be empty"
         # Verify chunking produced same results
         total_scores = sum(1 for s in result["scores"])
-        assert total_scores == 10
+        assert total_scores == 10, "total_scores is not valid"
 
     def test_async_and_sync_produce_identical_results(self):
         """Test that async and sync produce identical scores."""
         items = [{"id": f"doc-{i}", "text": f"text {i}"} for i in range(5)]
         sync_payload = {"items": items}
         async_payload = {"items": items}
-        
+
         sync_result = run(sync_payload)
         async_result = asyncio.run(run_async(async_payload))
-        
+
         for sync_score, async_score in zip(sync_result["scores"], async_result["scores"]):
-            assert sync_score["id"] == async_score["id"]
-            assert sync_score["total"] == async_score["total"]
-            assert sync_score["pass"] == async_score["pass"]
+            assert sync_score["id"] == async_score["id"], "sync_sc is not valid"
+            assert sync_score["total"] == async_score["total"], "sync_sc is not valid"
+            assert sync_score["pass"] == async_score["pass"], "sync_sc is not valid"
 
     def test_max_concurrency_zero_unlimited(self):
         """Test that max_concurrency=0 means unlimited."""
         items = [{"id": f"i{i}", "text": "text"} for i in range(50)]
         payload = {"items": items, "max_concurrency": 0}
         result = run(payload)
-        assert len(result["scores"]) == 50
+        assert len(result["scores"]) == 50, "Collection must not be empty"
 
 
 # ============================================================================
@@ -379,38 +381,38 @@ class TestFailureModes:
         payload = {"items": items}
         # Should complete without timeout
         result = run(payload)
-        assert len(result["scores"]) == 200
+        assert len(result["scores"]) == 200, "Collection must not be empty"
 
     def test_corrupted_input_data_missing_id(self):
         """Test handling of items with missing ID field."""
         payload = {"items": [{"text": "content"}]}  # No id
         result = run(payload)
         # Should still score, with empty string as ID
-        assert len(result["scores"]) == 1
-        assert result["scores"][0]["id"] == ""
+        assert len(result["scores"]) == 1, "Collection must not be empty"
+        assert result["scores"][0]["id"] == "", "Result must not be empty"
 
     def test_corrupted_input_data_missing_text(self):
         """Test handling of items with missing text field."""
         payload = {"items": [{"id": "x"}]}  # No text
         result = run(payload)
         # Should still score, with empty string as text
-        assert len(result["scores"]) == 1
-        assert result["scores"][0]["total"] == 0.0
+        assert len(result["scores"]) == 1, "Collection must not be empty"
+        assert result["scores"][0]["total"] == 0.0, "Result must not be empty"
 
     def test_corrupted_input_data_null_values(self):
         """Test handling of None/null values in items."""
         payload = {"items": [{"id": None, "text": None}]}
         result = run(payload)
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
         # Should convert None to string
-        assert result["scores"][0]["id"] == "None"
+        assert result["scores"][0]["id"] == "None", "Result must not be empty"
 
     def test_corrupted_input_data_integer_text(self):
         """Test handling of non-string text field."""
         payload = {"items": [{"id": "x", "text": 12345}]}
         result = run(payload)
         # Should convert to string and score
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
         assert isinstance(result["scores"][0]["total"], float)
 
     def test_memory_exhaustion_large_batch_structure(self):
@@ -422,7 +424,7 @@ class TestFailureModes:
         ]
         payload = {"items": items}
         result = run(payload)
-        assert len(result["scores"]) == 500
+        assert len(result["scores"]) == 500, "Collection must not be empty"
 
     def test_agent_crash_during_scoring_invalid_threshold(self):
         """Test handling of invalid threshold values."""
@@ -432,7 +434,7 @@ class TestFailureModes:
         }
         result = run(payload)
         # Should still process, using the value as-is
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
 
     def test_agent_crash_threshold_above_one(self):
         """Test handling of threshold > 1."""
@@ -442,7 +444,7 @@ class TestFailureModes:
         }
         result = run(payload)
         # Should process; everything will fail since scores are <= 1.0
-        assert result["scores"][0]["pass"] is False
+        assert result["scores"][0]["pass"] is False, "Result must not be empty"
 
     def test_invalid_max_concurrency_negative(self):
         """Test that negative max_concurrency raises error."""
@@ -461,7 +463,7 @@ class TestFailureModes:
         }
         result = run(payload)
         # Should convert string to int
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
 
     def test_deprecated_max_workers_parameter(self):
         """Test that max_workers triggers deprecation warning."""
@@ -473,9 +475,9 @@ class TestFailureModes:
             warnings.simplefilter("always")
             result = run(payload)
             # Should have triggered a deprecation warning
-            assert len(w) >= 1
+            assert len(w) >= 1, "W must not be empty"
             assert issubclass(w[0].category, DeprecationWarning)
-            assert "max_workers" in str(w[0].message)
+            assert "max_workers" in str(w[0].message), "Condition must be true"
 
     def test_max_workers_still_functional(self):
         """Test that deprecated max_workers parameter still works."""
@@ -486,7 +488,7 @@ class TestFailureModes:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             result = run(payload)
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
 
     def test_bool_coercion_include_dimensions(self):
         """Test that include_dimensions is coerced to bool."""
@@ -496,7 +498,7 @@ class TestFailureModes:
         }
         result = run(payload)
         # Should include dimensions
-        assert "dimensions" in result["scores"][0]
+        assert "dimensions" in result["scores"][0], "Result must not be empty"
 
     def test_threshold_float_coercion(self):
         """Test that threshold is coerced to float."""
@@ -505,14 +507,14 @@ class TestFailureModes:
             "threshold": "0.5",  # String instead of float
         }
         result = run(payload)
-        assert result["summary"]["threshold"] == 0.5
+        assert result["summary"]["threshold"] == 0.5, "Result must not be empty"
 
     def test_very_long_text_processing(self):
         """Test that very long text is processed without error."""
         long_text = "word " * 10000  # ~50KB text
         payload = {"items": [{"id": "x", "text": long_text}]}
         result = run(payload)
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
         assert isinstance(result["scores"][0]["total"], float)
 
 
@@ -527,14 +529,14 @@ class TestIntegration:
     def test_integration_with_empty_payload_dict(self):
         """Test that empty payload is handled gracefully."""
         result = run({})
-        assert result["scores"] == []
-        assert result["summary"]["total"] == 0
+        assert result["scores"] == [], "Result must not be empty"
+        assert result["summary"]["total"] == 0, "Result must not be empty"
 
     def test_integration_payload_missing_items_key(self):
         """Test that missing 'items' key defaults to empty list."""
         result = run({"threshold": 0.5})
-        assert result["scores"] == []
-        assert result["summary"]["total"] == 0
+        assert result["scores"] == [], "Result must not be empty"
+        assert result["summary"]["total"] == 0, "Result must not be empty"
 
     def test_integration_with_all_payload_options(self):
         """Test using all available payload options simultaneously."""
@@ -548,9 +550,9 @@ class TestIntegration:
             "max_concurrency": 2,
         }
         result = run(payload)
-        assert len(result["scores"]) == 2
-        assert all("dimensions" in s for s in result["scores"])
-        assert result["summary"]["threshold"] == 0.6
+        assert len(result["scores"]) == 2, "Collection must not be empty"
+        assert all("dimensions" in s for s in result["scores"]), "Result must not be empty"
+        assert result["summary"]["threshold"] == 0.6, "Result must not be empty"
 
     def test_integration_async_with_all_options(self):
         """Test async run with all available options."""
@@ -561,40 +563,40 @@ class TestIntegration:
             "max_concurrency": 2,
         }
         result = asyncio.run(run_async(payload))
-        assert len(result["scores"]) == 5
-        assert all("dimensions" in s for s in result["scores"])
+        assert len(result["scores"]) == 5, "Collection must not be empty"
+        assert all("dimensions" in s for s in result["scores"]), "Result must not be empty"
 
     def test_score_item_helper_with_dimensions(self):
         """Test _score_item helper function directly."""
         item = {"id": "test", "text": "# Title\n\nContent"}
         result = _score_item(item, threshold=0.5, include_dims=True)
-        assert result["id"] == "test"
-        assert "dimensions" in result
+        assert result["id"] == "test", "Result must not be empty"
+        assert "dimensions" in result, "Result must not be empty"
         assert isinstance(result["total"], float)
 
     def test_score_item_helper_without_dimensions(self):
         """Test _score_item helper without dimensions."""
         item = {"id": "test", "text": "text"}
         result = _score_item(item, threshold=0.75, include_dims=False)
-        assert result["id"] == "test"
-        assert "dimensions" not in result
+        assert result["id"] == "test", "Result must not be empty"
+        assert "dimensions" not in result, "Result must not be empty"
 
     def test_build_summary_empty_scores(self):
         """Test _build_summary with empty scores list."""
         summary = _build_summary([], threshold=0.75)
-        assert summary["total"] == 0
-        assert summary["passed"] == 0
-        assert summary["failed"] == 0
-        assert summary["avg_score"] is None
+        assert summary["total"] == 0, "Condition must be true"
+        assert summary["passed"] == 0, "Condition must be true"
+        assert summary["failed"] == 0, "Condition must be true"
+        assert summary["avg_score"] is None, "Condition must be true"
 
     def test_build_summary_single_score(self):
         """Test _build_summary with single score."""
         scores = [{"total": 0.8, "pass": True}]
         summary = _build_summary(scores, threshold=0.75)
-        assert summary["total"] == 1
-        assert summary["passed"] == 1
-        assert summary["failed"] == 0
-        assert summary["avg_score"] == 0.8
+        assert summary["total"] == 1, "Condition must be true"
+        assert summary["passed"] == 1, "Condition must be true"
+        assert summary["failed"] == 0, "Condition must be true"
+        assert summary["avg_score"] == 0.8, "Condition must be true"
 
     def test_build_summary_multiple_scores(self):
         """Test _build_summary calculates averages correctly."""
@@ -604,28 +606,28 @@ class TestIntegration:
             {"total": 1.0, "pass": True},
         ]
         summary = _build_summary(scores, threshold=0.75)
-        assert summary["total"] == 3
-        assert summary["passed"] == 2
-        assert summary["failed"] == 1
+        assert summary["total"] == 3, "Condition must be true"
+        assert summary["passed"] == 2, "Condition must be true"
+        assert summary["failed"] == 1, "Condition must be true"
         expected_avg = round((0.6 + 0.8 + 1.0) / 3, 4)
-        assert summary["avg_score"] == expected_avg
+        assert summary["avg_score"] == expected_avg, "Condition must be true"
 
     def test_get_max_concurrency_default(self):
         """Test _get_max_concurrency with default."""
         result = _get_max_concurrency({}, default=4)
-        assert result == 4
+        assert result == 4, "Result must not be empty"
 
     def test_get_max_concurrency_from_payload(self):
         """Test _get_max_concurrency extracts from payload."""
         result = _get_max_concurrency({"max_concurrency": 8}, default=4)
-        assert result == 8
+        assert result == 8, "Result must not be empty"
 
     def test_get_max_concurrency_max_workers_deprecated(self):
         """Test _get_max_concurrency reads max_workers as fallback."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             result = _get_max_concurrency({"max_workers": 6}, default=4)
-        assert result == 6
+        assert result == 6, "Result must not be empty"
 
 
 # ============================================================================
@@ -641,12 +643,12 @@ class TestPerformance:
         import time
         items = [{"id": f"i{i}", "text": f"text {i}"} for i in range(1000)]
         payload = {"items": items}
-        
+
         start = time.time()
         result = run(payload)
         elapsed = time.time() - start
-        
-        assert len(result["scores"]) == 1000
+
+        assert len(result["scores"]) == 1000, "Collection must not be empty"
         assert elapsed < 60, f"Processing 1000 items took {elapsed:.1f}s (target < 60s)"
 
     def test_performance_batch_mode_efficiency(self):
@@ -654,14 +656,14 @@ class TestPerformance:
         items = [{"id": f"i{i}", "text": "x" * 100} for i in range(500)]
         payload = {"items": items, "max_concurrency": 50}
         result = run(payload)
-        assert len(result["scores"]) == 500
+        assert len(result["scores"]) == 500, "Collection must not be empty"
 
     def test_async_processing_efficiency(self):
         """Test that async processing handles concurrency well."""
         items = [{"id": f"i{i}", "text": "text"} for i in range(200)]
         payload = {"items": items, "max_concurrency": 16}
         result = asyncio.run(run_async(payload))
-        assert len(result["scores"]) == 200
+        assert len(result["scores"]) == 200, "Collection must not be empty"
 
     def test_memory_usage_moderate_batch(self):
         """Test that memory usage is reasonable for moderate batches."""
@@ -672,18 +674,18 @@ class TestPerformance:
         ]
         payload = {"items": items}
         result = run(payload)
-        assert len(result["scores"]) == 500
+        assert len(result["scores"]) == 500, "Collection must not be empty"
 
     def test_throughput_measurement(self):
         """Test throughput (items per second)."""
         import time
         items = [{"id": f"i{i}", "text": "text"} for i in range(400)]
         payload = {"items": items}
-        
+
         start = time.time()
         result = run(payload)
         elapsed = time.time() - start
-        
+
         throughput = len(result["scores"]) / elapsed if elapsed > 0 else 0
         # Should process > 100 items/sec (conservative threshold)
         assert throughput > 50, f"Throughput {throughput:.1f} items/sec (target > 100)"
@@ -705,7 +707,7 @@ class TestEdgeCasesAndRegressions:
             ]
         }
         result = run(payload)
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
         assert isinstance(result["scores"][0]["total"], float)
 
     def test_special_characters_in_id(self):
@@ -714,7 +716,7 @@ class TestEdgeCasesAndRegressions:
             "items": [{"id": "test-id:with:colons", "text": "text"}]
         }
         result = run(payload)
-        assert result["scores"][0]["id"] == "test-id:with:colons"
+        assert result["scores"][0]["id"] == "test-id:with:colons", "Result must not be empty"
 
     def test_markdown_with_code_blocks(self):
         """Test scoring of markdown with various code blocks."""
@@ -731,20 +733,20 @@ console.log("test");
 """
         payload = {"items": [{"id": "x", "text": text}]}
         result = run(payload)
-        assert result["scores"][0]["total"] > 0.3
+        assert result["scores"][0]["total"] > 0.3, "Value must be greater than zero"
 
     def test_very_short_text(self):
         """Test scoring of single-character text."""
         payload = {"items": [{"id": "x", "text": "a"}]}
         result = run(payload)
         assert isinstance(result["scores"][0]["total"], float)
-        assert 0 <= result["scores"][0]["total"] <= 1
+        assert 0 <= result["scores"][0]["total"] <= 1, "Result must not be empty"
 
     def test_text_with_only_punctuation(self):
         """Test text that is only punctuation."""
         payload = {"items": [{"id": "x", "text": "!@#$%^&*()"}]}
         result = run(payload)
-        assert len(result["scores"]) == 1
+        assert len(result["scores"]) == 1, "Collection must not be empty"
         assert isinstance(result["scores"][0]["total"], float)
 
 

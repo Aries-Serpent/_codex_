@@ -6,12 +6,12 @@
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #         rate_limited = sum(1 for status in responses if status == 429)
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #         rate_limited = sum(1 for status in responses if status == 429)
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
@@ -37,7 +37,7 @@
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #     def test_invalid_jwt_signature(self, jwt_client):
 #     def test_invalid_jwt_signature(self, jwt_client):
 #         """Test rejection of JWT with invalid signature."""
@@ -51,7 +51,7 @@
 #         )
 #         assert response.status_code == 401, "Response must not be empty"
 #         assert response.status_code == 401, "Response must not be empty"
-# 
+#
 #     def test_expired_jwt_token(self, jwt_client):
 #     def test_expired_jwt_token(self, jwt_client):
 #         """Test rejection of expired JWT tokens."""
@@ -65,7 +65,7 @@
 #         )
 #         assert response.status_code == 401, "Response must not be empty"
 #         assert response.status_code == 401, "Response must not be empty"
-# 
+#
 #     def test_jwt_algorithm_confusion(self, jwt_client):
 #     def test_jwt_algorithm_confusion(self, jwt_client):
 #         """Test protection against JWT algorithm confusion attacks."""
@@ -81,7 +81,7 @@
 #         )
 #         assert response.status_code == 401, "Response must not be empty"
 #         assert response.status_code == 401, "Response must not be empty"
-# 
+#
 #     def test_jwt_with_modified_claims(self, jwt_client):
 #     def test_jwt_with_modified_claims(self, jwt_client):
 #         """Test rejection of JWT with modified claims."""
@@ -97,7 +97,7 @@
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #     def test_missing_api_key(self, secure_client):
 #     def test_missing_api_key(self, secure_client):
 #         """Test rejection of requests without API key."""
@@ -106,7 +106,7 @@
 #         )
 #         assert response.status_code == 401, "Response must not be empty"
 #         assert response.status_code == 401, "Response must not be empty"
-# 
+#
 #     def test_invalid_api_key(self, secure_client):
 #     def test_invalid_api_key(self, secure_client):
 #         """Test rejection of invalid API keys."""
@@ -117,7 +117,7 @@
 #         )
 #         assert response.status_code == 401, "Response must not be empty"
 #         assert response.status_code == 401, "Response must not be empty"
-# 
+#
 #     def test_api_key_timing_attack_resistance(self, secure_client):
 #     def test_api_key_timing_attack_resistance(self, secure_client):
 #         """Test resistance to timing attacks on API key validation."""
@@ -135,7 +135,7 @@
 #         assert variance < 0.1, f"Timing variance too high: {variance:.4f}s"
 #         variance = max(times) - min(times)
 #         assert variance < 0.1, f"Timing variance too high: {variance:.4f}s"
-# 
+#
 #     def test_api_key_in_query_param_rejected(self, secure_client):
 #     def test_api_key_in_query_param_rejected(self, secure_client):
 #         """Test that API keys in query params are rejected (security best practice)."""
@@ -149,7 +149,7 @@
 #         assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #     def test_rate_limit_enforcement(self, secure_client):
 #     def test_rate_limit_enforcement(self, secure_client):
 #         """Test that rate limits are enforced."""
@@ -163,7 +163,7 @@
 #             s == 200 for s in responses
 #         ), "Rate limiting should trigger or all succeed"
 #         ), "Rate limiting should trigger or all succeed"
-# 
+#
 #     def test_rate_limit_bypass_different_headers(self, secure_client):
 #     def test_rate_limit_bypass_different_headers(self, secure_client):
 #         """Test rate limit can't be bypassed by changing headers."""
@@ -176,7 +176,7 @@
 #         # May or may not trigger depending on rate limit config
 #         assert len(responses) == 50, "Responses must not be empty"
 #         assert len(responses) == 50, "Responses must not be empty"
-# 
+#
 #     def test_rate_limit_per_key(self, secure_client):
 #     def test_rate_limit_per_key(self, secure_client):
 #         """Test rate limits are enforced per API key."""

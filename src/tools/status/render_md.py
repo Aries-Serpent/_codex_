@@ -27,7 +27,7 @@ def main():
     ]
     for c in data["snapshot"]["capabilities"]:
         lines += [
-            f"| {c['name']} | {c.get('category','')} | {c['status']} | {badge(c.get('severity',3))} | {badge(c.get('confidence',3))} | {c.get('artifacts','')} |"
+            f"| {c['name']} | {c.get('category', '')} | {c['status']} | {badge(c.get('severity', 3))} | {badge(c.get('confidence', 3))} | {c.get('artifacts', '')} |"
         ]
     with open(sys.argv[2], "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")

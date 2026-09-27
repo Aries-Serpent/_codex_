@@ -30,15 +30,15 @@ def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
     new_file.write_text("brand-new\n", encoding="utf-8")
 
     bundle = bundle_changes(source, tmp_path / "bundles", "sandbox-example")
-    assert bundle.exists()
+    assert bundle.exists(), "Condition must be true"
     bundle_hash = bundle.with_name(f"{bundle.name}.sha256")
-    assert bundle_hash.exists()
-    assert bundle_hash.read_text(encoding="utf-8").strip()
+    assert bundle_hash.exists(), "Condition must be true"
+    assert bundle_hash.read_text(encoding="utf-8").strip(), "Condition must be true"
     verify_bundle(bundle)
 
     apply_bundle(bundle, target)
 
-    assert (target / "tracked.txt").read_text(encoding="utf-8") == "after\n"
-    assert (target / "new.txt").read_text(encoding="utf-8") == "brand-new\n"
+    assert (target / "tracked.txt").read_text(encoding="utf-8") == "after\n", "Condition must be true"
+    assert (target / "new.txt").read_text(encoding="utf-8") == "brand-new\n", "Condition must be true"
 
     subprocess.run(["git", "-C", str(target), "status", "--short"], check=True)

@@ -57,7 +57,7 @@ class TestSessionLifecycleE2E:
         # Verify creation
         sessions = db.query_by_pr_number(100)
         assert len(sessions) == 1, "Session should be retrievable"
-        assert sessions[0]["session_id"] == session_id
+        assert sessions[0]["session_id"] == session_id, "Condition must be true"
 
         # PHASE 2: Log events
         with db._get_connection() as conn:
@@ -80,14 +80,14 @@ class TestSessionLifecycleE2E:
         # PHASE 3: Resume session (query for continuation)
         db2 = SessionDB(db_path)
         resumed_sessions = db2.query_all()
-        assert any(
+        assert any(, "Condition must be true"
             s["session_id"] == session_id for s in resumed_sessions
         ), "Should find session to resume"
 
         # PHASE 4: Verify final state
         final_session = [s for s in resumed_sessions if s["session_id"] == session_id][0]
-        assert final_session["status"] == "in-progress"
-        assert final_session["agent_name"] == "test_agent"
+        assert final_session["status"] == "in-progress", "Condition must be true"
+        assert final_session["agent_name"] == "test_agent", "Condition must be true"
 
         logger.info(f"✅ Session lifecycle complete: {session_id}")
 
@@ -107,7 +107,7 @@ class TestSessionLifecycleE2E:
 
         # Verify pending state
         pending = db.query_by_status("pending")
-        assert any(s["session_id"] == session_id for s in pending)
+        assert any(s["session_id"] == session_id for s in pending), "Condition must be true"
 
         # Simulate state transitions
         statuses = ["in-progress", "complete", "failed"]
@@ -270,7 +270,7 @@ class TestCorruptedStateRecoveryE2E:
         db1.insert_session(session)
 
         healthy_count = len(db1.query_all())
-        assert healthy_count == 1
+        assert healthy_count == 1, "Count must be greater than zero"
 
         # Phase 2: Corrupt database
         with open(db_path, "wb") as f:
@@ -430,7 +430,7 @@ class TestConcurrentAccessStressE2E:
         all_sessions = db.query_all()
         found_sessions = {s["session_id"] for s in all_sessions}
 
-        assert sessions_written.issubset(
+        assert sessions_written.issubset(, "Condition must be true"
             found_sessions
         ), "All written sessions should be retrievable"
 
@@ -487,9 +487,9 @@ class TestQuantumOrchestratorWorkflowE2E:
 
         # Verify results validity
         for tid, result in final_results.items():
-            assert 0 <= result["probability"] <= 1
-            assert result["energy"] > 0
-            assert result["speed"] >= 0
+            assert 0 <= result["probability"] <= 1, "Result must not be empty"
+            assert result["energy"] > 0, "Value must be greater than zero"
+            assert result["speed"] >= 0, "Value must be greater than zero"
 
         logger.info(f"✅ Quantum workflow: {len(task_ids)} tasks, 10 evolution steps")
 
@@ -511,7 +511,7 @@ class TestQuantumOrchestratorWorkflowE2E:
             orch.evolve()
 
         # Verify all completed
-        assert all(
+        assert all(, "Condition must be true"
             tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]
         )
         logger.info("✅ Task dependency chain verified")
@@ -546,7 +546,7 @@ class TestCognitiveBrainTrainingE2E:
                     input_data=pattern
                 )
                 if result:
-                    assert "prediction" in result or result is None
+                    assert "prediction" in result or result is None, "Result must not be empty"
             except (FileNotFoundError, ValueError, RuntimeError):
                 # Expected if model not initialized
                 pass
@@ -615,15 +615,15 @@ class TestCLIIntegrationE2E:
 
         # List all sessions
         all_sessions = db.query_all()
-        assert len(all_sessions) == 5
+        assert len(all_sessions) == 5, "All_sessions must not be empty"
 
         # Query by status
         complete = db.query_by_status("complete")
-        assert len(complete) >= 1
+        assert len(complete) >= 1, "Complete must not be empty"
 
         # Query by branch
         main_sessions = db.query_by_branch("main")
-        assert len(main_sessions) >= 0
+        assert len(main_sessions) >= 0, "Main_sessions must not be empty"
 
         # Export results (simulate)
         export_data = {
@@ -635,7 +635,7 @@ class TestCLIIntegrationE2E:
             },
         }
 
-        assert export_data["total_sessions"] == 5
+        assert export_data["total_sessions"] == 5, "Data must not be empty"
         logger.info(f"✅ CLI workflow: {export_data}")
 
     def test_cli_session_filtering_sorting(self, temp_dir: str):
@@ -658,10 +658,10 @@ class TestCLIIntegrationE2E:
 
         # Filter by agent
         agent_0_sessions = db.query_by_agent_name("agent_0")
-        assert len(agent_0_sessions) >= 3
+        assert len(agent_0_sessions) >= 3, "Agent_0_sessions must not be empty"
 
         # Filter by PR
         pr_100_sessions = db.query_by_pr_number(100)
-        assert len(pr_100_sessions) >= 1
+        assert len(pr_100_sessions) >= 1, "Pr_100_sessions must not be empty"
 
         logger.info(f"✅ CLI filtering: {len(agent_0_sessions)} agent_0 sessions")

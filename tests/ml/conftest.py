@@ -65,7 +65,7 @@ def pytest_runtest_setup(item):
     """Configure test setup for ML module tests."""
     # Ensure seed is reset at test start
     random.seed(42)
-    
+
     # Mark all ML tests with ml_reproducibility if they use random
     if "random" in item.fspath.basename:
         item.add_marker(pytest.mark.ml_reproducibility)

@@ -48,7 +48,12 @@ _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
     from training.checkpoint_manager import CheckpointManager
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback to canonical
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - fallback to canonical
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
 
 try:  # pragma: no cover - prefer canonical helpers
@@ -217,7 +222,12 @@ def _restore_rng(state: Mapping[str, Any]) -> None:
         try:
             _restore_rng_state(state)
             return
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fall back to legacy behaviour
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - fall back to legacy behaviour
             LOGGER.debug("Canonical RNG restore failed; falling back to legacy: %s", exc)
     _legacy_restore_rng_state(state)
 
@@ -239,7 +249,11 @@ def _torch_load(path: str, *, map_location: str | None = None) -> Any:
         return load_fn(path, **kwargs)
     except TypeError as exc:
         logger.debug("torch.load rejected payload: %s", exc)
-        if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in kwargs and _can_retry_without_weights_only(exc):
+        if (
+            _TORCH_SUPPORTS_WEIGHTS_ONLY
+            and "weights_only" in kwargs
+            and _can_retry_without_weights_only(exc)
+        ):
             kwargs.pop("weights_only", None)
             return load_fn(path, **kwargs)
         raise

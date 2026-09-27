@@ -199,8 +199,8 @@ class TestZeroBoundary:
 
         result = agent.execute_agent({"value": 0})
 
-        assert result["status"] == "success"
-        assert result["data"]["result"] == "zero"
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["data"]["result"] == "zero", "Result must not be empty"
 
         agent.teardown()
 
@@ -215,8 +215,8 @@ class TestZeroBoundary:
 
         result = agent.execute_agent({"value": 1})
 
-        assert result["status"] == "success"
-        assert result["data"]["result"] == 2
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["data"]["result"] == 2, "Result must not be empty"
 
         agent.teardown()
 
@@ -231,8 +231,8 @@ class TestZeroBoundary:
 
         result = agent.execute_agent({"value": 1000001})
 
-        assert result["status"] == "error"
-        assert result["code"] == "OVERFLOW"
+        assert result["status"] == "error", "Result must not be empty"
+        assert result["code"] == "OVERFLOW", "Result must not be empty"
 
         agent.teardown()
 
@@ -247,8 +247,8 @@ class TestZeroBoundary:
 
         result = agent.execute_agent({"value": -1})
 
-        assert result["status"] == "error"
-        assert result["code"] == "NEGATIVE_VALUE"
+        assert result["status"] == "error", "Result must not be empty"
+        assert result["code"] == "NEGATIVE_VALUE", "Result must not be empty"
 
         agent.teardown()
 
@@ -267,8 +267,8 @@ class TestEmptyCollections:
 
         result = agent.execute_agent({"data": {}})
 
-        assert result["status"] == "success"
-        assert result["data"]["processed"] == 0
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["data"]["processed"] == 0, "Result must not be empty"
 
         agent.teardown()
 
@@ -283,8 +283,8 @@ class TestEmptyCollections:
 
         result = agent.execute_agent({"data": []})
 
-        assert result["status"] == "success"
-        assert result["data"]["items"] == 0
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["data"]["items"] == 0, "Result must not be empty"
 
         agent.teardown()
 
@@ -299,8 +299,8 @@ class TestEmptyCollections:
 
         result = agent.execute_agent({"data": ""})
 
-        assert result["status"] == "success"
-        assert result["data"]["length"] == 0
+        assert result["status"] == "success", "Result must not be empty"
+        assert result["data"]["length"] == 0, "Result must not be empty"
 
         agent.teardown()
 
@@ -319,8 +319,8 @@ class TestNullValues:
 
         result = agent.execute_agent({"value": None})
 
-        assert result["status"] == "error"
-        assert result["code"] == "NULL_VALUE"
+        assert result["status"] == "error", "Result must not be empty"
+        assert result["code"] == "NULL_VALUE", "Result must not be empty"
 
         agent.teardown()
 
@@ -336,8 +336,8 @@ class TestNullValues:
         # Not providing 'data' field
         result = agent.execute_agent({})
 
-        assert result["status"] == "success"
-        assert "data" in result
+        assert result["status"] == "success", "Result must not be empty"
+        assert "data" in result, "Result must not be empty"
 
         agent.teardown()
 
@@ -356,7 +356,7 @@ class TestTypeHandling:
 
         result = agent.execute_agent({"data": 12345})
 
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
         agent.teardown()
 
@@ -373,7 +373,7 @@ class TestTypeHandling:
             {"data": {"a": {"b": {"c": "value"}}}}
         )
 
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
         agent.teardown()
 
@@ -390,7 +390,7 @@ class TestTypeHandling:
             {"data": [1, "string", {"key": "value"}, [1, 2, 3]]}
         )
 
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
         agent.teardown()
 
@@ -411,9 +411,9 @@ class TestBackwardCompatibility:
             {"api_version": "1.0", "data": "legacy_data"}
         )
 
-        assert result["status"] == "success"
-        assert "result" in result
-        assert result["result"] == "legacy_data"
+        assert result["status"] == "success", "Result must not be empty"
+        assert "result" in result, "Result must not be empty"
+        assert result["result"] == "legacy_data", "Result must not be empty"
 
         agent.teardown()
 
@@ -430,9 +430,9 @@ class TestBackwardCompatibility:
             {"api_version": "2.0", "data": "new_data"}
         )
 
-        assert result["status"] == "success"
-        assert "data" in result
-        assert result["data"] == "new_data"
+        assert result["status"] == "success", "Result must not be empty"
+        assert "data" in result, "Result must not be empty"
+        assert result["data"] == "new_data", "Result must not be empty"
 
         agent.teardown()
 
@@ -447,7 +447,7 @@ class TestBackwardCompatibility:
 
         result = agent.execute_agent({"api_version": "3.0"})
 
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
         agent.teardown()
 
@@ -467,7 +467,7 @@ class TestStateManagementRegressions:
         agent.execute_agent({"action": "increment"})
         result = agent.execute_agent({"action": "increment"})
 
-        assert result["data"]["counter"] == 2
+        assert result["data"]["counter"] == 2, "Result must not be empty"
 
         agent.teardown()
 
@@ -484,7 +484,7 @@ class TestStateManagementRegressions:
         agent.execute_agent({"action": "increment"})
         result = agent.execute_agent({"action": "decrement"})
 
-        assert result["data"]["counter"] == 1
+        assert result["data"]["counter"] == 1, "Result must not be empty"
 
         agent.teardown()
 
@@ -501,7 +501,7 @@ class TestStateManagementRegressions:
         agent.execute_agent({"action": "increment"})
         result = agent.execute_agent({"action": "reset"})
 
-        assert result["data"]["counter"] == 0
+        assert result["data"]["counter"] == 0, "Result must not be empty"
 
         agent.teardown()
 
@@ -519,7 +519,7 @@ class TestStateManagementRegressions:
         agent.execute_agent({"action": "decrement"})
         result = agent.execute_agent({"action": "reset"})
 
-        assert result["data"]["history_length"] == 4
+        assert result["data"]["history_length"] == 4, "Result must not be empty"
 
         agent.teardown()
 
@@ -534,7 +534,7 @@ class TestStateManagementRegressions:
 
         result = agent.execute_agent({"action": "invalid_action"})
 
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
         agent.teardown()
 
@@ -556,7 +556,7 @@ class TestOutputFormatRegressions:
         # Should be JSON serializable
         json_str = json.dumps(result)
         parsed = json.loads(json_str)
-        assert parsed["status"] == "success"
+        assert parsed["status"] == "success", "Condition must be true"
 
         agent.teardown()
 
@@ -571,7 +571,7 @@ class TestOutputFormatRegressions:
 
         result = agent.execute_agent({"value": 10})
 
-        assert "status" in result
+        assert "status" in result, "Result must not be empty"
         assert result["status"] in ["success", "partial", "error"]
 
         agent.teardown()
@@ -587,8 +587,8 @@ class TestOutputFormatRegressions:
 
         result = agent.execute_agent({"value": -1})
 
-        assert result["status"] == "error"
-        assert "error" in result
+        assert result["status"] == "error", "Result must not be empty"
+        assert "error" in result, "Result must not be empty"
         assert isinstance(result["error"], str)
 
         agent.teardown()
@@ -615,7 +615,7 @@ class TestConcurrencyRegressions:
         result2 = agent2.execute_agent({"action": "increment"})
 
         # agent2 should have counter=1, not affected by agent1
-        assert result2["data"]["counter"] == 1
+        assert result2["data"]["counter"] == 1, "Result must not be empty"
 
         agent1.teardown()
         agent2.teardown()
@@ -636,6 +636,6 @@ class TestConcurrencyRegressions:
         agent.execute_agent({"action": "increment"})
 
         # State should be maintained
-        assert agent.state["counter"] == 11
+        assert agent.state["counter"] == 11, "Count must be greater than zero"
 
         agent.teardown()

@@ -172,7 +172,7 @@ class EmbeddingPipeline:
             except (OSError, ValueError, TypeError, RuntimeError) as e:
                 text_fingerprint = hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
                 logger.warning(
-                    "Embedding failed for text fingerprint '%s' with model '%s'; using fallback (%s)",
+                    "Embedding failed for text fingerprint '%s' with model '%s'; using fallback (%s)",  # noqa: E501
                     text_fingerprint,
                     self.config.model_name,
                     type(e).__name__,
@@ -264,7 +264,7 @@ def main() -> None:
     results = pipeline.embed_texts(texts)
     logger.info(f"\nBatch embedding: {len(results)} results")
     for r in results:
-       logger.info(f"  - {r.text}: dim={r.dimension}")
+        logger.info(f"  - {r.text}: dim={r.dimension}")
 
 
 if __name__ == "__main__":

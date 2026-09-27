@@ -8,8 +8,8 @@
 # - Shell compatibility validation (5+ tests)
 # - File I/O cross-platform tests (5+ tests)
 # - Total: 30+ cross-platform test cases
-# 
-# 
+#
+#
 # Validation Coverage:
 # - Path separators (\ vs /)
 # - Temporary directory handling
@@ -84,7 +84,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_windows_backslash_path_separation(self):
 #     def test_windows_backslash_path_separation(self):
 #         """Test Windows paths with backslash separators."""
@@ -126,7 +126,7 @@
 #         relative_norm = relative.replace(".\\", "")
 #         assert relative_norm == r"subfolder\file.txt", "relative_norm is not valid"
 #         assert relative_norm == r"subfolder\file.txt", "relative_norm is not valid"
-# 
+#
 #     def test_windows_parent_directory_references(self):
 #     def test_windows_parent_directory_references(self):
 #         """Test Windows parent directory (..) path handling."""
@@ -173,7 +173,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_unix_absolute_path_format(self):
 #     def test_unix_absolute_path_format(self):
 #         """Test Unix absolute path format."""
@@ -222,7 +222,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_path_separator_in_PATH_variable(self, mock_linux_platform):
 #     def test_path_separator_in_PATH_variable(self, mock_linux_platform):
 #         """Test PATH variable uses platform-specific separators."""
@@ -256,7 +256,7 @@
 #             tmpdir = os.environ.get("TMPDIR")
 #             assert tmpdir == "/tmp", "tmpdir is not valid"
 #             assert tmpdir == "/tmp", "tmpdir is not valid"
-# 
+#
 #     def test_username_env_variable_platform_difference(self):
 #     def test_username_env_variable_platform_difference(self):
 #         """Test USERNAME vs USER environment variables."""
@@ -267,7 +267,7 @@
 #         with mock.patch.dict(os.environ, {"USER": "admin"}):
 #             user = os.environ.get("USER")
 #             assert user == "admin", "user is not valid"
-# 
+#
 #         for shebang in shebangs:
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
@@ -277,7 +277,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_shell_invocation_windows_cmd(self, mock_windows_platform):
 #     def test_shell_invocation_windows_cmd(self, mock_windows_platform):
 #         """Test Windows cmd.exe shell invocation."""
@@ -307,7 +307,7 @@
 #         win_cmd = r"cmd1 & cmd2 && cmd3"
 #         assert "&" in win_cmd, "Condition must be true"
 #         assert "&" in win_cmd, "Condition must be true"
-# 
+#
 #     def test_shell_environment_variable_syntax(self):
 #     def test_shell_environment_variable_syntax(self):
 #         """Test platform-specific environment variable syntax."""
@@ -316,7 +316,7 @@
 #         assert "$HOME" in unix_env or "${HOME}" in unix_env, "Condition must be true"
 #         win_env = r"%USERPROFILE%\Documents"
 #         assert "%USERPROFILE%" in win_env, "Condition must be true"
-# 
+#
 #         for shebang in shebangs:
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
@@ -326,7 +326,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_line_ending_normalization(self, temp_dir):
 #     def test_line_ending_normalization(self, temp_dir):
 #         """Test line ending handling (CRLF vs LF)."""
@@ -335,11 +335,11 @@
 #         text_file.write_text(unix_content)
 #         read_content = text_file.read_text()
 #         assert "\n" in read_content, "Content must not be empty"
-# 
+#
 #         # Count newlines
 #         assert read_content.count("\n") == 3, "Content must not be empty"
 #         assert read_content.count("\n") == 3, "Content must not be empty"
-# 
+#
 #     def test_line_ending_binary_vs_text_mode(self, temp_dir):
 #     def test_line_ending_binary_vs_text_mode(self, temp_dir):
 #         """Test binary vs text mode file operations."""
@@ -350,14 +350,14 @@
 #         read_data = bin_file.read_bytes()
 #         assert read_data == data, "Data must not be empty"
 #         assert b"\r\n" in read_data, "Data must not be empty"
-# 
+#
 #         # Text mode may normalize line endings
 #         content = "line1\nline2\nline3\n"
 #         text_file.write_text(content)
 #         read_content = text_file.read_text()
 #         assert len(read_content.split("\n")) >= 3, "Collection must not be empty"
 #         assert len(read_content.split("\n")) >= 3, "Collection must not be empty"
-# 
+#
 #     def test_file_permissions_handling(self, temp_dir):
 #     def test_file_permissions_handling(self, temp_dir):
 #         """Test file permissions handling."""
@@ -365,17 +365,17 @@
 #         test_file.write_text("#!/bin/bash\necho 'test'\n")
 #         stat_info = test_file.stat()
 #         mode = stat_info.st_mode
-# 
+#
 #         # Permissions are available on all platforms
 #         assert hasattr(stat_info, "st_mode")
-# 
+#
 #         # On Unix, can check execution bit
 #         if sys.platform != "win32":
 #             executable = mode & 0o111
 #             # File may or may not be executable after write
 #             assert executable is not None, "executable must be initialized"
 #             assert executable is not None, "executable must be initialized"
-# 
+#
 #     def test_path_separator_in_file_operations(self, temp_dir):
 #     def test_path_separator_in_file_operations(self, temp_dir):
 #         """Test file operations handle path separators correctly."""
@@ -384,16 +384,16 @@
 #         nested.mkdir(parents=True, exist_ok=True)
 #         test_file = nested / "file.txt"
 #         test_file.write_text("test content")
-# 
+#
 #         # Verify it exists and is readable
 #         assert test_file.exists(), "Condition must be true"
 #         assert test_file.read_text() == "test content", "Content must not be empty"
-# 
+#
 #         # Verify parent references work
 #         assert test_file.parent == nested, "parent is not valid"
 #         assert nested.parent.name == "level2", "name is not valid"
 #         assert nested.parent.name == "level2", "name is not valid"
-# 
+#
 #     def test_special_characters_in_filenames(self, temp_dir):
 #     def test_special_characters_in_filenames(self, temp_dir):
 #         """Test special character handling in filenames."""
@@ -409,7 +409,7 @@
 #             test_file.write_text("test")
 #             assert test_file.exists(), "Condition must be true"
 #             assert test_file.read_text() == "test", "Condition must be true"
-# 
+#
 #     def test_directory_traversal_operations(self, temp_dir):
 #     def test_directory_traversal_operations(self, temp_dir):
 #         """Test directory traversal with .. and .."""
@@ -421,7 +421,7 @@
 #         current = test_file.parent.resolve()
 #         parent = current.parent.resolve()
 #         parent = current.parent.resolve()
-# 
+#
 #         assert current.name == "subdir", "name is not valid"
 #         assert parent == temp_dir.resolve(), "parent is not valid"
 #         for shebang in shebangs:
@@ -433,7 +433,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_path_case_sensitivity_detection(self, mock_linux_platform):
 #     def test_path_case_sensitivity_detection(self, mock_linux_platform):
 #         """Test detecting case sensitivity on current platform."""
@@ -443,7 +443,7 @@
 #         assert path1 != path2, "path1 is not valid"
 #         assert path1.lower() == path2.lower(), "Condition must be true"
 #         assert path1.lower() == path2.lower(), "Condition must be true"
-# 
+#
 #     def test_windows_case_insensitive_paths(self):
 #     def test_windows_case_insensitive_paths(self):
 #         """Test Windows case-insensitive path handling."""
@@ -454,7 +454,7 @@
 #         assert win_path1.lower() == win_path2.lower(), "Condition must be true"
 #         # But normalized lowercase versions match
 #         assert win_path1.lower() == win_path2.lower(), "Condition must be true"
-# 
+#
 #     def test_macos_case_insensitive_case_preserving(self, temp_dir):
 #     def test_macos_case_insensitive_case_preserving(self, temp_dir):
 #         """Test macOS case insensitivity with case preservation."""
@@ -465,7 +465,7 @@
 #         assert test_file.exists(), "Condition must be true"
 #         # Case is preserved in the filesystem
 #         assert test_file.name == "TestFile.txt", "name is not valid"
-# 
+#
 #     def test_filename_case_variations(self, temp_dir):
 #     def test_filename_case_variations(self, temp_dir):
 #         """Test creating files with case variations."""
@@ -480,13 +480,13 @@
 #         assert file1.exists(), "Condition must be true"
 #         assert file2.exists(), "Condition must be true"
 #         assert file3.exists(), "Condition must be true"
-# 
+#
 #         # Different content
 #         assert file1.read_text() == "file1", "Condition must be true"
 #         assert file2.read_text() == "file2", "Condition must be true"
 #         assert file3.read_text() == "file3", "Condition must be true"
 #         assert file3.read_text() == "file3", "Condition must be true"
-# 
+#
 #     def test_extension_case_handling(self):
 #     def test_extension_case_handling(self):
 #         """Test file extension case handling."""
@@ -503,7 +503,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_symlink_creation_on_unix(self, temp_dir):
 #     def test_symlink_creation_on_unix(self, temp_dir):
 #         """Test symlink creation on Unix systems."""
@@ -511,7 +511,7 @@
 #             pytest.skip("Symlinks require Unix or admin on Windows")
 #         target = temp_dir / "target.txt"
 #         target.write_text("target content")
-# 
+#
 #         link = temp_dir / "link.txt"
 #         try:
 #             link.symlink_to(target)
@@ -520,7 +520,7 @@
 #             assert link.resolve() == target.resolve(), "Condition must be true"
 #         except (OSError, NotImplementedError):
 #             pytest.skip("Symlinks not supported in this environment")
-# 
+#
 #     def test_symlink_resolution(self, temp_dir):
 #     def test_symlink_resolution(self, temp_dir):
 #         """Test symlink path resolution."""
@@ -529,7 +529,7 @@
 #         target = temp_dir / "target" / "file.txt"
 #         target.parent.mkdir(parents=True)
 #         target.write_text("content")
-# 
+#
 #         link = temp_dir / "link"
 #         try:
 #             link.symlink_to(target)
@@ -538,7 +538,7 @@
 #             assert resolved.read_text() == "content", "Content must not be empty"
 #         except (OSError, NotImplementedError):
 #             pytest.skip("Symlinks not supported in this environment")
-# 
+#
 #     def test_readlink_detection(self, temp_dir):
 #     def test_readlink_detection(self, temp_dir):
 #         """Test detecting and reading symlinks."""
@@ -546,14 +546,14 @@
 #             pytest.skip("Symlinks require Unix or admin on Windows")
 #         target = temp_dir / "target.txt"
 #         target.write_text("target")
-# 
+#
 #         link = temp_dir / "link.txt"
 #         try:
 #             link.symlink_to(target)
 #             assert link.is_symlink() or True, "Condition must be true"
 #         except (OSError, NotImplementedError):
 #             pytest.skip("Symlinks not supported in this environment")
-# 
+#
 #     def test_junction_windows_fallback(self, mock_windows_platform):
 #     def test_junction_windows_fallback(self, mock_windows_platform):
 #         """Test Windows junction handling as symlink fallback."""
@@ -561,7 +561,7 @@
 #         # Junctions are created with: mklink /J link target
 #         # Symlinks require admin privileges
 #         assert sys.platform == "win32" or True, "platform is not valid"
-# 
+#
 #         for shebang in shebangs:
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
@@ -571,7 +571,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_shebang_line_parsing(self):
 #     def test_shebang_line_parsing(self):
 #         """Test shebang line parsing for scripts."""
@@ -585,7 +585,7 @@
 #             assert shebang.startswith(", "Condition must be true"
 #             path = shebang[2:].strip()
 #             assert path, "path is not valid"
-# 
+#
 #     def test_python_executable_detection(self):
 #     def test_python_executable_detection(self):
 #         """Test Python executable detection."""

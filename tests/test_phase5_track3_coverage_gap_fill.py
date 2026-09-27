@@ -30,7 +30,7 @@ def assert_valid_numeric_type(value: Any, name: str = "value") -> None:
         )
 
 
-def assert_numeric_in_range(value: float, min_val: float, max_val: float, 
+def assert_numeric_in_range(value: float, min_val: float, max_val: float,
                            name: str = "value") -> None:
     """Validate numeric values are within expected range."""
     assert_valid_numeric_type(value, name)
@@ -84,7 +84,7 @@ class TestCriticalModuleErrorHandling:
             {"missing_required_field": True},
             {"field": "not_a_valid_type"},
         ]
-        
+
         for config in invalid_configs:
             if config is None:
                 # Should raise when validating None
@@ -96,7 +96,7 @@ class TestCriticalModuleErrorHandling:
     def test_boundary_condition_handling(self):
         """Test handling of boundary conditions."""
         boundary_values = [0, -1, 1, sys.maxsize, -sys.maxsize - 1, float('inf')]
-        
+
         for value in boundary_values:
             assert_valid_numeric_type(value)
             assert isinstance(value, (int, float))
@@ -107,9 +107,9 @@ class TestCriticalModuleErrorHandling:
             if val is None:
                 return "NONE_RECEIVED"
             return f"VALUE_{val}"
-        
-        assert process_value(None) == "NONE_RECEIVED"
-        assert process_value(42) == "VALUE_42"
+
+        assert process_value(None) == "NONE_RECEIVED", "Value must be initialized"
+        assert process_value(42) == "VALUE_42", "Value must be initialized"
 
     def test_empty_collection_handling(self):
         """Test handling of empty collections."""
@@ -120,12 +120,12 @@ class TestCriticalModuleErrorHandling:
             "",
             tuple(),
         ]
-        
+
         for collection in empty_collections:
-            assert len(collection) == 0
+            assert len(collection) == 0, "Collection must not be empty"
             # Should handle gracefully when iterating
             items = [x for x in collection]
-            assert items == []
+            assert items == [], "Item must not be empty"
 
 
 # ============================================================================
@@ -137,68 +137,68 @@ class TestEdgeCaseCoverage:
 
     def test_zero_boundary_conditions(self):
         """Test zero as boundary value."""
-        assert 0 == 0
-        assert -0 == 0
-        assert 0.0 == 0
-        
+        assert 0 == 0, "0 is not valid"
+        assert -0 == 0, "0 is not valid"
+        assert 0.0 == 0, "0 is not valid"
+
         # Zero in various contexts
         values = [0, 0.0, 0 + 0j]
         for v in values:
-            assert v == 0 or v == 0.0
+            assert v == 0 or v == 0.0, "v is not valid"
 
     def test_very_small_numbers(self):
         """Test very small floating point numbers."""
         small_values = [1e-10, 1e-100, 1e-300, sys.float_info.min]
-        
+
         for value in small_values:
-            assert value > 0
-            assert value < 1
+            assert value > 0, "value must be greater than zero"
+            assert value < 1, "Value must be initialized"
             assert_numeric_in_range(value, 0, 1)
 
     def test_very_large_numbers(self):
         """Test very large numbers."""
         large_values = [1e10, 1e100, 1e300, sys.maxsize]
-        
+
         for value in large_values:
-            assert value > 1000
+            assert value > 1000, "value must be greater than zero"
             assert_valid_numeric_type(value)
 
     def test_negative_numbers(self):
         """Test negative number handling."""
         negative_values = [-1, -100, -1e10, -sys.maxsize]
-        
+
         for value in negative_values:
-            assert value < 0
+            assert value < 0, "Value must be initialized"
             assert_valid_numeric_type(value)
 
     def test_float_precision_edge_cases(self):
         """Test floating point precision boundaries."""
         # Test precision near limits
         epsilon = sys.float_info.epsilon
-        assert epsilon > 0
-        assert epsilon < 1
-        
+        assert epsilon > 0, "epsilon must be greater than zero"
+        assert epsilon < 1, "epsilon is not valid"
+
         # Test near-equal floating points
         a = 0.1 + 0.2
         b = 0.3
-        assert abs(a - b) < 1e-10  # Common floating point precision issue
+        assert abs(a - b) < 1e-10, "Condition must be true"
 
     def test_special_float_values(self):
         """Test special floating point values."""
         # Positive infinity
         pos_inf = float('inf')
-        assert pos_inf > 0
-        assert pos_inf == pos_inf + 1
-        
+        assert pos_inf > 0, "pos_inf must be greater than zero"
+        assert pos_inf == pos_inf + 1, "pos_inf is not valid"
+
         # Negative infinity
         neg_inf = float('-inf')
-        assert neg_inf < 0
-        assert neg_inf == neg_inf - 1
-        
+        assert neg_inf < 0, "neg_inf is not valid"
+        assert neg_inf == neg_inf - 1, "neg_inf is not valid"
+
         # NaN handling
         nan = float('nan')
-        assert nan != nan  # NaN != NaN is the definition
-        assert not (nan == nan)
+        assert nan != nan, "nan is not valid"
+        assert not (nan == nan), "nan is not valid"
 
     def test_string_boundary_cases(self):
         """Test string handling at boundaries."""
@@ -210,7 +210,7 @@ class TestEdgeCaseCoverage:
             "a" * 10000,  # Very long string
             "🚀" * 100,   # Unicode
         ]
-        
+
         for s in strings:
             assert isinstance(s, str)
             assert_valid_numeric_type(len(s))
@@ -233,7 +233,7 @@ class TestExceptionHandling:
             IndexError("test"),
             AttributeError("test"),
         ]
-        
+
         for exc in exceptions:
             with pytest.raises(type(exc)):
                 raise exc
@@ -241,11 +241,11 @@ class TestExceptionHandling:
     def test_exception_message_propagation(self):
         """Test exception messages are preserved."""
         message = "This is a test error message"
-        
+
         with pytest.raises(ValueError) as exc_info:
             raise ValueError(message)
-        
-        assert str(exc_info.value) == message
+
+        assert str(exc_info.value) == message, "Value must be initialized"
 
     def test_exception_chain_handling(self):
         """Test exception chaining."""
@@ -255,7 +255,7 @@ class TestExceptionHandling:
             except ValueError as e:
                 raise RuntimeError("Wrapped error") from e
         except RuntimeError as e:
-            assert e.__cause__ is not None
+            assert e.__cause__ is not None, "__cause__ must be initialized"
             assert isinstance(e.__cause__, ValueError)
 
     def test_traceback_preservation(self):
@@ -263,18 +263,18 @@ class TestExceptionHandling:
         try:
             def level3():
                 raise ValueError("Deep error")
-            
+
             def level2():
                 level3()
-            
+
             def level1():
                 level2()
-            
+
             level1()
         except ValueError as e:
             tb = traceback.format_exc()
-            assert "ValueError" in tb
-            assert "Deep error" in tb
+            assert "ValueError" in tb, "Value must be initialized"
+            assert "Deep error" in tb, "Error should be raised or set"
             assert "level1" in tb or "level2" in tb or "level3" in tb
 
 
@@ -288,26 +288,26 @@ class TestCollectionOperations:
     def test_empty_list_operations(self):
         """Test operations on empty lists."""
         empty_list = []
-        assert len(empty_list) == 0
-        assert list(empty_list) == []
-        assert [x for x in empty_list] == []
+        assert len(empty_list) == 0, "Empty_list must not be empty"
+        assert list(empty_list) == [], "Condition must be true"
+        assert [x for x in empty_list] == [], "Condition must be true"
 
     def test_single_element_collections(self):
         """Test collections with single element."""
         single_list = [42]
-        assert len(single_list) == 1
-        assert single_list[0] == 42
-        
+        assert len(single_list) == 1, "Single_list must not be empty"
+        assert single_list[0] == 42, "Condition must be true"
+
         single_dict = {"key": "value"}
-        assert len(single_dict) == 1
-        assert single_dict["key"] == "value"
+        assert len(single_dict) == 1, "Single_dict must not be empty"
+        assert single_dict["key"] == "value", "Value must be initialized"
 
     def test_large_collection_operations(self):
         """Test operations on large collections."""
         large_list = list(range(100000))
-        assert len(large_list) == 100000
-        assert large_list[0] == 0
-        assert large_list[-1] == 99999
+        assert len(large_list) == 100000, "Large_list must not be empty"
+        assert large_list[0] == 0, "Condition must be true"
+        assert large_list[-1] == 99999, "Condition must be true"
 
     def test_nested_collection_access(self):
         """Test access patterns in nested collections."""
@@ -318,16 +318,16 @@ class TestCollectionOperations:
                 }
             }
         }
-        
+
         assert nested["level1"]["level2"]["level3"] == [1, 2, 3]
-        assert nested["level1"]["level2"]["level3"][0] == 1
+        assert nested["level1"]["level2"]["level3"][0] == 1, "Condition must be true"
 
     def test_collection_type_coercion(self):
         """Test type coercion in collections."""
         # List from generator
         list_from_gen = list(x for x in range(10))
-        assert len(list_from_gen) == 10
-        
+        assert len(list_from_gen) == 10, "List_from_gen must not be empty"
+
         # Dict from pairs
         dict_from_pairs = dict([(k, v) for k, v in [("a", 1), ("b", 2)]])
         assert dict_from_pairs == {"a": 1, "b": 2}
@@ -344,31 +344,31 @@ class TestTypeValidationAndCoercion:
         """Test numeric type conversions."""
         # Int to float
         assert isinstance(float(42), float)
-        assert float(42) == 42.0
-        
+        assert float(42) == 42.0, "Condition must be true"
+
         # Float to int
         assert isinstance(int(42.7), int)
-        assert int(42.7) == 42
-        
+        assert int(42.7) == 42, "Condition must be true"
+
         # String to numeric
-        assert float("3.14") == 3.14
-        assert int("42") == 42
+        assert float("3.14") == 3.14, "Condition must be true"
+        assert int("42") == 42, "Condition must be true"
 
     def test_string_type_conversions(self):
         """Test string conversions."""
-        assert str(42) == "42"
-        assert str(3.14) == "3.14"
-        assert str(None) == "None"
-        assert str(True) == "True"
+        assert str(42) == "42", "Condition must be true"
+        assert str(3.14) == "3.14", "Condition must be true"
+        assert str(None) == "None", "Condition must be true"
+        assert str(True) == "True", "Condition must be true"
 
     def test_bool_type_conversions(self):
         """Test boolean conversions."""
-        assert bool(0) is False
-        assert bool(1) is True
-        assert bool("") is False
-        assert bool("text") is True
-        assert bool([]) is False
-        assert bool([1]) is True
+        assert bool(0) is False, "Condition must be true"
+        assert bool(1) is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("text") is True, "Condition must be true"
+        assert bool([]) is False, "Condition must be true"
+        assert bool([1]) is True, "Condition must be true"
 
     def test_sequence_type_operations(self):
         """Test sequence type operations."""
@@ -377,10 +377,10 @@ class TestTypeValidationAndCoercion:
         assert seq[1:3] == [2, 3]
         assert seq[:2] == [1, 2]
         assert seq[2:] == [3, 4, 5]
-        
+
         # Negative indexing
-        assert seq[-1] == 5
-        assert seq[-2] == 4
+        assert seq[-1] == 5, "Condition must be true"
+        assert seq[-2] == 4, "Condition must be true"
 
 
 # ============================================================================
@@ -393,67 +393,67 @@ class TestStateAndContextManagement:
     def test_state_initialization(self):
         """Test state initialization."""
         state = {"initialized": False, "value": None}
-        assert state["initialized"] is False
-        assert state["value"] is None
+        assert state["initialized"] is False, "Condition must be true"
+        assert state["value"] is None, "Value must be initialized"
 
     def test_state_transitions(self):
         """Test state transitions."""
         state = {"step": 0}
-        
+
         # Transition 1
         state["step"] = 1
-        assert state["step"] == 1
-        
+        assert state["step"] == 1, "Condition must be true"
+
         # Transition 2
         state["step"] = 2
-        assert state["step"] == 2
-        
+        assert state["step"] == 2, "Condition must be true"
+
         # Transition 3
         state["step"] = 3
-        assert state["step"] == 3
+        assert state["step"] == 3, "Condition must be true"
 
     def test_context_cleanup(self):
         """Test context cleanup patterns."""
         resource_opened = False
         resource_closed = False
-        
+
         class ManagedResource:
             def __enter__(self):
                 nonlocal resource_opened
                 resource_opened = True
                 return self
-            
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 nonlocal resource_closed
                 resource_closed = True
-        
+
         with ManagedResource():
-            assert resource_opened is True
-            assert resource_closed is False
-        
-        assert resource_closed is True
+            assert resource_opened is True, "resource_opened is not valid"
+            assert resource_closed is False, "resource_closed is not valid"
+
+        assert resource_closed is True, "resource_closed is not valid"
 
     def test_resource_leak_prevention(self):
         """Test resource leak prevention patterns."""
         open_resources = []
-        
+
         class TrackedResource:
             def __init__(self, id):
                 self.id = id
                 open_resources.append(self)
-            
+
             def close(self):
                 open_resources.remove(self)
-        
+
         r1 = TrackedResource(1)
         r2 = TrackedResource(2)
-        assert len(open_resources) == 2
-        
+        assert len(open_resources) == 2, "Open_resources must not be empty"
+
         r1.close()
-        assert len(open_resources) == 1
-        
+        assert len(open_resources) == 1, "Open_resources must not be empty"
+
         r2.close()
-        assert len(open_resources) == 0
+        assert len(open_resources) == 0, "Open_resources must not be empty"
 
 
 # ============================================================================
@@ -469,14 +469,14 @@ class TestDataValidationAndSanitization:
             if not value:
                 raise ValueError("Input cannot be empty")
             return value
-        
+
         with pytest.raises(ValueError):
             validate_input("")
-        
+
         with pytest.raises(ValueError):
             validate_input(None)
-        
-        assert validate_input("valid") == "valid"
+
+        assert validate_input("valid") == "valid", "Condition must be true"
 
     def test_type_validation(self):
         """Test type validation."""
@@ -484,10 +484,10 @@ class TestDataValidationAndSanitization:
             if not isinstance(value, expected_type):
                 raise TypeError(f"Expected {expected_type}, got {type(value)}")
             return value
-        
+
         with pytest.raises(TypeError):
             validate_type("string", int)
-        
+
         assert validate_type(42, int) == 42
         assert validate_type("text", str) == "text"
 
@@ -497,26 +497,26 @@ class TestDataValidationAndSanitization:
             if not (min_val <= value <= max_val):
                 raise ValueError(f"Value {value} out of range [{min_val}, {max_val}]")
             return value
-        
+
         with pytest.raises(ValueError):
             validate_range(101, 0, 100)
-        
+
         assert validate_range(50, 0, 100) == 50
 
     def test_pattern_validation(self):
         """Test pattern/regex validation."""
         import re
-        
+
         def validate_email(email):
             pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
             if not re.match(pattern, email):
                 raise ValueError(f"Invalid email: {email}")
             return email
-        
+
         with pytest.raises(ValueError):
             validate_email("invalid@email")  # Missing TLD
-        
-        assert validate_email("user@example.com") == "user@example.com"
+
+        assert validate_email("user@example.com") == "user@example.com", "Condition must be true"
 
 
 # ============================================================================
@@ -529,35 +529,35 @@ class TestPerformanceAndResourceHandling:
     def test_operation_completes_within_time(self):
         """Test operations complete within reasonable time."""
         import time
-        
+
         start = time.time()
         # Simple operation
         result = sum(range(1000))
         elapsed = time.time() - start
-        
-        assert result == 499500
-        assert elapsed < 1.0  # Should be much faster
+
+        assert result == 499500, "Result must not be empty"
+        assert elapsed < 1.0, "elapsed is not valid"
 
     def test_memory_efficiency_basic(self):
         """Test basic memory efficiency."""
-        import sys
-        
+        pass  # removed redundant `import sys` (top-level import used)
+
         # Small list shouldn't use excessive memory
         small_list = [1, 2, 3]
         size = sys.getsizeof(small_list)
-        assert size < 1000  # Less than 1KB
+        assert size < 1000, "size is not valid"
 
     def test_resource_limit_handling(self):
         """Test handling of resource limits."""
         # Create large but manageable collection
         large_collection = list(range(100000))
-        assert len(large_collection) == 100000
-        
+        assert len(large_collection) == 100000, "Large_collection must not be empty"
+
         # Iterate without error
         count = 0
         for _ in large_collection:
             count += 1
-        assert count == 100000
+        assert count == 100000, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -572,15 +572,15 @@ class TestIntegrationPatterns:
         class Service:
             def __init__(self, dependency):
                 self.dependency = dependency
-            
+
             def use_dependency(self):
                 return self.dependency.get_value()
-        
+
         mock_dep = Mock()
         mock_dep.get_value.return_value = 42
-        
+
         service = Service(mock_dep)
-        assert service.use_dependency() == 42
+        assert service.use_dependency() == 42, "Condition must be true"
         mock_dep.get_value.assert_called_once()
 
     def test_factory_pattern(self):
@@ -593,44 +593,44 @@ class TestIntegrationPatterns:
                     return {"type": "B", **kwargs}
                 else:
                     raise ValueError(f"Unknown type: {type_name}")
-        
+
         factory = ObjectFactory()
         obj_a = factory.create("A", value=1)
         obj_b = factory.create("B", value=2)
-        
-        assert obj_a["type"] == "A"
-        assert obj_b["type"] == "B"
+
+        assert obj_a["type"] == "A", "Object must be initialized"
+        assert obj_b["type"] == "B", "Object must be initialized"
 
     def test_observer_pattern(self):
         """Test observer pattern."""
         class Subject:
             def __init__(self):
                 self.observers = []
-            
+
             def attach(self, observer):
                 self.observers.append(observer)
-            
+
             def notify(self, event):
                 for observer in self.observers:
                     observer.update(event)
-        
+
         class Observer:
             def __init__(self):
                 self.events = []
-            
+
             def update(self, event):
                 self.events.append(event)
-        
+
         subject = Subject()
         observer1 = Observer()
         observer2 = Observer()
-        
+
         subject.attach(observer1)
         subject.attach(observer2)
-        
+
         subject.notify("event1")
-        assert observer1.events == ["event1"]
-        assert observer2.events == ["event1"]
+        assert observer1.events == ["event1"], "events is not valid"
+        assert observer2.events == ["event1"], "events is not valid"
 
 
 # ============================================================================

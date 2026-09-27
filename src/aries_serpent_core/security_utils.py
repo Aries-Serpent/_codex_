@@ -127,6 +127,15 @@ def sanitize_log_message(
         >>> sanitize_log_message("Commit abc123, Token: ghp_realtoken", whitelist_patterns=[r'\\bCommit [a-f0-9]{6,40}\\b'])
         'Commit abc123, Token: [REDACTED_GITHUB_TOKEN]'
     """  # noqa: E501
+    if not isinstance(message, str):
+        message = str(message)
+
+    # Remove control characters and normalize whitespace before scanning.
+    # This prevents log forging and ensures one-line log output.
+    message = re.sub(r"[\x00-\x1f\x7f]", " ", message)
+    message = message.replace("\r", " ").replace("\n", " ")
+    message = re.sub(r"\s+", " ", message).strip()
+
     # Default patterns for common sensitive data
     # Note: These patterns are tuned to balance security with false positive rate
     default_patterns = [
@@ -144,6 +153,8 @@ def sanitize_log_message(
         (r"A[KS]IA[A-Z0-9]{16}", "[REDACTED]"),
         # JWT tokens (three base64 segments separated by dots)
         (r"eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[REDACTED]"),
+        # Mask credential placeholders such as "JWT: ******" or "token: ********"
+        (r"(?i)\b(?:jwt|token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]?\s*\*{4,}", "[REDACTED]"),
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted

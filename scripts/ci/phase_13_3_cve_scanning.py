@@ -73,9 +73,9 @@ class CVEScanResult:
 def scan_python_dependencies() -> CVEScanResult:
     """Scan Python dependencies using pip-audit."""
     logger.info("🐍 Scanning Python dependencies with pip-audit...")
-    
+
     findings = []
-    
+
     try:
         # Try pip-audit
         result = subprocess.run(
@@ -85,17 +85,17 @@ def scan_python_dependencies() -> CVEScanResult:
             text=True,
             timeout=120
         )
-        
+
         if result.returncode != 0:
             logger.warning("   pip-audit not installed or no vulnerabilities found")
             logger.info("   Install: pip install pip-audit")
-        
+
         # Parse output if JSON
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
                 vulnerabilities = data.get("vulnerabilities", [])
-                
+
                 for vuln in vulnerabilities:
                     findings.append(CVEFinding(
                         package=vuln.get("name", "unknown"),
@@ -105,11 +105,11 @@ def scan_python_dependencies() -> CVEScanResult:
                         description=vuln.get("description", "No description"),
                         ecosystem="Python"
                     ))
-                
+
                 logger.info(f"   ✅ Found {len(vulnerabilities)} Python vulnerabilities")
             except json.JSONDecodeError:
                 logger.debug("   Could not parse pip-audit JSON output")
-    
+
     except FileNotFoundError:
         logger.warning("   pip-audit not installed")
         logger.info("   Install: pip install pip-audit")
@@ -117,7 +117,7 @@ def scan_python_dependencies() -> CVEScanResult:
         logger.error("   pip-audit scan timed out")
     except Exception as e:
         logger.error(f"   Error: {e}")
-    
+
     return CVEScanResult(
         total_vulnerabilities=len(findings),
         critical_vulnerabilities=sum(1 for f in findings if f.severity == Severity.CRITICAL),
@@ -131,15 +131,15 @@ def scan_python_dependencies() -> CVEScanResult:
 def scan_javascript_dependencies() -> CVEScanResult:
     """Scan JavaScript dependencies using npm audit."""
     logger.info("📦 Scanning JavaScript dependencies with npm audit...")
-    
+
     findings = []
-    
+
     # Check if package.json exists
     package_json = REPO_ROOT / "package.json"
     if not package_json.exists():
         logger.info("   ⏭️  No package.json found, skipping npm audit")
         return CVEScanResult(0, 0, 0, {}, [], "success")
-    
+
     try:
         result = subprocess.run(
             ["npm", "audit", "--json"],
@@ -148,12 +148,12 @@ def scan_javascript_dependencies() -> CVEScanResult:
             text=True,
             timeout=120
         )
-        
+
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
                 vulnerabilities = data.get("vulnerabilities", {})
-                
+
                 for pkg_name, vuln_data in vulnerabilities.items():
                     if isinstance(vuln_data, dict) and "via" in vuln_data:
                         for via in vuln_data.get("via", []):
@@ -166,18 +166,18 @@ def scan_javascript_dependencies() -> CVEScanResult:
                                     description=via.get("title", "No description"),
                                     ecosystem="JavaScript"
                                 ))
-                
+
                 logger.info(f"   ✅ Found {len(findings)} JavaScript vulnerabilities")
             except json.JSONDecodeError:
                 logger.debug("   Could not parse npm audit JSON")
-    
+
     except FileNotFoundError:
         logger.warning("   npm not installed or package.json not found")
     except subprocess.TimeoutExpired:
         logger.error("   npm audit scan timed out")
     except Exception as e:
         logger.debug(f"   Warning: {e}")
-    
+
     return CVEScanResult(
         total_vulnerabilities=len(findings),
         critical_vulnerabilities=sum(1 for f in findings if f.severity == Severity.CRITICAL),
@@ -191,15 +191,15 @@ def scan_javascript_dependencies() -> CVEScanResult:
 def scan_rust_dependencies() -> CVEScanResult:
     """Scan Rust dependencies using cargo audit."""
     logger.info("🦀 Scanning Rust dependencies with cargo audit...")
-    
+
     findings = []
-    
+
     # Check if Cargo.toml exists
     cargo_toml = REPO_ROOT / "Cargo.toml"
     if not cargo_toml.exists():
         logger.info("   ⏭️  No Cargo.toml found, skipping cargo audit")
         return CVEScanResult(0, 0, 0, {}, [], "success")
-    
+
     try:
         result = subprocess.run(
             ["cargo", "audit", "--json"],
@@ -208,12 +208,12 @@ def scan_rust_dependencies() -> CVEScanResult:
             text=True,
             timeout=120
         )
-        
+
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
                 vulnerabilities = data.get("vulnerabilities", [])
-                
+
                 for vuln in vulnerabilities:
                     findings.append(CVEFinding(
                         package=vuln.get("package", {}).get("name", "unknown"),
@@ -223,11 +223,11 @@ def scan_rust_dependencies() -> CVEScanResult:
                         description=vuln.get("advisory", {}).get("title", "No description"),
                         ecosystem="Rust"
                     ))
-                
+
                 logger.info(f"   ✅ Found {len(findings)} Rust vulnerabilities")
             except json.JSONDecodeError:
                 logger.debug("   Could not parse cargo audit JSON")
-    
+
     except FileNotFoundError:
         logger.warning("   cargo audit not installed")
         logger.info("   Install: cargo install cargo-audit")
@@ -235,7 +235,7 @@ def scan_rust_dependencies() -> CVEScanResult:
         logger.error("   cargo audit scan timed out")
     except Exception as e:
         logger.debug(f"   Warning: {e}")
-    
+
     return CVEScanResult(
         total_vulnerabilities=len(findings),
         critical_vulnerabilities=sum(1 for f in findings if f.severity == Severity.CRITICAL),
@@ -249,18 +249,18 @@ def scan_rust_dependencies() -> CVEScanResult:
 def aggregate_results(results: list[CVEScanResult]) -> CVEScanResult:
     """Aggregate results from all ecosystem scans."""
     logger.info("🔗 Aggregating CVE scan results...")
-    
+
     all_findings = []
     total_by_ecosystem = {}
     total_critical = 0
     total_high = 0
-    
+
     for result in results:
         all_findings.extend(result.findings)
         total_by_ecosystem.update(result.by_ecosystem)
         total_critical += result.critical_vulnerabilities
         total_high += result.high_vulnerabilities
-    
+
     return CVEScanResult(
         total_vulnerabilities=len(all_findings),
         critical_vulnerabilities=total_critical,
@@ -274,7 +274,7 @@ def aggregate_results(results: list[CVEScanResult]) -> CVEScanResult:
 def deploy_cve_blocking_workflow() -> bool:
     """Deploy workflow to block PRs with unpatched critical/high CVEs."""
     logger.info("🛠️  Deploying CVE blocking workflow...")
-    
+
     workflow_content = """# Phase 13.3: CVE Scanning & Dependency Audit
 name: CVE Scanning & Dependency Audit
 
@@ -335,13 +335,13 @@ jobs:
               body: '❌ **Critical or High-severity CVE detected!**\\n\\n**Actions required:**\\n1. Update vulnerable dependencies\\n2. Force-push with patches\\n3. Request new review\\n\\nSee SECURITY.md for vulnerability policy.'
             })
 """
-    
+
     workflow_path = REPO_ROOT / ".github" / "workflows"
     workflow_path.mkdir(parents=True, exist_ok=True)
-    
+
     workflow_file = workflow_path / "13-3-cve-scanning.yml"
     workflow_file.write_text(workflow_content)
-    
+
     logger.info(f"✅ CVE blocking workflow deployed: {workflow_file}")
     return True
 
@@ -351,25 +351,25 @@ def main():
     logger.info("=" * 70)
     logger.info("🔍 Phase 13.3: CVE Scanning & Dependency Audit")
     logger.info("=" * 70)
-    
+
     # Scan all ecosystems
     logger.info("\n[1/4] Scanning Python dependencies...")
     python_results = scan_python_dependencies()
-    
+
     logger.info("\n[2/4] Scanning JavaScript dependencies...")
     js_results = scan_javascript_dependencies()
-    
+
     logger.info("\n[3/4] Scanning Rust dependencies...")
     rust_results = scan_rust_dependencies()
-    
+
     # Aggregate
     logger.info("\n[4/4] Aggregating results...")
     all_results = [python_results, js_results, rust_results]
     aggregated = aggregate_results(all_results)
-    
+
     # Deploy workflow
     workflow_deployed = deploy_cve_blocking_workflow()
-    
+
     # Summary
     logger.info("\n" + "=" * 70)
     logger.info("📊 Phase 13.3.2 Summary: CVE Scanning")
@@ -379,11 +379,11 @@ def main():
     logger.info(f"🟠 High: {aggregated.high_vulnerabilities}")
     logger.info(f"✅ By ecosystem: {aggregated.by_ecosystem}")
     logger.info(f"✅ CVE blocking workflow deployed: {workflow_deployed}")
-    
+
     if aggregated.critical_vulnerabilities > 0:
         logger.error(f"\n❌ {aggregated.critical_vulnerabilities} critical CVEs require immediate patching!")
         return 1
-    
+
     logger.info("\n✅ Phase 13.3.2 COMPLETE")
     return 0
 

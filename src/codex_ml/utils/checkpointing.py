@@ -392,7 +392,12 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         try:
             _torch_dump(path, payload)
             return
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - torch optional
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to save torch checkpoint: {exc}") from exc
@@ -421,10 +426,13 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(
-                path, **kwargs
-            )  # nosec B614 - weights_only=False required for optimizer/RNG state
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - torch optional
+            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to load torch checkpoint: {exc}") from exc
@@ -432,7 +440,16 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
-    except (IOError, OSError, ModuleNotFoundError, ImportError, ValueError, TypeError, RuntimeError, pickle.UnpicklingError) as exc:
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+        pickle.UnpicklingError,
+    ) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         errors.append(exc)
@@ -547,7 +564,12 @@ def load_checkpoint(
             f"CheckpointLoadError: {e}", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fallback path
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - fallback path
         capture_error(
             step_no="load_checkpoint",
             step_desc="checkpoint load unexpected",
@@ -835,7 +857,12 @@ def save_checkpoint(
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - metadata best effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - metadata best effort
         logger.info(
             "save_checkpoint: unable to write metadata sidecar for %s: %s",
             p,
@@ -904,7 +931,12 @@ def load_training_checkpoint(
             "CheckpointLoadError: <ERROR_TYPE>", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fallback path
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - fallback path
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
 
     if not isinstance(raw, Mapping):
@@ -1536,7 +1568,12 @@ class CheckpointManager:
             if optimizer is not None and state.get("optimizer") is not None:
                 try:
                     optimizer.load_state_dict(state["optimizer"])
-                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                ) as exc:  # pragma: no cover
                     raise ValueError(f"optimizer state load failed: {exc}") from exc
             if scheduler is not None and state.get("scheduler") is not None:
                 with contextlib.suppress(Exception):

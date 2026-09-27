@@ -47,14 +47,10 @@ class RagAPIRegistry:
             ValueError: If name is already registered and force is False
         """
         if name in cls._registry and not force:
-            raise ValueError(
-                f"RAG API '{name}' is already registered. Use force=True to override."
-            )
+            raise ValueError(f"RAG API '{name}' is already registered. Use force=True to override.")
 
         if not issubclass(api_class, BaseRagAPI):
-            raise TypeError(
-                f"API class must inherit from BaseRagAPI, got {api_class.__name__}"
-            )
+            raise TypeError(f"API class must inherit from BaseRagAPI, got {api_class.__name__}")
 
         cls._registry[name] = api_class
         logger.debug(f"Registered RAG API: {name} -> {api_class.__name__}")

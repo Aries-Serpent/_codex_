@@ -103,7 +103,12 @@ def _safe_operation(
 
     try:
         return operation()
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive logging path
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive logging path
         message = f"{exc.__class__.__name__}: {exc}"
         _append_error_report(step_name, message, context)
         raise

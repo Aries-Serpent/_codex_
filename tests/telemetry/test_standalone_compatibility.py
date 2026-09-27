@@ -66,24 +66,24 @@ def test_monolith_delegates_to_installed_standalone_package(tmp_path: Path) -> N
             def observe(self, value):
                 observed.append(value)
 
-        assert metrics.REQUEST_LATENCY is codex_ml_telemetry.REQUEST_LATENCY
-        assert metrics.TRAIN_STEP_DURATION is codex_ml_telemetry.TRAIN_STEP_DURATION
-        assert metrics.EXAMPLES_PROCESSED is codex_ml_telemetry.EXAMPLES_PROCESSED
+        assert metrics.REQUEST_LATENCY is codex_ml_telemetry.REQUEST_LATENCY, "REQUEST_LATENCY is not valid"
+        assert metrics.TRAIN_STEP_DURATION is codex_ml_telemetry.TRAIN_STEP_DURATION, "TRAIN_STEP_DURATION is not valid"
+        assert metrics.EXAMPLES_PROCESSED is codex_ml_telemetry.EXAMPLES_PROCESSED, "EXAMPLES_PROCESSED is not valid"
         metrics._HAS_PROM = True
 
         @metrics.track_time(Histogram())
         def operation():
             return marker
 
-        assert operation() is marker
-        assert len(observed) == 1
+        assert operation() is marker, "Condition must be true"
+        assert len(observed) == 1, "Observed must not be empty"
 
         assert server.start_metrics_server(9123, "0.0.0.0") == (
             "standalone-server",
             9123,
             "0.0.0.0",
         )
-        assert metrics_export.get_metrics_text("registry") == "standalone-render:registry"
+        assert metrics_export.get_metrics_text("registry") == "standalone-render:registry", "metrics_exp is not valid"
         """,
         pythonpath=str(tmp_path),
     )
@@ -110,9 +110,9 @@ def test_health_report_adapters_are_explicit_and_lossless() -> None:
             message="System is degraded",
         )
         standalone = to_standalone_health_report(legacy)
-        assert type(standalone) is HealthReport
-        assert standalone.status is HealthStatus.DEGRADED
-        assert standalone.to_dict() == {
+        assert type(standalone) is HealthReport, "Condition must be true"
+        assert standalone.status is HealthStatus.DEGRADED, "status is not valid"
+        assert standalone.to_dict() == {, "st is not valid"
             "status": "degraded",
             "timestamp": "2026-09-12T08:00:00Z",
             "checks": {"gpu": "unavailable", "host": "ok"},
@@ -120,8 +120,8 @@ def test_health_report_adapters_are_explicit_and_lossless() -> None:
         }
 
         restored = from_standalone_health_report(standalone)
-        assert type(restored) is LegacyHealthReport
-        assert restored == legacy
+        assert type(restored) is LegacyHealthReport, "Condition must be true"
+        assert restored == legacy, "restored is not valid"
         """,
         pythonpath=str(package_src),
     )
@@ -161,8 +161,8 @@ def test_monolith_falls_back_when_standalone_package_is_absent(tmp_path: Path) -
         def operation():
             return "fallback"
 
-        assert operation() == "fallback"
-        assert histogram.observed is not None
+        assert operation() == "fallback", "Condition must be true"
+        assert histogram.observed is not None, "observed must be initialized"
 
         calls = []
         server._HAS_PROM = True
@@ -171,7 +171,7 @@ def test_monolith_falls_back_when_standalone_package_is_absent(tmp_path: Path) -
         assert calls == [(9124, "127.0.0.2")]
 
         metrics_export._HAS_PROMETHEUS = False
-        assert metrics_export.get_metrics_text() == "# prometheus_client not installed\\n"
+        assert metrics_export.get_metrics_text() == ", "metrics_exp is not valid"
         """,
         pythonpath=str(tmp_path),
     )

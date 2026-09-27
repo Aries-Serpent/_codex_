@@ -6,15 +6,12 @@ Generates detailed mutation kill rate analysis and recommendations.
 """
 
 import ast
-import sys
-import json
-import subprocess
-import tempfile
-import shutil
-from pathlib import Path
-from typing import Dict, List, Tuple, Set
-from collections import defaultdict
 import re
+import sys
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Tuple
+
 
 class MutationAnalyzer:
     def __init__(self):
@@ -23,7 +20,7 @@ class MutationAnalyzer:
         self.mutations_survived = []
         self.test_results = defaultdict(list)
         self.module_stats = {}
-        
+
     def extract_functions_from_file(self, filepath: str) -> List[Tuple[str, str, int, int]]:
         """Extract function definitions from a Python file."""
         with open(filepath, 'r') as f:
@@ -31,7 +28,7 @@ class MutationAnalyzer:
                 tree = ast.parse(f.read())
             except SyntaxError:
                 return []
-        
+
         functions = []
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
@@ -41,7 +38,7 @@ class MutationAnalyzer:
                 end_line = node.end_lineno
                 functions.append((node.name, filepath, start_line, end_line))
         return functions
-    
+
     def analyze_test_coverage(self, test_files: List[str]) -> Dict:
         """Analyze test file coverage and structure."""
         coverage_info = {
@@ -49,25 +46,25 @@ class MutationAnalyzer:
             'test_by_module': defaultdict(list),
             'assertions_per_test': defaultdict(int),
         }
-        
+
         for test_file in test_files:
             if not Path(test_file).exists():
                 continue
-                
+
             with open(test_file, 'r') as f:
                 content = f.read()
-                
+
             # Count test functions
             test_count = len(re.findall(r'def test_\w+', content))
             coverage_info['total_tests'] += test_count
             coverage_info['test_by_module'][test_file] = test_count
-            
+
             # Count assertions
             assertion_count = len(re.findall(r'assert\s', content))
             coverage_info['assertions_per_test'][test_file] = assertion_count
-        
+
         return coverage_info
-    
+
     def identify_mutation_types(self) -> List[Dict]:
         """Identify mutation types for critical paths."""
         return [
@@ -102,18 +99,18 @@ class MutationAnalyzer:
                 'examples': ['remove security check', 'remove validation']
             }
         ]
-    
+
     def generate_mutation_report(self, test_files: List[str]) -> str:
         """Generate comprehensive mutation testing report."""
         coverage_info = self.analyze_test_coverage(test_files)
         mutation_types = self.identify_mutation_types()
-        
+
         report = []
         report.append("=" * 80)
         report.append("PHASE 12 WS3 TIER 2 LANE 3 - MUTATION TESTING ANALYSIS")
         report.append("=" * 80)
         report.append("")
-        
+
         # Test Coverage Summary
         report.append("1. TEST COVERAGE ANALYSIS")
         report.append("-" * 80)
@@ -125,7 +122,7 @@ class MutationAnalyzer:
             if count > 0:
                 report.append(f"  • {module}: {count} tests")
         report.append("")
-        
+
         # Mutation Strategy
         report.append("2. MUTATION STRATEGY")
         report.append("-" * 80)
@@ -135,7 +132,7 @@ class MutationAnalyzer:
             report.append(f"     {mut_type['description']}")
             report.append(f"     Examples: {', '.join(mut_type['examples'])}")
         report.append("")
-        
+
         # Expected Mutation Count
         report.append("3. EXPECTED MUTATION BASELINE")
         report.append("-" * 80)
@@ -147,7 +144,7 @@ class MutationAnalyzer:
         report.append("")
         report.append("TOTAL EXPECTED MUTATIONS: 600-800")
         report.append("")
-        
+
         # Kill Rate Analysis
         report.append("4. MUTATION KILL RATE TARGETS")
         report.append("-" * 80)
@@ -157,19 +154,19 @@ class MutationAnalyzer:
         report.append("  • Auth Module Kill Rate: 95%+ (authentication critical)")
         report.append("  • RAG Module Kill Rate: 90%+ (data integrity)")
         report.append("")
-        
+
         # Test Quality Metrics
         report.append("5. TEST QUALITY METRICS")
         report.append("-" * 80)
         total_tests = coverage_info['total_tests']
         total_assertions = sum(coverage_info['assertions_per_test'].values())
         avg_assertions = total_assertions / total_tests if total_tests > 0 else 0
-        
+
         report.append(f"Total Test Functions: {total_tests}")
         report.append(f"Total Assertions: {total_assertions}")
         report.append(f"Average Assertions per Test: {avg_assertions:.1f}")
         report.append("")
-        
+
         # Risk Assessment
         report.append("6. TEST QUALITY ASSESSMENT")
         report.append("-" * 80)
@@ -181,7 +178,7 @@ class MutationAnalyzer:
             quality = "LOW - Tests need more thorough validation"
         report.append(f"Quality Level: {quality}")
         report.append("")
-        
+
         # Common Weak Spots
         report.append("7. COMMON WEAK SPOTS IN TESTS")
         report.append("-" * 80)
@@ -210,7 +207,7 @@ class MutationAnalyzer:
         report.append("     - Missing else branch tests")
         report.append("     - No coverage of all conditional paths")
         report.append("")
-        
+
         # Remediation Roadmap
         report.append("8. MUTATION KILLING REMEDIATION ROADMAP")
         report.append("-" * 80)
@@ -233,7 +230,7 @@ class MutationAnalyzer:
         report.append("  Expected New Tests: 15-25")
         report.append("  Effort: 2-3 hours")
         report.append("")
-        
+
         # Test Writing Guidelines
         report.append("9. MUTATION-KILLING TEST PATTERNS")
         report.append("-" * 80)
@@ -263,7 +260,7 @@ class MutationAnalyzer:
         report.append("  ✓ Verify 'and' vs 'or' behavior")
         report.append("  ✓ Test negation explicitly")
         report.append("")
-        
+
         # Expected Results
         report.append("10. EXPECTED MUTATION TESTING RESULTS")
         report.append("-" * 80)
@@ -285,7 +282,7 @@ class MutationAnalyzer:
         report.append("  • Additional Tests Needed: 20")
         report.append("  • Total New Tests: 80")
         report.append("")
-        
+
         # Validation Checklist
         report.append("11. VALIDATION CHECKLIST")
         report.append("-" * 80)
@@ -301,23 +298,23 @@ class MutationAnalyzer:
         report.append("=" * 80)
         report.append("Phase 12 WS3 Tier 2 Lane 3 Analysis Complete")
         report.append("=" * 80)
-        
+
         return "\n".join(report)
 
 def main():
     analyzer = MutationAnalyzer()
-    
+
     # Define test files to analyze
     test_files = [
         'tests/rag/test_security_enhanced.py',
         'tests/test_security_auth.py',
         'tests/test_security_input_validation.py',
     ]
-    
+
     # Generate comprehensive report
     report = analyzer.generate_mutation_report(test_files)
     print(report)
-    
+
     return 0
 
 if __name__ == '__main__':

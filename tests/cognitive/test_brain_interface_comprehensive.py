@@ -66,10 +66,10 @@ class TestCognitiveBrainPredictFunction:
         try:
             result = brain.predict(input_data={"test": "data"})
             # Either returns error or uses fallback
-            assert result is not None or result is None  # Accept either
+            assert result is not None or result is None, "result must be initialized"
         except Exception as e:
             # Should be a clear, informative error
-            assert "model" in str(e).lower() or "state" in str(e).lower()
+            assert "model" in str(e).lower() or "state" in str(e).lower(), "Condition must be true"
 
     def test_predict_model_not_found_error_message(self, brain: BrainInterface):
         """Test error message when model not found."""
@@ -77,7 +77,7 @@ class TestCognitiveBrainPredictFunction:
             brain.predict(input_data={"query": "test"})
         except (FileNotFoundError, ValueError) as e:
             # Error message should be informative
-            assert "model" in str(e).lower() or "init" in str(e).lower()
+            assert "model" in str(e).lower() or "init" in str(e).lower(), "Condition must be true"
 
     # ========================================================================
     # BRANCH 2: Invalid Input Validation
@@ -216,7 +216,7 @@ class TestCognitiveBrainPredictFunction:
             t.join(timeout=10)
 
         # All should complete
-        assert len(completed) == 15  # 3 threads × 5 iterations
+        assert len(completed) == 15, "Completed must not be empty"
 
     # ========================================================================
     # BRANCH 4: Stale Cache Detection
@@ -352,7 +352,7 @@ class TestCognitiveBrainPredictFunction:
         if hasattr(brain, "_reconstruct_state"):
             try:
                 brain._reconstruct_state()
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     # ========================================================================
@@ -367,7 +367,7 @@ class TestCognitiveBrainPredictFunction:
             try:
                 brain.predict(input_data={"query": "test"})
             except RuntimeError as e:
-                assert "Upstream error" in str(e)
+                assert "Upstream error" in str(e), "Error should be raised or set"
 
     def test_predict_error_context_preservation(self, brain: BrainInterface):
         """Test that error context is preserved."""
@@ -380,7 +380,7 @@ class TestCognitiveBrainPredictFunction:
                 brain.predict(input_data={"query": "test"})
             except ValueError as e:
                 # Error message should be preserved
-                assert "Invalid" in str(e)
+                assert "Invalid" in str(e), "Condition must be true"
 
     def test_predict_nested_error_handling(self, brain: BrainInterface):
         """Test handling of nested errors."""
@@ -443,8 +443,8 @@ class TestCognitiveBrainPredictFunction:
         """Test default timeout value."""
         # Should have a reasonable default timeout
         if hasattr(brain, "default_timeout"):
-            assert brain.default_timeout > 0
-            assert brain.default_timeout < 300  # Less than 5 minutes
+            assert brain.default_timeout > 0, "default_timeout must be greater than zero"
+            assert brain.default_timeout < 300, "default_timeout is not valid"
 
     # ========================================================================
     # BRANCH 9: Memory Limits
@@ -518,7 +518,7 @@ class TestCognitiveBrainPredictFunction:
         elapsed = time.time() - start
 
         # Should not hang (less than 5 seconds)
-        assert elapsed < 5.0
+        assert elapsed < 5.0, "elapsed is not valid"
 
     # ========================================================================
     # BRANCH 11: Session Consistency
@@ -562,8 +562,8 @@ class TestCognitiveBrainPredictFunction:
         t2.join(timeout=10)
 
         # Both sessions should complete independently
-        assert len(session1_data) <= 3
-        assert len(session2_data) <= 3
+        assert len(session1_data) <= 3, "Session1_data must not be empty"
+        assert len(session2_data) <= 3, "Session2_data must not be empty"
 
     # ========================================================================
     # BRANCH 12: Checkpoint Recovery
@@ -625,7 +625,7 @@ class TestBrainInterfaceIntegration:
         brain1 = BrainInterface(state_dir=temp_dir)
 
         # Should be able to initialize
-        assert brain1 is not None
+        assert brain1 is not None, "brain1 must be initialized"
 
         # Save state
         if hasattr(brain1, "_save_checkpoint"):

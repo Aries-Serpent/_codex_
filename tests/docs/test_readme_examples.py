@@ -200,7 +200,7 @@ class TestREADMEExampleCompleteness:
         """Verify README has installation example."""
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8").lower()
-        
+
         install_keywords = ["pip", "conda", "install", "clone", "git"]
         matches = sum(1 for kw in install_keywords if kw in content)
         assert matches >= 2, "README should have installation instructions"
@@ -209,15 +209,15 @@ class TestREADMEExampleCompleteness:
         """Verify README usage example is complete."""
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
-        
+
         # Extract code blocks
         pattern = re.compile(r"```(\w*)\n(.*?)```", re.DOTALL)
         code_blocks = pattern.findall(content)
-        
+
         # Should have at least one substantial code example
         substantial_blocks = [
             code for lang, code in code_blocks
             if lang.lower() in ("python", "py", "") and len(code.strip()) > 50
         ]
-        
+
         assert len(substantial_blocks) > 0, "README should have substantial usage examples"

@@ -11,13 +11,13 @@ Usage:
 """
 
 import json
+import logging
 import os
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-import logging
 
 # Setup logging
 logging.basicConfig(
@@ -68,7 +68,7 @@ class WorkflowHealthCollector:
     def get_workflows(self) -> List[Dict]:
         """Get all workflows in the repository"""
         logger.info(f"Fetching workflows from {self.repo}...")
-        
+
         if not self.gh_cli_available:
             logger.error("gh CLI not available")
             return []
@@ -80,7 +80,7 @@ class WorkflowHealthCollector:
                 text=True,
                 timeout=30
             )
-            
+
             if result.returncode != 0:
                 logger.error(f"Failed to fetch workflows: {result.stderr}")
                 return []
@@ -96,7 +96,7 @@ class WorkflowHealthCollector:
         """Get recent runs for a workflow"""
         since = datetime.utcnow() - timedelta(days=days)
         since_str = since.isoformat() + "Z"
-        
+
         try:
             result = subprocess.run(
                 [
@@ -111,7 +111,7 @@ class WorkflowHealthCollector:
                 text=True,
                 timeout=30
             )
-            
+
             if result.returncode != 0:
                 logger.warning(f"Failed to fetch runs for workflow {workflow_id}")
                 return []
@@ -124,7 +124,7 @@ class WorkflowHealthCollector:
     def calculate_metrics(self, workflow_id: str, workflow_name: str, workflow_path: str, days: int = 30) -> Optional[WorkflowMetrics]:
         """Calculate metrics for a workflow"""
         runs = self.get_workflow_runs(workflow_id, days)
-        
+
         if not runs:
             logger.warning(f"No runs found for {workflow_name}")
             return None
@@ -133,24 +133,24 @@ class WorkflowHealthCollector:
         successful_runs = sum(1 for r in runs if r.get("conclusion") == "success")
         failed_runs = sum(1 for r in runs if r.get("conclusion") == "failure")
         cancelled_runs = sum(1 for r in runs if r.get("conclusion") == "cancelled")
-        
+
         success_rate = (successful_runs / total_runs * 100) if total_runs > 0 else 0
         cancellation_rate = (cancelled_runs / total_runs * 100) if total_runs > 0 else 0
-        
+
         # Calculate runtimes
         durations = [r.get("durationMinutes", 0) for r in runs if r.get("durationMinutes")]
         average_runtime_seconds = int((sum(durations) / len(durations) * 60)) if durations else 0
-        
+
         sorted_durations = sorted(durations)
         p95_idx = max(0, int(len(sorted_durations) * 0.95) - 1)
         p95_runtime_seconds = int(sorted_durations[p95_idx] * 60) if sorted_durations else 0
-        
+
         # Get last run
         last_run = runs[0] if runs else {}
         last_run_status = last_run.get("conclusion", "unknown")
         last_run_timestamp = last_run.get("createdAt", datetime.utcnow().isoformat())
         last_run_duration = int(last_run.get("durationMinutes", 0) * 60)
-        
+
         # Calculate flakiness (retry rate / instability)
         flakiness_score = 0.0
         if success_rate > 0:
@@ -162,7 +162,7 @@ class WorkflowHealthCollector:
         if mid > 0:
             first_half_success = sum(1 for r in runs[:mid] if r.get("conclusion") == "success") / mid * 100
             second_half_success = sum(1 for r in runs[mid:] if r.get("conclusion") == "success") / (total_runs - mid) * 100
-            
+
             if second_half_success > first_half_success + 5:
                 trend = "improving"
             elif second_half_success < first_half_success - 5:
@@ -196,14 +196,14 @@ class WorkflowHealthCollector:
         """Collect metrics for all workflows"""
         workflows = self.get_workflows()
         metrics = {}
-        
+
         for workflow in workflows:
             workflow_id = str(workflow.get("id"))
             workflow_name = workflow.get("name", "unknown")
             workflow_path = workflow.get("path", "")
-            
+
             logger.info(f"Collecting metrics for {workflow_name}...")
-            
+
             workflow_metrics = self.calculate_metrics(workflow_id, workflow_name, workflow_path, days)
             if workflow_metrics:
                 metrics[workflow_name] = workflow_metrics
@@ -215,18 +215,18 @@ class WorkflowHealthCollector:
     def save_snapshot(self, metrics: Dict[str, WorkflowMetrics], output_file: str):
         """Save metrics snapshot to JSON"""
         logger.info(f"Saving snapshot to {output_file}...")
-        
+
         snapshot = {
             "generated_at": datetime.utcnow().isoformat() + "Z",
             "metrics": {k: asdict(v) for k, v in metrics.items()},
             "summary": self._generate_summary(metrics)
         }
-        
+
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        
+
         with open(output_file, "w") as f:
             json.dump(snapshot, f, indent=2)
-        
+
         logger.info(f"Snapshot saved ({len(metrics)} workflows)")
 
     def _generate_summary(self, metrics: Dict[str, WorkflowMetrics]) -> Dict:
@@ -236,7 +236,7 @@ class WorkflowHealthCollector:
 
         success_rates = [m.success_rate for m in metrics.values()]
         runtimes = [m.average_runtime_seconds for m in metrics.values()]
-        
+
         return {
             "total_workflows": len(metrics),
             "avg_success_rate": round(sum(success_rates) / len(success_rates), 2) if success_rates else 0,
@@ -251,20 +251,20 @@ class WorkflowHealthCollector:
 
 def main():
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Collect workflow health metrics")
     parser.add_argument("--days", type=int, default=30, help="Number of days to analyze")
     parser.add_argument("--workflow", type=str, help="Specific workflow to analyze")
     parser.add_argument("--output", type=str, default=".codex/workflow_health_snapshot.json", help="Output file")
     parser.add_argument("--repo", type=str, help="Repository (owner/repo)")
-    
+
     args = parser.parse_args()
-    
+
     if args.repo:
         os.environ["GITHUB_REPOSITORY"] = args.repo
 
     collector = WorkflowHealthCollector()
-    
+
     if not collector.gh_cli_available:
         logger.error("gh CLI not available. Install it first: https://cli.github.com/")
         sys.exit(1)
@@ -273,7 +273,7 @@ def main():
         metrics = collector.collect_all_metrics(days=args.days)
         collector.save_snapshot(metrics, args.output)
         logger.info("✅ Metrics collection complete")
-        
+
         # Print summary
         summary = collector._generate_summary(metrics)
         print("\n📊 Summary:")
@@ -281,7 +281,7 @@ def main():
         print(f"  Avg Success Rate: {summary.get('avg_success_rate', 0)}%")
         print(f"  Workflows >95%: {summary.get('workflows_above_95_percent', 0)}")
         print(f"  Workflows <80%: {summary.get('workflows_below_80_percent', 0)}")
-        
+
         sys.exit(0)
     except Exception as e:
         logger.error(f"❌ Collection failed: {e}", exc_info=True)

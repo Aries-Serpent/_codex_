@@ -97,9 +97,9 @@ class TestProcess10AuditLogAccess:
             mock_audit_log_entry(action="org.delete_repo", actor="user2"),
         ]
 
-        assert "/audit-log" in endpoint
-        assert "/orgs/" in endpoint
-        assert len(expected_response) == 2
+        assert "/audit-log" in endpoint, "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
+        assert len(expected_response) == 2, "Expected_response must not be empty"
 
     def test_process10_audit_logs_empty(
         self,
@@ -110,9 +110,9 @@ class TestProcess10AuditLogAccess:
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}"
         expected_response = []
 
-        assert "/audit-log" in endpoint
-        assert "/orgs/" in endpoint
-        assert len(expected_response) == 0
+        assert "/audit-log" in endpoint, "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
+        assert len(expected_response) == 0, "Expected_response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Filtering
@@ -127,7 +127,7 @@ class TestProcess10AuditLogAccess:
         action = "org.create_repo"
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?action={action}"
 
-        assert "action=org.create_repo" in endpoint
+        assert "action=org.create_repo" in endpoint, "Condition must be true"
 
     def test_process10_filter_by_actor(
         self,
@@ -138,7 +138,7 @@ class TestProcess10AuditLogAccess:
         actor = "testuser"
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?actor={actor}"
 
-        assert "actor=testuser" in endpoint
+        assert "actor=testuser" in endpoint, "Condition must be true"
 
     def test_process10_filter_by_date_range(
         self,
@@ -152,9 +152,9 @@ class TestProcess10AuditLogAccess:
 
         # GitHub uses URL encoding for ISO 8601 dates
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?phrase=created:{start_date}..{end_date}&include=all&sort=asc"
-        assert "/audit-log" in endpoint
-        assert start_date in endpoint
-        assert end_date in endpoint
+        assert "/audit-log" in endpoint, "Condition must be true"
+        assert start_date in endpoint, "Condition must be true"
+        assert end_date in endpoint, "Condition must be true"
 
     def test_process10_filter_by_operation_result(
         self,
@@ -165,10 +165,10 @@ class TestProcess10AuditLogAccess:
         # GitHub audit logs typically return all, filtering done client-side
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}"
 
-        assert "/audit-log" in endpoint
+        assert "/audit-log" in endpoint, "Condition must be true"
         expected_results = ["success", "failure"]
         for result in expected_results:
-            assert result in expected_results
+            assert result in expected_results, "Result must not be empty"
 
     def test_process10_filter_by_include_type(
         self,
@@ -178,7 +178,7 @@ class TestProcess10AuditLogAccess:
         """Test: Filter by include type (all, web, api)."""
         for include in ["all", "web", "api"]:
             endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?include={include}"
-            assert f"include={include}" in endpoint
+            assert f"include={include}" in endpoint, "Condition must be true"
 
     def test_process10_combined_filters(
         self,
@@ -191,9 +191,9 @@ class TestProcess10AuditLogAccess:
             "?action=org.create_repo&actor=testuser&include=all"
         )
 
-        assert "action=org.create_repo" in endpoint
-        assert "actor=testuser" in endpoint
-        assert "include=all" in endpoint
+        assert "action=org.create_repo" in endpoint, "Condition must be true"
+        assert "actor=testuser" in endpoint, "Condition must be true"
+        assert "include=all" in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Pagination
@@ -207,8 +207,8 @@ class TestProcess10AuditLogAccess:
         """Test: Paginate through audit logs with per_page parameter."""
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?per_page=50&page=1"
 
-        assert "per_page=50" in endpoint
-        assert "page=1" in endpoint
+        assert "per_page=50" in endpoint, "Condition must be true"
+        assert "page=1" in endpoint, "Condition must be true"
 
     def test_process10_pagination_cursor_based(
         self,
@@ -220,7 +220,7 @@ class TestProcess10AuditLogAccess:
         cursor = "cursor_value_123"
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?after={cursor}&per_page=50"
 
-        assert "after=cursor_value_123" in endpoint
+        assert "after=cursor_value_123" in endpoint, "Value must be initialized"
 
     def test_process10_pagination_large_dataset(
         self,
@@ -231,7 +231,7 @@ class TestProcess10AuditLogAccess:
         # Typical approach: request per_page items, use cursor for next page
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?per_page=100"
 
-        assert "per_page=100" in endpoint
+        assert "per_page=100" in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Audit Log Entry Content
@@ -248,14 +248,14 @@ class TestProcess10AuditLogAccess:
         ]
 
         for field in required_fields:
-            assert field in entry
+            assert field in entry, "Condition must be true"
 
     def test_process10_audit_entry_actor_info(self, mock_audit_log_entry):
         """Test: Audit entry includes actor information."""
         entry = mock_audit_log_entry(actor="testuser")
 
-        assert "actor" in entry
-        assert entry["actor"]["login"] == "testuser"
+        assert "actor" in entry, "Condition must be true"
+        assert entry["actor"]["login"] == "testuser", "Condition must be true"
 
     def test_process10_audit_entry_ip_address(self, mock_audit_log_entry):
         """Test: Audit entry includes IP address for web events."""
@@ -263,21 +263,21 @@ class TestProcess10AuditLogAccess:
 
         # May be present for web events
         if "actor_ip" in entry:
-            assert entry["actor_ip"]  # Non-empty string
+            assert entry["actor_ip"], "Condition must be true"
 
     def test_process10_audit_entry_location(self, mock_audit_log_entry):
         """Test: Audit entry includes location info."""
         entry = mock_audit_log_entry()
 
         if "actor_location" in entry:
-            assert "country_code" in entry["actor_location"]
+            assert "country_code" in entry["actor_location"], "Count must be greater than zero"
 
     def test_process10_audit_entry_timestamp_iso8601(self, mock_audit_log_entry):
         """Test: Audit entry timestamp is ISO 8601 format."""
         entry = mock_audit_log_entry()
 
         timestamp = entry["timestamp"]
-        assert timestamp.endswith("Z") or "+" in timestamp  # UTC or timezone offset
+        assert timestamp.endswith("Z") or "+" in timestamp, "Condition must be true"
 
     def test_process10_audit_entry_action_format(self, mock_audit_log_entry):
         """Test: Audit action follows resource.action format."""
@@ -291,7 +291,7 @@ class TestProcess10AuditLogAccess:
 
         for action in actions:
             entry = mock_audit_log_entry(action=action)
-            assert "." in entry["action"]
+            assert "." in entry["action"], "Condition must be true"
 
     def test_process10_audit_entry_data_field(self, mock_audit_log_entry):
         """Test: Audit entry includes action-specific data."""
@@ -318,8 +318,8 @@ class TestProcess10AuditLogAccess:
         ]
 
         for action in org_actions:
-            assert "." in action
-            assert action.startswith("org.")
+            assert "." in action, "Condition must be true"
+            assert action.startswith("org."), "Condition must be true"
 
     def test_process10_security_actions(self):
         """Test: Security-related audit log actions."""
@@ -332,7 +332,7 @@ class TestProcess10AuditLogAccess:
         ]
 
         for action in security_actions:
-            assert "secret" in action.lower()
+            assert "secret" in action.lower(), "Condition must be true"
 
     def test_process10_user_authentication_actions(self):
         """Test: User authentication audit log actions."""
@@ -344,7 +344,7 @@ class TestProcess10AuditLogAccess:
         ]
 
         for action in auth_actions:
-            assert "user." in action
+            assert "user." in action, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -358,7 +358,7 @@ class TestProcess10AuditLogAccess:
     ):
         """Test: 403 Forbidden when token lacks admin:org scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
     def test_process10_org_not_found(
         self,
@@ -367,7 +367,7 @@ class TestProcess10AuditLogAccess:
     ):
         """Test: 404 Not Found when organization doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     def test_process10_rate_limit_exceeded(
         self,
@@ -377,7 +377,7 @@ class TestProcess10AuditLogAccess:
     ):
         """Test: 429 Too Many Requests when rate limited."""
         error = api_errors.rate_limited()
-        assert error.code == 429
+        assert error.code == 429, "Error should be raised or set"
 
     # ───────────────────────────────────────────────────────────────────────
     # Sorting and Ordering
@@ -390,7 +390,7 @@ class TestProcess10AuditLogAccess:
     ):
         """Test: Sort audit logs ascending (oldest first)."""
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?sort=asc"
-        assert "sort=asc" in endpoint
+        assert "sort=asc" in endpoint, "Condition must be true"
 
     def test_process10_sort_descending(
         self,
@@ -399,7 +399,7 @@ class TestProcess10AuditLogAccess:
     ):
         """Test: Sort audit logs descending (newest first)."""
         endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?sort=desc"
-        assert "sort=desc" in endpoint
+        assert "sort=desc" in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -418,8 +418,8 @@ class TestEnterpriseAuditLogs:
         """Test: Enterprise audit logs accessible at enterprise endpoint."""
         endpoint = f"{gh_api_base}{enterprise_audit_logs_endpoint}"
 
-        assert "/enterprises/" in endpoint
-        assert "/audit-log" in endpoint
+        assert "/enterprises/" in endpoint, "Condition must be true"
+        assert "/audit-log" in endpoint, "Condition must be true"
 
     def test_enterprise_audit_logs_list(
         self,
@@ -430,13 +430,13 @@ class TestEnterpriseAuditLogs:
         """Test: Query enterprise audit logs."""
         endpoint = f"{gh_api_base}{enterprise_audit_logs_endpoint}"
 
-        assert "/enterprises/" in endpoint
-        assert "/audit-log" in endpoint
+        assert "/enterprises/" in endpoint, "Condition must be true"
+        assert "/audit-log" in endpoint, "Condition must be true"
         response = [
             mock_audit_log_entry(action="org.create"),
         ]
 
-        assert len(response) >= 0
+        assert len(response) >= 0, "Response must not be empty"
 
     def test_enterprise_audit_logs_filter(
         self,
@@ -446,8 +446,8 @@ class TestEnterpriseAuditLogs:
         """Test: Filter enterprise audit logs."""
         endpoint = f"{gh_api_base}{enterprise_audit_logs_endpoint}?action=org.create&include=all"
 
-        assert "action=org.create" in endpoint
-        assert "include=all" in endpoint
+        assert "action=org.create" in endpoint, "Condition must be true"
+        assert "include=all" in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -471,8 +471,8 @@ class TestAuditLogAnalysis:
             action = entry["action"]
             action_counts[action] = action_counts.get(action, 0) + 1
 
-        assert action_counts.get("org.create_repo") == 2
-        assert action_counts.get("org.delete_repo") == 1
+        assert action_counts.get("org.create_repo") == 2, "Count must be greater than zero"
+        assert action_counts.get("org.delete_repo") == 1, "Count must be greater than zero"
 
     def test_audit_log_timeline_by_hour(self):
         """Test: Group audit events by hour."""
@@ -481,7 +481,7 @@ class TestAuditLogAnalysis:
         # Would group events by hour
         hours = [now - timedelta(hours=i) for i in range(24)]
 
-        assert len(hours) == 24
+        assert len(hours) == 24, "Hours must not be empty"
 
     def test_audit_log_actor_activity(self, mock_audit_log_entry):
         """Test: Summarize activity by actor."""
@@ -496,8 +496,8 @@ class TestAuditLogAnalysis:
             actor = entry["actor"]["login"]
             actor_activity[actor] = actor_activity.get(actor, 0) + 1
 
-        assert actor_activity.get("user1") == 2
-        assert actor_activity.get("user2") == 1
+        assert actor_activity.get("user1") == 2, "act is not valid"
+        assert actor_activity.get("user2") == 1, "act is not valid"
 
     def test_audit_log_risk_indicators(self, mock_audit_log_entry):
         """Test: Identify potential risk indicators in audit log."""
@@ -514,7 +514,7 @@ class TestAuditLogAnalysis:
             e for e in entries if any(risk in e["action"] for risk in ["delete", "secret"])
         ]
 
-        assert len(high_risk_entries) == 2
+        assert len(high_risk_entries) == 2, "High_risk_entries must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -533,18 +533,18 @@ class TestAuditLogRetention:
         now = datetime.now(tz=timezone.utc)
         retention_date = now - timedelta(days=retention_days)
 
-        assert retention_date < now
+        assert retention_date < now, "retention_date is not valid"
 
     def test_audit_log_export_csv(self):
         """Test: Export audit logs to CSV format."""
         # Some implementations support export to CSV
         export_format = "csv"
-        assert export_format == "csv"
+        assert export_format == "csv", "export_format is not valid"
 
     def test_audit_log_export_json(self):
         """Test: Export audit logs to JSON format."""
         export_format = "json"
-        assert export_format == "json"
+        assert export_format == "json", "export_format is not valid"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -567,7 +567,7 @@ class TestAuditLogBatchOperations:
             (datetime.now(tz=timezone.utc) - timedelta(days=21), datetime.now(tz=timezone.utc) - timedelta(days=14)),
         ]
 
-        assert len(date_ranges) == 3
+        assert len(date_ranges) == 3, "Date_ranges must not be empty"
 
     def test_batch_retrieve_by_actor(
         self,
@@ -579,7 +579,7 @@ class TestAuditLogBatchOperations:
 
         for actor in actors:
             endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?actor={actor}"
-            assert actor in endpoint
+            assert actor in endpoint, "act is not valid"
 
     def test_batch_retrieve_by_action(
         self,
@@ -591,4 +591,4 @@ class TestAuditLogBatchOperations:
 
         for action in actions:
             endpoint = f"{gh_api_base}{org_audit_logs_endpoint}?action={action}"
-            assert action in endpoint
+            assert action in endpoint, "Condition must be true"

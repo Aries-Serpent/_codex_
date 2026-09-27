@@ -78,7 +78,7 @@ class TestMetaTensorEdgeCases:
             pytest.skip("PyTorch not installed")
 
         model = nn.Linear(10, 10)
-        
+
         try:
             model = model.float()
             meta_params = [
@@ -103,7 +103,7 @@ class TestMetaTensorEdgeCases:
                 self.register_buffer("buffer", torch.randn(10))
 
         model = CustomModel()
-        
+
         for name, buffer in model.named_buffers():
             assert buffer.device.type != "meta", f"Buffer {name} on meta"
 
@@ -147,7 +147,7 @@ class TestMetaTensorEdgeCases:
             pytest.skip("PyTorch not installed")
 
         linear = nn.Linear(10, 10)
-        
+
         model = nn.Sequential(linear, linear)
 
         for param in model.parameters():
@@ -394,7 +394,7 @@ class TestModelFactoryPatterns:
         try:
             factory = create_model_factory()
             assert factory is not None, "factory must be initialized"
-            
+
             # Create multiple models
             m1 = factory.create(model_type="tiny", device="cpu")
             m2 = factory.create(model_type="tiny", device="cpu")

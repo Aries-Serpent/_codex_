@@ -36,12 +36,8 @@ class Tunnel:
     source_sandbox: str = ""
     destination_sandbox: str = ""
     state: TunnelState = TunnelState.CREATE
-    created_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
-    last_heartbeat: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    last_heartbeat: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     bytes_transferred: int = 0
     latency_ms: float = 0.0
     is_healthy: bool = True
@@ -71,9 +67,7 @@ class TunnelLifecycle:
         self.tunnels: Dict[str, Tunnel] = {}
         self.tunnel_index: Dict[tuple, str] = {}
 
-    def create_tunnel(
-        self, source_sandbox: str, destination_sandbox: str
-    ) -> Tunnel:
+    def create_tunnel(self, source_sandbox: str, destination_sandbox: str) -> Tunnel:
         """Create a new secure channel tunnel."""
         tunnel = Tunnel(
             source_sandbox=source_sandbox,

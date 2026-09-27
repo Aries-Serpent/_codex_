@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 class BackendState(Enum):
     """Backend server state."""
+
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
@@ -32,6 +33,7 @@ class BackendState(Enum):
 @dataclass
 class BackendNode:
     """Backend server node."""
+
     node_id: str
     host: str
     port: int
@@ -57,6 +59,7 @@ class BackendNode:
 @dataclass
 class LoadBalancerConfig:
     """Load balancer configuration."""
+
     name: str
     algorithm: str = "consistent_hash"  # consistent_hash, round_robin, weighted
     health_check_interval: float = 5.0
@@ -169,8 +172,9 @@ class LoadBalancer:
 
         logger.info(f"Removed backend {node_id}")
 
-    def select_backend(self, request_id: str,
-                      session_id: Optional[str] = None) -> Optional[BackendNode]:
+    def select_backend(
+        self, request_id: str, session_id: Optional[str] = None
+    ) -> Optional[BackendNode]:
         """
         Select backend for request.
 
@@ -185,7 +189,10 @@ class LoadBalancer:
         if self.config.session_stickiness and session_id:
             if session_id in self.session_affinity:
                 node_id = self.session_affinity[session_id]
-                if node_id in self.backends and self.backends[node_id].state == BackendState.HEALTHY:
+                if (
+                    node_id in self.backends
+                    and self.backends[node_id].state == BackendState.HEALTHY
+                ):
                     self.request_distribution[node_id] += 1
                     return self.backends[node_id]
 
@@ -213,8 +220,7 @@ class LoadBalancer:
     def _select_consistent_hash(self, request_id: str) -> Optional[str]:
         """Select backend using consistent hashing."""
         healthy_nodes = [
-            n_id for n_id, node in self.backends.items()
-            if node.state == BackendState.HEALTHY
+            n_id for n_id, node in self.backends.items() if node.state == BackendState.HEALTHY
         ]
 
         if not healthy_nodes:
@@ -236,8 +242,7 @@ class LoadBalancer:
     def _select_round_robin(self) -> Optional[str]:
         """Select backend using round-robin."""
         healthy_nodes = [
-            n_id for n_id, node in self.backends.items()
-            if node.state == BackendState.HEALTHY
+            n_id for n_id, node in self.backends.items() if node.state == BackendState.HEALTHY
         ]
 
         if not healthy_nodes:
@@ -250,7 +255,8 @@ class LoadBalancer:
     def _select_weighted(self) -> Optional[str]:
         """Select backend using weighted distribution."""
         healthy_nodes = [
-            (n_id, node) for n_id, node in self.backends.items()
+            (n_id, node)
+            for n_id, node in self.backends.items()
             if node.state == BackendState.HEALTHY
         ]
 
@@ -262,8 +268,7 @@ class LoadBalancer:
 
         # Find node with least connections relative to weight
         best_node = min(
-            healthy_nodes,
-            key=lambda x: x[1].current_connections / (x[1].weight or 1.0)
+            healthy_nodes, key=lambda x: x[1].current_connections / (x[1].weight or 1.0)
         )
 
         return best_node[0]
@@ -320,8 +325,9 @@ class LoadBalancer:
         # Calculate variance
         total_variance = 0.0
         for node_id in self.backends.keys():
-            actual_percentage = (self.request_distribution.get(node_id, 0) /
-                               max(self.request_count, 1)) * 100
+            actual_percentage = (
+                self.request_distribution.get(node_id, 0) / max(self.request_count, 1)
+            ) * 100
             variance = abs(actual_percentage - expected)
             total_variance += variance
 
@@ -374,8 +380,7 @@ class LoadBalancer:
             "algorithm": self.config.algorithm,
             "total_backends": len(self.backends),
             "healthy_backends": sum(
-                1 for n in self.backends.values()
-                if n.state == BackendState.HEALTHY
+                1 for n in self.backends.values() if n.state == BackendState.HEALTHY
             ),
             "total_requests": self.request_count,
             "load_variance": variance,

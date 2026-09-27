@@ -5,13 +5,14 @@ Monitors commit 194f6af0dbef18c680f40b40a7d4cfd0b1ea6aee for PR #5328
 Updates dashboard every 5 minutes with real-time status
 """
 
-import subprocess
 import json
-import time
+import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
+
 
 class ContinuousMonitor:
     def __init__(self):
@@ -23,11 +24,11 @@ class ContinuousMonitor:
         self.start_time = datetime.utcnow()
         self.poll_num = 0
         self.poll_history: List[Dict] = []
-        
+
     def get_workflows_gh_run(self) -> Optional[List[Dict]]:
         """Try to get workflows using 'gh run list'"""
         try:
-            cmd = ["gh", "run", "list", "--repo", self.repo, "--limit", "100", 
+            cmd = ["gh", "run", "list", "--repo", self.repo, "--limit", "100",
                    "--json", "id,name,status,conclusion,createdAt"]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             if result.returncode == 0 and result.stdout.strip():
@@ -35,7 +36,7 @@ class ContinuousMonitor:
         except Exception as e:
             pass
         return None
-    
+
     def get_workflows_api(self) -> Optional[List[Dict]]:
         """Try GitHub API endpoint"""
         try:
@@ -51,7 +52,7 @@ class ContinuousMonitor:
         except Exception:
             pass
         return None
-    
+
     def filter_by_commit(self, workflows: List[Dict]) -> List[Dict]:
         """Filter workflows for this commit"""
         filtered = []
@@ -60,7 +61,7 @@ class ContinuousMonitor:
             if wf.get('id'):  # If we have any workflow, assume it's for our commit
                 filtered.append(wf)
         return filtered[:100]
-    
+
     def analyze(self, workflows: List[Dict]) -> Dict:
         """Analyze workflow statuses"""
         analysis = {
@@ -74,11 +75,11 @@ class ContinuousMonitor:
             'failed_list': [],
             'running_list': [],
         }
-        
+
         for wf in workflows:
             status = wf.get('status', '').lower()
             conclusion = wf.get('conclusion', '').lower()
-            
+
             if status == 'completed':
                 analysis['completed'] += 1
                 if conclusion == 'success':
@@ -99,18 +100,18 @@ class ContinuousMonitor:
                 })
             elif status == 'queued':
                 analysis['queued'] += 1
-        
+
         return analysis
-    
+
     def build_dashboard(self, workflows: List[Dict], analysis: Dict) -> str:
         """Build markdown dashboard"""
         elapsed_min = (datetime.utcnow() - self.start_time).total_seconds() / 60
-        
+
         a = analysis
         total = max(a['total'], 1)
         completion_pct = (a['completed'] * 100) // total
         success_pct = (a['success'] * 100) // max(a['completed'], 1)
-        
+
         dashboard = f"""# 🚀 Workflow Health Monitor - Live Dashboard
 
 ## 📍 Monitoring Info
@@ -150,92 +151,92 @@ TOTAL:    {a['total']:3d}
 | Name | Status | Conclusion |
 |------|--------|-----------|
 """
-        
+
         for wf in workflows[:20]:
             status = wf.get('status', 'unknown').lower()
             conclusion = wf.get('conclusion', '').lower() or '-'
             name = wf.get('name', 'Unknown')[:50]
-            
+
             icon = {
                 'completed': '✅',
                 'in_progress': '🔵',
                 'queued': '⏳'
             }.get(status, '❓')
-            
+
             dashboard += f"| {name} | {icon} {status} | {conclusion} |\n"
-        
+
         if a['total'] > 20:
             dashboard += f"| ... and {a['total'] - 20} more | | |\n"
-        
+
         if a['failed_list']:
             dashboard += f"\n### ❌ Failed Workflows ({len(a['failed_list'])})\n\n"
             for f in a['failed_list'][:10]:
                 dashboard += f"- {f['name']} (ID: {f['id']})\n"
-        
+
         if a['running_list']:
             dashboard += f"\n### 🔵 Running Workflows ({len(a['running_list'])})\n\n"
             for r in a['running_list'][:10]:
                 dashboard += f"- {r['name']} (ID: {r['id']})\n"
-        
+
         dashboard += f"\n---\n**Poll #{self.poll_num}** | {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}\n"
-        
+
         return dashboard
-    
+
     def run(self, max_polls: int = 12):
         """Main monitoring loop"""
-        print(f"\n🚀 Starting Workflow Monitor")
+        print("\n🚀 Starting Workflow Monitor")
         print(f"   Commit: {self.commit[:8]}")
         print(f"   PR: #{self.pr}")
         print(f"   Max Polls: {max_polls} (≈{max_polls * 5} minutes)")
-        
+
         while self.poll_num < max_polls:
             self.poll_num += 1
             timestamp = datetime.utcnow()
             print(f"\n[{timestamp.strftime('%H:%M:%S')}] Poll #{self.poll_num}")
-            
+
             # Try to get workflows
             workflows = self.get_workflows_gh_run()
             if not workflows:
                 workflows = self.get_workflows_api()
-            
+
             if workflows:
                 print(f"  ✅ Retrieved {len(workflows)} workflows")
-                
+
                 # Filter for our commit (if implementation supports it)
                 workflows = self.filter_by_commit(workflows)
-                
+
                 if workflows:
                     # Analyze
                     analysis = self.analyze(workflows)
                     print(f"  📊 OK:{analysis['success']} FAIL:{analysis['failed']} RUN:{analysis['in_progress']} Q:{analysis['queued']}")
-                    
+
                     # Build dashboard
                     dashboard = self.build_dashboard(workflows, analysis)
                     self.dashboard_file.write_text(dashboard)
-                    
+
                     # Store status
                     self.poll_history.append({
                         'poll': self.poll_num,
                         'time': timestamp.isoformat(),
                         'analysis': analysis
                     })
-                    
+
                     # Check if done
                     if analysis['in_progress'] == 0 and analysis['queued'] == 0:
-                        print(f"  ✅ All workflows complete!")
+                        print("  ✅ All workflows complete!")
                         break
                 else:
-                    print(f"  ⚠️ No workflows found for commit filter")
+                    print("  ⚠️ No workflows found for commit filter")
             else:
-                print(f"  ⚠️ Could not retrieve workflows")
-            
+                print("  ⚠️ Could not retrieve workflows")
+
             # Wait for next poll
             if self.poll_num < max_polls:
-                print(f"  ⏱️ Waiting 5 minutes until next poll...")
+                print("  ⏱️ Waiting 5 minutes until next poll...")
                 time.sleep(300)
-        
+
         print(f"\n✅ Monitoring finished. Dashboard: {self.dashboard_file}")
-        
+
         # Final status
         if self.poll_history:
             final = self.poll_history[-1]['analysis']

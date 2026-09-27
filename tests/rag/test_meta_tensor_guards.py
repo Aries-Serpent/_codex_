@@ -38,29 +38,29 @@ class TestGuardRailBasics:
     def test_guard_rail_initialization(self):
         """Test guard rail initialization."""
         guard = MetaTensorGuardRail(max_recovery_attempts=3)
-        assert guard.max_recovery_attempts == 3
-        assert len(guard.reports) == 0
-        assert len(guard.state_history) == 0
+        assert guard.max_recovery_attempts == 3, "max_recovery_attempts is not valid"
+        assert len(guard.reports) == 0, "Collection must not be empty"
+        assert len(guard.state_history) == 0, "Collection must not be empty"
 
     def test_check_environment_success(self):
         """Test environment check succeeds."""
         guard = MetaTensorGuardRail()
         report = guard.check_environment()
 
-        assert report.name == "environment_check"
-        assert report.status == GuardRailStatus.PASSED
-        assert report.error is None
-        assert "torch_version" in report.details
-        assert report.duration_ms >= 0
+        assert report.name == "environment_check", "name is not valid"
+        assert report.status == GuardRailStatus.PASSED, "status is not valid"
+        assert report.error is None, "Error should be raised or set"
+        assert "torch_version" in report.details, "Condition must be true"
+        assert report.duration_ms >= 0, "duration_ms must be greater than zero"
 
     def test_check_pre_init_state_success(self):
         """Test pre-init state check succeeds."""
         guard = MetaTensorGuardRail()
         report = guard.check_pre_init_state()
 
-        assert report.name == "pre_init_state_check"
-        assert report.status == GuardRailStatus.PASSED
-        assert "garbage_collection" in report.details
+        assert report.name == "pre_init_state_check", "name is not valid"
+        assert report.status == GuardRailStatus.PASSED, "status is not valid"
+        assert "garbage_collection" in report.details, "Condition must be true"
 
     def test_check_oom_condition_success(self):
         """Test OOM check succeeds under normal conditions."""
@@ -77,9 +77,9 @@ class TestGuardRailBasics:
         guard.check_pre_init_state()
 
         summary = guard.get_summary()
-        assert summary["total_checks"] == 2
-        assert summary["passed"] >= 0
-        assert "details" in summary
+        assert summary["total_checks"] == 2, "Condition must be true"
+        assert summary["passed"] >= 0, "Value must be greater than zero"
+        assert "details" in summary, "Condition must be true"
         assert isinstance(summary["pass_rate"], float)
 
     def test_guard_rail_state_history(self):
@@ -88,9 +88,9 @@ class TestGuardRailBasics:
         guard.save_state("initial")
         guard.save_state("final")
 
-        assert len(guard.state_history) == 2
-        assert guard.state_history[0]["state_id"] == "initial"
-        assert guard.state_history[1]["state_id"] == "final"
+        assert len(guard.state_history) == 2, "Collection must not be empty"
+        assert guard.state_history[0]["state_id"] == "initial", "Condition must be true"
+        assert guard.state_history[1]["state_id"] == "final", "Condition must be true"
 
 
 class TestModelChecking:
@@ -103,15 +103,15 @@ class TestModelChecking:
         mock_model.named_parameters = Mock(return_value=[])
 
         report = guard.check_model_loading(mock_model)
-        assert report.status == GuardRailStatus.PASSED
+        assert report.status == GuardRailStatus.PASSED, "status is not valid"
 
     def test_check_model_loading_failure_none_model(self):
         """Test model loading check with None model."""
         guard = MetaTensorGuardRail()
         report = guard.check_model_loading(None)
 
-        assert report.status == GuardRailStatus.FAILED
-        assert report.error is not None
+        assert report.status == GuardRailStatus.FAILED, "status is not valid"
+        assert report.error is not None, "error must be initialized"
 
     def test_check_meta_tensors_no_tensors(self):
         """Test meta tensor check when no meta tensors present."""
@@ -124,8 +124,8 @@ class TestModelChecking:
         mock_model.named_modules = Mock(return_value=[])
 
         report = guard.check_meta_tensors_post_init(mock_model)
-        assert report.status == GuardRailStatus.PASSED
-        assert report.details["total_meta_tensors"] == 0
+        assert report.status == GuardRailStatus.PASSED, "status is not valid"
+        assert report.details["total_meta_tensors"] == 0, "rep is not valid"
 
     def test_check_meta_tensors_with_meta_param(self):
         """Test meta tensor check detects meta parameter."""
@@ -141,8 +141,8 @@ class TestModelChecking:
         mock_model.named_modules = Mock(return_value=[])
 
         report = guard.check_meta_tensors_post_init(mock_model)
-        assert report.status == GuardRailStatus.FAILED
-        assert len(report.details["meta_params"]) > 0
+        assert report.status == GuardRailStatus.FAILED, "status is not valid"
+        assert len(report.details["meta_params"]) > 0, "Collection must not be empty"
         assert isinstance(report.error, MetaTensorException)
 
 
@@ -157,8 +157,8 @@ class TestRecoveryMechanism:
             return True
 
         report = guard.check_recovery_mechanism(success_recovery)
-        assert report.status == GuardRailStatus.RECOVERED
-        assert report.details["recovery_successes"] == 1
+        assert report.status == GuardRailStatus.RECOVERED, "status is not valid"
+        assert report.details["recovery_successes"] == 1, "rep is not valid"
 
     def test_recovery_mechanism_failure(self):
         """Test failed recovery."""
@@ -168,8 +168,8 @@ class TestRecoveryMechanism:
             raise RuntimeError("Recovery failed")
 
         report = guard.check_recovery_mechanism(failure_recovery)
-        assert report.status == GuardRailStatus.FAILED
-        assert report.error is not None
+        assert report.status == GuardRailStatus.FAILED, "status is not valid"
+        assert report.error is not None, "error must be initialized"
 
     def test_recovery_multiple_attempts(self):
         """Test recovery with multiple attempts."""
@@ -185,7 +185,7 @@ class TestRecoveryMechanism:
             return True
 
         report = guard.check_recovery_mechanism(intermittent_recovery)
-        assert report.details["recovery_attempts"] == 3
+        assert report.details["recovery_attempts"] == 3, "rep is not valid"
 
 
 class TestGuardRailContext:
@@ -194,14 +194,14 @@ class TestGuardRailContext:
     def test_guard_rail_context_manager(self):
         """Test guard rail context manager."""
         with guard_rail_context() as guard:
-            assert guard is not None
-            assert len(guard.reports) >= 1  # At least environment check
+            assert guard is not None, "guard must be initialized"
+            assert len(guard.reports) >= 1, "Collection must not be empty"
 
     def test_guard_rail_context_logging(self):
         """Test that context manager logs summary."""
         with guard_rail_context() as guard:
             summary = guard.get_summary()
-            assert summary["total_checks"] >= 1
+            assert summary["total_checks"] >= 1, "Value must be greater than zero"
 
 
 class TestMaterializationMonitor:
@@ -210,8 +210,8 @@ class TestMaterializationMonitor:
     def test_monitor_initialization(self):
         """Test monitor initialization."""
         monitor = MaterializationMonitor("test-model")
-        assert monitor.model_name == "test-model"
-        assert len(monitor.events) == 0
+        assert monitor.model_name == "test-model", "model_name is not valid"
+        assert len(monitor.events) == 0, "Collection must not be empty"
 
     def test_record_event(self):
         """Test recording materialization event."""
@@ -223,8 +223,8 @@ class TestMaterializationMonitor:
             tensor_dtype="float32",
         )
 
-        assert event.tensor_name == "weight"
-        assert len(monitor.events) == 1
+        assert event.tensor_name == "weight", "tensor_name is not valid"
+        assert len(monitor.events) == 1, "Collection must not be empty"
 
     def test_record_recovery(self):
         """Test recording recovery attempt."""
@@ -235,9 +235,9 @@ class TestMaterializationMonitor:
         )
 
         monitor.record_recovery(event, success=True, method="gc")
-        assert event.recovery_attempted is True
-        assert event.recovery_successful is True
-        assert event.recovery_method == "gc"
+        assert event.recovery_attempted is True, "recovery_attempted is not valid"
+        assert event.recovery_successful is True, "recovery_successful is not valid"
+        assert event.recovery_method == "gc", "recovery_method is not valid"
 
     def test_monitor_summary(self):
         """Test monitor summary generation."""
@@ -246,8 +246,8 @@ class TestMaterializationMonitor:
         monitor.record_event(TensorLocation.BUFFERS, "bias")
 
         summary = monitor.get_summary()
-        assert summary["total_events"] == 2
-        assert summary["model_name"] == "test-model"
+        assert summary["total_events"] == 2, "Condition must be true"
+        assert summary["model_name"] == "test-model", "Condition must be true"
 
 
 class TestMetaTensorDetector:
@@ -261,7 +261,7 @@ class TestMetaTensorDetector:
         mock_model.named_modules = Mock(return_value=[])
 
         result = MatTensorDetector.detect_in_model(mock_model)
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_detector_identifies_meta_tensor(self):
         """Test detector identifies meta tensor."""
@@ -274,8 +274,8 @@ class TestMetaTensorDetector:
         mock_model.named_modules = Mock(return_value=[])
 
         result = MatTensorDetector.detect_in_model(mock_model)
-        assert len(result) == 1
-        assert result[0][1] == "weight"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0][1] == "weight", "Result must not be empty"
 
     def test_detector_tensor_info(self):
         """Test getting tensor information."""
@@ -287,7 +287,7 @@ class TestMetaTensorDetector:
 
         info = MatTensorDetector.get_tensor_info(tensor)
         assert info["shape"] == (10, 20)
-        assert "float32" in info["dtype"]
+        assert "float32" in info["dtype"], "Condition must be true"
 
 
 class TestRecoveryStrategies:
@@ -296,25 +296,25 @@ class TestRecoveryStrategies:
     def test_garbage_collection_recovery(self):
         """Test garbage collection recovery."""
         success, method = MaterializationRecoveryStrategy.strategy_garbage_collection()
-        assert success is True
-        assert method == "garbage_collection"
+        assert success is True, "success is not valid"
+        assert method == "garbage_collection", "method is not valid"
 
     def test_cache_clear_recovery(self):
         """Test cache clear recovery."""
         success, method = MaterializationRecoveryStrategy.strategy_cache_clear()
-        assert success is True
-        assert method == "cache_clear"
+        assert success is True, "success is not valid"
+        assert method == "cache_clear", "method is not valid"
 
     def test_memory_reset_recovery(self):
         """Test memory reset recovery."""
         success, method = MaterializationRecoveryStrategy.strategy_memory_reset()
-        assert success is True
-        assert method == "memory_reset"
+        assert success is True, "success is not valid"
+        assert method == "memory_reset", "method is not valid"
 
     def test_all_strategies(self):
         """Test all recovery strategies."""
         results = MaterializationRecoveryStrategy.try_all_strategies()
-        assert len(results) >= 3
+        assert len(results) >= 3, "Results must not be empty"
 
 
 class TestMaterializationPreventionFramework:
@@ -323,9 +323,9 @@ class TestMaterializationPreventionFramework:
     def test_framework_initialization(self):
         """Test framework initialization."""
         framework = MaterializationPreventionFramework("test-model")
-        assert framework.model_name == "test-model"
-        assert framework.prevention_enabled is True
-        assert framework.recovery_enabled is True
+        assert framework.model_name == "test-model", "model_name is not valid"
+        assert framework.prevention_enabled is True, "prevention_enabled is not valid"
+        assert framework.recovery_enabled is True, "recovery_enabled is not valid"
 
     def test_framework_setup_prevention_environment(self):
         """Test environment setup."""
@@ -345,7 +345,7 @@ class TestMaterializationPreventionFramework:
         mock_model.named_modules = Mock(return_value=[])
 
         has_meta = framework.detect_materialization(mock_model)
-        assert has_meta is False
+        assert has_meta is False, "has_meta is not valid"
 
     def test_framework_attempt_recovery(self):
         """Test recovery attempt."""
@@ -360,9 +360,9 @@ class TestMaterializationPreventionFramework:
         framework = MaterializationPreventionFramework("test-model")
         report = framework.get_status_report()
 
-        assert report["model_name"] == "test-model"
-        assert "prevention_enabled" in report
-        assert "recovery_enabled" in report
+        assert report["model_name"] == "test-model", "rep is not valid"
+        assert "prevention_enabled" in report, "Condition must be true"
+        assert "recovery_enabled" in report, "Condition must be true"
 
 
 class TestPreventionFrameworkIntegration:
@@ -371,7 +371,7 @@ class TestPreventionFrameworkIntegration:
     def test_prevent_meta_tensor_materialization(self):
         """Test framework creation and initialization."""
         framework = prevent_meta_tensor_materialization("integration-test")
-        assert framework.model_name == "integration-test"
+        assert framework.model_name == "integration-test", "model_name is not valid"
 
 
 class TestVerifyModelIntegrity:
@@ -385,7 +385,7 @@ class TestVerifyModelIntegrity:
         mock_model.named_modules = Mock(return_value=[])
 
         result = verify_model_integrity(mock_model, "test-model")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_verify_model_with_meta_tensors(self):
         """Test verification fails for model with meta tensors."""
@@ -416,10 +416,10 @@ class TestGuardRailReport:
         )
 
         data = report.to_dict()
-        assert data["name"] == "test"
-        assert data["status"] == "passed"
-        assert "timestamp" in data
-        assert data["duration_ms"] == 10.5
+        assert data["name"] == "test", "Data must not be empty"
+        assert data["status"] == "passed", "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
+        assert data["duration_ms"] == 10.5, "Data must not be empty"
 
 
 class TestMaterializationEvent:
@@ -437,9 +437,9 @@ class TestMaterializationEvent:
         )
 
         data = event.to_dict()
-        assert data["tensor_name"] == "weight"
-        assert data["location"] == "parameters"
-        assert data["model_name"] == "test"
+        assert data["tensor_name"] == "weight", "Data must not be empty"
+        assert data["location"] == "parameters", "Data must not be empty"
+        assert data["model_name"] == "test", "Data must not be empty"
 
 
 if __name__ == "__main__":

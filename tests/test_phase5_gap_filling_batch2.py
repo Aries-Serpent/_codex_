@@ -17,16 +17,16 @@ import pytest
 # Test API clients
 class TestAPIClients:
     """Gap-filling tests for API client modules"""
-    
+
     def test_openai_client_initialization(self):
         """Test OpenAI client initialization"""
         try:
             from aries_serpent_core.clients.openai_client import OpenAIClient
             client = OpenAIClient(api_key="test-key")
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("OpenAIClient not available")
-    
+
     def test_openai_client_request_building(self):
         """Test OpenAI client request building"""
         try:
@@ -36,16 +36,16 @@ class TestAPIClients:
             assert hasattr(client, '__class__')
         except (ImportError, TypeError, AttributeError):
             pytest.skip("OpenAIClient not available")
-    
+
     def test_github_client_initialization(self):
         """Test GitHub client initialization"""
         try:
             from aries_serpent_core.clients.github_client import GitHubClient
             client = GitHubClient(token="test-token")
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("GitHubClient not available")
-    
+
     def test_github_client_repo_operations(self):
         """Test GitHub client repository operations"""
         try:
@@ -55,14 +55,14 @@ class TestAPIClients:
             assert hasattr(client, '__class__')
         except (ImportError, TypeError, AttributeError):
             pytest.skip("GitHubClient not available")
-    
+
     def test_api_client_error_handling(self):
         """Test API client error handling"""
         try:
             from aries_serpent_core.clients.openai_client import OpenAIClient
             client = OpenAIClient(api_key=None)
             # Should handle None API key gracefully
-            assert client is not None or True
+            assert client is not None or True, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("OpenAIClient not available")
 
@@ -70,25 +70,25 @@ class TestAPIClients:
 # Test GitHub integration
 class TestGitHubIntegration:
     """Gap-filling tests for GitHub API integration"""
-    
+
     def test_github_api_client_initialization(self):
         """Test GitHub API client"""
         try:
             from aries_serpent_core.github.api_client import GitHubAPIClient
             client = GitHubAPIClient(token="test-token")
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("GitHubAPIClient not available")
-    
+
     def test_github_http_client_initialization(self):
         """Test GitHub HTTP client"""
         try:
             from aries_serpent_core.github.http_client import GitHubHTTPClient
             client = GitHubHTTPClient()
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("GitHubHTTPClient not available")
-    
+
     def test_github_http_client_request_methods(self):
         """Test GitHub HTTP client request methods"""
         try:
@@ -103,16 +103,16 @@ class TestGitHubIntegration:
 # Test caching modules
 class TestCachingModules:
     """Gap-filling tests for caching infrastructure"""
-    
+
     def test_unified_cache_initialization(self):
         """Test unified cache initialization"""
         try:
             from aries_serpent_core.caching.unified_cache import UnifiedCache
             cache = UnifiedCache()
-            assert cache is not None
+            assert cache is not None, "cache must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("UnifiedCache not available")
-    
+
     def test_unified_cache_get_set_operations(self):
         """Test cache get/set operations"""
         try:
@@ -120,10 +120,10 @@ class TestCachingModules:
             cache = UnifiedCache()
             cache.set("key", "value")
             result = cache.get("key")
-            assert result == "value" or result is None
+            assert result == "value" or result is None, "Result must not be empty"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("UnifiedCache operations not available")
-    
+
     def test_unified_cache_key_patterns(self):
         """Test cache key pattern handling"""
         try:
@@ -131,16 +131,16 @@ class TestCachingModules:
             cache = UnifiedCache()
             # Should handle various key formats
             cache.set("namespace:key", "value")
-            assert True
+            assert True, "True is not valid"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("UnifiedCache key patterns not available")
-    
+
     def test_session_cache_operations(self):
         """Test session cache operations"""
         try:
             from aries_serpent_core.utils.session_cache import SessionCache
             cache = SessionCache()
-            assert cache is not None
+            assert cache is not None, "cache must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SessionCache not available")
 
@@ -148,58 +148,58 @@ class TestCachingModules:
 # Test CLI handlers
 class TestCLIHandlers:
     """Gap-filling tests for CLI handler modules"""
-    
+
     def test_cli_handler_initialization(self):
         """Test CLI handler base initialization"""
         try:
             from aries_serpent_core.cli_handlers import CLIHandler
             handler = CLIHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("CLIHandler not available")
-    
+
     def test_cli_knowledge_handler(self):
         """Test CLI knowledge command handler"""
         try:
             from aries_serpent_core.cli_knowledge import KnowledgeHandler
             handler = KnowledgeHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("KnowledgeHandler not available")
-    
+
     def test_cli_maps_handler(self):
         """Test CLI maps command handler"""
         try:
             from aries_serpent_core.cli_maps import MapsHandler
             handler = MapsHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("MapsHandler not available")
-    
+
     def test_cli_qa_handler(self):
         """Test CLI QA command handler"""
         try:
             from aries_serpent_core.cli_qa import QAHandler
             handler = QAHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("QAHandler not available")
-    
+
     def test_cli_rag_handler(self):
         """Test CLI RAG command handler"""
         try:
             from aries_serpent_core.cli_rag import RAGHandler
             handler = RAGHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("RAGHandler not available")
-    
+
     def test_cli_release_handler(self):
         """Test CLI release command handler"""
         try:
             from aries_serpent_core.cli_release import ReleaseHandler
             handler = ReleaseHandler()
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ReleaseHandler not available")
 
@@ -207,20 +207,20 @@ class TestCLIHandlers:
 # Test CLI subcommands
 class TestCLISubcommands:
     """Gap-filling tests for CLI subcommand modules"""
-    
+
     def test_cli_github_logs_subcommand(self):
         """Test CLI GitHub logs subcommand"""
         try:
             from aries_serpent_core.cli_github_logs import github_logs_command
-            assert callable(github_logs_command)
+            assert callable(github_logs_command), "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("github_logs_command not available")
-    
+
     def test_cli_zendesk_subcommand(self):
         """Test CLI Zendesk subcommand"""
         try:
             from aries_serpent_core.cli_zendesk import zendesk_command
-            assert callable(zendesk_command)
+            assert callable(zendesk_command), "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("zendesk_command not available")
 
@@ -228,25 +228,25 @@ class TestCLISubcommands:
 # Test archive modules
 class TestArchiveModules:
     """Gap-filling tests for archive functionality"""
-    
+
     def test_archive_cli_module(self):
         """Test archive CLI module"""
         try:
             from aries_serpent_core.archive.cli import ArchiveCLI
             cli = ArchiveCLI()
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ArchiveCLI not available")
-    
+
     def test_sigstore_client_initialization(self):
         """Test sigstore client initialization"""
         try:
             from aries_serpent_core.archive.sigstore_client import SigstoreClient
             client = SigstoreClient()
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SigstoreClient not available")
-    
+
     def test_sigstore_client_operations(self):
         """Test sigstore client operations"""
         try:
@@ -261,22 +261,22 @@ class TestArchiveModules:
 # Test skills modules
 class TestSkillsModules:
     """Gap-filling tests for skills functionality"""
-    
+
     def test_skills_cli_module(self):
         """Test skills CLI module"""
         try:
             from aries_serpent_core.skills.cli import SkillsCLI
             cli = SkillsCLI()
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SkillsCLI not available")
-    
+
     def test_skills_registry(self):
         """Test skills registry"""
         try:
             from aries_serpent_core.skills import SkillsRegistry
             registry = SkillsRegistry()
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SkillsRegistry not available")
 
@@ -284,22 +284,22 @@ class TestSkillsModules:
 # Test reporting modules
 class TestReportingModules:
     """Gap-filling tests for reporting functionality"""
-    
+
     def test_reporting_cli_module(self):
         """Test reporting CLI module"""
         try:
             from aries_serpent_core.reporting.cli import ReportingCLI
             cli = ReportingCLI()
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ReportingCLI not available")
-    
+
     def test_report_generation(self):
         """Test report generation"""
         try:
             from aries_serpent_core.reporting import generate_report
             report = generate_report("test")
-            assert report is not None or True
+            assert report is not None or True, "report must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("generate_report not available")
 
@@ -307,22 +307,22 @@ class TestReportingModules:
 # Test quantum orchestrator
 class TestQuantumOrchestrator:
     """Gap-filling tests for quantum orchestrator"""
-    
+
     def test_quantum_mlops_bridge(self):
         """Test quantum orchestrator MLOps bridge"""
         try:
             from aries_serpent_core.quantum_orchestrator.mlops_bridge import MLOpsBridge
             bridge = MLOpsBridge()
-            assert bridge is not None
+            assert bridge is not None, "bridge must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("MLOpsBridge not available")
-    
+
     def test_quantum_cli_module(self):
         """Test quantum orchestrator CLI"""
         try:
             from aries_serpent_core.quantum_orchestrator.cli import QuantumCLI
             cli = QuantumCLI()
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("QuantumCLI not available")
 
@@ -330,22 +330,22 @@ class TestQuantumOrchestrator:
 # Test quality modules
 class TestQualityModules:
     """Gap-filling tests for quality assurance"""
-    
+
     def test_quality_cli_module(self):
         """Test quality CLI module"""
         try:
             from aries_serpent_core.quality.cli import QualityCLI
             cli = QualityCLI()
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("QualityCLI not available")
-    
+
     def test_quality_gate_checks(self):
         """Test quality gate checks"""
         try:
             from aries_serpent_core.quality import QualityGate
             gate = QualityGate()
-            assert gate is not None
+            assert gate is not None, "gate must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("QualityGate not available")
 
@@ -353,22 +353,22 @@ class TestQualityModules:
 # Test zendesk modules
 class TestZendeskModules:
     """Gap-filling tests for Zendesk integration"""
-    
+
     def test_zendesk_rag_bridge(self):
         """Test Zendesk RAG bridge"""
         try:
             from aries_serpent_core.zendesk.rag.bridge import ZendeskRAGBridge
             bridge = ZendeskRAGBridge()
-            assert bridge is not None
+            assert bridge is not None, "bridge must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ZendeskRAGBridge not available")
-    
+
     def test_zendesk_mcp_bridge(self):
         """Test Zendesk MCP bridge"""
         try:
             from aries_serpent_core.zendesk.monitoring.mcp_bridge import ZendeskMCPBridge
             bridge = ZendeskMCPBridge()
-            assert bridge is not None
+            assert bridge is not None, "bridge must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ZendeskMCPBridge not available")
 
@@ -376,17 +376,17 @@ class TestZendeskModules:
 # Test edge cases for common patterns
 class TestCommonEdgeCases:
     """Edge cases for common functionality"""
-    
+
     def test_empty_configuration_handling(self):
         """Test handling of empty configurations"""
         try:
             from aries_serpent_core.training import TrainingConfig
             config = TrainingConfig()
             # Should handle empty/default config
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except (ImportError, TypeError):
             pytest.skip("TrainingConfig edge cases not available")
-    
+
     def test_none_return_handling(self):
         """Test handling of None returns"""
         try:
@@ -395,13 +395,13 @@ class TestCommonEdgeCases:
             assert result is None or isinstance(result, str)
         except (ImportError, AttributeError):
             pytest.skip("safe_read edge cases not available")
-    
+
     def test_default_value_fallback(self):
         """Test default value fallback"""
         try:
             from aries_serpent_core.paths import get_config_dir
             result = get_config_dir()
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("get_config_dir edge cases not available")
 
@@ -409,7 +409,7 @@ class TestCommonEdgeCases:
 # Test error recovery
 class TestErrorRecovery:
     """Error recovery and resilience tests"""
-    
+
     def test_api_client_retry_logic(self):
         """Test API client retry logic"""
         try:
@@ -419,7 +419,7 @@ class TestErrorRecovery:
             assert hasattr(client, '__class__')
         except (ImportError, TypeError, AttributeError):
             pytest.skip("OpenAIClient retry logic not available")
-    
+
     def test_cache_miss_handling(self):
         """Test cache miss handling"""
         try:
@@ -429,7 +429,7 @@ class TestErrorRecovery:
             assert result is None or isinstance(result, str)
         except (ImportError, TypeError, AttributeError):
             pytest.skip("UnifiedCache miss handling not available")
-    
+
     def test_db_connection_recovery(self):
         """Test database connection recovery"""
         try:
@@ -438,7 +438,7 @@ class TestErrorRecovery:
                 db_path = os.path.join(tmpdir, "test.db")
                 db = SessionDB(db_path)
                 # Should recover from connection issues
-                assert db is not None
+                assert db is not None, "db must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SessionDB recovery not available")
 
@@ -446,7 +446,7 @@ class TestErrorRecovery:
 # Test thread safety
 class TestThreadSafety:
     """Thread safety and concurrency tests"""
-    
+
     def test_cache_thread_safety(self):
         """Test cache thread-safe operations"""
         try:
@@ -455,10 +455,10 @@ class TestThreadSafety:
             # Cache should be thread-safe
             cache.set("key", "value")
             result = cache.get("key")
-            assert result == "value" or result is None
+            assert result == "value" or result is None, "Result must not be empty"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("UnifiedCache thread safety not available")
-    
+
     def test_session_db_concurrent_access(self):
         """Test session DB concurrent access"""
         try:
@@ -467,7 +467,7 @@ class TestThreadSafety:
                 db_path = os.path.join(tmpdir, "test.db")
                 db = SessionDB(db_path)
                 # Should handle concurrent access
-                assert db is not None
+                assert db is not None, "db must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("SessionDB concurrency not available")
 
@@ -475,33 +475,33 @@ class TestThreadSafety:
 # Test data validation
 class TestDataValidation:
     """Data validation tests"""
-    
+
     def test_json_validation(self):
         """Test JSON validation"""
         try:
             from aries_serpent_core.serialization_safe import safe_json_loads
             valid = safe_json_loads('{"key": "value"}')
             invalid = safe_json_loads("not json")
-            assert valid is not None
+            assert valid is not None, "valid must be initialized"
             assert invalid is None or isinstance(invalid, dict)
         except (ImportError, AttributeError):
             pytest.skip("JSON validation not available")
-    
+
     def test_input_sanitization(self):
         """Test input sanitization"""
         try:
             from aries_serpent_core.security_utils import sanitize_input
             result = sanitize_input("<script>alert('xss')</script>")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Input sanitization not available")
-    
+
     def test_path_validation(self):
         """Test path validation"""
         try:
             from aries_serpent_core.security_utils import validate_path
             result = validate_path("/safe/path")
-            assert result is True or result is None
+            assert result is True or result is None, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Path validation not available")
 

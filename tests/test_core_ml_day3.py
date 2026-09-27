@@ -160,11 +160,11 @@ class TestRegistryOperations:
         try:
             registry = Registry()
             registry.register("Test", lambda: 1)
-            
+
             # Lookup should be consistent
             result1 = registry.get("Test")
             result2 = registry.get("test")
-            
+
             # Either both should work or both should fail
             if result1 is not None:
                 assert result1 is not None, "should find Test"
@@ -197,7 +197,7 @@ class TestRegistryOperations:
             registry = Registry()
             registry.register("test1", lambda: 1)
             registry.register("test2", lambda: 2)
-            
+
             all_plugins = registry.list_all()
             if all_plugins:
                 assert len(all_plugins) >= 2, "Should have at least 2"
@@ -213,11 +213,11 @@ class TestRegistryOperations:
 
         try:
             registry = Registry()
-            
+
             def plugin_func():
                 """Test plugin."""
                 return 42
-            
+
             registry.register("test", plugin_func)
             # Metadata should be accessible
             metadata = registry.get_metadata("test")
@@ -236,7 +236,7 @@ class TestRegistryOperations:
             registry = Registry()
             registry.register("model", lambda: 1, version="1.0.0")
             registry.register("model", lambda: 2, version="2.0.0")
-            
+
             # Should retrieve specific version or latest
             plugin = registry.get("model")
             assert plugin is not None, "plugin must exist"
@@ -271,10 +271,10 @@ class TestPipelineExecution:
         try:
             def stage_fn(x):
                 return x + 1
-            
+
             pipeline = Pipeline()
             pipeline.add_stage("add", stage_fn)
-            
+
             result = pipeline.execute(1)
             assert result is not None, "result must exist"
         except (NotImplementedError, TypeError):
@@ -291,7 +291,7 @@ class TestPipelineExecution:
             pipeline = Pipeline()
             pipeline.add_stage("stage1", lambda x: x + 1)
             pipeline.add_stage("stage2", lambda x: x * 2)
-            
+
             result = pipeline.execute(5)
             # (5 + 1) * 2 = 12
             assert result is not None, "result must exist"
@@ -308,10 +308,10 @@ class TestPipelineExecution:
         try:
             def failing_stage(x):
                 raise ValueError("Stage failed")
-            
+
             pipeline = Pipeline()
             pipeline.add_stage("fail", failing_stage)
-            
+
             try:
                 result = pipeline.execute(1)
             except ValueError:
@@ -329,7 +329,7 @@ class TestPipelineExecution:
         try:
             pipeline = Pipeline()
             pipeline.add_stage("check", lambda x: x > 5)
-            
+
             result = pipeline.execute(10)
             assert result is not None, "result must exist"
         except (NotImplementedError, TypeError):
@@ -344,15 +344,15 @@ class TestPipelineExecution:
 
         try:
             state = {"counter": 0}
-            
+
             def increment_state(x):
                 state["counter"] += 1
                 return x
-            
+
             pipeline = Pipeline()
             pipeline.add_stage("inc1", increment_state)
             pipeline.add_stage("inc2", increment_state)
-            
+
             result = pipeline.execute(1)
             # State should be updated
             assert state["counter"] >= 0, "state handled"
@@ -373,10 +373,10 @@ class TestErrorHandlingRecovery:
         try:
             def primary():
                 raise ValueError("Primary failed")
-            
+
             def fallback():
                 return "fallback"
-            
+
             result = execute_with_fallback(primary, fallback)
             assert result is not None, "fallback must work"
         except (NotImplementedError, TypeError):
@@ -391,13 +391,13 @@ class TestErrorHandlingRecovery:
 
         try:
             attempts = [0]
-            
+
             def failing_func():
                 attempts[0] += 1
                 if attempts[0] < 3:
                     raise ValueError("Try again")
                 return "success"
-            
+
             result = retry_with_backoff(failing_func, max_retries=3)
             assert result is not None, "retry must work"
         except (NotImplementedError, ValueError):

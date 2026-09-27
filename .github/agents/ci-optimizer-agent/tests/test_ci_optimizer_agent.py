@@ -3,9 +3,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from test_prioritizer import create_prioritizer
-
 from __init__ import RANDOM_SEED, create_agent
+from test_prioritizer import create_prioritizer
 
 TEST_SEED = 49
 

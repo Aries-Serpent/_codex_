@@ -53,10 +53,10 @@ def test_execute_sandboxed_returns_result_before_contract_timeout() -> None:
     assert sandbox.execute_sandboxed(plugin, "execute", {"ok": True}) == {"ok": True}
 
     health = sandbox.get_health_status(plugin.name)
-    assert health is not None
-    assert health.status is PluginStatus.ENABLED
-    assert health.failure_count == 0
-    assert health.last_success is not None
+    assert health is not None, "health must be initialized"
+    assert health.status is PluginStatus.ENABLED, "status is not valid"
+    assert health.failure_count == 0, "Count must be greater than zero"
+    assert health.last_success is not None, "last_success must be initialized"
 
 
 @pytest.mark.parametrize("timeout", [0, -1, math.inf, math.nan, True])
@@ -71,15 +71,15 @@ def test_timeout_terminates_execution_and_quarantines_plugin(tmp_path: Path) -> 
     sandbox = PluginSandbox()
 
     started = time.monotonic()
-    assert sandbox.execute_sandboxed(plugin) is None
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
     elapsed = time.monotonic() - started
 
     health = sandbox.get_health_status(plugin.name)
-    assert elapsed < 0.4
-    assert health is not None
-    assert health.status is PluginStatus.QUARANTINED
-    assert health.failure_count == 1
-    assert health.last_error == "TimeoutError"
+    assert elapsed < 0.4, "elapsed is not valid"
+    assert health is not None, "health must be initialized"
+    assert health.status is PluginStatus.QUARANTINED, "status is not valid"
+    assert health.failure_count == 1, "Count must be greater than zero"
+    assert health.last_error == "TimeoutError", "Error should be raised or set"
 
     time.sleep(0.55)
     assert not marker.exists(), "timed-out plugin code must not continue in the background"
@@ -90,30 +90,30 @@ def test_quarantined_plugin_is_not_reexecuted(tmp_path: Path) -> None:
     plugin = _TimedPlugin(timeout=0.05, delay=0.5, marker=marker)
     sandbox = PluginSandbox(quarantine_duration=60)
 
-    assert sandbox.execute_sandboxed(plugin) is None
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
     plugin.delay = 0
-    assert sandbox.execute_sandboxed(plugin) is None
-    assert not marker.exists()
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
+    assert not marker.exists(), "Condition must be true"
 
     health = sandbox.get_health_status(plugin.name)
-    assert health is not None
-    assert health.failure_count == 1
-    assert health.status is PluginStatus.QUARANTINED
+    assert health is not None, "health must be initialized"
+    assert health.failure_count == 1, "Count must be greater than zero"
+    assert health.status is PluginStatus.QUARANTINED, "status is not valid"
 
 
 def test_manual_enable_clears_quarantine_metadata(tmp_path: Path) -> None:
     plugin = _TimedPlugin(timeout=0.05, delay=0.5, marker=tmp_path / "completed")
     sandbox = PluginSandbox()
 
-    assert sandbox.execute_sandboxed(plugin) is None
+    assert sandbox.execute_sandboxed(plugin) is None, "s is not valid"
     quarantined_health = sandbox.get_health_status(plugin.name)
-    assert quarantined_health is not None
-    assert quarantined_health.quarantined_at is not None
+    assert quarantined_health is not None, "quarantined_health must be initialized"
+    assert quarantined_health.quarantined_at is not None, "quarantined_at must be initialized"
 
     sandbox.enable_plugin(plugin.name)
 
     health = sandbox.get_health_status(plugin.name)
-    assert health is not None
-    assert health.status is PluginStatus.ENABLED
-    assert health.failure_count == 0
-    assert health.quarantined_at is None
+    assert health is not None, "health must be initialized"
+    assert health.status is PluginStatus.ENABLED, "status is not valid"
+    assert health.failure_count == 0, "Count must be greater than zero"
+    assert health.quarantined_at is None, "quarantined_at is not valid"

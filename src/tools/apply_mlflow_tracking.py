@@ -78,7 +78,9 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
 
 # ----------------- codex_ml/tracking/mlflow_utils.py -----------------
 UTILS_SENT = "# BEGIN: CODEX_MLFLOW_UTILS"
-UTILS_CODE = UTILS_SENT + '''
+UTILS_CODE = (
+    UTILS_SENT
+    + '''
 from __future__ import annotations
 
 import contextlib
@@ -142,10 +144,13 @@ def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Dict[s
     (run_dir / "seeds.json").write_text(json.dumps(seeds, indent=2), encoding="utf-8")
 # END: CODEX_MLFLOW_UTILS
 '''
+)
 
 # ----------------- codex_ml/tracking/__init__.py -----------------
 INIT_SENT = "# BEGIN: CODEX_MLFLOW_INIT"
-INIT_CODE = INIT_SENT + """
+INIT_CODE = (
+    INIT_SENT
+    + """
 from .mlflow_utils import (
     MlflowConfig,
     ensure_local_artifacts,
@@ -165,10 +170,13 @@ __all__ = [
 ]
 # END: CODEX_MLFLOW_INIT
 """
+)
 
 # ----------------- codex_ml/tracking/cli.py -----------------
 CLI_SENT = "# BEGIN: CODEX_MLFLOW_CLI"
-CLI_CODE = CLI_SENT + """
+CLI_CODE = (
+    CLI_SENT
+    + """
 from __future__ import annotations
 
 import argparse
@@ -204,10 +212,13 @@ def mlflow_from_args(args) -> MlflowConfig:
     )
 # END: CODEX_MLFLOW_CLI
 """
+)
 
 # ----------------- docs/ops/experiment_tracking.md -----------------
 DOCS_SENT = "<!-- BEGIN: CODEX_MLFLOW_DOCS -->"
-DOCS_CODE = DOCS_SENT + """
+DOCS_CODE = (
+    DOCS_SENT
+    + """
 # Experiment Tracking (MLflow)
 
 This project provides optional MLflow integration that can be enabled via CLI flags.
@@ -240,6 +251,7 @@ with start_run(cfg) as run:
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
 """
+)
 
 
 def apply() -> None:

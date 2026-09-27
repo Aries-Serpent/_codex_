@@ -41,9 +41,9 @@ class TestCommandResult:
             message="Command succeeded",
             exit_code=0,
         )
-        assert result.success is True
-        assert result.exit_code == 0
-        assert result.error is None
+        assert result.success is True, "Result must not be empty"
+        assert result.exit_code == 0, "Result must not be empty"
+        assert result.error is None, "Result must not be empty"
 
     def test_failed_result(self):
         """Test creating a failed result."""
@@ -54,9 +54,9 @@ class TestCommandResult:
             error=exc,
             exit_code=1,
         )
-        assert result.success is False
-        assert result.exit_code == 1
-        assert result.error is exc
+        assert result.success is False, "Result must not be empty"
+        assert result.exit_code == 1, "Result must not be empty"
+        assert result.error is exc, "Result must not be empty"
 
     def test_result_with_data(self):
         """Test result with additional data."""
@@ -65,7 +65,7 @@ class TestCommandResult:
             success=True,
             data=data,
         )
-        assert result.data == data
+        assert result.data == data, "Result must not be empty"
 
 
 class TestCommandHandler:
@@ -82,9 +82,9 @@ class TestCommandHandler:
                 return CommandResult(success=True, message="Test passed")
 
         handler = TestCommand()
-        assert handler.name == "test"
-        assert handler.help == "Test command"
-        assert handler.aliases == []
+        assert handler.name == "test", "name is not valid"
+        assert handler.help == "Test command", "help is not valid"
+        assert handler.aliases == [], "aliases is not valid"
 
     def test_handler_execute_success(self):
         """Test successful command execution."""
@@ -96,8 +96,8 @@ class TestCommandHandler:
 
         handler = TestCommand()
         result = handler.execute()
-        assert result.success is True
-        assert result.message == "OK"
+        assert result.success is True, "Result must not be empty"
+        assert result.message == "OK", "Result must not be empty"
 
     def test_handler_execute_exception(self):
         """Test exception handling in command execution."""
@@ -109,8 +109,8 @@ class TestCommandHandler:
 
         handler = TestCommand()
         result = handler.execute()
-        assert result.success is False
-        assert result.exit_code == 1
+        assert result.success is False, "Result must not be empty"
+        assert result.exit_code == 1, "Result must not be empty"
         assert isinstance(result.error, ValueError)
 
     def test_handler_with_arguments(self):
@@ -135,8 +135,8 @@ class TestCommandRegistry:
     def test_registry_initialization(self):
         """Test registry initialization."""
         registry = CommandRegistry()
-        assert registry._commands == {}
-        assert registry._aliases == {}
+        assert registry._commands == {}, "_commands is not valid"
+        assert registry._aliases == {}, "_aliases is not valid"
 
     def test_register_command(self):
         """Test registering a command."""
@@ -149,7 +149,7 @@ class TestCommandRegistry:
 
         registry = CommandRegistry()
         registry.register(TestCommand())
-        assert "test" in registry._commands
+        assert "test" in registry._commands, "Condition must be true"
 
     def test_register_duplicate_command(self):
         """Test that duplicate commands are rejected."""
@@ -177,8 +177,8 @@ class TestCommandRegistry:
         registry = CommandRegistry()
         registry.register(TestCommand())
 
-        assert registry._aliases["t"] == "test"
-        assert registry._aliases["tst"] == "test"
+        assert registry._aliases["t"] == "test", "Condition must be true"
+        assert registry._aliases["tst"] == "test", "Condition must be true"
 
     def test_execute_command(self):
         """Test executing a command through registry."""
@@ -192,8 +192,8 @@ class TestCommandRegistry:
         registry.register(TestCommand())
 
         result = registry.execute("test", "myvalue")
-        assert result.success is True
-        assert result.data == {"value": "myvalue"}
+        assert result.success is True, "Result must not be empty"
+        assert result.data == {"value": "myvalue"}, "Result must not be empty"
 
     def test_execute_via_alias(self):
         """Test executing a command via alias."""
@@ -208,15 +208,15 @@ class TestCommandRegistry:
         registry.register(TestCommand())
 
         result = registry.execute("t")
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
     def test_execute_unknown_command(self):
         """Test executing an unknown command."""
         registry = CommandRegistry()
         result = registry.execute("unknown")
 
-        assert result.success is False
-        assert result.exit_code == 1
+        assert result.success is False, "Result must not be empty"
+        assert result.exit_code == 1, "Result must not be empty"
 
     def test_list_commands(self):
         """Test listing registered commands."""
@@ -239,7 +239,7 @@ class TestCommandRegistry:
         registry.register(TestCommand2())
 
         commands = registry.list_commands()
-        assert len(commands) == 2
+        assert len(commands) == 2, "Commands must not be empty"
         assert ("cmd1", "First command") in commands
         assert ("cmd2", "Second command") in commands
 
@@ -255,14 +255,14 @@ class TestCommandRegistry:
         registry.register(TestCommand())
 
         handler = registry.get_handler("test")
-        assert handler is not None
-        assert handler.name == "test"
+        assert handler is not None, "handler must be initialized"
+        assert handler.name == "test", "name is not valid"
 
     def test_get_handler_unknown(self):
         """Test getting a non-existent handler."""
         registry = CommandRegistry()
         handler = registry.get_handler("unknown")
-        assert handler is None
+        assert handler is None, "handler is not valid"
 
 
 class TestIngestionCommand:
@@ -279,18 +279,18 @@ class TestIngestionCommand:
             cmd = IngestionCommand()
             result = cmd.execute(src=src, dst=dst)
 
-            assert result.success is True
-            assert dst.exists()
-            assert dst.read_text() == src.read_text()
+            assert result.success is True, "Result must not be empty"
+            assert dst.exists(), "Condition must be true"
+            assert dst.read_text() == src.read_text(), "Condition must be true"
 
     def test_ingest_source_not_found(self):
         """Test ingestion with missing source file."""
         cmd = IngestionCommand()
         result = cmd.execute(src=Path("/nonexistent/file.jsonl"))
 
-        assert result.success is False
-        assert result.exit_code == 1
-        assert "not found" in result.message.lower()
+        assert result.success is False, "Result must not be empty"
+        assert result.exit_code == 1, "Result must not be empty"
+        assert "not found" in result.message.lower(), "Result must not be empty"
 
     def test_ingest_default_paths(self):
         """Test ingestion with default paths."""
@@ -309,7 +309,7 @@ class TestIngestionCommand:
                 result = cmd.execute()
 
                 # Default paths would be relative to tmpdir
-                assert result.success is False or result.success is True
+                assert result.success is False or result.success is True, "Result must not be empty"
             finally:
                 os.chdir(old_cwd)
 
@@ -325,8 +325,8 @@ class TestValidationCommand:
         cmd = ValidationCommand()
         result = cmd.execute(session="tests")
 
-        assert result.success is True
-        assert mock_run.called
+        assert result.success is True, "Result must not be empty"
+        assert mock_run.called, "Condition must be true"
 
     @patch("subprocess.run")
     def test_validation_failure(self, mock_run):
@@ -338,8 +338,8 @@ class TestValidationCommand:
         cmd = ValidationCommand()
         result = cmd.execute(session="tests")
 
-        assert result.success is False
-        assert result.exit_code == 1
+        assert result.success is False, "Result must not be empty"
+        assert result.exit_code == 1, "Result must not be empty"
 
     @patch("subprocess.run")
     def test_validation_with_custom_session(self, mock_run):
@@ -351,7 +351,7 @@ class TestValidationCommand:
 
         # Verify the session was passed correctly
         call_args = mock_run.call_args
-        assert "lint" in call_args[0][0]
+        assert "lint" in call_args[0][0], "Condition must be true"
 
 
 class TestHelpCommand:
@@ -372,9 +372,9 @@ class TestHelpCommand:
         cmd = HelpCommand(registry)
         result = cmd.execute()
 
-        assert result.success is True
-        assert "test" in result.message
-        assert "Test command" in result.message
+        assert result.success is True, "Result must not be empty"
+        assert "test" in result.message, "Result must not be empty"
+        assert "Test command" in result.message, "Result must not be empty"
 
     def test_help_specific_command(self):
         """Test displaying help for a specific command."""
@@ -391,9 +391,9 @@ class TestHelpCommand:
         cmd = HelpCommand(registry)
         result = cmd.execute(command_name="test")
 
-        assert result.success is True
-        assert "test" in result.message
-        assert "Test command help" in result.message
+        assert result.success is True, "Result must not be empty"
+        assert "test" in result.message, "Result must not be empty"
+        assert "Test command help" in result.message, "Result must not be empty"
 
     def test_help_unknown_command(self):
         """Test help for unknown command."""
@@ -401,7 +401,7 @@ class TestHelpCommand:
         cmd = HelpCommand(registry)
         result = cmd.execute(command_name="unknown")
 
-        assert result.success is False
+        assert result.success is False, "Result must not be empty"
 
 
 class TestCLIRefactoringImpact:
@@ -454,7 +454,7 @@ class TestCLIRefactoringImpact:
 
         # Dispatch is declarative and consistent
         result = registry.execute("help")
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
     def test_exception_handling_centralization(self):
         """Verify exception handling is centralized.
@@ -474,11 +474,11 @@ class TestCLIRefactoringImpact:
 
         # Exception is caught and wrapped
         result = handler.execute()
-        assert result.success is False
-        assert result.error is not None
+        assert result.success is False, "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
 
         # No uncaught exception escapes
-        assert True  # Would have raised otherwise
+        assert True, "True is not valid"
 
     def test_refactoring_loc_reduction(self):
         """Verify LOC reduction from refactoring.
@@ -509,10 +509,10 @@ class TestCLIRefactoringImpact:
         # Plus cli_handlers.py with handlers
 
         # Goal: Each handler <100 LOC
-        assert 40 < 100  # IngestionCommand
-        assert 45 < 100  # ValidationCommand
-        assert 50 < 100  # HelpCommand
+        assert 40 < 100, "40 is not valid"
+        assert 45 < 100, "45 is not valid"
+        assert 50 < 100, "50 is not valid"
 
         # Net reduction from refactoring
         reduction = 1 - ((800 + 350) / 2210)
-        assert reduction > 0.3  # At least 30% reduction
+        assert reduction > 0.3, "reduction must be greater than zero"

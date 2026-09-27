@@ -36,7 +36,12 @@ try:
     from charset_normalizer import from_bytes as _cn_from_bytes_module
 
     _cn_from_bytes = _cn_from_bytes_module
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency
     _cn_from_bytes = None
 
 _cn_from_path: Any
@@ -44,7 +49,12 @@ try:
     from charset_normalizer import from_path as _cn_from_path_module
 
     _cn_from_path = _cn_from_path_module
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency
     _cn_from_path = None
 
 __all__ = ["autodetect_encoding", "detect_encoding"]
@@ -72,10 +82,10 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
 
 def _detect_bom(raw: bytes) -> Optional[str]:
     """Detect byte-order marks for common UTF variants.
-    
+
     Returns:
         Detected encoding string or None
-    
+
     Reduces complexity by extracting BOM checks (5 branches).
     """
     try:
@@ -92,15 +102,15 @@ def _detect_bom(raw: bytes) -> Optional[str]:
 
 def _try_chardet(raw: bytes) -> Optional[str]:
     """Try chardet detection.
-    
+
     Returns:
         Encoding if safe encoding found, None otherwise
-    
+
     Reduces complexity by extracting chardet logic (3 branches).
     """
     if _chardet is None:
         return None
-    
+
     try:
         res = _chardet.detect(raw) or {}
         enc = _norm_encoding(res.get("encoding"))
@@ -113,15 +123,15 @@ def _try_chardet(raw: bytes) -> Optional[str]:
 
 def _try_charset_normalizer_bytes(raw: bytes) -> Optional[str]:
     """Try charset-normalizer from_bytes detection.
-    
+
     Returns:
         Encoding if safe encoding found, None otherwise
-    
+
     Reduces complexity by extracting charset-normalizer bytes logic (3 branches).
     """
     if _cn_from_bytes is None:
         return None
-    
+
     try:
         result = _cn_from_bytes(raw)
         best = result.best() if result is not None else None
@@ -135,15 +145,15 @@ def _try_charset_normalizer_bytes(raw: bytes) -> Optional[str]:
 
 def _try_charset_normalizer_path(path: Path) -> Optional[str]:
     """Try charset-normalizer from_path detection.
-    
+
     Returns:
         Encoding if safe encoding found, None otherwise
-    
+
     Reduces complexity by extracting charset-normalizer path logic (3 branches).
     """
     if _cn_from_path is None:
         return None
-    
+
     try:
         result = _cn_from_path(str(path))
         best = result.best() if result is not None else None
@@ -157,10 +167,10 @@ def _try_charset_normalizer_path(path: Path) -> Optional[str]:
 
 def _try_decode_heuristics(raw: bytes) -> Optional[str]:
     """Try simple heuristics: attempt to decode using common encodings.
-    
+
     Returns:
         Encoding if successful decode, None otherwise
-    
+
     Reduces complexity by extracting heuristic logic (5 branches).
     """
     for trial in ("utf-8", "cp1252", "iso-8859-1"):

@@ -34,7 +34,7 @@ class TestSessionLifecycleE2E:
     def test_session_create_log_resume_verify(self, tmp_path):
         """E2E: Create session → log events → resume → verify state."""
         session_id = "e2e_session_create_001"
-        
+
         # Create session
         session_data = {
             "session_id": session_id,
@@ -42,9 +42,9 @@ class TestSessionLifecycleE2E:
             "created_at": datetime.now().isoformat(),
             "agent_name": "test_agent",
         }
-        assert session_data["session_id"] == session_id
-        assert session_data["status"] == "in_progress"
-        assert "agent_name" in session_data
+        assert session_data["session_id"] == session_id, "Data must not be empty"
+        assert session_data["status"] == "in_progress", "Data must not be empty"
+        assert "agent_name" in session_data, "Data must not be empty"
 
     def test_session_state_persistence_across_checkpoints(self, tmp_path):
         """E2E: Session state persists across checkpoints."""
@@ -54,10 +54,10 @@ class TestSessionLifecycleE2E:
             "session_id": session_id,
             "state": {"counter": 5, "data": [1, 2, 3]},
         }
-        
+
         # Verify checkpoint captures full state
-        assert checkpoint_data["state"]["counter"] == 5
-        assert len(checkpoint_data["state"]["data"]) == 3
+        assert checkpoint_data["state"]["counter"] == 5, "Data must not be empty"
+        assert len(checkpoint_data["state"]["data"]) == 3, "Collection must not be empty"
 
     def test_session_event_log_ordering(self, tmp_path):
         """E2E: Event logs maintain strict ordering."""
@@ -68,56 +68,56 @@ class TestSessionLifecycleE2E:
                 "timestamp": datetime.now().isoformat(),
                 "type": f"event_{i % 3}",
             })
-        
+
         # Verify ordering is maintained
         for i, event in enumerate(events):
-            assert event["event_id"] == i
+            assert event["event_id"] == i, "Condition must be true"
 
     def test_session_concurrent_modifications(self, tmp_path):
         """E2E: Session handles concurrent modifications safely."""
         session_id = "e2e_session_concurrent_001"
         results = []
-        
+
         def modify_session(thread_id: int):
             # Simulate concurrent modification
             results.append({"thread_id": thread_id, "time": time.time()})
-        
+
         threads = [threading.Thread(target=modify_session, args=(i,)) for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
-        assert len(results) == 5
+
+        assert len(results) == 5, "Results must not be empty"
 
     def test_session_recovery_from_corruption(self, tmp_path):
         """E2E: Session recovers from corrupted state."""
         session_id = "e2e_session_recovery_001"
-        
+
         # Simulate corruption detection
         corrupted_data = {"corrupted": True, "session_id": session_id}
-        
+
         # Verify recovery mechanism
         recovered = {"corrupted": False, "session_id": session_id}
-        assert not recovered["corrupted"]
+        assert not recovered["corrupted"], "Condition must be true"
 
     def test_session_cleanup_on_completion(self, tmp_path):
         """E2E: Session resources cleaned up on completion."""
         session_id = "e2e_session_cleanup_001"
         session = {"session_id": session_id, "status": "completed"}
-        
+
         # Cleanup
-        assert session["status"] == "completed"
+        assert session["status"] == "completed", "Condition must be true"
 
     def test_session_timeout_handling(self, tmp_path):
         """E2E: Session timeout properly detected and handled."""
         session_id = "e2e_session_timeout_001"
         created_at = datetime.now() - timedelta(hours=2)
-        
+
         # Verify timeout detection
         timeout_threshold = timedelta(hours=1)
         elapsed = datetime.now() - created_at
-        assert elapsed > timeout_threshold
+        assert elapsed > timeout_threshold, "elapsed must be greater than zero"
 
     def test_session_metadata_validation(self, tmp_path):
         """E2E: Session metadata validated on creation."""
@@ -127,10 +127,10 @@ class TestSessionLifecycleE2E:
             "branch": "main",
             "pr_number": 123,
         }
-        
+
         # Validate required fields
-        assert "session_id" in session_data
-        assert "agent_name" in session_data
+        assert "session_id" in session_data, "Data must not be empty"
+        assert "agent_name" in session_data, "Data must not be empty"
 
 
 # ============================================================================
@@ -144,26 +144,26 @@ class TestAPIWorkflowsE2E:
         """E2E: API request → processing → response."""
         request = {"method": "GET", "endpoint": "/api/sessions", "params": {}}
         response = {"status": 200, "data": [], "timestamp": datetime.now().isoformat()}
-        
-        assert response["status"] == 200
-        assert "data" in response
+
+        assert response["status"] == 200, "Response must not be empty"
+        assert "data" in response, "Response must not be empty"
 
     def test_api_error_handling_and_recovery(self):
         """E2E: API errors properly handled and recovery attempted."""
         request = {"method": "GET", "endpoint": "/api/missing"}
-        
+
         # Simulate error response
         response = {"status": 404, "error": "Not found"}
-        assert response["status"] == 404
+        assert response["status"] == 404, "Response must not be empty"
 
     def test_api_pagination_workflow(self):
         """E2E: API pagination handles large result sets."""
         page1 = {"page": 1, "items": list(range(10)), "has_next": True}
         page2 = {"page": 2, "items": list(range(10, 20)), "has_next": False}
-        
-        assert len(page1["items"]) == 10
-        assert page1["has_next"]
-        assert not page2["has_next"]
+
+        assert len(page1["items"]) == 10, "Collection must not be empty"
+        assert page1["has_next"], "Condition must be true"
+        assert not page2["has_next"], "Condition must be true"
 
     def test_api_authentication_flow(self):
         """E2E: API authentication and token management."""
@@ -173,61 +173,61 @@ class TestAPIWorkflowsE2E:
             "refresh_token": "refresh_xyz789",
             "expires_in": 3600,
         }
-        
-        assert "access_token" in auth_response
-        assert auth_response["expires_in"] == 3600
+
+        assert "access_token" in auth_response, "Response must not be empty"
+        assert auth_response["expires_in"] == 3600, "Response must not be empty"
 
     def test_api_request_validation(self):
         """E2E: API request validation and schema enforcement."""
         invalid_request = {"method": "POST", "endpoint": "/api/sessions"}
-        
+
         # Validation should catch missing required fields
         required_fields = ["method", "endpoint"]
         for field in required_fields:
-            assert field in invalid_request
+            assert field in invalid_request, "Condition must be true"
 
     def test_api_concurrent_requests(self):
         """E2E: API handles concurrent requests safely."""
         responses = []
-        
+
         def make_request(req_id: int):
             resp = {"request_id": req_id, "status": 200}
             responses.append(resp)
-        
+
         threads = [threading.Thread(target=make_request, args=(i,)) for i in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
-        assert len(responses) == 10
+
+        assert len(responses) == 10, "Responses must not be empty"
 
     def test_api_rate_limiting(self):
         """E2E: API rate limiting enforced properly."""
         rate_limit = {"requests_per_second": 10, "burst_size": 20}
-        
+
         requests = [{"id": i, "time": time.time()} for i in range(15)]
-        assert len(requests) <= rate_limit["burst_size"]
+        assert len(requests) <= rate_limit["burst_size"], "Requests must not be empty"
 
     def test_api_response_caching(self):
         """E2E: API response caching reduces redundant calls."""
         cache = {}
-        
+
         def cached_request(key: str) -> Dict:
             if key in cache:
                 return {"source": "cache", "data": cache[key]}
-            
+
             result = {"data": f"result_{key}", "computed_at": datetime.now().isoformat()}
             cache[key] = result
             return {"source": "computed", "data": result}
-        
+
         # First call computes
         resp1 = cached_request("key1")
-        assert resp1["source"] == "computed"
-        
+        assert resp1["source"] == "computed", "Condition must be true"
+
         # Second call uses cache
         resp2 = cached_request("key1")
-        assert resp2["source"] == "cache"
+        assert resp2["source"] == "cache", "Condition must be true"
 
     def test_api_transaction_rollback_on_failure(self):
         """E2E: API transaction properly rolled back on failure."""
@@ -239,18 +239,18 @@ class TestAPIWorkflowsE2E:
             ],
             "status": "pending",
         }
-        
+
         # Simulate failure and rollback
         transaction["status"] = "rolled_back"
-        assert transaction["status"] == "rolled_back"
+        assert transaction["status"] == "rolled_back", "Condition must be true"
 
     def test_api_versioning_compatibility(self):
         """E2E: API supports multiple versions with backward compatibility."""
         v1_response = {"version": "1.0", "data": {"id": 1, "name": "item"}}
         v2_response = {"version": "2.0", "data": {"id": 1, "name": "item", "extra": None}}
-        
-        assert v1_response["version"] == "1.0"
-        assert v2_response["version"] == "2.0"
+
+        assert v1_response["version"] == "1.0", "Response must not be empty"
+        assert v2_response["version"] == "2.0", "Response must not be empty"
 
 
 # ============================================================================
@@ -267,9 +267,9 @@ class TestCLIIntegrationE2E:
             "stdout": "Success",
             "stderr": "",
         }
-        
-        assert cmd_result["exit_code"] == 0
-        assert "Success" in cmd_result["stdout"]
+
+        assert cmd_result["exit_code"] == 0, "Result must not be empty"
+        assert "Success" in cmd_result["stdout"], "Result must not be empty"
 
     def test_cli_error_handling_with_exit_codes(self):
         """E2E: CLI properly returns error exit codes."""
@@ -277,31 +277,31 @@ class TestCLIIntegrationE2E:
             "exit_code": 1,
             "stderr": "Error: invalid argument",
         }
-        
-        assert cmd_result["exit_code"] != 0
-        assert "Error" in cmd_result["stderr"]
+
+        assert cmd_result["exit_code"] != 0, "Result must not be empty"
+        assert "Error" in cmd_result["stderr"], "Result must not be empty"
 
     def test_cli_argument_parsing_and_validation(self):
         """E2E: CLI arguments parsed and validated."""
         args = ["--verbose", "--output", "/tmp/out.json", "--workers", "4"]
-        
+
         parsed = {
             "verbose": True,
             "output": "/tmp/out.json",
             "workers": 4,
         }
-        
-        assert parsed["verbose"]
-        assert parsed["workers"] == 4
+
+        assert parsed["verbose"], "Condition must be true"
+        assert parsed["workers"] == 4, "Condition must be true"
 
     def test_cli_config_file_loading(self, tmp_path):
         """E2E: CLI loads and applies config files."""
         config_content = {"workers": 8, "timeout": 300, "retry": 3}
         config_path = tmp_path / "config.json"
-        
+
         # Simulate config loading
         loaded_config = config_content.copy()
-        assert loaded_config["workers"] == 8
+        assert loaded_config["workers"] == 8, "Condition must be true"
 
     def test_cli_interactive_prompts(self):
         """E2E: CLI interactive prompts work correctly."""
@@ -309,37 +309,37 @@ class TestCLIIntegrationE2E:
             {"question": "Enter name", "response": "test_user"},
             {"question": "Confirm? (y/n)", "response": "y"},
         ]
-        
-        assert prompts[0]["response"] == "test_user"
-        assert prompts[1]["response"] == "y"
+
+        assert prompts[0]["response"] == "test_user", "Response must not be empty"
+        assert prompts[1]["response"] == "y", "Response must not be empty"
 
     def test_cli_progress_reporting(self):
         """E2E: CLI reports progress during long operations."""
         progress_updates = []
-        
+
         for i in range(0, 101, 10):
             progress_updates.append({"percent": i, "status": f"Processing {i}%"})
-        
-        assert len(progress_updates) == 11
-        assert progress_updates[-1]["percent"] == 100
+
+        assert len(progress_updates) == 11, "Progress_updates must not be empty"
+        assert progress_updates[-1]["percent"] == 100, "Condition must be true"
 
     def test_cli_output_formatting_options(self):
         """E2E: CLI supports multiple output formats."""
         data = {"id": 1, "name": "test"}
-        
+
         json_output = json.dumps(data)
         text_output = f"ID: {data['id']}, Name: {data['name']}"
-        
+
         assert json_output == '{"id": 1, "name": "test"}'
-        assert "ID: 1" in text_output
+        assert "ID: 1" in text_output, "Condition must be true"
 
     def test_cli_signal_handling_and_cleanup(self, tmp_path):
         """E2E: CLI handles signals and cleans up resources."""
         resources = {"temp_files": [str(tmp_path / f"file{i}") for i in range(3)]}
-        
+
         # Cleanup
         cleanup_status = {"files_cleaned": len(resources["temp_files"])}
-        assert cleanup_status["files_cleaned"] == 3
+        assert cleanup_status["files_cleaned"] == 3, "Condition must be true"
 
 
 # ============================================================================
@@ -356,15 +356,15 @@ class TestCognitiveBrainE2E:
             {"input": "test2", "output": "result2", "score": 0.9},
             {"input": "test3", "output": "result3", "score": 0.85},
         ]
-        
+
         pattern = {
             "type": "learned_pattern",
             "observations": len(observations),
             "avg_score": sum(o["score"] for o in observations) / len(observations),
         }
-        
-        assert pattern["observations"] == 3
-        assert pattern["avg_score"] > 0.8
+
+        assert pattern["observations"] == 3, "Condition must be true"
+        assert pattern["avg_score"] > 0.8, "Value must be greater than zero"
 
     def test_cognitive_pattern_prediction_and_validation(self):
         """E2E: Cognitive brain predicts patterns and validates."""
@@ -373,10 +373,10 @@ class TestCognitiveBrainE2E:
             {"feature": "b", "label": 0},
             {"feature": "a", "label": 1},
         ]
-        
+
         prediction = {"feature": "a", "predicted_label": 1, "confidence": 0.95}
-        
-        assert prediction["confidence"] > 0.9
+
+        assert prediction["confidence"] > 0.9, "Value must be greater than zero"
 
     def test_cognitive_memory_storage_and_retrieval(self):
         """E2E: Cognitive brain stores and retrieves memories."""
@@ -386,25 +386,25 @@ class TestCognitiveBrainE2E:
             "timestamp": datetime.now().isoformat(),
             "relevance_score": 0.9,
         }
-        
+
         # Store
         storage = {memory_item["id"]: memory_item}
-        
+
         # Retrieve
         retrieved = storage[memory_item["id"]]
-        assert retrieved["content"] == "Important pattern"
+        assert retrieved["content"] == "Important pattern", "Content must not be empty"
 
     def test_cognitive_decision_making_process(self):
         """E2E: Cognitive brain makes decisions based on patterns."""
         context = {"situation": "urgent", "resources": "limited", "priority": "high"}
-        
+
         decision = {
             "action": "escalate",
             "confidence": 0.88,
             "reasoning": "High priority + limited resources → escalate",
         }
-        
-        assert decision["confidence"] > 0.8
+
+        assert decision["confidence"] > 0.8, "Value must be greater than zero"
 
     def test_cognitive_pattern_conflict_resolution(self):
         """E2E: Cognitive brain resolves conflicting patterns."""
@@ -412,24 +412,24 @@ class TestCognitiveBrainE2E:
             {"id": "p1", "recommendation": "A", "confidence": 0.7},
             {"id": "p2", "recommendation": "B", "confidence": 0.75},
         ]
-        
+
         resolution = {
             "winner": "p2",
             "reason": "Higher confidence",
             "combined_confidence": 0.725,
         }
-        
-        assert resolution["winner"] == "p2"
+
+        assert resolution["winner"] == "p2", "Condition must be true"
 
     def test_cognitive_continuous_learning_loop(self):
         """E2E: Cognitive brain continuously learns from feedback."""
         iterations = []
-        
+
         for epoch in range(5):
             feedback = {"epoch": epoch, "accuracy": 0.8 + (epoch * 0.01)}
             iterations.append(feedback)
-        
-        assert iterations[-1]["accuracy"] > iterations[0]["accuracy"]
+
+        assert iterations[-1]["accuracy"] > iterations[0]["accuracy"], "Value must be greater than zero"
 
     def test_cognitive_pattern_serialization_and_storage(self):
         """E2E: Cognitive brain patterns serialized and stored persistently."""
@@ -438,11 +438,11 @@ class TestCognitiveBrainE2E:
             "weights": [0.1, 0.2, 0.3, 0.4],
             "metadata": {"created": datetime.now().isoformat()},
         }
-        
+
         serialized = json.dumps(pattern, default=str)
         deserialized = json.loads(serialized)
-        
-        assert deserialized["id"] == pattern["id"]
+
+        assert deserialized["id"] == pattern["id"], "Condition must be true"
 
     def test_cognitive_context_propagation_across_calls(self):
         """E2E: Context propagates across cognitive calls."""
@@ -451,12 +451,12 @@ class TestCognitiveBrainE2E:
             "user_id": "user_001",
             "request_id": "req_001",
         }
-        
+
         # Propagate through calls
         call1_context = context.copy()
         call2_context = call1_context.copy()
-        
-        assert call2_context["session_id"] == context["session_id"]
+
+        assert call2_context["session_id"] == context["session_id"], "Condition must be true"
 
 
 # ============================================================================
@@ -473,25 +473,25 @@ class TestMultiServiceCoordinationE2E:
             "data_service": {"address": "localhost:5001", "status": "online"},
             "api_service": {"address": "localhost:5002", "status": "online"},
         }
-        
-        assert len(services) == 3
-        assert all(s["status"] == "online" for s in services.values())
+
+        assert len(services) == 3, "Services must not be empty"
+        assert all(s["status"] == "online" for s in services.values()), "Value must be initialized"
 
     def test_cross_service_communication_workflow(self):
         """E2E: Services communicate across network."""
         call_chain = []
-        
+
         def service_a():
             call_chain.append("service_a_start")
             service_b()
             call_chain.append("service_a_end")
-        
+
         def service_b():
             call_chain.append("service_b_start")
             call_chain.append("service_b_end")
-        
+
         service_a()
-        
+
         assert call_chain == ["service_a_start", "service_b_start", "service_b_end", "service_a_end"]
 
     def test_service_dependency_resolution(self):
@@ -501,11 +501,11 @@ class TestMultiServiceCoordinationE2E:
             "service_b": ["service_a"],
             "service_a": [],
         }
-        
+
         # Topological sort simulation
         order = []
         processed = set()
-        
+
         def process(service):
             if service in processed:
                 return
@@ -513,11 +513,11 @@ class TestMultiServiceCoordinationE2E:
                 process(dep)
             order.append(service)
             processed.add(service)
-        
+
         for service in dependencies:
             process(service)
-        
-        assert order.index("service_a") < order.index("service_b")
+
+        assert order.index("service_a") < order.index("service_b"), "Condition must be true"
 
     def test_distributed_transaction_coordination(self):
         """E2E: Distributed transactions coordinated across services."""
@@ -527,18 +527,18 @@ class TestMultiServiceCoordinationE2E:
             "participants": ["service_a", "service_b", "service_c"],
             "status": "completed",
         }
-        
-        assert transaction["status"] == "completed"
+
+        assert transaction["status"] == "completed", "Condition must be true"
 
     def test_service_failover_and_recovery(self):
         """E2E: Service failover triggered and recovery executed."""
         primary = {"address": "primary:5000", "status": "down"}
         backup = {"address": "backup:5000", "status": "up"}
-        
+
         # Failover
         active_service = backup if primary["status"] == "down" else primary
-        
-        assert active_service == backup
+
+        assert active_service == backup, "active_service is not valid"
 
     def test_service_load_balancing_across_instances(self):
         """E2E: Requests load balanced across service instances."""
@@ -547,10 +547,10 @@ class TestMultiServiceCoordinationE2E:
             {"id": 2, "load": 15},
             {"id": 3, "load": 8},
         ]
-        
+
         # Choose least loaded
         selected = min(instances, key=lambda x: x["load"])
-        assert selected["id"] == 3
+        assert selected["id"] == 3, "Condition must be true"
 
     def test_service_health_monitoring_and_alerts(self):
         """E2E: Service health monitored and alerts triggered."""
@@ -559,12 +559,12 @@ class TestMultiServiceCoordinationE2E:
             {"service": "service_b", "response_time": 200},
             {"service": "service_c", "response_time": 1500},
         ]
-        
+
         threshold = 1000
         unhealthy = [h for h in health_checks if h["response_time"] > threshold]
-        
-        assert len(unhealthy) == 1
-        assert unhealthy[0]["service"] == "service_c"
+
+        assert len(unhealthy) == 1, "Unhealthy must not be empty"
+        assert unhealthy[0]["service"] == "service_c", "Condition must be true"
 
     def test_service_event_propagation_and_handling(self):
         """E2E: Events propagate across services correctly."""
@@ -574,16 +574,16 @@ class TestMultiServiceCoordinationE2E:
             "source": "service_a",
             "timestamp": datetime.now().isoformat(),
         }
-        
+
         handled_by = []
-        
+
         def handle_event(service_name):
             handled_by.append(service_name)
-        
+
         for service in ["service_b", "service_c"]:
             handle_event(service)
-        
-        assert len(handled_by) == 2
+
+        assert len(handled_by) == 2, "Handled_by must not be empty"
 
 
 # ============================================================================
@@ -603,24 +603,24 @@ class TestErrorRecoveryE2E:
                 "message": str(e),
                 "timestamp": datetime.now().isoformat(),
             }
-        
-        assert error_log["type"] == "ValueError"
-        assert "Test error" in error_log["message"]
+
+        assert error_log["type"] == "ValueError", "Value must be initialized"
+        assert "Test error" in error_log["message"], "Error should be raised or set"
 
     def test_retry_mechanism_with_exponential_backoff(self):
         """E2E: Retry mechanism with exponential backoff."""
         attempts = []
         max_attempts = 3
         base_delay = 0.01
-        
+
         for attempt in range(max_attempts):
             attempts.append({
                 "attempt": attempt,
                 "delay": base_delay * (2 ** attempt),
             })
-        
-        assert len(attempts) == 3
-        assert attempts[2]["delay"] > attempts[1]["delay"]
+
+        assert len(attempts) == 3, "Attempts must not be empty"
+        assert attempts[2]["delay"] > attempts[1]["delay"], "Value must be greater than zero"
 
     def test_circuit_breaker_pattern_activation(self):
         """E2E: Circuit breaker activates on repeated failures."""
@@ -629,14 +629,14 @@ class TestErrorRecoveryE2E:
             {"attempt": 2, "failed": True},
             {"attempt": 3, "failed": True},
         ]
-        
+
         circuit_breaker_threshold = 3
         if len([f for f in failures if f["failed"]]) >= circuit_breaker_threshold:
             circuit_status = "open"
         else:
             circuit_status = "closed"
-        
-        assert circuit_status == "open"
+
+        assert circuit_status == "open", "circuit_status is not valid"
 
     def test_graceful_degradation_under_load(self):
         """E2E: System degrades gracefully under overload."""
@@ -646,9 +646,9 @@ class TestErrorRecoveryE2E:
             "degradation_mode": "enabled",
             "available_features": ["core", "cache"],
         }
-        
-        assert system["degradation_mode"] == "enabled"
-        assert len(system["available_features"]) > 0
+
+        assert system["degradation_mode"] == "enabled", "Condition must be true"
+        assert len(system["available_features"]) > 0, "Collection must not be empty"
 
     def test_data_validation_and_repair(self):
         """E2E: Invalid data detected and repaired."""
@@ -657,16 +657,16 @@ class TestErrorRecoveryE2E:
             "name": "",
             "timestamp": "invalid_date",
         }
-        
+
         # Repair
         repaired_data = {
             "id": "auto_generated_id",
             "name": "unknown",
             "timestamp": datetime.now().isoformat(),
         }
-        
-        assert repaired_data["id"] is not None
-        assert repaired_data["name"] != ""
+
+        assert repaired_data["id"] is not None, "Value must be initialized"
+        assert repaired_data["name"] != "", "Data must not be empty"
 
     def test_state_recovery_from_checkpoint(self):
         """E2E: State recovered from checkpoint on failure."""
@@ -675,35 +675,35 @@ class TestErrorRecoveryE2E:
             "state": {"counter": 50, "processed": 100},
             "timestamp": datetime.now().isoformat(),
         }
-        
+
         # Simulate failure and recovery
         recovered_state = checkpoint["state"].copy()
-        assert recovered_state["counter"] == 50
+        assert recovered_state["counter"] == 50, "Count must be greater than zero"
 
     def test_deadlock_detection_and_resolution(self):
         """E2E: Deadlocks detected and resolved."""
         locks = {"resource_a": "thread_1", "resource_b": "thread_2"}
-        
+
         # Detect potential deadlock
         potential_deadlock = len(locks) > 1
-        
+
         if potential_deadlock:
             # Resolution: timeout or reorder
             locks.clear()
-        
-        assert len(locks) == 0
+
+        assert len(locks) == 0, "Locks must not be empty"
 
     def test_resource_exhaustion_handling(self):
         """E2E: Resource exhaustion detected and handled."""
         memory_used = 85  # Percentage
         threshold = 80
-        
+
         if memory_used > threshold:
             action = "trigger_cleanup"
         else:
             action = "monitor"
-        
-        assert action == "trigger_cleanup"
+
+        assert action == "trigger_cleanup", "action is not valid"
 
 
 # ============================================================================
@@ -719,9 +719,9 @@ class TestValidationGates:
             "session_lifecycle": {"severity": "critical", "status": "defined"},
             "api_contract": {"severity": "high", "status": "defined"},
         }
-        
-        assert "session_lifecycle" in gates
-        assert gates["session_lifecycle"]["severity"] == "critical"
+
+        assert "session_lifecycle" in gates, "Condition must be true"
+        assert gates["session_lifecycle"]["severity"] == "critical", "Condition must be true"
 
     def test_gate_execution_tracking(self):
         """Test: Gate execution tracked with results."""
@@ -729,8 +729,8 @@ class TestValidationGates:
             "session_lifecycle": {"status": "passed", "duration_ms": 150},
             "api_contract": {"status": "passed", "duration_ms": 200},
         }
-        
-        assert all(r["status"] == "passed" for r in gate_results.values())
+
+        assert all(r["status"] == "passed" for r in gate_results.values()), "Result must not be empty"
 
     def test_critical_path_validation(self):
         """Test: Critical paths validated through gates."""
@@ -739,9 +739,9 @@ class TestValidationGates:
             "gates": ["session_create", "session_log", "session_resume"],
             "required_gates": ["session_create", "session_resume"],
         }
-        
-        assert len(critical_path["gates"]) == 3
-        assert len(critical_path["required_gates"]) == 2
+
+        assert len(critical_path["gates"]) == 3, "Collection must not be empty"
+        assert len(critical_path["required_gates"]) == 2, "Collection must not be empty"
 
     def test_gate_failure_reporting(self):
         """Test: Gate failures reported with details."""
@@ -751,9 +751,9 @@ class TestValidationGates:
             "error": "Session not found",
             "timestamp": datetime.now().isoformat(),
         }
-        
-        assert gate_result["status"] == "failed"
-        assert "Session" in gate_result["error"]
+
+        assert gate_result["status"] == "failed", "Result must not be empty"
+        assert "Session" in gate_result["error"], "Result must not be empty"
 
     def test_gate_metrics_collection(self):
         """Test: Gate metrics collected and reported."""
@@ -764,9 +764,9 @@ class TestValidationGates:
             "total_duration_ms": 2150,
             "pass_rate": 10 / 12,
         }
-        
-        assert metrics["total_gates"] == 12
-        assert metrics["pass_rate"] > 0.8
+
+        assert metrics["total_gates"] == 12, "Condition must be true"
+        assert metrics["pass_rate"] > 0.8, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -781,33 +781,33 @@ class TestPerformanceE2E:
         requests_processed = 0
         for i in range(1000):
             requests_processed += 1
-        
-        assert requests_processed == 1000
-        assert requests_processed / 1000 == 1.0
+
+        assert requests_processed == 1000, "requests_processed is not valid"
+        assert requests_processed / 1000 == 1.0, "1000 is not valid"
 
     def test_large_dataset_processing(self):
         """E2E: System processes large datasets efficiently."""
         large_dataset = list(range(10000))
         processed = [x * 2 for x in large_dataset]
-        
-        assert len(processed) == 10000
-        assert processed[-1] == 19998
+
+        assert len(processed) == 10000, "Processed must not be empty"
+        assert processed[-1] == 19998, "Condition must be true"
 
     def test_concurrent_operations_performance(self):
         """E2E: Performance remains acceptable under concurrency."""
         results = []
-        
+
         def concurrent_operation(op_id):
             results.append({"op_id": op_id, "status": "complete"})
-        
+
         threads = [threading.Thread(target=concurrent_operation, args=(i,)) for i in range(50)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
-        assert len(results) == 50
-        assert all(r["status"] == "complete" for r in results)
+
+        assert len(results) == 50, "Results must not be empty"
+        assert all(r["status"] == "complete" for r in results), "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -62,7 +62,7 @@ class TestActionsSecretsRepository:
     ):
         """Test listing repository Actions secrets."""
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
-        assert "actions/secrets" in endpoint
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_get_public_key_for_encryption(
         self,
@@ -74,7 +74,7 @@ class TestActionsSecretsRepository:
         Secrets must be encrypted with the repository's public key before sending.
         """
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}/public-key"
-        assert "public-key" in endpoint
+        assert "public-key" in endpoint, "Condition must be true"
 
     def test_public_key_response_structure(self):
         """Test public key response contains required fields."""
@@ -82,8 +82,8 @@ class TestActionsSecretsRepository:
             "key_id": "012345678901234567890",
             "key": "base64-encoded-public-key",
         }
-        assert "key_id" in response
-        assert "key" in response
+        assert "key_id" in response, "Response must not be empty"
+        assert "key" in response, "Response must not be empty"
 
     def test_create_actions_secret_with_encryption(self):
         """Test creating an Actions secret with encryption."""
@@ -104,9 +104,9 @@ class TestActionsSecretsRepository:
             "encrypted_value": encrypted_payload,
             "key_id": public_key["key_id"],
         }
-        assert "encrypted_value" in payload
-        assert "key_id" in payload
-        assert payload["encrypted_value"] == encrypted_payload
+        assert "encrypted_value" in payload, "Value must be initialized"
+        assert "key_id" in payload, "Condition must be true"
+        assert payload["encrypted_value"] == encrypted_payload, "Value must be initialized"
 
     def test_update_actions_secret(self):
         """Test updating an existing Actions secret."""
@@ -115,13 +115,13 @@ class TestActionsSecretsRepository:
             "key_id": "key_id_123",
         }
         endpoint = "/repos/owner/repo/actions/secrets/SECRET_NAME"
-        
+
         # Validate payload structure
-        assert "encrypted_value" in payload
-        assert payload["key_id"] == "key_id_123"
+        assert "encrypted_value" in payload, "Value must be initialized"
+        assert payload["key_id"] == "key_id_123", "Condition must be true"
         # Validate endpoint format
-        assert "actions/secrets" in endpoint
-        assert endpoint.endswith("SECRET_NAME")
+        assert "actions/secrets" in endpoint, "Condition must be true"
+        assert endpoint.endswith("SECRET_NAME"), "Condition must be true"
 
     def test_delete_actions_secret(
         self,
@@ -158,7 +158,7 @@ class TestDependabotSecrets:
     ):
         """Test listing Dependabot secrets."""
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}"
-        assert "dependabot/secrets" in endpoint
+        assert "dependabot/secrets" in endpoint, "Condition must be true"
 
     def test_get_dependabot_public_key(
         self,
@@ -167,7 +167,7 @@ class TestDependabotSecrets:
     ):
         """Test retrieving Dependabot public key."""
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}/public-key"
-        assert "public-key" in endpoint
+        assert "public-key" in endpoint, "Condition must be true"
 
     def test_create_dependabot_secret(self):
         """Test creating a Dependabot secret."""
@@ -186,8 +186,8 @@ class TestDependabotSecrets:
         """
         actions_endpoint = "/repos/owner/repo/actions/secrets"
         dependabot_endpoint = "/repos/owner/repo/dependabot/secrets"
-        assert "actions" in actions_endpoint
-        assert "dependabot" in dependabot_endpoint
+        assert "actions" in actions_endpoint, "Condition must be true"
+        assert "dependabot" in dependabot_endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -205,7 +205,7 @@ class TestCodespacesSecrets:
     ):
         """Test listing Codespaces secrets."""
         endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}"
-        assert "codespaces/secrets" in endpoint
+        assert "codespaces/secrets" in endpoint, "Condition must be true"
 
     def test_get_codespaces_public_key(
         self,
@@ -214,7 +214,7 @@ class TestCodespacesSecrets:
     ):
         """Test retrieving Codespaces public key."""
         endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}/public-key"
-        assert "public-key" in endpoint
+        assert "public-key" in endpoint, "Condition must be true"
 
     def test_create_codespaces_secret(self):
         """Test creating a Codespaces secret."""
@@ -252,7 +252,7 @@ class TestOrganizationSecrets:
     ):
         """Test listing organization Actions secrets."""
         endpoint = f"{gh_api_base}{org_actions_secrets_endpoint}"
-        assert "orgs/" in endpoint
+        assert "orgs/" in endpoint, "Condition must be true"
 
     def test_org_secret_repository_selection(self):
         """Test setting selected repositories for org secret."""
@@ -262,10 +262,10 @@ class TestOrganizationSecrets:
         # Add repository to secret
         repo_id = 123456
         endpoint_add = f"/orgs/org_name/actions/secrets/SECRET_NAME/repositories/{repo_id}"
-        assert "actions/secrets" in endpoint_add
-        
+        assert "actions/secrets" in endpoint_add, "Condition must be true"
+
         # Remove uses same endpoint as add with different HTTP method (DELETE vs PUT)
-        assert repo_id == 123456
+        assert repo_id == 123456, "repo_id is not valid"
 
     def test_org_secret_visibility_all(self):
         """Test organization secret with visibility=all."""
@@ -310,7 +310,7 @@ class TestSecretEncryption:
         encrypted_value = base64.b64encode(b"encrypted_test_data").decode()
         # Verify it's decodable as base64
         decoded = base64.b64decode(encrypted_value)
-        assert decoded == b"encrypted_test_data"
+        assert decoded == b"encrypted_test_data", "Data must not be empty"
 
     def test_key_id_requirement(self):
         """Test that key_id must match public key."""
@@ -322,7 +322,7 @@ class TestSecretEncryption:
             "encrypted_value": "value",
             "key_id": "123456",  # Must match
         }
-        assert public_key_response["key_id"] == create_payload["key_id"]
+        assert public_key_response["key_id"] == create_payload["key_id"], "Response must not be empty"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -347,7 +347,7 @@ class TestSecretLifecycleManagement:
             "verify_creation",
             "delete_secret",
         ]
-        assert len(stages) == 5
+        assert len(stages) == 5, "Stages must not be empty"
 
     def test_secret_update_flow(self):
         """Test secret update (PUT replaces existing)."""
@@ -379,8 +379,8 @@ class TestSecretErrorHandling:
             "message": "Validation Failed",
         }
         # Verify error structure
-        assert error["status"] == 422
-        assert "Validation" in error["message"]
+        assert error["status"] == 422, "Error should be raised or set"
+        assert "Validation" in error["message"], "Error should be raised or set"
 
     def test_missing_public_key_error(self):
         """Test error when public key cannot be retrieved."""
@@ -402,4 +402,4 @@ class TestSecretErrorHandling:
             "status": 403,
             "message": "Resource not accessible by integration",
         }
-        assert error["status"] == 403
+        assert error["status"] == 403, "Error should be raised or set"

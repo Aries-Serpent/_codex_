@@ -75,41 +75,48 @@ def _ensure_codex_ml_imports() -> None:
     global load_from_pretrained
     if FileLogger is not None:
         return  # Already loaded
-    
+
     try:
         from codex_ml.logging.file_logger import FileLogger as _FileLogger
+
         FileLogger = _FileLogger
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.logging.run_metadata import log_run_metadata as _log_run_metadata
+
         log_run_metadata = _log_run_metadata
     except (ImportError, AttributeError):
+
         def log_run_metadata(*args: Any, **kwargs: Any) -> None:
             pass
-    
+
     try:
         from codex_ml.telemetry import EXAMPLES_PROCESSED as _EXAMPLES_PROCESSED
+
         EXAMPLES_PROCESSED = _EXAMPLES_PROCESSED
     except (ImportError, AttributeError):
         EXAMPLES_PROCESSED = None
-    
+
     try:
         from codex_ml.telemetry import TRAIN_STEP_DURATION as _TRAIN_STEP_DURATION
+
         TRAIN_STEP_DURATION = _TRAIN_STEP_DURATION
     except (ImportError, AttributeError):
         TRAIN_STEP_DURATION = None
-    
+
     try:
         from codex_ml.telemetry import track_time as _track_time
+
         track_time = _track_time
     except (ImportError, AttributeError):
         from contextlib import contextmanager
+
         @contextmanager
         def track_time(*args: Any, **kwargs: Any) -> Any:
             yield
-    
+
     try:
         from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
             dump_rng_state as _dump_rng_state,
@@ -118,6 +125,7 @@ def _ensure_codex_ml_imports() -> None:
             save_checkpoint as _save_checkpoint,
             set_seed as _set_seed,
         )
+
         dump_rng_state = _dump_rng_state
         load_rng_state = _load_rng_state
         load_training_checkpoint = _load_training_checkpoint
@@ -125,22 +133,24 @@ def _ensure_codex_ml_imports() -> None:
         set_seed = _set_seed
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.experiment_tracking_mlflow import (
             _as_flat_params as _FLAT_PARAMS,
             maybe_mlflow as _maybe_mlflow,
         )
+
         _as_flat_params = _FLAT_PARAMS
         maybe_mlflow = _maybe_mlflow
     except (ImportError, AttributeError):
         pass
-    
+
     try:
         from codex_ml.utils.hf_pinning import (
             ensure_pinned_kwargs as _ensure_pinned_kwargs,
             load_from_pretrained as _load_from_pretrained,
         )
+
         ensure_pinned_kwargs = _ensure_pinned_kwargs
         load_from_pretrained = _load_from_pretrained
     except (ImportError, AttributeError):
@@ -192,13 +202,23 @@ except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
 
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency missing
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - optional dependency missing
     manifest_for_paths = None  # type: ignore[assignment]
 
 
 try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - minimal training may not need registry
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - minimal training may not need registry
 
     def get_model(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("codex_ml.models.registry is unavailable")
@@ -208,7 +228,6 @@ try:  # pragma: no cover - optional system metrics dependency chain
     from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency missing
     collect_system_metrics = None
-
 
 
 def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
@@ -313,7 +332,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     # Ensure lazy imports are loaded
     _ensure_codex_ml_imports()
-    
+
     from codex_ml.utils.config_loader import load_training_cfg  # local import
 
     parser = argparse.ArgumentParser(description="Training orchestrator entry.")

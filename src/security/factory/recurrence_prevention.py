@@ -18,6 +18,7 @@ from .ingest import NormalizedFinding
 @dataclass
 class SuppressionPattern:
     """Pattern to suppress similar findings."""
+
     pattern_id: str
     description: str
     cwe: Optional[str] = None
@@ -29,6 +30,7 @@ class SuppressionPattern:
 @dataclass
 class RecurrencePrevention:
     """Generates and manages suppression patterns."""
+
     patterns: List[SuppressionPattern] = field(default_factory=list)
     total_patterns_applied: int = 0
     pattern_effectiveness: Dict[str, float] = field(default_factory=dict)
@@ -142,9 +144,7 @@ class RecurrencePrevention:
                 "avg_effectiveness": 0.0,
             }
 
-        avg_effectiveness = (
-            sum(p.effectiveness for p in self.patterns) / len(self.patterns)
-        )
+        avg_effectiveness = sum(p.effectiveness for p in self.patterns) / len(self.patterns)
 
         return {
             "total_patterns": len(self.patterns),

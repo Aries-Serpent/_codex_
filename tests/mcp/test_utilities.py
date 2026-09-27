@@ -5,7 +5,7 @@ pytest.skip("Placeholder test - infrastructure not fully implemented", allow_mod
 from typing import Any, Callable
 
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
-# 
+#
 #         Tuple of (result, log_records)
 # Helper functions and fixtures for testing MCP capabilities.
 #     """
@@ -16,7 +16,7 @@ from typing import Any, Callable
 # import random
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
-# 
+#
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
 # from mcp.rate_limit import MCPRateLimiter
@@ -36,7 +36,7 @@ from typing import Any, Callable
 #     """Create a handler that captures the tool name at definition time."""
 #     def _handler(params: dict[str, Any]) -> dict[str, Any]:
 #         return {"tool": tool_name, "params": params}
-# 
+#
 #     return _handler
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
@@ -46,7 +46,7 @@ from typing import Any, Callable
 #     Create a test registry with optional pre-registered tools.
 #     Args:
 #         tools: List of tool names to pre-register
-# 
+#
 #     Returns:
 #         MCPToolRegistry instance
 #         MCPToolRegistry instance
@@ -60,7 +60,7 @@ from typing import Any, Callable
 #                 schema={"type": "object"},
 #                 metadata={"description": f"Test tool: {tool_name}"},
 #             )
-# 
+#
 #     return registry
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
@@ -133,10 +133,10 @@ from typing import Any, Callable
 # # Test Fixtures
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
-# 
+#
 #     def __init__(self, headers: Optional[dict[str, str]] = None):
 #         self.headers = headers or {}
-# 
+#
 #     def get_header(self, name: str) -> Optional[str]:
 #         return self.headers.get(name)
 #     for i in range(count):
@@ -148,12 +148,12 @@ from typing import Any, Callable
 #         self.return_value = return_value or {"status": "ok"}
 #         self.call_count = 0
 #         self.call_history: list[dict[str, Any]] = []
-# 
+#
 #     def __call__(self, params: dict[str, Any]) -> Any:
 #         self.call_count += 1
 #         self.call_history.append(params)
 #         return self.return_value
-# 
+#
 #     def reset(self):
 #     def reset(self):
 #         """Reset call tracking."""
@@ -173,7 +173,7 @@ from typing import Any, Callable
 #     data = []
 #     for i in range(count):
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
-# 
+#
 #     return data
 
 

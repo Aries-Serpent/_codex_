@@ -12,17 +12,16 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 import tempfile
-import hashlib
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from typing import Dict, List, Optional
 
 
 @dataclass
 class CodeExample:
     """Represents a single code example"""
+
     id: str
     file_path: str
     line_number: int
@@ -49,9 +48,9 @@ class CodeExampleExtractor:
     def extract_from_file(self, file_path: str) -> List[CodeExample]:
         """Extract all code examples from a markdown file"""
         examples = []
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 lines = f.readlines()
         except Exception as e:
             print(f"Error reading {file_path}: {e}")
@@ -60,37 +59,37 @@ class CodeExampleExtractor:
         i = 0
         while i < len(lines):
             line = lines[i]
-            
+
             # Look for code block markers
-            if line.strip().startswith('```'):
+            if line.strip().startswith("```"):
                 # Extract language
-                lang_match = re.match(r'```(\w+)?', line.strip())
-                language = lang_match.group(1) if lang_match and lang_match.group(1) else 'text'
-                
+                lang_match = re.match(r"```(\w+)?", line.strip())
+                language = lang_match.group(1) if lang_match and lang_match.group(1) else "text"
+
                 # Get preceding context (description before code block)
                 context_lines = []
                 for j in range(max(0, i - 5), i):
                     context_lines.append(lines[j].strip())
-                context = ' '.join(context_lines[-3:]) if context_lines else ''
-                
+                context = " ".join(context_lines[-3:]) if context_lines else ""
+
                 # Extract code until closing ```
                 code_lines = []
                 start_line = i + 1
                 i += 1
-                
-                while i < len(lines) and not lines[i].strip().startswith('```'):
-                    code_lines.append(lines[i].rstrip('\n'))
+
+                while i < len(lines) and not lines[i].strip().startswith("```"):
+                    code_lines.append(lines[i].rstrip("\n"))
                     i += 1
-                
-                code = '\n'.join(code_lines).strip()
-                
+
+                code = "\n".join(code_lines).strip()
+
                 if code:
                     self.example_counter += 1
                     example_id = f"ex-{self.example_counter:04d}"
-                    
+
                     # Determine if executable
                     is_executable = self._is_executable(language, code)
-                    
+
                     example = CodeExample(
                         id=example_id,
                         file_path=file_path,
@@ -99,36 +98,36 @@ class CodeExampleExtractor:
                         code=code,
                         context=context,
                         is_executable=is_executable,
-                        execution_status='pending'
+                        execution_status="pending",
                     )
                     examples.append(example)
                     self.examples.append(example)
-            
+
             i += 1
-        
+
         return examples
 
     def _is_executable(self, language: str, code: str) -> bool:
         """Determine if a code example is executable"""
-        non_executable = ['text', 'json', 'yaml', 'html', 'xml', 'markdown', 'md', '']
-        
+        non_executable = ["text", "json", "yaml", "html", "xml", "markdown", "md", ""]
+
         if language.lower() in non_executable:
             return False
-        
+
         # Check for common non-executable patterns
-        if 'TODO' in code or '...' in code or '# [' in code:
+        if "TODO" in code or "..." in code or "# [" in code:
             return False
-        
+
         return True
 
-    def extract_all(self, docs_path: str = 'docs') -> List[CodeExample]:
+    def extract_all(self, docs_path: str = "docs") -> List[CodeExample]:
         """Extract all examples from documentation directory"""
         for root, dirs, files in os.walk(docs_path):
             for file in files:
-                if file.endswith('.md'):
+                if file.endswith(".md"):
                     file_path = os.path.join(root, file)
                     self.extract_from_file(file_path)
-        
+
         return self.examples
 
 
@@ -141,20 +140,16 @@ class CodeExampleValidator:
     def validate(self, example: CodeExample) -> CodeExample:
         """Validate a single code example"""
         if not example.is_executable:
-            example.execution_status = 'skipped'
+            example.execution_status = "skipped"
             return example
 
-        validator_method = getattr(
-            self,
-            f'validate_{example.language}',
-            self._validate_generic
-        )
+        validator_method = getattr(self, f"validate_{example.language}", self._validate_generic)
 
         try:
             validator_method(example)
-            example.execution_status = 'success'
+            example.execution_status = "success"
         except Exception as e:
-            example.execution_status = 'failed'
+            example.execution_status = "failed"
             example.error_message = str(e)
 
         example.validation_timestamp = datetime.now().isoformat()
@@ -162,25 +157,22 @@ class CodeExampleValidator:
 
     def validate_python(self, example: CodeExample):
         """Validate Python code examples"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write(example.code)
             temp_file = f.name
 
         try:
             # First, syntax check
-            compile(example.code, temp_file, 'exec')
-            
+            compile(example.code, temp_file, "exec")
+
             # Then try execution (but limit execution time)
             result = subprocess.run(
-                [sys.executable, temp_file],
-                capture_output=True,
-                text=True,
-                timeout=5
+                [sys.executable, temp_file], capture_output=True, text=True, timeout=5
             )
-            
+
             if result.returncode != 0:
                 raise Exception(f"Execution failed: {result.stderr}")
-            
+
             example.execution_output = result.stdout
         finally:
             os.unlink(temp_file)
@@ -189,10 +181,11 @@ class CodeExampleValidator:
         """Validate YAML syntax"""
         try:
             import yaml
+
             yaml.safe_load(example.code)
         except ImportError:
             # YAML not available, skip validation
-            example.execution_status = 'skipped'
+            example.execution_status = "skipped"
         except Exception as e:
             raise Exception(f"YAML validation failed: {str(e)}")
 
@@ -201,12 +194,12 @@ class CodeExampleValidator:
         # Basic shell syntax validation
         if not example.code.strip():
             raise Exception("Empty shell command")
-        
+
         # Check for common shell syntax errors
-        if example.code.count('(') != example.code.count(')'):
+        if example.code.count("(") != example.code.count(")"):
             raise Exception("Mismatched parentheses")
-        
-        if example.code.count('[') != example.code.count(']'):
+
+        if example.code.count("[") != example.code.count("]"):
             raise Exception("Mismatched brackets")
 
     def validate_javascript(self, example: CodeExample):
@@ -214,13 +207,13 @@ class CodeExampleValidator:
         try:
             # Check if Node.js is available
             result = subprocess.run(
-                ['node', '--check', '--input-type=module'],
+                ["node", "--check", "--input-type=module"],
                 input=example.code,
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
-            
+
             if result.returncode != 0:
                 raise Exception(f"JavaScript validation failed: {result.stderr}")
         except FileNotFoundError:
@@ -237,9 +230,11 @@ class CodeExampleValidator:
 def _is_valid_js_syntax(code: str) -> bool:
     """Basic JavaScript syntax validation"""
     # Check for balanced braces/brackets
-    return (code.count('{') == code.count('}') and
-            code.count('[') == code.count(']') and
-            code.count('(') == code.count(')'))
+    return (
+        code.count("{") == code.count("}")
+        and code.count("[") == code.count("]")
+        and code.count("(") == code.count(")")
+    )
 
 
 class CodeExampleCatalog:
@@ -274,28 +269,26 @@ class CodeExampleCatalog:
         by_status = self.categorize_by_status()
 
         report = {
-            'timestamp': datetime.now().isoformat(),
-            'total_examples': len(self.examples),
-            'by_language': {
+            "timestamp": datetime.now().isoformat(),
+            "total_examples": len(self.examples),
+            "by_language": {
                 lang: {
-                    'count': len(examples),
-                    'executable': sum(1 for e in examples if e.is_executable),
-                    'examples': [e.to_dict() for e in examples[:3]]  # First 3
+                    "count": len(examples),
+                    "executable": sum(1 for e in examples if e.is_executable),
+                    "examples": [e.to_dict() for e in examples[:3]],  # First 3
                 }
                 for lang, examples in by_language.items()
             },
-            'by_status': {
-                status: len(examples)
-                for status, examples in by_status.items()
-            },
-            'executability': {
-                'total_executable': sum(1 for e in self.examples if e.is_executable),
-                'total_non_executable': sum(1 for e in self.examples if not e.is_executable),
-                'executable_percentage': (
+            "by_status": {status: len(examples) for status, examples in by_status.items()},
+            "executability": {
+                "total_executable": sum(1 for e in self.examples if e.is_executable),
+                "total_non_executable": sum(1 for e in self.examples if not e.is_executable),
+                "executable_percentage": (
                     sum(1 for e in self.examples if e.is_executable) / len(self.examples) * 100
-                    if self.examples else 0
-                )
-            }
+                    if self.examples
+                    else 0
+                ),
+            },
         }
 
         return report
@@ -303,57 +296,65 @@ class CodeExampleCatalog:
     def export_json(self, file_path: str):
         """Export catalog to JSON"""
         catalog = {
-            'metadata': {
-                'created': datetime.now().isoformat(),
-                'total_examples': len(self.examples),
-                'phase': 'Phase 12 WS3'
+            "metadata": {
+                "created": datetime.now().isoformat(),
+                "total_examples": len(self.examples),
+                "phase": "Phase 12 WS3",
             },
-            'examples': [e.to_dict() for e in self.examples]
+            "examples": [e.to_dict() for e in self.examples],
         }
-        
-        with open(file_path, 'w') as f:
+
+        with open(file_path, "w") as f:
             json.dump(catalog, f, indent=2)
 
     def export_csv(self, file_path: str):
         """Export catalog to CSV for analysis"""
         import csv
-        
-        with open(file_path, 'w', newline='') as f:
+
+        with open(file_path, "w", newline="") as f:
             writer = csv.DictWriter(
                 f,
-                fieldnames=['id', 'file_path', 'language', 'is_executable',
-                           'execution_status', 'line_number']
+                fieldnames=[
+                    "id",
+                    "file_path",
+                    "language",
+                    "is_executable",
+                    "execution_status",
+                    "line_number",
+                ],
             )
             writer.writeheader()
-            
+
             for example in self.examples:
-                writer.writerow({
-                    'id': example.id,
-                    'file_path': example.file_path,
-                    'language': example.language,
-                    'is_executable': example.is_executable,
-                    'execution_status': example.execution_status,
-                    'line_number': example.line_number
-                })
+                writer.writerow(
+                    {
+                        "id": example.id,
+                        "file_path": example.file_path,
+                        "language": example.language,
+                        "is_executable": example.is_executable,
+                        "execution_status": example.execution_status,
+                        "line_number": example.line_number,
+                    }
+                )
 
 
 def main():
     """Main execution"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description='Code Example Validator & Audit')
-    parser.add_argument('--extract', action='store_true', help='Extract examples')
-    parser.add_argument('--validate', action='store_true', help='Validate examples')
-    parser.add_argument('--report', action='store_true', help='Generate report')
-    parser.add_argument('--limit', type=int, default=None, help='Limit examples to validate')
-    parser.add_argument('--docs-path', default='docs', help='Path to documentation')
-    parser.add_argument('--output', default='code_examples_catalog.json', help='Output file')
-    
+
+    parser = argparse.ArgumentParser(description="Code Example Validator & Audit")
+    parser.add_argument("--extract", action="store_true", help="Extract examples")
+    parser.add_argument("--validate", action="store_true", help="Validate examples")
+    parser.add_argument("--report", action="store_true", help="Generate report")
+    parser.add_argument("--limit", type=int, default=None, help="Limit examples to validate")
+    parser.add_argument("--docs-path", default="docs", help="Path to documentation")
+    parser.add_argument("--output", default="code_examples_catalog.json", help="Output file")
+
     args = parser.parse_args()
-    
+
     print("🔍 Code Example Validator & Audit Tool")
     print("=" * 60)
-    
+
     # Extract examples
     if args.extract or not any([args.validate, args.report]):
         print("\n📚 Extracting code examples...")
@@ -362,26 +363,26 @@ def main():
         print(f"✅ Found {len(examples)} code examples")
     else:
         examples = []
-    
+
     # Validate examples
     if args.validate and examples:
         print("\n✔️ Validating code examples...")
         validator = CodeExampleValidator()
-        
+
         limit = min(args.limit or len(examples), len(examples))
         for i, example in enumerate(examples[:limit], 1):
             validator.validate(example)
             if i % 10 == 0:
                 print(f"  {i}/{limit} validated...")
-        
-        print(f"✅ Validation complete")
-    
+
+        print("✅ Validation complete")
+
     # Generate report
     if args.report and examples:
         print("\n📊 Generating report...")
         catalog = CodeExampleCatalog(examples)
         report = catalog.generate_report()
-        
+
         print("\n" + "=" * 60)
         print("AUDIT REPORT SUMMARY")
         print("=" * 60)
@@ -389,26 +390,26 @@ def main():
         print(f"Executable: {report['executability']['total_executable']}")
         print(f"Non-executable: {report['executability']['total_non_executable']}")
         print(f"Executable %: {report['executability']['executable_percentage']:.1f}%")
-        
+
         print("\nBy Language:")
-        for lang, data in report['by_language'].items():
+        for lang, data in report["by_language"].items():
             print(f"  {lang}: {data['count']} total, {data['executable']} executable")
-        
+
         print("\nBy Status:")
-        for status, count in report['by_status'].items():
+        for status, count in report["by_status"].items():
             print(f"  {status}: {count}")
-        
+
         # Export catalog
         catalog.export_json(args.output)
         print(f"\n✅ Catalog exported to {args.output}")
-        
+
         # Export CSV
-        csv_output = args.output.replace('.json', '.csv')
+        csv_output = args.output.replace(".json", ".csv")
         catalog.export_csv(csv_output)
         print(f"✅ CSV exported to {csv_output}")
-        
+
         return report
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -22,7 +22,7 @@ def load_analytics(path: Path) -> dict[str, Any]:
     """Load existing analytics"""
     if not path.exists():
         return {"entries": []}
-    
+
     try:
         with open(path, "r") as f:
             return json.load(f)
@@ -41,16 +41,16 @@ def save_analytics(path: Path, data: dict[str, Any]) -> None:
 def prune_old_entries(data: dict[str, Any], max_days: int = 28) -> None:
     """Remove entries older than max_days"""
     cutoff = datetime.now() - timedelta(days=max_days)
-    
+
     entries = data.get("entries", [])
     original_count = len(entries)
-    
+
     # Filter out old entries
     data["entries"] = [
         e for e in entries
         if datetime.fromisoformat(e.get("timestamp", "")) >= cutoff
     ]
-    
+
     pruned_count = original_count - len(data["entries"])
     if pruned_count > 0:
         print(f"Pruned {pruned_count} entries older than {max_days} days")
@@ -85,20 +85,20 @@ def main() -> int:
         default=Path(".codex/perf/analytics.json"),
         help="Output analytics file",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Load current metrics
     if not args.metrics.exists():
         print(f"Error: Metrics file not found: {args.metrics}", file=sys.stderr)
         return 1
-    
+
     with open(args.metrics, "r") as f:
         metrics = json.load(f)
-    
+
     # Load existing analytics
     analytics = load_analytics(args.output)
-    
+
     # Create new entry
     entry = {
         "timestamp": datetime.now().isoformat(),
@@ -106,22 +106,22 @@ def main() -> int:
         "commit": args.commit,
         "metrics": metrics,
     }
-    
+
     # Add to analytics
     if "entries" not in analytics:
         analytics["entries"] = []
     analytics["entries"].append(entry)
-    
+
     # Prune old entries (keep 4 weeks)
     prune_old_entries(analytics, max_days=28)
-    
+
     # Update metadata
     analytics["last_updated"] = datetime.now().isoformat()
     analytics["total_entries"] = len(analytics["entries"])
-    
+
     # Save analytics
     save_analytics(args.output, analytics)
-    
+
     print(f"✅ Analytics stored: {len(analytics['entries'])} entries in database")
     return 0
 

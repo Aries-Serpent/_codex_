@@ -40,8 +40,8 @@ class TestWorkflowInventoryIntegration:
 
         inventory = WorkflowInventory(workflows_dir)
 
-        assert inventory is not None
-        assert inventory.workflows_dir == workflows_dir
+        assert inventory is not None, "inventory must be initialized"
+        assert inventory.workflows_dir == workflows_dir, "workflows_dir is not valid"
         assert isinstance(inventory.workflows, dict)
 
     def test_workflow_inventory_scan_empty_directory(self, tmp_path):
@@ -54,8 +54,8 @@ class TestWorkflowInventoryIntegration:
         inventory = WorkflowInventory(workflows_dir)
         count = inventory.scan()
 
-        assert count == 0
-        assert len(inventory.workflows) == 0
+        assert count == 0, "Count must be greater than zero"
+        assert len(inventory.workflows) == 0, "Collection must not be empty"
 
     def test_workflow_parser_yaml_parsing(self, tmp_path):
         """Test workflow YAML parsing with valid structure."""
@@ -78,9 +78,9 @@ jobs:
         parser = WorkflowParser()
         metadata = parser.parse_file(workflow_file)
 
-        assert metadata is not None
+        assert metadata is not None, "metadata must be initialized"
         assert hasattr(metadata, "name")
-        assert metadata.name == "Test Workflow"
+        assert metadata.name == "Test Workflow", "Data must not be empty"
 
     def test_workflow_inventory_with_valid_yaml(self, tmp_path):
         """Test workflow inventory with valid YAML file."""
@@ -105,8 +105,8 @@ jobs:
         inventory = WorkflowInventory(workflows_dir)
         count = inventory.scan()
 
-        assert count >= 0
-        assert inventory.workflows_dir.exists()
+        assert count >= 0, "count must be positive"
+        assert inventory.workflows_dir.exists(), "invent is not valid"
 
     def test_workflow_inventory_error_handling(self, tmp_path):
         """Test workflow inventory handles errors gracefully."""
@@ -123,7 +123,7 @@ jobs:
         # Should not raise, should handle gracefully
         try:
             count = inventory.scan()
-            assert count >= 0
+            assert count >= 0, "count must be positive"
         except Exception as e:
             # If it does raise, it should be a known exception type
             assert isinstance(e, (ValueError, OSError, Exception))
@@ -136,7 +136,7 @@ jobs:
         workflows_dir.mkdir(parents=True, exist_ok=True)
 
         inventory = WorkflowInventory(str(workflows_dir))  # String path
-        assert inventory.workflows_dir == workflows_dir
+        assert inventory.workflows_dir == workflows_dir, "workflows_dir is not valid"
 
     def test_workflow_parser_handles_complex_workflow(self, tmp_path):
         """Test workflow parser handles complex multi-job workflows."""
@@ -175,7 +175,7 @@ jobs:
         parser = WorkflowParser()
         metadata = parser.parse_file(workflow_file)
 
-        assert metadata is not None
+        assert metadata is not None, "metadata must be initialized"
         assert hasattr(metadata, "job_ids") or hasattr(metadata, "jobs")
 
     def test_workflow_inventory_force_refresh(self, tmp_path):
@@ -207,7 +207,7 @@ jobs:
         count2 = inventory.scan(force_refresh=True)
 
         # Should detect the new workflow
-        assert inventory.workflows_dir.exists()
+        assert inventory.workflows_dir.exists(), "invent is not valid"
 
 
 # ============================================================================
@@ -222,28 +222,28 @@ class TestServicesModuleInitialization:
         """Test that services module can be imported."""
         from src import services
 
-        assert services is not None
+        assert services is not None, "services must be initialized"
         assert hasattr(services, "__all__")
 
     def test_workflow_inventory_exported(self):
         """Test that WorkflowInventory is available from src.services."""
         from services import WorkflowInventory
 
-        assert WorkflowInventory is not None
+        assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
 
     def test_workflow_parser_exported(self):
         """Test that WorkflowParser is available from src.services."""
         from services import WorkflowParser
 
-        assert WorkflowParser is not None
+        assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_all_exports_defined_properly(self):
         """Test that __all__ is properly defined."""
         from services import __all__
 
         assert isinstance(__all__, list)
-        assert "WorkflowParser" in __all__
-        assert "WorkflowInventory" in __all__
+        assert "WorkflowParser" in __all__, "Condition must be true"
+        assert "WorkflowInventory" in __all__, "Condition must be true"
 
 
 # ============================================================================
@@ -279,8 +279,8 @@ class TestServiceDependencyInjection:
         inv2 = WorkflowInventory(workflows_dir)
 
         # Verify they're independent instances
-        assert inv1 is not inv2
-        assert inv1.workflows_dir == inv2.workflows_dir
+        assert inv1 is not inv2, "inv1 is not valid"
+        assert inv1.workflows_dir == inv2.workflows_dir, "workflows_dir is not valid"
 
     def test_service_state_isolation(self, tmp_path):
         """Test service state isolation between instances."""
@@ -295,9 +295,9 @@ class TestServiceDependencyInjection:
         inv2 = WorkflowInventory(workflows_dir2)
 
         # State should be isolated
-        assert inv1.workflows_dir == workflows_dir1
-        assert inv2.workflows_dir == workflows_dir2
-        assert inv1.workflows_dir != inv2.workflows_dir
+        assert inv1.workflows_dir == workflows_dir1, "workflows_dir is not valid"
+        assert inv2.workflows_dir == workflows_dir2, "workflows_dir is not valid"
+        assert inv1.workflows_dir != inv2.workflows_dir, "workflows_dir is not valid"
 
 
 # ============================================================================
@@ -318,7 +318,7 @@ class TestServiceErrorHandling:
         try:
             result = parser.parse_file(nonexistent_file)
             # Should either return None or raise a known error
-            assert result is None or result is not None  # Either case is ok
+            assert result is None or result is not None, "result must be initialized"
         except (FileNotFoundError, OSError, Exception):
             # Expected - file doesn't exist
             pass
@@ -339,7 +339,7 @@ class TestServiceErrorHandling:
             inventory = WorkflowInventory(workflows_dir)
             # Should handle gracefully
             count = inventory.scan()
-            assert count >= 0
+            assert count >= 0, "count must be positive"
         finally:
             # Restore permissions for cleanup
             protected_file.chmod(0o644)
@@ -360,10 +360,10 @@ class TestServiceErrorHandling:
         # Should handle without raising or should raise expected error
         try:
             count = inventory.scan()
-            assert count >= 0
+            assert count >= 0, "count must be positive"
         except Exception as e:
             # Expected - malformed YAML
-            assert True
+            assert True, "True is not valid"
 
 
 # ============================================================================
@@ -383,16 +383,16 @@ class TestWorkflowTypesAndMetadata:
             WorkflowTrigger,
         )
 
-        assert WorkflowMetadata is not None
-        assert WorkflowTrigger is not None
-        assert WorkflowJob is not None
-        assert WorkflowDependency is not None
+        assert WorkflowMetadata is not None, "WorkflowMetadata must be initialized"
+        assert WorkflowTrigger is not None, "WorkflowTrigger must be initialized"
+        assert WorkflowJob is not None, "WorkflowJob must be initialized"
+        assert WorkflowDependency is not None, "WorkflowDependency must be initialized"
 
     def test_workflow_input_type_available(self):
         """Test workflow input type is available."""
         from services.workflow import WorkflowInput
 
-        assert WorkflowInput is not None
+        assert WorkflowInput is not None, "WorkflowInput must be initialized"
 
 
 # ============================================================================
@@ -408,14 +408,14 @@ class TestGitHubServiceOptionalDependency:
         import services
 
         # Should import even if httpx is not available
-        assert services is not None
+        assert services is not None, "services must be initialized"
 
         # Check if GitHubClient is available (optional)
         if hasattr(services, "GitHubClient"):
-            assert services.GitHubClient is not None
+            assert services.GitHubClient is not None, "GitHubClient must be initialized"
         else:
             # It's ok if GitHubClient isn't available (optional dependency)
-            assert True
+            assert True, "True is not valid"
 
 
 # ============================================================================
@@ -473,9 +473,9 @@ jobs:
         count = inventory.scan()
 
         # Verify
-        assert count >= 0
-        assert inventory.workflows_dir.exists()
-        assert len(list(workflows_dir.glob("*.yml"))) == 3
+        assert count >= 0, "count must be positive"
+        assert inventory.workflows_dir.exists(), "invent is not valid"
+        assert len(list(workflows_dir.glob("*.yml"))) == 3, "Collection must not be empty"
 
         # Verify parser works
         parser = WorkflowParser()
@@ -483,7 +483,7 @@ jobs:
             filepath = workflows_dir / filename
             try:
                 metadata = parser.parse_file(filepath)
-                assert metadata is not None
-            except Exception:
+                assert metadata is not None, "metadata must be initialized"
+            except Exception as _err:
                 # Parser might not support all formats - that's ok
                 pass

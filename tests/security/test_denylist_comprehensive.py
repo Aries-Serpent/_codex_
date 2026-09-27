@@ -1,18 +1,18 @@
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
-# 
+#
 #     def test_no_redaction_needed(self):
 # This module provides exhaustive testing of the denylist enforcement system,
 #         """Test text that doesn't need redaction."""
 #         patterns = [
 #             (re.compile(r"\d{16}"), "[CARD]"),
 #         ]
-# 
+#
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
 # import re
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
-# 
+#
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
 # try:
@@ -22,11 +22,11 @@
 #         DenylistViolation,
 #         load_denylist,
 #     )
-# 
+#
 #     DENYLIST_AVAILABLE = True
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
-# 
+#
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
 #     not DENYLIST_AVAILABLE, reason="codex_ml.security.denylist not available"
@@ -56,7 +56,7 @@
 #         assert enforcer.is_prompt_allowed("password") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("My password is secret") is False, "password is not valid"
 #         assert enforcer.is_prompt_allowed("My password is secret") is False, "password is not valid"
-# 
+#
 #     def test_partial_word_matching(self):
 #     def test_partial_word_matching(self):
 #         """Test that sensitive terms match within words."""
@@ -70,7 +70,7 @@
 #         assert enforcer.is_prompt_allowed("The secretive plan") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("secretariat") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("secretariat") is False, "enf is not valid"
-# 
+#
 #     def test_multiple_sensitive_terms_detection(self):
 #     def test_multiple_sensitive_terms_detection(self):
 #         """Test detection when multiple terms are present."""
@@ -83,7 +83,7 @@
 #         enforcer = DenylistEnforcer(rules)
 #         prompt = "Send api_key and token with credentials"
 #         assert enforcer.is_prompt_allowed(prompt) is False, "enf is not valid"
-# 
+#
 #     def test_blocked_pattern_regex_like(self):
 #     def test_blocked_pattern_regex_like(self):
 #         """Test blocked patterns are matched as substrings."""
@@ -97,7 +97,7 @@
 #         assert enforcer.is_prompt_allowed("Please delete the file") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("drop table users") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("drop table users") is False, "enf is not valid"
-# 
+#
 #     def test_whitespace_variations(self):
 #     def test_whitespace_variations(self):
 #         """Test handling of various whitespace characters."""
@@ -112,7 +112,7 @@
 #         assert enforcer.is_prompt_allowed("sensitive  information") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("sensitive\tinformation") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("sensitive\tinformation") is False, "enf is not valid"
-# 
+#
 #     def test_special_characters_in_terms(self):
 #     def test_special_characters_in_terms(self):
 #         """Test sensitive terms with special characters."""
@@ -126,7 +126,7 @@
 #         assert enforcer.is_prompt_allowed("The $secret is here") is False, "secret is not valid"
 #         assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
 #         assert enforcer.is_prompt_allowed("Enter pass#word") is False, "pass is not valid"
-# 
+#
 #     def test_empty_string_prompt(self):
 #     def test_empty_string_prompt(self):
 #         """Test handling of empty string prompt."""
@@ -138,7 +138,7 @@
 #         )
 #         enforcer = DenylistEnforcer(rules)
 #         assert enforcer.is_prompt_allowed("") is True, "enf is not valid"
-# 
+#
 #     def test_very_long_prompt_performance(self):
 #     def test_very_long_prompt_performance(self):
 #         """Test performance with very long prompts."""
@@ -151,7 +151,7 @@
 #         enforcer = DenylistEnforcer(rules)
 #         long_prompt = "safe " * 200000
 #         assert enforcer.is_prompt_allowed(long_prompt) is True, "enf is not valid"
-# 
+#
 #         # With secret at the end
 #         long_prompt_with_secret = long_prompt + " secret"
 #         assert enforcer.is_prompt_allowed(long_prompt_with_secret) is False, "enf is not valid"

@@ -142,7 +142,7 @@ def cache_records(records: Iterable[dict[str, Any]], *, cache_dir: str | Path, k
     True
     >>> path.name.endswith('.jsonl')
     True
-    """
+    """  # noqa: E501
     cache_path = Path(cache_dir)
     cache_path.mkdir(parents=True, exist_ok=True)
 

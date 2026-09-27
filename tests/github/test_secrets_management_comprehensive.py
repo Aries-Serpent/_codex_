@@ -98,16 +98,16 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}/public-key"
         expected_response = mock_public_key_response()
 
-        assert "public-key" in endpoint
-        assert expected_response["key_id"]
-        assert expected_response["key"]
+        assert "public-key" in endpoint, "Condition must be true"
+        assert expected_response["key_id"], "Response must not be empty"
+        assert expected_response["key"], "Response must not be empty"
 
     def test_process3_public_key_response_structure(self, mock_public_key_response):
         """Test: Public key response has required fields."""
         response = mock_public_key_response(key_id="test_key_123")
 
-        assert "key_id" in response
-        assert "key" in response
+        assert "key_id" in response, "Response must not be empty"
+        assert "key" in response, "Response must not be empty"
         assert isinstance(response["key_id"], str)
         assert isinstance(response["key"], str)
 
@@ -118,7 +118,7 @@ class TestProcess3RepositoryActionsSecrets:
         # Verify base64 encoding
         try:
             decoded = base64.b64decode(response["key"])
-            assert len(decoded) == 32  # Curve25519 key is 32 bytes
+            assert len(decoded) == 32, "Decoded must not be empty"
         except Exception as _err:
             pytest.fail("Public key is not valid base64 or incorrect size")
 
@@ -134,7 +134,7 @@ class TestProcess3RepositoryActionsSecrets:
         # Second call should return cached key
         key2 = mock_public_key_response()
 
-        assert key1["key"] == key2["key"]
+        assert key1["key"] == key2["key"], "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Secret CRUD Operations
@@ -163,8 +163,8 @@ class TestProcess3RepositoryActionsSecrets:
             ],
         }
 
-        assert "actions/secrets" in endpoint
-        assert expected_response["total_count"] == 2
+        assert "actions/secrets" in endpoint, "Condition must be true"
+        assert expected_response["total_count"] == 2, "Response must not be empty"
 
     def test_process3_list_actions_secrets_empty(
         self,
@@ -175,8 +175,8 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
         expected_response = {"total_count": 0, "secrets": []}
 
-        assert "actions/secrets" in endpoint
-        assert expected_response["total_count"] == 0
+        assert "actions/secrets" in endpoint, "Condition must be true"
+        assert expected_response["total_count"] == 0, "Response must not be empty"
 
     def test_process3_create_actions_secret_success(
         self,
@@ -200,9 +200,9 @@ class TestProcess3RepositoryActionsSecrets:
             "key_id": encrypted_secret["key_id"],
         }
 
-        assert payload["encrypted_value"]
-        assert payload["key_id"]
-        assert "actions/secrets" in endpoint
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert payload["key_id"], "Condition must be true"
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_process3_create_secret_with_mock_encryption(
         self,
@@ -223,9 +223,9 @@ class TestProcess3RepositoryActionsSecrets:
             "key_id": "mock_key_id",
         }
 
-        assert payload["name"] == test_secret_name_base
-        assert payload["encrypted_value"]
-        assert "actions/secrets" in endpoint
+        assert payload["name"] == test_secret_name_base, "Condition must be true"
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_process3_create_secret_with_visibility(
         self,
@@ -244,8 +244,8 @@ class TestProcess3RepositoryActionsSecrets:
             "selected_repository_ids": [123, 456],
         }
 
-        assert payload.get("visibility") == "selected"
-        assert "actions/secrets" in endpoint
+        assert payload.get("visibility") == "selected", "Condition must be true"
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_process3_update_actions_secret_success(
         self,
@@ -261,8 +261,8 @@ class TestProcess3RepositoryActionsSecrets:
             "key_id": "key_id",
         }
 
-        assert payload["encrypted_value"]
-        assert test_secret_name_base in endpoint
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     def test_process3_delete_actions_secret_success(
         self,
@@ -274,7 +274,7 @@ class TestProcess3RepositoryActionsSecrets:
         endpoint = f"{gh_api_base}{actions_secrets_endpoint}/{test_secret_name_base}"
 
         # DELETE returns 204 No Content
-        assert test_secret_name_base in endpoint
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -288,7 +288,7 @@ class TestProcess3RepositoryActionsSecrets:
     ):
         """Test: 404 Not Found when secret doesn't exist."""
         error = api_errors.resource_not_found()
-        assert error.code == 404
+        assert error.code == 404, "Error should be raised or set"
 
     def test_process3_invalid_encryption_error(
         self,
@@ -298,7 +298,7 @@ class TestProcess3RepositoryActionsSecrets:
     ):
         """Test: 422 Unprocessable Entity for invalid encryption."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
     def test_process3_missing_key_id_error(
         self,
@@ -308,7 +308,7 @@ class TestProcess3RepositoryActionsSecrets:
     ):
         """Test: 422 when key_id is missing."""
         error = api_errors.unprocessable_entity()
-        assert error.code == 422
+        assert error.code == 422, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -333,9 +333,9 @@ class TestProcess4OrganizationActionsSecrets:
         endpoint = f"{gh_api_base}{org_actions_secrets_endpoint}/public-key"
         response = mock_public_key_response()
 
-        assert "public-key" in endpoint
-        assert "/orgs/" in endpoint
-        assert response["key_id"]
+        assert "public-key" in endpoint, "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
+        assert response["key_id"], "Response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Organization Secret CRUD
@@ -349,8 +349,8 @@ class TestProcess4OrganizationActionsSecrets:
         """Test: List organization Actions secrets."""
         endpoint = f"{gh_api_base}{org_actions_secrets_endpoint}"
 
-        assert "actions/secrets" in endpoint
-        assert "/orgs/" in endpoint
+        assert "actions/secrets" in endpoint, "Condition must be true"
+        assert "/orgs/" in endpoint, "Condition must be true"
 
     def test_process4_create_org_secret_success(
         self,
@@ -369,7 +369,7 @@ class TestProcess4OrganizationActionsSecrets:
         }
 
         assert payload["visibility"] in ["all", "private", "selected"]
-        assert "actions/secrets" in endpoint
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_process4_create_org_secret_visibility_selected(
         self,
@@ -388,9 +388,9 @@ class TestProcess4OrganizationActionsSecrets:
             "selected_repository_ids": [111, 222, 333],
         }
 
-        assert payload["visibility"] == "selected"
-        assert len(payload["selected_repository_ids"]) == 3
-        assert "/orgs/" in endpoint
+        assert payload["visibility"] == "selected", "Condition must be true"
+        assert len(payload["selected_repository_ids"]) == 3, "Collection must not be empty"
+        assert "/orgs/" in endpoint, "Condition must be true"
 
     def test_process4_update_org_secret_success(
         self,
@@ -403,8 +403,8 @@ class TestProcess4OrganizationActionsSecrets:
 
         payload = {"encrypted_value": "new_base64_value", "key_id": "key_id"}
 
-        assert payload["encrypted_value"]
-        assert test_secret_name_base in endpoint
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     def test_process4_delete_org_secret_success(
         self,
@@ -415,7 +415,7 @@ class TestProcess4OrganizationActionsSecrets:
         """Test: Delete organization secret."""
         endpoint = f"{gh_api_base}{org_actions_secrets_endpoint}/{test_secret_name_base}"
 
-        assert test_secret_name_base in endpoint
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     # ───────────────────────────────────────────────────────────────────────
     # Error Handling
@@ -429,7 +429,7 @@ class TestProcess4OrganizationActionsSecrets:
     ):
         """Test: 403 Forbidden when token lacks 'admin:org' scope."""
         error = api_errors.insufficient_scope()
-        assert error.code == 403
+        assert error.code == 403, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -454,9 +454,9 @@ class TestProcess5DependabotSecrets:
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}/public-key"
         response = mock_public_key_response(key_id="dependabot_key_123")
 
-        assert "dependabot/secrets" in endpoint
-        assert "public-key" in endpoint
-        assert response["key_id"]
+        assert "dependabot/secrets" in endpoint, "Condition must be true"
+        assert "public-key" in endpoint, "Condition must be true"
+        assert response["key_id"], "Response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Dependabot Secret CRUD
@@ -470,7 +470,7 @@ class TestProcess5DependabotSecrets:
         """Test: List Dependabot secrets."""
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}"
 
-        assert "dependabot/secrets" in endpoint
+        assert "dependabot/secrets" in endpoint, "Condition must be true"
 
     def test_process5_create_dependabot_secret_success(
         self,
@@ -487,9 +487,9 @@ class TestProcess5DependabotSecrets:
             "key_id": "dependabot_key_id",
         }
 
-        assert payload["name"]
-        assert payload["encrypted_value"]
-        assert "dependabot/secrets" in endpoint
+        assert payload["name"], "Condition must be true"
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert "dependabot/secrets" in endpoint, "Condition must be true"
 
     def test_process5_dependabot_secret_isolation(
         self,
@@ -504,9 +504,9 @@ class TestProcess5DependabotSecrets:
         actions_endpoint = f"{gh_api_base}{actions_secrets_endpoint}"
         dependabot_endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}"
 
-        assert "actions/secrets" in actions_endpoint
-        assert "dependabot/secrets" in dependabot_endpoint
-        assert actions_endpoint != dependabot_endpoint
+        assert "actions/secrets" in actions_endpoint, "Condition must be true"
+        assert "dependabot/secrets" in dependabot_endpoint, "Condition must be true"
+        assert actions_endpoint != dependabot_endpoint, "actions_endpoint is not valid"
 
     def test_process5_update_dependabot_secret_success(
         self,
@@ -519,8 +519,8 @@ class TestProcess5DependabotSecrets:
 
         payload = {"encrypted_value": "new_encrypted", "key_id": "key"}
 
-        assert payload["encrypted_value"]
-        assert test_secret_name_base in endpoint
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     def test_process5_delete_dependabot_secret_success(
         self,
@@ -531,7 +531,7 @@ class TestProcess5DependabotSecrets:
         """Test: Delete Dependabot secret."""
         endpoint = f"{gh_api_base}{dependabot_secrets_endpoint}/{test_secret_name_base}"
 
-        assert test_secret_name_base in endpoint
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -556,8 +556,8 @@ class TestProcess6CodespacesSecrets:
         endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}/public-key"
         response = mock_public_key_response()
 
-        assert "codespaces/secrets" in endpoint
-        assert response["key"]
+        assert "codespaces/secrets" in endpoint, "Condition must be true"
+        assert response["key"], "Response must not be empty"
 
     # ───────────────────────────────────────────────────────────────────────
     # Codespaces Secret CRUD
@@ -571,7 +571,7 @@ class TestProcess6CodespacesSecrets:
         """Test: List Codespaces secrets."""
         endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}"
 
-        assert "codespaces/secrets" in endpoint
+        assert "codespaces/secrets" in endpoint, "Condition must be true"
 
     def test_process6_create_codespaces_secret_success(
         self,
@@ -588,8 +588,8 @@ class TestProcess6CodespacesSecrets:
             "key_id": "codespaces_key",
         }
 
-        assert payload["name"]
-        assert "codespaces/secrets" in endpoint
+        assert payload["name"], "Condition must be true"
+        assert "codespaces/secrets" in endpoint, "Condition must be true"
 
     def test_process6_codespaces_vs_user_secrets(
         self,
@@ -605,7 +605,7 @@ class TestProcess6CodespacesSecrets:
         repo_endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}"
 
         # This is repository-level endpoint
-        assert "/repos/" in repo_endpoint
+        assert "/repos/" in repo_endpoint, "Condition must be true"
 
     def test_process6_update_codespaces_secret_success(
         self,
@@ -618,8 +618,8 @@ class TestProcess6CodespacesSecrets:
 
         payload = {"encrypted_value": "new_value", "key_id": "key"}
 
-        assert payload["encrypted_value"]
-        assert test_secret_name_base in endpoint
+        assert payload["encrypted_value"], "Value must be initialized"
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
     def test_process6_delete_codespaces_secret_success(
         self,
@@ -630,7 +630,7 @@ class TestProcess6CodespacesSecrets:
         """Test: Delete Codespaces secret."""
         endpoint = f"{gh_api_base}{codespaces_secrets_endpoint}/{test_secret_name_base}"
 
-        assert test_secret_name_base in endpoint
+        assert test_secret_name_base in endpoint, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -647,7 +647,7 @@ class TestSecretsEncryption:
 
         # Decode and verify size
         decoded = base64.b64decode(response["key"])
-        assert len(decoded) == 32
+        assert len(decoded) == 32, "Decoded must not be empty"
 
     def test_encryption_key_id_required(self):
         """Test: key_id must be included with encrypted value."""
@@ -657,8 +657,8 @@ class TestSecretsEncryption:
             "key_id": "key_id_from_public_key",
         }
 
-        assert "encrypted_value" in payload
-        assert "key_id" in payload
+        assert "encrypted_value" in payload, "Value must be initialized"
+        assert "key_id" in payload, "Condition must be true"
 
     def test_encryption_mock_without_libsodium(self):
         """Test: Can mock encryption without libsodium library."""
@@ -669,7 +669,7 @@ class TestSecretsEncryption:
 
         # Can decrypt mock
         decrypted = base64.b64decode(mock_encrypted).decode()
-        assert decrypted == secret_value
+        assert decrypted == secret_value, "Value must be initialized"
 
     def test_secret_name_validation(self):
         """Test: Secret names follow naming conventions."""
@@ -706,9 +706,9 @@ class TestSecretsBatchOperations:
                 "key_id": "key_id",
             }
 
-            assert payload["name"]
+            assert payload["name"], "Condition must be true"
 
-        assert "actions/secrets" in endpoint
+        assert "actions/secrets" in endpoint, "Condition must be true"
 
     def test_batch_update_secrets(
         self,
@@ -722,8 +722,8 @@ class TestSecretsBatchOperations:
 
             payload = {"encrypted_value": f"new_value_{i}", "key_id": "key"}
 
-            assert payload["encrypted_value"]
-            assert secret_name in endpoint
+            assert payload["encrypted_value"], "Value must be initialized"
+            assert secret_name in endpoint, "Condition must be true"
 
     def test_batch_delete_secrets(
         self,
@@ -735,4 +735,4 @@ class TestSecretsBatchOperations:
             secret_name = f"SECRET_{i}"
             endpoint = f"{gh_api_base}{actions_secrets_endpoint}/{secret_name}"
 
-            assert secret_name in endpoint
+            assert secret_name in endpoint, "Condition must be true"

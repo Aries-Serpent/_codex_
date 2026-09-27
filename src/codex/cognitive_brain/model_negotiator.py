@@ -201,9 +201,7 @@ class ModelNegotiator:
                         if not fb_supports and param not in stripped:
                             safe_cfg.pop(param)
                             stripped.append(param)
-                            notes.append(
-                                f"Stripped '{param}' from fallback '{fallback}' too"
-                            )
+                            notes.append(f"Stripped '{param}' from fallback '{fallback}' too")
             else:
                 notes.append(
                     f"No fallback found for unmet capabilities {unmet}; "

@@ -19,13 +19,13 @@ Usage:
   Use --weeks N to generate report for the last N weeks.
 """
 
+import argparse
 import json
 import sys
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Tuple
-import argparse
 from collections import defaultdict
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 
 def load_baseline_history(input_dir: Path) -> List[Dict[str, Any]]:

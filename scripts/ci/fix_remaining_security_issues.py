@@ -6,6 +6,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 import re
 
+
 def fix_file(filepath: Path):
     """Fix a single file"""
     content = filepath.read_text()

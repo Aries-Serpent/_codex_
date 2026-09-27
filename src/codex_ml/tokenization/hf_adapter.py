@@ -35,7 +35,12 @@ except (ImportError, AttributeError, ValueError, TypeError):  # pragma: no cover
 
 try:  # pragma: no cover - optional dependency guard
     from tokenizers import Tokenizer as _FastTokenizer
-except (ValueError, TypeError, ImportError, AttributeError):  # pragma: no cover - dependency missing
+except (
+    ValueError,
+    TypeError,
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - dependency missing
     _FastTokenizer = None
 
 
@@ -45,7 +50,10 @@ def _register_hf_adapter() -> None:
         try:
             tokenizers.register("hf_tokenizer_json")(HFTokenizerAdapter)
         except (AttributeError, ValueError, TypeError):
-            logger.debug("HFTokenizerAdapter registration skipped during partial initialization", exc_info=True)
+            logger.debug(
+                "HFTokenizerAdapter registration skipped during partial initialization",
+                exc_info=True,
+            )
 
 
 class HFTokenizerAdapter(TokenizerAdapter):

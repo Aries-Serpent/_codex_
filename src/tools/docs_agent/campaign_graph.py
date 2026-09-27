@@ -1,10 +1,10 @@
 """Campaign graph construction — builds directed relationship graph from JSONL records."""
 
-import json
-from pathlib import Path
-from typing import Dict, List, Any
 import hashlib
+import json
 import uuid
+from pathlib import Path
+from typing import Any, Dict, List
 
 
 class CampaignGraphBuilder:

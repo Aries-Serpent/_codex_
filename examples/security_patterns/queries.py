@@ -125,17 +125,17 @@ class UserQueryExecutor:
         # Validate input type
         if not isinstance(user_id, int):
             raise ValueError(f"user_id must be an integer, got {type(user_id)}")
- 
+
         # Validate field names to prevent SQL injection through field names
         # SCHEMA SYNC: Keep this whitelist synchronized with the database schema definition
         allowed_fields = {"name", "email", "phone", "bio"}
         for field in kwargs.keys():
             if field not in allowed_fields:
                 raise ValueError(f"Field '{field}' not allowed for update")
- 
+
         if not kwargs:
             return False
- 
+
         # Build query with parameterized fields
         set_clauses = [f"{field} = ?" for field in kwargs.keys()]
         set_string = ", ".join(set_clauses)

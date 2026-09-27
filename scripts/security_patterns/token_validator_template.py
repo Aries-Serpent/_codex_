@@ -28,7 +28,7 @@ import json
 import os
 import sys
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 class TokenValidator:
@@ -95,10 +95,10 @@ class TokenValidator:
         try:
             created = datetime.fromisoformat(token_created_date)
             max_age = timedelta(days=self.validation_rules["max_age_days"])
-            
+
             if datetime.utcnow() - created > max_age:
                 return False, f"Token older than {self.validation_rules['max_age_days']} days"
-            
+
             return True, "Token age acceptable"
 
         except Exception as e:
@@ -138,10 +138,10 @@ class TokenValidator:
         try:
             created = datetime.fromisoformat(token_created_date)
             rotation_interval = timedelta(days=90)  # Quarterly
-            
+
             if datetime.utcnow() - created > rotation_interval:
                 return True, "Token rotation is due"
-            
+
             days_until_rotation = (rotation_interval - (datetime.utcnow() - created)).days
             return False, f"Rotation due in {days_until_rotation} days"
 

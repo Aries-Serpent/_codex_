@@ -34,9 +34,9 @@ class TestEnhancedRouting:
             max_latency_ms=500.0,
         )
 
-        assert decision.selected_agent is not None
-        assert decision.decision_id is not None
-        assert decision.decision_hash is not None
+        assert decision.selected_agent is not None, "selected_agent must be initialized"
+        assert decision.decision_id is not None, "decision_id must be initialized"
+        assert decision.decision_hash is not None, "decision_hash must be initialized"
 
     def test_load_aware_selection(self):
         """Test load balancer awareness in routing."""
@@ -66,7 +66,7 @@ class TestEnhancedRouting:
 
         # agent-a has lower utilization
         healthiest = tracker.healthiest_agents(1)
-        assert healthiest[0] == "agent-a"
+        assert healthiest[0] == "agent-a", "Condition must be true"
 
     def test_sla_compliance_enforcement(self):
         """Test SLA compliance in routing."""
@@ -96,8 +96,8 @@ class TestEnhancedRouting:
         ))
 
         compliant = tracker.sla_compliant_agents(max_latency_ms=500.0)
-        assert "agent-a" in compliant
-        assert "agent-b" not in compliant
+        assert "agent-a" in compliant, "Condition must be true"
+        assert "agent-b" not in compliant, "Condition must be true"
 
 
 class TestDistributedTracing:
@@ -106,8 +106,8 @@ class TestDistributedTracing:
     def test_trace_context_propagation(self):
         """Test trace ID propagation across handoffs."""
         trace_id = TraceContext.new_trace()
-        assert trace_id is not None
-        assert TraceContext.get_trace_id() == trace_id
+        assert trace_id is not None, "trace_id must be initialized"
+        assert TraceContext.get_trace_id() == trace_id, "Condition must be true"
 
     def test_handoff_tracing_success(self):
         """Test successful handoff tracing."""
@@ -118,10 +118,10 @@ class TestDistributedTracing:
             span.add_event("task_received")
             span.add_event("validation_passed")
 
-        assert span.status == SpanStatus.SUCCESS
-        assert len(span.events) == 2
-        assert span.duration_ms is not None
-        assert span.duration_ms >= 0
+        assert span.status == SpanStatus.SUCCESS, "status is not valid"
+        assert len(span.events) == 2, "Collection must not be empty"
+        assert span.duration_ms is not None, "duration_ms must be initialized"
+        assert span.duration_ms >= 0, "duration_ms must be greater than zero"
 
     def test_handoff_tracing_failure(self):
         """Test failed handoff tracing."""
@@ -135,9 +135,9 @@ class TestDistributedTracing:
         except ValueError:
             pass
 
-        assert span.status == SpanStatus.FAILED
-        assert span.error_code == "ValueError"
-        assert "Simulated failure" in span.error_message
+        assert span.status == SpanStatus.FAILED, "status is not valid"
+        assert span.error_code == "ValueError", "Value must be initialized"
+        assert "Simulated failure" in span.error_message, "Error should be raised or set"
 
     def test_metrics_collection(self):
         """Test metrics collection from traces."""
@@ -154,10 +154,10 @@ class TestDistributedTracing:
 
         metrics = tracer.get_metrics_summary()
 
-        assert metrics["handoff_success_rate"] > 0
-        assert metrics["total_handoffs"] == 10
-        assert metrics["avg_latency_ms"] >= 0
-        assert metrics["p99_latency_ms"] >= metrics["avg_latency_ms"]
+        assert metrics["handoff_success_rate"] > 0, "Value must be greater than zero"
+        assert metrics["total_handoffs"] == 10, "Condition must be true"
+        assert metrics["avg_latency_ms"] >= 0, "Value must be greater than zero"
+        assert metrics["p99_latency_ms"] >= metrics["avg_latency_ms"], "Value must be greater than zero"
 
 
 class TestLoadBalancing:
@@ -170,8 +170,8 @@ class TestLoadBalancing:
         balancer.register_agent("agent-b", max_concurrent=3)
 
         snapshot = balancer.get_capacity_snapshot()
-        assert len(snapshot) == 2
-        assert snapshot["agent-a"]["utilization"] == 0.0
+        assert len(snapshot) == 2, "Snapshot must not be empty"
+        assert snapshot["agent-a"]["utilization"] == 0.0, "Condition must be true"
 
     def test_task_enqueue_dequeue(self):
         """Test task enqueuing and dequeuing."""
@@ -182,15 +182,15 @@ class TestLoadBalancing:
         entry1 = balancer.enqueue("task-1", "agent-a", priority=TaskPriority.NORMAL)
         entry2 = balancer.enqueue("task-2", "agent-a", priority=TaskPriority.HIGH)
 
-        assert entry1 is not None
-        assert entry2 is not None
+        assert entry1 is not None, "entry1 must be initialized"
+        assert entry2 is not None, "entry2 must be initialized"
 
         snapshot = balancer.get_capacity_snapshot()
-        assert snapshot["agent-a"]["queue_depth"] == 2
+        assert snapshot["agent-a"]["queue_depth"] == 2, "Condition must be true"
 
         # Dequeue (should respect priority)
         dequeued = balancer.dequeue("agent-a")
-        assert dequeued.task_id == "task-2"  # High priority
+        assert dequeued.task_id == "task-2", "task_id is not valid"
 
     def test_load_balancing_recommendation(self):
         """Test load-balanced agent recommendation."""
@@ -220,7 +220,7 @@ class TestLoadBalancing:
             balancer._circuit_breakers["agent-a"].record_failure()
 
         # Circuit should be open
-        assert not balancer._circuit_breakers["agent-a"].can_execute()
+        assert not balancer._circuit_breakers["agent-a"].can_execute(), "Condition must be true"
 
         # Record successes to recover
         for _ in range(3):
@@ -249,9 +249,9 @@ class TestSimulation:
         results = engine.run_scenario(scenario)
 
         # Should complete most tasks successfully
-        assert results.success_rate() > 0.9
-        assert results.total_tasks > 0
-        assert results.avg_latency_ms() < 2000.0
+        assert results.success_rate() > 0.9, "Value must be greater than zero"
+        assert results.total_tasks > 0, "total_tasks must be greater than zero"
+        assert results.avg_latency_ms() < 2000.0, "Result must not be empty"
 
     def test_simulation_bursty_workload(self):
         """Test simulation with bursty workload."""
@@ -264,8 +264,8 @@ class TestSimulation:
         results = engine.run_scenario(scenario)
 
         # Should handle bursty load
-        assert results.total_tasks > 0
-        assert results.completed_tasks > 0
+        assert results.total_tasks > 0, "total_tasks must be greater than zero"
+        assert results.completed_tasks > 0, "completed_tasks must be greater than zero"
 
     def test_simulation_with_failures(self):
         """Test simulation with failure injection."""
@@ -279,9 +279,9 @@ class TestSimulation:
         results = engine.run_scenario(scenario)
 
         # Should have some failures
-        assert results.failed_tasks > 0
-        assert results.success_rate() < 1.0
-        assert results.success_rate() >= 0.75  # Most still succeed despite injection
+        assert results.failed_tasks > 0, "failed_tasks must be greater than zero"
+        assert results.success_rate() < 1.0, "Result must not be empty"
+        assert results.success_rate() >= 0.75, "Value must be greater than zero"
 
     def test_simulation_adversarial_workload(self):
         """Test simulation with adversarial (worst-case) workload."""
@@ -295,7 +295,7 @@ class TestSimulation:
         results = engine.run_scenario(scenario)
 
         # Should still maintain reasonable success rate even under adversarial conditions
-        assert results.success_rate() > 0.8
+        assert results.success_rate() > 0.8, "Value must be greater than zero"
 
 
 class TestEndToEndOrchestration:
@@ -317,7 +317,7 @@ class TestEndToEndOrchestration:
             max_latency_ms=500.0,
         )
 
-        assert decision.selected_agent is not None
+        assert decision.selected_agent is not None, "selected_agent must be initialized"
         selected_agent = decision.selected_agent
 
         # Trace the handoff
@@ -337,9 +337,9 @@ class TestEndToEndOrchestration:
             span.add_event("agent_completed")
 
         # Verify
-        assert span.status == SpanStatus.SUCCESS
+        assert span.status == SpanStatus.SUCCESS, "status is not valid"
         metrics = tracer.get_metrics_summary()
-        assert metrics["handoff_success_rate"] > 0
+        assert metrics["handoff_success_rate"] > 0, "Value must be greater than zero"
 
     def test_handoff_success_rate_target(self):
         """Test that orchestration achieves 100% handoff success rate."""
@@ -355,7 +355,7 @@ class TestEndToEndOrchestration:
                 pass  # Should not happen
 
         metrics = tracer.get_metrics_summary()
-        assert metrics["handoff_success_rate"] == 1.0
+        assert metrics["handoff_success_rate"] == 1.0, "Condition must be true"
 
     def test_sla_compliance_target(self):
         """Test SLA compliance <500ms p99."""
@@ -371,7 +371,7 @@ class TestEndToEndOrchestration:
 
         # P99 should be under SLA
         # Note: This is a simplified test; real testing would use actual metrics
-        assert results.total_tasks > 0
+        assert results.total_tasks > 0, "total_tasks must be greater than zero"
 
 
 if __name__ == "__main__":

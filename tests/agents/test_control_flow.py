@@ -121,12 +121,12 @@ class TestAgentInitialization:
 
         agent.setup(context)
 
-        assert agent.is_initialized is True
-        assert agent.context is not None
-        assert agent.context.agent_id == "test-agent"
+        assert agent.is_initialized is True, "is_initialized is not valid"
+        assert agent.context is not None, "context must be initialized"
+        assert agent.context.agent_id == "test-agent", "agent_id is not valid"
 
         agent.teardown()
-        assert agent.is_initialized is False
+        assert agent.is_initialized is False, "is_initialized is not valid"
 
     @pytest.mark.agent
     @pytest.mark.control_flow
@@ -147,8 +147,8 @@ class TestAgentInitialization:
         agent.execute_agent({"input": "test"})
 
         # Context should be preserved
-        assert agent.context == original_context
-        assert agent.context.metadata["custom_field"] == "custom_value"
+        assert agent.context == original_context, "context is not valid"
+        assert agent.context.metadata["custom_field"] == "custom_value", "Data must not be empty"
 
         agent.teardown()
 
@@ -169,10 +169,10 @@ class TestAgentInitialization:
         agent1.setup(ctx1)
         agent2.setup(ctx2)
 
-        assert agent1.agent_id == "agent1"
-        assert agent2.agent_id == "agent2"
-        assert agent1.context.session_id == "session1"
-        assert agent2.context.session_id == "session2"
+        assert agent1.agent_id == "agent1", "agent_id is not valid"
+        assert agent2.agent_id == "agent2", "agent_id is not valid"
+        assert agent1.context.session_id == "session1", "session_id is not valid"
+        assert agent2.context.session_id == "session2", "session_id is not valid"
 
         agent1.teardown()
         agent2.teardown()
@@ -193,10 +193,10 @@ class TestAgentExecution:
 
         result = agent.execute_agent({"input": "test input"})
 
-        assert result is not None
-        assert result["status"] == "success"
-        assert "data" in result
-        assert "metadata" in result
+        assert result is not None, "result must be initialized"
+        assert result["status"] == "success", "Result must not be empty"
+        assert "data" in result, "Result must not be empty"
+        assert "metadata" in result, "Result must not be empty"
 
         agent.teardown()
 
@@ -213,8 +213,8 @@ class TestAgentExecution:
         # Use harness test methods
         result = agent.test_basic_execution({"input": "test"})
 
-        assert result.status == ExecutionStatus.SUCCESS
-        assert result.test_name == "test_basic_execution"
+        assert result.status == ExecutionStatus.SUCCESS, "Result must not be empty"
+        assert result.test_name == "test_basic_execution", "Result must not be empty"
 
         agent.teardown()
 
@@ -232,9 +232,9 @@ class TestAgentExecution:
         agent.execute_agent({"input": "test2"})
         agent.execute_agent({"input": "test3"})
 
-        assert len(agent.execution_log) == 3
-        assert agent.execution_log[0]["input"]["input"] == "test1"
-        assert agent.execution_log[2]["input"]["input"] == "test3"
+        assert len(agent.execution_log) == 3, "Collection must not be empty"
+        assert agent.execution_log[0]["input"]["input"] == "test1", "Condition must be true"
+        assert agent.execution_log[2]["input"]["input"] == "test3", "Condition must be true"
 
         agent.teardown()
 
@@ -250,8 +250,8 @@ class TestAgentExecution:
 
         result = agent.test_basic_execution({"input": "test"})
 
-        assert result.duration_ms > 0
-        assert result.assertions >= 0
+        assert result.duration_ms > 0, "duration_ms must be greater than zero"
+        assert result.assertions >= 0, "assertions must be greater than zero"
 
         agent.teardown()
 
@@ -272,8 +272,8 @@ class TestOutputFormat:
         result = agent.execute_agent({"input": "test"})
 
         is_valid, msg = agent.validate_output_status(result)
-        assert is_valid is True
-        assert msg == "OK"
+        assert is_valid is True, "is_valid is not valid"
+        assert msg == "OK", "msg is not valid"
 
         agent.teardown()
 
@@ -295,7 +295,7 @@ class TestOutputFormat:
         agent2 = MockErrorAgent("error-agent", "error")
         agent2.setup(context)
         error_result = agent2.execute_agent({"trigger_error": True})
-        assert error_result["status"] == "error"
+        assert error_result["status"] == "error", "Result must not be empty"
 
         agent.teardown()
         agent2.teardown()
@@ -316,7 +316,7 @@ class TestOutputFormat:
         is_valid, msg = agent.validate_output_structure(
             result, ["status", "data", "metadata"]
         )
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
         agent.teardown()
 
@@ -335,7 +335,7 @@ class TestOutputFormat:
         is_valid, msg = agent.validate_output_types(
             result, {"status": str, "data": dict, "metadata": dict}
         )
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
         agent.teardown()
 
@@ -354,10 +354,10 @@ class TestOutputFormat:
         # Should be JSON serializable
         try:
             json_str = json.dumps(result)
-            assert json_str is not None
+            assert json_str is not None, "json_str must be initialized"
             # Should be deserializable
             parsed = json.loads(json_str)
-            assert parsed["status"] == "success"
+            assert parsed["status"] == "success", "Condition must be true"
         except (TypeError, ValueError) as e:
             pytest.fail(f"Output not JSON serializable: {e}")
 
@@ -379,9 +379,9 @@ class TestErrorHandling:
 
         result = agent.execute_agent({"trigger_error": True})
 
-        assert result["status"] == "error"
-        assert "error" in result
-        assert result["error"] == "Simulated error"
+        assert result["status"] == "error", "Result must not be empty"
+        assert "error" in result, "Result must not be empty"
+        assert result["error"] == "Simulated error", "Result must not be empty"
 
         agent.teardown()
 
@@ -397,11 +397,11 @@ class TestErrorHandling:
 
         # First call with error
         result1 = agent.execute_agent({"trigger_error": True})
-        assert result1["status"] == "error"
+        assert result1["status"] == "error", "Result must not be empty"
 
         # Second call without error - should succeed
         result2 = agent.execute_agent({"trigger_error": False})
-        assert result2["status"] == "success"
+        assert result2["status"] == "success", "Result must not be empty"
 
         agent.teardown()
 
@@ -436,8 +436,8 @@ class TestErrorHandling:
 
         result = agent.run_test("test_exception", failing_test)
 
-        assert result.status == ExecutionStatus.FAILED
-        assert "Test error" in result.message
+        assert result.status == ExecutionStatus.FAILED, "Result must not be empty"
+        assert "Test error" in result.message, "Result must not be empty"
 
         agent.teardown()
 
@@ -455,8 +455,8 @@ class TestStateManagement:
         )
         agent.setup(context)
 
-        assert agent.state["counter"] == 0
-        assert agent.state["results"] == []
+        assert agent.state["counter"] == 0, "Count must be greater than zero"
+        assert agent.state["results"] == [], "Result must not be empty"
 
         agent.teardown()
 
@@ -471,13 +471,13 @@ class TestStateManagement:
         agent.setup(context)
 
         agent.execute_agent({"input": "first"})
-        assert agent.state["counter"] == 1
+        assert agent.state["counter"] == 1, "Count must be greater than zero"
 
         agent.execute_agent({"input": "second"})
-        assert agent.state["counter"] == 2
+        assert agent.state["counter"] == 2, "Count must be greater than zero"
 
         agent.execute_agent({"input": "third"})
-        assert agent.state["counter"] == 3
+        assert agent.state["counter"] == 3, "Count must be greater than zero"
 
         agent.teardown()
 
@@ -492,13 +492,13 @@ class TestStateManagement:
         agent.setup(context)
 
         agent.execute_agent({"input": "test"})
-        assert agent.state["counter"] > 0
+        assert agent.state["counter"] > 0, "Value must be greater than zero"
 
         agent.teardown()
 
         # State should be reset
-        assert agent.state["counter"] == 0
-        assert agent.state["results"] == []
+        assert agent.state["counter"] == 0, "Count must be greater than zero"
+        assert agent.state["results"] == [], "Result must not be empty"
 
 
 class TestExecutionMetrics:
@@ -516,8 +516,8 @@ class TestExecutionMetrics:
 
         result = agent.test_basic_execution({"input": "test"})
 
-        assert result.duration_ms >= 0
-        assert result.duration_ms < 5000  # Should complete in < 5 seconds
+        assert result.duration_ms >= 0, "duration_ms must be greater than zero"
+        assert result.duration_ms < 5000, "Result must not be empty"
 
         agent.teardown()
 
@@ -537,7 +537,7 @@ class TestExecutionMetrics:
         agent.test_basic_execution({"input": "test2"})
         agent.test_basic_execution({"input": "test3"})
 
-        assert agent.execution_count == initial_count + 3
+        assert agent.execution_count == initial_count + 3, "Count must be greater than zero"
 
         agent.teardown()
 
@@ -555,7 +555,7 @@ class TestExecutionMetrics:
 
         agent.test_basic_execution({"input": "test"})
 
-        assert len(agent.test_results) == initial_results + 1
+        assert len(agent.test_results) == initial_results + 1, "Collection must not be empty"
 
         agent.teardown()
 
@@ -572,11 +572,11 @@ class TestExecutionMetrics:
         agent.test_basic_execution({"input": "test"})
         summary = agent.get_summary()
 
-        assert "total_tests" in summary
-        assert "passed" in summary
-        assert "failed" in summary
-        assert "pass_rate" in summary
-        assert summary["agent_id"] == "test-agent"
+        assert "total_tests" in summary, "Condition must be true"
+        assert "passed" in summary, "Condition must be true"
+        assert "failed" in summary, "Condition must be true"
+        assert "pass_rate" in summary, "Condition must be true"
+        assert summary["agent_id"] == "test-agent", "Condition must be true"
 
         agent.teardown()
 
@@ -651,8 +651,8 @@ class TestControlFlowWithFixtures:
             .build()
         )
 
-        assert context["agent_id"] == "test-agent"
-        assert context["inputs"]["data"] == "test data"
+        assert context["agent_id"] == "test-agent", "Condition must be true"
+        assert context["inputs"]["data"] == "test data", "Data must not be empty"
 
     @pytest.mark.agent
     @pytest.mark.control_flow
@@ -665,7 +665,7 @@ class TestControlFlowWithFixtures:
         agent.setup(context)
 
         result = agent.execute_agent(sample_test_inputs["simple"])
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
         agent.teardown()
 
@@ -706,8 +706,8 @@ class TestReporting:
         agent.test_basic_execution({"input": "test"})
 
         report = agent.report_results(format="text")
-        assert "test-agent" in report
-        assert "Test Results" in report
+        assert "test-agent" in report, "Condition must be true"
+        assert "Test Results" in report, "Result must not be empty"
 
         agent.teardown()
 
@@ -726,8 +726,8 @@ class TestReporting:
         report = agent.report_results(format="json")
         parsed = json.loads(report)
 
-        assert "summary" in parsed
-        assert "results" in parsed
-        assert parsed["summary"]["agent_id"] == "test-agent"
+        assert "summary" in parsed, "Condition must be true"
+        assert "results" in parsed, "Result must not be empty"
+        assert parsed["summary"]["agent_id"] == "test-agent", "Condition must be true"
 
         agent.teardown()

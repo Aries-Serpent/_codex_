@@ -162,12 +162,12 @@ class TestPatternTransformation:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is True
-        assert task is not None
-        assert task.task_type == expected_task_type
-        assert task.priority == "medium"  # confidence = 0.85, expect medium (priority requires > 0.85 for high)
-        assert len(task.required_capabilities) > 0
-        assert task.metadata["pattern_id"] == pattern_id
+        assert success is True, "success is not valid"
+        assert task is not None, "task must be initialized"
+        assert task.task_type == expected_task_type, "task_type is not valid"
+        assert task.priority == "medium", "priority is not valid"
+        assert len(task.required_capabilities) > 0, "Collection must not be empty"
+        assert task.metadata["pattern_id"] == pattern_id, "Data must not be empty"
 
     def test_transform_high_confidence_pattern(self, adapter, sample_cascade_context):
         """Test transformation prioritizes high confidence patterns."""
@@ -185,9 +185,9 @@ class TestPatternTransformation:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is True
-        assert task.priority == "high"
-        assert task.metadata["pattern_confidence"] == 0.95
+        assert success is True, "success is not valid"
+        assert task.priority == "high", "priority is not valid"
+        assert task.metadata["pattern_confidence"] == 0.95, "Data must not be empty"
 
     def test_transform_medium_confidence_pattern(self, adapter, sample_cascade_context):
         """Test transformation for medium confidence patterns."""
@@ -205,8 +205,8 @@ class TestPatternTransformation:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is True
-        assert task.priority == "medium"
+        assert success is True, "success is not valid"
+        assert task.priority == "medium", "priority is not valid"
 
     def test_transform_low_confidence_pattern(self, adapter, sample_cascade_context):
         """Test transformation for low confidence patterns."""
@@ -224,8 +224,8 @@ class TestPatternTransformation:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is True
-        assert task.priority == "low"
+        assert success is True, "success is not valid"
+        assert task.priority == "low", "priority is not valid"
 
 
 # ============================================================================
@@ -238,27 +238,27 @@ class TestSchemaValidation:
 
     def test_valid_pattern_match_validation(self, adapter, sample_pattern_match_rp001):
         """Test validation of valid pattern match."""
-        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is True
+        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is True, "Condition must be true"
 
     def test_invalid_pattern_id_validation(self, adapter, sample_pattern_match_rp001):
         """Test validation rejects invalid pattern ID."""
         sample_pattern_match_rp001.pattern_id = "RP-999"
-        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False
+        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False, "Condition must be true"
 
     def test_invalid_confidence_validation(self, adapter, sample_pattern_match_rp001):
         """Test validation rejects invalid confidence."""
         sample_pattern_match_rp001.confidence = 1.5
-        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False
+        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False, "Condition must be true"
 
     def test_empty_error_context_validation(self, adapter, sample_pattern_match_rp001):
         """Test validation rejects empty error context."""
         sample_pattern_match_rp001.error_context = ""
-        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False
+        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False, "Condition must be true"
 
     def test_empty_affected_files_validation(self, adapter, sample_pattern_match_rp001):
         """Test validation rejects empty affected files."""
         sample_pattern_match_rp001.affected_files = []
-        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False
+        assert adapter._validate_pattern_match(sample_pattern_match_rp001) is False, "Condition must be true"
 
     def test_valid_semantic_task_validation(
         self, adapter, sample_cascade_context, sample_pattern_match_rp001
@@ -267,7 +267,7 @@ class TestSchemaValidation:
         task, success = adapter.transform_pattern_to_task(
             sample_pattern_match_rp001, sample_cascade_context
         )
-        assert adapter._validate_semantic_task(task) is True
+        assert adapter._validate_semantic_task(task) is True, "Condition must be true"
 
     def test_invalid_task_empty_description(self, adapter):
         """Test validation rejects empty task description."""
@@ -277,7 +277,7 @@ class TestSchemaValidation:
             task_type="ci_fix",
             required_capabilities=["test"],
         )
-        assert adapter._validate_semantic_task(task) is False
+        assert adapter._validate_semantic_task(task) is False, "Condition must be true"
 
     def test_invalid_task_invalid_type(self, adapter):
         """Test validation rejects invalid task type."""
@@ -287,7 +287,7 @@ class TestSchemaValidation:
             task_type="invalid_type",
             required_capabilities=["test"],
         )
-        assert adapter._validate_semantic_task(task) is False
+        assert adapter._validate_semantic_task(task) is False, "Condition must be true"
 
     def test_invalid_task_no_capabilities(self, adapter):
         """Test validation rejects tasks without capabilities."""
@@ -297,7 +297,7 @@ class TestSchemaValidation:
             task_type="ci_fix",
             required_capabilities=[],
         )
-        assert adapter._validate_semantic_task(task) is False
+        assert adapter._validate_semantic_task(task) is False, "Condition must be true"
 
 
 # ============================================================================
@@ -316,13 +316,13 @@ class TestRoutingDecisionTransformation:
             sample_routing_decision, "RP-001", sample_cascade_context
         )
 
-        assert result.pattern_id == "RP-001"
-        assert result.primary_agent == "ci-auto-healer-agent"
-        assert len(result.fallback_agents) == 1
-        assert result.semantic_confidence == 92.5
-        assert result.cascade_default_agent == "ci-auto-healer-agent"
-        assert result.override_default_routing is True
-        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY
+        assert result.pattern_id == "RP-001", "Result must not be empty"
+        assert result.primary_agent == "ci-auto-healer-agent", "Result must not be empty"
+        assert len(result.fallback_agents) == 1, "Collection must not be empty"
+        assert result.semantic_confidence == 92.5, "Result must not be empty"
+        assert result.cascade_default_agent == "ci-auto-healer-agent", "Result must not be empty"
+        assert result.override_default_routing is True, "Result must not be empty"
+        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY, "Result must not be empty"
 
     def test_routing_decision_high_confidence_override(
         self, adapter, sample_cascade_context, sample_routing_decision
@@ -333,8 +333,8 @@ class TestRoutingDecisionTransformation:
             sample_routing_decision, "RP-002", sample_cascade_context
         )
 
-        assert result.override_default_routing is True
-        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY
+        assert result.override_default_routing is True, "Result must not be empty"
+        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY, "Result must not be empty"
 
     def test_routing_decision_medium_confidence_hybrid(
         self, adapter, sample_cascade_context, sample_routing_decision
@@ -345,8 +345,8 @@ class TestRoutingDecisionTransformation:
             sample_routing_decision, "RP-003", sample_cascade_context
         )
 
-        assert result.override_default_routing is False
-        assert result.execution_strategy == ExecutionStrategy.HYBRID
+        assert result.override_default_routing is False, "Result must not be empty"
+        assert result.execution_strategy == ExecutionStrategy.HYBRID, "Result must not be empty"
 
     def test_routing_decision_low_confidence_cascade_default(
         self, adapter, sample_cascade_context, sample_routing_decision
@@ -357,8 +357,8 @@ class TestRoutingDecisionTransformation:
             sample_routing_decision, "RP-004", sample_cascade_context
         )
 
-        assert result.override_default_routing is False
-        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT
+        assert result.override_default_routing is False, "Result must not be empty"
+        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT, "Result must not be empty"
 
     def test_routing_decision_no_primary_agent_escalate(
         self, adapter, sample_cascade_context
@@ -379,7 +379,7 @@ class TestRoutingDecisionTransformation:
         )
 
         # With confidence 0.0 (< 60), should use cascade default
-        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT
+        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT, "Result must not be empty"
 
 
 # ============================================================================
@@ -400,7 +400,7 @@ class TestLatencyPerformance:
         )
         elapsed_ms = (time.time() - start) * 1000
 
-        assert success is True
+        assert success is True, "success is not valid"
         assert elapsed_ms < 100, f"Transformation took {elapsed_ms:.2f}ms, expected <100ms"
 
     def test_bulk_transformation_latency(self, adapter, sample_cascade_context):
@@ -428,7 +428,7 @@ class TestLatencyPerformance:
         elapsed_ms = (time.time() - start) * 1000
 
         success_count = sum(1 for task, success in results if success)
-        assert success_count == 12
+        assert success_count == 12, "Count must be greater than zero"
         # All 12 transformations should complete in <1.2s
         assert elapsed_ms < 1200, f"Bulk transformation took {elapsed_ms:.2f}ms"
 
@@ -462,7 +462,7 @@ class TestLatencyPerformance:
                 single_time = elapsed_ms
             else:
                 # Rough check: 5x patterns shouldn't take >5x time
-                assert elapsed_ms < single_time * count * 1.5
+                assert elapsed_ms < single_time * count * 1.5, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -489,8 +489,8 @@ class TestErrorHandling:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is False
-        assert task is None
+        assert success is False, "success is not valid"
+        assert task is None, "task is not valid"
 
     def test_malformed_timestamp_handling(self, adapter, sample_cascade_context):
         """Test handling of malformed timestamp."""
@@ -508,7 +508,7 @@ class TestErrorHandling:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
 
-        assert success is False
+        assert success is False, "success is not valid"
 
     def test_metrics_tracking_on_failure(self, adapter, sample_cascade_context):
         """Test that adapter tracks failures in metrics."""
@@ -543,9 +543,9 @@ class TestErrorHandling:
         adapter.transform_pattern_to_task(pattern_invalid, sample_cascade_context)
 
         metrics = adapter.get_metrics()
-        assert metrics["transforms_total"] == 2
-        assert metrics["validation_failures"] == 1
-        assert metrics["success_rate"] == 50.0
+        assert metrics["transforms_total"] == 2, "Condition must be true"
+        assert metrics["validation_failures"] == 1, "Condition must be true"
+        assert metrics["success_rate"] == 50.0, "Condition must be true"
 
 
 # ============================================================================
@@ -571,7 +571,7 @@ class TestEscalationHandler:
             requested_priority="high",
         )
 
-        assert handler.should_escalate_to_semantic(metadata) is True
+        assert handler.should_escalate_to_semantic(metadata) is True, "Data must not be empty"
 
     def test_should_not_escalate_low_confidence(self):
         """Test no escalation for low confidence patterns."""
@@ -588,7 +588,7 @@ class TestEscalationHandler:
             requested_priority="low",
         )
 
-        assert handler.should_escalate_to_semantic(metadata) is False
+        assert handler.should_escalate_to_semantic(metadata) is False, "Data must not be empty"
 
     def test_should_escalate_to_human_exhausted_attempts(self):
         """Test human escalation when attempts exhausted."""
@@ -605,7 +605,7 @@ class TestEscalationHandler:
             requested_priority="medium",
         )
 
-        assert handler.should_escalate_to_human(metadata) is True
+        assert handler.should_escalate_to_human(metadata) is True, "Data must not be empty"
 
     def test_should_not_escalate_attempts_remaining(self):
         """Test no human escalation when attempts remain."""
@@ -622,7 +622,7 @@ class TestEscalationHandler:
             requested_priority="medium",
         )
 
-        assert handler.should_escalate_to_human(metadata) is False
+        assert handler.should_escalate_to_human(metadata) is False, "Data must not be empty"
 
 
 # ============================================================================
@@ -679,8 +679,8 @@ class TestFailureScenarios:
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
         assert success is True, f"Failed to transform {scenario_name}"
-        assert task is not None
-        assert len(task.metadata["affected_files"]) == match_count
+        assert task is not None, "task must be initialized"
+        assert len(task.metadata["affected_files"]) == match_count, "Collection must not be empty"
 
 
 # ============================================================================
@@ -709,16 +709,16 @@ class TestEndToEndIntegration:
         )
 
         task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
-        assert success is True
+        assert success is True, "success is not valid"
 
         # Step 2: Transform routing decision
         result = adapter.transform_routing_decision(
             sample_routing_decision, "RP-001", sample_cascade_context
         )
 
-        assert result.pattern_id == "RP-001"
-        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY
-        assert result.semantic_confidence == 92.5
+        assert result.pattern_id == "RP-001", "Result must not be empty"
+        assert result.execution_strategy == ExecutionStrategy.SEMANTIC_PRIMARY, "Result must not be empty"
+        assert result.semantic_confidence == 92.5, "Result must not be empty"
 
     def test_all_patterns_complete_workflow(self, adapter, sample_cascade_context):
         """Test complete workflow for all 12 patterns."""
@@ -750,8 +750,8 @@ class TestEndToEndIntegration:
 
             task, success = adapter.transform_pattern_to_task(pattern, sample_cascade_context)
             assert success is True, f"Failed to transform {pattern_id}"
-            assert task is not None
-            assert task.metadata["pattern_id"] == pattern_id
+            assert task is not None, "task must be initialized"
+            assert task.metadata["pattern_id"] == pattern_id, "Data must not be empty"
 
 
 # ============================================================================
@@ -814,6 +814,6 @@ class TestBackwardCompatibility:
             routing_decision, "RP-001", sample_cascade_context
         )
 
-        assert result.cascade_default_agent == "ci-auto-healer-agent"
+        assert result.cascade_default_agent == "ci-auto-healer-agent", "Result must not be empty"
         # With confidence 0.0 (< 60), should use cascade default
-        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT
+        assert result.execution_strategy == ExecutionStrategy.CASCADE_DEFAULT, "Result must not be empty"

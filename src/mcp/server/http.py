@@ -29,7 +29,6 @@ class MissingAPIKeyError(RuntimeError):
     """Raised when MCP_API_KEY environment variable is not set."""
 
 
-
 class ContextItem(BaseModel):
     """Represents a stored context item for retrieval."""
 

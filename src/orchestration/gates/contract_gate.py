@@ -178,9 +178,7 @@ class ContractGateSystem:
             logger.error(f"Gate {gate_num} ({gate_name}): ERROR - {e}")
             return result
 
-    def validate_gate_2_regression_tests(
-        self, proposal: Dict[str, Any]
-    ) -> GateResult:
+    def validate_gate_2_regression_tests(self, proposal: Dict[str, Any]) -> GateResult:
         """Gate 2: Verify regression tests pass."""
         gate_num = 2
         gate_name = self.GATE_CONFIGS[gate_num]["name"]

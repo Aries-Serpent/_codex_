@@ -87,12 +87,8 @@ if TYPER_AVAILABLE:
         runtime_only: Annotated[
             bool, typer.Option("--runtime-only", help="Run only runtime analysis")
         ] = False,
-        full: Annotated[
-            bool, typer.Option("--full", help="Run the full analysis suite")
-        ] = False,
-        format: Annotated[
-            Optional[str], typer.Option("--format", help="Output format")
-        ] = None,
+        full: Annotated[bool, typer.Option("--full", help="Run the full analysis suite")] = False,
+        format: Annotated[Optional[str], typer.Option("--format", help="Output format")] = None,
     ):
         """Run analysis on a snapshot."""
         if snapshot_id is None:
@@ -116,16 +112,14 @@ if TYPER_AVAILABLE:
                     lint_warnings = summary.get("lint_warning_count", 0)
                     security_issues = summary.get("security_issue_count", 0)
                     typer.echo(f"✅ Static analysis complete: {files_count} files")
-                    typer.echo(
-                        f"   Lint issues: {lint_errors} errors, {lint_warnings} warnings"
-                    )
+                    typer.echo(f"   Lint issues: {lint_errors} errors, {lint_warnings} warnings")
                     typer.echo(f"   Security issues: {security_issues}")
                 elif isinstance(report, dict):
                     files_count = len(report.get("files", []))
                     summary = report.get("summary", {})
                     typer.echo(f"✅ Static analysis complete: {files_count} files")
                     typer.echo(
-                        f"   Lint issues: {summary.get('lint_error_count', 0)} errors, {summary.get('lint_warning_count', 0)} warnings"
+                        f"   Lint issues: {summary.get('lint_error_count', 0)} errors, {summary.get('lint_warning_count', 0)} warnings"  # noqa: E501
                     )
                     typer.echo(f"   Security issues: {summary.get('security_issue_count', 0)}")
                 else:
@@ -139,22 +133,20 @@ if TYPER_AVAILABLE:
 
     @app.command()
     def transform(
-        snapshot_id: Annotated[Optional[str], typer.Argument(help="Snapshot ID to transform")] = None,
+        snapshot_id: Annotated[
+            Optional[str], typer.Argument(help="Snapshot ID to transform")
+        ] = None,
         tier: Annotated[
             Optional[str],
             typer.Option("--tier", "-t", help="Tier to apply (A, B, or C)"),
         ] = None,
         auto: Annotated[bool, typer.Option("--auto", help="Auto-apply Tier A changes")] = False,
         dry_run: Annotated[bool, typer.Option("--dry-run", help="Don't modify files")] = True,
-        mode: Annotated[
-            Optional[str], typer.Option("--mode", help="Transformation mode")
-        ] = None,
+        mode: Annotated[Optional[str], typer.Option("--mode", help="Transformation mode")] = None,
         filter: Annotated[
             Optional[str], typer.Option("--filter", help="File filter pattern")
         ] = None,
-        verbose: Annotated[
-            bool, typer.Option("--verbose", help="Verbose output")
-        ] = False,
+        verbose: Annotated[bool, typer.Option("--verbose", help="Verbose output")] = False,
     ):
         """Apply transformations to a snapshot."""
         if snapshot_id is None:
@@ -180,14 +172,18 @@ if TYPER_AVAILABLE:
                 typer.echo("✅ Transform complete:")
                 typer.echo(f"   Tier A patches: {len(getattr(result, 'tier_a_patches', []))}")
                 typer.echo(f"   Tier B patches: {len(getattr(result, 'tier_b_patches', []))}")
-                typer.echo(f"   Tier C suggestions: {len(getattr(result, 'tier_c_suggestions', []))}")
-                if getattr(result, 'applied', False):
+                typer.echo(
+                    f"   Tier C suggestions: {len(getattr(result, 'tier_c_suggestions', []))}"
+                )
+                if getattr(result, "applied", False):
                     typer.echo("   Changes applied to source")
                 else:
                     typer.echo("   Dry run - no changes applied")
             elif isinstance(result, dict):
                 typer.echo("✅ Transform complete:")
-                typer.echo(f"   Tier A patches: {len(result.get('tier_a_patches', result.get('changes', [])))}")
+                typer.echo(
+                    f"   Tier A patches: {len(result.get('tier_a_patches', result.get('changes', [])))}"  # noqa: E501
+                )
                 typer.echo(f"   Tier B patches: {len(result.get('tier_b_patches', []))}")
                 typer.echo(f"   Tier C suggestions: {len(result.get('tier_c_suggestions', []))}")
             else:
@@ -208,9 +204,7 @@ if TYPER_AVAILABLE:
         patched: Annotated[
             Optional[str], typer.Option("--patched", help="Patched snapshot ID to compare")
         ] = None,
-        format: Annotated[
-            Optional[str], typer.Option("--format", help="Output format")
-        ] = None,
+        format: Annotated[Optional[str], typer.Option("--format", help="Output format")] = None,
     ):
         """Verify behavior preservation."""
         if snapshot_id is None:
@@ -223,8 +217,14 @@ if TYPER_AVAILABLE:
         compare_target = compare_mode or patched is not None
         if compare_target:
             baseline_dir = artifacts_dir / "source"
-            patched_dir = Path("artifacts") / patched if patched is not None else (
-                artifacts_dir / "patched" if (artifacts_dir / "patched").exists() else baseline_dir
+            patched_dir = (
+                Path("artifacts") / patched
+                if patched is not None
+                else (
+                    artifacts_dir / "patched"
+                    if (artifacts_dir / "patched").exists()
+                    else baseline_dir
+                )
             )
 
             try:
@@ -235,17 +235,23 @@ if TYPER_AVAILABLE:
 
             if hasattr(result, "save"):
                 result.save(artifacts_dir / "behavior-diff.json")
-                status = "✅" if result.result == "pass" else "❌" if result.result == "fail" else "⚠️"
+                status = (
+                    "✅" if result.result == "pass" else "❌" if result.result == "fail" else "⚠️"
+                )
                 typer.echo(f"{status} Comparison result: {result.result.upper()}")
                 for comp in getattr(result, "comparisons", []):
                     typer.echo(f"   {comp.input_ref}: {comp.result}")
             elif isinstance(result, dict):
                 status = result.get("status", "pass")
-                status_emoji = "✅" if status == "identical" else "❌" if status == "different" else "⚠️"
+                status_emoji = (
+                    "✅" if status == "identical" else "❌" if status == "different" else "⚠️"
+                )
                 typer.echo(f"{status_emoji} Comparison result: {status.upper()}")
                 for comp in result.get("differences", []) or []:
                     if isinstance(comp, dict):
-                        typer.echo(f"   {comp.get('input_ref', 'diff')}: {comp.get('result', 'ok')}")
+                        typer.echo(
+                            f"   {comp.get('input_ref', 'diff')}: {comp.get('result', 'ok')}"
+                        )
             else:
                 typer.echo("✅ Comparison result: PASS")
         else:
@@ -254,12 +260,8 @@ if TYPER_AVAILABLE:
     @app.command("list")
     def list_snapshots(
         status: Annotated[Optional[str], typer.Option("--status", help="Filter by status")] = None,
-        filter: Annotated[
-            Optional[str], typer.Option("--filter", help="Filter by name")
-        ] = None,
-        verbose: Annotated[
-            bool, typer.Option("--verbose", help="Verbose output")
-        ] = False,
+        filter: Annotated[Optional[str], typer.Option("--filter", help="Filter by name")] = None,
+        verbose: Annotated[bool, typer.Option("--verbose", help="Verbose output")] = False,
     ):
         """List all snapshots."""
         from codex.snapshot import list_snapshots as list_snapshot_records
@@ -270,15 +272,15 @@ if TYPER_AVAILABLE:
             return
 
         for meta in snapshots:
-            typer.echo(f"  {meta.get('snapshot_id', meta.get('id', 'unknown'))} - {meta.get('source', 'unknown')}")
+            typer.echo(
+                f"  {meta.get('snapshot_id', meta.get('id', 'unknown'))} - {meta.get('source', 'unknown')}"  # noqa: E501
+            )
 
     @app.command()
     def show(
         snapshot_id: Annotated[Optional[str], typer.Argument(help="Snapshot ID")] = None,
         as_json: Annotated[bool, typer.Option("--json", help="Output as JSON")] = False,
-        format: Annotated[
-            Optional[str], typer.Option("--format", help="Output format")
-        ] = None,
+        format: Annotated[Optional[str], typer.Option("--format", help="Output format")] = None,
     ):
         """Show snapshot details."""
         if snapshot_id is None:
@@ -348,7 +350,6 @@ if TYPER_AVAILABLE:
         """Main entry point."""
         # Emit typer import error warning if it occurred
         if _TYPER_IMPORT_ERROR:
-
             logger.error(
                 f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",
             )

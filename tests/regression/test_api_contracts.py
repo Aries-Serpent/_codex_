@@ -2,8 +2,8 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
-# 
+#
+#
 # All tests use FastAPI's in-process ``TestClient`` (no live server needed).
 #         """GET /readiness must return 2xx (200 ready or 503 not-ready — never 4xx/5xx)."""
 #         resp = dashboard_client.get("/readiness")
@@ -17,7 +17,7 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
+#
 #         resp = dashboard_client.get("/readiness")
 #         assert resp.status_code in (, "Condition must be true"
 #             200,
@@ -31,7 +31,7 @@
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
 #         resp = dashboard_client.get("/")
 #         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
-# 
+#
 #     def test_root_schema_contains_name_and_version(self, dashboard_client):
 #     def test_root_schema_contains_name_and_version(self, dashboard_client):
 #         """Root response must expose 'name' and 'version' fields."""
@@ -48,14 +48,14 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
+#
 #         resp = dashboard_client.get("/readiness")
 #         assert resp.status_code in (, "Condition must be true"
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
 #         assert resp.status_code == 200, "status_code is not valid"
-# 
+#
 #     def test_health_schema_status_field(self, dashboard_client):
 #     def test_health_schema_status_field(self, dashboard_client):
 #         """Health response must contain a 'status' string field."""
@@ -71,14 +71,14 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
+#
 #         resp = dashboard_client.get("/readiness")
 #         assert resp.status_code in (, "Condition must be true"
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
 #         assert resp.status_code == 200, "status_code is not valid"
-# 
+#
 #     def test_liveness_schema(self, dashboard_client):
 #     def test_liveness_schema(self, dashboard_client):
 #         """Liveness response must expose status, uptime_seconds, and timestamp."""
@@ -102,7 +102,7 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
+#
 #         resp = dashboard_client.get("/readiness")
 #         assert resp.status_code in (, "Condition must be true"
 #             200,
@@ -112,7 +112,7 @@
 #             200,
 #             503,
 #         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-# 
+#
 #     def test_readiness_schema_status_field(self, dashboard_client):
 #     def test_readiness_schema_status_field(self, dashboard_client):
 #         """Readiness response must always contain a 'status' field."""
@@ -130,12 +130,12 @@
 #         assert "timestamp" in body, "Readiness response missing 'timestamp'"
 #         assert isinstance(body["timestamp"], str)
 #         assert "application/json" in resp.headers.get(, "Condition must be true"
-# 
+#
 # # ────────────────────────────────────────────────────────────────────────────
 # # 5. Content-type contract
 # # ────────────────────────────────────────────────────────────────────────────
 #         assert "application/json" in resp.headers.get(, "Condition must be true"
-# 
+#
 #         assert "application/json" in resp.headers.get(, "Condition must be true"
 #     def test_health_content_type_json(self, dashboard_client):
 #         """All JSON endpoints must return application/json content type."""

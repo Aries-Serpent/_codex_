@@ -12,11 +12,11 @@ Key Concepts:
 """
 
 import logging
-import requests
-from typing import Dict, Optional
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Dict, Optional
 
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,17 +32,17 @@ class EmergencyResponse:
 
 class CIEmergencyResponseAgent:
     """Emergency response for blocking CI failures."""
-    
+
     def __init__(self):
         from scripts.ci._token_resolver import get_token, validate_scope
-        
+
         # Requires Level 3 - NO fallback
         self.token = get_token(required_elevated=True, require_level=3)
         if not self.token:
             raise RuntimeError("CI Emergency agent requires Level 3 token")
-        
+
         validate_scope(self.token, ['repo', 'workflow', 'actions:write'])
-    
+
     def dispatch_emergency_workflow(
         self,
         repo: str,
@@ -52,13 +52,13 @@ class CIEmergencyResponseAgent:
     ) -> EmergencyResponse:
         """Dispatch emergency workflow."""
         inputs = inputs or {}
-        
+
         url = f"https://api.github.com/repos/{repo}/actions/workflows/{workflow_id}/dispatches"
         headers = {
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        
+
         try:
             response = requests.post(
                 url,
@@ -67,18 +67,18 @@ class CIEmergencyResponseAgent:
                 timeout=30
             )
             response.raise_for_status()
-            
+
             logger.info(
                 "emergency_workflow_dispatched",
                 extra={"repo": repo, "workflow": workflow_id, "reason": reason}
             )
-            
+
             return EmergencyResponse(
                 status="success",
                 message=f"Workflow {workflow_id} dispatched",
                 timestamp=datetime.utcnow().isoformat()
             )
-        
+
         except requests.HTTPError as e:
             if e.response.status_code == 403:
                 raise RuntimeError("Insufficient scope for workflow dispatch")

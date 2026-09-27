@@ -217,12 +217,10 @@ class DuplicationDetector:
                         i += 1
 
                     if occurrences:
-                        # Create hash from first occurrence
+                        # Create hash from first occurrence. Use SHA-256 rather than
+                        # MD5 to avoid legacy weak-hash usage in this security review surface.
                         hash_str = f"{occurrences[0]['file']}:{occurrences[0]['start']}"
-                        # nosec B324 - MD5 used for deduplication hashing, not security
-                        block_hash = hashlib.md5(
-                            hash_str.encode(), usedforsecurity=False
-                        ).hexdigest()
+                        block_hash = hashlib.sha256(hash_str.encode()).hexdigest()
 
                         block = DuplicateBlock(
                             hash=block_hash,

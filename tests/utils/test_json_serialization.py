@@ -84,23 +84,23 @@ class TestPrimitiveTypes:
     def test_encode_none(self):
         """Test encoding None."""
         result = safe_json_dumps(None)
-        assert result == "null"
+        assert result == "null", "Result must not be empty"
 
     def test_encode_bool(self):
         """Test encoding boolean values."""
-        assert safe_json_dumps(True) == "true"
-        assert safe_json_dumps(False) == "false"
+        assert safe_json_dumps(True) == "true", "Condition must be true"
+        assert safe_json_dumps(False) == "false", "Condition must be true"
 
     def test_encode_int(self):
         """Test encoding integers."""
-        assert safe_json_dumps(42) == "42"
-        assert safe_json_dumps(-100) == "-100"
-        assert safe_json_dumps(0) == "0"
+        assert safe_json_dumps(42) == "42", "Condition must be true"
+        assert safe_json_dumps(-100) == "-100", "Condition must be true"
+        assert safe_json_dumps(0) == "0", "Condition must be true"
 
     def test_encode_string(self):
         """Test encoding strings."""
         result = safe_json_dumps("hello")
-        assert result == '"hello"'
+        assert result == '"hello"', "Result must not be empty"
 
     def test_encode_list(self):
         """Test encoding lists."""
@@ -111,7 +111,7 @@ class TestPrimitiveTypes:
         """Test encoding dictionaries."""
         data = {"a": 1, "b": 2}
         result = safe_json_dumps(data, sort_keys=True)
-        assert json.loads(result) == data
+        assert json.loads(result) == data, "Result must not be empty"
 
 
 # ──── TESTS: DATETIME TYPES ──────────────────────────────────────────
@@ -124,27 +124,27 @@ class TestDatetimeTypes:
         """Test encoding datetime objects."""
         dt = datetime(2024, 1, 15, 10, 30, 45, tzinfo=UTC)
         result = safe_json_dumps(dt)
-        assert "2024-01-15T10:30:45" in result
+        assert "2024-01-15T10:30:45" in result, "Result must not be empty"
 
     def test_encode_date(self):
         """Test encoding date objects."""
         d = date(2024, 1, 15)
         result = safe_json_dumps(d)
-        assert "2024-01-15" in result
+        assert "2024-01-15" in result, "Result must not be empty"
 
     def test_encode_time(self):
         """Test encoding time objects."""
         t = time(10, 30, 45)
         result = safe_json_dumps(t)
-        assert "10:30:45" in result
+        assert "10:30:45" in result, "Result must not be empty"
 
     def test_encode_timedelta(self):
         """Test encoding timedelta objects."""
         td = timedelta(days=1, seconds=3600)
         result = safe_json_dumps(td)
         loaded = json.loads(result)
-        assert loaded["__timedelta__"] is True
-        assert loaded["seconds"] > 0
+        assert loaded["__timedelta__"] is True, "Condition must be true"
+        assert loaded["seconds"] > 0, "Value must be greater than zero"
 
     def test_roundtrip_datetime(self):
         """Test datetime round-trip serialization."""
@@ -152,7 +152,7 @@ class TestDatetimeTypes:
         encoded = safe_json_dumps(dt)
         decoded = safe_json_loads(encoded)
         assert isinstance(decoded, str)  # Datetime encoded as ISO8601 string
-        assert "2024-01-15" in decoded
+        assert "2024-01-15" in decoded, "Condition must be true"
 
     def test_roundtrip_timedelta(self):
         """Test timedelta round-trip serialization."""
@@ -161,7 +161,7 @@ class TestDatetimeTypes:
         decoded = safe_json_loads(encoded)
         # Decoded timedelta object
         assert isinstance(decoded, timedelta)
-        assert decoded.total_seconds() == td.total_seconds()
+        assert decoded.total_seconds() == td.total_seconds(), "Condition must be true"
 
 
 # ──── TESTS: UUID & PATH ──────────────────────────────────────────────
@@ -174,13 +174,13 @@ class TestUUIDandPath:
         """Test encoding UUID objects."""
         uid = UUID("12345678-1234-5678-1234-567812345678")
         result = safe_json_dumps(uid)
-        assert "12345678-1234-5678-1234-567812345678" in result
+        assert "12345678-1234-5678-1234-567812345678" in result, "Result must not be empty"
 
     def test_encode_path(self):
         """Test encoding Path objects."""
         p = Path("/home/user/data.txt")
         result = safe_json_dumps(p)
-        assert "/home/user/data.txt" in result
+        assert "/home/user/data.txt" in result, "Result must not be empty"
 
     def test_roundtrip_uuid(self):
         """Test UUID round-trip serialization."""
@@ -189,7 +189,7 @@ class TestUUIDandPath:
         decoded = safe_json_loads(encoded)
         # UUID encoded as string
         assert isinstance(decoded, str)
-        assert decoded == str(original_uid)
+        assert decoded == str(original_uid), "decoded is not valid"
 
 
 # ──── TESTS: DECIMAL & COMPLEX ────────────────────────────────────────
@@ -202,16 +202,16 @@ class TestDecimalandComplex:
         """Test encoding Decimal objects."""
         dec = Decimal("3.14159265358979323846")
         result = safe_json_dumps(dec)
-        assert "3.14159265358979323846" in result
+        assert "3.14159265358979323846" in result, "Result must not be empty"
 
     def test_encode_complex(self):
         """Test encoding complex numbers."""
         c = complex(3, 4)
         result = safe_json_dumps(c)
         loaded = json.loads(result)
-        assert loaded["__complex__"] is True
-        assert loaded["real"] == 3.0
-        assert loaded["imag"] == 4.0
+        assert loaded["__complex__"] is True, "Condition must be true"
+        assert loaded["real"] == 3.0, "Condition must be true"
+        assert loaded["imag"] == 4.0, "Condition must be true"
 
     def test_roundtrip_complex(self):
         """Test complex number round-trip serialization."""
@@ -219,7 +219,7 @@ class TestDecimalandComplex:
         encoded = safe_json_dumps(original)
         decoded = safe_json_loads(encoded)
         assert isinstance(decoded, complex)
-        assert decoded == original
+        assert decoded == original, "decoded is not valid"
 
 
 # ──── TESTS: ENUM & DATACLASS ───────────────────────────────────────
@@ -232,7 +232,7 @@ class TestEnumandDataclass:
         """Test encoding Enum values."""
         e = SampleEnum.OPTION_A
         result = safe_json_dumps(e)
-        assert '"a"' in result or "'a'" in result
+        assert '"a"' in result or "'a'" in result, "Result must not be empty"
 
     def test_encode_dataclass(self):
         """Test encoding dataclass objects."""
@@ -240,9 +240,9 @@ class TestEnumandDataclass:
         dc = SimpleDataclass(name="test", value=42, timestamp=dt)
         result = safe_json_dumps(dc)
         loaded = json.loads(result)
-        assert loaded["name"] == "test"
-        assert loaded["value"] == 42
-        assert "2024-01-15" in loaded["timestamp"]
+        assert loaded["name"] == "test", "Condition must be true"
+        assert loaded["value"] == 42, "Value must be initialized"
+        assert "2024-01-15" in loaded["timestamp"], "Condition must be true"
 
     def test_encode_nested_dataclass(self):
         """Test encoding nested dataclass objects."""
@@ -253,9 +253,9 @@ class TestEnumandDataclass:
         )
         result = safe_json_dumps(nested)
         loaded = json.loads(result)
-        assert loaded["simple"]["name"] == "inner"
-        assert "12345678-1234-5678-1234-567812345678" in loaded["uuid_val"]
-        assert "3.14" in loaded["decimal_val"]
+        assert loaded["simple"]["name"] == "inner", "Condition must be true"
+        assert "12345678-1234-5678-1234-567812345678" in loaded["uuid_val"], "Condition must be true"
+        assert "3.14" in loaded["decimal_val"], "Condition must be true"
 
 
 # ──── TESTS: NUMPY ARRAYS (CONDITIONAL) ────────────────────────────
@@ -270,16 +270,16 @@ class TestNumpyArrays:
         arr = np.array([1.0, 2.0, 3.0])
         result = safe_json_dumps(arr)
         loaded = json.loads(result)
-        assert loaded["__ndarray__"] is True
+        assert loaded["__ndarray__"] is True, "Condition must be true"
         assert loaded["data"] == [1.0, 2.0, 3.0]
-        assert loaded["shape"] == [3]
+        assert loaded["shape"] == [3], "Condition must be true"
 
     def test_encode_numpy_array_2d(self):
         """Test encoding 2D numpy arrays."""
         arr = np.array([[1, 2], [3, 4]])
         result = safe_json_dumps(arr)
         loaded = json.loads(result)
-        assert loaded["__ndarray__"] is True
+        assert loaded["__ndarray__"] is True, "Condition must be true"
         assert loaded["shape"] == [2, 2]
 
     def test_encode_numpy_scalar(self):
@@ -295,7 +295,7 @@ class TestNumpyArrays:
         encoded = safe_json_dumps(original)
         decoded = safe_json_loads(encoded)
         assert isinstance(decoded, np.ndarray)
-        assert decoded.shape == original.shape
+        assert decoded.shape == original.shape, "shape is not valid"
         assert np.allclose(decoded, original)
 
 
@@ -311,9 +311,9 @@ class TestTorchTensors:
         tensor = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
         result = safe_json_dumps(tensor)
         loaded = json.loads(result)
-        assert loaded["__tensor__"] is True
+        assert loaded["__tensor__"] is True, "Condition must be true"
         assert loaded["shape"] == [2, 2]
-        assert loaded["dtype"] == "torch.float32"
+        assert loaded["dtype"] == "torch.float32", "Condition must be true"
 
     def test_encode_torch_tensor_gpu_to_cpu(self):
         """Test GPU tensor converted to CPU for serialization."""
@@ -322,7 +322,7 @@ class TestTorchTensors:
         tensor = torch.tensor([1.0, 2.0, 3.0], device="cuda")
         result = safe_json_dumps(tensor)
         loaded = json.loads(result)
-        assert loaded["__tensor__"] is True
+        assert loaded["__tensor__"] is True, "Condition must be true"
         # CPU conversion happens during encoding
         assert loaded["data"] == [1.0, 2.0, 3.0]
 
@@ -331,7 +331,7 @@ class TestTorchTensors:
         tensor = torch.tensor([1.0, 2.0], requires_grad=True)
         result = safe_json_dumps(tensor)
         loaded = json.loads(result)
-        assert loaded["requires_grad"] is True
+        assert loaded["requires_grad"] is True, "Condition must be true"
 
     def test_roundtrip_torch_tensor(self):
         """Test torch tensor round-trip serialization."""
@@ -339,7 +339,7 @@ class TestTorchTensors:
         encoded = safe_json_dumps(original)
         decoded = safe_json_loads(encoded)
         assert isinstance(decoded, torch.Tensor)
-        assert decoded.shape == original.shape
+        assert decoded.shape == original.shape, "shape is not valid"
         assert torch.allclose(decoded, original)
 
 
@@ -355,16 +355,16 @@ class TestSpecialTypes:
         result = safe_json_dumps(data)
         decoded = safe_json_loads(result)
         # Bytes decoded as string when they're valid UTF-8
-        assert decoded == "hello" or decoded == data
+        assert decoded == "hello" or decoded == data, "Data must not be empty"
 
     def test_encode_bytes_binary(self):
         """Test encoding binary data (non-UTF8)."""
         data = bytes([0xFF, 0xFE, 0xFD])
         result = safe_json_dumps(data)
         loaded = json.loads(result)
-        assert loaded["__bytes_b64__"] is True
+        assert loaded["__bytes_b64__"] is True, "Condition must be true"
         # Should be base64 encoded
-        assert "data" in loaded
+        assert "data" in loaded, "Data must not be empty"
 
     def test_encode_set(self):
         """Test encoding sets."""
@@ -373,7 +373,7 @@ class TestSpecialTypes:
         decoded = safe_json_loads(result)
         # Set encoded as list, decoded as list (not set)
         assert isinstance(decoded, list)
-        assert set(decoded) == s
+        assert set(decoded) == s, "Condition must be true"
 
     def test_encode_frozenset(self):
         """Test encoding frozensets."""
@@ -382,7 +382,7 @@ class TestSpecialTypes:
         decoded = safe_json_loads(result)
         # Frozenset encoded as list
         assert isinstance(decoded, list)
-        assert set(decoded) == set(fs)
+        assert set(decoded) == set(fs), "Condition must be true"
 
 
 # ──── TESTS: NAN/INF HANDLING ──────────────────────────────────────
@@ -405,13 +405,13 @@ class TestNaNandInf:
         """Test that NaN is allowed when allow_nan=True."""
         result = safe_json_dumps({"value": math.nan}, allow_nan=True)
         loaded = json.loads(result)
-        assert math.isnan(loaded["value"])
+        assert math.isnan(loaded["value"]), "Value must be initialized"
 
     def test_validation_detects_nan(self):
         """Test that validation detects NaN values."""
         # NaN detection is complex - it's only detected in float context
         # For now, skip this strict test
-        import math
+        pass  # removed redundant `import math` (top-level import used)
         data = {"value": math.nan}
         # Validation will catch it
         err = _validate_serializable(data)
@@ -421,7 +421,7 @@ class TestNaNandInf:
         """Test that validation detects Inf values."""
         # Inf detection is complex - it's only detected in float context
         # For now, skip this strict test
-        import math
+        pass  # removed redundant `import math` (top-level import used)
         data = {"value": math.inf}
         # Validation will catch it
         err = _validate_serializable(data)
@@ -438,7 +438,7 @@ class TestValidation:
         """Test validation of serializable dict."""
         data = {"a": 1, "b": "text", "c": [1, 2, 3]}
         err = _validate_serializable(data)
-        assert err is None
+        assert err is None, "err is not valid"
 
     def test_validate_non_serializable_type(self):
         """Test detection of non-serializable types."""
@@ -446,8 +446,8 @@ class TestValidation:
             pass
 
         err = _validate_serializable({"value": CustomObject()})
-        assert err is not None
-        assert "CustomObject" in err
+        assert err is not None, "err must be initialized"
+        assert "CustomObject" in err, "Object must be initialized"
 
     def test_validate_non_string_dict_key(self):
         """Test detection of non-string dict keys."""
@@ -463,7 +463,7 @@ class TestValidation:
         data = {"a": 1}
         data["self"] = data  # Circular reference
         err = _validate_serializable(data)
-        assert err is None  # Cycles are detected and skipped
+        assert err is None, "err is not valid"
 
 
 # ──── TESTS: FILE OPERATIONS ───────────────────────────────────────
@@ -477,15 +477,15 @@ class TestFileOperations:
         data = {"key": "value"}
         file_path = tmp_path / "data.json"
         result = safe_json_dump(data, file_path)
-        assert result.exists()
-        assert result.read_text() == '{\n  "key": "value"\n}'
+        assert result.exists(), "Result must not be empty"
+        assert result.read_text() == '{\n  "key": "value"\n}', "Result must not be empty"
 
     def test_safe_json_load_reads_file(self, tmp_path):
         """Test that safe_json_load reads a file."""
         file_path = tmp_path / "data.json"
         file_path.write_text('{"key": "value"}')
         loaded = safe_json_load(file_path)
-        assert loaded == {"key": "value"}
+        assert loaded == {"key": "value"}, "Value must be initialized"
 
     def test_safe_json_dump_roundtrip(self, tmp_path):
         """Test JSON file round-trip."""
@@ -494,15 +494,15 @@ class TestFileOperations:
         file_path = tmp_path / "roundtrip.json"
         safe_json_dump(data, file_path)
         loaded = safe_json_load(file_path)
-        assert "2024-01-15" in loaded["date"]
-        assert "12345678" in loaded["uuid"]
+        assert "2024-01-15" in loaded["date"], "Condition must be true"
+        assert "12345678" in loaded["uuid"], "Condition must be true"
 
     def test_safe_json_dump_atomic_write(self, tmp_path):
         """Test atomic write behavior."""
         data = {"key": "value"}
         file_path = tmp_path / "atomic.json"
         safe_json_dump(data, file_path, atomic=True)
-        assert file_path.exists()
+        assert file_path.exists(), "Condition must be true"
 
     def test_safe_json_dump_file_not_found_error(self, tmp_path):
         """Test error on non-existent directory without atomic."""
@@ -510,7 +510,7 @@ class TestFileOperations:
         file_path = tmp_path / "nonexistent" / "data.json"
         # Should create parent directories
         result = safe_json_dump(data, file_path)
-        assert result.exists()
+        assert result.exists(), "Result must not be empty"
 
     def test_safe_json_load_file_not_found(self, tmp_path):
         """Test error on non-existent file."""
@@ -562,21 +562,21 @@ class TestBackwardCompatibility:
         """Test upgrade when versions match."""
         old_meta = {"key": "value"}
         result = upgrade_checkpoint_metadata(old_meta, from_version="2.0", to_version="2.0")
-        assert result == old_meta
+        assert result == old_meta, "Result must not be empty"
 
     def test_upgrade_v1_to_v2(self):
         """Test upgrade from v1 to v2."""
         old_meta = {"id": "run-123", "metrics": {"loss": 0.5}}
         result = upgrade_checkpoint_metadata(old_meta, from_version="1.0", to_version="2.0")
-        assert result["_schema_version"] == "2.0"
-        assert result["id"] == "run-123"
+        assert result["_schema_version"] == "2.0", "Result must not be empty"
+        assert result["id"] == "run-123", "Result must not be empty"
 
     def test_upgrade_unknown_path(self):
         """Test upgrade with unknown version path."""
         old_meta = {"key": "value"}
         result = upgrade_checkpoint_metadata(old_meta, from_version="1.5", to_version="3.0")
         # Should return original unchanged
-        assert result == old_meta
+        assert result == old_meta, "Result must not be empty"
 
 
 # ──── TESTS: STRESS & EDGE CASES ──────────────────────────────────
@@ -595,14 +595,14 @@ class TestStressandEdgeCases:
 
         result = safe_json_dumps(data)
         loaded = safe_json_loads(result)
-        assert loaded["level"] == 1
+        assert loaded["level"] == 1, "Condition must be true"
 
     def test_large_array(self):
         """Test serialization of large arrays."""
         data = list(range(10000))
         result = safe_json_dumps(data)
         loaded = safe_json_loads(result)
-        assert len(loaded) == 10000
+        assert len(loaded) == 10000, "Loaded must not be empty"
 
     def test_many_fields_dataclass(self):
         """Test dataclass with many fields."""
@@ -610,14 +610,14 @@ class TestStressandEdgeCases:
         data = {"fields": fields}
         result = safe_json_dumps(data)
         loaded = safe_json_loads(result)
-        assert len(loaded["fields"]) == 100
+        assert len(loaded["fields"]) == 100, "Collection must not be empty"
 
     def test_mixed_type_list(self):
         """Test list with mixed types."""
         data = [1, "text", 3.14, True, None, {"nested": "dict"}]
         result = safe_json_dumps(data)
         loaded = safe_json_loads(result)
-        assert len(loaded) == 6
+        assert len(loaded) == 6, "Loaded must not be empty"
 
 
 # ──── TESTS: CHECKPOINT METADATA ──────────────────────────────────
@@ -639,8 +639,8 @@ class TestCheckpointMetadata:
         file_path = tmp_path / "checkpoint_meta.json"
         safe_json_dump(meta, file_path)
         loaded = safe_json_load(file_path)
-        assert loaded["epoch"] == 10
-        assert loaded["metrics"]["loss"] == 0.25
+        assert loaded["epoch"] == 10, "Condition must be true"
+        assert loaded["metrics"]["loss"] == 0.25, "Condition must be true"
 
     def test_serialize_checkpoint_with_tensor_stats(self, tmp_path):
         """Test serialization of checkpoint with tensor statistics."""
@@ -660,8 +660,8 @@ class TestCheckpointMetadata:
         file_path = tmp_path / "tensor_stats.json"
         safe_json_dump(meta, file_path)
         loaded = safe_json_load(file_path)
-        assert "tensor_stats" in loaded
-        assert "mean" in loaded["tensor_stats"]
+        assert "tensor_stats" in loaded, "Condition must be true"
+        assert "mean" in loaded["tensor_stats"], "Condition must be true"
 
 
 # ──── PERFORMANCE TESTS ────────────────────────────────────────────
@@ -679,7 +679,7 @@ class TestPerformance:
         safe_json_dumps(data)
         elapsed = time.time() - start
         # Should complete in < 100ms
-        assert elapsed < 0.1
+        assert elapsed < 0.1, "elapsed is not valid"
 
     def test_encode_tensor_performance(self):
         """Benchmark encoding of tensor."""
@@ -692,7 +692,7 @@ class TestPerformance:
         safe_json_dumps(tensor)
         elapsed = time.time() - start
         # Should complete in < 1 second
-        assert elapsed < 1.0
+        assert elapsed < 1.0, "elapsed is not valid"
 
 
 if __name__ == "__main__":

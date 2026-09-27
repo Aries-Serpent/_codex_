@@ -7,6 +7,7 @@ handling logic.
 """
 
 import asyncio
+import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -177,7 +178,19 @@ class CodexQuantumReviewer:
         review_result.review_time_seconds = (end_time - start_time).total_seconds()
 
         # Post review
-        await self._post_review(context, review_result)
+        try:
+            await self._post_review(context, review_result)
+        except Exception as exc:
+            logger.error(f"Review posting failed for PR #{context.pr_number}: {exc}")
+            return {
+                "status": "review_failed",
+                "pr_number": context.pr_number,
+                "review_status": review_result.status,
+                "suggestions_count": len(review_result.suggestions),
+                "confidence": review_result.confidence,
+                "review_time_seconds": review_result.review_time_seconds,
+                "error": str(exc),
+            }
 
         # Learn from review
         await self.learning_system.learn_from_review(context, review_result)
@@ -230,11 +243,33 @@ class CodexQuantumReviewer:
         logger.info("Integrating human feedback")  # codeql[py/clear-text-logging-sensitive-data]
 
         feedback = event.get("feedback", {})
+        if isinstance(feedback, str):
+            try:
+                parsed = json.loads(feedback)
+            except json.JSONDecodeError:
+                parsed = {"comments": [feedback]}
+            if isinstance(parsed, dict):
+                feedback = parsed
+            elif isinstance(parsed, list):
+                feedback = {"comments": parsed}
+            elif parsed is None:
+                feedback = {}
+            else:
+                feedback = {"comments": [str(parsed)]}
+        elif not isinstance(feedback, dict):
+            feedback = {"comments": [feedback] if not isinstance(feedback, list) else feedback}
+
+        comments = feedback.get("comments", [])
+        if isinstance(comments, str):
+            comments = [comments]
+        elif comments is None:
+            comments = []
+
         await self.learning_system.integrate_feedback(feedback)
 
         return {
             "status": "feedback_integrated",
-            "feedback_items": len(feedback.get("comments", []))
+            "feedback_items": len(comments)
         }
 
     async def respond_to_mention(self, event: dict[str, Any]) -> dict[str, Any]:
@@ -251,7 +286,12 @@ class CodexQuantumReviewer:
             Dictionary with response status
         """
         comment = event.get("comment", {})
-        body = comment.get("body", "")
+        if isinstance(comment, str):
+            body = comment
+        elif isinstance(comment, dict):
+            body = comment.get("body", "")
+        else:
+            body = str(comment)
 
         logger.info(f"Responding to mention: {body[:100]}...")  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -562,7 +602,7 @@ class CodexQuantumReviewer:
             logger.info(f"Successfully posted {action} review")  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as e:
             logger.error(f"Failed to post review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
-            raise
+            raise RuntimeError(f"Failed to post review for PR #{context.pr_number}: {e}") from e
 
     def _format_review_body(self, result: ReviewResult) -> str:
         """

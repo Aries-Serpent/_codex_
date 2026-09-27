@@ -32,10 +32,14 @@ def _build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     key_cmd = subparsers.add_parser("generate-key", help="Generate a local key manifest")
-    key_cmd.add_argument("--key-out", required=True, help="Where to store the generated key manifest")
+    key_cmd.add_argument(
+        "--key-out", required=True, help="Where to store the generated key manifest"
+    )
     key_cmd.add_argument("--algorithm", choices=["aes-gcm", "fernet"], default="aes-gcm")
 
-    encrypt_cmd = subparsers.add_parser("encrypt", help="Encrypt a directory into a protected ZIP archive")
+    encrypt_cmd = subparsers.add_parser(
+        "encrypt", help="Encrypt a directory into a protected ZIP archive"
+    )
     encrypt_cmd.add_argument("--input-dir", required=True, help="Directory to encrypt")
     encrypt_cmd.add_argument("--zip-out", required=True, help="Destination ZIP archive")
     encrypt_cmd.add_argument("--key-file", required=True, help="Local key manifest")
@@ -43,14 +47,24 @@ def _build_parser() -> argparse.ArgumentParser:
     unpack_cmd = subparsers.add_parser("unpack", help="Decrypt and unpack a protected ZIP archive")
     unpack_cmd.add_argument("--zip-path", required=True, help="Encrypted ZIP archive")
     unpack_cmd.add_argument("--key-file", required=True, help="Key manifest path")
-    unpack_cmd.add_argument("--output-dir", default=".", help="Parent directory for the self-titled extraction folder")
+    unpack_cmd.add_argument(
+        "--output-dir", default=".", help="Parent directory for the self-titled extraction folder"
+    )
 
-    normalize_cmd = subparsers.add_parser("normalize", help="Normalize a directory into a deterministic manifest")
+    normalize_cmd = subparsers.add_parser(
+        "normalize", help="Normalize a directory into a deterministic manifest"
+    )
     normalize_cmd.add_argument("--input-dir", required=True, help="Directory to normalize")
-    normalize_cmd.add_argument("--output-manifest", help="Optional output path for the JSON manifest")
-    normalize_cmd.add_argument("--include-content", action="store_true", help="Embed file content in the JSON output")
+    normalize_cmd.add_argument(
+        "--output-manifest", help="Optional output path for the JSON manifest"
+    )
+    normalize_cmd.add_argument(
+        "--include-content", action="store_true", help="Embed file content in the JSON output"
+    )
 
-    rezip_cmd = subparsers.add_parser("rezip-clean", help="Rebuild a clean zip archive from a normalized directory")
+    rezip_cmd = subparsers.add_parser(
+        "rezip-clean", help="Rebuild a clean zip archive from a normalized directory"
+    )
     rezip_cmd.add_argument("--input-dir", required=True, help="Dir to archive")
     rezip_cmd.add_argument("--zip-out", required=True, help="Output zip path")
 
@@ -84,7 +98,9 @@ def main(argv: list[str] | None = None) -> int:
             zip_path = Path(args.zip_out).expanduser().resolve()
             key_file = Path(args.key_file).expanduser().resolve()
             result = encrypt_directory(input_dir, zip_path, key_file)
-            print(f"Encrypted archive created at {result['zip_path']} ({result['member_count']} files)")
+            print(
+                f"Encrypted archive created at {result['zip_path']} ({result['member_count']} files)"  # noqa: E501
+            )
             print(f"Workspace: {workspace}")
             return 0
 
@@ -97,7 +113,11 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.command == "normalize":
-            manifest = normalize_directory(args.input_dir, output_manifest=args.output_manifest, include_content=args.include_content)
+            manifest = normalize_directory(
+                args.input_dir,
+                output_manifest=args.output_manifest,
+                include_content=args.include_content,
+            )
             print(f"Normalized manifest has {len(manifest.get('entries', []))} entries")
             return 0
 

@@ -46,7 +46,7 @@ class Config:
         # Required credentials are loaded as None if not in environment
         self.db_user = os.environ.get("DB_USER")  # None if not provided
         self.db_password = os.environ.get("DB_PASSWORD")  # None if not provided
-  
+
         # SECURE: API keys come from environment
         self.api_key = os.environ.get("API_KEY")  # None if not provided
         self.secret_key = os.environ.get("SECRET_KEY")  # None if not provided

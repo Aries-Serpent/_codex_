@@ -17,6 +17,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / 'src'))
 
 from codex.interpretability import AttentionScorer  # noqa: E402
+
 from transformers import AutoModel, AutoTokenizer  # noqa: E402
 
 

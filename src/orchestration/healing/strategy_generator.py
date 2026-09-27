@@ -144,9 +144,7 @@ class StrategyGenerator:
         strategies.extend(cls._fallback_strategies(report))
 
         # Sort by success probability (descending)
-        strategies.sort(
-            key=lambda s: (s.success_probability, -s.risk_score), reverse=True
-        )
+        strategies.sort(key=lambda s: (s.success_probability, -s.risk_score), reverse=True)
 
         # Limit and assign IDs
         for i, strategy in enumerate(strategies[:max_strategies]):
@@ -385,9 +383,7 @@ class StrategyGenerator:
         return strategies
 
     @classmethod
-    def _strategies_for_cascading_failure(
-        cls, report: IncidentReport
-    ) -> List[RepairStrategy]:
+    def _strategies_for_cascading_failure(cls, report: IncidentReport) -> List[RepairStrategy]:
         """Strategies for cascading failures."""
         strategies = []
 
@@ -447,9 +443,7 @@ class StrategyGenerator:
         return strategies
 
     @classmethod
-    def _strategies_for_security_finding(
-        cls, report: IncidentReport
-    ) -> List[RepairStrategy]:
+    def _strategies_for_security_finding(cls, report: IncidentReport) -> List[RepairStrategy]:
         """Strategies for security findings."""
         strategies = []
 

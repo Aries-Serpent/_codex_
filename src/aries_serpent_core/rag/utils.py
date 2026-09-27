@@ -220,9 +220,7 @@ def safe_model_to_device(
                 logger.debug("Could not convert model dtype after to_empty()", exc_info=True)
 
         duration = time.time() - start_time
-        logger.info(
-            f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}"
-        )
+        logger.info(f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}")
         return model
 
     try:
@@ -237,8 +235,7 @@ def safe_model_to_device(
     if torch_module_type is not None and not isinstance(model, torch_module_type):
         if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
             raise TypeError(
-                f"Expected torch.nn.Module or model with .to() method, "
-                f"got {type(model).__name__}"
+                f"Expected torch.nn.Module or model with .to() method, got {type(model).__name__}"
             )
     if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
         to_kwargs = {"device": device, "non_blocking": non_blocking}

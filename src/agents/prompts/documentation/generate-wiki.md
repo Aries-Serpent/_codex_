@@ -170,11 +170,7 @@ capabilities: 39
 from scripts.space_traversal.viz_docs_hub import generate_docs_hub
 from pathlib import Path
 
-generate_docs_hub(
-    Path('custom_docs.html'),
-    repo_name='My Custom Repo',
-    version='2.0.0'
-)
+generate_docs_hub(Path("custom_docs.html"), repo_name="My Custom Repo", version="2.0.0")
 ```
 
 ### Additional Pages

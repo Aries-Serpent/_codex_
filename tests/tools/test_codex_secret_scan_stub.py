@@ -1,15 +1,15 @@
-#     assert (, "Condition must be true"
+#     assert (
 # Test Codex Secret Scan Stub
 # """
 #     first = data["findings"][0]
 #     # Snippet is sanitized before storage — accept any redaction sentinel.
-#     assert (, "Condition must be true"
+#     assert (
 # import json
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
+#     assert (
+#
+#     assert (
+#
+#     assert (
 # def test_secret_scan_stub_detects_pattern(tmp_path: Path):
 #     src = tmp_path / "test_secrets.py"
 #     src.write_text(
@@ -32,13 +32,13 @@
 #     md_out = tmp_path / "secrets.md"
 #     assert json_out.exists(), "Condition must be true"
 #     assert md_out.exists(), "Condition must be true"
-# 
+#
 #     data = json.loads(json_out.read_text(encoding="utf-8"))
 #     assert data["total_findings"] >= 1, "Value must be greater than zero"
 #     first = data["findings"][0]
 #     # Snippet is sanitized before storage — accept any redaction sentinel.
-#     assert (, "Condition must be true"
-#     assert (, "Condition must be true"
+#     assert (
+#     assert (
 #         "AWS_SECRET" in first["snippet"]
 #         or "[REDACTED]" in first["snippet"]
 #         or first["snippet"] == "<redacted>"

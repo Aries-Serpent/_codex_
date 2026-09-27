@@ -1,5 +1,5 @@
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         """Test list creation doesn't regress."""
 # Tests performance characteristics to detect regressions:
 # - Tokenization throughput
@@ -13,9 +13,9 @@
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 # import time
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 # class PerformanceBaseline:
 #     """Stores and compares performance baselines."""
@@ -40,24 +40,24 @@
 #         if test_name not in cls.BASELINES:
 #             return True  # No baseline, assume pass
 #         baseline = cls.BASELINES[test_name]
-# 
+#
 #         if metric == "ops_per_sec" and "min_ops_per_sec" in baseline:
 #             return actual_value >= baseline["min_ops_per_sec"]
 #         if metric == "time_ms" and "max_time_ms" in baseline:
 #             return actual_value <= baseline["max_time_ms"]
 #         if metric == "memory_mb" and "max_mb" in baseline:
 #             return actual_value <= baseline["max_mb"]
-# 
+#
 #         return True
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Measure execution time statistics for a function."""
 #     times = []
 #     for _ in range(min(10, iterations // 10)):
 #         func()
-# 
+#
 #     # Actual measurements
 #     for _ in range(iterations):
 #         gc.disable()
@@ -67,7 +67,7 @@
 #         gc.enable()
 #         times.append((end - start) * 1000)  # Convert to ms
 #         times.append((end - start) * 1000)  # Convert to ms
-# 
+#
 #     return {
 #     return {
 #         "mean_ms": statistics.mean(times),
@@ -80,24 +80,24 @@
 #         ),
 #     }
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Measure memory usage of a function in MB."""
 #     gc.collect()
 #     import tracemalloc
 #     import tracemalloc
-# 
+#
 #     tracemalloc.start()
-# 
+#
 #     func()
-# 
+#
 #     _current, peak = tracemalloc.get_traced_memory()
 #     tracemalloc.stop()
-# 
+#
 #     return peak / (1024 * 1024)  # Convert to MB
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test list operation performance."""
 #     def test_list_creation_performance(self):
@@ -105,9 +105,9 @@
 #         """Test list creation doesn't regress."""
 #         def create_list():
 #             return [i for i in range(1000)]
-# 
+#
 #         stats = measure_time(create_list, iterations=100)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "list_creation_1000", stats["ops_per_sec"], "ops_per_sec"
@@ -120,12 +120,12 @@
 #             for i in range(1000):
 #                 lst.append(i)
 #             return lst
-# 
+#
 #         stats = measure_time(append_to_list, iterations=100)
 #         assert stats["mean_ms"] < 5, f"List append too slow: {stats['mean_ms']:.2f}ms"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test dictionary operation performance."""
 #     def test_dict_lookup_performance(self):
@@ -134,9 +134,9 @@
 #         data = {f"key_{i}": i for i in range(10000)}
 #         def lookup_dict():
 #             return [data.get(f"key_{i}") for i in range(100)]
-# 
+#
 #         stats = measure_time(lookup_dict, iterations=100)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "dict_lookup_10000", stats["ops_per_sec"], "ops_per_sec"
@@ -146,12 +146,12 @@
 #         """Test dict creation doesn't regress."""
 #         def create_dict():
 #             return {f"key_{i}": i for i in range(1000)}
-# 
+#
 #         stats = measure_time(create_dict, iterations=100)
 #         assert stats["mean_ms"] < 5, f"Dict creation too slow: {stats['mean_ms']:.2f}ms"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test string operation performance."""
 #     def test_string_concat_performance(self):
@@ -160,9 +160,9 @@
 #         def concat_strings():
 #             parts = [f"part_{i}" for i in range(100)]
 #             return "".join(parts)
-# 
+#
 #         stats = measure_time(concat_strings, iterations=100)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "string_concat_1000", stats["ops_per_sec"], "ops_per_sec"
@@ -172,12 +172,12 @@
 #         """Test f-string formatting doesn't regress."""
 #         def format_strings():
 #             return [f"item_{i}_value_{i*2}" for i in range(1000)]
-# 
+#
 #         stats = measure_time(format_strings, iterations=100)
 #         assert stats["mean_ms"] < 5, f"String formatting too slow: {stats['mean_ms']:.2f}ms"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test JSON serialization performance."""
 #     def test_json_serialize_performance(self):
@@ -191,9 +191,9 @@
 #         }
 #         def serialize_json():
 #             return json.dumps(data)
-# 
+#
 #         stats = measure_time(serialize_json, iterations=100)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "json_serialize_100", stats["ops_per_sec"], "ops_per_sec"
@@ -209,12 +209,12 @@
 #         json_str = json.dumps(data)
 #         def deserialize_json():
 #             return json.loads(json_str)
-# 
+#
 #         stats = measure_time(deserialize_json, iterations=100)
 #         assert stats["mean_ms"] < 5, f"JSON deserialize too slow: {stats['mean_ms']:.2f}ms"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test hash computation performance."""
 #     def test_sha256_performance(self):
@@ -222,18 +222,18 @@
 #         """Test SHA256 hashing doesn't regress."""
 #         import hashlib
 #         data = b"test data " * 100
-# 
+#
 #         def compute_hash():
 #             return hashlib.sha256(data).hexdigest()
-# 
+#
 #         stats = measure_time(compute_hash, iterations=1000)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "hash_computation_1000", stats["ops_per_sec"], "ops_per_sec"
 #         ), f"Hash computation too slow: {stats['ops_per_sec']:.0f} ops/sec"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #     """Test memory usage patterns."""
 #     def test_large_list_memory(self):
@@ -241,9 +241,9 @@
 #         """Test large list doesn't use excessive memory."""
 #         def create_large_list():
 #             return [i for i in range(100000)]
-# 
+#
 #         memory_mb = measure_memory(create_large_list)
-# 
+#
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #             "memory_allocation_mb", memory_mb, "memory_mb"
@@ -253,7 +253,7 @@
 #         """Test dict memory efficiency."""
 #         def create_large_dict():
 #             return {f"key_{i}": i for i in range(10000)}
-# 
+#
 #         memory_mb = measure_memory(create_large_dict)
 #         assert memory_mb < 50, f"Dict memory too high: {memory_mb:.2f}MB"
 

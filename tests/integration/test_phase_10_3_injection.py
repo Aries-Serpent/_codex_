@@ -36,25 +36,25 @@ class TestTFIDFScorer:
     def test_tfidf_scorer_initialization(self):
         """Test scorer initializes correctly."""
         scorer = TFIDFScorer()
-        assert scorer.vocabulary == {}
-        assert scorer.document_frequencies == {}
-        assert scorer.num_documents == 0
+        assert scorer.vocabulary == {}, "vocabulary is not valid"
+        assert scorer.document_frequencies == {}, "document_frequencies is not valid"
+        assert scorer.num_documents == 0, "num_documents is not valid"
 
     def test_tokenization_basic(self):
         """Test tokenization of simple text."""
         scorer = TFIDFScorer()
         tokens = scorer._tokenize("hello world test")
-        assert len(tokens) == 3
+        assert len(tokens) == 3, "Tokens must not be empty"
         assert all(t in ["hello", "world", "test"] for t in tokens)
 
     def test_tokenization_with_special_chars(self):
         """Test tokenization handles special characters."""
         scorer = TFIDFScorer()
         tokens = scorer._tokenize("Hello-World! Test@123 abc")
-        assert "hello" in tokens
-        assert "world" in tokens
-        assert "test" in tokens
-        assert "abc" in tokens
+        assert "hello" in tokens, "Condition must be true"
+        assert "world" in tokens, "Condition must be true"
+        assert "test" in tokens, "Condition must be true"
+        assert "abc" in tokens, "Condition must be true"
 
     def test_build_vocab(self):
         """Test vocabulary building."""
@@ -62,10 +62,10 @@ class TestTFIDFScorer:
         docs = ["hello world", "world peace", "hello peace world"]
         scorer.build_vocab(docs)
 
-        assert scorer.num_documents == 3
-        assert len(scorer.vocabulary) > 0
-        assert scorer.document_frequencies.get("hello") == 2
-        assert scorer.document_frequencies.get("world") == 3
+        assert scorer.num_documents == 3, "num_documents is not valid"
+        assert len(scorer.vocabulary) > 0, "Collection must not be empty"
+        assert scorer.document_frequencies.get("hello") == 2, "sc is not valid"
+        assert scorer.document_frequencies.get("world") == 3, "sc is not valid"
 
     def test_similarity_identical_docs(self):
         """Test perfect similarity for identical documents."""
@@ -74,7 +74,7 @@ class TestTFIDFScorer:
         scorer.build_vocab(docs)
 
         similarity = scorer.score_similarity("test document", "test document")
-        assert similarity > 0.95
+        assert similarity > 0.95, "similarity must be greater than zero"
 
     def test_similarity_different_docs(self):
         """Test low similarity for dissimilar documents."""
@@ -83,7 +83,7 @@ class TestTFIDFScorer:
         scorer.build_vocab(docs)
 
         similarity = scorer.score_similarity("hello world", "test string")
-        assert similarity < 0.5
+        assert similarity < 0.5, "similarity is not valid"
 
     def test_similarity_partial_overlap(self):
         """Test partial overlap in documents."""
@@ -94,7 +94,7 @@ class TestTFIDFScorer:
         similarity = scorer.score_similarity(
             "python testing framework", "python testing"
         )
-        assert 0.5 < similarity <= 1.0  # Allow for perfect match
+        assert 0.5 < similarity <= 1.0, "5 is not valid"
 
     def test_similarity_empty_query(self):
         """Test similarity with empty query returns 0."""
@@ -103,7 +103,7 @@ class TestTFIDFScorer:
         scorer.build_vocab(docs)
 
         similarity = scorer.score_similarity("", "hello world")
-        assert similarity == 0.0
+        assert similarity == 0.0, "similarity is not valid"
 
     def test_similarity_empty_target(self):
         """Test similarity with empty target returns 0."""
@@ -112,7 +112,7 @@ class TestTFIDFScorer:
         scorer.build_vocab(docs)
 
         similarity = scorer.score_similarity("hello world", "")
-        assert similarity == 0.0
+        assert similarity == 0.0, "similarity is not valid"
 
 
 class TestContextScorer:
@@ -145,12 +145,12 @@ class TestContextScorer:
     def test_scorer_initialization(self):
         """Test scorer initializes without errors."""
         scorer = ContextScorer(pattern_file=".codex/patterns/ci_failure_patterns.yaml")
-        assert scorer is not None
+        assert scorer is not None, "scorer must be initialized"
 
     def test_compute_domain_score_exact_match(self, base_pattern, base_session_metadata):
         """Test domain scoring for exact match."""
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
-        
+
         # Build vocabulary for TF-IDF matching
         docs = [
             "CI/CD GitHub Actions workflow GitHub workflow CI failure",
@@ -158,9 +158,9 @@ class TestContextScorer:
             "Test coverage metrics code coverage",
         ]
         scorer.tfidf.build_vocab(docs)
-        
+
         score = scorer._compute_domain_score(base_pattern, base_session_metadata)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
         # Score may be 0 with vocab built from different docs, but should be valid
         assert isinstance(score, float)
 
@@ -168,20 +168,20 @@ class TestContextScorer:
         """Test domain scoring with empty metadata."""
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_domain_score(base_pattern, {})
-        assert score == 0.5  # Should return default
+        assert score == 0.5, "score is not valid"
 
     def test_compute_domain_score_no_vocabulary(self, base_pattern, base_session_metadata):
         """Test domain scoring without pre-built vocabulary."""
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_domain_score(base_pattern, base_session_metadata)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_compute_recency_score_recent(self, base_pattern):
         """Test recency scoring for recent patterns."""
         base_pattern["last_seen"] = datetime.now().isoformat()
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_recency_score(base_pattern)
-        assert score > 0.8
+        assert score > 0.8, "score must be greater than zero"
 
     def test_compute_recency_score_old(self, base_pattern):
         """Test recency scoring for old patterns."""
@@ -189,56 +189,56 @@ class TestContextScorer:
         base_pattern["last_seen"] = old_date
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_recency_score(base_pattern)
-        assert score < 0.2
+        assert score < 0.2, "score is not valid"
 
     def test_compute_recency_score_missing(self, base_pattern):
         """Test recency scoring with missing date."""
         del base_pattern["last_seen"]
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_recency_score(base_pattern)
-        assert score == 0.5
+        assert score == 0.5, "score is not valid"
 
     def test_compute_success_score_high(self, base_pattern):
         """Test success scoring for high success rate."""
         base_pattern["success_rate"] = 0.95
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_success_score(base_pattern)
-        assert score > 0.9
+        assert score > 0.9, "score must be greater than zero"
 
     def test_compute_success_score_low(self, base_pattern):
         """Test success scoring for low success rate."""
         base_pattern["success_rate"] = 0.1
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_success_score(base_pattern)
-        assert score < 0.2
+        assert score < 0.2, "score is not valid"
 
     def test_compute_success_score_percentage(self, base_pattern):
         """Test success scoring with percentage values."""
         base_pattern["success_rate"] = 85.0
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_success_score(base_pattern)
-        assert 0.8 < score < 0.9
+        assert 0.8 < score < 0.9, "8 is not valid"
 
     def test_compute_popularity_score_zero(self, base_pattern):
         """Test popularity scoring with zero executions."""
         base_pattern["execution_count"] = 0
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_popularity_score(base_pattern)
-        assert 0.0 <= score < 0.2
+        assert 0.0 <= score < 0.2, "0 is not valid"
 
     def test_compute_popularity_score_low(self, base_pattern):
         """Test popularity scoring with low execution count."""
         base_pattern["execution_count"] = 5
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_popularity_score(base_pattern)
-        assert 0.1 <= score <= 0.5
+        assert 0.1 <= score <= 0.5, "1 is not valid"
 
     def test_compute_popularity_score_high(self, base_pattern):
         """Test popularity scoring with high execution count."""
         base_pattern["execution_count"] = 500
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer._compute_popularity_score(base_pattern)
-        assert score > 0.6
+        assert score > 0.6, "score must be greater than zero"
 
     def test_compute_applicability_score_match(self, base_pattern, base_session_metadata):
         """Test applicability scoring for matching agents."""
@@ -246,7 +246,7 @@ class TestContextScorer:
         score = scorer._compute_applicability_score(
             base_pattern, base_session_metadata
         )
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"
 
     def test_compute_applicability_score_no_match(self, base_pattern, base_session_metadata):
         """Test applicability scoring for non-matching agents."""
@@ -255,7 +255,7 @@ class TestContextScorer:
         score = scorer._compute_applicability_score(
             base_pattern, base_session_metadata
         )
-        assert score < 0.5
+        assert score < 0.5, "score is not valid"
 
     def test_compute_applicability_score_partial_match(self, base_pattern, base_session_metadata):
         """Test applicability scoring for partial match."""
@@ -271,13 +271,13 @@ class TestContextScorer:
         score = scorer._compute_applicability_score(
             base_pattern, base_session_metadata
         )
-        assert 0.3 < score < 0.7
+        assert 0.3 < score < 0.7, "3 is not valid"
 
     def test_score_pattern_basic(self, base_pattern, base_session_metadata):
         """Test pattern scoring."""
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         score = scorer.score_pattern(base_pattern, base_session_metadata)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_score_pattern_with_custom_weights(self, base_pattern, base_session_metadata):
         """Test pattern scoring with custom weights."""
@@ -290,13 +290,13 @@ class TestContextScorer:
             "applicability": 0.05,
         }
         score = scorer.score_pattern(base_pattern, base_session_metadata, weights)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_select_patterns_empty(self, base_session_metadata):
         """Test pattern selection with empty list."""
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         selected = scorer.select_patterns(base_session_metadata, top_k=15, patterns=[])
-        assert len(selected) == 0
+        assert len(selected) == 0, "Selected must not be empty"
 
     def test_select_patterns_below_threshold(self, base_pattern, base_session_metadata):
         """Test pattern selection filters by minimum score."""
@@ -308,7 +308,7 @@ class TestContextScorer:
             patterns=[base_pattern],
         )
         # Depending on scoring, this may or may not pass threshold
-        assert len(selected) <= 1
+        assert len(selected) <= 1, "Selected must not be empty"
 
     def test_select_patterns_top_k(self, base_pattern, base_session_metadata):
         """Test pattern selection respects top-K limit."""
@@ -326,7 +326,7 @@ class TestContextScorer:
             min_score=0.0,
             patterns=patterns,
         )
-        assert len(selected) <= 10
+        assert len(selected) <= 10, "Selected must not be empty"
 
     def test_select_patterns_sorted_by_score(self, base_pattern, base_session_metadata):
         """Test pattern selection returns patterns sorted by score."""
@@ -353,7 +353,7 @@ class TestContextScorer:
 
         if len(selected) > 1:
             for i in range(len(selected) - 1):
-                assert selected[i].score >= selected[i + 1].score
+                assert selected[i].score >= selected[i + 1].score, "score must be greater than zero"
 
 
 class TestPatternInjectionWorkflow:
@@ -396,7 +396,7 @@ class TestPatternInjectionWorkflow:
         elapsed_ms = (time.time() - start_time) * 1000
 
         assert elapsed_ms < 100.0, f"Scoring took {elapsed_ms}ms, should be <100ms"
-        assert len(selected) > 0
+        assert len(selected) > 0, "Selected must not be empty"
 
     def test_injection_target_15_patterns(self):
         """Test that injection targets 10-20 patterns (median 15)."""
@@ -433,7 +433,7 @@ class TestPatternInjectionWorkflow:
         )
 
         # Should select between 10-20 patterns with lower threshold
-        assert 5 <= len(selected) <= 20  # Relaxed constraint for test
+        assert 5 <= len(selected) <= 20, "Selected must not be empty"
 
     def test_injection_relevance_score_80_percent(self):
         """Test that average relevance score exceeds 80%."""
@@ -470,7 +470,7 @@ class TestPatternInjectionWorkflow:
 
         if len(selected) > 0:
             avg_score = sum(p.score for p in selected) / len(selected)
-            assert avg_score >= 0.65
+            assert avg_score >= 0.65, "avg_score must be greater than zero"
 
     def test_ooda_cycle_improvement(self):
         """Test that OODA cycle time is improved with context injection."""
@@ -514,11 +514,11 @@ class TestPatternInjectionWorkflow:
         injected_time = time.time() - start_injected
 
         # Both should be fast
-        assert baseline_time < 0.1
-        assert injected_time < 0.1
+        assert baseline_time < 0.1, "baseline_time is not valid"
+        assert injected_time < 0.1, "injected_time is not valid"
 
         # Injected context should provide results
-        assert len(injected) > 0
+        assert len(injected) > 0, "Injected must not be empty"
 
 
 class TestScorablePatternTypes:
@@ -546,7 +546,7 @@ class TestScorablePatternTypes:
         }
 
         score = scorer.score_pattern(pattern, session)
-        assert score > 0.65  # Relaxed from 0.7
+        assert score > 0.65, "score must be greater than zero"
 
     def test_score_security_pattern(self):
         """Test scoring of security-related patterns."""
@@ -570,7 +570,7 @@ class TestScorablePatternTypes:
         }
 
         score = scorer.score_pattern(pattern, session)
-        assert score > 0.6
+        assert score > 0.6, "score must be greater than zero"
 
     def test_score_test_coverage_pattern(self):
         """Test scoring of test coverage patterns."""
@@ -594,7 +594,7 @@ class TestScorablePatternTypes:
         }
 
         score = scorer.score_pattern(pattern, session)
-        assert score > 0.5
+        assert score > 0.5, "score must be greater than zero"
 
 
 class TestContextInjectionEdgeCases:
@@ -605,7 +605,7 @@ class TestContextInjectionEdgeCases:
         scorer = ContextScorer(pattern_file="/nonexistent/file.yaml")
         session = {"task_description": "test", "domain": "test"}
         selected = scorer.select_patterns(session, top_k=15, patterns=[])
-        assert len(selected) == 0
+        assert len(selected) == 0, "Selected must not be empty"
 
     def test_all_patterns_below_threshold(self):
         """Test when all patterns are below minimum score."""
@@ -635,7 +635,7 @@ class TestContextInjectionEdgeCases:
             session, top_k=15, min_score=0.95, patterns=patterns
         )
         # May have 0 results or very few
-        assert len(selected) <= 5
+        assert len(selected) <= 5, "Selected must not be empty"
 
     def test_single_pattern(self):
         """Test with single pattern."""
@@ -661,7 +661,7 @@ class TestContextInjectionEdgeCases:
         selected = scorer.select_patterns(
             session, top_k=15, min_score=0.0, patterns=[pattern]
         )
-        assert len(selected) <= 1
+        assert len(selected) <= 1, "Selected must not be empty"
 
     def test_very_large_patterns_list(self):
         """Test with very large patterns list."""
@@ -696,8 +696,8 @@ class TestContextInjectionEdgeCases:
         )
         elapsed = time.time() - start
 
-        assert len(selected) <= 15
-        assert elapsed < 1.0  # Should handle 500 patterns in <1s
+        assert len(selected) <= 15, "Selected must not be empty"
+        assert elapsed < 1.0, "elapsed is not valid"
 
 
 class TestA2BTestingFramework:
@@ -739,11 +739,11 @@ class TestA2BTestingFramework:
         group_b_elapsed = time.time() - group_b_time
 
         # Both should complete quickly
-        assert group_a_elapsed < 1.0
-        assert group_b_elapsed < 1.0
+        assert group_a_elapsed < 1.0, "group_a_elapsed is not valid"
+        assert group_b_elapsed < 1.0, "group_b_elapsed is not valid"
 
         # Difference should be minimal (overhead <100ms per call)
-        assert abs(group_b_elapsed - group_a_elapsed) < 1.0
+        assert abs(group_b_elapsed - group_a_elapsed) < 1.0, "Condition must be true"
 
 
 # Run all tests

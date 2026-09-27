@@ -101,7 +101,7 @@ def test_multiple_error_types():
 
     for err in errors:
         assert isinstance(err, MCPError)
-        assert err.code
+        assert err.code, "Condition must be true"
 
 
 def test_error_propagation():

@@ -146,7 +146,7 @@ class LinkValidator:
         try:
             result = urlparse(url)
             return bool(result.scheme and result.netloc)
-        except Exception:
+        except Exception as _err:
             return False
 
     def find_redirect_chains(self) -> List[Tuple[Path, str, str]]:
@@ -176,7 +176,7 @@ class TestInternalLinkValidity:
         """Test that internal links are extracted correctly."""
         content = "[Link to file](file.md) and [External](https://example.com)"
         links = validator.extract_links(content)
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"
         assert any(url == "file.md" for _, url, _ in links)
 
     def test_internal_links_reference_existing_files(self, validator):
@@ -189,16 +189,16 @@ class TestInternalLinkValidity:
         """Test that relative links are resolved correctly."""
         content = "[Sibling](../other.md) and [Child](subdir/file.md)"
         links = validator.extract_links(content)
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"
         link_types = [lt for _, _, lt in links]
-        assert "relative" in link_types
+        assert "relative" in link_types, "Condition must be true"
 
     def test_absolute_link_resolution(self, validator):
         """Test that absolute links are resolved correctly."""
         content = "[Docs](/docs/readme.md)"
         links = validator.extract_links(content)
-        assert len(links) >= 1
-        assert links[0][2] == "absolute"
+        assert len(links) >= 1, "Links must not be empty"
+        assert links[0][2] == "absolute", "Condition must be true"
 
     def test_missing_link_detection(self, validator):
         """Test that missing links are detected."""
@@ -226,14 +226,14 @@ class TestExternalLinkValidity:
         content = "[GitHub](https://github.com) and [Google](https://google.com)"
         links = validator.extract_links(content)
         external = [l for l in links if l[2] == "external"]
-        assert len(external) >= 2
+        assert len(external) >= 2, "External must not be empty"
 
     def test_https_links_preferred(self, validator):
         """Test that HTTPS links are properly recognized."""
         content = "[Secure](https://example.com) and [Insecure](http://example.com)"
         links = validator.extract_links(content)
         external = [url for _, url, lt in links if lt == "external"]
-        assert len(external) >= 2
+        assert len(external) >= 2, "External must not be empty"
 
     def test_external_link_format_validation(self, validator):
         """Test that external link formats are validated."""
@@ -246,21 +246,21 @@ class TestExternalLinkValidity:
         invalid = "[Bad](not_a_url)"
         links = validator.extract_links(invalid)
         # Should extract the link
-        assert len(links) >= 1
+        assert len(links) >= 1, "Links must not be empty"
 
     def test_url_with_parameters_validation(self, validator):
         """Test validation of URLs with query parameters."""
         content = "[Search](https://example.com/search?q=test&limit=10)"
         links = validator.extract_links(content)
-        assert len(links) >= 1
-        assert "?" in links[0][1]
+        assert len(links) >= 1, "Links must not be empty"
+        assert "?" in links[0][1], "Condition must be true"
 
     def test_url_with_fragments_validation(self, validator):
         """Test validation of URLs with fragments."""
         content = "[Section](https://example.com/docs#section-1)"
         links = validator.extract_links(content)
-        assert len(links) >= 1
-        assert "#" in links[0][1]
+        assert len(links) >= 1, "Links must not be empty"
+        assert ", "Condition must be true"
 
 
 class TestAnchorLinkValidation:
@@ -276,19 +276,19 @@ class TestAnchorLinkValidation:
         content = "[Link](#section) and [Other](#subsection)"
         links = validator.extract_links(content)
         anchors = [url for _, url, lt in links if lt == "anchor"]
-        assert len(anchors) >= 2
+        assert len(anchors) >= 2, "Anchors must not be empty"
 
     def test_heading_anchor_detection(self, validator):
         """Test that heading anchors are detected."""
         content = "# Main Section\n## Subsection"
         anchors = validator.extract_anchors(content)
-        assert len(anchors) >= 2
+        assert len(anchors) >= 2, "Anchors must not be empty"
 
     def test_explicit_anchor_detection(self, validator):
         """Test that explicit anchors are detected."""
         content = "## Section {#custom-id}"
         anchors = validator.extract_anchors(content)
-        assert "custom-id" in anchors
+        assert "custom-id" in anchors, "Condition must be true"
 
     def test_anchor_link_pointing_to_valid_anchor(self, validator):
         """Test that anchor links point to valid anchors."""
@@ -298,14 +298,14 @@ class TestAnchorLinkValidation:
         # Extract anchor from link
         link_anchors = [url.lstrip("#") for _, url, lt in links if lt == "anchor"]
         # Should have proper anchors defined
-        assert len(anchors) > 0 or len(link_anchors) == 0
+        assert len(anchors) > 0 or len(link_anchors) == 0, "Anchors must not be empty"
 
     def test_anchor_case_sensitivity(self, validator):
         """Test anchor case sensitivity handling."""
         content = "## My Section\n\n[Link](#my-section)"
         anchors = validator.extract_anchors(content)
         # Anchors should be lowercase
-        assert any(a.islower() or a == "" for a in anchors if a)
+        assert any(a.islower() or a == "" for a in anchors if a), "a is not valid"
 
     @pytest.mark.edge_case
     def test_anchor_with_special_characters(self, validator):
@@ -335,13 +335,13 @@ class TestBrokenReferenceDetection:
         content = "This has empty link and [good](https://example.com)"
         links = validator.extract_links(content)
         # Should extract at least the valid link
-        assert len(links) >= 1
+        assert len(links) >= 1, "Links must not be empty"
 
     def test_link_text_emptiness_handling(self, validator):
         """Test handling of links with empty text."""
         content = "[](https://example.com) is a link with empty text"
         links = validator.extract_links(content)
-        assert len(links) >= 1
+        assert len(links) >= 1, "Links must not be empty"
 
     @pytest.mark.edge_case
     def test_malformed_link_handling(self, validator):
@@ -380,7 +380,7 @@ class TestLinkConsistency:
             content = md_file.read_text(encoding="utf-8")
             links = validator.extract_links(content)
             # Should use consistent markdown link format
-            assert len(links) >= 0
+            assert len(links) >= 0, "Links must not be empty"
 
     def test_repository_url_consistency(self, validator):
         """Test that repository URLs are consistent."""
@@ -395,7 +395,7 @@ class TestLinkConsistency:
                     if repo_part:
                         repo_urls.add(repo_part)
         # Should have consistent repo references
-        assert len(repo_urls) <= 5 or len(repo_urls) == 0
+        assert len(repo_urls) <= 5 or len(repo_urls) == 0, "Repo_urls must not be empty"
 
 
 class TestLinkAccessibility:
@@ -422,7 +422,7 @@ class TestLinkAccessibility:
         content = '[Link](https://example.com "Example")'
         links = validator.extract_links(content)
         # Should handle title attributes gracefully
-        assert len(links) >= 1
+        assert len(links) >= 1, "Links must not be empty"
 
     def test_media_file_links_valid(self, validator):
         """Test that media file links are valid."""
@@ -431,7 +431,7 @@ class TestLinkAccessibility:
             images = re.findall(r"!\[([^\]]*)\]\(([^)]+)\)", content)
             for alt, src in images[:3]:
                 # Image sources should be valid paths or URLs
-                assert src.strip()
+                assert src.strip(), "Condition must be true"
 
     def test_broken_image_links_detected(self, validator):
         """Test that broken image links are detected."""
@@ -455,23 +455,23 @@ class TestLinkNormalization:
         """Test that trailing slashes are handled consistently."""
         content = "[A](https://example.com/) and [B](https://example.com)"
         links = validator.extract_links(content)
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"
 
     def test_url_parameter_ordering(self, validator):
         """Test consistent URL parameter ordering."""
         content = "[A](https://example.com?a=1&b=2) and [B](https://example.com?b=2&a=1)"
         links = validator.extract_links(content)
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"
 
     def test_fragment_identifier_normalization(self, validator):
         """Test fragment identifier normalization."""
         content = "[A](#Section) and [B](#section)"
         links = validator.extract_links(content)
         # Different fragments, should both be extractable
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"
 
     def test_case_sensitivity_in_paths(self, validator):
         """Test case sensitivity in file paths."""
         content = "[File](./File.md) and [file](./file.md)"
         links = validator.extract_links(content)
-        assert len(links) >= 2
+        assert len(links) >= 2, "Links must not be empty"

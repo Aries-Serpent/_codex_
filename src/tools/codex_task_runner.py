@@ -169,13 +169,15 @@ def ensure_encoding_support(file_path: Path) -> dict:
         if "encoding=" not in text:
             text = re.sub(
                 r"(def\s+\w+\s*\()([^\)]*)\)",
-                lambda m: m.group(1)
-                + (
-                    m.group(2)
-                    + (", " if m.group(2).strip() else "")
-                    + 'encoding: str = "utf-8", errors: str = "strict"'
-                )
-                + ")",
+                lambda m: (
+                    m.group(1)
+                    + (
+                        m.group(2)
+                        + (", " if m.group(2).strip() else "")
+                        + 'encoding: str = "utf-8", errors: str = "strict"'
+                    )
+                    + ")"
+                ),
                 text,
                 count=1,
             )
@@ -233,7 +235,8 @@ def ensure_precommit():
     cfg = REPO_ROOT / ".pre-commit-config.yaml"
     if cfg.exists():
         return {"created": False, "path": str(cfg)}
-    content = textwrap.dedent("""
+    content = (
+        textwrap.dedent("""
     repos:
       - repo: https://github.com/psf/black
         rev: 24.8.0
@@ -251,7 +254,9 @@ def ensure_precommit():
             entry: bash -lc 'pytest -q || true'
             language: system
             pass_filenames: false
-    """).strip() + "\n"
+    """).strip()
+        + "\n"
+    )
     safe_write(cfg, content)
     return {"created": True, "path": str(cfg)}
 
@@ -274,7 +279,8 @@ def ensure_tests_matrix():
     tfile = TESTS_DIR / "test_encoding_matrix.py"
     if tfile.exists():
         return False
-    content = textwrap.dedent(r"""
+    content = (
+        textwrap.dedent(r"""
     import io, os, tempfile, pathlib, pytest
 
     @pytest.mark.parametrize("enc", ["utf-8", "cp1252", "utf-16"])
@@ -287,7 +293,9 @@ def ensure_tests_matrix():
             assert isinstance(txt_auto, str)
             txt_explicit = p.read_text(encoding=enc, errors="strict")
             assert data == txt_explicit
-    """).strip() + "\n"
+    """).strip()
+        + "\n"
+    )
     safe_write(tfile, content)
     return True
 

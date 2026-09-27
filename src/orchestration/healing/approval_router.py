@@ -131,9 +131,7 @@ class ApprovalRouter:
         evidence = [h.description for h in strategy.actions]
 
         # Summarize actions
-        actions_summary = [
-            f"{a.action_type.value}: {a.description}" for a in strategy.actions
-        ]
+        actions_summary = [f"{a.action_type.value}: {a.description}" for a in strategy.actions]
 
         # Build risk assessment
         risk_assessment = {
@@ -223,8 +221,7 @@ class ApprovalRouter:
         cls._approval_history.append(decision)
 
         logger.info(
-            f"Recorded approval decision for {request_id}: "
-            f"{'approved' if approved else 'rejected'}"
+            f"Recorded approval decision for {request_id}: {'approved' if approved else 'rejected'}"
         )
 
         return decision
@@ -279,9 +276,7 @@ class ApprovalRouter:
             request = cls._pending_requests[request_id]
             request.status = ApprovalStatus.ESCALATED
 
-            logger.warning(
-                f"Escalated approval request {request_id} to governance: {reason}"
-            )
+            logger.warning(f"Escalated approval request {request_id} to governance: {reason}")
 
     @classmethod
     def get_pending_requests(cls, tier: Optional[str] = None) -> List[ApprovalRequest]:
@@ -330,18 +325,14 @@ class ApprovalRouter:
                         approval_times.append(duration)
                         break
 
-        avg_approval_time = (
-            sum(approval_times) / len(approval_times) if approval_times else 0
-        )
+        avg_approval_time = sum(approval_times) / len(approval_times) if approval_times else 0
 
         metrics = {
             "total_requests": len(history),
             "approved": sum(1 for d in history if d.approved),
             "rejected": sum(1 for d in history if not d.approved),
             "approval_success_rate": (
-                sum(1 for d in history if d.approved) / len(history)
-                if history
-                else 0
+                sum(1 for d in history if d.approved) / len(history) if history else 0
             ),
             "avg_approval_time_sec": avg_approval_time,
             "pending_count": len(cls._pending_requests),

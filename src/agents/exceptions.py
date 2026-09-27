@@ -19,7 +19,6 @@ class AgentError(Exception):
     """Base exception for all agent-related errors."""
 
 
-
 class AgentImportError(AgentError, ImportError):
     """
     Raised when an optional dependency is missing.
@@ -56,35 +55,28 @@ class AgentConfigError(AgentError, ValueError):
     """Raised when agent configuration is invalid."""
 
 
-
 class AgentValidationError(AgentError, ValueError):
     """Raised when validation fails (e.g., invariants violated)."""
-
 
 
 class AgentExecutionError(AgentError, RuntimeError):
     """Raised when agent execution encounters an error."""
 
 
-
 class EntanglementError(AgentError):
     """Raised when entanglement operations fail."""
-
 
 
 class GaugeError(AgentError):
     """Raised when gauge symmetry or conservation checks fail."""
 
 
-
 class ContinuityError(AgentValidationError):
     """Raised when continuity equation is violated."""
 
 
-
 class BoundCheckError(AgentValidationError):
     """Raised when physical bounds are violated (e.g., |j| > c)."""
-
 
 
 # Physics-specific exceptions for test compatibility
@@ -92,20 +84,16 @@ class PhysicsError(AgentError):
     """Base exception for physics-related errors."""
 
 
-
 class ValidationError(AgentValidationError):
     """Raised when validation fails - alias for backward compatibility."""
-
 
 
 class ConvergenceError(PhysicsError):
     """Raised when iterative physics calculations fail to converge."""
 
 
-
 class InvariantViolationError(PhysicsError):
     """Raised when physical invariants are violated."""
-
 
 
 class CausalityViolationError(PhysicsError):

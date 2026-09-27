@@ -57,7 +57,9 @@ class LocalTransformersAdapter(ModelAdapter):
 
             logger.info("Loading model: %s", self.model_path)
 
-            self.tokenizer = load_from_pretrained(AutoTokenizer, self.model_path)  # Uses revision pinning for security
+            self.tokenizer = load_from_pretrained(
+                AutoTokenizer, self.model_path
+            )  # Uses revision pinning for security
             self.model = load_from_pretrained(  # Uses revision pinning for security
                 AutoModelForCausalLM,
                 self.model_path,

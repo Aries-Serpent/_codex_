@@ -368,9 +368,9 @@ class TestLogCollection:
         stdout_source.write("INFO: Processing request\n")
 
         logs = log_collector.collect_from_stdout()
-        assert len(logs) == 2
-        assert "Application started" in logs[0]
-        assert "Processing request" in logs[1]
+        assert len(logs) == 2, "Logs must not be empty"
+        assert "Application started" in logs[0], "Condition must be true"
+        assert "Processing request" in logs[1], "Condition must be true"
 
     def test_collect_from_stderr(self, log_collector):
         """Test collecting logs from stderr."""
@@ -379,9 +379,9 @@ class TestLogCollection:
         stderr_source.write("ERROR: Startup failed\n")
 
         logs = log_collector.collect_from_stderr()
-        assert len(logs) == 2
-        assert "Configuration error" in logs[0]
-        assert "Startup failed" in logs[1]
+        assert len(logs) == 2, "Logs must not be empty"
+        assert "Configuration error" in logs[0], "Error should be raised or set"
+        assert "Startup failed" in logs[1], "Condition must be true"
 
     def test_collect_from_file(self, log_collector, tmp_path):
         """Test collecting logs from file."""
@@ -389,9 +389,9 @@ class TestLogCollection:
         log_file.write_text("INFO: Log line 1\nINFO: Log line 2\nWARN: Log line 3\n")
 
         logs = log_collector.collect_from_file(log_file)
-        assert len(logs) == 3
-        assert "Log line 1" in logs[0]
-        assert "Log line 3" in logs[2]
+        assert len(logs) == 3, "Logs must not be empty"
+        assert "Log line 1" in logs[0], "Condition must be true"
+        assert "Log line 3" in logs[2], "Condition must be true"
 
     def test_multi_source_aggregation(self, log_collector):
         """Test aggregating logs from multiple sources."""
@@ -399,9 +399,9 @@ class TestLogCollection:
         log_collector.sources["stderr"].write("STDERR: Message 2\n")
 
         aggregated = log_collector.aggregate()
-        assert len(aggregated) == 2
-        assert any("STDOUT" in log for log in aggregated)
-        assert any("STDERR" in log for log in aggregated)
+        assert len(aggregated) == 2, "Aggregated must not be empty"
+        assert any("STDOUT" in log for log in aggregated), "Condition must be true"
+        assert any("STDERR" in log for log in aggregated), "Condition must be true"
 
 
 # ============================================================================
@@ -417,36 +417,36 @@ class TestLogParsing:
         json_log = '{"level": "INFO", "message": "Test", "request_id": "123"}'
         parsed = log_parser.parse_json(json_log)
 
-        assert parsed["level"] == "INFO"
-        assert parsed["message"] == "Test"
-        assert parsed["request_id"] == "123"
+        assert parsed["level"] == "INFO", "Condition must be true"
+        assert parsed["message"] == "Test", "Condition must be true"
+        assert parsed["request_id"] == "123", "Condition must be true"
 
     def test_parse_keyvalue_logs(self, log_parser):
         """Test parsing key=value log format."""
         kv_log = 'level=INFO message="Test message" request_id=123'
         parsed = log_parser.parse_keyvalue(kv_log)
 
-        assert parsed.get("level") == "INFO"
-        assert parsed.get("message") == "Test message"
-        assert parsed.get("request_id") == "123"
+        assert parsed.get("level") == "INFO", "Condition must be true"
+        assert parsed.get("message") == "Test message", "Condition must be true"
+        assert parsed.get("request_id") == "123", "Condition must be true"
 
     def test_parse_unstructured_logs(self, log_parser):
         """Test extracting data from unstructured logs."""
         unstructured = "This is a simple log message with multiple words"
         parsed = log_parser.parse_unstructured(unstructured)
 
-        assert parsed["raw"] == unstructured
-        assert parsed["word_count"] == 9
-        assert parsed["length"] == len(unstructured)
+        assert parsed["raw"] == unstructured, "Condition must be true"
+        assert parsed["word_count"] == 9, "Count must be greater than zero"
+        assert parsed["length"] == len(unstructured), "Unstructured must not be empty"
 
     def test_field_standardization(self, log_parser):
         """Test field standardization."""
         data = {"Request-ID": "123", "USER-Name": "alice", "error_code": "ERR_001"}
         standardized = log_parser.standardize_fields(data)
 
-        assert "request_id" in standardized
-        assert "user_name" in standardized
-        assert standardized["error_code"] == "ERR_001"
+        assert "request_id" in standardized, "Condition must be true"
+        assert "user_name" in standardized, "Condition must be true"
+        assert standardized["error_code"] == "ERR_001", "Error should be raised or set"
 
 
 # ============================================================================
@@ -461,9 +461,9 @@ class TestLogEnrichment:
         """Test adding service_name tag to logs."""
         enriched = log_enricher.enrich(sample_log_entry)
 
-        assert enriched.fields["service_name"] == "test-service"
-        assert enriched.fields["pod_id"] == "test-pod-123"
-        assert enriched.fields["container_id"] == "test-container-456"
+        assert enriched.fields["service_name"] == "test-service", "Condition must be true"
+        assert enriched.fields["pod_id"] == "test-pod-123", "Condition must be true"
+        assert enriched.fields["container_id"] == "test-container-456", "Condition must be true"
 
     def test_timestamp_standardization(self, log_enricher):
         """Test timestamp standardization to UTC."""
@@ -477,14 +477,14 @@ class TestLogEnrichment:
         )
 
         standardized = log_enricher.standardize_timestamp(log_entry)
-        assert standardized.timestamp.tzinfo is not None
-        assert standardized.timestamp.tzinfo == timezone.utc
+        assert standardized.timestamp.tzinfo is not None, "tzinfo must be initialized"
+        assert standardized.timestamp.tzinfo == timezone.utc, "tzinfo is not valid"
 
     def test_hostname_enrichment(self, log_enricher, sample_log_entry):
         """Test hostname field enrichment."""
         enriched = log_enricher.enrich(sample_log_entry)
 
-        assert enriched.fields["hostname"] == "test-host"
+        assert enriched.fields["hostname"] == "test-host", "Condition must be true"
 
 
 # ============================================================================
@@ -498,20 +498,20 @@ class TestLogRetentionPolicies:
     def test_retention_policy_archive_trigger(self, retention_policy):
         """Test retention policy archive trigger logic."""
         # Log younger than archive threshold
-        assert not retention_policy.should_archive(5)
+        assert not retention_policy.should_archive(5), "Condition must be true"
 
         # Log older than archive threshold
-        assert retention_policy.should_archive(7)
-        assert retention_policy.should_archive(10)
+        assert retention_policy.should_archive(7), "Condition must be true"
+        assert retention_policy.should_archive(10), "Condition must be true"
 
     def test_retention_policy_deletion(self, retention_policy):
         """Test retention policy deletion logic."""
         # Log within retention window
-        assert not retention_policy.should_delete(15)
+        assert not retention_policy.should_delete(15), "Condition must be true"
 
         # Log exceeding retention window
-        assert retention_policy.should_delete(30)
-        assert retention_policy.should_delete(40)
+        assert retention_policy.should_delete(30), "Condition must be true"
+        assert retention_policy.should_delete(40), "Condition must be true"
 
     def test_custom_retention_policies(self):
         """Test different retention policy configurations."""
@@ -523,11 +523,11 @@ class TestLogRetentionPolicies:
         )
 
         # Short-term: archive after 1 day
-        assert short_term.should_archive(1)
+        assert short_term.should_archive(1), "sh is not valid"
 
         # Long-term: archive after 30 days
-        assert not long_term.should_archive(15)
-        assert long_term.should_archive(30)
+        assert not long_term.should_archive(15), "Condition must be true"
+        assert long_term.should_archive(30), "Condition must be true"
 
 
 # ============================================================================
@@ -545,13 +545,13 @@ class TestFullTextSearch:
 
         # Search for single term
         results = log_store.search("login")
-        assert len(results) == 1
-        assert "login" in results[0]["message"].lower()
+        assert len(results) == 1, "Results must not be empty"
+        assert "login" in results[0]["message"].lower(), "Result must not be empty"
 
         # Search for multiple terms
         results = log_store.search("database connection")
-        assert len(results) == 1
-        assert "Database connection" in results[0]["message"]
+        assert len(results) == 1, "Results must not be empty"
+        assert "Database connection" in results[0]["message"], "Result must not be empty"
 
     def test_search_performance_at_scale(self, log_store):
         """Test search performance with large log volume."""
@@ -576,8 +576,8 @@ class TestFullTextSearch:
         results = log_store.search("important")
         elapsed = time.time() - start
 
-        assert len(results) == 1000
-        assert elapsed < 0.5  # Should complete in less than 500ms
+        assert len(results) == 1000, "Results must not be empty"
+        assert elapsed < 0.5, "elapsed is not valid"
 
 
 # ============================================================================
@@ -595,12 +595,12 @@ class TestLogFiltering:
 
         # Filter by level
         errors = log_store.filter_by_level("ERROR")
-        assert len(errors) == 1
-        assert "Database connection failed" in errors[0]["message"]
+        assert len(errors) == 1, "Errors must not be empty"
+        assert "Database connection failed" in errors[0]["message"], "Data must not be empty"
 
         # Filter by service
         auth_logs = log_store.filter_by_service("auth")
-        assert len(auth_logs) == 1
+        assert len(auth_logs) == 1, "Auth_logs must not be empty"
 
     def test_query_result_accuracy(self, log_store, sample_logs):
         """Test query result accuracy."""
@@ -613,7 +613,7 @@ class TestLogFiltering:
 
         # Time range query
         results = log_store.filter_by_time_range(start, end)
-        assert len(results) == 3  # All logs in range
+        assert len(results) == 3, "Results must not be empty"
 
 
 # ============================================================================
@@ -633,9 +633,9 @@ class TestStructuredLogging:
 
         for log_line in json_logs:
             parsed = log_parser.parse_json(log_line)
-            assert "timestamp" in parsed
-            assert "level" in parsed
-            assert "message" in parsed
+            assert "timestamp" in parsed, "Condition must be true"
+            assert "level" in parsed, "Condition must be true"
+            assert "message" in parsed, "Condition must be true"
             assert isinstance(parsed, dict)
 
 
@@ -652,9 +652,9 @@ class TestCardinalityManagement:
         # Add values up to limit
         for i in range(100):
             result = cardinality_limiter.check_cardinality("user_id", f"user-{i}")
-            assert result is True
+            assert result is True, "Result must not be empty"
 
-        assert cardinality_limiter.get_field_cardinality("user_id") == 100
+        assert cardinality_limiter.get_field_cardinality("user_id") == 100, "Condition must be true"
 
         # Limit to 100 for testing
         limiter = CardinalityLimiter(max_cardinality=100)
@@ -663,7 +663,7 @@ class TestCardinalityManagement:
 
         # Next value should be rejected
         assert limiter.check_cardinality("request_id", "req-100") is False
-        assert limiter.get_field_cardinality("request_id") == 100
+        assert limiter.get_field_cardinality("request_id") == 100, "Condition must be true"
 
 
 # ============================================================================
@@ -681,11 +681,11 @@ class TestLogAggregationIntegration:
         # Collect
         log_collector.sources["stdout"].write("level=INFO message='Test' request_id=123\n")
         logs = log_collector.collect_from_stdout()
-        assert len(logs) == 1
+        assert len(logs) == 1, "Logs must not be empty"
 
         # Parse
         parsed = log_parser.parse_keyvalue(logs[0])
-        assert "level" in parsed
+        assert "level" in parsed, "Condition must be true"
 
         # Create entry
         entry = LogEntry(
@@ -698,7 +698,7 @@ class TestLogAggregationIntegration:
 
         # Enrich
         enriched = log_enricher.enrich(entry)
-        assert enriched.fields["service_name"] is not None
+        assert enriched.fields["service_name"] is not None, "Value must be initialized"
 
         # Store
         log_dict = {
@@ -712,7 +712,7 @@ class TestLogAggregationIntegration:
 
         # Query
         results = log_store.filter_by_level("INFO")
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
 
     def test_multiple_services_aggregation(self, log_store):
         """Test aggregation of logs from multiple services."""
@@ -733,25 +733,25 @@ class TestLogAggregationIntegration:
         # Verify all services logged
         for service in services:
             results = log_store.filter_by_service(service)
-            assert len(results) == 1
+            assert len(results) == 1, "Results must not be empty"
 
     def test_log_lifecycle_management(self, retention_policy):
         """Test complete log lifecycle from creation to deletion."""
         # New log (0 days old)
-        assert not retention_policy.should_archive(0)
-        assert not retention_policy.should_delete(0)
+        assert not retention_policy.should_archive(0), "Condition must be true"
+        assert not retention_policy.should_delete(0), "Condition must be true"
 
         # Log after 5 days
-        assert not retention_policy.should_archive(5)
-        assert not retention_policy.should_delete(5)
+        assert not retention_policy.should_archive(5), "Condition must be true"
+        assert not retention_policy.should_delete(5), "Condition must be true"
 
         # Log after 7 days (archive threshold)
-        assert retention_policy.should_archive(7)
-        assert not retention_policy.should_delete(7)
+        assert retention_policy.should_archive(7), "Condition must be true"
+        assert not retention_policy.should_delete(7), "Condition must be true"
 
         # Log after 30 days (retention threshold)
-        assert retention_policy.should_archive(30)
-        assert retention_policy.should_delete(30)
+        assert retention_policy.should_archive(30), "Condition must be true"
+        assert retention_policy.should_delete(30), "Condition must be true"
 
 
 # ============================================================================
@@ -766,14 +766,14 @@ class TestErrorHandling:
         """Test handling of invalid JSON logs."""
         invalid_json = '{invalid json'
         parsed = log_parser.parse_json(invalid_json)
-        assert parsed == {}
+        assert parsed == {}, "parsed is not valid"
 
     def test_missing_required_fields(self, log_parser):
         """Test handling of logs with missing required fields."""
         incomplete_log = '{"message": "test"}'
         parsed = log_parser.parse_json(incomplete_log)
-        assert "message" in parsed
-        assert "level" not in parsed
+        assert "message" in parsed, "Condition must be true"
+        assert "level" not in parsed, "Condition must be true"
 
     def test_empty_log_handling(self, log_store):
         """Test handling of empty logs."""
@@ -787,7 +787,7 @@ class TestErrorHandling:
         )
 
         results = log_store.search("nonexistent")
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
 
 # ============================================================================
@@ -818,8 +818,8 @@ class TestPerformance:
             )
         elapsed = time.time() - start
 
-        assert len(log_store.logs) == 10000
-        assert elapsed < 5.0  # Should complete in < 5 seconds
+        assert len(log_store.logs) == 10000, "Collection must not be empty"
+        assert elapsed < 5.0, "elapsed is not valid"
 
     def test_concurrent_log_operations(self, cardinality_limiter):
         """Test concurrent cardinality checking."""
@@ -840,7 +840,7 @@ class TestPerformance:
             cardinality_limiter.get_field_cardinality(f"field_{i}")
             for i in range(4)
         )
-        assert total_cardinality == 400
+        assert total_cardinality == 400, "total_cardinality is not valid"
 
 
 # ============================================================================
@@ -859,10 +859,10 @@ class TestConfiguration:
             RetentionPolicy("production", 365, 90, compress=True),
         ]
 
-        assert len(policies) == 3
-        assert policies[0].retention_days == 7
-        assert policies[1].retention_days == 30
-        assert policies[2].retention_days == 365
+        assert len(policies) == 3, "Policies must not be empty"
+        assert policies[0].retention_days == 7, "retention_days is not valid"
+        assert policies[1].retention_days == 30, "retention_days is not valid"
+        assert policies[2].retention_days == 365, "retention_days is not valid"
 
     def test_enricher_configuration(self):
         """Test log enricher configuration."""
@@ -873,14 +873,14 @@ class TestConfiguration:
             hostname="api-host-1",
         )
 
-        assert enricher.service_name == "api-service"
-        assert enricher.pod_id == "pod-xyz"
-        assert enricher.container_id == "container-abc"
+        assert enricher.service_name == "api-service", "service_name is not valid"
+        assert enricher.pod_id == "pod-xyz", "pod_id is not valid"
+        assert enricher.container_id == "container-abc", "container_id is not valid"
 
     def test_cardinality_limiter_configuration(self):
         """Test cardinality limiter configuration."""
         limiter = CardinalityLimiter(max_cardinality=50000)
-        assert limiter.max_cardinality == 50000
+        assert limiter.max_cardinality == 50000, "max_cardinality is not valid"
 
 
 if __name__ == "__main__":

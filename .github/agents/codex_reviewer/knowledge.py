@@ -33,6 +33,12 @@ class KnowledgeGapDetector:
         """
         gaps = []
 
+        if not getattr(context, "description", "").strip():
+            gaps.append("PR description is empty; context is missing the business intent and expected behavior.")
+
+        if any(".github/workflows" in file for file in context.files_changed):
+            gaps.append("Workflow files changed; additional CI/CD behavior knowledge may be required before approving.")
+
         # Check for unfamiliar file types
         unknown_extensions = self._find_unknown_extensions(context.files_changed)
         if unknown_extensions:
@@ -51,6 +57,16 @@ class KnowledgeGapDetector:
         # Check for custom patterns
         if self._has_custom_patterns(context.files_changed):
             gaps.append("Repository-specific patterns or conventions")
+
+        head_branch = getattr(context, "head_branch", "")
+        file_names = ' '.join(getattr(context, "files_changed", [])).lower()
+        if not gaps and (
+            'quantum' in head_branch.lower()
+            or 'quantum' in file_names
+            or 'entanglement' in file_names
+            or 'superposition' in file_names
+        ):
+            gaps.append("Quantum-domain or research-specific concepts require extra review context")
 
         logger.info(f"Detected {len(gaps)} knowledge gaps")  # codeql[py/clear-text-logging-sensitive-data]
         return gaps

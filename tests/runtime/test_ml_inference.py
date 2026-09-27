@@ -41,38 +41,38 @@ class TestMLInferenceBasic:
     def test_mock_model_loading(self):
         """Test that mock model can be loaded."""
         model = MockModel()
-        assert model.is_loaded() is True
-        assert model.model_name == "test-model-v1"
+        assert model.is_loaded() is True, "Condition must be true"
+        assert model.model_name == "test-model-v1", "model_name is not valid"
 
     def test_single_inference(self):
         """Test single inference prediction."""
         model = MockModel()
         result = model.predict("test input")
-        assert len(result) == 1
-        assert result[0]["prediction"] == "output_0"
-        assert result[0]["confidence"] == 0.92
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["prediction"] == "output_0", "Result must not be empty"
+        assert result[0]["confidence"] == 0.92, "Result must not be empty"
 
     def test_batch_inference(self):
         """Test batch inference with multiple samples."""
         model = MockModel()
         results = model.predict("test input", batch_size=5)
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
         for i, result in enumerate(results):
-            assert result["prediction"] == f"output_{i}"
+            assert result["prediction"] == f"output_{i}", "Result must not be empty"
 
     def test_forward_pass(self):
         """Test model forward pass."""
         model = MockModel()
         output = model.forward({"input_ids": [1, 2, 3]})
-        assert "predictions" in output
-        assert "latency_ms" in output
-        assert output["latency_ms"] > 0
+        assert "predictions" in output, "Condition must be true"
+        assert "latency_ms" in output, "Condition must be true"
+        assert output["latency_ms"] > 0, "Value must be greater than zero"
 
     def test_model_configuration(self):
         """Test model configuration access."""
         model = MockModel()
-        assert model.config["max_tokens"] == 256
-        assert model.config["temperature"] == 0.7
+        assert model.config["max_tokens"] == 256, "Condition must be true"
+        assert model.config["temperature"] == 0.7, "Condition must be true"
 
 
 class TestMLInferencePerformance:
@@ -93,7 +93,7 @@ class TestMLInferencePerformance:
         batch_sizes = [1, 5, 10, 32]
         for batch_size in batch_sizes:
             results = model.predict("test", batch_size=batch_size)
-            assert len(results) == batch_size
+            assert len(results) == batch_size, "Results must not be empty"
 
     def test_inference_result_structure(self):
         """Test that inference results have correct structure."""
@@ -101,10 +101,10 @@ class TestMLInferencePerformance:
         results = model.predict("test input")
         result = results[0]
         assert isinstance(result, dict)
-        assert "prediction" in result
-        assert "confidence" in result
+        assert "prediction" in result, "Result must not be empty"
+        assert "confidence" in result, "Result must not be empty"
         assert isinstance(result["confidence"], float)
-        assert 0 <= result["confidence"] <= 1
+        assert 0 <= result["confidence"] <= 1, "Result must not be empty"
 
 
 class TestMLInferenceOODAIntegration:
@@ -115,7 +115,7 @@ class TestMLInferenceOODAIntegration:
         model = MockModel()
         observation = "observed data"
         predictions = model.predict(observation)
-        assert len(predictions) > 0
+        assert len(predictions) > 0, "Predictions must not be empty"
 
     def test_orient_phase_with_inference(self):
         """Test orientation using inference results."""
@@ -123,7 +123,7 @@ class TestMLInferenceOODAIntegration:
         raw_predictions = model.predict("input")
         # Orient by selecting best prediction
         oriented_result = max(raw_predictions, key=lambda x: x["confidence"])
-        assert "confidence" in oriented_result
+        assert "confidence" in oriented_result, "Result must not be empty"
 
     def test_decide_phase_inference_integration(self):
         """Test decision making with inference results."""
@@ -132,7 +132,7 @@ class TestMLInferenceOODAIntegration:
         predictions = model.predict(context["observations"][0], batch_size=2)
         # Decide: pick action based on predictions
         best_action = max(predictions, key=lambda x: x["confidence"])
-        assert best_action is not None
+        assert best_action is not None, "best_action must be initialized"
 
 
 class TestMLInferenceErrorHandling:
@@ -151,19 +151,19 @@ class TestMLInferenceErrorHandling:
     def test_model_state_after_inference(self):
         """Test that model state is consistent after inference."""
         model = MockModel()
-        assert model.is_loaded() is True
+        assert model.is_loaded() is True, "Condition must be true"
         model.predict("test")
-        assert model.is_loaded() is True
+        assert model.is_loaded() is True, "Condition must be true"
 
     def test_concurrent_inference_safety(self):
         """Test that multiple inferences don't corrupt state."""
         model = MockModel()
         results_1 = model.predict("input1")
         results_2 = model.predict("input2")
-        assert len(results_1) == 1
-        assert len(results_2) == 1
-        assert results_1[0]["prediction"] == "output_0"
-        assert results_2[0]["prediction"] == "output_0"
+        assert len(results_1) == 1, "Results_1 must not be empty"
+        assert len(results_2) == 1, "Results_2 must not be empty"
+        assert results_1[0]["prediction"] == "output_0", "Result must not be empty"
+        assert results_2[0]["prediction"] == "output_0", "Result must not be empty"
 
 
 @pytest.mark.heavy
@@ -176,7 +176,7 @@ class TestMLInferenceWithMocking:
         mock_cuda.return_value = False
         model = MockModel()
         results = model.predict("test")
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
 
     @patch("transformers.AutoModel.from_pretrained")
     def test_model_loading_with_mocked_transformers(self, mock_load):
@@ -184,14 +184,14 @@ class TestMLInferenceWithMocking:
         mock_model = MagicMock()
         mock_load.return_value = mock_model
         model = MockModel()
-        assert model.is_loaded()
+        assert model.is_loaded(), "Condition must be true"
 
     def test_inference_without_gpu_requirement(self):
         """Test that inference works without GPU."""
         model = MockModel()
         results = model.predict("cpu test")
-        assert len(results) == 1
-        assert "prediction" in results[0]
+        assert len(results) == 1, "Results must not be empty"
+        assert "prediction" in results[0], "Result must not be empty"
 
 
 class TestMLInferenceDeterminism:
@@ -204,14 +204,14 @@ class TestMLInferenceDeterminism:
         result1 = model1.predict("test input")
         result2 = model2.predict("test input")
         # Both models should produce same structure
-        assert len(result1) == len(result2)
+        assert len(result1) == len(result2), "Result1 must not be empty"
 
     def test_consistent_model_behavior(self):
         """Test that model behavior is consistent."""
         model = MockModel()
         for _ in range(3):
             result = model.predict("test")
-            assert result[0]["prediction"] == "output_0"
+            assert result[0]["prediction"] == "output_0", "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 class ScalingAction(Enum):
     """Scaling action type."""
+
     SCALE_UP = "scale_up"
     SCALE_DOWN = "scale_down"
     NO_ACTION = "no_action"
@@ -32,6 +33,7 @@ class ScalingAction(Enum):
 @dataclass
 class MetricsSnapshot:
     """Snapshot of system metrics at a point in time."""
+
     timestamp: float
     cpu_usage: float  # 0-100%
     memory_usage: float  # 0-100%
@@ -43,6 +45,7 @@ class MetricsSnapshot:
 @dataclass
 class ScalingTrigger:
     """Scaling trigger configuration."""
+
     cpu_scale_up_threshold: float = 75.0  # %
     cpu_scale_down_threshold: float = 40.0  # %
     memory_scale_up_threshold: float = 80.0  # %
@@ -59,6 +62,7 @@ class ScalingTrigger:
 @dataclass
 class ScalingEvent:
     """Scaling event."""
+
     event_id: str
     timestamp: float
     action: ScalingAction
@@ -72,7 +76,7 @@ class ScalingEvent:
 class AutoScaler:
     """
     Auto-scaling orchestrator with trigger logic.
-    
+
     Guarantees:
     - CPU-based scaling (75% up, 40% down)
     - Memory-based scaling (80% up, 45% down)
@@ -81,7 +85,7 @@ class AutoScaler:
     - Scale down cooldown: 10 min
     - SLA compliance maintained
     """
-    
+
     def __init__(self, trigger: ScalingTrigger):
         self.trigger = trigger
         self.current_instances = trigger.min_instances
@@ -93,13 +97,14 @@ class AutoScaler:
         self.scaling_func: Optional[callable] = None
         self.pending_scale_ups = 0  # Instances being provisioned
         self.provision_times: Dict[str, float] = {}  # instance_id → provision_time
-    
+
     def set_scaling_func(self, func: callable) -> None:
         """Set function to actually perform scaling."""
         self.scaling_func = func
-    
-    def record_metrics(self, cpu: float, memory: float, 
-                      request_rate: float, latency_ms: float = 0.0) -> None:
+
+    def record_metrics(
+        self, cpu: float, memory: float, request_rate: float, latency_ms: float = 0.0
+    ) -> None:
         """Record system metrics."""
         snapshot = MetricsSnapshot(
             timestamp=time.time(),
@@ -110,74 +115,75 @@ class AutoScaler:
             avg_latency_ms=latency_ms,
         )
         self.metrics_history.append(snapshot)
-        
+
         # Make scaling decision
         self._make_scaling_decision()
-    
+
     def _make_scaling_decision(self) -> None:
         """
         Make scaling decision based on metrics.
-        
+
         Gate Criterion 4: Triggers fire correctly
         """
         if not self.metrics_history:
             return
-        
+
         # Get most recent metrics
         latest = self.metrics_history[-1]
         current_time = time.time()
-        
+
         # Check scaling cooldowns
         scale_up_ready = (current_time - self.last_scale_up) >= self.trigger.scale_up_cooldown
         scale_down_ready = (current_time - self.last_scale_down) >= self.trigger.scale_down_cooldown
-        
+
         action = self._evaluate_triggers(latest, scale_up_ready, scale_down_ready)
-        
+
         if action == ScalingAction.SCALE_UP:
             self._scale_up(latest, current_time)
         elif action == ScalingAction.SCALE_DOWN:
             self._scale_down(latest, current_time)
-    
-    def _evaluate_triggers(self, metrics: MetricsSnapshot,
-                          scale_up_ready: bool,
-                          scale_down_ready: bool) -> ScalingAction:
+
+    def _evaluate_triggers(
+        self, metrics: MetricsSnapshot, scale_up_ready: bool, scale_down_ready: bool
+    ) -> ScalingAction:
         """
         Evaluate scaling triggers.
-        
+
         Gate Criterion 4: Triggers fire at right times
         """
         # Scale up triggers
         if scale_up_ready and self.current_instances < self.trigger.max_instances:
-            if (metrics.cpu_usage > self.trigger.cpu_scale_up_threshold or
-                metrics.memory_usage > self.trigger.memory_scale_up_threshold or
-                metrics.request_rate > self.trigger.request_scale_up_threshold):
+            if (
+                metrics.cpu_usage > self.trigger.cpu_scale_up_threshold
+                or metrics.memory_usage > self.trigger.memory_scale_up_threshold
+                or metrics.request_rate > self.trigger.request_scale_up_threshold
+            ):
                 return ScalingAction.SCALE_UP
-        
+
         # Scale down triggers
         if scale_down_ready and self.current_instances > self.trigger.min_instances:
-            if (metrics.cpu_usage < self.trigger.cpu_scale_down_threshold and
-                metrics.memory_usage < self.trigger.memory_scale_down_threshold and
-                metrics.request_rate < self.trigger.request_scale_down_threshold):
+            if (
+                metrics.cpu_usage < self.trigger.cpu_scale_down_threshold
+                and metrics.memory_usage < self.trigger.memory_scale_down_threshold
+                and metrics.request_rate < self.trigger.request_scale_down_threshold
+            ):
                 return ScalingAction.SCALE_DOWN
-        
+
         return ScalingAction.NO_ACTION
-    
+
     def _scale_up(self, metrics: MetricsSnapshot, current_time: float) -> None:
         """
         Scale up by adding instances.
-        
+
         Gate Criterion 4: Completes in <5 min
         """
         if self.current_instances >= self.trigger.max_instances:
             logger.warning("Cannot scale up: max instances reached")
             return
-        
+
         from_instances = self.current_instances
-        to_instances = min(
-            self.current_instances + 1,
-            self.trigger.max_instances
-        )
-        
+        to_instances = min(self.current_instances + 1, self.trigger.max_instances)
+
         reason_parts = []
         if metrics.cpu_usage > self.trigger.cpu_scale_up_threshold:
             reason_parts.append(f"CPU {metrics.cpu_usage:.1f}%")
@@ -185,9 +191,9 @@ class AutoScaler:
             reason_parts.append(f"Memory {metrics.memory_usage:.1f}%")
         if metrics.request_rate > self.trigger.request_scale_up_threshold:
             reason_parts.append(f"Request rate {metrics.request_rate:.0f} req/s")
-        
+
         reason = ", ".join(reason_parts)
-        
+
         # Execute scaling
         success = False
         if self.scaling_func:
@@ -195,12 +201,12 @@ class AutoScaler:
                 start_time = time.time()
                 self.scaling_func(to_instances)
                 provision_time = time.time() - start_time
-                
+
                 if provision_time > self.trigger.scale_up_duration:
                     logger.warning(
-                        f"Scale-up took {provision_time:.1f}s (SLA: <{self.trigger.scale_up_duration}s)"
+                        f"Scale-up took {provision_time:.1f}s (SLA: <{self.trigger.scale_up_duration}s)"  # noqa: E501
                     )
-                
+
                 success = True
                 self.current_instances = to_instances
                 self.pending_scale_ups += 1
@@ -210,9 +216,9 @@ class AutoScaler:
             # Simulate successful scaling
             success = True
             self.current_instances = to_instances
-        
+
         self.last_scale_up = current_time
-        
+
         event = ScalingEvent(
             event_id=f"scale-{uuid.uuid4().hex[:12]}",
             timestamp=current_time,
@@ -224,34 +230,28 @@ class AutoScaler:
             success=success,
         )
         self.scaling_events.append(event)
-        
-        logger.info(
-            f"Scale-up: {from_instances} → {to_instances} instances "
-            f"({reason})"
-        )
-    
+
+        logger.info(f"Scale-up: {from_instances} → {to_instances} instances ({reason})")
+
     def _scale_down(self, metrics: MetricsSnapshot, current_time: float) -> None:
         """
         Scale down by removing instances.
-        
+
         Gate Criterion 4: Respects cooldown
         """
         if self.current_instances <= self.trigger.min_instances:
             logger.warning("Cannot scale down: min instances reached")
             return
-        
+
         from_instances = self.current_instances
-        to_instances = max(
-            self.current_instances - 1,
-            self.trigger.min_instances
-        )
-        
+        to_instances = max(self.current_instances - 1, self.trigger.min_instances)
+
         reason = (
             f"Low utilization: CPU {metrics.cpu_usage:.1f}%, "
             f"Memory {metrics.memory_usage:.1f}%, "
             f"Request rate {metrics.request_rate:.0f} req/s"
         )
-        
+
         # Execute scaling
         success = False
         if self.scaling_func:
@@ -265,9 +265,9 @@ class AutoScaler:
             # Simulate successful scaling
             success = True
             self.current_instances = to_instances
-        
+
         self.last_scale_down = current_time
-        
+
         event = ScalingEvent(
             event_id=f"scale-{uuid.uuid4().hex[:12]}",
             timestamp=current_time,
@@ -279,20 +279,13 @@ class AutoScaler:
             success=success,
         )
         self.scaling_events.append(event)
-        
-        logger.info(
-            f"Scale-down: {from_instances} → {to_instances} instances "
-            f"({reason})"
-        )
-    
+
+        logger.info(f"Scale-down: {from_instances} → {to_instances} instances ({reason})")
+
     def get_scaling_history(self, limit: int = 100) -> List[Dict]:
         """Get scaling event history."""
-        events = sorted(
-            self.scaling_events,
-            key=lambda x: x.timestamp,
-            reverse=True
-        )[:limit]
-        
+        events = sorted(self.scaling_events, key=lambda x: x.timestamp, reverse=True)[:limit]
+
         return [
             {
                 "event_id": e.event_id,
@@ -308,7 +301,7 @@ class AutoScaler:
             }
             for e in events
         ]
-    
+
     def get_current_state(self) -> Dict:
         """Get current auto-scaler state."""
         if not self.metrics_history:
@@ -322,9 +315,9 @@ class AutoScaler:
                 "request_rate": m.request_rate,
                 "avg_latency_ms": m.avg_latency_ms,
             }
-        
+
         current_time = time.time()
-        
+
         return {
             "current_instances": self.current_instances,
             "min_instances": self.trigger.min_instances,
@@ -333,19 +326,20 @@ class AutoScaler:
             "last_scale_up": self.last_scale_up,
             "last_scale_down": self.last_scale_down,
             "scale_up_ready": (current_time - self.last_scale_up) >= self.trigger.scale_up_cooldown,
-            "scale_down_ready": (current_time - self.last_scale_down) >= self.trigger.scale_down_cooldown,
+            "scale_down_ready": (current_time - self.last_scale_down)
+            >= self.trigger.scale_down_cooldown,
             "total_scale_events": len(self.scaling_events),
             "successful_scales": sum(1 for e in self.scaling_events if e.success),
         }
-    
+
     def verify_scaling_capability(self) -> Dict[str, any]:
         """
         Verify auto-scaling capability.
-        
+
         Gate Criterion 4: All triggers working
         """
         successful_scales = [e for e in self.scaling_events if e.success]
-        
+
         if successful_scales:
             durations = []
             for event in successful_scales:
@@ -353,15 +347,19 @@ class AutoScaler:
                     durations.append(0.0)  # Would need actual timing
             if durations:
                 sum(durations) / len(durations)
-        
+
         return {
             "timestamp": time.time(),
             "current_instances": self.current_instances,
             "instance_range": f"{self.trigger.min_instances}-{self.trigger.max_instances}",
             "total_scale_events": len(self.scaling_events),
             "successful_scales": len(successful_scales),
-            "scale_up_events": sum(1 for e in self.scaling_events if e.action == ScalingAction.SCALE_UP),
-            "scale_down_events": sum(1 for e in self.scaling_events if e.action == ScalingAction.SCALE_DOWN),
+            "scale_up_events": sum(
+                1 for e in self.scaling_events if e.action == ScalingAction.SCALE_UP
+            ),
+            "scale_down_events": sum(
+                1 for e in self.scaling_events if e.action == ScalingAction.SCALE_DOWN
+            ),
             "cpu_trigger_configured": True,
             "memory_trigger_configured": True,
             "request_rate_trigger_configured": True,

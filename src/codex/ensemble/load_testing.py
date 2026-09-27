@@ -121,7 +121,9 @@ class LoadTester:
             progress = elapsed / self.config.ramp_up_seconds
             current_parallelism = max(1, int(self.config.max_workers * progress))
 
-            futures = [self.executor.submit(self.make_prediction) for _ in range(current_parallelism)]
+            futures = [
+                self.executor.submit(self.make_prediction) for _ in range(current_parallelism)
+            ]
             for future in as_completed(futures):
                 try:
                     success, _ = future.result(timeout=self.config.timeout_seconds)
@@ -208,7 +210,9 @@ class LoadTester:
                 p95_latency = float("inf")
 
             error_rate = failures / len(steady_state_results) if steady_state_results else 0.0
-            actual_rps = len(steady_state_results) / (overall_duration - self.config.warmup_seconds - self.config.ramp_up_seconds)
+            actual_rps = len(steady_state_results) / (
+                overall_duration - self.config.warmup_seconds - self.config.ramp_up_seconds
+            )
 
             result = LoadTestResult(
                 total_requests=len(steady_state_results),
@@ -256,8 +260,12 @@ class LoadTester:
         print("\nLatency Percentiles (ms):")
         print(f"  Min:                  {result.min_latency_ms:.2f}ms")
         print(f"  P50 (Median):         {result.p50_latency_ms:.2f}ms")
-        print(f"  P95:                  {result.p95_latency_ms:.2f}ms (SLA: {result.p95_meets_sla})")
-        print(f"  P99:                  {result.p99_latency_ms:.2f}ms (SLA: {result.p99_meets_sla})")
+        print(
+            f"  P95:                  {result.p95_latency_ms:.2f}ms (SLA: {result.p95_meets_sla})"
+        )
+        print(
+            f"  P99:                  {result.p99_latency_ms:.2f}ms (SLA: {result.p99_meets_sla})"
+        )
         print(f"  Max:                  {result.max_latency_ms:.2f}ms")
         print(f"  Mean:                 {result.mean_latency_ms:.2f}ms")
         print("\nSLA Compliance:")

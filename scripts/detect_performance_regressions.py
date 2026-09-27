@@ -16,7 +16,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 from scipy import stats
@@ -52,13 +52,13 @@ def detect_regression(
     """
     if len(baseline) < 5 or len(current) < 5:
         return False, {"reason": "Insufficient samples"}
-    
+
     baseline_mean = np.mean(baseline)
     current_mean = np.mean(current)
-    
+
     # Calculate relative change
     percent_change = (current_mean - baseline_mean) / abs(baseline_mean)
-    
+
     # Check magnitude first (fast path)
     if abs(percent_change) < threshold:
         return False, {
@@ -67,13 +67,13 @@ def detect_regression(
             "current_mean": current_mean,
             "reason": "Below threshold",
         }
-    
+
     # Welch's t-test for unequal variances
     t_statistic, p_value = stats.ttest_ind(baseline, current, equal_var=False)
-    
+
     is_significant = p_value < alpha
     is_regression = is_significant and percent_change > threshold
-    
+
     return is_regression, {
         "percent_change": percent_change,
         "baseline_mean": baseline_mean,
@@ -91,20 +91,20 @@ def calculate_trend(values: list[float]) -> dict[str, Any]:
     """Calculate trend using linear regression"""
     if len(values) < 3:
         return {"reason": "Insufficient samples"}
-    
+
     x = np.arange(len(values))
     y = np.array(values)
-    
+
     # Linear regression
     coeffs = np.polyfit(x, y, 1)
     slope = coeffs[0]
-    
+
     # R-squared
     y_fit = np.polyval(coeffs, x)
     ss_res = np.sum((y - y_fit) ** 2)
     ss_tot = np.sum((y - np.mean(y)) ** 2)
     r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0
-    
+
     return {
         "slope": float(slope),
         "direction": "increasing" if slope > 0 else "decreasing",
@@ -147,13 +147,13 @@ def main() -> int:
         default=0.10,
         help="Regression threshold (% change)",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Load data
     baseline_data = load_json_safe(args.baseline)
     current_data = load_json_safe(args.current)
-    
+
     # Analyze regressions
     regressions = {
         "timestamp": datetime.now().isoformat(),
@@ -162,25 +162,25 @@ def main() -> int:
         "regressions": [],
         "trends": [],
     }
-    
+
     # Simple detection logic for demonstration
     # In production, this would be more sophisticated
-    
+
     # Check workflow timing if available
     baseline_workflows = baseline_data.get("baselines", {}).get("workflows", {})
-    
+
     for workflow_name, workflow_data in baseline_workflows.items():
         if isinstance(workflow_data, dict):
             current_duration = workflow_data.get("current_duration_minutes", 0)
             target_duration = workflow_data.get("target_duration_minutes", 0)
-            
+
             if current_duration > 0 and target_duration > 0:
                 percent_diff = (current_duration - target_duration) / target_duration
-                
+
                 if percent_diff > args.threshold:
                     regressions["total_metrics_analyzed"] += 1
                     regressions["regressions_detected"] += 1
-                    
+
                     regressions["regressions"].append({
                         "metric": workflow_name,
                         "type": "workflow_timing",
@@ -190,10 +190,10 @@ def main() -> int:
                         "unit": "minutes",
                         "severity": "CRITICAL" if percent_diff > 0.25 else "HIGH",
                     })
-    
+
     # Write output
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    
+
     if args.format == "json":
         with open(args.output, "w") as f:
             json.dump(regressions, f, indent=2)
@@ -207,7 +207,7 @@ def main() -> int:
             f"**Regressions Detected**: {regressions['regressions_detected']}",
             "",
         ]
-        
+
         if regressions["regressions"]:
             lines.append("## Regressions Detected")
             lines.append("")
@@ -227,10 +227,10 @@ def main() -> int:
                 lines.append("")
         else:
             lines.append("✅ No regressions detected")
-        
+
         with open(args.output, "w") as f:
             f.write("\n".join(lines))
-    
+
     print(f"✅ Regression report saved to {args.output}")
     return 0
 

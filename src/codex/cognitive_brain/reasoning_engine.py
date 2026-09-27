@@ -188,8 +188,7 @@ class PerceptionLayer:
             category=category,
         )
         logger.debug(
-            f"Extracted context: goal={goal}, category={category}, "
-            f"constraints={len(constraints)}"
+            f"Extracted context: goal={goal}, category={category}, constraints={len(constraints)}"
         )
         return context
 
@@ -248,9 +247,7 @@ class ReasoningLayer:
             candidates.append(ensemble_decision)
 
         self.decision_count += len(candidates)
-        logger.debug(
-            f"Generated {len(candidates)} candidates for category={context.category}"
-        )
+        logger.debug(f"Generated {len(candidates)} candidates for category={context.category}")
         return candidates
 
     def _heuristic_strategy(self, context: AgentContext) -> Optional[CandidateDecision]:
@@ -363,17 +360,13 @@ class ActionLayer:
         scored = [
             (
                 c,
-                self._score_candidate(
-                    c, context, calibrator
-                ),  # (base_score, domain_score)
+                self._score_candidate(c, context, calibrator),  # (base_score, domain_score)
             )
             for c in candidates
         ]
 
         # Select best
-        best_candidate, (base_score, domain_score) = max(
-            scored, key=lambda x: x[1][0] + x[1][1]
-        )
+        best_candidate, (base_score, domain_score) = max(scored, key=lambda x: x[1][0] + x[1][1])
 
         # Validate against domain rules
         domain_valid = self._validate_domain_rules(best_candidate, context)
@@ -424,9 +417,7 @@ class ActionLayer:
 
         return (base_score, domain_score)
 
-    def _validate_domain_rules(
-        self, candidate: CandidateDecision, context: AgentContext
-    ) -> bool:
+    def _validate_domain_rules(self, candidate: CandidateDecision, context: AgentContext) -> bool:
         """Validate candidate against domain-specific rules."""
         # Check all validation rules pass
         for rule in candidate.validation_rules:
@@ -590,9 +581,7 @@ class ImprovementLayer:
             ]
 
             if strategy_outcomes:
-                accuracy = sum(
-                    1 for o in strategy_outcomes if o.success
-                ) / len(strategy_outcomes)
+                accuracy = sum(1 for o in strategy_outcomes if o.success) / len(strategy_outcomes)
                 brier = self._calculate_brier_score(strategy_outcomes)
 
                 # Adjust weights based on performance
@@ -612,9 +601,7 @@ class ImprovementLayer:
 
         # Normalize weights
         total_weight = sum(self.strategy_weights.values())
-        self.strategy_weights = {
-            k: v / total_weight for k, v in self.strategy_weights.items()
-        }
+        self.strategy_weights = {k: v / total_weight for k, v in self.strategy_weights.items()}
 
         improvement_record = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
@@ -639,8 +626,7 @@ class ImprovementLayer:
             return 0.0
 
         squared_errors = [
-            (1.0 if o.success else 0.0 - (1.0 if o.success else 0.0)) ** 2
-            for o in outcomes
+            (1.0 if o.success else 0.0 - (1.0 if o.success else 0.0)) ** 2 for o in outcomes
         ]
         return float(np.mean(squared_errors))
 
@@ -764,9 +750,7 @@ class ReasoningEngine:
         Returns:
             DecisionOutcome
         """
-        decision = next(
-            (d for d in self.decision_history if d.id == decision_id), None
-        )
+        decision = next((d for d in self.decision_history if d.id == decision_id), None)
 
         if not decision:
             raise ValueError(f"Decision {decision_id} not found")
@@ -788,9 +772,7 @@ class ReasoningEngine:
         Returns:
             Improvement metrics
         """
-        return self.improvement.learn_from_outcomes(
-            self.feedback, self.reasoning, self.calibrator
-        )
+        return self.improvement.learn_from_outcomes(self.feedback, self.reasoning, self.calibrator)
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get comprehensive reasoning engine metrics.

@@ -17,6 +17,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any, Dict
 
+
 class ConvergenceAnalyzer2:
     """Extended analyzer for remaining convergence reports."""
 
@@ -477,14 +478,14 @@ class ConvergenceAnalyzer2:
 def main():
     repo_root = REPO_ROOT
     analyzer = ConvergenceAnalyzer2(repo_root)
-    
+
     # Generate reports
     reports = analyzer.generate_all_reports()
-    
+
     # Save individual reports
     output_dir = Path(repo_root) / "docs-data" / "generated"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     for report_name, report_data in reports.items():
         output_file = output_dir / f"{report_name}.json"
         with open(output_file, 'w') as f:

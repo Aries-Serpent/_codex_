@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("tensorboard")
-#     assert (, "Condition must be true"
+#     assert (
 # Test Validate Configs Cli
 # """,
 #         encoding="utf-8",
@@ -14,17 +14,17 @@ pytest.importorskip("tensorboard")
 #             sys.executable,
 #             str(TOOL),
 # import sys
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
+#     assert (
+#
+#     assert (
+#
+#     assert (
 # pytest.importorskip("yaml")
-#     assert (, "Condition must be true"
+#     assert (
 # ROOT = Path(__file__).resolve().parents[2]
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
+#     assert (
+#
+#     assert (
 # def test_group_validation_report(tmp_path: Path) -> None:
 #     report = tmp_path / "report.json"
 #     result = subprocess.run(
@@ -48,9 +48,9 @@ pytest.importorskip("tensorboard")
 #     content = json.loads(report.read_text(encoding="utf-8"))
 #     assert content["total"] >= 3, "Value must be greater than zero"
 #     assert content["counts"].get("fail", 0) == 0
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
+#     assert (
+#
+#     assert (
 #     config_root = tmp_path / "configs"
 #     config_root.mkdir(parents=True, exist_ok=True)
 #     partial_cfg = config_root / "logging.yaml"
@@ -79,9 +79,9 @@ pytest.importorskip("tensorboard")
 #     )
 #     assert result.returncode != 0, "Result must not be empty"
 #     assert "required property" in result.stdout or "required property" in result.stderr, "Result must not be empty"
-#     assert (, "Condition must be true"
-# 
-#     assert (, "Condition must be true"
+#     assert (
+#
+#     assert (
 #     bad_config = ROOT / "tests/fixtures/malformed_config.yaml"
 #     schema = ROOT / "configs/schemas/training.schema.yaml"
 #     result = subprocess.run(
@@ -97,7 +97,7 @@ pytest.importorskip("tensorboard")
 #         text=True,
 #     )
 #     assert result.returncode != 0, "Result must not be empty"
-#     assert (, "Condition must be true"
+#     assert (
 #         "failed to load config" in result.stdout
 #         or "required property" in result.stdout
 #         or "failed to load config" in result.stderr

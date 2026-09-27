@@ -44,7 +44,7 @@ class TestReproducibilityEdgeCases:
         execution order, preventing race conditions in concurrent operations.
         """
         from threading import Barrier, Lock
-        
+
         results = []
         barrier = Barrier(2)  # Synchronize both threads
         lock = Lock()
@@ -246,7 +246,7 @@ class TestConcurrencyAndThreading:
         multiple threads append results simultaneously.
         """
         from threading import Lock
-        
+
         results = []
         lock = Lock()
 
@@ -274,7 +274,7 @@ class TestConcurrencyAndThreading:
         and prevent any potential race conditions.
         """
         from threading import Lock
-        
+
         results = []
         lock = Lock()
 

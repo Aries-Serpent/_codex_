@@ -280,9 +280,7 @@ class LaneManifestContract:
         required = {"namespace", "read_scope", "write_scope"}
         missing = sorted(required - set(lane_isolation.keys()))
         if missing:
-            raise LaneManifestError(
-                "lane_isolation missing required fields: " + ", ".join(missing)
-            )
+            raise LaneManifestError("lane_isolation missing required fields: " + ", ".join(missing))
 
         read_scope = lane_isolation.get("read_scope")
         write_scope = lane_isolation.get("write_scope")
@@ -300,7 +298,14 @@ class LaneManifestContract:
             normalized = scope.strip()
             if not normalized:
                 raise LaneManifestError("lane_isolation.read_scope entries cannot be empty")
-            if normalized in {"shared", "shared/*", "shared/**", "upstream", "upstream/*", "upstream/**"}:
+            if normalized in {
+                "shared",
+                "shared/*",
+                "shared/**",
+                "upstream",
+                "upstream/*",
+                "upstream/**",
+            }:
                 continue
             if normalized.startswith("shared/") or normalized.startswith("upstream/"):
                 continue
@@ -321,7 +326,14 @@ class LaneManifestContract:
             normalized = scope.strip()
             if not normalized:
                 raise LaneManifestError("lane_isolation.write_scope entries cannot be empty")
-            if normalized in {"shared", "shared/*", "shared/**", "upstream", "upstream/*", "upstream/**"}:
+            if normalized in {
+                "shared",
+                "shared/*",
+                "shared/**",
+                "upstream",
+                "upstream/*",
+                "upstream/**",
+            }:
                 continue
             if normalized.startswith("shared/") or normalized.startswith("upstream/"):
                 continue
@@ -333,8 +345,7 @@ class LaneManifestContract:
                 target_lane = normalized.split("/", 2)[1]
                 if target_lane != lane_key:
                     raise LaneManifestError(
-                        "lane_isolation.write_scope must not target sibling lanes: "
-                        f"{scope}"
+                        f"lane_isolation.write_scope must not target sibling lanes: {scope}"
                     )
                 continue
             raise LaneManifestError(
@@ -375,7 +386,11 @@ class LaneManifestContract:
 
         if handoff["status"] == "accepted" and not handoff.get("result_contract"):
             raise LaneManifestError("accepted handoffs require a result_contract")
-        if handoff.get("mode") == "checkpoint" and handoff.get("status") == "accepted" and not handoff.get("checkpoint_id"):
+        if (
+            handoff.get("mode") == "checkpoint"
+            and handoff.get("status") == "accepted"
+            and not handoff.get("checkpoint_id")
+        ):
             raise LaneManifestError("checkpoint handoffs require a checkpoint_id when accepted")
         return True
 
@@ -403,7 +418,9 @@ class LaneManifestContract:
             raise LaneManifestError("azimuth.delta_deg must be between 0 and 180")
 
         if azimuth.get("alignment") == "aligned" and delta_deg is not None and int(delta_deg) > 15:
-            raise LaneManifestError("aligned azimuth must remain within the 15 degree coherence window")
+            raise LaneManifestError(
+                "aligned azimuth must remain within the 15 degree coherence window"
+            )
 
         if azimuth.get("alignment") == "blocked" and azimuth.get("locked") is not False:
             raise LaneManifestError("blocked azimuth must be explicitly unlocked before resume")
@@ -427,9 +444,7 @@ class LaneManifestContract:
 
         for gate_name, gate_status in upstream_gates.items():
             if gate_status == "pending":
-                raise LaneManifestError(
-                    f"Upstream gate '{gate_name}' is still pending"
-                )
+                raise LaneManifestError(f"Upstream gate '{gate_name}' is still pending")
             if gate_status not in ["pass", "fail"]:
                 raise LaneManifestError(
                     f"Invalid gate status '{gate_status}' for gate '{gate_name}'"
@@ -438,9 +453,7 @@ class LaneManifestContract:
         return True
 
     @classmethod
-    def write_manifest_file(
-        cls, manifest: Dict[str, Any], output_path: Path
-    ) -> None:
+    def write_manifest_file(cls, manifest: Dict[str, Any], output_path: Path) -> None:
         """Write lane-manifest.json to disk.
 
         Args:

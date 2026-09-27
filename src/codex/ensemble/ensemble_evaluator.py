@@ -250,9 +250,7 @@ class EnsembleEvaluator:
                 model_preds[model_type].append(score)
 
         # Convert to numpy arrays
-        ensemble_preds_array = np.array(
-            [1.0 if p == "positive" else 0.0 for p in ensemble_preds]
-        )
+        ensemble_preds_array = np.array([1.0 if p == "positive" else 0.0 for p in ensemble_preds])
         labels_array = np.array(labels)
         latencies_array = np.array(latencies)
         confidences_array = np.array(confidences)
@@ -276,15 +274,20 @@ class EnsembleEvaluator:
         fn = np.sum((ensemble_preds_array == 0) & (labels_array == 1))
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+        f1_score = (
+            2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+        )
 
         # Calculate latency metrics
         p99_latency = float(np.percentile(latencies_array, 99))
 
         # Calculate model diversity
         diversity_metrics = DiversityValidator.calculate_diversity(
-            [model_preds[ModelType.HEURISTIC], model_preds[ModelType.MACHINE_LEARNING],
-             model_preds[ModelType.SYMBOLIC]]
+            [
+                model_preds[ModelType.HEURISTIC],
+                model_preds[ModelType.MACHINE_LEARNING],
+                model_preds[ModelType.SYMBOLIC],
+            ]
         )
 
         # Calculate false positive rate
@@ -339,7 +342,9 @@ class EnsembleEvaluator:
         print(f"  Ensemble Accuracy:          {result.ensemble_accuracy:.4f}")
         print(f"  Best Single Model:          {result.best_single_model_accuracy:.4f}")
         print(f"  Improvement:                {result.accuracy_improvement:+.4f} (Gate: ≥0.03)")
-        print(f"  Status:                     {'✓ PASS' if result.improvement_meets_gate else '✗ FAIL'}")
+        print(
+            f"  Status:                     {'✓ PASS' if result.improvement_meets_gate else '✗ FAIL'}"  # noqa: E501
+        )
 
         print("\nModel Accuracies:")
         for model_name, accuracy in result.model_accuracies.items():
@@ -351,21 +356,31 @@ class EnsembleEvaluator:
 
         print("\nLatency Metrics:")
         print(f"  p99 Latency:                {result.median_p99_latency_ms:.2f}ms (Gate: <200ms)")
-        print(f"  Status:                     {'✓ PASS' if result.p99_latency_meets_gate else '✗ FAIL'}")
+        print(
+            f"  Status:                     {'✓ PASS' if result.p99_latency_meets_gate else '✗ FAIL'}"  # noqa: E501
+        )
 
         print("\nCalibration Metrics:")
         print(f"  Mean Confidence:            {result.calibration_metrics['mean_confidence']:.4f}")
-        print(f"  Confidence Calibration:     {result.calibration_metrics['calibration_error']:.4f}")
+        print(
+            f"  Confidence Calibration:     {result.calibration_metrics['calibration_error']:.4f}"
+        )
         print(f"  Escalation Rate:            {result.calibration_metrics['escalation_rate']:.2%}")
 
         print("\nFalse Positive Rate:")
         print(f"  FP Rate:                    {result.false_positive_rate:.4f} (Gate: <5%)")
-        print(f"  Status:                     {'✓ PASS' if result.false_positive_acceptable else '✗ FAIL'}")
+        print(
+            f"  Status:                     {'✓ PASS' if result.false_positive_acceptable else '✗ FAIL'}"  # noqa: E501
+        )
 
         print("\nModel Diversity:")
         print(f"  Diversity Score:            {result.diversity_metrics.diversity_score:.4f}")
-        print(f"  Avg Pearson Corr:           {result.diversity_metrics.avg_pearson_correlation:.4f}")
-        print(f"  Status:                     {'✓ PASS' if result.diversity_acceptable else '✗ FAIL'}")
+        print(
+            f"  Avg Pearson Corr:           {result.diversity_metrics.avg_pearson_correlation:.4f}"
+        )
+        print(
+            f"  Status:                     {'✓ PASS' if result.diversity_acceptable else '✗ FAIL'}"
+        )
 
         gate_results = [
             result.improvement_meets_gate,

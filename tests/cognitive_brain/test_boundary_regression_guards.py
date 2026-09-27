@@ -83,13 +83,13 @@ class TestSessionCreateBoundary:
         """Every SessionGuard result must inject the resolved model key."""
         result = guard.create_session("claude-haiku-4.5", {"max_tokens": 512})
         assert isinstance(result, SessionCreateResult)
-        assert "model" in result.safe_config
-        assert result.safe_config["model"] == result.resolved_model
+        assert "model" in result.safe_config, "Result must not be empty"
+        assert result.safe_config["model"] == result.resolved_model, "Result must not be empty"
 
     def test_decision_id_unique_per_call(self, guard: SessionGuard) -> None:
         """Each create_session invocation must receive a unique decision_id."""
         decision_ids = {guard.create_session("claude-haiku-4.5", {}).decision_id for _ in range(50)}
-        assert len(decision_ids) == 50
+        assert len(decision_ids) == 50, "Decision_ids must not be empty"
 
     def test_turn_id_and_task_id_roundtrip(self, guard: SessionGuard) -> None:
         """Caller-supplied turn/task identifiers must be preserved exactly."""
@@ -99,8 +99,8 @@ class TestSessionCreateBoundary:
             turn_id="turn-42",
             task_id="task-5430",
         )
-        assert result.turn_id == "turn-42"
-        assert result.task_id == "task-5430"
+        assert result.turn_id == "turn-42", "Result must not be empty"
+        assert result.task_id == "task-5430", "Result must not be empty"
 
     def test_unsupported_params_stripped(self, guard: SessionGuard) -> None:
         """Unsupported params must be removed from safe_config and reported."""
@@ -108,14 +108,14 @@ class TestSessionCreateBoundary:
             "claude-haiku-4.5",
             {"reasoning_effort": "high", "max_tokens": 256},
         )
-        assert "reasoning_effort" not in result.safe_config
-        assert "reasoning_effort" in result.params_stripped
+        assert "reasoning_effort" not in result.safe_config, "Result must not be empty"
+        assert "reasoning_effort" in result.params_stripped, "Result must not be empty"
 
     def test_convenience_wrapper_uses_session_guard(self) -> None:
         """safe_create_session must produce a SessionCreateResult, not a raw dict."""
         result = safe_create_session("claude-haiku-4.5", {"max_tokens": 128})
         assert isinstance(result, SessionCreateResult)
-        assert "model" in result.safe_config
+        assert "model" in result.safe_config, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -219,19 +219,19 @@ class TestShellAdversarialCoverage:
     def test_all_metachar_vectors_denied(self, shell_policy: ShellPolicy, command: str) -> None:
         """Every documented shell metacharacter vector must be denied."""
         decision = shell_policy.gate(command)
-        assert decision.verdict == PolicyVerdict.DENY
-        assert "shell metacharacter" in decision.reason.lower()
-        assert "shell_metacharacter_detected" in decision.risk_flags
+        assert decision.verdict == PolicyVerdict.DENY, "verdict is not valid"
+        assert "shell metacharacter" in decision.reason.lower(), "Condition must be true"
+        assert "shell_metacharacter_detected" in decision.risk_flags, "Condition must be true"
 
     def test_deny_pattern_overrides_allow_pattern(self, shell_policy: ShellPolicy) -> None:
         """Deny patterns must take precedence over matching allow patterns."""
         decision = shell_policy.gate("sudo git status")
-        assert decision.verdict == PolicyVerdict.DENY
-        assert "sudo" in decision.reason.lower()
+        assert decision.verdict == PolicyVerdict.DENY, "verdict is not valid"
+        assert "sudo" in decision.reason.lower(), "Condition must be true"
 
     def test_metacharacter_list_is_non_empty(self) -> None:
         """The metacharacter inventory must never be accidentally emptied."""
-        assert len(_SHELL_METACHARACTERS) >= 10
+        assert len(_SHELL_METACHARACTERS) >= 10, "_shell_metacharacters must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -275,7 +275,7 @@ class TestAssertLoadedEnforcement:
         monkeypatch.setenv("COGNITIVE_BRAIN_FAILSAFE_OFF", "true")
         monkeypatch.setenv("COGNITIVE_BRAIN_AUTO_LOAD", "false")
         kernel = CognitiveBrainKernel(config=KernelConfig())
-        assert not kernel.is_loaded
+        assert not kernel.is_loaded, "Condition must be true"
         with pytest.raises(RuntimeError, match="not yet booted"):
             kernel.negotiate_model("claude-haiku-4.5", {})
 
@@ -283,21 +283,21 @@ class TestAssertLoadedEnforcement:
         """Module-level assert_loaded must operate on an already-loaded kernel singleton."""
         # When get_kernel() auto-boots, assert_loaded() must succeed without raising.
         assert_loaded()
-        assert get_kernel().is_loaded
+        assert get_kernel().is_loaded, "Condition must be true"
 
     def test_get_kernel_returns_booted_instance(self) -> None:
         """get_kernel() must always return an initialized (loaded) kernel."""
         kernel = get_kernel()
-        assert kernel.is_loaded
+        assert kernel.is_loaded, "Condition must be true"
         # Idempotent repeated calls
-        assert get_kernel() is kernel
+        assert get_kernel() is kernel, "Condition must be true"
 
     def test_kernel_initializes_session_guard_on_boot(self) -> None:
         """Booting the kernel must create the session guard."""
         kernel = CognitiveBrainKernel(config=KernelConfig())
         kernel.boot()
-        assert kernel.is_loaded
-        assert kernel._session_guard is not None
+        assert kernel.is_loaded, "Condition must be true"
+        assert kernel._session_guard is not None, "_session_guard must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -315,14 +315,14 @@ class TestForensicsFieldPreservation:
             task_id="task-5430",
         )
         data = event.to_dict()
-        assert data["decision_id"] == "d-001"
-        assert data["turn_id"] == "t-42"
-        assert data["task_id"] == "task-5430"
+        assert data["decision_id"] == "d-001", "Data must not be empty"
+        assert data["turn_id"] == "t-42", "Data must not be empty"
+        assert data["task_id"] == "task-5430", "Data must not be empty"
 
         reloaded = json.loads(event.to_json())
-        assert reloaded["decision_id"] == "d-001"
-        assert reloaded["turn_id"] == "t-42"
-        assert reloaded["task_id"] == "task-5430"
+        assert reloaded["decision_id"] == "d-001", "Condition must be true"
+        assert reloaded["turn_id"] == "t-42", "Condition must be true"
+        assert reloaded["task_id"] == "task-5430", "Condition must be true"
 
     def test_session_guard_telemetry_includes_forensics(
         self, guard: SessionGuard, telemetry: CognitiveTelemetry
@@ -335,11 +335,11 @@ class TestForensicsFieldPreservation:
             task_id="task-5",
         )
         events = telemetry.query(event_type="session_guard")
-        assert len(events) == 1
+        assert len(events) == 1, "Events must not be empty"
         event = events[0]
-        assert event.decision_id == result.decision_id
-        assert event.turn_id == "t-7"
-        assert event.task_id == "task-5"
+        assert event.decision_id == result.decision_id, "Result must not be empty"
+        assert event.turn_id == "t-7", "turn_id is not valid"
+        assert event.task_id == "task-5", "task_id is not valid"
 
     def test_ndjson_backend_preserves_forensics(self, tmp_path: Path) -> None:
         """NDJSON serialization must not silently drop forensics fields."""
@@ -353,22 +353,22 @@ class TestForensicsFieldPreservation:
         )
         backend.write(event)
         reloaded = backend.read_all()[-1]
-        assert reloaded.decision_id == "d-123"
-        assert reloaded.turn_id == "t-1"
-        assert reloaded.task_id == "task-1"
+        assert reloaded.decision_id == "d-123", "decision_id is not valid"
+        assert reloaded.turn_id == "t-1", "turn_id is not valid"
+        assert reloaded.task_id == "task-1", "task_id is not valid"
 
     def test_kernel_plan_tools_emits_forensics(self) -> None:
         """plan_tools must emit a forensics event with decision_id, turn_id, task_id."""
         kernel = get_kernel()
         kernel.plan_tools("repo_introspection", turn_id="t-001", task_id="pr-42")
         events = kernel.telemetry.query(event_type="forensics")
-        assert len(events) >= 1
+        assert len(events) >= 1, "Events must not be empty"
         last = events[-1]
-        assert last.decision_id is not None
-        assert last.turn_id == "t-001"
-        assert last.task_id == "pr-42"
-        assert "selected_toolchain" in last.payload
-        assert "rejected_alternatives" in last.payload
+        assert last.decision_id is not None, "decision_id must be initialized"
+        assert last.turn_id == "t-001", "turn_id is not valid"
+        assert last.task_id == "pr-42", "task_id is not valid"
+        assert "selected_toolchain" in last.payload, "Condition must be true"
+        assert "rejected_alternatives" in last.payload, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -424,14 +424,14 @@ class TestLegacyQuarantineSchema:
         assert match, "Detailed Failure Counts table header malformed"
         header = match.group(1)
         cells = [c.strip() for c in header.split("|") if c.strip()]
-        assert "File" in cells
-        assert "Failed" in cells
-        assert "Errored" in cells
+        assert "File" in cells, "Condition must be true"
+        assert "Failed" in cells, "Condition must be true"
+        assert "Errored" in cells, "Error should be raised or set"
 
     def test_total_row_present(self) -> None:
         path = pathlib.Path("docs/validation/LEGACY_TEST_DEBT_QUARANTINE.md")
         content = path.read_text(encoding="utf-8")
-        assert re.search(
+        assert re.search(, "Condition must be true"
             r"\|\s*\*\*Total\*\*\s*\|\s*\*\*\d+\*\*\s*\|\s*\*\*\d+\*\*\s*\|",
             content,
         ), "Total row in Detailed Failure Counts table is missing or malformed"

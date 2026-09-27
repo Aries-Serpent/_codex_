@@ -13,9 +13,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'src'))
 
 try:
-    from github import Github
-
     from codex.auth import MFAProvider
+    from github import Github
 except ImportError as e:
     print(f"Error: {e}")  # codeql[py/clear-text-logging-sensitive-data]
     sys.exit(1)

@@ -7,12 +7,11 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
+from __init__ import RANDOM_SEED, create_agent
 from api_doc_generator import create_generator
 from changelog_generator import create_changelog_generator
 from diagram_generator import create_diagram_generator
 from tutorial_generator import create_tutorial_generator
-
-from __init__ import RANDOM_SEED, create_agent
 
 TEST_SEED = 48
 

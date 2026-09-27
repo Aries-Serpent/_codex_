@@ -234,7 +234,9 @@ def build(
         console.print(
             f"[red]❌ Failed to build index: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.exception("Unexpected error building index")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception(
+            "Unexpected error building index"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -383,7 +385,9 @@ def query(
         console.print(
             f"[red]❌ Query failed: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.exception("Unexpected error querying index")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception(
+            "Unexpected error querying index"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -655,7 +659,9 @@ def merge(
         console.print(
             f"[red]❌ Merge failed: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.exception("Unexpected error merging indices")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception(
+            "Unexpected error merging indices"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 
@@ -817,7 +823,9 @@ def metrics(
         console.print(
             f"[red]❌ Failed to export metrics: {type(e).__name__}[/red]"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        logger.exception("Unexpected error exporting metrics")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.exception(
+            "Unexpected error exporting metrics"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         raise typer.Exit(1) from e
 
 

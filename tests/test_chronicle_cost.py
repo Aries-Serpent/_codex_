@@ -64,7 +64,7 @@ def _database(path: Path) -> None:
 def _cli_module():
     path = Path(__file__).resolve().parents[1] / "src" / "aries_serpent_core" / "cli.py"
     spec = importlib.util.spec_from_file_location("chronicle_cli_test_module", path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -78,8 +78,8 @@ def test_resolve_chronicle_database_prefers_existing_repo_session_db(tmp_path: P
     session_db.touch()
     (tmp_path / ".codex" / "codex.sqlite").touch()
 
-    assert module._resolve_chronicle_database() == str(session_db)
-    assert module._resolve_chronicle_database("/tmp/custom.sqlite") == "/tmp/custom.sqlite"
+    assert module._resolve_chronicle_database() == str(session_db), "Data must not be empty"
+    assert module._resolve_chronicle_database("/tmp/custom.sqlite") == "/tmp/custom.sqlite", "Data must not be empty"
 
 
 def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
@@ -91,9 +91,9 @@ def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) 
     report = analyze_costs(records, store.diagnostics)
 
     assert [record.session_id for record in records] == ["S-heavy", "S-open"]
-    assert report["metrics"]["credits_available"] is False
-    assert report["metrics"]["tool_calls"] == 4
-    assert any(tip["category"] == "measurement" for tip in report["tips"])
+    assert report["metrics"]["credits_available"] is False, "rep is not valid"
+    assert report["metrics"]["tool_calls"] == 4, "rep is not valid"
+    assert any(tip["category"] == "measurement" for tip in report["tips"]), "Condition must be true"
 
 
 def test_standup_filters_task_url_and_identifies_incomplete_work(tmp_path: Path) -> None:
@@ -107,10 +107,10 @@ def test_standup_filters_task_url_and_identifies_incomplete_work(tmp_path: Path)
     records = store.load_sessions(task_id=task_id)
     report = build_standup_report(records, store.diagnostics, task_id=task_id)
 
-    assert [record.session_id for record in records] == ["S-heavy"]
-    assert report["summary"]["completed_sessions"] == 1
-    assert report["summary"]["commits"] == 1
-    assert report["summary"]["tests"] >= 1
+    assert [record.session_id for record in records] == ["S-heavy"], "Condition must be true"
+    assert report["summary"]["completed_sessions"] == 1, "rep is not valid"
+    assert report["summary"]["commits"] == 1, "rep is not valid"
+    assert report["summary"]["tests"] >= 1, "rep must be greater than zero"
 
 
 def test_task_reference_url_without_direct_task_is_matched(tmp_path: Path) -> None:
@@ -171,13 +171,13 @@ def test_session_events_preserve_zero_credits_and_tool_boundaries(
     records = store.load_sessions()
     report = analyze_costs(records, store.diagnostics)
 
-    assert records[0].tool_calls == 0
-    assert records[0].credits == 0
-    assert records[0].commits == 0
-    assert records[0].tests == 0
-    assert records[0].checkpoints == 0
-    assert report["metrics"]["credits_available"] is True
-    assert not any(tip["category"] == "measurement" for tip in report["tips"])
+    assert records[0].tool_calls == 0, "tool_calls is not valid"
+    assert records[0].credits == 0, "credits is not valid"
+    assert records[0].commits == 0, "commits is not valid"
+    assert records[0].tests == 0, "tests is not valid"
+    assert records[0].checkpoints == 0, "checkpoints is not valid"
+    assert report["metrics"]["credits_available"] is True, "rep is not valid"
+    assert not any(tip["category"] == "measurement" for tip in report["tips"]), "Condition must be true"
 
 
 def test_event_rows_count_only_tool_events(tmp_path: Path) -> None:
@@ -202,7 +202,7 @@ def test_event_rows_count_only_tool_events(tmp_path: Path) -> None:
 
     records = ChronicleStore(database).load_sessions()
 
-    assert records[0].tool_calls == 1
+    assert records[0].tool_calls == 1, "tool_calls is not valid"
 
 
 def test_analyze_costs_keeps_lane_scope_and_cost_proxy_consistent() -> None:
@@ -240,10 +240,10 @@ def test_analyze_costs_keeps_lane_scope_and_cost_proxy_consistent() -> None:
     report = analyze_costs(records, [], warning_budget=100, lane="P2")
     empty_scope_report = analyze_costs(records, [], warning_budget=100, lane="")
 
-    assert report["scope"]["lane"] == "P2"
-    assert report["lane_pattern"] == "fragmented"
-    assert empty_scope_report["scope"]["lane"] == "unknown"
-    assert empty_scope_report["lane_focus"] == "unknown"
+    assert report["scope"]["lane"] == "P2", "rep is not valid"
+    assert report["lane_pattern"] == "fragmented", "rep is not valid"
+    assert empty_scope_report["scope"]["lane"] == "unknown", "empty_scope_rep is not valid"
+    assert empty_scope_report["lane_focus"] == "unknown", "empty_scope_rep is not valid"
 
 
 def test_standup_materializes_diagnostics_iterable() -> None:
@@ -253,8 +253,8 @@ def test_standup_materializes_diagnostics_iterable() -> None:
         task_id="task-id",
     )
 
-    assert report["source_diagnostics"] == ["source unavailable"]
-    assert "source unavailable" in report["missing_work"]
+    assert report["source_diagnostics"] == ["source unavailable"], "rep is not valid"
+    assert "source unavailable" in report["missing_work"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -279,7 +279,7 @@ def test_standup_no_db_uses_env_var(tmp_path: Path, monkeypatch) -> None:
 
     assert result.exit_code == 0, result.output
     data = json.loads(result.output)
-    assert data["task_id"] == "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
+    assert data["task_id"] == "98a181d6-d9af-448e-8fab-6f4760fd7a6f", "Data must not be empty"
 
 
 def test_standup_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) -> None:
@@ -302,7 +302,7 @@ def test_standup_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) ->
 
     assert result.exit_code == 0, result.output
     data = json.loads(result.output)
-    assert "task_id" in data
+    assert "task_id" in data, "Data must not be empty"
 
 
 def test_standup_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monkeypatch) -> None:
@@ -325,7 +325,7 @@ def test_standup_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monk
         data = json.loads(result.output)
         assert data.get("summary", {}).get("total_sessions", 0) == 0
     else:
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -350,9 +350,9 @@ def test_reindex_no_db_uses_env_var(tmp_path: Path, monkeypatch) -> None:
     )
 
     assert result.exit_code == 0, result.output
-    assert index_path.exists()
+    assert index_path.exists(), "Condition must be true"
     data = json.loads(index_path.read_text())
-    assert data["summary"]["total_sessions"] == 2
+    assert data["summary"]["total_sessions"] == 2, "Data must not be empty"
 
 
 def test_reindex_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) -> None:
@@ -375,9 +375,9 @@ def test_reindex_no_db_uses_repo_session_logs_db(tmp_path: Path, monkeypatch) ->
     )
 
     assert result.exit_code == 0, result.output
-    assert index_path.exists()
+    assert index_path.exists(), "Condition must be true"
     data = json.loads(index_path.read_text())
-    assert data["summary"]["total_sessions"] == 2
+    assert data["summary"]["total_sessions"] == 2, "Data must not be empty"
 
 
 def test_reindex_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monkeypatch) -> None:
@@ -400,9 +400,9 @@ def test_reindex_no_db_no_env_no_file_falls_back_gracefully(tmp_path: Path, monk
     if result.exit_code == 0:
         if index_path.exists():
             data = json.loads(index_path.read_text())
-            assert data["summary"]["total_sessions"] == 0
+            assert data["summary"]["total_sessions"] == 0, "Data must not be empty"
     else:
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 def test_build_chronicle_index_preserves_session_evidence(tmp_path: Path) -> None:
@@ -416,10 +416,10 @@ def test_build_chronicle_index_preserves_session_evidence(tmp_path: Path) -> Non
         scope="test",
     )
 
-    assert index["schema_version"] == "1.0"
-    assert index["scope"] == "test"
-    assert index["summary"]["total_sessions"] == 2
-    assert index["sessions"][0]["session_id"] == "S-open"
+    assert index["schema_version"] == "1.0", "Condition must be true"
+    assert index["scope"] == "test", "Condition must be true"
+    assert index["summary"]["total_sessions"] == 2, "Condition must be true"
+    assert index["sessions"][0]["session_id"] == "S-open", "Condition must be true"
 
 
 def test_build_chronicle_index_redacts_machine_specific_diagnostics() -> None:
@@ -429,9 +429,9 @@ def test_build_chronicle_index_redacts_machine_specific_diagnostics() -> None:
         scope="/home/runner/work/_codex_/_codex_/.codex/session_logs.db",
     )
 
-    assert index["scope"] == ".codex/session_logs.db"
-    assert index["source_diagnostics"] == ["database not found"]
-    assert "/home/runner/work" not in json.dumps(index)
+    assert index["scope"] == ".codex/session_logs.db", "Condition must be true"
+    assert index["source_diagnostics"] == ["database not found"], "Data must not be empty"
+    assert "/home/runner/work" not in json.dumps(index), "Condition must be true"
 
 
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
@@ -474,9 +474,9 @@ def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> 
     assert cost_result.exit_code == 0, cost_result.output
     assert standup_result.exit_code == 0, standup_result.output
     assert reindex_result.exit_code == 0, reindex_result.output
-    assert json.loads(cost_result.output)["schema_version"] == "1.0"
-    assert json.loads(standup_result.output)["task_id"] == task_id
-    assert json.loads(index_path.read_text())["summary"]["total_sessions"] == 2
+    assert json.loads(cost_result.output)["schema_version"] == "1.0", "Result must not be empty"
+    assert json.loads(standup_result.output)["task_id"] == task_id, "Result must not be empty"
+    assert json.loads(index_path.read_text())["summary"]["total_sessions"] == 2, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -521,7 +521,7 @@ def test_tips_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
 
     assert result.exit_code == 0, result.output
     # The explicit path must have been forwarded to _resolve_chronicle_database
-    assert resolved_paths == [str(database)]
+    assert resolved_paths == [str(database)], "Data must not be empty"
 
 
 def test_tips_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
@@ -558,7 +558,7 @@ def test_tips_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
 
     assert result.exit_code == 0, result.output
     # Called with None (no explicit --database)
-    assert resolved_paths == [None]
+    assert resolved_paths == [None], "resolved_paths is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -601,7 +601,7 @@ def test_analyze_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
     )
 
     assert result.exit_code == 0, result.output
-    assert resolved_paths == [str(database)]
+    assert resolved_paths == [str(database)], "Data must not be empty"
 
 
 def test_analyze_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
@@ -637,4 +637,4 @@ def test_analyze_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
     result = runner.invoke(module.cli, ["chronicle", "analyze"])
 
     assert result.exit_code == 0, result.output
-    assert resolved_paths == [None]
+    assert resolved_paths == [None], "resolved_paths is not valid"

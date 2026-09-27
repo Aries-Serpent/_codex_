@@ -40,7 +40,7 @@ class TestOllamaEmbeddingProvider:
         """Create provider with mocked session."""
         # Mock health check to succeed
         mock_session.get.return_value.status_code = 200
-        
+
         provider = OllamaEmbeddingProvider(
             model_name="nomic-embed-text",
             host="http://localhost",
@@ -54,12 +54,12 @@ class TestOllamaEmbeddingProvider:
         with patch("codex.rag.providers.ollama_provider._RequestsSession"):
             # Act
             provider = OllamaEmbeddingProvider()
-            
+
             # Assert
-            assert provider.model_name == "nomic-embed-text"
-            assert provider.host == "http://localhost"
-            assert provider.port == 11434
-            assert provider.dimension == 768
+            assert provider.model_name == "nomic-embed-text", "model_name is not valid"
+            assert provider.host == "http://localhost", "host is not valid"
+            assert provider.port == 11434, "port is not valid"
+            assert provider.dimension == 768, "dimension is not valid"
 
     def test_initialization_custom_parameters(self):
         """Test provider initialization with custom parameters."""
@@ -73,13 +73,13 @@ class TestOllamaEmbeddingProvider:
                 timeout=60,
                 dimension=1024,
             )
-            
+
             # Assert
-            assert provider.model_name == "mxbai-embed-large"
-            assert provider.host == "http://example.com"
-            assert provider.port == 8080
-            assert provider.timeout == 60
-            assert provider.dimension == 1024
+            assert provider.model_name == "mxbai-embed-large", "model_name is not valid"
+            assert provider.host == "http://example.com", "host is not valid"
+            assert provider.port == 8080, "port is not valid"
+            assert provider.timeout == 60, "timeout is not valid"
+            assert provider.dimension == 1024, "dimension is not valid"
 
     def test_initialization_base_url_construction(self):
         """Test base URL construction from host and port."""
@@ -90,9 +90,9 @@ class TestOllamaEmbeddingProvider:
                 host="http://localhost",
                 port=11434,
             )
-            
+
             # Assert
-            assert provider.base_url == "http://localhost:11434"
+            assert provider.base_url == "http://localhost:11434", "base_url is not valid"
 
     def test_health_check_success(self):
         """Test successful health check."""
@@ -124,7 +124,7 @@ class TestOllamaEmbeddingProvider:
         # Arrange
         with patch("codex.rag.providers.ollama_provider._RequestsSession"):
             provider = OllamaEmbeddingProvider()
-            
+
             # Act & Assert
             # Should return empty array or raise error
             # TODO: expand for edge cases
@@ -147,12 +147,12 @@ class TestOllamaEmbeddingProvider:
             session = MagicMock()
             mock_cls.return_value = session
             session.get.return_value.status_code = 200  # Health check passes
-            
+
             # Mock POST to fail
             session.post.side_effect = ValueError("API error")
-            
+
             provider = OllamaEmbeddingProvider()
-            
+
             # Act & Assert
             with pytest.raises(ValueError):
                 provider.encode("test text")

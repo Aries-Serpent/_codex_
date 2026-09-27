@@ -127,8 +127,8 @@ class FrameworkConfig:
             try:
                 import yaml
                 data = yaml.safe_load(content)
-            except ImportError:
-                raise ImportError("PyYAML required for YAML config files")
+            except ImportError as err:
+                raise ImportError("PyYAML required for YAML config files") from err
         else:
             raise ValueError(f"Unsupported config format: {config_file.suffix}")
 
@@ -171,8 +171,8 @@ class FrameworkConfig:
             try:
                 import yaml
                 config_file.write_text(yaml.dump(self.to_dict()))
-            except ImportError:
-                raise ImportError("PyYAML required for YAML config files")
+            except ImportError as err:
+                raise ImportError("PyYAML required for YAML config files") from err
         else:
             raise ValueError(f"Unsupported config format: {config_file.suffix}")
 

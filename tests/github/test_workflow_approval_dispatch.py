@@ -46,7 +46,7 @@ class TestListWorkflowRuns:
     ):
         """Test listing all workflow runs."""
         endpoint = f"{gh_api_base}{runs_endpoint}"
-        assert "actions/runs" in endpoint
+        assert "actions/runs" in endpoint, "Condition must be true"
 
     def test_list_runs_filtered_by_status(
         self,
@@ -56,7 +56,7 @@ class TestListWorkflowRuns:
         statuses = ["queued", "in_progress", "completed"]
         for status in statuses:
             endpoint = f"{runs_endpoint}?status={status}"
-            assert status in endpoint
+            assert status in endpoint, "Condition must be true"
 
     def test_list_runs_filtered_by_branch(
         self,
@@ -64,7 +64,7 @@ class TestListWorkflowRuns:
     ):
         """Test filtering runs by branch."""
         endpoint = f"{runs_endpoint}?head_branch=main"
-        assert "head_branch=main" in endpoint
+        assert "head_branch=main" in endpoint, "Condition must be true"
 
     def test_list_runs_pagination(self):
         """Test pagination of workflow runs list."""
@@ -72,7 +72,7 @@ class TestListWorkflowRuns:
             "total_count": 1000,
             "workflow_runs": [],  # 30 items per page
         }
-        assert response["total_count"] > 0
+        assert response["total_count"] > 0, "Value must be greater than zero"
 
 
 class TestWorkflowRunStatus:
@@ -83,7 +83,7 @@ class TestWorkflowRunStatus:
         statuses = ["queued", "in_progress", "completed"]
         for status in statuses:
             run = mock_workflow_run_response(status=status)
-            assert run["status"] == status
+            assert run["status"] == status, "Condition must be true"
 
     def test_run_conclusions(self, mock_workflow_run_response):
         """Test workflow run conclusions (only when completed)."""
@@ -93,12 +93,12 @@ class TestWorkflowRunStatus:
                 status="completed",
                 conclusion=conclusion,
             )
-            assert run["conclusion"] == conclusion
+            assert run["conclusion"] == conclusion, "Condition must be true"
 
     def test_pending_approval_run(self, mock_workflow_run_response):
         """Test identifying runs awaiting approval."""
         run = mock_workflow_run_response(status="queued")
-        assert run["status"] == "queued"
+        assert run["status"] == "queued", "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -117,7 +117,7 @@ class TestApproveWorkflowRuns:
         """Test endpoint for approving a pending run."""
         run_id = 12345
         endpoint = f"{gh_api_base}{runs_endpoint}/{run_id}/approve"
-        assert f"{run_id}/approve" in endpoint
+        assert f"{run_id}/approve" in endpoint, "Condition must be true"
 
     def test_approve_run_payload(self):
         """Test payload for approving a run."""
@@ -132,10 +132,10 @@ class TestApproveWorkflowRuns:
         """Test approving a queued (pending) run."""
         run = mock_workflow_run_response(status="queued", run_id=111)
         # After approval, run should transition to in_progress
-        assert run["status"] == "queued"
+        assert run["status"] == "queued", "Condition must be true"
         # Simulate approval → status change
         approved_run = mock_workflow_run_response(status="in_progress", run_id=111)
-        assert approved_run["status"] == "in_progress"
+        assert approved_run["status"] == "in_progress", "Condition must be true"
 
     def test_approve_run_success_response(self):
         """Test successful approval response."""
@@ -151,7 +151,7 @@ class TestApproveWorkflowRuns:
             "status": 404,
             "message": "Not Found",
         }
-        assert error["status"] == 404
+        assert error["status"] == 404, "Error should be raised or set"
 
     def test_approve_already_completed_run_error(self):
         """Test error when approving completed run."""
@@ -160,7 +160,7 @@ class TestApproveWorkflowRuns:
             "message": "Validation Failed",
             "errors": [{"message": "Run is not awaiting review"}],
         }
-        assert error["status"] == 422
+        assert error["status"] == 422, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -179,18 +179,18 @@ class TestCancelWorkflowRuns:
         """Test endpoint for cancelling a run."""
         run_id = 12345
         endpoint = f"{gh_api_base}{runs_endpoint}/{run_id}/cancel"
-        assert f"{run_id}/cancel" in endpoint
+        assert f"{run_id}/cancel" in endpoint, "Condition must be true"
 
     def test_cancel_in_progress_run(self, mock_workflow_run_response):
         """Test cancelling an in-progress run."""
         run = mock_workflow_run_response(status="in_progress")
-        assert run["status"] == "in_progress"
+        assert run["status"] == "in_progress", "Condition must be true"
         # After cancellation
         cancelled = mock_workflow_run_response(
             status="completed",
             conclusion="cancelled",
         )
-        assert cancelled["conclusion"] == "cancelled"
+        assert cancelled["conclusion"] == "cancelled", "Condition must be true"
 
     def test_cancel_run_success_response(self):
         """Test successful cancellation response."""
@@ -206,7 +206,7 @@ class TestCancelWorkflowRuns:
             "message": "Validation Failed",
             "errors": [{"message": "Can only cancel in_progress runs"}],
         }
-        assert error["status"] == 422
+        assert error["status"] == 422, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -225,7 +225,7 @@ class TestDispatchWorkflow:
         """Test endpoint for dispatching a workflow."""
         workflow_id = "test.yml"
         endpoint = f"{gh_api_base}{workflows_endpoint}/{workflow_id}/dispatches"
-        assert "dispatches" in endpoint
+        assert "dispatches" in endpoint, "Condition must be true"
 
     def test_dispatch_workflow_payload(self):
         """Test payload for dispatching a workflow."""
@@ -236,8 +236,8 @@ class TestDispatchWorkflow:
                 "param2": "value2",
             },
         }
-        assert payload["ref"] == "main"
-        assert "inputs" in payload
+        assert payload["ref"] == "main", "Condition must be true"
+        assert "inputs" in payload, "Condition must be true"
 
     def test_dispatch_with_custom_inputs(self):
         """Test dispatching workflow with custom inputs."""
@@ -249,7 +249,7 @@ class TestDispatchWorkflow:
                 "debug": "true",
             },
         }
-        assert len(payload["inputs"]) == 3
+        assert len(payload["inputs"]) == 3, "Collection must not be empty"
 
     def test_dispatch_workflow_success_response(self):
         """Test successful dispatch response."""
@@ -264,7 +264,7 @@ class TestDispatchWorkflow:
             "status": 404,
             "message": "Not Found",
         }
-        assert error["status"] == 404
+        assert error["status"] == 404, "Error should be raised or set"
 
     def test_dispatch_invalid_branch_error(self):
         """Test error when dispatching with invalid branch."""
@@ -273,7 +273,7 @@ class TestDispatchWorkflow:
             "message": "Validation Failed",
             "errors": [{"message": "Invalid branch"}],
         }
-        assert error["status"] == 422
+        assert error["status"] == 422, "Error should be raised or set"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -301,7 +301,7 @@ class TestWorkflowPermissions:
             "actions": "write",  # Can trigger actions
             "checks": "write",  # Can write checks
         }
-        assert permissions["contents"] == "write"
+        assert permissions["contents"] == "write", "Content must not be empty"
 
     def test_update_workflow_permissions(self):
         """Test updating workflow permissions."""
@@ -309,7 +309,7 @@ class TestWorkflowPermissions:
             "can_approve_pull_request_reviews": True,
         }
         # Updates whether workflow can auto-approve PRs
-        assert "can_approve_pull_request_reviews" in payload
+        assert "can_approve_pull_request_reviews" in payload, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -327,7 +327,7 @@ class TestApprovalCoordination:
             mock_workflow_run_response(run_id=2, status="queued"),
             mock_workflow_run_response(run_id=3, status="queued"),
         ]
-        assert all(run["status"] == "queued" for run in pending_runs)
+        assert all(run["status"] == "queued" for run in pending_runs), "Condition must be true"
 
     def test_selective_approval(self, mock_workflow_run_response):
         """Test approving only specific runs based on criteria."""
@@ -337,7 +337,7 @@ class TestApprovalCoordination:
             mock_workflow_run_response(run_id=3, status="queued"),
         ]
         pending = [r for r in runs if r["status"] == "queued"]
-        assert len(pending) == 2
+        assert len(pending) == 2, "Pending must not be empty"
 
     def test_approval_retry_logic(self, mock_workflow_run_response):
         """Test retry logic for failed approval attempts."""
@@ -348,7 +348,7 @@ class TestApprovalCoordination:
             # Would attempt approval
             # If fails, increment attempt and retry
             attempts += 1
-        assert attempts <= max_attempts
+        assert attempts <= max_attempts, "attempts is not valid"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -365,7 +365,7 @@ class TestWorkflowErrorHandling:
             "status": 403,
             "message": "Resource not accessible by integration",
         }
-        assert error["status"] == 403
+        assert error["status"] == 403, "Error should be raised or set"
 
     def test_rate_limit_error(self):
         """Test 429 error for rate limiting."""
@@ -373,10 +373,10 @@ class TestWorkflowErrorHandling:
             "status": 429,
             "message": "API rate limit exceeded",
         }
-        assert error["status"] == 429
+        assert error["status"] == 429, "Error should be raised or set"
 
     def test_timeout_error_handling(self):
         """Test handling of timeout errors."""
         error_type = "ConnectionError"
         # Implements retry with exponential backoff
-        assert error_type == "ConnectionError"
+        assert error_type == "ConnectionError", "Error should be raised or set"

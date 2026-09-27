@@ -77,7 +77,7 @@ def batch_test_texts() -> list[list[str]]:
         "Text embeddings are useful for similarity matching.",
         "Model evaluation metrics help us understand performance.",
     ]
-    
+
     # Create batches
     batch_size = 4
     batches = [texts[i : i + batch_size] for i in range(0, len(texts), batch_size)]
@@ -118,7 +118,7 @@ def cuda_available() -> bool:
 def device_info() -> dict[str, Any]:
     """Get information about the available device."""
     info = {"cuda_available": False, "device": "cpu", "device_name": "CPU"}
-    
+
     try:
         import torch
         if torch.cuda.is_available():
@@ -126,37 +126,37 @@ def device_info() -> dict[str, Any]:
             info["device"] = "cuda"
             info["device_name"] = torch.cuda.get_device_name(0)
             info["cuda_version"] = torch.version.cuda
-    except Exception:
+    except (ImportError, AttributeError, ModuleNotFoundError):
         pass
-    
+
     return info
 
 
 @pytest.fixture
 def memory_profiler() -> Generator[dict[str, Any], None, None]:
     """Simple memory profiler for tracking peak memory during inference."""
-    
+
     def get_memory_usage() -> tuple[float, Optional[float]]:
         """Get current RAM and VRAM usage in GB."""
         ram_gb = 0.0
         vram_gb = None
-        
+
         try:
             import psutil
             process = psutil.Process(os.getpid())
             ram_gb = process.memory_info().rss / (1024 ** 3)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
-        
+
         try:
             import torch
             if torch.cuda.is_available():
                 vram_gb = torch.cuda.memory_allocated() / (1024 ** 3)
-        except Exception:
+        except (ImportError, AttributeError, ModuleNotFoundError):
             pass
-        
+
         return ram_gb, vram_gb
-    
+
     profile_data = {
         "start_ram_gb": 0.0,
         "start_vram_gb": None,
@@ -164,7 +164,7 @@ def memory_profiler() -> Generator[dict[str, Any], None, None]:
         "peak_vram_gb": None,
         "measurements": [],
     }
-    
+
     # Record initial state
     ram, vram = get_memory_usage()
     profile_data["start_ram_gb"] = ram
@@ -172,16 +172,16 @@ def memory_profiler() -> Generator[dict[str, Any], None, None]:
     profile_data["peak_ram_gb"] = ram
     if vram is not None:
         profile_data["peak_vram_gb"] = vram
-    
+
     yield profile_data
-    
+
     # Cleanup: Peak memory should already be recorded
 
 
 @pytest.fixture
 def performance_tracker() -> Generator[dict[str, Any], None, None]:
     """Track performance metrics during inference."""
-    
+
     metrics = {
         "inference_times_ms": [],
         "total_samples": 0,
@@ -191,7 +191,7 @@ def performance_tracker() -> Generator[dict[str, Any], None, None]:
         "mean_latency_ms": 0.0,
         "throughput_samples_per_sec": 0.0,
     }
-    
+
     yield metrics
 
 
@@ -211,10 +211,10 @@ def hf_cache_dir(tmp_path: Path) -> Generator[Path, None, None]:
     """Temporary directory for HuggingFace model cache."""
     cache_dir = tmp_path / "hf_cache"
     cache_dir.mkdir(exist_ok=True)
-    
+
     old_home = os.environ.get("HF_HOME")
     os.environ["HF_HOME"] = str(cache_dir)
-    
+
     try:
         yield cache_dir
     finally:
@@ -256,5 +256,5 @@ def _cuda_available() -> bool:
     try:
         import torch
         return torch.cuda.is_available()
-    except Exception:
+    except Exception as _err:
         return False

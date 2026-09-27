@@ -135,9 +135,7 @@ class PolicyTierEngine:
     }
 
     @classmethod
-    def _calculate_risk_score(
-        cls, action_description: str, affected_modules: List[str]
-    ) -> float:
+    def _calculate_risk_score(cls, action_description: str, affected_modules: List[str]) -> float:
         """Calculate risk score based on action and modules.
 
         Args:
@@ -241,8 +239,7 @@ class PolicyTierEngine:
             )
 
             logger.info(
-                f"Action classified as {final_tier}: {action_description} "
-                f"(risk: {risk_score:.1f})"
+                f"Action classified as {final_tier}: {action_description} (risk: {risk_score:.1f})"
             )
 
             return classification
@@ -278,9 +275,7 @@ class PolicyTierEngine:
         }
 
     @classmethod
-    def batch_classify(
-        cls, actions: List[Dict[str, Any]]
-    ) -> List[TierClassification]:
+    def batch_classify(cls, actions: List[Dict[str, Any]]) -> List[TierClassification]:
         """Classify multiple actions at once.
 
         Args:

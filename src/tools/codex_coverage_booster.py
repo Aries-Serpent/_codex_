@@ -52,14 +52,16 @@ def nowstamp() -> str:
 def append_error(step: str, err: Exception, context: str) -> None:
     DOCS_ERRORS.parent.mkdir(parents=True, exist_ok=True)
     with open(DOCS_ERRORS, "a", encoding="utf-8") as f:
-        f.write(textwrap.dedent(f"""
+        f.write(
+            textwrap.dedent(f"""
                 Question for ChatGPT-5 {nowstamp()}:
                 While performing {step}, encountered the following error:
                 {type(err).__name__}: {err}
                 Context: {context}
                 What are the possible causes, and how can this be resolved while preserving intended functionality?
 
-                """))
+                """)
+        )
 
 
 def safe_write(path: Path, content: str, apply: bool) -> None:
@@ -120,7 +122,7 @@ def test_template_sentencepiece() -> str:
                 spm = types.SimpleNamespace(
                     SentencePieceTrainer=types.SimpleNamespace(Train=lambda *a, **k: None),
                     SentencePieceProcessor=type("Proc", (), {
-                        "__init__": lambda self: None,
+        "__init__": lambda self: None,
                         "Load": lambda self, path=None: None,
                         "EncodeAsIds": lambda self, s: [1, 2],
                         "DecodeIds": lambda self, ids: "ok",

@@ -38,11 +38,11 @@ class TestChronicleImprove:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "empty"
-        assert payload["database"] == str(missing_db)
-        assert "Chronicle database not found" in payload["diagnostics"][0]
-        assert payload["cost_report"] == {}
-        assert payload["pattern_observations"] == {}
+        assert payload["state"] == "empty", "Condition must be true"
+        assert payload["database"] == str(missing_db), "Data must not be empty"
+        assert "Chronicle database not found" in payload["diagnostics"][0], "Data must not be empty"
+        assert payload["cost_report"] == {}, "Condition must be true"
+        assert payload["pattern_observations"] == {}, "Condition must be true"
 
     def test_improve_with_valid_database_returns_roadmap(self, tmp_path: Path) -> None:
         """When a valid Chronicle DB exists, improve returns a roadmap with expected keys."""
@@ -77,13 +77,13 @@ class TestChronicleImprove:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "available"
-        assert payload["database"] == str(db_path)
-        assert payload["cost_report"]["metrics"]["sessions"] == 1
-        assert "tips" in payload["cost_report"]
-        assert "pattern_observations" in payload
-        assert payload["pattern_observations"]["agents"]["total_agents_used"] == 1
-        assert payload["repository"]["branch"] is not None
+        assert payload["state"] == "available", "Condition must be true"
+        assert payload["database"] == str(db_path), "Data must not be empty"
+        assert payload["cost_report"]["metrics"]["sessions"] == 1, "Condition must be true"
+        assert "tips" in payload["cost_report"], "Condition must be true"
+        assert "pattern_observations" in payload, "Condition must be true"
+        assert payload["pattern_observations"]["agents"]["total_agents_used"] == 1, "Condition must be true"
+        assert payload["repository"]["branch"] is not None, "Value must be initialized"
 
     def test_improve_budget_validation(self, tmp_path: Path) -> None:
         """Improve rejects a hard budget below the warning budget."""
@@ -100,7 +100,7 @@ class TestChronicleImprove:
                 "50",
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
         assert "--hard-budget must be greater than or equal to --warning-budget" in result.output
 
 
@@ -118,10 +118,10 @@ class TestChronicleSearch:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "empty"
-        assert payload["hit_count"] == 0
-        assert payload["hits"] == []
-        assert "Search index not found" in payload["diagnostics"][0]
+        assert payload["state"] == "empty", "Condition must be true"
+        assert payload["hit_count"] == 0, "Count must be greater than zero"
+        assert payload["hits"] == [], "Condition must be true"
+        assert "Search index not found" in payload["diagnostics"][0], "Condition must be true"
 
     def test_search_empty_index_returns_empty_state(self, tmp_path: Path) -> None:
         """When the search index has no sessions, search returns an empty-state JSON."""
@@ -135,8 +135,8 @@ class TestChronicleSearch:
         result = runner.invoke(chronicle_search, ["test", "--index", str(index_path), "--json"])
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "empty"
-        assert payload["hit_count"] == 0
+        assert payload["state"] == "empty", "Condition must be true"
+        assert payload["hit_count"] == 0, "Count must be greater than zero"
 
     def test_search_returns_matching_hits(self, tmp_path: Path) -> None:
         """Search returns hits ranked by local relevance."""
@@ -173,11 +173,11 @@ class TestChronicleSearch:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "available"
-        assert payload["hit_count"] >= 1
+        assert payload["state"] == "available", "Condition must be true"
+        assert payload["hit_count"] >= 1, "Value must be greater than zero"
         hits = payload["hits"]
-        assert hits[0]["session_id"] == "lane-5-docs"
-        assert "lane" in [t.lower() for t in hits[0]["matched_terms"]]
+        assert hits[0]["session_id"] == "lane-5-docs", "Condition must be true"
+        assert "lane" in [t.lower() for t in hits[0]["matched_terms"]], "Condition must be true"
 
     def test_search_no_query_returns_empty_results(self, tmp_path: Path) -> None:
         """Search without a query returns empty results and a diagnostic."""
@@ -188,9 +188,9 @@ class TestChronicleSearch:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["state"] == "empty"
-        assert payload["hit_count"] == 0
-        assert "No search query provided" in payload["diagnostics"][0]
+        assert payload["state"] == "empty", "Condition must be true"
+        assert payload["hit_count"] == 0, "Count must be greater than zero"
+        assert "No search query provided" in payload["diagnostics"][0], "Condition must be true"
 
 
 class TestChronicleLaneFilters:
@@ -225,8 +225,8 @@ class TestChronicleLaneFilters:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["scope"]["lane"] == "P1"
-        assert payload["lane_focus"] == "P1"
+        assert payload["scope"]["lane"] == "P1", "Condition must be true"
+        assert payload["lane_focus"] == "P1", "Condition must be true"
 
     def test_standup_accepts_lane_filter(self, tmp_path: Path) -> None:
         db_path = tmp_path / "chronicle.sqlite"
@@ -257,5 +257,5 @@ class TestChronicleLaneFilters:
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
-        assert payload["lane"] == "S1"
+        assert payload["lane"] == "S1", "Condition must be true"
         assert payload["lane_pattern"] in {"fragmented", "batchable"}

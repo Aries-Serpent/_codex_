@@ -37,8 +37,8 @@ import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call
 from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
@@ -1636,7 +1636,7 @@ async def submit_decision(req: DecisionSubmitRequest):
         try:
             decision_id = str(uuid.uuid4())
             timestamp = datetime.now(timezone.utc).isoformat()
-            
+
             with _db_lock:
                 _db.execute(
                     """
@@ -1651,10 +1651,10 @@ async def submit_decision(req: DecisionSubmitRequest):
                     ),
                 )
                 _db.commit()
-            
+
             log.info("Decision submitted: %s (lane=%s, confidence=%.2f)",  # lgtm[py/log-injection]
                     decision_id, _sanitize_log_value(req.lane_name), req.confidence_score)
-            
+
             return DecisionResponse(
                 decision_id=decision_id,
                 lane_name=req.lane_name,
@@ -1688,7 +1688,7 @@ async def get_recent_decisions(limit: int = 50):
                     """,
                     (limit,),
                 ).fetchall()
-            
+
             return [
                 DecisionResponse(
                     decision_id=row["decision_id"],
@@ -1717,7 +1717,7 @@ async def get_decision_history(lane_name: Optional[str] = None, page: int = 1, p
     with tracer.start_as_current_span("get_decision_history"):
         try:
             offset = (page - 1) * page_size
-            
+
             with _db_lock:
                 if lane_name:
                     total = _db.execute(
@@ -1743,7 +1743,7 @@ async def get_decision_history(lane_name: Optional[str] = None, page: int = 1, p
                         """,
                         (page_size, offset),
                     ).fetchall()
-            
+
             decisions = [
                 DecisionResponse(
                     decision_id=row["decision_id"],
@@ -1759,7 +1759,7 @@ async def get_decision_history(lane_name: Optional[str] = None, page: int = 1, p
                 )
                 for row in rows
             ]
-            
+
             return DecisionHistoryResponse(
                 total=total,
                 decisions=decisions,
@@ -1783,10 +1783,10 @@ async def get_decision(decision_id: str):
                     "SELECT * FROM decisions WHERE decision_id = ?",
                     (decision_id,),
                 ).fetchone()
-            
+
             if not row:
                 raise HTTPException(status_code=404, detail="Decision not found")
-            
+
             return DecisionResponse(
                 decision_id=row["decision_id"],
                 lane_name=row["lane_name"],
@@ -1817,7 +1817,7 @@ async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_m
     with tracer.start_as_current_span("store_memory"):
         try:
             timestamp = datetime.now(timezone.utc).isoformat()
-            
+
             with _db_lock:
                 _db.execute(
                     """
@@ -1831,10 +1831,10 @@ async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_m
                     ),
                 )
                 _db.commit()
-            
+
             log.info("Memory stored: lane=%s, pattern_type=%s",  # lgtm[py/log-injection]
                     _sanitize_log_value(req.lane_name), _sanitize_log_value(req.pattern_type))
-            
+
             return {"success": True, "message": "Pattern stored in LTE", "timestamp": timestamp}
         except Exception as exc:
             log.warning("store_memory error: %s", sanitize_for_log(type(exc).__name__))
@@ -1857,20 +1857,20 @@ async def retrieve_memory(
             with _db_lock:
                 query = "SELECT * FROM lte_patterns WHERE 1=1"
                 params = []
-                
+
                 if lane_name:
                     query += " AND lane_name = ?"
                     params.append(lane_name)
-                
+
                 if pattern_type:
                     query += " AND pattern_type = ?"
                     params.append(pattern_type)
-                
+
                 query += " ORDER BY created_at DESC LIMIT ?"
                 params.append(limit)
-                
+
                 rows = _db.execute(query, params).fetchall()
-                
+
                 # Update access count
                 for row in rows:
                     _db.execute(
@@ -1878,7 +1878,7 @@ async def retrieve_memory(
                         (datetime.now(timezone.utc).isoformat(), row["id"]),
                     )
                 _db.commit()
-            
+
             return [
                 MemoryRetrieveResponse(
                     lane_name=row["lane_name"],
@@ -1908,7 +1908,7 @@ async def stm_push(req: dict[str, Any], _auth: None = Depends(_require_memory_au
             value = req.get("value")
             metadata = req.get("metadata", {})
             timestamp = datetime.now(timezone.utc).isoformat()
-            
+
             with _db_lock:
                 _db.execute(
                     """
@@ -1919,9 +1919,9 @@ async def stm_push(req: dict[str, Any], _auth: None = Depends(_require_memory_au
                     (key, json.dumps(value), json.dumps(metadata), timestamp),
                 )
                 _db.commit()
-            
+
             log.info("STM entry pushed: key=%s", _sanitize_log_value(key))  # lgtm[py/log-injection]
-            
+
             return {"success": True, "key": key, "timestamp": timestamp}
         except Exception as exc:
             log.warning("stm_push error: %s", sanitize_for_log(type(exc).__name__))
@@ -1943,11 +1943,11 @@ async def get_memory_stats(_auth: None = Depends(_require_memory_auth)):
                 warm_count = _db.execute(
                     "SELECT COUNT(*) FROM stm_entries WHERE access_count >= 1"
                 ).fetchone()[0]
-            
+
             capacity = MEMORY_CAPACITY
             compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
             cache_hit_rate = warm_count / stm_count if stm_count > 0 else 0.0
-            
+
             return MemoryStatsResponse(
                 stm_count=stm_count,
                 ltm_count=ltm_count,
@@ -2026,7 +2026,7 @@ async def get_rate_limit_status():
             timestamp = datetime.now(timezone.utc)
             reset_timestamp = timestamp.replace(second=0, microsecond=0)
             reset_timestamp = reset_timestamp.replace(minute=(reset_timestamp.minute + 1) % 60)
-            
+
             return WorkflowRateLimitResponse(
                 remaining=4500,
                 limit=5000,

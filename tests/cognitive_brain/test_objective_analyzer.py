@@ -43,19 +43,19 @@ def _make_metric(
 
 class TestEnums:
     def test_metric_types(self) -> None:
-        assert MetricType.COVERAGE.value == "coverage"
-        assert MetricType.SECURITY.value == "security"
-        assert MetricType.CI_CD.value == "ci_cd"
+        assert MetricType.COVERAGE.value == "coverage", "Value must be initialized"
+        assert MetricType.SECURITY.value == "security", "Value must be initialized"
+        assert MetricType.CI_CD.value == "ci_cd", "Value must be initialized"
 
     def test_trend_directions(self) -> None:
-        assert TrendDirection.IMPROVING.value == "improving"
-        assert TrendDirection.DEGRADING.value == "degrading"
-        assert TrendDirection.STABLE.value == "stable"
+        assert TrendDirection.IMPROVING.value == "improving", "Value must be initialized"
+        assert TrendDirection.DEGRADING.value == "degrading", "Value must be initialized"
+        assert TrendDirection.STABLE.value == "stable", "Value must be initialized"
 
     def test_alert_severities(self) -> None:
-        assert AlertSeverity.INFO.value == "info"
-        assert AlertSeverity.WARNING.value == "warning"
-        assert AlertSeverity.CRITICAL.value == "critical"
+        assert AlertSeverity.INFO.value == "info", "Value must be initialized"
+        assert AlertSeverity.WARNING.value == "warning", "Value must be initialized"
+        assert AlertSeverity.CRITICAL.value == "critical", "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -73,19 +73,19 @@ class TestMetricValue:
             context={"source": "pytest"},
         )
         d = mv.to_dict()
-        assert d["metric_type"] == "coverage"
-        assert d["value"] == 82.5
-        assert d["context"] == {"source": "pytest"}
+        assert d["metric_type"] == "coverage", "Condition must be true"
+        assert d["value"] == 82.5, "Value must be initialized"
+        assert d["context"] == {"source": "pytest"}, "Condition must be true"
 
         # Round-trip via from_dict
         mv2 = MetricValue.from_dict(d)
-        assert mv2.metric_type == MetricType.COVERAGE
-        assert mv2.value == pytest.approx(82.5)
-        assert mv2.context == {"source": "pytest"}
+        assert mv2.metric_type == MetricType.COVERAGE, "metric_type is not valid"
+        assert mv2.value == pytest.approx(82.5), "Value must be initialized"
+        assert mv2.context == {"source": "pytest"}, "context is not valid"
 
     def test_default_context_empty(self) -> None:
         mv = _make_metric(75.0)
-        assert mv.context == {}
+        assert mv.context == {}, "context is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -116,37 +116,37 @@ class TestMetricThreshold:
 
     def test_gte_above_target_ok(self, gte_threshold: MetricThreshold) -> None:
         ok, severity = gte_threshold.check_value(85.0)
-        assert ok is True
-        assert severity is None
+        assert ok is True, "ok is not valid"
+        assert severity is None, "severity is not valid"
 
     def test_gte_at_target_ok(self, gte_threshold: MetricThreshold) -> None:
         ok, severity = gte_threshold.check_value(80.0)
-        assert ok is True
+        assert ok is True, "ok is not valid"
 
     def test_gte_warning_zone(self, gte_threshold: MetricThreshold) -> None:
         ok, severity = gte_threshold.check_value(72.0)
-        assert ok is False
-        assert severity == AlertSeverity.WARNING
+        assert ok is False, "ok is not valid"
+        assert severity == AlertSeverity.WARNING, "severity is not valid"
 
     def test_gte_critical_zone(self, gte_threshold: MetricThreshold) -> None:
         ok, severity = gte_threshold.check_value(55.0)
-        assert ok is False
-        assert severity == AlertSeverity.CRITICAL
+        assert ok is False, "ok is not valid"
+        assert severity == AlertSeverity.CRITICAL, "severity is not valid"
 
     def test_lte_at_or_below_target_ok(self, lte_threshold: MetricThreshold) -> None:
         ok, severity = lte_threshold.check_value(0.0)
-        assert ok is True
-        assert severity is None
+        assert ok is True, "ok is not valid"
+        assert severity is None, "severity is not valid"
 
     def test_lte_warning_zone(self, lte_threshold: MetricThreshold) -> None:
         ok, severity = lte_threshold.check_value(2.0)
-        assert ok is False
-        assert severity == AlertSeverity.WARNING
+        assert ok is False, "ok is not valid"
+        assert severity == AlertSeverity.WARNING, "severity is not valid"
 
     def test_lte_critical_zone(self, lte_threshold: MetricThreshold) -> None:
         ok, severity = lte_threshold.check_value(15.0)
-        assert ok is False
-        assert severity == AlertSeverity.CRITICAL
+        assert ok is False, "ok is not valid"
+        assert severity == AlertSeverity.CRITICAL, "severity is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -163,11 +163,11 @@ class TestMetricStore:
         mv = _make_metric(80.0, MetricType.COVERAGE)
         store.add_metric(mv)
         latest = store.get_latest(MetricType.COVERAGE)
-        assert latest is not None
-        assert latest.value == pytest.approx(80.0)
+        assert latest is not None, "latest must be initialized"
+        assert latest.value == pytest.approx(80.0), "Value must be initialized"
 
     def test_get_latest_empty_store(self, store: MetricStore) -> None:
-        assert store.get_latest(MetricType.COVERAGE) is None
+        assert store.get_latest(MetricType.COVERAGE) is None, "st is not valid"
 
     def test_get_metrics_within_period(self, store: MetricStore) -> None:
         old = _make_metric(60.0, MetricType.COVERAGE, offset_days=40)
@@ -176,14 +176,14 @@ class TestMetricStore:
         store.add_metric(recent)
         # Default 30-day window should include recent but not old
         metrics_30 = store.get_metrics(MetricType.COVERAGE, days=30)
-        assert any(m.value == pytest.approx(80.0) for m in metrics_30)
-        assert all(m.value != pytest.approx(60.0) for m in metrics_30)
+        assert any(m.value == pytest.approx(80.0) for m in metrics_30), "Value must be initialized"
+        assert all(m.value != pytest.approx(60.0) for m in metrics_30), "Value must be initialized"
 
     def test_add_multiple_types(self, store: MetricStore) -> None:
         store.add_metric(_make_metric(90.0, MetricType.CI_CD))
         store.add_metric(_make_metric(2.0, MetricType.SECURITY))
-        assert store.get_latest(MetricType.CI_CD) is not None
-        assert store.get_latest(MetricType.SECURITY) is not None
+        assert store.get_latest(MetricType.CI_CD) is not None, "st must be initialized"
+        assert store.get_latest(MetricType.SECURITY) is not None, "st must be initialized"
 
     def test_persistence(self, tmp_path: Path) -> None:
         path = tmp_path / "metrics.json"
@@ -192,7 +192,7 @@ class TestMetricStore:
         store1._save()
 
         store2 = MetricStore(store_path=path)
-        assert store2.get_latest(MetricType.COVERAGE) is not None
+        assert store2.get_latest(MetricType.COVERAGE) is not None, "st must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -221,45 +221,45 @@ class TestTrendAnalyzer:
     def test_too_few_points_returns_none(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([70.0, 75.0])  # only 2 — below min 3
         result = analyzer.analyze(metrics)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_improving_trend(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([60.0, 70.0, 80.0, 85.0])
         result = analyzer.analyze(metrics)
-        assert result is not None
-        assert result.direction == TrendDirection.IMPROVING
-        assert result.slope > 0
+        assert result is not None, "result must be initialized"
+        assert result.direction == TrendDirection.IMPROVING, "Result must not be empty"
+        assert result.slope > 0, "slope must be greater than zero"
 
     def test_degrading_trend(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([85.0, 75.0, 65.0, 55.0])
         result = analyzer.analyze(metrics)
-        assert result is not None
-        assert result.direction == TrendDirection.DEGRADING
-        assert result.slope < 0
+        assert result is not None, "result must be initialized"
+        assert result.direction == TrendDirection.DEGRADING, "Result must not be empty"
+        assert result.slope < 0, "Result must not be empty"
 
     def test_stable_trend(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([80.0, 80.0, 80.0, 80.0])
         result = analyzer.analyze(metrics)
-        assert result is not None
-        assert result.direction == TrendDirection.STABLE
+        assert result is not None, "result must be initialized"
+        assert result.direction == TrendDirection.STABLE, "Result must not be empty"
 
     def test_result_fields_populated(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([70.0, 75.0, 80.0])
         result = analyzer.analyze(metrics)
-        assert result is not None
-        assert result.data_points == 3
-        assert result.start_value == pytest.approx(70.0)
-        assert result.end_value == pytest.approx(80.0)
+        assert result is not None, "result must be initialized"
+        assert result.data_points == 3, "Result must not be empty"
+        assert result.start_value == pytest.approx(70.0), "Result must not be empty"
+        assert result.end_value == pytest.approx(80.0), "Result must not be empty"
         assert isinstance(result.r_squared, float)
 
     def test_to_dict(self, analyzer: TrendAnalyzer) -> None:
         metrics = self._make_series([70.0, 75.0, 80.0])
         result = analyzer.analyze(metrics)
-        assert result is not None
+        assert result is not None, "result must be initialized"
         d = result.to_dict()
-        assert "direction" in d
-        assert "slope" in d
-        assert "data_points" in d
+        assert "direction" in d, "Condition must be true"
+        assert "slope" in d, "Condition must be true"
+        assert "data_points" in d, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -288,8 +288,8 @@ class TestAnomalyDetector:
     def test_detects_spike(self, detector: AnomalyDetector) -> None:
         metrics = self._make_series_with_spike()
         anomalies = detector.detect(metrics)
-        assert len(anomalies) >= 1
-        assert any(m.value == pytest.approx(200.0) for m in anomalies)
+        assert len(anomalies) >= 1, "Anomalies must not be empty"
+        assert any(m.value == pytest.approx(200.0) for m in anomalies), "Value must be initialized"
 
     def test_no_anomaly_uniform_series(self, detector: AnomalyDetector) -> None:
         base_ts = datetime.now(timezone.utc)
@@ -302,7 +302,7 @@ class TestAnomalyDetector:
             for i in range(10)
         ]
         anomalies = detector.detect(metrics)
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
 
     def test_empty_short_series(self, detector: AnomalyDetector) -> None:
         base_ts = datetime.now(timezone.utc)
@@ -314,7 +314,7 @@ class TestAnomalyDetector:
             )
         ]
         # Fewer than 3 points → no anomalies
-        assert detector.detect(metrics) == []
+        assert detector.detect(metrics) == [], "detect is not valid"
 
     def test_returns_metric_values(self, detector: AnomalyDetector) -> None:
         metrics = self._make_series_with_spike()

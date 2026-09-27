@@ -16,12 +16,12 @@ import pytest
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
 #             ), f"Missing keys for dist={dist}: {required - result.keys()}"
-# 
+#
 #             result = collector.analyze_multi_job_cascade(self._make_report(dist))
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
 #             ), f"Missing keys for dist={dist}: {required - result.keys()}"
-# 
+#
 #             result = collector.analyze_multi_job_cascade(self._make_report(dist))
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
@@ -176,11 +176,11 @@ import pytest
 #         mock_response.json.return_value = {"workflow_runs": mock_workflow_runs}
 #         mock_get.return_value = mock_response
 #         runs = collector.collect_workflow_runs("main", days=7)
-# 
+#
 #         assert len(runs) == 3, "Runs must not be empty"
 #         assert runs[0]["name"] == "Auto-Fix Common Issues", "Condition must be true"
 #         mock_get.assert_called_once()
-# 
+#
 #     @patch("collect_telemetry.requests.get")
 #     def test_collect_workflow_runs_pagination(self, mock_get, collector):
 #     def test_collect_workflow_runs_pagination(self, mock_get, collector):
@@ -200,12 +200,12 @@ import pytest
 #             ),
 #         ]
 #         mock_get.side_effect = mock_responses
-# 
+#
 #         runs = collector.collect_workflow_runs("main", days=7, max_pages=10)
-# 
+#
 #         assert len(runs) == 150, "Runs must not be empty"
 #         assert mock_get.call_count == 2, "Count must be greater than zero"
-# 
+#
 #     @patch("collect_telemetry.requests.get")
 #     def test_collect_job_details(self, mock_get, collector, mock_jobs):
 #     def test_collect_job_details(self, mock_get, collector, mock_jobs):
@@ -215,10 +215,10 @@ import pytest
 #         mock_response.json.return_value = {"jobs": mock_jobs}
 #         mock_get.return_value = mock_response
 #         jobs = collector.collect_job_details(1001)
-# 
+#
 #         assert len(jobs) == 1, "Jobs must not be empty"
 #         assert jobs[0]["name"] == "auto-fix", "Condition must be true"
-# 
+#
 #     @patch("collect_telemetry.requests.get")
 #     def test_collect_artifacts(self, mock_get, collector, mock_artifacts):
 #     def test_collect_artifacts(self, mock_get, collector, mock_artifacts):
@@ -228,10 +228,10 @@ import pytest
 #         mock_response.json.return_value = {"artifacts": mock_artifacts}
 #         mock_get.return_value = mock_response
 #         artifacts = collector.collect_artifacts(1001)
-# 
+#
 #         assert len(artifacts) == 1, "Artifacts must not be empty"
 #         assert artifacts[0]["name"] == "test-results", "Result must not be empty"
-# 
+#
 #     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
 #     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
 #     @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
@@ -260,28 +260,28 @@ import pytest
 #         assert report["repository"] == "test-owner/test-repo", "rep is not valid"
 #         assert report["branch"] == "main", "rep is not valid"
 #         assert report["days_analyzed"] == 7, "rep is not valid"
-# 
+#
 #         # Verify summary
 #         assert report["summary"]["total_runs"] == 3, "rep is not valid"
 #         assert report["summary"]["failed_runs"] == 2, "rep is not valid"
 #         assert report["summary"]["failure_rate"] > 0, "rep must be greater than zero"
-# 
+#
 #         # Verify pattern distribution
 #         assert "auto-fix" in report["pattern_distribution"], "Condition must be true"
 #         # Note: coverage-timeout pattern may or may not be present depending on mock data
 #         # The mock data includes a timed_out conclusion which should trigger this pattern
 #         assert "coverage-timeout" in report["pattern_distribution"], "Condition must be true"
-# 
+#
 #         # Verify failed runs
 #         assert len(report["failed_runs"]) == 2, "Collection must not be empty"
-# 
+#
 #         # Verify file was written
 #         assert output_file.exists(), "Condition must be true"
 #         with open(output_file) as f:
 #             saved_report = json.load(f)
 #             assert saved_report["repository"] == "test-owner/test-repo", "saved_rep is not valid"
 #             assert saved_report["repository"] == "test-owner/test-repo", "saved_rep is not valid"
-# 
+#
 #     def test_telemetry_report_structure(self, collector):
 #     def test_telemetry_report_structure(self, collector):
 #         """Test that telemetry report has correct structure."""
@@ -309,13 +309,13 @@ import pytest
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
 #             ), f"Missing keys for dist={dist}: {required - result.keys()}"
-# 
+#
 #     @pytest.fixture
 #     def collector(self):
 #         return TelemetryCollector(
 #             owner="test-owner", repo="test-repo", token="test-token"
 #         )  # pragma: allowlist secret
-# 
+#
 #     def test_classify_run_rebase_gate(self, collector):
 #     def test_classify_run_rebase_gate(self, collector):
 #         """--classify-run returns rebase-gate for branch-rebase-gate workflow failures."""
@@ -367,7 +367,7 @@ import pytest
 #         mock_jobs_resp = Mock()
 #         mock_jobs_resp.json.return_value = {"jobs": [{"name": "pytest resilient validation"}]}
 #         mock_jobs_resp.raise_for_status = Mock()
-# 
+#
 #         with (
 #             patch("requests.get", side_effect=[mock_run_resp, mock_jobs_resp]),
 #             patch.object(
@@ -390,7 +390,7 @@ import pytest
 #             ct_mod.main()
 #         captured = capsys.readouterr()
 #         assert captured.out.strip() == "test-infrastructure", "Condition must be true"
-# 
+#
 #     def test_classify_run_api_error_prints_unknown(self, capsys):
 #     def test_classify_run_api_error_prints_unknown(self, capsys):
 #         """main() with --classify-run prints 'unknown' when API call fails."""
@@ -421,13 +421,13 @@ import pytest
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()
 #             ), f"Missing keys for dist={dist}: {required - result.keys()}"
-# 
+#
 #     @pytest.fixture
 #     def collector(self):
 #         return TelemetryCollector(
 #             owner="test-owner", repo="test-repo", token="test-token"
 #         )  # pragma: allowlist secret
-# 
+#
 #     def _make_report(self, distribution: dict) -> dict:
 #     def _make_report(self, distribution: dict) -> dict:
 #         """Build a minimal telemetry_data dict with the given pattern_distribution."""
@@ -441,7 +441,7 @@ import pytest
 #         assert result["total_failures"] == 0, "Result must not be empty"
 #         assert result["self_healing_count"] == 0, "Result must not be empty"
 #         assert result["total_failures"] == 0, "Result must not be empty"
-# 
+#
 #     def test_missing_pattern_distribution_key(self, collector):
 #     def test_missing_pattern_distribution_key(self, collector):
 #         """Missing key is treated as empty → no cascade."""
@@ -457,7 +457,7 @@ import pytest
 #         assert result["total_failures"] == 20, "Result must not be empty"
 #         assert result["self_healing_count"] == 5, "Result must not be empty"
 #         assert result["total_failures"] == 20, "Result must not be empty"
-# 
+#
 #     def test_no_cascade_exactly_at_50_percent(self, collector):
 #     def test_no_cascade_exactly_at_50_percent(self, collector):
 #         """Exactly 50% is NOT considered a cascade (threshold is > 50%)."""
@@ -472,7 +472,7 @@ import pytest
 #         assert "unknown" in result["recommended_action"], "Result must not be empty"
 #         assert "10" in result["recommended_action"], "Result must not be empty"
 #         assert "collect_telemetry.py" in result["recommended_action"], "Result must not be empty"
-# 
+#
 #     def test_cascade_detected_when_self_healing_dominant(self, collector):
 #     # ── cascade DETECTED (>50%) ──────────────────────────────────────────────
 #     def test_cascade_detected_when_self_healing_dominant(self, collector):
@@ -519,7 +519,7 @@ import pytest
 #         # Must NOT instruct operator to look for a system-pip fallback
 #         assert "system pip" not in ra.lower(), "Condition must be true"
 #         assert "|| pip" not in ra, "Condition must be true"
-# 
+#
 #     def test_cascade_100_percent_self_healing(self, collector):
 #     def test_cascade_100_percent_self_healing(self, collector):
 #         """All failures are self-healing — should still detect cascade."""
@@ -531,7 +531,7 @@ import pytest
 #         assert result["total_failures"] == 50, "Result must not be empty"
 #     def test_result_always_contains_required_keys(self, collector):
 #         required = {
-# 
+#
 #     def test_result_always_contains_required_keys(self, collector):
 #         required = {
 #             "cascade_detected",

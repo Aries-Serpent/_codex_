@@ -6,7 +6,7 @@
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
 # from datetime import UTC, datetime, timedelta
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
 # class TestScheduleConfiguration:
@@ -24,7 +24,7 @@
 #         }
 #         assert window["day_of_week"] == "Sunday", "Condition must be true"
 #         assert window["duration_hours"] == 4, "Condition must be true"
-# 
+#
 #     def test_schedule_recurring_task(self):
 #     def test_schedule_recurring_task(self):
 #         """Test scheduling a recurring task."""
@@ -38,7 +38,7 @@
 #             "action": "check_dependencies",
 #         }
 #         assert task["schedule"]["frequency"] == "daily", "Condition must be true"
-# 
+#
 #     def test_schedule_cron_expression(self):
 #     def test_schedule_cron_expression(self):
 #         """Test parsing cron expression for schedule."""
@@ -54,7 +54,7 @@
 #         }
 #         assert schedule["hour"] == "6", "Condition must be true"
 #         assert schedule["day_of_week"] == "1", "Condition must be true"
-# 
+#
 #     def test_multiple_schedules(self):
 #     def test_multiple_schedules(self):
 #         """Test configuring multiple maintenance schedules."""
@@ -66,7 +66,7 @@
 #         assert len(schedules) == 3, "Schedules must not be empty"
 #         assert schedules[0]["frequency"] == "daily", "Condition must be true"
 #         assert schedules[2]["day"] == 1, "Condition must be true"
-# 
+#
 #     def test_schedule_blackout_periods(self):
 #     def test_schedule_blackout_periods(self):
 #         """Test defining schedule blackout periods."""
@@ -77,13 +77,13 @@
 #         test_date = "2026-12-25"
 #         is_blackout = any(b["start"] <= test_date <= b["end"] for b in blackouts)
 #         is_blackout = any(b["start"] <= test_date <= b["end"] for b in blackouts)
-# 
+#
 #         assert is_blackout, "is_blackout is not valid"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
 #     """Tests for scheduled task execution."""
-# 
+#
 #     def test_execute_scheduled_task(self):
 #     def test_execute_scheduled_task(self):
 #         """Test executing a scheduled task."""
@@ -102,9 +102,9 @@
 #         execution["status"] = "success"
 #         execution["exit_code"] = 0
 #         execution["exit_code"] = 0
-# 
+#
 #         assert execution["status"] == "success", "Condition must be true"
-# 
+#
 #     def test_handle_task_timeout(self):
 #     def test_handle_task_timeout(self):
 #         """Test handling task timeout."""
@@ -115,9 +115,9 @@
 #         }
 #         elapsed = (datetime.now(UTC) - task["started_at"]).total_seconds() / 60
 #         is_timed_out = elapsed > task["timeout_minutes"]
-# 
+#
 #         assert is_timed_out, "is_timed_out is not valid"
-# 
+#
 #     def test_task_retry_on_failure(self):
 #     def test_task_retry_on_failure(self):
 #         """Test retrying failed task."""
@@ -135,10 +135,10 @@
 #             if task["current_retry"] == 3:
 #                 task["status"] = "success"
 #                 task["status"] = "success"
-# 
+#
 #         assert len(retry_attempts) == 3, "Retry_attempts must not be empty"
 #         assert task["status"] == "success", "Condition must be true"
-# 
+#
 #     def test_task_dependency_chain(self):
 #     def test_task_dependency_chain(self):
 #         """Test executing tasks with dependencies."""
@@ -150,7 +150,7 @@
 #         ]
 #         execution_order = []
 #         completed = set()
-# 
+#
 #         while len(completed) < len(tasks):
 #             for task in tasks:
 #                 if task["name"] not in completed:
@@ -159,9 +159,9 @@
 #                         task["status"] = "success"
 #                         completed.add(task["name"])
 #                         execution_order.append(task["name"])
-# 
+#
 #         assert execution_order == ["backup", "update", "test", "deploy"]
-# 
+#
 #     def test_parallel_task_execution(self):
 #     def test_parallel_task_execution(self):
 #         """Test parallel execution of independent tasks."""
@@ -171,19 +171,19 @@
 #             {"name": "task_c", "depends_on": [], "duration": 4},
 #         ]
 #         parallelizable = [t for t in tasks if not t["depends_on"]]
-# 
+#
 #         # Total time = max duration (not sum)
 #         parallel_time = max(t["duration"] for t in parallelizable)
 #         sequential_time = sum(t["duration"] for t in parallelizable)
 #         sequential_time = sum(t["duration"] for t in parallelizable)
-# 
+#
 #         assert parallel_time == 5, "parallel_time is not valid"
 #         assert sequential_time == 12, "sequential_time is not valid"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
 #     """Tests for maintenance monitoring and alerts."""
-# 
+#
 #     def test_track_maintenance_status(self):
 #     def test_track_maintenance_status(self):
 #         """Test tracking maintenance job status."""
@@ -201,7 +201,7 @@
 #         }
 #         assert summary["success"] == 1, "Condition must be true"
 #         assert summary["total"] == 3, "Condition must be true"
-# 
+#
 #     def test_alert_on_maintenance_failure(self):
 #     def test_alert_on_maintenance_failure(self):
 #         """Test alerting on maintenance job failure."""
@@ -220,7 +220,7 @@
 #         }
 #         assert alert["severity"] == "high", "Condition must be true"
 #         assert "Disk full" in alert["message"], "Condition must be true"
-# 
+#
 #     def test_maintenance_metrics_collection(self):
 #     def test_maintenance_metrics_collection(self):
 #         """Test collecting maintenance metrics."""
@@ -241,7 +241,7 @@
 #         }
 #         assert metrics["success_rate"] == 75.0, "Condition must be true"
 #         assert metrics["failures"] == 1, "Condition must be true"
-# 
+#
 #     def test_predict_maintenance_completion(self):
 #     def test_predict_maintenance_completion(self):
 #         """Test predicting maintenance job completion time."""
@@ -256,9 +256,9 @@
 #         rate = job["progress_percent"] / elapsed_minutes  # percent per minute
 #         estimated_remaining = remaining_percent / rate if rate > 0 else float("inf")
 #         estimated_remaining = remaining_percent / rate if rate > 0 else float("inf")
-# 
+#
 #         assert round(estimated_remaining) == 20, "Condition must be true"
-# 
+#
 #     def test_maintenance_history_retention(self):
 #     def test_maintenance_history_retention(self):
 #         """Test maintenance history retention policy."""
@@ -271,13 +271,13 @@
 #         ]
 #         cutoff = datetime.now(UTC) - timedelta(days=retention_days)
 #         retained = [h for h in history if h["date"] >= cutoff]
-# 
+#
 #         assert len(retained) == 2, "Retained must not be empty"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
 #     """Tests for maintenance documentation."""
-# 
+#
 #     def test_generate_runbook_documentation(self):
 #     def test_generate_runbook_documentation(self):
 #         """Test generating runbook documentation."""
@@ -296,10 +296,10 @@
 #         for step in runbook["steps"]:
 #             doc += f"{step['step']}. **{step['action']}**\n"
 #             doc += f"   ```\n   {step['command']}\n   ```\n\n"
-# 
+#
 #         assert ", "Condition must be true"
 #         assert "pg_dump" in doc, "Condition must be true"
-# 
+#
 #     def test_document_maintenance_schedule(self):
 #     def test_document_maintenance_schedule(self):
 #         """Test documenting maintenance schedule."""
@@ -313,9 +313,9 @@
 #         doc += "|------|-----------|------|\n"
 #         for item in schedule:
 #             doc += f"| {item['task']} | {item['frequency']} | {item['time']} |\n"
-# 
+#
 #         assert "| Backup | Daily |" in doc, "Condition must be true"
-# 
+#
 #     def test_record_maintenance_changelog(self):
 #     def test_record_maintenance_changelog(self):
 #         """Test recording maintenance changelog."""
@@ -331,7 +331,7 @@
 #         changelog.append(entry)
 #         assert len(changelog) == 1, "Changelog must not be empty"
 #         assert changelog[0]["type"] == "update", "Condition must be true"
-# 
+#
 #     def test_generate_maintenance_report(self):
 #     def test_generate_maintenance_report(self):
 #         """Test generating periodic maintenance report."""
@@ -347,21 +347,21 @@
 #         report = f"""
 # # Weekly Maintenance Report
 #     def test_export_documentation(self):
-# 
+#
 # **Period:** {report_data['period']}
 #         """Test exporting documentation to file."""
 #         with tempfile.TemporaryDirectory() as tmpdir:
 #             doc_file = Path(tmpdir) / "maintenance_docs.json"
 # - Total Duration: {report_data['total_duration_hours']} hours
 #     def test_export_documentation(self):
-# 
+#
 # ## Issues
 #         """Test exporting documentation to file."""
 #         with tempfile.TemporaryDirectory() as tmpdir:
 #             doc_file = Path(tmpdir) / "maintenance_docs.json"
 #         assert "Jobs Run: 45" in report, "Condition must be true"
 #         assert "97.8%" in report, "Condition must be true"
-# 
+#
 #     def test_export_documentation(self):
 #     def test_export_documentation(self):
 #         """Test exporting documentation to file."""
@@ -378,6 +378,6 @@
 #                 ],
 #             }
 #             doc_file.write_text(json.dumps(docs, indent=2))
-# 
+#
 #             loaded = json.loads(doc_file.read_text())
 #             assert len(loaded["runbooks"]) == 2, "Collection must not be empty"

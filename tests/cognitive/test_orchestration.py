@@ -545,7 +545,7 @@ class TestLearningAggregation:
         assert summary["total_orchestrations"] == 3, "Condition must be true"
         assert summary["total_agents_executed"] == 6, "Condition must be true"
         assert summary["successful_orchestrations"] == 2, "Condition must be true"
-        assert summary["success_rate"] == pytest.approx(2 / 3)
+        assert summary["success_rate"] == pytest.approx(2 / 3), "Condition must be true"
         assert "hierarchical" in summary["patterns_used"], "Condition must be true"
         assert "sequential_chain" in summary["patterns_used"], "Condition must be true"
 

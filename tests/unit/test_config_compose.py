@@ -9,7 +9,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 from omegaconf import OmegaConf
 
 # Use pytest.importorskip for collection-safe conditional imports

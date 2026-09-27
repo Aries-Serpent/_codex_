@@ -180,7 +180,7 @@ class MockDeploymentEngine:
             status=HealthStatus.HEALTHY,
             response_time_ms=45.5,
         )
-        
+
         deployment = self.deployments.get(deployment_id)
         if deployment:
             deployment.health_checks.append(result)
@@ -199,7 +199,7 @@ class MockDeploymentEngine:
             health_checks_passed=10,
             health_checks_failed=0,
         )
-        
+
         deployment = self.deployments.get(deployment_id)
         if deployment:
             deployment.metrics.append(metrics)
@@ -210,7 +210,7 @@ class MockDeploymentEngine:
         deployment = self.deployments.get(deployment_id)
         if not deployment or not deployment.metrics:
             return False
-        
+
         latest_metrics = deployment.metrics[-1]
         if latest_metrics.error_rate > 5.0:
             return True
@@ -224,16 +224,16 @@ class MockDeploymentEngine:
         """Execute blue-green deployment strategy."""
         if not self.start_deployment(deployment_id):
             return False
-        
+
         # Simulate deployment execution
         # In real scenario, would deploy to green environment
         deployment = self.deployments[deployment_id]
         deployment.current_instance = "green"
         deployment.previous_instance = "blue"
-        
+
         # Perform health checks
         self.perform_health_check(deployment_id)
-        
+
         # Switch traffic if healthy
         health_check = deployment.health_checks[-1]
         if health_check.status == HealthStatus.HEALTHY:
@@ -244,17 +244,17 @@ class MockDeploymentEngine:
         """Execute canary deployment strategy."""
         if not self.start_deployment(deployment_id):
             return False
-        
+
         deployment = self.deployments[deployment_id]
         config = RolloutConfig(initial_traffic_percent=initial_traffic)
         self.rollout_state[deployment_id] = config
-        
+
         # Perform initial health check
         self.perform_health_check(deployment_id)
-        
+
         # Collect initial metrics
         self.collect_metrics(deployment_id)
-        
+
         return True
 
     def increment_canary_traffic(self, deployment_id: str, new_traffic_percent: int) -> bool:
@@ -262,40 +262,40 @@ class MockDeploymentEngine:
         deployment = self.deployments.get(deployment_id)
         if not deployment:
             return False
-        
+
         config = self.rollout_state.get(deployment_id)
         if not config:
             return False
-        
+
         config.initial_traffic_percent = new_traffic_percent
-        
+
         # Perform health check and metrics collection
         self.perform_health_check(deployment_id)
         self.collect_metrics(deployment_id)
-        
+
         # Check rollback conditions
         if self.should_rollback(deployment_id):
             return self.rollback_deployment(deployment_id, "Canary health check failed")
-        
+
         # Complete if reached 100%
         if new_traffic_percent >= 100:
             return self.complete_deployment(deployment_id)
-        
+
         return True
 
     def execute_rolling_deployment(self, deployment_id: str, batch_size: int = 2) -> bool:
         """Execute rolling deployment strategy."""
         if not self.start_deployment(deployment_id):
             return False
-        
+
         deployment = self.deployments[deployment_id]
         deployment.current_instance = f"rolling_{batch_size}"
-        
+
         # Simulate rolling updates
         for i in range(5):  # 5 batches
             self.perform_health_check(deployment_id)
             self.collect_metrics(deployment_id)
-        
+
         return self.complete_deployment(deployment_id)
 
     def get_deployment_status(self, deployment_id: str) -> Optional[DeploymentStatus]:
@@ -308,7 +308,7 @@ class MockDeploymentEngine:
         deployment = self.deployments.get(deployment_id)
         if not deployment or not deployment.metrics:
             return None
-        
+
         latest_metrics = deployment.metrics[-1]
         return {
             "error_rate": latest_metrics.error_rate,
@@ -316,7 +316,7 @@ class MockDeploymentEngine:
             "cpu_usage_percent": latest_metrics.cpu_usage_percent,
             "memory_usage_percent": latest_metrics.memory_usage_percent,
             "health_status": (
-                "healthy" if deployment.health_checks and 
+                "healthy" if deployment.health_checks and
                 deployment.health_checks[-1].status == HealthStatus.HEALTHY
                 else "unhealthy"
             ),
@@ -343,30 +343,30 @@ class TestDeploymentPipelineTriggering:
     def test_create_deployment(self, deployment_engine):
         """Test creating a new deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0")
-        assert deployment.deployment_id is not None
-        assert deployment.version == "v2.0.0"
-        assert deployment.status == DeploymentStatus.PENDING
+        assert deployment.deployment_id is not None, "deployment_id must be initialized"
+        assert deployment.version == "v2.0.0", "version is not valid"
+        assert deployment.status == DeploymentStatus.PENDING, "status is not valid"
 
     def test_start_deployment(self, deployment_engine):
         """Test starting a deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         result = deployment_engine.start_deployment(deployment.deployment_id)
-        assert result is True
-        assert deployment.status == DeploymentStatus.IN_PROGRESS
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.IN_PROGRESS, "status is not valid"
 
     def test_start_invalid_deployment(self, deployment_engine):
         """Test starting non-existent deployment fails."""
         result = deployment_engine.start_deployment("invalid_id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_complete_deployment(self, deployment_engine):
         """Test completing a deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
         result = deployment_engine.complete_deployment(deployment.deployment_id)
-        assert result is True
-        assert deployment.status == DeploymentStatus.COMPLETED
-        assert deployment.completed_at is not None
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
+        assert deployment.completed_at is not None, "completed_at must be initialized"
 
     def test_deployment_marks_as_active(self, deployment_engine):
         """Test completed deployment marked as active."""
@@ -383,27 +383,27 @@ class TestBlueGreenDeployment:
         """Test successful blue-green deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.BLUE_GREEN)
         result = deployment_engine.execute_blue_green_deployment(deployment.deployment_id)
-        assert result is True
-        assert deployment.status == DeploymentStatus.COMPLETED
-        assert deployment.current_instance == "green"
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
+        assert deployment.current_instance == "green", "current_instance is not valid"
 
     def test_blue_green_maintains_blue_as_previous(self, deployment_engine):
         """Test blue environment maintained as previous instance."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.BLUE_GREEN)
         deployment_engine.execute_blue_green_deployment(deployment.deployment_id)
-        assert deployment.previous_instance == "blue"
+        assert deployment.previous_instance == "blue", "previous_instance is not valid"
 
     def test_blue_green_deployment_with_health_check(self, deployment_engine):
         """Test blue-green deployment includes health checks."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.BLUE_GREEN)
         deployment_engine.execute_blue_green_deployment(deployment.deployment_id)
-        assert len(deployment.health_checks) > 0
-        assert deployment.health_checks[0].status == HealthStatus.HEALTHY
+        assert len(deployment.health_checks) > 0, "Collection must not be empty"
+        assert deployment.health_checks[0].status == HealthStatus.HEALTHY, "status is not valid"
 
     def test_blue_green_deployment_strategy_recorded(self, deployment_engine):
         """Test deployment strategy is recorded."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.BLUE_GREEN)
-        assert deployment.strategy == DeploymentStrategy.BLUE_GREEN
+        assert deployment.strategy == DeploymentStrategy.BLUE_GREEN, "strategy is not valid"
 
 
 class TestCanaryDeployment:
@@ -413,42 +413,42 @@ class TestCanaryDeployment:
         """Test canary deployment initialization."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         result = deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        assert result is True
-        assert deployment.status == DeploymentStatus.IN_PROGRESS
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.IN_PROGRESS, "status is not valid"
         assert deployment_engine.rollout_state[deployment.deployment_id].initial_traffic_percent == 10
 
     def test_canary_initial_health_check(self, deployment_engine):
         """Test canary performs initial health check."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        assert len(deployment.health_checks) > 0
+        assert len(deployment.health_checks) > 0, "Collection must not be empty"
 
     def test_canary_initial_metrics_collection(self, deployment_engine):
         """Test canary collects initial metrics."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        assert len(deployment.metrics) > 0
+        assert len(deployment.metrics) > 0, "Collection must not be empty"
 
     def test_canary_traffic_increment(self, deployment_engine):
         """Test incrementing canary traffic."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
         result = deployment_engine.increment_canary_traffic(deployment.deployment_id, 50)
-        assert result is True
+        assert result is True, "Result must not be empty"
         assert deployment_engine.rollout_state[deployment.deployment_id].initial_traffic_percent == 50
 
     def test_canary_progressive_rollout(self, deployment_engine):
         """Test progressive canary rollout."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        
+
         # Progressive steps
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 25)
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 50)
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 100)
-        
+
         # Should complete at 100%
-        assert deployment.status == DeploymentStatus.COMPLETED
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
 
 
 class TestRollbackAutomation:
@@ -459,29 +459,29 @@ class TestRollbackAutomation:
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
         result = deployment_engine.rollback_deployment(deployment.deployment_id, "Manual rollback")
-        assert result is True
-        assert deployment.status == DeploymentStatus.ROLLED_BACK
-        assert "Manual rollback" in deployment.error
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.ROLLED_BACK, "status is not valid"
+        assert "Manual rollback" in deployment.error, "Error should be raised or set"
 
     def test_automatic_rollback_on_health_failure(self, deployment_engine):
         """Test automatic rollback triggered by health check failure."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        
+
         # Simulate unhealthy metrics to trigger rollback
         # (In real scenario, metrics would indicate issues)
         # For testing, we manually set metrics to trigger rollback
-        
+
         # Simulate failed health check by manipulating state
         deployment_engine.rollback_deployment(deployment.deployment_id, "Health check failed")
-        assert deployment.status == DeploymentStatus.ROLLED_BACK
+        assert deployment.status == DeploymentStatus.ROLLED_BACK, "status is not valid"
 
     def test_rollback_records_reason(self, deployment_engine):
         """Test rollback records the reason."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
         deployment_engine.rollback_deployment(deployment.deployment_id, "Error rate exceeded 10%")
-        assert "Error rate exceeded 10%" in deployment.error
+        assert "Error rate exceeded 10%" in deployment.error, "Error should be raised or set"
 
 
 class TestProgressiveRollout:
@@ -491,21 +491,21 @@ class TestProgressiveRollout:
         """Test rolling deployment strategy."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.ROLLING)
         result = deployment_engine.execute_rolling_deployment(deployment.deployment_id, batch_size=2)
-        assert result is True
-        assert deployment.status == DeploymentStatus.COMPLETED
+        assert result is True, "Result must not be empty"
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
 
     def test_rolling_deployment_batches(self, deployment_engine):
         """Test rolling deployment batches."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.ROLLING)
         deployment_engine.execute_rolling_deployment(deployment.deployment_id, batch_size=2)
-        assert len(deployment.health_checks) >= 5
+        assert len(deployment.health_checks) >= 5, "Collection must not be empty"
 
     def test_rolling_deployment_continuous_health_checks(self, deployment_engine):
         """Test rolling deployment performs health checks per batch."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.ROLLING)
         deployment_engine.execute_rolling_deployment(deployment.deployment_id, batch_size=2)
         # Should have health checks for each batch
-        assert len(deployment.health_checks) > 0
+        assert len(deployment.health_checks) > 0, "Collection must not be empty"
 
     def test_progressive_rollout_traffic_weights(self, deployment_engine):
         """Test progressive rollout can use traffic weights."""
@@ -516,7 +516,7 @@ class TestProgressiveRollout:
             increment_interval_seconds=300,
         )
         deployment_engine.rollout_state[deployment.deployment_id] = config
-        assert config.initial_traffic_percent == 10
+        assert config.initial_traffic_percent == 10, "initial_traffic_percent is not valid"
 
 
 class TestDeploymentHealthChecks:
@@ -526,15 +526,15 @@ class TestDeploymentHealthChecks:
         """Test performing a health check."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         result = deployment_engine.perform_health_check(deployment.deployment_id)
-        assert result.check_id is not None
-        assert result.status == HealthStatus.HEALTHY
-        assert result.response_time_ms > 0
+        assert result.check_id is not None, "check_id must be initialized"
+        assert result.status == HealthStatus.HEALTHY, "Result must not be empty"
+        assert result.response_time_ms > 0, "response_time_ms must be greater than zero"
 
     def test_health_check_recorded(self, deployment_engine):
         """Test health check is recorded in deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.perform_health_check(deployment.deployment_id)
-        assert len(deployment.health_checks) == 1
+        assert len(deployment.health_checks) == 1, "Collection must not be empty"
 
     def test_multiple_health_checks(self, deployment_engine):
         """Test multiple health checks can be performed."""
@@ -542,13 +542,13 @@ class TestDeploymentHealthChecks:
         deployment_engine.perform_health_check(deployment.deployment_id)
         deployment_engine.perform_health_check(deployment.deployment_id)
         deployment_engine.perform_health_check(deployment.deployment_id)
-        assert len(deployment.health_checks) == 3
+        assert len(deployment.health_checks) == 3, "Collection must not be empty"
 
     def test_health_check_timestamp(self, deployment_engine):
         """Test health check includes timestamp."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         result = deployment_engine.perform_health_check(deployment.deployment_id)
-        assert result.timestamp is not None
+        assert result.timestamp is not None, "timestamp must be initialized"
         assert isinstance(result.timestamp, datetime)
 
 
@@ -559,23 +559,23 @@ class TestDeploymentMetricsCollection:
         """Test collecting deployment metrics."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         metrics = deployment_engine.collect_metrics(deployment.deployment_id)
-        assert metrics.deployment_id == deployment.deployment_id
-        assert metrics.error_rate >= 0
-        assert metrics.latency_p99_ms > 0
+        assert metrics.deployment_id == deployment.deployment_id, "deployment_id is not valid"
+        assert metrics.error_rate >= 0, "error_rate must be greater than zero"
+        assert metrics.latency_p99_ms > 0, "latency_p99_ms must be greater than zero"
 
     def test_metrics_recorded_in_deployment(self, deployment_engine):
         """Test metrics are recorded in deployment."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.collect_metrics(deployment.deployment_id)
-        assert len(deployment.metrics) == 1
+        assert len(deployment.metrics) == 1, "Collection must not be empty"
 
     def test_metrics_include_health_status(self, deployment_engine):
         """Test metrics include health check information."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.perform_health_check(deployment.deployment_id)
         metrics = deployment_engine.collect_metrics(deployment.deployment_id)
-        assert metrics.health_checks_passed >= 0
-        assert metrics.health_checks_failed >= 0
+        assert metrics.health_checks_passed >= 0, "health_checks_passed must be greater than zero"
+        assert metrics.health_checks_failed >= 0, "health_checks_failed must be greater than zero"
 
     def test_metrics_include_performance_indicators(self, deployment_engine):
         """Test metrics include performance indicators."""
@@ -590,8 +590,8 @@ class TestDeploymentMetricsCollection:
         deployment = deployment_engine.create_deployment("v2.0.0")
         m1 = deployment_engine.collect_metrics(deployment.deployment_id)
         m2 = deployment_engine.collect_metrics(deployment.deployment_id)
-        assert len(deployment.metrics) == 2
-        assert m1.timestamp <= m2.timestamp
+        assert len(deployment.metrics) == 2, "Collection must not be empty"
+        assert m1.timestamp <= m2.timestamp, "timestamp is not valid"
 
 
 class TestRollbackDecisionLogic:
@@ -601,7 +601,7 @@ class TestRollbackDecisionLogic:
         """Test rollback decision on high error rate."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
-        
+
         # Manually create metrics with high error rate
         high_error_metrics = DeploymentMetrics(
             deployment_id=deployment.deployment_id,
@@ -614,15 +614,15 @@ class TestRollbackDecisionLogic:
             health_checks_failed=0,
         )
         deployment.metrics.append(high_error_metrics)
-        
+
         should_rollback = deployment_engine.should_rollback(deployment.deployment_id)
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_should_rollback_on_high_latency(self, deployment_engine):
         """Test rollback decision on high latency."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
-        
+
         high_latency_metrics = DeploymentMetrics(
             deployment_id=deployment.deployment_id,
             error_rate=0.5,
@@ -634,15 +634,15 @@ class TestRollbackDecisionLogic:
             health_checks_failed=0,
         )
         deployment.metrics.append(high_latency_metrics)
-        
+
         should_rollback = deployment_engine.should_rollback(deployment.deployment_id)
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_should_rollback_on_failed_health_checks(self, deployment_engine):
         """Test rollback decision on failed health checks."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
-        
+
         failed_health_metrics = DeploymentMetrics(
             deployment_id=deployment.deployment_id,
             error_rate=0.5,
@@ -654,18 +654,18 @@ class TestRollbackDecisionLogic:
             health_checks_failed=5,  # > 3
         )
         deployment.metrics.append(failed_health_metrics)
-        
+
         should_rollback = deployment_engine.should_rollback(deployment.deployment_id)
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_should_not_rollback_on_healthy_metrics(self, deployment_engine):
         """Test no rollback needed on healthy metrics."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.start_deployment(deployment.deployment_id)
         deployment_engine.collect_metrics(deployment.deployment_id)
-        
+
         should_rollback = deployment_engine.should_rollback(deployment.deployment_id)
-        assert should_rollback is False
+        assert should_rollback is False, "should_rollback is not valid"
 
 
 class TestDeploymentStatusAndHistory:
@@ -675,30 +675,30 @@ class TestDeploymentStatusAndHistory:
         """Test retrieving deployment status."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         status = deployment_engine.get_deployment_status(deployment.deployment_id)
-        assert status == DeploymentStatus.PENDING
+        assert status == DeploymentStatus.PENDING, "status is not valid"
 
     def test_deployment_status_transitions(self, deployment_engine):
         """Test deployment status state transitions."""
         deployment = deployment_engine.create_deployment("v2.0.0")
-        assert deployment.status == DeploymentStatus.PENDING
-        
+        assert deployment.status == DeploymentStatus.PENDING, "status is not valid"
+
         deployment_engine.start_deployment(deployment.deployment_id)
-        assert deployment.status == DeploymentStatus.IN_PROGRESS
-        
+        assert deployment.status == DeploymentStatus.IN_PROGRESS, "status is not valid"
+
         deployment_engine.complete_deployment(deployment.deployment_id)
-        assert deployment.status == DeploymentStatus.COMPLETED
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
 
     def test_get_deployment_metrics_summary(self, deployment_engine):
         """Test retrieving deployment metrics summary."""
         deployment = deployment_engine.create_deployment("v2.0.0")
         deployment_engine.perform_health_check(deployment.deployment_id)
         deployment_engine.collect_metrics(deployment.deployment_id)
-        
+
         summary = deployment_engine.get_deployment_metrics_summary(deployment.deployment_id)
-        assert summary is not None
-        assert "error_rate" in summary
-        assert "latency_p99_ms" in summary
-        assert "health_status" in summary
+        assert summary is not None, "summary must be initialized"
+        assert "error_rate" in summary, "Error should be raised or set"
+        assert "latency_p99_ms" in summary, "Condition must be true"
+        assert "health_status" in summary, "Condition must be true"
 
 
 class TestDeploymentIntegration:
@@ -708,27 +708,27 @@ class TestDeploymentIntegration:
         """Test complete blue-green deployment workflow."""
         # Create deployment
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.BLUE_GREEN)
-        
+
         # Execute deployment
         result = deployment_engine.execute_blue_green_deployment(deployment.deployment_id)
-        assert result is True
-        
+        assert result is True, "Result must not be empty"
+
         # Verify final state
-        assert deployment.status == DeploymentStatus.COMPLETED
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"
         assert deployment_engine.active_deployments.get("production") == deployment.deployment_id
 
     def test_end_to_end_canary_with_progressive_rollout(self, deployment_engine):
         """Test complete canary deployment with progressive rollout."""
         deployment = deployment_engine.create_deployment("v2.0.0", DeploymentStrategy.CANARY)
-        
+
         # Start canary
         deployment_engine.execute_canary_deployment(deployment.deployment_id, initial_traffic=10)
-        assert deployment.status == DeploymentStatus.IN_PROGRESS
-        
+        assert deployment.status == DeploymentStatus.IN_PROGRESS, "status is not valid"
+
         # Progressive steps
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 25)
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 50)
         deployment_engine.increment_canary_traffic(deployment.deployment_id, 100)
-        
+
         # Verify completion
-        assert deployment.status == DeploymentStatus.COMPLETED
+        assert deployment.status == DeploymentStatus.COMPLETED, "status is not valid"

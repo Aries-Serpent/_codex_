@@ -655,4 +655,4 @@ Parameter Optimization:
 >>> logger.info(params)
 {'M': 32, 'ef_construction': 200, 'ef_search': 100,
  'estimated_memory_gb': 3.2, 'estimated_build_time': 'medium'}
-"""
+"""  # noqa: E501

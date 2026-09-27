@@ -82,12 +82,12 @@ import datetime
 import hashlib
 import json
 import os
+import pathlib
 import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
-import pathlib
 from typing import Any
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit

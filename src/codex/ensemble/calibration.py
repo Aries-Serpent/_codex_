@@ -47,9 +47,7 @@ class CalibrationFramework:
         Returns:
             List of cross-validation results per fold
         """
-        logger.info(
-            f"Starting {self.k_folds}-fold cross-validation for {model_type.value}"
-        )
+        logger.info(f"Starting {self.k_folds}-fold cross-validation for {model_type.value}")
 
         # Create fold splits
         fold_size = len(X) // self.k_folds
@@ -70,9 +68,7 @@ class CalibrationFramework:
 
             # Train and evaluate
             fold_start = time.time()
-            result = self._evaluate_fold(
-                X_train, y_train, X_test, y_test, model_type, fold
-            )
+            result = self._evaluate_fold(X_train, y_train, X_test, y_test, model_type, fold)
             result.execution_time_ms = (time.time() - fold_start) * 1000
 
             results.append(result)
@@ -196,9 +192,7 @@ class CalibrationFramework:
             return 0.0
         return 2 * (precision * recall) / (precision + recall)
 
-    def _calculate_brier_score(
-        self, confidences: np.ndarray, targets: np.ndarray
-    ) -> float:
+    def _calculate_brier_score(self, confidences: np.ndarray, targets: np.ndarray) -> float:
         """Calculate Brier score (MSE of probabilities).
 
         Args:
@@ -313,7 +307,9 @@ class CalibrationFramework:
 
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+            f1 = (
+                2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+            )
 
             if f1 > best_f1:
                 best_f1 = f1

@@ -41,15 +41,15 @@ def trace_factory():
     ) -> Dict[str, Any]:
         trace_id = trace_id or str(uuid.uuid4())
         start_time = datetime.utcnow()
-        
+
         spans = []
         current_time = start_time
-        
+
         for i in range(span_count):
             span_start = current_time
             span_duration = duration_ms / span_count * (0.8 + i * 0.1)  # Vary durations
             span_end = span_start + timedelta(milliseconds=span_duration)
-            
+
             span = {
                 "span_id": f"{trace_id}-span-{i}",
                 "trace_id": trace_id,
@@ -74,7 +74,7 @@ def trace_factory():
                     }
                 ] if i == 0 else [],
             }
-            
+
             if error_message and status == "error":
                 span["error"] = {"message": error_message, "type": "Exception"}
                 span["logs"].append({
@@ -82,10 +82,10 @@ def trace_factory():
                     "message": error_message,
                     "level": "ERROR",
                 })
-            
+
             spans.append(span)
             current_time = span_end
-        
+
         return {
             "trace_id": trace_id,
             "service": service,
@@ -98,7 +98,7 @@ def trace_factory():
             "spans": spans,
             "error_message": error_message,
         }
-    
+
     return create_trace
 
 
@@ -114,7 +114,7 @@ def metric_factory():
     ) -> Dict[str, Any]:
         timestamp = timestamp or datetime.utcnow()
         labels = labels or {}
-        
+
         return {
             "name": name,
             "value": value,
@@ -122,7 +122,7 @@ def metric_factory():
             "labels": labels,
             "type": metric_type,
         }
-    
+
     return create_metric
 
 
@@ -137,7 +137,7 @@ def log_factory():
         timestamp: Optional[datetime] = None,
     ) -> Dict[str, Any]:
         timestamp = timestamp or datetime.utcnow()
-        
+
         return {
             "message": message,
             "trace_id": trace_id,
@@ -149,7 +149,7 @@ def log_factory():
                 "host": "localhost",
             },
         }
-    
+
     return create_log
 
 
@@ -197,18 +197,18 @@ class TestTraceToMetricsCorrelation:
             duration_ms=150.0,
             status="success",
         )
-        
+
         # Create matching metric
         metric = metric_factory(
             name="http_request_duration_ms",
             value=150.0,
             labels={"service": "api", "endpoint": "/users"},
         )
-        
+
         # Verify correlation
         correlation_engine.correlate_trace_to_metrics(trace, [metric])
         correlation_engine.correlate_trace_to_metrics.assert_called_once()
-        
+
         # Assert correlation result
         result = correlation_engine.correlate_trace_to_metrics.return_value
         assert result["correlation"] >= 0.9, "Correlation must be strong"
@@ -221,7 +221,7 @@ class TestTraceToMetricsCorrelation:
             duration_ms=75.5,
             span_count=5,
         )
-        
+
         # Verify trace structure
         assert trace["trace_id"] is not None, "Trace must have ID"
         assert trace["duration_ms"] == 75.5, "Duration must match"
@@ -238,20 +238,20 @@ class TestTraceToMetricsCorrelation:
             trace_factory(duration_ms=200.0),
             trace_factory(duration_ms=250.0),
         ]
-        
+
         # Create percentile metrics
         metrics = [
             metric_factory(name="p50_latency_ms", value=100.0),
             metric_factory(name="p95_latency_ms", value=200.0),
             metric_factory(name="p99_latency_ms", value=250.0),
         ]
-        
+
         # Correlate
         for trace in traces:
             correlation_engine.correlate_trace_to_metrics(trace, metrics)
-        
+
         # Verify calls
-        assert correlation_engine.correlate_trace_to_metrics.call_count == 5
+        assert correlation_engine.correlate_trace_to_metrics.call_count == 5, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -273,21 +273,21 @@ class TestErrorCorrelation:
             error_message="Database connection timeout",
             duration_ms=1000.0,
         )
-        
+
         # Create error rate metric spike
         error_metric = metric_factory(
             name="http_errors_total",
             value=5.0,
             labels={"service": "api", "error_type": "timeout"},
         )
-        
+
         # Correlate
         correlation_engine.correlate_trace_to_metrics(error_trace, [error_metric])
-        
+
         # Verify error trace has error information
         assert error_trace["status"] == "error", "Trace status must be error"
         assert error_trace["error_message"] is not None, "Error message must be present"
-        assert any(
+        assert any(, "Condition must be true"
             span.get("error") for span in error_trace["spans"]
         ), "At least one span must have error"
 
@@ -299,7 +299,7 @@ class TestErrorCorrelation:
             ("ValidationError", "validation"),
             ("RuntimeError", "runtime"),
         ]
-        
+
         error_traces = []
         for error_msg, expected_type in error_types:
             trace = trace_factory(
@@ -307,7 +307,7 @@ class TestErrorCorrelation:
                 error_message=error_msg,
             )
             error_traces.append((trace, expected_type))
-        
+
         # Verify categorization
         for trace, expected_type in error_traces:
             assert trace["error_message"] is not None, f"Error type {expected_type} must have message"
@@ -319,21 +319,21 @@ class TestErrorCorrelation:
         baseline_metrics = [
             metric_factory(name="error_rate", value=0.01, labels={"service": "api"}),
         ]
-        
+
         # Create spike metrics
         spike_metrics = [
             metric_factory(name="error_rate", value=0.25, labels={"service": "api"}),
         ]
-        
+
         # Simulate spike detection
         def detect_spike(baseline, current, threshold=0.1):
             return current >= baseline + threshold
-        
+
         is_spike = detect_spike(
             baseline_metrics[0]["value"],
             spike_metrics[0]["value"],
         )
-        
+
         assert is_spike, "Spike must be detected"
 
 
@@ -348,7 +348,7 @@ class TestLogTraceCorrelation:
     def test_trace_id_present_in_logs(self, log_factory, trace_factory):
         """Test that trace_id is present in all logs for a trace."""
         trace = trace_factory(service="api")
-        
+
         logs = [
             log_factory(
                 message="Request started",
@@ -366,7 +366,7 @@ class TestLogTraceCorrelation:
                 service="api",
             ),
         ]
-        
+
         # Verify trace_id in all logs
         for log in logs:
             assert log["trace_id"] == trace["trace_id"], "Log must have trace_id"
@@ -375,23 +375,23 @@ class TestLogTraceCorrelation:
     def test_trace_context_matches_log_trace_id(self, log_factory, trace_factory, correlation_engine):
         """Test that trace context matches log trace_id."""
         trace = trace_factory(service="database")
-        
+
         log = log_factory(
             message="Query executed",
             trace_id=trace["trace_id"],
             service="database",
         )
-        
+
         # Verify context match
         correlation_engine.link_log_to_trace(log, trace)
         correlation_engine.link_log_to_trace.assert_called_once()
-        
+
         assert log["trace_id"] == trace["trace_id"], "Log trace_id must match trace"
 
     def test_log_entries_linked_to_spans(self, log_factory, trace_factory):
         """Test that log entries are correctly linked to spans."""
         trace = trace_factory(service="api", span_count=3)
-        
+
         # Create logs with span references
         logs = []
         for i, span in enumerate(trace["spans"]):
@@ -401,7 +401,7 @@ class TestLogTraceCorrelation:
                 service="api",
             )
             logs.append(log)
-        
+
         # Verify logs linked to trace
         assert len(logs) == len(trace["spans"]), "Log count must match span count"
         for log in logs:
@@ -424,10 +424,10 @@ class TestAnomalyDetection:
             metric_factory(name="cpu_usage", value=32.0, labels={"host": "web-01"}),
             metric_factory(name="cpu_usage", value=31.0, labels={"host": "web-01"}),
         ]
-        
+
         # Create spike
         spike = metric_factory(name="cpu_usage", value=95.0, labels={"host": "web-01"})
-        
+
         # Detect anomaly
         correlation_engine.detect_anomaly(spike, baseline)
         correlation_engine.detect_anomaly.assert_called_once()
@@ -439,7 +439,7 @@ class TestAnomalyDetection:
             value=92.0,
             labels={"host": "db-01"},
         )
-        
+
         alert = {
             "alert_id": "mem-high-001",
             "metric": "memory_usage",
@@ -447,7 +447,7 @@ class TestAnomalyDetection:
             "current_value": 92.0,
             "fired_at": datetime.utcnow().isoformat(),
         }
-        
+
         # Verify alert correlation
         assert alert["current_value"] >= alert["threshold"], "Alert must be above threshold"
         assert alert["metric"] == anomaly_metric["name"], "Alert metric must match"
@@ -461,18 +461,18 @@ class TestAnomalyDetection:
             status="error",
             error_message="Service degradation",
         )
-        
+
         # Create anomaly metric
         anomaly_metric = metric_factory(
             name="p99_latency_ms",
             value=5000.0,
             labels={"service": "api"},
         )
-        
+
         # Verify trace captures anomaly
         assert anomalous_trace["duration_ms"] == 5000.0, "Trace must capture long duration"
         assert anomalous_trace["status"] == "error", "Trace must show error status"
-        
+
         correlation_engine.correlate_trace_to_metrics(anomalous_trace, [anomaly_metric])
         correlation_engine.correlate_trace_to_metrics.assert_called_once()
 
@@ -485,26 +485,26 @@ class TestAnomalyDetection:
             duration_ms=3000.0,
             error_message="Circuit breaker open",
         )
-        
+
         error_metric = metric_factory(
             name="error_rate",
             value=0.5,
             labels={"service": "api"},
         )
-        
+
         latency_metric = metric_factory(
             name="p99_latency_ms",
             value=3000.0,
             labels={"service": "api"},
         )
-        
+
         # Simulate incident detection
         incident_signals = {
             "high_error_rate": error_metric["value"] > 0.1,
             "high_latency": latency_metric["value"] > 1000.0,
             "error_trace": error_trace["status"] == "error",
         }
-        
+
         incident_detected = all(incident_signals.values())
         assert incident_detected, "Incident must be detected from correlated signals"
 
@@ -525,17 +525,17 @@ class TestServiceDependencyMapping:
             trace_factory(service="auth", operation="POST /validate"),
             trace_factory(service="database", operation="SELECT users"),
         ]
-        
+
         # Mock service dependency graph
         graph = {
             "api": ["auth", "database"],
             "auth": ["cache"],
             "database": ["logging"],
         }
-        
+
         correlation_engine.get_service_dependencies(traces)
         correlation_engine.get_service_dependencies.assert_called_once()
-        
+
         # Verify graph structure
         assert "api" in graph, "API service must be in graph"
         assert "auth" in graph["api"], "Auth must be dependency of API"
@@ -551,7 +551,7 @@ class TestServiceDependencyMapping:
             trace_factory(service="service-b", operation="FETCH info"),
             trace_factory(service="database", operation="SELECT *"),
         ]
-        
+
         # Simulate depth analysis
         depth_map = {
             "gateway": 0,
@@ -560,7 +560,7 @@ class TestServiceDependencyMapping:
             "service-b": 2,
             "database": 3,
         }
-        
+
         max_depth = max(depth_map.values())
         assert max_depth == 3, "Max dependency depth must be 3"
         assert len(traces) == len(depth_map), "All services must have depth"
@@ -582,10 +582,10 @@ class TestCriticalPathAnalysis:
             trace_factory(service="database", duration_ms=150.0),
             trace_factory(service="cache", duration_ms=30.0),
         ]
-        
+
         correlation_engine.get_critical_path(traces)
         correlation_engine.get_critical_path.assert_called_once()
-        
+
         # Identify slowest
         slowest = max(traces, key=lambda t: t["duration_ms"])
         assert slowest["service"] == "api", "API must be slowest service"
@@ -599,10 +599,10 @@ class TestCriticalPathAnalysis:
             trace_factory(service="service-b", duration_ms=150.0, span_count=3),
             trace_factory(service="service-c", duration_ms=200.0, span_count=2),
         ]
-        
+
         # Calculate critical path (sum of sequential operations)
         critical_path_duration = sum(t["duration_ms"] for t in traces)
-        
+
         # For parallel services, critical path is max, not sum
         # Simulate sequential dependency
         assert critical_path_duration == 450.0, "Critical path duration must be sum"
@@ -628,20 +628,20 @@ class TestRootCauseAnalysisCorrelation:
             error_message="Database connection pool exhausted",
             duration_ms=5000.0,
         )
-        
+
         # Create supporting metrics
         connection_metric = metric_factory(
             name="db_connections_used",
             value=100.0,
             labels={"pool_size": "100"},
         )
-        
+
         error_rate_metric = metric_factory(
             name="error_rate",
             value=0.8,
             labels={"service": "api"},
         )
-        
+
         # Create supporting logs
         logs = [
             log_factory(
@@ -655,7 +655,7 @@ class TestRootCauseAnalysisCorrelation:
                 level="WARN",
             ),
         ]
-        
+
         # Perform RCA
         rca_result = {
             "root_cause": "Database connection pool exhausted",
@@ -670,12 +670,12 @@ class TestRootCauseAnalysisCorrelation:
             "metrics": [connection_metric, error_rate_metric],
             "logs": logs,
         }
-        
+
         correlation_engine.analyze_root_cause(
             error_trace, [connection_metric, error_rate_metric], logs
         )
         correlation_engine.analyze_root_cause.assert_called_once()
-        
+
         # Verify RCA structure
         assert rca_result["root_cause"] is not None, "Root cause must be identified"
         assert len(rca_result["contributing_factors"]) > 0, "Must have contributing factors"
@@ -704,7 +704,7 @@ class TestCorrelationEngineIntegration:
         # 1. Ingest trace
         trace = trace_factory(service="api", duration_ms=200.0)
         analytics_store.store_trace(trace)
-        
+
         # 2. Ingest metrics
         metrics = [
             metric_factory(name="latency_ms", value=200.0, labels={"service": "api"}),
@@ -712,7 +712,7 @@ class TestCorrelationEngineIntegration:
         ]
         for metric in metrics:
             analytics_store.store_metric(metric)
-        
+
         # 3. Ingest logs
         logs = [
             log_factory(message="Request started", trace_id=trace["trace_id"]),
@@ -720,14 +720,14 @@ class TestCorrelationEngineIntegration:
         ]
         for log in logs:
             analytics_store.store_log(log)
-        
+
         # 4. Correlate
         correlation_engine.correlate_trace_to_metrics(trace, metrics)
-        
+
         # 5. Verify all stored
         analytics_store.store_trace.assert_called_once()
-        assert analytics_store.store_metric.call_count == 2
-        assert analytics_store.store_log.call_count == 2
+        assert analytics_store.store_metric.call_count == 2, "Count must be greater than zero"
+        assert analytics_store.store_log.call_count == 2, "Count must be greater than zero"
         correlation_engine.correlate_trace_to_metrics.assert_called_once()
 
     def test_multi_service_correlation(
@@ -735,9 +735,9 @@ class TestCorrelationEngineIntegration:
     ):
         """Test correlation across multiple services."""
         services = ["api", "auth", "database", "cache"]
-        
+
         traces = [trace_factory(service=svc) for svc in services]
-        
+
         all_metrics = []
         for svc in services:
             metric = metric_factory(
@@ -746,12 +746,12 @@ class TestCorrelationEngineIntegration:
                 labels={"service": svc},
             )
             all_metrics.append(metric)
-        
+
         # Correlate all
         for trace in traces:
             correlation_engine.correlate_trace_to_metrics(trace, all_metrics)
-        
-        assert correlation_engine.correlate_trace_to_metrics.call_count == len(services)
+
+        assert correlation_engine.correlate_trace_to_metrics.call_count == len(services), "Services must not be empty"
 
     def test_time_series_correlation_analysis(
         self, metric_factory, correlation_engine
@@ -760,7 +760,7 @@ class TestCorrelationEngineIntegration:
         # Create time series
         base_time = datetime.utcnow()
         metrics_series = []
-        
+
         for i in range(10):
             timestamp = base_time + timedelta(seconds=i*10)
             metric = metric_factory(
@@ -770,11 +770,11 @@ class TestCorrelationEngineIntegration:
                 labels={"service": "api"},
             )
             metrics_series.append(metric)
-        
+
         # Analyze correlation
         for metric in metrics_series:
             correlation_engine.correlate_trace_to_metrics(None, [metric])
-        
+
         assert len(metrics_series) == 10, "Must have 10 metrics"
         assert metrics_series[-1]["value"] > metrics_series[0]["value"], "Values must increase"
 
@@ -788,17 +788,17 @@ class TestCorrelationEngineIntegration:
             trace_factory(service="service-a", duration_ms=900.0),
             trace_factory(service="database", duration_ms=800.0),
         ]
-        
+
         metrics = [
             metric_factory(name="latency", value=1000.0, labels={"service": "api"}),
             metric_factory(name="latency", value=900.0, labels={"service": "service-a"}),
             metric_factory(name="latency", value=800.0, labels={"service": "database"}),
         ]
-        
+
         # Correlate chain
         for trace, metric in zip(traces, metrics):
             correlation_engine.correlate_trace_to_metrics(trace, [metric])
-        
+
         # Verify anomaly propagation
         assert traces[0]["duration_ms"] > 500.0, "Upstream anomaly must be visible"
         assert all(m["value"] > 0 for m in metrics), "All metrics must have values"
@@ -808,11 +808,11 @@ class TestCorrelationEngineIntegration:
     ):
         """Test correlation robustness with missing data."""
         trace = trace_factory(service="api", duration_ms=100.0)
-        
+
         # Call with no metrics
         correlation_engine.correlate_trace_to_metrics(trace, [])
         correlation_engine.correlate_trace_to_metrics.assert_called_once()
-        
+
         # Verify handles gracefully
         result = correlation_engine.correlate_trace_to_metrics.return_value
         assert result is not None, "Result must not be None"

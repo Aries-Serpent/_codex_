@@ -243,9 +243,9 @@ def predict(req: PredictRequest) -> PredictResponse:
     _mod = ModerationAdapter(ModerationSettings(enabled=True, fail_open=False))
     try:
         _mod.enforce(req.prompt, stage="input")
-    except ModerationRejection:
+    except ModerationRejection as exc:
         logger.warning("Moderation rejected /predict input")
-        raise HTTPException(status_code=400, detail="Request rejected by content policy.")
+        raise HTTPException(status_code=400, detail="Request rejected by content policy.") from exc
 
     tokenizer = _tokenizer()
     model = _model()
@@ -269,8 +269,8 @@ def predict(req: PredictRequest) -> PredictResponse:
     # Gap 27: post-output moderation check (fail-closed)
     try:
         _mod.enforce(output, stage="output")
-    except ModerationRejection:
+    except ModerationRejection as exc:
         logger.warning("Moderation rejected /predict output")
-        raise HTTPException(status_code=400, detail="Response rejected by content policy.")
+        raise HTTPException(status_code=400, detail="Response rejected by content policy.") from exc
 
     return PredictResponse(output=output)

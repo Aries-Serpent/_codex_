@@ -22,7 +22,7 @@ class TestSafetyFiltersImport:
         """Test importing safety filters module."""
         try:
             from codex_ml.safety import filters
-            assert filters is not None
+            assert filters is not None, "filters must be initialized"
         except ImportError:
             pytest.skip("codex_ml.safety not available")
 
@@ -30,7 +30,7 @@ class TestSafetyFiltersImport:
         """Test importing SafetyPolicy class."""
         try:
             from codex_ml.safety.filters import SafetyPolicy
-            assert SafetyPolicy is not None
+            assert SafetyPolicy is not None, "SafetyPolicy must be initialized"
         except ImportError:
             pytest.skip("SafetyPolicy not available")
 
@@ -38,7 +38,7 @@ class TestSafetyFiltersImport:
         """Test importing SafetyFilters class."""
         try:
             from codex_ml.safety.filters import SafetyFilters
-            assert SafetyFilters is not None
+            assert SafetyFilters is not None, "SafetyFilters must be initialized"
         except ImportError:
             pytest.skip("SafetyFilters not available")
 
@@ -46,7 +46,7 @@ class TestSafetyFiltersImport:
         """Test importing PolicyRule class."""
         try:
             from codex_ml.safety.filters import PolicyRule
-            assert PolicyRule is not None
+            assert PolicyRule is not None, "PolicyRule must be initialized"
         except ImportError:
             pytest.skip("PolicyRule not available")
 
@@ -54,7 +54,7 @@ class TestSafetyFiltersImport:
         """Test importing RuleMatch class."""
         try:
             from codex_ml.safety.filters import RuleMatch
-            assert RuleMatch is not None
+            assert RuleMatch is not None, "RuleMatch must be initialized"
         except ImportError:
             pytest.skip("RuleMatch not available")
 
@@ -62,7 +62,7 @@ class TestSafetyFiltersImport:
         """Test importing SafetyResult class."""
         try:
             from codex_ml.safety.filters import SafetyResult
-            assert SafetyResult is not None
+            assert SafetyResult is not None, "SafetyResult must be initialized"
         except ImportError:
             pytest.skip("SafetyResult not available")
 
@@ -70,7 +70,7 @@ class TestSafetyFiltersImport:
         """Test importing SafetyViolation class."""
         try:
             from codex_ml.safety.filters import SafetyViolation
-            assert SafetyViolation is not None
+            assert SafetyViolation is not None, "SafetyViolation must be initialized"
         except ImportError:
             pytest.skip("SafetyViolation not available")
 
@@ -82,9 +82,9 @@ class TestUtilityHelpers:
         """Test _ensure_sequence with None."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             result = _ensure_sequence(None)
-            assert result == []
+            assert result == [], "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -92,11 +92,11 @@ class TestUtilityHelpers:
         """Test _ensure_sequence with string."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             result = _ensure_sequence("test")
             assert isinstance(result, (list, tuple))
-            assert len(result) == 1
-            assert result[0] == "test"
+            assert len(result) == 1, "Result must not be empty"
+            assert result[0] == "test", "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -104,10 +104,10 @@ class TestUtilityHelpers:
         """Test _ensure_sequence with list."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             input_list = ["a", "b", "c"]
             result = _ensure_sequence(input_list)
-            assert result == input_list
+            assert result == input_list, "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -115,10 +115,10 @@ class TestUtilityHelpers:
         """Test _ensure_sequence with tuple."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             input_tuple = ("a", "b", "c")
             result = _ensure_sequence(input_tuple)
-            assert result == input_tuple
+            assert result == input_tuple, "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -126,12 +126,12 @@ class TestUtilityHelpers:
         """Test _ensure_sequence with bytes."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             input_bytes = b"test"
             result = _ensure_sequence(input_bytes)
             assert isinstance(result, (list, tuple))
-            assert len(result) == 1
-            assert result[0] == input_bytes
+            assert len(result) == 1, "Result must not be empty"
+            assert result[0] == input_bytes, "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -139,9 +139,9 @@ class TestUtilityHelpers:
         """Test _parse_flags with None."""
         try:
             from codex_ml.safety.filters import _parse_flags
-            
+
             result = _parse_flags(None)
-            assert result == 0
+            assert result == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -151,10 +151,10 @@ class TestUtilityHelpers:
             import re
 
             from codex_ml.safety.filters import _parse_flags
-            
+
             result = _parse_flags(re.IGNORECASE)
             assert isinstance(result, int)
-            assert result == re.IGNORECASE
+            assert result == re.IGNORECASE, "Result must not be empty"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -164,9 +164,9 @@ class TestUtilityHelpers:
             import re
 
             from codex_ml.safety.filters import _parse_flags
-            
+
             result = _parse_flags("IGNORECASE")
-            assert result == re.IGNORECASE
+            assert result == re.IGNORECASE, "Result must not be empty"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -176,9 +176,9 @@ class TestUtilityHelpers:
             import re
 
             from codex_ml.safety.filters import _parse_flags
-            
+
             result = _parse_flags("I")
-            assert result == re.IGNORECASE
+            assert result == re.IGNORECASE, "Result must not be empty"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -188,9 +188,9 @@ class TestUtilityHelpers:
             import re
 
             from codex_ml.safety.filters import _parse_flags
-            
+
             result = _parse_flags("MULTILINE")
-            assert result == re.MULTILINE
+            assert result == re.MULTILINE, "Result must not be empty"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -202,9 +202,9 @@ class TestSafetyPolicyDataclass:
         """Test creating SafetyPolicy."""
         try:
             from codex_ml.safety.filters import SafetyPolicy
-            
+
             policy = SafetyPolicy()
-            assert policy is not None
+            assert policy is not None, "policy must be initialized"
         except ImportError:
             pytest.skip("SafetyPolicy not available")
 
@@ -212,7 +212,7 @@ class TestSafetyPolicyDataclass:
         """Test SafetyPolicy default values."""
         try:
             from codex_ml.safety.filters import SafetyPolicy
-            
+
             policy = SafetyPolicy()
             # Check common default attributes
             assert hasattr(policy, 'rules') or hasattr(policy, 'name')
@@ -223,9 +223,9 @@ class TestSafetyPolicyDataclass:
         """Test creating SafetyPolicy with custom name."""
         try:
             from codex_ml.safety.filters import SafetyPolicy
-            
+
             policy = SafetyPolicy(name="custom_policy")
-            assert policy.name == "custom_policy"
+            assert policy.name == "custom_policy", "name is not valid"
         except (ImportError, TypeError):
             pytest.skip("SafetyPolicy not available or doesn't accept name")
 
@@ -237,9 +237,9 @@ class TestPolicyRuleDataclass:
         """Test creating PolicyRule."""
         try:
             from codex_ml.safety.filters import PolicyRule
-            
+
             rule = PolicyRule(name="test_rule", action="block")
-            assert rule is not None
+            assert rule is not None, "rule must be initialized"
         except ImportError:
             pytest.skip("PolicyRule not available")
 
@@ -247,10 +247,10 @@ class TestPolicyRuleDataclass:
         """Test PolicyRule default values."""
         try:
             from codex_ml.safety.filters import PolicyRule
-            
+
             rule = PolicyRule(name="test", action="block")
-            assert rule.name == "test"
-            assert rule.action == "block"
+            assert rule.name == "test", "name is not valid"
+            assert rule.action == "block", "action is not valid"
         except (ImportError, TypeError):
             pytest.skip("PolicyRule not available")
 
@@ -262,9 +262,9 @@ class TestRuleMatchDataclass:
         """Test creating RuleMatch."""
         try:
             from codex_ml.safety.filters import RuleMatch
-            
+
             match = RuleMatch(rule_name="test", matched_text="dangerous")
-            assert match is not None
+            assert match is not None, "match must be initialized"
         except ImportError:
             pytest.skip("RuleMatch not available")
 
@@ -276,9 +276,9 @@ class TestSafetyResultDataclass:
         """Test creating SafetyResult."""
         try:
             from codex_ml.safety.filters import SafetyResult
-            
+
             result = SafetyResult(passed=True)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("SafetyResult not available")
 
@@ -286,9 +286,9 @@ class TestSafetyResultDataclass:
         """Test SafetyResult with passed=True."""
         try:
             from codex_ml.safety.filters import SafetyResult
-            
+
             result = SafetyResult(passed=True)
-            assert result.passed is True
+            assert result.passed is True, "Result must not be empty"
         except ImportError:
             pytest.skip("SafetyResult not available")
 
@@ -296,9 +296,9 @@ class TestSafetyResultDataclass:
         """Test SafetyResult with passed=False."""
         try:
             from codex_ml.safety.filters import SafetyResult
-            
+
             result = SafetyResult(passed=False)
-            assert result.passed is False
+            assert result.passed is False, "Result must not be empty"
         except ImportError:
             pytest.skip("SafetyResult not available")
 
@@ -310,9 +310,9 @@ class TestSafetyViolationDataclass:
         """Test creating SafetyViolation."""
         try:
             from codex_ml.safety.filters import SafetyViolation
-            
+
             violation = SafetyViolation(rule_name="test", matched_text="bad")
-            assert violation is not None
+            assert violation is not None, "violation must be initialized"
         except ImportError:
             pytest.skip("SafetyViolation not available")
 
@@ -324,9 +324,9 @@ class TestSafetyFiltersClass:
         """Test instantiating SafetyFilters."""
         try:
             from codex_ml.safety.filters import SafetyFilters
-            
+
             filters = SafetyFilters()
-            assert filters is not None
+            assert filters is not None, "filters must be initialized"
         except ImportError:
             pytest.skip("SafetyFilters not available")
 
@@ -334,10 +334,10 @@ class TestSafetyFiltersClass:
         """Test that SafetyFilters has sanitize_prompt method."""
         try:
             from codex_ml.safety.filters import SafetyFilters
-            
+
             filters = SafetyFilters()
             assert hasattr(filters, 'sanitize_prompt')
-            assert callable(filters.sanitize_prompt)
+            assert callable(filters.sanitize_prompt), "Condition must be true"
         except ImportError:
             pytest.skip("SafetyFilters not available")
 
@@ -345,10 +345,10 @@ class TestSafetyFiltersClass:
         """Test that SafetyFilters has sanitize_output method."""
         try:
             from codex_ml.safety.filters import SafetyFilters
-            
+
             filters = SafetyFilters()
             assert hasattr(filters, 'sanitize_output')
-            assert callable(filters.sanitize_output)
+            assert callable(filters.sanitize_output), "Condition must be true"
         except ImportError:
             pytest.skip("SafetyFilters not available")
 
@@ -360,8 +360,8 @@ class TestSanitizePromptFunction:
         """Test importing sanitize_prompt function."""
         try:
             from codex_ml.safety.filters import sanitize_prompt
-            assert sanitize_prompt is not None
-            assert callable(sanitize_prompt)
+            assert sanitize_prompt is not None, "sanitize_prompt must be initialized"
+            assert callable(sanitize_prompt), "Condition must be true"
         except ImportError:
             pytest.skip("sanitize_prompt not available")
 
@@ -369,7 +369,7 @@ class TestSanitizePromptFunction:
         """Test sanitize_prompt with basic input."""
         try:
             from codex_ml.safety.filters import sanitize_prompt
-            
+
             result = sanitize_prompt("Hello, world!")
             assert isinstance(result, str)
         except ImportError:
@@ -383,8 +383,8 @@ class TestSanitizeOutputFunction:
         """Test importing sanitize_output function."""
         try:
             from codex_ml.safety.filters import sanitize_output
-            assert sanitize_output is not None
-            assert callable(sanitize_output)
+            assert sanitize_output is not None, "sanitize_output must be initialized"
+            assert callable(sanitize_output), "Condition must be true"
         except ImportError:
             pytest.skip("sanitize_output not available")
 
@@ -392,7 +392,7 @@ class TestSanitizeOutputFunction:
         """Test sanitize_output with basic input."""
         try:
             from codex_ml.safety.filters import sanitize_output
-            
+
             result = sanitize_output("Hello, world!")
             assert isinstance(result, str)
         except ImportError:
@@ -407,7 +407,7 @@ class TestSafetyFiltersConstants:
         try:
             from codex_ml.safety.filters import REDACT_PLACEHOLDER
             assert isinstance(REDACT_PLACEHOLDER, str)
-            assert len(REDACT_PLACEHOLDER) > 0
+            assert len(REDACT_PLACEHOLDER) > 0, "Redact_placeholder must not be empty"
         except ImportError:
             pytest.skip("REDACT_PLACEHOLDER not available")
 
@@ -424,7 +424,7 @@ class TestSafetyFiltersConstants:
         try:
             from codex_ml.safety.filters import POLICY_ENV_VAR
             assert isinstance(POLICY_ENV_VAR, str)
-            assert "POLICY" in POLICY_ENV_VAR
+            assert "POLICY" in POLICY_ENV_VAR, "Condition must be true"
         except ImportError:
             pytest.skip("POLICY_ENV_VAR not available")
 
@@ -433,7 +433,7 @@ class TestSafetyFiltersConstants:
         try:
             from codex_ml.safety.filters import BYPASS_ENV_VAR
             assert isinstance(BYPASS_ENV_VAR, str)
-            assert "BYPASS" in BYPASS_ENV_VAR
+            assert "BYPASS" in BYPASS_ENV_VAR, "Condition must be true"
         except ImportError:
             pytest.skip("BYPASS_ENV_VAR not available")
 
@@ -445,9 +445,9 @@ class TestSafetyFiltersLogging:
         """Test that logger is properly configured."""
         try:
             from codex_ml.safety import filters
-            
+
             logger = filters.logger
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
             assert isinstance(logger, logging.Logger)
         except ImportError:
             pytest.skip("filters module not available")
@@ -460,9 +460,9 @@ class TestSafetyFiltersModuleDoc:
         """Test that module has proper documentation."""
         try:
             from codex_ml.safety import filters
-            
-            assert filters.__doc__ is not None
-            assert "Safety" in filters.__doc__ or "safety" in filters.__doc__.lower()
+
+            assert filters.__doc__ is not None, "__doc__ must be initialized"
+            assert "Safety" in filters.__doc__ or "safety" in filters.__doc__.lower(), "Condition must be true"
         except ImportError:
             pytest.skip("filters module not available")
 
@@ -477,7 +477,7 @@ class TestEnvVarHandling:
             import os
 
             from codex_ml.safety.filters import BYPASS_ENV_VAR
-            
+
             value = os.getenv(BYPASS_ENV_VAR, "false")
             assert value in ("true", "false", None)
         except ImportError:
@@ -492,7 +492,7 @@ class TestFlagLookup:
         try:
             from codex_ml.safety.filters import _FLAG_LOOKUP
             assert isinstance(_FLAG_LOOKUP, dict)
-            assert len(_FLAG_LOOKUP) > 0
+            assert len(_FLAG_LOOKUP) > 0, "_flag_lookup must not be empty"
         except ImportError:
             pytest.skip("_FLAG_LOOKUP not available")
 
@@ -500,9 +500,9 @@ class TestFlagLookup:
         """Test that _FLAG_LOOKUP has common flags."""
         try:
             from codex_ml.safety.filters import _FLAG_LOOKUP
-            
+
             # Check for at least one common regex flag
-            assert "I" in _FLAG_LOOKUP or "IGNORECASE" in _FLAG_LOOKUP
+            assert "I" in _FLAG_LOOKUP or "IGNORECASE" in _FLAG_LOOKUP, "Condition must be true"
         except ImportError:
             pytest.skip("_FLAG_LOOKUP not available")
 
@@ -518,8 +518,8 @@ def test_ensure_sequence_parametrized(input_value, expected_length):
     """Parametrized test for _ensure_sequence with various inputs."""
     try:
         from codex_ml.safety.filters import _ensure_sequence
-        
+
         result = _ensure_sequence(input_value)
-        assert len(result) == expected_length
+        assert len(result) == expected_length, "Result must not be empty"
     except ImportError:
         pytest.skip("_ensure_sequence not available")

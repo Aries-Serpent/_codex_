@@ -5,7 +5,7 @@ from typing import Any
 #         """Check if README has quickstart section."""
 #         patterns = ["quickstart", "quick start", "getting started", "## usage"]
 #         return any(p in content.lower() for p in patterns)
-# 
+#
 #         for line in lines[1:]:
 #             line = line.strip()
 #             if line.lower().startswith(("args:", "parameters:", "params:")):
@@ -24,7 +24,7 @@ from typing import Any
 #             elif not in_params and not in_returns and line:
 #                 description += line + " "
 #     """Parse docstrings for documentation."""
-# 
+#
 #     def parse(self, docstring: str | None) -> dict[str, Any]:
 #     def parse(self, docstring: str | None) -> dict[str, Any]:
 #         """Parse docstring into structured format."""
@@ -35,10 +35,10 @@ from typing import Any
 #         description = ""
 #         params = []
 #         returns = None
-# 
+#
 #         in_params = False
 #         in_returns = False
-# 
+#
 #         for line in lines[1:]:
 #             line = line.strip()
 #             if line.lower().startswith(("args:", "parameters:", "params:")):
@@ -56,7 +56,7 @@ from typing import Any
 #                 returns = line
 #             elif not in_params and not in_returns and line:
 #                 description += line + " "
-# 
+#
 #         return {
 #         return {
 #             "summary": summary,
@@ -67,7 +67,7 @@ from typing import Any
 #         assert validator.has_quickstart(", "validat is not valid"
 #         assert not validator.has_quickstart(", "Condition must be true"
 #         cells_with_errors = []
-# 
+#
 #     def test_parse_simple(self):
 #     def test_parse_simple(self):
 #         """Parse simple docstring."""
@@ -98,11 +98,11 @@ from typing import Any
 #         errors = validator.validate_structure(invalid_nb)
 #         assert "Missing 'cells' key" in errors, "Error should be raised or set"
 #     """Calculate documentation coverage."""
-# 
+#
 #     def __init__(self):
 #         self.total_items = 0
 #         self.documented_items = 0
-# 
+#
 #     def add_item(self, name: str, has_doc: bool) -> None:
 #     def add_item(self, name: str, has_doc: bool) -> None:
 #         """Add item to coverage calculation."""
@@ -144,9 +144,9 @@ from typing import Any
 #         assert cov.coverage_percent() == 100.0, "Condition must be true"
 #         assert validator.has_quickstart(", "validat is not valid"
 #         assert not validator.has_quickstart(", "Condition must be true"
-# 
+#
 #     def test_add_link(self):
-# 
+#
 #         assert validator.has_quickstart(", "validat is not valid"
 #         assert not validator.has_quickstart(", "Condition must be true"
 #         tests = linker.get_tests_for_doc("auth-design.md")
@@ -173,9 +173,9 @@ from typing import Any
 #                 present.append(section)
 #             else:
 #                 missing.append(section)
-# 
+#
 #         optional_present = [s for s in self.OPTIONAL_SECTIONS if s in content_lower]
-# 
+#
 #         return {
 #         return {
 #             "valid": len(missing) == 0,
@@ -192,7 +192,7 @@ from typing import Any
 #         assert validator.has_quickstart(", "validat is not valid"
 #         assert not validator.has_quickstart(", "Condition must be true"
 #                 lines.append("")
-# 
+#
 #     def test_complete_readme(self):
 #     def test_complete_readme(self):
 #         """Complete README passes validation."""
@@ -200,10 +200,10 @@ from typing import Any
 #         content = """
 #         # My Project
 #         pip install myproject
-# 
+#
 #         ## Usage
 #         import myproject
-# 
+#
 #         ## Requirements
 #         Python 3.8+
 #         ## Requirements

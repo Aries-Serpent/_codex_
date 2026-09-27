@@ -40,18 +40,18 @@ def check_plugin(name: str, import_name: str) -> tuple[bool, str]:
         "pytest_randomly": "pytest-randomly",
         "pytest": "pytest",
     }
-    
+
     # Validate import_name is in whitelist
     if import_name not in ALLOWED_PLUGINS:
         return False, f"✗ {name} - BLOCKED: '{import_name}' is not in allowed plugins"
-    
+
     try:
         # Use importlib.import_module() instead of __import__()
         # This is safer and more readable
         module = importlib.util.find_spec(import_name)
         if module is None:
             return False, f"✗ {name} ({import_name}) - NOT FOUND"
-        
+
         # Import module to get version
         mod = importlib.import_module(import_name)
         version = getattr(mod, "__version__", "unknown")

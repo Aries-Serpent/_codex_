@@ -31,7 +31,7 @@ class TestSubprocessTimingBarrier:
         """Test subprocess timing with barrier synchronization."""
         # Without barrier, this test can be flaky due to timing issues
         # between subprocess startup and signal delivery
-        
+
         def subprocess_worker():
             """Worker that runs in subprocess."""
             import sys
@@ -64,17 +64,17 @@ class TestSubprocessTimingBarrier:
         # Run synchronized
         t1 = threading.Thread(target=run_subprocess)
         t2 = threading.Thread(target=run_main)
-        
+
         t1.start()
         t2.start()
-        
+
         t1.join(timeout=10)
         t2.join(timeout=10)
 
-        assert len(self.results) > 0
+        assert len(self.results) > 0, "Collection must not be empty"
         proc = self.results[0]
         stdout, stderr = proc.communicate(timeout=5)
-        
-        assert "ready" in stdout
-        assert "done" in stdout
-        assert proc.returncode == 0
+
+        assert "ready" in stdout, "Condition must be true"
+        assert "done" in stdout, "Condition must be true"
+        assert proc.returncode == 0, "returncode is not valid"

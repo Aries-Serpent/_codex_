@@ -11,7 +11,6 @@ from typing import Any
 
 import codex.training as ft
 import pytest
-
 from omegaconf import OmegaConf
 
 pytestmark = pytest.mark.requires_torch

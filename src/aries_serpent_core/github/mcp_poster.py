@@ -144,7 +144,7 @@ class GitHubMCPPoster:
     def post_pr_comment_from_file(
         self, repo: str, pr_number: int, body_file: str | Path
     ) -> dict[str, Any]:
-        """Read a file and post as a PR comment. See PullRequestManager.post_pr_comment_from_file()."""
+        """Read a file and post as a PR comment. See PullRequestManager.post_pr_comment_from_file()."""  # noqa: E501
         return self._prs.post_pr_comment_from_file(repo, pr_number, body_file)
 
     # ------------------------------------------------------------------
@@ -164,7 +164,7 @@ class GitHubMCPPoster:
     def post_session_summary_discussion(
         self, repo: str, session_num: int, summary_md: str
     ) -> dict[str, Any]:
-        """Post a session summary as a Discussion. See DiscussionManager.post_session_summary_discussion()."""
+        """Post a session summary as a Discussion. See DiscussionManager.post_session_summary_discussion()."""  # noqa: E501
         return self._discussions.post_session_summary_discussion(repo, session_num, summary_md)
 
     def add_discussion_comment(
@@ -207,7 +207,7 @@ class GitHubMCPPoster:
         purpose: str,
         category_slug: str = "show-and-tell",
     ) -> tuple[int, str]:
-        """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""
+        """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""  # noqa: E501
         return self._discussions.find_or_create_pr_discussion(
             repo, pr_number, purpose, category_slug
         )
@@ -219,7 +219,7 @@ class GitHubMCPPoster:
         since_marker: str = "",
         max_comments: int = 200,
     ) -> list[dict[str, Any]]:
-        """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""
+        """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""  # noqa: E501
         return self._discussions.check_discussion_replies(
             repo, discussion_number, since_marker, max_comments
         )
@@ -303,7 +303,7 @@ class GitHubMCPPoster:
     # ------------------------------------------------------------------
 
     def set_repo_variable(self, repo: str, name: str, value: str) -> dict[str, Any]:
-        """Create or update a repository variable. See CognitiveBrainIntegration.set_repo_variable()."""
+        """Create or update a repository variable. See CognitiveBrainIntegration.set_repo_variable()."""  # noqa: E501
         return self._cb.set_repo_variable(repo, name, value)
 
     # ------------------------------------------------------------------
@@ -367,7 +367,7 @@ class GitHubMCPPoster:
         limit: int = 10,
         pattern_prefix: str = "CB-",
     ) -> str:
-        """Retrieve cognitive-brain patterns. See CognitiveBrainIntegration.retrieve_cb_patterns()."""
+        """Retrieve cognitive-brain patterns. See CognitiveBrainIntegration.retrieve_cb_patterns()."""  # noqa: E501
         return self._cb.retrieve_cb_patterns(limit, pattern_prefix)
 
     # ------------------------------------------------------------------
@@ -837,14 +837,14 @@ def main(argv: list[str] | None = None) -> int:
             body = Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_ci_pattern_summary(args.repo, args.number, body, args.session_id)
             logger.info(
-                f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}"
+                f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501
             )  # noqa: E501
 
         elif args.command == "post-continuation":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_continuation_chain(args.repo, args.number, body)
             logger.info(
-                f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}"
+                f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501
             )  # noqa: E501
 
     except RuntimeError as exc:

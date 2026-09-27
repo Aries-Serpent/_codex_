@@ -67,6 +67,7 @@ I need help optimizing performance in the Codex repository.
 
    # After: NumPy vectorization
    import numpy as np
+
    data_np = np.array(data)
    result = data_np * 2 + 1
    ```
@@ -74,6 +75,7 @@ I need help optimizing performance in the Codex repository.
    **Caching:**
    ```python
    from functools import lru_cache
+
 
    @lru_cache(maxsize=128)
    def expensive_function(arg):
@@ -87,9 +89,11 @@ I need help optimizing performance in the Codex repository.
    def fetch_data(urls):
        return [requests.get(url) for url in urls]
 
+
    # After: Async
    import asyncio
    import aiohttp
+
 
    async def fetch_data(urls):
        async with aiohttp.ClientSession() as session:
@@ -118,6 +122,7 @@ I need help optimizing performance in the Codex repository.
    def read_large_file(path):
        return [line for line in open(path)]
 
+
    # After: Generator
    def read_large_file(path):
        for line in open(path):
@@ -140,11 +145,8 @@ I need help optimizing performance in the Codex repository.
 
    **Use Performance Module:**
    ```python
-   from scripts.space_traversal.performance import (
-       cache_result,
-       batch_process,
-       profile_function
-   )
+   from scripts.space_traversal.performance import cache_result, batch_process, profile_function
+
 
    @cache_result(ttl=3600)
    @profile_function
@@ -157,6 +159,7 @@ I need help optimizing performance in the Codex repository.
    ```python
    # Check if performance.py cache exists
    from scripts.space_traversal.performance import get_cache_stats
+
    stats = get_cache_stats()
    ```
 

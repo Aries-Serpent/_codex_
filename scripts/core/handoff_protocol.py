@@ -22,28 +22,28 @@ from typing import Any, Dict, List, Optional
 
 class HandoffObject:
     """Represents a structured handoff from one agent to another."""
-    
+
     def __init__(self, state_id: str, from_agent: str, to_agent: str):
         self.handoff_id = str(uuid.uuid4())
         self.state_id = state_id
         self.from_agent = from_agent
         self.to_agent = to_agent
         self.created_at = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-        
+
         # State transfer
         self.input_state: Dict[str, Any] = {}
         self.decision_trace: List[Dict[str, Any]] = []
         self.validation_status: Dict[str, Any] = {}
-        
+
         # Continuity
         self.remaining_tasks: List[Dict[str, Any]] = []
         self.risk_flags: List[str] = []
         self.confidence: float = 0.0
-        
+
         # Context preservation
         self.execution_context: Dict[str, Any] = {}
         self.dependencies_summary: Dict[str, Any] = {}
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert handoff to dictionary."""
         return {
@@ -61,7 +61,7 @@ class HandoffObject:
             "execution_context": self.execution_context,
             "dependencies_summary": self.dependencies_summary
         }
-    
+
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> "HandoffObject":
         """Create handoff from dictionary."""
@@ -85,7 +85,7 @@ class HandoffObject:
 
 class HandoffProtocol:
     """Protocol for agent-to-agent handoffs."""
-    
+
     @staticmethod
     def prepare_handoff(state: Dict[str, Any],
                        next_agent: str,
@@ -104,10 +104,10 @@ class HandoffProtocol:
             HandoffObject with complete context and continuity information
         """
         state_id = state.get("state_id", "")
-        
+
         # Create handoff object
         handoff = HandoffObject(state_id, current_agent, next_agent)
-        
+
         # 1. COMPLETE STATE TRANSFER
         # Include the full input/decision context to prevent 100% STM loss
         handoff.input_state = {
@@ -121,11 +121,11 @@ class HandoffProtocol:
             "confidence_score": state.get("confidence_score", 0.0),
             "timestamp": state.get("timestamp")
         }
-        
+
         # 2. DECISION TRACE PRESERVATION
         # Prevent 80% loss of decision rationale
         decision_context = state.get("decision_context", {})
-        
+
         # Build complete decision trace
         handoff.decision_trace = [
             {
@@ -155,10 +155,10 @@ class HandoffProtocol:
                 "confidence": decision_context.get("confidence", 0.0)
             }
         ]
-        
+
         # 3. VALIDATION STATUS
         handoff.validation_status = state.get("validation_results", {})
-        
+
         # 4. REMAINING TASKS
         # Build list of remaining work from unresolved items
         unresolved = state.get("unresolved_items", [])
@@ -171,36 +171,36 @@ class HandoffProtocol:
                     "owner": item.get("owner", next_agent),
                     "priority": item.get("priority", "normal")
                 })
-        
+
         # 5. RISK FLAGS
         # Identify risks to be aware of
         risk_flags = []
-        
+
         if state.get("confidence_score", 1.0) < 0.7:
             risk_flags.append(f"low_confidence:{state.get('confidence_score')}")
-        
+
         blocker_count = len([i for i in unresolved if i.get("type") == "blocker"])
         if blocker_count > 0:
             risk_flags.append(f"unresolved_blockers:{blocker_count}")
-        
+
         failed_deps = [d for d in state.get("dependencies", [])
                       if d.get("status") == "failed"]
         if failed_deps:
             risk_flags.append(f"failed_dependencies:{len(failed_deps)}")
-        
+
         failed_actions = [a for a in state.get("actions_taken", [])
                          if a.get("status") == "failed"]
         if failed_actions:
             risk_flags.append(f"failed_actions:{len(failed_actions)}")
-        
+
         if state.get("status") == "escalated":
             risk_flags.append("escalated_status")
-        
+
         handoff.risk_flags = risk_flags
-        
+
         # 6. CONFIDENCE TRANSFER
         handoff.confidence = state.get("confidence_score", 0.0)
-        
+
         # 7. EXECUTION CONTEXT
         handoff.execution_context = {
             "current_phase": state.get("phase_id"),
@@ -211,7 +211,7 @@ class HandoffProtocol:
                 "created_by": state.get("agent_id")
             }
         }
-        
+
         # 8. DEPENDENCIES SUMMARY
         deps = state.get("dependencies", [])
         handoff.dependencies_summary = {
@@ -229,9 +229,9 @@ class HandoffProtocol:
                 for d in deps if d.get("status") in {"failed", "blocked"}
             ]
         }
-        
+
         return handoff
-    
+
     @staticmethod
     def resume_from_handoff(handoff: HandoffObject,
                            base_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -257,7 +257,7 @@ class HandoffProtocol:
                 "agent_id": handoff.to_agent,
                 "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
             }
-        
+
         # Restore state info from input_state
         input_state = handoff.input_state
         state.update({
@@ -267,7 +267,7 @@ class HandoffProtocol:
             "execution_step": input_state.get("execution_step"),
             "confidence_score": handoff.confidence
         })
-        
+
         # Restore decision context from decision trace
         decision_context = {
             "reasoning": [],
@@ -276,7 +276,7 @@ class HandoffProtocol:
             "selected_action": "",
             "confidence": handoff.confidence
         }
-        
+
         for trace_item in handoff.decision_trace:
             if trace_item.get("type") == "reasoning":
                 decision_context["reasoning"] = trace_item.get("items", [])
@@ -286,12 +286,12 @@ class HandoffProtocol:
                 decision_context["alternatives_considered"] = trace_item.get("alternatives", [])
             elif trace_item.get("type") == "decision":
                 decision_context["selected_action"] = trace_item.get("selected_action", "")
-        
+
         state["decision_context"] = decision_context
-        
+
         # Restore validation results
         state["validation_results"] = handoff.validation_status
-        
+
         # Restore unresolved items
         unresolved_items = []
         for task in handoff.remaining_tasks:
@@ -302,9 +302,9 @@ class HandoffProtocol:
                 "owner": task.get("owner", handoff.to_agent),
                 "priority": task.get("priority", "normal")
             })
-        
+
         state["unresolved_items"] = unresolved_items
-        
+
         # Add handoff metadata to state's metadata object (not as underscore field)
         if "metadata" not in state:
             state["metadata"] = {}
@@ -314,9 +314,9 @@ class HandoffProtocol:
             "created_at": handoff.created_at,
             "risk_flags": handoff.risk_flags
         }
-        
+
         return state
-    
+
     @staticmethod
     def validate_handoff(handoff: HandoffObject) -> Dict[str, Any]:
         """
@@ -335,42 +335,42 @@ class HandoffProtocol:
             "errors": [],
             "warnings": []
         }
-        
+
         # Check required fields
         if not handoff.state_id:
             result["errors"].append("Missing state_id")
-        
+
         if not handoff.from_agent:
             result["errors"].append("Missing from_agent")
-        
+
         if not handoff.to_agent:
             result["errors"].append("Missing to_agent")
-        
+
         # Check state transfer
         if not handoff.input_state:
             result["warnings"].append("No input state captured")
-        
+
         # Check decision trace
         if not handoff.decision_trace:
             result["warnings"].append("No decision trace captured")
         elif len(handoff.decision_trace) < 3:
             result["warnings"].append("Decision trace may be incomplete")
-        
+
         # Check confidence
         if handoff.confidence < 0.5:
             result["warnings"].append(f"Low confidence: {handoff.confidence}")
-        
+
         # Check risk flags
         if len(handoff.risk_flags) > 5:
             result["warnings"].append(f"Many risk flags: {len(handoff.risk_flags)}")
-        
+
         # Check dependencies
         deps_summary = handoff.dependencies_summary
         if deps_summary.get("failed", 0) > 0:
             result["warnings"].append(
                 f"Failed dependencies: {deps_summary.get('failed')}"
             )
-        
+
         result["valid"] = len(result["errors"]) == 0
         return result
 

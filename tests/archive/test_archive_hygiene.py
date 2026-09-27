@@ -3,9 +3,9 @@
 #             '"""DEPRECATED module slated for archival."""\n\n'
 # Test module for archive hygiene.
 #             '"""DEPRECATED module slated for archival."""\n\n'
-# 
+#
 #             "demo-repo",
-# 
+#
 #             "demo-repo",
 # import os
 #             "demo-repo",
@@ -13,9 +13,9 @@
 #             "demo-repo",
 # from pathlib import Path
 #             "demo-repo",
-# 
+#
 #             "demo-repo",
-# 
+#
 #             "demo-repo",
 # def _reload_archive_modules() -> None:
 #     for name in [
@@ -26,7 +26,7 @@
 #             sys.modules.pop(name)
 #     reload(import_module("codex.archive.dal"))
 #             "demo-repo",
-# 
+#
 #             "demo-repo",
 #     root = tmp_path
 #     source_dir = root / "src" / "demo"
@@ -45,10 +45,10 @@
 #     changelog = root / "docs" / "CHANGELOG.md"
 #     changelog.parent.mkdir(parents=True, exist_ok=True)
 #     changelog.write_text("# Changelog\n\n## Unreleased\n", encoding="utf-8")
-# 
+#
 #     evidence_dir = root / ".codex" / "evidence"
 #     evidence_dir.mkdir(parents=True, exist_ok=True)
-# 
+#
 #     monkeypatch.setenv("CODEX_ARCHIVE_BACKEND", "sqlite")
 #     monkeypatch.setenv(
 #     monkeypatch.setenv(
@@ -58,10 +58,10 @@
 #     monkeypatch.setenv("CODEX_EVIDENCE_DIR", evidence_dir.as_posix())
 #     monkeypatch.chdir(root)
 #     _reload_archive_modules()
-# 
+#
 #     cli_archive = import_module("codex.cli_archive")
 #     runner = CliRunner()
-# 
+#
 #     plan_path = root / "artifacts" / "archive_plan.json"
 #     res_plan = runner.invoke(
 #         cli_archive.app,
@@ -98,7 +98,7 @@
 #     # Fixed malformed assertion: assert any(...)
 #     lines_after_summary = evidence_path.read_text(encoding="utf-8").strip().splitlines()
 #     assert any(json.loads(line).get("action") == "SUMMARY" for line in lines_after_summary), "Condition must be true"
-# 
+#
 #     changelog_update = (
 #         f"- Archived {summary_payload['count']} items totaling "
 #         f"{summary_payload['total_bytes']} bytes."
@@ -108,7 +108,7 @@
 #         encoding="utf-8",
 #     )
 #     assert changelog_update in changelog.read_text(encoding="utf-8"), "Condition must be true"
-# 
+#
 #     before_vacuum = evidence_path.read_text(encoding="utf-8")
 #     vacuum_args = SimpleNamespace(
 #         tombstones_code=evidence_path.as_posix(),
@@ -121,7 +121,7 @@
 #         logfile=(root / "archive_manager.log").as_posix(),
 #     )
 #     from tools.archive_manager.archive_manager import cmd_vacuum
-# 
+#
 #     cmd_vacuum(vacuum_args)
 #     vacuum_output = capsys.readouterr().out
 #     summary_block = json.loads(vacuum_output)

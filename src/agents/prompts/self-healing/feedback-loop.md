@@ -317,6 +317,7 @@ Feedback loop complete
 # Generate tests for missing coverage
 from hypothesis import given, strategies as st
 
+
 @given(st.text())
 def test_auto_generated_capability(input_data):
     """Auto-generated test for capability validation"""
@@ -433,18 +434,19 @@ jobs:
 ```python
 # Track improvement metrics
 metrics = {
-    'capability_coverage': 0.0,  # Percentage of capabilities implemented
-    'feedback_resolution_time': 0.0,  # Hours to resolve feedback
-    'gap_closure_rate': 0.0,  # Gaps closed per-phase
-    'agent_satisfaction': 0.0,  # Success rate of agent tasks
+    "capability_coverage": 0.0,  # Percentage of capabilities implemented
+    "feedback_resolution_time": 0.0,  # Hours to resolve feedback
+    "gap_closure_rate": 0.0,  # Gaps closed per-phase
+    "agent_satisfaction": 0.0,  # Success rate of agent tasks
 }
+
 
 # Update metrics after each iteration
 def update_metrics():
-    with open('improvement_metrics.json', 'r+') as f:
+    with open("improvement_metrics.json", "r+") as f:
         data = json.load(f)
-        data['last_updated'] = datetime.now().isoformat()
-        data['metrics'] = metrics
+        data["last_updated"] = datetime.now().isoformat()
+        data["metrics"] = metrics
         f.seek(0)
         json.dump(data, f, indent=2)
 ```

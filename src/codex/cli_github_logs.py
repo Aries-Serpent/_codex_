@@ -87,12 +87,16 @@ def fetch_check_run_logs(
 @click.argument("ref")
 @click.option("--status", type=click.Choice(["queued", "in_progress", "completed"]))
 @click.option("--name", help="Filter by check run name")
-def list_check_runs(owner: str, repo: str, ref: str, status: Optional[str], name: Optional[str]) -> None:
+def list_check_runs(
+    owner: str, repo: str, ref: str, status: Optional[str], name: Optional[str]
+) -> None:
     """List check runs for a git reference."""
     try:
         client = _get_github_client()
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
-        check_runs = client.list_check_runs_for_ref(owner, repo, ref, check_name=name, status=status)
+        check_runs = client.list_check_runs_for_ref(
+            owner, repo, ref, check_name=name, status=status
+        )
         if not check_runs:
             click.echo("No check runs found.", err=True)
             return

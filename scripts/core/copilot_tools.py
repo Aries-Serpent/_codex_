@@ -21,12 +21,12 @@ from typing import Any, Dict, Optional
 
 class CopilotToolContract:
     """Base contract for Copilot tools."""
-    
+
     @staticmethod
     def validate_input(**kwargs) -> Dict[str, Any]:
         """Validate tool input parameters."""
         return {"valid": True, "errors": []}
-    
+
     @staticmethod
     def ensure_structured_output(result: Any) -> Dict[str, Any]:
         """Ensure output is valid JSON/dict."""
@@ -43,7 +43,7 @@ class CopilotToolContract:
 
 class ContextRetrievalTools:
     """Tools for retrieving agent and task context."""
-    
+
     @staticmethod
     def get_agent_context(agent_id: str) -> Dict[str, Any]:
         """
@@ -90,7 +90,7 @@ class ContextRetrievalTools:
             "checkpoint_available": False,
             "last_checkpoint_id": None
         }
-    
+
     @staticmethod
     def get_task_brief(task_id: str) -> Dict[str, Any]:
         """
@@ -152,7 +152,7 @@ class ContextRetrievalTools:
 
 class StateOperationTools:
     """Tools for state validation, checkpointing, and resumption."""
-    
+
     @staticmethod
     def validate_state_tool(state_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -183,14 +183,14 @@ class StateOperationTools:
         """
         # In real implementation, would call validation_engine.validate_state()
         from scripts.core import validate_state
-        
+
         # Validate the provided state dict
         validation = validate_state(state_dict)
         return {
             "state_id": state_dict.get("state_id"),
             **validation
         }
-    
+
     @staticmethod
     def checkpoint_state(state_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -214,9 +214,9 @@ class StateOperationTools:
         """
         # In real implementation, would call checkpoint_manager.create_checkpoint()
         from scripts.core import create_checkpoint
-        
+
         checkpoint_id = create_checkpoint(state_dict)
-        
+
         return {
             "checkpoint_id": checkpoint_id,
             "state_id": state_dict.get("state_id"),
@@ -226,7 +226,7 @@ class StateOperationTools:
             "lineage_depth": 1,
             "can_rollback": True
         }
-    
+
     @staticmethod
     def resume_state(checkpoint_id: str) -> Dict[str, Any]:
         """
@@ -250,9 +250,9 @@ class StateOperationTools:
         """
         # In real implementation, would call checkpoint_manager.resume_execution()
         from scripts.core import resume_execution
-        
+
         restored_state = resume_execution(checkpoint_id)
-        
+
         return {
             "checkpoint_id": checkpoint_id,
             "restored_state": restored_state,
@@ -266,7 +266,7 @@ class StateOperationTools:
 
 class AgentCoordinationTools:
     """Tools for multi-agent coordination and handoffs."""
-    
+
     @staticmethod
     def handoff_state(
         state_id: str,
@@ -299,12 +299,12 @@ class AgentCoordinationTools:
         """
         # In real implementation, would call handoff_protocol.prepare_handoff()
         from scripts.core import prepare_handoff
-        
+
         # Would load state from storage
         state = {"state_id": state_id}  # Placeholder
-        
+
         handoff = prepare_handoff(state, to_agent, from_agent)
-        
+
         return {
             "handoff_id": handoff.get("handoff_id"),
             "state_id": state_id,
@@ -321,7 +321,7 @@ class AgentCoordinationTools:
 
 class UniversalQueryTool:
     """Universal query abstraction for state data access."""
-    
+
     @staticmethod
     def query_state(
         query: str,
@@ -355,9 +355,9 @@ class UniversalQueryTool:
         # - "states.filter(phase='phase-10')" - Filter states
         # - "dependencies.status('resolved')" - Filter dependencies
         # - "actions.by_status('failed')" - Filter actions
-        
+
         filters = filters or {}
-        
+
         query_patterns = {
             "state.decision_context": "Get decision context from current state",
             "state.validation_results": "Get validation results",
@@ -368,7 +368,7 @@ class UniversalQueryTool:
             "checkpoints.list": "List checkpoints for current track",
             "handoffs.list": "List recent handoffs",
         }
-        
+
         return {
             "query": query,
             "filters": filters,

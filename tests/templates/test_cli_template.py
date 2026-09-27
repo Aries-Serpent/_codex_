@@ -13,7 +13,7 @@ from tests.conftest import REPO_ROOT
 # Template Version: 1.0.0
 # Copy this file and replace placeholders with actual implementation.
 # Created: 2026-01-18 (Phase 14.0)
-# 
+#
 #     def test_help_command_completes_quickly(self) -> None:
 # """
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
@@ -22,7 +22,7 @@ from tests.conftest import REPO_ROOT
 #         # Should fail with non-zero exit code when file doesn't exist
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
-# 
+#
 #         # Should fail with non-zero exit code when file doesn't exist
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
@@ -30,11 +30,11 @@ from tests.conftest import REPO_ROOT
 #         # Should fail with non-zero exit code when file doesn't exist
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
-# 
+#
 #         # Should fail with non-zero exit code when file doesn't exist
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
-# 
+#
 # # =============================================================================
 # # Fixtures
 # # =============================================================================
@@ -64,7 +64,7 @@ from tests.conftest import REPO_ROOT
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
 #     """Test CLI help and version commands."""
-# 
+#
 #     @pytest.mark.smoke
 #     def test_help_displays_usage(self) -> None:
 #     def test_help_displays_usage(self) -> None:
@@ -85,7 +85,7 @@ from tests.conftest import REPO_ROOT
 #                 f"stdout={result.stdout[:200]}, stderr={result.stderr[:200]}"
 #             )
 #         assert result.returncode == 0 or has_usage, "Help should succeed or show usage"
-# 
+#
 #     @pytest.mark.smoke
 #     def test_version_displays_version_string(self) -> None:
 #     def test_version_displays_version_string(self) -> None:
@@ -111,7 +111,7 @@ from tests.conftest import REPO_ROOT
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
 #     """Test CLI command execution."""
-# 
+#
 #     def test_command_with_valid_input_succeeds(self, temp_config_file: Path) -> None:
 #     def test_command_with_valid_input_succeeds(self, temp_config_file: Path) -> None:
 #         """Test that a valid command succeeds."""

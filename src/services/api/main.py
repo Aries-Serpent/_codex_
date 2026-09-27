@@ -90,9 +90,7 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
         def __exit__(self, *exc_info: Any) -> bool:  # pragma: no cover - simple context manager
             return False
 
-    def _fake_tensor(
-        value: Any, dtype: Any = None
-    ) -> _FakeTensor:  # noqa: ARG001 - dtype kept for API parity
+    def _fake_tensor(value: Any, dtype: Any = None) -> _FakeTensor:  # noqa: ARG001 - dtype kept for API parity
         if isinstance(value, _FakeTensor):
             return value
         return _FakeTensor(value)
@@ -138,9 +136,10 @@ logger = logging.getLogger("codex_ml.api")
 
 # --- Authentication middleware + routes ------------------------------------
 try:
-    from codex.api.auth_routes import create_auth_router as _create_auth_router
     from codex.auth.middleware import AuthConfig, AuthMiddleware
     from codex.auth.token_manager import TokenManager as _AuthTokenManager
+
+    from codex.api.auth_routes import create_auth_router as _create_auth_router
 
     _auth_secret = os.getenv("CODEX_AUTH_SECRET", "")
     if not _auth_secret:
@@ -161,7 +160,11 @@ try:
     # Use startswith-based prefix matching so all current and future /auth/*
     # endpoints (including /auth/csrf-token) are automatically exempt.
     _exempt = {
-        "/health", "/ready", "/metrics", "/docs", "/openapi.json",
+        "/health",
+        "/ready",
+        "/metrics",
+        "/docs",
+        "/openapi.json",
     }
     _auth_prefix = "/auth/"
     _auth_cfg = AuthConfig(
@@ -183,7 +186,9 @@ SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
     re.compile(rf"(?i)({_AWS_SECRET_PATTERN}\s*=\s*[A-Za-z0-9/+=]{{40}})"),
-    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{20,})"),  # Google API keys: min 24 chars total (AIza + 20 suffix)
+    re.compile(
+        r"(?i)(AIza[0-9A-Za-z\-_]{20,})"
+    ),  # Google API keys: min 24 chars total (AIza + 20 suffix)
     re.compile(r"(?i)(ghp_[A-Za-z0-9]{35,})"),  # GitHub PATs: min 39 chars total (ghp_ + 35 suffix)
     re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
 )
@@ -234,6 +239,7 @@ def _extract_logits(output: Any) -> torch.Tensor:
 # Helpers for context-limit and vocab-size resolution (extracted from inner
 # functions to keep cyclomatic complexity below the C901 threshold of 10).
 # ---------------------------------------------------------------------------
+
 
 def _coerce_positive_int(value: Any) -> Optional[int]:
     """Return *value* as a positive int, or ``None`` if not coercible."""

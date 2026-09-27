@@ -604,7 +604,7 @@ class TestModelUtilsSafeLoad:
 
         result = safe_load_sentence_transformer("test-model", None)
 
-        assert result is materialized_model
+        assert result is materialized_model, "Result must not be empty"
         meta_model.to_empty.assert_called_once_with(device="cpu")
         materialized_model.eval.assert_called_once_with()
 

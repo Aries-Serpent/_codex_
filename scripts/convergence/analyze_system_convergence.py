@@ -23,6 +23,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 from typing import Any, Dict
 
+
 class ConvergenceAnalyzer:
     """Analyzes system convergence failures across multiple dimensions."""
 
@@ -41,7 +42,7 @@ class ConvergenceAnalyzer:
         - Structured JSONL (if partially implemented)
         """
         conflicts = []
-        
+
         # Check for runtime vs documentation conflicts
         conflicts.append({
             "conflict_id": "SOT-001",
@@ -399,7 +400,7 @@ class ConvergenceAnalyzer:
         Part 7: Analyze tool dependency chains.
         """
         dependencies = []
-        
+
         dependencies.append({
             "tool": "github_mcp_server",
             "provides": ["list_issues", "get_commit", "search_code"],
@@ -481,14 +482,14 @@ class ConvergenceAnalyzer:
 def main():
     repo_root = REPO_ROOT
     analyzer = ConvergenceAnalyzer(repo_root)
-    
+
     # Generate reports
     reports = analyzer.generate_all_reports()
-    
+
     # Save individual reports
     output_dir = Path(repo_root) / "docs-data" / "generated"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     for report_name, report_data in reports.items():
         output_file = output_dir / f"{report_name}.json"
         with open(output_file, 'w') as f:

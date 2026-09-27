@@ -35,7 +35,7 @@ class TestFullProfileCoreImports:
         """Test omegaconf import."""
         try:
             from omegaconf import OmegaConf
-            assert OmegaConf is not None
+            assert OmegaConf is not None, "OmegaConf must be initialized"
         except ImportError as e:
             pytest.skip(f"omegaconf not in full profile: {e}")
 
@@ -43,7 +43,7 @@ class TestFullProfileCoreImports:
         """Test pydantic import."""
         try:
             from pydantic import BaseModel
-            assert BaseModel is not None
+            assert BaseModel is not None, "BaseModel must be initialized"
         except ImportError as e:
             pytest.skip(f"pydantic not in full profile: {e}")
 
@@ -63,7 +63,7 @@ class TestFullProfileRuntimeImports:
         """Test transformers import."""
         try:
             from transformers import AutoTokenizer
-            assert AutoTokenizer is not None
+            assert AutoTokenizer is not None, "AutoTokenizer must be initialized"
         except ImportError as e:
             pytest.skip(f"transformers not in full profile: {e}")
 
@@ -71,7 +71,7 @@ class TestFullProfileRuntimeImports:
         """Test datasets import."""
         try:
             from datasets import Dataset
-            assert Dataset is not None
+            assert Dataset is not None, "Dataset must be initialized"
         except ImportError as e:
             pytest.skip(f"datasets not in full profile: {e}")
 
@@ -95,7 +95,7 @@ class TestFullProfileRuntimeImports:
         """Test fastapi import."""
         try:
             from fastapi import FastAPI
-            assert FastAPI is not None
+            assert FastAPI is not None, "FastAPI must be initialized"
         except ImportError as e:
             pytest.skip(f"fastapi not in full profile: {e}")
 
@@ -111,7 +111,7 @@ class TestFullProfileRuntimeImports:
         """Test sentence-transformers import."""
         try:
             from sentence_transformers import SentenceTransformer
-            assert SentenceTransformer is not None
+            assert SentenceTransformer is not None, "SentenceTransformer must be initialized"
         except ImportError as e:
             pytest.skip(f"sentence-transformers not in full profile: {e}")
 
@@ -122,7 +122,7 @@ class TestFullProfileDevDependencies:
     def test_pytest_import(self):
         """Test pytest import."""
         try:
-            import pytest as pt
+            pt = pytest
             assert hasattr(pt, '__version__')
         except ImportError as e:
             pytest.skip(f"pytest not in full profile: {e}")
@@ -147,7 +147,7 @@ class TestFullProfileDevDependencies:
         """Test ruff import."""
         try:
             import ruff
-            assert ruff is not None
+            assert ruff is not None, "ruff must be initialized"
         except ImportError as e:
             pytest.skip(f"ruff not in full profile: {e}")
 
@@ -171,7 +171,7 @@ class TestFullProfileDevDependencies:
         """Test pytest-cov import."""
         try:
             import pytest_cov
-            assert pytest_cov is not None
+            assert pytest_cov is not None, "pytest_cov must be initialized"
         except ImportError as e:
             pytest.skip(f"pytest-cov not in full profile: {e}")
 
@@ -182,21 +182,22 @@ class TestFullProfileComplexIntegration:
     def test_ml_pipeline_with_core_config(self):
         """Test ML pipeline can use core configuration."""
         try:
+            from omegaconf import OmegaConf
+
             import torch
             import torch.nn as nn
-            from omegaconf import OmegaConf
-            
+
             # Create config using core infrastructure
             cfg = OmegaConf.create({
                 'model': 'bert',
                 'hidden_size': 768,
                 'num_layers': 12,
             })
-            
+
             # Create simple model
             model = nn.Linear(cfg.hidden_size, 10)
-            assert model is not None
-            
+            assert model is not None, "model must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Required packages not available: {e}")
 
@@ -207,19 +208,19 @@ class TestFullProfileComplexIntegration:
 
             import torch
             import torch.nn as nn
-            
+
             app = FastAPI()
             model = nn.Linear(100, 10)
-            
+
             @app.post("/predict")
             def predict(features: list):
                 x = torch.tensor(features, dtype=torch.float32)
                 with torch.no_grad():
                     output = model(x)
                 return {"prediction": output.tolist()}
-            
-            assert len(app.routes) > 0
-            
+
+            assert len(app.routes) > 0, "Collection must not be empty"
+
         except ImportError as e:
             pytest.skip(f"Required packages not available: {e}")
 
@@ -227,22 +228,22 @@ class TestFullProfileComplexIntegration:
         """Test that testing infrastructure works with ML."""
         try:
             import numpy as np
-            import pytest
+            pass  # removed redundant `import pytest` (top-level import used)
 
             import torch
-            
+
             @pytest.fixture
             def sample_tensor():
                 return torch.randn(10, 5)
-            
+
             @pytest.fixture
             def sample_array():
                 return np.random.randn(10, 5)
-            
+
             # Just verify fixtures can be defined
-            assert sample_tensor is not None
-            assert sample_array is not None
-            
+            assert sample_tensor is not None, "sample_tensor must be initialized"
+            assert sample_array is not None, "sample_array must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Required packages not available: {e}")
 
@@ -253,14 +254,14 @@ class TestFullProfileComplexIntegration:
 
             import torch
             import torch.nn as nn
-            
+
             accelerator = Accelerator()
             model = nn.Linear(10, 5)
-            
+
             # Prepare model
             model = accelerator.prepare(model)
-            assert model is not None
-            
+            assert model is not None, "model must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Required packages not available: {e}")
 
@@ -308,26 +309,26 @@ class TestFullProfileAllImportsAvailable:
             'hypothesis': 'Hypothesis',
             'pytest_cov': 'pytest-cov',
         }
-        
+
         available = []
         missing = []
-        
+
         for pkg_name, description in full_profile_packages.items():
             try:
                 __import__(pkg_name)
                 available.append((pkg_name, description))
             except ImportError:
                 missing.append((pkg_name, description))
-        
+
         print(f"\n✅ Available full profile packages ({len(available)}):")
         for pkg, desc in sorted(available):
             print(f"  ✓ {pkg:30s} ({desc})")
-        
+
         if missing:
             print(f"\n⚠️  Missing full profile packages ({len(missing)}):")
             for pkg, desc in sorted(missing):
                 print(f"  ✗ {pkg:30s} ({desc})")
-        
+
         # Require at least 80% of packages (40/50)
         required_count = int(len(full_profile_packages) * 0.8)
         assert len(available) >= required_count, \
@@ -345,13 +346,13 @@ class TestFullProfileFeatureCompleteness:
 
             import torch
             from transformers import AutoModelForCausalLM
-            
+
             # All ML training components available
-            assert torch is not None
-            assert AutoModelForCausalLM is not None
-            assert Accelerator is not None
-            assert get_peft_model is not None
-            
+            assert torch is not None, "torch must be initialized"
+            assert AutoModelForCausalLM is not None, "AutoModelForCausalLM must be initialized"
+            assert Accelerator is not None, "Accelerator must be initialized"
+            assert get_peft_model is not None, "get_peft_model must be initialized"
+
         except ImportError as e:
             pytest.skip(f"ML training not fully available: {e}")
 
@@ -361,26 +362,26 @@ class TestFullProfileFeatureCompleteness:
             from fastapi import FastAPI
             from litestar import Litestar
             from slowapi import Limiter
-            
-            assert FastAPI is not None
-            assert Litestar is not None
-            assert Limiter is not None
-            
+
+            assert FastAPI is not None, "FastAPI must be initialized"
+            assert Litestar is not None, "Litestar must be initialized"
+            assert Limiter is not None, "Limiter must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Web services not fully available: {e}")
 
     def test_testing_features(self):
         """Test testing features are available."""
         try:
-            import pytest
+            pass  # removed redundant `import pytest` (top-level import used)
             from hypothesis import given
             from hypothesis import strategies as st
             from pytest_cov import plugin as cov_plugin
-            
-            assert pytest is not None
-            assert cov_plugin is not None
-            assert given is not None
-            
+
+            assert pytest is not None, "pytest must be initialized"
+            assert cov_plugin is not None, "cov_plugin must be initialized"
+            assert given is not None, "given must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Testing features not fully available: {e}")
 
@@ -391,12 +392,12 @@ class TestFullProfileFeatureCompleteness:
             import isort
             import mypy.api
             import ruff
-            
-            assert black is not None
-            assert ruff is not None
-            assert mypy is not None
-            assert isort is not None
-            
+
+            assert black is not None, "black must be initialized"
+            assert ruff is not None, "ruff must be initialized"
+            assert mypy is not None, "mypy must be initialized"
+            assert isort is not None, "isort must be initialized"
+
         except ImportError as e:
             pytest.skip(f"Code quality features not fully available: {e}")
 

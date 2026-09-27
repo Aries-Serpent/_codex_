@@ -29,8 +29,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 # Allow running from repo root without installing the package
 REPO_ROOT = Path(__file__).parent.parent

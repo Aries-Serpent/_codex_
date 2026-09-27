@@ -31,8 +31,8 @@ class TestCoreProfileBaseImports:
             import hydra
             from hydra import compose, initialize_config_dir
             assert hasattr(hydra, '__version__')
-            assert compose is not None
-            assert initialize_config_dir is not None
+            assert compose is not None, "compose must be initialized"
+            assert initialize_config_dir is not None, "initialize_config_dir must be initialized"
         except ImportError as e:
             pytest.skip(f"hydra-core not installed: {e}")
 
@@ -40,11 +40,11 @@ class TestCoreProfileBaseImports:
         """Test omegaconf import and basic functionality."""
         try:
             from omegaconf import DictConfig, OmegaConf
-            assert OmegaConf is not None
-            assert DictConfig is not None
+            assert OmegaConf is not None, "OmegaConf must be initialized"
+            assert DictConfig is not None, "DictConfig must be initialized"
             # Test basic functionality
             cfg = OmegaConf.create({"key": "value"})
-            assert cfg.key == "value"
+            assert cfg.key == "value", "Value must be initialized"
         except ImportError as e:
             pytest.skip(f"omegaconf not installed: {e}")
 
@@ -52,15 +52,15 @@ class TestCoreProfileBaseImports:
         """Test pydantic import and basic functionality."""
         try:
             from pydantic import BaseModel, ValidationError
-            assert BaseModel is not None
-            assert ValidationError is not None
-            
+            assert BaseModel is not None, "BaseModel must be initialized"
+            assert ValidationError is not None, "ValidationError must be initialized"
+
             class TestModel(BaseModel):
                 name: str
                 age: int
-            
+
             obj = TestModel(name="test", age=25)
-            assert obj.name == "test"
+            assert obj.name == "test", "Object must be initialized"
         except ImportError as e:
             pytest.skip(f"pydantic not installed: {e}")
 
@@ -68,7 +68,7 @@ class TestCoreProfileBaseImports:
         """Test pydantic-settings import."""
         try:
             from pydantic_settings import BaseSettings
-            assert BaseSettings is not None
+            assert BaseSettings is not None, "BaseSettings must be initialized"
         except ImportError as e:
             pytest.skip(f"pydantic-settings not installed: {e}")
 
@@ -76,8 +76,8 @@ class TestCoreProfileBaseImports:
         """Test marshmallow import and basic functionality."""
         try:
             from marshmallow import Schema, fields
-            assert Schema is not None
-            assert fields is not None
+            assert Schema is not None, "Schema must be initialized"
+            assert fields is not None, "fields must be initialized"
         except ImportError as e:
             pytest.skip(f"marshmallow not installed: {e}")
 
@@ -85,10 +85,10 @@ class TestCoreProfileBaseImports:
         """Test PyYAML import and basic functionality."""
         try:
             import yaml
-            assert yaml is not None
+            assert yaml is not None, "yaml must be initialized"
             # Test basic functionality
             data = yaml.safe_load("key: value")
-            assert data['key'] == 'value'
+            assert data['key'] == 'value', "Data must not be empty"
         except ImportError as e:
             pytest.skip(f"PyYAML not installed: {e}")
 
@@ -97,7 +97,7 @@ class TestCoreProfileBaseImports:
         try:
             import typer
             app = typer.Typer()
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError as e:
             pytest.skip(f"typer not installed: {e}")
 
@@ -108,7 +108,7 @@ class TestCoreProfileBaseImports:
             @click.command()
             def test_cmd():
                 pass
-            assert test_cmd is not None
+            assert test_cmd is not None, "test_cmd must be initialized"
         except ImportError as e:
             pytest.skip(f"click not installed: {e}")
 
@@ -116,10 +116,10 @@ class TestCoreProfileBaseImports:
         """Test libcst import and basic functionality."""
         try:
             import libcst as cst
-            assert cst is not None
+            assert cst is not None, "cst must be initialized"
             # Test parsing
             module = cst.parse_module("x = 1")
-            assert module is not None
+            assert module is not None, "module must be initialized"
         except ImportError as e:
             pytest.skip(f"libcst not installed: {e}")
 
@@ -130,7 +130,7 @@ class TestCoreProfileBaseImports:
             assert hasattr(parso, '__version__')
             # Test parsing
             module = parso.parse("x = 1")
-            assert module is not None
+            assert module is not None, "module must be initialized"
         except ImportError as e:
             pytest.skip(f"parso not installed: {e}")
 
@@ -138,8 +138,8 @@ class TestCoreProfileBaseImports:
         """Test tree-sitter imports."""
         try:
             from tree_sitter import Language, Parser
-            assert Language is not None
-            assert Parser is not None
+            assert Language is not None, "Language must be initialized"
+            assert Parser is not None, "Parser must be initialized"
         except ImportError as e:
             pytest.skip(f"tree-sitter not installed: {e}")
 
@@ -264,22 +264,23 @@ class TestCoreProfileSize:
     def test_core_profile_imports_quickly(self):
         """Verify core profile imports complete quickly (lightweight)."""
         import time
-        
+
         # Remove any already-loaded core modules for fresh import timing
         core_modules = [
             'hydra', 'omegaconf', 'pydantic', 'pydantic_settings',
             'marshmallow', 'yaml', 'typer', 'click',
             'libcst', 'parso', 'tree_sitter', 'sqlparse'
         ]
-        
+
         start_time = time.time()
-        
+
         try:
             # Import all core dependencies
             import click
             import hydra
             import libcst
             import marshmallow
+            import omegaconf
             import parso
             import pydantic
             import pydantic_settings
@@ -288,17 +289,15 @@ class TestCoreProfileSize:
             import typer
             import yaml
 
-            import omegaconf
-            
             elapsed = time.time() - start_time
-            
+
             # Core profile should import in < 2 seconds (typically < 0.5s)
             # This is a soft check; exact timing depends on system
             print(f"\n⏱️  Core profile import time: {elapsed:.3f}s")
-            
+
             # Just verify it's reasonably fast
             assert elapsed < 10.0, f"Core profile import took too long: {elapsed:.3f}s"
-            
+
         except ImportError as e:
             pytest.skip(f"Some core packages not available: {e}")
 
@@ -315,9 +314,9 @@ def hello(name):
     print(f"Hello, {name}!")
 """
             module = cst.parse_module(code)
-            assert module is not None
+            assert module is not None, "module must be initialized"
             # Verify we can access the function definition
-            assert len(module.body) == 1
+            assert len(module.body) == 1, "Collection must not be empty"
         except ImportError:
             pytest.skip("libcst not installed")
 
@@ -325,16 +324,16 @@ def hello(name):
         """Verify core profile can validate configurations."""
         try:
             from pydantic import BaseModel, ValidationError
-            
+
             class Config(BaseModel):
                 name: str
                 timeout: int
                 debug: bool
-            
+
             cfg = Config(name="test", timeout=30, debug=True)
-            assert cfg.name == "test"
-            assert cfg.timeout == 30
-            
+            assert cfg.name == "test", "name is not valid"
+            assert cfg.timeout == 30, "timeout is not valid"
+
             # Verify validation works
             try:
                 Config(name="test", timeout="invalid", debug=True)
@@ -355,8 +354,8 @@ database:
   debug: false
 """
             config = yaml.safe_load(config_text)
-            assert config['database']['host'] == 'localhost'
-            assert config['database']['port'] == 5432
+            assert config['database']['host'] == 'localhost', "Data must not be empty"
+            assert config['database']['port'] == 5432, "Data must not be empty"
         except ImportError:
             pytest.skip("PyYAML not installed")
 
@@ -380,21 +379,21 @@ class TestCoreProfileMinimalViability:
             'tree_sitter',
             'sqlparse',
         ]
-        
+
         available = []
         missing = []
-        
+
         for pkg_name in core_packages:
             try:
                 __import__(pkg_name)
                 available.append(pkg_name)
             except ImportError:
                 missing.append(pkg_name)
-        
+
         print(f"\n✅ Available core packages ({len(available)}): {', '.join(available)}")
         if missing:
             print(f"⚠️  Missing core packages ({len(missing)}): {', '.join(missing)}")
-        
+
         # Require at least 8/12 core packages (configuration + CLI + parsing)
         assert len(available) >= 8, f"Too many missing core packages: {missing}"
 
@@ -415,16 +414,16 @@ class TestCoreProfileMinimalViability:
             'black',
             'mypy',
         ]
-        
+
         found_runtime_deps = []
-        
+
         for dep in runtime_deps:
             try:
                 __import__(dep)
                 found_runtime_deps.append(dep)
             except ImportError:
                 pass
-        
+
         if found_runtime_deps:
             print(f"\n⚠️  Runtime dependencies found in core profile: {', '.join(found_runtime_deps)}")
             # Skip if runtime deps are installed (maybe we're testing full profile)

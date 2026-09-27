@@ -52,7 +52,12 @@ def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase:
         out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
         with out_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - evidence is best effort
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ):  # pragma: no cover - evidence is best effort
         LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
 
 
@@ -101,9 +106,7 @@ def _get_client(env: str) -> object:
     email = os.getenv(f"{prefix}EMAIL")
     token = os.getenv(f"{prefix}TOKEN")
     if not subdomain or not email or not token:
-        LOGGER.error(
-            "Zendesk authentication config incomplete for environment '%s'.", env
-        )  # nosec B506 — environment name is not a credential value
+        LOGGER.error("Zendesk authentication config incomplete for environment '%s'.", env)  # nosec B506 — environment name is not a credential value
         return None
 
     return zenpy_client(subdomain=subdomain, email=email, token=token)

@@ -23,8 +23,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from omegaconf import DictConfig, OmegaConf
+
+from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
 logger = logging.getLogger(__name__)
 

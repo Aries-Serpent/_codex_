@@ -41,36 +41,36 @@ def validate_link(link: str) -> Tuple[bool, str]:
     # Skip external links
     if link.startswith('http'):
         return True, "external"
-    
+
     # Remove anchor
     file_path = link.split('#')[0]
-    
+
     if not file_path:  # Just an anchor
         return True, "anchor_only"
-    
+
     # Check if file exists
     if Path(file_path).exists():
         return True, "ok"
-    
+
     return False, f"missing_file: {file_path}"
 
 def validate_docs(fail_on_errors: bool = False) -> int:
     """Validate all Tier 1 documentation."""
     broken_count = 0
-    
+
     for doc_path in find_markdown_files(tier1_only=True):
         with open(doc_path) as f:
             content = f.read()
-        
+
         links = extract_links(content)
-        
+
         for text, link in links:
             valid, reason = validate_link(link)
             if not valid:
                 broken_count += 1
                 print(f"❌ {doc_path}: {link}")
                 print(f"   Reason: {reason}")
-    
+
     if broken_count == 0:
         print("✅ All Tier 1 documentation links are valid!")
         return 0

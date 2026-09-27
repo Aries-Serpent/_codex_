@@ -27,9 +27,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from hydra import main as hydra_main
+from omegaconf import DictConfig
 
 from codex_ml.utils.mlflow_entrypoints import configure_mlflow_uri
-from omegaconf import DictConfig
 
 REPO = Path(__file__).resolve().parents[1]
 CODEX = REPO / ".codex"

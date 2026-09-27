@@ -11,13 +11,13 @@ Usage:
 """
 
 import json
+import logging
 import os
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from typing import Dict, List, Optional
-import logging
 
 logging.basicConfig(
     level=logging.INFO,
@@ -277,7 +277,7 @@ class CodeQLAlertCategorizer:
         with open(output_file, "w") as f:
             json.dump(report, f, indent=2)
 
-        logger.info(f"Triage report saved")
+        logger.info("Triage report saved")
 
     def generate_summary_markdown(self, report: Dict) -> str:
         """Generate markdown summary from report"""
@@ -290,7 +290,7 @@ class CodeQLAlertCategorizer:
         lines.append("## Alert Distribution\n")
         lines.append("| Severity | Count | SLA | Status |")
         lines.append("|----------|-------|-----|--------|")
-        
+
         severity_emoji = {
             "critical": "🔴",
             "high": "🟠",
@@ -328,7 +328,7 @@ def main():
     try:
         categorizer = CodeQLAlertCategorizer(args.repo)
         alerts = categorizer.get_alerts()
-        
+
         if not alerts:
             logger.warning("No alerts to categorize")
             sys.exit(0)

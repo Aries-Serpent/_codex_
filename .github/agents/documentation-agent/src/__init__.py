@@ -4,18 +4,18 @@ Integrates all documentation capabilities with Cognitive Brain PDA Loop
 """
 import os
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
-    from .api_doc_generator import APIDocGenerator, create_generator
-    from .changelog_generator import ChangelogGenerator, create_changelog_generator
-    from .diagram_generator import DiagramGenerator, create_diagram_generator
-    from .tutorial_generator import TutorialGenerator, create_tutorial_generator
+    from .api_doc_generator import create_generator
+    from .changelog_generator import create_changelog_generator
+    from .diagram_generator import create_diagram_generator
+    from .tutorial_generator import create_tutorial_generator
 except ImportError:
-    from api_doc_generator import APIDocGenerator, create_generator
-    from changelog_generator import ChangelogGenerator, create_changelog_generator
-    from diagram_generator import DiagramGenerator, create_diagram_generator
-    from tutorial_generator import TutorialGenerator, create_tutorial_generator
+    from api_doc_generator import create_generator
+    from changelog_generator import create_changelog_generator
+    from diagram_generator import create_diagram_generator
+    from tutorial_generator import create_tutorial_generator
 
 RANDOM_SEED = 48  # Documentation Agent seed
 

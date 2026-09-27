@@ -1,0 +1,7 @@
+{
+  "stage": "S7",
+  "timestamp": "2026-09-26T18:47:13.760799+00:00",
+  "warnings": [
+    "prefix_violations: foo_archive.tar.gz does not match required prefix 'bundle_'"
+  ]
+}

@@ -113,7 +113,9 @@ def verify_write_permissions() -> None:
 
 # ---------- Injected blocks ----------
 FT_SENT = "# BEGIN: CODEX_FUNCTR_DEEPNN"
-FT_CODE = FT_SENT + """
+FT_CODE = (
+    FT_SENT
+    + """
 # Codex injection: deep-learning toggles, device, grad-clip, scheduler, per-epoch metrics
 import argparse, json, hashlib, time
 from pathlib import Path
@@ -211,9 +213,12 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
         ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
 # END: CODEX_FUNCTR_DEEPNN
 """
+)
 
 DP_SENT = "# BEGIN: CODEX_DEPLOY_MONITORING"
-DP_CODE = DP_SENT + """
+DP_CODE = (
+    DP_SENT
+    + """
 # Codex injection: TensorBoard, W&B, MLflow wiring + system stats
 import argparse, os, json, time
 from pathlib import Path
@@ -306,9 +311,12 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             _ = None  # suppressed: no action needed
 # END: CODEX_DEPLOY_MONITORING
 """
+)
 
 MLF_SENT = "# BEGIN: CODEX_MLFLOW_UTILS"
-MLF_CODE = MLF_SENT + """
+MLF_CODE = (
+    MLF_SENT
+    + """
 # MLflow wrappers (no-op if mlflow missing)
 from __future__ import annotations
 from pathlib import Path
@@ -348,9 +356,12 @@ def log_artifacts(paths: Iterable[Path]):
         _ = None  # suppressed: no action needed
 # END: CODEX_MLFLOW_UTILS
 """
+)
 
 CKPT_SENT = "# BEGIN: CODEX_CKPT_RNG_SEED"
-CKPT_CODE = CKPT_SENT + """
+CKPT_CODE = (
+    CKPT_SENT
+    + """
 from __future__ import annotations
 import json, random
 from pathlib import Path
@@ -417,9 +428,12 @@ def log_seed(path: Path, seed: int) -> None:
     (path / "seeds.json").write_text(json.dumps({"seed": seed}), encoding="utf-8")
 # END: CODEX_CKPT_RNG_SEED
 """
+)
 
 API_SENT = "# BEGIN: CODEX_FASTAPI_HARDEN"
-API_CODE = API_SENT + """
+API_CODE = (
+    API_SENT
+    + """
 # FastAPI app with background queue, API-key middleware, and basic handlers
 from __future__ import annotations
 import os, asyncio, time
@@ -489,9 +503,12 @@ def build_app():
 app = build_app()
 # END: CODEX_FASTAPI_HARDEN
 """
+)
 
 DOCKER_SENT = "# BEGIN: CODEX_DOCKERFILE"
-DOCKERFILE = DOCKER_SENT + """
+DOCKERFILE = (
+    DOCKER_SENT
+    + """
 # Ubuntu base, multi-stage, non-root, healthcheck
 FROM ubuntu:22.04 AS base
 ENV DEBIAN_FRONTEND=noninteractive
@@ -510,9 +527,12 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD python3 -c "impor
 CMD ["python3","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8000"]
 # END: CODEX_DOCKERFILE
 """
+)
 
 COMPOSE_SENT = "# BEGIN: CODEX_COMPOSE"
-COMPOSE = COMPOSE_SENT + """
+COMPOSE = (
+    COMPOSE_SENT
+    + """
 version: "3.9"
 services:
   api:
@@ -529,9 +549,12 @@ services:
     #         - capabilities: ["gpu"]
 # END: CODEX_COMPOSE
 """
+)
 
 MON_DOC_SENT = "<!-- BEGIN: CODEX_MONITORING_DOC -->"
-MONITORING_DOC = MON_DOC_SENT + """
+MONITORING_DOC = (
+    MON_DOC_SENT
+    + """
 # Monitoring & Experiment Tracking
 
 Flags:
@@ -543,9 +566,12 @@ Behavior:
 - Weights & Biases: enabled when flag set
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
 """
+)
 
 DEPLOY_DOC_SENT = "<!-- BEGIN: CODEX_DEPLOY_DOC -->"
-DEPLOY_DOC = DEPLOY_DOC_SENT + """
+DEPLOY_DOC = (
+    DEPLOY_DOC_SENT
+    + """
 # Deployment
 
 - Build: `docker build -t codex-api:local .`
@@ -554,12 +580,16 @@ DEPLOY_DOC = DEPLOY_DOC_SENT + """
 - Auth: send header `x-api-key: <value>` for POST endpoints
 - Endpoints: `/infer`, `/train`, `/evaluate`, `/status`
 """
+)
 
 README_SENT = "<!-- BEGIN: CODEX_README_UPDATE -->"
-README_UPDATES = README_SENT + """
+README_UPDATES = (
+    README_SENT
+    + """
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
 """
+)
 
 
 # ---------- Apply patches ----------

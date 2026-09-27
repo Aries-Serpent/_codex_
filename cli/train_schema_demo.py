@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import hydra
 from hydra.core.global_hydra import GlobalHydra
+from omegaconf import OmegaConf
 
 from configs.schemas import AppCfg, register_schema
-from omegaconf import OmegaConf
 from training.offline_wandb import force_offline
 from training.seed_utils import set_all_seeds
 

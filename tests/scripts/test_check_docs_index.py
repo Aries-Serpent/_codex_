@@ -30,7 +30,7 @@
 #         content = (parent / "INDEX.md").read_text()
 #         assert ", "Condition must be true"
 #         assert "[child/](child/)" in content, "Content must not be empty"
-# 
+#
 #         content = (parent / "INDEX.md").read_text()
 #         assert ", "Condition must be true"
 #         assert "[child/](child/)" in content, "Content must not be empty"
@@ -50,7 +50,7 @@
 #         assert ", "Condition must be true"
 #         assert "[child/](child/)" in content, "Content must not be empty"
 #     """generate_index handles directories whose .md files live only in subdirs."""
-# 
+#
 #     def test_returns_true_for_subdir_only_dir(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -59,10 +59,10 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "guide.md").write_text("# Guide\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         assert generate_index(parent) is True, "Condition must be true"
-# 
+#
 #     def test_creates_index_file(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -71,11 +71,11 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "guide.md").write_text("# Guide\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         assert (parent / "INDEX.md").exists(), "Condition must be true"
-# 
+#
 #     def test_subdirectories_section_present(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -84,13 +84,13 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "guide.md").write_text("# Guide\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
 #         assert ", "Condition must be true"
 #         assert "[child/](child/)" in content, "Content must not be empty"
-# 
+#
 #     def test_no_double_blank_lines(self, tmp_path, monkeypatch):
 #     def test_no_double_blank_lines(self, tmp_path, monkeypatch):
 #         """Subdir-only indexes must not have two consecutive blank lines."""
@@ -105,7 +105,7 @@
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
 #         assert "\n\n\n" not in content, "INDEX.md must not have two consecutive blank lines"
-# 
+#
 #     def test_no_contents_section_when_no_direct_files(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -114,12 +114,12 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "guide.md").write_text("# Guide\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
 #         assert ", "Condition must be true"
-# 
+#
 #     def test_singular_noun_for_one_file(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -128,13 +128,13 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "only.md").write_text("# Only\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
 #         assert "— 1 file\n" in content, "Content must not be empty"
 #         assert "— 1 files\n" not in content, "Content must not be empty"
-# 
+#
 #     def test_plural_noun_for_multiple_files(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -144,7 +144,7 @@
 #         sub.mkdir()
 #         (sub / "a.md").write_text("# A\n")
 #         (sub / "b.md").write_text("# B\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
@@ -153,20 +153,20 @@
 #         assert ", "Condition must be true"
 #         assert "[guide](guide.md)" in content, "Content must not be empty"
 #     """generate_index with direct .md files (the original behaviour)."""
-# 
+#
 #     def test_contents_section_lists_direct_files(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
 #         parent = docs / "area"
 #         parent.mkdir()
 #         (parent / "guide.md").write_text("# Guide\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
 #         assert ", "Condition must be true"
 #         assert "[guide](guide.md)" in content, "Content must not be empty"
-# 
+#
 #     def test_index_readme_excluded_from_contents(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -174,7 +174,7 @@
 #         parent.mkdir()
 #         (parent / "guide.md").write_text("# Guide\n")
 #         (parent / "README.md").write_text("# Readme\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()
@@ -183,7 +183,7 @@
 #         assert "- [INDEX](INDEX.md)" not in content, "Content must not be empty"
 #         assert "- [README](README.md)" not in content, "Content must not be empty"
 #         assert "- [index](index.md)" not in content, "Content must not be empty"
-# 
+#
 #     def test_both_sections_when_direct_and_subdirs(self, tmp_path, monkeypatch):
 #         docs = tmp_path / "docs"
 #         docs.mkdir()
@@ -193,7 +193,7 @@
 #         sub = parent / "child"
 #         sub.mkdir()
 #         (sub / "note.md").write_text("# Note\n")
-# 
+#
 #         _patch_roots(monkeypatch, docs)
 #         generate_index(parent)
 #         content = (parent / "INDEX.md").read_text()

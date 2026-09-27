@@ -18,14 +18,14 @@ class TestRAGCLICommandImplementation:
         """Test _validate_files returns proper Path objects."""
         try:
             from aries_serpent_core.cli_rag import _validate_files
-            
+
             # Create temp files
             with tempfile.NamedTemporaryFile(delete=False) as f:
                 temp_file = f.name
-            
+
             try:
                 result = _validate_files([temp_file])
-                assert len(result) > 0
+                assert len(result) > 0, "Result must not be empty"
                 assert all(isinstance(p, Path) for p in result)
             finally:
                 Path(temp_file).unlink()
@@ -36,7 +36,7 @@ class TestRAGCLICommandImplementation:
         """Test _format_bytes produces proper formatted strings."""
         try:
             from aries_serpent_core.cli_rag import _format_bytes
-            
+
             # Test various sizes
             test_cases = [
                 (0, "0"),
@@ -44,12 +44,12 @@ class TestRAGCLICommandImplementation:
                 (1024, "1.0 KB"),
                 (1024 * 1024, "1.0 MB"),
             ]
-            
+
             for size, expected_pattern in test_cases:
                 result = _format_bytes(size)
                 assert isinstance(result, str)
                 # Should contain either the value or a unit
-                assert any(c.isdigit() for c in result)
+                assert any(c.isdigit() for c in result), "Result must not be empty"
         except ImportError:
             pytest.skip("_format_bytes not available")
 
@@ -57,11 +57,11 @@ class TestRAGCLICommandImplementation:
         """Test that console can print without errors."""
         try:
             from aries_serpent_core.cli_rag import console
-            
+
             # Should have print method
             assert hasattr(console, "print")
             # Should be callable
-            assert callable(console.print)
+            assert callable(console.print), "Condition must be true"
         except ImportError:
             pytest.skip("console not available")
 
@@ -73,9 +73,9 @@ class TestSafetyFiltersCore:
         """Test SafetyFilters can be instantiated and has required methods."""
         try:
             from codex_ml.safety.filters import SafetyFilters
-            
+
             sf = SafetyFilters()
-            
+
             # Check for main methods
             assert callable(getattr(sf, "sanitize_prompt", None)) or callable(getattr(sf, "__call__", None))
             assert callable(getattr(sf, "sanitize_output", None)) or callable(getattr(sf, "__call__", None))
@@ -86,13 +86,13 @@ class TestSafetyFiltersCore:
         """Test PolicyRule accepts various action values."""
         try:
             from codex_ml.safety.filters import PolicyRule
-            
+
             actions = ["allow", "block", "redact", "flag"]
-            
+
             for action in actions:
                 try:
                     rule = PolicyRule(name="test", action=action)
-                    assert rule.action == action
+                    assert rule.action == action, "action is not valid"
                 except (TypeError, ValueError):
                     # Some actions might not be supported
                     pass
@@ -103,18 +103,18 @@ class TestSafetyFiltersCore:
         """Test _ensure_sequence with edge cases."""
         try:
             from codex_ml.safety.filters import _ensure_sequence
-            
+
             # Empty list
             result = _ensure_sequence([])
-            assert result == []
-            
+            assert result == [], "Result must not be empty"
+
             # Single element
             result = _ensure_sequence("x")
-            assert len(result) == 1
-            
+            assert len(result) == 1, "Result must not be empty"
+
             # Already sequence
             result = _ensure_sequence(["a", "b", "c"])
-            assert len(result) == 3
+            assert len(result) == 3, "Result must not be empty"
         except ImportError:
             pytest.skip("_ensure_sequence not available")
 
@@ -124,14 +124,14 @@ class TestSafetyFiltersCore:
             import re
 
             from codex_ml.safety.filters import _parse_flags
-            
+
             # Single flag
             result = _parse_flags("I")
-            assert result > 0
-            
+            assert result > 0, "result must be greater than zero"
+
             # Named flag
             result = _parse_flags("MULTILINE")
-            assert result > 0
+            assert result > 0, "result must be greater than zero"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -143,7 +143,7 @@ class TestCLIStructureValidation:
         """Test CLI app has proper Typer structure."""
         try:
             from aries_serpent_core.cli import app
-            
+
             # Should have methods like callback, command
             assert hasattr(app, "command") or callable(app)
         except ImportError:
@@ -153,7 +153,7 @@ class TestCLIStructureValidation:
         """Test CLI supports help command."""
         try:
             from aries_serpent_core.cli import app
-            
+
             # Should have invoke method or similar
             assert hasattr(app, "invoke") or callable(app)
         except ImportError:
@@ -167,13 +167,13 @@ class TestDataclassImplementations:
         """Test SafetyPolicy has required fields."""
         try:
             from codex_ml.safety.filters import SafetyPolicy
-            
+
             policy = SafetyPolicy()
-            
+
             # Check for common fields
             attrs = dir(policy)
             # Should have some fields
-            assert len(attrs) > 5
+            assert len(attrs) > 5, "Attrs must not be empty"
         except ImportError:
             pytest.skip("SafetyPolicy not available")
 
@@ -181,11 +181,11 @@ class TestDataclassImplementations:
         """Test RuleMatch stores match data."""
         try:
             from codex_ml.safety.filters import RuleMatch
-            
+
             match = RuleMatch(rule_name="test_rule", matched_text="dangerous_text")
-            
-            assert match.rule_name == "test_rule"
-            assert match.matched_text == "dangerous_text"
+
+            assert match.rule_name == "test_rule", "rule_name is not valid"
+            assert match.matched_text == "dangerous_text", "matched_text is not valid"
         except ImportError:
             pytest.skip("RuleMatch not available")
 
@@ -193,14 +193,14 @@ class TestDataclassImplementations:
         """Test SafetyResult can evaluate passes."""
         try:
             from codex_ml.safety.filters import SafetyResult
-            
+
             # Passing result
             result1 = SafetyResult(passed=True)
-            assert result1.passed is True
-            
+            assert result1.passed is True, "Result must not be empty"
+
             # Failing result
             result2 = SafetyResult(passed=False)
-            assert result2.passed is False
+            assert result2.passed is False, "Result must not be empty"
         except ImportError:
             pytest.skip("SafetyResult not available")
 
@@ -212,7 +212,7 @@ class TestModuleImportPaths:
         """Test aries_serpent_core namespace is properly set up."""
         try:
             import aries_serpent_core
-            
+
             # Should have sub-modules
             assert hasattr(aries_serpent_core, "cli_rag") or True
         except ImportError:
@@ -222,9 +222,9 @@ class TestModuleImportPaths:
         """Test codex_ml namespace is properly set up."""
         try:
             import codex_ml
-            
+
             # Should be importable
-            assert codex_ml is not None
+            assert codex_ml is not None, "codex_ml must be initialized"
         except ImportError:
             pytest.skip("codex_ml not available")
 
@@ -236,13 +236,13 @@ class TestLoggingCallChains:
         """Test logger works at various log levels."""
         try:
             from aries_serpent_core.cli_rag import logger
-            
+
             # Should be able to log at all levels
             logger.debug("Debug message")
             logger.info("Info message")
             logger.warning("Warning message")
-            
-            assert True  # If we get here, logging works
+
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -250,13 +250,13 @@ class TestLoggingCallChains:
         """Test logger can handle exception logging."""
         try:
             from codex_ml.safety.filters import logger
-            
+
             try:
                 raise ValueError("Test exception")
-            except Exception:
+            except Exception as _err:
                 logger.exception("An error occurred")
-            
-            assert True
+
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("logger not available")
 
@@ -267,24 +267,24 @@ class TestFileFunctionality:
     def test_path_operations_on_file_patterns(self):
         """Test Path operations with file patterns."""
         try:
-            import tempfile
+            pass  # removed redundant `import tempfile` (top-level import used)
             from pathlib import Path
 
             from aries_serpent_core.cli_rag import _validate_files
-            
+
             # Create temp directory with files
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create test files
                 for i in range(3):
                     Path(tmpdir, f"test{i}.txt").write_text(f"content{i}")
-                
+
                 # Test glob pattern
                 pattern = f"{tmpdir}/*.txt"
                 try:
                     result = _validate_files([pattern])
                     assert isinstance(result, list)
                     assert all(isinstance(p, Path) for p in result)
-                except Exception:
+                except Exception as _err:
                     # May fail due to Typer error handling
                     pass
         except ImportError:
@@ -298,11 +298,11 @@ class TestRegexFlagHandling:
         """Test _parse_flags with list of strings."""
         try:
             from codex_ml.safety.filters import _parse_flags
-            
+
             # Single flag string
             result = _parse_flags("I")
             assert isinstance(result, int)
-            assert result > 0
+            assert result > 0, "result must be greater than zero"
         except ImportError:
             pytest.skip("_parse_flags not available")
 
@@ -310,9 +310,9 @@ class TestRegexFlagHandling:
         """Test _parse_flags always returns int."""
         try:
             from codex_ml.safety.filters import _parse_flags
-            
+
             test_inputs = [None, 0, "I", "MULTILINE"]
-            
+
             for inp in test_inputs:
                 result = _parse_flags(inp)
                 assert isinstance(result, int)
@@ -327,7 +327,7 @@ class TestSanitizationFunctions:
         """Test sanitize_prompt returns string."""
         try:
             from codex_ml.safety.filters import sanitize_prompt
-            
+
             result = sanitize_prompt("test prompt")
             assert isinstance(result, str)
         except ImportError:
@@ -337,7 +337,7 @@ class TestSanitizationFunctions:
         """Test sanitize_output returns string."""
         try:
             from codex_ml.safety.filters import sanitize_output
-            
+
             result = sanitize_output("test output")
             assert isinstance(result, str)
         except ImportError:
@@ -354,10 +354,10 @@ class TestEnvironmentVariableHandling:
             import os
 
             from codex_ml.safety.filters import BYPASS_ENV_VAR
-            
+
             env_value = os.getenv(BYPASS_ENV_VAR)
             # Should be able to read the env var
-            assert env_value is not None or True  # Might be None if not set
+            assert env_value is not None or True, "env_value must be initialized"
         except ImportError:
             pytest.skip("BYPASS_ENV_VAR not available")
 
@@ -369,10 +369,10 @@ class TestConsoleOutputIntegration:
         """Test console can print with markup."""
         try:
             from aries_serpent_core.cli_rag import console
-            
+
             # Should support rich markup
             console.print("[bold]Test[/bold]")
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("console not available")
 
@@ -380,10 +380,10 @@ class TestConsoleOutputIntegration:
         """Test that progress indicators are available."""
         try:
             from aries_serpent_core.cli_rag import Progress, SpinnerColumn
-            
+
             # Should have progress components
-            assert Progress is not None
-            assert SpinnerColumn is not None
+            assert Progress is not None, "Progress must be initialized"
+            assert SpinnerColumn is not None, "SpinnerColumn must be initialized"
         except ImportError:
             pytest.skip("Progress components not available")
 
@@ -395,14 +395,14 @@ class TestComplexScenarios:
         """Test combined flag operations."""
         try:
             from codex_ml.safety.filters import _ensure_sequence, _parse_flags
-            
+
             # Test sequence with various elements
             seq = _ensure_sequence(["a", "b", "c"])
-            assert len(seq) == 3
-            
+            assert len(seq) == 3, "Seq must not be empty"
+
             # Parse flags
             flags = _parse_flags("I")
-            assert flags > 0
+            assert flags > 0, "flags must be greater than zero"
         except ImportError:
             pytest.skip("Functions not available")
 
@@ -410,19 +410,19 @@ class TestComplexScenarios:
         """Test complete safety policy workflow."""
         try:
             from codex_ml.safety.filters import PolicyRule, SafetyPolicy, sanitize_prompt
-            
+
             # Create policy
             policy = SafetyPolicy()
-            
+
             # Create rule
             rule = PolicyRule(name="test", action="block")
-            
+
             # Sanitize
             result = sanitize_prompt("test")
-            
-            assert policy is not None
-            assert rule is not None
-            assert result is not None
+
+            assert policy is not None, "policy must be initialized"
+            assert rule is not None, "rule must be initialized"
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("Safety components not available")
 
@@ -438,7 +438,7 @@ def test_ensure_sequence_type_handling(test_input, expected_type):
     """Test _ensure_sequence handles various types."""
     try:
         from codex_ml.safety.filters import _ensure_sequence
-        
+
         result = _ensure_sequence(test_input)
         # Result should be sequence-like
         assert hasattr(result, "__len__")
@@ -454,20 +454,20 @@ def test_ensure_sequence_type_handling(test_input, expected_type):
 def test_glob_pattern_handling(file_pattern):
     """Test glob pattern handling."""
     try:
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
 
         from aries_serpent_core.cli_rag import _validate_files
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create test file
             from pathlib import Path
             Path(tmpdir, "test.py").write_text("content")
-            
+
             # Try pattern - may fail gracefully
             try:
                 result = _validate_files([f"{tmpdir}/*"])
                 assert isinstance(result, list) or True
-            except Exception:
+            except Exception as _err:
                 pass  # Expected if no matches
     except ImportError:
         pytest.skip("_validate_files not available")

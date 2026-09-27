@@ -1,12 +1,12 @@
 """Reasoning Advisor Agent - Main Module"""
 import os
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
-    from .causal_analyzer import CausalAnalyzer, create_analyzer
+    from .causal_analyzer import create_analyzer
 except ImportError:
-    from causal_analyzer import CausalAnalyzer, create_analyzer
+    from causal_analyzer import create_analyzer
 
 RANDOM_SEED = 50
 

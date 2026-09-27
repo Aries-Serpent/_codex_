@@ -36,8 +36,8 @@ import os
 import subprocess
 import sys
 from typing import Optional
-from scripts.ci._token_resolver import get_token
 
+from scripts.ci._token_resolver import get_token
 
 logging.basicConfig(
     level=logging.INFO,

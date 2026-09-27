@@ -9,11 +9,11 @@ where needed for clarity.
 Reference: Site-First Lane 3 removed 6,494 decorative emojis across 1,947 files (Commit 0aa797a2)
 """
 
-import re
 import json
-from pathlib import Path
-from typing import Dict, List, Tuple, Set
+import re
 from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
 
 
 class EmojiRemovalProcessor:
@@ -311,7 +311,7 @@ class EmojiRemovalProcessor:
 ### Post-Processing State
 """
         report_content += f"- Total markdown files: {len(self.after_files)}\n"
-        report_content += f"- Files with emojis remaining: TBD (verify with post-processing scan)\n"
+        report_content += "- Files with emojis remaining: TBD (verify with post-processing scan)\n"
 
         report_content += """
 ## Quality Assurance
@@ -500,7 +500,7 @@ def main():
     print(f"✓ Files modified: {processor.files_with_emojis}")
     print(f"✓ Total emojis removed: {processor.total_emojis_removed}")
     print(f"✓ Unique emoji types: {len(processor.emoji_frequency)}")
-    print(f"✓ Professional tone: ENFORCED")
+    print("✓ Professional tone: ENFORCED")
     print("=" * 70)
 
 

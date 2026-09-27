@@ -18,7 +18,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-
 # CWE Metadata Database
 CWE_TITLES: Dict[str, str] = {
     "CWE-22": "Improper Limitation of a Pathname to a Restricted Directory",

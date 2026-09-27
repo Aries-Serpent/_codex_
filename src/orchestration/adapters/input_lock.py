@@ -115,9 +115,7 @@ class InputLockAdapter:
             InputLockError: If generation fails
         """
         try:
-            lock_hash = cls._compute_hash(
-                policy_config, solver_info, environment, input_checksums
-            )
+            lock_hash = cls._compute_hash(policy_config, solver_info, environment, input_checksums)
 
             lock_dict = {
                 "lock_version": cls.LOCK_VERSION,
@@ -141,9 +139,7 @@ class InputLockAdapter:
             raise InputLockError(f"Failed to generate input lock: {e}")
 
     @classmethod
-    def write_lock_file(
-        cls, lock_dict: Dict[str, Any], output_path: Path
-    ) -> None:
+    def write_lock_file(cls, lock_dict: Dict[str, Any], output_path: Path) -> None:
         """Write input-lock.json to disk.
 
         Args:
@@ -190,8 +186,7 @@ class InputLockAdapter:
 
             if recalculated_hash != lock_dict["lock_hash"]:
                 raise InputLockError(
-                    f"Hash mismatch: expected {lock_dict['lock_hash']}, "
-                    f"got {recalculated_hash}"
+                    f"Hash mismatch: expected {lock_dict['lock_hash']}, got {recalculated_hash}"
                 )
 
             return True

@@ -69,13 +69,13 @@ class TestRAGEndToEndPatterns:
                 indexer1 = RAGIndexer()
                 docs = [{"id": "1", "text": "hello"}]
                 indexer1.add_documents(docs)
-                
+
                 save_path = Path(tmpdir) / "index"
                 indexer1.save(str(save_path))
-                
+
                 indexer2 = RAGIndexer()
                 indexer2.load(str(save_path))
-                
+
                 # Should have loaded documents
                 assert indexer2 is not None, "indexer must be initialized"
             except (NotImplementedError, FileNotFoundError):
@@ -136,7 +136,7 @@ class TestRAGEndToEndPatterns:
         try:
             retriever = RAGRetriever()
             results = retriever.retrieve("test", k=5)
-            
+
             # Results should have scores if available
             if results and len(results) > 0:
                 assert "score" in results[0] or "relevance" in results[0], "Condition must be true"
@@ -231,11 +231,11 @@ class TestRetrievalLatency:
 
         try:
             retriever = RAGRetriever()
-            
+
             start = time.time()
             results = retriever.retrieve("test", k=5)
             latency = time.time() - start
-            
+
             assert latency >= 0, "latency must be non-negative"
         except (NotImplementedError, TypeError):
             pytest.skip("Latency measurement incomplete")
@@ -249,11 +249,11 @@ class TestRetrievalLatency:
 
         try:
             retriever = RAGRetriever()
-            
+
             start = time.time()
             results = retriever.retrieve("test", k=5)
             latency = time.time() - start
-            
+
             # Should be reasonably fast (< 10 seconds for test)
             assert latency < 10, "retrieval must be fast"
         except (NotImplementedError, TypeError):
@@ -268,14 +268,14 @@ class TestRetrievalLatency:
 
         try:
             retriever = RAGRetriever()
-            
+
             # Retrieve with different k values
             latencies = []
             for k in [1, 5, 10]:
                 start = time.time()
                 results = retriever.retrieve("test", k=k)
                 latencies.append(time.time() - start)
-            
+
             # Latencies should be reasonable
             assert all(l >= 0 for l in latencies), "latencies must be non-negative"
         except (NotImplementedError, TypeError):
@@ -290,12 +290,12 @@ class TestRetrievalLatency:
 
         try:
             retriever = RAGRetriever()
-            
+
             queries = ["test1", "test2", "test3"]
             start = time.time()
             results = retriever.batch_retrieve(queries, k=5)
             latency = time.time() - start
-            
+
             assert latency >= 0, "latency must be non-negative"
         except (NotImplementedError, AttributeError):
             pytest.skip("batch_retrieve not available")
@@ -317,7 +317,7 @@ class TestMetaTensorSafety:
             indexer = RAGIndexer()
             docs = [{"id": "1", "text": "hello"}]
             indexer.add_documents(docs)
-            
+
             # Check embeddings device
             embeddings = indexer.get_embeddings()
             if embeddings is not None and hasattr(embeddings, "device"):
@@ -336,7 +336,7 @@ class TestMetaTensorSafety:
 
         try:
             retriever = RAGRetriever()
-            
+
             # Check model parameters
             if hasattr(retriever, "model") and retriever.model is not None:
                 for param in retriever.model.parameters():
@@ -353,7 +353,7 @@ class TestMetaTensorSafety:
 
         try:
             retriever = RAGRetriever()
-            
+
             # All components should be on same device
             results = retriever.retrieve("test", k=5)
             assert results is not None, "results must be initialized"
@@ -374,7 +374,7 @@ class TestRAGRecoveryMechanisms:
         try:
             retriever = RAGRetriever()
             results = retriever.retrieve("impossible_query_xyz", k=5)
-            
+
             # Should return empty list or fallback results
             assert results is not None, "results must be initialized"
         except (NotImplementedError, TypeError):
@@ -389,7 +389,7 @@ class TestRAGRecoveryMechanisms:
 
         try:
             retriever = RAGRetriever()
-            
+
             # Should not crash on invalid input
             results = retriever.retrieve(None, k=5)
             assert results is not None or results is None, "handled error"
@@ -407,7 +407,7 @@ class TestRAGRecoveryMechanisms:
             indexer = RAGIndexer()
             docs = [{"id": "1", "text": "hello"}]
             indexer.add_documents(docs)
-            
+
             indexer.rebuild()
             # Should rebuild without errors
         except (NotImplementedError, AttributeError):
@@ -422,7 +422,7 @@ class TestRAGRecoveryMechanisms:
 
         try:
             indexer = RAGIndexer()
-            
+
             # Should detect corruption
             is_valid = indexer.check_integrity()
             assert is_valid is True or is_valid is False, "must return boolean"

@@ -86,7 +86,7 @@ def safe_load_sentence_transformer(  # nosec B107
             )
         except (OSError, ValueError, TypeError, RuntimeError) as meta_exc:
             logger.warning(
-                "Model %s could not be loaded via meta fallback; re-raising for higher-level handling (%s)",
+                "Model %s could not be loaded via meta fallback; re-raising for higher-level handling (%s)",  # noqa: E501
                 model_name,
                 type(meta_exc).__name__,
             )
@@ -124,7 +124,7 @@ def safe_load_sentence_transformer(  # nosec B107
 
     except (OSError, ValueError, TypeError, RuntimeError) as exc:
         logger.warning(
-            "Model %s could not be loaded directly; re-raising for higher-level fallback handling (%s)",
+            "Model %s could not be loaded directly; re-raising for higher-level fallback handling (%s)",  # noqa: E501
             model_name,
             type(exc).__name__,
         )

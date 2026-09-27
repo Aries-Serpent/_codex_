@@ -47,26 +47,34 @@ import re
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from scripts.ci._token_resolver import (
-        get_token,
-        get_token_scope as _get_token_scope,
-        validate_token_scope as _validate_token_scope,
         TokenResolutionError,
+        get_token,
+    )
+    from scripts.ci._token_resolver import (
+        get_token_scope as _get_token_scope,
+    )
+    from scripts.ci._token_resolver import (
+        validate_token_scope as _validate_token_scope,
     )
 except ImportError:
     # Fallback for direct execution
     sys.path.insert(0, str(Path(__file__).parent))
     from _token_resolver import (
-        get_token,
-        get_token_scope as _get_token_scope,
-        validate_token_scope as _validate_token_scope,
         TokenResolutionError,
+        get_token,
+    )
+    from _token_resolver import (
+        get_token_scope as _get_token_scope,
+    )
+    from _token_resolver import (
+        validate_token_scope as _validate_token_scope,
     )
 
 

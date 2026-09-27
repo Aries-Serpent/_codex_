@@ -226,11 +226,11 @@ class TestScopeDetection:
         For example: admin:org includes write:org and read:org.
         """
         # admin:org should include org management
-        assert "admin:org" in REQUIRED_SCOPES
+        assert "admin:org" in REQUIRED_SCOPES, "Condition must be true"
         # admin:public_key should include write/read
-        assert "admin:public_key" in REQUIRED_SCOPES
-        assert "write:public_key" in REQUIRED_SCOPES
-        assert "read:public_key" in REQUIRED_SCOPES
+        assert "admin:public_key" in REQUIRED_SCOPES, "Condition must be true"
+        assert "write:public_key" in REQUIRED_SCOPES, "Condition must be true"
+        assert "read:public_key" in REQUIRED_SCOPES, "Condition must be true"
 
 
 class TestScopeCapabilityMapping:
@@ -268,22 +268,22 @@ class TestScopeCapabilityMapping:
     def test_repo_scope_operations(self):
         """Test repository scope grants expected operations."""
         ops = self.SCOPE_OPERATIONS.get("repo", set())
-        assert "READ_VARIABLES" in ops
-        assert "WRITE_VARIABLES" in ops
-        assert "DELETE_VARIABLES" in ops
+        assert "READ_VARIABLES" in ops, "Condition must be true"
+        assert "WRITE_VARIABLES" in ops, "Condition must be true"
+        assert "DELETE_VARIABLES" in ops, "Condition must be true"
 
     def test_workflow_scope_operations(self):
         """Test workflow scope grants expected operations."""
         ops = self.SCOPE_OPERATIONS.get("workflow", set())
-        assert "APPROVE_RUNS" in ops
-        assert "CANCEL_RUNS" in ops
-        assert "DISPATCH_RUNS" in ops
+        assert "APPROVE_RUNS" in ops, "Condition must be true"
+        assert "CANCEL_RUNS" in ops, "Condition must be true"
+        assert "DISPATCH_RUNS" in ops, "Condition must be true"
 
     def test_org_scope_operations(self):
         """Test admin:org scope grants expected operations."""
         ops = self.SCOPE_OPERATIONS.get("admin:org", set())
-        assert "LIST_TEAMS" in ops
-        assert "CREATE_TEAMS" in ops
+        assert "LIST_TEAMS" in ops, "Condition must be true"
+        assert "CREATE_TEAMS" in ops, "Condition must be true"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

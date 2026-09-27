@@ -10,7 +10,6 @@ from pathlib import Path
 # Add repo root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from aries_serpent_core.security_utils import sanitize_log_message
 
 def create_safe_error_function() -> str:
     """Generate a safe error handling function."""
@@ -39,7 +38,7 @@ except ImportError:
         patterns = [
             (r'ghp_[A-Za-z0-9]{36,}', '[REDACTED_GITHUB_TOKEN]'),
             (r'github_pat_[A-Za-z0-9_]{82}', '[REDACTED_GITHUB_PAT]'),
-            (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)', '[REDACTED]'),
+            (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\\s*[:=]\\s*["\']?([^"\'\\s]+)', '[REDACTED]'),
         ]
         result = msg
         for pattern, replacement in patterns:
@@ -79,13 +78,13 @@ def analyze_file(filepath: Path) -> dict:
         'logger_calls': 0,
         'issues': []
     }
-    
+
     try:
         with open(filepath) as f:
             lines = f.readlines()
-        
+
         findings['total_lines'] = len(lines)
-        
+
         for i, line in enumerate(lines, 1):
             # Look for logging patterns
             if 'logger.' in line:
@@ -101,7 +100,7 @@ def analyze_file(filepath: Path) -> dict:
                     })
     except Exception as e:
         findings['error'] = str(e)
-    
+
     return findings
 
 
@@ -110,9 +109,9 @@ def generate_report(files: list[Path]) -> None:
     print("\n" + "=" * 80)
     print("Phase 5.3 - Security Analysis Report")
     print("=" * 80 + "\n")
-    
+
     total_issues = 0
-    
+
     for filepath in files:
         if filepath.exists():
             analysis = analyze_file(filepath)
@@ -120,13 +119,13 @@ def generate_report(files: list[Path]) -> None:
             print(f"   Lines: {analysis['total_lines']}")
             print(f"   Logger calls: {analysis['logger_calls']}")
             print(f"   Print statements: {analysis['print_statements']}")
-            
+
             if analysis['issues']:
                 print(f"   ⚠️  Issues found: {len(analysis['issues'])}")
                 for issue in analysis['issues']:
                     print(f"      Line {issue['line']}: {issue['type']}")
                     total_issues += len(analysis['issues'])
-    
+
     print("\n" + "=" * 80)
     print(f"Total issues identified: {total_issues}")
     print("=" * 80 + "\n")
@@ -145,9 +144,9 @@ if __name__ == "__main__":
         Path("scripts/ci/copilot_security_agent_handoff.py"),
         Path("scripts/observability/core_telemetry_collector.py"),
     ]
-    
+
     repo_root = Path(__file__).parent
-    
+
     # Analyze all files
     files_to_check = [repo_root / f for f in high_priority_files]
     generate_report(files_to_check)

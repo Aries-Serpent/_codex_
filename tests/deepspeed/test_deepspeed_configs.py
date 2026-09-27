@@ -23,7 +23,7 @@
 #         }
 #         assert config["zero_optimization"]["stage"] == 0, "Condition must be true"
 #         # Stage 0 = no optimization, baseline
-# 
+#
 #     def test_zero_stage_1_config(self):
 #     def test_zero_stage_1_config(self):
 #         """Test ZeRO Stage 1 (optimizer state partitioning) configuration"""
@@ -37,7 +37,7 @@
 #         assert config["zero_optimization"]["stage"] == 1, "Condition must be true"
 #         assert "reduce_bucket_size" in config["zero_optimization"], "Condition must be true"
 #         assert "allgather_bucket_size" in config["zero_optimization"], "Condition must be true"
-# 
+#
 #     def test_zero_stage_2_config(self):
 #     def test_zero_stage_2_config(self):
 #         """Test ZeRO Stage 2 (optimizer + gradient state partitioning) configuration"""
@@ -54,7 +54,7 @@
 #         assert config["zero_optimization"]["stage"] == 2, "Condition must be true"
 #         assert config["zero_optimization"]["contiguous_gradients"] is True, "Condition must be true"
 #         assert config["zero_optimization"]["overlap_comm"] is True, "Condition must be true"
-# 
+#
 #     def test_zero_stage_3_config(self):
 #     def test_zero_stage_3_config(self):
 #         """Test ZeRO Stage 3 (full parameter partitioning) configuration"""
@@ -72,7 +72,7 @@
 #         assert config["zero_optimization"]["stage"] == 3, "Condition must be true"
 #         assert "stage3_prefetch_bucket_size" in config["zero_optimization"], "Condition must be true"
 #         assert "stage3_param_persistence_threshold" in config["zero_optimization"], "Condition must be true"
-# 
+#
 #     def test_invalid_zero_stage(self):
 #     def test_invalid_zero_stage(self):
 #         """Test invalid ZeRO stage raises appropriate error"""
@@ -83,12 +83,12 @@
 #         }
 #         stage = config["zero_optimization"]["stage"]
 #         assert stage not in [0, 1, 2, 3], "Stage 4 is invalid"
-# 
+#
 #         # Validate relationship
 #         assert config["train_batch_size"] == (, "Condition must be true"
 #             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
 #         )
-# 
+#
 #     def test_optimizer_state_cpu_offload(self):
 #     def test_optimizer_state_cpu_offload(self):
 #         """Test CPU offloading of optimizer states"""
@@ -103,7 +103,7 @@
 #         }
 #         assert config["zero_optimization"]["offload_optimizer"]["device"] == "cpu", "Condition must be true"
 #         assert config["zero_optimization"]["offload_optimizer"]["pin_memory"] is True, "Condition must be true"
-# 
+#
 #     def test_optimizer_state_nvme_offload(self):
 #     def test_optimizer_state_nvme_offload(self):
 #         """Test NVMe offloading of optimizer states"""
@@ -119,7 +119,7 @@
 #         }
 #         assert config["zero_optimization"]["offload_optimizer"]["device"] == "nvme", "Condition must be true"
 #         assert "nvme_path" in config["zero_optimization"]["offload_optimizer"], "Condition must be true"
-# 
+#
 #     def test_parameter_offload(self):
 #     def test_parameter_offload(self):
 #         """Test parameter offloading (ZeRO Stage 3)"""
@@ -133,7 +133,7 @@
 #             }
 #         }
 #         assert config["zero_optimization"]["offload_param"]["device"] == "cpu", "Condition must be true"
-# 
+#
 #     def test_optimizer_states_config(self):
 #     def test_optimizer_states_config(self):
 #         """Test optimizer state management"""
@@ -146,12 +146,12 @@
 #         }
 #         assert config["zero_optimization"]["reduce_bucket_size"] > 0, "Value must be greater than zero"
 #         assert config["zero_optimization"]["allgather_bucket_size"] > 0, "Value must be greater than zero"
-# 
+#
 #         # Validate relationship
 #         assert config["train_batch_size"] == (, "Condition must be true"
 #             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
 #         )
-# 
+#
 #     def test_activation_checkpointing_enabled(self):
 #     def test_activation_checkpointing_enabled(self):
 #         """Test activation checkpointing configuration"""
@@ -166,7 +166,7 @@
 #         assert config["activation_checkpointing"]["partition_activations"] is True, "Condition must be true"
 #         assert config["activation_checkpointing"]["contiguous_memory_optimization"] is True, "Condition must be true"
 #         assert config["activation_checkpointing"]["number_checkpoints"] == 4, "Condition must be true"
-# 
+#
 #     def test_cpu_checkpointing(self):
 #     def test_cpu_checkpointing(self):
 #         """Test CPU-based activation checkpointing"""
@@ -178,7 +178,7 @@
 #             }
 #         }
 #         assert config["activation_checkpointing"]["cpu_checkpointing"] is True, "Condition must be true"
-# 
+#
 #     def test_gradient_checkpointing_config(self):
 #     def test_gradient_checkpointing_config(self):
 #         """Test gradient checkpointing parameters"""
@@ -188,7 +188,7 @@
 #         }
 #         assert config["gradient_accumulation_steps"] > 0, "Value must be greater than zero"
 #         assert config["gradient_clipping"] > 0, "Value must be greater than zero"
-# 
+#
 #     def test_activation_memory_optimization(self):
 #     def test_activation_memory_optimization(self):
 #         """Test activation memory optimization settings"""
@@ -200,12 +200,12 @@
 #             }
 #         }
 #         assert config["activation_checkpointing"]["partition_activations"] is True, "Condition must be true"
-# 
+#
 #         # Validate relationship
 #         assert config["train_batch_size"] == (, "Condition must be true"
 #             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
 #         )
-# 
+#
 #     def test_fp16_config(self):
 #     def test_fp16_config(self):
 #         """Test FP16 mixed precision configuration"""
@@ -222,7 +222,7 @@
 #         assert config["fp16"]["enabled"] is True, "Condition must be true"
 #         assert config["fp16"]["loss_scale"] == 0, "Condition must be true"
 #         assert config["fp16"]["initial_scale_power"] == 16, "Condition must be true"
-# 
+#
 #     def test_bf16_config(self):
 #     def test_bf16_config(self):
 #         """Test BF16 mixed precision configuration"""
@@ -232,7 +232,7 @@
 #             }
 #         }
 #         assert config["bf16"]["enabled"] is True, "Condition must be true"
-# 
+#
 #     def test_amp_config(self):
 #     def test_amp_config(self):
 #         """Test automatic mixed precision configuration"""
@@ -244,7 +244,7 @@
 #         }
 #         assert config["amp"]["enabled"] is True, "Condition must be true"
 #         assert config["amp"]["opt_level"] in ["O0", "O1", "O2", "O3"]
-# 
+#
 #     def test_mixed_precision_exclusions(self):
 #     def test_mixed_precision_exclusions(self):
 #         """Test mixed precision with layer exclusions"""
@@ -258,12 +258,12 @@
 #             },
 #         }
 #         assert not (config["fp16"]["enabled"] and config["amp"]["enabled"]), "Condition must be true"
-# 
+#
 #         # Validate relationship
 #         assert config["train_batch_size"] == (, "Condition must be true"
 #             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
 #         )
-# 
+#
 #     def test_complete_deepspeed_config(self):
 #     def test_complete_deepspeed_config(self):
 #         """Test complete DeepSpeed configuration"""
@@ -305,7 +305,7 @@
 #         assert "optimizer" in config, "Condition must be true"
 #         assert "scheduler" in config, "Condition must be true"
 #         assert "zero_optimization" in config, "Condition must be true"
-# 
+#
 #         # Validate batch size calculations
 #         batch_size = config["train_batch_size"]
 #         micro_batch = config["train_micro_batch_size_per_gpu"]
@@ -315,7 +315,7 @@
 #         assert batch_size == micro_batch * grad_accum, "batch_size is not valid"
 #         # For single GPU: batch_size = micro_batch * grad_accum
 #         assert batch_size == micro_batch * grad_accum, "batch_size is not valid"
-# 
+#
 #     def test_config_validation_batch_sizes(self):
 #     def test_config_validation_batch_sizes(self):
 #         """Test batch size configuration validation"""
@@ -328,7 +328,7 @@
 #             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
 #         )
 #         )
-# 
+#
 #     def test_config_with_all_stages(self):
 #     def test_config_with_all_stages(self):
 #         """Test configurations for all ZeRO stages"""
@@ -341,7 +341,7 @@
 #                 }
 #             }
 #             assert config["zero_optimization"]["stage"] in stages, "Condition must be true"
-# 
+#
 #     def test_optimizer_config_validation(self):
 #     def test_optimizer_config_validation(self):
 #         """Test optimizer configuration validation"""
@@ -358,7 +358,7 @@
 #             }
 #             assert config["optimizer"]["type"] in valid_optimizers, "Condition must be true"
 #             assert "lr" in config["optimizer"]["params"], "Condition must be true"
-# 
+#
 #     def test_scheduler_config_validation(self):
 #     def test_scheduler_config_validation(self):
 #         """Test learning rate scheduler configuration"""

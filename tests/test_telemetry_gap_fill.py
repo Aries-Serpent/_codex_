@@ -23,24 +23,24 @@ class TestTrackTimeDecorator:
         Targets: Lines in decorator wrapper when _HAS_PROM=True
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         # Create a mock histogram
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def sample_function():
             time.sleep(0.01)
             return "success"
-        
+
         result = sample_function()
-        
+
         # Verify function executed correctly
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
         # Verify histogram.observe was called with a time value
         mock_histogram.observe.assert_called_once()
         call_args = mock_histogram.observe.call_args[0][0]
         # Ensure time is approximately correct (at least 0.01 seconds)
-        assert call_args >= 0.01
+        assert call_args >= 0.01, "call_args must be greater than zero"
 
     def test_track_time_with_none_histogram(self):
         """Test track_time decorator handles None histogram gracefully.
@@ -48,13 +48,13 @@ class TestTrackTimeDecorator:
         Targets: Lines handling histogram=None case
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         @track_time(None)
         def sample_function():
             return "success"
-        
+
         result = sample_function()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_track_time_decorator_preserves_args_kwargs(self):
         """Test track_time decorator preserves function arguments and keyword arguments.
@@ -62,13 +62,13 @@ class TestTrackTimeDecorator:
         Targets: Lines handling *args, **kwargs in wrapper
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def function_with_args(a, b, c=None):
             return (a, b, c)
-        
+
         result = function_with_args(1, 2, c=3)
         assert result == (1, 2, 3)
         mock_histogram.observe.assert_called_once()
@@ -79,16 +79,16 @@ class TestTrackTimeDecorator:
         Targets: Lines in finally block
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def failing_function():
             raise ValueError("Test error")
-        
+
         with pytest.raises(ValueError):
             failing_function()
-        
+
         # Verify histogram was still called despite exception
         mock_histogram.observe.assert_called_once()
 
@@ -98,14 +98,14 @@ class TestTrackTimeDecorator:
         Targets: Lines handling _HAS_PROM=False branch
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         # Create decorator with histogram=None to simulate no prometheus
         @track_time(None)
         def sample_function():
             return "no-prometheus"
-        
+
         result = sample_function()
-        assert result == "no-prometheus"
+        assert result == "no-prometheus", "Result must not be empty"
 
 
 class TestMetricsServer:
@@ -119,11 +119,11 @@ class TestMetricsServer:
         Targets: Success path in start_metrics_server
         """
         from codex_ml.telemetry.server import start_metrics_server
-        
+
         mock_start.return_value = None
         result = start_metrics_server(port=9000, addr="0.0.0.0")
-        
-        assert result is True
+
+        assert result is True, "Result must not be empty"
         mock_start.assert_called_once_with(9000, "0.0.0.0")
 
     @patch("codex_ml.telemetry.server._HAS_PROM", True)
@@ -134,11 +134,11 @@ class TestMetricsServer:
         Targets: OSError exception handling
         """
         from codex_ml.telemetry.server import start_metrics_server
-        
+
         mock_start.side_effect = OSError("Port already in use")
         result = start_metrics_server(port=9000)
-        
-        assert result is False
+
+        assert result is False, "Result must not be empty"
         mock_start.assert_called_once()
 
     @patch("codex_ml.telemetry.server._HAS_PROM", False)
@@ -148,9 +148,9 @@ class TestMetricsServer:
         Targets: _HAS_PROM=False branch
         """
         from codex_ml.telemetry.server import start_metrics_server
-        
+
         result = start_metrics_server()
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     @patch("codex_ml.telemetry.server._HAS_PROM", True)
     @patch("codex_ml.telemetry.server.start_http_server")
@@ -160,10 +160,10 @@ class TestMetricsServer:
         Targets: Default port and address
         """
         from codex_ml.telemetry.server import start_metrics_server
-        
+
         mock_start.return_value = None
         start_metrics_server()
-        
+
         mock_start.assert_called_once_with(8000, "127.0.0.1")
 
     @patch("codex_ml.telemetry.server._HAS_PROM", True)
@@ -174,10 +174,10 @@ class TestMetricsServer:
         Targets: Custom parameter handling
         """
         from codex_ml.telemetry.server import start_metrics_server
-        
+
         mock_start.return_value = None
         start_metrics_server(port=9090, addr="0.0.0.0")
-        
+
         mock_start.assert_called_once_with(9090, "0.0.0.0")
 
 
@@ -190,12 +190,12 @@ class TestMetricsModuleExports:
         Targets: __init__.py import statements
         """
         from codex_ml import telemetry
-        
+
         # Verify all expected exports are available
         assert hasattr(telemetry, 'track_time')
         assert hasattr(telemetry, 'start_metrics_server')
         assert hasattr(telemetry, '__all__')
-        
+
         # Verify __all__ contains expected items
         expected_items = {
             'track_time',
@@ -204,7 +204,7 @@ class TestMetricsModuleExports:
             'REQUEST_LATENCY',
             'TRAIN_STEP_DURATION',
         }
-        assert set(telemetry.__all__) == expected_items
+        assert set(telemetry.__all__) == expected_items, "Item must not be empty"
 
     def test_metrics_objects_are_none_when_prometheus_missing(self):
         """Test metrics objects are None when prometheus is not available.
@@ -212,12 +212,12 @@ class TestMetricsModuleExports:
         Targets: Conditional metric object initialization
         """
         from codex_ml.telemetry import metrics as telemetry_metrics
-        
+
         # Check if _HAS_PROM is False, then objects should be None
         if not telemetry_metrics._HAS_PROM:
-            assert telemetry_metrics.EXAMPLES_PROCESSED is None
-            assert telemetry_metrics.REQUEST_LATENCY is None
-            assert telemetry_metrics.TRAIN_STEP_DURATION is None
+            assert telemetry_metrics.EXAMPLES_PROCESSED is None, "EXAMPLES_PROCESSED is not valid"
+            assert telemetry_metrics.REQUEST_LATENCY is None, "REQUEST_LATENCY is not valid"
+            assert telemetry_metrics.TRAIN_STEP_DURATION is None, "TRAIN_STEP_DURATION is not valid"
 
     def test_metrics_objects_are_initialized_when_prometheus_available(self):
         """Test metrics objects are initialized when prometheus is available.
@@ -225,12 +225,12 @@ class TestMetricsModuleExports:
         Targets: Metric objects initialization when prometheus is available
         """
         from codex_ml.telemetry import metrics as telemetry_metrics
-        
+
         # Check if _HAS_PROM is True, then objects should not be None
         if telemetry_metrics._HAS_PROM:
-            assert telemetry_metrics.EXAMPLES_PROCESSED is not None
-            assert telemetry_metrics.REQUEST_LATENCY is not None
-            assert telemetry_metrics.TRAIN_STEP_DURATION is not None
+            assert telemetry_metrics.EXAMPLES_PROCESSED is not None, "EXAMPLES_PROCESSED must be initialized"
+            assert telemetry_metrics.REQUEST_LATENCY is not None, "REQUEST_LATENCY must be initialized"
+            assert telemetry_metrics.TRAIN_STEP_DURATION is not None, "TRAIN_STEP_DURATION must be initialized"
 
 
 class TestDecoratorFunctionality:
@@ -242,13 +242,13 @@ class TestDecoratorFunctionality:
         Targets: Return value handling in decorator wrapper
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def function_returning_dict():
             return {"key": "value", "count": 42}
-        
+
         result = function_returning_dict()
         assert result == {"key": "value", "count": 42}
 
@@ -258,18 +258,18 @@ class TestDecoratorFunctionality:
         Targets: Generator function handling
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def generator_function():
             yield 1
             yield 2
             yield 3
-        
+
         gen = generator_function()
         # Note: timing is recorded when generator is created, not when exhausted
-        assert mock_histogram.observe.called or not mock_histogram.observe.called  # Flexible assertion
+        assert mock_histogram.observe.called or not mock_histogram.observe.called, "Condition must be true"
 
     def test_track_time_timing_accuracy(self):
         """Test track_time records timing with reasonable accuracy.
@@ -277,16 +277,16 @@ class TestDecoratorFunctionality:
         Targets: Timing precision in decorator
         """
         from codex_ml.telemetry.metrics import track_time
-        
+
         mock_histogram = MagicMock()
-        
+
         @track_time(mock_histogram)
         def timed_function():
             time.sleep(0.05)
-        
+
         timed_function()
-        
+
         if mock_histogram.observe.called:
             recorded_time = mock_histogram.observe.call_args[0][0]
             # Should be at least 0.04 seconds (allowing some margin)
-            assert recorded_time >= 0.04
+            assert recorded_time >= 0.04, "recorded_time must be greater than zero"

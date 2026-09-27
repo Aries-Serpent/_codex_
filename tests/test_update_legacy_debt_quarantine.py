@@ -43,10 +43,10 @@ class TestPytestSummaryRegex:
         line = "1041 passed, 24 failed, 13 errors in 12.34s"
         match = summary_pattern.search(line)
 
-        assert match is not None
-        assert match.group("passed") == "1041"
-        assert match.group("failed") == "24"
-        assert match.group("errored") == "13"
+        assert match is not None, "match must be initialized"
+        assert match.group("passed") == "1041", "Condition must be true"
+        assert match.group("failed") == "24", "Condition must be true"
+        assert match.group("errored") == "13", "Error should be raised or set"
 
     def test_regex_plural_errors_only(self):
         """Test pattern: '1041 passed, 13 errors in 12.34s'"""
@@ -62,10 +62,10 @@ class TestPytestSummaryRegex:
         line = "1041 passed, 13 errors in 12.34s"
         match = summary_pattern.search(line)
 
-        assert match is not None
-        assert match.group("passed") == "1041"
-        assert match.group("failed") is None
-        assert match.group("errored") == "13"
+        assert match is not None, "match must be initialized"
+        assert match.group("passed") == "1041", "Condition must be true"
+        assert match.group("failed") is None, "Condition must be true"
+        assert match.group("errored") == "13", "Error should be raised or set"
 
     def test_regex_singular_error_with_failed(self):
         """Test pattern: '1041 passed, 24 failed, 1 error in 12.34s'"""
@@ -81,10 +81,10 @@ class TestPytestSummaryRegex:
         line = "1041 passed, 24 failed, 1 error in 12.34s"
         match = summary_pattern.search(line)
 
-        assert match is not None
-        assert match.group("passed") == "1041"
-        assert match.group("failed") == "24"
-        assert match.group("errored") == "1"
+        assert match is not None, "match must be initialized"
+        assert match.group("passed") == "1041", "Condition must be true"
+        assert match.group("failed") == "24", "Condition must be true"
+        assert match.group("errored") == "1", "Error should be raised or set"
 
     def test_regex_singular_error_only(self):
         """Test pattern: '1041 passed, 1 error in 12.34s'"""
@@ -100,10 +100,10 @@ class TestPytestSummaryRegex:
         line = "1041 passed, 1 error in 12.34s"
         match = summary_pattern.search(line)
 
-        assert match is not None
-        assert match.group("passed") == "1041"
-        assert match.group("failed") is None
-        assert match.group("errored") == "1"
+        assert match is not None, "match must be initialized"
+        assert match.group("passed") == "1041", "Condition must be true"
+        assert match.group("failed") is None, "Condition must be true"
+        assert match.group("errored") == "1", "Error should be raised or set"
 
     def test_regex_no_errors(self):
         """Test pattern: '1041 passed in 12.34s'"""
@@ -119,10 +119,10 @@ class TestPytestSummaryRegex:
         line = "1041 passed in 12.34s"
         match = summary_pattern.search(line)
 
-        assert match is not None
-        assert match.group("passed") == "1041"
-        assert match.group("failed") is None
-        assert match.group("errored") is None
+        assert match is not None, "match must be initialized"
+        assert match.group("passed") == "1041", "Condition must be true"
+        assert match.group("failed") is None, "Condition must be true"
+        assert match.group("errored") is None, "Error should be raised or set"
 
 
 class TestPytestResultCalculations:
@@ -133,14 +133,14 @@ class TestPytestResultCalculations:
         result = PytestResult()
         result.failed = 10
         result.errored = 5
-        assert result.non_attributable == 15
+        assert result.non_attributable == 15, "Result must not be empty"
 
     def test_non_attributable_with_zeros(self):
         """Test non_attributable with zero values."""
         result = PytestResult()
         result.failed = 0
         result.errored = 0
-        assert result.non_attributable == 0
+        assert result.non_attributable == 0, "Result must not be empty"
 
     def test_total_calculation(self):
         """Test total includes all test outcomes."""
@@ -149,7 +149,7 @@ class TestPytestResultCalculations:
         result.failed = 10
         result.errored = 5
         result.total = result.passed + result.failed + result.errored
-        assert result.total == 115
+        assert result.total == 115, "Result must not be empty"
 
 
 class TestExtractShortCause:
@@ -159,33 +159,33 @@ class TestExtractShortCause:
         """Test NameError extraction."""
         message = "NameError: name 'CognitiveBrain' is not defined"
         cause = _extract_short_cause(message)
-        assert "NameError" in cause
-        assert "CognitiveBrain" in cause
+        assert "NameError" in cause, "Error should be raised or set"
+        assert "CognitiveBrain" in cause, "Condition must be true"
 
     def test_attribute_error(self):
         """Test AttributeError extraction."""
         message = "AttributeError: 'NoneType' object has no attribute 'score'"
         cause = _extract_short_cause(message)
-        assert "AttributeError" in cause
+        assert "AttributeError" in cause, "Error should be raised or set"
 
     def test_import_error(self):
         """Test ImportError extraction."""
         message = "ImportError: cannot import name 'MagicMock' from 'unittest.mock'"
         cause = _extract_short_cause(message)
-        assert "ImportError" in cause or "cannot import" in cause
+        assert "ImportError" in cause or "cannot import" in cause, "Error should be raised or set"
 
     def test_assertion_threshold(self):
         """Test assertion with threshold extraction."""
         message = "AssertionError: assert 0.4494 > 0.35"
         cause = _extract_short_cause(message)
-        assert "Assertion" in cause
-        assert "0.4494" in cause
+        assert "Assertion" in cause, "Condition must be true"
+        assert "0.4494" in cause, "Condition must be true"
 
     def test_unknown_message(self):
         """Test fallback for unknown message types."""
         message = "SomeWeirdError: this is an unusual failure"
         cause = _extract_short_cause(message)
-        assert cause != ""
+        assert cause != "", "cause is not valid"
 
 
 class TestTopCause:
@@ -194,13 +194,13 @@ class TestTopCause:
     def test_empty_messages(self):
         """Test with no failure messages."""
         causes = _top_cause([])
-        assert causes == "-"
+        assert causes == "-", "causes is not valid"
 
     def test_single_message(self):
         """Test with single message."""
         messages = ["NameError: name 'x' is not defined"]
         cause = _top_cause(messages)
-        assert cause != "-"
+        assert cause != "-", "cause is not valid"
 
     def test_multiple_same_cause(self):
         """Test that most common cause is returned."""
@@ -211,7 +211,7 @@ class TestTopCause:
         ]
         cause = _top_cause(messages)
         # The most common should be NameError (appears twice)
-        assert "NameError" in cause
+        assert "NameError" in cause, "Error should be raised or set"
 
 
 class TestControlFlow:

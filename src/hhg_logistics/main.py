@@ -31,8 +31,9 @@ except ImportError as e:
     import config_legacy as hydra
 
 
-from common.randomness import set_seed  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
+
+from common.randomness import set_seed  # noqa: E402
 
 from .pipeline import run_pipeline  # noqa: E402
 

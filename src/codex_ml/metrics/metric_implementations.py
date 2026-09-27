@@ -33,7 +33,12 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import torch
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - environments without torch
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - environments without torch
     torch = None  # type: ignore[assignment]
 
 

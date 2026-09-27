@@ -245,7 +245,9 @@ def _resolve_plugin_contract(plugin: Plugin) -> PluginContract:
         else multiprocessing.get_context()
     )
     receiving_connection, sending_connection = context.Pipe(duplex=False)
-    process = context.Process(target=_read_plugin_contract_in_child, args=(sending_connection, plugin), daemon=True)
+    process = context.Process(
+        target=_read_plugin_contract_in_child, args=(sending_connection, plugin), daemon=True
+    )
 
     try:
         process.start()
@@ -496,10 +498,7 @@ class PluginSandbox:
             self.enable_quarantine
             and health.status != PluginStatus.QUARANTINED
             and health.failure_count < self.max_failures
-            and (
-                quarantine_immediately
-                or health.failure_count >= self.quarantine_threshold
-            )
+            and (quarantine_immediately or health.failure_count >= self.quarantine_threshold)
         )
         if should_quarantine:
             health.set_quarantined()
@@ -577,7 +576,9 @@ class PluginSandbox:
             if not hasattr(plugin, method_name):
                 raise AttributeError(f"Plugin {plugin_name} has no method {method_name}")
 
-            timeout = _validate_execution_timeout(_resolve_plugin_contract(plugin).max_execution_time)
+            timeout = _validate_execution_timeout(
+                _resolve_plugin_contract(plugin).max_execution_time
+            )
 
             # Execute in sandbox
             logger.debug(f"Executing {plugin_name}.{method_name}()")
@@ -599,9 +600,7 @@ class PluginSandbox:
             logger.debug("Exception: <ERROR_TYPE>")
             # Exception text is plugin-controlled and may itself raise from
             # __str__; keep failure accounting inside the trust boundary.
-            error_msg = (
-                e.error_name if isinstance(e, _PluginExecutionError) else type(e).__name__
-            )
+            error_msg = e.error_name if isinstance(e, _PluginExecutionError) else type(e).__name__
             self._record_failure(
                 plugin_name,
                 method_name,

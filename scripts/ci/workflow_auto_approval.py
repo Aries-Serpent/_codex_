@@ -8,11 +8,12 @@ This script uses CODEX_MASTER_KEY (via gh CLI) to:
 3. Resolve action_required status
 """
 
-import sys
 import json
 import subprocess
+import sys
 from datetime import datetime
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
+
 
 def run_gh_command(cmd: List[str]) -> Tuple[bool, str]:
     """Run a gh CLI command and return success status and output."""

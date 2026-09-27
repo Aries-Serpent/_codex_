@@ -32,8 +32,8 @@ class SecretPatterns:
         "password": r'(?i)(?:password|passwd|pwd)["\']?\s*[:=]\s*["\'](?!(?:YOUR_|your_|example|test|password))([^"\']{8,})["\']',
         "token": r'(?i)(?:token|access[_-]?token)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test))([a-zA-Z0-9_\-\.]{20,})["\']?',
         "secret": r'(?i)(?:secret|secret[_-]?key)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test))([a-zA-Z0-9_\-]{16,})["\']?',
-        "aws_access_key": r'(?i)(?:aws[_-]?access[_-]?key[_-]?id|AWS_ACCESS_KEY_ID)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|AKIAIOSFODNN7EXAMPLE))([A-Z0-9]{20})["\']?',
-        "aws_secret_key": r'(?i)(?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|wJalrXUtnFEMI))([A-Za-z0-9/+=]{40})["\']?',
+        "aws_access_key": r'(?i)(?:aws[_-]?access[_-]?key[_-]?id|AWS_ACCESS_KEY_ID)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_))([A-Z0-9]{20})["\']?',
+        "aws_secret_key": r'(?i)(?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_))([A-Za-z0-9/+=]{40})["\']?',
         # Fixed: GitHub token with word boundaries for standalone detection
         "github_token": r'\b((?:ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36,})\b',
         "private_key": r'-----BEGIN (?:RSA |EC )?PRIVATE KEY-----',
@@ -68,6 +68,10 @@ class SecretPatterns:
         '.credentials', '.secret', '.secrets',
         'id_rsa', 'id_dsa', 'id_ecdsa', 'id_ed25519',
     ]
+    HIGH_RISK_FILES: set[str] = {
+        '.env', 'id_rsa', 'id_dsa', 'id_ecdsa', 'id_ed25519',
+        'credentials', 'secrets', 'secret', 'private_key',
+    }
 
     # File patterns to exclude from secret scanning
     EXCLUDED_FILE_PATTERNS: list[str] = [
@@ -108,8 +112,12 @@ class SecretPatterns:
         Returns:
             True if value appears to be a placeholder
         """
+        normalized = value.strip().strip("\"\'")
+        if not normalized:
+            return False
+
         placeholder_patterns = cls.get_compiled_placeholder_patterns()
-        return any(pattern.search(value) for pattern in placeholder_patterns)
+        return any(pattern.match(normalized) for pattern in placeholder_patterns)
 
     @classmethod
     def is_high_risk_file(cls, filename: str) -> bool:
@@ -123,6 +131,8 @@ class SecretPatterns:
             True if file is high risk
         """
         filename_lower = filename.lower()
+        if any(token in filename_lower for token in cls.HIGH_RISK_FILES):
+            return True
         return any(
             filename_lower.endswith(ext) or ext in filename_lower
             for ext in cls.HIGH_RISK_EXTENSIONS

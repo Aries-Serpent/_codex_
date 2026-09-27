@@ -5,13 +5,14 @@ Monitors commit 194f6af0dbef18c680f40b40a7d4cfd0b1ea6aee continuously
 Updates .codex/WORKFLOW_MONITORING_194F6AF0.md every 5 minutes
 """
 
-import subprocess
 import json
-import time
+import subprocess
 import sys
-from datetime import datetime, timedelta
+import time
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Any, Dict, List, Tuple
+
 
 class ProductionWorkflowMonitor:
     def __init__(self):
@@ -25,21 +26,21 @@ class ProductionWorkflowMonitor:
         self.poll_count = 0
         self.workflow_history: List[Dict[str, Any]] = []
         self.last_statuses: Dict[int, str] = {}
-        
+
     def query_gh_api(self, endpoint: str, query: str = "") -> Tuple[bool, List[Dict]]:
         """Query GitHub API via gh CLI with timeout"""
         try:
             cmd = ["gh", "api", f"repos/{self.repo}/actions/runs", "--paginate"]
             if query:
                 cmd.extend(["-q", query])
-            
+
             result = subprocess.run(
-                cmd, 
-                capture_output=True, 
-                text=True, 
+                cmd,
+                capture_output=True,
+                text=True,
                 timeout=30
             )
-            
+
             if result.returncode == 0:
                 workflows = []
                 for line in result.stdout.strip().split('\n'):
@@ -55,19 +56,19 @@ class ProductionWorkflowMonitor:
             print("API query timed out after 30s")
         except Exception as e:
             print(f"Exception: {e}")
-        
+
         return False, []
-    
+
     def fetch_workflows(self) -> List[Dict[str, Any]]:
         """Fetch and filter workflows for this commit"""
         success, all_workflows = self.query_gh_api(
             "actions/runs",
             ".[]|select(.head_sha | startswith(\"{}\"))|{{id:.id,name:.name,status:.status,conclusion:.conclusion,created_at:.created_at,updated_at:.updated_at,run_number:.run_number}}".format(self.commit_short)
         )
-        
+
         if success:
             return all_workflows
-        
+
         # Fall back to cache if available
         if self.cache_file.exists():
             try:
@@ -78,9 +79,9 @@ class ProductionWorkflowMonitor:
                         return cached['workflows']
             except:
                 pass
-        
+
         return []
-    
+
     def cache_workflows(self, workflows: List[Dict[str, Any]]):
         """Cache workflows for fallback"""
         try:
@@ -91,7 +92,7 @@ class ProductionWorkflowMonitor:
                 }, f)
         except:
             pass
-    
+
     def analyze_workflows(self, workflows: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analyze workflow status and metrics"""
         status_counts = {
@@ -102,16 +103,16 @@ class ProductionWorkflowMonitor:
             'queued': 0,
             'cancelled': 0,
         }
-        
+
         running_durations = []
         failed_workflows = []
         stalled = []
         now = datetime.utcnow()
-        
+
         for wf in workflows:
             status = wf.get('status', '').lower()
             conclusion = wf.get('conclusion', '').lower()
-            
+
             if status == 'completed':
                 if conclusion == 'success':
                     status_counts['success'] += 1
@@ -129,7 +130,7 @@ class ProductionWorkflowMonitor:
                 created = datetime.fromisoformat(wf.get('created_at', '').replace('Z', '+00:00'))
                 duration = (now - created).total_seconds() / 60
                 running_durations.append(duration)
-                
+
                 # Flag stalled (>25 min running)
                 if duration > 25:
                     stalled.append({
@@ -139,7 +140,7 @@ class ProductionWorkflowMonitor:
                     })
             elif status == 'queued':
                 status_counts['queued'] += 1
-        
+
         return {
             'counts': status_counts,
             'failed': failed_workflows,
@@ -148,15 +149,15 @@ class ProductionWorkflowMonitor:
             'completion_rate': (status_counts['success'] + status_counts['failed']) / max(status_counts['total'], 1),
             'success_rate': status_counts['success'] / max(status_counts['success'] + status_counts['failed'], 1),
         }
-    
+
     def build_dashboard(self, workflows: List[Dict[str, Any]], analysis: Dict[str, Any]) -> str:
         """Build markdown dashboard"""
         elapsed = datetime.utcnow() - self.start_time
         elapsed_min = elapsed.total_seconds() / 60
-        
+
         c = analysis['counts']
         status_icon = "🟢" if c['running'] == 0 else "🔵"
-        
+
         dashboard = f"""# 🚀 Workflow Health Monitor - Production
 
 **📌 Commit:** `{self.commit_short}`  
@@ -198,81 +199,81 @@ Status Overview:
 | Workflow | Status | Conclusion | Run # |
 |----------|--------|-----------|-------|
 """
-        
+
         for wf in sorted(workflows, key=lambda x: x.get('id', 0), reverse=True)[:30]:
             status = wf.get('status', '').lower()
             conclusion = wf.get('conclusion', '').lower()
             name = wf.get('name', 'Unknown')[:40]
             run_num = wf.get('run_number', '?')
-            
+
             icon = {'completed': '✅', 'in_progress': '⏳', 'queued': '⏸️'}.get(status, '❓')
-            
+
             dashboard += f"| {name} | {icon} {status} | {conclusion or '-'} | #{run_num} |\n"
-        
+
         if len(workflows) > 30:
             dashboard += f"| ... + {len(workflows) - 30} more | | | |\n"
-        
+
         if analysis['stalled']:
-            dashboard += f"\n### ⚠️ Stalled Workflows (Running >25 min)\n\n"
+            dashboard += "\n### ⚠️ Stalled Workflows (Running >25 min)\n\n"
             for s in analysis['stalled']:
                 dashboard += f"- **{s['name']}** → {s['duration_min']}min (ID: {s['id']})\n"
-        
+
         if analysis['failed']:
-            dashboard += f"\n### ❌ Failed Workflows\n\n"
+            dashboard += "\n### ❌ Failed Workflows\n\n"
             for f in analysis['failed'][:10]:
                 dashboard += f"- **{f['name']}** (Run #{f['run_number']})\n"
-        
-        dashboard += f"\n---\n"
+
+        dashboard += "\n---\n"
         dashboard += f"**Poll #{self.poll_count}** | **Updated:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}\n"
-        
+
         return dashboard
-    
+
     def monitor(self, max_polls: int = 12):  # 12 polls * 5 min = 60 minutes
         """Run monitoring loop"""
-        print(f"\n🚀 Workflow Monitoring Started")
+        print("\n🚀 Workflow Monitoring Started")
         print(f"   Commit: {self.commit_short}")
         print(f"   PR: #{self.pr_number}")
         print(f"   Max Duration: {max_polls * 5} minutes ({max_polls} polls)\n")
-        
+
         while self.poll_count < max_polls:
             self.poll_count += 1
             elapsed = datetime.utcnow() - self.start_time
-            
+
             print(f"\n[{datetime.utcnow().strftime('%H:%M:%S')}] Poll #{self.poll_count} ({elapsed.total_seconds()/60:.1f}m elapsed)")
-            
+
             # Fetch workflows
             workflows = self.fetch_workflows()
-            
+
             if workflows:
                 print(f"  ✅ Found {len(workflows)} workflows")
                 self.cache_workflows(workflows)
-                
+
                 # Analyze
                 analysis = self.analyze_workflows(workflows)
-                
+
                 # Print summary
                 c = analysis['counts']
                 print(f"  📊 OK:{c['success']} FAIL:{c['failed']} RUN:{c['running']} QUEUE:{c['queued']}")
-                
+
                 if analysis['stalled']:
                     print(f"  ⚠️  Stalled: {len(analysis['stalled'])} workflows")
-                
+
                 # Build and save dashboard
                 dashboard = self.build_dashboard(workflows, analysis)
                 self.monitoring_file.write_text(dashboard)
-                
+
                 # Check if done
                 if c['running'] == 0 and c['queued'] == 0:
-                    print(f"  ✅ All workflows completed!")
+                    print("  ✅ All workflows completed!")
                     break
             else:
-                print(f"  ⚠️  Could not fetch workflows (API unavailable?)")
-            
+                print("  ⚠️  Could not fetch workflows (API unavailable?)")
+
             # Wait for next poll (except on last iteration)
             if self.poll_count < max_polls:
-                print(f"  ⏱️ Next poll in 5 minutes...")
+                print("  ⏱️ Next poll in 5 minutes...")
                 time.sleep(300)  # 5 minutes
-        
+
         print(f"\n✅ Monitoring complete. Dashboard: {self.monitoring_file}")
 
 if __name__ == "__main__":

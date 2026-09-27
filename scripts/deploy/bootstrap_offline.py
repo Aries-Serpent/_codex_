@@ -221,7 +221,7 @@ class OfflineBootstrapper:
             ValueError: If any member attempts path traversal
         """
         base_dir = Path(extract_dir).resolve()
-        
+
         # Define a filter function that validates members during extraction
         def safe_extract_filter(member: tarfile.TarInfo, extract_path: str) -> tarfile.TarInfo | None:
             """Filter function for safe tarfile extraction.
@@ -230,7 +230,7 @@ class OfflineBootstrapper:
             """
             # Resolve the extraction path
             member_path = (base_dir / member.name).resolve()
-            
+
             # Check if path escapes the extraction directory
             try:
                 member_path.relative_to(base_dir)
@@ -238,20 +238,20 @@ class OfflineBootstrapper:
                 raise ValueError(
                     f"Security: Attempted path traversal in tarfile member: {member.name}"
                 )
-            
+
             # Block absolute paths (including Windows absolute paths)
             # Using os.path.isabs() for cross-platform compatibility
             if os.path.isabs(member.name):
                 raise ValueError(f"Security: Absolute path in tarfile member: {member.name}")
-            
+
             # Block symlinks and hardlinks (could be used for traversal)
             if member.issym() or member.islnk():
                 raise ValueError(
                     f"Security: Symlink/hardlink not allowed in tarfile: {member.name}"
                 )
-            
+
             return member
-        
+
         # Extract with the validation filter function
         tar.extractall(extract_dir, filter=safe_extract_filter)
 

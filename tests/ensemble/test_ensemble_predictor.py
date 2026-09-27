@@ -94,16 +94,16 @@ class TestHeuristicModel:
     def test_heuristic_initialization(self):
         """Test heuristic model initialization."""
         model = HeuristicModel()
-        assert model is not None
-        assert model.get_model_type() == ModelType.HEURISTIC
+        assert model is not None, "model must be initialized"
+        assert model.get_model_type() == ModelType.HEURISTIC, "Condition must be true"
 
     def test_heuristic_predict(self, test_features):
         """Test heuristic prediction."""
         model = HeuristicModel()
         result = model.predict(test_features)
-        assert result.model_type == ModelType.HEURISTIC
-        assert 0.0 <= result.confidence <= 1.0
-        assert result.execution_time_ms > 0
+        assert result.model_type == ModelType.HEURISTIC, "Result must not be empty"
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
+        assert result.execution_time_ms > 0, "execution_time_ms must be greater than zero"
 
 
 class TestMLModel:
@@ -112,22 +112,22 @@ class TestMLModel:
     def test_ml_initialization(self):
         """Test ML model initialization."""
         model = MLModel()
-        assert model is not None
-        assert model.get_model_type() == ModelType.MACHINE_LEARNING
+        assert model is not None, "model must be initialized"
+        assert model.get_model_type() == ModelType.MACHINE_LEARNING, "Condition must be true"
 
     def test_ml_predict(self, test_features):
         """Test ML prediction."""
         model = MLModel()
         result = model.predict(test_features)
-        assert result.model_type == ModelType.MACHINE_LEARNING
-        assert 0.0 <= result.confidence <= 1.0
+        assert result.model_type == ModelType.MACHINE_LEARNING, "Result must not be empty"
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
     def test_ml_training(self, synthetic_data):
         """Test ML model training."""
         X, y = synthetic_data
         model = MLModel()
         metrics = model.train(X, y)
-        assert "training_accuracy" in metrics
+        assert "training_accuracy" in metrics, "Condition must be true"
 
 
 class TestSymbolicModel:
@@ -136,15 +136,15 @@ class TestSymbolicModel:
     def test_symbolic_initialization(self):
         """Test symbolic model initialization."""
         model = SymbolicModel()
-        assert model is not None
-        assert model.get_model_type() == ModelType.SYMBOLIC
+        assert model is not None, "model must be initialized"
+        assert model.get_model_type() == ModelType.SYMBOLIC, "Condition must be true"
 
     def test_symbolic_predict(self, test_features):
         """Test symbolic prediction."""
         model = SymbolicModel()
         result = model.predict(test_features)
-        assert result.model_type == ModelType.SYMBOLIC
-        assert 0.0 <= result.confidence <= 1.0
+        assert result.model_type == ModelType.SYMBOLIC, "Result must not be empty"
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
 
 class TestEnsemblePredictor:
@@ -152,15 +152,15 @@ class TestEnsemblePredictor:
 
     def test_ensemble_initialization(self, ensemble_predictor):
         """Test ensemble initialization."""
-        assert ensemble_predictor is not None
-        assert len(ensemble_predictor.models) == 3
+        assert ensemble_predictor is not None, "ensemble_predictor must be initialized"
+        assert len(ensemble_predictor.models) == 3, "Collection must not be empty"
 
     def test_ensemble_predict(self, ensemble_predictor, test_features):
         """Test ensemble prediction."""
         result = ensemble_predictor.predict(test_features)
-        assert result.prediction is not None
-        assert 0.0 <= result.confidence <= 1.0
-        assert len(result.model_predictions) == 3
+        assert result.prediction is not None, "prediction must be initialized"
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
+        assert len(result.model_predictions) == 3, "Collection must not be empty"
 
     def test_ensemble_latency_sla(self, ensemble_predictor, test_features):
         """Test ensemble meets latency SLA (<200ms p99)."""
@@ -170,7 +170,7 @@ class TestEnsemblePredictor:
             latencies.append(result.total_execution_time_ms)
 
         p99 = np.percentile(latencies, 99)
-        assert p99 < 200
+        assert p99 < 200, "p99 is not valid"
 
     def test_ensemble_batch_predict(self, ensemble_predictor):
         """Test batch prediction."""
@@ -179,7 +179,7 @@ class TestEnsemblePredictor:
             {"confidence": 0.3, "frequency": 10, "days_old": 20},
         ]
         results = ensemble_predictor.batch_predict(features_list)
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
 
 class TestCalibration:
@@ -188,14 +188,14 @@ class TestCalibration:
     def test_calibration_initialization(self):
         """Test calibration initialization."""
         framework = CalibrationFramework(k_folds=5)
-        assert framework.k_folds == 5
+        assert framework.k_folds == 5, "k_folds is not valid"
 
     def test_cross_validation(self, synthetic_data):
         """Test cross-validation."""
         X, y = synthetic_data
         framework = CalibrationFramework(k_folds=5)
         results = framework.cross_validate(X, y, ModelType.HEURISTIC)
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
 
 
 class TestPredictionAPI:
@@ -203,13 +203,13 @@ class TestPredictionAPI:
 
     def test_api_initialization(self, prediction_api):
         """Test API initialization."""
-        assert prediction_api is not None
+        assert prediction_api is not None, "prediction_api must be initialized"
 
     def test_api_predict(self, prediction_api, test_features):
         """Test API predict."""
         response = prediction_api.predict(test_features, "classification")
-        assert "prediction" in response
-        assert "confidence" in response
+        assert "prediction" in response, "Response must not be empty"
+        assert "confidence" in response, "Response must not be empty"
 
     def test_api_batch_predict(self, prediction_api):
         """Test API batch predict."""
@@ -218,7 +218,7 @@ class TestPredictionAPI:
             {"confidence": 0.3, "frequency": 10},
         ]
         response = prediction_api.predict_batch(features_list, "classification")
-        assert response["count"] == 2
+        assert response["count"] == 2, "Response must not be empty"
 
     def test_api_health_check(self, prediction_api):
         """Test API health check."""

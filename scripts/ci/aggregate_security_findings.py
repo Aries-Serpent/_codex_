@@ -158,7 +158,7 @@ class FindingsAggregator:
         """Parse CodeQL SARIF artifacts"""
         logger.info("Parsing CodeQL findings...")
         codeql_dir = self.artifacts_dir / "security-suite-codeql-python"
-        
+
         if not codeql_dir.exists():
             logger.warning(f"CodeQL directory not found: {codeql_dir}")
             return
@@ -167,13 +167,13 @@ class FindingsAggregator:
             try:
                 with open(sarif_file, "r") as f:
                     sarif_data = json.load(f)
-                
+
                 for run in sarif_data.get("runs", []):
                     for rule in run.get("tool", {}).get("driver", {}).get("rules", []):
                         rule_id = rule.get("id", "unknown")
                         cwe_match = re.search(r'CWE-(\d+)', rule.get("help", {}).get("text", ""))
                         cwe_id = f"CWE-{cwe_match.group(1)}" if cwe_match else None
-                        
+
                     for result in run.get("results", []):
                         finding = Finding(
                             id=f"CODEQL-{rule_id}-{len(self.findings):03d}",
@@ -199,7 +199,7 @@ class FindingsAggregator:
         """Parse Semgrep JSON output"""
         logger.info("Parsing Semgrep findings...")
         semgrep_dir = self.artifacts_dir / "security-suite-semgrep"
-        
+
         if not semgrep_dir.exists():
             logger.warning(f"Semgrep directory not found: {semgrep_dir}")
             return
@@ -212,7 +212,7 @@ class FindingsAggregator:
         try:
             with open(json_file, "r") as f:
                 semgrep_data = json.load(f)
-            
+
             for result in semgrep_data.get("results", []):
                 finding = Finding(
                     id=f"SEMGREP-{result.get('check_id', 'unknown')}-{len(self.findings):03d}",
@@ -237,7 +237,7 @@ class FindingsAggregator:
         """Parse pip-audit and Safety JSON outputs"""
         logger.info("Parsing dependency vulnerability findings...")
         dep_dir = self.artifacts_dir / "security-suite-dependency"
-        
+
         if not dep_dir.exists():
             logger.warning(f"Dependency directory not found: {dep_dir}")
             return
@@ -248,7 +248,7 @@ class FindingsAggregator:
             try:
                 with open(pip_audit_file, "r") as f:
                     pip_data = json.load(f)
-                
+
                 for dep in pip_data.get("dependencies", []):
                     for vuln in dep.get("vulns", []):
                         finding = Finding(
@@ -275,7 +275,7 @@ class FindingsAggregator:
         """
         logger.info("Parsing secret detection findings...")
         secrets_dir = self.artifacts_dir / "security-suite-secrets"
-        
+
         if not secrets_dir.exists():
             # lgtm[py/clear-text-logging]: Logging directory path only, not secret data
             logger.warning(f"Secrets directory not found: {secrets_dir}")
@@ -290,7 +290,7 @@ class FindingsAggregator:
         try:
             with open(baseline_file, "r") as f:
                 baseline_data = json.load(f)
-            
+
             for file_path, secrets in baseline_data.get("results", {}).items():
                 for idx, secret in enumerate(secrets):
                     # Extract only type and location metadata, not actual secret values
@@ -320,7 +320,7 @@ class FindingsAggregator:
         for finding in self.findings:
             # Create dedup key based on file, line, and description hash
             dedup_key = (finding.file, finding.line, hash(finding.description))
-            
+
             if dedup_key not in seen:
                 seen[dedup_key] = finding
                 unique_findings.append(finding)
@@ -439,10 +439,10 @@ class FindingsAggregator:
         report = self.run()
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(output_file, "w") as f:
             json.dump(report, f, indent=2)
-        
+
         logger.info(f"JSON report saved to {output_file}")
 
     def save_markdown(self, output_path: str) -> None:

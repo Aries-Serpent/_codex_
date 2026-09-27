@@ -207,7 +207,9 @@ class HybridPhysicsOrchestrator:
         return self.advanced_orchestrator.fluid.optimize_flow()
 
     def route_agent_with_em_field(
-        self, start_position: Any, hotspots: list[tuple]  # np.ndarray when numpy available
+        self,
+        start_position: Any,
+        hotspots: list[tuple],  # np.ndarray when numpy available
     ) -> list[Any]:  # list[np.ndarray] when numpy available
         """
         Route agent using electromagnetic field.

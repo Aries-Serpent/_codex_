@@ -8,6 +8,7 @@ Verify secrets baseline - ensures no real secrets are committed to repository.
 import subprocess
 import sys
 
+
 def verify_secrets():
     """Run git-secrets scan on the repository, excluding documentation."""
     try:

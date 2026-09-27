@@ -18,7 +18,7 @@ class TestPhase19PatternExpansion:
 
     PATTERN_DIR = Path(".codex/patterns")
     CONFIDENCE_THRESHOLD = 0.89  # Minimum confidence for new patterns
-    
+
     @pytest.mark.parametrize("pattern_id,expected_confidence", [
         ("P-041", 0.92),  # Model Versioning & Rollback
         ("P-042", 0.93),  # A/B Testing Infrastructure
@@ -67,9 +67,9 @@ class TestPhase19PatternExpansion:
         """Verify pattern has required documentation sections"""
         pattern_files = list(self.PATTERN_DIR.glob(f"{pattern_id}_*.md"))
         assert len(pattern_files) >= 1, f"No pattern file for {pattern_id}"
-        
+
         content = pattern_files[0].read_text()
-        
+
         required_sections = [
             "Description",
             "Context",
@@ -79,7 +79,7 @@ class TestPhase19PatternExpansion:
             "Related Patterns",
             "Production Validation",
         ]
-        
+
         for section in required_sections:
             assert section.lower() in content.lower(), \
                 f"{pattern_id}: Missing section '{section}'"
@@ -110,7 +110,7 @@ class TestPhase19PatternExpansion:
         """Verify pattern has correct category classification"""
         pattern_files = list(self.PATTERN_DIR.glob(f"{pattern_id}_*.md"))
         assert len(pattern_files) >= 1, f"No pattern file for {pattern_id}"
-        
+
         content = pattern_files[0].read_text()
         assert category in content, \
             f"{pattern_id}: Expected category '{category}' not found in documentation"
@@ -129,11 +129,11 @@ class TestPhase19PatternExpansion:
             0.92, 0.91, 0.89, 0.90, 0.92,  # P-051 to P-055
             0.90, 0.89, 0.91, 0.92, 0.91,  # P-056 to P-060
         ]
-        
+
         avg_confidence = sum(new_confidences) / len(new_confidences)
         assert avg_confidence >= 0.90, \
             f"Average confidence {avg_confidence:.3f} below target 0.90"
-        
+
         # Verify all individual patterns meet minimum threshold
         for conf in new_confidences:
             assert conf >= 0.89, f"Pattern confidence {conf} below minimum 0.89"
@@ -141,9 +141,9 @@ class TestPhase19PatternExpansion:
     def test_evidence_based_patterns(self):
         """Verify all patterns are evidence-based from Phase 17-18"""
         pattern_files = list(self.PATTERN_DIR.glob("P-0[4-5][0-9]_*.md"))
-        
+
         required_evidence_keywords = ["Phase 17", "Phase 18", "evidence", "validated", "deployment"]
-        
+
         for pattern_file in pattern_files:
             content = pattern_file.read_text().lower()
             has_evidence = any(keyword in content for keyword in required_evidence_keywords)
@@ -154,11 +154,11 @@ class TestPhase19PatternExpansion:
         # New patterns (P-041-P-060) should exist independently
         new_patterns = list(self.PATTERN_DIR.glob("P-0[4-5][0-9]_*.md"))
         old_patterns = list(self.PATTERN_DIR.glob("P-00[1-4][0-9]_*.md"))
-        
+
         # Verify no overlap
         new_names = {f.stem for f in new_patterns}
         old_names = {f.stem for f in old_patterns}
-        
+
         overlap = new_names & old_names
         assert len(overlap) == 0, f"Pattern name collision detected: {overlap}"
 
@@ -167,7 +167,7 @@ class TestPhase19PatternExpansion:
         # P-041 should reference related patterns like P-046, P-049, P-055
         p041 = (self.PATTERN_DIR / "P-041_MODEL_VERSIONING_ROLLBACK.md").read_text()
         assert "P-046" in p041 or "P-049" in p041, "P-041 missing expected cross-references"
-        
+
         # P-046 should reference related patterns like P-047
         p046_files = list(self.PATTERN_DIR.glob("P-046_*.md"))
         if p046_files:
@@ -179,13 +179,13 @@ class TestPhase19PatternExpansion:
         """Verify validation test coverage for all 20 new patterns"""
         # This test validates the test suite itself
         test_count = 0
-        
+
         # Count parametrized tests for new patterns
         test_count += 20  # test_pattern_confidence_score
         test_count += 20  # test_pattern_file_exists
         test_count += 20  # test_pattern_documentation_completeness
         test_count += 20  # test_pattern_category_classification
-        
+
         assert test_count >= 20, "Insufficient test coverage (expected ≥20 pattern tests)"
 
 
@@ -201,7 +201,7 @@ class TestPatternValidation:
             "categories": 4,
             "groups": ["ML Deployment", "Production Release", "Advanced Automation", "Observability"],
         }
-        
+
         assert metrics["patterns_created"] >= 15, "Minimum 15 patterns required"
         assert metrics["confidence_avg"] >= 0.90, "Average confidence must be ≥0.90"
         assert metrics["categories"] == 4, "Must have 4 pattern categories"
@@ -209,7 +209,7 @@ class TestPatternValidation:
     def test_pattern_library_integration(self):
         """Verify new patterns integrate with existing library"""
         pattern_index = Path(".codex/patterns/PATTERN_INDEX.md")
-        
+
         # Pattern index should exist and be updateable
         if pattern_index.exists():
             content = pattern_index.read_text()
@@ -220,7 +220,7 @@ class TestPatternValidation:
     def test_complete_documentation_set(self):
         """Verify complete documentation for all new patterns"""
         pattern_dir = Path(".codex/patterns")
-        
+
         # All 20 patterns should have documentation
         for i in range(41, 61):
             pattern_files = list(pattern_dir.glob(f"P-{i:03d}_*.md"))
@@ -261,7 +261,7 @@ class TestPhase19ComplianceGates:
             0.92, 0.91, 0.89, 0.90, 0.92,  # P-051-055
             0.90, 0.89, 0.91, 0.92, 0.91,  # P-056-060
         ]
-        
+
         below_threshold = [c for c in all_confidences if c < min_confidence]
         assert len(below_threshold) == 0, \
             f"GATE FAILED: {len(below_threshold)} patterns below {min_confidence} confidence"

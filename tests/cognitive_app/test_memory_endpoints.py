@@ -29,111 +29,111 @@ class TestMemoryStore:
     def test_store_pattern_happy_path(self, valid_pattern_payload, valid_auth_header):
         """Test successful pattern storage."""
         payload = valid_pattern_payload
-        assert payload["pattern_name"] == "security-patterns-v1"
-        assert payload["lane"] == "security"
+        assert payload["pattern_name"] == "security-patterns-v1", "Condition must be true"
+        assert payload["lane"] == "security", "Condition must be true"
 
     def test_store_pattern_all_lanes(self, valid_pattern_payload, all_lanes):
         """Test pattern storage for all lanes."""
         for lane in all_lanes:
             payload = {**valid_pattern_payload, "lane": lane}
-            assert payload["lane"] == lane
+            assert payload["lane"] == lane, "Condition must be true"
 
     def test_store_pattern_min_confidence(self, valid_pattern_payload):
         """Test pattern storage with minimum confidence."""
         payload = {**valid_pattern_payload, "confidence": 0.0}
-        assert payload["confidence"] == 0.0
+        assert payload["confidence"] == 0.0, "Condition must be true"
 
     def test_store_pattern_max_confidence(self, valid_pattern_payload):
         """Test pattern storage with maximum confidence."""
         payload = {**valid_pattern_payload, "confidence": 1.0}
-        assert payload["confidence"] == 1.0
+        assert payload["confidence"] == 1.0, "Condition must be true"
 
     def test_store_pattern_usage_count_min(self, valid_pattern_payload):
         """Test pattern with minimum usage_count."""
         payload = {**valid_pattern_payload, "usage_count": 1}
-        assert payload["usage_count"] == 1
+        assert payload["usage_count"] == 1, "Count must be greater than zero"
 
     def test_store_pattern_usage_count_large(self, valid_pattern_payload):
         """Test pattern with large usage_count."""
         payload = {**valid_pattern_payload, "usage_count": 999999}
-        assert payload["usage_count"] == 999999
+        assert payload["usage_count"] == 999999, "Count must be greater than zero"
 
     def test_store_pattern_no_tags(self, valid_pattern_payload):
         """Test pattern storage without tags."""
         payload = {**valid_pattern_payload}
         del payload["tags"]
-        assert "tags" not in payload
+        assert "tags" not in payload, "Condition must be true"
 
     def test_store_pattern_many_tags(self, valid_pattern_payload):
         """Test pattern with many tags."""
         many_tags = [f"tag_{i}" for i in range(20)]
         payload = {**valid_pattern_payload, "tags": many_tags}
-        assert len(payload["tags"]) == 20
+        assert len(payload["tags"]) == 20, "Collection must not be empty"
 
     def test_store_pattern_empty_tags_list(self, valid_pattern_payload):
         """Test pattern with empty tags list."""
         payload = {**valid_pattern_payload, "tags": []}
-        assert payload["tags"] == []
+        assert payload["tags"] == [], "Condition must be true"
 
     def test_store_pattern_long_description(self, valid_pattern_payload):
         """Test pattern with maximum-length description."""
         long_desc = "A" * 1000
         payload = {**valid_pattern_payload, "description": long_desc}
-        assert len(payload["description"]) == 1000
+        assert len(payload["description"]) == 1000, "Collection must not be empty"
 
     def test_store_pattern_min_description(self, valid_pattern_payload):
         """Test pattern with minimum-length description."""
         short_desc = "Pattern"
         payload = {**valid_pattern_payload, "description": short_desc}
-        assert len(payload["description"]) == 7
+        assert len(payload["description"]) == 7, "Collection must not be empty"
 
     def test_store_pattern_empty_description(self, valid_pattern_payload):
         """Test pattern with empty description (invalid)."""
         payload = {**valid_pattern_payload, "description": ""}
-        assert payload["description"] == ""
+        assert payload["description"] == "", "Condition must be true"
 
     def test_store_pattern_missing_pattern_name(self, valid_pattern_payload):
         """Test storage without pattern_name field."""
         payload = {**valid_pattern_payload}
         del payload["pattern_name"]
-        assert "pattern_name" not in payload
+        assert "pattern_name" not in payload, "Condition must be true"
 
     def test_store_pattern_missing_lane(self, valid_pattern_payload):
         """Test storage without lane field."""
         payload = {**valid_pattern_payload}
         del payload["lane"]
-        assert "lane" not in payload
+        assert "lane" not in payload, "Condition must be true"
 
     def test_store_pattern_missing_confidence(self, valid_pattern_payload):
         """Test storage without confidence field."""
         payload = {**valid_pattern_payload}
         del payload["confidence"]
-        assert "confidence" not in payload
+        assert "confidence" not in payload, "Condition must be true"
 
     def test_store_pattern_invalid_confidence_below(self, valid_pattern_payload):
         """Test pattern with confidence < 0.0."""
         payload = {**valid_pattern_payload, "confidence": -0.5}
-        assert payload["confidence"] == -0.5
+        assert payload["confidence"] == -0.5, "Condition must be true"
 
     def test_store_pattern_invalid_confidence_above(self, valid_pattern_payload):
         """Test pattern with confidence > 1.0."""
         payload = {**valid_pattern_payload, "confidence": 1.5}
-        assert payload["confidence"] == 1.5
+        assert payload["confidence"] == 1.5, "Condition must be true"
 
     def test_store_pattern_invalid_usage_count_zero(self, valid_pattern_payload):
         """Test pattern with usage_count = 0 (invalid)."""
         payload = {**valid_pattern_payload, "usage_count": 0}
-        assert payload["usage_count"] == 0
+        assert payload["usage_count"] == 0, "Count must be greater than zero"
 
     def test_store_pattern_invalid_usage_count_negative(self, valid_pattern_payload):
         """Test pattern with negative usage_count."""
         payload = {**valid_pattern_payload, "usage_count": -5}
-        assert payload["usage_count"] == -5
+        assert payload["usage_count"] == -5, "Count must be greater than zero"
 
     def test_store_pattern_duplicate_tags(self, valid_pattern_payload):
         """Test pattern with duplicate tags."""
         payload = {**valid_pattern_payload, "tags": ["sec", "sec", "fix"]}
-        assert len(payload["tags"]) == 3
+        assert len(payload["tags"]) == 3, "Collection must not be empty"
 
     def test_store_pattern_response_structure(self, valid_pattern_payload):
         """Test response includes all expected fields."""
@@ -142,7 +142,7 @@ class TestMemoryStore:
         # compressed_size_bytes, compression_ratio, stored_timestamp
         response_fields = ["pattern_id", "pattern_name", "lane", "confidence"]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_store_pattern_compression_ratio(self, valid_pattern_payload):
         """Test compression ratio in response."""
@@ -162,7 +162,7 @@ class TestMemoryStore:
     def test_store_pattern_with_unicode_tags(self, valid_pattern_payload):
         """Test pattern with Unicode characters in tags."""
         payload = {**valid_pattern_payload, "tags": ["security🔐", "fix→token"]}
-        assert payload["tags"]
+        assert payload["tags"], "Condition must be true"
 
     def test_store_pattern_special_chars_in_name(self, valid_pattern_payload):
         """Test pattern with special characters in name."""
@@ -170,7 +170,7 @@ class TestMemoryStore:
             **valid_pattern_payload,
             "pattern_name": "cve-2026-fix_v1.0.0",
         }
-        assert payload["pattern_name"] == "cve-2026-fix_v1.0.0"
+        assert payload["pattern_name"] == "cve-2026-fix_v1.0.0", "Condition must be true"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -185,7 +185,7 @@ class TestMemoryRetrieve:
         """Test successful pattern retrieval."""
         pattern_name = "security-patterns"
         # Should return list of patterns
-        assert pattern_name
+        assert pattern_name, "pattern_name is not valid"
 
     def test_retrieve_nonexistent_pattern(self, valid_auth_header):
         """Test retrieval of non-existent pattern."""
@@ -248,7 +248,7 @@ class TestMemoryRetrieve:
         # Should include: pattern_name, patterns[], count, cache_hit, cache_hit_rate
         response_fields = ["pattern_name", "patterns", "count", "cache_hit"]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_retrieve_pattern_cache_hit_true(self, valid_auth_header):
         """Test cache_hit=true when pattern was cached."""
@@ -287,72 +287,72 @@ class TestMemorySTMPush:
     def test_stm_push_happy_path(self, valid_stm_payload, valid_auth_header):
         """Test successful STM item push."""
         payload = valid_stm_payload
-        assert payload["content"]
-        assert payload["context"]
-        assert payload["lifetime_seconds"] == 3600
+        assert payload["content"], "Content must not be empty"
+        assert payload["context"], "Condition must be true"
+        assert payload["lifetime_seconds"] == 3600, "Condition must be true"
 
     def test_stm_push_min_lifetime(self, valid_stm_payload):
         """Test STM push with minimum lifetime."""
         payload = {**valid_stm_payload, "lifetime_seconds": 1}
-        assert payload["lifetime_seconds"] == 1
+        assert payload["lifetime_seconds"] == 1, "Condition must be true"
 
     def test_stm_push_max_lifetime(self, valid_stm_payload):
         """Test STM push with maximum lifetime."""
         payload = {**valid_stm_payload, "lifetime_seconds": 86400}
-        assert payload["lifetime_seconds"] == 86400
+        assert payload["lifetime_seconds"] == 86400, "Condition must be true"
 
     def test_stm_push_zero_lifetime(self, valid_stm_payload):
         """Test STM push with zero lifetime (invalid)."""
         payload = {**valid_stm_payload, "lifetime_seconds": 0}
-        assert payload["lifetime_seconds"] == 0
+        assert payload["lifetime_seconds"] == 0, "Condition must be true"
 
     def test_stm_push_negative_lifetime(self, valid_stm_payload):
         """Test STM push with negative lifetime."""
         payload = {**valid_stm_payload, "lifetime_seconds": -100}
-        assert payload["lifetime_seconds"] == -100
+        assert payload["lifetime_seconds"] == -100, "Condition must be true"
 
     def test_stm_push_empty_content(self, valid_stm_payload):
         """Test STM push with empty content."""
         payload = {**valid_stm_payload, "content": ""}
-        assert payload["content"] == ""
+        assert payload["content"] == "", "Content must not be empty"
 
     def test_stm_push_long_content(self, valid_stm_payload):
         """Test STM push with very long content."""
         long_content = "X" * 10000
         payload = {**valid_stm_payload, "content": long_content}
-        assert len(payload["content"]) == 10000
+        assert len(payload["content"]) == 10000, "Collection must not be empty"
 
     def test_stm_push_context_values(self, valid_stm_payload):
         """Test various context values."""
         contexts = ["orchestrator", "agent", "lane", "campaign", "system"]
         for ctx in contexts:
             payload = {**valid_stm_payload, "context": ctx}
-            assert payload["context"] == ctx
+            assert payload["context"] == ctx, "Condition must be true"
 
     def test_stm_push_missing_content(self, valid_stm_payload):
         """Test STM push without content field."""
         payload = {**valid_stm_payload}
         del payload["content"]
-        assert "content" not in payload
+        assert "content" not in payload, "Content must not be empty"
 
     def test_stm_push_missing_context(self, valid_stm_payload):
         """Test STM push without context field."""
         payload = {**valid_stm_payload}
         del payload["context"]
-        assert "context" not in payload
+        assert "context" not in payload, "Condition must be true"
 
     def test_stm_push_missing_lifetime(self, valid_stm_payload):
         """Test STM push without lifetime_seconds field."""
         payload = {**valid_stm_payload}
         del payload["lifetime_seconds"]
-        assert "lifetime_seconds" not in payload
+        assert "lifetime_seconds" not in payload, "Condition must be true"
 
     def test_stm_push_response_structure(self, valid_stm_payload):
         """Test response includes required fields."""
         # Expected: stm_id, content, context, expires_at
         response_fields = ["stm_id", "content", "context", "expires_at"]
         for field in response_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_stm_push_expires_at_calculation(self, valid_stm_payload):
         """Test expires_at is calculated correctly."""
@@ -370,13 +370,13 @@ class TestMemorySTMPush:
             **valid_stm_payload,
             "content": "Phase 15 🚀 → Security lane 🔐 objectives",
         }
-        assert "🚀" in payload["content"]
+        assert "🚀" in payload["content"], "Content must not be empty"
 
     def test_stm_push_json_in_content(self, valid_stm_payload):
         """Test STM push with JSON content."""
         json_content = json.dumps({"key": "value", "number": 123})
         payload = {**valid_stm_payload, "content": json_content}
-        assert json.loads(payload["content"])
+        assert json.loads(payload["content"]), "Content must not be empty"
 
     def test_stm_push_no_auth(self, valid_stm_payload):
         """Test STM push without authorization header."""
@@ -407,14 +407,14 @@ class TestMemoryStats:
         # Should have: stm, ltm, cache
         categories = ["stm", "ltm", "cache"]
         for cat in categories:
-            assert cat is not None
+            assert cat is not None, "cat must be initialized"
 
     def test_memory_stats_stm_fields(self, valid_auth_header):
         """Test STM stats fields."""
         # Should include: capacity, current_size, eviction_count
         stm_fields = ["capacity", "current_size", "eviction_count"]
         for field in stm_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_memory_stats_ltm_fields(self, valid_auth_header):
         """Test LTM stats fields."""
@@ -428,14 +428,14 @@ class TestMemoryStats:
             "retention_days",
         ]
         for field in ltm_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_memory_stats_cache_fields(self, valid_auth_header):
         """Test cache stats fields."""
         # Should include: hit_rate, hit_count, miss_count
         cache_fields = ["hit_rate", "hit_count", "miss_count"]
         for field in cache_fields:
-            assert field is not None
+            assert field is not None, "field must be initialized"
 
     def test_memory_stats_stm_capacity_range(self, valid_auth_header):
         """Test STM capacity is positive integer."""

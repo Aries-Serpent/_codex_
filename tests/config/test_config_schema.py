@@ -10,7 +10,6 @@ import dataclasses
 from typing import Any
 
 import pytest
-
 from omegaconf import OmegaConf
 
 # Prefer the project unified config if present; otherwise use a tiny fallback.

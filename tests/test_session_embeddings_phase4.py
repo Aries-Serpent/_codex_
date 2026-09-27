@@ -39,9 +39,9 @@ class TestPhase4EmbeddingsIntegration:
 
     def test_initialization(self, embeddings):
         """Test embeddings initialization."""
-        assert embeddings is not None
-        assert embeddings.DIMENSION == 384
-        assert embeddings.MODEL_NAME == "sentence-transformers/all-MiniLM-L6-v2"
+        assert embeddings is not None, "embeddings must be initialized"
+        assert embeddings.DIMENSION == 384, "DIMENSION is not valid"
+        assert embeddings.MODEL_NAME == "sentence-transformers/all-MiniLM-L6-v2", "MODEL_NAME is not valid"
 
     def test_add_single_session(self, embeddings):
         """Test adding a single session."""
@@ -51,8 +51,8 @@ class TestPhase4EmbeddingsIntegration:
             patterns=["P-001"],
             tags=["test"],
         )
-        assert success is True
-        assert len(embeddings.list_sessions()) == 1
+        assert success is True, "success is not valid"
+        assert len(embeddings.list_sessions()) == 1, "Collection must not be empty"
 
     def test_add_multiple_sessions(self, embeddings):
         """Test adding multiple sessions."""
@@ -71,9 +71,9 @@ class TestPhase4EmbeddingsIntegration:
                 patterns=patterns,
                 tags=tags,
             )
-            assert success is True
+            assert success is True, "success is not valid"
 
-        assert len(embeddings.list_sessions()) == 5
+        assert len(embeddings.list_sessions()) == 5, "Collection must not be empty"
 
     def test_get_stats(self, embeddings):
         """Test getting index statistics."""
@@ -81,11 +81,11 @@ class TestPhase4EmbeddingsIntegration:
         embeddings.add_session("S002", "Another session", [], [])
 
         stats = embeddings.get_stats()
-        assert stats["total_sessions"] == 2
-        assert stats["dimension"] == 384
-        assert stats["model"] == "sentence-transformers/all-MiniLM-L6-v2"
-        assert stats["has_faiss"] is True or stats["has_faiss"] is False
-        assert stats["has_model"] is True or stats["has_model"] is False
+        assert stats["total_sessions"] == 2, "Condition must be true"
+        assert stats["dimension"] == 384, "Condition must be true"
+        assert stats["model"] == "sentence-transformers/all-MiniLM-L6-v2", "Condition must be true"
+        assert stats["has_faiss"] is True or stats["has_faiss"] is False, "Condition must be true"
+        assert stats["has_model"] is True or stats["has_model"] is False, "Condition must be true"
 
     def test_save_and_load_index(self, embeddings, temp_index_path, temp_metadata_path):
         """Test saving and loading index."""
@@ -95,14 +95,14 @@ class TestPhase4EmbeddingsIntegration:
 
         # Save
         embeddings.save_index()
-        assert temp_index_path.exists() or temp_metadata_path.exists()
+        assert temp_index_path.exists() or temp_metadata_path.exists(), "Data must not be empty"
 
         # Load in new instance
         new_embeddings = SessionEmbeddings(
             embeddings_path=str(temp_index_path),
             metadata_path=str(temp_metadata_path),
         )
-        assert len(new_embeddings.list_sessions()) == 2
+        assert len(new_embeddings.list_sessions()) == 2, "Collection must not be empty"
 
     def test_semantic_search_text(self, embeddings):
         """Test semantic search with text query."""
@@ -113,13 +113,13 @@ class TestPhase4EmbeddingsIntegration:
 
         # Search
         results = embeddings.find_similar_text("cache management", k=2)
-        assert len(results) <= 2
+        assert len(results) <= 2, "Results must not be empty"
         assert isinstance(results, list)
         if results:
             session_id, score = results[0]
             assert isinstance(session_id, str)
             assert isinstance(score, (int, float))
-            assert 0 <= score <= 1
+            assert 0 <= score <= 1, "0 is not valid"
 
     def test_semantic_search_session(self, embeddings):
         """Test semantic search by session."""
@@ -128,16 +128,16 @@ class TestPhase4EmbeddingsIntegration:
         embeddings.add_session("S003", "Cache optimization", [], ["cache"])
 
         results = embeddings.find_similar("S001", k=2)
-        assert len(results) <= 2
+        assert len(results) <= 2, "Results must not be empty"
         # Results should not include S001 itself
         result_ids = [r[0] for r in results]
-        assert "S001" not in result_ids
+        assert "S001" not in result_ids, "Result must not be empty"
 
     def test_find_similar_nonexistent_session(self, embeddings):
         """Test finding similar to non-existent session."""
         embeddings.add_session("S001", "Test", [], [])
         results = embeddings.find_similar("NONEXISTENT", k=5)
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_get_metadata(self, embeddings):
         """Test getting session metadata."""
@@ -149,33 +149,33 @@ class TestPhase4EmbeddingsIntegration:
         )
 
         meta = embeddings.get_metadata("S001")
-        assert meta["summary"] == "Test session"
-        assert meta["patterns"] == ["P-001"]
-        assert meta["tags"] == ["test"]
+        assert meta["summary"] == "Test session", "Condition must be true"
+        assert meta["patterns"] == ["P-001"], "Condition must be true"
+        assert meta["tags"] == ["test"], "Condition must be true"
 
     def test_invalid_session_handling(self, embeddings):
         """Test handling of invalid sessions."""
         # Empty session_id
         result = embeddings.add_session("", "Test", [], [])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
         # Empty summary
         result = embeddings.add_session("S001", "", [], [])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_normalize_text(self, embeddings):
         """Test text normalization."""
         # Create instance to test private method
         text = "  UPPERCASE TEXT  "
         normalized = embeddings._normalize_text(text)
-        assert normalized == "uppercase text"
+        assert normalized == "uppercase text", "normalized is not valid"
 
     def test_embedding_dimension(self, embeddings):
         """Test that embeddings have correct dimension."""
         embeddings.add_session("S001", "Test", [], [])
         metadata = embeddings.get_metadata("S001")
-        assert metadata is not None
-        assert embeddings.DIMENSION == 384
+        assert metadata is not None, "metadata must be initialized"
+        assert embeddings.DIMENSION == 384, "DIMENSION is not valid"
 
     def test_batch_operations(self, embeddings):
         """Test batch session operations."""
@@ -188,11 +188,11 @@ class TestPhase4EmbeddingsIntegration:
 
         # Verify all sessions added
         all_sessions = embeddings.list_sessions()
-        assert len(all_sessions) == 20
+        assert len(all_sessions) == 20, "All_sessions must not be empty"
 
         # Test search with all sessions
         results = embeddings.find_similar_text("summary", k=5)
-        assert len(results) <= 5
+        assert len(results) <= 5, "Results must not be empty"
 
     def test_performance_search_latency(self, embeddings):
         """Test search performance."""
@@ -211,8 +211,8 @@ class TestPhase4EmbeddingsIntegration:
         latency = (time.time() - start) * 1000  # Convert to ms
 
         # Should complete in reasonable time (< 100ms even for 50 sessions)
-        assert latency < 1000  # Very generous limit for mock mode
-        assert len(results) <= 5
+        assert latency < 1000, "latency is not valid"
+        assert len(results) <= 5, "Results must not be empty"
 
     def test_list_sessions(self, embeddings):
         """Test listing all sessions."""
@@ -221,8 +221,8 @@ class TestPhase4EmbeddingsIntegration:
             embeddings.add_session(s_id, f"Session {s_id}", [], [])
 
         listed = embeddings.list_sessions()
-        assert len(listed) == 3
-        assert set(listed) == set(sessions)
+        assert len(listed) == 3, "Listed must not be empty"
+        assert set(listed) == set(sessions), "Condition must be true"
 
     def test_search_with_k_parameter(self, embeddings):
         """Test search with different k values."""
@@ -249,10 +249,10 @@ class TestPhase4EmbeddingsIntegration:
         with open(temp_metadata_path) as f:
             data = json.load(f)
 
-        assert data["version"] == embeddings.VERSION
-        assert data["model"] == embeddings.MODEL_NAME
-        assert data["dimension"] == embeddings.DIMENSION
-        assert "S001" in data["sessions"]
+        assert data["version"] == embeddings.VERSION, "Data must not be empty"
+        assert data["model"] == embeddings.MODEL_NAME, "Data must not be empty"
+        assert data["dimension"] == embeddings.DIMENSION, "Data must not be empty"
+        assert "S001" in data["sessions"], "Data must not be empty"
 
     def test_thread_safety(self, embeddings):
         """Test basic thread safety (concurrent access)."""
@@ -280,7 +280,7 @@ class TestPhase4EmbeddingsIntegration:
 
         # Verify sessions
         all_sessions = embeddings.list_sessions()
-        assert len(all_sessions) == 30
+        assert len(all_sessions) == 30, "All_sessions must not be empty"
 
     def test_rebuild_index(self, embeddings):
         """Test rebuilding index."""
@@ -289,8 +289,8 @@ class TestPhase4EmbeddingsIntegration:
 
         # Rebuild
         success = embeddings.rebuild_index()
-        assert success is True
-        assert len(embeddings.list_sessions()) == 2
+        assert success is True, "success is not valid"
+        assert len(embeddings.list_sessions()) == 2, "Collection must not be empty"
 
     def test_search_result_format(self, embeddings):
         """Test search result format."""
@@ -304,12 +304,12 @@ class TestPhase4EmbeddingsIntegration:
         for session_id, score in results:
             assert isinstance(session_id, str)
             assert isinstance(score, (int, float))
-            assert 0 <= score <= 1
+            assert 0 <= score <= 1, "0 is not valid"
 
     def test_empty_index_search(self, embeddings):
         """Test searching empty index."""
         results = embeddings.find_similar_text("query", k=5)
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_single_session_search(self, embeddings):
         """Test searching with single session in index."""
@@ -318,4 +318,4 @@ class TestPhase4EmbeddingsIntegration:
         results = embeddings.find_similar_text("query", k=5)
         # With mock embeddings, might return the one session or might not
         # depending on distance calculation
-        assert len(results) <= 1
+        assert len(results) <= 1, "Results must not be empty"

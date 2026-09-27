@@ -171,7 +171,14 @@ class GitHubLogsAPI:
         self.token = token
         self._kwargs = kwargs
 
-    def get_logs(self, *, owner: Optional[str] = None, repo: Optional[str] = None, run_id: Optional[int] = None, **kwargs: Any) -> str:
+    def get_logs(
+        self,
+        *,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+        run_id: Optional[int] = None,
+        **kwargs: Any,
+    ) -> str:
         if repo is None or repo == "":
             raise ValueError("repo is required")
         if run_id is None:
@@ -181,7 +188,14 @@ class GitHubLogsAPI:
         client = _get_github_client()
         return client.get_check_run_logs(owner or "", repo, run_id)
 
-    async def fetch_logs(self, *, owner: Optional[str] = None, repo: Optional[str] = None, run_id: Optional[int] = None, **kwargs: Any) -> str:
+    async def fetch_logs(
+        self,
+        *,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+        run_id: Optional[int] = None,
+        **kwargs: Any,
+    ) -> str:
         if repo is None or repo == "":
             raise ValueError("repo is required")
         if run_id is None:

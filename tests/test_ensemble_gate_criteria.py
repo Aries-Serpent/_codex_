@@ -209,7 +209,7 @@ class TestEnsembleGateCriteria:
 
     def test_ensemble_initialization(self, predictor):
         """Test ensemble initialization with all models."""
-        assert len(predictor.models) == 3
+        assert len(predictor.models) == 3, "Collection must not be empty"
         model_types = [m.__class__.__name__ for m in predictor.models.values()]
         assert all(name in ["HeuristicModel", "MLModel", "SymbolicModel"] for name in model_types)
 
@@ -228,12 +228,12 @@ class TestEnsembleGateCriteria:
         # Verify output format
         assert hasattr(result, "prediction")
         assert hasattr(result, "confidence")
-        assert 0.0 <= result.confidence <= 1.0
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
         assert hasattr(result, "model_predictions")
-        assert len(result.model_predictions) == 3
+        assert len(result.model_predictions) == 3, "Collection must not be empty"
         assert hasattr(result, "voting_scores")
         assert hasattr(result, "total_execution_time_ms")
-        assert result.total_execution_time_ms < 200.0
+        assert result.total_execution_time_ms < 200.0, "Result must not be empty"
 
     def test_batch_predictions(self, predictor):
         """Test batch prediction functionality."""
@@ -245,10 +245,10 @@ class TestEnsembleGateCriteria:
 
         results = predictor.batch_predict(features_list)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         for result in results:
             assert result.prediction in ["positive", "negative"]
-            assert 0.0 <= result.confidence <= 1.0
+            assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
     def test_model_accuracy_estimates(self, predictor, test_data):
         """Test model accuracy estimation."""
@@ -257,9 +257,9 @@ class TestEnsembleGateCriteria:
 
         accuracies = predictor.get_model_accuracy_estimates()
 
-        assert len(accuracies) == 3
+        assert len(accuracies) == 3, "Accuracies must not be empty"
         for model_name, accuracy in accuracies.items():
-            assert 0.0 <= accuracy <= 1.0
+            assert 0.0 <= accuracy <= 1.0, "0 is not valid"
 
     def test_performance_metrics(self, predictor, test_data):
         """Test performance metrics collection."""
@@ -268,11 +268,11 @@ class TestEnsembleGateCriteria:
 
         metrics = predictor.get_ensemble_performance()
 
-        assert "total_predictions" in metrics
-        assert "avg_execution_time_ms" in metrics
-        assert "p99_execution_time_ms" in metrics
-        assert "avg_confidence" in metrics
-        assert metrics["total_predictions"] == len(features_list)
+        assert "total_predictions" in metrics, "Condition must be true"
+        assert "avg_execution_time_ms" in metrics, "Condition must be true"
+        assert "p99_execution_time_ms" in metrics, "Condition must be true"
+        assert "avg_confidence" in metrics, "Condition must be true"
+        assert metrics["total_predictions"] == len(features_list), "Features_list must not be empty"
 
     def test_weighting_configuration(self, ensemble_config):
         """Test ensemble weighting configuration."""
@@ -283,7 +283,7 @@ class TestEnsembleGateCriteria:
         }
 
         total_weight = sum(weights.values())
-        assert abs(total_weight - 1.0) < 0.01  # Weights should sum to ~1.0
+        assert abs(total_weight - 1.0) < 0.01, "Condition must be true"
 
     def test_model_predictions_structure(self, predictor):
         """Test structure of individual model predictions."""
@@ -314,9 +314,9 @@ class TestModelIndividual:
         features = {"confidence": 0.8, "frequency": 75, "days_old": 5, "priority": 7, "category": "high"}
         result = model.predict(features)
 
-        assert result.model_type.value == "heuristic"
+        assert result.model_type.value == "heuristic", "Result must not be empty"
         assert result.prediction in ["positive", "negative"]
-        assert 0.1 <= result.confidence <= 0.95
+        assert 0.1 <= result.confidence <= 0.95, "Result must not be empty"
 
     def test_ml_model(self):
         """Test ML model."""
@@ -324,9 +324,9 @@ class TestModelIndividual:
         features = {"confidence": 0.8, "frequency": 75, "days_old": 5, "priority": 7, "category": "high"}
         result = model.predict(features)
 
-        assert result.model_type.value == "ml"
+        assert result.model_type.value == "ml", "Result must not be empty"
         assert result.prediction in ["positive", "negative"]
-        assert 0.15 <= result.confidence <= 0.95
+        assert 0.15 <= result.confidence <= 0.95, "Result must not be empty"
 
     def test_symbolic_model(self):
         """Test symbolic model."""
@@ -334,9 +334,9 @@ class TestModelIndividual:
         features = {"confidence": 0.8, "frequency": 75, "days_old": 5, "priority": 7, "category": "high"}
         result = model.predict(features)
 
-        assert result.model_type.value == "symbolic"
+        assert result.model_type.value == "symbolic", "Result must not be empty"
         assert result.prediction in ["positive", "negative"]
-        assert 0.15 <= result.confidence <= 0.95
+        assert 0.15 <= result.confidence <= 0.95, "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # Metrics collection categories
 METRICS_CATEGORIES = {
@@ -50,7 +50,7 @@ def collect_test_metrics() -> dict[str, Any]:
         "total_tests": 0,
         "test_markers": [],
     }
-    
+
     try:
         # Count test files
         result = subprocess.run(
@@ -62,7 +62,7 @@ def collect_test_metrics() -> dict[str, Any]:
         metrics["test_files"] = len(result.stdout.strip().split("\n"))
     except Exception as e:
         print(f"Warning: Could not count test files: {e}", file=sys.stderr)
-    
+
     return metrics
 
 
@@ -72,7 +72,7 @@ def collect_workflow_metrics() -> dict[str, Any]:
         "workflow_files": 0,
         "total_jobs": 0,
     }
-    
+
     try:
         # Count workflow files
         result = subprocess.run(
@@ -85,7 +85,7 @@ def collect_workflow_metrics() -> dict[str, Any]:
         metrics["workflow_files"] = len(workflow_files)
     except Exception as e:
         print(f"Warning: Could not count workflows: {e}", file=sys.stderr)
-    
+
     return metrics
 
 
@@ -100,7 +100,7 @@ def collect_system_metrics() -> dict[str, Any]:
             timeout=5,
         ).stdout.strip(),
     }
-    
+
     try:
         # Memory info
         result = subprocess.run(
@@ -119,14 +119,14 @@ def collect_system_metrics() -> dict[str, Any]:
             }
     except Exception as e:
         print(f"Warning: Could not collect memory metrics: {e}", file=sys.stderr)
-    
+
     return metrics
 
 
 def collect_repository_metrics() -> dict[str, Any]:
     """Collect repository size and structure metrics"""
     metrics = {}
-    
+
     try:
         # Repository size
         result = subprocess.run(
@@ -136,7 +136,7 @@ def collect_repository_metrics() -> dict[str, Any]:
             timeout=30,
         )
         metrics["repo_size"] = result.stdout.strip().split()[0]
-        
+
         # File counts by type
         result = subprocess.run(
             ["find", ".", "-type", "f", "-name", "*.py"],
@@ -145,10 +145,10 @@ def collect_repository_metrics() -> dict[str, Any]:
             timeout=30,
         )
         metrics["python_files"] = len(result.stdout.strip().split("\n"))
-    
+
     except Exception as e:
         print(f"Warning: Could not collect repo metrics: {e}", file=sys.stderr)
-    
+
     return metrics
 
 
@@ -173,31 +173,31 @@ def main() -> int:
         action="store_true",
         help="Include workflow metrics",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Collect metrics
     metrics = {
         "timestamp": datetime.now().isoformat(),
         "metrics": {},
     }
-    
+
     # System metrics (always included)
     metrics["system"] = collect_system_metrics()
     metrics["repository"] = collect_repository_metrics()
-    
+
     # Optional metrics
     if args.include_tests:
         metrics["metrics"]["tests"] = collect_test_metrics()
-    
+
     if args.include_workflows:
         metrics["metrics"]["workflows"] = collect_workflow_metrics()
-    
+
     # Write output
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w") as f:
         json.dump(metrics, f, indent=2)
-    
+
     print(f"✅ Metrics collected and saved to {args.output}")
     return 0
 

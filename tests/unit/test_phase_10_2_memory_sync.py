@@ -44,21 +44,21 @@ class TestMemoryConsolidationEngine:
 
     def test_initialization(self):
         engine = MemoryConsolidationEngine()
-        assert engine.config is not None
-        assert engine.config["stm_capacity"] == 500
-        assert engine.config["consolidation_threshold"] == 0.80
+        assert engine.config is not None, "config must be initialized"
+        assert engine.config["stm_capacity"] == 500, "Condition must be true"
+        assert engine.config["consolidation_threshold"] == 0.80, "Condition must be true"
 
     def test_custom_configuration(self):
         config = {"stm_capacity": 1000, "ltm_capacity": 5000}
         engine = MemoryConsolidationEngine(config)
-        assert engine.config["stm_capacity"] == 1000
+        assert engine.config["stm_capacity"] == 1000, "Condition must be true"
 
     def test_observe_returns_state(self):
         engine = MemoryConsolidationEngine()
         state = engine._observe()
-        assert "stm_count" in state
-        assert "ltm_count" in state
-        assert "timestamp" in state
+        assert "stm_count" in state, "Count must be greater than zero"
+        assert "ltm_count" in state, "Count must be greater than zero"
+        assert "timestamp" in state, "Condition must be true"
 
     def test_calculate_pattern_score(self):
         engine = MemoryConsolidationEngine()
@@ -73,7 +73,7 @@ class TestMemoryConsolidationEngine:
             created_at=datetime.now(timezone.utc) - timedelta(days=10),
         )
         score = engine._calculate_pattern_score(entry)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_determine_retention_policy(self):
         engine = MemoryConsolidationEngine()
@@ -112,11 +112,11 @@ class TestMemoryConsolidationEngine:
 
         metrics = engine._analyze(state_before, state_after, 10, 5, 0.5)
 
-        assert metrics.stm_count_before == 100
-        assert metrics.stm_count_after == 50
-        assert metrics.patterns_promoted == 10
-        assert metrics.patterns_pruned == 5
-        assert metrics.duration_ms > 0
+        assert metrics.stm_count_before == 100, "Count must be greater than zero"
+        assert metrics.stm_count_after == 50, "Count must be greater than zero"
+        assert metrics.patterns_promoted == 10, "patterns_promoted is not valid"
+        assert metrics.patterns_pruned == 5, "patterns_pruned is not valid"
+        assert metrics.duration_ms > 0, "duration_ms must be greater than zero"
 
 
 class TestPatternDiscovery:
@@ -124,20 +124,20 @@ class TestPatternDiscovery:
 
     def test_discovery_initialization(self):
         discovery = PatternDiscovery(frequency_threshold=3)
-        assert discovery.frequency_threshold == 3
-        assert len(discovery.patterns) == 0
+        assert discovery.frequency_threshold == 3, "frequency_threshold is not valid"
+        assert len(discovery.patterns) == 0, "Collection must not be empty"
 
     def test_classifier_decision_pattern(self):
         event = {"action": "choose", "resource": "algorithm", "outcome": "success"}
-        assert PatternClassifier.classify(event) == PatternType.DECISION
+        assert PatternClassifier.classify(event) == PatternType.DECISION, "Condition must be true"
 
     def test_classifier_error_pattern(self):
         event = {"action": "execute", "error": "timeout", "outcome": "failure"}
-        assert PatternClassifier.classify(event) == PatternType.ERROR
+        assert PatternClassifier.classify(event) == PatternType.ERROR, "Error should be raised or set"
 
     def test_classifier_success_pattern(self):
         event = {"action": "deploy", "outcome": "success"}
-        assert PatternClassifier.classify(event) == PatternType.SUCCESS
+        assert PatternClassifier.classify(event) == PatternType.SUCCESS, "Condition must be true"
 
     def test_pattern_scorer_calculation(self):
         pattern = Pattern(
@@ -149,7 +149,7 @@ class TestPatternDiscovery:
             success_rate=0.8,
         )
         score = PatternScorer.calculate_score(pattern)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_confidence_calculation(self):
         pattern = Pattern(
@@ -161,8 +161,8 @@ class TestPatternDiscovery:
             success_rate=0.8,
         )
         confidence = PatternScorer.calculate_confidence(pattern, frequency_threshold=3)
-        assert 0.0 <= confidence <= 1.0
-        assert confidence > 0.5
+        assert 0.0 <= confidence <= 1.0, "0 is not valid"
+        assert confidence > 0.5, "confidence must be greater than zero"
 
     def test_tagging_engine(self):
         pattern = Pattern(
@@ -174,8 +174,8 @@ class TestPatternDiscovery:
             success_rate=0.9,
         )
         tags = TaggingEngine.tag_pattern(pattern)
-        assert len(tags) > 0
-        assert any("ML_PATTERN_FEEDING" in tag for tag in tags)
+        assert len(tags) > 0, "Tags must not be empty"
+        assert any("ML_PATTERN_FEEDING" in tag for tag in tags), "Condition must be true"
 
     def test_discovery_from_events(self):
         discovery = PatternDiscovery(frequency_threshold=2)
@@ -185,7 +185,7 @@ class TestPatternDiscovery:
             {"action": "choose", "outcome": "success"},
         ]
         patterns = discovery.discover(events)
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
 
     def test_promoted_patterns_filter(self):
         discovery = PatternDiscovery(frequency_threshold=3)
@@ -197,8 +197,8 @@ class TestPatternDiscovery:
         discovered = discovery.discover(events)
         promoted = discovery.get_promoted_patterns(score_threshold=0.60)
 
-        assert len(discovered) > 0
-        assert len(promoted) > 0
+        assert len(discovered) > 0, "Discovered must not be empty"
+        assert len(promoted) > 0, "Promoted must not be empty"
         assert all(getattr(p, "score", 1.0) >= 0.60 for p in promoted)
 
     def test_metrics_calculation(self):
@@ -221,9 +221,9 @@ class TestPatternDiscovery:
             ),
         ]
         metrics = MetricsCalculator.calculate_discovery_metrics(patterns)
-        assert metrics["total_patterns"] == 2
-        assert metrics["average_confidence"] >= 0.0
-        assert len(metrics["type_distribution"]) > 0
+        assert metrics["total_patterns"] == 2, "Condition must be true"
+        assert metrics["average_confidence"] >= 0.0, "Value must be greater than zero"
+        assert len(metrics["type_distribution"]) > 0, "Collection must not be empty"
 
 
 class TestRetentionPolicies:
@@ -231,9 +231,9 @@ class TestRetentionPolicies:
 
     def test_retention_config_defaults(self):
         config = RetentionConfig()
-        assert config.standard_retention_days == 90
-        assert config.decay_retention_days == 180
-        assert config.archived_retention_days == 365
+        assert config.standard_retention_days == 90, "standard_retention_days is not valid"
+        assert config.decay_retention_days == 180, "decay_retention_days is not valid"
+        assert config.archived_retention_days == 365, "archived_retention_days is not valid"
 
     def test_evergreen_policy(self):
         config = RetentionConfig()
@@ -300,8 +300,8 @@ class TestRetentionPolicies:
         )
 
         confidence = policy.calculate_confidence(pattern, now)
-        assert confidence < 1.0
-        assert confidence > 0.0
+        assert confidence < 1.0, "confidence is not valid"
+        assert confidence > 0.0, "confidence must be greater than zero"
 
     def test_archived_policy(self):
         config = RetentionConfig()
@@ -359,12 +359,12 @@ class TestRetentionPolicies:
             last_accessed=datetime.now(timezone.utc),
         )
 
-        assert manager.classify_pattern(evergreen_pattern) == RetentionPolicy.EVERGREEN
-        assert manager.classify_pattern(decay_pattern) == RetentionPolicy.DECAY
+        assert manager.classify_pattern(evergreen_pattern) == RetentionPolicy.EVERGREEN, "Condition must be true"
+        assert manager.classify_pattern(decay_pattern) == RetentionPolicy.DECAY, "Condition must be true"
 
     def test_confidence_decay_calculator(self):
         decayed = ConfidenceDecayCalculator.exponential_decay(1.0, 60, 60)
-        assert 0.0 < decayed < 1.0
+        assert 0.0 < decayed < 1.0, "0 is not valid"
 
     def test_cleanup_cycle(self):
         config = RetentionConfig()
@@ -397,7 +397,7 @@ class TestRetentionPolicies:
         ]
 
         retained, pruned = manager.cleanup(patterns, now)
-        assert any(p.key == "p1" for p in retained)
+        assert any(p.key == "p1" for p in retained), "key is not valid"
         assert isinstance(pruned, list)
 
 
@@ -406,8 +406,8 @@ class TestPatternGraph:
 
     def test_graph_initialization(self):
         graph = PatternGraph()
-        assert len(graph.nodes) == 0
-        assert len(graph.edges) == 0
+        assert len(graph.nodes) == 0, "Collection must not be empty"
+        assert len(graph.edges) == 0, "Collection must not be empty"
 
     def test_add_node(self):
         graph = PatternGraph()
@@ -421,8 +421,8 @@ class TestPatternGraph:
             success_rate=0.9,
         )
         graph.add_node(node)
-        assert len(graph.nodes) == 1
-        assert "p1" in graph.nodes
+        assert len(graph.nodes) == 1, "Collection must not be empty"
+        assert "p1" in graph.nodes, "Condition must be true"
 
     def test_add_edge(self):
         graph = PatternGraph()
@@ -433,8 +433,8 @@ class TestPatternGraph:
         graph.add_node(node2)
         graph.add_edge(PatternEdge(source_id="p1", target_id="p2", relationship_type="causes", weight=0.8))
 
-        assert len(graph.edges) == 1
-        assert len(graph.adjacency["p1"]) == 1
+        assert len(graph.edges) == 1, "Collection must not be empty"
+        assert len(graph.adjacency["p1"]) == 1, "Collection must not be empty"
 
     def test_get_related_patterns(self):
         graph = PatternGraph()
@@ -445,7 +445,7 @@ class TestPatternGraph:
         graph.add_edge(PatternEdge("p1", "p2", "causes", 0.8))
 
         related = graph.get_related_patterns("p0", depth=2)
-        assert len(related) >= 2
+        assert len(related) >= 2, "Related must not be empty"
 
     def test_query_patterns(self):
         graph = PatternGraph()
@@ -463,8 +463,8 @@ class TestPatternGraph:
                 )
             )
 
-        assert len(graph.query_patterns({"pattern_type": "success"})) == 3
-        assert len(graph.query_patterns({"min_confidence": 0.85})) >= 1
+        assert len(graph.query_patterns({"pattern_type": "success"})) == 3, "Collection must not be empty"
+        assert len(graph.query_patterns({"min_confidence": 0.85})) >= 1, "Collection must not be empty"
 
     def test_graph_metrics(self):
         graph = PatternGraph()
@@ -475,28 +475,28 @@ class TestPatternGraph:
         graph.add_edge(PatternEdge("p1", "p2", "causes", 0.8))
 
         metrics = graph.compute_graph_metrics()
-        assert metrics["nodes"] == 3
-        assert metrics["edges"] == 2
-        assert metrics["density"] >= 0.0
+        assert metrics["nodes"] == 3, "Condition must be true"
+        assert metrics["edges"] == 2, "Condition must be true"
+        assert metrics["density"] >= 0.0, "Value must be greater than zero"
 
     def test_graph_export_json(self):
         graph = PatternGraph()
         graph.add_node(PatternNode("p1", "test", "success", "Test", 0.8, 5, 0.9))
         export = graph.export_json()
 
-        assert "nodes" in export
-        assert "edges" in export
-        assert "metrics" in export
-        assert len(export["nodes"]) == 1
+        assert "nodes" in export, "Condition must be true"
+        assert "edges" in export, "Condition must be true"
+        assert "metrics" in export, "Condition must be true"
+        assert len(export["nodes"]) == 1, "Collection must not be empty"
 
     def test_graph_export_graphml(self):
         graph = PatternGraph()
         graph.add_node(PatternNode("p1", "test_pattern", "success", "Test", 0.8, 5, 0.9))
         graphml = graph.export_graphml()
 
-        assert '<?xml version="1.0"' in graphml
-        assert "<graph" in graphml
-        assert "p1" in graphml
+        assert '<?xml version="1.0"' in graphml, "Condition must be true"
+        assert "<graph" in graphml, "Condition must be true"
+        assert "p1" in graphml, "Condition must be true"
 
     def test_graph_builder(self):
         builder = GraphBuilder()
@@ -513,7 +513,7 @@ class TestPatternGraph:
             for i in range(5)
         ]
         graph = builder.build_complete_graph(patterns)
-        assert len(graph.nodes) == 5
+        assert len(graph.nodes) == 5, "Collection must not be empty"
 
 
 class TestIntegration:
@@ -529,9 +529,9 @@ class TestIntegration:
         builder = GraphBuilder()
         graph = builder.build_complete_graph(patterns)
 
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
         assert isinstance(promoted, list)
-        assert len(graph.nodes) > 0
+        assert len(graph.nodes) > 0, "Collection must not be empty"
 
     def test_retention_policy_workflow(self):
         manager = RetentionPolicyManager()
@@ -555,8 +555,8 @@ class TestIntegration:
             pattern.policy = manager.classify_pattern(pattern)
 
         metrics = manager.batch_cleanup(patterns, now)
-        assert metrics["total_processed"] == 5
-        assert metrics["pruned"] >= 0
+        assert metrics["total_processed"] == 5, "Condition must be true"
+        assert metrics["pruned"] >= 0, "Value must be greater than zero"
 
 
 class TestPerformance:
@@ -569,7 +569,7 @@ class TestPerformance:
         start = time.time()
         engine._observe()
         elapsed = (time.time() - start) * 1000
-        assert elapsed < 250
+        assert elapsed < 250, "elapsed is not valid"
 
     def test_graph_query_latency(self):
         graph = PatternGraph()
@@ -583,7 +583,7 @@ class TestPerformance:
         elapsed = (time.time() - start) * 1000
 
         assert isinstance(results, list)
-        assert elapsed < 250
+        assert elapsed < 250, "elapsed is not valid"
 
 
 class TestValidation:
@@ -601,7 +601,7 @@ class TestValidation:
                     success_rate=success_rate,
                 )
                 score = engine._calculate_pattern_score(entry)
-                assert 0.0 <= score <= 1.0
+                assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_confidence_bounds(self):
         for frequency in range(1, 10):
@@ -614,7 +614,7 @@ class TestValidation:
                 success_rate=0.7,
             )
             confidence = PatternScorer.calculate_confidence(pattern, 3)
-            assert 0.0 <= confidence <= 1.0
+            assert 0.0 <= confidence <= 1.0, "0 is not valid"
 
     def test_no_data_loss_on_consolidation(self):
         entries = [
@@ -628,7 +628,7 @@ class TestValidation:
             for i in range(10)
         ]
         promoted_count = len([e for e in entries if e.frequency >= 3])
-        assert promoted_count > 0
+        assert promoted_count > 0, "promoted_count must be positive"
 
 
 @pytest.fixture

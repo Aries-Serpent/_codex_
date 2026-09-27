@@ -33,10 +33,10 @@ def test_artifact_summary_reads_current_repo_schema(tmp_path):
 
     summary = rls._artifact_summary(artifact)
 
-    assert summary["total_findings"] == 10
-    assert summary["by_severity"]["CRITICAL"] == 4
-    assert summary["by_severity"]["HIGH"] == 4
-    assert summary["by_severity"]["MEDIUM"] == 2
+    assert summary["total_findings"] == 10, "Condition must be true"
+    assert summary["by_severity"]["CRITICAL"] == 4, "Condition must be true"
+    assert summary["by_severity"]["HIGH"] == 4, "Condition must be true"
+    assert summary["by_severity"]["MEDIUM"] == 2, "Condition must be true"
 
 
 def test_build_payload_falls_back_to_artifact_evidence(monkeypatch, tmp_path):
@@ -64,11 +64,11 @@ def test_build_payload_falls_back_to_artifact_evidence(monkeypatch, tmp_path):
 
     payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
 
-    assert payload["source_of_truth"] == "artifact"
-    assert payload["total_open_alerts"] == 3
-    assert payload["needs_triage"] is True
-    assert payload["delta"]["total_findings"] == 0
-    assert payload["artifact_generated_findings"]["total_findings"] == 3
+    assert payload["source_of_truth"] == "artifact", "Condition must be true"
+    assert payload["total_open_alerts"] == 3, "Condition must be true"
+    assert payload["needs_triage"] is True, "Condition must be true"
+    assert payload["delta"]["total_findings"] == 0, "Condition must be true"
+    assert payload["artifact_generated_findings"]["total_findings"] == 3, "Condition must be true"
 
 
 def test_default_branch_ref_filtering_handles_branch_matches():
@@ -97,10 +97,10 @@ def test_failure_classification_and_raw_evidence_are_exposed(tmp_path):
     payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
 
     assert payload["failure_classification"] == "blocked_by_critical_or_high_vulnerabilities"
-    assert payload["raw_evidence_artifacts"] == [str(artifact)]
-    assert payload["severity_summary"]["CRITICAL"] == 1
-    assert payload["severity_summary"]["HIGH"] == 1
-    assert payload["security_overview"]["severity_summary"] == payload["severity_summary"]
+    assert payload["raw_evidence_artifacts"] == [str(artifact)], "Condition must be true"
+    assert payload["severity_summary"]["CRITICAL"] == 1, "Condition must be true"
+    assert payload["severity_summary"]["HIGH"] == 1, "Condition must be true"
+    assert payload["security_overview"]["severity_summary"] == payload["severity_summary"], "Condition must be true"
 
 
 def test_artifact_backlog_reports_4k_plus_findings_in_summary(tmp_path):
@@ -128,10 +128,10 @@ def test_artifact_backlog_reports_4k_plus_findings_in_summary(tmp_path):
     rls._write_markdown(markdown_path, payload)
     text = markdown_path.read_text(encoding="utf-8")
 
-    assert rls._compact_count(4100) == "4.1k+"
-    assert "Historical artifact backlog: **4100**" in text
-    assert "Stale or archived findings: **4100**" in text
-    assert "Final recommendation: **advisory-only**" in text
+    assert rls._compact_count(4100) == "4.1k+", "Count must be greater than zero"
+    assert "Historical artifact backlog: **4100**" in text, "Condition must be true"
+    assert "Stale or archived findings: **4100**" in text, "Condition must be true"
+    assert "Final recommendation: **advisory-only**" in text, "Condition must be true"
 
 
 def test_artifact_only_classification_and_markdown_evidence_are_explicit(monkeypatch, tmp_path):
@@ -154,15 +154,15 @@ def test_artifact_only_classification_and_markdown_evidence_are_explicit(monkeyp
     )
 
     payload = rls._build_payload("Aries-Serpent/_codex_", str(artifact))
-    assert payload["classification"] == "historical_artifact_backlog"
-    assert payload["source_of_truth"] == "artifact"
+    assert payload["classification"] == "historical_artifact_backlog", "Condition must be true"
+    assert payload["source_of_truth"] == "artifact", "Condition must be true"
 
     markdown_path = tmp_path / "report.md"
     rls._write_markdown(markdown_path, payload)
     text = markdown_path.read_text(encoding="utf-8")
-    assert "Source of truth: **artifact**" in text
-    assert "Evidence artifacts:" in text
-    assert str(artifact) in text
+    assert "Source of truth: **artifact**" in text, "Condition must be true"
+    assert "Evidence artifacts:" in text, "Condition must be true"
+    assert str(artifact) in text, "Condition must be true"
 
 
 def test_paginate_handles_network_errors(monkeypatch):
@@ -171,14 +171,14 @@ def test_paginate_handles_network_errors(monkeypatch):
 
     monkeypatch.setattr(rls, "_api_get", fake_api_get)
 
-    assert rls._paginate("/repos/test/repo/code-scanning/alerts?state=open") == []
+    assert rls._paginate("/repos/test/repo/code-scanning/alerts?state=open") == [], "Condition must be true"
 
 
 def test_artifact_validation_rejects_invalid_payload(tmp_path):
     artifact = tmp_path / "invalid.json"
     artifact.write_text("[]", encoding="utf-8")
 
-    assert rls._artifact_is_valid(artifact) is False
+    assert rls._artifact_is_valid(artifact) is False, "Condition must be true"
 
 
 def test_default_branch_detection_uses_git_remote_when_api_unavailable(monkeypatch):
@@ -212,7 +212,7 @@ def test_default_branch_detection_uses_git_remote_when_api_unavailable(monkeypat
 
     monkeypatch.setattr(rls.subprocess, "run", fake_run)
 
-    assert rls._discover_default_branch("Aries-Serpent/_codex_") == "0D_base_"
+    assert rls._discover_default_branch("Aries-Serpent/_codex_") == "0D_base_", "Condition must be true"
 
 
 def test_artifact_summary_uses_severity_bucket_totals_for_counting(tmp_path):
@@ -236,10 +236,10 @@ def test_artifact_summary_uses_severity_bucket_totals_for_counting(tmp_path):
 
     summary = rls._artifact_summary(artifact)
 
-    assert summary["total_findings"] == 6
-    assert summary["by_severity"]["HIGH"] == 2
-    assert summary["by_severity"]["LOW"] == 3
-    assert summary["by_severity"]["INFO"] == 1
+    assert summary["total_findings"] == 6, "Condition must be true"
+    assert summary["by_severity"]["HIGH"] == 2, "Condition must be true"
+    assert summary["by_severity"]["LOW"] == 3, "Condition must be true"
+    assert summary["by_severity"]["INFO"] == 1, "Condition must be true"
 
 
 def test_main_rejects_invalid_artifact_under_strict_validation(monkeypatch, tmp_path):
@@ -250,4 +250,4 @@ def test_main_rejects_invalid_artifact_under_strict_validation(monkeypatch, tmp_
     monkeypatch.delenv("GITHUB_DEFAULT_BRANCH", raising=False)
     monkeypatch.setattr(rls, "_token", lambda: None)
 
-    assert rls.main() == 2
+    assert rls.main() == 2, "Condition must be true"

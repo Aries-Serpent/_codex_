@@ -198,7 +198,7 @@ class TestWecLabelGateGuard:
 
     def test_require_wec_auto_approve_accepts_one_session_label_within_ttl(self, monkeypatch):
         def fake_gh(method, path, token, body=None):
-            assert path.startswith("/repos/owner/repo/issues/123")
+            assert path.startswith("/repos/owner/repo/issues/123"), "Condition must be true"
             return (
                 200,
                 {
@@ -224,7 +224,7 @@ class TestWecLabelGateGuard:
             "argv",
             ["require_wec_auto_approve.py", "--pr-number", "123", "--repo", "owner/repo", "--token", "token"],
         )
-        assert require_wec_auto_approve.main() == 1
+        assert require_wec_auto_approve.main() == 1, "Condition must be true"
 
     def test_pending_run_gate_accepts_one_session_label_within_ttl(self, monkeypatch):
         def fake_gh(method, path, token, body=None):

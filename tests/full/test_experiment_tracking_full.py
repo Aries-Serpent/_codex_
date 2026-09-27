@@ -41,17 +41,17 @@ class TestExperimentNesting:
 
     def test_parent_experiment_creation(self, parent_experiment):
         """Test that parent experiment is created successfully."""
-        assert parent_experiment is not None
-        assert "id" in parent_experiment
-        assert "name" in parent_experiment
-        assert parent_experiment["name"] == "parent_experiment_full"
+        assert parent_experiment is not None, "parent_experiment must be initialized"
+        assert "id" in parent_experiment, "Condition must be true"
+        assert "name" in parent_experiment, "Condition must be true"
+        assert parent_experiment["name"] == "parent_experiment_full", "Condition must be true"
 
     def test_child_experiment_creation(self, child_experiment, parent_experiment):
         """Test that child experiment is created and linked to parent."""
-        assert child_experiment is not None
-        assert "id" in child_experiment
-        assert "parent_id" in child_experiment
-        assert child_experiment["parent_id"] == parent_experiment["id"]
+        assert child_experiment is not None, "child_experiment must be initialized"
+        assert "id" in child_experiment, "Condition must be true"
+        assert "parent_id" in child_experiment, "Condition must be true"
+        assert child_experiment["parent_id"] == parent_experiment["id"], "Condition must be true"
 
     def test_experiment_hierarchy_query(self, mlflow_client_full, parent_experiment):
         """Test querying experiment hierarchy."""
@@ -60,12 +60,12 @@ class TestExperimentNesting:
 
             # Get parent experiment
             exp = mlflow_client_full.get_experiment(parent_experiment["id"])
-            assert exp is not None
-            assert exp.experiment_id == parent_experiment["id"]
+            assert exp is not None, "exp must be initialized"
+            assert exp.experiment_id == parent_experiment["id"], "experiment_id is not valid"
 
             # Verify experiment properties
-            assert exp.name == parent_experiment["name"]
-            assert exp.lifecycle_stage == "active"
+            assert exp.name == parent_experiment["name"], "name is not valid"
+            assert exp.lifecycle_stage == "active", "lifecycle_stage is not valid"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -76,21 +76,21 @@ class TestMultiMetricTracking:
 
     def test_multi_metric_logging(self, mlflow_client_full, multi_metric_run):
         """Test logging multiple metrics to a single run."""
-        assert multi_metric_run["metric_count"] == 150
+        assert multi_metric_run["metric_count"] == 150, "Count must be greater than zero"
 
         # Query metrics from run
         try:
             import mlflow
 
             metrics = mlflow_client_full.get_run(multi_metric_run["id"]).data.metrics
-            assert len(metrics) == 150
+            assert len(metrics) == 150, "Metrics must not be empty"
 
             # Verify metric values
             for i in range(150):
                 metric_key = f"metric_{i:03d}"
-                assert metric_key in metrics
+                assert metric_key in metrics, "Condition must be true"
                 expected_value = float(i) * 1.5
-                assert abs(metrics[metric_key] - expected_value) < 0.01
+                assert abs(metrics[metric_key] - expected_value) < 0.01, "Value must be initialized"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -112,9 +112,9 @@ class TestMultiMetricTracking:
             run_data = mlflow_client_full.get_run(run.info.run_id).data
             metrics = run_data.metrics
 
-            assert "loss" in metrics
+            assert "loss" in metrics, "Condition must be true"
             # Latest metric (step 49) should be smallest
-            assert metrics["loss"] < 0.1
+            assert metrics["loss"] < 0.1, "Condition must be true"
 
             mlflow_client_full.set_terminated(run.info.run_id)
 
@@ -139,8 +139,8 @@ class TestArtifactManagement:
 
             # Query artifacts
             artifacts = mlflow_client_full.list_artifacts(artifact_run["id"])
-            assert artifacts is not None
-            assert len(artifacts) > 0
+            assert artifacts is not None, "artifacts must be initialized"
+            assert len(artifacts) > 0, "Artifacts must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -164,7 +164,7 @@ class TestArtifactManagement:
 
                 # Verify artifact was logged
                 artifacts = mlflow_client_full.list_artifacts(run.info.run_id)
-                assert artifacts is not None
+                assert artifacts is not None, "artifacts must be initialized"
 
             mlflow_client_full.set_terminated(run.info.run_id)
 
@@ -188,7 +188,7 @@ class TestModelRegistry:
             # Note: Full model registry testing requires more setup
             # This test validates the basic run structure
             run_data = mlflow_client_full.get_run(run_id).data
-            assert run_data.tags.get("test_type") == "model_registry"
+            assert run_data.tags.get("test_type") == "model_registry", "Data must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -208,8 +208,8 @@ class TestModelRegistry:
             )
 
             run_data = mlflow_client_full.get_run(run.info.run_id).data
-            assert run_data.params.get("model_version") == "1.0.0"
-            assert run_data.params.get("model_stage") == "production"
+            assert run_data.params.get("model_version") == "1.0.0", "Data must not be empty"
+            assert run_data.params.get("model_stage") == "production", "Data must not be empty"
 
             mlflow_client_full.set_terminated(run.info.run_id)
 
@@ -222,16 +222,16 @@ class TestHyperparameterSweeps:
 
     def test_sweep_run_creation(self, sweep_run_set):
         """Test that sweep runs are created with hyperparameters."""
-        assert sweep_run_set is not None
-        assert len(sweep_run_set) == 10
+        assert sweep_run_set is not None, "sweep_run_set must be initialized"
+        assert len(sweep_run_set) == 10, "Sweep_run_set must not be empty"
 
         # Verify each run has hyperparameters
         for run_info in sweep_run_set:
-            assert "id" in run_info
-            assert "hyperparams" in run_info
-            assert "lr" in run_info["hyperparams"]
-            assert "batch_size" in run_info["hyperparams"]
-            assert "epochs" in run_info["hyperparams"]
+            assert "id" in run_info, "Condition must be true"
+            assert "hyperparams" in run_info, "Condition must be true"
+            assert "lr" in run_info["hyperparams"], "Condition must be true"
+            assert "batch_size" in run_info["hyperparams"], "Condition must be true"
+            assert "epochs" in run_info["hyperparams"], "Condition must be true"
 
     def test_sweep_parameter_logging(self, mlflow_client_full, sweep_run_set):
         """Test querying sweep runs and comparing hyperparameters."""
@@ -245,15 +245,15 @@ class TestHyperparameterSweeps:
                 sweep_params.append(run_data.params)
 
             # Verify parameter diversity
-            assert len(sweep_params) == 10
+            assert len(sweep_params) == 10, "Sweep_params must not be empty"
             unique_lrs = set(p.get("lr") for p in sweep_params if "lr" in p)
             unique_batch_sizes = set(
                 p.get("batch_size") for p in sweep_params if "batch_size" in p
             )
 
             # Should have multiple learning rates and batch sizes
-            assert len(unique_lrs) > 1
-            assert len(unique_batch_sizes) > 1
+            assert len(unique_lrs) > 1, "Unique_lrs must not be empty"
+            assert len(unique_batch_sizes) > 1, "Unique_batch_sizes must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -275,12 +275,12 @@ class TestCrossRunComparison:
                 filter_string="tags.test_type = 'hyperparameter_sweep'",
             )
 
-            assert len(runs) == 10
+            assert len(runs) == 10, "Runs must not be empty"
 
             # Extract metrics for comparison
             accuracies = [run.data.metrics.get("accuracy", 0) for run in runs]
-            assert len(accuracies) == 10
-            assert all(0 < acc < 1 for acc in accuracies)
+            assert len(accuracies) == 10, "Accuracies must not be empty"
+            assert all(0 < acc < 1 for acc in accuracies), "0 is not valid"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -298,15 +298,15 @@ class TestCrossRunComparison:
                 all_metrics[run_info["id"]] = accuracy
 
             # Verify metrics collection
-            assert len(all_metrics) == 10
+            assert len(all_metrics) == 10, "All_metrics must not be empty"
             accuracies = list(all_metrics.values())
 
             # Find best and worst runs
             best_accuracy = max(accuracies)
             worst_accuracy = min(accuracies)
 
-            assert best_accuracy > worst_accuracy
-            assert best_accuracy > 0.8
+            assert best_accuracy > worst_accuracy, "best_accuracy must be greater than zero"
+            assert best_accuracy > 0.8, "best_accuracy must be greater than zero"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -317,9 +317,9 @@ class TestNestedRuns:
 
     def test_nested_run_creation(self, parent_run, child_run):
         """Test creating nested run structure."""
-        assert parent_run is not None
-        assert child_run is not None
-        assert child_run["parent_run_id"] == parent_run["id"]
+        assert parent_run is not None, "parent_run must be initialized"
+        assert child_run is not None, "child_run must be initialized"
+        assert child_run["parent_run_id"] == parent_run["id"], "Condition must be true"
 
     def test_nested_run_tags(self, mlflow_client_full, parent_run, child_run):
         """Test that nested runs have proper tags."""
@@ -329,9 +329,9 @@ class TestNestedRuns:
             parent_data = mlflow_client_full.get_run(parent_run["id"]).data
             child_data = mlflow_client_full.get_run(child_run["id"]).data
 
-            assert parent_data.tags.get("run_type") == "parent"
-            assert child_data.tags.get("run_type") == "child"
-            assert child_data.tags.get("parent") == parent_run["id"]
+            assert parent_data.tags.get("run_type") == "parent", "Data must not be empty"
+            assert child_data.tags.get("run_type") == "child", "Data must not be empty"
+            assert child_data.tags.get("parent") == parent_run["id"], "Data must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -342,13 +342,13 @@ class TestDistributedLogging:
 
     def test_distributed_run_logging(self, distributed_run_set):
         """Test logging from multiple distributed ranks."""
-        assert distributed_run_set is not None
-        assert len(distributed_run_set) == 5
+        assert distributed_run_set is not None, "distributed_run_set must be initialized"
+        assert len(distributed_run_set) == 5, "Distributed_run_set must not be empty"
 
         # Verify each rank has its own run
         for i, run_info in enumerate(distributed_run_set):
-            assert run_info["rank"] == i
-            assert "id" in run_info
+            assert run_info["rank"] == i, "Condition must be true"
+            assert "id" in run_info, "Condition must be true"
 
     def test_distributed_metrics_isolation(self, mlflow_client_full, distributed_run_set):
         """Test that distributed metrics are properly isolated."""
@@ -362,13 +362,13 @@ class TestDistributedLogging:
 
                 # Should have metrics from this rank
                 rank_metric_key = f"rank_{i}_loss"
-                assert rank_metric_key in metrics
+                assert rank_metric_key in metrics, "Condition must be true"
 
                 # Should not have metrics from other ranks
                 for j in range(5):
                     if j != i:
                         other_metric_key = f"rank_{j}_loss"
-                        assert other_metric_key not in metrics
+                        assert other_metric_key not in metrics, "Condition must be true"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -393,11 +393,11 @@ class TestExportImport:
             }
 
             # Verify exported data structure
-            assert "run_id" in exported_data
-            assert "params" in exported_data
-            assert "metrics" in exported_data
-            assert exported_data["params"].get("param1") == "value1"
-            assert exported_data["metrics"].get("metric1") == 0.97
+            assert "run_id" in exported_data, "Data must not be empty"
+            assert "params" in exported_data, "Data must not be empty"
+            assert "metrics" in exported_data, "Data must not be empty"
+            assert exported_data["params"].get("param1") == "value1", "Data must not be empty"
+            assert exported_data["metrics"].get("metric1") == 0.97, "Data must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -430,8 +430,8 @@ class TestExportImport:
                 serialized_exp["runs"].append(run_data)
 
             # Verify serialized data
-            assert serialized_exp["experiment_id"] == exp_id
-            assert serialized_exp["run_count"] >= 0
+            assert serialized_exp["experiment_id"] == exp_id, "Condition must be true"
+            assert serialized_exp["run_count"] >= 0, "Value must be greater than zero"
 
         except ImportError:
             pytest.skip("MLflow not installed")
@@ -459,7 +459,7 @@ class TestPerformanceTracking:
             duration = time.time() - start_time
 
             # Should complete in reasonable time (< 30 seconds)
-            assert duration < 30.0
+            assert duration < 30.0, "duration is not valid"
 
             mlflow_client_full.set_terminated(run.info.run_id)
 
@@ -488,8 +488,8 @@ class TestPerformanceTracking:
             query_duration = time.time() - start_time
 
             # Query should be fast (< 5 seconds)
-            assert query_duration < 5.0
-            assert len(runs) >= 50
+            assert query_duration < 5.0, "query_duration is not valid"
+            assert len(runs) >= 50, "Runs must not be empty"
 
         except ImportError:
             pytest.skip("MLflow not installed")

@@ -228,7 +228,7 @@ def _print_table(candidates: list[Candidate], optional: list[str]) -> None:
         opt_hits = sum(1 for sig in optional if sig.lower() in cand.payload.lower())
         status = "OK" if not cand.missing else "MISSING"
         print(
-            f"{cand.idx:>3} | {len(cand.hits):>3}/{len(cand.hits)+len(cand.missing):<9} | {opt_hits:>8} | {status}"
+            f"{cand.idx:>3} | {len(cand.hits):>3}/{len(cand.hits) + len(cand.missing):<9} | {opt_hits:>8} | {status}"
         )
         if cand.missing:
             print(f"     missing: {', '.join(cand.missing)}")

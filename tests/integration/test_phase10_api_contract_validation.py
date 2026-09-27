@@ -43,17 +43,17 @@ class TestPhase10APIContractValidation:
                 }
             },
         }
-        
+
         # Act
         api_context["contracts"]["openapi"] = {
             "version": openapi_spec["info"]["version"],
             "paths": list(openapi_spec["paths"].keys()),
             "valid": True,
         }
-        
+
         # Assert
-        assert api_context["contracts"]["openapi"]["valid"] is True
-        assert "/predict" in api_context["contracts"]["openapi"]["paths"]
+        assert api_context["contracts"]["openapi"]["valid"] is True, "Condition must be true"
+        assert "/predict" in api_context["contracts"]["openapi"]["paths"], "Condition must be true"
 
     def test_request_schema_validation(self, api_context):
         """Test request schema validation."""
@@ -66,19 +66,19 @@ class TestPhase10APIContractValidation:
             },
             "required": ["data"],
         }
-        
+
         valid_request = {"data": [1, 2, 3], "model_id": "m1"}
         invalid_request = {"model_id": "m1"}  # Missing required 'data'
-        
+
         # Act
         api_context["schemas"]["predict_request"] = schema
-        
+
         request_valid = "data" in valid_request
         request_invalid = "data" not in invalid_request
-        
+
         # Assert
-        assert request_valid is True
-        assert request_invalid is True
+        assert request_valid is True, "request_valid is not valid"
+        assert request_invalid is True, "request_invalid is not valid"
 
     def test_response_schema_validation(self, api_context):
         """Test response schema validation."""
@@ -91,18 +91,18 @@ class TestPhase10APIContractValidation:
             },
             "required": ["prediction"],
         }
-        
+
         valid_response = {"prediction": 0.85, "confidence": 0.92}
-        
+
         # Act
         api_context["schemas"]["predict_response"] = response_schema
-        
+
         has_prediction = "prediction" in valid_response
         prediction_is_number = isinstance(valid_response["prediction"], (int, float))
-        
+
         # Assert
-        assert has_prediction is True
-        assert prediction_is_number is True
+        assert has_prediction is True, "has_prediction is not valid"
+        assert prediction_is_number is True, "prediction_is_number is not valid"
 
     def test_api_versioning_consistency(self, api_context):
         """Test API versioning consistency."""
@@ -112,17 +112,17 @@ class TestPhase10APIContractValidation:
             "v2": {"status": "stable", "endpoints": 15},
             "v3": {"status": "beta", "endpoints": 20},
         }
-        
+
         # Act
         for version, info in versions.items():
             api_context["versions"][version] = info
-        
+
         current_version = "v2"
         api_version = api_context["versions"][current_version]
-        
+
         # Assert
-        assert api_version["status"] == "stable"
-        assert len(api_context["versions"]) == 3
+        assert api_version["status"] == "stable", "Condition must be true"
+        assert len(api_context["versions"]) == 3, "Collection must not be empty"
 
     def test_backward_compatibility_validation(self, api_context):
         """Test backward compatibility validation."""
@@ -131,22 +131,22 @@ class TestPhase10APIContractValidation:
             "data": {"value": 42},
             "status": "ok",
         }
-        
+
         new_endpoint_response = {
             "data": {"value": 42},
             "status": "ok",
             "metadata": {"version": "v2"},
         }
-        
+
         # Act
         # Check that new response is compatible with old client expectations
         old_client_compatible = (
             "data" in new_endpoint_response and
             "status" in new_endpoint_response
         )
-        
+
         # Assert
-        assert old_client_compatible is True
+        assert old_client_compatible is True, "old_client_compatible is not valid"
 
     def test_api_rate_limiting_headers(self, api_context):
         """Test API rate limiting headers."""
@@ -156,16 +156,16 @@ class TestPhase10APIContractValidation:
             "X-RateLimit-Remaining": "995",
             "X-RateLimit-Reset": "1626446400",
         }
-        
+
         # Act
         api_context["endpoints"]["/predict"] = {
             "rate_limit": True,
             "headers": response_headers,
         }
-        
+
         # Assert
-        assert "X-RateLimit-Limit" in response_headers
-        assert int(response_headers["X-RateLimit-Remaining"]) >= 0
+        assert "X-RateLimit-Limit" in response_headers, "Response must not be empty"
+        assert int(response_headers["X-RateLimit-Remaining"]) >= 0, "Value must be greater than zero"
 
     def test_error_response_consistency(self, api_context):
         """Test error response consistency."""
@@ -184,14 +184,14 @@ class TestPhase10APIContractValidation:
                 "body": {"error": "internal_error", "message": "Server error"},
             },
         ]
-        
+
         # Act
         for error in error_responses:
-            assert "error" in error["body"]
-            assert "message" in error["body"]
-        
+            assert "error" in error["body"], "Error should be raised or set"
+            assert "message" in error["body"], "Error should be raised or set"
+
         # Assert
-        assert len(error_responses) == 3
+        assert len(error_responses) == 3, "Error_responses must not be empty"
 
 
 @pytest.mark.integration
@@ -209,7 +209,7 @@ class TestPhase10APIRegressionPrevention:
             },
             "required": ["id"],
         }
-        
+
         new_schema = {
             "properties": {
                 "id": {"type": "integer"},  # Breaking change!
@@ -217,36 +217,36 @@ class TestPhase10APIRegressionPrevention:
             },
             "required": ["id"],
         }
-        
+
         # Act
         breaking = old_schema["properties"]["id"]["type"] != new_schema["properties"]["id"]["type"]
-        
+
         # Assert
-        assert breaking is True
+        assert breaking is True, "breaking is not valid"
 
     def test_removed_field_detection(self):
         """Test detection of removed fields."""
         # Arrange
         old_fields = {"id", "name", "email"}
         new_fields = {"id", "name"}  # email removed
-        
+
         # Act
         removed_fields = old_fields - new_fields
-        
+
         # Assert
-        assert "email" in removed_fields
+        assert "email" in removed_fields, "Condition must be true"
 
     def test_endpoint_removal_detection(self):
         """Test detection of removed endpoints."""
         # Arrange
         old_endpoints = {"/users", "/predict", "/health"}
         new_endpoints = {"/users", "/health"}  # /predict removed
-        
+
         # Act
         removed_endpoints = old_endpoints - new_endpoints
-        
+
         # Assert
-        assert "/predict" in removed_endpoints
+        assert "/predict" in removed_endpoints, "Condition must be true"
 
 
 if __name__ == "__main__":

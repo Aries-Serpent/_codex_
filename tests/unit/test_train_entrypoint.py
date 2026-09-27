@@ -7,7 +7,6 @@ Test module for train entrypoint.
 from __future__ import annotations
 
 import pytest
-
 from omegaconf import OmegaConf
 
 

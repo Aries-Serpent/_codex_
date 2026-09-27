@@ -1,4 +1,4 @@
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # - Workflow file syntax
@@ -8,30 +8,30 @@
 # - Matrix configurations
 #     def test_no_hardcoded_secrets(self) -> None:
 # """
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # import pytest
-# 
-#             assert (, "Condition must be true"
+#
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 #     HAS_YAML = True
 #     HAS_YAML = True
 # except ImportError:
 #     HAS_YAML = False
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # # =============================================================================
-# 
+#
 import re
 from pathlib import Path
 
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
-# 
+#
 #     def test_workflows_directory_exists(self) -> None:
 #     def test_workflows_directory_exists(self) -> None:
 #         """Test that .github/workflows directory exists."""
@@ -63,9 +63,9 @@ from pathlib import Path
 #                     yaml.safe_load(content)
 #                 except yaml.YAMLError as e:
 #                     invalid_files.append(f"{workflow}: {e}")
-# 
+#
 #             assert len(invalid_files) == 0, f"Invalid YAML files: {invalid_files}"
-# 
+#
 #     def test_workflow_files_have_name(self) -> None:
 #     def test_workflow_files_have_name(self) -> None:
 #         """Test that workflow files have a name field."""
@@ -79,18 +79,18 @@ from pathlib import Path
 #                         files_without_name.append(str(workflow))
 #                 except OSError:
 #                     continue
-# 
+#
 #             assert len(files_without_name) == 0, f"Workflows without name: {files_without_name}"
-# 
-#             assert (, "Condition must be true"
+#
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
 # # =============================================================================
-# 
-#             assert (, "Condition must be true"
+#
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
-# 
+#
 #     def test_workflows_have_triggers(self) -> None:
 #     def test_workflows_have_triggers(self) -> None:
 #         """Test that workflows have at least one trigger."""
@@ -105,11 +105,11 @@ from pathlib import Path
 #                         files_without_triggers.append(str(workflow))
 #                 except OSError:
 #                     continue
-# 
-#             assert (, "Condition must be true"
+#
+#             assert (
 #                 len(files_without_triggers) == 0
 #             ), f"Workflows without triggers: {files_without_triggers}"
-# 
+#
 #     def test_test_workflows_trigger_on_push_and_pr(self) -> None:
 #     def test_test_workflows_trigger_on_push_and_pr(self) -> None:
 #         """Test that test workflows trigger on push and pull_request.
@@ -136,15 +136,15 @@ from pathlib import Path
 #                     assert has_push_or_pr, f"{workflow} should trigger on push or PR"
 #                 except OSError:
 #                     continue
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
 # # =============================================================================
 #             # Some workflows might be valid without explicit jobs section
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
-# 
+#
 #     def test_workflows_have_jobs(self) -> None:
 #     def test_workflows_have_jobs(self) -> None:
 #         """Test that workflows have at least one job."""
@@ -159,11 +159,11 @@ from pathlib import Path
 #                 except OSError:
 #                     continue
 #             # Some workflows might be valid without explicit jobs section
-#             assert (, "Condition must be true"
+#             assert (
 #                 len(files_without_jobs) <= 2
 #             ), f"Workflows without jobs section: {files_without_jobs}"
 #             ), f"Workflows without jobs section: {files_without_jobs}"
-# 
+#
 #     def test_jobs_have_runs_on(self) -> None:
 #     def test_jobs_have_runs_on(self) -> None:
 #         """Test that jobs specify runs-on."""
@@ -175,7 +175,7 @@ from pathlib import Path
 #                     content = workflow.read_text()
 #                     if "jobs:" in content:
 #                         # Jobs should either run on a local runner or call a reusable workflow.
-#                         assert (, "Condition must be true"
+#                         assert (
 #                             "runs-on" in content or "uses:" in content
 #                         ), f"{workflow} jobs should have runs-on or reusable workflow uses"
 #                 except OSError:
@@ -191,7 +191,7 @@ from pathlib import Path
 #                     content = workflow.read_text()
 #                     if "jobs:" in content:
 #                         # Jobs should either define local steps or call a reusable workflow.
-#                         assert (, "Condition must be true"
+#                         assert (
 #                             "steps:" in content or "uses:" in content
 #                         ), f"{workflow} jobs should have steps or reusable workflow uses"
 #                 except OSError:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from codex.utils.path_extended import get_repo_root
+
 """
 Final validation script for CODEX_MASTER_KEY implementation
 
@@ -17,6 +18,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 from datetime import datetime
+
 
 def run_command(cmd, description):
     """Run command safely without shell interpretation

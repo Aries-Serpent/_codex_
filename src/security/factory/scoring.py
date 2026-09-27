@@ -21,6 +21,7 @@ from .ingest import FindingSeverity
 
 class Exploitability(str, Enum):
     """Exploitability levels."""
+
     NOT_KNOWN = "not_known"
     UNPROVEN = "unproven"
     POC = "poc"
@@ -31,6 +32,7 @@ class Exploitability(str, Enum):
 @dataclass
 class ScoredFamily:
     """A finding family with computed risk score."""
+
     family: FindingFamily
     risk_score: float = 0.0  # 0-10 scale
     exploitability: Exploitability = Exploitability.NOT_KNOWN
@@ -55,6 +57,7 @@ class ScoredFamily:
 @dataclass
 class WavePlan:
     """Plan for remediation waves."""
+
     wave_1: List[ScoredFamily] = field(default_factory=list)  # 10% of findings
     wave_2: List[ScoredFamily] = field(default_factory=list)  # 50% of findings
     wave_3: List[ScoredFamily] = field(default_factory=list)  # 100% of findings

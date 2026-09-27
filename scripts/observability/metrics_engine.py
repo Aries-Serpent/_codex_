@@ -7,17 +7,18 @@ Timeline: Days 3-4 deliverable (2026-07-03 → 2026-07-04)
 Target: 650+ lines, >95% test coverage, 100% type hints
 """
 
-import time
-import threading
 import json
-import statistics
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Any, Optional, Callable, Union
-from enum import Enum
-from dataclasses import dataclass, field
-from collections import defaultdict, deque
 import logging
+import statistics
+import threading
+import time
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
 from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
 import psutil
 
 # Configure logging

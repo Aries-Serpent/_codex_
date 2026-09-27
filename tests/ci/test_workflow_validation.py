@@ -122,7 +122,7 @@ def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
     event_config = workflow["on"][event]
     ignored_paths = event_config["paths-ignore"]
 
-    assert ".codex/**" in ignored_paths
+    assert ".codex/**" in ignored_paths, "Condition must be true"
     for metadata_path in (
         ".codex/campaign_metrics.jsonl",
         ".codex/cascade_detector_state.json",

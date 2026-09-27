@@ -144,9 +144,7 @@ class CircuitBreakerState:
         if self.failure_count >= config.circuit_breaker_threshold:
             self.state = CircuitState.OPEN
             self.last_state_change = time.time()
-            logger.error(
-                f"Circuit breaker opening after {self.failure_count} failures"
-            )
+            logger.error(f"Circuit breaker opening after {self.failure_count} failures")
 
 
 class TimeoutManager:
@@ -199,21 +197,23 @@ class TimeoutManager:
         """Record successful operation."""
         if self.config.enable_telemetry:
             self._metrics.append(metrics)
-            if hasattr(metrics, 'compute_duration'):
+            if hasattr(metrics, "compute_duration"):
                 metrics.compute_duration()
 
             if self.config.enable_circuit_breaker:
                 circuit = self.get_circuit_breaker(operation_type)
                 circuit.record_success(self.config)
 
-    def record_failure(self, operation_type: str, metrics: TimeoutMetrics, error: Optional[str] = None) -> None:
+    def record_failure(
+        self, operation_type: str, metrics: TimeoutMetrics, error: Optional[str] = None
+    ) -> None:
         """Record failed operation."""
-        if error and hasattr(metrics, 'error_message'):
+        if error and hasattr(metrics, "error_message"):
             metrics.error_message = error
 
         if self.config.enable_telemetry:
             self._metrics.append(metrics)
-            if hasattr(metrics, 'compute_duration'):
+            if hasattr(metrics, "compute_duration"):
                 metrics.compute_duration()
 
             if self.config.enable_circuit_breaker:
@@ -320,19 +320,14 @@ def with_timeout(
                 timeout_manager.record_timeout(operation_type, metrics)
 
                 if fallback_fn:
-                    logger.warning(
-                        f"Timeout on {operation_type} after {timeout}s, "
-                        "using fallback"
-                    )
+                    logger.warning(f"Timeout on {operation_type} after {timeout}s, using fallback")
                     metrics.fallback_used = True
                     return fallback_fn(*args, **kwargs)
                 raise
 
             except Exception as e:
                 metrics.end_time = time.time()
-                timeout_manager.record_failure(
-                    operation_type, metrics, str(e)
-                )
+                timeout_manager.record_failure(operation_type, metrics, str(e))
                 raise
 
         return wrapper
@@ -395,6 +390,7 @@ async def _async_timeout_wrapper(
     try:
         # Python 3.11+ has asyncio.timeout context manager
         import sys
+
         if sys.version_info >= (3, 11):
             async with asyncio.timeout(timeout):
                 return await func(*args, **kwargs)

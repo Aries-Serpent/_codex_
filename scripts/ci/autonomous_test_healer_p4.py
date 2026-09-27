@@ -13,11 +13,11 @@ Status: ADVISORY MODE (Days 1-2 analysis, Day 5 deployment)
 Authority: @mbaetiong (D-Tier autonomous)
 """
 
+import logging
 import re
-from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
-import logging
+from typing import Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class FlakyFailure:
 
 class P4FlakyDetector:
     """Detect P4 flaky test patterns."""
-    
+
     FLAKY_INDICATORS = {
         P4Pattern.NON_DETERMINISTIC: [
             r"(?i)(random|seed|non.?deterministic|differs)",
@@ -68,12 +68,12 @@ class P4FlakyDetector:
             r"(?i)(system.*depend|platform.*specific)",
         ],
     }
-    
+
     def __init__(self):
         self.compiled = {}
         for pattern_type, regexes in self.FLAKY_INDICATORS.items():
             self.compiled[pattern_type] = [re.compile(r) for r in regexes]
-    
+
     def detect(self, error_message: str) -> List[Tuple[P4Pattern, float]]:
         """Detect P4 flaky patterns."""
         detections = []
@@ -82,41 +82,41 @@ class P4FlakyDetector:
                 if regex.search(error_message):
                     confidence = 0.75 if len(regex.pattern) > 30 else 0.65
                     detections.append((pattern_type, confidence))
-        
+
         # Deduplicate
         best = {}
         for pattern_type, confidence in detections:
             if pattern_type not in best or confidence > best[pattern_type]:
                 best[pattern_type] = confidence
-        
+
         return sorted([(p, c) for p, c in best.items()], key=lambda x: x[1], reverse=True)
-    
+
     def classify_flaky_test(self, test_file: str, test_name: str,
                            failure_messages: List[str],
                            failure_rate: float) -> Optional[FlakyFailure]:
         """Classify flaky test based on failure patterns."""
-        
+
         all_detections = []
         for msg in failure_messages:
             detections = self.detect(msg)
             all_detections.extend(detections)
-        
+
         if not all_detections:
             return None
-        
+
         # Find most common pattern
         pattern_counts = {}
         for pattern, confidence in all_detections:
             if pattern not in pattern_counts:
                 pattern_counts[pattern] = []
             pattern_counts[pattern].append(confidence)
-        
-        pattern = max(pattern_counts.keys(), 
+
+        pattern = max(pattern_counts.keys(),
                      key=lambda p: sum(pattern_counts[p]) / len(pattern_counts[p]))
         avg_confidence = sum(pattern_counts[pattern]) / len(pattern_counts[pattern])
-        
+
         suggested_fix = self._suggest_fix(pattern, test_file, test_name, failure_rate)
-        
+
         return FlakyFailure(
             test_file=test_file,
             test_name=test_name,
@@ -126,7 +126,7 @@ class P4FlakyDetector:
             confidence=avg_confidence,
             suggested_fix=suggested_fix,
         )
-    
+
     def _suggest_fix(self, pattern: P4Pattern, test_file: str, test_name: str,
                      failure_rate: float) -> str:
         """Generate fix suggestion for P4 pattern."""
@@ -153,7 +153,7 @@ class P4FlakyDetector:
 
 class P4IsolationFramework:
     """Build isolation framework for flaky tests."""
-    
+
     @staticmethod
     def create_deterministic_fixture(test_name: str) -> str:
         """Generate deterministic fixture for non-deterministic tests."""
@@ -182,7 +182,7 @@ def test_{test_name}(deterministic_environment):
     # Test code here
     pass
 """
-    
+
     @staticmethod
     def create_synchronized_fixture(test_name: str) -> str:
         """Generate synchronization fixture for race condition tests."""
@@ -213,7 +213,7 @@ def test_{test_name}(synchronized_test_env):
     # Use synchronized_test_env['wait'] and 'signal' for ordering
     pass
 """
-    
+
     @staticmethod
     def create_resource_isolation_fixture(test_name: str) -> str:
         """Generate resource isolation fixture for resource conflict tests."""
@@ -257,7 +257,7 @@ def test_{test_name}(isolated_resources):
     # Use isolated_resources['unique_id'] for naming
     pass
 """
-    
+
     @staticmethod
     def create_environment_isolation_fixture(test_name: str) -> str:
         """Generate environment isolation fixture for environmental tests."""
@@ -295,12 +295,12 @@ def test_{test_name}(isolated_environment):
     # Test now runs in stable environment
     pass
 """
-    
+
     @staticmethod
     def create_flaky_marker_suggestion(test_name: str, failure_rate: float,
                                       pattern: P4Pattern) -> str:
         """Generate suggestion for @pytest.mark.flaky usage."""
-        
+
         # Calculate rerun count based on failure rate
         if failure_rate > 0.5:
             reruns = 5
@@ -308,7 +308,7 @@ def test_{test_name}(isolated_environment):
             reruns = 3
         else:
             reruns = 2
-        
+
         return f"""
 # Temporary flaky marker while investigating {test_name}
 # Failure rate: {failure_rate*100:.1f}%
@@ -324,19 +324,19 @@ def test_{test_name}():
 
 class P4IsolationReport:
     """Generate report for P4 flaky test remediation."""
-    
+
     def __init__(self):
         self.flaky_tests: List[FlakyFailure] = []
         self.isolation_fixtures: Dict[str, str] = {}
-    
+
     def add_flaky_test(self, failure: FlakyFailure):
         """Add detected flaky test."""
         self.flaky_tests.append(failure)
-    
+
     def add_isolation_fixture(self, test_name: str, fixture_code: str):
         """Add generated isolation fixture."""
         self.isolation_fixtures[test_name] = fixture_code
-    
+
     def summary(self) -> Dict:
         """Generate summary report."""
         by_pattern = {}
@@ -345,7 +345,7 @@ class P4IsolationReport:
             if pattern not in by_pattern:
                 by_pattern[pattern] = []
             by_pattern[pattern].append(failure)
-        
+
         return {
             "total_flaky_tests": len(self.flaky_tests),
             "by_pattern": {
@@ -363,14 +363,14 @@ class P4IsolationReport:
 
 def main():
     """Demo P4 flaky detection and isolation."""
-    
+
     logger.info("Phase 13 Track 13.1: P4 Flaky Test Detection & Isolation")
     logger.info("=" * 60)
-    
+
     detector = P4FlakyDetector()
     framework = P4IsolationFramework()
     report = P4IsolationReport()
-    
+
     # Example: Non-deterministic test
     flaky_failure = detector.classify_flaky_test(
         test_file="tests/test_utils.py",
@@ -382,7 +382,7 @@ def main():
         ],
         failure_rate=0.45  # Fails 45% of the time
     )
-    
+
     if flaky_failure:
         logger.info("\nDetected flaky test:")
         logger.info(f"  Test: {flaky_failure.test_file}::{flaky_failure.test_name}")
@@ -390,16 +390,16 @@ def main():
         logger.info(f"  Failure rate: {flaky_failure.failure_rate*100:.1f}%")
         logger.info(f"  Confidence: {flaky_failure.confidence*100:.0f}%")
         logger.info(f"  Fix: {flaky_failure.suggested_fix}")
-        
+
         report.add_flaky_test(flaky_failure)
-        
+
         # Generate isolation fixture
         fixture = framework.create_deterministic_fixture(flaky_failure.test_name)
         report.add_isolation_fixture(flaky_failure.test_name, fixture)
-        
+
         logger.info("\nGenerated isolation fixture:")
         logger.info(fixture[:200] + "...")
-    
+
     # Summary
     logger.info("\n" + "=" * 60)
     logger.info("Flaky Test Analysis Summary:")

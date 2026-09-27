@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from src.codex.utils.path_extended import get_repo_root
+
 """
 Analyze PR #2449 commits to extract objectives and build trace matrix.
 """

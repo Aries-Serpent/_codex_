@@ -22,8 +22,10 @@ except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
             is_legacy_mode,
             timestamped_record,
         )
-    except ModuleNotFoundError:
-        raise exc
+    except ModuleNotFoundError as exc2:
+        raise ModuleNotFoundError(
+            "codex_ml.logging.ndjson_logger is unavailable in this environment"
+        ) from exc2
 
 __all__ = ["NDJSONLogger", "timestamped_record", "is_legacy_mode"]
 

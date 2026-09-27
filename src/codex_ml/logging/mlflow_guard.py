@@ -9,7 +9,12 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional import
     import mlflow
-except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - environments without mlflow
+except (
+    IOError,
+    OSError,
+    ModuleNotFoundError,
+    ImportError,
+):  # pragma: no cover - environments without mlflow
     mlflow = None
 
 from codex_ml.tracking.mlflow_guard import ensure_file_backend  # noqa: E402
@@ -76,7 +81,12 @@ def log_params_safe(params: Mapping[str, Any]) -> None:
     try:
         if mlflow.active_run():
             mlflow.log_params(dict(params))
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow parameter logging failed: %s", exc)
 
 
@@ -88,7 +98,12 @@ def log_artifact_safe(path: str) -> None:
     try:
         if mlflow.active_run():
             mlflow.log_artifact(path)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow artifact logging failed for %s: %s", path, exc)
 
 

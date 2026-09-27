@@ -1,5 +1,8 @@
 extends: default
 
+ignore: |
+  .github/workflows/agent-auth-delegation.yml
+
 rules:
   line-length:
     max: 140

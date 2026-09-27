@@ -29,8 +29,8 @@ class TestDecisionDomainMapping:
     def test_mapper_init(self):
         """Test mapper initialization"""
         mapper = DecisionDomainMapper()
-        assert mapper is not None
-        assert len(mapper._domains) == 0
+        assert mapper is not None, "mapper must be initialized"
+        assert len(mapper._domains) == 0, "Collection must not be empty"
 
     def test_register_low_risk_domain(self):
         """Test registering a low-risk domain"""
@@ -42,9 +42,9 @@ class TestDecisionDomainMapping:
             hybrid_solver="variational_quantum",
             risk_level=RiskLevel.LOW,
         )
-        assert compat.domain_id == "resource_alloc_1"
-        assert compat.risk_level == RiskLevel.LOW
-        assert compat.compatibility_score == 0.95
+        assert compat.domain_id == "resource_alloc_1", "domain_id is not valid"
+        assert compat.risk_level == RiskLevel.LOW, "risk_level is not valid"
+        assert compat.compatibility_score == 0.95, "compatibility_score is not valid"
 
     def test_register_medium_risk_domain(self):
         """Test registering a medium-risk domain"""
@@ -56,8 +56,8 @@ class TestDecisionDomainMapping:
             hybrid_solver="quantum_annealing",
             risk_level=RiskLevel.MEDIUM,
         )
-        assert compat.risk_level == RiskLevel.MEDIUM
-        assert compat.compatibility_score == 0.95 * 0.85  # 0.8075
+        assert compat.risk_level == RiskLevel.MEDIUM, "risk_level is not valid"
+        assert compat.compatibility_score == 0.95 * 0.85, "compatibility_score is not valid"
 
     def test_register_high_risk_domain(self):
         """Test registering a high-risk domain"""
@@ -69,8 +69,8 @@ class TestDecisionDomainMapping:
             hybrid_solver="quantum_walk",
             risk_level=RiskLevel.HIGH,
         )
-        assert compat.risk_level == RiskLevel.HIGH
-        assert compat.compatibility_score == 0.95 * 0.70  # 0.665
+        assert compat.risk_level == RiskLevel.HIGH, "risk_level is not valid"
+        assert compat.compatibility_score == 0.95 * 0.70, "compatibility_score is not valid"
 
     def test_register_multiple_domains(self):
         """Test registering multiple domains"""
@@ -82,7 +82,7 @@ class TestDecisionDomainMapping:
                 classical_solver="solver_classical",
                 hybrid_solver="solver_hybrid",
             )
-        assert len(mapper._domains) == 5
+        assert len(mapper._domains) == 5, "Collection must not be empty"
 
     def test_generate_mapping_all_domains(self):
         """Test generating a domain mapping"""
@@ -95,8 +95,8 @@ class TestDecisionDomainMapping:
                 hybrid_solver="hybrid",
             )
         mapping = mapper.generate_mapping(include_high_risk=False)
-        assert mapping.total_domains == 3
-        assert mapping.compatible_domains == 3
+        assert mapping.total_domains == 3, "total_domains is not valid"
+        assert mapping.compatible_domains == 3, "compatible_domains is not valid"
 
     def test_get_low_risk_domains(self):
         """Test filtering low-risk domains"""
@@ -108,8 +108,8 @@ class TestDecisionDomainMapping:
         mapper.register_domain("high1", DecisionDomain.GRAPH_OPTIMIZATION,
                              "s", "h", RiskLevel.HIGH)
         low = mapper.get_low_risk_domains()
-        assert len(low) == 1
-        assert low[0].domain_id == "low1"
+        assert len(low) == 1, "Low must not be empty"
+        assert low[0].domain_id == "low1", "domain_id is not valid"
 
     def test_get_medium_risk_domains(self):
         """Test filtering medium-risk domains"""
@@ -119,8 +119,8 @@ class TestDecisionDomainMapping:
         mapper.register_domain("med1", DecisionDomain.SCHEDULING,
                              "s", "h", RiskLevel.MEDIUM)
         med = mapper.get_medium_risk_domains()
-        assert len(med) == 1
-        assert med[0].domain_id == "med1"
+        assert len(med) == 1, "Med must not be empty"
+        assert med[0].domain_id == "med1", "domain_id is not valid"
 
     def test_custom_thresholds(self):
         """Test registering domain with custom thresholds"""
@@ -135,8 +135,8 @@ class TestDecisionDomainMapping:
                 "max_latency": 1.5,
             },
         )
-        assert compat.min_improvement_threshold == 0.10
-        assert compat.max_latency_multiplier == 1.5
+        assert compat.min_improvement_threshold == 0.10, "min_improvement_threshold is not valid"
+        assert compat.max_latency_multiplier == 1.5, "max_latency_multiplier is not valid"
 
     def test_mapping_compatibility_pct(self):
         """Test compatibility percentage calculation"""
@@ -146,7 +146,7 @@ class TestDecisionDomainMapping:
                 f"d{i}", DecisionDomain.RESOURCE_ALLOCATION, "s", "h"
             )
         mapping = mapper.generate_mapping()
-        assert mapping.compatibility_pct == 1.0
+        assert mapping.compatibility_pct == 1.0, "compatibility_pct is not valid"
 
 
 class TestShadowExecution:
@@ -155,8 +155,8 @@ class TestShadowExecution:
     def test_executor_init(self):
         """Test executor initialization"""
         executor = ShadowExecutor(timeout_ms=5000)
-        assert executor.timeout_ms == 5000
-        assert len(executor._executions) == 0
+        assert executor.timeout_ms == 5000, "timeout_ms is not valid"
+        assert len(executor._executions) == 0, "Collection must not be empty"
 
     def test_solver_result_creation(self):
         """Test SolverResult creation"""
@@ -167,9 +167,9 @@ class TestShadowExecution:
             latency_ms=100.0,
             constraints_satisfied=True,
         )
-        assert result.solver_name == "test_solver"
-        assert result.quality == 0.95
-        assert result.latency_ms == 100.0
+        assert result.solver_name == "test_solver", "Result must not be empty"
+        assert result.quality == 0.95, "Result must not be empty"
+        assert result.latency_ms == 100.0, "Result must not be empty"
 
     def test_execute_parallel_success(self):
         """Test successful parallel execution"""
@@ -201,9 +201,9 @@ class TestShadowExecution:
             seed=42,
         )
 
-        assert comparison.decision_id == "test_1"
-        assert comparison.classical_result.quality == 1.0
-        assert comparison.hybrid_result.quality == 1.05
+        assert comparison.decision_id == "test_1", "decision_id is not valid"
+        assert comparison.classical_result.quality == 1.0, "Result must not be empty"
+        assert comparison.hybrid_result.quality == 1.05, "Result must not be empty"
 
     def test_improvement_calculation(self):
         """Test improvement percentage calculation"""
@@ -212,7 +212,7 @@ class TestShadowExecution:
             classical_quality=1.0,
             hybrid_quality=1.05,
         )
-        assert improvement == pytest.approx(5.0)
+        assert improvement == pytest.approx(5.0), "improvement is not valid"
 
     def test_improvement_negative(self):
         """Test negative improvement (hybrid worse than classical)"""
@@ -221,7 +221,7 @@ class TestShadowExecution:
             classical_quality=1.0,
             hybrid_quality=0.95,
         )
-        assert improvement == pytest.approx(-5.0)
+        assert improvement == pytest.approx(-5.0), "improvement is not valid"
 
     def test_improvement_zero_classical(self):
         """Test improvement with zero classical quality"""
@@ -230,13 +230,13 @@ class TestShadowExecution:
             classical_quality=0.0,
             hybrid_quality=0.5,
         )
-        assert improvement == 0.0
+        assert improvement == 0.0, "improvement is not valid"
 
     def test_get_statistics_empty(self):
         """Test statistics with no executions"""
         executor = ShadowExecutor()
         stats = executor.get_statistics()
-        assert stats == {}
+        assert stats == {}, "stats is not valid"
 
     def test_get_statistics_after_execution(self):
         """Test statistics after executions"""
@@ -270,9 +270,9 @@ class TestShadowExecution:
             )
 
         stats = executor.get_statistics()
-        assert stats["total_executions"] == 3
-        assert stats["successful_executions"] == 3
-        assert stats["avg_improvement_pct"] == pytest.approx(5.0)
+        assert stats["total_executions"] == 3, "Condition must be true"
+        assert stats["successful_executions"] == 3, "Condition must be true"
+        assert stats["avg_improvement_pct"] == pytest.approx(5.0), "Condition must be true"
 
     def test_latency_ratio_calculation(self):
         """Test latency ratio in comparisons"""
@@ -339,7 +339,7 @@ class TestShadowExecution:
             solver_params={},
         )
 
-        assert comparison.both_feasible is True
+        assert comparison.both_feasible is True, "both_feasible is not valid"
 
     def test_both_feasible_false(self):
         """Test both_feasible when one violates constraints"""
@@ -370,7 +370,7 @@ class TestShadowExecution:
             solver_params={},
         )
 
-        assert comparison.both_feasible is False
+        assert comparison.both_feasible is False, "both_feasible is not valid"
 
     def test_solver_failure_handling(self):
         """Test handling of solver failures"""
@@ -406,8 +406,8 @@ class TestPromotionGates:
     def test_promotion_gates_init(self):
         """Test PromotionGates initialization"""
         gates = PromotionGates()
-        assert gates is not None
-        assert gates.GATE_1_IMPROVEMENT["threshold"] == 0.05
+        assert gates is not None, "gates must be initialized"
+        assert gates.GATE_1_IMPROVEMENT["threshold"] == 0.05, "Condition must be true"
 
     def test_gate_1_pass_threshold(self):
         """Test Gate 1 passing with sufficient improvement"""
@@ -418,8 +418,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.gates[0].passed is True
-        assert report.gates[0].gate_number == 1
+        assert report.gates[0].passed is True, "passed is not valid"
+        assert report.gates[0].gate_number == 1, "gate_number is not valid"
 
     def test_gate_1_fail_threshold(self):
         """Test Gate 1 failing with insufficient improvement"""
@@ -430,7 +430,7 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.gates[0].passed is False
+        assert report.gates[0].passed is False, "passed is not valid"
 
     def test_gate_2_pass_threshold(self):
         """Test Gate 2 passing with low determinism drift"""
@@ -441,8 +441,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.gates[1].passed is True
-        assert report.gates[1].gate_number == 2
+        assert report.gates[1].passed is True, "passed is not valid"
+        assert report.gates[1].gate_number == 2, "gate_number is not valid"
 
     def test_gate_2_fail_threshold(self):
         """Test Gate 2 failing with high determinism drift"""
@@ -453,7 +453,7 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.gates[1].passed is False
+        assert report.gates[1].passed is False, "passed is not valid"
 
     def test_gate_3_pass_threshold(self):
         """Test Gate 3 passing with acceptable latency"""
@@ -464,8 +464,8 @@ class TestPromotionGates:
             latency_ratio=1.8,
             num_samples=60,
         )
-        assert report.gates[2].passed is True
-        assert report.gates[2].gate_number == 3
+        assert report.gates[2].passed is True, "passed is not valid"
+        assert report.gates[2].gate_number == 3, "gate_number is not valid"
 
     def test_gate_3_fail_threshold(self):
         """Test Gate 3 failing with excessive latency"""
@@ -476,7 +476,7 @@ class TestPromotionGates:
             latency_ratio=2.5,
             num_samples=60,
         )
-        assert report.gates[2].passed is False
+        assert report.gates[2].passed is False, "passed is not valid"
 
     def test_all_gates_pass(self):
         """Test all gates passing"""
@@ -487,8 +487,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.all_passed is True
-        assert report.ready_for_promotion is True
+        assert report.all_passed is True, "all_passed is not valid"
+        assert report.ready_for_promotion is True, "ready_for_promotion is not valid"
 
     def test_all_gates_pass_insufficient_samples(self):
         """Test gates pass but insufficient samples"""
@@ -499,8 +499,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=30,  # Below 50
         )
-        assert report.all_passed is True
-        assert report.ready_for_promotion is False
+        assert report.all_passed is True, "all_passed is not valid"
+        assert report.ready_for_promotion is False, "ready_for_promotion is not valid"
 
     def test_gate_history_tracking(self):
         """Test gate evaluation history tracking"""
@@ -513,7 +513,7 @@ class TestPromotionGates:
                 num_samples=60,
             )
         history = gates.get_gate_history()
-        assert len(history) == 3
+        assert len(history) == 3, "History must not be empty"
 
     def test_get_latest_evaluation(self):
         """Test getting latest evaluation"""
@@ -525,8 +525,8 @@ class TestPromotionGates:
             num_samples=60,
         )
         latest = gates.get_latest_evaluation()
-        assert latest is not None
-        assert latest.all_passed is True
+        assert latest is not None, "latest must be initialized"
+        assert latest.all_passed is True, "all_passed is not valid"
 
     def test_gate_result_evidence(self):
         """Test gate result includes evidence"""
@@ -538,8 +538,8 @@ class TestPromotionGates:
             num_samples=60,
         )
         gate1 = report.gates[0]
-        assert "avg_improvement_pct" in gate1.evidence
-        assert gate1.evidence["avg_improvement_pct"] == 6.0
+        assert "avg_improvement_pct" in gate1.evidence, "Condition must be true"
+        assert gate1.evidence["avg_improvement_pct"] == 6.0, "Condition must be true"
 
     def test_gate_boundary_gate_1(self):
         """Test Gate 1 at boundary (5% exactly)"""
@@ -551,7 +551,7 @@ class TestPromotionGates:
             num_samples=60,
         )
         # 5% is threshold, need > 5%
-        assert report.gates[0].passed is False
+        assert report.gates[0].passed is False, "passed is not valid"
 
     def test_gate_boundary_gate_1_above(self):
         """Test Gate 1 just above boundary (5.01%)"""
@@ -562,7 +562,7 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert report.gates[0].passed is True
+        assert report.gates[0].passed is True, "passed is not valid"
 
     def test_edge_case_one_gate_fails(self):
         """Test case where only one gate fails"""
@@ -573,9 +573,9 @@ class TestPromotionGates:
             latency_ratio=1.5,  # Gate 3 passes
             num_samples=60,
         )
-        assert report.all_passed is False
+        assert report.all_passed is False, "all_passed is not valid"
         failed = [g for g in report.gates if not g.passed]
-        assert len(failed) == 1
+        assert len(failed) == 1, "Failed must not be empty"
 
     def test_recommendation_ready_for_promotion(self):
         """Test recommendation when ready for promotion"""
@@ -586,8 +586,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=60,
         )
-        assert "✅" in report.recommendation
-        assert "READY FOR PHASE 6" in report.recommendation
+        assert "✅" in report.recommendation, "Condition must be true"
+        assert "READY FOR PHASE 6" in report.recommendation, "Condition must be true"
 
     def test_recommendation_insufficient_samples(self):
         """Test recommendation with insufficient samples"""
@@ -598,8 +598,8 @@ class TestPromotionGates:
             latency_ratio=1.5,
             num_samples=30,
         )
-        assert "⚠️" in report.recommendation
-        assert "insufficient samples" in report.recommendation.lower()
+        assert "⚠️" in report.recommendation, "Condition must be true"
+        assert "insufficient samples" in report.recommendation.lower(), "Condition must be true"
 
     def test_recommendation_gates_failed(self):
         """Test recommendation when gates fail"""
@@ -610,8 +610,8 @@ class TestPromotionGates:
             latency_ratio=3.0,
             num_samples=60,
         )
-        assert "❌" in report.recommendation
-        assert "GATES FAILED" in report.recommendation
+        assert "❌" in report.recommendation, "Condition must be true"
+        assert "GATES FAILED" in report.recommendation, "Condition must be true"
 
     def test_metadata_stored_in_report(self):
         """Test metadata is stored in report"""
@@ -624,4 +624,4 @@ class TestPromotionGates:
             num_samples=60,
             metadata=metadata,
         )
-        assert report.details["domain"] == "resource_allocation"
+        assert report.details["domain"] == "resource_allocation", "rep is not valid"

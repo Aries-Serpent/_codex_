@@ -35,19 +35,19 @@ from codex.cognitive.workflow_optimizer import (
 
 class TestEnums:
     def test_workflow_status_values(self) -> None:
-        assert WorkflowStatus.QUEUED.value == "queued"
-        assert WorkflowStatus.COMPLETED.value == "completed"
-        assert WorkflowStatus.FAILED.value == "failed"
-        assert WorkflowStatus.PENDING_APPROVAL.value == "pending_approval"
+        assert WorkflowStatus.QUEUED.value == "queued", "Value must be initialized"
+        assert WorkflowStatus.COMPLETED.value == "completed", "Value must be initialized"
+        assert WorkflowStatus.FAILED.value == "failed", "Value must be initialized"
+        assert WorkflowStatus.PENDING_APPROVAL.value == "pending_approval", "Value must be initialized"
 
     def test_workflow_category_values(self) -> None:
-        assert WorkflowCategory.SECURITY.value == "security"
-        assert WorkflowCategory.TESTING.value == "testing"
-        assert WorkflowCategory.BUILD.value == "build"
+        assert WorkflowCategory.SECURITY.value == "security", "Value must be initialized"
+        assert WorkflowCategory.TESTING.value == "testing", "Value must be initialized"
+        assert WorkflowCategory.BUILD.value == "build", "Value must be initialized"
 
     def test_optimization_type_values(self) -> None:
-        assert OptimizationType.CONSOLIDATION.value == "consolidation"
-        assert OptimizationType.CACHING.value == "caching"
+        assert OptimizationType.CONSOLIDATION.value == "consolidation", "Value must be initialized"
+        assert OptimizationType.CACHING.value == "caching", "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -74,14 +74,14 @@ class TestWorkflowInfo:
 
     def test_to_dict_keys(self, wf: WorkflowInfo) -> None:
         d = wf.to_dict()
-        assert "name" in d
-        assert "category" in d
-        assert d["name"] == "ci-tests"
-        assert d["category"] == "testing"
+        assert "name" in d, "Condition must be true"
+        assert "category" in d, "Condition must be true"
+        assert d["name"] == "ci-tests", "Condition must be true"
+        assert d["category"] == "testing", "Condition must be true"
 
     def test_to_dict_uses_cache(self, wf: WorkflowInfo) -> None:
         d = wf.to_dict()
-        assert d["uses_cache"] is True
+        assert d["uses_cache"] is True, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -104,10 +104,10 @@ class TestWorkflowRun:
             branch="main",
         )
         d = run.to_dict()
-        assert d["run_id"] == "12345"
-        assert d["conclusion"] == "success"
-        assert d["duration_seconds"] == pytest.approx(90.0)
-        assert d["head_sha"] == "abc123def456"
+        assert d["run_id"] == "12345", "Condition must be true"
+        assert d["conclusion"] == "success", "Condition must be true"
+        assert d["duration_seconds"] == pytest.approx(90.0), "Condition must be true"
+        assert d["head_sha"] == "abc123def456", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -127,10 +127,10 @@ class TestWorkflowCheckpoint:
             metadata={"tests_passed": 247},
         )
         d = cp.to_dict()
-        assert d["checkpoint_id"] == "CP-00001"
-        assert d["step_name"] == "pytest"
-        assert d["status"] == "completed"
-        assert d["metadata"] == {"tests_passed": 247}
+        assert d["checkpoint_id"] == "CP-00001", "Condition must be true"
+        assert d["step_name"] == "pytest", "Condition must be true"
+        assert d["status"] == "completed", "Condition must be true"
+        assert d["metadata"] == {"tests_passed": 247}, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -165,7 +165,7 @@ class TestWorkflowCategorizer:
         expected: WorkflowCategory,
     ) -> None:
         result = categorizer.categorize(name, path)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_categorize_unknown_returns_valid_category(
         self, categorizer: WorkflowCategorizer
@@ -226,7 +226,7 @@ class TestRedundancyDetector:
     def test_find_similar_empty_list(self, detector: RedundancyDetector) -> None:
         groups = detector.find_similar_workflows([])
         assert isinstance(groups, list)
-        assert groups == []
+        assert groups == [], "groups is not valid"
 
     def test_recommend_consolidations_empty(self, detector: RedundancyDetector) -> None:
         recs = detector.recommend_consolidations([])
@@ -275,7 +275,7 @@ class TestImmutableRegistry:
             reason="frozen",
         )
         items = registry.get_all()
-        assert len(items) >= 1
+        assert len(items) >= 1, "Items must not be empty"
         assert all(isinstance(c, ImmutableComponent) for c in items)
 
     def test_save_and_load(self, tmp_path: Path) -> None:
@@ -311,31 +311,31 @@ class TestCheckpointManager:
             status="completed",
             metadata={"tests_passed": 247},
         )
-        assert cp.workflow_name == "ci-tests"
-        assert cp.step_name == "pytest"
-        assert cp.status == "completed"
-        assert cp.metadata == {"tests_passed": 247}
+        assert cp.workflow_name == "ci-tests", "workflow_name is not valid"
+        assert cp.step_name == "pytest", "step_name is not valid"
+        assert cp.status == "completed", "status is not valid"
+        assert cp.metadata == {"tests_passed": 247}, "Data must not be empty"
 
     def test_get_latest_checkpoint(self, manager: CheckpointManager) -> None:
         manager.create_checkpoint("wf-a", "step-1", "in_progress")
         manager.create_checkpoint("wf-a", "step-2", "completed")
         latest = manager.get_latest_checkpoint("wf-a")
-        assert latest is not None
-        assert latest.step_name == "step-2"
+        assert latest is not None, "latest must be initialized"
+        assert latest.step_name == "step-2", "step_name is not valid"
 
     def test_get_latest_nonexistent(self, manager: CheckpointManager) -> None:
-        assert manager.get_latest_checkpoint("nonexistent-wf") is None
+        assert manager.get_latest_checkpoint("nonexistent-wf") is None, "Condition must be true"
 
     def test_get_all_for_workflow(self, manager: CheckpointManager) -> None:
         manager.create_checkpoint("wf-b", "step-1", "done")
         manager.create_checkpoint("wf-b", "step-2", "done")
         manager.create_checkpoint("wf-c", "step-1", "done")
         result = manager.get_all_for_workflow("wf-b")
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_checkpoint_id_auto_generated(self, manager: CheckpointManager) -> None:
         cp = manager.create_checkpoint("wf-x", "step", "completed")
-        assert cp.checkpoint_id.startswith("CP-")
+        assert cp.checkpoint_id.startswith("CP-"), "Condition must be true"
 
     def test_save_and_reload(self, tmp_path: Path) -> None:
         path = tmp_path / "cp.json"
@@ -344,8 +344,8 @@ class TestCheckpointManager:
         # save called automatically; reload to verify
         mgr2 = CheckpointManager(checkpoint_path=path)
         loaded = mgr2.get_latest_checkpoint("wf-persist")
-        assert loaded is not None
-        assert loaded.status == "done"
+        assert loaded is not None, "loaded must be initialized"
+        assert loaded.status == "done", "status is not valid"
 
 
 # ---------------------------------------------------------------------------

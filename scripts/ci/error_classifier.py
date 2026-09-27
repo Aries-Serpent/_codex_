@@ -11,10 +11,10 @@ Classifies CI failures into categories:
 
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from typing import Optional, Dict, List, Tuple
-from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple
 
 
 class ErrorCategory(Enum):
@@ -435,7 +435,7 @@ if __name__ == "__main__":
     # Test network error
     net_error = "Error: Connection refused - Failed to connect to api.github.com:443"
     sig = classifier.classify(net_error)
-    print(f"\n=== Network Error ===")
+    print("\n=== Network Error ===")
     print(f"Classification: {sig.category.value}")
     print(f"Severity: {sig.severity.value}")
     print(f"Suggestions: {sig.suggestions}")
@@ -443,7 +443,7 @@ if __name__ == "__main__":
     # Test timeout error
     timeout_error = "SIGTERM signal: terminated"
     sig = classifier.classify(timeout_error, attempt_number=2)
-    print(f"\n=== Timeout Error ===")
+    print("\n=== Timeout Error ===")
     print(f"Classification: {sig.category.value}")
     print(f"Severity: {sig.severity.value}")
     print(f"Suggestions: {sig.suggestions}")
@@ -451,7 +451,7 @@ if __name__ == "__main__":
     # Test resource error
     resource_error = "MemoryError: Unable to allocate 2.00 GiB for an array"
     sig = classifier.classify(resource_error)
-    print(f"\n=== Resource Error ===")
+    print("\n=== Resource Error ===")
     print(f"Classification: {sig.category.value}")
     print(f"Severity: {sig.severity.value}")
 
@@ -464,6 +464,6 @@ if __name__ == "__main__":
     metrics = RecoveryMetrics()
     metrics.record_attempt("net-conn-refused", RecoverySeverity.AUTO_RECOVERABLE, True, 5)
     metrics.record_attempt("net-conn-refused", RecoverySeverity.AUTO_RECOVERABLE, True, 5)
-    print(f"\n=== Metrics ===")
+    print("\n=== Metrics ===")
     print(f"Success Rate: {metrics.get_success_rate():.1f}%")
     print(f"MTTR: {metrics.calculate_mttr_seconds():.1f}s")

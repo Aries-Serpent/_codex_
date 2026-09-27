@@ -62,7 +62,13 @@ try:  # pragma: no cover - optional dependency
         import pynvml
     else:  # pragma: no cover - GPU polling disabled via feature flag
         pynvml = None
-except (ImportError, AttributeError, OSError, RuntimeError, ValueError) as exc:  # pragma: no cover - pynvml missing
+except (
+    ImportError,
+    AttributeError,
+    OSError,
+    RuntimeError,
+    ValueError,
+) as exc:  # pragma: no cover - pynvml missing
     logger.debug(
         "pynvml import failed; GPU metrics disabled",
         exc_info=True,
@@ -447,14 +453,24 @@ def start_metrics_logger(
             record = sample_system_metrics()
             try:
                 write_fn(record)
-            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - sink errors are non-fatal
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+            ):  # pragma: no cover - sink errors are non-fatal
                 logger.debug("Suppressed exception in handler", exc_info=True)
             if scalar_sink is not None:
                 try:
                     scalars = system_metrics_scalars(record)
                     if scalars:
                         scalar_sink(scalars)
-                except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - sink errors are non-fatal
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                ):  # pragma: no cover - sink errors are non-fatal
                     logger.debug("Suppressed exception in handler", exc_info=True)
             event.wait(interval)
 

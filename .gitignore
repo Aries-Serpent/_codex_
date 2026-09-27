@@ -63,6 +63,7 @@ Thumbs.db
 .codex/phase_10_3_performance_metrics.json
 .codex/py312_deps_cache.json
 .codex/py312_deps_report.json
+!.codex/agent_auth_session.json
 
 # Testing
 .pytest_cache/

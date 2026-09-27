@@ -224,7 +224,7 @@ class RetryStrategy:
                 # Determine if we should retry
                 if not self.should_retry(e, attempt):
                     logger.error(
-                        f"{operation_name} failed permanently on attempt " f"{attempt + 1}: {e}"
+                        f"{operation_name} failed permanently on attempt {attempt + 1}: {e}"
                     )
                     raise
 

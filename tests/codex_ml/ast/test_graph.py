@@ -14,21 +14,21 @@ class TestDependencyGraph:
     def test_create_empty_graph(self) -> None:
         """Test creating an empty graph."""
         graph = DependencyGraph()
-        assert len(graph) == 0
+        assert len(graph) == 0, "Graph must not be empty"
 
     def test_add_node(self) -> None:
         """Test adding a node."""
         graph = DependencyGraph()
         graph.add_node("module_a", ["module_b", "module_c"])
-        assert "module_a" in graph
-        assert len(graph) == 3  # a, b, c are all added
+        assert "module_a" in graph, "Condition must be true"
+        assert len(graph) == 3, "Graph must not be empty"
 
     def test_add_node_no_deps(self) -> None:
         """Test adding a node without dependencies."""
         graph = DependencyGraph()
         graph.add_node("standalone")
-        assert "standalone" in graph
-        assert graph.get_dependencies("standalone") == set()
+        assert "standalone" in graph, "Condition must be true"
+        assert graph.get_dependencies("standalone") == set(), "Condition must be true"
 
     def test_get_dependencies(self) -> None:
         """Test getting node dependencies."""
@@ -49,23 +49,23 @@ class TestDependencyGraph:
         """Test adding an edge."""
         graph = DependencyGraph()
         graph.add_edge("a", "b")
-        assert graph.get_dependencies("a") == {"b"}
-        assert graph.get_dependents("b") == {"a"}
+        assert graph.get_dependencies("a") == {"b"}, "Condition must be true"
+        assert graph.get_dependents("b") == {"a"}, "Condition must be true"
 
     def test_remove_edge(self) -> None:
         """Test removing an edge."""
         graph = DependencyGraph()
         graph.add_edge("a", "b")
         result = graph.remove_edge("a", "b")
-        assert result is True
-        assert graph.get_dependencies("a") == set()
+        assert result is True, "Result must not be empty"
+        assert graph.get_dependencies("a") == set(), "Condition must be true"
 
     def test_remove_edge_not_found(self) -> None:
         """Test removing non-existent edge."""
         graph = DependencyGraph()
         graph.add_node("a")
         result = graph.remove_edge("a", "b")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_remove_node(self) -> None:
         """Test removing a node."""
@@ -73,14 +73,14 @@ class TestDependencyGraph:
         graph.add_node("a", ["b"])
         graph.add_node("c", ["a"])
         result = graph.remove_node("a")
-        assert result is True
-        assert "a" not in graph
+        assert result is True, "Result must not be empty"
+        assert "a" not in graph, "Condition must be true"
 
     def test_remove_node_not_found(self) -> None:
         """Test removing non-existent node."""
         graph = DependencyGraph()
         result = graph.remove_node("nonexistent")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_get_all_dependencies(self) -> None:
         """Test getting transitive dependencies."""
@@ -99,7 +99,7 @@ class TestDependencyGraph:
         graph.add_node("a", ["b"])
         graph.add_node("b", ["c"])
         graph.add_node("c")
-        assert graph.has_cycle() is False
+        assert graph.has_cycle() is False, "Condition must be true"
 
     def test_has_cycle_true(self) -> None:
         """Test cycle detection on cyclic graph."""
@@ -107,13 +107,13 @@ class TestDependencyGraph:
         graph.add_node("a", ["b"])
         graph.add_node("b", ["c"])
         graph.add_node("c", ["a"])  # Creates cycle
-        assert graph.has_cycle() is True
+        assert graph.has_cycle() is True, "Condition must be true"
 
     def test_has_cycle_self_reference(self) -> None:
         """Test cycle detection on self-referencing node."""
         graph = DependencyGraph()
         graph.add_node("a", ["a"])  # Self-reference
-        assert graph.has_cycle() is True
+        assert graph.has_cycle() is True, "Condition must be true"
 
     def test_find_cycle(self) -> None:
         """Test finding a cycle."""
@@ -123,15 +123,15 @@ class TestDependencyGraph:
         graph.add_node("c", ["a"])  # Creates cycle
 
         cycle = graph.find_cycle()
-        assert cycle is not None
-        assert len(cycle) >= 3  # At least 3 nodes in cycle
+        assert cycle is not None, "cycle must be initialized"
+        assert len(cycle) >= 3, "Cycle must not be empty"
 
     def test_find_cycle_none(self) -> None:
         """Test finding cycle when none exists."""
         graph = DependencyGraph()
         graph.add_node("a", ["b"])
         graph.add_node("b")
-        assert graph.find_cycle() is None
+        assert graph.find_cycle() is None, "Condition must be true"
 
     def test_topological_sort_simple(self) -> None:
         """Test topological sort on simple graph."""
@@ -141,8 +141,8 @@ class TestDependencyGraph:
         graph.add_node("c")
 
         order = graph.topological_sort()
-        assert order.index("c") < order.index("b")
-        assert order.index("b") < order.index("a")
+        assert order.index("c") < order.index("b"), "Condition must be true"
+        assert order.index("b") < order.index("a"), "Condition must be true"
 
     def test_topological_sort_with_cycle(self) -> None:
         """Test topological sort raises on cyclic graph."""
@@ -161,8 +161,8 @@ class TestDependencyGraph:
         graph.add_node("c")
 
         order = graph.reverse_topological_sort()
-        assert order.index("a") < order.index("b")
-        assert order.index("b") < order.index("c")
+        assert order.index("a") < order.index("b"), "Condition must be true"
+        assert order.index("b") < order.index("c"), "Condition must be true"
 
     def test_get_roots(self) -> None:
         """Test getting root nodes."""
@@ -173,9 +173,9 @@ class TestDependencyGraph:
         graph.add_node("standalone")
 
         roots = graph.get_roots()
-        assert "c" in roots
-        assert "standalone" in roots
-        assert "a" not in roots
+        assert "c" in roots, "Condition must be true"
+        assert "standalone" in roots, "Condition must be true"
+        assert "a" not in roots, "Condition must be true"
 
     def test_get_leaves(self) -> None:
         """Test getting leaf nodes."""
@@ -185,8 +185,8 @@ class TestDependencyGraph:
         graph.add_node("c")
 
         leaves = graph.get_leaves()
-        assert "a" in leaves
-        assert "c" not in leaves
+        assert "a" in leaves, "Condition must be true"
+        assert "c" not in leaves, "Condition must be true"
 
     def test_strongly_connected_components(self) -> None:
         """Test SCC detection."""
@@ -200,7 +200,7 @@ class TestDependencyGraph:
 
         sccs = graph.get_strongly_connected_components()
         # Should have 2 SCCs: {a, b, c} and {d}
-        assert len(sccs) == 2
+        assert len(sccs) == 2, "Sccs must not be empty"
 
         # Find the SCC containing the cycle
         cycle_scc = None
@@ -209,7 +209,7 @@ class TestDependencyGraph:
                 cycle_scc = scc
                 break
 
-        assert cycle_scc is not None
+        assert cycle_scc is not None, "cycle_scc must be initialized"
         assert cycle_scc == {"a", "b", "c"}
 
     def test_repr(self) -> None:
@@ -217,5 +217,5 @@ class TestDependencyGraph:
         graph = DependencyGraph()
         graph.add_node("a", ["b", "c"])
         repr_str = repr(graph)
-        assert "DependencyGraph" in repr_str
-        assert "nodes=3" in repr_str
+        assert "DependencyGraph" in repr_str, "Condition must be true"
+        assert "nodes=3" in repr_str, "Condition must be true"

@@ -133,9 +133,7 @@ class DeterministicPolicy:
     # Public API
     # ------------------------------------------------------------------
 
-    def score(
-        self, plan: CandidatePlan, context: PolicyContext
-    ) -> ScoredPlan:
+    def score(self, plan: CandidatePlan, context: PolicyContext) -> ScoredPlan:
         """Compute the five-dimension score for a single *plan* / *context* pair."""
         path = self._score_path(plan, context)
         fields = self._score_fields(plan, context)
@@ -161,9 +159,7 @@ class DeterministicPolicy:
             total_score=total,
         )
 
-    def rank(
-        self, candidates: Sequence[CandidatePlan], context: PolicyContext
-    ) -> List[ScoredPlan]:
+    def rank(self, candidates: Sequence[CandidatePlan], context: PolicyContext) -> List[ScoredPlan]:
         """Score and rank *candidates*, returning highest score first.
 
         Tie-breaking is deterministic: plans with equal total scores are
@@ -219,9 +215,7 @@ class DeterministicPolicy:
         """
         if not context.constraints:
             return 0.8
-        satisfied = len(
-            [c for c in context.constraints if c in plan.constraints_satisfied]
-        )
+        satisfied = len([c for c in context.constraints if c in plan.constraints_satisfied])
         return satisfied / len(context.constraints)
 
     def _score_patterns(self, plan: CandidatePlan, context: PolicyContext) -> float:

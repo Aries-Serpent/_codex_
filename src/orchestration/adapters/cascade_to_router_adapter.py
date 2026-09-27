@@ -552,7 +552,7 @@ Detection Confidence: {pattern.confidence:.1%}
 Match Count: {pattern.match_count}
 
 Affected Files ({len(pattern.affected_files)} total):
-{', '.join(pattern.affected_files[:5])}{'...' if len(pattern.affected_files) > 5 else ''}
+{", ".join(pattern.affected_files[:5])}{"..." if len(pattern.affected_files) > 5 else ""}
 
 Error Context:
 {pattern.error_context[:300]}

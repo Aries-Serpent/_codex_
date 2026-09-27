@@ -17,4 +17,4 @@ from __future__ import annotations
 # Placeholder for actual tests
 def test_placeholder():
     """Placeholder test to avoid syntax errors."""
-    assert True
+    assert True, "True is not valid"

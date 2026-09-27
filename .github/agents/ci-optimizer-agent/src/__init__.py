@@ -1,12 +1,12 @@
 """CI Optimizer Agent - Main Module"""
 import os
 import random
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 try:
-    from .test_prioritizer import TestPrioritizer, create_prioritizer
+    from .test_prioritizer import create_prioritizer
 except ImportError:
-    from test_prioritizer import TestPrioritizer, create_prioritizer
+    from test_prioritizer import create_prioritizer
 
 RANDOM_SEED = 49
 
