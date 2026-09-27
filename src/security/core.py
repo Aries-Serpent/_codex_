@@ -56,12 +56,11 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     )
     if max_length <= 0:
         return ""
+    suffix = "...[truncated]"
     if len(sanitized) > max_length:
-        suffix = "...[truncated]"
-        # Preserve the requested `max_length` as the visible prefix, while still
-        # appending the truncation marker. This keeps log output bounded in a
-        # reviewable way without dropping the explicit suffix.
-        sanitized = sanitized[:max_length] + suffix
+        visible_prefix = max(0, max_length - len(suffix))
+        sanitized = sanitized[:visible_prefix] + suffix
+        return sanitized[:max_length]
     return sanitized
 
 
@@ -380,7 +379,7 @@ def log_security_event(event: str, *, logger: logging.Logger | None = None) -> N
     """Emit an audit log entry for a security-relevant event."""
 
     log = logger or logging.getLogger("codex.security")
-    log.info("security_event", extra={"event": sanitize_text(event)})
+    log.info("security_event", extra={"event": sanitize_for_logging(event)})
 
 
 def hmac_compare(expected: str, actual: str) -> bool:

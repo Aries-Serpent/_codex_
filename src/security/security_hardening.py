@@ -17,6 +17,8 @@ import subprocess
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence, TypeVar
 
+from .core import sanitize_for_logging
+
 import structlog
 
 # Configure structured logging
@@ -71,17 +73,25 @@ def _log_security_event(
         **context,
     }
 
+    clean_context: dict[str, Any] = {}
+    for key, value in context.items():
+        if value is None:
+            continue
+        clean_context[key] = sanitize_for_logging(value)
+
     # Use structlog with fallback to standard logging
     try:
         if severity == "CRITICAL":
-            logger.critical(f"Security event: {event_type}", **log_data)
+            logger.critical("Security event: %s", sanitize_for_logging(event_type), **clean_context)
         elif severity == "WARNING":
-            logger.warning(f"Security event: {event_type}", **log_data)
+            logger.warning("Security event: %s", sanitize_for_logging(event_type), **clean_context)
         else:
-            logger.info(f"Security event: {event_type}", **log_data)
+            logger.info("Security event: %s", sanitize_for_logging(event_type), **clean_context)
     except Exception:
         # Fallback to standard logging
-        msg = f"Security event {event_type}: {context}"
+        safe_event = sanitize_for_logging(event_type)
+        safe_context = {key: sanitize_for_logging(value) for key, value in context.items() if value is not None}
+        msg = f"Security event {safe_event}: {safe_context}"
         if severity == "CRITICAL":
             fallback_logger.critical(msg, exc_info=True)
         elif severity == "WARNING":

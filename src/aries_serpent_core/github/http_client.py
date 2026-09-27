@@ -32,9 +32,13 @@ def redact_url_for_log(url: str) -> str:
         return ""
     parts = urlsplit(url)
     host = parts.hostname or ""
-    if ":" in host and not host.startswith("["):
+    if host and ":" in host and not host.startswith("["):
         host = f"[{host}]"
-    netloc = f"{host}:{parts.port}" if parts.port else host
+    try:
+        port = parts.port
+    except ValueError:
+        port = None
+    netloc = f"{host}:{port}" if port is not None else host
     return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
 
 
@@ -42,11 +46,17 @@ def validated_github_api_url(url: str) -> str:
     """Allow only credential-free HTTPS calls to api.github.com."""
     if not url:
         raise ValueError("GitHub API URL cannot be empty")
+    if any(ch in url for ch in ("\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub API URL contains control characters")
     parts = urlsplit(url)
     if parts.scheme != "https" or parts.hostname != "api.github.com":
         raise ValueError(f"GitHub API URL must target https://api.github.com: {url!r}")
     if parts.username or parts.password:
         raise ValueError("GitHub API URL must not contain embedded credentials")
+    if parts.fragment:
+        raise ValueError("GitHub API URL must not contain fragments")
+    if any(ch in (parts.path or "") for ch in ("\\", "?", "#", "%")):
+        raise ValueError("GitHub API URL path contains unexpected query or escape characters")
     return url
 
 
@@ -64,6 +74,12 @@ class GitHubHTTPClient:
             token: GitHub API token. If None, operations will fail without token.
         """
         self._token = token
+
+    def _safe_token_for_log(self) -> str:
+        """Return a non-sensitive token label for logging."""
+        if not self._token:
+            return "<unset>"
+        return f"{self._token[:4]}...{self._token[-4:]}" if len(self._token) > 8 else "[REDACTED]"
 
     def make_request(
         self,
@@ -101,7 +117,7 @@ class GitHubHTTPClient:
 
         # Prepare headers
         headers = {
-            "Authorization": "******",
+            "Authorization": f"******",
             "Accept": _ACCEPT,
             "X-GitHub-Api-Version": _API_VERSION,
         }
@@ -121,7 +137,7 @@ class GitHubHTTPClient:
                 method=method,
             )
 
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310 - URL is validated to api.github.com with a https-only allowlist
                 response_body = resp.read().decode("utf-8")
                 if response_body:
                     return json.loads(response_body)
@@ -129,12 +145,17 @@ class GitHubHTTPClient:
 
         except urllib.error.HTTPError as e:
             # Log safe error details without exposing request or response secrets.
-            logger.error("GitHub API error: %s %s at %s", e.code, e.reason, redact_url_for_log(url))
+            logger.error(
+                "GitHub API error: %s %s at %s",
+                e.code,
+                redact_url_for_log(url),
+                redact_url_for_log(url),
+            )
             try:
-                error_data = json.loads(e.read().decode("utf-8"))
-                logger.debug("GitHub API error details: %s", redact_url_for_log(str(error_data)))
+                json.loads(e.read().decode("utf-8"))
             except Exception:
                 pass
+            logger.debug("GitHub API error details: status=%s reason=%s", e.code, e.reason)
             raise
         except urllib.error.URLError as e:
             logger.error("Network error: %s at %s", e.reason, redact_url_for_log(url))

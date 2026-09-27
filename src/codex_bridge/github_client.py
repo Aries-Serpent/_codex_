@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 import requests
 
@@ -54,6 +54,10 @@ def _cache_path(key: str) -> str:
 
 
 def _validated_url(url: str) -> str:
+    if not isinstance(url, str) or not url:
+        raise ValueError("GitHub client URL must be a non-empty string")
+    if any(ch in url for ch in ("\x00", "\n", "\r", "\t")):
+        raise ValueError("GitHub client URL contains invalid control characters")
     parsed = urlsplit(url)
     if parsed.scheme != "https" or not parsed.netloc:
         raise ValueError("GitHub client only allows absolute https URLs")
@@ -65,6 +69,8 @@ def _validated_url(url: str) -> str:
     hostname_lower = hostname.lower()
     if hostname_lower not in _ALLOWED_HTTP_HOSTS:
         raise ValueError(f"GitHub client URL host not allowlisted: {hostname_lower}")
+    if hostname_lower in {"localhost", "localhost.localdomain", "127.0.0.1", "0.0.0.0"}:
+        raise ValueError(f"GitHub client URL host is not public: {hostname_lower}")
     if any(ch in parsed.path for ch in ("\x00", "\n", "\r", "\t")):
         raise ValueError("GitHub client URL contains invalid control characters")
     return url
@@ -72,13 +78,41 @@ def _validated_url(url: str) -> str:
 
 def _safe_repo_component(value: str, *, field_name: str) -> str:
     """Reject path traversal and injection characters in GitHub path components."""
-    if not value:
+    if not isinstance(value, str):
         raise ValueError(f"GitHub client URL {field_name} cannot be empty")
-    if value.startswith("/") or value.endswith("/"):
+
+    cleaned = value.strip()
+    if not cleaned:
+        raise ValueError(f"GitHub client URL {field_name} cannot be empty")
+
+    rejected_chars = {"\x00", "\n", "\r", "\t", "\\", "?", "#", "%", "@", ":", ";", " "}
+    if any(ch in cleaned for ch in rejected_chars):
+        raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+
+    if cleaned.startswith("/") or cleaned.endswith("/") or "//" in cleaned:
         raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
-    if any(sep in value for sep in ("..", "\\", "\x00", "\n", "\r", "\t")):
+    if cleaned in {".", ".."} or ".." in cleaned:
         raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
-    return value
+
+    if field_name == "path":
+        segments = [segment for segment in cleaned.split("/") if segment]
+        if not segments:
+            raise ValueError(f"GitHub client URL {field_name} cannot be empty")
+        for segment in segments:
+            if segment in {".", ".."}:
+                raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+            if any(ch in segment for ch in rejected_chars):
+                raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+        return "/".join(segments)
+
+    if field_name in {"owner", "repo"}:
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", cleaned):
+            raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+        return cleaned
+
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", cleaned):
+        raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
+    return cleaned
 
 
 def cache_get(key: str, ttl: int) -> Any | None:
@@ -99,27 +133,34 @@ def cache_set(key: str, data: Any) -> None:
 
 
 def gh_get(url: str) -> Any:
-    r = requests.get(_validated_url(url), headers=_auth_headers(), timeout=30)
+    validated = _validated_url(url)
+    r = requests.get(validated, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
 
 def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
-    key = f"branches:{owner}/{repo}"
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    key = f"branches:{safe_owner}/{safe_repo}"
     c = cache_get(key, ttl=60)
     if c is not None:
         return c
-    data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
+    data = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/branches?per_page=100")
     cache_set(key, data)
     return data
 
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
-    raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    safe_ref = _safe_repo_component(ref, field_name="ref")
+    safe_path = _safe_repo_component(path.strip("/"), field_name="path")
+    raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{quote(safe_path, safe='/')}"
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
-    meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{path}?ref={ref}")
+    meta = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}")
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)
@@ -128,7 +169,10 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
 def code_search(owner: str, repo: str, q: str, ref: str = "main") -> dict[str, Any]:
     from urllib.parse import quote
 
-    query = quote(f"{q} repo:{owner}/{repo} ref:{ref}")
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    safe_ref = _safe_repo_component(ref, field_name="ref")
+    query = quote(f"{q} repo:{safe_owner}/{safe_repo} ref:{safe_ref}")
     url = f"{BASE}/search/code?q={query}&per_page=10"
     return gh_get(url)
 
@@ -140,7 +184,9 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
     """
     import datetime
 
-    branches = list_branches(owner, repo)
+    safe_owner = _safe_repo_component(owner, field_name="owner")
+    safe_repo = _safe_repo_component(repo, field_name="repo")
+    branches = list_branches(safe_owner, safe_repo)
     best_name = "main"
     best_ts: datetime.datetime | None = None
     for b in branches:
@@ -149,7 +195,9 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
         sha = commit.get("sha")
         if not sha or not name:
             continue
-        url = f"{BASE}/repos/{owner}/{repo}/commits/{sha}"
+        if not re.fullmatch(r"[0-9a-fA-F]{40,64}", str(sha)):
+            continue
+        url = f"{BASE}/repos/{safe_owner}/{safe_repo}/commits/{sha}"
         data = gh_get(url)
         # Prefer committer date, fall back to author
         commit_obj = data.get("commit", {})
