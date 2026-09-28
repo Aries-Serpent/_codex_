@@ -170,6 +170,10 @@ src_str = str(repo_root / "src")
 if src_str not in sys.path:
     sys.path.insert(0, src_str)
 
+contracts_src = str(repo_root / "packages" / "contracts" / "src")
+if contracts_src not in sys.path:
+    sys.path.insert(0, contracts_src)
+
 codex_bridge_client_str = str(repo_root / "agents" / "codex_client")
 if codex_bridge_client_str not in sys.path:
     sys.path.insert(0, codex_bridge_client_str)

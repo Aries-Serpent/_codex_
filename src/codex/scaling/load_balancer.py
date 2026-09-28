@@ -128,8 +128,13 @@ class ConsistentHashRing:
         return None
 
     def _hash(self, key: str) -> int:
-        """Hash key to integer."""
-        return int(hashlib.md5(key.encode(), usedforsecurity=False).hexdigest(), 16)
+        """Hash key to integer.
+
+        SHA-256 is used instead of MD5 because this ring is for stable request
+        distribution, not cryptographic security. The value still remains an int
+        suitable for consistent hashing while avoiding the weak algorithm.
+        """
+        return int(hashlib.sha256(key.encode("utf-8")).hexdigest()[:16], 16)
 
 
 class LoadBalancer:

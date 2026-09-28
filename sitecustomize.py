@@ -19,6 +19,10 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parent
 
+_contracts_src = str(_REPO_ROOT / "packages" / "contracts" / "src")
+if _contracts_src not in sys.path:
+    sys.path.insert(0, _contracts_src)
+
 
 class _SiteCustomizeFinder(importlib.abc.MetaPathFinder):
     """Keep the root shim reloadable even when pytest strips repo root from sys.path."""

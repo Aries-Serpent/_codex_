@@ -41,6 +41,18 @@ The GitHub code-scanning API is restricted in this sandbox, so the artifact bund
 - `security-suite-cve-javascript` — JS advisory data may require external dependency or registry access for a full triage decision.
 - `security-suite-cve-rust` — Rust audit and version gating require upstream policy and registry advisory handling.
 
+## Pattern recurrence ledger
+
+This ledger records recurring backlog patterns observed in the residual backlog and remediation history, with evidence from the canonical backlog document and the repo's previous security triage artifacts. The patterns below are intentionally limited to issues with repeated deferral risk and documented follow-up responsibility.
+
+| pattern_id | recurrence_summary | evidence_in_repo | remediation_history | status |
+|---|---|---|---|---|
+| `codeql_scope_bloat` | Scope expands beyond the validated delta and is carried forward as repo-wide follow-up work. | `docs/evidence/consolidated-security-residual-backlog.md` explicitly consolidates multiple plan-based findings, and PR #3181 recorded repository-wide items as ownership follow-ups instead of active patch scope. | Require PRs to remain bounded to the proven fix area; spillover must be filed as a follow-up issue with owner and validation command. | recurring / open until scoped closure artifact exists |
+| `codeql_followup_pr_defer` | Follow-up work is deferred without a closure artifact and then reappears in later branches or sessions. | The residual backlog states that follow-up work must have a dedicated task, owner, and validation run before the next branch is closed. | Close only when a named issue/PR, due date, verification command, and completion note are attached to the follow-up item. | recurring deferral / open without closure evidence |
+| `codeql_admin_blocker` | Validation is prevented by repository or workflow administration rather than code-level defects. | `.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md` documents branch rebase and secret-scanning gate failures; `.github/OWNER_APPROVAL.yml` and `.github/CODEOWNERS` impose proof/approval guardrails. | Admin action must be completed (permission grant, workflow fix, policy unblock), followed by a retry and validation log proving the gate passes. | external-admin dependency / open |
+| `codeql_external_platform_block` | Platform/API/tooling outages or provider restrictions prevent reruns or the execution of proactive security tasks. | The residual backlog records CodeQL, Semgrep, Bandit, and secret-scanning query failures as access-blocked; the triage doc additionally shows external-API and runner issues. | Closure requires provider or runner recovery, a fresh rerun, and a recorded artifact/log proving the result. | external-platform dependency / open |
+| `codeql_backlog_fragmentation` | Work is split across branches, plans, and docs, which causes each cycle to restart from zero. | The repo contains repeated residual backlog and roadmap artifacts (`docs/evidence/consolidated-security-residual-backlog.md`, `docs/security/SECURITY_ROADMAP.md`, `.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md`) without a single canonical queue. | Merge duplicates into the canonical queue, attach current owner, and require closure via issue/PR link before branch completion. | recurring / only resolved by canonicalization |
+
 ## Explicit suppressible list
 
 - `security-suite-codeql-javascript` — no JavaScript findings present in the current artifact bundle; treated as suppressed/no-action in this sandbox.
@@ -58,3 +70,15 @@ The repo does not lack a security backlog in this sandbox; the backlog is presen
 5. Container policy and runtime issues requiring admin-side enforcement.
 
 No item is silently deferred as “out of scope.” Missing families (JavaScript/Rust CVE and some container scan artifacts) are explicitly tracked as unresolved-with-owner pending artifact or external validation.
+
+## Session remediation notes (2026-09-28)
+
+The following actionable items were remediated in-session against the repo's current security code paths and verified with targeted tests:
+
+- Resolved the repo bootstrap/import gap that prevented the `codex_contracts` package from being discovered during security test collection.
+- Hardened optional dependency handling in `src/codex_ml/monitoring/codex_logging.py` so the log redaction path degrades gracefully when `psutil` is absent.
+- Replaced weak MD5/SHA1-based hashing in repo-local code paths with SHA-256 in `src/codex/scaling/load_balancer.py` and `src/tools/codex_apply_modeling_monitoring_api.py`.
+
+Validation performed: `python -m pip install -e packages/contracts` followed by `pytest -q tests/security/test_audit_logger.py tests/security/test_log_redaction.py`.
+
+The artifact-driven backlog remains partially open and is not considered complete: unresolved items remain explicitly classified as `code-fix actionable`, `admin-only / external requirement`, `deferred-with-owner`, or `false-positive / suppressible` in this ledger. No item was silently closed without owner and validation status.
