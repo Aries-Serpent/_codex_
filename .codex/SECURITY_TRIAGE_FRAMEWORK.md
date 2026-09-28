@@ -223,6 +223,84 @@ Any unresolved item must contain all of the following:
 5. Keep the backlog visible and auditable so it does not vanish behind deferral language.
 6. Record all remaining admin-only or suppressible findings in the repo's governance or security docs, not in private commentary.
 
+## Customer-agent task pack for workflow run 36282332415
+
+The repo already has the right behavior to address CodeQL findings when the security suite is run. The workflow evidence from `Art_Security Scanning Suite` run `#15082` is the authoritative artifact source for this backlog analysis in the sandbox, because the GitHub code-scanning alert API is currently returning 403 here and therefore cannot be used as the primary source for exact live alert enumeration.
+
+### Required task assignments
+
+#### P1 — `unified-security-scanner`
+
+Assign this agent to:
+
+- inspect the artifact bundle from `https://github.com/Aries-Serpent/_codex_/actions/runs/36282332415`
+- classify the relevant output bundles by family and severity, explicitly prioritizing:
+  - `security-suite-codeql-python`
+  - `security-suite-codeql-javascript`
+  - `security-suite-semgrep`
+  - `security-suite-comprehensive-findings`
+  - `security-suite-summary`
+- identify which artifact is intended to capture the majority of the 3.2k alert set and document why
+- produce a backlog ledger with columns: `alert_family`, `severity`, `file_path`, `root_cause`, `fix_class`, `status`, `owner_lane`, and `validation`
+- mark every unresolved item as one of: `code-fix`, `false-positive`, `admin-only`, `documentation-only`, or `unresolved-with-owner`
+
+Required prompt:
+
+> Analyze the security-suite workflow artifacts for run 36282332415. Do not rely on the GitHub code-scanning API as the primary source because the sandbox is returning 403. Treat the artifact bundles as the canonical evidence and enumerate the findings by CodeQL family, severity, file path, and fix class. Group the backlog into actionable findings, suppressible findings, admin-only requirements, and unresolved items with explicit owner. Do not defer broad findings as out-of-scope.
+
+#### P2 — `codeql-alert-resolution-agent`
+
+Assign this agent to:
+
+- fix actionable families in batches across the repo without pretending the backlog is outside scope
+- start with critical/high repo-code findings from the CodeQL surface
+- validate by rerunning the relevant static or test gates, not just by claiming the issue is broad or external
+- record which families remain after each batch and why they remain unresolved
+
+Required prompt:
+
+> Take the enumerated backlog from the security workflow artifacts and remediate all actionable CodeQL findings in batches by family. Prioritize critical and high repo-code findings, then admin-only requirements, then suppressible findings. Keep the backlog visible and track the remaining items with explicit classification and owner.
+
+#### P3 — `workflow-compliance-guardian`
+
+Assign this agent to:
+
+- reject “out of scope,” “future PR,” or “broader repo issue” language in every status update
+- require every unresolved finding to have a formal classification, owner, reason, and next step
+- enforce the repo policy that backlog debt is a backlog, not a reason to stop remediation
+
+Required prompt:
+
+> Validate each remediation status update against the repo no-deferral policy. Any unresolved finding must be labeled as code-fix, false-positive, admin-only, documentation-only, or unresolved-with-owner with the reason and owner clearly recorded. Reject any response that contains out-of-scope or deferral phrasing.
+
+#### P4 — `ci-pattern-guardian`
+
+Assign this agent to:
+
+- identify why this security backlog is repeatedly narrowed to “current branch” or “later PR” reasoning
+- track repeated findings and prevention measures so subsequent sessions do not reintroduce the same deferral loop
+- produce the canonical re-triage queue for the next remediation cycle
+
+Required prompt:
+
+> Audit the pattern behind repeated security backlog deferrals and scope narrowing. Identify the recurring anti-patterns in sessions that classify security debt as out of scope. Produce a canonical backlog queue and a prevention plan so future security work does not restart from zero.
+
+### Artifact interpretation for the 3.2k alert concern
+
+The workflow run is designed to surface the majority of the backlog via artifact-based security scanning rather than via direct GitHub code-scanning API output. The artifact list includes the relevant evidence for that model:
+
+- `security-suite-codeql-python`
+- `security-suite-codeql-javascript`
+- `security-suite-semgrep`
+- `security-suite-dependency`
+- `security-suite-cve-python`
+- `security-suite-cve-javascript`
+- `security-suite-cve-rust`
+- `security-suite-comprehensive-findings`
+- `security-suite-summary`
+
+This is the expected repo behavior for security/codeql work: the workflow is intended to package the broad security backlog into artifacts for triage, processing, and classification, even when direct API enumeration is restricted in the sandbox. The correct operational model is therefore to use the workflow artifacts as the canonical backlog source and to fix or classify backlog items by family without claiming that the findings do not exist.
+
 ## Immediate repo use
 
 The canonical pattern for this repository is:
