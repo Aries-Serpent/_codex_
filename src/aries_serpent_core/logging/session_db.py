@@ -150,7 +150,7 @@ class SessionDB:
 
     def query_all(self) -> list[dict[str, Any]]:
         """Return all sessions in insertion order (newest first)."""
-        return self._query_builder.query_sessions(limit=1000000, offset=0)
+        return self._query_builder.query_sessions(filters=None, limit=None, offset=0)
 
     def query_by_agent(self, agent_name: str, days: int = 7) -> list[dict[str, Any]]:
         """
@@ -193,13 +193,13 @@ class SessionDB:
                 rows = cursor.fetchall()
         return [dict(row) for row in rows]
 
-    def query_by_status(self, status: str, limit: int = 100) -> list[dict[str, Any]]:
+    def query_by_status(self, status: str, limit: Optional[int] = None) -> list[dict[str, Any]]:
         """
         Query sessions by status.
 
         Args:
             status: Session status ('pending', 'in-progress', 'complete', 'failed')
-            limit: Maximum results
+            limit: Maximum results; when omitted, return all matching sessions.
 
         Returns:
             List of sessions with specified status.

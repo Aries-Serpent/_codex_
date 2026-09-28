@@ -400,9 +400,7 @@ class SessionDatabase:
                     conn.commit()
                     return True
 
-            except sqlite3.IntegrityError as e:
-                if "UNIQUE constraint failed" in str(e):
-                    raise ValueError(f"Session ID {session['session_id']} already exists") from e
+            except sqlite3.IntegrityError:
                 raise
             except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 raise sqlite3.Error(f"Failed to insert session: {e}") from e
