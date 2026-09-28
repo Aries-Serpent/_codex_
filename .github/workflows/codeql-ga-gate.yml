@@ -147,20 +147,46 @@ jobs:
     - name: Gate Decision & Policy Enforcement
       id: gate-decision
       shell: bash
-      run: "CRITICAL=${{ steps.analyze.outputs.critical_count || 0 }}\nHIGH=${{ steps.analyze.outputs.high_count || 0 }}\nMEDIUM=${{ steps.analyze.outputs.medium_count || 0 }}\nDRY_RUN=${{ github.event.inputs.dry_run || 'false' }}\n\nBLOCKED=false\nSTATUS=\"\
-        PASS\"\nREASON=\"\"\n\n# Check for critical alerts (always blocking)\nif [\
-        \ \"$CRITICAL\" -gt 0 ]; then\n  BLOCKED=true\n  STATUS=\"FAIL\"\n  REASON=\"\
-        Critical vulnerabilities detected ($CRITICAL)\"\nfi\n\n# Check for high alerts\
-        \ (blocking based on severity threshold)\nif [ \"$HIGH\" -gt 0 ] && [ \"${{\
-        \ env.CODEQL_SEVERITY_THRESHOLD }}\" != \"critical\" ]; then\n  BLOCKED=true\n\
-        \  STATUS=\"FAIL\"\n  REASON=\"High severity vulnerabilities detected ($HIGH)\"\
-        \nfi\n\n# Override if dry-run mode\nif [ \"$DRY_RUN\" = \"true\" ]; then\n\
-        \  BLOCKED=false\n  STATUS=\"DRY_RUN\"\n  REASON=\"Dry-run mode enabled (gate\
-        \ not enforced)\"\nfi\n\necho \"blocked=$BLOCKED\" >> $GITHUB_OUTPUT\necho\
-        \ \"status=$STATUS\" >> $GITHUB_OUTPUT\necho \"reason=$REASON\" >> $GITHUB_OUTPUT\n\
-        \necho \"### Gate Decision: $STATUS\" >> $GITHUB_STEP_SUMMARY\necho \"$REASON\"\
-        \ >> $GITHUB_STEP_SUMMARY\n\nif [ \"$BLOCKED\" = \"true\" ] && [ \"$DRY_RUN\"\
-        \ != \"true\" ]; then\n  exit 1\nfi\n"
+      run: >-
+        CRITICAL=${{ steps.analyze.outputs.critical_count || 0 }}
+        HIGH=${{ steps.analyze.outputs.high_count || 0 }}
+        MEDIUM=${{ steps.analyze.outputs.medium_count || 0 }}
+        DRY_RUN=${{ github.event.inputs.dry_run || 'false' }}
+
+        BLOCKED=false
+        STATUS="PASS"
+        REASON=""
+
+        # Check for critical alerts (always blocking)
+        if [ "$CRITICAL" -gt 0 ]; then
+          BLOCKED=true
+          STATUS="FAIL"
+          REASON="Critical vulnerabilities detected ($CRITICAL)"
+        fi
+
+        # Check for high alerts (blocking based on severity threshold)
+        if [ "$HIGH" -gt 0 ] && [ "${{ env.CODEQL_SEVERITY_THRESHOLD }}" != "critical" ]; then
+          BLOCKED=true
+          STATUS="FAIL"
+          REASON="High severity vulnerabilities detected ($HIGH)"
+        fi
+
+        # Override if dry-run mode
+        if [ "$DRY_RUN" = "true" ]; then
+          BLOCKED=false
+          STATUS="DRY_RUN"
+          REASON="Dry-run mode enabled (gate not enforced)"
+        fi
+
+        echo "blocked=$BLOCKED" >> $GITHUB_OUTPUT
+        echo "status=$STATUS" >> $GITHUB_OUTPUT
+        echo "reason=$REASON" >> $GITHUB_OUTPUT
+        echo "### Gate Decision: $STATUS" >> $GITHUB_STEP_SUMMARY
+        echo "$REASON" >> $GITHUB_STEP_SUMMARY
+
+        if [ "$BLOCKED" = "true" ] && [ "$DRY_RUN" != "true" ]; then
+          exit 1
+        fi
     - name: Create PR Comment with Gate Status
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
