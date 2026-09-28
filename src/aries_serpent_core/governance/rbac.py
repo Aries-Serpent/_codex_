@@ -472,8 +472,6 @@ class RBACEnforcer:
             user_roles = [role_value]
             subject = role_value
         else:
-            if user_id is None:
-                raise TypeError("'user_id' must not be None when 'role' is not provided.")
             user_roles = self._role_manager.get_user_roles(user_id)
             if not user_roles:
                 user_roles = []

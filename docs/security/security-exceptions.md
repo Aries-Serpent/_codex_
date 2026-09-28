@@ -222,10 +222,10 @@ ignore-vulnerabilities:
 Security Governance Team / repository maintainers
 
 **Reason**:
-The coverage gap is a known repository-wide debt item that is not introduced by the current change; a full remediation requires phased test expansion beyond the current PR scope. This exception remains active only while the governed remediation plan is tracked and measured.
+This exception records the active coverage gap and the concrete remediation path for the repository. The risk is a measurable reduction in fault detection and release confidence while the coverage plan is still being executed; the governing owner is the Security Governance Team / repository maintainers, and the exception remains active only while the tracked remediation plan is being executed and validated.
 
 **Reason for Exception**:
-Pre-existing condition not introduced by current work. Fixing requires sustained multi-week effort beyond scope of immediate PR.
+Coverage remains below target across the repository during a staged uplift plan. The control owner is responsible for tracking milestones, verifying progress, and closing the exception only when the measured coverage threshold is reached and sustained.
 
 **Risk Assessment**:
 - Impact: High - Low test coverage increases bug risk
