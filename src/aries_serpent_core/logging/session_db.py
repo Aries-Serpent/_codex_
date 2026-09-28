@@ -148,6 +148,10 @@ class SessionDB:
         """
         return self._query_builder.query_by_date_range(start_dt, end_dt, limit)
 
+    def query_all(self) -> list[dict[str, Any]]:
+        """Return all sessions in insertion order (newest first)."""
+        return self._query_builder.query_sessions(limit=1000000, offset=0)
+
     def query_by_agent(self, agent_name: str, days: int = 7) -> list[dict[str, Any]]:
         """
         Query sessions for specific agent in last N days.
@@ -164,6 +168,30 @@ class SessionDB:
             - Typical query <50ms
         """
         return self._query_builder.query_by_agent(agent_name, days)
+
+    def query_by_agent_name(self, agent_name: str, limit: int = 100) -> list[dict[str, Any]]:
+        """Backward-compatible alias used by the session database tests."""
+        with self._database._lock:
+            with self._database._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT * FROM sessions WHERE agent_name = ? ORDER BY created_at DESC LIMIT ?",
+                    (agent_name, limit),
+                )
+                rows = cursor.fetchall()
+        return [dict(row) for row in rows]
+
+    def query_by_pr_number(self, pr_number: int, limit: int = 100) -> list[dict[str, Any]]:
+        """Backward-compatible helper for looking up sessions by PR number."""
+        with self._database._lock:
+            with self._database._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT * FROM sessions WHERE pr_number = ? ORDER BY created_at DESC LIMIT ?",
+                    (pr_number, limit),
+                )
+                rows = cursor.fetchall()
+        return [dict(row) for row in rows]
 
     def query_by_status(self, status: str, limit: int = 100) -> list[dict[str, Any]]:
         """

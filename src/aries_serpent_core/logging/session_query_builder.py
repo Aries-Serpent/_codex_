@@ -69,6 +69,21 @@ class SessionQueryBuilder:
                 if not entry.is_expired(self.db._cache_ttl):
                     return entry.data
 
+        # Keep query semantics consistent with backward-compatible SessionDB tests;
+        # when no explicit filter is supplied, return all rows and permit large
+        # result sets to honor the requested limit instead of silently truncating.
+        if not filters:
+            query = "SELECT * FROM sessions ORDER BY timestamp DESC LIMIT ? OFFSET ?"
+            params = [limit, offset]
+            with self.db._lock:
+                with self.db._get_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(query, params)
+                    rows = cursor.fetchall()
+                    results = [dict(row) for row in rows]
+                self.db._cache[cache_key] = CacheEntry(results, time.time())
+            return results
+
         filters = filters or {}
         where_clauses = []
         params = []

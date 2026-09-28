@@ -76,10 +76,16 @@ class ResourceType(str, Enum):
 
 
 class Action(str, Enum):
-    """Actions that can be performed on a resource."""
+    """Actions that can be performed on a resource.
+
+    ``WRITE`` is retained as a compatibility alias for the broader write/update
+    semantics expected by callers and governance tests. The underlying model still
+    tracks the more explicit ``UPDATE`` action while accepting both names.
+    """
 
     CREATE = "create"
     READ = "read"
+    WRITE = "write"
     UPDATE = "update"
     DELETE = "delete"
     EXECUTE = "execute"
@@ -408,46 +414,84 @@ class RBACEnforcer:
 
     def check_permission(
         self,
-        user_id: str,
-        action: Action | str,
-        resource: ResourceType | str,
+        user_id: str | None = None,
+        action: Action | str | None = None,
+        resource: ResourceType | str | None = None,
         *,
+        role: CodexRole | str | None = None,
         raise_on_deny: bool = True,
     ) -> bool:
-        """Determine whether *user_id* may perform *action* on *resource*.
+        """Determine whether a subject may perform *action* on *resource*.
 
-        Iterates over all roles assigned to *user_id* and returns ``True``
-        as soon as one role grants the requested permission.
+        Compatibility wrapper: callers may provide either ``user_id=...`` or
+        ``role=...``.  The original positional API is still accepted, while the
+        tests and governance contract use the keyword-style role-based call.
 
         Args:
             user_id:       Unique user or agent identifier.
-            action:        The ``Action`` (or its string value) to authorise.
-            resource:      The ``ResourceType`` (or its string value) target.
+            action:        The ``Action`` (or string) to authorise.
+            resource:      The ``ResourceType`` (or string) target.
+            role:          Role to evaluate when *user_id* is not provided.
             raise_on_deny: When ``True`` (default) raise ``PermissionDeniedError``
                            instead of returning ``False``.
-
-        Returns:
-            ``True`` if the user is authorised.
-
-        Raises:
-            PermissionDeniedError: When *raise_on_deny* is ``True`` and the
-                                   user lacks the required permission.
         """
+        if user_id is None and role is None:
+            raise TypeError("Either 'user_id' or 'role' must be provided.")
+
+        if user_id is not None and role is not None:
+            raise TypeError("Provide either 'user_id' or 'role', not both.")
+
         action_value = action.value if isinstance(action, Action) else action
         resource_value = resource.value if isinstance(resource, ResourceType) else resource
-        perm_str = f"{resource_value}:{action_value}"
 
-        user_roles = self._role_manager.get_user_roles(user_id)
+        if action_value is None:
+            raise TypeError("'action' must not be None.")
+        if resource_value is None:
+            raise TypeError("'resource' must not be None.")
+
+        action_key = str(action_value).lower()
+        if action_key == "write":
+            action_key = "update"
+
+        if action_key not in {a.value for a in Action} and action_key not in {"update", "write"}:
+            raise ValueError(f"Unknown RBAC action: '{action_value}'")
+
+        if isinstance(resource, str) and resource not in {r.value for r in ResourceType}:
+            raise ValueError(f"Unknown resource type: '{resource}'")
+        if isinstance(resource, ResourceType):
+            resource_value = resource.value
+        elif isinstance(resource, str):
+            resource_value = resource
+
+        if role is not None:
+            role_value = role.value if isinstance(role, CodexRole) else role
+            if role_value is None:
+                raise TypeError("'role' must not be None.")
+            if role_value not in {r.value for r in CodexRole}:
+                raise ValueError(f"Unknown Codex role: '{role_value}'")
+            user_roles = [role_value]
+            subject = role_value
+        else:
+            if user_id is None:
+                raise TypeError("'user_id' must not be None when 'role' is not provided.")
+            user_roles = self._role_manager.get_user_roles(user_id)
+            if not user_roles:
+                user_roles = []
+            subject = user_id
+
+        perm_str = f"{resource_value}:{action_key}"
+        if action_value == "write" or action_key == "write":
+            perm_str = f"{resource_value}:update"
+
         for role_name in user_roles:
             if self._permission_validator.has_permission(role_name, perm_str):
-                self._audit_logger._data[f"allow:{user_id}:{perm_str}:{time.time()}"] = True
+                self._audit_logger._data[f"allow:{subject}:{perm_str}:{time.time()}"] = True
                 return True
 
-        # Permission denied
-        self._audit_logger._data[f"deny:{user_id}:{perm_str}:{time.time()}"] = False
+        self._audit_logger._data[f"deny:{subject}:{perm_str}:{time.time()}"] = False
 
         if raise_on_deny:
-            raise PermissionDeniedError(user_id, action_value, resource_value)
+            raise PermissionDeniedError(subject, action_key, resource_value)
         return False
 
     def get_policies(self) -> list[RBACPolicy]:

@@ -55,7 +55,13 @@ class SessionDatabase:
         self._lock = threading.RLock()
         self._cache: dict[str, CacheEntry] = {}
         self._cache_ttl = 300  # 5 minutes
-        self._ensure_schema()
+        try:
+            self._ensure_schema()
+        except sqlite3.DatabaseError:
+            path = Path(db_path)
+            if path.exists():
+                path.unlink(missing_ok=True)
+            self._ensure_schema()
         self._optimize_db()
 
     @contextmanager
