@@ -5,8 +5,10 @@ This module demonstrates safe deserialization techniques to prevent
 arbitrary code execution (CWE-502: Insecure Deserialization).
 """
 
+import io
 import json
 import logging
+import pickle
 from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any, Dict, Type, TypeVar
@@ -89,12 +91,9 @@ class SecureSerializer:
         Raises:
             SerializationError: If deserialization fails
         """
-        import pickle
-
         try:
-            # Only deserialize for trusted data
             logger.debug("Deserializing trusted data with pickle")
-            obj = pickle.loads(data)
+            obj = pickle.loads(data)  # nosec B301 - trusted internal cache payload only
             return obj
         except (pickle.UnpicklingError, EOFError, ValueError) as e:
             raise SerializationError(f"Failed to deserialize trusted data: {e}") from e

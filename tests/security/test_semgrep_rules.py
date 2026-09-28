@@ -32,6 +32,13 @@ def test_semgrep_rules(tmp_path: Path) -> None:
     bad = tmp_path / "bad.py"
     bad.write_text(BAD_CODE)
     env = os.environ.copy()
+    # The repo test runner injects src/ into PYTHONPATH to support local imports,
+    # but Semgrep is an external CLI that should not inherit that shadowing when it
+    # resolves third-party packages like ``mcp.server.auth``. Strip the project path
+    # so the scanner uses the active environment's installed dependencies instead of
+    # repo-local partial packages.
+    env.pop("PYTHONPATH", None)
+    env.pop("PYTHONHOME", None)
     env.setdefault("SEMGREP_COLOR", "never")
     env.setdefault("SEMGREP_DISABLE_LIVE_PROGRESS", "1")
     res = subprocess.run(

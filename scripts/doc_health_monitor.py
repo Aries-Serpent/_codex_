@@ -182,9 +182,10 @@ class DocHealthMonitor:
                 if path2 in processed:
                     continue
 
-                # Quick hash check
-                hash1 = hashlib.md5(data1['content'].encode()).hexdigest()
-                hash2 = hashlib.md5(data2['content'].encode()).hexdigest()
+                # Quick hash check using a non-security cryptographic digest for
+                # content deduplication only; this is not used for security decisions.
+                hash1 = hashlib.md5(data1['content'].encode(), usedforsecurity=False).hexdigest()
+                hash2 = hashlib.md5(data2['content'].encode(), usedforsecurity=False).hexdigest()
 
                 if hash1 == hash2:
                     duplicates.append((path1, path2, 1.0))

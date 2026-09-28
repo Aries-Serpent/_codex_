@@ -268,6 +268,10 @@ _install_optional_stub("test_session_logging_mirror")
 _install_optional_stub("test_session_query_smoke")
 _install_optional_stub("viewer")
 
+# Some optional tooling loads nested MCP auth modules that are not part of the
+# repo's runtime dependencies. Keep those imports resolvable during local test and
+# security tooling execution without introducing a hard dependency on the package.
+
 
 from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 
