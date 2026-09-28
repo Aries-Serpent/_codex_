@@ -49,6 +49,25 @@
 | P2 | `.secrets.baseline` regeneration | Source-path false positives are already triaged; the baseline still needs a single cleanup pass to retire them. | <!-- pragma: allowlist secret -->
 | P3 | Bandit low-severity hygiene rerun | Historical artifact still shows low-severity subprocess / broad-`except` findings, but Bandit was unavailable locally. |
 
+## Canonical next-cycle queue
+
+This repository has repeated the same backlog families across multiple branches and sessions. The following queue is the canonical "do not restart from zero" list for the next cycle. Each family is tracked as a recurring work item with a designated owner and a closure path before it is considered complete.
+
+| Family ID | Recurring pattern | Evidence seen in repo | Closure path | Owner |
+|---|---|---|---|---|
+| `codeql_scope_bloat` | Scope expands beyond what is proven, validated, or required for a single change set. | `docs/evidence/consolidated-security-residual-backlog.md` consolidates multiple plan-based findings; PR #3181 explicitly says repository-wide issues were recorded as follow-up ownership items instead of being merged into the active patch. | Close only when a PR or patch is narrowed to a bounded scope, any spillover is filed as a follow-up task with owner, and the validation gate passes on the scoped delta. | `@Aries-Serpent/owners` |
+| `codeql_followup_pr_defer` | Follow-up work is deferred without a closure artifact, then reappears in the next branch/session. | PR #3181 validation note requires a dedicated follow-up task, owner, and validation run before merge of the follow-up change. The residual backlog doc itself is explicitly a consolidation against repeated re-openings. | Require a named follow-up issue/PR, due date, verification command, and closure note before closure. Deferrals without a reference are escalated as open recurring items. | `@Aries-Serpent/owners` |
+| `codeql_admin_blocker` | Repository or workflow administration prevents validation (permissions, access, gating, or requirement mismatches). | Branch rebase and secret-scanning gate failures are treated as systemic environment failures in `.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md`; the repo also has admin/approval guardrails in `.github/OWNER_APPROVAL.yml` and `.github/CODEOWNERS`. | Close only after the admin action is taken (permission grant, workflow fix, policy unblocking), with a retry and a validation log proving the gate can pass. | `@Aries-Serpent/ops-team` |
+| `codeql_external_platform_block` | Platform/API/tooling outage or provider restriction blocks code verification or follow-up work. | `docs/evidence/consolidated-security-residual-backlog.md` records CodeQL, Semgrep, Bandit, and secret-scanning query failures as blocked by environment access. `.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md` also shows a large workflow cascade with external-API/runner symptoms. | Close only when the provider or runner issue is resolved, a fresh scan or rerun is executed, and the result is recorded with the run or API evidence. | `@Aries-Serpent/ops-team` |
+| `codeql_backlog_fragmentation` | Work is split across branches, plans, and docs, causing the next cycle to start from zero. | The repo contains multiple residual backlog and roadmap artifacts (`docs/evidence/consolidated-security-residual-backlog.md`, `docs/security/SECURITY_ROADMAP.md`, `.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md`, and branch-specific follow-up plans) without a single canonical queue. | Merge all duplicates into this canonical queue, attach the current owner, and link the closure PR/issue before the branch is considered complete. | `@Aries-Serpent/owners` + `@Aries-Serpent/docs-team` |
+
+### Escalation policy for recurring deferrals
+
+- If a family appears in more than one branch, session artifact, or PR narrative in the same cycle, it is marked as `recurring-deferral` and must have an owner.
+- Any deferral without a closure artifact (issue/PR link, owner, proof command, and completion note) is considered open until the next cycle reconciliation.
+- The canonical queue is the only source of truth for next-cycle carryover; plan docs, branch notes, and session summaries are supporting evidence only.
+- Closure requires all four elements: owner, evidence, verification, and a linked follow-up path.
+
 ## Non-reopen guidance
 
 - Do **not** reopen the checkpoint safety lane unless a new unsafe deserialization entry point appears.

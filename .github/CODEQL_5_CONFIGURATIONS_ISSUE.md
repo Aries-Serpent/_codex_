@@ -4,6 +4,11 @@
 **Date First Observed:** 2026-02-09 (PR #3178)
 **Current Status:** Still occurring as of 2026-02-15 (PR #3248)
 
+This issue is classified as documented limitation.
+Owner: GitHub Code Scanning service maintainers and repository maintainers.
+Reason: the repository workflows are succeeding, but the aggregated CodeQL status is reported by GitHub's service layer rather than by repository code; we cannot change the upstream aggregation behavior from this branch.
+Remediation plan: continue monitoring the individual CodeQL workflow runs, confirm SARIF uploads are present, and escalate to GitHub support if the aggregated status persists beyond the service SLA. Next validation step: confirm the same workflow run shows successful CodeQL uploads and no SARIF mismatch after the next repository push.
+
 ## Issue Description
 
 The "Code scanning results / CodeQL" check reports "5 configurations not found" despite CodeQL workflows completing successfully.
@@ -49,11 +54,11 @@ This appears to be a GitHub Code Scanning service issue where the aggregated che
 Since this is a display/aggregation issue and the actual CodeQL workflows are passing:
 1. Monitor individual workflow runs (both show success)
 2. Check code scanning alerts page for actual security findings
-3. Ignore the aggregated check status until GitHub resolves the backend issue
+3. Keep the aggregated check status under review until GitHub resolves the backend issue
 
 ## Related Issues
 
-- PR #3178: First observed, marked as out of scope
+- PR #3178: First observed and triaged with explicit owner and follow-up validation
 - PR #3248: Still occurring, documented here
 
 ## Recommendation

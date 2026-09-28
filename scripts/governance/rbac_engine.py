@@ -21,6 +21,7 @@ Test Coverage: >95% unit + integration tests.
 
 from __future__ import annotations
 
+import ast
 import json
 import logging
 import os
@@ -39,37 +40,118 @@ class PolicyEnforcer:
                 if data and 'adaptive_rules' in data:
                     self.rules = data['adaptive_rules']
 
+    @staticmethod
+    def _safe_eval_expr(expr: str, ctx_vars: dict) -> bool:
+        """Evaluate a constrained boolean expression without invoking eval()."""
+        if not expr:
+            return False
+        normalized = expr.replace("AND", "and").replace("OR", "or")
+        try:
+            node = ast.parse(normalized, mode="eval")
+        except SyntaxError:
+            return False
+
+        def evaluate(current):
+            if isinstance(current, ast.Expression):
+                return evaluate(current.body)
+            if isinstance(current, ast.Constant):
+                return current.value
+            if isinstance(current, ast.Name):
+                if current.id == "None":
+                    return None
+                if current.id in ctx_vars:
+                    return ctx_vars[current.id]
+                raise ValueError(f"Unknown identifier: {current.id}")
+            if isinstance(current, ast.Attribute):
+                value = evaluate(current.value)
+                if value is None:
+                    return None
+                return getattr(value, current.attr)
+            if isinstance(current, ast.BoolOp):
+                values = [evaluate(value) for value in current.values]
+                if isinstance(current.op, ast.And):
+                    return all(values)
+                if isinstance(current.op, ast.Or):
+                    return any(values)
+                raise ValueError("Unsupported boolean operator")
+            if isinstance(current, ast.UnaryOp):
+                operand = evaluate(current.operand)
+                if isinstance(current.op, ast.Not):
+                    return not bool(operand)
+                if isinstance(current.op, ast.USub):
+                    return -operand
+                if isinstance(current.op, ast.UAdd):
+                    return +operand
+                raise ValueError("Unsupported unary operator")
+            if isinstance(current, ast.Compare):
+                left = evaluate(current.left)
+                for op, comparator in zip(current.ops, current.comparators):
+                    right = evaluate(comparator)
+                    if isinstance(op, ast.Eq):
+                        ok = left == right
+                    elif isinstance(op, ast.NotEq):
+                        ok = left != right
+                    elif isinstance(op, ast.Gt):
+                        ok = left > right
+                    elif isinstance(op, ast.GtE):
+                        ok = left >= right
+                    elif isinstance(op, ast.Lt):
+                        ok = left < right
+                    elif isinstance(op, ast.LtE):
+                        ok = left <= right
+                    elif isinstance(op, ast.In):
+                        ok = left in right
+                    elif isinstance(op, ast.NotIn):
+                        ok = left not in right
+                    elif isinstance(op, ast.Is):
+                        ok = left is right
+                    elif isinstance(op, ast.IsNot):
+                        ok = left is not right
+                    else:
+                        raise ValueError("Unsupported comparison operator")
+                    if not ok:
+                        return False
+                    left = right
+                return True
+            if isinstance(current, ast.Tuple):
+                return tuple(evaluate(item) for item in current.elts)
+            if isinstance(current, ast.List):
+                return [evaluate(item) for item in current.elts]
+            if isinstance(current, ast.Set):
+                return {evaluate(item) for item in current.elts}
+            if isinstance(current, ast.Dict):
+                return {evaluate(k): evaluate(v) for k, v in zip(current.keys, current.values)}
+            if isinstance(current, ast.Call):
+                raise ValueError("Function calls are not allowed in policy expressions")
+            raise ValueError(f"Unsupported expression type: {type(current).__name__}")
+
+        try:
+            return bool(evaluate(node))
+        except Exception:
+            return False
+
     def evaluate(self, action_val: str, resource_val: str, ooda_context) -> str:
         ctx_vars = {
             'ooda_context': ooda_context,
             'action': action_val,
             'resource': resource_val,
             'incident_severity': getattr(ooda_context, 'incident_severity', 'LOW'),
-            'None': None
+            'None': None,
         }
-
-        def safe_eval(expr):
-            expr = expr.replace("AND", "and").replace("OR", "or")
-            try:
-                return eval(expr, {"__builtins__": {}}, ctx_vars)
-            except Exception:
-                return False
 
         for rule in self.rules:
             cond = rule.get('condition', '')
-            if safe_eval(cond):
-                # Check rules
+            if self._safe_eval_expr(cond, ctx_vars):
                 rule_lines = rule.get('rule', [])
                 all_passed = True
                 for r in rule_lines:
-                    if not safe_eval(r):
+                    if not self._safe_eval_expr(r, ctx_vars):
                         all_passed = False
                         break
 
                 if all_passed:
                     return rule.get('action')
-                else:
-                    return f"DENY:{rule.get('name')}"
+                return f"DENY:{rule.get('name')}"
         return None
 
 from collections import OrderedDict
