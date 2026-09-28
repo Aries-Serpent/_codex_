@@ -46,6 +46,9 @@ def validate_exceptions(path: Path) -> list[str]:
         status_match = re.search(r"\*\*Status\*\*:\s*(ACTIVE|OPEN|UNRESOLVED|PENDING)", block, re.IGNORECASE)
         if status_match:
             errors.extend(_ensure_owner_reason(block, f"{path}:{block.splitlines()[0].strip()}"))
+            out_of_scope_hits = _scan_for_out_of_scope_language(block)
+            if out_of_scope_hits:
+                errors.extend(out_of_scope_hits)
     return errors
 
 

@@ -102,25 +102,25 @@ MIIEpAIBAAKCAQEA0Z8hNNl9G5S7Np2J0VZ2V+mQ0gQ+fQM0xZj8E7nP0J0l
             pass
 
     def test_jwt_token_expiration(self):
-        """Test JWT token expiration handling."""
-        from codex.auth.exceptions import AuthenticationError
+        """Test JWT token expiration handling with a generated RSA key."""
+        from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+
         from codex.auth.github_app import GitHubApp
 
-        app = GitHubApp(
-            app_id="123",
-            private_key="-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA0Z...",
+        private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        key_pem = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption(),
         )
+        app = GitHubApp(app_id="123", private_key=key_pem)
 
-        # Test token caching/expiration logic if present
-        try:
-            token1 = app.generate_jwt()
-            token2 = app.generate_jwt()
-            # Tokens might be the same if cached, or different if regenerated
-            assert token1 is not None and token2 is not None, "token1 must be initialized"
-        except (AttributeError, OSError, RuntimeError, AuthenticationError):
-            # Placeholder PEM material cannot be loaded; graceful failure is
-            # acceptable here (mirrors test_generate_jwt_token's contract).
-            pass
+        token1 = app.generate_jwt()
+        token2 = app.generate_jwt()
+        assert token1 is not None and token2 is not None, "token1 must be initialized"
+        assert token1.count(".") == 2
+        assert token2.count(".") == 2
 
     def test_exchange_jwt_for_access_token(self):
         """Test exchanging JWT for access token."""

@@ -24,7 +24,8 @@ TOKEN_PATTERNS = [
     r"(?:AKIA|ASIA)[A-Z0-9]{16}",  # AWS access key pattern
     r"AIza[0-9A-Za-z\-_]{35}",  # Google API key
     r"xox[baprs]-[A-Za-z0-9-]{10,}",  # Slack token pattern
-    r"(?i)(?:token|api[_-]?key|secret|password|authorization|bearer)\s*[:=]\s*['\"]?[A-Za-z0-9_\-./:=+]{8,}['\"]?",
+    r"(?i)(?:opaque-secret|token|secret|api[-_]?key|password)[-_]?[A-Za-z0-9._:-]{12,}",
+    r"(?i)(?:token|api[_-]?key|secret|password|authorization|bearer)\s*[:=]\s*(?:['\"]([^'\"]+)['\"]|([^'\"\s,;]+))",
 ]
 
 PASSWORD_PATTERNS = [
@@ -197,12 +198,15 @@ def sanitize_for_logging(value: Any) -> str:
     sanitized = re.sub(r"[\n\r\x00-\x1f\x7f]", " ", value_str)
     sanitized = re.sub(r" +", " ", sanitized)
     sanitized = re.sub(
-        r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*['\"]?([^'\"\s,;]+)",
-        r"\1=[REDACTED]",
+        r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*(?:['\"]([^'\"]+)['\"]|([^'\"\s,;]+))",
+        lambda m: f"{m.group(1)}=[REDACTED]",
         sanitized,
     )
     for pattern in TOKEN_PATTERNS:
-        sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+        if pattern.endswith("))"):
+            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+        else:
+            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
     for pattern in PASSWORD_PATTERNS:
         sanitized = re.sub(pattern, "[REDACTED_PASSWORD]", sanitized, flags=re.IGNORECASE)
     return sanitized.strip()

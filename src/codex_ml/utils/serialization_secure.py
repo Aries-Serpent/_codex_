@@ -5,7 +5,6 @@ This module demonstrates safe deserialization techniques to prevent
 arbitrary code execution (CWE-502: Insecure Deserialization).
 """
 
-import io
 import json
 import logging
 import pickle

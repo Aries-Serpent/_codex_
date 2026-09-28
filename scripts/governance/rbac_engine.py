@@ -68,11 +68,16 @@ class PolicyEnforcer:
                     return None
                 return getattr(value, current.attr)
             if isinstance(current, ast.BoolOp):
-                values = [evaluate(value) for value in current.values]
                 if isinstance(current.op, ast.And):
-                    return all(values)
+                    for value in current.values:
+                        if not evaluate(value):
+                            return False
+                    return True
                 if isinstance(current.op, ast.Or):
-                    return any(values)
+                    for value in current.values:
+                        if evaluate(value):
+                            return True
+                    return False
                 raise ValueError("Unsupported boolean operator")
             if isinstance(current, ast.UnaryOp):
                 operand = evaluate(current.operand)

@@ -624,6 +624,9 @@ class OAuthManager:
         # For now, just remove from local storage
 
         # Find and remove token from storage
+        if token_type not in {"access_token", "refresh_token"}:
+            raise ValueError(f"Unsupported token_type '{token_type}'; expected 'access_token' or 'refresh_token'")
+
         for token_id, token in list(self._token_store.items()):
             if token_type == "refresh_token":
                 matches = token.refresh_token is not None and token.refresh_token == access_token
