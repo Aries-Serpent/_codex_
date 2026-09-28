@@ -156,7 +156,7 @@ jobs:
         python examples/authentication/03_token_management.py
         python examples/authentication/04_complete_flow.py
     - name: Security scan
-     run: |
+      run: |
        set -euo pipefail
        pip install bandit>=1.7.5
        python -c "import bandit; print(f'✓ bandit {bandit.__version__}')"
@@ -176,22 +176,22 @@ jobs:
          exit 1
        fi
        python - <<'PY'
-import json
-from pathlib import Path
-report_path = Path('auth-security-report.json')
-with report_path.open('r', encoding='utf-8') as f:
-    data = json.load(f)
-required_keys = ['metrics', 'results']
-missing = [k for k in required_keys if k not in data]
-if missing:
-    raise ValueError(f'Missing keys in report: {missing}')
-results = data.get('results') or []
-if results:
-    severities = {item.get('issue_severity', 'UNKNOWN').upper() for item in results if isinstance(item, dict)}
-    if severities:
-       raise SystemExit(f"Bandit reported findings with severities: {sorted(severities)}")
-print('✓ Security report JSON is valid and complete; no blocking findings found')
-PY
+       import json
+       from pathlib import Path
+       report_path = Path('auth-security-report.json')
+       with report_path.open('r', encoding='utf-8') as f:
+           data = json.load(f)
+       required_keys = ['metrics', 'results']
+       missing = [k for k in required_keys if k not in data]
+       if missing:
+           raise ValueError(f'Missing keys in report: {missing}')
+       results = data.get('results') or []
+       if results:
+           severities = {item.get('issue_severity', 'UNKNOWN').upper() for item in results if isinstance(item, dict)}
+           if severities:
+               raise SystemExit(f"Bandit reported findings with severities: {sorted(severities)}")
+       print('✓ Security report JSON is valid and complete; no blocking findings found')
+       PY
        echo "✓ Security scan completed successfully"
        echo "Report location: auth-security-report.json"
     - name: Verify security report exists before upload

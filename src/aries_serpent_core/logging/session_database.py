@@ -59,10 +59,24 @@ class SessionDatabase:
             self._ensure_schema()
         except sqlite3.DatabaseError:
             path = Path(db_path)
-            if path.exists():
-                path.unlink(missing_ok=True)
-            self._ensure_schema()
+            if path.exists() and self._looks_like_corruption(path):
+                backup = path.with_suffix(path.suffix + ".corrupt")
+                backup.unlink(missing_ok=True)
+                path.replace(backup)
+            raise
         self._optimize_db()
+
+    @staticmethod
+    def _looks_like_corruption(path: Path) -> bool:
+        """Return True only for database files that are clearly corrupt."""
+        if not path.exists() or path.is_dir():
+            return False
+        try:
+            with sqlite3.connect(path) as conn:
+                conn.execute("PRAGMA quick_check")
+        except sqlite3.DatabaseError:
+            return True
+        return False
 
     @contextmanager
     def _get_connection(self) -> Generator[sqlite3.Connection, None, None]:

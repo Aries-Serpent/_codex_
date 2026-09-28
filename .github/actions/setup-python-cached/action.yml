@@ -101,14 +101,17 @@ runs:
     - name: Resolve full Python version for cache keys
       id: pyver
       shell: bash
+      env:
+        SETUP_PYTHON_VERSION: ${{ steps.setup-python.outputs.python-version }}
+        PYTHON_VERSION_INPUT: ${{ inputs.python-version }}
       run: |
-        RESOLVED="${{ steps.setup-python.outputs.python-version }}"
+        RESOLVED="${SETUP_PYTHON_VERSION:-${PYTHON_VERSION_INPUT}}"
         # Fallback to the raw input if the output is unavailable for any reason.
         if [ -z "${RESOLVED}" ]; then
-          RESOLVED="${{ inputs.python-version }}"
+          RESOLVED="${PYTHON_VERSION_INPUT}"
         fi
         echo "resolved=${RESOLVED}" >> "$GITHUB_OUTPUT"
-        echo "[setup] Requested python-version='${{ inputs.python-version }}' -> resolved='${RESOLVED}'"
+        echo "[setup] Requested python-version='${PYTHON_VERSION_INPUT}' -> resolved='${RESOLVED}'"
 
     # ─────────────────────────────────────────────────────────────────
     # 2. LAYER 1 — pip download cache (~/.cache/pip)

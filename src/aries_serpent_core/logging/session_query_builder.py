@@ -60,10 +60,9 @@ class SessionQueryBuilder:
             - O(log n) with proper indices on filter fields
             - Typical 7-day query: <100ms
         """
-        cache_key = (
-            tuple(sorted((str(k), v) for k, v in (filters or {}).items())),
-            limit,
-            offset,
+        cache_key: str = (
+            "|".join(f"{k}={repr(v)}" for k, v in sorted((filters or {}).items()))
+            + f"|limit={limit}|offset={offset}"
         )
 
         # Check cache without the lock on the hot path to minimize overhead on repeated,
@@ -130,8 +129,8 @@ class SessionQueryBuilder:
             query += " LIMIT ? OFFSET ?"
             params.extend([limit, offset])
         else:
-            query += " LIMIT ? OFFSET ?"
-            params.extend([1000000, offset])
+            query += " LIMIT -1 OFFSET ?"
+            params.extend([offset])
 
         with self.db._lock:
             with self.db._get_connection() as conn:

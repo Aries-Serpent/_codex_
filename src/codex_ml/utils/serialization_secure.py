@@ -7,7 +7,6 @@ arbitrary code execution (CWE-502: Insecure Deserialization).
 
 import json
 import logging
-import pickle
 from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any, Dict, Type, TypeVar
@@ -72,29 +71,17 @@ class SecureSerializer:
     @staticmethod
     def deserialize_trusted(data: bytes) -> Any:
         """
-        Deserialize trusted data (internal use only).
+        Deserialize trusted data using a JSON-only safe path.
 
-        ⚠️ WARNING: Only use this for data you trust (e.g., cache, internal messages)
-
-        DO NOT use for:
-        - User-supplied data
-        - Data from external APIs
-        - Data from untrusted sources
-
-        Args:
-            data: Trusted bytes from internal source
-
-        Returns:
-            Deserialized object
-
-        Raises:
-            SerializationError: If deserialization fails
+        The project intentionally avoids pickle for security reasons, even for
+        internally trusted payloads, because the same data may cross boundaries
+        or be re-used in untrusted contexts. JSON remains the interoperable safe
+        default for this module.
         """
         try:
-            logger.debug("Deserializing trusted data with pickle")
-            obj = pickle.loads(data)  # nosec B301 - trusted internal cache payload only
-            return obj
-        except (pickle.UnpicklingError, EOFError, ValueError) as e:
+            decoded = data.decode("utf-8")
+            return json.loads(decoded)
+        except (UnicodeDecodeError, json.JSONDecodeError) as e:
             raise SerializationError(f"Failed to deserialize trusted data: {e}") from e
 
     @staticmethod
