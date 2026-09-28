@@ -5,6 +5,7 @@
 **Last Updated**: 2026-06-22
 **Purpose**: Document all intentionally left as-is code with security scan findings
 **Policy**: ALL security findings must be justified or fixed - no exceptions without documented rationale
+**Strict Rule**: No unresolved finding may be merged without an explicit `Owner:` and `Reason:` classification. Out-of-scope, pre-existing, or deferred wording is prohibited and fails the security gate.
 
 ## Nosec Suppressions Status (Phase 3-4 Update)
 
@@ -81,6 +82,12 @@ When a security finding MUST be left as-is, document using this template:
 
 **Finding Description**:
 [What the scanner detected]
+
+**Owner**:
+[Primary owner for this finding; required for every unresolved item]
+
+**Reason**:
+[Detailed explanation why this cannot be fixed, with the explicit owner and risk/mitigation rationale]
 
 **Reason for Exception**:
 [Detailed explanation why this cannot be fixed]
@@ -210,6 +217,12 @@ ignore-vulnerabilities:
 - Current: 15.9%
 - Required: 90%
 - Gap: 74.1 percentage points
+
+**Owner**:
+Security Governance Team / repository maintainers
+
+**Reason**:
+The coverage gap is a known repository-wide debt item that is not introduced by the current change; a full remediation requires phased test expansion beyond the current PR scope. This exception remains active only while the governed remediation plan is tracked and measured.
 
 **Reason for Exception**:
 Pre-existing condition not introduced by current work. Fixing requires sustained multi-week effort beyond scope of immediate PR.

@@ -4,6 +4,8 @@
 
 ## Table of Contents
 
+> Strict rule: All unresolved findings must list an owner and reason before merge. No deferral language, out-of-scope wording, or "pre-existing" exceptions are allowed without an explicit owner and reason in the corresponding security exception record.
+
 - [Status definitions](#status-definitions)
 - [Consolidated delta against the original plans](#consolidated-delta-against-the-original-plans)
 - [Overlap map (do not reopen duplicates)](#overlap-map-do-not-reopen-duplicates)

@@ -1,0 +1,60 @@
+name: Strict No-Deferral Security Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  strict-no-deferral:
+    name: No deferral / owner-reason enforcement
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12.13
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Capture PR text
+        env:
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+        run: |
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr_body.txt"
+          test -s "$RUNNER_TEMP/pr_body.txt" || echo "No PR body provided" > "$RUNNER_TEMP/pr_body.txt"
+
+      - name: Block deferral language and out-of-scope statements
+        run: |
+          set -euo pipefail
+          python scripts/ci/check_deferral_language.py --pr-body "$RUNNER_TEMP/pr_body.txt"
+          python scripts/ci/check_deferral_language.py --git-log
+          python scripts/ci/check_no_deferral_security.py
+
+      - name: Require owner/reason classification for unresolved findings
+        run: |
+          set -euo pipefail
+          python scripts/ci/check_no_deferral_security.py \
+            --paths docs/security/security-exceptions.md docs/security-open-findings-matrix.md
+
+      - name: Fail with actionable guidance
+        if: failure()
+        run: |
+          echo "::error::No-deferral security gate failed."
+          echo "::error::Remove any deferral/out-of-scope wording and classify every unresolved finding with Owner + Reason."
+          echo "::error::See docs/security/security-exceptions.md and docs/security-open-findings-matrix.md."
+          exit 1
