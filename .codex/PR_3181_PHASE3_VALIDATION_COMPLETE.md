@@ -34,7 +34,12 @@ Successfully completed Phase 3 validation for PR #3181, addressing all outstandi
    - All hooks pass for modified files
    - Fixed detect-secrets false positives with pragma comments
    - Code quality, security, and formatting standards verified
-   - This issue is classified as code fix. Owner: repository maintainers. Reason: the current PR addressed the validation failure, and the remaining repository-wide findings still require explicit tracking and dedicated follow-up. Remediation plan: create separate issue entries for each remaining item, assign owners, and validate them in a follow-up branch. Next validation step: rerun the repo-level pre-commit and confirm each follow-up item has an owner and completion target.
+   - **Tracked follow-up findings:**
+     - #5645 — pip 25.3 vulnerability remediation; owner: `@copilot-security-audit`; target: 2026-10-03
+     - #5646 — `shell=True` production-code remediation; owner: `@copilot-security-audit`; target: 2026-10-10
+     - #5647 — unsafe XML parsing in `tools/codemods/`; owner: `@copilot-security-audit`; target: 2026-10-10
+     - #5648 — test utility file naming convention alignment; owner: `@copilot-test-pattern-guardian`; target: 2026-10-06
+   - This issue is classified as code fix. Owner: repository maintainers. Reason: the current PR addressed the validation failure, and the remaining repository-wide findings are now explicitly tracked with owners and completion targets. Remediation plan: resolve each linked issue in its assigned follow-up branch and validate with passing pre-commit + targeted tests. Next validation step: confirm each follow-up issue has an owner, a completion target, and a passing verification run.
 
 5. ✅ **Updated CHANGELOG.md**
    - Added comprehensive Phase 3 validation entry
@@ -112,7 +117,7 @@ Successfully completed Phase 3 validation for PR #3181, addressing all outstandi
 - ⚠️ check-unsafe-xml: Unsafe XML parsing (tools/codemods/)
 - ⚠️ check-test-utility-naming: Test utility files incorrectly named (19 files)
 
-**Note:** This issue is classified as code fix. Owner: repository maintainers. Reason: the current PR validated the branch, and the remaining repository-wide issues were recorded with explicit follow-up ownership to avoid deferral without accountability. Remediation plan: track each issue in a dedicated follow-up task, assign an owner, and validate it before merge of the follow-up change. Next validation step: confirm each follow-up task has an owner, a completion target, and a passing verification run.
+**Note:** This issue is classified as code fix. Owner: repository maintainers. Reason: the current PR validated the branch, and the remaining repository-wide issues are now linked to explicit follow-up issues with owners and completion targets. Tracked findings: #5645, #5646, #5647, #5648. Remediation plan: resolve each linked issue in its assigned follow-up branch and validate with passing pre-commit + targeted tests. Next validation step: confirm each follow-up issue has an owner, a completion target, and a passing verification run.
 
 ---
 
