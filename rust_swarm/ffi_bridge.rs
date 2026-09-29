@@ -67,7 +67,7 @@ impl FFIBridge {
     }
 
     /// Convert Rust bytes to Python object
-    pub fn to_python(&self, data: &[u8], py: Python<'_>) -> PyResult<PyObject> {
+    pub fn to_python(&self, data: &[u8], py: Python<'_>) -> PyResult<Py<PyAny>> {
         *self.message_count.write() += 1;
         if data.len() > MAX_MESSAGEPACK_BYTES {
             return Err(self.value_error(format!(
@@ -175,7 +175,7 @@ mod tests {
         let bridge = FFIBridge::new();
         let payload = vec![0_u8; MAX_MESSAGEPACK_BYTES + 1];
 
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             let error = bridge.to_python(&payload, py).unwrap_err();
             assert!(error.is_instance_of::<PyValueError>(py));
             assert!(error.to_string().contains("payload exceeds"));
@@ -190,7 +190,7 @@ mod tests {
         let mut payload = vec![0xdb];
         payload.extend_from_slice(&declared_length.to_be_bytes());
 
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             let error = bridge.to_python(&payload, py).unwrap_err();
             assert!(error.is_instance_of::<PyValueError>(py));
             assert!(error.to_string().contains("decoded limit"));
@@ -201,7 +201,7 @@ mod tests {
     #[test]
     fn test_msgpack_encoding_owns_data_beyond_python_lifetime() {
         let bridge = FFIBridge::new();
-        let encoded = Python::with_gil(|py| {
+        let encoded = Python::attach(|py| {
             let source = PyString::new(py, "owned across the boundary");
             bridge.from_python(source.as_any()).unwrap()
         });

@@ -128,8 +128,8 @@ class ConsistentHashRing:
         return None
 
     def _hash(self, key: str) -> int:
-        """Hash key to integer."""
-        return int(hashlib.md5(key.encode(), usedforsecurity=False).hexdigest(), 16)
+        """Hash key to integer using the compatibility digest for consistent ring placement."""
+        return int(hashlib.md5(key.encode("utf-8"), usedforsecurity=False).hexdigest()[:16], 16)
 
 
 class LoadBalancer:

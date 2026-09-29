@@ -159,11 +159,11 @@ impl PySwarmEngine {
     }
 
     fn process_batch(&self, py: Python<'_>, count: usize) -> usize {
-        py.allow_threads(|| self.engine.process_batch(count))
+        py.detach(|| self.engine.process_batch(count))
     }
 
     fn execute_parallel(&self, py: Python<'_>, task_count: usize) -> usize {
-        py.allow_threads(|| self.engine.execute_parallel(task_count))
+        py.detach(|| self.engine.execute_parallel(task_count))
     }
 
     fn agent_count(&self) -> usize {
@@ -171,14 +171,14 @@ impl PySwarmEngine {
     }
 
     fn shutdown(&self, py: Python<'_>) {
-        py.allow_threads(|| self.engine.shutdown())
+        py.detach(|| self.engine.shutdown())
     }
 
     fn is_running(&self) -> bool {
         self.engine.is_running()
     }
 
-    fn process_tasks(&self, tasks: Vec<PyObject>) -> Vec<PyObject> {
+    fn process_tasks(&self, tasks: Vec<Py<PyAny>>) -> Vec<Py<PyAny>> {
         // Explicitly retained as an experimental identity-transport API.
         // Python objects cannot be processed off-GIL; byte-oriented workloads
         // should use `process_batch`, which releases the GIL.

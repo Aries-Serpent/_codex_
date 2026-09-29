@@ -103,8 +103,8 @@ def verify_write_permissions() -> None:
             p.parent.mkdir(parents=True, exist_ok=True)
             testfile = p.parent / (
                 ".codex.touch."
-                + hashlib.sha1(str(p).encode(), usedforsecurity=False).hexdigest()[:8]
-            )  # nosec B324 - Not for security, test file naming only
+                + hashlib.sha256(str(p).encode("utf-8")).hexdigest()[:8]
+            )
             testfile.write_text("ok", encoding="utf-8")
             testfile.unlink(missing_ok=True)
         except Exception as e:

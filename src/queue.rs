@@ -16,7 +16,7 @@ use tokio::sync::mpsc;
 /// Tasks are the fundamental unit of work in the swarm. They contain
 /// all necessary information for an agent to execute a specific operation.
 #[derive(Serialize, Deserialize, Clone, Debug)]
-#[pyclass]
+#[pyclass(from_py_object)]
 pub struct Task {
     /// Unique identifier for the task
     #[pyo3(get, set)]

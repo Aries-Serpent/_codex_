@@ -17,10 +17,20 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 _MODULE_NAME = "datasets"
+_THIS_FILE = Path(__file__).resolve()
+_THIS_DIR = _THIS_FILE.parent
 
 
 def _find_real_module():
-    """Return the real third-party datasets package when one is installed."""
+    """Return the real third-party datasets package when one is installed.
+
+    Only the repo root and this stub's own directory are excluded from the
+    search. Real installs inside a virtualenv that happens to live under the
+    repo root (e.g. ``.venv_ci/.../site-packages``) must remain importable, so
+    we deliberately do NOT reject every path that is merely "relative to the
+    repo root" — doing so would mask the genuine dependency.
+    """
+    excluded_paths = {_THIS_DIR, _REPO_ROOT, _REPO_ROOT.parent}
     search_paths: list[str] = []
     for entry in sys.path:
         if not entry:
@@ -29,12 +39,7 @@ def _find_real_module():
             resolved = Path(entry).resolve()
         except (OSError, RuntimeError, TypeError, ValueError):
             continue
-        if resolved == _REPO_ROOT or resolved == _REPO_ROOT.parent:
-            continue
-        if any(
-            resolved == root or resolved.is_relative_to(root)
-            for root in {_REPO_ROOT, _REPO_ROOT.parent}
-        ):
+        if resolved in excluded_paths:
             continue
         search_paths.append(entry)
 
@@ -47,10 +52,8 @@ def _find_real_module():
             origin_path = Path(origin).resolve()
         except (OSError, RuntimeError, TypeError, ValueError):
             origin_path = None
-        if origin_path and (
-            origin_path == Path(__file__).resolve()
-            or origin_path.is_relative_to(_REPO_ROOT)
-        ):
+        # Reject only if the candidate is this very stub file (self-import).
+        if origin_path and origin_path == _THIS_FILE:
             return None
     return spec
 

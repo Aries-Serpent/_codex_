@@ -5,6 +5,7 @@
 **Last Updated**: 2026-06-22
 **Purpose**: Document all intentionally left as-is code with security scan findings
 **Policy**: ALL security findings must be justified or fixed - no exceptions without documented rationale
+**Strict Rule**: No unresolved finding may be merged without an explicit `Owner:` and `Reason:` classification. Out-of-scope, pre-existing, or deferred wording is prohibited and fails the security gate.
 
 ## Nosec Suppressions Status (Phase 3-4 Update)
 
@@ -81,6 +82,12 @@ When a security finding MUST be left as-is, document using this template:
 
 **Finding Description**:
 [What the scanner detected]
+
+**Owner**:
+[Primary owner for this finding; required for every unresolved item]
+
+**Reason**:
+[Detailed explanation why this cannot be fixed, with the explicit owner and risk/mitigation rationale]
 
 **Reason for Exception**:
 [Detailed explanation why this cannot be fixed]
@@ -211,8 +218,14 @@ ignore-vulnerabilities:
 - Required: 90%
 - Gap: 74.1 percentage points
 
+**Owner**:
+Security Governance Team / repository maintainers
+
+**Reason**:
+This exception records the active coverage gap and the concrete remediation path for the repository. The risk is a measurable reduction in fault detection and release confidence while the coverage plan is still being executed; the governing owner is the Security Governance Team / repository maintainers, and the exception remains active only while the tracked remediation plan is being executed and validated.
+
 **Reason for Exception**:
-Pre-existing condition not introduced by current work. Fixing requires sustained multi-week effort beyond scope of immediate PR.
+Coverage remains below target across the repository during a staged uplift plan. The control owner is responsible for tracking milestones, verifying progress, and closing the exception only when the measured coverage threshold is reached and sustained.
 
 **Risk Assessment**:
 - Impact: High - Low test coverage increases bug risk

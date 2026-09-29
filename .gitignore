@@ -52,6 +52,7 @@ Thumbs.db
 
 # Runtime files - Codex session/context files
 .codex/rag/session_delta.json
+.codex/test-artifacts/offline-*
 .codex/session_access_manifest.json
 .codex/session_access_strategy.json
 .codex/session_context_latest.md
@@ -82,6 +83,7 @@ tmp/
 
 # Rust build output
 /target/
+src/**/target/
 
 # DVC
 .dvc/cache/

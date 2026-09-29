@@ -49,6 +49,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
@@ -58,16 +59,25 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
+      - name: Export venv interpreter
+        run: |
+          set -euo pipefail
+          VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          echo "[SETUP] venv-python: ${VENV_PYTHON}"
+          "${VENV_PYTHON}" --version
+
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -e '.[runtime]'
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          "$PYTHON_BIN" -m pip install --upgrade pip
+          "$PYTHON_BIN" -m pip install -e '.[runtime]'
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
-          python - <<'PY'
+          "$PYTHON_BIN" - <<'PY'
           import importlib
           for name in [
               "numpy",
@@ -121,6 +131,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python with caching
+        id: setup-python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
@@ -130,16 +141,25 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
+      - name: Export venv interpreter
+        run: |
+          set -euo pipefail
+          VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          echo "[SETUP] venv-python: ${VENV_PYTHON}"
+          "${VENV_PYTHON}" --version
+
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -e '.[runtime]'
+          PYTHON_BIN="${VENV_PYTHON:-python3}"
+          "$PYTHON_BIN" -m pip install --upgrade pip
+          "$PYTHON_BIN" -m pip install -e '.[runtime]'
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
-          python - <<'PY'
+          "$PYTHON_BIN" - <<'PY'
           import importlib
           for name in [
               "numpy",

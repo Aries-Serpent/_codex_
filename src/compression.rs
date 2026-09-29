@@ -53,7 +53,7 @@ impl CompressionPipeline {
             CompressionCodec::LZ4 => self.compress_lz4(data)?,
             CompressionCodec::Zstd(level) => self.compress_zstd(data, level)?,
         };
-        Ok(PyBytes::new_bound(py, &result))
+        Ok(PyBytes::new(py, &result))
     }
 
     /// Decompress data
@@ -68,7 +68,7 @@ impl CompressionPipeline {
             CompressionCodec::LZ4 => self.decompress_lz4(data)?,
             CompressionCodec::Zstd(_) => self.decompress_zstd(data)?,
         };
-        Ok(PyBytes::new_bound(py, &result))
+        Ok(PyBytes::new(py, &result))
     }
 }
 

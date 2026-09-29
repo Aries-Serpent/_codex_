@@ -88,8 +88,8 @@ class GitHubSecretsManager:
         self.api_base = "https://api.github.com"
 
         if not self.token:
-            logger.error("No GitHub token found. Set GITHUB_TOKEN or GH_TOKEN")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.error("Token must have 'repo' and 'workflow' scopes")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("GitHub authentication is missing; set GITHUB_TOKEN or GH_TOKEN")
+            logger.error("Token must have repo and workflow scopes")
 
     def generate_secure_key(self, length: int = 32) -> str:
         """

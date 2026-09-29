@@ -18,18 +18,20 @@ logger = logging.getLogger(__name__)
 
 # Common token/secret patterns for detection
 TOKEN_PATTERNS = [
-    r"ghp_[a-zA-Z0-9]{36}",  # GitHub Personal Access Token
-    r"ghs_[a-zA-Z0-9]{36}",  # GitHub OAuth token
-    r"ghu_[a-zA-Z0-9]{36}",  # GitHub User-to-Server token
-    r"github_pat_[a-zA-Z0-9]+",  # GitHub fine-grained token
-    r"sk_[a-zA-Z0-9]{32,}",  # Generic secret key
-    r"[a-zA-Z0-9_-]{20,}",  # Generic token-like pattern
+    r"gh[pous]_[A-Za-z0-9]{20,}",  # GitHub tokens
+    r"github_pat_[A-Za-z0-9_\-]{20,}",  # GitHub fine-grained token
+    r"sk_(live|test)_[A-Za-z0-9]{16,}",  # Stripe-like secret key
+    r"(?:AKIA|ASIA)[A-Z0-9]{16}",  # AWS access key pattern
+    r"AIza[0-9A-Za-z\-_]{35}",  # Google API key
+    r"xox[baprs]-[A-Za-z0-9-]{10,}",  # Slack token pattern
+    r"(?i)(?:opaque-secret|token|secret|api[-_]?key|password)[-_]?[A-Za-z0-9._:-]{12,}",
+    r"(?i)(?:token|api[_-]?key|secret|password|authorization|bearer)\s*[:=]\s*(?:['\"]([^'\"]+)['\"]|([^'\"\s,;]+))",
 ]
 
 PASSWORD_PATTERNS = [
-    r"password['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
-    r"pwd['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
-    r"passwd['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
+    r"(?i)password['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
+    r"(?i)pwd['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
+    r"(?i)passwd['\"]?\s*[:=]\s*['\"]?[^'\"]*['\"]?",
 ]
 
 
@@ -189,11 +191,24 @@ def sanitize_for_logging(value: Any) -> str:
         >>> sanitize_for_logging("injection\\nattack")
         'injection attack'
     """
+    if value is None:
+        return "[None]"
+
     value_str = str(value)
-    # Remove newlines, carriage returns, and control characters
     sanitized = re.sub(r"[\n\r\x00-\x1f\x7f]", " ", value_str)
-    # Collapse multiple spaces
     sanitized = re.sub(r" +", " ", sanitized)
+    sanitized = re.sub(
+        r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*(?:['\"]([^'\"]+)['\"]|([^'\"\s,;]+))",
+        lambda m: f"{m.group(1)}=[REDACTED]",
+        sanitized,
+    )
+    for pattern in TOKEN_PATTERNS:
+        if pattern.endswith("))"):
+            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+        else:
+            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+    for pattern in PASSWORD_PATTERNS:
+        sanitized = re.sub(pattern, "[REDACTED_PASSWORD]", sanitized, flags=re.IGNORECASE)
     return sanitized.strip()
 
 
@@ -223,34 +238,39 @@ def create_log_filter() -> logging.Filter:
             Returns:
                 Always True to allow the record through (after redaction)
             """
-            # Redact message
-            record.msg = self._redact_string(str(record.msg))
-
-            # Redact exception message if present
-            if record.exc_text:
-                record.exc_text = self._redact_string(record.exc_text)
-
-            # Redact record arguments if they're strings
-            if isinstance(record.args, dict):
-                for key, value in record.args.items():
-                    if isinstance(value, str):
-                        record.args[key] = self._redact_string(value)
-            elif isinstance(record.args, (list, tuple)):
-                record.args = tuple(
-                    self._redact_string(arg) if isinstance(arg, str) else arg for arg in record.args
-                )
-
+            try:
+                record.msg = self._redact_string(str(record.msg))
+                if record.exc_text:
+                    record.exc_text = self._redact_string(record.exc_text)
+                if isinstance(record.args, dict):
+                    for key, value in record.args.items():
+                        if isinstance(value, str):
+                            record.args[key] = self._redact_string(value)
+                elif isinstance(record.args, (list, tuple)):
+                    record.args = tuple(
+                        self._redact_string(arg) if isinstance(arg, str) else arg for arg in record.args
+                    )
+            except Exception:
+                record.msg = "[REDACTED]"
+                record.args = ()
             return True
 
         @staticmethod
         def _redact_string(text: str) -> str:
             """Redact secrets from a string."""
+            if not text:
+                return text
+            redacted = text
             for pattern in TOKEN_PATTERNS:
-                # Replace tokens with redacted version
-                text = re.sub(
-                    pattern, lambda m: redact_token(m.group(0)), text, flags=re.IGNORECASE
+                redacted = re.sub(
+                    pattern,
+                    lambda m: redact_token(m.group(0)) if m.group(0).strip() else "[REDACTED]",
+                    redacted,
+                    flags=re.IGNORECASE,
                 )
-            return text
+            for pattern in PASSWORD_PATTERNS:
+                redacted = re.sub(pattern, "[REDACTED_PASSWORD]", redacted, flags=re.IGNORECASE)
+            return redacted
 
     return SecretRedactionFilter()
 

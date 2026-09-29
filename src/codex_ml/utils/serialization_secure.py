@@ -26,7 +26,7 @@ class DeserializationMode(Enum):
     """Deserialization modes with different security levels."""
 
     SAFE = "safe"  # JSON only - completely safe
-    TRUSTED = "trusted"  # Pickle only for trusted data
+    TRUSTED = "trusted"  # JSON only; pickle is not used by this implementation
     HYBRID = "hybrid"  # JSON with whitelist validation
 
 
@@ -34,9 +34,9 @@ class SecureSerializer:
     """
     Handles secure serialization and deserialization.
 
-    SECURITY: Never uses pickle for untrusted data.
+    SECURITY: Never uses pickle for any data.
     - For untrusted data: Use JSON (safe, limited to primitives)
-    - For trusted data: Use pickle with validation
+    - For trusted data: Use JSON (safe, interoperable default)
     - For hybrid: Use JSON with schema validation
     """
 
@@ -71,32 +71,18 @@ class SecureSerializer:
     @staticmethod
     def deserialize_trusted(data: bytes) -> Any:
         """
-        Deserialize trusted data (internal use only).
+        Deserialize trusted data using a JSON-only safe path.
 
-        ⚠️ WARNING: Only use this for data you trust (e.g., cache, internal messages)
-
-        DO NOT use for:
-        - User-supplied data
-        - Data from external APIs
-        - Data from untrusted sources
-
-        Args:
-            data: Trusted bytes from internal source
-
-        Returns:
-            Deserialized object
-
-        Raises:
-            SerializationError: If deserialization fails
+        COMPATIBILITY NOTE: Previous versions of this module accepted pickle
+        bytes for ``TRUSTED`` payloads. That behavior has been removed because
+        pickle cannot safely cross process or trust boundaries and is easy to
+        misuse. Callers that previously passed pickle bytes must migrate to
+        JSON-serialized data (use ``SecureSerializer.serialize``).
         """
-        import pickle
-
         try:
-            # Only deserialize for trusted data
-            logger.debug("Deserializing trusted data with pickle")
-            obj = pickle.loads(data)
-            return obj
-        except (pickle.UnpicklingError, EOFError, ValueError) as e:
+            decoded = data.decode("utf-8")
+            return json.loads(decoded)
+        except (UnicodeDecodeError, json.JSONDecodeError) as e:
             raise SerializationError(f"Failed to deserialize trusted data: {e}") from e
 
     @staticmethod
@@ -216,9 +202,9 @@ class UserData:
 # No code execution possible!
 
 # KEY PRINCIPLES:
-# 1. NEVER use pickle for untrusted data
+# 1. NEVER use pickle for any data
 # 2. Use JSON for data from external sources
-# 3. Use pickle ONLY for internal trusted data
+# 3. Use JSON for internal trusted data as well
 # 4. Validate schema after deserialization
 # 5. Use typed dataclasses for type hints
 # 6. Log deserialization attempts

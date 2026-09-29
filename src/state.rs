@@ -22,7 +22,7 @@ pub enum AgentStatus {
 ///
 /// This structure provides concurrent access to agent state without the
 /// overhead of Python's GIL. Multiple threads can read/write simultaneously.
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Clone)]
 pub struct SwarmState {
     agents: Arc<DashMap<String, AgentStatus>>,

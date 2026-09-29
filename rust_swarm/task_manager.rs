@@ -143,15 +143,15 @@ impl PyTaskManager {
     }
 
     fn submit_task(&self, py: Python<'_>, data: String) -> usize {
-        py.allow_threads(move || self.manager.submit_task(&data))
+        py.detach(move || self.manager.submit_task(&data))
     }
 
     fn submit(&self, py: Python<'_>, data: Vec<u8>) -> usize {
-        py.allow_threads(move || self.manager.submit(data))
+        py.detach(move || self.manager.submit(data))
     }
 
     fn get_result(&self, py: Python<'_>, timeout: f64) -> Option<(usize, bool, Vec<u8>)> {
-        py.allow_threads(|| self.manager.get_result(timeout))
+        py.detach(|| self.manager.get_result(timeout))
             .map(|r| (r.task_id, r.success, r.data))
     }
 

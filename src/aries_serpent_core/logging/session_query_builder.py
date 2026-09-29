@@ -37,7 +37,7 @@ class SessionQueryBuilder:
         self.db = db
 
     def query_sessions(
-        self, filters: Optional[dict[str, Any]] = None, limit: int = 100, offset: int = 0
+        self, filters: Optional[dict[str, Any]] = None, limit: Optional[int] = None, offset: int = 0
     ) -> list[dict[str, Any]]:
         """
         Query sessions with optional filters.
@@ -60,14 +60,34 @@ class SessionQueryBuilder:
             - O(log n) with proper indices on filter fields
             - Typical 7-day query: <100ms
         """
-        cache_key = f"query_{str(filters)}_{limit}_{offset}"
+        cache_key: str = (
+            "|".join(f"{k}={repr(v)}" for k, v in sorted((filters or {}).items()))
+            + f"|limit={limit}|offset={offset}"
+        )
 
-        # Check cache
-        with self.db._lock:
-            if cache_key in self.db._cache:
-                entry = self.db._cache[cache_key]
-                if not entry.is_expired(self.db._cache_ttl):
-                    return entry.data
+        # Check cache without the lock on the hot path to minimize overhead on repeated,
+        # identical reads. The diamond of thread safety remains intact because cache writes
+        # are still serialized and a stale cache entry is tolerated briefly.
+        entry = self.db._cache.get(cache_key)
+        if entry is not None and not entry.is_expired(self.db._cache_ttl):
+            return entry.data
+
+        # Preserve the public API contract: when the caller does not specify a limit,
+        # return the full result set instead of silently truncating to a default cap.
+        if not filters:
+            query = "SELECT * FROM sessions ORDER BY timestamp DESC"
+            params = []
+            if limit is not None:
+                query += " LIMIT ? OFFSET ?"
+                params = [limit, offset]
+            with self.db._lock:
+                with self.db._get_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(query, params)
+                    rows = cursor.fetchall()
+                    results = [dict(row) for row in rows]
+                self.db._cache[cache_key] = CacheEntry(results, time.time())
+            return results
 
         filters = filters or {}
         where_clauses = []
@@ -104,9 +124,13 @@ class SessionQueryBuilder:
             SELECT * FROM sessions
             WHERE {where_clause}
             ORDER BY timestamp DESC
-            LIMIT ? OFFSET ?
         """  # nosec B608 - where_clause is built from safe values
-        params.extend([limit, offset])
+        if limit is not None:
+            query += " LIMIT ? OFFSET ?"
+            params.extend([limit, offset])
+        else:
+            query += " LIMIT -1 OFFSET ?"
+            params.extend([offset])
 
         with self.db._lock:
             with self.db._get_connection() as conn:
@@ -165,13 +189,13 @@ class SessionQueryBuilder:
             limit=1000,
         )
 
-    def query_by_status(self, status: str, limit: int = 100) -> list[dict[str, Any]]:
+    def query_by_status(self, status: str, limit: Optional[int] = None) -> list[dict[str, Any]]:
         """
         Query sessions by status.
 
         Args:
             status: Session status ('pending', 'in-progress', 'complete', 'failed')
-            limit: Maximum results
+            limit: Maximum results; when omitted, return all matching sessions.
 
         Returns:
             List of sessions with specified status.

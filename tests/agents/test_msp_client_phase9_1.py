@@ -189,7 +189,7 @@ def test_infer_sends_full_payload(fake_client_factory):
     )
     assert result == {"tokens": 5}, "Result must not be empty"
     payload = fake.calls[-1][2]["json"]
-    assert payload == {, "payload is not valid"
+    assert payload == {
         "tenant_id": "t1",
         "prompt": "hello",
         "max_tokens": 10,
@@ -222,7 +222,7 @@ def test_create_tenant_defaults(fake_client_factory):
     fake = fake_client_factory[0]
     client.create_tenant("tid", "Name", "k")
     payload = fake.calls[-1][2]["json"]
-    assert payload["quota"] == {, "Condition must be true"
+    assert payload["quota"] == {
         "requests_per_minute": 60,
         "tokens_per_minute": 10000,
     }
@@ -261,7 +261,7 @@ def test_update_tenant_all_fields(fake_client_factory):
         active=True,
     )
     body = fake.calls[-1][2]["json"]
-    assert body == {, "body is not valid"
+    assert body == {
         "name": "n",
         "quota": {"q": 1},
         "policies": ["p"],
@@ -380,7 +380,7 @@ def test_get_usage_stats_with_and_without_bounds(fake_client_factory):
     client.get_usage_stats("t")
     assert fake.calls[-1][2]["params"] == {"tenant_id": "t"}, "Condition must be true"
     client.get_usage_stats("t", start_time="s", end_time="e")
-    assert fake.calls[-1][2]["params"] == {, "Condition must be true"
+    assert fake.calls[-1][2]["params"] == {
         "tenant_id": "t",
         "start_time": "s",
         "end_time": "e",

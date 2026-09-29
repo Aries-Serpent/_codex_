@@ -70,7 +70,7 @@ def _ensure_local_mlflow_tracking_uri_default() -> None:
 
 try:  # pragma: no cover - optional
     import psutil
-except (ConnectionError, TimeoutError):  # pragma: no cover - psutil not installed
+except (ConnectionError, TimeoutError, ModuleNotFoundError, ImportError):  # pragma: no cover - psutil not installed
     psutil = None
 
 if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard

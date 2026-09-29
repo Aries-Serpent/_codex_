@@ -69,9 +69,9 @@ impl AgentManager {
         });
 
         self.pool.spawn(move || {
-            Python::with_gil(|py| {
+            Python::attach(|py| {
                 // Try to import and run agent
-                match py.import_bound("codex.agent") {
+                match py.import("codex.agent") {
                     Ok(agent_module) => {
                         match agent_module.call_method1("Agent", (&config,)) {
                             Ok(agent) => {

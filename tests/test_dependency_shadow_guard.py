@@ -51,6 +51,12 @@ def test_repo_root_stubs_do_not_mask_real_installs(
     imported_file = getattr(loaded, "__file__", "")
     if imported_file:
         resolved = Path(imported_file).resolve()
-        assert not resolved.is_relative_to(repo_root), (
-            f"{module_name} resolved inside repo root instead of the installed package: {resolved}"
+        # The loaded module must not be the repo-local stub itself. Real
+        # installs may legitimately live under the repo root when CI uses an
+        # in-repo virtualenv (e.g. ``.venv_ci/.../site-packages``), so we only
+        # reject the stub path ``<repo_root>/<module_name>/__init__.py`` rather
+        # than any path merely "relative to the repo root".
+        stub_init = (repo_root / module_name / "__init__.py").resolve()
+        assert resolved != stub_init, (
+            f"{module_name} resolved to the repo-local stub instead of the installed package: {resolved}"
         )

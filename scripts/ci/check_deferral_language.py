@@ -68,7 +68,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     (r"not introduced by (?:this|my|our)",
      "Origin deferral: deflecting to another source"),
     # Scope-based deferrals
-    (r"(?:not|out of|outside)(?: the)? scope(?: of this| of my)?",
+    (r"(?:out[-\s]?of[-\s]?scope|not in scope|outside(?: the)? scope|(?:not|out of|outside)(?: the)? scope(?: of this| of my)?)",
      "Scope deferral: scoping out responsibility"),
     (r"not related to (?:this|my|our|the current) (?:pr|task|branch|change)",
      "Scope deferral: claiming issue is unrelated"),
