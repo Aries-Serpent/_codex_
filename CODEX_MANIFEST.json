@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-28T06:05:40Z",
+  "generated_at": "2026-09-29T06:24:30Z",
   "agents": [
     {
       "name": "offline-zip-recovery-agent",
@@ -918,6 +918,11 @@
       "has_concurrency": true
     },
     {
+      "name": "strict-no-deferral-security",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "template_lint",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1344,5 +1349,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "9a9b467ddb88ae44f0328e26299614371453230cbcfd32b373726bde547e2468"
+  "integrity_sha256": "44824bc4d3c072d16ddca50d8087b7a6456ed8f3bf9de97b1aa20b120e6c25df"
 }
