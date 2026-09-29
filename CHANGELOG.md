@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5643)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5643 (SHA `c043d48f026dc2b59b32e0160280f2d53d536b4f`) at 2026-09-29T00:29:11Z [auto-generated]
+
 ### Fixed — PR #5634 auto-approve churn trigger loop (2026-09-26)
 - Updated `.github/workflows/agent-auth-delegation.yml` pull_request triggers to remove `edited` and include `synchronize`.
 - This prevents PR-body self-edits from re-triggering/canceling in-progress delegation runs, allowing auto-approve dispatch stages to complete.

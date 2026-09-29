@@ -46,15 +46,15 @@ impl Orchestrator {
             // Heavy I/O simulation occurs fully outside the GIL.
             tokio::time::sleep(Duration::from_millis(150)).await;
 
-            // Re-acquire GIL only to build the Python coroutine and convert it to a Rust future.
-            let py_future = Python::with_gil(|py| -> PyResult<_> {
+            // Re-acquire the Python GIL only to build the Python coroutine and convert it to a Rust future.
+            let py_future = Python::attach(|py| -> PyResult<_> {
                 let coroutine = callback.call1(py, (error_type.clone(),))?;
                 into_future(coroutine.into_bound(py))
             })?;
 
             // Await Python callback outside the GIL to avoid deadlocks.
             let patch_obj = py_future.await?;
-            let patch_text = Python::with_gil(|py| -> PyResult<String> { patch_obj.extract(py) })?;
+            let patch_text = Python::attach(|py| -> PyResult<String> { patch_obj.extract(py) })?;
 
             {
                 let mut guard = state.lock().await;

@@ -122,9 +122,13 @@ runs:
       uses: actions/cache@v5
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        key: >-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{
+          inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-${{
+          hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{
+            inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-
           ${{ runner.os }}-live-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-
 
     # ─────────────────────────────────────────────────────────────────
@@ -163,11 +167,22 @@ runs:
         # 3.12.14. Restore-keys stay at minor granularity (py3.12) — a partial
         # hit only seeds the build and the cross-patch self-healing rebuild below
         # discards any stale interpreter wiring.
-        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        key: >-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{
+          inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{
+          inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{
+          inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-
-          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{ inputs.extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{
+            inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{
+            inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{
+            inputs.install-preflight-extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{
+            inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{
+            inputs.extras }}-torch=${{ inputs.install-torch }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{
+            inputs.cache-version || 'v2' }}-py${{ steps.pyver.outputs.resolved }}-extras=${{
+            inputs.extras }}-
 
     # ─────────────────────────────────────────────────────────────────
     # 5. Build / refresh venv
@@ -235,7 +250,9 @@ runs:
         #       (e.g. venv was cached on Python 3.11, runner now provides 3.12).
         REQUESTED_MINOR=$(echo "${{ inputs.python-version }}" | cut -d. -f1,2)
         PYTHON_BIN=".venv_ci/bin/python"
-        ACTUAL_MINOR=$("$PYTHON_BIN" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+        ACTUAL_MINOR=$(
+          "$PYTHON_BIN" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown"
+        )
         # Cross-patch safety: a venv cached on Python 3.12.N can break when the
         # runner image moves to 3.12.(N+1) because the cache key only pins the
         # minor version (see step comment at line ~150). If the interpreter that
@@ -244,7 +261,12 @@ runs:
         # path. Detect by checking whether the venv python actually imports from
         # its own site-packages; rebuild if it cannot.
         VENV_OK=true
-        if ! "$PYTHON_BIN" -c "import sys, site; sp=site.getsitepackages(); assert any('site-packages' in p for p in sp), sp" &>/dev/null; then
+        if ! "$PYTHON_BIN" - <<'PY' >/dev/null 2>&1
+          import sys, site
+          sp = site.getsitepackages()
+          assert any('site-packages' in p for p in sp), sp
+        PY
+        then
           VENV_OK=false
         fi
         if ! "$PYTHON_BIN" --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ] || [ "${VENV_OK}" != "true" ]; then
