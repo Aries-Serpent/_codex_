@@ -44,3 +44,10 @@ rules:
     pattern-either:
       - pattern: pickle.load(...)
       - pattern: pickle.loads(...)
+    paths:
+      # Test fixtures create process-local trusted pickle data to validate the
+      # RestrictedUnpickler / safe_pickle boundary itself; they are intentional
+      # false positives (see .codex/reports/security/lane-p3/).
+      exclude:
+        - "tests/**"
+        - "**/test_*.py"

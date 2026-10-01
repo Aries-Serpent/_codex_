@@ -264,7 +264,7 @@ class TestCryptographicOperations:
         assert len(sha256_hash) == 64, "SHA-256 produces 256-bit hash"
 
         # MD5 should not be used for security
-        md5_hash = hashlib.md5(data).hexdigest()
+        md5_hash = hashlib.md5(data, usedforsecurity=False).hexdigest()  # nosec B324 - deliberate weak-hash comparison fixture
         assert len(md5_hash) == 32, "MD5 is weaker (128-bit)"
 
         # SHA-256 should be preferred

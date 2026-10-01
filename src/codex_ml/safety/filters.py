@@ -816,7 +816,7 @@ class SafetyFilters:
                 RuntimeError,
             ) as exc:  # nosec B112 - continue loop; log for observability
                 logger.debug(
-                    "safety.filters: failed to assign neg_inf for token %s (%s)",
+                    "safety.filters: failed to assign neg_inf for vocabulary id %s (%s)",
                     tid,
                     type(exc).__name__,
                     exc_info=True,

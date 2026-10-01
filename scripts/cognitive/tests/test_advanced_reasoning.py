@@ -32,6 +32,25 @@ import numpy as np
 import pandas as pd
 import pytest
 
+# Module-level optional dependency imports.
+# Using importorskip at module level so CodeQL does not flag function-level
+# re-imports as potentially-uninitialized local variables.
+dowhy = pytest.importorskip("dowhy", reason="dowhy required for causal reasoning tests")
+networkx = pytest.importorskip("networkx", reason="networkx required for graph tests")
+causalml_meta = pytest.importorskip(
+    "causalml.inference.meta", reason="causalml required for uplift tests"
+)
+sklearn_ensemble = pytest.importorskip(
+    "sklearn.ensemble", reason="scikit-learn required for model tests"
+)
+shap = pytest.importorskip("shap", reason="shap required for explainability tests")
+
+CausalModel = dowhy.CausalModel
+nx = networkx
+BaseSRegressor = causalml_meta.BaseSRegressor
+RandomForestRegressor = sklearn_ensemble.RandomForestRegressor
+RandomForestClassifier = sklearn_ensemble.RandomForestClassifier
+
 
 class TestCausalReasoning:
     """Test causal inference with DoWhy"""
@@ -63,7 +82,6 @@ class TestCausalReasoning:
 
     def test_causal_effect_estimation(self, sample_data):
         """Test estimating causal effect of code changes on test success"""
-        CausalModel = pytest.importorskip("dowhy").CausalModel
 
         # Define causal model
         model = CausalModel(
@@ -89,8 +107,6 @@ class TestCausalReasoning:
 
     def test_confounding_detection(self, sample_data):
         """Test detecting confounding variables"""
-        CausalModel = pytest.importorskip("dowhy").CausalModel
-
         # Model without confounder
         model_biased = CausalModel(
             data=sample_data,
@@ -123,7 +139,6 @@ class TestCausalReasoning:
 
     def test_causal_graph_construction(self):
         """Test building causal graphs"""
-        nx = pytest.importorskip("networkx")
 
         # Build causal graph
         G = nx.DiGraph()
@@ -171,10 +186,6 @@ class TestCounterfactualReasoning:
         """Test predicting treatment effect uplift"""
         X, treatment, outcome = sample_data
 
-        BaseSRegressor = pytest.importorskip("causalml.inference.meta").BaseSRegressor
-        RandomForestRegressor = pytest.importorskip(
-            "sklearn.ensemble"
-        ).RandomForestRegressor
 
         # Train uplift model
         learner = BaseSRegressor(RandomForestRegressor(random_state=42))
@@ -217,9 +228,6 @@ class TestExplainability:
     @pytest.fixture
     def trained_model(self):
         """Train a simple model for testing"""
-        RandomForestClassifier = pytest.importorskip(
-            "sklearn.ensemble"
-        ).RandomForestClassifier
 
         np.random.seed(42)
         n = 200
@@ -236,7 +244,6 @@ class TestExplainability:
         """Test computing feature importance with SHAP"""
         model, X, _y = trained_model
 
-        shap = pytest.importorskip("shap")
 
         # Create explainer
         explainer = shap.TreeExplainer(model)
@@ -250,7 +257,6 @@ class TestExplainability:
         """Test explaining individual predictions"""
         model, X, _y = trained_model
 
-        shap = pytest.importorskip("shap")
 
         # Explain single prediction
         explainer = shap.TreeExplainer(model)
@@ -268,7 +274,6 @@ class TestExplainability:
         """Test generating global model explanations"""
         model, X, _y = trained_model
 
-        shap = pytest.importorskip("shap")
 
         explainer = shap.TreeExplainer(model)
         shap_values = explainer.shap_values(X)
@@ -299,10 +304,6 @@ class TestAdvancedReasoningIntegration:
         # Add treatment effect
         data.loc[data['treatment'] == 1, 'outcome'] += 0.5
 
-        shap = pytest.importorskip("shap")
-        RandomForestRegressor = pytest.importorskip(
-            "sklearn.ensemble"
-        ).RandomForestRegressor
 
         # Train outcome model
         X = data[['feature1', 'feature2', 'treatment']]

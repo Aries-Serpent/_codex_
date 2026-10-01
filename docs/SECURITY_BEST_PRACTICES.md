@@ -309,6 +309,44 @@ If you discover a security vulnerability:
 
 ---
 
+## Transitive Dependency Policy (Known-Unfixable CVEs)
+
+Some CVEs exist in **transitive** dependencies — packages the repo never imports
+directly and never pins in `pyproject.toml` / `requirements*.txt`, but which
+arrive in CI/dev environments via another tool's dependency graph. When no
+upstream fix version exists, do **not** add a direct pin (there is nothing to
+pin to); instead apply this policy.
+
+### Current acknowledged entries (as of 2026-10-01)
+
+| Package | CVE | Introduced via | Upstream fix | Repo exposure |
+|---------|-----|----------------|--------------|---------------|
+| `diskcache 5.6.3` | CVE-2025-69872 (pickle RCE via cache-dir write) | `dvc-data → dvc==3.67.1` (dataops/dev extra only) | **None** (pip-audit "Fix Versions" empty) | Zero direct imports; reachable only through DVC's local cache layer on developer/CI machines |
+| `sqlitedict 2.1.0` | CVE-2024-35515 (insecure deserialization) | `lm-eval>=0.4.2` (eval extra only) | **None** (affected spec `<=2.1.0`, latest release) | Zero direct imports; used only inside lm-eval's local evaluation cache |
+
+Both are recorded in `pyproject.toml [tool.pip-audit] ignore-vulns` and tracked
+in `.codex/plans/security-remediation-planset.md` (CVE Status + Batch 5
+monitoring protocol).
+
+### Rules
+
+1. **Never introduce a direct import** of a known-vulnerable transitive package
+   in `src/`, `scripts/`, or `tools/`. CI dependency scanning
+   (`security-scanning-suite.yml`) and `scripts/security/validate_security.py`
+   will flag it.
+2. **If a use case genuinely requires one of these packages**, it MUST go
+   through the repo's safe deserialization boundary:
+   `codex_ml.utils.safe_pickle.safe_pickle_load(..., use_restricted_unpickler=True)`
+   (RestrictedUnpickler class allowlist + optional HMAC signature), never the
+   package's default pickle-based load path.
+3. **Re-check for a fix version on every dependency bump** (planset Batch 5):
+   when a fixed release ships, upgrade the parent (`dvc` / `lm-eval`), remove
+   the `ignore-vulns` entry, and re-run `pip-audit`.
+4. **Document any new acknowledged CVE** in this table plus
+   `pyproject.toml [tool.pip-audit] ignore-vulns` — never silently ignore.
+
+---
+
 ## Security Metrics
 
 Track these metrics for ongoing security health:

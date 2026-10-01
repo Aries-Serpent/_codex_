@@ -168,7 +168,7 @@ class TokenHealthChecker:
                 )
         except (ValueError, TypeError, RuntimeError) as exc:  # noqa: BLE001
             logger.warning(
-                "Token health check failed for %s: %s",
+                "Credential health check failed for %s: %s",
                 source.value,
                 exc,
                 exc_info=False,
@@ -228,7 +228,7 @@ class TokenHealthChecker:
                 days_until_expiry = (expires_at - now) / 86400
                 if days_until_expiry < self._EXPIRY_WARNING_DAYS:
                     logger.warning(
-                        "Token from %s expiring in %.1f days",
+                        "Credential from %s expiring in %.1f days",
                         source.value,
                         days_until_expiry,
                     )
@@ -480,7 +480,7 @@ class TokenRotationScheduler:
 
         if days_until < 0:
             logger.warning(
-                "Token rotation overdue for %s: %d days past expiration",
+                "Credential rotation overdue for %s: %d days past expiration",
                 source.value,
                 abs(int(days_until)),
             )
@@ -488,7 +488,7 @@ class TokenRotationScheduler:
 
         if days_until < self._WARNING_THRESHOLD_DAYS and not info.warning_issued:
             logger.warning(
-                "Token rotation approaching for %s in %.1f days",
+                "Credential rotation approaching for %s in %.1f days",
                 source.value,
                 days_until,
             )

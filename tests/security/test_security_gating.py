@@ -85,7 +85,6 @@ def test_gitleaks_config_exists():
 
 def test_gitleaks_config_valid_toml():
     """Test that gitleaks config is valid TOML."""
-    toml = None
     try:
         import tomli as toml
     except ImportError:

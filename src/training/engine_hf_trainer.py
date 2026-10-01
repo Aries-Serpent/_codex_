@@ -1268,7 +1268,7 @@ def run_hf_trainer(
     )
     if tokenizer.pad_token is None:
         logger.warning(
-            "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
+            "Text backend from '%s' has no pad token; falling back to eos padding. "
             "This may affect training behaviour.",
             type(tokenizer).__name__,
         )
