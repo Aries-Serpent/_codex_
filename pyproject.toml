@@ -406,6 +406,10 @@ dev = [
     "bandit>=1.9.4",
     "pip-audit>=2.10.1",
     "semgrep>=1.175.0",
+    # semgrep (<=1.178) ships opentelemetry exporter/sdk 1.37.x, which imports
+    # ``_ExtendedAttributes`` — removed in opentelemetry-api 1.38+. Pin the API
+    # below the break so a fresh resolve cannot crash the semgrep CLI.
+    "opentelemetry-api>=1.37.0,<1.38.0",
     "coverage[toml]>=7.15.1,<8",
 ]
 ml = [

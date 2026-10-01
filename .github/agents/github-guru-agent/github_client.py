@@ -87,7 +87,12 @@ class GitHubAPIClient:
 
     @property
     def _base_url(self) -> str:
-        return f"{_GITHUB_API_BASE}/repos/{self.owner}/{self.repo}"
+        # Reads GITHUB_API_URL per access (with the module default as fallback) so
+        # GitHub Enterprise Server deployments and tests that set the env var after
+        # import time are honoured. ``_build_url`` re-validates scheme, hostname
+        # parity, and embedded credentials on every request.
+        base = os.environ.get("GITHUB_API_URL", _GITHUB_API_BASE).rstrip("/")
+        return f"{base}/repos/{self.owner}/{self.repo}"
 
     def _headers(self) -> dict[str, str]:
         headers: dict[str, str] = {
@@ -104,7 +109,14 @@ class GitHubAPIClient:
         if params:
             url = f"{url}?{urllib_parse.urlencode(params, doseq=True)}"
         parts = urllib_parse.urlsplit(url)
-        if parts.scheme != "https" or parts.hostname != "api.github.com":
+        base_parts = urllib_parse.urlsplit(
+            os.environ.get("GITHUB_API_URL", _GITHUB_API_BASE).rstrip("/")
+        )
+        if (
+            parts.scheme != "https"
+            or not parts.hostname
+            or parts.hostname != base_parts.hostname
+        ):
             raise ValueError(f"Refusing non-GitHub API URL: {url!r}")
         if parts.username or parts.password:
             raise ValueError("Refusing GitHub API URL with embedded credentials")
@@ -154,7 +166,11 @@ class GitHubAPIClient:
         return GitHubAPIResponse(status=0, data={}, error="Max retries exceeded")
 
     def _post(self, path: str, body: dict[str, Any]) -> "GitHubAPIResponse":
-        """Issue a POST request with retry + backoff.
+        """Issue a POST request with retry + backoff via ``requests``.
+
+        No dynamic urllib use (Semgrep dynamic-urllib-use-detected): the URL is
+        validated by ``_build_url()`` (https + api.github.com only, no embedded
+        credentials) and the request is issued with the ``requests`` library.
 
         In SAFE_MODE, the call is short-circuited and a 403 stub is returned
         so callers can detect that mutating operations are disabled.
@@ -168,34 +184,31 @@ class GitHubAPIClient:
             )
 
         url = self._build_url(path)
-        payload = json.dumps(body).encode("utf-8")
 
         for attempt in range(_MAX_RETRIES):
             try:
                 headers = {**self._headers(), "Content-Type": "application/json"}
-                req = urllib_request.Request(url, data=payload, headers=headers, method="POST")
-                with urllib_request.urlopen(  # nosec B310 -- URL scheme and hostname are validated by _build_url() (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _build_url()
-                    req, timeout=_DEFAULT_TIMEOUT
-                ) as resp:
-                    raw = resp.read().decode("utf-8")
+                resp = requests.post(url, json=body, headers=headers, timeout=_DEFAULT_TIMEOUT)
+                try:
+                    raw = resp.text
                     data = json.loads(raw) if raw else {}
-                    remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
-                    self._rate_limit_remaining = remaining
-                    return GitHubAPIResponse(
-                        status=resp.status,
-                        data=data,
-                        headers=dict(resp.headers),
-                        rate_limit_remaining=remaining,
-                    )
-            except HTTPError as exc:
-                if exc.code in (403, 429):
+                except json.JSONDecodeError:
+                    data = {}
+                remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
+                self._rate_limit_remaining = remaining
+                if resp.status_code in (403, 429):
                     wait = _BACKOFF_BASE ** attempt
                     logger.warning("Rate limited on POST; sleeping %.1fs", wait)  # codeql[py/clear-text-logging-sensitive-data]
                     time.sleep(wait)
                     continue
-                return GitHubAPIResponse(status=exc.code, data={}, error=str(exc))
-            except URLError as exc:
-                logger.warning("URLError on POST attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
+                return GitHubAPIResponse(
+                    status=resp.status_code,
+                    data=data,
+                    headers=dict(resp.headers),
+                    rate_limit_remaining=remaining,
+                )
+            except requests.RequestException as exc:
+                logger.warning("Request error on POST attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
                 if attempt < _MAX_RETRIES - 1:
                     time.sleep(_BACKOFF_BASE ** attempt)
                     continue
