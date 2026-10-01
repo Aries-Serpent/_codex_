@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed — Multi-lane security/CodeQL family remediation (2026-10-01)
+- Completed all 6 lanes of the multi-lane security remediation: P1 (secrets), P2 (uninitialized-local), P3 (deps/CVE), P4 (unsafe patterns), S1 (governance), S2 (containers).
+- Lane P1: Confirmed 0 live secrets across 667 flagged files; refreshed `.secrets.baseline` to 30 files/78 entries; verified clear-text-logging/storage CodeQL families already remediated.
+- Lane P2: Added 17 `py/uninitialized-local-variable` suppressions with justifications (14 `physics_orchestrator.py` + 3 `core.py`); all verified false positives, 0 genuine bugs.
+- Lane P3: diskcache/sqlitedict CVEs confirmed transitive-unfixable; added Transitive Dependency Policy; fixed pickle/md5/sha1/defused-xml findings.
+- Lane P4: All unsafe patterns (urllib/exec/file-perms/cyclic-import/pythagorean) confirmed already remediated in current tree.
+- Updated `.codex/reports/security/security-backlog-ledger.md` with convergence gate: 107 CodeQL → 0 actionable, 88 Semgrep → 0 actionable.
+
 ### Fixed (auto-update — PR #5643)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5643 (SHA `c043d48f026dc2b59b32e0160280f2d53d536b4f`) at 2026-09-29T00:29:11Z [auto-generated]
 
