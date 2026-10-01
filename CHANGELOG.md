@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed — Cherry-pick resume-session branch + workflow hardening (2026-10-01)
+- Cherry-picked `f6f68eeb` from `copilot/resume-session-multi-lane-remediation` (previous session ended abruptly at run `36844433421`).
+- Lane P2-CI: Fixed 3 security-scanning-suite workflow defects — semgrep `PYTHONPATH`/`PYTHONHOME` env shadowing, 10 upload steps `error→warn` for evidence-gap degradation, missing artifact family recording.
+- Lane P4-Gov: No-deferral audit passed (0 violations, 0 blocked phrases, full classification coverage).
+- Semgrep: `github_client.py` migrated from urllib to `requests.post`; nosemgrep suppressions aligned; `opentelemetry-api>=1.37.0,<1.38.0` pin added for semgrep CLI compat.
+- Updated `.codex/reports/security/security-backlog-ledger.md` with P2-CI and P4-Gov lane results.
+
 ### Fixed — Multi-lane security/CodeQL family remediation (2026-10-01)
 - Completed all 6 lanes of the multi-lane security remediation: P1 (secrets), P2 (uninitialized-local), P3 (deps/CVE), P4 (unsafe patterns), S1 (governance), S2 (containers).
 - Lane P1: Confirmed 0 live secrets across 667 flagged files; refreshed `.secrets.baseline` to 30 files/78 entries; verified clear-text-logging/storage CodeQL families already remediated.

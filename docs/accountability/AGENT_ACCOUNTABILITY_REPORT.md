@@ -1,3 +1,33 @@
+## Session: 2026-10-01T10:15:00Z — Cherry-pick resume-session branch + workflow hardening
+
+**Objective:** Cherry-pick all branch diffs from `copilot/resume-session-multi-lane-remediation` (previous session ended abruptly at run `36844433421`) into `copilot/security-codeql-family-remediation`.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Fetched `copilot/resume-session-multi-lane-remediation`; identified 1 commit (`f6f68eeb`) with 14-file diff.
+2. Cherry-picked with conflict resolution: kept current branch for generated files (session_startup_packet, security_events, token_rotation, fragile_tests, agent_environment_config), took source branch for code/workflow/docs.
+3. New lane reports: P2-CI (security-scanning-suite CI diagnosis with 3 workflow fixes) and P4-Gov (governance ledger with no-deferral audit).
+4. Workflow hardening: semgrep `PYTHONPATH`/`PYTHONHOME` env strip, 10 upload steps `error→warn`, evidence-gap recording step.
+5. Semgrep remediation: `github_client.py` urllib→requests migration, nosemgrep alignment, `opentelemetry-api` pin for semgrep compat.
+6. Updated backlog ledger with P2-CI and P4-Gov findings.
+
+**Validation:**
+- `py_compile` on all modified Python files → clean
+- `check_workflow_yaml.py` on security-scanning-suite.yml → passed
+- Secret scan on all changed files → no secrets detected
+- Deferral language check → clean
+
+**Governance:**
+- REQ-4: This entry.
+- REQ-5: CHANGELOG.md updated under `[Unreleased]`.
+- PDA: Session entry appended.
+
+### Agents Used
+- [x] `general-purpose` (cherry-pick + conflict resolution + validation)
+
+---
+
 ## Session: 2026-10-01T02:30:00Z — Multi-lane security/CodeQL family remediation (6/6 lanes complete)
 
 **Objective:** Complete all 6 lanes of the security/CodeQL family remediation from checkpoint `.codex/reports/security/CHECKPOINT_2026_10_01_MULTILANE_REMEDIATION.md`.
