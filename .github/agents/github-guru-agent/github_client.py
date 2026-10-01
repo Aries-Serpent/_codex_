@@ -17,8 +17,11 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Optional
 from urllib import parse as urllib_parse
-from urllib import request as urllib_request
-from urllib.error import HTTPError, URLError
+
+# ``requests`` is a hard runtime dependency (pyproject.toml ``requests>=2.33.0``).
+# Used instead of ``urllib.request.urlopen`` so no user-influenced URL is ever
+# handed to urllib (Semgrep dynamic-urllib-use-detected).
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -116,33 +119,33 @@ class GitHubAPIClient:
 
         for attempt in range(_MAX_RETRIES):
             try:
-                req = urllib_request.Request(url, headers=self._headers(), method="GET")
-                with urllib_request.urlopen(  # nosec B310 -- URL scheme and hostname are validated by _build_url() (https + api.github.com only)  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _build_url()
-                    req, timeout=_DEFAULT_TIMEOUT
-                ) as resp:
-                    raw = resp.read().decode("utf-8")
+                resp = requests.get(url, headers=self._headers(), timeout=_DEFAULT_TIMEOUT)
+                try:
+                    raw = resp.text
                     data = json.loads(raw) if raw else {}
-                    remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
-                    self._rate_limit_remaining = remaining
-                    return GitHubAPIResponse(
-                        status=resp.status,
-                        data=data,
-                        headers=dict(resp.headers),
-                        rate_limit_remaining=remaining,
-                    )
-            except HTTPError as exc:
-                if exc.code in (403, 429):
+                except json.JSONDecodeError:
+                    data = {}
+                remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
+                self._rate_limit_remaining = remaining
+                if resp.status_code in (403, 429):
                     wait = _BACKOFF_BASE ** attempt
                     logger.warning("Rate limited; sleeping %.1fs", wait)  # codeql[py/clear-text-logging-sensitive-data]
                     time.sleep(wait)
                     continue
+                if not resp.ok:
+                    return GitHubAPIResponse(
+                        status=resp.status_code,
+                        data=data,
+                        error=f"HTTP {resp.status_code}",
+                    )
                 return GitHubAPIResponse(
-                    status=exc.code,
-                    data={},
-                    error=str(exc),
+                    status=resp.status_code,
+                    data=data,
+                    headers=dict(resp.headers),
+                    rate_limit_remaining=remaining,
                 )
-            except URLError as exc:
-                logger.warning("URLError on attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
+            except requests.RequestException as exc:
+                logger.warning("Request error on attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
                 if attempt < _MAX_RETRIES - 1:
                     time.sleep(_BACKOFF_BASE ** attempt)
                     continue
