@@ -48,6 +48,7 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     """
     text = _ensure_str(value)
     # Remove newlines and control characters that could be used for log injection
+    # codeql[py/uninitialized-local-variable] - sanitized is assigned unconditionally on next line
     sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
     sanitized = re.sub(
         r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*([^\s,;]+)",
@@ -248,6 +249,7 @@ def sanitize_path(path: str | Path, base_dir: str | Path | None = None) -> str |
 
     base = Path(base_dir).expanduser().resolve(strict=False)
     candidate = Path(sanitized)
+    # codeql[py/uninitialized-local-variable] - resolved is assigned unconditionally on next line
     resolved = (base / candidate) if not candidate.is_absolute() else candidate
 
     try:
@@ -301,6 +303,9 @@ def rate_limiter(
     windows: dict[str, deque[float]] = defaultdict(deque)
 
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        # codeql[py/uninitialized-local-variable] - key/timestamps/now are assigned in both
+        # branches of this if/else (async_wrapper and wrapper), so they are always bound
+        # within whichever closure is returned.
         if asyncio.iscoroutinefunction(func):
 
             @functools.wraps(func)
