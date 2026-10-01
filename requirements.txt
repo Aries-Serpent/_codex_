@@ -28,6 +28,6 @@ jinja2>=3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201, CVE-2024-XXXXX,
 certifi>=2026.7.22  # Security: Fixes CVE-2024-39689 (root cert trust issue)
 filelock>=3.32.4  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
 idna>=3.19  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
-urllib3>=2.7.0  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
+urllib3>=2.8.0  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
 requests>=2.33.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-25645 (requests <2.33.0 has TLS bypass vulnerability)
 tenacity>=8.2.3
