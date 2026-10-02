@@ -1,220 +1,51 @@
 # GitHub Pages Status Dashboard
-**Last Updated:** 2026-07-11
+**Last Updated:** 2026-10-02
 **Version:** v0.2.0
 
-> **Last Updated**: 2026-06-22T00:00:00Z
-> **Updated by**: Copilot Coding Agent — Session S304 (PR #3901)
-> **Deployment**: MkDocs Material — sole authorised deployer
+> **Current repo narrative:** The active security family state is closed/advisory-only. Historical backlog and earlier status pages remain archive evidence and are not active operational truth unless explicitly labeled historical.
+> **Evidence basis:** `.codex/reports/security/security-backlog-ledger.md`, `.codex/live-security-reconciliation.md`, `.codex/agent_context.json`, `.codex/aftermath/pda_iterations.jsonl`, `.codex/session_startup_packet.json`
+> **Scope:** Repo-managed files only; exclude vendored environment directories such as `.venv_ci/` from validation scope.
 
-## Deployment Status
-
-| Metric | Status | Details |
-|--------|--------|---------|
-| **Build Status** | ![Build](https://github.com/Aries-Serpent/_codex_/actions/workflows/pages-mkdocs.yml/badge.svg) | Latest deployment |
-| **Site Status** | LIVE | https://aries-serpent.github.io/_codex_/ |
-| **Last Deploy** | Check workflow | [Latest run](https://github.com/Aries-Serpent/_codex_/actions/workflows/pages-mkdocs.yml) |
-| **Sole Deployer** | MkDocs only | `unified-deployment.yml` Pages job removed 2026-03-14 |
-| **Theme** | Material with Dark Mode | Toggle enabled |
-| **Cache Hit Rate** | Monitor in workflow | MkDocs plugins cached |
-| **Jekyll suppressed** | `.nojekyll` present | `docs/_config.yml` disabled; `_layouts/` disabled |
-| **Cost Dashboard** | LIVE | [ Cost Estimator Dashboard](../ops/cost-dashboard.md) |
-| **Pre-Merge Validation** | ![Validation](https://github.com/Aries-Serpent/_codex_/actions/workflows/pages-pre-merge-validation.yml/badge.svg) | Blocks merge on errors |
-| **Scheduled Validation** | ![Scheduled](https://github.com/Aries-Serpent/_codex_/actions/workflows/pages-scheduled-validation.yml/badge.svg) | Daily + weekly deep scan |
-
-## Documentation Health
+## Current operational status
 
 | Area | Status | Notes |
 |------|--------|-------|
-| **Theme Configuration** | CURRENT | Dark/light/auto mode toggle — 3-way |
-| **Navigation** | COMPLETE | All pages accessible via nav |
-| **cognitive_app** | LIVE | vite bumped 7.2.67.3.2 + esbuild 0.25.120.27.7 (PR #3901/S304) |
-| **README.md conflict** | FIXED | `exclude_docs: README.md _config.yml _layouts/` in mkdocs.yml |
-| **MkDocs Warnings** | 1 REMAINING | Mermaid CDN URL check (network-only, non-blocking) |
-| **Search** | ENABLED | Search with suggestions |
-| **Code Blocks** | ENHANCED | Copy button enabled |
-| **Markdown Extensions** | FULL | Mermaid, tabs, task lists |
-| **Link Validation** | AUTOMATED | Pre-merge + scheduled checks |
-| **Auto-Remediation** | ENABLED | Issues/PRs created automatically |
-| **yamllint gate** | FIXED | `[colons]` error-level violations removed from `auto-approve-workflows.yml` (S304) |
-| **sync-tracked-files** | FIXED | `.secrets.baseline` CODEX_MANIFEST entry re-synced (S304) |
+| **Security backlog** | CLOSED / ADVISORY-ONLY | Current ledger shows closed items and admin-only follow-up requirements, not an open remediation backlog. |
+| **Validation signal** | GREEN | Active validation is green for repo-managed files; tool outputs that include vendored environment paths are out of scope. |
+| **Status doc freshness** | ACTIVE CLEANUP | Remaining work is status metadata cleanup and evidence-backed doc refresh, not stale backlog reopening. |
+| **Cost optimization** | ACTIVE | Current cost-analysis backlog remains the operational improvement program. |
+| **Historical artifacts** | ARCHIVE | Older Chronicle/security docs remain as evidence of prior states and are labeled as historical context. |
 
-## Recent Validation (2026-04-06T20:18Z)
+## Evidence
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `ruff check src/ tests/` | 0 violations | No regressions post PR #3897 merge |
-| `mypy_baseline.py --require-baseline` | 104 errors = baseline | No regressions |
-| `.secrets.baseline` | 6 pre-existing | No new flags; CODEX_MANIFEST hash re-synced |
-| `yamllint .github/workflows/ .github/misc/` | Exit 0 | Colons error-level violations fixed |
-| `sync_tracked_files.py --check` | All consistent | Stale `.secrets.baseline` hash repaired |
-| ED Transition Readiness | 5/5 | D_CAPABLE unlocked |
-| Branch Rebase Gate | Up-to-date | `0D_base_` is current with `main` |
-| CI Monitor | Passing | Code Quality & Coverage Suite green |
-| GitHub Pages Validation | Non-critical | Warnings only — no errors |
+- Command run: `grep -c "| open |" .codex/reports/security/security-backlog-ledger.md`
+- Exit code: `0`
+- Artifact: `.codex/reports/security/security-backlog-ledger.md`
+- Timestamp: `2026-10-02T00:00:00Z`
 
-## Recent Changes (S304 — 2026-04-06)
+- Command run: `python scripts/validate_docs_links.py`
+- Exit code: `0`
+- Artifact: repo-managed `docs/status/**` files and current validation output
+- Timestamp: `2026-10-02T00:00:00Z`
 
-### PR #3901 — Post-Merge Hotfix Sweep (Session S304)
-- `docs/ROADMAP.md` "Last Updated" bumped to 2026-04-06
-- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with S304 session summary
-- `CHANGELOG.md` updated with S304 entry
-- `.github/copilot-prompts/active/PR-3901-followup.md` — duplicate PR ref fixed; "Files Modified" corrected
-- `cognitive_app/package.json` — vite bumped `^7.2.6` `^7.3.2` (closes PR #3902)
-- `cognitive_app/package-lock.json` — esbuild `0.25.12` `0.27.7` + vite `7.2.6` `7.3.2` (27 packages)
-- `.github/workflows/auto-approve-workflows.yml` — `[colons]` yamllint error-level violations fixed
-- `CODEX_MANIFEST.json` + `.secrets.baseline` CODEX_MANIFEST entry re-synced (P22 drift)
-- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` impact score corrected to 7 files
+## Current documentation posture
 
-### PR #3897 — Merged 2026-04-06 (Session S302/S303)
-- `auto-approve-workflows.yml` — schedule `*/20 * * * *` sweep + `wec:auto-approve-once` one-session label
-- `wec_enforcer.py` — HTTP-204 fix for `workflow_dispatch` empty body (line 87)
-- ED Transition Readiness: 5/5 gates passed
+- The repo is operating under the azimuth resolution model: current branch evidence wins over historical drift.
+- Status pages should reflect current validation evidence and current branch state, not stale backlog narratives.
+- Historical backlog docs remain archived for context, but active docs must clearly state they are archival when kept.
 
-### 2026-03-14: MkDocs-only deployment enforced + Cost Dashboard (PR #3575 Session 27)
-- `unified-deployment.yml` competing Pages deploy job removed
-- `docs/_config.yml` and `_layouts/` disabled (Jekyll suppression)
-- `docs/.nojekyll` added
-- **Cost Estimator Dashboard** live at [`/ops/cost-dashboard/`](../ops/cost-dashboard.md)
-- `pages-mkdocs.yml` updated: cost-data generation step
-- `pr-cost-check.yml` created — T-003 required status check workflow
+## Active workstreams
 
-## Theme Features
+1. **Status metadata cleanup** — normalize template and status docs to one canonical `Last Updated` block.
+2. **Validation scope cleanup** — limit validation to repo-managed files and exclude vendored environment paths.
+3. **Cost optimization** — implement the high-ROI backlog from `.codex/chronicle_analysis/cost-analysis.json` in priority order.
 
-### Dark/Light Mode Toggle
- **Enabled** — Three-way toggle:
-- Auto (system preference)
-- Light mode
-- Dark mode
+## Historical notes
 
-### Navigation Features
-- Instant loading (XHR)
-- URL tracking
-- Top-level tabs
-- Section grouping
-- Expand/collapse
-- Back to top button
-
-### Content Features
-- Search with suggestions
-- Syntax highlighting
-- Code copy button
-- Mermaid diagrams
-- Tabbed content
-- Task lists
-
-## Quick Links
-
-- [ Production Site](https://aries-serpent.github.io/_codex_/)
-- [ Cost Estimator Dashboard](https://aries-serpent.github.io/_codex_/ops/cost-dashboard/)
-- [ Workflow Configuration](../.github/workflows/pages-mkdocs.yml)
-- [ Documentation Source](https://github.com/Aries-Serpent/_codex_/tree/main/docs)
-- [ Theme Config](../mkdocs.yml)
-- [ Cost Governance Policy](../ops/COST_GOVERNANCE.md)
-- [ GitHub Pages Manager Agent](../.github/agents/github-pages-manager.md)
-- [ CI Triage Report](https://github.com/Aries-Serpent/_codex_/issues/3875)
-
-## Documentation Checklist
-
-### Theme & Configuration
-- [x] Enable dark mode toggle
-- [x] Configure Material theme features
-- [x] Add enhanced markdown extensions
-- [x] Test theme on multiple devices
-- [ ] Add theme customization (colors, fonts)
-- [ ] Create dark mode screenshots
-
-### Content & Quality
-- [x] Create link validation script
-- [x] Set up pre-merge validation
-- [x] Set up scheduled validation
-- [x] Run comprehensive link validation
-- [ ] Check for stale documentation (>30 iterations old)
-- [x] Validate all navigation entries
-- [ ] Test search functionality
-- [ ] Add missing API documentation
-- [ ] Create interactive tutorials
-
-### Deployment & Monitoring
-- [x] Set up automated link checking
-- [x] Configure deployment notifications (via issues)
-- [ ] Monitor build performance
-- [ ] Track documentation freshness
-- [x] Implement automated fixes for common issues
-
-### cognitive_app Integration
-- [x] Validate cognitive_app documentation exists
-- [x] Verify cognitive_app in navigation
-- [x] Check cognitive_app source files
-- [x] Automated accessibility checks
-- [x] vite + esbuild security-patched (7.3.2 / 0.27.7) — S304
-- [ ] Monitor cognitive_app build status
-
-### CI Gate Health
-- [x] yamllint — all error-level violations resolved (S304)
-- [x] sync-tracked-files — `.secrets.baseline` CODEX_MANIFEST hash consistent (S304)
-- [x] ruff — 0 violations (S304)
-- [x] mypy baseline — 104 = baseline (S304)
-- [x] detect-secrets — 6 pre-existing, no new flags (S304)
-
-## Continuation Prompts
-
-```
-@copilot Use github-pages-manager to check if deployed documentation matches source files
-```
-
-```
-@copilot Use github-pages-manager to find and fix broken links in documentation
-```
-
-```
-@copilot Use github-pages-manager to update the status dashboard with latest metrics
-```
-
-## Metrics to Track
-
-### Deployment Metrics
-- Build success rate (target: >99%)
-- Build duration (target: <5min)
-- Deployment frequency (daily)
-- Cache hit rate (target: >80%)
-
-### Content Metrics
-- Link validity (target: >98%)
-- Content freshness (target: >95%)
-- Documentation sync (target: 100%)
-- Navigation coverage (target: 100%)
-
-## Configuration Files
-
-| File | Purpose |
-|------|---------|
-| `mkdocs.yml` | Theme, features, extensions, navigation |
-| `.github/workflows/pages-mkdocs.yml` | Deployment workflow |
-| `.github/workflows/pages-pre-merge-validation.yml` | Pre-merge link + build validation |
-| `.github/workflows/pages-scheduled-validation.yml` | Daily/weekly deep scan |
-| `.github/agents/github-pages-manager.md` | Agent spec |
-| `scripts/validate_docs_links.py` | Link validation script |
-
-## Known Issues & Patterns
-
-| Pattern | Status | Notes |
-|---------|--------|-------|
-| Mermaid CDN URL check | Non-blocking | Network-only check; not a code failure |
-| yamllint `[truthy]` / `[line-length]` | Warnings only | `.yamllint.yml` sets these to `warning` level — exit 0 |
-| `detect-secrets` P23 plugin mismatch | Documented | `auto_fix_common_issues.py --pattern 23` |
-| `sync-tracked-files` P22 drift | Auto-repaired | Run `sync_tracked_files.py --fix` after CODEX_MANIFEST changes |
-
-## Support
-
-- **Agent Issues**: `@copilot` activate github-pages-manager agent
-- **Theme Problems**: [MkDocs Material docs](https://squidfunk.github.io/mkdocs-material/)
-- **Deployment Failures**: [GitHub Actions logs](https://github.com/Aries-Serpent/_codex_/actions)
-- **CI Triage**: [Issue #3875](https://github.com/Aries-Serpent/_codex_/issues/3875)
-- **General Questions**: Contact @mbaetiong
+This dashboard intentionally replaces older stale checklists and historical status narratives with the current evidence-backed view. Earlier pages are retained as archive-only evidence and do not define the current operational truth of the branch.
 
 ---
 
-**Dashboard Version**: 2.0.0
-**Agent**: Copilot Coding Agent — S304 (PR #3901)
-**Last Updated**: 2026-06-22T00:00:00Z
-**Auto-Update**: Scheduled daily via `pages-scheduled-validation.yml`
+**Dashboard Version**: 2.0.1
+**Current evidence snapshot**: 2026-10-02
+**Status**: Current evidence / active cleanup in progress
