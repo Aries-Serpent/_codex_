@@ -218,6 +218,3 @@ with open('archive/metadata.json', 'w') as f:
 ```
 
 ## Related Prompts
-- [analyze-dependencies.md](analyze-dependencies.md) - Dependency analysis
-- [generate-repo-map.md](generate-repo-map.md) - Repository mapping
-- [cleanup-workflows.md](cleanup-workflows.md) - GitHub Actions cleanup

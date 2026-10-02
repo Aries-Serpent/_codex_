@@ -300,5 +300,3 @@ flowchart TB
 
 ## Related Prompts
 - [update-agents-md.md](update-agents-md.md) - Update .codex/archive/deprecated/AGENTS.md
-- [generate-api-docs.md](generate-api-docs.md) - API documentation
-- [deploy-github-pages.md](deploy-github-pages.md) - GitHub Pages deployment

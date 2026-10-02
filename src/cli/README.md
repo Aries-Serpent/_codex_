@@ -48,4 +48,3 @@ See [Development Guide](../../docs/DEVELOPMENT.md) for contributing guidelines.
 
 - [Audit Pipeline](../../src/codex_ml/cli/audit_pipeline.py)
 - [Session Logger](../codex/logging/session_logger.py)
-- [Configuration Guide](../../docs/CONFIGURATION.md)
