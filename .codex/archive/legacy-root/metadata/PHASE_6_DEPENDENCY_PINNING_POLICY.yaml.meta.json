@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_DEPENDENCY_PINNING_POLICY.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_DEPENDENCY_PINNING_POLICY.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_DEPENDENCY_PINNING_POLICY.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "eaf58a2bffad9042945fc844f94adb30407ef4ae009968e6965f70caed68cab6",
+  "size_bytes": 11170,
+  "kind": "historical_root"
+}

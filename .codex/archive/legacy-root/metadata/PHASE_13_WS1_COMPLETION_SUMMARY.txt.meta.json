@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_13_WS1_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_13_WS1_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_13_WS1_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "1da66fe0b87703744497b403ecf9f2830f8a0f892156af2e7dbf5bce12ad2a7c",
+  "size_bytes": 8837,
+  "kind": "historical_root"
+}

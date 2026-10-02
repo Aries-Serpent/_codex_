@@ -1,0 +1,11 @@
+{
+  "id": "EXECUTION_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/EXECUTION_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/EXECUTION_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "1af33175e8fd350a11bb2ed0543d1a762c104a5bab6d96c310f19fb020115bd7",
+  "size_bytes": 3423,
+  "kind": "historical_root"
+}

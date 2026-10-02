@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_LANE_3_4_QUALITY_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_LANE_3_4_QUALITY_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_LANE_3_4_QUALITY_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "48f706cbd8456afb0d88a4b94a7159218066a50fb938bab0e439831bcb2588d7",
+  "size_bytes": 10317,
+  "kind": "historical_root"
+}

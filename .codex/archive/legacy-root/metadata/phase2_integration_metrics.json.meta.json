@@ -1,0 +1,11 @@
+{
+  "id": "phase2_integration_metrics.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase2_integration_metrics.json",
+  "archive_path": ".codex/archive/legacy-root/phase2_integration_metrics.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "aa594ed80870b2389f9f12ac03f55adfaf957ecee5bfcb953a250be189c351a9",
+  "size_bytes": 1599,
+  "kind": "historical_root"
+}

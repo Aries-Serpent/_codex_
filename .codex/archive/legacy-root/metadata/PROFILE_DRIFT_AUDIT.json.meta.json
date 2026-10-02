@@ -1,0 +1,11 @@
+{
+  "id": "PROFILE_DRIFT_AUDIT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PROFILE_DRIFT_AUDIT.json",
+  "archive_path": ".codex/archive/legacy-root/PROFILE_DRIFT_AUDIT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "07e1541ce798ed2c6b15695bb2c93ea62074e0eb8913439cb770f9507bc60c1e",
+  "size_bytes": 8886,
+  "kind": "historical_root"
+}

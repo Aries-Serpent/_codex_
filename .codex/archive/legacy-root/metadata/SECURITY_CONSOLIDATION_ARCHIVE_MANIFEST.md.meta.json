@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_CONSOLIDATION_ARCHIVE_MANIFEST.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_CONSOLIDATION_ARCHIVE_MANIFEST.md",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_CONSOLIDATION_ARCHIVE_MANIFEST.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "9126cefff151a9b828d8cc555b9121e35789d1f51ce92f284b7c174f49982740",
+  "size_bytes": 9153,
+  "kind": "historical_root"
+}

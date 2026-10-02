@@ -1,0 +1,11 @@
+{
+  "id": "validation_test_suite_v0.3.0.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/validation_test_suite_v0.3.0.py",
+  "archive_path": ".codex/archive/legacy-root/validation_test_suite_v0.3.0.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "73fd0c10ddfabb4bf0bc7d617156a3ee0ce04e0d9c454b641bd833d03e9717f0",
+  "size_bytes": 32777,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "89a4b8d1f5afd9e4d047d7315d4305f30e8c0b04a09a235bd69d7eda4f97c546",
+  "size_bytes": 6686,
+  "kind": "historical_root"
+}

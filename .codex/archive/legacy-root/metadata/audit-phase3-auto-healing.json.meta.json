@@ -1,0 +1,11 @@
+{
+  "id": "audit-phase3-auto-healing.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-phase3-auto-healing.json",
+  "archive_path": ".codex/archive/legacy-root/audit-phase3-auto-healing.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "8c128ed12861358b65f2a7cd09f2b61958504f5ea6b69339fd1f6f2fdb78962f",
+  "size_bytes": 8095,
+  "kind": "historical_root"
+}

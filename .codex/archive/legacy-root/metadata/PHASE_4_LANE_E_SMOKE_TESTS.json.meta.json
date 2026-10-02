@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_SMOKE_TESTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_SMOKE_TESTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_SMOKE_TESTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "59554ec1ec1487926df9e36e9df0cebfcfb4705a23b38b81efc7eaf763a9e4ea",
+  "size_bytes": 905,
+  "kind": "historical_root"
+}

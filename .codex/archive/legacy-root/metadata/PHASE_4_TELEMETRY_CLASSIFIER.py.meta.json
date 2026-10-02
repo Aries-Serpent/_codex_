@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_TELEMETRY_CLASSIFIER.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_TELEMETRY_CLASSIFIER.py",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_TELEMETRY_CLASSIFIER.py",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "367bc009ff54addaedc189e3591b840136b83074d7efdfae225e0f6b78e6a6fd",
+  "size_bytes": 10246,
+  "kind": "historical_root"
+}

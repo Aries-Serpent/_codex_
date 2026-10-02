@@ -1,0 +1,11 @@
+{
+  "id": "LANE_1_KEY_DELIVERABLES.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_1_KEY_DELIVERABLES.txt",
+  "archive_path": ".codex/archive/legacy-root/LANE_1_KEY_DELIVERABLES.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "622b788a3d90c3932148d88a1896979279016114e25ef7bcdd1441db86921944",
+  "size_bytes": 10576,
+  "kind": "historical_root"
+}

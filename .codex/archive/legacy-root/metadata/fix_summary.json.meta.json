@@ -1,0 +1,11 @@
+{
+  "id": "fix_summary.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/fix_summary.json",
+  "archive_path": ".codex/archive/legacy-root/fix_summary.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "9aafb29e0f9d465824da79326843d9cd68c8537b480d4da857bbfc29002a23c0",
+  "size_bytes": 5122,
+  "kind": "historical_root"
+}

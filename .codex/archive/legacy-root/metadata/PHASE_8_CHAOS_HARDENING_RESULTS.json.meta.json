@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_CHAOS_HARDENING_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_CHAOS_HARDENING_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_CHAOS_HARDENING_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "7629674f905b07cc3cd820688a274b675ee79b247051eb19120c6d67c226a158",
+  "size_bytes": 19712,
+  "kind": "historical_root"
+}

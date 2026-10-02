@@ -1,0 +1,11 @@
+{
+  "id": "PHASE10_GATE_ACTIVATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE10_GATE_ACTIVATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE10_GATE_ACTIVATION.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "4890ab4ed5dd77b2d1c05a38ff84d04321e5695f0cdceacf5a2cd6ec3b2cc511",
+  "size_bytes": 2270,
+  "kind": "historical_root"
+}

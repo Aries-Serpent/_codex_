@@ -1,0 +1,11 @@
+{
+  "id": "TRACK_1_TASK_1_RELEASE_NOTES_EXTRACTION.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TRACK_1_TASK_1_RELEASE_NOTES_EXTRACTION.md",
+  "archive_path": ".codex/archive/legacy-root/TRACK_1_TASK_1_RELEASE_NOTES_EXTRACTION.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d92c369e5afcc9a2b17aea4f437289a980c5eebbccd1be5ae044e2b43b80e746",
+  "size_bytes": 4756,
+  "kind": "historical_root"
+}

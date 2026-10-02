@@ -1,0 +1,11 @@
+{
+  "id": "CACHE_OPTIMIZATION_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CACHE_OPTIMIZATION_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/CACHE_OPTIMIZATION_METRICS.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "a131a46252fb4e0d5f40b7f7b9263b4e9d4e37c0c49c033107f312a8000e8a26",
+  "size_bytes": 498,
+  "kind": "historical_root"
+}

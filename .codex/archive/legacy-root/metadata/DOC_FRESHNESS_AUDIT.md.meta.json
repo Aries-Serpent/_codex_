@@ -1,0 +1,11 @@
+{
+  "id": "DOC_FRESHNESS_AUDIT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/DOC_FRESHNESS_AUDIT.md",
+  "archive_path": ".codex/archive/legacy-root/DOC_FRESHNESS_AUDIT.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "ff164865c26dce502709c456c23cd29b3ac4f918ae00851a747e27994387ba9c",
+  "size_bytes": 1040,
+  "kind": "historical_root"
+}

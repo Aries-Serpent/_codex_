@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_2B_AGENT2_BASELINE_SECURITY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_2B_AGENT2_BASELINE_SECURITY.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_2B_AGENT2_BASELINE_SECURITY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "bc27ebc90493cdbbfac87e2d5afc13a911311e46ac50e7a4f7a77c634767c74f",
+  "size_bytes": 1593,
+  "kind": "historical_root"
+}

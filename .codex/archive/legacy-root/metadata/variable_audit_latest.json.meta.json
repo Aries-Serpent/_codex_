@@ -1,0 +1,11 @@
+{
+  "id": "variable_audit_latest.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/variable_audit_latest.json",
+  "archive_path": ".codex/archive/legacy-root/variable_audit_latest.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f9c8d31774b0c7752f34fd6435610548d104302b7ced9f35b84341740a962f0e",
+  "size_bytes": 27668,
+  "kind": "historical_root"
+}

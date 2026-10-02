@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_EXECUTION_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_EXECUTION_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_EXECUTION_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "10dcb28768cc53823f1282bfcadfb2d31dd4b2b1bbdbc56560e03f4ddb316bc1",
+  "size_bytes": 6453,
+  "kind": "historical_root"
+}

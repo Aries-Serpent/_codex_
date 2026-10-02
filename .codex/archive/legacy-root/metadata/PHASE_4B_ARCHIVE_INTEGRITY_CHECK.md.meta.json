@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4B_ARCHIVE_INTEGRITY_CHECK.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4B_ARCHIVE_INTEGRITY_CHECK.md",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4B_ARCHIVE_INTEGRITY_CHECK.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "305a271269d3101bb07f88be849f04c00524a5c6fa42bf1cf03fa9d848811c17",
+  "size_bytes": 7536,
+  "kind": "historical_root"
+}

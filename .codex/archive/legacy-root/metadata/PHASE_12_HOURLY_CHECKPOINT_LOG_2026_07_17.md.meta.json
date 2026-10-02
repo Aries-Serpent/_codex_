@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md",
+  "archive_path": ".codex/archive/legacy-root/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5ed60fe923b20d6d4f0d8050fd6e5675d74bf20c47ffd0f404e8b949e201dece",
+  "size_bytes": 97534,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "b2_b5_coverage_summary.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/b2_b5_coverage_summary.txt",
+  "archive_path": ".codex/archive/legacy-root/b2_b5_coverage_summary.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "439584b0181977459b9a10cdf89f0d35cf262e2caeb787e8de879efa5d0cc69c",
+  "size_bytes": 339,
+  "kind": "historical_root"
+}

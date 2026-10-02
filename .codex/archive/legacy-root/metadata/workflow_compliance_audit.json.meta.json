@@ -1,0 +1,11 @@
+{
+  "id": "workflow_compliance_audit.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/workflow_compliance_audit.json",
+  "archive_path": ".codex/archive/legacy-root/workflow_compliance_audit.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "28ac329508fc0ad09748be44ed51b9b5d90aeafca32285d6b72d62f3dc82b015",
+  "size_bytes": 18485,
+  "kind": "historical_root"
+}

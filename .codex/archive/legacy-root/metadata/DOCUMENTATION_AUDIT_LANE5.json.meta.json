@@ -1,0 +1,11 @@
+{
+  "id": "DOCUMENTATION_AUDIT_LANE5.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/DOCUMENTATION_AUDIT_LANE5.json",
+  "archive_path": ".codex/archive/legacy-root/DOCUMENTATION_AUDIT_LANE5.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "0699fed2151710f45df09b1bc4119dea8224ae0f778d4c2a6bd046c5868dc63b",
+  "size_bytes": 9894,
+  "kind": "historical_root"
+}

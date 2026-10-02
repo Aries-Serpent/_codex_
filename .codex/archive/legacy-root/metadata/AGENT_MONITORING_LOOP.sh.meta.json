@@ -1,0 +1,11 @@
+{
+  "id": "AGENT_MONITORING_LOOP.sh",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/AGENT_MONITORING_LOOP.sh",
+  "archive_path": ".codex/archive/legacy-root/AGENT_MONITORING_LOOP.sh",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "fb675f1acdf4aaac1e14e035676fb65ab84039c14b3d93ccf394361842ca9ed7",
+  "size_bytes": 1626,
+  "kind": "historical_root"
+}

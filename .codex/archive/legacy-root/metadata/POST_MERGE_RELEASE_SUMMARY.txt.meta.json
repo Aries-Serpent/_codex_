@@ -1,0 +1,11 @@
+{
+  "id": "POST_MERGE_RELEASE_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/POST_MERGE_RELEASE_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/POST_MERGE_RELEASE_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "4bf77bbc2a18d2c99eed761e8b195501395092c404bec0c0fd5de0812f5b5dbb",
+  "size_bytes": 6749,
+  "kind": "historical_root"
+}

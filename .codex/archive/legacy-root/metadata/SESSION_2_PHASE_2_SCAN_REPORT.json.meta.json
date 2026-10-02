@@ -1,0 +1,11 @@
+{
+  "id": "SESSION_2_PHASE_2_SCAN_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SESSION_2_PHASE_2_SCAN_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/SESSION_2_PHASE_2_SCAN_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "fa32b302d7649369d28587ff6872fef55c9605573150687b087fa3a65186e015",
+  "size_bytes": 2005,
+  "kind": "historical_root"
+}

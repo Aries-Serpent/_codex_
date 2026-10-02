@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_INDEX_CREATION_PLAN.sql",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_INDEX_CREATION_PLAN.sql",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_INDEX_CREATION_PLAN.sql",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "e4f2f42a6445489917a4b1bee200b643b9a9c83e7538878f2195f107b787a550",
+  "size_bytes": 18097,
+  "kind": "historical_root"
+}

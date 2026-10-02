@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_AUDIT_LOG_SCHEMA.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_AUDIT_LOG_SCHEMA.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_AUDIT_LOG_SCHEMA.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "3935746940a2f238510f3461df0d8cbddb2820110755e647887fb887cfbb705c",
+  "size_bytes": 22123,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "deployment_artifacts_manifest.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/deployment_artifacts_manifest.json",
+  "archive_path": ".codex/archive/legacy-root/deployment_artifacts_manifest.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "b324a6a7158f404a97e6b1200b1b53088ec2cba0fbe88219d4995740a9bda498",
+  "size_bytes": 4129,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "audit-phase2-test-locations.csv",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-phase2-test-locations.csv",
+  "archive_path": ".codex/archive/legacy-root/audit-phase2-test-locations.csv",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "524397ef7f3f0744cd42977f351d018ad2c18e7acf829092854c811117b4df9b",
+  "size_bytes": 57675,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_1_SUMMARY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_1_SUMMARY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_1_SUMMARY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "0927cc5524bdf75cd7b7f15e295610b9f2af50e519bbceb875d964edc86e05a0",
+  "size_bytes": 808,
+  "kind": "historical_root"
+}

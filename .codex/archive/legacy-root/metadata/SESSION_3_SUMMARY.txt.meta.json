@@ -1,0 +1,11 @@
+{
+  "id": "SESSION_3_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SESSION_3_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/SESSION_3_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c860c9a7c0af3ba95470d6d06edd02fcdbb4d7651d5f1eb3ffb6fc7d06177c16",
+  "size_bytes": 6279,
+  "kind": "historical_root"
+}

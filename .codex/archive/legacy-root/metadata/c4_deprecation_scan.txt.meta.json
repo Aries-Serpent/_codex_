@@ -1,0 +1,11 @@
+{
+  "id": "c4_deprecation_scan.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c4_deprecation_scan.txt",
+  "archive_path": ".codex/archive/legacy-root/c4_deprecation_scan.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "401efc945775c87d94d391e0014b576099315efcd8c8340d7e501f39f61d6876",
+  "size_bytes": 272,
+  "kind": "historical_root"
+}

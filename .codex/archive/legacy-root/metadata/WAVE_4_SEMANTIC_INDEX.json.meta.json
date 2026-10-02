@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_4_SEMANTIC_INDEX.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_4_SEMANTIC_INDEX.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_4_SEMANTIC_INDEX.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f0b4695d5b2e166fa54b876edb1bb6d32d5261bb98d604c305dc41a66ffa0449",
+  "size_bytes": 10419,
+  "kind": "historical_root"
+}

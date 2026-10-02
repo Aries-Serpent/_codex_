@@ -1,0 +1,11 @@
+{
+  "id": "live-security-reconciliation.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/live-security-reconciliation.json",
+  "archive_path": ".codex/archive/legacy-root/live-security-reconciliation.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "e1ce55f78cc5a4254b309cc77761cf0c1541002d0afb471e5559d20ffeb85f3a",
+  "size_bytes": 2146,
+  "kind": "historical_root"
+}

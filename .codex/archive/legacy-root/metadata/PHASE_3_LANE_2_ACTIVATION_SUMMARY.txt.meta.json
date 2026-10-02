@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_LANE_2_ACTIVATION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_LANE_2_ACTIVATION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_LANE_2_ACTIVATION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "7ed020988de302703eac986da5861fb4bb7e6e639fc1849cf2850f6d84662e7b",
+  "size_bytes": 6216,
+  "kind": "historical_root"
+}

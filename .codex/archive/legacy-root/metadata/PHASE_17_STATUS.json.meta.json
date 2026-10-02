@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_17_STATUS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_17_STATUS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_17_STATUS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5642399255395502d29818c2674bbccad30bcf4d095664afdc668204aa0abb07",
+  "size_bytes": 1939,
+  "kind": "historical_root"
+}

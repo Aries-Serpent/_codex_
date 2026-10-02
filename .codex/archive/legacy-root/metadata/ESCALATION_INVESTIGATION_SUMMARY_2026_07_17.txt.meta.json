@@ -1,0 +1,11 @@
+{
+  "id": "ESCALATION_INVESTIGATION_SUMMARY_2026_07_17.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/ESCALATION_INVESTIGATION_SUMMARY_2026_07_17.txt",
+  "archive_path": ".codex/archive/legacy-root/ESCALATION_INVESTIGATION_SUMMARY_2026_07_17.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "855b9149685c5131aafe59c007bc05aa886845bff594ae3355aed813c8074ebb",
+  "size_bytes": 9820,
+  "kind": "historical_root"
+}

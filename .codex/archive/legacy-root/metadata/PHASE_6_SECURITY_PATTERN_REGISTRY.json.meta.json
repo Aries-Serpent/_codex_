@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_SECURITY_PATTERN_REGISTRY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_SECURITY_PATTERN_REGISTRY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_SECURITY_PATTERN_REGISTRY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "658b53d0eb2778c1b88c6097d97c1e43cce6d901cab43af15c0f0c64aecef42e",
+  "size_bytes": 21087,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "A5_certification_summary.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/A5_certification_summary.json",
+  "archive_path": ".codex/archive/legacy-root/A5_certification_summary.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "338fda8c4d26c3588051f38b9ceb7494284abf8330933578d0e2e470437c0053",
+  "size_bytes": 632,
+  "kind": "historical_root"
+}

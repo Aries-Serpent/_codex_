@@ -1,0 +1,11 @@
+{
+  "id": "phase-9-metrics-dashboard.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase-9-metrics-dashboard.json",
+  "archive_path": ".codex/archive/legacy-root/phase-9-metrics-dashboard.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "c63353314e3dab1aa8ae1e6d0c67524397115e331faff00a198dc31c012da95d",
+  "size_bytes": 3007,
+  "kind": "historical_root"
+}

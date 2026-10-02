@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_LANE_2_2_TRACKING_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_LANE_2_2_TRACKING_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_LANE_2_2_TRACKING_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "70f230b77da8296e4fe3c82f1101e16dbd6c5355ee4756ed3c070a71b75ac4e1",
+  "size_bytes": 7927,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_LANE_3_2_EXPERIMENT_FULL_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_LANE_3_2_EXPERIMENT_FULL_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_LANE_3_2_EXPERIMENT_FULL_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "30b0d481e08541724c80f8d57f4bcb56bb93973d51d8d85fd07982619fe990ee",
+  "size_bytes": 6059,
+  "kind": "historical_root"
+}

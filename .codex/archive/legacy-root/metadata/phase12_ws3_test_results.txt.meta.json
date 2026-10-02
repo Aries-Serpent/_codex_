@@ -1,0 +1,11 @@
+{
+  "id": "phase12_ws3_test_results.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase12_ws3_test_results.txt",
+  "archive_path": ".codex/archive/legacy-root/phase12_ws3_test_results.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "bca6ae77cda25d9c4d19cb44b7b4b9ad402cce8239002f1950f4fd9716d8a676",
+  "size_bytes": 741,
+  "kind": "historical_root"
+}

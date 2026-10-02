@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_EXECUTION_SUMMARY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_EXECUTION_SUMMARY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_EXECUTION_SUMMARY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "a8d2ac984e9d9e5749b9ee5735af92758072c8132351fb149ea4012a14fca7c1",
+  "size_bytes": 1750,
+  "kind": "historical_root"
+}

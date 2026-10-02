@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_LANE_3_BASELINES.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_LANE_3_BASELINES.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_LANE_3_BASELINES.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "47af8a85dfdf191da50b09db63f8102b3962c4b6612a96ad1727bf21750ba9d3",
+  "size_bytes": 2769,
+  "kind": "historical_root"
+}

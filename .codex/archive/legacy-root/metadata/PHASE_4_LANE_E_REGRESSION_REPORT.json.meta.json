@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_REGRESSION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_REGRESSION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_REGRESSION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "56052371ce6815d0f21a1a2db042f262be0c2f704a7631df6b1533e7989b55b6",
+  "size_bytes": 672,
+  "kind": "historical_root"
+}

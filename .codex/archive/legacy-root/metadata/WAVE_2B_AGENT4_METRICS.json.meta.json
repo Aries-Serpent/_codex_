@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_2B_AGENT4_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_2B_AGENT4_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_2B_AGENT4_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c334a7366e7bee0572e0d9fdedf87c20deebe448ffccb3c481078f0b74fecdfa",
+  "size_bytes": 3688,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "SESSION_3_BATCH_4_EXECUTION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SESSION_3_BATCH_4_EXECUTION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/SESSION_3_BATCH_4_EXECUTION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "9c419ce913ab9fefe075ecfb7813f18c83ddb24e520c6e5bbd460712d2c1062c",
+  "size_bytes": 8896,
+  "kind": "historical_root"
+}

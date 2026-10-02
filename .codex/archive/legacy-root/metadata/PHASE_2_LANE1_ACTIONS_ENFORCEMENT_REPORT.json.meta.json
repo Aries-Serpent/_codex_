@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_LANE1_ACTIONS_ENFORCEMENT_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_LANE1_ACTIONS_ENFORCEMENT_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_LANE1_ACTIONS_ENFORCEMENT_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "7300442937df88e96b0a7a20ddf9aafe4372e2635e8e2c2a9c63de329cbd1054",
+  "size_bytes": 5859,
+  "kind": "historical_root"
+}

@@ -2,6 +2,7 @@
 > **v0.3.0** - ML platform with repository automation and a persistent decision-and-learning layer. See [`docs/REPOSITORY_EXPLANATION.md`](docs/REPOSITORY_EXPLANATION.md) for an evidence-based repository overview.
 **Release Status**: v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists. Selected autonomous operations are enabled in the checked-in configuration but remain policy-scoped, approval-gated, and dependent on environment credentials.
 **Repository Version**: v0.3.0 (`pyproject.toml`); this checkout does not itself establish external release or artifact availability.
+**Documentation truth**: Current repo truth lives in the active repo files under `README.md`, `docs/`, and `mkdocs.yml`. Historical backlog, phase reports, and earlier status pages are archive evidence only; they do not define the current operational state unless explicitly labeled historical.
 ![Version](https://img.shields.io/badge/version-0.3.0-brightgreen)
 ![Python](https://img.shields.io/badge/python-%3E%3D3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -290,8 +291,8 @@ Automated CI health monitoring (daily at 2 AM UTC):
 - Analysis foundation: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
 - Complete plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
 ## Cognitive Codex Web Application
-**Status:** Integrated & Built Successfully
-**Access:** https://aries-serpent.github.io/_codex_/cognitive_app/ (GitHub Pages deployment - available after PR merge)
+**Status:** Integrated source exists in the repo; public Pages hosting is a deployment artifact and must be verified separately from the active source tree.
+**Source of truth:** `cognitive_app/` and its integration notes in the repo; the GitHub Pages site is not itself the authoritative implementation state.
 A React/Vite-based quantum-enhanced code generation platform with real-time cognitive brain visualization.
 ### Features
 - **Quantum Decision Engine** - Real-time k₁ factor tracking, 2.86× quantum advantage visualization
@@ -305,7 +306,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 - 3 Code generation components
 - 5 Custom React hooks
 - Backend API integration pending (see `cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md`)
-**Documentation:** [`docs/api/reference/INTEGRATION.md`](docs/api/reference/INTEGRATION.md)
+**Documentation:** [`docs/api/reference/INTEGRATION.md`](docs/api/reference/INTEGRATION.md) and current status docs in [`docs/status/GITHUB_PAGES_STATUS.md`](docs/status/GITHUB_PAGES_STATUS.md)
 ## 🆕 Recent Additions (2025-12-24)
 | component | Description | Location |
 |-----------|-------------|----------|
@@ -333,7 +334,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 | **Self-Healing CI** | Automated issue detection and remediation | `.github/workflows/self-healing-ci.yml` |
 | **Quantum Game Theory** | Physics-inspired Blue/Red team decision framework | `agents/quantum_game_theory.py` |
 | **Performance Tests** | Regression testing suite | `tests/performance/` |
-| **API Documentation** | Complete API reference with GitHub Pages | `docs/api/` |
+| **API Documentation** | Current repo API and docs live in `docs/`; public site deployment is a separate validation target | `docs/` |
 | **Scalability Utils** | LRUCache, RateLimiter, CircuitBreaker, LoadBalancer | `src/codex_ml/utils/scalability.py` |
 | **HAR Integration** | HTTP Archive recording/replay | `src/codex_ml/integrations/har_integration.py` |
 ## Philosophical & Cognitive Architecture

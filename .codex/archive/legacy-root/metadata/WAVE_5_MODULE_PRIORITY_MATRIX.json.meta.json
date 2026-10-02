@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_5_MODULE_PRIORITY_MATRIX.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_5_MODULE_PRIORITY_MATRIX.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_5_MODULE_PRIORITY_MATRIX.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "42a9f6db3c2193a46666fe0036b0e2552f4b9e64b22f78b580b908617b744003",
+  "size_bytes": 26302,
+  "kind": "historical_root"
+}

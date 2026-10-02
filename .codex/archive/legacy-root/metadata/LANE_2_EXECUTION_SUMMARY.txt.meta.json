@@ -1,0 +1,11 @@
+{
+  "id": "LANE_2_EXECUTION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_2_EXECUTION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/LANE_2_EXECUTION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "d9a8ec3f27f99690fa7e8e31659a331e8ae57b6192a1b81c5f818223f28b8373",
+  "size_bytes": 16560,
+  "kind": "historical_root"
+}

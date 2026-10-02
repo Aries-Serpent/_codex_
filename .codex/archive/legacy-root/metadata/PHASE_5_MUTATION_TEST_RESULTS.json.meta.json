@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_5_MUTATION_TEST_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_5_MUTATION_TEST_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_5_MUTATION_TEST_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "b98d664598f4a06e9589193a53efd94a0910eeb9a9c598122147525517008694",
+  "size_bytes": 1686,
+  "kind": "historical_root"
+}

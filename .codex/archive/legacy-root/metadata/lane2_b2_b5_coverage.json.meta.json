@@ -1,0 +1,11 @@
+{
+  "id": "lane2_b2_b5_coverage.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/lane2_b2_b5_coverage.json",
+  "archive_path": ".codex/archive/legacy-root/lane2_b2_b5_coverage.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f52040a69c8e9e0845c968e63c129e0bba54e9c4c49ac3c5e96907382a21b3dd",
+  "size_bytes": 370607,
+  "kind": "historical_root"
+}

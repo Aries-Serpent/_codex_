@@ -1,0 +1,11 @@
+{
+  "id": "DEPENDENCY_ANALYSIS_COMPLETE.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/DEPENDENCY_ANALYSIS_COMPLETE.txt",
+  "archive_path": ".codex/archive/legacy-root/DEPENDENCY_ANALYSIS_COMPLETE.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "54cc1f513795fefecd5f3223c1ac1ff3ad423713455a72376aa47116eb806e42",
+  "size_bytes": 9118,
+  "kind": "historical_root"
+}

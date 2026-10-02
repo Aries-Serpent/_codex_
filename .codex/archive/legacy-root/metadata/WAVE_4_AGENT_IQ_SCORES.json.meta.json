@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_4_AGENT_IQ_SCORES.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_4_AGENT_IQ_SCORES.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_4_AGENT_IQ_SCORES.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "46af99ba2975cd3f15d7c00d4fea4988985ff67a15714c2325f769c791d25e2c",
+  "size_bytes": 115888,
+  "kind": "historical_root"
+}

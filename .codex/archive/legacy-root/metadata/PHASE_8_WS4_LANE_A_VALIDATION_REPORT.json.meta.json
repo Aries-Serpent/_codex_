@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_WS4_LANE_A_VALIDATION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_WS4_LANE_A_VALIDATION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_WS4_LANE_A_VALIDATION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c0ffecd29dd252b3198140d9eb59b26b639fcfc045ea8e570d101a63011af5e2",
+  "size_bytes": 14580,
+  "kind": "historical_root"
+}

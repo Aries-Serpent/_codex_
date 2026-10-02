@@ -1,0 +1,11 @@
+{
+  "id": "QUICK_FIX_REFERENCE.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/QUICK_FIX_REFERENCE.txt",
+  "archive_path": ".codex/archive/legacy-root/QUICK_FIX_REFERENCE.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "3cafbf791e517ca7c2b0c02ccf8e727e8531a2cd30fbe7ba608f85f5a669e04d",
+  "size_bytes": 7284,
+  "kind": "historical_root"
+}

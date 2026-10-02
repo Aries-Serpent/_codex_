@@ -1,0 +1,11 @@
+{
+  "id": "LANE_3_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_3_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/LANE_3_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "52078774ee1abf9c5b1b1142e42ea0e2b25acd0b24261f173650987cc1405cd7",
+  "size_bytes": 9102,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "session_4_phase3_recovery_validator.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_4_phase3_recovery_validator.py",
+  "archive_path": ".codex/archive/legacy-root/session_4_phase3_recovery_validator.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "fcc67b11ae147814e1188acdcb7f2b9088f245f5507dd97602754bc186761dbe",
+  "size_bytes": 25748,
+  "kind": "historical_root"
+}

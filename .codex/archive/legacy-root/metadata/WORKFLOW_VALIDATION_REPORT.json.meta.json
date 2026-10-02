@@ -1,0 +1,11 @@
+{
+  "id": "WORKFLOW_VALIDATION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WORKFLOW_VALIDATION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/WORKFLOW_VALIDATION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "3dc7a2a826cff068ee185f1732a1fad6aa0030a73ed4c9ecf9252d32fa7215da",
+  "size_bytes": 4714,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "integration_test_report_v0.3.0.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/integration_test_report_v0.3.0.py",
+  "archive_path": ".codex/archive/legacy-root/integration_test_report_v0.3.0.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "12fbc548e369fc97ec008c27eb9b9454a6dbb2adb3b139fe0569df9e5bde5b3b",
+  "size_bytes": 8033,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_SLOW_QUERY_ANALYSIS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_SLOW_QUERY_ANALYSIS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_SLOW_QUERY_ANALYSIS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "db4c027cacb67eed686505f1948cc9696eaad06cbd014f450da46d00198f5799",
+  "size_bytes": 21639,
+  "kind": "historical_root"
+}

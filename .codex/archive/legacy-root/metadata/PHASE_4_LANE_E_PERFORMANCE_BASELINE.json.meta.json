@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_PERFORMANCE_BASELINE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_PERFORMANCE_BASELINE.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_PERFORMANCE_BASELINE.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "3c2fc608bf10743242866a21838aa6d966d26471be1e44bba7426fe291cd51d5",
+  "size_bytes": 651,
+  "kind": "historical_root"
+}

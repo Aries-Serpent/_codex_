@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_4_EXECUTION_METADATA.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_4_EXECUTION_METADATA.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_4_EXECUTION_METADATA.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "13073307692b11e525cf5525bf44fd02fe5fd09d9bd231a086b200dcf0f10d2d",
+  "size_bytes": 5071,
+  "kind": "historical_root"
+}

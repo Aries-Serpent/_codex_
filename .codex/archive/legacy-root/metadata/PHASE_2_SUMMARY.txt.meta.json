@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "4f67a03aee4bbceda0a86d4c2a97239b907465a48784e1952aac7929da1170d0",
+  "size_bytes": 9235,
+  "kind": "historical_root"
+}

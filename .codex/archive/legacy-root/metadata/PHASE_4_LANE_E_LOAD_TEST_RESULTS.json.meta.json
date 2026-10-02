@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_LOAD_TEST_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_LOAD_TEST_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_LOAD_TEST_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5d96c6bb538e7054ad06f8c28a33f161bd254d8486dba4bd1b74707f3de11d02",
+  "size_bytes": 758,
+  "kind": "historical_root"
+}

@@ -1,8 +1,12 @@
 # Codex Documentation Hub
 
 **Version:** v0.3.0  
-**Last Updated:** 2026-09-12  
-**Status:** Maintained documentation for the v0.3.0 repository
+**Last Updated:** 2026-10-02  
+**Status:** Active documentation source-of-truth for the current branch
+
+> Current operational truth: use `README.md`, `docs/`, and `mkdocs.yml` as the live documentation source. Historical narrative pages, older rebuild snapshots, and phase reports remain archive evidence and are not the current branch state unless explicitly labeled historical.
+> Current status page: [docs/status/GITHUB_PAGES_STATUS.md](status/GITHUB_PAGES_STATUS.md)
+> Archive policy: [docs/archive/README.md](archive/README.md)
 
 Welcome to the documentation for **Aries-Serpent/_codex_**, an ML platform,
 repository-automation workspace, and persistent decision-and-learning system.

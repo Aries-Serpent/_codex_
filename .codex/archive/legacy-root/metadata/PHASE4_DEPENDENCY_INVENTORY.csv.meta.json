@@ -1,0 +1,11 @@
+{
+  "id": "PHASE4_DEPENDENCY_INVENTORY.csv",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE4_DEPENDENCY_INVENTORY.csv",
+  "archive_path": ".codex/archive/legacy-root/PHASE4_DEPENDENCY_INVENTORY.csv",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "9885289c501f5b6a1e360db95dd79d39f9211ba6ff5d105ce0b61b57741c2a77",
+  "size_bytes": 126381,
+  "kind": "historical_root"
+}

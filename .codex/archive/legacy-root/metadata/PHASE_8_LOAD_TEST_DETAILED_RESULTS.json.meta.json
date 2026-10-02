@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LOAD_TEST_DETAILED_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LOAD_TEST_DETAILED_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LOAD_TEST_DETAILED_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5653773f69fb1d05c0a391066862dc4622977496329a17fdb4c9adf269fe4fcf",
+  "size_bytes": 2317,
+  "kind": "historical_root"
+}

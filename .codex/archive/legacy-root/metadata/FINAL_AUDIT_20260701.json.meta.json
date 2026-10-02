@@ -1,0 +1,11 @@
+{
+  "id": "FINAL_AUDIT_20260701.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/FINAL_AUDIT_20260701.json",
+  "archive_path": ".codex/archive/legacy-root/FINAL_AUDIT_20260701.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "79a016b96dd60209a29b47acd3f46fca297ec79e9c8406a7111bf8e1db82749f",
+  "size_bytes": 6004,
+  "kind": "historical_root"
+}

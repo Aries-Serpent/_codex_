@@ -1,0 +1,11 @@
+{
+  "id": "WORKFLOW_BACKLOG_SUMMARY_2026_07_16.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WORKFLOW_BACKLOG_SUMMARY_2026_07_16.yaml",
+  "archive_path": ".codex/archive/legacy-root/WORKFLOW_BACKLOG_SUMMARY_2026_07_16.yaml",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "6cd4bc7930e80d36b74a3c52b0c743e57b3483c0f2eff1ac44c04adaa1326256",
+  "size_bytes": 1299,
+  "kind": "historical_root"
+}

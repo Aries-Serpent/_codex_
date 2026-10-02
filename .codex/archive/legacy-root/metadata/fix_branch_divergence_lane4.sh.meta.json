@@ -1,0 +1,11 @@
+{
+  "id": "fix_branch_divergence_lane4.sh",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/fix_branch_divergence_lane4.sh",
+  "archive_path": ".codex/archive/legacy-root/fix_branch_divergence_lane4.sh",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "5836f40b66b860cd9a9b1f30ee99d298d228fbd6f67788170f7d64b1b764fa8b",
+  "size_bytes": 4534,
+  "kind": "historical_root"
+}

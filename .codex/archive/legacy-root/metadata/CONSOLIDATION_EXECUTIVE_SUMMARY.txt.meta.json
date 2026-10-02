@@ -1,0 +1,11 @@
+{
+  "id": "CONSOLIDATION_EXECUTIVE_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CONSOLIDATION_EXECUTIVE_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/CONSOLIDATION_EXECUTIVE_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "249bce1a1d8962a72c4528a3d3a0441d9cc11fb215fa888df7922ef5778fc0c4",
+  "size_bytes": 14564,
+  "kind": "historical_root"
+}

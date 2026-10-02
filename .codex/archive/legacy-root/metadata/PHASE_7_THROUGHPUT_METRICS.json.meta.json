@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_7_THROUGHPUT_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_7_THROUGHPUT_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_7_THROUGHPUT_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "f290667a8da7b06ff783a6d94e1bc7c7585b3d7a98d03152193c72d10d06a61f",
+  "size_bytes": 885,
+  "kind": "historical_root"
+}

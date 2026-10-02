@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_INTEGRATION_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_INTEGRATION_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_INTEGRATION_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "bfba927aaf204a6156859882e36e4ef6496b54b9b19285c3dd75c4025cadd582",
+  "size_bytes": 19585,
+  "kind": "historical_root"
+}

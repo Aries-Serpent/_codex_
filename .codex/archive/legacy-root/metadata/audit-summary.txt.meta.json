@@ -1,0 +1,11 @@
+{
+  "id": "audit-summary.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-summary.txt",
+  "archive_path": ".codex/archive/legacy-root/audit-summary.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "162e6786710799875f257d88acce7fb6f20cf1009b5a930e4e9c28165207b882",
+  "size_bytes": 11084,
+  "kind": "historical_root"
+}

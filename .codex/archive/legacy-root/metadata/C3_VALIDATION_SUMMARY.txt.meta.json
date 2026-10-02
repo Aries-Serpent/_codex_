@@ -1,0 +1,11 @@
+{
+  "id": "C3_VALIDATION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/C3_VALIDATION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/C3_VALIDATION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "f6427d515ff33b1997355aa7cd24c763152b84ef4f45ea22c1affb107953f01b",
+  "size_bytes": 11534,
+  "kind": "historical_root"
+}

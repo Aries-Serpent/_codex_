@@ -1,0 +1,11 @@
+{
+  "id": "CODEQL_UNTRUSTED_CHECKOUT_REMEDIATION_PLAN.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CODEQL_UNTRUSTED_CHECKOUT_REMEDIATION_PLAN.md",
+  "archive_path": ".codex/archive/legacy-root/CODEQL_UNTRUSTED_CHECKOUT_REMEDIATION_PLAN.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "5af434baf1ecad271ed7b63c064dcd1e7b63ad3274c89860390469078dc05ff5",
+  "size_bytes": 7529,
+  "kind": "historical_root"
+}

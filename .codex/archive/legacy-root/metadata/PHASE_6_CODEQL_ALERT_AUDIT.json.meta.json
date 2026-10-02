@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_CODEQL_ALERT_AUDIT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_CODEQL_ALERT_AUDIT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_CODEQL_ALERT_AUDIT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "6e1f3b49c4092bb076b647a67d56f0adb888273ba9bc9e7e674c32d2d17d6143",
+  "size_bytes": 13117,
+  "kind": "historical_root"
+}

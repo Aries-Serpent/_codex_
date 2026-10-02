@@ -1,0 +1,11 @@
+{
+  "id": "B1_META_TENSOR_AUDIT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/B1_META_TENSOR_AUDIT.json",
+  "archive_path": ".codex/archive/legacy-root/B1_META_TENSOR_AUDIT.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "80bc6f06b960f29419b630adfab86418cab966f15918c357f7848bdc7a096c10",
+  "size_bytes": 9370,
+  "kind": "historical_root"
+}
