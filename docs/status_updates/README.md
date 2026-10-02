@@ -1,6 +1,8 @@
 # Status Updates
 **Last Updated:** 2026-10-02
-**Version:** v0.2.0
+**Version:** v0.3.0
+
+> **Active state:** This folder contains active, evidence-backed repo status for the current branch. Historical backlog narratives, archive snapshots, and older remediation notes remain archive-only evidence unless explicitly labeled historical.
 
 Use this folder to track active, evidence-backed repo status for the current branch. Historical backlog items remain in archive evidence, not in the active operational record, unless explicitly labeled historical.
 

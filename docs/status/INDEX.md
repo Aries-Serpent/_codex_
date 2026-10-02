@@ -1,8 +1,9 @@
 # Status
 **Last Updated:** 2026-10-02
-**Version:** v0.2.0
+**Version:** v0.3.0
 
 > **Current evidence index** — active status docs only. Historical status pages remain in the repo as archive evidence and are not treated as current operational truth unless explicitly labeled as historical.
+> **Current repo truth:** security backlog is closed/advisory-only; no open active remediation backlog remains.
 > Directory: `docs/status/`
 
 ## Active docs
@@ -14,6 +15,7 @@
 
 - Historical status artifacts in this directory may be retained as evidence of prior states but are not active operational truth.
 - Any file labeled as an archive or historical artifact should be treated as context, not as the current repo narrative.
+- Older backlog narratives are retained only as archive evidence and do not reopen the current security queue.
 
 ---
 

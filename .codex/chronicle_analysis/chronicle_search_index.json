@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-10-02T09:53:41Z",
+  "schema_version": "1.0",
+  "scope": ".codex/session_logs.db",
+  "sessions": [],
+  "source_diagnostics": [
+    "database not found"
+  ],
+  "summary": {
+    "branch_distribution": {},
+    "commits": 0,
+    "status_distribution": {},
+    "tests": 0,
+    "tool_calls": 0,
+    "total_sessions": 0
+  }
+}

@@ -1,0 +1,5 @@
+Chronicle evidence command inventory = analyze, cost-tips, improve, reindex, search, standup
+Guidance validation: False
+CLI matches: analyze, cost-tips, improve, reindex, search, standup
+Guidance matches: cost-tips, search
+Artifacts stored in: .codex/chronicle_analysis

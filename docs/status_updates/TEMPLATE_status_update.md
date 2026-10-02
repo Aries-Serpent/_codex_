@@ -1,8 +1,8 @@
 # Status Update — Current Evidence & Validation
 **Last Updated:** 2026-10-02
-**Version:** v0.2.0
+**Version:** v0.3.0
 
-> **Current repo truth:** The active security family state is closed/advisory-only. Historical backlog docs remain archive-only evidence and are not the operational status of the current branch.
+> **Current repo truth:** The active security family state is closed/advisory-only. Historical backlog docs, archived remediation notes, and prior status narratives remain archive-only evidence and are not the operational status of the current branch.
 >
 > **When to use:** Use this template to record active evidence for the current branch, validation scope, and any remaining operational work. Save as:
 > `docs/status_updates/<slug>-<YYYY-MM-DD>.md`.

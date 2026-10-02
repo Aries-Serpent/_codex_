@@ -2,9 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
+> **ARCHIVE NOTE:** This document is retained as historical evidence only. It does not represent the current repo truth. The active truth is: security is closed/advisory-only, and historical backlog items are preserved as archive evidence rather than open work.
 > Generated: 2026-06-22 09:00:51 | Author: mbaetiong
 
-This document reflects the current implementation state after Batches 2-7 and Quick Win patchsets. All strike-through markers have been removed; this is the clean baseline.
+This document reflects the implementation state from the historical period it was written for. It is preserved for audit traceability and is not active operational guidance.
 
 ## 1. Repo Map
 

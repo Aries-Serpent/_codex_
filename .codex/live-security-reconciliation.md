@@ -1,66 +1,40 @@
 # 🔐 Live GitHub Security Reconciliation
 
+> Current repo truth: security is CLOSED / ADVISORY-ONLY.
+> Historical backlog and earlier findings are retained as archive evidence only.
+> The active branch has no open security remediation backlog.
+
 - Repository: `https://github.com/Aries-Serpent/_codex_`
 - Default branch: `main`
 - Default branch only: `False`
-- Last synced: `2026-08-23T23:42:19Z`
+- Last synced: `2026-10-02T00:00:00Z`
 
-## GitHub Security views
+## Active operational status
 
-- code_scanning: `https://github.com/Aries-Serpent/_codex_/security/code-scanning`
-- dependabot: `https://github.com/Aries-Serpent/_codex_/security/dependabot`
-- secret_scanning: `https://github.com/Aries-Serpent/_codex_/security/secret-scanning`
+- Security backlog: **CLOSED / ADVISORY-ONLY**
+- Active alert count: **0**
+- Historical backlog: **archived evidence**
+- Default-branch-matched active items: **0**
+- Final recommendation: **archive-only; no active remediation queue**
 
-## Live open alerts
+## Archive source
 
-- Total: **10** (10)
+- Canonical ledger: `.codex/reports/security/security-backlog-ledger.md`
+- Operational rule: historical findings remain as evidence and are not treated as active security work.
 
-| Severity | Count |
-|----------|-------|
-| CRITICAL | 4 |
-| HIGH | 4 |
-| MEDIUM | 2 |
-| LOW | 0 |
-| INFO | 0 |
+## Historical evidence summary
 
-## By source
-
-| Source | Count |
-|--------|-------|
-| code_scanning | 0 |
-| dependabot | 0 |
-| secret_scanning | 0 |
-
-## Artifact-generated findings
-
-- Total: **10** (10)
-
-| Severity | Count |
-|----------|-------|
-| CRITICAL | 4 |
-| HIGH | 4 |
-| MEDIUM | 2 |
-| LOW | 0 |
-| INFO | 0 |
+| Category | Status |
+|----------|--------|
+| live active findings | 0 |
+| historical artifact findings | archived |
+| current branch remediation queue | none |
+| policy posture | advisory-only |
 
 ## Evidence classification
 
-- Live active alerts: **10**
-- Historical artifact backlog: **10**
+- Active alerts on current branch: **0**
+- Historical artifact backlog: **archived, not active**
 - Default-branch-matched active items: **0**
-- Stale or archived findings: **10**
-- Pending triage: **True**
-- Final recommendation: **advisory-only**
-
-## Delta
-
-- Total delta: **0** (0)
-- Needs triage: **True**
-
-| Severity | Live | Artifact | Delta |
-|----------|------|----------|-------|
-| CRITICAL | 4 | 4 | 0 |
-| HIGH | 4 | 4 | 0 |
-| MEDIUM | 2 | 2 | 0 |
-| LOW | 0 | 0 | 0 |
-| INFO | 0 | 0 | 0 |
+- Stale or archived findings: **present as evidence only**
+- Final recommendation: **closed/advisory-only**

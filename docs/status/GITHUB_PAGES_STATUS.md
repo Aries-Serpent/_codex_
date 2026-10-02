@@ -1,8 +1,9 @@
 # GitHub Pages Status Dashboard
 **Last Updated:** 2026-10-02
-**Version:** v0.2.0
+**Version:** v0.3.0
 
-> **Current repo narrative:** The active security family state is closed/advisory-only. Historical backlog and earlier status pages remain archive evidence and are not active operational truth unless explicitly labeled historical.
+> **Active state:** This page describes the current repo truth for active operational docs, not archived remediation history. Historical backlog and earlier status pages remain archive evidence and are not active operational truth unless explicitly labeled historical.
+> **Archive status:** Archived backlog and historical remediation docs remain in `.codex/archive/`, `docs/archive/`, and older status pages for context only.
 > **Evidence basis:** `.codex/reports/security/security-backlog-ledger.md`, `.codex/live-security-reconciliation.md`, `.codex/agent_context.json`, `.codex/aftermath/pda_iterations.jsonl`, `.codex/session_startup_packet.json`
 > **Scope:** Repo-managed files only; exclude vendored environment directories such as `.venv_ci/` from validation scope.
 
@@ -10,7 +11,7 @@
 
 | Area | Status | Notes |
 |------|--------|-------|
-| **Security backlog** | CLOSED / ADVISORY-ONLY | Current ledger shows closed items and admin-only follow-up requirements, not an open remediation backlog. |
+| **Security backlog** | CLOSED / ADVISORY-ONLY | Current ledger shows closed items and admin-only follow-up requirements; there is no active remediation backlog on the current branch. |
 | **Validation signal** | GREEN | Active validation is green for repo-managed files; tool outputs that include vendored environment paths are out of scope. |
 | **Status doc freshness** | ACTIVE CLEANUP | Remaining work is status metadata cleanup and evidence-backed doc refresh, not stale backlog reopening. |
 | **Cost optimization** | ACTIVE | Current cost-analysis backlog remains the operational improvement program. |
