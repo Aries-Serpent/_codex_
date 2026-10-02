@@ -32,7 +32,7 @@ python -m codex.cli --help
 
 ## Module Structure
 
-```
+```text
 src/cli/
 ├── __init__.py
 ├── config.py

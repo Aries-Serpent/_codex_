@@ -45,7 +45,7 @@ python -m scripts.space_traversal.audit_runner check-regressions
 ## Expected Output
 
 ### Console Output
-```
+```text
 Running audit pipeline...
 ✓ Scanned 1,208 test files
 ✓ Checked 39 capabilities

@@ -93,7 +93,7 @@ git push origin master
 ## Expected Output
 
 ### Generated Files
-```
+```text
 agent_interface.html      # Interactive agent control panel
 cli_builder.html          # CLI command builder
 api_collection.html       # API reference collection
@@ -103,7 +103,7 @@ wiki_bundle.zip           # Complete wiki deployment bundle
 ```
 
 ### Wiki Bundle Structure
-```
+```text
 wiki_bundle.zip
 ├── Home.md                    # Wiki home page
 ├── Quick-Start.md             # Quick start guide
@@ -141,7 +141,7 @@ wiki_bundle.zip
 ```
 
 ### 2. API Documentation
-```markdown
+````markdown
 # API Reference
 
 ## Audit Runner API
@@ -149,10 +149,10 @@ wiki_bundle.zip
 from scripts.space_traversal.audit_runner import run_audit
 results = run_audit(output_dir=Path('./results'))
 \```
-```
+````
 
 ### 3. Configuration Guide
-```markdown
+````markdown
 # Configuration
 
 ## Workflow Configuration
@@ -161,7 +161,7 @@ Edit `.copilot-space/workflow.yaml`:
 version: "1.5.0"
 capabilities: 39
 \```
-```
+````
 
 ## Customization
 
@@ -273,7 +273,7 @@ jobs:
 
 Wiki pages include Mermaid diagrams for visual documentation:
 
-```markdown
+````markdown
 ## Architecture Diagram
 
 \```mermaid
@@ -296,7 +296,7 @@ flowchart TB
     Viz --> Wiki
     Viz --> Reports
 \```
-```
+````
 
 ## Related Prompts
 - [update-agents-md.md](update-agents-md.md) - Update .codex/archive/deprecated/AGENTS.md

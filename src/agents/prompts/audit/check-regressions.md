@@ -35,7 +35,7 @@ python -m scripts.space_traversal.audit_runner show-trend "Automated Testing" --
 ## Expected Output
 
 ### No Regressions Detected
-```
+```text
 Checking for regressions...
 ✓ Analyzing 39 capabilities
 ✓ Comparing against 5 historical runs
@@ -43,7 +43,7 @@ Checking for regressions...
 ```
 
 ### Regressions Detected
-```
+```text
 Checking for regressions...
 ✓ Analyzing 39 capabilities
 ✓ Comparing against 5 historical runs

@@ -247,7 +247,7 @@ go test ./... -v
 
 ### Code Structure
 
-```
+```text
 tools/github-secrets-cli/
 ├── main.go           # CLI entry point and command definitions
 ├── go.mod            # Go module dependencies
@@ -262,19 +262,19 @@ tools/github-secrets-cli/
 ## Troubleshooting
 
 ### Token not found in keyring
-```
+```text
 Error: no GitHub token found
 Solution: Run 'github-secrets-cli auth login' or set GITHUB_TOKEN environment variable
 ```
 
 ### Insufficient permissions
-```
+```text
 Error: 403 Forbidden - token does not have required permissions
 Solution: Check token permissions at https://github.com/settings/tokens
 ```
 
 ### Public key not found
-```
+```text
 Error: failed to fetch public key for repository
 Solution: Verify repository exists and token has read access
 ```

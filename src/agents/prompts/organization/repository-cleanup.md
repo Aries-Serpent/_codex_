@@ -90,7 +90,7 @@ done
 ## Expected Output
 
 ### Directory Structure After Cleanup
-```
+```text
 /home/runner/work/_codex_/_codex_/
 ├── README.md              # Preserved
 ├── .codex/archive/deprecated/AGENTS.md              # Preserved
