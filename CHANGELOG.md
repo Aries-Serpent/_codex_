@@ -2,12 +2,6 @@
 
 ## [Unreleased]
 
-### Fixed — Security remediation epic closure (2026-10-02)
-- Closed all remaining non-terminal rows in `.codex/reports/security/security-backlog-ledger.md`: 5 S2 rows (CVE-JS, CVE-Rust, container-0/1/2) + 3 main table rows (comprehensive-findings, semgrep, dependency) → terminal states.
-- All 12 checklist items now ✅ CLOSED with evidence citations.
-- Convergence gate: zero open/zero ⏸ rows; security/CodeQL remediation epic marked CLOSED.
-- R1 consolidation verification: all cherry-picked artifacts (P2-CI diagnosis, P4-Gov ledger, workflow fixes, dependency pin) confirmed present.
-
 ### Fixed — Cherry-pick resume-session branch + workflow hardening (2026-10-01)
 - Cherry-picked `f6f68eeb` from `copilot/resume-session-multi-lane-remediation` (previous session ended abruptly at run `36844433421`).
 - Lane P2-CI: Fixed 3 security-scanning-suite workflow defects — semgrep `PYTHONPATH`/`PYTHONHOME` env shadowing, 10 upload steps `error→warn` for evidence-gap degradation, missing artifact family recording.

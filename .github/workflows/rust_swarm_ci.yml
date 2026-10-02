@@ -250,7 +250,12 @@ jobs:
           exit 1
         fi
         echo "✅ Validating ${estimate_count} Criterion estimate files"
-        python -c "import json, pathlib; files=list(pathlib.Path('target/criterion').rglob('estimates.json')); invalid=[str(path) for path in files if json.loads(path.read_text())['mean']['point_estimate'] <= 0]; assert files and not invalid, f'invalid benchmark estimates: {invalid}'"
+        python -c "
+          import json, pathlib
+          files = list(pathlib.Path('target/criterion').rglob('estimates.json'))
+          invalid = [str(p) for p in files if json.loads(p.read_text())['mean']['point_estimate'] <= 0]
+          assert files and not invalid, f'invalid benchmark estimates: {invalid}'
+        "
         mkdir -p coverage
         printf 'Benchmark Validation Report\n=================================\n\nStatus: PASS\nValidated estimate files: %s\n' \
           "${estimate_count}" > coverage/benchmark_validation_report.txt
@@ -362,7 +367,9 @@ jobs:
       continue-on-error: true
       run: |
         pip install -q pip 2>/dev/null
-        python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        python scripts/ci/generate_cache_keys.py \
+          --type cargo --workflow rust_swarm_ci --health 2>/dev/null \
+          || echo '{"status": "cache health check skipped"}'
     - name: Check all jobs
       env:
         RUST_TESTS_RESULT: ${{ needs.rust_tests.result }}
@@ -373,25 +380,28 @@ jobs:
         SECURITY_AUDIT_RESULT: ${{ needs.security_audit.result }}
       run: |
         echo "All required jobs completed"
-        FAILED=0
-        # Accept "success" or "skipped" — skipped means the job's trigger condition
-        # did not match (e.g. path filters, event type), not a failure.
-        check() {
-          local name="$1" result="$2"
-          if [[ "${result}" == "failure" || "${result}" == "cancelled" ]]; then
-            echo "❌ ${name} failed (result=${result})"
-            FAILED=1
-          else
-            echo "✅ ${name}: ${result}"
-          fi
-        }
-        check "Rust tests" "${RUST_TESTS_RESULT}"
-        check "Rust benchmarks" "${RUST_BENCHMARKS_RESULT}"
-        check "Benchmark validation" "${BENCHMARK_VALIDATION_RESULT}"
-        check "Python integration" "${PYTHON_INTEGRATION_RESULT}"
-        check "Code coverage" "${CODE_COVERAGE_RESULT}"
-        check "Security audit" "${SECURITY_AUDIT_RESULT}"
-        if [[ "${FAILED}" == "1" ]]; then
+        if [[ "${RUST_TESTS_RESULT}" != "success" ]]; then
+          echo "❌ Rust tests failed"
+          exit 1
+        fi
+        if [[ "${RUST_BENCHMARKS_RESULT}" != "success" ]]; then
+          echo "❌ Rust benchmarks failed"
+          exit 1
+        fi
+        if [[ "${BENCHMARK_VALIDATION_RESULT}" != "success" ]]; then
+          echo "❌ Benchmark result validation failed"
+          exit 1
+        fi
+        if [[ "${PYTHON_INTEGRATION_RESULT}" != "success" ]]; then
+          echo "❌ Python integration tests failed"
+          exit 1
+        fi
+        if [[ "${CODE_COVERAGE_RESULT}" != "success" ]]; then
+          echo "❌ Coverage check failed"
+          exit 1
+        fi
+        if [[ "${SECURITY_AUDIT_RESULT}" != "success" ]]; then
+          echo "❌ Security audit failed"
           exit 1
         fi
         echo "✅ All checks passed"
