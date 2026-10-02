@@ -5,8 +5,6 @@ Uses pytest markers to skip tests on CPU-only runners or when ACCELERATE_TEST is
 """
 
 import os
-import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest

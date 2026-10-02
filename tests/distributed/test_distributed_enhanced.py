@@ -10,8 +10,6 @@ distributed data loaders, and checkpoint synchronization.
 """
 
 import os
-import sys
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py _CanonicalPackageFinder
