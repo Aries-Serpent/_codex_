@@ -190,8 +190,8 @@ python scripts/ci/auto_fix_common_issues.py
 | 8 | CodeQL alerts | Yes | ruff F401/F841 |
 ### Documentation
 - **System Overview:** [`.codex/docs/CI_AUTO_FIX_SYSTEM.md`](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
-- **Pattern Library:** [`.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md`](.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md)
-- **workflow:** [`.github/workflows/auto-fix-common-issues.yml.disabled`](.github/workflows/auto-fix-common-issues.yml.disabled)
+- **Pattern Library:** [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+- **Workflow guidance:** [docs/WORKFLOW_MAP.md](docs/WORKFLOW_MAP.md)
 ### Benefits
 **Before:** Manual detection across 500+ test files, 2-4 hours per PR
 **After:** Automatic detection in <30 seconds, 15-30 minutes per PR
@@ -205,7 +205,7 @@ Autonomous prevention system that detects and auto-fixes critical CI failures:
 - **RP-003:** Documentation Links - Detects and fixes broken links in markdown
 **Quick Links:**
 - **Prevention Guide:** [`.codex/CI_PATTERN_PREVENTION_GUIDE.md`](.codex/CI_PATTERN_PREVENTION_GUIDE.md)
-- **Incident Archive:** [`.codex/archive/CI_INCIDENTS/2026-06-23_RESOLUTION.md`](.codex/archive/CI_INCIDENTS/2026-06-23_RESOLUTION.md)
+- **Incident Archive:** [`docs/archive/README.md`](docs/archive/README.md) and the historical incident notes under `.codex/archive/` remain archival-only context.
 - **Issue #5067:** [CI AUTO-FIX Prevention Framework](https://github.com/Aries-Serpent/_codex_/issues/5067)
 - **PR #5068:** [Fix 3 Critical CI Failures](https://github.com/Aries-Serpent/_codex_/pull/5068)
 **Impact:** Autonomous fixes deployed for critical issues, prevents 95%+ recurrence
@@ -418,12 +418,12 @@ Start here on every session:
 ---
 ## Codex Quick-Index (For AI Agents)
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
-**Start here:** [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) Comprehensive agent guide + Level 4 MLOps features
+**Start here:** [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md) and [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md) for current repo and agent guidance.
 **Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) Deterministic navigation paths
 **Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) Primary files, priorities, orchestration map
 **Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) Resume protocol for multi-step tasks
 **agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
-**Optimization:** Following the wavepoint order in .codex/archive/deprecated/AGENTS.md reduces repository traversal time by 62%.
+**Optimization:** Use the active docs map in `docs/` instead of archive-only playbooks.
 ### Python Ingestion Pipeline
 The Codex Ingestion Pipeline provides a complete system for processing Python code:
 ```bash
@@ -990,9 +990,9 @@ python3 scripts/catalog_workflows.py
 2. Select workflow and source
 3. Click "Run workflow"
 ### Documentation
-- [Final Consolidation Report](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
-- [workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
-- [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) - Detailed agent documentation
+- [Workflow Map](docs/WORKFLOW_MAP.md) for current repo workflow guidance
+- [docs/archive/README.md](docs/archive/README.md) for archive retention policy and historical separation
+- [docs/DOCUMENTATION_SOURCE_OF_TRUTH.md](docs/DOCUMENTATION_SOURCE_OF_TRUTH.md) for the active-vs-archive classification
 ### Monitoring
 - **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.md)
 - **Manual**: Run `bash scripts/validate_ci_health.sh`
