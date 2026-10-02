@@ -65,7 +65,7 @@ _REPO_TEST_TOOL_ARGS: dict[str, tuple[str, ...]] = {
         "--rules",
         "manifests/codex_eval_rules.v3.json",
         "--input",
-        os.devnull,
+        "samples/assistant_message_summary.sample.json",
     ),
 }
 

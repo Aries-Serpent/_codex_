@@ -14,11 +14,11 @@ import json
 
 import pytest
 
-# Guard against tests/zendesk/ shadowing src/zendesk/ when sys.path is polluted.
-zendesk_json = pytest.importorskip("zendesk.json_generator")
-ScriptTemplate = zendesk_json.ScriptTemplate
-TemplateVariable = zendesk_json.TemplateVariable
-ZendeskJSONGenerator = zendesk_json.ZendeskJSONGenerator
+from zendesk.json_generator import (
+    ScriptTemplate,
+    TemplateVariable,
+    ZendeskJSONGenerator,
+)
 
 # ==============================================================================
 # FIXTURES

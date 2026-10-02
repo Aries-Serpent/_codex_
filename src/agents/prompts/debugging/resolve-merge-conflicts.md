@@ -8,7 +8,7 @@ Use this prompt when git merge conflicts occur during PR merges or branch update
 
 ## Prompt Template
 
-```text
+````text
 I need help resolving merge conflicts in the Codex repository.
 
 **Conflict Information:**
@@ -20,7 +20,7 @@ I need help resolving merge conflicts in the Codex repository.
 **Steps to Resolve:**
 
 1. **Understand the Conflict**
-```
+````
    # Check conflict status
    git status
 
@@ -31,7 +31,7 @@ I need help resolving merge conflicts in the Codex repository.
    git show :1:path/to/file  # common ancestor
    git show :2:path/to/file  # current branch (HEAD)
    git show :3:path/to/file  # incoming branch
-   ```text
+   ````text
 
 2. **Analyze Changes**
    - Check what changes were made in your branch
@@ -60,7 +60,7 @@ I need help resolving merge conflicts in the Codex repository.
 4. **Resolve the Conflict**
 
    **Manual Resolution:**
-```
+````
    # Edit file to resolve conflicts
    # Remove conflict markers: <<<<<<<, =======, >>>>>>>
    # Keep desired changes
@@ -72,20 +72,20 @@ I need help resolving merge conflicts in the Codex repository.
    # Continue merge/rebase
    git commit  # for merge
    git rebase --continue  # for rebase
-   ```text
+   ````text
 
    **Using Git Tools:**
-```
+````
    # Use mergetool
    git mergetool path/to/file
 
    # Choose version (with caution)
    git checkout --ours path/to/file    # keep your version
    git checkout --theirs path/to/file  # take their version
-   ```text
+   ````text
 
 5. **Verify Resolution**
-```
+````
    # Run linters
    ruff check path/to/file
 
@@ -97,12 +97,12 @@ I need help resolving merge conflicts in the Codex repository.
 
    # View final result
    git diff --cached path/to/file
-   ```text
+   ````text
 
 6. **Common Conflict Patterns**
 
    **Import Conflicts:**
-```
+````
    # Both branches added imports - merge both
    <<<<<<< HEAD
    from module_a import ClassA
@@ -113,10 +113,10 @@ I need help resolving merge conflicts in the Codex repository.
    # Resolution: include both
    from module_a import ClassA
    from module_b import ClassB
-   ```text
+   ````text
 
    **Function Conflicts:**
-```
+````
    # Both branches modified function - merge logic
    <<<<<<< HEAD
    def process(data):
@@ -132,10 +132,10 @@ I need help resolving merge conflicts in the Codex repository.
    def process(data):
        validate(data)
        return enhance(transform(data))
-   ```text
+   ````text
 
    **Configuration Conflicts:**
-```
+````
    # Both branches added settings - merge both
    <<<<<<< HEAD
    settings:
@@ -149,10 +149,10 @@ I need help resolving merge conflicts in the Codex repository.
    settings:
      feature_a: true
      feature_b: true
-   ```text
+   ````text
 
 7. **Final Checks**
-```
+````
    # Ensure all conflicts resolved
    git status | grep -i conflict
 
@@ -161,10 +161,10 @@ I need help resolving merge conflicts in the Codex repository.
 
    # Check for unintended changes
    git diff main..HEAD --stat
-   ```text
+   ````text
 
 **Useful Commands:**
-```
+````
 # Abort merge if needed
 git merge --abort
 git rebase --abort
@@ -177,7 +177,7 @@ git ls-files -u
 
 # Re-resolve using recorded resolution (if available)
 git rerere
-```text
+````text
 
 **Repository-Specific Notes:**
 
@@ -192,13 +192,13 @@ For Codex repository:
 - Make smaller, focused PRs
 - Communicate about overlapping work
 - Use feature flags for long-running features
-```
+````
 
 ## Examples
 
 ### Example 1: Import Conflict
 
-```text
+````text
 File: src/codex_ml/training.py
 Conflict: Both branches added different imports
 
@@ -207,11 +207,11 @@ Resolution:
 - Sort imports alphabetically
 - Remove duplicates
 - Run isort to format
-```
+````
 
 ### Example 2: Function Modification
 
-```text
+````text
 File: scripts/audit_runner.py
 Conflict: Both branches modified same function
 
@@ -220,11 +220,11 @@ Resolution:
 - Merge logic if compatible
 - Keep both features if possible
 - Test thoroughly to ensure correctness
-```
+````
 
 ### Example 3: Configuration Update
 
-```text
+````text
 File: pyproject.toml
 Conflict: Both branches updated dependencies
 
@@ -233,7 +233,7 @@ Resolution:
 - Use newer versions if compatible
 - Check for conflicts between dependencies
 - Run tests to verify compatibility
-```
+````
 
 ## Best Practices
 

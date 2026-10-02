@@ -250,12 +250,7 @@ jobs:
           exit 1
         fi
         echo "✅ Validating ${estimate_count} Criterion estimate files"
-        python -c "
-          import json, pathlib
-          files = list(pathlib.Path('target/criterion').rglob('estimates.json'))
-          invalid = [str(p) for p in files if json.loads(p.read_text())['mean']['point_estimate'] <= 0]
-          assert files and not invalid, f'invalid benchmark estimates: {invalid}'
-        "
+        python3 -c "import json,pathlib;files=list(pathlib.Path('target/criterion').rglob('estimates.json'));invalid=[str(p) for p in files if json.loads(p.read_text())['mean']['point_estimate']<=0];assert files and not invalid,f'invalid benchmark estimates: {invalid}'"
         mkdir -p coverage
         printf 'Benchmark Validation Report\n=================================\n\nStatus: PASS\nValidated estimate files: %s\n' \
           "${estimate_count}" > coverage/benchmark_validation_report.txt

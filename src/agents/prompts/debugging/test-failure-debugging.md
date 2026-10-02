@@ -8,7 +8,7 @@ Use this prompt when tests fail in CI/CD or local development to diagnose and fi
 
 ## Prompt Template
 
-```text
+````text
 I need help debugging a test failure in the Codex repository.
 
 **Test Information:**
@@ -25,13 +25,13 @@ I need help debugging a test failure in the Codex repository.
    - Check test dependencies and fixtures
 
 2. **Reproduce Locally**
-```
+````
    # Run the specific test
    pytest path/to/test_file.py::test_function_name -v
 
    # Run with more debugging info
    pytest path/to/test_file.py::test_function_name -vv -s
-   ```text
+   ````text
 
 3. **Analyze the Failure**
    - Check if it's a test issue or code issue
@@ -78,7 +78,7 @@ I need help debugging a test failure in the Codex repository.
    - Consider adding regression test if appropriate
 
 **Useful Commands:**
-```
+````
 # Run tests with coverage
 pytest path/to/test_file.py --cov=src/codex_ml --cov-report=term
 
@@ -93,7 +93,7 @@ pytest path/to/test_file.py --pdb
 
 # List all tests without running
 pytest --collect-only path/to/test_file.py
-```text
+````text
 
 **Repository-Specific Debugging:**
 
@@ -107,13 +107,13 @@ For Codex-specific issues:
 - Fix the identified issue
 - Run tests to verify
 - Commit with clear message explaining the fix
-```
+````
 
 ## Examples
 
 ### Example 1: Import Error
 
-```text
+````text
 Test file: tests/test_training.py
 Test name: test_gradient_accumulation
 Failure: ImportError: cannot import name 'TrainingConfig' from 'training.config'
@@ -125,11 +125,11 @@ Diagnosis:
 - Check for circular imports
 
 Fix: Update import path or add missing __init__.py
-```
+````
 
 ### Example 2: Assertion Failure
 
-```text
+````text
 Test file: tests/test_tokenization.py
 Test name: test_tokenizer_parity
 Failure: AssertionError: assert [1, 2, 3] == [1, 2, 3, 4]
@@ -141,11 +141,11 @@ Diagnosis:
 - Review recent tokenizer changes
 
 Fix: Update test expectation or fix tokenizer behavior
-```
+````
 
 ### Example 3: Fixture Error
 
-```text
+````text
 Test file: tests/test_evaluation.py
 Test name: test_metric_computation
 Failure: fixture 'mock_model' not found
@@ -156,7 +156,7 @@ Diagnosis:
 - Import issue with fixture file
 
 Fix: Add missing fixture or import fixture module
-```
+````
 
 ## Related Prompts
 
