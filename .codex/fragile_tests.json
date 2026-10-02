@@ -340,6 +340,9 @@
   "tests/quantum_orchestrator/test_mlops_bridge.py": [
     "numpy"
   ],
+  "tests/quantum_orchestrator/test_orchestrator_physics.py": [
+    "numpy"
+  ],
   "tests/rag/test_device_placement.py": [
     "torch"
   ],
