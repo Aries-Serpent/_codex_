@@ -373,28 +373,25 @@ jobs:
         SECURITY_AUDIT_RESULT: ${{ needs.security_audit.result }}
       run: |
         echo "All required jobs completed"
-        if [[ "${RUST_TESTS_RESULT}" != "success" ]]; then
-          echo "❌ Rust tests failed"
-          exit 1
-        fi
-        if [[ "${RUST_BENCHMARKS_RESULT}" != "success" ]]; then
-          echo "❌ Rust benchmarks failed"
-          exit 1
-        fi
-        if [[ "${BENCHMARK_VALIDATION_RESULT}" != "success" ]]; then
-          echo "❌ Benchmark result validation failed"
-          exit 1
-        fi
-        if [[ "${PYTHON_INTEGRATION_RESULT}" != "success" ]]; then
-          echo "❌ Python integration tests failed"
-          exit 1
-        fi
-        if [[ "${CODE_COVERAGE_RESULT}" != "success" ]]; then
-          echo "❌ Coverage check failed"
-          exit 1
-        fi
-        if [[ "${SECURITY_AUDIT_RESULT}" != "success" ]]; then
-          echo "❌ Security audit failed"
+        FAILED=0
+        # Accept "success" or "skipped" — skipped means the job's trigger condition
+        # did not match (e.g. path filters, event type), not a failure.
+        check() {
+          local name="$1" result="$2"
+          if [[ "${result}" == "failure" || "${result}" == "cancelled" ]]; then
+            echo "❌ ${name} failed (result=${result})"
+            FAILED=1
+          else
+            echo "✅ ${name}: ${result}"
+          fi
+        }
+        check "Rust tests" "${RUST_TESTS_RESULT}"
+        check "Rust benchmarks" "${RUST_BENCHMARKS_RESULT}"
+        check "Benchmark validation" "${BENCHMARK_VALIDATION_RESULT}"
+        check "Python integration" "${PYTHON_INTEGRATION_RESULT}"
+        check "Code coverage" "${CODE_COVERAGE_RESULT}"
+        check "Security audit" "${SECURITY_AUDIT_RESULT}"
+        if [[ "${FAILED}" == "1" ]]; then
           exit 1
         fi
         echo "✅ All checks passed"
