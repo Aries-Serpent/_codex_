@@ -14,11 +14,9 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-# Add training directory to path
-training_dir = Path(__file__).parent.parent.parent / "training"
-sys.path.insert(0, str(training_dir))
-
-import accelerate_init_guard
+# NOTE: Do not manually manipulate sys.path. The conftest.py _CanonicalPackageFinder
+# already resolves 'training' to src/training. Use the canonical 'training.' import prefix.
+from training import accelerate_init_guard
 
 
 class TestAccelerateAvailability:
@@ -67,7 +65,7 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_cpu_only(self):
         """Test initialization on CPU-only system"""
-        with patch("src.training.accelerate_init_guard.is_gpu_available", return_value=False):
+        with patch("training.accelerate_init_guard.is_gpu_available", return_value=False):
             result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
 
             if accelerate_init_guard.is_accelerate_available():
@@ -143,8 +141,8 @@ class TestMockMultiGPU:
         assert env_info["RANK"] == "0", "Condition must be true"
         # Initialization would be mocked in real multi-GPU tests
 
-    @patch("src.training.accelerate_init_guard.is_gpu_available", return_value=True)
-    @patch("src.training.accelerate_init_guard.is_accelerate_available", return_value=True)
+    @patch("training.accelerate_init_guard.is_gpu_available", return_value=True)
+    @patch("training.accelerate_init_guard.is_accelerate_available", return_value=True)
     def test_distributed_init_with_gpu(self, mock_accel_avail, mock_gpu_avail, monkeypatch):
         """Test distributed initialization with mocked GPU"""
         monkeypatch.setenv("WORLD_SIZE", "2")
@@ -193,7 +191,7 @@ class TestGradientSynchronization:
         assert len(reduced_grads) == 2, "Reduced_grads must not be empty"
         assert reduced_grads[0] == [0.5, 1.0, 1.5]
 
-    @patch("src.training.accelerate_init_guard.Accelerator", create=True)
+    @patch("training.accelerate_init_guard.Accelerator", create=True)
     def test_gradient_accumulation_mock(self, mock_accelerator):
         """Test gradient accumulation with accelerator"""
         from unittest.mock import MagicMock
@@ -293,7 +291,7 @@ class TestCheckpointSynchronization:
 class TestCPUFallback:
     """Test CPU-only fallback scenarios"""
 
-    @patch("src.training.accelerate_init_guard.is_gpu_available", return_value=False)
+    @patch("training.accelerate_init_guard.is_gpu_available", return_value=False)
     def test_cpu_only_mode(self, mock_gpu):
         """Test training in CPU-only mode"""
         result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)

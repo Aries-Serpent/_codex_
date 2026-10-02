@@ -17,7 +17,10 @@ import pytest
 responses = pytest.importorskip("responses")
 from responses import matchers
 
-from zendesk.api_client import ZendeskAPIClient, ZendeskConfig
+# Guard against tests/zendesk/ shadowing src/zendesk/ when sys.path is polluted.
+zendesk_api = pytest.importorskip("zendesk.api_client")
+ZendeskAPIClient = zendesk_api.ZendeskAPIClient
+ZendeskConfig = zendesk_api.ZendeskConfig
 
 # ==============================================================================
 # FIXTURES
