@@ -305,6 +305,11 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
+    # Install local federated packages before the main package to avoid
+    # PyPI resolution failures for packages not yet published (e.g. codex-contracts).
+    contracts_dir = REPO_ROOT / "packages" / "contracts"
+    if contracts_dir.is_dir():
+        session.install("-e", str(contracts_dir))
     session.install("-e", ".[full]")
     _pytest_hermetic(session)
     _run_repo_health_prechecks(session)
@@ -346,6 +351,11 @@ def offline_check(session: nox.Session) -> None:
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
+    # Install local federated packages before the main package to avoid
+    # PyPI resolution failures for packages not yet published (e.g. codex-contracts).
+    contracts_dir = REPO_ROOT / "packages" / "contracts"
+    if contracts_dir.is_dir():
+        session.install("-e", str(contracts_dir))
     session.install("-e", ".[full]")
     _export_env(session)
     cmd = [session.bin_path("python"), "-m", "pytest", "-q", "tests"]
