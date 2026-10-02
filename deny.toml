@@ -3,6 +3,7 @@
 
 [licenses]
 # Allow common open source licenses used by our dependencies
+# All licenses NOT in this list are denied by default (v2 schema)
 allow = [
     "MIT",
     "Apache-2.0",
@@ -13,16 +14,11 @@ allow = [
     "0BSD",
 ]
 
-# Deny licenses that are not explicitly allowed
-unlicensed = "deny"
-copyleft = "deny"
-
 # Confidence threshold for license detection
 confidence-threshold = 0.8
 
 [advisories]
-# Enable vulnerability detection
-vulnerability = "deny"
+# Vulnerability detection is enabled by default; yanked crates are denied
 yanked = "deny"
 # Note: 'unmaintained' advisories should be handled via 'ignore' field with specific IDs if needed
 
