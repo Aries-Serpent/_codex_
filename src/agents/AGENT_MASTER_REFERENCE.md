@@ -187,7 +187,7 @@ task agent_type="agent-name" prompt="[instructions]"
 
 ### Multi-Tier Agent Structure
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │ User/Frontend Layer                             │
 │ (CLI, IDE Extension, Web UI)                    │
@@ -238,7 +238,7 @@ This contract is enforced at three layers:
 
 ### Agent Lifecycle
 
-```
+```text
 1. DESIGN
    └─→ Create agent prompt & capability tags
 

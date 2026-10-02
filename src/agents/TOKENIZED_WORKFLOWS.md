@@ -406,7 +406,7 @@ Each workflow has defined decision points where AI Agents must choose:
 
 All workflow state is preserved in `.codex/workflows/state/`:
 
-```
+```text
 .codex/workflows/state/
 ├── <workflow_id>_<timestamp>.json
 ├── current.json  # Symlink to active workflow

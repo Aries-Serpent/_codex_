@@ -55,9 +55,19 @@ OFFLINE_TEST_TARGETS = (
 REPO_TEST_TOOLS = (
     "tools/validate_fences.py",
     "tools/codex_evaluator.py",
-    "tools/selection_guard.py",
-    "tools/schema_validate.py",
 )
+
+# Default CLI args for tools that require them when called as prechecks.
+# selection_guard.py and schema_validate.py are excluded: both require
+# non-empty --data/--input pairs and are not designed for bare precheck runs.
+_REPO_TEST_TOOL_ARGS: dict[str, tuple[str, ...]] = {
+    "tools/codex_evaluator.py": (
+        "--rules",
+        "manifests/codex_eval_rules.v3.json",
+        "--input",
+        "samples/assistant_message_summary.sample.json",
+    ),
+}
 
 
 def _resolve_repo_script(script: str) -> Path | None:
@@ -103,7 +113,8 @@ def _run_repo_health_prechecks(session: nox.Session) -> None:
     for script in REPO_TEST_TOOLS:
         script_path = _resolve_repo_script(script)
         if script_path is not None:
-            session.run("python", str(script_path), external=True)
+            extra_args = _REPO_TEST_TOOL_ARGS.get(script, ())
+            session.run("python", str(script_path), *extra_args, external=True)
 
 
 def _export_env(session: nox.Session) -> None:
@@ -305,6 +316,11 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
+    # Install local federated packages before the main package to avoid
+    # PyPI resolution failures for packages not yet published (e.g. codex-contracts).
+    contracts_dir = REPO_ROOT / "packages" / "contracts"
+    if contracts_dir.is_dir():
+        session.install("-e", str(contracts_dir))
     session.install("-e", ".[full]")
     _pytest_hermetic(session)
     _run_repo_health_prechecks(session)
@@ -346,6 +362,11 @@ def offline_check(session: nox.Session) -> None:
 
     session.chdir(str(REPO_ROOT))
     _ensure_pip_cache(session)
+    # Install local federated packages before the main package to avoid
+    # PyPI resolution failures for packages not yet published (e.g. codex-contracts).
+    contracts_dir = REPO_ROOT / "packages" / "contracts"
+    if contracts_dir.is_dir():
+        session.install("-e", str(contracts_dir))
     session.install("-e", ".[full]")
     _export_env(session)
     cmd = [session.bin_path("python"), "-m", "pytest", "-q", "tests"]

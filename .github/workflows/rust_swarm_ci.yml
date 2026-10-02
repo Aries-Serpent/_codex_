@@ -250,7 +250,7 @@ jobs:
           exit 1
         fi
         echo "✅ Validating ${estimate_count} Criterion estimate files"
-        python -c "import json, pathlib; files=list(pathlib.Path('target/criterion').rglob('estimates.json')); invalid=[str(path) for path in files if json.loads(path.read_text())['mean']['point_estimate'] <= 0]; assert files and not invalid, f'invalid benchmark estimates: {invalid}'"
+        python3 -c "import json,pathlib;files=list(pathlib.Path('target/criterion').rglob('estimates.json'));invalid=[str(p) for p in files if json.loads(p.read_text())['mean']['point_estimate']<=0];assert files and not invalid,f'invalid benchmark estimates: {invalid}'"
         mkdir -p coverage
         printf 'Benchmark Validation Report\n=================================\n\nStatus: PASS\nValidated estimate files: %s\n' \
           "${estimate_count}" > coverage/benchmark_validation_report.txt
@@ -362,7 +362,9 @@ jobs:
       continue-on-error: true
       run: |
         pip install -q pip 2>/dev/null
-        python scripts/ci/generate_cache_keys.py --type cargo --workflow rust_swarm_ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+        python scripts/ci/generate_cache_keys.py \
+          --type cargo --workflow rust_swarm_ci --health 2>/dev/null \
+          || echo '{"status": "cache health check skipped"}'
     - name: Check all jobs
       env:
         RUST_TESTS_RESULT: ${{ needs.rust_tests.result }}

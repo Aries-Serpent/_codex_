@@ -34,10 +34,10 @@ This document provides a comprehensive, actionable plan for GitHub Copilot Agent
 3. Check git history for when `codex_plans` was removed
 
 ## Solution A: Create Missing Package (If Intended)
-```bash
+````
 mkdir -p src/codex_plans
 touch src/codex_plans/__init__.py
-```
+```text
 
 ## Solution B: Remove References (If Obsolete)
 
@@ -48,16 +48,16 @@ touch src/codex_plans/__init__.py
 - Any mapping like `codex_plans = "src/codex_plans"`
 
 **Verification Command:**
-```bash
-grep -r "codex_plans" . --exclude-dir=. git --exclude-dir=. codex
 ```
+grep -r "codex_plans" . --exclude-dir=. git --exclude-dir=. codex
+```text
 
 ## Validation
-```bash
+```
 python -m build --wheel
 pip install -e .[dev]
 pytest tests/ -v
-```
+```text
 ````
 
 ---
@@ -73,7 +73,7 @@ pytest tests/ -v
 
 ## Step 1: Create/Update bandit.yaml
 
-```yaml name=bandit.yaml
+````
 # Bandit Security Scanner Configuration
 # Repository: Aries-Serpent/_codex_
 # Purpose:  SAST scanning with balanced security/productivity
@@ -117,11 +117,11 @@ tests:
   - B506  # yaml_load
   - B608  # hardcoded_sql_expressions
   - B609  # linux_commands_wildcard_injection
-```
+```text
 
 ## Step 2: Update Workflow
 
-```yaml name=. github/workflows/security-scanning. yml
+```
 # Line 36-45 replacement
       - name: Run bandit scan
         run: |
@@ -151,13 +151,13 @@ tests:
             bandit-results.json
             bandit-report.txt
           retention-days: 30
-```
+```text
 
 ## Step 3: Audit and Document Nosec Comments
 
 Create audit script to review all nosec comments:
 
-```python name=tools/audit_nosec.py
+```
 #!/usr/bin/env python3
 """
 Audit all # nosec comments in the codebase.
@@ -221,10 +221,10 @@ if __name__ == "__main__":
         print(f"WARNING: {len(findings)} nosec suppressions found.  Review recommended.",
               file=sys.stderr)
         sys.exit(1)
-```
+```text
 
 ## Validation
-```bash
+```
 # Run bandit locally
 bandit -r src/ -c bandit.yaml -f txt
 
@@ -233,7 +233,7 @@ python tools/audit_nosec.py
 
 # Verify workflow
 act -j bandit-scan  # Using act for local testing
-```
+```text
 ````
 
 ---
@@ -249,50 +249,50 @@ act -j bandit-scan  # Using act for local testing
 
 ## Step 1: Identify All Dockerfiles
 
-```bash
+````
 find . -name "Dockerfile*" -o -name "*. dockerfile" | grep -v node_modules
-```
+```text
 
 ## Step 2: Update Base Images
 
 ### Search Pattern
-```bash
-grep -r "FROM debian:buster" . --include="Dockerfile*" --include="*.dockerfile"
 ```
+grep -r "FROM debian:buster" . --include="Dockerfile*" --include="*.dockerfile"
+```text
 
 ### Replacement Strategy
 
 **Option A: Upgrade to Debian Bullseye (Recommended)**
-```dockerfile
+```
 # Before
 FROM debian:buster
 
 # After
 FROM debian:bullseye-slim
-```
+```text
 
 **Option B: Upgrade to Debian Bookworm (Latest Stable)**
-```dockerfile
+```
 # Before
 FROM debian:buster
 
 # After
 FROM debian:bookworm-slim
-```
+```text
 
 **Option C: Use Python Official Images**
-```dockerfile
+```
 # Before
 FROM debian:buster
 RUN apt-get update && apt-get install -y python3.10
 
 # After
 FROM python:3.10-slim-bullseye
-```
+```text
 
 ## Step 3: Update Multi-Stage Builds
 
-```dockerfile name=Dockerfile.security-scanner
+```
 # Multi-stage build for security scanning tools
 # Stage 1: Build tools
 FROM python:3.11-slim-bullseye AS builder
@@ -336,11 +336,11 @@ RUN set -eux \
 WORKDIR /workspace
 
 ENTRYPOINT ["/bin/bash"]
-```
+```text
 
 ## Step 4: Update GitHub Workflow
 
-```yaml name=.github/workflows/security-scanning.yml
+```
 # Update Docker build step
       - name: Build Security Scanner Image
         run: |
@@ -361,17 +361,17 @@ ENTRYPOINT ["/bin/bash"]
               bandit -r src/ -c bandit.yaml -f json -o bandit-results.json
               detect-secrets scan --baseline . secrets. baseline
             "
-```
+```text
 
 ## Validation
-```bash
+```
 # Local Docker build test
 docker build -t codex-test -f Dockerfile.security-scanner .
 docker run --rm codex-test python --version
 
 # Vulnerability scan
 docker scout cves codex-test
-```
+```text
 ````
 
 ---
@@ -387,22 +387,22 @@ Then continue with reviewing all listed below and verifying all that was success
 ## 2.1 Configuration Audit
 
 ### Check 1: Environment Variables Documentation
-```bash
+````
 # Extract all env vars referenced in code
 grep -rh "os\. getenv\|os\.environ" src/ --include="*.py" | \
   sed -n 's/.*["\x27]\([A-Z_][A-Z0-9_]*\)["\x27]. */\1/p' | \
   sort -u > . codex/env_vars_found.txt
 
 # Compare with documented vars in .codex/archive/deprecated/AGENTS.md
-```
+```text
 
 ### Check 2: Package Dependencies Sync
-```bash
+```
 # Compare pyproject.toml dependencies across subprojects
 python tools/check_dep_sync.py
-```
+```text
 
-```python name=tools/check_dep_sync.py
+```
 #!/usr/bin/env python3
 """
 Verify dependency consistency across multiple pyproject.toml files.
@@ -466,21 +466,21 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print("✅ No dependency conflicts found")
-```
+```text
 
 ## 2.2 Code Quality & Structure
 
 ### Check 3: Import Organization
-```bash
+```
 # Verify isort compliance
 isort --check-only --diff src/
 
 # Fix if needed
 isort src/
-```
+```text
 
 ### Check 4: Type Hints Coverage
-```python name=tools/analyze_type_coverage.py
+```
 #!/usr/bin/env python3
 """
 Analyze type hint coverage across Python modules.
@@ -570,21 +570,21 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ## 2.3 Testing Infrastructure
 
 ### Check 5: Test Coverage Analysis
-```bash
+```
 # Run tests with coverage
 pytest --cov=src --cov-report=html --cov-report=term-missing
 
 # Generate coverage badge
 coverage-badge -o .codex/coverage. svg -f
-```
+```text
 
 ### Check 6: Missing Test Cases
-```python name=tools/find_untested_modules.py
+```
 #!/usr/bin/env python3
 """
 Identify Python modules without corresponding test files.
@@ -624,12 +624,12 @@ if __name__ == "__main__":
         print(f"\nTotal:  {len(untested)} modules")
     else:
         print("✅ All modules have corresponding test files")
-```
+```text
 
 ## 2.4 Documentation Completeness
 
 ### Check 7: Docstring Coverage
-```python name=tools/analyze_docstrings.py
+```
 #!/usr/bin/env python3
 """
 Analyze docstring coverage and quality.
@@ -726,32 +726,32 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ## 2.5 Security & Compliance
 
 ### Check 8: Dependency Vulnerabilities
-```bash
+```
 # Check for known vulnerabilities
 pip-audit --requirement requirements.txt --format json > . codex/vulnerabilities.json
 
 # Check with safety
 safety check --json > .codex/safety-report.json
-```
+```text
 
 ### Check 9: Secret Scanning
-```bash
+```
 # Update secrets baseline
 detect-secrets scan --update .secrets. baseline
 
 # Audit baseline
 detect-secrets audit .secrets.baseline
-```
+```text
 
 ## 2.6 Physics-Inspired Optimization Analysis
 
 ### Check 10: Entropy & Redundancy Analysis
-```python name=tools/analyze_code_entropy.py
+```
 #!/usr/bin/env python3
 """
 Analyze code entropy and redundancy using information theory principles.
@@ -907,10 +907,10 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ### Check 11: Path Optimization (Field Theory Inspired)
-```python name=tools/analyze_import_paths.py
+```
 #!/usr/bin/env python3
 """
 Analyze import dependencies using field theory concepts.
@@ -1051,7 +1051,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 ````
 
 ---
@@ -1073,7 +1073,7 @@ Each iteration follows this pattern:
 
 ### Iteration Template
 
-```markdown
+````
 ## Iteration N:  [Focus Area]
 
 ### Discovered Gaps
@@ -1108,12 +1108,12 @@ Each iteration follows this pattern:
 ### Next Focus Areas
 1. [Area 1]
 2. [Area 2]
-```
+```text
 
 ## Automation Scripts
 
 ### Master Orchestrator
-```python name=tools/orchestrate_improvements.py
+```
 #!/usr/bin/env python3
 """
 Master orchestrator for continuous improvement cycles.
@@ -1396,11 +1396,11 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ## Integration with GitHub Actions
 
-```yaml name=. github/workflows/continuous-improvement.yml
+```
 name: Continuous Improvement
 
 on:
@@ -1473,7 +1473,7 @@ jobs:
                 labels: ['improvement', 'automated'],
               });
             }
-```
+```text
 ````
 
 ---
@@ -1562,7 +1562,7 @@ jobs:
 - [ ] Runbook for common incidents
 - [ ] Post-mortem process defined
 
-```python name=tools/validate_production_readiness.py
+````
 #!/usr/bin/env python3
 """
 Comprehensive production readiness validation.
@@ -1944,11 +1944,11 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ## Generate Production Readiness Report
 
-```python name=tools/generate_readiness_report.py
+```
 #!/usr/bin/env python3
 """
 Generate comprehensive production readiness report in Markdown format.
@@ -2119,7 +2119,7 @@ def main():
 
 if __name__ == "__main__":
     exit(main())
-```
+```text
 ````
 
 ---
@@ -2147,10 +2147,10 @@ if __name__ == "__main__":
 - [ ] Docker images build successfully
 
 **Validation Command**:
-```bash
+````
 # Run full CI pipeline locally
 python tools/validate_production_readiness.py
-```
+```text
 
 ---
 
@@ -2171,11 +2171,11 @@ python tools/validate_production_readiness.py
 - [ ] All secrets properly managed (no hardcoded secrets)
 
 **Validation Command**:
-```bash
+```
 bandit -r src/ -c bandit.yaml
 pip-audit --format=json
 detect-secrets scan --baseline . secrets. baseline
-```
+```text
 
 ---
 
@@ -2196,10 +2196,10 @@ detect-secrets scan --baseline . secrets. baseline
 - [ ] Critical paths have integration tests
 
 **Validation Command**:
-```bash
+```
 pytest --cov=src --cov-report=html --cov-report=term-missing
 python tools/find_untested_modules.py
-```
+```text
 
 ---
 
@@ -2221,11 +2221,11 @@ python tools/find_untested_modules.py
 - [ ] Import coupling energy < 20
 
 **Validation Command**:
-```bash
+```
 mypy src/ --strict
 python tools/analyze_code_entropy. py
 python tools/analyze_import_paths.py
-```
+```text
 
 ---
 
@@ -2247,9 +2247,9 @@ python tools/analyze_import_paths.py
 - [ ] Runbooks for common operations
 
 **Validation Command**:
-```bash
-python tools/analyze_docstrings.py
 ```
+python tools/analyze_docstrings.py
+```text
 
 ---
 
@@ -2271,10 +2271,10 @@ python tools/analyze_docstrings.py
 - [ ] No memory leaks
 
 **Validation Command**:
-```bash
+```
 python tools/profile_performance.py
 locust -f tests/load/locustfile.py
-```
+```text
 
 ---
 
@@ -2296,9 +2296,9 @@ locust -f tests/load/locustfile.py
 - [ ] Error tracking operational
 
 **Validation Command**:
-```bash
-python tools/validate_observability.py
 ```
+python tools/validate_observability.py
+```text
 
 ---
 
@@ -2306,7 +2306,7 @@ python tools/validate_observability.py
 
 ### Current Status Dashboard
 
-```python name=tools/generate_status_dashboard.py
+```
 #!/usr/bin/env python3
 """
 Generate real-time status dashboard for all improvement iterations.
@@ -2434,7 +2434,7 @@ class StatusDashboard:
 | **Progress** | {progress['progress_percentage']:.1f}% |
 
 **Progress Bar**:  
-```
+```text
 [{'█' * int(progress['progress_percentage'] / 5)}{'░' * (20 - int(progress['progress_percentage'] / 5))}] {progress['progress_percentage']:.1f}%
 ```
 
@@ -2493,13 +2493,13 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ---
 
 ## Automated Gap Detection & Prioritization
 
-```python name=tools/detect_gaps. py
+```
 #!/usr/bin/env python3
 """
 Automated gap detection using multiple analysis techniques.
@@ -2799,7 +2799,7 @@ def main():
 if __name__ == "__main__":
     from datetime import datetime
     main()
-```
+```text
 ````
 
 ---
@@ -2831,16 +2831,16 @@ Execute a comprehensive, iterative improvement cycle to resolve all critical bui
 
 **Actions**:
 1. Search entire codebase for references to `codex_plans`:
-   ```bash
+````
    grep -r "codex_plans" .  --exclude-dir=.git --exclude-dir=. codex
-   ```
+   ```text
 
 2. **If package should exist**:
-   ```bash
+```
    mkdir -p src/codex_plans
    touch src/codex_plans/__init__.py
    echo '"""Codex plans module."""' > src/codex_plans/__init__.py
-   ```
+   ```text
 
 3. **If package was removed** (more likely):
    - Check `pyproject.toml` line 239-250 for package-dir mappings
@@ -2848,10 +2848,10 @@ Execute a comprehensive, iterative improvement cycle to resolve all critical bui
    - Verify `[tool.setuptools.packages.find]` doesn't reference `codex_plans`
 
 4. **Validate fix**:
-   ```bash
+```
    python -m build --wheel
    pip install -e .[dev]
-   ```
+   ```text
 
 ---
 
@@ -2862,7 +2862,7 @@ Execute a comprehensive, iterative improvement cycle to resolve all critical bui
 **Actions**:
 1. Create/update `bandit.yaml` in repository root:
 
-```yaml
+```
 # bandit.yaml - Security scanner configuration
 exclude_dirs:
   - /tests/
@@ -2884,11 +2884,11 @@ severity_level: MEDIUM
 skips:
   - B404  # import_subprocess
   - B603  # subprocess_without_shell_equals_true
-```
+```text
 
 2. Update `.github/workflows/security-scanning.yml` (lines 36-39):
 
-```yaml
+```
       - name: Run bandit scan
         run: |
           # Ensure bandit config exists
@@ -2912,12 +2912,12 @@ skips:
             bandit-results.json
             bandit-report.txt
           retention-days: 30
-```
+```text
 
 3.  Audit and document existing `nosec` comments:
-   ```bash
+```
    grep -rn "# nosec" src/ > . codex/nosec_inventory.txt
-   ```
+   ```text
 
 ---
 
@@ -2927,13 +2927,13 @@ skips:
 
 **Actions**:
 1. Find all Dockerfiles:
-   ```bash
+```
    find . -name "Dockerfile*" -o -name "*. dockerfile" | grep -v node_modules
-   ```
+   ```text
 
 2. Update base images from `debian:buster` to `debian:bullseye-slim`:
 
-```dockerfile
+```
 # Example:  Dockerfile. security-scanner
 FROM python:3.11-slim-bullseye
 
@@ -2958,13 +2958,13 @@ RUN pip install --no-cache-dir \
 
 WORKDIR /workspace
 ENTRYPOINT ["/bin/bash"]
-```
+```text
 
 3. Validate Docker builds:
-   ```bash
+```
    docker build -t codex-test -f Dockerfile.security-scanner .
    docker run --rm codex-test python --version
-   ```
+   ```text
 
 ---
 
@@ -2977,17 +2977,17 @@ ENTRYPOINT ["/bin/bash"]
 For each improvement cycle:
 
 1. **DISCOVER**: Run analysis tools
-   ```bash
+```
    python tools/detect_gaps.py
    python tools/analyze_code_entropy.py
    python tools/analyze_import_paths.py
    python tools/find_untested_modules.py
-   ```
+   ```text
 
 2. **PRIORITIZE**: Rank findings by impact/effort ratio
-   ```bash
+```
    python tools/orchestrate_improvements.py
-   ```
+   ```text
 
 3. **IMPLEMENT**: Fix highest-priority items
    - Apply code changes
@@ -2996,17 +2996,17 @@ For each improvement cycle:
    - Commit with descriptive messages
 
 4. **VALIDATE**:  Verify fixes
-   ```bash
+```
    python tools/validate_production_readiness.py
    pytest --cov=src --cov-report=term-missing
    mypy src/ --strict
-   ```
+   ```text
 
 5. **DOCUMENT**: Update status
-   ```bash
+```
    python tools/generate_status_dashboard.py
    python tools/generate_readiness_report.py
-   ```
+   ```text
 
 6. **REPEAT**: Continue until production-ready
 
@@ -3017,36 +3017,36 @@ For each improvement cycle:
 Leverage physics-inspired calculations for continuous improvement:
 
 ### 1. Entropy Analysis (Information Theory)
-```python
+```
 # Measure code information density
 Shannon Entropy = -Σ p(x) * log2(p(x))
 Target: 4-6 bits per character
 Action: Refactor if entropy < 3 or > 7
-```
+```text
 
 ### 2. Coupling Energy (Field Theory)
-```python
+```
 # Measure module interdependencies
 Coupling Energy = in_degree * out_degree
 Target: < 20 per module
 Action: Introduce facades if > 20
-```
+```text
 
 ### 3. Path Optimization (Graph Theory)
-```python
+```
 # Find optimal refactoring paths
 Path Length = shortest_path(module_A, module_B)
 Target: Average path length < 3
 Action: Reduce import chains if > 3
-```
+```text
 
 ### 4. Redundancy Reduction (Compression Theory)
-```python
+```
 # Identify duplicate patterns
 Redundancy Ratio = (total_lines - unique_lines) / total_lines
 Target: < 30%
 Action: Extract common patterns if > 30%
-```
+```text
 
 ---
 
@@ -3080,7 +3080,7 @@ Action: Extract common patterns if > 30%
 
 Auto-generate status dashboards:
 
-```bash
+```
 # Run per-iteration
 python tools/orchestrate_improvements.py
 python tools/generate_status_dashboard.py
@@ -3089,7 +3089,7 @@ python tools/generate_status_dashboard.py
 cat . codex/STATUS_DASHBOARD. md
 cat .codex/PRODUCTION_READINESS_REPORT.md
 cat .codex/GAP_ANALYSIS.md
-```
+```text
 
 ---
 

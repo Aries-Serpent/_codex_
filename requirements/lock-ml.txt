@@ -1483,9 +1483,9 @@ pygments==2.20.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f \
     --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
     # via rich
-pyjwt==2.13.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:41571c89ca91598c79e8ef18a2d07367d4810fbbd6f637794879baf1b7703423 \
-    --hash=sha256:66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728
+pyjwt==2.15.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:7a3742debf6b879e912dbb9819ceec1594be812452b78c5f2e2dfc56564954f8 \
+    --hash=sha256:7a3742debf6b879e912dbb9819ceec1594be812452b78c5f2e2dfc56564954f8
     # via codex-ml
 pynacl==1.6.2 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:018494d6d696ae03c7e656e5e74cdfd8ea1326962cc401bcf018f1ed8436811c \
@@ -2018,9 +2018,9 @@ ujson==5.13.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:fdde6341d213b29f413b5fa9fad1392d5408074c75f0900ed949e97e546fa5df \
     --hash=sha256:ffc61fc756a64f4d169a78cc638d769e3c324f45fc51997626abf4e5e5dd6460
     # via evidently
-urllib3==2.7.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c \
-    --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897
+urllib3==2.8.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3 \
+    --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3
     # via
     #   codex-ml
     #   evidently
@@ -2056,9 +2056,9 @@ uvloop==0.22.1 ; python_full_version < '3.13' and platform_python_implementation
     --hash=sha256:daf620c2995d193449393d6c62131b3fbd40a63bf7b307a1527856ace637fe88 \
     --hash=sha256:e047cc068570bac9866237739607d1313b9253c3051ad84738cbb095be0537b2
     # via uvicorn
-virtualenv==21.3.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:4d28ee41f6d9ec8f1f00cd472b9ffbcedda1b3d3b9a575b5c94a2d004fd51bd7 \
-    --hash=sha256:733750db978ec95c2d8eb4feadaa57091002bce404cb39ba69899cf7bd28944e
+virtualenv==21.7.13 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59 \
+    --hash=sha256:1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59
     # via ray
 watchdog==6.0.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:20ffe5b202af80ab4266dcd3e91aae72bf2da48c0d33bdb15c66658e685e94e2 \

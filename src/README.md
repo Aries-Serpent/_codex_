@@ -6,7 +6,7 @@
 
 ## 📁 Structure
 
-```
+```text
 src/
 ├── codex/           # Codex ingestion pipeline (ingest → analyze → transform → verify)
 ├── rag/             # RAG pipelines (chunking, embedding, retrieval)

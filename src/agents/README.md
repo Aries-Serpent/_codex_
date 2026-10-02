@@ -19,7 +19,7 @@
 
 ## 📁 Structure
 
-```
+```text
 agents/
 ├── workflow_navigator.py          # Tokenized workflow execution
 ├── quantum_game_theory.py         # Quantum-inspired decisions
@@ -137,7 +137,7 @@ Static code analysis capabilities for agents.
 - **Adaptive**: Learn and improve from feedback
 
 ### Workflow Execution
-```
+```text
 Request → WorkflowNavigator → Agent Orchestration
   ↓
 Task Execution (with physics optimization)

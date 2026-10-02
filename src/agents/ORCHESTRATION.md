@@ -510,19 +510,19 @@ sim_result = simulator.run_simulation(num_rounds=10, learning_rate=0.1)
 ### Physics Equations
 
 **Gibbs Distribution** (Classical equilibrium):
-```
+```text
 p(i,j) ∝ exp(-β H(i,j))
 β = inverse temperature (higher = more deterministic)
 ```
 
 **Expected Payoff** (Quantum):
-```
+```text
 E[U] = ⟨ψ|Û|ψ⟩
 Var(U) = ⟨ψ|Û²|ψ⟩ - E[U]²
 ```
 
 **Risk-Adjusted Utility**:
-```
+```text
 J = E[U] - λ·Var(U)
 λ = risk aversion parameter
 ```
@@ -639,7 +639,7 @@ migration_map = {
 
 ### Example Output
 
-```
+```text
 ============================================================
 IMPORT MIGRATION - ASSESSMENT PHASE
 ============================================================

@@ -5,8 +5,6 @@ Uses pytest markers to skip tests on CPU-only runners or when ACCELERATE_TEST is
 """
 
 import os
-import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -19,13 +17,9 @@ from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
-# Add training directory to path
-_REPO_ROOT = Path(__file__).parent.parent.parent
-_TRAINING_DIR = _REPO_ROOT / "training"
-if str(_TRAINING_DIR) not in sys.path:
-    sys.path.insert(0, str(_TRAINING_DIR))
-
-from accelerate_init_guard import (
+# NOTE: Do not manually manipulate sys.path. The conftest.py _CanonicalPackageFinder
+# already resolves 'training' to src/training. Use the canonical 'training.' import prefix.
+from training.accelerate_init_guard import (
     AccelerateInitResult,
     get_distributed_env_info,
     is_accelerate_available,
@@ -111,7 +105,7 @@ class TestAccelerateInitGuard:
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
         # Mock is_gpu_available to return actual bool
-        with patch("src.training.accelerate_init_guard.is_gpu_available") as mock_gpu:
+        with patch("training.accelerate_init_guard.is_gpu_available") as mock_gpu:
             mock_gpu.return_value = False  # Return actual bool, not MagicMock
 
             # Mock accelerate.PartialState if accelerate is available

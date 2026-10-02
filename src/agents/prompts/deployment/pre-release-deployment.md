@@ -192,7 +192,7 @@ gh release view "$VERSION" --json assets -q '.assets[].name'
 ## Expected Output
 
 ### Release Artifacts Directory
-```
+```text
 release_artifacts/
 ├── RELEASE_LOG.md              # Comprehensive release log
 ├── audit_report.md             # Capability assessment
