@@ -29,7 +29,7 @@
 - **Root cause:** Pre-existing markdown fence mismatches across src/**/*.md files
 - **Error types:** closing fence shorter than opener (61), missing language tag (45), nested fences (12), EOF in fence (7)
 - **Worst file:** `src/codex_plans/Tasks_PR_2459.md` (61 errors)
-- **Fix:** `fence-fixer` agent was launched but session ended before completion. Re-run: `python3 src/tools/validate_fences.py` to see current state.
+- **Fix:** `fence-fixer` agent was launched but session ended before completion — 0 changes landed in the tree. The agent was still analyzing at 41 tool calls. Re-run: `python3 src/tools/validate_fences.py` to see current state. A dedicated session with a full 60-min budget is recommended for the 125 errors across 26 files.
 - **Scope:** These are ALL pre-existing on the base branch — not caused by this PR.
 
 ### 2. Validation Pipeline — yamllint
