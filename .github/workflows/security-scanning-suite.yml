@@ -275,7 +275,9 @@ jobs:
             }' > "$SARIF_DIR/codeql-${{ matrix.language }}-empty.sarif"
 
           if [ "${{ steps.codeql.outcome }}" = "failure" ]; then
-            echo "CodeQL analysis produced no SARIF for ${{ matrix.language }}. Preserving the fallback, but keeping the underlying CodeQL failure isolated to the empty-output path."
+            echo "CodeQL analysis produced no SARIF for ${{ matrix.language }}. " \
+              "Preserving the fallback, but keeping the underlying CodeQL failure " \
+              "isolated to the empty-output path."
             exit 0
           fi
         fi

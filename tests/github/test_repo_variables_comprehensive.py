@@ -244,6 +244,11 @@ class TestEnvironmentScopeVariables:
 class TestBatchVariableOperations:
     """Test batch operations and transaction consistency."""
 
+    @pytest.fixture
+    def repo_vars_endpoint(self, repo_owner: str, repo_name: str) -> str:
+        """Return repository variables endpoint."""
+        return f"/repos/{repo_owner}/{repo_name}/actions/variables"
+
     def test_batch_create_variables(
         self,
         repo_vars_endpoint: str,

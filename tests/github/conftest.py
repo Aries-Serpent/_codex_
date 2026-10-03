@@ -23,3 +23,6 @@ import importlib
 # warnings while producing the identical side-effect as a bare import statement.
 importlib.import_module("codex.github")
 importlib.import_module("codex.github.mcp_poster")
+
+# Load the shared GitHub API fixtures used across workflow/approval tests.
+pytest_plugins = ["tests.github.conftest_codex_master_key"]
