@@ -1,0 +1,11 @@
+{
+  "id": "audit-phase1-security-scan.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-phase1-security-scan.json",
+  "archive_path": ".codex/archive/legacy-root/audit-phase1-security-scan.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "518cbd389f76174d8546d45e3999dc5639772adbd3c46ce6c5e42529bf94d989",
+  "size_bytes": 35183,
+  "kind": "historical_root"
+}

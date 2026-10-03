@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_CAPACITY_ROADMAP.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_CAPACITY_ROADMAP.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_CAPACITY_ROADMAP.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "977844ef2117275e53cebe4831cb2e66efb4ceb0bf51e96212a14b6b07e3882b",
+  "size_bytes": 17151,
+  "kind": "historical_root"
+}

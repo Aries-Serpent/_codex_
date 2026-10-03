@@ -753,6 +753,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
         self.migrations = []
         files_scanned = 0
+        # codeql[py/uninitialized-local-variable] - initialized here before the loop
         deprecated_found = 0
 
         # Scan Python files for deprecated imports
@@ -844,6 +845,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         print(f"Energy budget: {energy_budget:.1f}")
 
         selected = []
+        # codeql[py/uninitialized-local-variable] - initialized here before the loop
         total_energy = 0.0
 
         for migration in ranked_migrations:
@@ -1360,6 +1362,7 @@ class EnergyLandscape:
         if not self.states:
             return 0.0
 
+        # codeql[py/uninitialized-local-variable] - initialized here before the loop
         entropy = 0.0
         for state in self.states:
             p = self.gibbs_probability(state)
@@ -1543,6 +1546,8 @@ class SwarmIntelligence:
                 new_velocity.append(v)
 
                 # Position update
+                # codeql[py/uninitialized-local-variable] - p is assigned unconditionally here;
+                # the if-bounds block below only re-assigns it
                 p = particle.position[d] + v
 
                 # Apply bounds if specified
@@ -1589,6 +1594,7 @@ class SwarmIntelligence:
         if not func:
             raise ValueError("Either fitness_function or objective_function must be provided")
 
+        # codeql[py/uninitialized-local-variable] - if-not-bounds guard always assigns
         if not bounds:
             # Default bounds if not provided
             bounds = [(-10.0, 10.0) for _ in range(self.dimensions)]
@@ -1829,6 +1835,8 @@ class TaskDecomposer:
         def _run_task(task_id: str) -> tuple[str, Any]:
             task = self.tasks[task_id]
             task.status = "running"
+            # codeql[py/uninitialized-local-variable] - both try and except return a tuple,
+            # so result is always bound before use
             try:
                 if executor:
                     result = executor(task)
@@ -2483,6 +2491,7 @@ class SuperpositionExplorer:
             path.calculate_optimization_score(self._mlp_scorer)  # type: ignore[attr-defined]
 
         # Optimal iterations ≈ π/4 * √N
+        # codeql[py/uninitialized-local-variable] - if-grover_iterations==0 guard always assigns
         if grover_iterations == 0:
             grover_iterations = max(1, int(math.pi / 4 * math.sqrt(len(paths))))
 
@@ -2920,6 +2929,7 @@ class QuantumOperator:
         state = []
         norm_factor = math.exp(-(abs(alpha) ** 2) / 2)
 
+        # codeql[py/uninitialized-local-variable] - initialized here before the loop
         factorial = 1.0
         for n in range(self.dimension):
             if n > 0:
@@ -3005,6 +3015,7 @@ class ConservationLawChecker:
         total_py = sum(p[1] for p in momenta)
         total_momentum = math.hypot(total_px, total_py)
 
+        # codeql[py/uninitialized-local-variable] - initialized here before the if block
         expected_change = 0.0
         if forces_applied:
             force_x = sum(f[0] for f in forces_applied)
@@ -3166,6 +3177,7 @@ class PathIntegralCalculator:
         The propagator gives the total amplitude for transitioning
         from initial to final state via all possible paths.
         """
+        # codeql[py/uninitialized-local-variable] - if-weights-is-None guard always assigns
         if weights is None:
             weights = [1.0] * len(paths)
 
@@ -3212,6 +3224,7 @@ class PathIntegralCalculator:
         - Classical path identification
         - Interference effects
         """
+        # codeql[py/uninitialized-local-variable] - if-path_labels-is-None guard always assigns
         if path_labels is None:
             path_labels = [f"path_{i}" for i in range(len(paths))]
 
@@ -3354,6 +3367,7 @@ class HamiltonianEvolver:
 
         Preserves Hamiltonian structure and energy conservation.
         """
+        # codeql[py/uninitialized-local-variable] - if-hamiltonian-is-None guard always assigns
         if hamiltonian is None:
             hamiltonian = self.harmonic_hamiltonian
 
@@ -3395,6 +3409,7 @@ class HamiltonianEvolver:
 
         Fixed points satisfy: ∂H/∂q = 0 and ∂H/∂p = 0
         """
+        # codeql[py/uninitialized-local-variable] - if-hamiltonian-is-None guard always assigns
         if hamiltonian is None:
             hamiltonian = self.harmonic_hamiltonian
 
@@ -3411,7 +3426,7 @@ class HamiltonianEvolver:
                 dH_dp = (hamiltonian(q, p + 0.001) - hamiltonian(q, p - 0.001)) / 0.002
 
                 if abs(dH_dq) < 0.1 and abs(dH_dp) < 0.1:
-                    # Check if this is a new fixed point
+                    # codeql[py/uninitialized-local-variable] - is_new initialized here before loop
                     is_new = True
                     for fp in fixed_points:
                         if abs(fp["q"] - q) < step and abs(fp["p"] - p) < step:

@@ -1,0 +1,11 @@
+{
+  "id": "profile_validation_results.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/profile_validation_results.json",
+  "archive_path": ".codex/archive/legacy-root/profile_validation_results.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "da88f9ec1600e8ab9dc557a0fc19f9a0a3f80ddfd5598124cf01c33e9deca80b",
+  "size_bytes": 2285,
+  "kind": "historical_root"
+}

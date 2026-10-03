@@ -1,0 +1,11 @@
+{
+  "id": "deployment_validation_v0.3.0.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/deployment_validation_v0.3.0.py",
+  "archive_path": ".codex/archive/legacy-root/deployment_validation_v0.3.0.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "e6503138cfa10c7ac3925cfe8d6467472717c646828c3cee215b6bedb4a04134",
+  "size_bytes": 11551,
+  "kind": "historical_root"
+}

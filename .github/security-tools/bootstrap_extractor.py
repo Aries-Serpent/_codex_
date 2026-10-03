@@ -101,7 +101,7 @@ class BootstrapExtractor:
             # Apply explicit file modes after creation with least-privilege defaults.
             # Security: executable tools remain owner-only executable (0o700) and
             # non-executable artifacts are owner read/write only (0o600).
-            # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
+            # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions -- modes are least-privilege by design: extracted executable tools are owner-only rwx (0o700), all other artifacts owner-only rw (0o600); group/other are never granted any access
             os.chmod(output_file, 0o700 if executable else 0o600)
 
             print(f"✅ Extracted: {output_file}")

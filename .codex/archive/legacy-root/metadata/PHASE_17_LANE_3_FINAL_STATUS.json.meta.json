@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_17_LANE_3_FINAL_STATUS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_17_LANE_3_FINAL_STATUS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_17_LANE_3_FINAL_STATUS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "f38b15329b5ec5a21d0a36d927e4f656112b66a801c08d7893065843397ec0e5",
+  "size_bytes": 3366,
+  "kind": "historical_root"
+}

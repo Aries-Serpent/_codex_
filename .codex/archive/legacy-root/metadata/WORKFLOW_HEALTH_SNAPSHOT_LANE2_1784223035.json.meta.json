@@ -1,0 +1,11 @@
+{
+  "id": "WORKFLOW_HEALTH_SNAPSHOT_LANE2_1784223035.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WORKFLOW_HEALTH_SNAPSHOT_LANE2_1784223035.json",
+  "archive_path": ".codex/archive/legacy-root/WORKFLOW_HEALTH_SNAPSHOT_LANE2_1784223035.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "652028d048d37ea28e9499d98a3f7cb79df5f3a62d5e12066193a633ceec3f87",
+  "size_bytes": 7350,
+  "kind": "historical_root"
+}

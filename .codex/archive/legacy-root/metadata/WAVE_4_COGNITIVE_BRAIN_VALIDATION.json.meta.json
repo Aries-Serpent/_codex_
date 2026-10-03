@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_4_COGNITIVE_BRAIN_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_4_COGNITIVE_BRAIN_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_4_COGNITIVE_BRAIN_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "6de9d1ff87df83493215df915ccaf3ed1cf15e6c5f1885de4d1a7e764a84b8d0",
+  "size_bytes": 8917,
+  "kind": "historical_root"
+}

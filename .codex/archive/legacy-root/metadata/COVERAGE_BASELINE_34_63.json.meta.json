@@ -1,0 +1,11 @@
+{
+  "id": "COVERAGE_BASELINE_34_63.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/COVERAGE_BASELINE_34_63.json",
+  "archive_path": ".codex/archive/legacy-root/COVERAGE_BASELINE_34_63.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "2a5e3513ba84e95c51e6eddf4c3b2d3c0f6fafd21a8b52dd6e52c8d2af5e4034",
+  "size_bytes": 4599,
+  "kind": "historical_root"
+}

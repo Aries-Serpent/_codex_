@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_FIXES_VERIFICATION.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_FIXES_VERIFICATION.txt",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_FIXES_VERIFICATION.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "30385398034ab38ed7ee7a98144fc41315bbc12fb09880d786880296bb16bc19",
+  "size_bytes": 2547,
+  "kind": "historical_root"
+}

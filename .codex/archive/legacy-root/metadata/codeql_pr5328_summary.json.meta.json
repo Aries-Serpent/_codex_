@@ -1,0 +1,11 @@
+{
+  "id": "codeql_pr5328_summary.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/codeql_pr5328_summary.json",
+  "archive_path": ".codex/archive/legacy-root/codeql_pr5328_summary.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "597623b961bbbd8a69bada64b7fe7cf1400351885668d30d649a1ab3c0294515",
+  "size_bytes": 1713,
+  "kind": "historical_root"
+}

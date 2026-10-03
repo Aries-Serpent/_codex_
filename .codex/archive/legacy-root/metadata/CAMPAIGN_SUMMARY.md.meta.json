@@ -1,0 +1,11 @@
+{
+  "id": "CAMPAIGN_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CAMPAIGN_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/CAMPAIGN_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "991bf696016bad7a6d12863e1864dd39601c43f8ce3116ad10946ca45271da00",
+  "size_bytes": 8475,
+  "kind": "historical_root"
+}

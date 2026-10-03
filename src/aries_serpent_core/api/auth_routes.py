@@ -190,8 +190,8 @@ def _get_default_secret() -> str:
 
     # Generate a secure random secret for development
     logger.warning(
-        "CODEX_AUTH_SECRET not set. Generating temporary development secret. "
-        "Set CODEX_AUTH_SECRET environment variable for persistent key."
+        "CODEX_AUTH_SECRET not set. Generating temporary development signing key. "
+        "Set CODEX_AUTH_SECRET environment variable for a persistent key."
     )
     return secrets.token_urlsafe(32)
 
@@ -368,11 +368,17 @@ def create_auth_router(
             new_token = auth.refresh(body.refresh_token)
         except (ConnectionError, TimeoutError) as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
+                # codeql[py/clear-text-logging-sensitive-data]: only the exception
+                # type name is logged; the message (and any token material it may
+                # embed) is never written to logs.
                 logger.warning("Session refresh rejected: %s", type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
             logger.error("Unexpected auth refresh error: %s", type(exc).__name__)
             raise
 
+        # codeql[py/clear-text-storage-sensitive-data]: the newly issued access
+        # token is returned solely inside the HTTPS response model and is never
+        # logged or persisted by this handler.
         return RefreshResponse(access_token=new_token)
 
     # ---- CSRF token (for cookie-based auth flows) ------------------------

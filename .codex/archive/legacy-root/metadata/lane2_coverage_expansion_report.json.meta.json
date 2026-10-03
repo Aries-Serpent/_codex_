@@ -1,0 +1,11 @@
+{
+  "id": "lane2_coverage_expansion_report.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/lane2_coverage_expansion_report.json",
+  "archive_path": ".codex/archive/legacy-root/lane2_coverage_expansion_report.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "820cdc60f0c0ec956a226a35ba65a4292dcb693665ab9c45d30f55d6526cd0ec",
+  "size_bytes": 6107,
+  "kind": "historical_root"
+}

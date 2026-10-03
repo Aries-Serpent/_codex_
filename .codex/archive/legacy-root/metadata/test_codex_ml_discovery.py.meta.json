@@ -1,0 +1,11 @@
+{
+  "id": "test_codex_ml_discovery.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/test_codex_ml_discovery.py",
+  "archive_path": ".codex/archive/legacy-root/test_codex_ml_discovery.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "ae878e432199fc70717435aab70dc66cc5751160abfddf5a6af1031d7e9728f9",
+  "size_bytes": 14109,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "POST_MERGE_HEALTH_BASELINE_v0.3.0.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/POST_MERGE_HEALTH_BASELINE_v0.3.0.json",
+  "archive_path": ".codex/archive/legacy-root/POST_MERGE_HEALTH_BASELINE_v0.3.0.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "be0941295174caf0453f0dcbda3d89b25b864ce93a7d8360029de9154c84ef38",
+  "size_bytes": 2982,
+  "kind": "historical_root"
+}

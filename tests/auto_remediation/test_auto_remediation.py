@@ -1,19 +1,15 @@
 """Comprehensive test suite for auto-remediation system."""
 
-import sys
-from pathlib import Path
-
 import pytest
 
-# Add tools to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "tools"))
-
-from auto_remediation.fix_generator import (
+# NOTE: Do not manually manipulate sys.path. The conftest.py _CanonicalPackageFinder
+# already resolves 'tools' to src/tools. Use the canonical 'tools.' import prefix.
+from tools.auto_remediation.fix_generator import (
     FixContext,
     FixStrategy,
     IntelligentFixGenerator,
 )
-from auto_remediation.verifier import FixVerifier
+from tools.auto_remediation.verifier import FixVerifier
 
 
 class TestFixGenerator:
@@ -218,7 +214,7 @@ if x > 0:
 
     def test_improvements_detection(self):
         """Test detection of improvements."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from tools.auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -244,7 +240,7 @@ if x > 0:
 
     def test_regression_detection(self):
         """Test detection of regressions."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from tools.auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -270,7 +266,7 @@ if x > 0:
 
     def test_confidence_calculation(self):
         """Test confidence score calculation."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from tools.auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         # Good fix scenario
         pre_good = PreFixSnapshot(
@@ -306,7 +302,7 @@ if x > 0:
 
     def test_success_rate_tracking(self):
         """Test success rate calculation."""
-        from auto_remediation.verifier import (
+        from tools.auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,
@@ -459,7 +455,7 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Simulate multiple remediation attempts
-        from auto_remediation.verifier import (
+        from tools.auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,
@@ -482,7 +478,7 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Track multiple attempts
-        from auto_remediation.verifier import (
+        from tools.auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,

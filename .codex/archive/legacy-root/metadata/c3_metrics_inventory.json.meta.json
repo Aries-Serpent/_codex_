@@ -1,0 +1,11 @@
+{
+  "id": "c3_metrics_inventory.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c3_metrics_inventory.json",
+  "archive_path": ".codex/archive/legacy-root/c3_metrics_inventory.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "c7f4cefc84771dc9649549e244dcf0e3cdeba33b2e64355f86d711c23755896e",
+  "size_bytes": 10254,
+  "kind": "historical_root"
+}

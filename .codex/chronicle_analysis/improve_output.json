@@ -1,0 +1,68 @@
+{
+  "cost_report": {
+    "diagnostics": [
+      "no sessions available in selected window"
+    ],
+    "generated_at": "2026-10-02T09:53:42Z",
+    "global_summary": {
+      "checkpoint_gap_count": 0,
+      "estimated_cost": 0,
+      "heavy_session_count": 0,
+      "repeated_tool_calls": 0,
+      "sessions": 0,
+      "tool_calls": 0
+    },
+    "heavy_sessions_by_lane": {},
+    "metrics": {
+      "credits": null,
+      "credits_available": false,
+      "hard_budget": 20000,
+      "input_tokens": null,
+      "median_tool_calls": 0,
+      "output_tokens": null,
+      "sessions": 0,
+      "tool_calls": 0,
+      "warning_budget": 16000
+    },
+    "per_lane": {},
+    "schema_version": "1.0",
+    "scope": {
+      "lane": null,
+      "sessions": 0
+    },
+    "tips": [
+      {
+        "category": "measurement",
+        "confidence": "high",
+        "description": "The selected source does not expose AI credits. Preserve token or usage fields in the session event store so budget warnings are evidence-based.",
+        "estimated_savings": "Enables budget enforcement",
+        "evidence": "No credits/ai_credits/credit_usage column was available.",
+        "title": "Capture AI-credit usage"
+      }
+    ],
+    "warning_budget_by_lane": {}
+  },
+  "database": "/home/runner/work/_codex_/_codex_/.codex/missing.sqlite",
+  "diagnostics": [
+    "No session records found in Chronicle database.",
+    "no sessions available in selected window"
+  ],
+  "generated_at": "2026-10-02T09:53:42Z",
+  "pattern_observations": {
+    "agents": {},
+    "frequency": {},
+    "insights": [],
+    "performance": {},
+    "time_patterns": {},
+    "tools": {},
+    "trends": {}
+  },
+  "repository": {
+    "branch": "copilot/full-chronicle-remediation",
+    "commit_sha": "c1100b564a1966e78c106cf08e001e8d5c2bbfab",
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "uncommitted_changes": 18
+  },
+  "schema_version": "1.0",
+  "state": "empty"
+}

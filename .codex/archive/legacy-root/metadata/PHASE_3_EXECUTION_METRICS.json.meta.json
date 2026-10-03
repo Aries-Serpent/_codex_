@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_EXECUTION_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_EXECUTION_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_EXECUTION_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2a7452730bf0e9e3ac6d5f52c4199174312e5e3d0097dbfd472db2a628e71f58",
+  "size_bytes": 6475,
+  "kind": "historical_root"
+}

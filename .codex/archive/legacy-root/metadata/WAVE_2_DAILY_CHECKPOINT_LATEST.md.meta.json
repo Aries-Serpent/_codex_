@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_2_DAILY_CHECKPOINT_LATEST.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_2_DAILY_CHECKPOINT_LATEST.md",
+  "archive_path": ".codex/archive/legacy-root/WAVE_2_DAILY_CHECKPOINT_LATEST.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "41868fd5d68476aef200434d5b762403c58df9133d5ca83db51cf6d27b72c1b7",
+  "size_bytes": 15830,
+  "kind": "historical_root"
+}

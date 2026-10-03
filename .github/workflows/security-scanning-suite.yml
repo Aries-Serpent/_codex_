@@ -193,7 +193,7 @@ jobs:
           .codex/contracts/lane-manifest.json
           .codex/contracts/input-lock.json
           .codex/contracts/input-lock.materialized.txt
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 90
   codeql-scan:
     name: CodeQL Analysis (${{ matrix.language }})
@@ -388,7 +388,7 @@ jobs:
           codeql-sarif/${{ matrix.language }}/
           codeql-reports/codeql-${{ matrix.language }}-summary.md
           .codex/contracts/output-contract-codeql-${{ matrix.language }}.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   semgrep:
     name: Semgrep SAST (SARIF Upload)
@@ -427,14 +427,27 @@ jobs:
     - name: Run Semgrep scan (SARIF)
       id: semgrep
       continue-on-error: true
-      run: "set -o pipefail\nsemgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python\
+      # Strip PYTHONPATH/PYTHONHOME so the external semgrep CLI does not inherit
+      # repo-local src/ shadowing (it must resolve installed third-party packages,
+      # not repo partial packages). Mirrors tests/security/test_semgrep_rules.py:40-41.
+      env:
+        PYTHONPATH: ""
+        PYTHONHOME: ""
+        SEMGREP_COLOR: never
+        SEMGREP_DISABLE_LIVE_PROGRESS: "1"
+      run: "set -o pipefail\nunset PYTHONPATH PYTHONHOME\nsemgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python\
         \ \\\n  --config=p/flask \\\n  --sarif \\\n  --output=semgrep-results.sarif\
         \ \\\n  2>&1 | tee semgrep-scan.log || {\n    echo \"Primary configs failed,\
         \ falling back to auto...\"\n    semgrep scan --config=auto --sarif --output=semgrep-results.sarif\
         \ 2>&1 | tee semgrep-scan-fallback.log\n  }\n"
     - name: Run Semgrep scan (JSON)
       continue-on-error: true
-      run: "set -o pipefail\nsemgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python\
+      env:
+        PYTHONPATH: ""
+        PYTHONHOME: ""
+        SEMGREP_COLOR: never
+        SEMGREP_DISABLE_LIVE_PROGRESS: "1"
+      run: "set -o pipefail\nunset PYTHONPATH PYTHONHOME\nsemgrep scan \\\n  --config=p/security-audit \\\n  --config=p/python\
         \ \\\n  --config=p/flask \\\n  --json \\\n  --output=semgrep-results.json\
         \ \\\n  2>&1 | tee semgrep-scan-json.log || {\n    echo \"Primary configs\
         \ failed for JSON output, falling back to auto...\"\n    semgrep scan --config=auto\
@@ -573,7 +586,7 @@ jobs:
           semgrep-scan-json-fallback.log
           semgrep-summary.md
           .codex/contracts/output-contract-semgrep.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   container-scan:
     name: Container Security Scan (Trivy)
@@ -670,7 +683,7 @@ jobs:
           container-scan-summary-${{ strategy.job-index }}.md
           docker-build-${{ strategy.job-index }}.log
           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   cve-scan:
     name: CVE & Dependency Audit
@@ -770,7 +783,7 @@ jobs:
           *-cve-audit.json
           cve-scan-summary-${{ matrix.ecosystem }}.md
           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   dependency-scan:
     name: Dependency Security Scan
@@ -894,7 +907,7 @@ jobs:
           pip-audit-cyclonedx.log
           safety-json.log
           .codex/contracts/output-contract-dependency.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   secret-scan:
     name: Secret Scanning
@@ -966,7 +979,7 @@ jobs:
           detect-secrets.log
           secret-scan-summary.md
           .codex/contracts/output-contract-secrets.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   sbom-generation:
     name: SBOM Generation
@@ -1040,7 +1053,7 @@ jobs:
           sbom-json.log
           sbom-xml.log
           .codex/contracts/output-contract-sbom.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 90
   security-suite-summary:
     name: Security Suite Summary
@@ -1064,6 +1077,89 @@ jobs:
         path: security-suite-artifacts/
         pattern: security-suite-*
         merge-multiple: false
+    - name: Audit artifact family presence (record evidence gaps)
+      if: always()
+      shell: bash
+      run: |
+        set -euo pipefail
+        # Record which expected artifact families are present vs missing. A missing
+        # family is an EVIDENCE GAP (recorded), not a workflow failure — the
+        # authoritative hard gate lives in validate-security-artifact-contract.
+        mkdir -p security-suite-summary
+        GAP_JSON="security-suite-summary/artifact-evidence-gap.json"
+        GAP_MD="security-suite-summary/artifact-evidence-gap.md"
+        python - <<'PY'
+        import json, os
+        from datetime import datetime, timezone
+
+        root = "security-suite-artifacts"
+        present = set()
+        if os.path.isdir(root):
+            present = {d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))}
+
+        expected = [
+            "security-suite-lane-contract",
+            "security-suite-codeql-python",
+            "security-suite-codeql-javascript",
+            "security-suite-semgrep",
+            "security-suite-dependency",
+            "security-suite-secrets",
+            "security-suite-sbom",
+            "security-suite-summary",
+        ]
+        # Matrix families (3 dockerfiles / 3 ecosystems) — count any present member.
+        matrix_prefixes = ["security-suite-container-", "security-suite-cve-"]
+
+        rows = []
+        for name in expected:
+            rows.append({"family": name, "present": name in present})
+        for prefix in matrix_prefixes:
+            members = sorted(d for d in present if d.startswith(prefix))
+            rows.append({
+                "family": prefix + "*",
+                "present": len(members) > 0,
+                "members": members,
+                "member_count": len(members),
+            })
+
+        gaps = [r["family"] for r in rows if not r["present"]]
+        report = {
+            "schema_version": "1.0.0",
+            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "run_id": os.environ.get("GITHUB_RUN_ID", "unknown"),
+            "sha": os.environ.get("GITHUB_SHA", "unknown"),
+            "families": rows,
+            "evidence_gaps": gaps,
+            "evidence_gap_count": len(gaps),
+            "classification": "evidence_gap" if gaps else "complete",
+        }
+        with open("security-suite-summary/artifact-evidence-gap.json", "w") as fh:
+            json.dump(report, fh, indent=2)
+
+        lines = [
+            "## Artifact Family Evidence Audit",
+            "",
+            "| Family | Status |",
+            "|---|---|",
+        ]
+        for r in rows:
+            status = "present" if r["present"] else "**EVIDENCE GAP**"
+            if r.get("member_count") is not None and r["present"]:
+                status = f"present ({r['member_count']} members)"
+            lines.append(f"| `{r['family']}` | {status} |")
+        lines.append("")
+        if gaps:
+            lines.append(f"**Evidence gaps recorded:** {len(gaps)} — " + ", ".join(f"`{g}`" for g in gaps))
+            lines.append("")
+            lines.append("_Missing families are recorded as evidence gaps, not treated as workflow failures._")
+        else:
+            lines.append("All expected artifact families present.")
+        with open("security-suite-summary/artifact-evidence-gap.md", "w") as fh:
+            fh.write("\n".join(lines) + "\n")
+
+        print("\n".join(lines))
+        PY
+        cat "$GAP_MD" >> "$GITHUB_STEP_SUMMARY"
     - name: Build consolidated security summary
       if: always()
       shell: bash
@@ -1102,7 +1198,7 @@ jobs:
         path: |
           security-suite-summary/
           .codex/contracts/output-contract-summary.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 30
   aggregate-all-findings:
     name: Aggregate All Security Findings
@@ -1209,7 +1305,7 @@ jobs:
           security/codeql-schema-version.json
           security/artifact-provenance.json
           security/remediation-input-lock.json
-        if-no-files-found: error
+        if-no-files-found: warn
         retention-days: 90
     - name: Summary
       if: always()

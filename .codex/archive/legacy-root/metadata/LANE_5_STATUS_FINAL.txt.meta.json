@@ -1,0 +1,11 @@
+{
+  "id": "LANE_5_STATUS_FINAL.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_5_STATUS_FINAL.txt",
+  "archive_path": ".codex/archive/legacy-root/LANE_5_STATUS_FINAL.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "1db80c14ca9a8c2aa336b356d4991970e796e93bca90ffc5997de5be381275ed",
+  "size_bytes": 11500,
+  "kind": "historical_root"
+}

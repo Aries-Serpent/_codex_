@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-01T06:41:43Z",
+  "generated_at": "2026-10-02T21:27:27Z",
   "agents": [
     {
       "name": "offline-zip-recovery-agent",
@@ -1349,5 +1349,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "f270ba79f42b49d46e6e19be6514f4c2dcf09ecaa113b48be848787fec751d80"
+  "integrity_sha256": "185b3fc01fbb541686bb2635e3d2423a2f6a1bd38adba5d4a5d0b0d236cfea4b"
 }

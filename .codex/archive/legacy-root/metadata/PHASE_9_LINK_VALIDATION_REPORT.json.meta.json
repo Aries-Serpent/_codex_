@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_LINK_VALIDATION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_LINK_VALIDATION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_LINK_VALIDATION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "7d4aaa9fabe27b3478aeeb2ecddb2b48857e43e57b2c5211397a446a0c13fa84",
+  "size_bytes": 3410,
+  "kind": "historical_root"
+}

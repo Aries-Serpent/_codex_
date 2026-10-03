@@ -1,0 +1,11 @@
+{
+  "id": "A1_dependency_audit_report.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/A1_dependency_audit_report.json",
+  "archive_path": ".codex/archive/legacy-root/A1_dependency_audit_report.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "044d1ff869f69cb910181a18eafb055cc3a0c5db1ac735989be301c714683aa2",
+  "size_bytes": 16659,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "auto-fix-diagnostic.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/auto-fix-diagnostic.json",
+  "archive_path": ".codex/archive/legacy-root/auto-fix-diagnostic.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "ac54592a9c2aa944f432adfdd79a953edd1c1350fb11580ccd92f3586c6432e0",
+  "size_bytes": 703,
+  "kind": "historical_root"
+}

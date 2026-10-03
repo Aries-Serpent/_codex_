@@ -1,0 +1,11 @@
+{
+  "id": "batch3_validation.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/batch3_validation.py",
+  "archive_path": ".codex/archive/legacy-root/batch3_validation.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "0e911740e4ca4336601c9f68488bd1fea655b15dc833d4eebe3adbb03006aae6",
+  "size_bytes": 7498,
+  "kind": "historical_root"
+}

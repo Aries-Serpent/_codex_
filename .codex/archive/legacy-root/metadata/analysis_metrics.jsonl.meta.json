@@ -1,0 +1,11 @@
+{
+  "id": "analysis_metrics.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/analysis_metrics.jsonl",
+  "archive_path": ".codex/archive/legacy-root/analysis_metrics.jsonl",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "d962979cd2f5d5a8f1bdcae5765ddc0cf549cc2f34f4f0120ce275b85a6240eb",
+  "size_bytes": 824,
+  "kind": "historical_root"
+}

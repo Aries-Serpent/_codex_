@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_7_LOAD_TEST_SUSTAINED_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_7_LOAD_TEST_SUSTAINED_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_7_LOAD_TEST_SUSTAINED_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "10dab6cfacac918a5ac0f71fa2d5c0cc64d88d2ec77f9e5b3596874992160e69",
+  "size_bytes": 427,
+  "kind": "historical_root"
+}

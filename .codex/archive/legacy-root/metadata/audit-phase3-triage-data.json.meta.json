@@ -1,0 +1,11 @@
+{
+  "id": "audit-phase3-triage-data.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-phase3-triage-data.json",
+  "archive_path": ".codex/archive/legacy-root/audit-phase3-triage-data.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "2544deaa30e28b26ee12d1da187cda0784e4c9dd3a849a70df1ffd858662331a",
+  "size_bytes": 7675,
+  "kind": "historical_root"
+}

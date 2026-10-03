@@ -1,0 +1,11 @@
+{
+  "id": "documentation_evolution_progress.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/documentation_evolution_progress.json",
+  "archive_path": ".codex/archive/legacy-root/documentation_evolution_progress.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f8e18b9be4d7b5590de4e97a7b98d149e3a22dd2eee14f7bfed3b676eab707c1",
+  "size_bytes": 8387,
+  "kind": "historical_root"
+}

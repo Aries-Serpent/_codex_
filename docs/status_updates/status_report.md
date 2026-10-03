@@ -1,7 +1,9 @@
 <!-- generated 2026-06-22T20:36:36 UTC -->
-# Status Report — _codex_ (v0.2.0)
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+# Status Report — _codex_ (v0.3.0)
+**Last Updated:** 2026-10-02
+**Version:** v0.3.0
+
+> **Active state:** This report reflects the current repo status. Historical backlog and archived remediation notes are archive-only evidence and not active operational work.
 
 Generated: 2026-06-22T20:36:36
 

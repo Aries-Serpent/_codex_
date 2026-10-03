@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-10-02T10:36:24.743977+00:00",
+  "methods": [
+    "rest",
+    "graphql",
+    "gh_cli"
+  ],
+  "rest_available": true,
+  "rest_remaining": 5000,
+  "graphql_available": true,
+  "graphql_remaining": 5000,
+  "gh_cli_available": true,
+  "codeql_available": false,
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [],
+  "branch": "copilot/full-chronicle-remediation",
+  "recommendation": "Use REST for data fetches. "
+}

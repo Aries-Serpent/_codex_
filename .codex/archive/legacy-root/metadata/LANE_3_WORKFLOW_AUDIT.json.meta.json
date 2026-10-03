@@ -1,0 +1,11 @@
+{
+  "id": "LANE_3_WORKFLOW_AUDIT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_3_WORKFLOW_AUDIT.json",
+  "archive_path": ".codex/archive/legacy-root/LANE_3_WORKFLOW_AUDIT.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "3f9f14edd4e3f2829955343e1a8967165d177b11b3b531c6c91759c3b341e550",
+  "size_bytes": 1987,
+  "kind": "historical_root"
+}

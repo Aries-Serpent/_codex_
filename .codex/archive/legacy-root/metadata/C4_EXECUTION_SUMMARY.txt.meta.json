@@ -1,0 +1,11 @@
+{
+  "id": "C4_EXECUTION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/C4_EXECUTION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/C4_EXECUTION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "bdfd0f4a380f301ff90716da430d04935e338827c9fe5bf2440e79251604729c",
+  "size_bytes": 14545,
+  "kind": "historical_root"
+}

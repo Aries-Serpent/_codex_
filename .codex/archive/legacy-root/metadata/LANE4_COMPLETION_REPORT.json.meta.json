@@ -1,0 +1,11 @@
+{
+  "id": "LANE4_COMPLETION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE4_COMPLETION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/LANE4_COMPLETION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "d2c63e81ccaade085a197b72157862087ab88ad9fe8f442063c422da97e66bf4",
+  "size_bytes": 4112,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_FINDINGS_XXE_CMDINJECTION.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_FINDINGS_XXE_CMDINJECTION.md",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_FINDINGS_XXE_CMDINJECTION.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "687e7a796463f92b9ffa11fce1d518eed6ff516b63b1d364b05d25d37b68d196",
+  "size_bytes": 11803,
+  "kind": "historical_root"
+}

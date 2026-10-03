@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_B_ALPHA_MONITORING_INDEX.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_B_ALPHA_MONITORING_INDEX.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_B_ALPHA_MONITORING_INDEX.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "8966209c8259bbc6c05a1d3431d844c03c1e4955719b92805a440753b90730e0",
+  "size_bytes": 12458,
+  "kind": "historical_root"
+}

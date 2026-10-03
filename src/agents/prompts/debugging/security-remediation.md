@@ -8,7 +8,7 @@ Use this prompt when security scans (CodeQL, Bandit, etc.) identify vulnerabilit
 
 ## Prompt Template
 
-```
+````text
 I need help remediating a security vulnerability in the Codex repository.
 
 **Vulnerability Information:**
@@ -29,7 +29,7 @@ I need help remediating a security vulnerability in the Codex repository.
 2. **Common Vulnerabilities and Fixes**
 
    **SQL Injection:**
-   ```python
+````
    # ❌ Vulnerable
    query = f"SELECT * FROM users WHERE name = '{user_input}'"
    cursor.execute(query)
@@ -37,10 +37,10 @@ I need help remediating a security vulnerability in the Codex repository.
    # ✅ Fixed: Use parameterized queries
    query = "SELECT * FROM users WHERE name = ?"
    cursor.execute(query, (user_input,))
-   ```
+   ````text
 
    **Cross-Site Scripting (XSS):**
-   ```python
+````
    # ❌ Vulnerable
    html = f"<div>{user_input}</div>"
 
@@ -54,10 +54,10 @@ I need help remediating a security vulnerability in the Codex repository.
 
    template = Template("<div>{{ user_input }}</div>")
    safe_html = template.render(user_input=user_input)
-   ```
+   ````text
 
    **Path Traversal:**
-   ```python
+````
    # ❌ Vulnerable
    file_path = os.path.join(base_dir, user_input)
    with open(file_path) as f:
@@ -82,10 +82,10 @@ I need help remediating a security vulnerability in the Codex repository.
 
    with open(real_path) as f:
        data = f.read()
-   ```
+   ````text
 
    **Command Injection:**
-   ```python
+````
    # ❌ Vulnerable
    os.system(f"ls {user_input}")
 
@@ -98,10 +98,10 @@ I need help remediating a security vulnerability in the Codex repository.
    if not user_input.isalnum():
        raise ValueError("Invalid input")
    subprocess.run(["ls", user_input], check=True)
-   ```
+   ````text
 
    **Insecure Deserialization:**
-   ```python
+````
    # ❌ Vulnerable
    import pickle
 
@@ -115,10 +115,10 @@ I need help remediating a security vulnerability in the Codex repository.
    # ✅ Or validate source
    if not is_trusted_source(source):
        raise SecurityError("Untrusted data")
-   ```
+   ````text
 
    **Hardcoded Secrets:**
-   ```python
+````
    # ❌ Vulnerable
    API_KEY = "sk_live_abc123..." <!-- pragma: allowlist secret -->
 
@@ -127,10 +127,10 @@ I need help remediating a security vulnerability in the Codex repository.
    API_KEY = os.getenv("API_KEY")
    if not API_KEY:
        raise ValueError("API_KEY not set")
-   ```
+   ````text
 
    **Weak Cryptography:**
-   ```python
+````
    # ❌ Vulnerable: MD5 for passwords
    import hashlib
 
@@ -140,22 +140,22 @@ I need help remediating a security vulnerability in the Codex repository.
    from passlib.hash import bcrypt
 
    password_hash = bcrypt.hash(password)
-   ```
+   ````text
 
 3. **Codex-Specific Security**
 
    **HTML Generation (planning_components.py):**
-   ```python
+````
    # ✅ Already implemented
    def sanitizeHTML(text):
        """Escape HTML to prevent XSS."""
        import html
 
        return html.escape(text)
-   ```
+   ````text
 
    **File Operations (connectors/base.py):**
-   ```python
+````
    # ✅ Already implemented
    def _resolve(self, relative_path: str) -> Path:
        """Validate path to prevent traversal."""
@@ -163,12 +163,12 @@ I need help remediating a security vulnerability in the Codex repository.
        if not os.path.commonpath([self.root, candidate]) == str(self.root):
            raise ConnectorError(f"refusing to access path outside root")
        return candidate
-   ```
+   ````text
 
 4. **Verification and Testing**
 
    **Security Tests:**
-   ```python
+````
    def test_no_path_traversal():
        """Ensure path traversal is prevented."""
        connector = LocalConnector(root="/safe/dir")
@@ -182,10 +182,10 @@ I need help remediating a security vulnerability in the Codex repository.
        safe = sanitize_html(malicious)
        assert "<script>" not in safe
        assert "&lt;script&gt;" in safe
-   ```
+   ````text
 
    **Run Security Scanners:**
-   ```bash
+````
    # CodeQL
    codeql database create --language=python db
    codeql database analyze db --format=sarif-latest --output=results.sarif
@@ -198,7 +198,7 @@ I need help remediating a security vulnerability in the Codex repository.
 
    # detect-secrets
    detect-secrets scan --baseline .secrets.baseline
-   ```
+   ````text
 
 5. **Fix Implementation**
    - Apply minimal fix for vulnerability
@@ -208,7 +208,7 @@ I need help remediating a security vulnerability in the Codex repository.
    - Document security considerations
 
 6. **Post-Fix Validation**
-   ```bash
+````
    # Re-run security scanner
    codeql database analyze db --format=sarif-latest
 
@@ -220,10 +220,10 @@ I need help remediating a security vulnerability in the Codex repository.
 
    # Manual verification
    # Try to exploit the vulnerability
-   ```
+   ````text
 
 7. **Documentation**
-   ```python
+````
    def process_user_input(data: str) -> str:
        """
        Process user input safely.
@@ -236,7 +236,7 @@ I need help remediating a security vulnerability in the Codex repository.
        See: SECURITY.md for security guidelines
        """
        return html.escape(data)
-   ```
+   ````text
 
 **Security Checklist:**
 
@@ -281,13 +281,13 @@ If unsure about security fix:
 - Review similar CVEs
 - Ask security team
 - Don't guess on critical vulnerabilities
-```
+````
 
 ## Examples
 
 ### Example 1: XSS in HTML Generation
 
-```
+````text
 File: scripts/planning_components.py:309
 Issue: User input directly inserted into HTML
 Severity: High
@@ -296,11 +296,11 @@ Fix:
 - Added sanitizeHTML() function
 - Escape all user inputs before HTML insertion
 - Use data attributes instead of IDs for safety
-```
+````
 
 ### Example 2: Path Traversal in Connector
 
-```
+````text
 File: src/codex_ml/connectors/base.py:94
 Issue: Path not validated for traversal
 Severity: Critical
@@ -309,11 +309,11 @@ Fix:
 - Added _resolve() method with path validation
 - Check if resolved path is within root
 - Raise ConnectorError for invalid paths
-```
+````
 
 ### Example 3: Hardcoded Secret
 
-```
+````text
 File: config/api_keys.py:10
 Issue: API key hardcoded in source
 Severity: Critical
@@ -323,7 +323,7 @@ Fix:
 - Use environment variable
 - Add to .env.example
 - Update documentation
-```
+````
 
 ## Related Prompts
 

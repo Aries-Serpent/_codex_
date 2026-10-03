@@ -1,0 +1,11 @@
+{
+  "id": "session_startup_packet.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_startup_packet.json",
+  "archive_path": ".codex/archive/legacy-root/session_startup_packet.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "9a74400f298c7dc921dc3b5f0e18da002b08032aeeb546a695d64759e4bf0fdf",
+  "size_bytes": 315,
+  "kind": "historical_root"
+}

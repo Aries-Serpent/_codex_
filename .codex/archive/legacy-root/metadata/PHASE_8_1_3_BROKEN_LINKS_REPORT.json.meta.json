@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_1_3_BROKEN_LINKS_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_1_3_BROKEN_LINKS_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_1_3_BROKEN_LINKS_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "9093d0c59ab40c7882a44cef02937a22884dd2db8f6cd726700d41051188f4df",
+  "size_bytes": 790278,
+  "kind": "historical_root"
+}

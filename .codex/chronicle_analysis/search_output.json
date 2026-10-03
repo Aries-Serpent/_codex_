@@ -1,0 +1,12 @@
+{
+  "diagnostics": [
+    "Search index contains no sessions."
+  ],
+  "generated_at": "2026-10-02T09:53:43Z",
+  "hit_count": 0,
+  "hits": [],
+  "index": "/home/runner/work/_codex_/_codex_/.codex/chronicle_analysis/chronicle_search_index.json",
+  "query": "repo state",
+  "schema_version": "1.0",
+  "state": "empty"
+}

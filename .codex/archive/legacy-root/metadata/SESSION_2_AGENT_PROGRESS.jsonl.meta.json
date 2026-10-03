@@ -1,0 +1,11 @@
+{
+  "id": "SESSION_2_AGENT_PROGRESS.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SESSION_2_AGENT_PROGRESS.jsonl",
+  "archive_path": ".codex/archive/legacy-root/SESSION_2_AGENT_PROGRESS.jsonl",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "cafb924cd72df47de5519fe07e15b2bd13f8393965a4a5acd613b08a3dda5b98",
+  "size_bytes": 506,
+  "kind": "historical_root"
+}

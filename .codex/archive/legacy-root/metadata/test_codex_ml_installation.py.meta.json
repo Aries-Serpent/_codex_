@@ -1,0 +1,11 @@
+{
+  "id": "test_codex_ml_installation.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/test_codex_ml_installation.py",
+  "archive_path": ".codex/archive/legacy-root/test_codex_ml_installation.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "5edef281e04db37208f11fea3fae75cea68ef3c0e644af94c5178944f9291b4d",
+  "size_bytes": 13730,
+  "kind": "historical_root"
+}

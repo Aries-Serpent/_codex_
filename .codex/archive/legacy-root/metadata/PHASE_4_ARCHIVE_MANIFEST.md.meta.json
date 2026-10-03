@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_ARCHIVE_MANIFEST.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_ARCHIVE_MANIFEST.md",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_ARCHIVE_MANIFEST.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "25192e502013db64530f517d8be62c765c028a61b5ccf9ca74f6dc03d1d039d9",
+  "size_bytes": 22938,
+  "kind": "historical_root"
+}

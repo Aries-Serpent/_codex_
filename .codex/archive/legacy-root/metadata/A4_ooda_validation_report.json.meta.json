@@ -1,0 +1,11 @@
+{
+  "id": "A4_ooda_validation_report.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/A4_ooda_validation_report.json",
+  "archive_path": ".codex/archive/legacy-root/A4_ooda_validation_report.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "2c7bcdc1fd712bdab60d9134b17687d9e49bcdc54c4eff4e383be2face76da49",
+  "size_bytes": 436,
+  "kind": "historical_root"
+}

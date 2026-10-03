@@ -1,0 +1,11 @@
+{
+  "id": "b2_b5_validation.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/b2_b5_validation.py",
+  "archive_path": ".codex/archive/legacy-root/b2_b5_validation.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "84ea945c9db18b3485ea78b43c9c9bb601844ae90f50e8e8c595f6fd463ab902",
+  "size_bytes": 18645,
+  "kind": "historical_root"
+}

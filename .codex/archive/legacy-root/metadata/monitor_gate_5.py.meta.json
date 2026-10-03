@@ -1,0 +1,11 @@
+{
+  "id": "monitor_gate_5.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/monitor_gate_5.py",
+  "archive_path": ".codex/archive/legacy-root/monitor_gate_5.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "de11059d97e2ede10bfc5007fd6b2797b740cb33aab495e6130c20e23505c1e3",
+  "size_bytes": 5728,
+  "kind": "historical_root"
+}

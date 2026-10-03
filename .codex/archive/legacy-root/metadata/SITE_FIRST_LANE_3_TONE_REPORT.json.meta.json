@@ -1,0 +1,11 @@
+{
+  "id": "SITE_FIRST_LANE_3_TONE_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SITE_FIRST_LANE_3_TONE_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/SITE_FIRST_LANE_3_TONE_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c7d38f796993f795e8c7be66573509a89e4775c3ba99c31c6f9dd8e567efa54e",
+  "size_bytes": 4064,
+  "kind": "historical_root"
+}

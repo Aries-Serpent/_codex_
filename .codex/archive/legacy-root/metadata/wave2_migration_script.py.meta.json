@@ -1,0 +1,11 @@
+{
+  "id": "wave2_migration_script.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/wave2_migration_script.py",
+  "archive_path": ".codex/archive/legacy-root/wave2_migration_script.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "55936ed25730dda137f6e7fc5154b77b27b75c9054e76e00351e1d337816a944",
+  "size_bytes": 6788,
+  "kind": "historical_root"
+}

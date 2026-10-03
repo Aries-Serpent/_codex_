@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_QUERY_OPTIMIZATION_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_QUERY_OPTIMIZATION_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_QUERY_OPTIMIZATION_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "508a8d89bf8956e05bb36c92dcb00bd5d5106849e5e2f31548e6d43b54c6a2de",
+  "size_bytes": 18600,
+  "kind": "historical_root"
+}

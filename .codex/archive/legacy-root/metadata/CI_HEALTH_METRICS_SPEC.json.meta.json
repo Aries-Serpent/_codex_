@@ -1,0 +1,11 @@
+{
+  "id": "CI_HEALTH_METRICS_SPEC.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CI_HEALTH_METRICS_SPEC.json",
+  "archive_path": ".codex/archive/legacy-root/CI_HEALTH_METRICS_SPEC.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "e7ee8b3006211780067404c130dbff70517695e63aefd8c94259dcd60bc639f7",
+  "size_bytes": 5465,
+  "kind": "historical_root"
+}

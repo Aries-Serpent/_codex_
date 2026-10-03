@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_1_3_FINAL_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_1_3_FINAL_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_1_3_FINAL_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "495ea8a688441d1d777f78ee3ae0b52453571bfd4c273355923848e627068bb1",
+  "size_bytes": 530,
+  "kind": "historical_root"
+}

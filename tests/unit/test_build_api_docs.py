@@ -1,16 +1,12 @@
 """Unit tests for tools/build_api_docs.py module filtering and list building."""
 
-import sys
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-# Add tools directory to path to import build_api_docs
-tools_dir = Path(__file__).parent.parent.parent / "tools"
-sys.path.insert(0, str(tools_dir))
-
-import build_api_docs
+# NOTE: Do not manually manipulate sys.path. The conftest.py _CanonicalPackageFinder
+# already resolves 'tools' to src/tools. Use the canonical 'tools.' import prefix.
+from tools import build_api_docs
 
 
 class TestFilterModules:

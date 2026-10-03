@@ -1,0 +1,11 @@
+{
+  "id": "c3_metrics_validation.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c3_metrics_validation.txt",
+  "archive_path": ".codex/archive/legacy-root/c3_metrics_validation.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "c8b15a2d6fe7e7b55b014401f39dd3a563be21fa735204f99baa641c521ff2a8",
+  "size_bytes": 721,
+  "kind": "historical_root"
+}

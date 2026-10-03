@@ -1,0 +1,11 @@
+{
+  "id": "DISTRIBUTION_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/DISTRIBUTION_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/DISTRIBUTION_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "6d797f64ce1b59d26af99df2cde9ee112eaff151bad39abd0fd5415c109ca4ab",
+  "size_bytes": 6647,
+  "kind": "historical_root"
+}

@@ -86,7 +86,7 @@ Creates immutable snapshots of source code.
 - **manifest.py** - Parse and validate ingestion manifests
 
 **Snapshot Structure:**
-```
+```text
 artifacts/<snapshot-id>/
 ├── source/                 # Original code (immutable)
 ├── manifest.yaml           # Copy of ingestion manifest

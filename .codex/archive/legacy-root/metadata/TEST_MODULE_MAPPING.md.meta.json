@@ -1,0 +1,11 @@
+{
+  "id": "TEST_MODULE_MAPPING.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TEST_MODULE_MAPPING.md",
+  "archive_path": ".codex/archive/legacy-root/TEST_MODULE_MAPPING.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "187b456dd1dd50efb16cf6162d7b6f0bcf76e426f30027ed7401df3e7feb5965",
+  "size_bytes": 16670,
+  "kind": "historical_root"
+}

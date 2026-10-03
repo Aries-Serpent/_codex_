@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_13_WS1_AUDIT_SUMMARY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_13_WS1_AUDIT_SUMMARY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_13_WS1_AUDIT_SUMMARY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "6722d3e13442746b492f5c62180644914aebabf14d5074fcedd9cf1a76bee404",
+  "size_bytes": 4906,
+  "kind": "historical_root"
+}

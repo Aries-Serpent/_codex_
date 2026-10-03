@@ -1,0 +1,11 @@
+{
+  "id": "TEST_STABILIZATION_BASELINE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TEST_STABILIZATION_BASELINE.json",
+  "archive_path": ".codex/archive/legacy-root/TEST_STABILIZATION_BASELINE.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "1677d786fac0f8c29cc564eea34548648e4c6b30fc78e615922e1e2b780e1781",
+  "size_bytes": 648,
+  "kind": "historical_root"
+}

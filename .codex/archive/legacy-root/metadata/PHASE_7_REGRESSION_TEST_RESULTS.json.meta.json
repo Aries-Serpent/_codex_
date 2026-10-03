@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_7_REGRESSION_TEST_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_7_REGRESSION_TEST_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_7_REGRESSION_TEST_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "171a27522bb4c8bf727765a8146b1108cf4f43596e56066c6a0718e8d8c5281c",
+  "size_bytes": 8578,
+  "kind": "historical_root"
+}

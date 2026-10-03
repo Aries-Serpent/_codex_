@@ -1,0 +1,11 @@
+{
+  "id": "C5_TASK_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/C5_TASK_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/C5_TASK_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "06fe2eaaec60b166c15e90de5c1c3d5f2fa819975e5ca53aad76b93dd6d01f40",
+  "size_bytes": 11630,
+  "kind": "historical_root"
+}

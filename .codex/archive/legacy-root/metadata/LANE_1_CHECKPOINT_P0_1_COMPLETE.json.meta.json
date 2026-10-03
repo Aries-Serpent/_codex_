@@ -1,0 +1,11 @@
+{
+  "id": "LANE_1_CHECKPOINT_P0_1_COMPLETE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_1_CHECKPOINT_P0_1_COMPLETE.json",
+  "archive_path": ".codex/archive/legacy-root/LANE_1_CHECKPOINT_P0_1_COMPLETE.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "e7088e08839826304ea099622d59f95ab4cbde62079b53c770ebd8da094efdac",
+  "size_bytes": 3272,
+  "kind": "historical_root"
+}

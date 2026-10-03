@@ -1,0 +1,11 @@
+{
+  "id": "TEST_SUITE_RESTORATION_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TEST_SUITE_RESTORATION_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/TEST_SUITE_RESTORATION_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "e82b73eab094a7a0deb3c201f8bff8cec622b039df7c1a31e8df930b8c3d661b",
+  "size_bytes": 10688,
+  "kind": "historical_root"
+}

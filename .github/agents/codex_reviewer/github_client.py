@@ -20,8 +20,13 @@ try:
     HTTPX_AVAILABLE = True
 except ImportError:
     HTTPX_AVAILABLE = False
-    import json
-    import urllib.request
+
+# ``requests`` is a hard runtime dependency (see pyproject.toml ``requests>=2.33.0``).
+# It replaces the dynamic urllib fallback so no user-influenced URL is ever handed
+# to ``urllib.request.urlopen`` (Semgrep dynamic-urllib-use-detected).
+import json
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +224,7 @@ class GitHubAPIClient:
         """Core request logic, exposed for tests and compatibility wrappers."""
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
-        return await self._post_with_urllib(url, payload)
+        return await self._post_with_requests(url, payload)
 
     async def _post_with_httpx(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Post request using httpx library."""
@@ -259,26 +264,32 @@ class GitHubAPIClient:
 
         return {}  # unreachable: loop always returns or raises
 
-    async def _post_with_urllib(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
-        """Fallback: Post request using urllib (synchronous)."""
-        url = self._validated_request_url(url)
-        request = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode('utf-8'),
-            headers=self._get_headers(),
-            method='POST'
-        )
+    async def _post_with_requests(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Fallback: POST via ``requests`` (no dynamic urllib use).
 
+        The URL is still passed through ``_validated_request_url`` first, which
+        enforces the configured ``GITHUB_API_URL`` scheme/host parity, preserves
+        any configured base path, and rejects embedded credentials / traversal.
+        The blocking ``requests`` call is dispatched to a thread-pool executor so
+        the async event loop is never blocked.
+        """
+        url = self._validated_request_url(url)
+        headers = self._get_headers()
+        timeout = self.config.timeout
+
+        def _do_post() -> dict[str, Any]:
+            response = requests.post(url, json=payload, headers=headers, timeout=timeout)
+            response.raise_for_status()
+            return response.json()
+
+        loop = asyncio.get_running_loop()
         for attempt in range(self.config.max_retries):
             try:
-                with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
-                    request, timeout=self.config.timeout
-                ) as response:
-                    return json.loads(response.read().decode('utf-8'))
-
-            except urllib.error.HTTPError as e:
-                if e.code == 422:
-                    logger.error("GitHub API validation error (status=%d).", e.code)  # codeql[py/clear-text-logging-sensitive-data]
+                return await loop.run_in_executor(None, _do_post)
+            except requests.HTTPError as e:
+                status = e.response.status_code if e.response is not None else 0
+                if status == 422:
+                    logger.error("GitHub API validation error (status=%d).", status)  # codeql[py/clear-text-logging-sensitive-data]
                     raise
 
                 if attempt < self.config.max_retries - 1:
@@ -287,7 +298,6 @@ class GitHubAPIClient:
                     await asyncio.sleep(wait_time)
                 else:
                     raise
-
             except Exception as e:
                 logger.error(f"Unexpected error posting review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
                 raise
@@ -319,7 +329,32 @@ class GitHubAPIClient:
 
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)
-        return await self._post_with_urllib(url, payload)
+        return await self._post_with_requests(url, payload)
+
+    async def _get_json(self, url: str, headers: dict[str, str]) -> Any:
+        """GET helper returning the decoded JSON body via ``requests``.
+
+        No dynamic urllib use; the blocking call runs in a thread-pool executor.
+        """
+        loop = asyncio.get_running_loop()
+
+        def _do_get() -> Any:
+            response = requests.get(url, headers=headers, timeout=self.config.timeout)
+            response.raise_for_status()
+            return response.json()
+
+        return await loop.run_in_executor(None, _do_get)
+
+    async def _get_text(self, url: str, headers: dict[str, str]) -> str:
+        """GET helper returning the raw text body via ``requests``."""
+        loop = asyncio.get_running_loop()
+
+        def _do_get() -> str:
+            response = requests.get(url, headers=headers, timeout=self.config.timeout)
+            response.raise_for_status()
+            return response.text
+
+        return await loop.run_in_executor(None, _do_get)
 
     async def get_pr_details(self, repo: str, pr_number: int) -> dict[str, Any]:
         """
@@ -342,11 +377,7 @@ class GitHubAPIClient:
                 response.raise_for_status()
                 return response.json()
         else:
-            request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
-                request, timeout=self.config.timeout
-            ) as response:
-                return json.loads(response.read().decode('utf-8'))
+            return await self._get_json(url, headers)
 
     async def get_pr_files(self, repo: str, pr_number: int) -> list[dict[str, Any]]:
         """
@@ -369,11 +400,7 @@ class GitHubAPIClient:
                 response.raise_for_status()
                 return response.json()
         else:
-            request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
-                request, timeout=self.config.timeout
-            ) as response:
-                return json.loads(response.read().decode('utf-8'))
+            return await self._get_json(url, headers)
 
     async def get_pr_diff(self, repo: str, pr_number: int) -> str:
         """
@@ -397,8 +424,4 @@ class GitHubAPIClient:
                 response.raise_for_status()
                 return response.text
         else:
-            request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(  # nosec B310 -- URL is derived from validated GitHubConfig.base_url and sanitized repo/path values.  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected -- validated GitHub API host and repo/path constraints are enforced before use.
-                request, timeout=self.config.timeout
-            ) as response:
-                return response.read().decode('utf-8')
+            return await self._get_text(url, headers)

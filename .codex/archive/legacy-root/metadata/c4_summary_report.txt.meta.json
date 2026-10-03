@@ -1,0 +1,11 @@
+{
+  "id": "c4_summary_report.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c4_summary_report.txt",
+  "archive_path": ".codex/archive/legacy-root/c4_summary_report.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "cff23bd4ea15e7a2e491053f04682d794795c1adf2e2c8e1dac4cb1f89681af7",
+  "size_bytes": 1529,
+  "kind": "historical_root"
+}

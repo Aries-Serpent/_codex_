@@ -1,0 +1,11 @@
+{
+  "id": "simulate_gate_5_validation.sh",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/simulate_gate_5_validation.sh",
+  "archive_path": ".codex/archive/legacy-root/simulate_gate_5_validation.sh",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "96c69e87fa1e7f82daa6f61aa5ee0f8ec41016f363fddd0784c4ec3f767116cd",
+  "size_bytes": 1148,
+  "kind": "historical_root"
+}

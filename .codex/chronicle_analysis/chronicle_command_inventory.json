@@ -1,0 +1,90 @@
+{
+  "canonical_folder": ".codex/chronicle_analysis",
+  "command_results": [
+    {
+      "command": "python -m aries_serpent_core.cli chronicle standup --format json",
+      "exit_code": 0,
+      "name": "standup",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/standup_output.json"
+    },
+    {
+      "command": "python -m aries_serpent_core.cli chronicle cost-tips --format json",
+      "exit_code": 0,
+      "name": "cost-tips",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/cost_tips_output.json"
+    },
+    {
+      "command": "python -m aries_serpent_core.cli chronicle search repo state --index /home/runner/work/_codex_/_codex_/.codex/chronicle_analysis/chronicle_search_index.json --json",
+      "exit_code": 0,
+      "name": "search",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/search_output.json"
+    },
+    {
+      "command": "python -m aries_serpent_core.cli chronicle reindex --output /home/runner/work/_codex_/_codex_/.codex/chronicle_analysis/chronicle_search_index.json",
+      "exit_code": 0,
+      "name": "reindex",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/reindex_output.json"
+    },
+    {
+      "command": "python -m aries_serpent_core.cli chronicle analyze --pattern frequency --database /home/runner/work/_codex_/_codex_/.codex/missing.sqlite",
+      "exit_code": 0,
+      "name": "analyze",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/analyze_output.json"
+    },
+    {
+      "command": "python -m aries_serpent_core.cli chronicle improve --warning-budget 16000 --hard-budget 20000 --database /home/runner/work/_codex_/_codex_/.codex/missing.sqlite",
+      "exit_code": 0,
+      "name": "improve",
+      "status": "ok",
+      "stdout_path": ".codex/chronicle_analysis/improve_output.json"
+    }
+  ],
+  "generated_at_utc": "2026-10-02T00:00:00Z",
+  "repo_guidance": {
+    "inventory": [
+      "analyze",
+      "cost-tips",
+      "improve",
+      "reindex",
+      "search",
+      "standup"
+    ],
+    "source": "docs/SESSION_STATE_GUIDE.md + src/aries_serpent_core/cli.py"
+  },
+  "search_index_path": ".codex/chronicle_analysis/chronicle_search_index.json",
+  "validation": {
+    "expected_command_inventory": [
+      "analyze",
+      "cost-tips",
+      "improve",
+      "reindex",
+      "search",
+      "standup"
+    ],
+    "found_in_cli": [
+      "analyze",
+      "cost-tips",
+      "improve",
+      "reindex",
+      "search",
+      "standup"
+    ],
+    "found_in_guidance": [
+      "cost-tips",
+      "search"
+    ],
+    "matches_guidance": false,
+    "missing_from_cli": [],
+    "missing_from_guidance": [
+      "analyze",
+      "improve",
+      "reindex",
+      "standup"
+    ]
+  }
+}

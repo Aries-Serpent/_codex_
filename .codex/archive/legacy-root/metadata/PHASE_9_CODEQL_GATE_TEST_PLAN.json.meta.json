@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_CODEQL_GATE_TEST_PLAN.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_CODEQL_GATE_TEST_PLAN.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_CODEQL_GATE_TEST_PLAN.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "590cd761ad1bac98e7a7262fa52ebe3308f2a5c298cb8de080b50c9399398572",
+  "size_bytes": 482,
+  "kind": "historical_root"
+}

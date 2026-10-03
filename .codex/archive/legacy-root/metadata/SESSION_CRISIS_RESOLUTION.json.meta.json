@@ -1,0 +1,11 @@
+{
+  "id": "SESSION_CRISIS_RESOLUTION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SESSION_CRISIS_RESOLUTION.json",
+  "archive_path": ".codex/archive/legacy-root/SESSION_CRISIS_RESOLUTION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "03c295d6543501b187410cb5f7bc3ca660d55097337de268332a8b4806dc4cb7",
+  "size_bytes": 5609,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_5_FLAKY_TEST_REMEDIATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_5_FLAKY_TEST_REMEDIATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_5_FLAKY_TEST_REMEDIATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "372b8fe430d0b47833360b3003a4b5f61b669b57582629edc9000ff442a20601",
+  "size_bytes": 4639474,
+  "kind": "historical_root"
+}

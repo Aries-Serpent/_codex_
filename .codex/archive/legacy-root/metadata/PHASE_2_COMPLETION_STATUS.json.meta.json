@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_COMPLETION_STATUS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_COMPLETION_STATUS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_COMPLETION_STATUS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "9f9ff13e3e3c0b051e3ddd78b9219628e51981ea7d1d330672faba7893f6da9f",
+  "size_bytes": 2462,
+  "kind": "historical_root"
+}

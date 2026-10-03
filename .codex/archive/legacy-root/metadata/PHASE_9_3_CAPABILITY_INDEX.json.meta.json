@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_3_CAPABILITY_INDEX.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_3_CAPABILITY_INDEX.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_3_CAPABILITY_INDEX.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5878b8d73d133b8636f9d98d7f9e191d90e7f48872e6a4b25bd19b9214a3da8a",
+  "size_bytes": 75598,
+  "kind": "historical_root"
+}

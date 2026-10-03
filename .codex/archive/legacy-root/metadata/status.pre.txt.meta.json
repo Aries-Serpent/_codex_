@@ -1,0 +1,11 @@
+{
+  "id": "status.pre.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/status.pre.txt",
+  "archive_path": ".codex/archive/legacy-root/status.pre.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "2f17b164b2bed1575878814ad07010c984d43e3c54b0336dcd2947abdef2116e",
+  "size_bytes": 25,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "phase_b_monitoring_samples.sh",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_b_monitoring_samples.sh",
+  "archive_path": ".codex/archive/legacy-root/phase_b_monitoring_samples.sh",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "79f74b9914e5bc5414ffa3bec852f8f8eea7d9c449cc25074ab75c1d175c5911",
+  "size_bytes": 719,
+  "kind": "historical_root"
+}

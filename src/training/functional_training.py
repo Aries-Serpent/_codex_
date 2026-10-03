@@ -449,7 +449,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         if getattr(tokenizer, "pad_token", None) is None:
             logger.warning(
-                "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "Text backend '%s' has no pad token; falling back to eos padding. "
                 "This may affect training behaviour.",
                 type(tokenizer).__name__,
             )

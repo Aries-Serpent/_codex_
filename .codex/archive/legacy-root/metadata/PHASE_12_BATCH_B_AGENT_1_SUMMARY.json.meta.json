@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_12_BATCH_B_AGENT_1_SUMMARY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_12_BATCH_B_AGENT_1_SUMMARY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_12_BATCH_B_AGENT_1_SUMMARY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "492253fd7e2af88ecd3853646b15955ebc7bf313d1c9345a87c63afa4a4c90e0",
+  "size_bytes": 4024,
+  "kind": "historical_root"
+}

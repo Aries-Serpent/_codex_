@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_1_BASELINE_DATA.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_1_BASELINE_DATA.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_1_BASELINE_DATA.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "63d0493e72e084775dbbed97b51a38218c8dd185225b10f18f1bd792d403ea33",
+  "size_bytes": 1649,
+  "kind": "historical_root"
+}

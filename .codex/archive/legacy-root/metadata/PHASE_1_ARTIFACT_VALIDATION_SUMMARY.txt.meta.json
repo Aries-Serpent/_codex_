@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_1_ARTIFACT_VALIDATION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_1_ARTIFACT_VALIDATION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_1_ARTIFACT_VALIDATION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "ea4cb568ef0f6df6910cbc9170969ed2c060331023aab4e53013a33b05f42772",
+  "size_bytes": 3892,
+  "kind": "historical_root"
+}

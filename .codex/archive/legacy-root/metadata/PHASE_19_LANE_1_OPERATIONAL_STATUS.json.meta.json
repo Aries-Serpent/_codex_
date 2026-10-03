@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_19_LANE_1_OPERATIONAL_STATUS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_19_LANE_1_OPERATIONAL_STATUS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_19_LANE_1_OPERATIONAL_STATUS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "1f1090a562420babbdc6b3e1a93d7d7da31e4089e5a1486be2f75420e5f3a02e",
+  "size_bytes": 5859,
+  "kind": "historical_root"
+}

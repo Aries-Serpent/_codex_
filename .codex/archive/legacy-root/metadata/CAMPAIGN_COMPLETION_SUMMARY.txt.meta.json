@@ -1,0 +1,11 @@
+{
+  "id": "CAMPAIGN_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CAMPAIGN_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/CAMPAIGN_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "2b1c88c5f85a5ab40d64d83eccfaef427b28f56d5e95ad65fd1749cddd58d003",
+  "size_bytes": 8299,
+  "kind": "historical_root"
+}

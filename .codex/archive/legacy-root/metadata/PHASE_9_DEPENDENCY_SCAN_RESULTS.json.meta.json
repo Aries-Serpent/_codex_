@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_DEPENDENCY_SCAN_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_DEPENDENCY_SCAN_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_DEPENDENCY_SCAN_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "89f9544bcf92c961e3fd09edb220a877932ae15f59fdb86f4bf84947ad9ab479",
+  "size_bytes": 9993,
+  "kind": "historical_root"
+}

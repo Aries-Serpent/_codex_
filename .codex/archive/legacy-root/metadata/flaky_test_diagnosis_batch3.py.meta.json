@@ -1,0 +1,11 @@
+{
+  "id": "flaky_test_diagnosis_batch3.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/flaky_test_diagnosis_batch3.py",
+  "archive_path": ".codex/archive/legacy-root/flaky_test_diagnosis_batch3.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "cfefc13aec5b4e5cfb428dc7c039b265a31a4bdc8866fdf5a6b64389ca33021f",
+  "size_bytes": 3790,
+  "kind": "historical_root"
+}

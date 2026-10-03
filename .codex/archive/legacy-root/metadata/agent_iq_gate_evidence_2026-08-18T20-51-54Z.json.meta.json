@@ -1,0 +1,11 @@
+{
+  "id": "agent_iq_gate_evidence_2026-08-18T20-51-54Z.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/agent_iq_gate_evidence_2026-08-18T20-51-54Z.json",
+  "archive_path": ".codex/archive/legacy-root/agent_iq_gate_evidence_2026-08-18T20-51-54Z.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "7bad2f5c206a6ca45a86c1a1efc7273b0d48975e5e4a833eb7887b5eb1be3545",
+  "size_bytes": 714,
+  "kind": "historical_root"
+}

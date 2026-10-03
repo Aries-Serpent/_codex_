@@ -1,0 +1,11 @@
+{
+  "id": "c2_coverage_report.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c2_coverage_report.txt",
+  "archive_path": ".codex/archive/legacy-root/c2_coverage_report.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "5d62469b06495caba5a304f44d8be9d9926220c3b8b1b86c74bb054968020f73",
+  "size_bytes": 10391,
+  "kind": "historical_root"
+}

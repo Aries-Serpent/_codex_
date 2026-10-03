@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_5_LANE_1_EXECUTION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_5_LANE_1_EXECUTION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_5_LANE_1_EXECUTION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "21e578bf00eba2fe7c8b12d9d3fa5a2b6ddf8ee3e9a32ea3b78e9ebb16e4c0f2",
+  "size_bytes": 6190,
+  "kind": "historical_root"
+}

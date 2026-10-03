@@ -1,0 +1,11 @@
+{
+  "id": "LANE_11_ML_VALIDATION_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_11_ML_VALIDATION_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/LANE_11_ML_VALIDATION_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "7feb6a79fd20d260cb9012c9d4c7f7f6c08a6b9b5906e4f573fa920fe235e109",
+  "size_bytes": 4669,
+  "kind": "historical_root"
+}

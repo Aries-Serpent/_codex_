@@ -1,0 +1,11 @@
+{
+  "id": "FALLBACK_CHAIN_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/FALLBACK_CHAIN_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/FALLBACK_CHAIN_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "d0355c447049a28b1feb9986830c95da37fbfad868d847a1dcabb48a24c20a37",
+  "size_bytes": 38392,
+  "kind": "historical_root"
+}

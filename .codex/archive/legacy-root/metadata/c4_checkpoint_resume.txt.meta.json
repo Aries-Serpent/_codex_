@@ -1,0 +1,11 @@
+{
+  "id": "c4_checkpoint_resume.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c4_checkpoint_resume.txt",
+  "archive_path": ".codex/archive/legacy-root/c4_checkpoint_resume.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "e979f0bc6594945454dfb45e5ed7bfcc9afdcc98894c7b0175d64e085e5efe15",
+  "size_bytes": 953,
+  "kind": "historical_root"
+}

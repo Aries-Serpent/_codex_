@@ -428,7 +428,7 @@ pydantic-settings==2.14.2 ; python_full_version < '3.13' and sys_platform == 'li
     # via codex-ml
 pygments==2.20.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via rich
-pyjwt==2.13.0 ; python_full_version < '3.13' and sys_platform == 'linux'
+pyjwt==2.15.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via codex-ml
 pynacl==1.6.2 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via codex-ml
@@ -628,7 +628,7 @@ tzdata==2026.2 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via pandas
 ujson==5.13.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via evidently
-urllib3==2.7.0 ; python_full_version < '3.13' and sys_platform == 'linux'
+urllib3==2.8.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via
     #   codex-ml
     #   evidently
@@ -641,7 +641,7 @@ uvicorn==0.46.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     #   ray
 uvloop==0.22.1 ; python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux'
     # via uvicorn
-virtualenv==21.3.0 ; python_full_version < '3.13' and sys_platform == 'linux'
+virtualenv==21.7.13 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via ray
 watchdog==6.0.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via evidently

@@ -4,7 +4,7 @@ This directory contains pre-defined prompts for AI Agents (ChatGPT 5.1 Agent Mod
 
 ## Directory Structure
 
-```
+```text
 agents/prompts/
 ├── README.md                    # This file
 ├── audit/                       # Audit and improvement prompts
@@ -79,7 +79,7 @@ When adding new prompts:
 
 ## Prompt Template Format
 
-```markdown
+````markdown
 # [Prompt Name]
 
 ## Purpose
@@ -103,7 +103,7 @@ Description of what should be produced.
 
 ## Troubleshooting
 Common issues and solutions.
-```
+````
 
 ## Version History
 

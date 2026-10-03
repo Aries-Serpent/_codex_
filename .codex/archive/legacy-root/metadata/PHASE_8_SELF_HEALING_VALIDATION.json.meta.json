@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_SELF_HEALING_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_SELF_HEALING_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_SELF_HEALING_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "84856d0dc23687966c3b263c4029a2cefa1818ac40a6f5a52448730f2319be6c",
+  "size_bytes": 23849,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_GA_CASCADE_MONITORING_LOG.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_GA_CASCADE_MONITORING_LOG.jsonl",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_GA_CASCADE_MONITORING_LOG.jsonl",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "34763ba606ad8bc556913c212e02b9cfd37895a15c2c041de5c868681e3e9b8d",
+  "size_bytes": 1149,
+  "kind": "historical_root"
+}

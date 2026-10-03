@@ -1,0 +1,11 @@
+{
+  "id": "DOCKER_SECURITY_SCAN_BASELINE.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/DOCKER_SECURITY_SCAN_BASELINE.md",
+  "archive_path": ".codex/archive/legacy-root/DOCKER_SECURITY_SCAN_BASELINE.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "8ec970a85c6f265f0c0bbe22d94d774ce080289b22567c65dd52dc51942db5ee",
+  "size_bytes": 9815,
+  "kind": "historical_root"
+}

@@ -97,8 +97,8 @@ class TestL2DependencyCache:
     def test_l2_pip_cache_key(self):
         """Generate cache key for pip dependencies"""
         requirements_hash = hashlib.md5(
-            b"requests==2.31.0\nnumpy>=1.20.0"
-        ).hexdigest()
+            b"requests==2.31.0\nnumpy>=1.20.0", usedforsecurity=False
+        ).hexdigest()  # nosec B324 - cache key fixture only, not security
         
         cache_key = f"pip-{requirements_hash}"
         assert cache_key.startswith("pip-")
@@ -107,8 +107,8 @@ class TestL2DependencyCache:
     def test_l2_npm_cache_key(self):
         """Generate cache key for npm dependencies"""
         package_lock_hash = hashlib.md5(
-            b'{"dependencies": {"react": "18.2.0"}}'
-        ).hexdigest()
+            b'{"dependencies": {"react": "18.2.0"}}', usedforsecurity=False
+        ).hexdigest()  # nosec B324 - cache key fixture only, not security
         
         cache_key = f"npm-{package_lock_hash}"
         assert cache_key.startswith("npm-")
@@ -116,8 +116,8 @@ class TestL2DependencyCache:
     def test_l2_cargo_cache_key(self):
         """Generate cache key for Rust dependencies"""
         lockfile_hash = hashlib.md5(
-            b"[[package]]\nname = \"serde\"\n"
-        ).hexdigest()
+            b"[[package]]\nname = \"serde\"\n", usedforsecurity=False
+        ).hexdigest()  # nosec B324 - cache key fixture only, not security
         
         cache_key = f"cargo-{lockfile_hash}"
         assert cache_key.startswith("cargo-")
@@ -294,7 +294,7 @@ class TestL4RAGModelCache:
         model_version = "gpt-3.5-turbo-20240630"
         query = "What is X?"
         
-        cache_key = f"model-{model_version}-{hashlib.md5(query.encode()).hexdigest()}"
+        cache_key = f"model-{model_version}-{hashlib.md5(query.encode(), usedforsecurity=False).hexdigest()}"  # nosec B324 - cache key fixture only, not security
         assert model_version in cache_key
     
     def test_l4_cache_staleness_detection(self):
@@ -387,7 +387,7 @@ class TestCachePerformance:
         
         start = time.time()
         for i in range(1000):
-            key = f"cache-{hashlib.md5(str(i).encode()).hexdigest()}"
+            key = f"cache-{hashlib.md5(str(i).encode(), usedforsecurity=False).hexdigest()}"  # nosec B324 - cache key fixture only, not security
         elapsed = (time.time() - start) * 1000
         
         # Should complete in < 10ms

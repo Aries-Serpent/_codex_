@@ -1,0 +1,11 @@
+{
+  "id": "workflow_health_snapshot.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/workflow_health_snapshot.json",
+  "archive_path": ".codex/archive/legacy-root/workflow_health_snapshot.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "2ae01ee7497e8282e754bdb98f6082683bc19e03de4f8f5c014b08fcf9829ef0",
+  "size_bytes": 85,
+  "kind": "historical_root"
+}

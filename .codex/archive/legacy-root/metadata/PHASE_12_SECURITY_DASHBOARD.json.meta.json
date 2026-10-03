@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_12_SECURITY_DASHBOARD.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_12_SECURITY_DASHBOARD.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_12_SECURITY_DASHBOARD.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "4bf2bafd68d4c74a4a4260d7ed75da8bda4d804d96153591501849cfcec8287d",
+  "size_bytes": 1936,
+  "kind": "historical_root"
+}

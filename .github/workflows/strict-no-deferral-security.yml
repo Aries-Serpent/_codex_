@@ -1,9 +1,9 @@
 name: Strict No-Deferral Security Gate
 
-on:
+'on':
   pull_request:
     types: [opened, synchronize, reopened, edited]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: read

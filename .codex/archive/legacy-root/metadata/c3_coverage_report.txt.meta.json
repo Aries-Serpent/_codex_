@@ -1,0 +1,11 @@
+{
+  "id": "c3_coverage_report.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c3_coverage_report.txt",
+  "archive_path": ".codex/archive/legacy-root/c3_coverage_report.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "af56f613d27f6ff223b3ee684a15479227a770b21d546a7271e07845d0571303",
+  "size_bytes": 4895,
+  "kind": "historical_root"
+}

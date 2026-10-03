@@ -1,0 +1,11 @@
+{
+  "id": "TRACK_1_TASK_2_SBOM_REPORT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TRACK_1_TASK_2_SBOM_REPORT.md",
+  "archive_path": ".codex/archive/legacy-root/TRACK_1_TASK_2_SBOM_REPORT.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "cccd060450ad4300d4a81985a8aaaecdda8c258e60b2d646302c14a1fad9c1fb",
+  "size_bytes": 5445,
+  "kind": "historical_root"
+}

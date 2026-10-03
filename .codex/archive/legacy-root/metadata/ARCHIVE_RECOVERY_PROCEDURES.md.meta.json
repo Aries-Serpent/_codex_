@@ -1,0 +1,11 @@
+{
+  "id": "ARCHIVE_RECOVERY_PROCEDURES.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/ARCHIVE_RECOVERY_PROCEDURES.md",
+  "archive_path": ".codex/archive/legacy-root/ARCHIVE_RECOVERY_PROCEDURES.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "af00df05d0eef6287db7ac38fcd1df5c1d5224be333a736a4e64b93ce7dac718",
+  "size_bytes": 226,
+  "kind": "historical_root"
+}

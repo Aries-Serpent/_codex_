@@ -1,0 +1,11 @@
+{
+  "id": "audit_results_raw.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit_results_raw.json",
+  "archive_path": ".codex/archive/legacy-root/audit_results_raw.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "77e7e58e296f30b4211cd5a8e359dba86f22deb180c6897f5615bacdff4a4a28",
+  "size_bytes": 779683,
+  "kind": "historical_root"
+}

@@ -1487,8 +1487,9 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
                 rate_limit=5000,
             )
         except Exception as exc:
+            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- only the exception TYPE NAME is logged (never the exception message or any token value)
             log.warning(
-                "GitHub auth: app installation exchange failed (%s), falling back",
+                "GitHub auth: app installation token failed (%s), falling back",
                 sanitize_for_log(type(exc).__name__),
             )
 
@@ -1496,7 +1497,8 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
     for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
         pat = env.get(var, "").strip()
         if pat:
-            log.info("GitHub auth: using %s as fallback source", var)
+            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- logs only the env-var NAME (e.g. CODEX_MASTER_KEY), never the token value stored in it
+            log.info("github_token: using %s as PAT", var)
             return _GithubTokenResponse(
                 token=pat,
                 expires_at=None,

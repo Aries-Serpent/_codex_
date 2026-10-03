@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_10_TRAFFIC_RAMP_STAGE1_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_10_TRAFFIC_RAMP_STAGE1_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_10_TRAFFIC_RAMP_STAGE1_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "56b005a2eea67857e7fb464e664a60c250589eb6d5d091306d3ab4f9115e815f",
+  "size_bytes": 7842,
+  "kind": "historical_root"
+}

@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-10-02T09:53:39Z",
+  "lane": null,
+  "lane_pattern": "batchable",
+  "missing_work": [
+    "No linked session records were found; completion cannot be confirmed.",
+    "database not found"
+  ],
+  "schema_version": "1.0",
+  "sessions": [],
+  "source_diagnostics": [
+    "database not found"
+  ],
+  "summary": {
+    "commits": 0,
+    "completed_sessions": 0,
+    "incomplete_sessions": 0,
+    "open_blockers": [],
+    "sessions": 0,
+    "tests": 0,
+    "tool_calls": 0,
+    "uncommitted_changes": 0
+  },
+  "task_id": null
+}

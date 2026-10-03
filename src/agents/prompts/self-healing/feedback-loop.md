@@ -293,7 +293,7 @@ python scripts/feedback_loop.py
 ```
 
 ### Feedback Loop Output
-```
+```text
 Starting feedback loop analysis...
 Found 12 feedback items in last 24 hours
 

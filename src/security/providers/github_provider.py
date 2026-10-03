@@ -285,7 +285,7 @@ class GitHubTokenProvider(TokenProvider):
                     return True
                 # Unexpected status — treat as valid but log
                 logger.warning(
-                    "GitHub API returned unexpected status %d; treating token as valid",
+                    "GitHub API returned unexpected status %d; treating credential as valid",
                     resp.status_code,
                 )
                 return True
@@ -477,7 +477,7 @@ class GitHubTokenProvider(TokenProvider):
                     },
                 )
             logger.error(
-                "GitHub API returned %d when creating installation token.",
+                "GitHub API returned %d when creating installation grant.",
                 resp.status_code,
             )
             return RotationResult(
@@ -603,14 +603,14 @@ class GitHubTokenProvider(TokenProvider):
                     logger.info("GitHub revoke API: installation grant revoked successfully.")
                     return True
                 logger.warning(
-                    "revoke_secret(): GitHub API returned %d; token may not be revoked.",
+                    "revoke_secret(): GitHub API returned %d; credential may not be revoked.",
                     resp.status_code,
                 )
                 return False
             # For classic PATs, revocation requires a GitHub OAuth App client_id+secret.
             # Without those credentials we cannot safely call the API — log and return False.
             logger.warning(
-                "revoke_secret(): classic PAT revocation requires OAuth App credentials "
+                "revoke_secret(): classic PAT revocation requires OAuth App client pair "
                 "(client_id + client_secret). Configure GitHubTokenProvider with "
                 "client_id/client_secret to enable revocation. Token NOT revoked."
             )

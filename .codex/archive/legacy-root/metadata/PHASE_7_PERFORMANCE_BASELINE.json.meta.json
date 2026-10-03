@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_7_PERFORMANCE_BASELINE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_7_PERFORMANCE_BASELINE.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_7_PERFORMANCE_BASELINE.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2dac0f9a1e4200527244a3c5cb08cedcbfa3dea3697fa0431d2a1aec4af793a3",
+  "size_bytes": 7706,
+  "kind": "historical_root"
+}

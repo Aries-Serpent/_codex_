@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_2B_AGENT4_BASELINE_CVE_SCAN.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_2B_AGENT4_BASELINE_CVE_SCAN.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_2B_AGENT4_BASELINE_CVE_SCAN.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d84981721fc55778a2477e6c44ff45a4b96e827c6da33be0b8019c88bd80d977",
+  "size_bytes": 59023,
+  "kind": "historical_root"
+}

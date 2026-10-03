@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_LANE_2_3_INFERENCE_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_LANE_2_3_INFERENCE_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_LANE_2_3_INFERENCE_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "b64375f146bedd6e713ae732ad190becf9d31301272cdb7dbf6618a6c950472c",
+  "size_bytes": 11972,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "test_generation_plan.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/test_generation_plan.md",
+  "archive_path": ".codex/archive/legacy-root/test_generation_plan.md",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "4af8e0b1392c1339f8d3d37c9500b6dc82eb0355681f7cd20aad612cd53a9f3b",
+  "size_bytes": 11115,
+  "kind": "historical_root"
+}

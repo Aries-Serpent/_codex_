@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_GA_FINAL_STATUS_LOG.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_GA_FINAL_STATUS_LOG.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_GA_FINAL_STATUS_LOG.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "480c7f0b9a9f7f8941535745263b0588ca0142bc104b6803d9448d44bba8d1c1",
+  "size_bytes": 14264,
+  "kind": "historical_root"
+}
