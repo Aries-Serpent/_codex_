@@ -30,6 +30,22 @@ The repo has already closed the code-fixable PR #5658 review-thread items, but t
 4. If a check reappears on a future PR, attach it to the same ledger entry and update the remediation plan rather than deferring it.
 5. Keep `generated` artifacts pinned to their tracked baselines so timestamp-only churn does not create false follow-up failures.
 
+### Active PR #5660 workflow monitoring (2026-10-03)
+
+The current branch is `copilot/fix-review-comments-5659`, and the pending workflows have been approved and are now in progress. This section captures the live run state for the active investigation and keeps the same no-silent-deferral pattern while the branch is validating.
+
+| Workflow / run | Status | Evidence / note | Action |
+|---|---|---|---|
+| `Agent Token Delegation` — run_id `37154703183` | In progress | Approved + auto-authorized path reached the final `Approve all action_required runs for this PR` step; no hard failure on the active approval path | Continue monitoring until all remaining action-required approvals are cleared. |
+| `Art_CodeQL GA Security Gate` — run_id `37154703082` | In progress | `Perform CodeQL Analysis` step is active; no failing gate yet | Keep watching for severity-threshold or SARIF parsing regressions. |
+| `Art_Semgrep SAST (SARIF Upload)` — run_id `37154703004` | In progress | Semgrep is active on the branch; no failure signal observed yet | If it fails, trace SARIF upload / repo path shadowing and capture the exact failing job. |
+| `Nox Quality Gates` — run_id `37154703098` | In progress | Lint + typecheck succeeded; `Run tests` is active | Keep the failing-check ledger updated if tests fail or if a job errors after the active step. |
+| `Enterprise Compliance & CodeQL` — run_id `37154702998` | In progress | Semgrep + Bandit jobs have succeeded; Python CodeQL matrix still in progress | If any CodeQL matrix job fails, attach the specific failing job name and root cause to this ledger. |
+| `ML Components Test Suite` — run_id `37154703006` | In progress | No failure reported yet | If it fails, classify the cause as code bug vs workflow issue. |
+| `Running Copilot cloud agent` — run_id `37155329126` | In progress | Active assistant session executing the follow-up plan | Treat as the operational conductor for the branch-level validation loop. |
+
+The earlier `Agent Token Delegation` run did report a real preflight failure at `Verify Accountability Report updated in last commit`, but that was auto-healed in the same delegation flow and the subsequent run reached the approval step successfully. This is captured as a branch-level governance issue, not as a silent pass-through.
+
 ## Collection Method
 
 Data collected via GitHub MCP server tools by scanning workflow runs on the `0D_base_` branch and filtering for:
