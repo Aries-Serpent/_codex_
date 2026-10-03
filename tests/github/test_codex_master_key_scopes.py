@@ -320,30 +320,6 @@ class TestTokenExpiration:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-class TestAPIVersionHeader:
-    """Validate correct API version headers are used."""
-
-    def test_valid_api_version_headers(self):
-        """Test valid GitHub API version headers."""
-        valid_versions = {
-            "2022-11-28",
-            "2023-01-01",
-            "2023-06-01",
-            "2024-01-01",
-            "2026-03-10",
-        }
-        # At least one valid version should be present
-        assert valid_versions, "Should have valid API versions defined"
-
-    def test_version_header_format(self):
-        """Test API version header format is YYYY-MM-DD."""
-        import re
-
-        version_pattern = r"^\d{4}-\d{2}-\d{2}$"
-        test_version = "2022-11-28"
-        assert re.match(version_pattern, test_version), "Version should match YYYY-MM-DD format"
-
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Tests: ****** Header Format
 # ─────────────────────────────────────────────────────────────────────────────
@@ -365,28 +341,26 @@ class TestBearerTokenFormat:
         headers = {"Authorization": "Bearer " + token}
         assert headers["Authorization"].startswith("Bearer "), "Auth header should use 'Bearer '"
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Tests: API Version Header Validation
+# ─────────────────────────────────────────────────────────────────────────────
+
+
 class TestAPIVersionHeader:
     """Validate correct API version headers are used."""
 
     def test_valid_api_version_headers(self):
-        """Test valid GitHub API version headers."""
-        valid_versions = {
-            "2022-11-28",
-            "2023-01-01",
-            "2023-06-01",
-            "2024-01-01",
-            "2026-03-10",
-        }
-        # At least one valid version should be present
-        assert valid_versions, "Should have valid API versions defined"
+        """Test the production GitHub API version header in use."""
+        from aries_serpent_core.github.api_client import _API_VERSION
+
+        assert _API_VERSION == "2022-11-28", "GitHub client must emit the expected API version"
 
     def test_version_header_format(self):
         """Test API version header format is YYYY-MM-DD."""
         import re
 
         version_pattern = r"^\d{4}-\d{2}-\d{2}$"
-        test_version = "2022-11-28"
-        assert re.match(version_pattern, test_version), "Version should match YYYY-MM-DD format"
+        assert re.match(version_pattern, "2022-11-28"), "Version should match YYYY-MM-DD format"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -106,18 +106,18 @@ class GitHubMCPPoster:
         if name == "_record_cb_pattern":
             try:
                 self._api._record_cb_pattern = value
-            except Exception:
-                pass
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
         elif name == "_request":
             try:
                 self._api._request = value
-            except Exception:
-                pass
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
         elif name == "_get":
             try:
                 self._api._get = value
-            except Exception:
-                pass
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
 
     def __init__(self, token: str | None = None) -> None:
         """Initialize the MCP poster with all specialized managers.
@@ -209,10 +209,7 @@ class GitHubMCPPoster:
         self, repo: str, discussion_number: int, body: str
     ) -> dict[str, Any]:
         """Add a comment to a Discussion. See DiscussionManager.add_discussion_comment()."""
-        result = self._discussions.add_discussion_comment(repo, discussion_number, body)
-        if isinstance(result, dict) and "url" in result and result.get("url") and "#" in result["url"]:
-            result = {**result, "url": result["url"].split("#", 1)[0]}
-        return result
+        return self._discussions.add_discussion_comment(repo, discussion_number, body)
 
     def upsert_discussion_comment(
         self, repo: str, discussion_number: int, body: str, marker: str = ""

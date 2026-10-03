@@ -25,4 +25,6 @@ importlib.import_module("codex.github")
 importlib.import_module("codex.github.mcp_poster")
 
 # Load the shared GitHub API fixtures used across workflow/approval tests.
-pytest_plugins = ["tests.github.conftest_codex_master_key"]
+# The plugin is registered at the top-level test entry point instead of inside
+# this subtree conftest so collection remains valid when pytest loads only a
+# subset of the suite.

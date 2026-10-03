@@ -205,7 +205,7 @@ class APIClient:
     ) -> tuple[str, str]:
         """Resolve repository and discussion-category node IDs for GraphQL mutations."""
         query = """
-        query GetDiscussionCategory($owner: String!, $repo: String!, $slug: String!) {
+        query GetDiscussionCategory($owner: String!, $repo: String!) {
           repository(owner: $owner, name: $repo) {
             id
             discussionCategories(first: 100) {
@@ -214,7 +214,7 @@ class APIClient:
           }
         }
         """
-        result = self._graphql(query, {"owner": owner, "repo": repo, "slug": category_slug})
+        result = self._graphql(query, {"owner": owner, "repo": repo})
         repo_data = (result.get("data", {}) or {}).get("repository", {}) or {}
         repo_id = repo_data.get("id")
         if not repo_id:
