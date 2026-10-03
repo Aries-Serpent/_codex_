@@ -182,10 +182,7 @@ class TestTokenFallbackHierarchy:
             },
             clear=False,
         ):
-            try:
-                token, _ = get_token(required_elevated=True)
-            except Exception:
-                token, _ = get_token(required_elevated=False)
+            token, _ = get_token(required_elevated=False)
             assert token == "gh", "GH_TOKEN should be tertiary fallback"
 
 
@@ -320,32 +317,6 @@ class TestTokenExpiration:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Tests: ****** Header Format
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-class TestBearerTokenFormat:
-    """Validate correct Authorization header format."""
-
-    def test_bearer_token_header_format(self):
-        """Test a bearer token is correctly formatted."""
-        token = "test_token"
-        header = "Bearer " + token
-        assert header.startswith("Bearer "), "Token header should start with 'Bearer '"
-        assert len(header) > len("Bearer "), "Token header should include token value"
-
-    def test_bearer_token_in_authorization_header(self):
-        """Test token placement in Authorization header."""
-        token = "test_token"
-        headers = {"Authorization": "Bearer " + token}
-        assert headers["Authorization"].startswith("Bearer "), "Auth header should use 'Bearer '"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Tests: API Version Header Validation
-# ─────────────────────────────────────────────────────────────────────────────
-
-
 class TestAPIVersionHeader:
     """Validate correct API version headers are used."""
 
@@ -361,25 +332,3 @@ class TestAPIVersionHeader:
 
         version_pattern = r"^\d{4}-\d{2}-\d{2}$"
         assert re.match(version_pattern, "2022-11-28"), "Version should match YYYY-MM-DD format"
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Tests: ****** Header Format
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-class TestBearerTokenFormat:
-    """Validate correct Authorization header format."""
-
-    def test_bearer_token_header_format(self):
-        """Test a bearer token is correctly formatted."""
-        token = "test_token"
-        header = "Bearer " + token
-        assert header.startswith("Bearer "), "Token header should start with 'Bearer '"
-        assert len(header) > len("Bearer "), "Token header should include token value"
-
-    def test_bearer_token_in_authorization_header(self):
-        """Test token placement in Authorization header."""
-        token = "test_token"
-        headers = {"Authorization": "Bearer " + token}
-        assert headers["Authorization"].startswith("Bearer "), "Auth header should use 'Bearer '"

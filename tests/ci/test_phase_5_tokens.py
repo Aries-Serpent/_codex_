@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 from typing import Any, Dict
 
 import pytest
@@ -145,8 +146,8 @@ class TestScenario2BackupKeyFallback:
         backup_key = get_token(required_elevated=True)[0]
         assert isinstance(backup_key, str) and len(backup_key) > 0, "backup_key must be a non-empty string"
 
-        # Verify CODEX_MASTER_KEY is not set
-        assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
+        # Verify CODEX_MASTER_KEY is not set for this isolated env.
+        assert os.environ.get("CODEX_MASTER_KEY") is None, "Master key should be unset"
 
         # Test 1: get_token retrieves backup key
         token, source = get_token(required_elevated=False)
@@ -200,9 +201,9 @@ class TestScenario3GHTokenFallback:
         gh_token = get_token(required_elevated=False)[0]
         assert isinstance(gh_token, str) and len(gh_token) > 0, "gh_token must be a non-empty string"
 
-        # Verify CODEX_* keys are not set
-        assert get_token(required_elevated=True)[0] is None, "Master key should be unset"
-        assert get_token(required_elevated=True)[0] is None, "Backup key should be unset"
+        # Verify CODEX_* keys are not set for this isolated env.
+        assert os.environ.get("CODEX_MASTER_KEY") is None, "Master key should be unset"
+        assert os.environ.get("CODEX_BACKUP_KEY") is None, "Backup key should be unset"
 
         # Test 1: get_token retrieves GH_TOKEN
         token, source = get_token(required_elevated=False)
@@ -629,7 +630,7 @@ class TestScenario8Base64RoundTrip:
         - Scenario 8 requires elevated token (CODEX_MASTER_KEY or CODEX_BACKUP_KEY)
         - GH_TOKEN cannot be used for elevated operations
         """
-        # Should fail to get elevated token
+        # Should fail to get elevated token.
         with pytest.raises(TokenResolutionError):
             get_token(required_elevated=True)
 
@@ -673,8 +674,8 @@ class TestPhase5TokenIntegration:
         master = token_factory.create_token("master")
         backup = token_factory.create_token("backup")
 
-        get_token(required_elevated=True)[0] = master
-        get_token(required_elevated=True)[0] = backup
+        os.environ["CODEX_MASTER_KEY"] = master
+        os.environ["CODEX_BACKUP_KEY"] = backup
 
         token, source = get_token(required_elevated=False)
         assert token == master, "Master key should have priority"
