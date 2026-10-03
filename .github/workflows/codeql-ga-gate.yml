@@ -158,18 +158,25 @@ jobs:
         STATUS="PASS"
         REASON=""
 
-        # Check for critical alerts (always blocking)
-        if [ "$CRITICAL" -gt 0 ]; then
-          BLOCKED=true
-          STATUS="FAIL"
-          REASON="Critical vulnerabilities detected ($CRITICAL)"
-        fi
-
-        # Check for high alerts (blocking based on severity threshold)
-        if [ "$HIGH" -gt 0 ] && [ "$SEVERITY_THRESHOLD" != "critical" ]; then
-          BLOCKED=true
-          STATUS="FAIL"
-          REASON="High severity vulnerabilities detected ($HIGH)"
+        # Enforce a mutually-exclusive severity threshold.
+        if [ "$SEVERITY_THRESHOLD" = "critical" ]; then
+          if [ "$CRITICAL" -gt 0 ]; then
+            BLOCKED=true
+            STATUS="FAIL"
+            REASON="Critical vulnerabilities detected ($CRITICAL)"
+          fi
+        elif [ "$SEVERITY_THRESHOLD" = "high" ]; then
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            BLOCKED=true
+            STATUS="FAIL"
+            REASON="Critical or high severity vulnerabilities detected ($CRITICAL critical / $HIGH high)"
+          fi
+        elif [ "$SEVERITY_THRESHOLD" = "medium" ]; then
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ] || [ "$MEDIUM" -gt 0 ]; then
+            BLOCKED=true
+            STATUS="FAIL"
+            REASON="Critical, high, or medium severity vulnerabilities detected ($CRITICAL critical / $HIGH high / $MEDIUM medium)"
+          fi
         fi
 
         # Override if dry-run mode

@@ -163,7 +163,7 @@ Use the shared helper for the following operation types:
 The canonical helper entry points are:
 
 ```python
-from ci.github_write_helper import (
+from scripts.ci.github_write_helper import (
     build_pr_comment_request,
     build_discussion_comment_request,
     build_workflow_dispatch_request,
