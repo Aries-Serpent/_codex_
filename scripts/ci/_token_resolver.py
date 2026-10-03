@@ -184,8 +184,10 @@ def get_token_scope(token: Optional[str] = None) -> str:
         return "elevated"
     if source == "CODEX_BACKUP_KEY":
         return "standard"
-    if source in {"GH_TOKEN", "GITHUB_TOKEN"}:
+    if source == "GH_TOKEN":
         return "standard"
+    if source == "GITHUB_TOKEN":
+        return "fallback"
     return "fallback"
 
 

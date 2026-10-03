@@ -138,6 +138,8 @@ from pathlib import Path as _Path
 
 import pytest
 
+pytest_plugins = ["tests.github.conftest_codex_master_key"]
+
 # PATCH: Pre-load cryptography when available to stabilize test-time imports
 # in environments where optional crypto dependencies may be missing.
 try:

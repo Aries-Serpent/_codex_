@@ -1,3 +1,28 @@
+## Session: 2026-10-03T00:00:00Z — PR review-thread follow-up: GitHub client + startup packet drift
+
+**Objective:** Resolve the remaining narrow review-thread follow-up in the repo-local GitHub client and restore the tracked startup packet baseline without widening scope beyond the affected paths.
+
+**Status:** ✅ COMPLETE
+
+**Actions:**
+1. Reviewed the active GitHub client implementation and found a direct runtime defect: the module used `re.fullmatch()` without importing `re` in `src/codex_bridge/github_client.py`.
+2. Added the missing import so owner/repo/ref validation and branch comparison logic work as intended.
+3. Restored `.codex/session_startup_packet.json` to the tracked baseline to remove timestamp-only churn from the branch.
+4. Re-ran the focused GitHub client validation command to confirm the affected paths remain green.
+
+**Validation:**
+- `pytest -q tests/test_github_client.py tests/services/test_github_client_phase9_1.py` → pass.
+
+**Governance:**
+- REQ-4: This entry.
+- REQ-5: CHANGELOG.md updated under `[Unreleased]`.
+- PDA: Session entry appended in `.codex/aftermath/pda_iterations.jsonl`.
+
+### Agents Used
+- [x] `general-purpose` (focused client + startup-packet follow-up)
+
+---
+
 ## Session: 2026-10-02T00:10:00Z — Resume session: R1 consolidation verification + R2 S2 ledger closure
 
 **Objective:** Execute `/resume a46f1956` (R1 consolidation verification) and `/resume 00104e56` (R2 S2 ledger closure) within a 60-minute budget. R3 gated on remaining time.

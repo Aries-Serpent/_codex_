@@ -121,7 +121,7 @@ class PullRequestManager:
         result = self._api._request("POST", url, payload)
         # Record to cognitive brain
         self._api._record_cb_pattern(
-            "CB-pr-create",
+            "CB-pr-open",
             f"create_pull_request: {title[:50]}",
             {"repo": repo, "head": head, "base": base, "title": title},
         )
@@ -159,6 +159,9 @@ class PullRequestManager:
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
         params = {"state": state, "per_page": min(per_page, 100)}
         if head:
+            owner = repo.split("/", 1)[0]
+            if ":" not in head and not head.startswith(f"{owner}:"):
+                head = f"{owner}:{head}"
             params["head"] = head
         if base:
             params["base"] = base

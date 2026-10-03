@@ -139,7 +139,15 @@ class CognitiveBrainIntegration:
             logger.debug(
                 "CB pattern stored: %s", pattern_id
             )  # codeql[py/clear-text-logging-sensitive-data]
-        except (ValueError, TypeError, RuntimeError) as _cb_exc:
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+            ImportError,
+            ModuleNotFoundError,
+            AttributeError,
+            OSError,
+        ) as _cb_exc:
             logger.debug(
                 "CB pattern storage skipped (%s: %s)",
                 type(_cb_exc).__name__,

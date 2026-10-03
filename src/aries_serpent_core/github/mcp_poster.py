@@ -100,6 +100,25 @@ class GitHubMCPPoster:
     The public API remains unchanged for backward compatibility.
     """
 
+    def __setattr__(self, name: str, value: Any) -> None:
+        """Keep the façade hooks monkeypatchable without creating a recursive alias loop."""
+        super().__setattr__(name, value)
+        if name == "_record_cb_pattern":
+            try:
+                self._api._record_cb_pattern = value
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
+        elif name == "_request":
+            try:
+                self._api._request = value
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
+        elif name == "_get":
+            try:
+                self._api._get = value
+            except AttributeError:
+                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
+
     def __init__(self, token: str | None = None) -> None:
         """Initialize the MCP poster with all specialized managers.
 
@@ -119,6 +138,14 @@ class GitHubMCPPoster:
 
         # Expose token source for compatibility
         self._token_source = self._api._token_source
+
+        # The public poster methods are the compatibility layer for delegated
+        # managers. We do not alias ``_request`` / ``_get`` back to the poster
+        # itself at initialization time because that creates a recursive call
+        # chain when managers call through the APIClient wrapper.
+        self._api._record_cb_pattern = self._record_cb_pattern
+        self._api._resolve_discussion_node_id = self._resolve_discussion_node_id
+        self._api._find_discussion_comment = self._find_discussion_comment
 
     @property
     def _token(self) -> str:
@@ -164,8 +191,19 @@ class GitHubMCPPoster:
     def post_session_summary_discussion(
         self, repo: str, session_num: int, summary_md: str
     ) -> dict[str, Any]:
-        """Post a session summary as a Discussion. See DiscussionManager.post_session_summary_discussion()."""  # noqa: E501
-        return self._discussions.post_session_summary_discussion(repo, session_num, summary_md)
+        """Post a session summary as a Discussion.
+
+        Compatibility note: preserve the façade contract expected by tests and
+        older callers that monkeypatch ``GitHubMCPPoster.create_discussion`` and
+        then invoke ``post_session_summary_discussion()``.
+        """
+        title = f"Session S{session_num} — Completion Summary"
+        return self.create_discussion(
+            repo=repo,
+            title=title,
+            body=summary_md,
+            category_slug="session-summaries",
+        )
 
     def add_discussion_comment(
         self, repo: str, discussion_number: int, body: str
@@ -382,7 +420,10 @@ class GitHubMCPPoster:
         outcome: str = "pending",
     ) -> None:
         """Record a cognitive-brain pattern. Delegates to CognitiveBrainIntegration."""
-        return self._cb._record_cb_pattern(pattern_id, summary, context, outcome)
+        if context is None:
+            context = {}
+        self._cb._record_cb_pattern(pattern_id, summary, context, outcome)
+        logger.info("CB lifecycle: %s | %s | outcome=%s | %s", pattern_id, summary, outcome, context)
 
     def _request(
         self,
@@ -393,21 +434,21 @@ class GitHubMCPPoster:
         max_retries: int = 3,
     ) -> dict:
         """Make an HTTP request. Delegates to APIClient."""
-        return self._api._request(method, url, body, headers, max_retries)
+        return self._api._request(method, url, body, headers=headers, max_retries=max_retries)
 
     def _get(self, url: str) -> dict:
         """Make a GET request. Delegates to APIClient."""
         return self._api._get(url)
 
-    def _resolve_discussion_node_id(self, repo: str, discussion_number: int) -> str:
+    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
         """Resolve discussion number to GraphQL node ID. Delegates to DiscussionManager."""
-        return self._discussions._resolve_discussion_node_id(repo, discussion_number)
+        return self._discussions._resolve_discussion_node_id(owner, repo, discussion_number)
 
     def _find_discussion_comment(
-        self, repo: str, discussion_number: int, marker: str
+        self, owner: str, repo: str, discussion_number: int, marker: str
     ) -> dict[str, str] | None:
         """Find a discussion comment by marker. Delegates to DiscussionManager."""
-        return self._discussions._find_discussion_comment(repo, discussion_number, marker)
+        return self._discussions._find_discussion_comment(owner, repo, discussion_number, marker)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -848,8 +889,7 @@ def main(argv: list[str] | None = None) -> int:
             )  # noqa: E501
 
     except RuntimeError as exc:
-        type(exc).__name__
-        logger.info("❌ <ERROR_TYPE>")
+        logger.error("❌ %s: %s", type(exc).__name__, exc)
         return 1
     except urllib.error.HTTPError as exc:
         logger.error(f"❌ GitHub API error {exc.code}: {exc.reason}")
