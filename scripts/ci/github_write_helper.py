@@ -7,7 +7,8 @@ through the same token selection policy instead of ad hoc inline fallbacks.
 
 The repository contract is:
 - read-only actions may use github.token
-- write-capable actions must resolve through the canonical token chain
+- write-capable actions must resolve through the canonical token chain in
+  scripts.ci._token_resolver
 - variable/workflow/admin writes must prefer CODEX_MASTER_KEY or CODEX_BACKUP_KEY
 - PR/issue comment posting may use GH_TOKEN when appropriate, but must be
   explicit and auditable
@@ -18,7 +19,7 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from scripts.ci._token_resolver import get_token, get_token_scope, validate_token_scope
+from scripts.ci._token_resolver import get_token
 
 CANONICAL_WRITE_CHAIN = (
     "CODEX_MASTER_KEY",
@@ -63,6 +64,10 @@ def _effective_token_chain(operation: str) -> tuple[str, ...]:
 def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
     """Resolve the correct token for a GitHub operation.
 
+    This helper intentionally delegates to the canonical repository token resolver
+    in scripts.ci._token_resolver so the write contract stays centralized and
+    auditable.
+
     Args:
         operation: A write/read capability name such as "pr_comment",
             "discussion_comment", "workflow_dispatch", or "repo_variable_write".
@@ -74,38 +79,28 @@ def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
         ValueError: when the operation requires a stronger token than the current
             environment provides.
     """
-    allowed = _effective_token_chain(operation)
-    for env_name in allowed:
-        candidate = os.environ.get(env_name, "").strip()
-        if candidate:
-            if operation in ADMIN_WRITE_OPERATIONS:
-                is_valid, message = validate_token_scope(candidate, ["repo", "workflow", "actions:write"])
-                if is_valid:
-                    return candidate, env_name
-                raise ValueError(
-                    f"Operation '{operation}' requires a write-capable token; "
-                    f"{env_name} is insufficient: {message}"
-                )
-            return candidate, env_name
-
-    if operation in ADMIN_WRITE_OPERATIONS:
+    requires_elevated = operation in ADMIN_WRITE_OPERATIONS
+    try:
+        token, source = get_token(required_elevated=requires_elevated)
+    except Exception as exc:
         raise ValueError(
-            "No write-capable GitHub token is available. "
-            "Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY."
+            f"No suitable GitHub token is available for operation '{operation}'. "
+            "Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY for elevated writes."
+        ) from exc
+
+    if requires_elevated and source not in {"CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"}:
+        raise ValueError(
+            f"Operation '{operation}' requires CODEX_MASTER_KEY or "
+            f"CODEX_BACKUP_KEY; got '{source}'."
         )
-    if os.environ.get("GITHUB_TOKEN"):
-        return os.environ["GITHUB_TOKEN"], "GITHUB_TOKEN"
-    raise ValueError(
-        f"No token available for GitHub operation '{operation}'. "
-        "Set CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GH_TOKEN, or GITHUB_TOKEN."
-    )
+    return token, source
 
 
 def build_auth_headers(token: str | None = None) -> dict[str, str]:
     """Return GitHub REST authorization headers for a given token."""
-    token = token or resolve_github_token()[0]
+    effective_token = token or resolve_github_token()[0]
     return {
-        "Authorization": f"******",
+        "Authorization": f"token {effective_token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
@@ -156,13 +151,11 @@ def ensure_write_capability(operation: str, token: str | None = None) -> tuple[s
     if token is None:
         token, source = resolve_github_token(operation)
     else:
-        source = os.environ.get("GH_TOKEN") if os.environ.get("GH_TOKEN") == token else None
-        if source is None:
-            source = os.environ.get("CODEX_MASTER_KEY") if os.environ.get("CODEX_MASTER_KEY") == token else None
-        if source is None:
-            source = os.environ.get("CODEX_BACKUP_KEY") if os.environ.get("CODEX_BACKUP_KEY") == token else None
-        if source is None:
-            source = os.environ.get("GITHUB_TOKEN") if os.environ.get("GITHUB_TOKEN") == token else None
+        source = None
+        for env_name in CANONICAL_WRITE_CHAIN:
+            if os.environ.get(env_name) == token:
+                source = env_name
+                break
         if source is None:
             source = "custom"
 

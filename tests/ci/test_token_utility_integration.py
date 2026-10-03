@@ -86,6 +86,40 @@ class TestTokenResolution:
             assert token == "master", "Token should be from CODEX_MASTER_KEY"
 
 
+class TestWriteHelperPolicy:
+    """Tests for the shared repo write-capable token helper."""
+
+    def test_resolve_github_token_prefers_master_write_path(self):
+        """Write-capable admin operations should prefer CODEX_MASTER_KEY or CODEX_BACKUP_KEY."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(
+            os.environ,
+            {"CODEX_MASTER_KEY": "master-write", "CODEX_BACKUP_KEY": "backup-write", "GH_TOKEN": "gh-write"},
+            clear=True,
+        ):
+            token, source = resolve_github_token("workflow_dispatch")
+            assert token == "master-write"
+            assert source == "CODEX_MASTER_KEY"
+
+    def test_resolve_github_token_supports_comment_writes(self):
+        """Comment writers should use the canonical write chain without requiring admin-only keys."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(os.environ, {"GH_TOKEN": "comment-token"}, clear=True):
+            token, source = resolve_github_token("pr_comment")
+            assert token == "comment-token"
+            assert source == "GH_TOKEN"
+
+    def test_resolve_github_token_rejects_weak_admin_tokens(self):
+        """Weak fallback tokens must not satisfy admin write operations."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "weak-token"}, clear=True):
+            with pytest.raises(ValueError, match="CODEX_MASTER_KEY|CODEX_BACKUP_KEY"):
+                resolve_github_token("workflow_dispatch")
+
+
 # ============================================================================
 # Test Category B: API Operations (2 tests)
 # ============================================================================
