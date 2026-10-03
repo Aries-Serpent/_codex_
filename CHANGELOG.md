@@ -5,6 +5,7 @@
 ### Fixed — GitHub client + governance drift follow-up (2026-10-03)
 - Restored the repo-local GitHub client `re` import so `owner`, `repo`, and branch validation logic work correctly in `src/codex_bridge/github_client.py` without shadowed-package regressions.
 - Restored the tracked `.codex/session_startup_packet.json` baseline to remove timestamp-only churn and keep the current branch aligned with the repo’s generated-artifact contract.
+- Logged the PR #5658 review-thread issues and the explicit follow-up plan in `.codex/reports/failing_checks.md` so repeated drift and check reports are tracked instead of silently classified away.
 - Revalidated the focused GitHub client checks on the active branch without broadening scope beyond the affected review-thread paths.
 
 ### Fixed — Security remediation epic closure (2026-10-02)

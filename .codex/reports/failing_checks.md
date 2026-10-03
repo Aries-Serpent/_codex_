@@ -9,6 +9,27 @@
 - **Commits with Failed Workflows**: 13
 - **Total Failed Workflow Runs**: 44
 
+## Active issue ledger and remediation plan (2026-10-03)
+
+The repo has already closed the code-fixable PR #5658 review-thread items, but the relevant failure reports were not retained in a single explicit issue ledger. This section captures the issues, their resolution status, and the follow-up plan for any reappearing CI or review failures.
+
+| Issue / reported failure | Source / location | Status | Resolution / plan |
+|---|---|---|---|
+| Generated drift in `.codex/session_startup_packet.json` | PR #5658 review thread + repo drift policy | Resolved | Restore tracked baseline and keep timestamp-only churn out of future commits. |
+| Invalid JSONL serialization in `.codex/aftermath/pda_iterations.jsonl` | `.codex/aftermath/pda_iterations.jsonl` review comment | Resolved | Use JSON value `null` instead of Python `None`; validate file parses as JSONL before commit. |
+| Severity-threshold mismatch in CodeQL gate logic | `.github/workflows/codeql-ga-gate.yml` review thread | Resolved | Keep `medium` as an explicit blocking threshold and avoid mutually-exclusive logic errors in the gate. |
+| Token helper contract / operation validation bug | `scripts/ci/github_write_helper.py` review thread | Resolved | Reject unsupported operations before token selection and fail closed for elevated admin writes. |
+| Documentation import example drift | `docs/ci/WORKFLOW_TOKEN_PATTERNS.md` review thread | Resolved | Keep examples aligned with the canonical import path and repo helper contract. |
+| Ongoing failing-check monitoring | PR #5658 + follow-up requirement | Active follow-up | Capture any new CI or review failures in this ledger, assign a remediation owner, and re-run the targeted verification command before closing the issue. |
+
+### PR #5658 follow-up plan
+
+1. Treat every review-thread item or failing check as a tracked issue, not a silent classification.
+2. Log the issue in this file before closing the work item or moving on.
+3. Verify the exact fix with the smallest relevant command (`pytest`/workflow YAML validation/script check) and record the result here.
+4. If a check reappears on a future PR, attach it to the same ledger entry and update the remediation plan rather than deferring it.
+5. Keep `generated` artifacts pinned to their tracked baselines so timestamp-only churn does not create false follow-up failures.
+
 ## Collection Method
 
 Data collected via GitHub MCP server tools by scanning workflow runs on the `0D_base_` branch and filtering for:
