@@ -24147,5 +24147,32 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
 ---
+
+## SESSION SUMMARY — 2026-10-03T08:02:43Z — PR #5658 review-thread closure + governance reconciliation
+
+### Objective
+Close the remaining PR #5658 review-thread blockers, preserve the tracked generated-artifact baseline, and refresh the current-day governance evidence so the merge-readiness scorecard reflects the true post-fix state.
+
+### Status
+✅ COMPLETE
+
+### Actions
+1. Re-checked the final remaining review-thread findings and narrowed the patch to the exact generated-artifact and compatibility-layer drift still present on this branch.
+2. Restored the tracked `.codex/session_startup_packet.json` baseline to eliminate timestamp-only churn without widening scope beyond the affected GitHub review surfaces.
+3. Kept the root `tools/` compatibility shims as thin delegates to the canonical `src/tools` modules and aligned the current-day accountability/PDA evidence with the active PR state.
+4. Verified the branch-level review blockers are resolved and the repo’s current-session governance evidence is in place for the final wrap-up check.
+
+### Validation
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5658` → pass after the current-day governance evidence is refreshed in this branch.
+- `python -m py_compile tools/github/app_token.py tools/github/gh_api.py` → pass.
+- `python -m pytest -q tests/github/test_codex_master_key_scopes.py` → pass.
+
+### Governance
+- REQ-4: Active accountability evidence refreshed for the current 2026-10-03 session.
+- REQ-5: Root `CHANGELOG.md` remains compliant for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-10-03 session evidence.
+
+### Agents Used
+- [x] `general-purpose` (final PR-readiness + review-thread reconciliation)
+- [x] `session-analysis-agent` (session wrap-up + governance validation)
