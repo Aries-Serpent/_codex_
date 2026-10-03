@@ -330,5 +330,9 @@ class TestAPIVersionHeader:
         """Test API version header format is YYYY-MM-DD."""
         import re
 
-        version_pattern = r"^\d{4}-\d{2}-\d{2}$"
-        assert re.match(version_pattern, "2022-11-28"), "Version should match YYYY-MM-DD format"
+        from aries_serpent_core.github.api_client import _API_VERSION
+
+        version_pattern = r"\d{4}-\d{2}-\d{2}"
+        assert re.fullmatch(version_pattern, _API_VERSION), (
+            "Version should match YYYY-MM-DD format"
+        )
