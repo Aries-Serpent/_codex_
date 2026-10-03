@@ -19,6 +19,64 @@
 
 ---
 
+## Active runtime variables in this repo
+
+The active runtime contract is not every historical or debugging variable ever mentioned in the repo. The codebase and workflow files actually consume the subset below; this is the inventory that should be tracked as the canonical GitHub variable list for day-to-day branch work.
+
+| Variable | Current value in repo snapshot | Source / consumption |
+|---|---|---|
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Repo variable gate for permanent agent authorization; checked by `.github/workflows/agent-auth-delegation.yml` |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | Repo variable used to bound automation tier |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Session restoration guardrail |
+| `COPILOT_AGENT_CCA_VERSION_LOCK` | `stable` | Required by `.github/workflows/copilot-setup-steps.yml` |
+| `COPILOT_AGENT_DEDUPLICATION_ENABLED` | `true` | Required by CCA payload hardening |
+| `COPILOT_AGENT_TURN_ISOLATION_ENABLED` | `true` | Required by CCA turn-state isolation |
+| `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | Present in active snapshot; aligns with runtime protection checks |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | RBAC allow-list used by cognitive-brain integration |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enables memory/session injection |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Context budget |
+| `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | STM+LTM enablement |
+| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Pattern promotion threshold |
+| `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Retention window |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `1485` | Session counter |
+| `CODEX_COVERAGE_THRESHOLD` | `80` | Coverage gate |
+| `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | CI health threshold |
+| `CODEX_CI_FAILURE_RATE` | `7.3:ok` | Current health-state indicator |
+| `CODEX_CI_LAST_GREEN_SHA` | `19e97a3ba18dd27e9ef20501546d1839d61c8534` | Last green SHA |
+| `CODEX_NETWORK_MODE` | `isolated` | Network hardening state |
+| `CODEX_LOG_LEVEL` | `INFO` | Logging verbosity |
+| `CODEX_CACHE_VERSION` | `v2` | Cache invalidation key used by setup workflows |
+| `COPILOT_RUNNER_PROFILE` | `ubuntu-latest-m` | Runner sizing profile (active config) |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Embedding index maintenance |
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | Auto-promotion policy |
+| `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Local Copilot CLI endpoint |
+| `CODEX_CLI_API_URL` | `http://localhost:8765` | Local API endpoint |
+| `COPILOT_CLI_ENABLED` | `true` | CLI enablement |
+| `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Operational timeout |
+| `AGENT_TOOLSDIRECTORY` | `/opt/hostedtoolcache` | Tooling path |
+
+### Variables that should not be treated as the runtime contract
+
+These names appear in historical diagnostics and generated audit content, but they are not part of the active runtime variable set used by the branch workflows or by the current codebase contract:
+
+| Variable | Status | Rationale |
+|---|---|---|
+| `CODEX_ENVIRONMENT_RUNNER` | Historical / diagnostic | Appears in local setup docs and archived audit output; not referenced in active workflows |
+| `CODEX_RUNNER_SHA256` | Historical / diagnostic | Runner authenticity artifact, not part of active runtime auth |
+| `CODEX_RUNNER_TOKEN` | Historical / diagnostic | Tokenized runner metadata; not an active repo variable in code |
+| `CODEX_GHP_TOKEN_BASE64` | Legacy / generated artifact | Debug token material; not part of the current repo contract |
+| `CODEX_GHP_TOKEN_HEX` | Legacy / generated artifact | Debug token material; not part of the current repo contract |
+| `CODEX_GHP_TOKEN_SHA256` | Legacy / generated artifact | Debug token material; not part of the current repo contract |
+| `CODEX_REPO_ID` | Historical / audit | Useful in audit traces, not used by active workflows |
+| `CODEX_WEBHOOK_SECRET` | Historical / audit | Operational secret, not a public runtime variable |
+| `CODEX_BOT_RUNNER` | Historical / audit | Setup artifact, not used by the live workflow contract |
+| `GITHUB_APP_*` variables | Optional integration-only | Present in some archival materials; not part of the active codepath unless a specific integration is enabled |
+| `OPENAI_API_KEY` | Optional external dependency credential | Not the repo’s GitHub variable contract; only relevant for optional model integrations |
+
+This distinction matters: the branch should rely on the values reflected in `.codex/agent_context.json` and the actual workflow reads in `.github/workflows/agent-auth-delegation.yml` and `.github/workflows/copilot-setup-steps.yml` rather than on any older runbook or archived variable dump.
+
+---
+
 ## 1. REST API
 
 > Requires PAT with `repo`, `admin:org`, or `codespace` scopes as appropriate.

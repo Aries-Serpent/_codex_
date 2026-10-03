@@ -172,7 +172,7 @@ class TestTokenFallbackHierarchy:
                 assert token == "backup", "CODEX_BACKUP_KEY should be fallback"
 
     def test_gh_token_tertiary_fallback(self):
-        """Test that GH_TOKEN is used if neither MASTER nor BACKUP available."""
+        """Test that GH_TOKEN is used if neither MASTER nor BACKUP is available."""
         with mock.patch.dict(
             os.environ,
             {
@@ -182,13 +182,8 @@ class TestTokenFallbackHierarchy:
             },
             clear=False,
         ):
-            token = (
-                get_token(required_elevated=True)[0]
-                or get_token(required_elevated=True)[0]
-                or get_token(required_elevated=False)[0]
-            )
-            if token:
-                assert token == "gh", "GH_TOKEN should be tertiary fallback"
+            token, _ = get_token(required_elevated=False)
+            assert token == "gh", "GH_TOKEN should be tertiary fallback"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -326,43 +321,18 @@ class TestAPIVersionHeader:
     """Validate correct API version headers are used."""
 
     def test_valid_api_version_headers(self):
-        """Test valid GitHub API version headers."""
-        valid_versions = {
-            "2022-11-28",
-            "2023-01-01",
-            "2023-06-01",
-            "2024-01-01",
-            "2026-03-10",
-        }
-        # At least one valid version should be present
-        assert valid_versions, "Should have valid API versions defined"
+        """Test the production GitHub API version header in use."""
+        from aries_serpent_core.github.api_client import _API_VERSION
+
+        assert _API_VERSION == "2022-11-28", "GitHub client must emit the expected API version"
 
     def test_version_header_format(self):
         """Test API version header format is YYYY-MM-DD."""
         import re
 
-        version_pattern = r"^\d{4}-\d{2}-\d{2}$"
-        test_version = "2022-11-28"
-        assert re.match(version_pattern, test_version), "Version should match YYYY-MM-DD format"
+        from aries_serpent_core.github.api_client import _API_VERSION
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Tests: ****** Header Format
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-class TestBearerTokenFormat:
-    """Validate correct ****** header format."""
-
-    def test_bearer_token_header_format(self):
-        """Test ****** is correctly formatted."""
-        token = "******"
-        header = "******"
-        assert header.startswith("Bearer "), "Token header should start with 'Bearer '"
-        assert len(header) > len("Bearer "), "Token header should include token value"
-
-    def test_bearer_token_in_authorization_header(self):
-        """Test token placement in Authorization header."""
-        token = "test_token"
-        headers = {"Authorization": "******"}
-        assert headers["Authorization"].startswith("Bearer "), "Auth header should use ******"
+        version_pattern = r"\d{4}-\d{2}-\d{2}"
+        assert re.fullmatch(version_pattern, _API_VERSION), (
+            "Version should match YYYY-MM-DD format"
+        )

@@ -310,11 +310,18 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     init_logger(level="WARNING", json_mode=args.json_envelope)
+    method_is_mutating = args.method in {"POST", "PATCH", "DELETE"}
 
     with capture_exceptions(
         exit_code=2, emit_json=args.json_envelope, errmsg="[gh_api] request failed"
     ):
         if args.use_cache_only:
+            if method_is_mutating:
+                _emit_error(
+                    "[gh_api] --use-cache-only is not supported for mutating methods",
+                    json_envelope=args.json_envelope,
+                )
+                return 2
             cached = _cache_get(args.cache_dir, cache_key)
             if cached is None:
                 _emit_error(
@@ -331,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
                     _stdout_write(json.dumps(payload))
             return 0
 
-        if not args.refresh_cache:
+        if not args.refresh_cache and not method_is_mutating:
             cached = _cache_get(args.cache_dir, cache_key)
             if cached is not None:
                 payload = _parse_cached_payload(cached)

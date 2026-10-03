@@ -23,3 +23,8 @@ import importlib
 # warnings while producing the identical side-effect as a bare import statement.
 importlib.import_module("codex.github")
 importlib.import_module("codex.github.mcp_poster")
+
+# Intentionally left without a nested pytest_plugins declaration.
+# The shared GitHub fixtures are registered from the repo-level pytest config so
+# pytest can discover them without making a non-top-level conftest affect the
+# whole suite.

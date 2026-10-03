@@ -25,8 +25,8 @@ name: Art_CodeQL GA Security Gate
         - medium
         default: high
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions:
   contents: read
   security-events: write
@@ -147,12 +147,13 @@ jobs:
     - name: Gate Decision & Policy Enforcement
       id: gate-decision
       shell: bash
-      run: >-
-        CRITICAL=${{ steps.analyze.outputs.critical_count || 0 }}
-        HIGH=${{ steps.analyze.outputs.high_count || 0 }}
-        MEDIUM=${{ steps.analyze.outputs.medium_count || 0 }}
-        DRY_RUN=${{ github.event.inputs.dry_run || 'false' }}
-
+      env:
+        CRITICAL: ${{ steps.analyze.outputs.critical_count || 0 }}
+        HIGH: ${{ steps.analyze.outputs.high_count || 0 }}
+        MEDIUM: ${{ steps.analyze.outputs.medium_count || 0 }}
+        DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        SEVERITY_THRESHOLD: ${{ env.CODEQL_SEVERITY_THRESHOLD }}
+      run: |
         BLOCKED=false
         STATUS="PASS"
         REASON=""
@@ -165,7 +166,7 @@ jobs:
         fi
 
         # Check for high alerts (blocking based on severity threshold)
-        if [ "$HIGH" -gt 0 ] && [ "${{ env.CODEQL_SEVERITY_THRESHOLD }}" != "critical" ]; then
+        if [ "$HIGH" -gt 0 ] && [ "$SEVERITY_THRESHOLD" != "critical" ]; then
           BLOCKED=true
           STATUS="FAIL"
           REASON="High severity vulnerabilities detected ($HIGH)"
@@ -178,11 +179,11 @@ jobs:
           REASON="Dry-run mode enabled (gate not enforced)"
         fi
 
-        echo "blocked=$BLOCKED" >> $GITHUB_OUTPUT
-        echo "status=$STATUS" >> $GITHUB_OUTPUT
-        echo "reason=$REASON" >> $GITHUB_OUTPUT
-        echo "### Gate Decision: $STATUS" >> $GITHUB_STEP_SUMMARY
-        echo "$REASON" >> $GITHUB_STEP_SUMMARY
+        echo "blocked=$BLOCKED" >> "$GITHUB_OUTPUT"
+        echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+        echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+        echo "### Gate Decision: $STATUS" >> "$GITHUB_STEP_SUMMARY"
+        echo "$REASON" >> "$GITHUB_STEP_SUMMARY"
 
         if [ "$BLOCKED" = "true" ] && [ "$DRY_RUN" != "true" ]; then
           exit 1
