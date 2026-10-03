@@ -1,0 +1,11 @@
+{
+  "id": "session_embeddings.faiss",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_embeddings.faiss",
+  "archive_path": ".codex/archive/legacy-root/session_embeddings.faiss",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "b6b8610d68285fa94d99d744ee99448a8237fbc051bf5c1f7efe1d78edff2afd",
+  "size_bytes": 31019,
+  "kind": "historical_root"
+}

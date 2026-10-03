@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_CODEQL_EXCLUSION_RULES.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_CODEQL_EXCLUSION_RULES.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "18934e94cce78e401724e397d7ad56e319252c191981c6056a50c22734bef34a",
+  "size_bytes": 10191,
+  "kind": "historical_root"
+}

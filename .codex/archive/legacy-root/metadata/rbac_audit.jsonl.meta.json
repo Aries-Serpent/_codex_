@@ -1,0 +1,11 @@
+{
+  "id": "rbac_audit.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/rbac_audit.jsonl",
+  "archive_path": ".codex/archive/legacy-root/rbac_audit.jsonl",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "69f26013e59defa9d647e4b847bfa388612265d662fbda04900ff42cdbdbfc42",
+  "size_bytes": 1041,
+  "kind": "historical_root"
+}

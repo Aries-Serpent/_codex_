@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_LANE_3_3_TRAINING_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_LANE_3_3_TRAINING_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_LANE_3_3_TRAINING_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "f864ebeef9e000a06af402a05aa4cc3cb430eec3daa2a26ad2f40b6ce6389fd7",
+  "size_bytes": 8529,
+  "kind": "historical_root"
+}

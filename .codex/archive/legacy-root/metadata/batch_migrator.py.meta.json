@@ -1,0 +1,11 @@
+{
+  "id": "batch_migrator.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/batch_migrator.py",
+  "archive_path": ".codex/archive/legacy-root/batch_migrator.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "98b3029a94fa4206de83d719561905ec0f31b1bcbb61d1bb3ae366e9c622000f",
+  "size_bytes": 5244,
+  "kind": "historical_root"
+}

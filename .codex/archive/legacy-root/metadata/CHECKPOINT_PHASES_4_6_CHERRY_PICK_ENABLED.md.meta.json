@@ -1,0 +1,11 @@
+{
+  "id": "CHECKPOINT_PHASES_4_6_CHERRY_PICK_ENABLED.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CHECKPOINT_PHASES_4_6_CHERRY_PICK_ENABLED.md",
+  "archive_path": ".codex/archive/legacy-root/CHECKPOINT_PHASES_4_6_CHERRY_PICK_ENABLED.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "2e2e11e551fdfabbdf16ff1ec0cbc9fc5a7f83f330932c5e9473b6f40afa6f14",
+  "size_bytes": 16875,
+  "kind": "historical_root"
+}

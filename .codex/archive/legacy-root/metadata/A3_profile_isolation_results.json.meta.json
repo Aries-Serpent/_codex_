@@ -1,0 +1,11 @@
+{
+  "id": "A3_profile_isolation_results.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/A3_profile_isolation_results.json",
+  "archive_path": ".codex/archive/legacy-root/A3_profile_isolation_results.json",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "50ae1060bd095da708f11bf898356d9aec39c001102f58ec5f643937a23a1b40",
+  "size_bytes": 172,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "phase_10_3_performance_metrics.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_10_3_performance_metrics.json",
+  "archive_path": ".codex/archive/legacy-root/phase_10_3_performance_metrics.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "0f109f8f2beb57866174a23c3df82c582abbf700c098cc5041e7a96e252c9711",
+  "size_bytes": 284,
+  "kind": "historical_root"
+}

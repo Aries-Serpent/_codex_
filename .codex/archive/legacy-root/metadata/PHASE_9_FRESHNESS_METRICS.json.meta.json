@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_FRESHNESS_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_FRESHNESS_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_FRESHNESS_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5b40e8b243f3e7a2c4a15a8b29f81bb14b5bbc9940af21126dfe4385024fb7cc",
+  "size_bytes": 2328,
+  "kind": "historical_root"
+}

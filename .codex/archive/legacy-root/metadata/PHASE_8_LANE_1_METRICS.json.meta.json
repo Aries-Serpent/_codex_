@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_1_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_1_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_1_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "5f0b50bc166662195596f49d6ef59e8cc05bd5d2079844c4b3f1b505e30fe67b",
+  "size_bytes": 6957,
+  "kind": "historical_root"
+}

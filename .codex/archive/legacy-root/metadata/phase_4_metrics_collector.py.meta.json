@@ -1,0 +1,11 @@
+{
+  "id": "phase_4_metrics_collector.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_4_metrics_collector.py",
+  "archive_path": ".codex/archive/legacy-root/phase_4_metrics_collector.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "afb84e24ea93d9bbf35fc16b808bd1bb559030f05198b67d2a83812f3a725034",
+  "size_bytes": 10362,
+  "kind": "historical_root"
+}

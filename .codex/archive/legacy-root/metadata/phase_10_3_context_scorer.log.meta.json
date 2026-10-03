@@ -1,0 +1,11 @@
+{
+  "id": "phase_10_3_context_scorer.log",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_10_3_context_scorer.log",
+  "archive_path": ".codex/archive/legacy-root/phase_10_3_context_scorer.log",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "size_bytes": 0,
+  "kind": "historical_root"
+}

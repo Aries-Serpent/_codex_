@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_1_3_POST_FIX_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_1_3_POST_FIX_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_1_3_POST_FIX_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2471c6c792d227c6b9702325f97d13fc13431782aa92953e15b2a6847a2fd4b4",
+  "size_bytes": 411,
+  "kind": "historical_root"
+}

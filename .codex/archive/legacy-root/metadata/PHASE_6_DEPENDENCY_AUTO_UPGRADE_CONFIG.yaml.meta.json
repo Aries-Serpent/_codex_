@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_DEPENDENCY_AUTO_UPGRADE_CONFIG.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_DEPENDENCY_AUTO_UPGRADE_CONFIG.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_DEPENDENCY_AUTO_UPGRADE_CONFIG.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "79fe1831543c660db53e67e3fb9f40704c26057b26a2ca7fc2a25f291aac7eff",
+  "size_bytes": 10940,
+  "kind": "historical_root"
+}

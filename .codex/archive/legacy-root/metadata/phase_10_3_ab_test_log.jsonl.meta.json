@@ -1,0 +1,11 @@
+{
+  "id": "phase_10_3_ab_test_log.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_10_3_ab_test_log.jsonl",
+  "archive_path": ".codex/archive/legacy-root/phase_10_3_ab_test_log.jsonl",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "904c1eb68bc0ff23b7d93eed252274dc323adfffab85f39cefe9208692e8dc95",
+  "size_bytes": 258,
+  "kind": "historical_root"
+}

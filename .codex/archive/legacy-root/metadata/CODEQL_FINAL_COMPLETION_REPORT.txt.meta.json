@@ -1,0 +1,11 @@
+{
+  "id": "CODEQL_FINAL_COMPLETION_REPORT.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CODEQL_FINAL_COMPLETION_REPORT.txt",
+  "archive_path": ".codex/archive/legacy-root/CODEQL_FINAL_COMPLETION_REPORT.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "bcfb2949272c70a7fdece8240dc87f7378e8decd3d8d21eb810fe9da40e81c59",
+  "size_bytes": 9858,
+  "kind": "historical_root"
+}

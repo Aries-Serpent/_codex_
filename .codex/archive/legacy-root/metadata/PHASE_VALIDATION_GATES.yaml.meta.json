@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_VALIDATION_GATES.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_VALIDATION_GATES.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_VALIDATION_GATES.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "e85099bdbe41e2a211f3ccacaea8baa2f0039852ee03a4f58c8a7b3a99034780",
+  "size_bytes": 11455,
+  "kind": "historical_root"
+}

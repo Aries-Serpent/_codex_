@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_13_LANE_1_MONITORING_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_13_LANE_1_MONITORING_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_13_LANE_1_MONITORING_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "1528385cf6d0422439f5d19cc3d4bee83e14904b49b4ff4d93f8b646087af933",
+  "size_bytes": 12408,
+  "kind": "historical_root"
+}

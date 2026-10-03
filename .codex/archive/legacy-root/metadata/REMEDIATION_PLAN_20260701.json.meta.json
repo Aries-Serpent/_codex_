@@ -1,0 +1,11 @@
+{
+  "id": "REMEDIATION_PLAN_20260701.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/REMEDIATION_PLAN_20260701.json",
+  "archive_path": ".codex/archive/legacy-root/REMEDIATION_PLAN_20260701.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "6a587986714a4109da052aa8fc137195bc03d5ef4db158662d92322e69ccb5f4",
+  "size_bytes": 8346,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "TASK_EXECUTION_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TASK_EXECUTION_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/TASK_EXECUTION_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "979c6d9918a2e251cea2115fdb8a17494178d22d0b8c075ee6f9407db2e9013a",
+  "size_bytes": 12375,
+  "kind": "historical_root"
+}

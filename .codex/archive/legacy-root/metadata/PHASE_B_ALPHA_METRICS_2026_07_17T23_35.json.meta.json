@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_B_ALPHA_METRICS_2026_07_17T23_35.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_B_ALPHA_METRICS_2026_07_17T23_35.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_B_ALPHA_METRICS_2026_07_17T23_35.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "176ffcf9ba64bd863180b9b657a3dc7bc78717bb687de71e2d53c4f9a8a6ebcd",
+  "size_bytes": 5777,
+  "kind": "historical_root"
+}

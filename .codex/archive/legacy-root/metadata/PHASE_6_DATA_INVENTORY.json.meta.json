@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_DATA_INVENTORY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_DATA_INVENTORY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_DATA_INVENTORY.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "352566ed7398fca1a3089cf89ba9cdc2d6c1ecfd155dcc2d86ee9c8696c01a92",
+  "size_bytes": 11725,
+  "kind": "historical_root"
+}

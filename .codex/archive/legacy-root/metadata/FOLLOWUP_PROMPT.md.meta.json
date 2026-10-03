@@ -1,0 +1,11 @@
+{
+  "id": "FOLLOWUP_PROMPT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/FOLLOWUP_PROMPT.md",
+  "archive_path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "875e6fb594de816922bffdc1aa6a745693dd36e59fca25135e3e163b5c797c7e",
+  "size_bytes": 12500,
+  "kind": "historical_root"
+}

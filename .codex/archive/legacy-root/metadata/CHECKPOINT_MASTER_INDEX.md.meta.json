@@ -1,0 +1,11 @@
+{
+  "id": "CHECKPOINT_MASTER_INDEX.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CHECKPOINT_MASTER_INDEX.md",
+  "archive_path": ".codex/archive/legacy-root/CHECKPOINT_MASTER_INDEX.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "4bb8c9f29e5f61398b39e6e81f182505254d6df0aa13f6ce4f854328b3a48557",
+  "size_bytes": 14550,
+  "kind": "historical_root"
+}

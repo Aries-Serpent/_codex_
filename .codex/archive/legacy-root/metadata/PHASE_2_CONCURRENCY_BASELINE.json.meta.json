@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_CONCURRENCY_BASELINE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_CONCURRENCY_BASELINE.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_CONCURRENCY_BASELINE.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "99a26300f8c25f09ff8ddc30d6d079ca098aa9b1ee56774b2822105c7952c622",
+  "size_bytes": 337943,
+  "kind": "historical_root"
+}

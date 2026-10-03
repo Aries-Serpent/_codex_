@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_13_prometheus_config.yml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_13_prometheus_config.yml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_13_prometheus_config.yml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "3bb093df8246316f1fa8d0889728552f8b9f4c8ebe710334d7a7dee30d7c5df9",
+  "size_bytes": 6343,
+  "kind": "historical_root"
+}

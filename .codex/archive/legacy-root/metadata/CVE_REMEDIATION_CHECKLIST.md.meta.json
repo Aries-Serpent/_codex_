@@ -1,0 +1,11 @@
+{
+  "id": "CVE_REMEDIATION_CHECKLIST.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CVE_REMEDIATION_CHECKLIST.md",
+  "archive_path": ".codex/archive/legacy-root/CVE_REMEDIATION_CHECKLIST.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "1a9c80d90665f81082a262d42ba2af9e93af99973c3bc1c633f3c5b2574d4b5b",
+  "size_bytes": 8631,
+  "kind": "historical_root"
+}

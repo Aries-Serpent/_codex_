@@ -1,0 +1,11 @@
+{
+  "id": "lane_b_findings.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/lane_b_findings.json",
+  "archive_path": ".codex/archive/legacy-root/lane_b_findings.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "305bf5cf6fefbe0276eee087bab997aacdf36013fc8ca132d2ee41439b171ddc",
+  "size_bytes": 12476,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_13_AUDIT_VERIFICATION.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_13_AUDIT_VERIFICATION.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_13_AUDIT_VERIFICATION.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "8158eb2af3ea2529aba8467029fad50c0c8fde31fee9e25097fb614d0aa64d0d",
+  "size_bytes": 6827,
+  "kind": "historical_root"
+}

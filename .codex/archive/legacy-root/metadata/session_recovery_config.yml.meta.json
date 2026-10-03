@@ -1,0 +1,11 @@
+{
+  "id": "session_recovery_config.yml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_recovery_config.yml",
+  "archive_path": ".codex/archive/legacy-root/session_recovery_config.yml",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "dfab5672c330810d85cd173b03bc8bbfdb4e359cd96f40e11d1d391938db52d5",
+  "size_bytes": 4394,
+  "kind": "historical_root"
+}

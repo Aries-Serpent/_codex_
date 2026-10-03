@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_PREPARATION_COMPLETE.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_PREPARATION_COMPLETE.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_PREPARATION_COMPLETE.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "7d4b2d26338f8ffdd33461a95d535921b33e25c2a825e5a07216d79029c60473",
+  "size_bytes": 12419,
+  "kind": "historical_root"
+}

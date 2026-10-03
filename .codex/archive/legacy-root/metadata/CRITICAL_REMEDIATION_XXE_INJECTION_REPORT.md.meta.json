@@ -1,0 +1,11 @@
+{
+  "id": "CRITICAL_REMEDIATION_XXE_INJECTION_REPORT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CRITICAL_REMEDIATION_XXE_INJECTION_REPORT.md",
+  "archive_path": ".codex/archive/legacy-root/CRITICAL_REMEDIATION_XXE_INJECTION_REPORT.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "2f22df7a4739beb370f13b4d20742375f32aba45e09964681c0c14853c79842a",
+  "size_bytes": 16554,
+  "kind": "historical_root"
+}

@@ -1,6 +1,8 @@
 # Local Status Reports
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-10-02
+**Version:** v0.3.0
+
+> **Active state:** `README.md`, `docs/`, and `mkdocs.yml` define the current operational narrative. Historical plans, backlog artifacts, and archive roots remain archive-only evidence and are not live operational work unless explicitly labeled historical.
 
 *Generate status reports for the repository using various tools and formats.*
 

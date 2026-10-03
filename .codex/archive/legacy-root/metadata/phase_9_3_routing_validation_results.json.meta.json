@@ -1,0 +1,11 @@
+{
+  "id": "phase_9_3_routing_validation_results.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_9_3_routing_validation_results.json",
+  "archive_path": ".codex/archive/legacy-root/phase_9_3_routing_validation_results.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "8ec5f28da9ae35345880aef7d516a0ba461553ca519fec3718e4e8b91648a714",
+  "size_bytes": 31373,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "WAVE_2B_AGENT4_PATCH_SIMULATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/WAVE_2B_AGENT4_PATCH_SIMULATION.json",
+  "archive_path": ".codex/archive/legacy-root/WAVE_2B_AGENT4_PATCH_SIMULATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "869112955f6dfab46a2df939cd7737ee8734984006607795eeeb7d3c141136f6",
+  "size_bytes": 49820,
+  "kind": "historical_root"
+}

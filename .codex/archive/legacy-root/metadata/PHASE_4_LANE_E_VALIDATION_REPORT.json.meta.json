@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_LANE_E_VALIDATION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_LANE_E_VALIDATION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_LANE_E_VALIDATION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "f7108ee91928e026cb22df6e95b9c8940c4bcee7366d36d529771ee20113c613",
+  "size_bytes": 11032,
+  "kind": "historical_root"
+}

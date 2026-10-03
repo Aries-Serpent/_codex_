@@ -1,8 +1,9 @@
 # Status Reporting - Capability Documentation
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-10-02
+**Version:** v0.3.0
 
-**Last Updated: 2026-06-22
+> **Active state:** This capability page reflects the current repo status and operational docs. Historical backlog and archived remediation notes remain in archive evidence and are not active work unless explicitly labeled as historical.
+
 
 ## Overview
 

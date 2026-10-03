@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_VERIFICATION_DATA.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_VERIFICATION_DATA.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_VERIFICATION_DATA.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "9581f6544979d65db2bf31a91c1e119b7ef97fe206c97b4e991e268e2312bf60",
+  "size_bytes": 1375,
+  "kind": "historical_root"
+}

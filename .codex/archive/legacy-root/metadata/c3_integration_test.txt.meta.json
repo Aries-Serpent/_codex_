@@ -1,0 +1,11 @@
+{
+  "id": "c3_integration_test.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c3_integration_test.txt",
+  "archive_path": ".codex/archive/legacy-root/c3_integration_test.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f13dd3a73f3d2c9e40e2d5cdfc13d9581232e39dc6c0fcfd6a7a3821977f877b",
+  "size_bytes": 281,
+  "kind": "historical_root"
+}

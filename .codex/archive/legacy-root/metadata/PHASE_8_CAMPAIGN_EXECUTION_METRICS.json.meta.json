@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_CAMPAIGN_EXECUTION_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_CAMPAIGN_EXECUTION_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_CAMPAIGN_EXECUTION_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "bcc4ddfd17854b2b0026793e3849452cd71462c8856e6cbf9dbd57f6ee0e0a43",
+  "size_bytes": 13112,
+  "kind": "historical_root"
+}

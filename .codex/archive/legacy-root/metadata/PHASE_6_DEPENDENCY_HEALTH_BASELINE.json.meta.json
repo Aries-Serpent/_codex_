@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_DEPENDENCY_HEALTH_BASELINE.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_DEPENDENCY_HEALTH_BASELINE.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "cd6ef49788916c4919273c87f7c675b77eea20e54634809457d45b209090a637",
+  "size_bytes": 6083,
+  "kind": "historical_root"
+}

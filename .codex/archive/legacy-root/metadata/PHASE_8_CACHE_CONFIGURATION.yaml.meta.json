@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_CACHE_CONFIGURATION.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_CACHE_CONFIGURATION.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_CACHE_CONFIGURATION.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d49518ae1e8fd8473145ec4dfcaa10b0439bd9425044ebc0fb94449d27e67358",
+  "size_bytes": 13075,
+  "kind": "historical_root"
+}

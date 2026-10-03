@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4_GA_PERFORMANCE_METRICS_LOG.jsonl",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4_GA_PERFORMANCE_METRICS_LOG.jsonl",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4_GA_PERFORMANCE_METRICS_LOG.jsonl",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "fd28b78078f74d6d05c5a7ea38d4a393a2da25fff801ba358d4d306a5ad0b623",
+  "size_bytes": 1047,
+  "kind": "historical_root"
+}

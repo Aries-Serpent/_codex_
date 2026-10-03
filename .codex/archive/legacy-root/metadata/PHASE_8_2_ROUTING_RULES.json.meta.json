@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_2_ROUTING_RULES.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_2_ROUTING_RULES.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_2_ROUTING_RULES.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "730acc781899bed78395bee2a2ffce189fa2a10a712306a66188e2b72db67034",
+  "size_bytes": 11555,
+  "kind": "historical_root"
+}

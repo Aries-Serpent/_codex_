@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_LANE_1_GATE_DECISION.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_LANE_1_GATE_DECISION.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_LANE_1_GATE_DECISION.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c6fea70a474bdf045eec13a923d8ad96ebc4369f6f106508ad0eb1a73e2ae9a5",
+  "size_bytes": 6567,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "integration_report_v0.3.0.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/integration_report_v0.3.0.json",
+  "archive_path": ".codex/archive/legacy-root/integration_report_v0.3.0.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f640dd9849eb00e55c7c6bb286dcb16552e86a90ec75c62866abca3cfe884ce6",
+  "size_bytes": 4660,
+  "kind": "historical_root"
+}

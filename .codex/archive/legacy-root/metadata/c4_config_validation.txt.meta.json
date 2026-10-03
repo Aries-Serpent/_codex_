@@ -1,0 +1,11 @@
+{
+  "id": "c4_config_validation.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/c4_config_validation.txt",
+  "archive_path": ".codex/archive/legacy-root/c4_config_validation.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "bbcb9e1e0e3b2d214499fc41087ba24406cc0ed118a71b52c4cd82f3e4c4b56f",
+  "size_bytes": 988,
+  "kind": "historical_root"
+}

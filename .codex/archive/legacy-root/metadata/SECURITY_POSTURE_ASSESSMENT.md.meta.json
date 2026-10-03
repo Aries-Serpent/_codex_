@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_POSTURE_ASSESSMENT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_POSTURE_ASSESSMENT.md",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_POSTURE_ASSESSMENT.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2e4a695e322e085a48193f5782c6e5d5374bb018affbd5cd8431c54f922295ca",
+  "size_bytes": 19876,
+  "kind": "historical_root"
+}

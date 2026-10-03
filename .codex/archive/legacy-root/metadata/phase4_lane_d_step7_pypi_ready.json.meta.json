@@ -1,0 +1,11 @@
+{
+  "id": "phase4_lane_d_step7_pypi_ready.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase4_lane_d_step7_pypi_ready.json",
+  "archive_path": ".codex/archive/legacy-root/phase4_lane_d_step7_pypi_ready.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "4977631ab47cfa88912f80a9e1e57e2d012ac5b1fa2309daf858ba828e4219ed",
+  "size_bytes": 661,
+  "kind": "historical_root"
+}

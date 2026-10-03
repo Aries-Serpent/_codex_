@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_18_LANE_B_ML_DEPLOYMENT_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_18_LANE_B_ML_DEPLOYMENT_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_18_LANE_B_ML_DEPLOYMENT_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "632304a0b94e044e0e3f9a985489f33fa6025632175a95efbfdde6ba573680b9",
+  "size_bytes": 911,
+  "kind": "historical_root"
+}

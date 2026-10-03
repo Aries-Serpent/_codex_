@@ -1,0 +1,11 @@
+{
+  "id": "security_monitoring_results.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/security_monitoring_results.json",
+  "archive_path": ".codex/archive/legacy-root/security_monitoring_results.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "5cd2708bba283222ea7e8a4396e858514f31f9e2c0dedf9b355114086c9db54d",
+  "size_bytes": 1336,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "v0.1.1_RELEASE_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/v0.1.1_RELEASE_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/v0.1.1_RELEASE_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "6454749980a9974a2d88b80002a05922d54361606aaee38078398f28b7aa0cdf",
+  "size_bytes": 6808,
+  "kind": "historical_root"
+}

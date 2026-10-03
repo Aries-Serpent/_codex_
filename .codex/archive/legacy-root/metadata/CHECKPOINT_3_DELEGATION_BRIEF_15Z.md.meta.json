@@ -1,0 +1,11 @@
+{
+  "id": "CHECKPOINT_3_DELEGATION_BRIEF_15Z.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CHECKPOINT_3_DELEGATION_BRIEF_15Z.md",
+  "archive_path": ".codex/archive/legacy-root/CHECKPOINT_3_DELEGATION_BRIEF_15Z.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "63f018382ce33df3571ca3532700cec59f4c4048ae2e530c85d225e1521e704e",
+  "size_bytes": 10500,
+  "kind": "historical_root"
+}

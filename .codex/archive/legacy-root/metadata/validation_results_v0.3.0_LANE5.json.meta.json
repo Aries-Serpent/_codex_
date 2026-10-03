@@ -1,0 +1,11 @@
+{
+  "id": "validation_results_v0.3.0_LANE5.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/validation_results_v0.3.0_LANE5.json",
+  "archive_path": ".codex/archive/legacy-root/validation_results_v0.3.0_LANE5.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "6c61c5a97ce8b7d40788dac9594a93e052a2a88d0151f561ad8c704f41dc0071",
+  "size_bytes": 5688,
+  "kind": "historical_root"
+}

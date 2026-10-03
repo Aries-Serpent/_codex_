@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_12_TIER2_BATCH_B_ENHANCEMENT_PLAN.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_12_TIER2_BATCH_B_ENHANCEMENT_PLAN.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_12_TIER2_BATCH_B_ENHANCEMENT_PLAN.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "f2b0b9151983ef2ecc9c26df3d8f0bf9593de0d47da5a9500f991a1f1abb00d5",
+  "size_bytes": 3520,
+  "kind": "historical_root"
+}

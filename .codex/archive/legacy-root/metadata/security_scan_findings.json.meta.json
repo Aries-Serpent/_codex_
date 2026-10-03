@@ -1,0 +1,11 @@
+{
+  "id": "security_scan_findings.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/security_scan_findings.json",
+  "archive_path": ".codex/archive/legacy-root/security_scan_findings.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "4807925a34bc21faf3c788367efc6073dc3cd0bab72ab1ae59041378a9ac31cb",
+  "size_bytes": 4070,
+  "kind": "historical_root"
+}

@@ -1,11 +1,10 @@
-# Status Update — Reasoning Readiness & Promotion Gate
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+# Status Update — Current Evidence & Validation
+**Last Updated:** 2026-10-02
+**Version:** v0.3.0
 
-**Last Updated: 2026-06-22
-
-> **When to use:** After each ring run (0A 0D) or major PR affecting reasoning,
-> fill this template to create an auditable record of progress. Save as:
+> **Current repo truth:** The active security family state is closed/advisory-only. Historical backlog docs, archived remediation notes, and prior status narratives remain archive-only evidence and are not the operational status of the current branch.
+>
+> **When to use:** Use this template to record active evidence for the current branch, validation scope, and any remaining operational work. Save as:
 > `docs/status_updates/<slug>-<YYYY-MM-DD>.md`.
 >
 > **Notation:** Let overall readiness be

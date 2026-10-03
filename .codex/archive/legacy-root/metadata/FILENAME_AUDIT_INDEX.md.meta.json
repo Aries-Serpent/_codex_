@@ -1,0 +1,11 @@
+{
+  "id": "FILENAME_AUDIT_INDEX.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/FILENAME_AUDIT_INDEX.md",
+  "archive_path": ".codex/archive/legacy-root/FILENAME_AUDIT_INDEX.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "481ec791ed516a9cb0fda3e6da16066f388be2302539d7c44981a7b225231878",
+  "size_bytes": 5019,
+  "kind": "historical_root"
+}

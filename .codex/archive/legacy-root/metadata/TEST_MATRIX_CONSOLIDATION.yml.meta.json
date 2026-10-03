@@ -1,0 +1,11 @@
+{
+  "id": "TEST_MATRIX_CONSOLIDATION.yml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TEST_MATRIX_CONSOLIDATION.yml",
+  "archive_path": ".codex/archive/legacy-root/TEST_MATRIX_CONSOLIDATION.yml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "aca6d3a735d2baed1eeeed15d5858718295c644068849c15b376efec4f885c4e",
+  "size_bytes": 8233,
+  "kind": "historical_root"
+}

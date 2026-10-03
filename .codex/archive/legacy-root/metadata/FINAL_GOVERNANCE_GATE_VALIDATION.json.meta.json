@@ -1,0 +1,11 @@
+{
+  "id": "FINAL_GOVERNANCE_GATE_VALIDATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/FINAL_GOVERNANCE_GATE_VALIDATION.json",
+  "archive_path": ".codex/archive/legacy-root/FINAL_GOVERNANCE_GATE_VALIDATION.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "81cc306e7c3b5a5276eb1a1484ce98143ab331c54c99e1800e3948d6c4044e31",
+  "size_bytes": 18531,
+  "kind": "historical_root"
+}

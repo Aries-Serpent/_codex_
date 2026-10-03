@@ -1,0 +1,11 @@
+{
+  "id": "session_access_manifest.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_access_manifest.json",
+  "archive_path": ".codex/archive/legacy-root/session_access_manifest.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "f01d1aa65b91bb8c14e8371421e1bfc371534cf38477c5e9d15db4bd68cfd2fa",
+  "size_bytes": 8881,
+  "kind": "historical_root"
+}

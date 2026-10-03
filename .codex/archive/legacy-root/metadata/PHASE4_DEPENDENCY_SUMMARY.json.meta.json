@@ -1,0 +1,11 @@
+{
+  "id": "PHASE4_DEPENDENCY_SUMMARY.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE4_DEPENDENCY_SUMMARY.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE4_DEPENDENCY_SUMMARY.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "516e76e40012c844760d6d3bf2c75fb30d3507eeb827096ad08aff28f60f448a",
+  "size_bytes": 2017,
+  "kind": "historical_root"
+}

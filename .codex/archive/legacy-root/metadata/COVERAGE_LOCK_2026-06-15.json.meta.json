@@ -1,0 +1,11 @@
+{
+  "id": "COVERAGE_LOCK_2026-06-15.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/COVERAGE_LOCK_2026-06-15.json",
+  "archive_path": ".codex/archive/legacy-root/COVERAGE_LOCK_2026-06-15.json",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "0f56b3da138b17ccba63958335b760b0d1c9deecccf9cd43ad2baeed6e87d1cb",
+  "size_bytes": 5026,
+  "kind": "historical_root"
+}

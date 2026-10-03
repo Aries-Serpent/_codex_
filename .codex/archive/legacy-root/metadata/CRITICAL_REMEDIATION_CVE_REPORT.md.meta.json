@@ -1,0 +1,11 @@
+{
+  "id": "CRITICAL_REMEDIATION_CVE_REPORT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CRITICAL_REMEDIATION_CVE_REPORT.md",
+  "archive_path": ".codex/archive/legacy-root/CRITICAL_REMEDIATION_CVE_REPORT.md",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "9bcdb869e4e9242afb62eac127bd149a6707a885f9438c685e0f0c85c4c16ad1",
+  "size_bytes": 17301,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "validation_test_suite_v0.3.0_LANE5.py",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/validation_test_suite_v0.3.0_LANE5.py",
+  "archive_path": ".codex/archive/legacy-root/validation_test_suite_v0.3.0_LANE5.py",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "cdb8cbc215b8684bd765da8997e8e7a13184c7badcef9c1b180c53510e0ccb87",
+  "size_bytes": 21954,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "coverage_by_module.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/coverage_by_module.json",
+  "archive_path": ".codex/archive/legacy-root/coverage_by_module.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "4a67e89098618a978e173d7fbcea05f452af90fdbd3e30421617eab50d3d1912",
+  "size_bytes": 15545,
+  "kind": "historical_root"
+}

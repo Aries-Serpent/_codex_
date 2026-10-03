@@ -1,0 +1,11 @@
+{
+  "id": "audit-phase2-summary.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/audit-phase2-summary.txt",
+  "archive_path": ".codex/archive/legacy-root/audit-phase2-summary.txt",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "697368b102badbf4deca06204c3ef0242a0e913743ea7cc774b0668a22e559ee",
+  "size_bytes": 8636,
+  "kind": "historical_root"
+}

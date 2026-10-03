@@ -1,0 +1,11 @@
+{
+  "id": "BROKEN_WORKFLOWS_TO_FIX.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/BROKEN_WORKFLOWS_TO_FIX.txt",
+  "archive_path": ".codex/archive/legacy-root/BROKEN_WORKFLOWS_TO_FIX.txt",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "f9c8e0a9679491e60e16d1471058108e6b85bc0fa71fda65cb7864332bf8af73",
+  "size_bytes": 1653,
+  "kind": "historical_root"
+}

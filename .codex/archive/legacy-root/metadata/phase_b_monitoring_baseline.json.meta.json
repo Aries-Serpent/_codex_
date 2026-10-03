@@ -1,0 +1,11 @@
+{
+  "id": "phase_b_monitoring_baseline.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_b_monitoring_baseline.json",
+  "archive_path": ".codex/archive/legacy-root/phase_b_monitoring_baseline.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "392a45154099ebb7ba841a50a51847e29fe8e1715f99f73e6e19e700a7b3b539",
+  "size_bytes": 1189,
+  "kind": "historical_root"
+}

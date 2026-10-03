@@ -1,0 +1,11 @@
+{
+  "id": "security-findings-comprehensive.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/security-findings-comprehensive.json",
+  "archive_path": ".codex/archive/legacy-root/security-findings-comprehensive.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "a31f00c07e0bb961a387a2fdbd08a27afbbdd2faaeedfc711f795351a78bb522",
+  "size_bytes": 4308,
+  "kind": "historical_root"
+}

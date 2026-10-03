@@ -1,0 +1,11 @@
+{
+  "id": "CHECKPOINT_3_EXECUTION_SUMMARY.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CHECKPOINT_3_EXECUTION_SUMMARY.md",
+  "archive_path": ".codex/archive/legacy-root/CHECKPOINT_3_EXECUTION_SUMMARY.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "3f5740ca4ef539782a2bfab6437058b2bf718c2ac651b13d285bf62ba7683bca",
+  "size_bytes": 5733,
+  "kind": "historical_root"
+}

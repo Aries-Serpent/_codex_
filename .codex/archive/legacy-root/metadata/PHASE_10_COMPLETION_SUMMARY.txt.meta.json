@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_10_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_10_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_10_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "785526ab29e9221808db67919ad36d2a68ac4e56361f17ab0b73fff48396b750",
+  "size_bytes": 7025,
+  "kind": "historical_root"
+}

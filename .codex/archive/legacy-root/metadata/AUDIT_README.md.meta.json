@@ -1,0 +1,11 @@
+{
+  "id": "AUDIT_README.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/AUDIT_README.md",
+  "archive_path": ".codex/archive/legacy-root/AUDIT_README.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "53edaf1bbd2c4cbe7d4b7d400edb6ae920970c44717060d0b0439cb9a34e5f9c",
+  "size_bytes": 8311,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "TESTING_BASELINE_LANE1_2026_07_17.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TESTING_BASELINE_LANE1_2026_07_17.json",
+  "archive_path": ".codex/archive/legacy-root/TESTING_BASELINE_LANE1_2026_07_17.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2b44d85e8bdb94b7ead36539c42839660674122a66b71b749c61388c7e11cc37",
+  "size_bytes": 7328,
+  "kind": "historical_root"
+}

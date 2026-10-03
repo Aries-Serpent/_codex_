@@ -2,9 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.0
 
+> **ARCHIVE NOTE:** Historical status traceability only. This file preserves prior gap records and does not define current repo truth. The active truth is: security backlog is closed/advisory-only, and historical backlog items are retained as evidence rather than active work.
 > Generated: 2026-06-22 09:00:51 | Author: mbaetiong
 
-This document provides traceability for all completed items that were originally listed as gaps in the 2025-11-05 status audit. Each item shows the original gap description and the resolution that was implemented.
+This document provides traceability for completed items that were originally listed as gaps in the historical 2025-11-05 status audit. It is preserved as audit evidence and not as current operational guidance.
 
 ## Purpose
 

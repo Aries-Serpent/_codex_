@@ -1,0 +1,11 @@
+{
+  "id": "phase6_link_audit_complete.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase6_link_audit_complete.json",
+  "archive_path": ".codex/archive/legacy-root/phase6_link_audit_complete.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "2c60c60dd4f9cfbc1ce847daefa4948e9367fdd1ec76d3e3634c518d01a1842b",
+  "size_bytes": 767122,
+  "kind": "historical_root"
+}

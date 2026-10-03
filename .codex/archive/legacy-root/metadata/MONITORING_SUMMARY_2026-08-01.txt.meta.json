@@ -1,0 +1,11 @@
+{
+  "id": "MONITORING_SUMMARY_2026-08-01.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/MONITORING_SUMMARY_2026-08-01.txt",
+  "archive_path": ".codex/archive/legacy-root/MONITORING_SUMMARY_2026-08-01.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "1382ba3a114d3560780e050661acf491827daa30eaaf1b2c62efc5e92a3af4aa",
+  "size_bytes": 10237,
+  "kind": "historical_root"
+}

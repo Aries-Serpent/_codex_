@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_2_LANE_2_1_DEPENDENCY_REPORT.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_2_LANE_2_1_DEPENDENCY_REPORT.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_2_LANE_2_1_DEPENDENCY_REPORT.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "1ae75d9239f621be7c10a15d5e54f6eacdb8109c9844ddd364c2cb23805ec252",
+  "size_bytes": 2122,
+  "kind": "historical_root"
+}

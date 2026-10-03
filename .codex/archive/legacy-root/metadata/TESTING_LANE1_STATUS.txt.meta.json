@@ -1,0 +1,11 @@
+{
+  "id": "TESTING_LANE1_STATUS.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TESTING_LANE1_STATUS.txt",
+  "archive_path": ".codex/archive/legacy-root/TESTING_LANE1_STATUS.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "23842f3cb83629dfd0047a8679b3296c2825da4ee3ccd418d495fd3c751af569",
+  "size_bytes": 12140,
+  "kind": "historical_root"
+}

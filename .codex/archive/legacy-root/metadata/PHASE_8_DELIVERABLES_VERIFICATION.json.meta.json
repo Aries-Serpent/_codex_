@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_DELIVERABLES_VERIFICATION.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_DELIVERABLES_VERIFICATION.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_DELIVERABLES_VERIFICATION.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d1227bb0ebe3c48d19a0b99dbe1c67e72405da971792033f96bf38679e217d1c",
+  "size_bytes": 890,
+  "kind": "historical_root"
+}

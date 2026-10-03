@@ -1,0 +1,11 @@
+{
+  "id": "BACKFILL_REPORT.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/BACKFILL_REPORT.md",
+  "archive_path": ".codex/archive/legacy-root/BACKFILL_REPORT.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "3fb6991f779fea32bff1cf776db014ad91c419f5d112bc81224c75425acf5050",
+  "size_bytes": 3385,
+  "kind": "historical_root"
+}

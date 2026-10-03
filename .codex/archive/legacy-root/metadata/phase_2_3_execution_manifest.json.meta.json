@@ -1,0 +1,11 @@
+{
+  "id": "phase_2_3_execution_manifest.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/phase_2_3_execution_manifest.json",
+  "archive_path": ".codex/archive/legacy-root/phase_2_3_execution_manifest.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "723bc1a78f7e7b305c8f8c8fcbb35a8bcff2f5bc36338f3e9da6f3b078a4239b",
+  "size_bytes": 1871,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_10_SYSTEM_HEALTH_STAGE2.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_10_SYSTEM_HEALTH_STAGE2.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_10_SYSTEM_HEALTH_STAGE2.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "93832818273231efa63017fa311e10d89936e9dbc5ae135ce26700b66b3c1e5e",
+  "size_bytes": 1150,
+  "kind": "historical_root"
+}

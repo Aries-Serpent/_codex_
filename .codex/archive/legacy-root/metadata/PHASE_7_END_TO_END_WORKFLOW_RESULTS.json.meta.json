@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_7_END_TO_END_WORKFLOW_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_7_END_TO_END_WORKFLOW_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_7_END_TO_END_WORKFLOW_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "a7bf80eda10903d73983af1e45bbbcace4515f391a87107a5291fb6f1e7c3303",
+  "size_bytes": 9366,
+  "kind": "historical_root"
+}

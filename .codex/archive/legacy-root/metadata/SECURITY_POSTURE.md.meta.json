@@ -1,0 +1,11 @@
+{
+  "id": "SECURITY_POSTURE.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/SECURITY_POSTURE.md",
+  "archive_path": ".codex/archive/legacy-root/SECURITY_POSTURE.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d7b90af4b48083bc935fd55ee593c535593ce3143c3b6a0fecb51bd141e3eb58",
+  "size_bytes": 8402,
+  "kind": "historical_root"
+}

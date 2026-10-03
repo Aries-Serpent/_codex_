@@ -1,0 +1,11 @@
+{
+  "id": "session_schema.sql",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/session_schema.sql",
+  "archive_path": ".codex/archive/legacy-root/session_schema.sql",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "b5f596e479fe3c61692b7ddc1fb19acf9baae75ac0764dfe3f34a757c60fbff0",
+  "size_bytes": 4892,
+  "kind": "historical_root"
+}

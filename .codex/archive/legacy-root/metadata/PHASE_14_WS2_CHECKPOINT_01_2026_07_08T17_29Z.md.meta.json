@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_14_WS2_CHECKPOINT_01_2026_07_08T17_29Z.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_14_WS2_CHECKPOINT_01_2026_07_08T17_29Z.md",
+  "archive_path": ".codex/archive/legacy-root/PHASE_14_WS2_CHECKPOINT_01_2026_07_08T17_29Z.md",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2ae39af84b9e2ce6b9629697230683c16b2b762acc9e70cb6baecc8c23cbd12a",
+  "size_bytes": 6332,
+  "kind": "historical_root"
+}

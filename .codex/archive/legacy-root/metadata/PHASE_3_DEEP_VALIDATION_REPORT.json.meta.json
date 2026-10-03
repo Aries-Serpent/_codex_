@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_3_DEEP_VALIDATION_REPORT.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_3_DEEP_VALIDATION_REPORT.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_3_DEEP_VALIDATION_REPORT.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "de6f74e3defd80ace8fa21e7239f90125be8ae1c375ac8406b124cfa5e8add62",
+  "size_bytes": 3392,
+  "kind": "historical_root"
+}

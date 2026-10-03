@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_4B_STABILITY_TEST_RESULTS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_4B_STABILITY_TEST_RESULTS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_4B_STABILITY_TEST_RESULTS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "66262a06a40d28554040b7da5e034f1f264b4cba6aa54ec37780a8b26fb61896",
+  "size_bytes": 14022,
+  "kind": "historical_root"
+}

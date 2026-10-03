@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_2_VALIDATION_METRICS.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_2_VALIDATION_METRICS.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_2_VALIDATION_METRICS.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "fd7909c578e650a5a40998c07b4476d9fb286290fb7ef1b4ba2d651488b3b4c8",
+  "size_bytes": 9557,
+  "kind": "historical_root"
+}

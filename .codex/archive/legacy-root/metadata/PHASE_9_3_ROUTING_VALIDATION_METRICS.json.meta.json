@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_3_ROUTING_VALIDATION_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_3_ROUTING_VALIDATION_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_3_ROUTING_VALIDATION_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2709af1ec50194be161aacc8eadbe0721d82b7a255204eed9b94956f1f6cd6c1",
+  "size_bytes": 332,
+  "kind": "historical_root"
+}

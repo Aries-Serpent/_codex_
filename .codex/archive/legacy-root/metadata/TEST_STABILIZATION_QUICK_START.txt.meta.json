@@ -1,0 +1,11 @@
+{
+  "id": "TEST_STABILIZATION_QUICK_START.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/TEST_STABILIZATION_QUICK_START.txt",
+  "archive_path": ".codex/archive/legacy-root/TEST_STABILIZATION_QUICK_START.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "13871047da839e9f400b26a654035184cc8b3476186101f4e71ba18bcb79b049",
+  "size_bytes": 3933,
+  "kind": "historical_root"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "ROOT_ORG_PHASE4_VALIDATION_FRAMEWORK.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/ROOT_ORG_PHASE4_VALIDATION_FRAMEWORK.json",
+  "archive_path": ".codex/archive/legacy-root/ROOT_ORG_PHASE4_VALIDATION_FRAMEWORK.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "2c354f8f143243a80605738cc54868d84b2f60a651b12351f0508aa54fc1f5b1",
+  "size_bytes": 3993,
+  "kind": "historical_root"
+}

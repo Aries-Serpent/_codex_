@@ -1,0 +1,11 @@
+{
+  "id": "CHECKPOINT_2_EXECUTION_PLAN.md",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/CHECKPOINT_2_EXECUTION_PLAN.md",
+  "archive_path": ".codex/archive/legacy-root/CHECKPOINT_2_EXECUTION_PLAN.md",
+  "archived_at": "2026-10-02T10:40:13Z",
+  "sha256": "1344a7306f3caf0655149c1d4f23959603660022c0dad308ac7e68958d30918d",
+  "size_bytes": 7452,
+  "kind": "historical_root"
+}

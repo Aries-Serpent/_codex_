@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_C_COVERAGE_OUTPUT.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_C_COVERAGE_OUTPUT.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_C_COVERAGE_OUTPUT.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "d3c26311f82b4b09a22ed463d5f7e78becdfdfcbbca6a1667eabdbf652dd3139",
+  "size_bytes": 1862,
+  "kind": "historical_root"
+}

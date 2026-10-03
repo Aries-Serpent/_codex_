@@ -1,0 +1,11 @@
+{
+  "id": "GATES_REPORT.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/GATES_REPORT.txt",
+  "archive_path": ".codex/archive/legacy-root/GATES_REPORT.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "2bd1c1e7f59eaef7c980e87a53284cb462a4707385e2de353d011fa1af21e7da",
+  "size_bytes": 129,
+  "kind": "historical_root"
+}

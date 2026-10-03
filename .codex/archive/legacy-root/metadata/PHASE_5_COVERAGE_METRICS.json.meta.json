@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_5_COVERAGE_METRICS.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_5_COVERAGE_METRICS.json",
+  "archive_path": ".codex/archive/legacy-root/PHASE_5_COVERAGE_METRICS.json",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c117d290c74316c8f95e6c7282e5797e8e98955cd12989c62855261613e9a674",
+  "size_bytes": 3397,
+  "kind": "historical_root"
+}

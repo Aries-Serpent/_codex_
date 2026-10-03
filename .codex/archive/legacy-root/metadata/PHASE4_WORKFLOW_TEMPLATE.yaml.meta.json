@@ -1,0 +1,11 @@
+{
+  "id": "PHASE4_WORKFLOW_TEMPLATE.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE4_WORKFLOW_TEMPLATE.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE4_WORKFLOW_TEMPLATE.yaml",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "5700d1757c82e9c0c3abe6a9bba4fea1de4a91dba67449a08e0cdce35c4f7c3c",
+  "size_bytes": 14145,
+  "kind": "historical_root"
+}

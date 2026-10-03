@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_COMPLIANCE_SLOS.yaml",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_COMPLIANCE_SLOS.yaml",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_COMPLIANCE_SLOS.yaml",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "858df812a8c7b80d73056f0cbe73be43b46033751424c21a36e48f21b76f152b",
+  "size_bytes": 20641,
+  "kind": "historical_root"
+}

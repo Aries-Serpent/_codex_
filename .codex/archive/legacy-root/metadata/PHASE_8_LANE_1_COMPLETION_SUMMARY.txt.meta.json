@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_8_LANE_1_COMPLETION_SUMMARY.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_8_LANE_1_COMPLETION_SUMMARY.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_8_LANE_1_COMPLETION_SUMMARY.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "4e6fd1b1deee3076db60960ab78a2f00ff59aeb33f398eb822851beddef34bd5",
+  "size_bytes": 14875,
+  "kind": "historical_root"
+}

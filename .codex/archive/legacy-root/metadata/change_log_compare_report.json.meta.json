@@ -1,0 +1,11 @@
+{
+  "id": "change_log_compare_report.json",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/change_log_compare_report.json",
+  "archive_path": ".codex/archive/legacy-root/change_log_compare_report.json",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "63d82f03a3ce55e347aff7ad690b0738cbcde897533915c4faa9c1da105f3930",
+  "size_bytes": 2840,
+  "kind": "historical_root"
+}

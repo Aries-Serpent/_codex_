@@ -1,0 +1,11 @@
+{
+  "id": "LANE_7_VALIDATION_COMPLETE.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/LANE_7_VALIDATION_COMPLETE.txt",
+  "archive_path": ".codex/archive/legacy-root/LANE_7_VALIDATION_COMPLETE.txt",
+  "archived_at": "2026-10-02T10:40:14Z",
+  "sha256": "f3d67ccb026a7aa455cfc39382705a382da277e2e7aa443c524bae29a92cca0d",
+  "size_bytes": 6772,
+  "kind": "historical_root"
+}

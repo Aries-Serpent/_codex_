@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_6_LANE_1_DELIVERABLES_MANIFEST.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_6_LANE_1_DELIVERABLES_MANIFEST.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_6_LANE_1_DELIVERABLES_MANIFEST.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "c866f897c02d8082e5e01228612c38616642a6db2efbb6e92ceed7b852bbacc9",
+  "size_bytes": 8358,
+  "kind": "historical_root"
+}

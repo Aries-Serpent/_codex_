@@ -1,0 +1,11 @@
+{
+  "id": "PHASE_9_GATE2_COMPLETION_REPORT.txt",
+  "archive_label": "ARCHIVED_HISTORICAL_ROOT",
+  "status": "archived",
+  "source_path": ".codex/PHASE_9_GATE2_COMPLETION_REPORT.txt",
+  "archive_path": ".codex/archive/legacy-root/PHASE_9_GATE2_COMPLETION_REPORT.txt",
+  "archived_at": "2026-10-02T10:40:15Z",
+  "sha256": "991fe835bb58212b3fda610e1885fdc8781c1afa4f94bb739e46a792c91f9d54",
+  "size_bytes": 10042,
+  "kind": "historical_root"
+}
