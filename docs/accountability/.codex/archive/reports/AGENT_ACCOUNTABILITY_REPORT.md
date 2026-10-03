@@ -26,29 +26,29 @@ Recover the interrupted CI remediation branch after the prior agent timed out, v
 
 ---
 
-## SESSION SUMMARY — 2026-10-03T05:36:00Z — workflow cancellation remediation + branch PR-readiness verification
+## SESSION SUMMARY — 2026-10-03T05:36:00Z — PR #5658 review-thread remediation + GitHub compatibility follow-up
 
 ### Objective
-Confirm the root cause of the cancelled security-scanning job, keep the fix scoped to the workflow concurrency policy, and verify the branch is ready for a direct merge-to-main PR without broadening scope.
+Resolve the remaining PR #5658 review-thread findings across the GitHub client, MCP poster, compatibility wrappers, and governance evidence without broadening scope beyond the affected paths.
 
 ### Status
 ✅ COMPLETE
 
 ### Actions
-1. Re-checked the cancelled run evidence and ruled out the CodeQL SARIF guard as the cause; the workflow own concurrency policy was responsible for the cancelled conclusion.
-2. Narrowed the fix to `.github/workflows/security-scanning-suite.yml` by scoping the concurrency group to `${{ github.event_name }}` and preserving PR-only cancellation via `cancel-in-progress: ${{ github.event_name == 'pull_request' }}`.
-3. Re-ran the workflow contract validation and branch sanity check to confirm the change is isolated, valid, and PR-ready.
-4. Confirmed the repo’s active governance artifacts are aligned with the final branch state so the security workflow fix can proceed to PR creation.
+1. Re-checked the remaining review-thread findings and narrowed the patch to the exact affected GitHub API compatibility files and generated governance artifacts.
+2. Removed the GraphQL unused-variable mismatch, kept the MCP discussion URL intact, and replaced empty broad exception handlers with targeted debug logging that preserves best-effort propagation semantics.
+3. Kept the root `tools/` layer as a thin delegate to the canonical `src/tools` modules and corrected the cache-only semantics so mutating GitHub requests are not served from stale cache entries.
+4. Restored the tracked `.codex/session_startup_packet.json` baseline and refreshed the current-day PDA/accountability evidence for the active PR.
 
 ### Validation
-- `python scripts/ci/check_workflow_yaml.py .github/workflows/security-scanning-suite.yml` → pass
-- `git diff --check` → clean
-- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5634` → pass after current-session accountability evidence is appended
+- `pytest -q tests/github/test_codex_master_key_scopes.py tests/github/test_client.py` → pass
+- `python -m py_compile tools/github/app_token.py tools/github/gh_api.py src/aries_serpent_core/github/api_client.py src/aries_serpent_core/github/mcp_poster.py` → pass
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5658` → pass after the governance artifacts are refreshed in the current branch.
 
 ### Governance
 - REQ-4: Active accountability evidence refreshed for the current 2026-10-03 session.
-- REQ-5: Root `CHANGELOG.md` remains compliant for the current branch state.
-- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current session evidence.
+- REQ-5: Root `CHANGELOG.md` remains compliant for the current PR state.
+- PDA: `.codex/aftermath/pda_iterations.jsonl` updated with the current 2026-10-03 session evidence.
 
 ### Agents Used
 - [x] `general-purpose` (workflow diagnosis + PR-readiness verification)
