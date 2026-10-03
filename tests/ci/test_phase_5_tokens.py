@@ -1,4 +1,19 @@
+import os
+import time
 from typing import Any, Dict
+
+import pytest
+
+from scripts.ci._token_resolver import (
+    CANONICAL_HIERARCHY,
+    TokenResolutionError,
+    get_auth_header,
+    get_token,
+    get_token_scope,
+    get_token_source,
+    log_token_usage,
+    validate_token_scope,
+)
 
 # from scripts.ci._token_resolver import get_token
 # This module implements 8 core test scenarios validating the entire token
