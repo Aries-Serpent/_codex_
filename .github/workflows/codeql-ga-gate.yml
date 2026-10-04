@@ -199,28 +199,49 @@ jobs:
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        script: "const critical = '${{ steps.analyze.outputs.critical_count }}';\n\
-          const high = '${{ steps.analyze.outputs.high_count }}';\nconst medium =\
-          \ '${{ steps.analyze.outputs.medium_count }}';\nconst blocked = '${{ steps.gate-decision.outputs.blocked\
-          \ }}';\nconst status = '${{ steps.gate-decision.outputs.status }}';\n\n\
-          let comment = `## \U0001F510 CodeQL GA Security Gate\\n\\n`;\ncomment +=\
-          \ `**Gate Status**: ${status === 'FAIL' ? '❌ BLOCKED' : status === 'PASS'\
-          \ ? '✅ PASSED' : '⚠️ ' + status}\\n\\n`;\ncomment += `### Alert Summary\\\
-          n`;\ncomment += `| Severity | Count | Status |\\n`;\ncomment += `|----------|-------|--------|\\\
-          n`;\ncomment += `| Critical | ${critical} | ${critical > 0 ? '❌ Blocking'\
-          \ : '✅ Clear'} |\\n`;\ncomment += `| High | ${high} | ${high > 0 ? '❌ Blocking'\
-          \ : '✅ Clear'} |\\n`;\ncomment += `| Medium | ${medium} | ℹ️ Logged |\\\
-          n\\n`;\n\nif (blocked === 'true') {\n  comment += `### Action Required\\\
-          n`;\n  comment += `This PR cannot be merged until CodeQL vulnerabilities\
-          \ are resolved.\\n\\n`;\n  comment += `**Resources**:\\n`;\n  comment +=\
-          \ `- [Deployment Report](.codex/PHASE_6_CODEQL_GA_DEPLOYMENT_REPORT.md)\\\
-          n`;\n  comment += `- [Remediation Guide](.codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml)\\\
-          n`;\n  comment += `- [Security Alerts](https://github.com/${{ github.repository\
-          \ }}/security/code-scanning)\\n`;\n} else {\n  comment += `### Status\\\
-          n`;\n  comment += `✅ All CodeQL security checks passed.\\n`;\n}\n\ncomment\
-          \ += `\\n---\\n*Gate v1.0.0 - Phase 6 Lane 1*\\n`;\n\ngithub.rest.issues.createComment({\n\
-          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
-          \ repo: context.repo.repo,\n  body: comment\n});\n"
+        script: |
+          const critical = '${{ steps.analyze.outputs.critical_count }}';
+          const high = '${{ steps.analyze.outputs.high_count }}';
+          const medium = '${{ steps.analyze.outputs.medium_count }}';
+          const blocked = '${{ steps.gate-decision.outputs.blocked }}';
+          const status = '${{ steps.gate-decision.outputs.status }}';
+          const threshold = '${{ env.CODEQL_SEVERITY_THRESHOLD }}' || 'high';
+          const isBlocking = (severity) => {
+            if (threshold === 'critical') return severity === 'Critical';
+            if (threshold === 'high') return severity === 'Critical' || severity === 'High';
+            if (threshold === 'medium') return ['Critical', 'High', 'Medium'].includes(severity);
+            return false;
+          };
+
+          let comment = `## 🔐 CodeQL GA Security Gate\n\n`;
+          comment += `**Gate Status**: ${status === 'FAIL' ? '❌ BLOCKED' : status === 'PASS' ? '✅ PASSED' : '⚠️ ' + status}\n\n`;
+          comment += `### Alert Summary\n`;
+          comment += `| Severity | Count | Status |\n`;
+          comment += `|----------|-------|--------|\n`;
+          comment += `| Critical | ${critical} | ${isBlocking('Critical') ? '❌ Blocking' : '✅ Clear'} |\n`;
+          comment += `| High | ${high} | ${isBlocking('High') ? '❌ Blocking' : '✅ Clear'} |\n`;
+          comment += `| Medium | ${medium} | ${isBlocking('Medium') ? '❌ Blocking' : 'ℹ️ Logged'} |\n\n`;
+
+          if (blocked === 'true') {
+            comment += `### Action Required\n`;
+            comment += `This PR cannot be merged until CodeQL vulnerabilities are resolved.\n\n`;
+            comment += `**Resources**:\n`;
+            comment += `- [Deployment Report](.codex/PHASE_6_CODEQL_GA_DEPLOYMENT_REPORT.md)\n`;
+            comment += `- [Remediation Guide](.codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml)\n`;
+            comment += `- [Security Alerts](https://github.com/${{ github.repository }}/security/code-scanning)\n`;
+          } else {
+            comment += `### Status\n`;
+            comment += `✅ All CodeQL security checks passed.\n`;
+          }
+
+          comment += `\n---\n*Gate v1.0.0 - Phase 6 Lane 1*\n`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
     - name: Log Gate Decision to Audit Trail
       if: always()
       shell: bash
