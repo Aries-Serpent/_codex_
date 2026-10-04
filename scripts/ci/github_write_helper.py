@@ -52,7 +52,7 @@ def _effective_token_chain(operation: str) -> tuple[str, ...]:
 
 
 def _validate_operation(operation: str) -> None:
-    if operation not in WRITE_OPERATIONS:
+    if operation not in VALID_OPERATIONS:
         raise ValueError(f"Unsupported GitHub operation: {operation}")
 
 
@@ -176,8 +176,9 @@ def ensure_write_capability(operation: str, token: str | None = None) -> tuple[s
 __all__ = [
     "ADMIN_WRITE_OPERATIONS",
     "COMMENT_OPERATIONS",
+    "DISCUSSION_OPERATIONS",
+    "VALID_OPERATIONS",
     "CANONICAL_WRITE_CHAIN",
-    "WRITE_OPERATIONS",
     "build_auth_headers",
     "build_discussion_comment_request",
     "build_pr_comment_request",

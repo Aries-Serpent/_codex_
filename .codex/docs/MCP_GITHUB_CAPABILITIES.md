@@ -1,6 +1,6 @@
 # GitHub MCP and Companion Research Capabilities
 
-- **Version:** `github-mcp-server/remote-112de3b831975632257acbdeb73b577f32ea1762`
+- **Version:** `github-mcp-server/1.10.0`
 - **Date:** 2026-08-01
 - **Author:** `mcp-github-doc-agent`
 - **Scope:** Aries-Serpent/_codex_ integration map for the supplied 36-name research inventory: 35 GitHub MCP tools plus standalone `web_search`
