@@ -123,15 +123,21 @@ class TestWriteHelperPolicy:
             with pytest.raises(ValueError, match="CODEX_MASTER_KEY|CODEX_BACKUP_KEY"):
                 resolve_github_token("workflow_dispatch")
 
-    def test_write_helper_rejects_unknown_operations(self):
-        """Unknown operation names must fail before choosing any token."""
-        from ci.github_write_helper import ensure_write_capability, resolve_github_token
+    def test_resolve_github_token_rejects_unknown_operation_before_resolution(self):
+        """Unknown operations must fail closed before any token lookup is attempted."""
+        from ci.github_write_helper import resolve_github_token
 
-        with patch.dict(os.environ, {"GITHUB_TOKEN": "weak-token"}, clear=True):
-            with pytest.raises(ValueError, match="Unsupported GitHub operation"):
-                resolve_github_token("workflow_dispach")
-            with pytest.raises(ValueError, match="Unsupported GitHub operation"):
-                ensure_write_capability("workflow_dispach", token="custom-token")
+        with patch.dict(os.environ, {}, clear=True):
+            with pytest.raises(ValueError, match="Unsupported GitHub operation 'unknown_operation'"):
+                resolve_github_token("unknown_operation")
+
+    def test_ensure_write_capability_rejects_unknown_operation_before_resolution(self):
+        """ensure_write_capability must reject unsupported operations without falling back."""
+        from ci.github_write_helper import ensure_write_capability
+
+        with patch.dict(os.environ, {"GH_TOKEN": "comment-token"}, clear=True):
+            with pytest.raises(ValueError, match="Unsupported GitHub operation 'unknown_operation'"):
+                ensure_write_capability("unknown_operation")
 
 
 # ============================================================================

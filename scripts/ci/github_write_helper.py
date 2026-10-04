@@ -28,17 +28,6 @@ CANONICAL_WRITE_CHAIN = (
     "GITHUB_TOKEN",
 )
 
-WRITE_OPERATIONS = {
-    "repo_variable_write",
-    "workflow_dispatch",
-    "workflow_approval",
-    "admin_write",
-    "discussion_write",
-    "issue_comment",
-    "pr_comment",
-    "discussion_comment",
-}
-
 ADMIN_WRITE_OPERATIONS = {
     "repo_variable_write",
     "workflow_dispatch",
@@ -48,6 +37,7 @@ ADMIN_WRITE_OPERATIONS = {
 
 COMMENT_OPERATIONS = {"pr_comment", "issue_comment", "discussion_comment"}
 DISCUSSION_OPERATIONS = {"discussion_write", "discussion_comment"}
+VALID_OPERATIONS = ADMIN_WRITE_OPERATIONS | COMMENT_OPERATIONS | DISCUSSION_OPERATIONS
 
 
 def _effective_token_chain(operation: str) -> tuple[str, ...]:
@@ -84,7 +74,9 @@ def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
         ValueError: when the operation is unsupported or requires a stronger
             token than the current environment provides.
     """
-    _validate_operation(operation)
+    if operation not in VALID_OPERATIONS:
+        raise ValueError(f"Unsupported GitHub operation '{operation}'.")
+
     requires_elevated = operation in ADMIN_WRITE_OPERATIONS
     try:
         token, source = get_token(required_elevated=requires_elevated)
@@ -159,7 +151,9 @@ def build_workflow_dispatch_request(
 
 def ensure_write_capability(operation: str, token: str | None = None) -> tuple[str, str]:
     """Validate that the selected token is acceptable for the operation."""
-    _validate_operation(operation)
+    if operation not in VALID_OPERATIONS:
+        raise ValueError(f"Unsupported GitHub operation '{operation}'.")
+
     if token is None:
         token, source = resolve_github_token(operation)
     else:
