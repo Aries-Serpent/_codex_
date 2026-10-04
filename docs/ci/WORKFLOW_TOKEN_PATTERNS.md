@@ -26,13 +26,13 @@ jobs:
         run: |
           gh pr edit ${{ github.event.pull_request.number }} \
             --body "Updated PR body"
-      
+
       - name: Write repository variable
         run: |
           gh api -X PATCH /repos/${{ github.repository }}/actions/variables/MY_VAR \
             -f name='MY_VAR' \
             -f value='new_value'
-      
+
       - name: Dispatch workflow
         run: |
           gh workflow run deploy.yml \
@@ -71,17 +71,17 @@ jobs:
             --workflow main.yml \
             --status completed \
             --limit 10
-      
+
       - name: Post comment on PR
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "Automated comment"
-      
+
       - name: Download artifact
         run: |
           gh run download ${{ github.run_id }} \
             --name test-results
-      
+
       - name: Check run status
         run: |
           gh run view ${{ github.run_id }} \
@@ -118,16 +118,16 @@ jobs:
           # Standard operation
           RUNS=$(gh run list --limit 5 --json status)
           echo "Recent runs: $RUNS"
-          
+
           # Elevated operation
           gh pr edit ${{ github.event.pull_request.number }} \
             --body "Status: $(echo $RUNS | jq -r '.[0].status')"
-      
+
       - name: Fetch data and manage variables
         run: |
           # Standard operation
           CHECKS=$(gh run view ${{ github.run_id }} --json checkRuns)
-          
+
           # Elevated operation
           gh api -X PATCH /repos/${{ github.repository }}/actions/variables/LAST_RUN \
             -f value="$CHECKS"
@@ -225,7 +225,7 @@ jobs:
           gh api /repos/${{ github.repository }}/actions/runs/${{ github.run_id }} \
             -H "Authorization: ******" \
             -H "X-GitHub-Api-Version: 2022-11-28"
-      
+
       - name: Check rate limits
         run: |
           # CRITICAL: Requires elevated token
@@ -234,7 +234,7 @@ jobs:
             echo "::error::API rate limit critically low"
             exit 1
           fi
-      
+
       - name: Verify session state
         run: |
           # CRITICAL: Session verification requires master key

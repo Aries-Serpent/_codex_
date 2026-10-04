@@ -82,8 +82,7 @@ def get_token_source() -> str:
         if os.environ.get(env_var):
             return env_var
     raise TokenResolutionError(
-        "No token available. Please set one of: "
-        + ", ".join(CANONICAL_HIERARCHY[:2])
+        "No token available. Please set one of: " + ", ".join(CANONICAL_HIERARCHY[:2])
     )
 
 
@@ -126,8 +125,7 @@ def get_token(required_elevated: bool = False) -> Tuple[Optional[str], str]:
         )
     else:
         raise TokenResolutionError(
-            "No token available. Please set one of: "
-            + ", ".join(CANONICAL_HIERARCHY)
+            "No token available. Please set one of: " + ", ".join(CANONICAL_HIERARCHY)
         )
 
 
@@ -167,6 +165,7 @@ def get_token_scope(token: Optional[str] = None) -> str:
     Raises:
         TokenResolutionError: If token cannot be determined and none provided.
     """
+    source: str | None
     if token is None:
         try:
             token, source = get_token()
@@ -191,9 +190,7 @@ def get_token_scope(token: Optional[str] = None) -> str:
     return "fallback"
 
 
-def validate_token_scope(
-    token: Optional[str], required_scopes: List[str]
-) -> Tuple[bool, str]:
+def validate_token_scope(token: Optional[str], required_scopes: List[str]) -> Tuple[bool, str]:
     """Validate that a token has the required scopes.
 
     Determines required scopes based on the token source and compares with
@@ -210,6 +207,7 @@ def validate_token_scope(
     Raises:
         TokenResolutionError: If token source cannot be determined.
     """
+    source: str | None
     if token is None:
         try:
             token, source = get_token(required_elevated=False)
@@ -279,9 +277,7 @@ def log_token_usage(context: str, required_elevated: bool = False) -> None:
     try:
         token, source = get_token(required_elevated=required_elevated)
         scope = get_token_scope(token)
-        logger.info(
-            f"Using token: source={source}, scope={scope}, context={context}"
-        )
+        logger.info(f"Using token: source={source}, scope={scope}, context={context}")
     except TokenResolutionError as e:
         logger.error(f"Token resolution failed: {e}")
         raise
