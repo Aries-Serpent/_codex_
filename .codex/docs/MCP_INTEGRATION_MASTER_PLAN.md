@@ -25,7 +25,7 @@
 
 | Server | Version | Tool Count | Status |
 |--------|---------|-----------:|--------|
-| `github-mcp-server` | `remote-112de3b831975632257acbdeb73b577f32ea1762` | 35 | Active, read-only |
+| `github-mcp-server` | `1.10.0` | 35 | Active, read-only |
 | `playwright` | `0.0.40` | 21 | Active |
 | Companion `web_search` | Runtime-managed | 1 | Active, separate callable namespace |
 
