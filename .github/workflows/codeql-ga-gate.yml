@@ -163,13 +163,16 @@ jobs:
           BLOCKED=true
           STATUS="FAIL"
           REASON="Critical vulnerabilities detected ($CRITICAL)"
-        fi
-
         # Check for high alerts (blocking based on severity threshold)
-        if [ "$HIGH" -gt 0 ] && [ "$SEVERITY_THRESHOLD" != "critical" ]; then
+        elif [ "$HIGH" -gt 0 ] && [ "$SEVERITY_THRESHOLD" != "critical" ]; then
           BLOCKED=true
           STATUS="FAIL"
           REASON="High severity vulnerabilities detected ($HIGH)"
+        # Check for medium alerts when the threshold is set to medium
+        elif [ "$MEDIUM" -gt 0 ] && [ "$SEVERITY_THRESHOLD" = "medium" ]; then
+          BLOCKED=true
+          STATUS="FAIL"
+          REASON="Medium severity vulnerabilities detected ($MEDIUM)"
         fi
 
         # Override if dry-run mode

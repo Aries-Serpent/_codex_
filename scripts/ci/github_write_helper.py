@@ -61,6 +61,11 @@ def _effective_token_chain(operation: str) -> tuple[str, ...]:
     return CANONICAL_WRITE_CHAIN
 
 
+def _validate_operation(operation: str) -> None:
+    if operation not in WRITE_OPERATIONS:
+        raise ValueError(f"Unsupported GitHub operation: {operation}")
+
+
 def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
     """Resolve the correct token for a GitHub operation.
 
@@ -76,9 +81,10 @@ def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
         A tuple of (token_value, token_source_name).
 
     Raises:
-        ValueError: when the operation requires a stronger token than the current
-            environment provides.
+        ValueError: when the operation is unsupported or requires a stronger
+            token than the current environment provides.
     """
+    _validate_operation(operation)
     requires_elevated = operation in ADMIN_WRITE_OPERATIONS
     try:
         token, source = get_token(required_elevated=requires_elevated)
@@ -87,6 +93,9 @@ def resolve_github_token(operation: str = "pr_comment") -> tuple[str, str]:
             f"No suitable GitHub token is available for operation '{operation}'. "
             "Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY for elevated writes."
         ) from exc
+
+    if token is None:
+        raise ValueError(f"No suitable GitHub token is available for operation '{operation}'.")
 
     if requires_elevated and source not in {"CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"}:
         raise ValueError(
@@ -135,7 +144,9 @@ mutation AddDiscussionComment($discussionId: ID!, $body: String!) {
     }
 
 
-def build_workflow_dispatch_request(repo: str, workflow_id: str, ref: str, **inputs: Any) -> dict[str, Any]:
+def build_workflow_dispatch_request(
+    repo: str, workflow_id: str, ref: str, **inputs: Any
+) -> dict[str, Any]:
     """Return a canonical workflow-dispatch payload consistent with this repo."""
     payload = {"ref": ref, "inputs": inputs}
     return {
@@ -148,18 +159,19 @@ def build_workflow_dispatch_request(repo: str, workflow_id: str, ref: str, **inp
 
 def ensure_write_capability(operation: str, token: str | None = None) -> tuple[str, str]:
     """Validate that the selected token is acceptable for the operation."""
+    _validate_operation(operation)
     if token is None:
         token, source = resolve_github_token(operation)
     else:
-        source = None
-        for env_name in CANONICAL_WRITE_CHAIN:
-            if os.environ.get(env_name) == token:
-                source = env_name
-                break
-        if source is None:
-            source = "custom"
+        source = next(
+            (env_name for env_name in CANONICAL_WRITE_CHAIN if os.environ.get(env_name) == token),
+            "custom",
+        )
 
-    if operation in ADMIN_WRITE_OPERATIONS and source not in {"CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"}:
+    if operation in ADMIN_WRITE_OPERATIONS and source not in {
+        "CODEX_MASTER_KEY",
+        "CODEX_BACKUP_KEY",
+    }:
         raise ValueError(
             f"Operation '{operation}' requires CODEX_MASTER_KEY or CODEX_BACKUP_KEY; "
             f"got source '{source}'."
@@ -171,6 +183,7 @@ __all__ = [
     "ADMIN_WRITE_OPERATIONS",
     "COMMENT_OPERATIONS",
     "CANONICAL_WRITE_CHAIN",
+    "WRITE_OPERATIONS",
     "build_auth_headers",
     "build_discussion_comment_request",
     "build_pr_comment_request",
