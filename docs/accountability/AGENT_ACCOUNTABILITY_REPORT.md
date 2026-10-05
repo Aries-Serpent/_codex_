@@ -1,3 +1,35 @@
+## Session: 2026-10-05T16:37Z — PR #5669 review-thread remediation
+
+**Objective:** Resolve the actionable review findings on PR #5669 through independent implementation lanes, preserve research provenance, and report the setup-workflow authorization decision accurately.
+
+**Status:** ⚠️ Code and artifact findings addressed; the protected Copilot setup-workflow thread requires an explicit maintainer choice.
+
+**Actions:**
+1. Restored `.codex/session_startup_packet.json` to the tracked timestamp baseline.
+2. Hardened research fetch-hash verification, CLI source-entry validation, and storage artifact-name validation, publication ordering, and UTC `Z` timestamps.
+3. Rebuilt phase 9.3 dependency edges from declared dependencies and added an `execute()` concurrency/dependency regression test.
+4. Published a corrected content-addressed EV run (`96c52002aec70d8b74d9148f`); marked the earlier run superseded, refreshed both indexes, and set all seven unmatched objectives to unresolved.
+5. Regenerated the deep-research fixture and synchronized AZIMUTH, execution-lane, source-role, checkpoint, and report artifacts.
+6. Assessed the protected setup workflow. No further edits were made; the review thread asks the owner to choose between a supported/reworked resource profile and restoring the file to base.
+
+**Validation:**
+- Research I/O lane: 55 focused tests and three direct regression tests passed; Ruff, format, targeted mypy, and diff checks passed.
+- Executor lane: four focused tests, Ruff, and diff checks passed.
+- Evidence/fixture lane: schema, checkpoint, manifest-hash, content-address, index, and companion checks passed; 55 changed-only RVS tests passed.
+- Secret scanning reported no secrets in changed files.
+- Final PR parallel validation: pending.
+
+**Governance:** The five always-required WEC items remain checked and the active optional workflows remain unchecked. Current-head workflow runs are gated as `action_required`; the setup-workflow review remains awaiting explicit owner direction.
+
+### Agents Used
+- [x] `general-purpose` — research provider, CLI, and storage fixes
+- [x] `test-enhancement-agent` — EV evidence and fixture repair
+- [x] `ci-testing-agent` — dependency-aware executor
+- [x] `explore` — setup-workflow impact assessment
+- [x] `workflow-monitoring-agent` — session and PR monitoring
+
+---
+
 ## Session: 2026-10-05T14:45Z — Copilot runtime resource exhaustion fallback
 
 **Objective:** Prevent CCA process/thread exhaustion during dependency-graph work by probing runner headroom and applying bounded concurrency or a configured larger runner.
