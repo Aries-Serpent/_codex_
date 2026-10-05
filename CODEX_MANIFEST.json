@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-05T06:25:26Z",
+  "generated_at": "2026-10-05T19:01:16Z",
   "agents": [
+    {
+      "name": "deep-research-analysis-agent",
+      "role": "specialist",
+      "enforcement_tier": "SOFT",
+      "autonomy_model": "E"
+    },
     {
       "name": "offline-zip-recovery-agent",
       "role": "specialist",
@@ -1355,5 +1361,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1c1f5dd33705514817c6e62bcb32c636b57ba1e06f05df3971e9a20b6509f3e7"
+  "integrity_sha256": "5c928c9e473a658ac3cf339a659a81fbd2d60d53fdeb21dd9f60c6cc13807258"
 }
