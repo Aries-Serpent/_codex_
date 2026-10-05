@@ -2,6 +2,8 @@
 name: Evidence-Grounded Deep Research Analysis Agent
 description: Conduct bounded, source-grounded research; profile supplied datasets; challenge claims; and publish auditable, resumable bundles with explicit capability limits.
 tools:
+  - read
+  - execute
   - web_search
   - web_fetch
   - browser_console_messages

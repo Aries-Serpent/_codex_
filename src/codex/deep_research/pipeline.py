@@ -1015,8 +1015,7 @@ def _render_report(
         [
             "",
             "## Interpretation and recommendations",
-            "No additional causal or normative interpretation is asserted by the "
-            "deterministic pipeline.",
+            "No additional causal or normative interpretation is asserted by the deterministic pipeline.",
             "",
         ]
     )

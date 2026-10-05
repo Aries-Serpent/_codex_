@@ -99,6 +99,13 @@ jobs:
       || inputs.mode == ''full-suite''))
 
       '
+    env:
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      VECLIB_MAXIMUM_THREADS: '1'
+      CI_PYTEST_WORKERS: '2'
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
@@ -136,9 +143,9 @@ jobs:
         is collected
 
         # Timeout: 7s per test (pytest-timeout), fail fast after 50 failures, run
-        in parallel with 6 workers
+        with a bounded worker count to avoid CI CPU/thread oversubscription.
 
-        coverage run -m pytest -q -m "not slow" --timeout=7 --maxfail=50 -n auto --dist=loadscope
+        coverage run -m pytest -q -m "not slow" --timeout=7 --maxfail=50 -n "${CI_PYTEST_WORKERS:-2}" --dist=loadscope
         || true
 
 
