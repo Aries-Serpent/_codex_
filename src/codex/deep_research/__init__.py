@@ -10,6 +10,7 @@ from codex.deep_research.providers import (
     canonicalize_url,
     validate_public_url,
 )
+from codex.deep_research.storage import TopicResearchStore, safe_topic_slug
 
 __all__ = [
     "BrowserDiagnostics",
@@ -19,8 +20,10 @@ __all__ = [
     "ResearchBundle",
     "ResearchProvider",
     "SafeHTTPSFetcher",
+    "TopicResearchStore",
     "canonicalize_url",
     "run_research",
+    "safe_topic_slug",
     "validate_checkpoint",
     "validate_public_url",
 ]

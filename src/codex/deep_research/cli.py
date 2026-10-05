@@ -11,6 +11,7 @@ from typing import Any
 
 from codex.deep_research.contracts import ResearchBundle
 from codex.deep_research.pipeline import ExecutionLimits, run_research
+from codex.deep_research.storage import TopicResearchStore
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -35,7 +36,22 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="Checkpoint JSON from a prior bundle to resume",
     )
-    parser.add_argument("--output", required=True, type=Path, help="Bundle output directory")
+    output_group = parser.add_mutually_exclusive_group()
+    output_group.add_argument(
+        "--output",
+        type=Path,
+        help="Write to this directory instead of the centralized topic store",
+    )
+    output_group.add_argument(
+        "--topic",
+        help="Topic label; defaults to the brief title when --output is omitted",
+    )
+    parser.add_argument(
+        "--research-root",
+        type=Path,
+        default=Path("docs/research/results"),
+        help="Central topic store root (default: docs/research/results)",
+    )
     parser.add_argument("--max-search-calls", type=int, default=40)
     parser.add_argument("--max-sources", type=int, default=60)
     parser.add_argument("--max-retries", type=int, default=3)
@@ -62,10 +78,18 @@ def main(argv: list[str] | None = None) -> int:
                 deadline_seconds=args.deadline_seconds,
             ),
         )
-        _write_bundle(args.output, bundle)
+        if args.output is not None:
+            _write_bundle(args.output, bundle)
+            output_path = args.output
+        else:
+            output_path = TopicResearchStore(args.research_root).publish(
+                args.topic or brief.get("title", ""),
+                bundle.to_dict(),
+                _bundle_artifacts(bundle),
+            )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
-    print(f"{bundle.status}: {args.output.resolve()}")
+    print(f"{bundle.status}: {output_path.resolve()}")
     return 0 if bundle.status == "complete" else 2
 
 
@@ -75,8 +99,13 @@ def _read_json(path: Path) -> Any:
 
 def _write_bundle(output_dir: Path, bundle: ResearchBundle) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
+    for name, content in _bundle_artifacts(bundle).items():
+        _atomic_write(output_dir / name, content)
+
+
+def _bundle_artifacts(bundle: ResearchBundle) -> dict[str, bytes]:
     data = bundle.to_dict()
-    outputs = {
+    return {
         "bundle.json": _json_bytes(data),
         "query_ledger.jsonl": _jsonl_bytes(data["query_ledger"]),
         "sources.jsonl": _jsonl_bytes(data["sources"]),
@@ -88,8 +117,6 @@ def _write_bundle(output_dir: Path, bundle: ResearchBundle) -> None:
         "checkpoint.json": _json_bytes(data["checkpoint"]),
         "report.md": data["report"].encode("utf-8"),
     }
-    for name, content in outputs.items():
-        _atomic_write(output_dir / name, content)
 
 
 def _json_bytes(value: Any) -> bytes:
