@@ -12821,7 +12821,7 @@ If you need to access the full original report, it's available for reference.
 Resolve the actionable PR #5669 review findings with verified code, executor, and research-artifact fixes while preserving the live WEC and respecting the protected setup-workflow authorization boundary.
 
 ### Status
-⚠️ Code and artifact findings addressed; explicit maintainer direction is still needed for the existing `copilot-setup-steps.yml` diff.
+⚠️ Code and artifact findings addressed; @mbaetiong approved retaining the existing `copilot-setup-steps.yml` wiring, with a CCA compatibility caveat recorded.
 
 ### Actions
 1. Restored the startup packet to its tracked baseline.
@@ -12829,7 +12829,7 @@ Resolve the actionable PR #5669 review findings with verified code, executor, an
 3. Built executor graph edges from declared dependencies and added end-to-end concurrency coverage.
 4. Published corrected EV findings in a new content-addressed run, marked the earlier run superseded, refreshed indexes, and left all seven unmatched objectives unresolved.
 5. Rebuilt the fixture bundle with the current schema and synchronized companion artifacts.
-6. Replied to actionable review threads. The protected setup thread now requests an owner decision; no further setup-file changes were made.
+6. @mbaetiong explicitly approved retaining the resource-profile job/wiring. The workflow has exactly one job named `copilot-setup-steps`, but its `needs` and job-level `env` wiring are not in the documented CCA customization list, so CCA-specific output propagation is not guaranteed by the published contract. No further setup-file edits were made; the compatibility note was posted on the review thread.
 
 ### Validation
 - Focused results reported by the lanes: research I/O 55 tests plus three direct regression tests; executor four tests; fixture/evidence 55 changed-only RVS tests and schema/integrity checks.
@@ -12839,7 +12839,8 @@ Resolve the actionable PR #5669 review findings with verified code, executor, an
 
 ### Governance
 - Five required WEC checks remain checked; active optional checks remain unchecked.
-- Current-head workflow records are `action_required`; the older dynamic Copilot run remains on the prior head.
+- Current-head workflow records are `action_required`; the older dynamic Copilot run remains in progress on the prior head.
+- Owner approval to retain the protected workflow is recorded; the review-thread resolution and CCA compatibility confirmation remain open.
 - REQ-4 and REQ-5 checked; PDA entry recorded for this review-remediation session.
 
 ### Agents Used
