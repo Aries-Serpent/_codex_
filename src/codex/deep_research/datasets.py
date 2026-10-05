@@ -24,8 +24,10 @@ def profile_dataset(
     suffix = dataset_path.suffix.lower()
     if suffix == ".csv":
         records, columns = _read_csv(raw, max_records)
+        coerce_strings = True
     elif suffix in {".jsonl", ".ndjson"}:
         records, columns = _read_jsonl(raw, max_records)
+        coerce_strings = False
     else:
         raise ValueError("Dataset profiling supports only CSV and JSONL/NDJSON files")
     missing_counts: Counter[str] = Counter()
@@ -43,7 +45,7 @@ def profile_dataset(
             if value is None or (isinstance(value, str) and not value.strip()):
                 missing_counts[column] += 1
             else:
-                value_types[column][_type_name(value)] += 1
+                value_types[column][_type_name(value, coerce_strings)] += 1
     return {
         "dataset_id": f"sha256:{digest}",
         "path": dataset_path.name,
@@ -77,12 +79,18 @@ def _read_csv(raw: bytes, max_records: int) -> tuple[list[dict[str, Any]], list[
     reader = csv.DictReader(io.StringIO(text, newline=""))
     if not reader.fieldnames:
         raise ValueError("CSV dataset must include a header row")
+    fieldnames = list(reader.fieldnames)
+    duplicates = [name for name, count in Counter(fieldnames).items() if count > 1]
+    if duplicates:
+        raise ValueError(f"CSV dataset contains duplicate headers: {', '.join(duplicates)}")
     records: list[dict[str, Any]] = []
     for row in reader:
         if len(records) >= max_records:
             raise ValueError(f"Dataset exceeds the {max_records}-record profile limit")
+        if None in row:
+            raise ValueError("CSV dataset contains a row with too many columns")
         records.append(dict(row))
-    return records, list(reader.fieldnames)
+    return records, fieldnames
 
 
 def _read_jsonl(raw: bytes, max_records: int) -> tuple[list[dict[str, Any]], list[str]]:

@@ -25,9 +25,11 @@ from urllib.parse import (
 class ResearchProvider(Protocol):
     """Search and retrieve material using explicitly supplied runtime callables."""
 
-    def search(self, query: str) -> list[dict[str, Any]]: ...
+    def search(self, query: str) -> list[dict[str, Any]]:
+        raise NotImplementedError
 
-    def fetch(self, url: str) -> dict[str, Any]: ...
+    def fetch(self, url: str) -> dict[str, Any]:
+        raise NotImplementedError
 
 
 class RateLimitError(RuntimeError):
@@ -200,7 +202,9 @@ class SafeHTTPSFetcher:
             ).encode("ascii")
             raw_socket = self.connector((address, port), timeout=self.timeout)
             try:
-                connection = ssl.create_default_context().wrap_socket(
+                context = ssl.create_default_context()
+                context.minimum_version = ssl.TLSVersion.TLSv1_2
+                connection = context.wrap_socket(
                     raw_socket, server_hostname=hostname.encode("idna").decode("ascii")
                 )
             except Exception:

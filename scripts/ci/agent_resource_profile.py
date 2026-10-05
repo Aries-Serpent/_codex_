@@ -90,7 +90,7 @@ def _memory_available_mib() -> int | None:
                 host_available = int(line.split()[1]) // 1024
                 break
     except (OSError, ValueError, IndexError):
-        pass
+        host_available = None
 
     limit, current = _cgroup_values("memory")
     cgroup_available = (

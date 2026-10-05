@@ -67,8 +67,13 @@ def main(argv: list[str] | None = None) -> int:
             if not isinstance(item, dict):
                 raise ValueError(f"--sources array element {index} must be a JSON object")
         checkpoint = _read_json(args.checkpoint) if args.checkpoint else None
-        if isinstance(checkpoint, dict) and "checkpoint" in checkpoint:
-            checkpoint = checkpoint["checkpoint"]
+        if checkpoint is not None:
+            if not isinstance(checkpoint, dict):
+                raise ValueError("Checkpoint JSON must be an object")
+            if "checkpoint" in checkpoint:
+                checkpoint = checkpoint["checkpoint"]
+            if not isinstance(checkpoint, dict):
+                raise ValueError("Checkpoint payload must be an object")
         bundle = run_research(
             brief,
             local_sources=source_items,
@@ -145,6 +150,7 @@ def _atomic_write(path: Path, content: bytes) -> None:
         try:
             os.unlink(temp_name)
         except OSError:
+            # Cleanup is best-effort; keep the original exception visible.
             pass
         raise
 

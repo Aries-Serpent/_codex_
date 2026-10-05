@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import fcntl
+
 from codex.deep_research.providers import contains_sensitive_material, redact_sensitive_text
 
 
@@ -56,7 +58,6 @@ class TopicResearchStore:
             existing = json.loads(manifest_path.read_text(encoding="utf-8"))
             if existing.get("artifact_sha256") != artifact_hashes:
                 raise ValueError("Topic run identifier collision; refusing to overwrite content")
-            manifest = existing
         else:
             run_dir.mkdir()
             for name, content in artifacts.items():
@@ -207,5 +208,6 @@ def _atomic_write(path: Path, content: bytes) -> None:
         try:
             os.unlink(temp_name)
         except OSError:
+            # Cleanup is best-effort: the original write failure is the real error.
             pass
         raise
