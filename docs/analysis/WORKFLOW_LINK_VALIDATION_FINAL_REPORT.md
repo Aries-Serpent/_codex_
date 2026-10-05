@@ -82,7 +82,7 @@ Incorrect path to `PHASE_2_QUICK_REFERENCE.md`:
 
 #### Fix Applied
 ```diff
-+ <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [PHASE_2_QUICK_REFERENCE.md](../archive/phases/PHASE_2_QUICK_REFERENCE.md) --> --> --> --> -->
++ [PHASE_2_QUICK_REFERENCE.md](../archive/phases/PHASE_2_QUICK_REFERENCE.md)
 ```
 
 **Impact**: Archive navigation now correctly points to phase documentation.
@@ -386,5 +386,5 @@ All critical broken documentation links have been successfully resolved. The "Wo
 
 For questions or follow-up, see:
 - [Link Validation Fix Summary](LINK_VALIDATION_FIX_SUMMARY.md)
-- [Link Validator Script](../scripts/fix_broken_doc_links.py)
-- [CI Validation Script](../.github/scripts/validate-links.py)
+- [Link Validator Script](../../scripts/fix_broken_doc_links.py)
+- [CI Validation Script](../../.github/scripts/validate-links.py)
