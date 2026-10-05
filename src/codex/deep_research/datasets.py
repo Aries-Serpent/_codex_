@@ -45,7 +45,7 @@ def profile_dataset(
             if value is None or (isinstance(value, str) and not value.strip()):
                 missing_counts[column] += 1
             else:
-                value_types[column][_type_name(value, coerce_strings)] += 1
+                value_types[column][_type_name(value, coerce_strings=coerce_strings)] += 1
     return {
         "dataset_id": f"sha256:{digest}",
         "path": dataset_path.name,
@@ -112,7 +112,7 @@ def _read_jsonl(raw: bytes, max_records: int) -> tuple[list[dict[str, Any]], lis
     return records, sorted(columns)
 
 
-def _type_name(value: Any) -> str:
+def _type_name(value: Any, *, coerce_strings: bool = False) -> str:
     if isinstance(value, bool):
         return "boolean"
     if isinstance(value, int):
@@ -123,17 +123,20 @@ def _type_name(value: Any) -> str:
         stripped = value.strip()
         if not stripped:
             return "unknown"
-        if stripped.casefold() in {"true", "false"}:
-            return "boolean"
-        try:
-            int(stripped)
-            return "integer"
-        except ValueError:
+        if coerce_strings:
+            if stripped.casefold() in {"true", "false"}:
+                return "boolean"
             try:
-                float(stripped)
-                return "number"
+                int(stripped)
+                return "integer"
             except ValueError:
-                return "string"
+                try:
+                    float(stripped)
+                    return "number"
+                except ValueError:
+                    return "string"
+            return "string"
+        return "string"
     if isinstance(value, list):
         return "array"
     if isinstance(value, dict):
