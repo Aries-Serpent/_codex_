@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added — Evidence-Grounded Deep Research Analysis (2026-10-05)
+- Added the versioned `codex.deep_research` bundle contract, bounded provider pipeline, DNS-pinned HTTPS fetcher, dataset profiler, structural verifier, CLI, fixture bundle, tests, documentation, and registered experimental agent.
+- Added browser diagnostics handling guidance and recording for rendered pages using `browser_console_messages`, `browser_network_requests`, and conditional dialog dismissal with `browser_handle_dialog`.
+- Added ordered AZIMUTH assessment output and validated parallel/dependent lane contracts, including a synthetic package, documentation, archive, deployment, and publication-readiness scenario.
+- Corrected legacy agent profile metadata so the strict agent-spec validator now reports zero non-compliant profiles.
+- Fresh web retrieval remains capability-gated; the fixture CLI is offline and does not claim a live-provider invocation.
+
 ### Fixed — GitHub client + governance drift follow-up (2026-10-03)
 - Restored the repo-local GitHub client `re` import so `owner`, `repo`, and branch validation logic work correctly in `src/codex_bridge/github_client.py` without shadowed-package regressions.
 - Restored the tracked `.codex/session_startup_packet.json` baseline to remove timestamp-only churn and keep the current branch aligned with the repo’s generated-artifact contract.

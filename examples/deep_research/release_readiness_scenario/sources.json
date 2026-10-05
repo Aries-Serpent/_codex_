@@ -1,0 +1,30 @@
+[
+  {
+    "locator": "fixture:source-package-metadata",
+    "title": "Synthetic source and package metadata note",
+    "publisher": "Release readiness test fixture",
+    "evidence_role": "current",
+    "content": "Package metadata records version 1.2.0 while built artifact metadata reports version 1.1.0.\nThe live documentation site describes package version 1.1.0 while source package metadata records 1.2.0."
+  },
+  {
+    "locator": "fixture:status-and-publication",
+    "title": "Synthetic active status and publication note",
+    "publisher": "Release readiness test fixture",
+    "evidence_role": "current",
+    "content": "The active status narrative says publication ready but no release validation evidence is attached.\nPackage release is ready for publication.\nPackage release is not ready because its built artifact version does not match package metadata.\nPublication readiness remains unresolved until package metadata, live docs, active status, and reproducible artifacts agree."
+  },
+  {
+    "locator": "fixture:historical-archive-and-deployment",
+    "title": "Synthetic archive and deployment note",
+    "publisher": "Release readiness test fixture",
+    "evidence_role": "archive",
+    "content": "Archived release note dated 2023 records version 0.8.0, but this historical record does not confirm current release state.\nProduction deployment verification is unknown because no deployment evidence is present."
+  },
+  {
+    "locator": "fixture:build-reproducibility",
+    "title": "Synthetic reproducible-build check",
+    "publisher": "Release readiness test fixture",
+    "evidence_role": "current",
+    "content": "Two clean package distribution builds produce different SHA-256 checksums."
+  }
+]

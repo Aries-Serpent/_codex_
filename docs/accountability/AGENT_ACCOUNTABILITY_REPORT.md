@@ -1,3 +1,27 @@
+## Session: 2026-10-05T05:20:00Z — Evidence-Grounded Deep Research Agent
+
+**Objective:** Implement `AGENT-DEEP-RESEARCH-001` as a registered, auditable research pipeline with validated evidence contracts, bounded retrieval, dataset profiling, adversarial checks, browser diagnostics, synthetic release-readiness coverage, and AZIMUTH assessment.
+
+**Status:** ⚠️ IMPLEMENTED; focused validation passed and repository-wide test collection failed
+
+**Actions:**
+1. Added versioned research briefs and bundles, validated lane dependency contracts, source/evidence provenance, bounded provider and safe-fetch interfaces, local dataset profiling, checkpointing, objective coverage, contradictions, and CLI exports.
+2. Registered the agent and documented browser console/network diagnostics plus conditional dialog dismissal; live web retrieval remains capability-gated and was not invoked in this fixture run.
+3. Added an offline synthetic package/docs/status/archive/build/deployment/publication scenario. Its findings do not describe the actual repository.
+4. Added ordered AZIMUTH assessment output that distinguishes declared work from executed delegation, recorded status from repository mutation, and archive tagging from migration.
+
+**Validation:**
+- `PYTHONPATH=src pytest -q tests/deep_research --cov=codex.deep_research --cov-report=term-missing` → 42 passed; 89.05% package coverage.
+- `ruff check src/codex/deep_research tests/deep_research --select E,F,I` and Ruff format check → passed.
+- `python scripts/validate_agent_specs.py --strict` → 240 compliant, 0 non-compliant before unrelated legacy-profile rewrites were restored.
+- Synthetic release-readiness bundle validated against the versioned JSON Schema and remained incomplete with unresolved contradictions.
+- `nox -s tests` stopped during collection because `tests/zendesk` could not import `zendesk.api_client` and `zendesk.json_generator`; the focused deep-research suite passed.
+- The repository-wide pre-commit run did not pass: its documentation-link scan reported 322 errors, secret-keyword heuristics flagged agent/PDA text, and shell/XML scans traversed the generated `.nox` environment.
+
+**Governance:** CHANGELOG, utility registry, accountability report, and PDA record updated. No workflow or `copilot-setup-steps.yml` changes were made.
+
+---
+
 ## Session: 2026-10-03T00:00:00Z — PR review-thread follow-up: GitHub client + startup packet drift
 
 **Objective:** Resolve the remaining narrow review-thread follow-up in the repo-local GitHub client and restore the tracked startup packet baseline without widening scope beyond the affected paths.
