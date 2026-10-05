@@ -187,22 +187,25 @@ class TaskDecomposer:
         for subtask in subtasks:
             graph.add_subtask(subtask)
 
-        # Add dependencies based on subtask list order
-        for i in range(1, len(subtasks)):
-            if "aggregation" in subtasks[i].metadata.get("depends_on", []):
-                # Aggregation task depends on all previous tasks
-                for j in range(i):
-                    graph.add_dependency(
-                        subtasks[j].id,
-                        subtasks[i].id,
-                        DependencyType.AGGREGATION
+        # Build graph edges only from dependencies explicitly declared by each subtask.
+        # List position alone does not imply a dependency: independent tasks should
+        # remain eligible for the same execution layer.
+        for subtask in subtasks:
+            dependency_type = (
+                DependencyType.AGGREGATION
+                if len(subtask.dependencies) > 1
+                else DependencyType.SEQUENTIAL
+            )
+            for dependency_id in subtask.dependencies:
+                if dependency_id not in graph.subtask_map:
+                    raise ValueError(
+                        f"Sub-task {subtask.id!r} depends on unknown sub-task "
+                        f"{dependency_id!r}"
                     )
-            else:
-                # Default: sequential
                 graph.add_dependency(
-                    subtasks[i-1].id,
-                    subtasks[i].id,
-                    DependencyType.SEQUENTIAL
+                    dependency_id,
+                    subtask.id,
+                    dependency_type,
                 )
 
         return subtasks, graph
