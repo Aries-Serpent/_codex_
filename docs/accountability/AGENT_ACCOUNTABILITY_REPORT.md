@@ -8,13 +8,14 @@
 1. Retrieved run `37317495938` job logs. The embedded Node runtime aborted after a thread panic while writing output (`Resource temporarily unavailable (os error 11)`), followed by exit 134 during dependency-graph output; this supports resource exhaustion as the failure class.
 2. Added `scripts/ci/agent_resource_profile.py` to detect host/cgroup memory, CPU, and process limits, fail closed to serialized mode on incomplete telemetry, and choose a configured high-headroom runner only on critical capacity.
 3. Added an ordered resource-profile job before `copilot-setup-steps`; it constrains agent/dependency graph workers, npm jobs, GOMAXPROCS, and Node heap while preserving the session preload step.
-4. Added deterministic tests for healthy, constrained, critical, and missing-resource telemetry; documented the optional larger-runner variable.
+4. Connected `COPILOT_AGENT_WORKERS` to the phase 9.3 dependency-graph executor, which now executes ready tasks in bounded batches and respects task-level parallelism limits.
+5. Added deterministic tests for healthy, constrained, critical, and missing-resource telemetry, plus bounded-executor concurrency; documented the optional larger-runner variable.
 
 **Validation:**
-- `python -m pytest -q tests/ci/test_agent_resource_profile.py` → 4 passed.
+- `python -m pytest -q tests/ci/test_concurrent_executor_limit.py tests/ci/test_agent_resource_profile.py` → 7 passed.
 - `python scripts/ci/validate_copilot_setup_steps.py --repo-root . --check-only` → 13/13 passed.
 - `bash scripts/ci/validate_setup_steps_yaml.sh` → passed.
-- Ruff, Black, and mypy → passed for the helper/tests; workflow output wiring and CLI execution were checked.
+- Ruff, Black (changed executor ranges), and mypy → passed for the helper/executor; workflow output wiring and CLI execution were checked.
 
 **Governance:** CHANGELOG, accountability report, and PDA record updated. Existing preload step was not modified.
 

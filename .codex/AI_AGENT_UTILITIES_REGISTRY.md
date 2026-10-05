@@ -1165,6 +1165,8 @@ Probes Linux memory, CPU quota, and process headroom before Copilot setup, then 
 scripts/ci/agent_resource_profile.py
 .github/workflows/copilot-setup-steps.yml
 tests/ci/test_agent_resource_profile.py
+scripts/ci/phase_9_3_concurrent_executor.py
+tests/ci/test_concurrent_executor_limit.py
 ```
 
 ### Usage
@@ -1180,7 +1182,8 @@ python3 scripts/ci/agent_resource_profile.py \
 - Reads available memory from `/proc` and cgroup v1/v2 limits, CPU affinity/quota, and process slots.
 - Fails closed to serialized work when resource telemetry is missing.
 - Limits dependency graph, npm, native build, Rust, Go, and Node worker pressure.
+- Makes the dependency-graph executor honor `COPILOT_AGENT_WORKERS` and per-task parallel-agent limits.
 - Selects a configured larger runner only under critical headroom.
 
 ### Validation
-`python -m pytest -q tests/ci/test_agent_resource_profile.py`
+`python -m pytest -q tests/ci/test_concurrent_executor_limit.py tests/ci/test_agent_resource_profile.py`

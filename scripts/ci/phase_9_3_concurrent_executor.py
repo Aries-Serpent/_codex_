@@ -13,6 +13,7 @@ Status: Production
 import asyncio
 import json
 import logging
+import os
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -65,12 +66,15 @@ class TaskMetadata:
 @dataclass
 class SubTask:
     """Sub-task in a task decomposition"""
+
     id: str
     parent_task_id: str
     name: str
+    timeout_s: int = 600
     agent_id: Optional[str] = None
     status: TaskStatus = TaskStatus.PENDING
     dependencies: List[str] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     result: Optional[Dict[str, Any]] = None
@@ -82,6 +86,7 @@ class SubTask:
 @dataclass
 class ExecutionResult:
     """Result of task execution"""
+
     task_id: str
     status: TaskStatus
     subtask_results: Dict[str, Dict[str, Any]] = field(default_factory=dict)
@@ -343,19 +348,28 @@ class ConcurrentExecutor:
         self,
         max_concurrent_agents: int = 5,
         global_timeout_s: int = 900,
-        agent_dispatcher_fn: Optional[Any] = None
+        agent_dispatcher_fn: Optional[Any] = None,
     ):
-        self.max_concurrent_agents = max_concurrent_agents
+        configured_limit = os.environ.get("COPILOT_AGENT_WORKERS")
+        try:
+            environment_limit = (
+                max(1, int(configured_limit)) if configured_limit is not None else None
+            )
+        except ValueError:
+            environment_limit = 1
+        self.max_concurrent_agents = max(
+            1,
+            min(
+                max(1, max_concurrent_agents),
+                environment_limit or max(1, max_concurrent_agents),
+            ),
+        )
         self.global_timeout_s = global_timeout_s
         self.agent_dispatcher_fn = agent_dispatcher_fn or self._mock_dispatch
         self.execution_results: Dict[str, ExecutionResult] = {}
         self.subtask_results: Dict[str, SubTask] = {}
 
-    async def execute(
-        self,
-        task: TaskMetadata,
-        agent_routing: Dict[str, str]
-    ) -> ExecutionResult:
+    async def execute(self, task: TaskMetadata, agent_routing: Dict[str, str]) -> ExecutionResult:
         """
         Execute a task with concurrent agents.
 
@@ -377,12 +391,13 @@ class ConcurrentExecutor:
             # Validate DAG
             is_dag, error_msg = dep_graph.validate_dag()
             if not is_dag:
-                execution_log.append(f"ERROR: {error_msg}")
+                error_message = error_msg or "Dependency graph is invalid."
+                execution_log.append(f"ERROR: {error_message}")
                 return ExecutionResult(
                     task_id=task.id,
                     status=TaskStatus.FAILED,
-                    errors=[error_msg],
-                    execution_log=execution_log
+                    errors=[error_message],
+                    execution_log=execution_log,
                 )
 
             # Get execution layers
@@ -391,40 +406,49 @@ class ConcurrentExecutor:
 
             # Execute layers sequentially
             for layer_idx, layer in enumerate(layers):
-                execution_log.append(f"Executing layer {layer_idx + 1}/{len(layers)} ({len(layer)} tasks)")
+                execution_log.append(
+                    f"Executing layer {layer_idx + 1}/{len(layers)} ({len(layer)} tasks)"
+                )
 
                 # Execute tasks in this layer in parallel
                 layer_results = await self._execute_layer(
                     layer,
                     dep_graph.subtask_map,
-                    task.timeout_s
+                    task.timeout_s,
+                    max_concurrent_agents=min(
+                        self.max_concurrent_agents,
+                        max(1, task.max_parallel_agents),
+                    ),
                 )
 
                 # Check for failures
                 failed_tasks = [
-                    task_id for task_id, result in layer_results.items()
+                    task_id
+                    for task_id, result in layer_results.items()
                     if result.status in (TaskStatus.FAILED, TaskStatus.TIMEOUT)
                 ]
 
                 if failed_tasks:
-                    execution_log.append(f"⚠️  {len(failed_tasks)} task(s) failed in layer {layer_idx + 1}")
+                    execution_log.append(
+                        f"⚠️  {len(failed_tasks)} task(s) failed in layer {layer_idx + 1}"
+                    )
 
             # Check global timeout
             elapsed = time.time() - start_time
             if elapsed > self.global_timeout_s:
-                execution_log.append(f"Global timeout exceeded: {elapsed:.1f}s > {self.global_timeout_s}s")
+                execution_log.append(
+                    f"Global timeout exceeded: {elapsed:.1f}s > {self.global_timeout_s}s"
+                )
                 return ExecutionResult(
                     task_id=task.id,
                     status=TaskStatus.TIMEOUT,
                     total_duration_s=elapsed,
                     errors=["Global execution timeout"],
-                    execution_log=execution_log
+                    execution_log=execution_log,
                 )
 
             # Aggregate results
-            aggregated = self._aggregate_results(
-                [self.subtask_results[st.id] for st in subtasks]
-            )
+            aggregated = self._aggregate_results([self.subtask_results[st.id] for st in subtasks])
 
             elapsed = time.time() - start_time
             execution_log.append(f"✅ Task completed in {elapsed:.1f}s")
@@ -436,7 +460,7 @@ class ConcurrentExecutor:
                 aggregated_result=aggregated,
                 total_duration_s=elapsed,
                 parallel_agents_count=len({st.agent_id for st in subtasks if st.agent_id}),
-                execution_log=execution_log
+                execution_log=execution_log,
             )
 
         except Exception as e:
@@ -446,39 +470,49 @@ class ConcurrentExecutor:
                 task_id=task.id,
                 status=TaskStatus.FAILED,
                 errors=[str(e)],
-                execution_log=execution_log
+                execution_log=execution_log,
             )
 
     async def _execute_layer(
         self,
         task_ids: List[str],
         subtask_map: Dict[str, SubTask],
-        timeout_s: int
+        timeout_s: int,
+        max_concurrent_agents: Optional[int] = None,
     ) -> Dict[str, SubTask]:
-        """Execute a layer of tasks in parallel"""
-        tasks = [
-            self._execute_subtask(subtask_map[task_id], timeout_s)
-            for task_id in task_ids
-            if task_id in subtask_map
+        """Execute independent layer tasks in bounded concurrent batches."""
+        ready_task_ids = [task_id for task_id in task_ids if task_id in subtask_map]
+        requested_workers = (
+            self.max_concurrent_agents if max_concurrent_agents is None else max_concurrent_agents
+        )
+        worker_limit = max(1, min(requested_workers, len(ready_task_ids) or 1))
+        batches = [
+            ready_task_ids[offset : offset + worker_limit]
+            for offset in range(0, len(ready_task_ids), worker_limit)
         ]
 
-        # Execute in parallel with timeout
+        async def execute_batches() -> List[Any]:
+            results: List[Any] = []
+            for batch in batches:
+                batch_tasks = [
+                    self._execute_subtask(subtask_map[task_id], timeout_s) for task_id in batch
+                ]
+                results.extend(await asyncio.gather(*batch_tasks, return_exceptions=True))
+            return results
+
+        # Each batch is sequential, while tasks within a batch remain independent.
         results = await asyncio.wait_for(
-            asyncio.gather(*tasks, return_exceptions=True),
-            timeout=timeout_s + 10  # 10s buffer for cleanup
+            execute_batches(),
+            timeout=(timeout_s + 10) * max(1, len(batches)),
         )
 
         return {
             task_id: result
-            for task_id, result in zip(task_ids, results)
+            for task_id, result in zip(ready_task_ids, results)
             if not isinstance(result, Exception)
         }
 
-    async def _execute_subtask(
-        self,
-        subtask: SubTask,
-        timeout_s: int
-    ) -> SubTask:
+    async def _execute_subtask(self, subtask: SubTask, timeout_s: int) -> SubTask:
         """Execute a single sub-task"""
         subtask.status = TaskStatus.RUNNING
         subtask.started_at = datetime.utcnow()
@@ -487,8 +521,7 @@ class ConcurrentExecutor:
         try:
             # Dispatch to agent
             result = await asyncio.wait_for(
-                self._dispatch_to_agent(subtask),
-                timeout=subtask.timeout_s
+                self._dispatch_to_agent(subtask), timeout=subtask.timeout_s
             )
             subtask.result = result
             subtask.status = TaskStatus.COMPLETED
@@ -501,7 +534,9 @@ class ConcurrentExecutor:
 
             # Retry if attempts remaining
             if subtask.attempt < subtask.max_retries:
-                logger.warning(f"Retrying {subtask.id} (attempt {subtask.attempt}/{subtask.max_retries})")
+                logger.warning(
+                    f"Retrying {subtask.id} (attempt {subtask.attempt}/{subtask.max_retries})"
+                )
                 return await self._execute_subtask(subtask, timeout_s)
 
         except Exception as e:
@@ -516,10 +551,7 @@ class ConcurrentExecutor:
 
     async def _dispatch_to_agent(self, subtask: SubTask) -> Dict[str, Any]:
         """Dispatch subtask to agent (async wrapper)"""
-        return await asyncio.to_thread(
-            self.agent_dispatcher_fn,
-            subtask
-        )
+        return await asyncio.to_thread(self.agent_dispatcher_fn, subtask)
 
     async def _mock_dispatch(self, subtask: SubTask) -> Dict[str, Any]:
         """Mock agent dispatch (for testing)"""
