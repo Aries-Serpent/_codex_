@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "topics": [
+    {
+      "index_path": "us-electric-vehicle-efficiency-and-ownership-cost-comparison-27924348/index.json",
+      "latest_run_id": "6289d9ca15a655684f25c8e7",
+      "run_count": 1,
+      "topic": "US Electric Vehicle Efficiency and Ownership Cost Comparison",
+      "topic_slug": "us-electric-vehicle-efficiency-and-ownership-cost-comparison-27924348"
+    }
+  ]
+}
