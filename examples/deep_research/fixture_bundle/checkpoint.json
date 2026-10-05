@@ -1,5 +1,5 @@
 {
-  "checkpoint_id": "checkpoint-6c09501748824d06d467",
+  "checkpoint_id": "checkpoint-791747cf2dc60ef6e15a",
   "claims": [
     {
       "evidence_ids": [
@@ -43,15 +43,16 @@
         "sampled": false,
         "value_types": {
           "id": {
-            "string": 3
+            "integer": 3
           },
           "label": {
             "string": 3
           },
           "value": {
-            "string": 2
+            "integer": 2
           }
-        }
+        },
+        "types_are_inferred_for_csv": true
       },
       "path": "sample.csv",
       "reported_properties": [],
@@ -104,7 +105,7 @@
     }
   ],
   "parent_id": null,
-  "payload_sha256": "6c09501748824d06d467eb5f4fc01081dc97c09e7779f6d109dc4c8d071a3cde",
+  "payload_sha256": "791747cf2dc60ef6e15a38f254aff5576a77eeeee83d470eae54d53c05be3557",
   "query_ledger": [
     {
       "attempt_number": 1,
@@ -172,7 +173,7 @@
       "status": "skipped"
     }
   ],
-  "research_id": "research-1d209941641be3dde142",
+  "research_id": "research-350cefd1a74dc6fb4786",
   "sources": [
     {
       "access_constraints": null,
@@ -190,6 +191,7 @@
       "content_type": null,
       "credibility_rationale": null,
       "extraction_method": "supplied_text",
+      "evidence_role": "unknown",
       "final_url": null,
       "id": "source-a19e59b0900d9daf17c6",
       "license": null,

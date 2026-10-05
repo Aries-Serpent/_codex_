@@ -577,6 +577,20 @@ def test_host_provider_normalizes_bytes_and_rejects_bad_fetch_results() -> None:
         provider.fetch("https://example.test")
 
 
+def test_host_provider_rejects_caller_supplied_content_hash_mismatch() -> None:
+    content_hash = hashlib.sha256(b"body").hexdigest()
+    provider = HostToolProvider(
+        search_call=lambda _query: [],
+        fetch_call=lambda _url: {"content": "body", "content_sha256": content_hash},
+        resolver=lambda _host: ["93.184.216.34"],
+        redirect_validation_verified=True,
+    )
+    assert provider.fetch("https://example.test")["content_sha256"] == content_hash
+    provider.fetch_call = lambda _url: {"content": "body", "content_sha256": "0" * 64}
+    with pytest.raises(ValueError, match="content_sha256 does not match"):
+        provider.fetch("https://example.test")
+
+
 def test_browser_diagnostic_tool_errors_are_recorded() -> None:
     diagnostics = BrowserDiagnostics(
         console_messages=lambda: (_ for _ in ()).throw(RuntimeError("console unavailable")),
@@ -1153,6 +1167,30 @@ def test_cli_rejects_non_array_sources(tmp_path: Path) -> None:
             ]
         )
     assert exc.value.code == 2
+
+
+def test_cli_rejects_non_object_sources_with_clear_input_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    brief = tmp_path / "brief.json"
+    sources = tmp_path / "sources.json"
+    brief.write_text(json.dumps(_brief()), encoding="utf-8")
+    sources.write_text('[{"locator":"fixture:valid"}, null]', encoding="utf-8")
+
+    with pytest.raises(SystemExit) as exc:
+        main(
+            [
+                "--brief",
+                str(brief),
+                "--sources",
+                str(sources),
+                "--output",
+                str(tmp_path / "out"),
+            ]
+        )
+
+    assert exc.value.code == 2
+    assert "--sources array element 1 must be a JSON object" in capsys.readouterr().err
 
 
 def test_module_main_invokes_cli_entrypoint(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -80,6 +81,50 @@ def test_topic_store_rejects_path_escape_and_invalid_bundle_ids(tmp_path: Path) 
     invalid["research_id"] = "../outside"
     with pytest.raises(ValueError, match="research_id"):
         TopicResearchStore(clean_root).publish(topic, invalid, _artifacts(invalid))
+
+
+@pytest.mark.parametrize("artifact_name", ["../escape", r"..\escape", "manifest.json"])
+def test_topic_store_rejects_unsafe_and_reserved_artifact_names_before_directory_creation(
+    tmp_path: Path, artifact_name: str
+) -> None:
+    artifacts = _artifacts(_bundle())
+    artifacts[artifact_name] = b"invalid"
+    root = tmp_path / "research"
+
+    with pytest.raises(ValueError, match="Invalid research artifact name"):
+        TopicResearchStore(root).publish("safe topic", _bundle(), artifacts)
+
+    assert not root.exists()
+
+
+def test_topic_store_uses_publication_order_for_latest_run_and_utc_z_timestamps(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    frozen = datetime(2026, 10, 5, 12, 0, 0, tzinfo=timezone.utc)
+
+    class FrozenDateTime:
+        @staticmethod
+        def now(tz: Any = None) -> datetime:
+            assert tz is timezone.utc
+            return frozen
+
+    monkeypatch.setattr("codex.deep_research.storage.datetime", FrozenDateTime)
+    store = TopicResearchStore(tmp_path)
+    first_bundle = _bundle()
+    second_bundle = _bundle(status="complete")
+    second_bundle["research_id"] = "research-0"
+    first = store.publish("same topic", first_bundle, _artifacts(first_bundle))
+    second = store.publish("same topic", second_bundle, _artifacts(second_bundle))
+
+    _, slug = safe_topic_slug("same topic")
+    index = json.loads((tmp_path / slug / "index.json").read_text(encoding="utf-8"))
+    assert second.name < first.name
+    assert index["latest_run_id"] == second.name
+    assert [item["publication_order"] for item in index["runs"]] == [1, 2]
+    for run_dir in (first, second):
+        manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
+        assert manifest["created_at"].endswith("Z")
+        assert manifest["created_at"] == "2026-10-05T12:00:00Z"
 
 
 def test_cli_defaults_to_topic_store_and_uses_explicit_topic(tmp_path: Path) -> None:

@@ -24,6 +24,8 @@ class TopicResearchStore:
     def publish(self, topic: str, bundle: dict[str, Any], artifacts: dict[str, bytes]) -> Path:
         """Write a bundle under a safe topic folder and update topic/global indexes."""
         safe_title, topic_slug = safe_topic_slug(topic)
+        for name in artifacts:
+            _validate_artifact_name(name)
         bundle_content = artifacts.get("bundle.json")
         if bundle_content is None:
             raise ValueError("Topic research output must include bundle.json")
@@ -69,7 +71,8 @@ class TopicResearchStore:
                 "checkpoint_id": checkpoint_id,
                 "run_id": run_id,
                 "status": bundle.get("status", "incomplete"),
-                "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "publication_order": _next_publication_order(runs_dir),
                 "relative_path": f"{topic_slug}/runs/{run_id}",
                 "artifact_sha256": artifact_hashes,
             }
@@ -109,7 +112,13 @@ def _build_topic_index(topic_dir: Path, title: str, slug: str) -> dict[str, Any]
             and manifest.get("run_id") == manifest_path.parent.name
         ):
             runs.append(manifest)
-    runs.sort(key=lambda item: (item.get("created_at", ""), item["run_id"]))
+    runs.sort(
+        key=lambda item: (
+            item.get("publication_order", 0),
+            item.get("created_at", ""),
+            item["run_id"],
+        )
+    )
     return {
         "schema_version": "1.0",
         "topic": title,
@@ -123,6 +132,7 @@ def _build_topic_index(topic_dir: Path, title: str, slug: str) -> dict[str, Any]
                 "status": item["status"],
                 "relative_path": item["relative_path"],
                 "created_at": item["created_at"],
+                "publication_order": item.get("publication_order", 0),
             }
             for item in runs
         ],
@@ -151,6 +161,29 @@ def _required_identifier(value: Any, name: str) -> str:
     if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,160}", value):
         raise ValueError(f"Research bundle has an invalid {name}")
     return value
+
+
+def _validate_artifact_name(name: Any) -> None:
+    if (
+        not isinstance(name, str)
+        or not name
+        or name in {".", "..", "manifest.json"}
+        or "/" in name
+        or "\\" in name
+        or any(ord(character) < 32 or ord(character) == 127 for character in name)
+        or Path(name).name != name
+    ):
+        raise ValueError(f"Invalid research artifact name: {name}")
+
+
+def _next_publication_order(runs_dir: Path) -> int:
+    highest_order = 0
+    for manifest_path in runs_dir.glob("*/manifest.json"):
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        order = manifest.get("publication_order", 0)
+        if isinstance(order, int) and not isinstance(order, bool):
+            highest_order = max(highest_order, order)
+    return highest_order + 1
 
 
 def _assert_contained(path: Path, root: Path) -> None:

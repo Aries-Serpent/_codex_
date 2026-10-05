@@ -63,6 +63,9 @@ def main(argv: list[str] | None = None) -> int:
         source_items = _read_json(args.sources) if args.sources else []
         if not isinstance(source_items, list):
             raise ValueError("--sources must contain a JSON array")
+        for index, item in enumerate(source_items):
+            if not isinstance(item, dict):
+                raise ValueError(f"--sources array element {index} must be a JSON object")
         checkpoint = _read_json(args.checkpoint) if args.checkpoint else None
         if isinstance(checkpoint, dict) and "checkpoint" in checkpoint:
             checkpoint = checkpoint["checkpoint"]

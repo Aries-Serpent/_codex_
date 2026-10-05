@@ -1,12 +1,22 @@
 {
-  "latest_run_id": "6289d9ca15a655684f25c8e7",
+  "latest_run_id": "96c52002aec70d8b74d9148f",
   "runs": [
     {
       "checkpoint_id": "checkpoint-3727321f268a21f5c4df",
-      "created_at": "2026-10-05T06:04:56+00:00",
+      "created_at": "2026-10-05T06:04:56Z",
+      "publication_order": 0,
       "relative_path": "us-electric-vehicle-efficiency-and-ownership-cost-comparison-27924348/runs/6289d9ca15a655684f25c8e7",
       "research_id": "research-49ed9d3046c362623799",
       "run_id": "6289d9ca15a655684f25c8e7",
+      "status": "superseded"
+    },
+    {
+      "checkpoint_id": "checkpoint-96d6430bb65a087392a0",
+      "created_at": "2026-10-05T16:54:20Z",
+      "publication_order": 1,
+      "relative_path": "us-electric-vehicle-efficiency-and-ownership-cost-comparison-27924348/runs/96c52002aec70d8b74d9148f",
+      "research_id": "research-49ed9d3046c362623799",
+      "run_id": "96c52002aec70d8b74d9148f",
       "status": "incomplete"
     }
   ],

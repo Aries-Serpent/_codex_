@@ -383,8 +383,8 @@ def _normalize_fetch_result(result: Any, requested_url: str) -> dict[str, Any]:
         title = _optional_string(result.get("title"))
         content_type = _optional_string(result.get("content_type"))
         supplied_hash = result.get("content_sha256")
-        if isinstance(supplied_hash, str) and re.fullmatch(r"[0-9a-f]{64}", supplied_hash):
-            content_sha256 = supplied_hash
+        if supplied_hash is not None and supplied_hash != content_sha256:
+            raise ValueError("Fetch callable content_sha256 does not match content")
     else:
         raise ValueError("Fetch callable must return text, bytes, or a result object")
     return {
