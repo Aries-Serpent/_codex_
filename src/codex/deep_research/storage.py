@@ -12,8 +12,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import fcntl
-
 from codex.deep_research.providers import contains_sensitive_material, redact_sensitive_text
 
 

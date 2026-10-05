@@ -242,6 +242,19 @@ def test_bundle_validation_rejects_inconsistent_azimuth_assessment() -> None:
         ResearchBundle.from_dict(bundle_data)
 
 
+def test_profile_dataset_keeps_jsonl_string_values_as_strings(tmp_path: Path) -> None:
+    dataset = tmp_path / "sample.jsonl"
+    dataset.write_text(
+        '{"code":"00123","flag":"false"}\n{"code":"00042","flag":"true"}\n',
+        encoding="utf-8",
+    )
+
+    profile = profile_dataset(dataset)
+
+    assert profile["observed"]["value_types"]["code"] == {"string": 2}
+    assert profile["observed"]["value_types"]["flag"] == {"string": 2}
+
+
 def test_secret_like_brief_is_rejected_and_sensitive_source_lines_are_omitted() -> None:
     with pytest.raises(ValueError, match="secret-like"):
         ResearchBrief.from_dict(
