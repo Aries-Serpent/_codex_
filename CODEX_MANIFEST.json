@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-04T06:31:57Z",
+  "generated_at": "2026-10-05T06:25:26Z",
   "agents": [
     {
       "name": "offline-zip-recovery-agent",
@@ -29,6 +29,12 @@
     {
       "name": "artifact-monitor-agent",
       "role": "utility",
+      "enforcement_tier": "GROUNDED",
+      "autonomy_model": "D_CAPABLE"
+    },
+    {
+      "name": "workflow-monitoring-agent",
+      "role": "monitoring",
       "enforcement_tier": "GROUNDED",
       "autonomy_model": "D_CAPABLE"
     },
@@ -1345,9 +1351,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 7,
+    "d_capable_agents": 8,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "a5c2c7f64fd774b99919c2f52a1cfca9307074e999256ac97ab4608c1ae1133f"
+  "integrity_sha256": "1c1f5dd33705514817c6e62bcb32c636b57ba1e06f05df3971e9a20b6509f3e7"
 }
