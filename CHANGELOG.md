@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed — Dependabot update consolidation (2026-10-05)
+- Applied the PyO3 0.29.3 patch update, including synchronized Cargo lockfile checksums for its PyO3 crates.
+- Applied `dotenv` 18.0.5 and `globals` 17.13.0 to the Copilot extension, and integrated the nine grouped `cognitive_app` updates with their matching npm lockfile.
+- Updated the scheduled dependency-audit workflow's Syft installer to the `anchore/sbom-action` commit for v0.24.3.
+- GitHub advisory database checks reported no advisories for the updated dependencies. Dependency PRs #5665–#5668 remain separate open PRs until their closure can be confirmed.
+
 ### Added — Evidence-Grounded Deep Research Analysis (2026-10-05)
 - Added the versioned `codex.deep_research` bundle contract, bounded provider pipeline, DNS-pinned HTTPS fetcher, dataset profiler, structural verifier, CLI, fixture bundle, tests, documentation, and registered experimental agent.
 - Added browser diagnostics handling guidance and recording for rendered pages using `browser_console_messages`, `browser_network_requests`, and conditional dialog dismissal with `browser_handle_dialog`.
