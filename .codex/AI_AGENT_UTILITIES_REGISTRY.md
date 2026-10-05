@@ -1148,3 +1148,39 @@ codex knowledge sync-mermaid-map \
 - node_count / edge_count extracted accurately
 - Coherence score computed and returned in JSON payload
 - Searchable NDJSON datablob emitted for retrieval pipelines
+
+---
+
+## Copilot Runtime Resource Profile
+
+**Created:** 2026-10-05
+**Agent:** `ci-failure-resolution-agent` + `explore`
+**Status:** ✅ Implemented and tested
+
+### Description
+Probes Linux memory, CPU quota, and process headroom before Copilot setup, then selects bounded or serialized concurrency. Critical resource limits select a larger runner only when `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE` names a configured runner; otherwise the run stays serialized and reports the escalation requirement.
+
+### Locations
+```
+scripts/ci/agent_resource_profile.py
+.github/workflows/copilot-setup-steps.yml
+tests/ci/test_agent_resource_profile.py
+```
+
+### Usage
+```bash
+python3 scripts/ci/agent_resource_profile.py \
+  --github-output "$GITHUB_OUTPUT" \
+  --summary "$GITHUB_STEP_SUMMARY" \
+  --current-runner-profile "${COPILOT_RUNNER_PROFILE:-ubuntu-latest-m}" \
+  --high-headroom-runner-profile "${COPILOT_HIGH_HEADROOM_RUNNER_PROFILE:-}"
+```
+
+### Features
+- Reads available memory from `/proc` and cgroup v1/v2 limits, CPU affinity/quota, and process slots.
+- Fails closed to serialized work when resource telemetry is missing.
+- Limits dependency graph, npm, native build, Rust, Go, and Node worker pressure.
+- Selects a configured larger runner only under critical headroom.
+
+### Validation
+`python -m pytest -q tests/ci/test_agent_resource_profile.py`

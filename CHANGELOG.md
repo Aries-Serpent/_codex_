@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — Copilot runtime resource exhaustion (2026-10-05)
+- Added a resource preflight before Copilot environment setup that detects memory, CPU, and process headroom, caps worker counts, serializes dependency-graph work, and bounds the Node heap and native build concurrency.
+- Critical resource pressure selects the configured `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE`; if none is configured, the run remains serialized and reports the required escalation.
+
 ### Changed — Dependabot update consolidation (2026-10-05)
 - Applied the PyO3 0.29.3 patch update, including synchronized Cargo lockfile checksums for its PyO3 crates.
 - Applied `dotenv` 18.0.5 and `globals` 17.13.0 to the Copilot extension, and integrated the nine grouped `cognitive_app` updates with their matching npm lockfile.

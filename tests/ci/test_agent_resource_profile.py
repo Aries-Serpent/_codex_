@@ -66,4 +66,4 @@ def test_missing_telemetry_fails_closed_to_serialized_mode() -> None:
     assert decision.agent_workers == 1
     assert decision.dependency_graph_workers == 1
     assert decision.gomaxprocs == 2
-    assert decision.node_heap_mib == 1024
+    assert decision.node_heap_mib == 512

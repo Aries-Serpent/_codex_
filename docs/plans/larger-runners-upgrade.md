@@ -271,6 +271,16 @@ Emitted on every session — example output for the active runner:
 
 ```
 
+### 4e. Resource-Headroom Gate
+
+The setup workflow now probes available memory, CPU quota, and process slots before
+the environment-preparation job starts. Constrained capacity selects serialized
+agent work and a single dependency-graph worker. Critical capacity selects the
+configured `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE`, when present; configure that
+variable only with a runner label already provisioned in the `AS Larger Runners`
+group. Without it, the workflow still proceeds with serialized work and records
+that larger capacity is required.
+
 ---
 
 ## 5. Custom Image Generation (Preview)

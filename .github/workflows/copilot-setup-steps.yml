@@ -34,12 +34,14 @@ name: Copilot Agent Environment Setup
   push:
     paths:
     - .github/workflows/copilot-setup-steps.yml
+    - scripts/ci/agent_resource_profile.py
     - .codex/agent_environment_config.yaml
     - pyproject.toml
     - requirements*.txt
   pull_request:
     paths:
     - .github/workflows/copilot-setup-steps.yml
+    - scripts/ci/agent_resource_profile.py
     - .codex/agent_environment_config.yaml
 env:
   PYTHON_VERSION: "3.12"
@@ -60,6 +62,7 @@ jobs:
     outputs:
       runner_profile: ${{ steps.profile.outputs.runner_profile }}
       resource_mode: ${{ steps.profile.outputs.resource_mode }}
+      larger_runner_required: ${{ steps.profile.outputs.larger_runner_required }}
       agent_workers: ${{ steps.profile.outputs.agent_workers }}
       dependency_graph_workers: ${{ steps.profile.outputs.dependency_graph_workers }}
       dependency_graph_serialized: ${{ steps.profile.outputs.dependency_graph_serialized }}
@@ -96,12 +99,19 @@ jobs:
     env:
       CI: 'true'
       COPILOT_RESOURCE_MODE: ${{ needs.resource-profile.outputs.resource_mode }}
+      COPILOT_HIGH_HEADROOM_REQUIRED: ${{ needs.resource-profile.outputs.larger_runner_required }}
       COPILOT_AGENT_WORKERS: ${{ needs.resource-profile.outputs.agent_workers }}
       COPILOT_DEPENDENCY_GRAPH_WORKERS: ${{ needs.resource-profile.outputs.dependency_graph_workers }}
       COPILOT_DEPENDENCY_GRAPH_SERIALIZED: ${{ needs.resource-profile.outputs.dependency_graph_serialized }}
       npm_config_jobs: ${{ needs.resource-profile.outputs.npm_jobs }}
       GOMAXPROCS: ${{ needs.resource-profile.outputs.gomaxprocs }}
       NODE_OPTIONS: --max-old-space-size=${{ needs.resource-profile.outputs.node_heap_mib }}
+      CARGO_BUILD_JOBS: '1'
+      MAKEFLAGS: -j1
+      UV_CONCURRENT_BUILDS: '1'
+      UV_CONCURRENT_DOWNLOADS: '1'
+      UV_THREADPOOL_SIZE: '1'
+      RAYON_NUM_THREADS: '1'
       COPILOT_RUNNER_PROFILE: ${{ needs.resource-profile.outputs.runner_profile }}
       GIT_LFS_SKIP_SMUDGE: '1'
       CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}

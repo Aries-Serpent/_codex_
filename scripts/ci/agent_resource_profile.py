@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import resource
@@ -57,9 +58,25 @@ def _read_integer(path: Path) -> int | None:
 
 
 def _cgroup_values(name: str) -> tuple[int | None, int | None]:
-    for base in (Path("/sys/fs/cgroup"), Path("/sys/fs/cgroup") / name):
-        limit = _read_integer(base / f"{name}.max")
-        current = _read_integer(base / f"{name}.current")
+    root = Path("/sys/fs/cgroup")
+    if name == "memory":
+        candidates = (
+            (root / "memory.max", root / "memory.current"),
+            (
+                root / "memory" / "memory.limit_in_bytes",
+                root / "memory" / "memory.usage_in_bytes",
+            ),
+        )
+    else:
+        candidates = (
+            (root / "pids.max", root / "pids.current"),
+            (root / "pids" / "pids.max", root / "pids" / "pids.current"),
+        )
+    for limit_path, current_path in candidates:
+        limit = _read_integer(limit_path)
+        current = _read_integer(current_path)
+        if name == "memory" and limit is not None and limit >= 2**60:
+            continue
         if limit is not None and current is not None:
             return limit, current
     return None, None
@@ -77,13 +94,9 @@ def _memory_available_mib() -> int | None:
 
     limit, current = _cgroup_values("memory")
     cgroup_available = (
-        max(0, limit - current) // MIB
-        if limit is not None and current is not None
-        else None
+        max(0, limit - current) // MIB if limit is not None and current is not None else None
     )
-    values = [
-        value for value in (host_available, cgroup_available) if value is not None
-    ]
+    values = [value for value in (host_available, cgroup_available) if value is not None]
     return min(values) if values else None
 
 
@@ -106,11 +119,45 @@ def _process_slots() -> int | None:
     return max(0, int(soft_limit) - process_count)
 
 
+def _cpu_count() -> int | None:
+    try:
+        affinity_count: int | None = len(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        affinity_count = None
+    available = affinity_count or os.cpu_count()
+    if not available:
+        return None
+
+    quota_files = (
+        (Path("/sys/fs/cgroup/cpu.max"), None),
+        (
+            Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us"),
+            Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us"),
+        ),
+    )
+    for quota_path, period_path in quota_files:
+        try:
+            if period_path is None:
+                quota, period = quota_path.read_text(encoding="utf-8").split()
+                if quota == "max":
+                    continue
+                quota_value, period_value = int(quota), int(period)
+            else:
+                quota_value = int(quota_path.read_text(encoding="utf-8").strip())
+                period_value = int(period_path.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            continue
+        if quota_value > 0 and period_value > 0:
+            available = min(available, max(1, quota_value // period_value))
+            break
+    return available
+
+
 def probe_capacity() -> ResourceCapacity:
     """Read memory, CPU, and process headroom from the current Linux runner."""
     return ResourceCapacity(
         memory_available_mib=_memory_available_mib(),
-        cpu_count=os.cpu_count(),
+        cpu_count=_cpu_count(),
         process_slots=_process_slots(),
     )
 
@@ -131,19 +178,24 @@ def choose_resource_profile(
         or capacity.process_slots < CONSTRAINED_PROCESS_SLOTS
     )
     critical = (
-        (capacity.memory_available_mib is not None
-         and capacity.memory_available_mib < CRITICAL_MEMORY_MIB)
+        (
+            capacity.memory_available_mib is not None
+            and capacity.memory_available_mib < CRITICAL_MEMORY_MIB
+        )
         or (capacity.cpu_count is not None and capacity.cpu_count <= 2)
-        or (capacity.process_slots is not None
-            and capacity.process_slots < CRITICAL_PROCESS_SLOTS)
+        or (capacity.process_slots is not None and capacity.process_slots < CRITICAL_PROCESS_SLOTS)
     )
     runner_profile = current_runner_profile
     larger_runner_required = critical
-    if critical and high_headroom_runner_profile:
+    if (
+        critical
+        and high_headroom_runner_profile
+        and high_headroom_runner_profile != current_runner_profile
+    ):
         runner_profile = high_headroom_runner_profile
 
     memory = capacity.memory_available_mib
-    heap_mib = min(4096, max(1024, (memory or 2048) // 2))
+    heap_mib = min(4096, max(512, (memory or 1024) // 2))
     gomaxprocs = min(2, max(1, capacity.cpu_count or 1))
     return ResourceDecision(
         mode="serialized" if constrained else "bounded",
@@ -196,13 +248,11 @@ def main() -> int:
         "larger_runner_required": str(decision.larger_runner_required).lower(),
         "agent_workers": str(decision.agent_workers),
         "dependency_graph_workers": str(decision.dependency_graph_workers),
-        "dependency_graph_serialized": str(
-            decision.dependency_graph_serialized
-        ).lower(),
+        "dependency_graph_serialized": str(decision.dependency_graph_serialized).lower(),
         "npm_jobs": str(decision.npm_jobs),
         "gomaxprocs": str(decision.gomaxprocs),
         "node_heap_mib": str(decision.node_heap_mib),
-        "resource_capacity": str(asdict(capacity)),
+        "resource_capacity": json.dumps(asdict(capacity), sort_keys=True),
     }
     _append_output(args.github_output, outputs)
 
@@ -215,7 +265,7 @@ def main() -> int:
             "(serialized).\n"
             f"- Runner profile: `{decision.runner_profile}`.\n"
         )
-        if decision.larger_runner_required and not high_profile:
+        if decision.larger_runner_required and decision.runner_profile == current_profile:
             summary.write(
                 "- Critical headroom detected; configure "
                 "`COPILOT_HIGH_HEADROOM_RUNNER_PROFILE` to enable runner "
@@ -223,8 +273,7 @@ def main() -> int:
             )
         elif decision.larger_runner_required:
             summary.write(
-                "- Critical headroom detected; selected the configured "
-                "high-headroom runner.\n"
+                "- Critical headroom detected; selected the configured " "high-headroom runner.\n"
             )
     print(f"Selected {decision.mode} mode on {decision.runner_profile}")
     return 0
