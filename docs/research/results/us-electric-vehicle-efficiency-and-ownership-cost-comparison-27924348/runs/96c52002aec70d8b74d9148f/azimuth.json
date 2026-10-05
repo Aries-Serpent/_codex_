@@ -1,0 +1,201 @@
+{
+  "archived_source_ids": [],
+  "canonical_truth_statement": "This research bundle is incomplete based only on its recorded evidence; it is not a repository release-readiness certification.",
+  "model": "AZIMUTH",
+  "phases": [
+    {
+      "evidence_ids": [
+        "evidence-5efa250cb9cc1607e8f6",
+        "evidence-3e67d6f3d61069c56a9e",
+        "evidence-1b68975743ae378e951d",
+        "evidence-68b5a7ffc548a6088593",
+        "evidence-0750a7471e9c85ff4b18",
+        "evidence-c0b8ecae7ad4dd0bb962",
+        "evidence-d4f7aebbb61438bf6217",
+        "evidence-e15ca30efc22fc873f3c",
+        "evidence-2331f8d5371ac24d518e",
+        "evidence-a60fc8af3f7b0fd5b20e",
+        "evidence-f57862c1ee17cf7f5809",
+        "evidence-788c87d9b9a167b8f481",
+        "evidence-ec5cd6f6b3a9f2b38d4b",
+        "evidence-8088c88b7181589ed671",
+        "evidence-0a96d29a1091e37c6b7e",
+        "evidence-76105db4fd4d214b25c5",
+        "evidence-baebe09005bf6132361e",
+        "evidence-5e07783f5cfb1e76e5d6",
+        "evidence-69a57948fc3b38654938",
+        "evidence-93b8cce49c7cb237db34",
+        "evidence-ce01570298ca44493eda"
+      ],
+      "id": "A",
+      "name": "Align to current truth",
+      "notes": "Only recorded source observations are treated as evidence; evidence role and retrieval limits remain explicit.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "source-1f2164f9eff73fcc8a2b",
+        "source-c47e039e06cb45cd88d1",
+        "source-33680ea44841900328fc"
+      ],
+      "id": "Z",
+      "name": "Separate stale state from active evidence",
+      "notes": "Explicitly tagged historical/archive sources: 0. No source records were deleted or rewritten.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "evidence-5efa250cb9cc1607e8f6",
+        "evidence-3e67d6f3d61069c56a9e",
+        "evidence-1b68975743ae378e951d",
+        "evidence-68b5a7ffc548a6088593",
+        "evidence-0750a7471e9c85ff4b18",
+        "evidence-c0b8ecae7ad4dd0bb962",
+        "evidence-d4f7aebbb61438bf6217",
+        "evidence-e15ca30efc22fc873f3c",
+        "evidence-2331f8d5371ac24d518e",
+        "evidence-a60fc8af3f7b0fd5b20e",
+        "evidence-f57862c1ee17cf7f5809",
+        "evidence-788c87d9b9a167b8f481",
+        "evidence-ec5cd6f6b3a9f2b38d4b",
+        "evidence-8088c88b7181589ed671",
+        "evidence-0a96d29a1091e37c6b7e",
+        "evidence-76105db4fd4d214b25c5",
+        "evidence-baebe09005bf6132361e",
+        "evidence-5e07783f5cfb1e76e5d6",
+        "evidence-69a57948fc3b38654938",
+        "evidence-93b8cce49c7cb237db34",
+        "evidence-ce01570298ca44493eda"
+      ],
+      "id": "I",
+      "name": "Integrate evidence and provenance",
+      "notes": "21 evidence items link to source locators.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [],
+      "id": "M",
+      "lanes": [
+        {
+          "completion_gate": "Every compared configuration has source-verified efficiency, range, and price fields or explicit unknowns.",
+          "depends_on": [],
+          "evidence_contract": "Primary EPA/DOE vehicle records and dated manufacturer or government price/incentive sources, with exact model-year and trim locators.",
+          "id": "P1",
+          "mode": "parallel",
+          "owner": "EPA efficiency and vehicle-price research",
+          "scope": "Identify current U.S. 2025-2026 EV model/trim configurations, EPA MPGe/range, MSRP, and applicable incentive evidence."
+        },
+        {
+          "completion_gate": "Every computed cost identifies observed inputs, derived calculation, uncertainty, and missing geography-specific values.",
+          "depends_on": [],
+          "evidence_contract": "Dated government/utility/research data with units, geography, assumptions, and methodology.",
+          "id": "P2",
+          "mode": "parallel",
+          "owner": "energy, maintenance, and ownership-cost research",
+          "scope": "Gather electricity-price, public charging, maintenance/repair, depreciation, insurance, and cost-model inputs for 5- and 10-year scenarios."
+        },
+        {
+          "completion_gate": "Known issues are tied to a source and applicable model year; absence of evidence is not presented as absence of defects.",
+          "depends_on": [],
+          "evidence_contract": "NHTSA and manufacturer records plus transparently attributed reliability data; recalls are matched to year/trim/VIN scope.",
+          "id": "P3",
+          "mode": "parallel",
+          "owner": "reliability, known-issue, and recall research",
+          "scope": "Check model-year-specific recalls, complaints, warranty terms, repair patterns, and source limitations."
+        },
+        {
+          "completion_gate": "No winner or cost claim is stated without complete, traceable inputs; unresolved objectives remain visible.",
+          "depends_on": [
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "evidence_contract": "Claim/evidence-linked comparison table, assumptions, contradictions, sensitivity analysis, objective matrix, and limitations.",
+          "id": "S1",
+          "mode": "dependent",
+          "owner": "comparative analysis and recommendation",
+          "scope": "Reconcile lane evidence, calculate scenario-based costs, challenge rankings, and report conditional recommendations."
+        }
+      ],
+      "name": "Map lanes and owners",
+      "notes": "4 declared lanes; declaration is not proof that parallel agents were run.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "evidence-5efa250cb9cc1607e8f6",
+        "evidence-3e67d6f3d61069c56a9e",
+        "evidence-1b68975743ae378e951d",
+        "evidence-68b5a7ffc548a6088593",
+        "evidence-0750a7471e9c85ff4b18",
+        "evidence-c0b8ecae7ad4dd0bb962",
+        "evidence-d4f7aebbb61438bf6217",
+        "evidence-e15ca30efc22fc873f3c",
+        "evidence-2331f8d5371ac24d518e",
+        "evidence-a60fc8af3f7b0fd5b20e",
+        "evidence-f57862c1ee17cf7f5809",
+        "evidence-788c87d9b9a167b8f481",
+        "evidence-ec5cd6f6b3a9f2b38d4b",
+        "evidence-8088c88b7181589ed671",
+        "evidence-0a96d29a1091e37c6b7e",
+        "evidence-76105db4fd4d214b25c5",
+        "evidence-baebe09005bf6132361e",
+        "evidence-5e07783f5cfb1e76e5d6",
+        "evidence-69a57948fc3b38654938",
+        "evidence-93b8cce49c7cb237db34",
+        "evidence-ce01570298ca44493eda"
+      ],
+      "id": "U",
+      "name": "Publish canonical research status",
+      "notes": "Canonical status is recorded in this bundle only; repository, package metadata, and public documentation were not modified.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "evidence-5efa250cb9cc1607e8f6",
+        "evidence-3e67d6f3d61069c56a9e",
+        "evidence-1b68975743ae378e951d",
+        "evidence-68b5a7ffc548a6088593",
+        "evidence-0750a7471e9c85ff4b18",
+        "evidence-c0b8ecae7ad4dd0bb962",
+        "evidence-d4f7aebbb61438bf6217",
+        "evidence-e15ca30efc22fc873f3c",
+        "evidence-2331f8d5371ac24d518e",
+        "evidence-a60fc8af3f7b0fd5b20e",
+        "evidence-f57862c1ee17cf7f5809",
+        "evidence-788c87d9b9a167b8f481",
+        "evidence-ec5cd6f6b3a9f2b38d4b",
+        "evidence-8088c88b7181589ed671",
+        "evidence-0a96d29a1091e37c6b7e",
+        "evidence-76105db4fd4d214b25c5",
+        "evidence-baebe09005bf6132361e",
+        "evidence-5e07783f5cfb1e76e5d6",
+        "evidence-69a57948fc3b38654938",
+        "evidence-93b8cce49c7cb237db34",
+        "evidence-ce01570298ca44493eda"
+      ],
+      "id": "T",
+      "name": "Test and validate evidence",
+      "notes": "Structural claim/citation validation ran; it does not establish semantic entailment or release readiness.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [],
+      "id": "H",
+      "name": "Harmonize archive and active truth",
+      "notes": "Historical/archive evidence remains preserved and separately tagged; no archival migration was performed.",
+      "status": "completed"
+    }
+  ],
+  "repo_mutations_performed": false,
+  "sequence": [
+    "A",
+    "Z",
+    "I",
+    "M",
+    "U",
+    "T",
+    "H"
+  ],
+  "status": "completed"
+}

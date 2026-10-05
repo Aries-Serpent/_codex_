@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+### Fixed — Copilot runtime resource exhaustion (2026-10-05)
+- Added a resource preflight before Copilot environment setup that detects memory, CPU, and process headroom, caps worker counts, serializes dependency-graph work, and bounds the Node heap and native build concurrency. The phase 9.3 executor builds graph edges from declared dependencies, runs independent tasks in bounded batches, and respects task-level parallel-agent limits.
+- Critical resource pressure selects the configured `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE`; if none is configured, the run remains serialized and reports the required escalation.
+
+### Changed — Dependabot update consolidation (2026-10-05)
+- Applied the PyO3 0.29.3 patch update, including synchronized Cargo lockfile checksums for its PyO3 crates.
+- Applied `dotenv` 18.0.5 and `globals` 17.13.0 to the Copilot extension, and integrated the nine grouped `cognitive_app` updates with their matching npm lockfile.
+- Updated the scheduled dependency-audit workflow's Syft installer to the `anchore/sbom-action` commit for v0.24.3.
+- GitHub advisory database checks reported no advisories for the updated dependencies. Dependency PRs #5665–#5668 remain separate open PRs until their closure can be confirmed.
+
+### Added — Evidence-Grounded Deep Research Analysis (2026-10-05)
+- Added the versioned `codex.deep_research` bundle contract, bounded provider pipeline, DNS-pinned HTTPS fetcher, dataset profiler, structural verifier, CLI, fixture bundle, tests, documentation, and registered experimental agent.
+- Added browser diagnostics handling guidance and recording for rendered pages using `browser_console_messages`, `browser_network_requests`, and conditional dialog dismissal with `browser_handle_dialog`.
+- Added ordered AZIMUTH assessment output and validated parallel/dependent lane contracts, including a synthetic package, documentation, archive, deployment, and publication-readiness scenario.
+- Corrected legacy agent profile metadata so the strict agent-spec validator now reports zero non-compliant profiles.
+- Fresh web retrieval remains capability-gated; the fixture CLI is offline and does not claim a live-provider invocation.
+- Corrected objective coverage when no acceptance criteria are matched, published the superseding EV run as incomplete, and regenerated the fixture bundle against the current schema.
+
 ### Fixed — GitHub client + governance drift follow-up (2026-10-03)
 - Restored the repo-local GitHub client `re` import so `owner`, `repo`, and branch validation logic work correctly in `src/codex_bridge/github_client.py` without shadowed-package regressions.
 - Restored the tracked `.codex/session_startup_packet.json` baseline to remove timestamp-only churn and keep the current branch aligned with the repo’s generated-artifact contract.

@@ -1,0 +1,20 @@
+[
+  {
+    "acceptance_criteria": [
+      "The supplied note states three records."
+    ],
+    "claim_ids": [
+      "claim-80c29f5a7d40d7c5c127"
+    ],
+    "evidence_ids": [
+      "evidence-ecaa9e7aa18c21cbd046"
+    ],
+    "id": "reported-count",
+    "matched_criteria": [
+      "The supplied note states three records."
+    ],
+    "question": "What record count does the supplied note report?",
+    "rationale": "Evidence was found for all specified acceptance criteria.",
+    "status": "answered"
+  }
+]

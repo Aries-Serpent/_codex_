@@ -1,0 +1,180 @@
+{
+  "title": "US Electric Vehicle Efficiency and Ownership Cost Comparison",
+  "scope": "Compare currently available U.S. battery-electric vehicle models and trims for model years 2025-2026. Assess EPA efficiency, range, price/incentives, charging costs, maintenance, reliability concerns, recalls, warranty, and 5- and 10-year ownership costs. Use a clearly declared 12,000-mile annual driving baseline and show electricity-price, home/public charging mix, insurance, depreciation, incentive, and ownership-duration sensitivities; leave geography-dependent inputs unknown unless a location is supplied.",
+  "exclusions": [
+    "Do not infer that the most efficient model is the lowest-cost or best vehicle for every driver.",
+    "Do not treat search snippets, manufacturer claims, or historical recalls as independently verified current model-year evidence.",
+    "Do not estimate a single total cost without stating acquisition, energy, maintenance, depreciation, insurance, tax, incentive, and charging assumptions."
+  ],
+  "jurisdictions": [
+    "United States"
+  ],
+  "time_period": "Model years 2025-2026; ownership horizons of 5 and 10 years from purchase.",
+  "terminology": {
+    "efficiency": "EPA combined MPGe and kWh per 100 miles, with test year, model year, trim, and wheel configuration.",
+    "total cost of ownership": "Purchase price less eligible incentives plus financing, energy, maintenance/repair, insurance, registration/taxes, charging equipment, and depreciation over an explicitly stated horizon."
+  },
+  "hypotheses": {
+    "efficiency": [
+      "A vehicle with the highest EPA MPGe also has the lowest estimated owner energy cost in every charging scenario."
+    ],
+    "total-cost": [
+      "The most efficient EV is the lowest-total-cost EV for every U.S. buyer."
+    ],
+    "recalls-warranty": [
+      "Historical model-family recalls directly predict the current model-year reliability of every trim."
+    ]
+  },
+  "execution_lanes": [
+    {
+      "id": "P1",
+      "owner": "EPA efficiency and vehicle-price research",
+      "mode": "parallel",
+      "depends_on": [],
+      "scope": "Identify current U.S. 2025-2026 EV model/trim configurations, EPA MPGe/range, MSRP, and applicable incentive evidence.",
+      "evidence_contract": "Primary EPA/DOE vehicle records and dated manufacturer or government price/incentive sources, with exact model-year and trim locators.",
+      "completion_gate": "Every compared configuration has source-verified efficiency, range, and price fields or explicit unknowns."
+    },
+    {
+      "id": "P2",
+      "owner": "energy, maintenance, and ownership-cost research",
+      "mode": "parallel",
+      "depends_on": [],
+      "scope": "Gather electricity-price, public charging, maintenance/repair, depreciation, insurance, and cost-model inputs for 5- and 10-year scenarios.",
+      "evidence_contract": "Dated government/utility/research data with units, geography, assumptions, and methodology.",
+      "completion_gate": "Every computed cost identifies observed inputs, derived calculation, uncertainty, and missing geography-specific values."
+    },
+    {
+      "id": "P3",
+      "owner": "reliability, known-issue, and recall research",
+      "mode": "parallel",
+      "depends_on": [],
+      "scope": "Check model-year-specific recalls, complaints, warranty terms, repair patterns, and source limitations.",
+      "evidence_contract": "NHTSA and manufacturer records plus transparently attributed reliability data; recalls are matched to year/trim/VIN scope.",
+      "completion_gate": "Known issues are tied to a source and applicable model year; absence of evidence is not presented as absence of defects."
+    },
+    {
+      "id": "S1",
+      "owner": "comparative analysis and recommendation",
+      "mode": "dependent",
+      "depends_on": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "scope": "Reconcile lane evidence, calculate scenario-based costs, challenge rankings, and report conditional recommendations.",
+      "evidence_contract": "Claim/evidence-linked comparison table, assumptions, contradictions, sensitivity analysis, objective matrix, and limitations.",
+      "completion_gate": "No winner or cost claim is stated without complete, traceable inputs; unresolved objectives remain visible."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "efficiency",
+      "question": "Which 2025-2026 U.S. EV model and trim configurations have the highest verified EPA efficiency and useful range?",
+      "acceptance_criteria": [
+        "primary-source model-year and trim-specific EPA MPGe and range",
+        "wheel configuration and test-cycle context"
+      ],
+      "synonyms": [
+        "kWh per 100 miles",
+        "energy efficiency",
+        "EPA range",
+        "battery-electric vehicle"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "purchase",
+      "question": "What are the comparable transaction-price ranges and verified incentives for each model/trim and buyer scenario?",
+      "acceptance_criteria": [
+        "dated price evidence by model and trim",
+        "eligibility conditions for any included incentive"
+      ],
+      "synonyms": [
+        "MSRP",
+        "purchase price",
+        "tax credit",
+        "rebate"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "energy",
+      "question": "What are the 5- and 10-year charging costs under stated annual mileage, local electricity prices, and home/public charging mixes?",
+      "acceptance_criteria": [
+        "electricity price and geography",
+        "annual miles and charging-loss assumptions",
+        "home and public charging cost scenarios"
+      ],
+      "synonyms": [
+        "fuel cost",
+        "charging cost",
+        "utility rate",
+        "cost per mile"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "maintenance",
+      "question": "What scheduled maintenance, common repairs, and model-year-specific known issues should buyers expect?",
+      "acceptance_criteria": [
+        "maintenance or repair evidence tied to model/year",
+        "source limitations and observed-versus-projected distinction"
+      ],
+      "synonyms": [
+        "service schedule",
+        "repair costs",
+        "reliability",
+        "owner complaints"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "recalls-warranty",
+      "question": "What recalls, warranty terms, and battery coverage apply to the compared model years and trims?",
+      "acceptance_criteria": [
+        "recall evidence and model-year applicability",
+        "battery and vehicle warranty terms"
+      ],
+      "synonyms": [
+        "NHTSA recall",
+        "battery warranty",
+        "safety campaign",
+        "complaint"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "total-cost",
+      "question": "What is the estimated 5- and 10-year total ownership cost, with assumptions and sensitivity ranges, for each compared EV?",
+      "acceptance_criteria": [
+        "purchase price and incentives",
+        "energy and charging costs",
+        "maintenance, insurance, taxes/fees, depreciation, and financing assumptions",
+        "sensitivity analysis and unresolved inputs"
+      ],
+      "synonyms": [
+        "TCO",
+        "cost over time",
+        "ownership cost",
+        "lifetime cost"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "recommendation",
+      "question": "Which EVs are conditionally best for efficiency, affordability, low ownership cost, and reliability, and what evidence remains insufficient?",
+      "acceptance_criteria": [
+        "separate rankings by buyer priority",
+        "explicit counterevidence, uncertainties, and unresolved objectives"
+      ],
+      "synonyms": [
+        "best value",
+        "lowest cost",
+        "most efficient",
+        "buyer recommendation"
+      ],
+      "applicable": true
+    }
+  ]
+}

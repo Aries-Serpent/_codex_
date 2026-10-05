@@ -31,14 +31,14 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Quick Reference
 
- **[PR_3133_EXECUTIVE_SUMMARY.md](../.codex/archive/pr-resolutions/PR_3133_ANALYSIS_INDEX.md)** (archived)
+ **[PR_3133_EXECUTIVE_SUMMARY.md](../../.codex/archive/pr-resolutions/PR_3133_ANALYSIS_INDEX.md)** (archived)
 - **Size**: 7.4 KB
 - **Read Time**: 3 minutes
 - **Best For**: Quick overview, status dashboard, immediate action items
 - **Contains**: TL;DR, root cause, resolution steps, confidence assessment
 - **Note**: Detailed reports have been archived to `.codex/archive/pr-resolutions/`
 
- **[PR_3133_CI_LOG_SUMMARY.md](../.codex/archive/pr-resolutions/PR_3133_RESOLUTION_STATUS.md)** (archived)
+ **[PR_3133_CI_LOG_SUMMARY.md](../../.codex/archive/pr-resolutions/PR_3133_RESOLUTION_STATUS.md)** (archived)
 - **Size**: 2.6 KB
 - **Read Time**: 1 minute
 - **Best For**: Quick status check, artifact links
@@ -46,7 +46,7 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Deep Analysis
 
- **[PR_3133_FINAL_CHECK_ANALYSIS.md](../.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)** (archived)
+ **[PR_3133_FINAL_CHECK_ANALYSIS.md](../../.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)** (archived)
 - **Size**: 21 KB (most comprehensive)
 - **Read Time**: 15 minutes
 - **Best For**: Understanding root causes, workflow analysis, lessons learned
@@ -74,7 +74,7 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Audit Trail
 
- **[.codex/change_log.md](../.codex/change_log.md)** (project root)
+ **[.codex/change_log.md](../../.codex/change_log.md)** (project root)
 - **Read Time**: < 1 minute (latest entry only)
 - **Best For**: Historical record, audit trail
 - **Contains**: Entry documenting this analysis with references
@@ -260,4 +260,4 @@ Auto-Fix Check (FAILED: detected 1 alert)
 **Version**: 1.0
 **Date**: 2026-02-03T17:20:00Z
 
-*For detailed analysis, see: [.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md](../.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)*
+*For detailed analysis, see: [.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md](../../.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)*
