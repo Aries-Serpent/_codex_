@@ -51,10 +51,42 @@ concurrency:
 permissions:
   contents: read
 jobs:
+  resource-profile:
+    name: Probe Copilot runner headroom
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      runner_profile: ${{ steps.profile.outputs.runner_profile }}
+      resource_mode: ${{ steps.profile.outputs.resource_mode }}
+      agent_workers: ${{ steps.profile.outputs.agent_workers }}
+      dependency_graph_workers: ${{ steps.profile.outputs.dependency_graph_workers }}
+      dependency_graph_serialized: ${{ steps.profile.outputs.dependency_graph_serialized }}
+      npm_jobs: ${{ steps.profile.outputs.npm_jobs }}
+      gomaxprocs: ${{ steps.profile.outputs.gomaxprocs }}
+      node_heap_mib: ${{ steps.profile.outputs.node_heap_mib }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Select runtime resource profile
+      id: profile
+      env:
+        CURRENT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+        HIGH_HEADROOM_RUNNER_PROFILE: ${{ vars.COPILOT_HIGH_HEADROOM_RUNNER_PROFILE }}
+      run: |
+        python3 scripts/ci/agent_resource_profile.py \
+          --github-output "$GITHUB_OUTPUT" \
+          --summary "$GITHUB_STEP_SUMMARY" \
+          --current-runner-profile "$CURRENT_RUNNER_PROFILE" \
+          --high-headroom-runner-profile "$HIGH_HEADROOM_RUNNER_PROFILE"
   copilot-setup-steps:
     name: Copilot Agent Environment Preparation
-    runs-on: ${{ (vars.COPILOT_RUNNER_PROFILE != '' && vars.COPILOT_RUNNER_PROFILE)
-      || 'ubuntu-latest' }}
+    needs: resource-profile
+    runs-on: ${{ needs.resource-profile.outputs.runner_profile }}
     timeout-minutes: 60
     permissions:
       contents: read
@@ -62,6 +94,15 @@ jobs:
       issues: write
       pull-requests: write
     env:
+      CI: 'true'
+      COPILOT_RESOURCE_MODE: ${{ needs.resource-profile.outputs.resource_mode }}
+      COPILOT_AGENT_WORKERS: ${{ needs.resource-profile.outputs.agent_workers }}
+      COPILOT_DEPENDENCY_GRAPH_WORKERS: ${{ needs.resource-profile.outputs.dependency_graph_workers }}
+      COPILOT_DEPENDENCY_GRAPH_SERIALIZED: ${{ needs.resource-profile.outputs.dependency_graph_serialized }}
+      npm_config_jobs: ${{ needs.resource-profile.outputs.npm_jobs }}
+      GOMAXPROCS: ${{ needs.resource-profile.outputs.gomaxprocs }}
+      NODE_OPTIONS: --max-old-space-size=${{ needs.resource-profile.outputs.node_heap_mib }}
+      COPILOT_RUNNER_PROFILE: ${{ needs.resource-profile.outputs.runner_profile }}
       GIT_LFS_SKIP_SMUDGE: '1'
       CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
       CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
