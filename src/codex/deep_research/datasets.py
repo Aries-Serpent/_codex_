@@ -135,7 +135,6 @@ def _type_name(value: Any, *, coerce_strings: bool = False) -> str:
                     return "number"
                 except ValueError:
                     return "string"
-            return "string"
         return "string"
     if isinstance(value, list):
         return "array"
