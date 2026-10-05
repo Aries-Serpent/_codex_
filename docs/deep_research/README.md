@@ -14,6 +14,31 @@ python -m codex.deep_research \
   --output /tmp/deep-research-bundle
 ```
 
+When `--output` is omitted, results are stored centrally under
+`docs/research/results/<topic-slug>/runs/<content-id>/`. The topic slug is
+filesystem-safe and hash-suffixed to avoid collisions. `--topic` overrides the
+brief title; each topic has an `index.json`, and the root store has a global
+`index.json`. Runs are content-addressed and identical output is idempotent.
+Use `--research-root <path>` to select another central store. Explicit `--output`
+retains the legacy flat-directory behavior.
+
+The EV ownership-cost scenario is an evidence contract and deterministic fixture,
+not a current vehicle recommendation:
+
+```bash
+python -m codex.deep_research \
+  --brief examples/deep_research/ev_ownership_cost/brief.json \
+  --topic "US Electric Vehicle Efficiency and Ownership Cost Comparison"
+```
+
+It requires current model/trim-specific EPA efficiency and range, dated price and
+incentive data, charging geography/rates, maintenance and repair evidence,
+model-year-specific recalls and warranty terms, and transparent 5-/10-year cost
+assumptions and sensitivities. Without supplied or retrieved evidence, the stored
+topic run is correctly marked incomplete with unresolved objectives rather than
+inventing rankings or costs. Search-result snippets are discovery leads only; they
+do not count as verification of the underlying source.
+
 Exit status is `0` for a complete bundle, `2` for an incomplete bundle, and `2` with an argument error for invalid input. Output is written only under the requested directory. The CLI does not perform fresh web retrieval and must not be represented as having done so.
 
 Python hosts may supply an actual callable search function to `HostToolProvider` and pass it to `run_research`. If no fetch callback is supplied, the provider uses its built-in `SafeHTTPSFetcher`, which pins a resolved public IP for each HTTPS connection, revalidates every redirect before connecting, and enforces a response-size limit. A supplied fetch callback fails closed by default: `redirect_validation_verified` must remain false unless its real transport has independently been verified to provide those same guarantees. The `is_live` flag is an explicit caller assertion and must only be true for a verified live host-tool binding; it does not itself verify the provider. The existing repository web-search HTTP tests are mocked and do not qualify as a live-provider check.
@@ -32,6 +57,8 @@ The output directory contains:
 - `azimuth.json` — ordered AZIMUTH phase assessment, evidence references, lane declarations, and explicit non-mutation boundary.
 - `checkpoint.json` — canonical JSON digest, parent checkpoint ID, and resumable state.
 - `report.md` — concise source-linked observations, limits, and dataset measurements.
+- `manifest.json` — content hash, topic, run/checkpoint identifiers, status, and artifact hashes for topic-indexed runs.
+- `index.json` — per-topic run list, latest run ID, and the global topic catalog at the store root.
 
 Source content is not retained by default. The source manifest keeps its SHA-256, access outcome, locator, observed metadata, relationships, retention/access fields, and browser diagnostics. Dataset record counts, missingness, type counts, and duplicate counts are measured only over the parsed supplied file; publication-reported properties are kept separate.
 

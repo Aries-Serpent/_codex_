@@ -196,7 +196,7 @@ pytest tests/ci/test_dependabot_consolidator.py -v
 **Status:** ✅ Implemented; live host-tool wiring requires explicit runtime binding
 
 ### Description
-Dependency-light research bundle builder with validated objective hierarchies and lane dependencies, injected search/fetch interfaces, DNS-pinned HTTPS fetching, bounded retries and budgets, source/evidence provenance, local dataset profiling, structural verification, contradiction tracking, resumable digest-checked checkpoints, and an ordered AZIMUTH assessment.
+Dependency-light research bundle builder with validated objective hierarchies and lane dependencies, injected search/fetch interfaces, DNS-pinned HTTPS fetching, bounded retries and budgets, source/evidence provenance, local dataset profiling, structural verification, contradiction tracking, resumable digest-checked checkpoints, ordered AZIMUTH assessment, and content-addressed topic-keyed result storage with indexes.
 
 ### Locations
 ```
@@ -221,6 +221,8 @@ python -m codex.deep_research \
 - The CLI is offline and labels results as not fresh web research.
 - AZIMUTH follows A-Z-I-M-U-T-H and separates phase assessment from repository mutation, archive migration, release readiness, and actual parallel-agent execution.
 - The synthetic release-readiness fixture tests package/artifact integrity, docs/status drift, archive evidence, deployment, and publication gates without asserting live repository findings.
+- Omitting `--output` stores results by safe topic slug with immutable content-addressed runs, per-topic indexes, and a root topic index.
+- The EV ownership-cost brief requires verified current model-year/trim evidence, explicit location and cost assumptions, recall/warranty scope, and 5-/10-year sensitivity; no unsupported ranking is generated.
 - A host must inject an actual callable search provider. The built-in fetch adapter pins public DNS results, validates redirect targets before connecting, and bounds response size.
 - An injected fetch callback remains disabled unless its redirect/DNS protections are independently verified.
 - Browser-rendered pages are checked with `browser_console_messages` and `browser_network_requests`; `browser_handle_dialog` is used only for an observed dialog and dismisses it by default.

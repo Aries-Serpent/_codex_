@@ -21,6 +21,8 @@ python -m codex.deep_research --brief <brief.json> --sources <sources.json> --ou
 
 Pass `--dataset <path>` for each supplied CSV or JSONL dataset and `--checkpoint <checkpoint.json>` to resume. The CLI does not search the web. Do not present its offline result as fresh web research.
 
+For topic-keyed persistence, omit `--output` and use `--topic <label>`; the CLI writes immutable content-addressed runs to `docs/research/results/<safe-topic-slug>/runs/` and updates per-topic and global `index.json` files. `--research-root` changes that central store. If no explicit topic is provided, the brief title is used. An EV total-cost brief is available at `examples/deep_research/ev_ownership_cost/brief.json`.
+
 ## Retrieval and browser procedure
 
 For a live task, first verify the current runtime exposes callable `web_search`. Bind that actual callable to `HostToolProvider`; without a fetch callback, it uses the package's DNS-pinned, redirect-validating `SafeHTTPSFetcher`. If supplying the host's `web_fetch` callback instead, use it only after verifying that its transport rejects private/reserved addresses and validates every redirect before connecting. Do not treat a tool declaration, mocked test, search plan, or unverified fetch callback as proof of live retrieval. If the binding or redirect guarantees are unavailable, use supplied/local sources and state that fresh web retrieval was unavailable.

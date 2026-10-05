@@ -45,8 +45,7 @@ class TopicResearchStore:
         _assert_contained(run_dir, root)
 
         artifact_hashes = {
-            name: hashlib.sha256(content).hexdigest()
-            for name, content in sorted(artifacts.items())
+            name: hashlib.sha256(content).hexdigest() for name, content in sorted(artifacts.items())
         }
         manifest_path = run_dir / "manifest.json"
         if run_dir.exists():
@@ -105,7 +104,10 @@ def _build_topic_index(topic_dir: Path, title: str, slug: str) -> dict[str, Any]
     runs = []
     for manifest_path in sorted((topic_dir / "runs").glob("*/manifest.json")):
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if manifest.get("topic_slug") == slug and manifest.get("run_id") == manifest_path.parent.name:
+        if (
+            manifest.get("topic_slug") == slug
+            and manifest.get("run_id") == manifest_path.parent.name
+        ):
             runs.append(manifest)
     runs.sort(key=lambda item: (item.get("created_at", ""), item["run_id"]))
     return {
@@ -157,9 +159,7 @@ def _assert_contained(path: Path, root: Path) -> None:
 
 
 def _json_bytes(value: Any) -> bytes:
-    return (
-        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
 def _atomic_write(path: Path, content: bytes) -> None:
