@@ -17,7 +17,7 @@
 - Executor lane: four focused tests, Ruff, and diff checks passed.
 - Evidence/fixture lane: schema, checkpoint, manifest-hash, content-address, index, and companion checks passed; 55 changed-only RVS tests passed.
 - Secret scanning reported no secrets in changed files.
-- Final PR parallel validation: pending.
+- Final PR parallel validation: Code Review completed with no comments; Python CodeQL analysis was skipped because the database exceeded the size limit.
 
 **Governance:** The five always-required WEC items remain checked and the active optional workflows remain unchecked. Current-head workflow runs are gated as `action_required`; the setup-workflow review remains awaiting explicit owner direction.
 
