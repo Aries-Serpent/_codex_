@@ -60,13 +60,13 @@ class TestTokenResolution:
 
     def test_get_token_validates_scope(self):
         """TEST A2: Verify get_token validates scope correctly."""
-        with patch.dict(os.environ, {"GH_TOKEN": "limited_token"}):
+        with patch.dict(os.environ, {"GH_TOKEN": "limited_token"}, clear=True):
             # Should fail with required_elevated=True
             with pytest.raises(TokenResolutionError):
                 get_token(required_elevated=True)
 
             # Should succeed with required_elevated=False
-            with patch.dict(os.environ, {"GH_TOKEN": "valid_token"}):
+            with patch.dict(os.environ, {"GH_TOKEN": "valid_token"}, clear=True):
                 token, source = get_token(required_elevated=False)
                 assert source == "GH_TOKEN", "Should accept GH_TOKEN when elevated not required"
 
@@ -84,6 +84,60 @@ class TestTokenResolution:
             token, source = get_token(required_elevated=False)
             assert source == "CODEX_MASTER_KEY", "Should prefer CODEX_MASTER_KEY"
             assert token == "master", "Token should be from CODEX_MASTER_KEY"
+
+
+class TestWriteHelperPolicy:
+    """Tests for the shared repo write-capable token helper."""
+
+    def test_resolve_github_token_prefers_master_write_path(self):
+        """Write-capable admin operations should prefer CODEX_MASTER_KEY or CODEX_BACKUP_KEY."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(
+            os.environ,
+            {
+                "CODEX_MASTER_KEY": "master-write",
+                "CODEX_BACKUP_KEY": "backup-write",
+                "GH_TOKEN": "gh-write",
+            },
+            clear=True,
+        ):
+            token, source = resolve_github_token("workflow_dispatch")
+            assert token == "master-write"
+            assert source == "CODEX_MASTER_KEY"
+
+    def test_resolve_github_token_supports_comment_writes(self):
+        """Comment writers should use the canonical write chain without requiring admin-only keys."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(os.environ, {"GH_TOKEN": "comment-token"}, clear=True):
+            token, source = resolve_github_token("pr_comment")
+            assert token == "comment-token"
+            assert source == "GH_TOKEN"
+
+    def test_resolve_github_token_rejects_weak_admin_tokens(self):
+        """Weak fallback tokens must not satisfy admin write operations."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "weak-token"}, clear=True):
+            with pytest.raises(ValueError, match="CODEX_MASTER_KEY|CODEX_BACKUP_KEY"):
+                resolve_github_token("workflow_dispatch")
+
+    def test_resolve_github_token_rejects_unknown_operation_before_resolution(self):
+        """Unknown operations must fail closed before any token lookup is attempted."""
+        from ci.github_write_helper import resolve_github_token
+
+        with patch.dict(os.environ, {}, clear=True):
+            with pytest.raises(ValueError, match="Unsupported GitHub operation 'unknown_operation'"):
+                resolve_github_token("unknown_operation")
+
+    def test_ensure_write_capability_rejects_unknown_operation_before_resolution(self):
+        """ensure_write_capability must reject unsupported operations without falling back."""
+        from ci.github_write_helper import ensure_write_capability
+
+        with patch.dict(os.environ, {"GH_TOKEN": "comment-token"}, clear=True):
+            with pytest.raises(ValueError, match="Unsupported GitHub operation 'unknown_operation'"):
+                ensure_write_capability("unknown_operation")
 
 
 # ============================================================================
@@ -246,7 +300,9 @@ class TestScopeValidation:
                 # Token value should NOT appear in logs
                 assert "secret_token_12345" not in call_args, "Token value exposed in logs!"
                 # Source should appear
-                assert "CODEX_MASTER_KEY" in call_args or "source" in call_args.lower(), "Condition must be true"
+                assert (
+                    "CODEX_MASTER_KEY" in call_args or "source" in call_args.lower()
+                ), "Condition must be true"
 
 
 # ============================================================================
@@ -272,11 +328,28 @@ def test_all_integration_tests_present():
     """Verify all 12 integration tests are defined."""
     # This meta-test documents all test categories
     test_categories = {
-        "A: Token Resolution": ["test_get_token_returns_tuple", "test_get_token_validates_scope", "test_get_token_validates_hierarchy"],
-        "B: API Operations": ["test_api_call_uses_auth_header", "test_api_error_handling_preserves_scopes"],
-        "C: Variable Operations": ["test_variable_operations_use_elevated_token", "test_variable_operations_handle_errors"],
-        "D: Error Scenarios": ["test_missing_token_handling", "test_invalid_token_validation", "test_insufficient_scope_error"],
-        "E: Scope Validation": ["test_get_token_scope_detection", "test_log_token_usage_no_exposure"],
+        "A: Token Resolution": [
+            "test_get_token_returns_tuple",
+            "test_get_token_validates_scope",
+            "test_get_token_validates_hierarchy",
+        ],
+        "B: API Operations": [
+            "test_api_call_uses_auth_header",
+            "test_api_error_handling_preserves_scopes",
+        ],
+        "C: Variable Operations": [
+            "test_variable_operations_use_elevated_token",
+            "test_variable_operations_handle_errors",
+        ],
+        "D: Error Scenarios": [
+            "test_missing_token_handling",
+            "test_invalid_token_validation",
+            "test_insufficient_scope_error",
+        ],
+        "E: Scope Validation": [
+            "test_get_token_scope_detection",
+            "test_log_token_usage_no_exposure",
+        ],
     }
 
     total_tests = sum(len(tests) for tests in test_categories.values())

@@ -180,6 +180,123 @@ class APIClient:
                 "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
             )
 
+    def _record_cb_pattern(
+        self,
+        pattern_id: str,
+        summary: str,
+        context: dict[str, Any] | None = None,
+        outcome: str = "success",
+    ) -> None:
+        """Record a cognitive-brain lifecycle pattern when the integration is available."""
+        try:
+            from .cognitive_brain_integration import CognitiveBrainIntegration
+
+            CognitiveBrainIntegration(self)._record_cb_pattern(
+                pattern_id,
+                summary,
+                context or {},
+                outcome,
+            )
+        except Exception:  # pragma: no cover - fail-open for optional dependency
+            return
+
+    def _resolve_discussion_ids(
+        self, owner: str, repo: str, category_slug: str
+    ) -> tuple[str, str]:
+        """Resolve repository and discussion-category node IDs for GraphQL mutations."""
+        query = """
+        query GetDiscussionCategory($owner: String!, $repo: String!) {
+          repository(owner: $owner, name: $repo) {
+            id
+            discussionCategories(first: 100) {
+              nodes { id slug name }
+            }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo})
+        repo_data = (result.get("data", {}) or {}).get("repository", {}) or {}
+        repo_id = repo_data.get("id")
+        if not repo_id:
+            raise RuntimeError(f"Repository {owner}/{repo} not found or inaccessible")
+        category_nodes = (repo_data.get("discussionCategories") or {}).get("nodes", []) or []
+        category_id = ""
+        for node in category_nodes:
+            if node.get("slug") == category_slug:
+                category_id = node.get("id")
+                break
+        if not category_id and category_nodes:
+            category_id = category_nodes[0].get("id", "")
+        if not category_id:
+            raise RuntimeError(
+                f"Discussion category {category_slug!r} not found for {owner}/{repo}"
+            )
+        return str(repo_id), str(category_id)
+
+    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
+        """Return the GitHub GraphQL node ID for a Discussion number."""
+        query = """
+        query GetDiscussionId($owner: String!, $repo: String!, $number: Int!) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) { id }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
+        discussion = (result.get("data", {}) or {}).get("repository", {}).get("discussion") or {}
+        node_id = discussion.get("id", "")
+        if not node_id:
+            raise RuntimeError(f"Discussion #{discussion_number} not found in {owner}/{repo}.")
+        return str(node_id)
+
+    def _find_discussion_comment(
+        self, owner: str, repo: str, discussion_number: int, marker: str
+    ) -> str:
+        """Return the node ID of the most recent discussion comment containing marker."""
+        query = """
+        query FindDiscussionComment(
+          $owner: String!, $repo: String!, $number: Int!, $cursor: String
+        ) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) {
+              comments(last: 100, before: $cursor) {
+                nodes { id body }
+                pageInfo { hasPreviousPage startCursor }
+              }
+            }
+          }
+        }
+        """
+        cursor: str | None = None
+        while True:
+            result = self._graphql(
+                query,
+                {"owner": owner, "repo": repo, "number": discussion_number, "cursor": cursor},
+            )
+            comments = (
+                (result.get("data", {}) or {}).get("repository", {}).get("discussion", {}).get("comments", {})
+            )
+            nodes = comments.get("nodes", []) or []
+            for item in reversed(nodes):
+                if marker in (item.get("body") or ""):
+                    return str(item.get("id", ""))
+            page_info = comments.get("pageInfo", {}) or {}
+            if not page_info.get("hasPreviousPage"):
+                return ""
+            cursor = page_info.get("startCursor")
+
+    def _update_discussion_comment(self, comment_id: str, body: str) -> dict[str, Any]:
+        """Update an existing discussion comment."""
+        mutation = """
+        mutation UpdateDiscussionComment($commentId: ID!, $body: String!) {
+          updateDiscussionComment(input: { commentId: $commentId, body: $body }) {
+            comment { id url body }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id, "body": body})
+        return ((result or {}).get("data", {}) or {}).get("updateDiscussionComment", {}).get("comment", result)
+
     # ------------------------------------------------------------------
     # REST API methods
     # ------------------------------------------------------------------
@@ -218,7 +335,8 @@ class APIClient:
         self,
         method: str,
         url: str,
-        payload: dict[str, Any],
+        payload: dict[str, Any] | str | None = None,
+        headers: dict[str, str] | None = None,
         max_retries: int = 3,
     ) -> dict[str, Any]:
         """Execute a GitHub REST API call with exponential back-off retry.
@@ -241,19 +359,23 @@ class APIClient:
             (default 3, giving up to 4 total attempts).
         """
         url = _validated_github_api_url(url)
-        data = json.dumps(payload).encode()
+        payload = {} if payload is None else payload
+        data = json.dumps(payload).encode() if isinstance(payload, dict) else (payload.encode() if isinstance(payload, str) else b"")
         last_exc: urllib.error.HTTPError | None = None
+        request_headers = {
+            "Authorization": "******",
+            "Accept": _ACCEPT,
+            "X-GitHub-Api-Version": _API_VERSION,
+            "Content-Type": "application/json",
+        }
+        if headers:
+            request_headers.update(headers)
         for attempt in range(max_retries + 1):
             req = urllib.request.Request(
                 url,
                 data=data,
                 method=method,
-                headers={
-                    "Authorization": "******",
-                    "Accept": _ACCEPT,
-                    "X-GitHub-Api-Version": _API_VERSION,
-                    "Content-Type": "application/json",
-                },
+                headers=request_headers,
             )
             try:
                 with urllib.request.urlopen(  # nosec B310  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is validated by _validated_github_api_url()

@@ -45,6 +45,16 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 **EVERY Copilot coding agent session MUST begin by completing ALL of the following
 before making any file changes:**
 
+**GitHub write-path contract (repo policy):**
+- The canonical shared resolver for GitHub automation is `scripts/ci/_token_resolver.py`.
+- The canonical escalation path for rescue / PR comment writes is `scripts/ci/post_rescue_comment.py`.
+- GitHub workflows must resolve write-capable operations via the repo’s token order:
+  `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GH_TOKEN` → `GITHUB_TOKEN`.
+- Elevated write operations are restricted to `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY`.
+- Comment-only or fallback writes may use `GH_TOKEN` / `GITHUB_TOKEN` only when the operation is explicitly not an elevated write.
+- Avoid ad hoc inline token checks in scripts; use the shared helper / resolver contract instead.
+
+
 1. **Review ALL bot-posted comments** on the active PR:
    - `copilot-pull request-reviewer[bot]` — code review threads
    - `github-advanced-security[bot]` — security alerts

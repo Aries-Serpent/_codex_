@@ -86,7 +86,9 @@ agents:
   has_src: false
   category: security
   subcategory: archive_recovery
-  purpose: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  purpose: >-
+    Offline recovery specialist for password-protected ZIP archives, including
+    candidate validation, safe unpacking, and sanitized forensic reporting.
   capabilities:
   - archive_recovery
   - zip_forensics
@@ -109,7 +111,9 @@ agents:
   - orchestrator
   consolidation_priority: false
   role: specialist
-  description: 'Offline recovery specialist for password-protected ZIP archives, including candidate validation, safe unpacking, and sanitized forensic reporting.'
+  description: >-
+    Offline recovery specialist for password-protected ZIP archives, including
+    candidate validation, safe unpacking, and sanitized forensic reporting.
   capability_tags:
   - archive_recovery
   - zip_forensics
@@ -301,6 +305,53 @@ agents:
   - fixture_independence_checking
   - test_quality_enforcement
   category: testing
+- id: workflow-monitoring-agent
+  name: Workflow Monitoring Agent
+  directory: .github/agents
+  file: .github/agents/workflow-monitoring-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: >-
+    Monitor active GitHub Actions workflows on the working branch and PR, log
+    failures, and notify the primary agent before session wrap-up.
+  capabilities:
+  - workflow_run_monitoring
+  - workflow_failure_logging
+  - failure_classification
+  - branch_state_awareness
+  - wrap_up_notification
+  integration_points:
+  - github_actions
+  - pull_request
+  - ci_validation
+  - cognitive_brain
+  priority: critical
+  created: '2026-10-03T00:00:00Z'
+  updated: '2026-10-03T22:15:00Z'
+  enforcement_tier: GROUNDED
+  autonomy_model: D_CAPABLE
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - artifact-monitor-agent
+  consolidation_priority: false
+  role: monitoring
+  description: >-
+    Monitors all in-flight workflows for the active branch and PR, tracks
+    failures, preserves WEC governance, and notifies the primary agent before
+    the 60-minute session cutoff.
+  capability_tags:
+  - workflow_run_monitoring
+  - workflow_failure_logging
+  - failure_classification
+  - branch_state_awareness
+  - wrap_up_notification
+  category: monitoring
 - id: config-validator
   name: Config Validator
   directory: .github/agents
@@ -2418,9 +2469,6 @@ agents:
   lane_id: A1
   lane_type: aggregator
   depends_on:
-  - P1
-  - P2
-  accepts_handoff_from:
   - P1
   - P2
   state_scope: shared-read-only

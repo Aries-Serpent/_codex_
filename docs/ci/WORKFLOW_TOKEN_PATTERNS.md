@@ -26,13 +26,13 @@ jobs:
         run: |
           gh pr edit ${{ github.event.pull_request.number }} \
             --body "Updated PR body"
-      
+
       - name: Write repository variable
         run: |
           gh api -X PATCH /repos/${{ github.repository }}/actions/variables/MY_VAR \
             -f name='MY_VAR' \
             -f value='new_value'
-      
+
       - name: Dispatch workflow
         run: |
           gh workflow run deploy.yml \
@@ -71,17 +71,17 @@ jobs:
             --workflow main.yml \
             --status completed \
             --limit 10
-      
+
       - name: Post comment on PR
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "Automated comment"
-      
+
       - name: Download artifact
         run: |
           gh run download ${{ github.run_id }} \
             --name test-results
-      
+
       - name: Check run status
         run: |
           gh run view ${{ github.run_id }} \
@@ -118,16 +118,16 @@ jobs:
           # Standard operation
           RUNS=$(gh run list --limit 5 --json status)
           echo "Recent runs: $RUNS"
-          
+
           # Elevated operation
           gh pr edit ${{ github.event.pull_request.number }} \
             --body "Status: $(echo $RUNS | jq -r '.[0].status')"
-      
+
       - name: Fetch data and manage variables
         run: |
           # Standard operation
           CHECKS=$(gh run view ${{ github.run_id }} --json checkRuns)
-          
+
           # Elevated operation
           gh api -X PATCH /repos/${{ github.repository }}/actions/variables/LAST_RUN \
             -f value="$CHECKS"
@@ -140,7 +140,49 @@ jobs:
 
 ---
 
-## Section 2: Critical Operations Pattern
+## Section 2: Write-vs-Read Policy (Canonical Contract)
+
+This repository uses a single, explicit contract for GitHub actions:
+
+- Read-only workflows may use `github.token`.
+- Any workflow that mutates GitHub state must resolve through the canonical write-capable token chain and use the shared helper at `scripts/ci/github_write_helper.py`.
+- The repo default ordering is: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GH_TOKEN` → `GITHUB_TOKEN`.
+- Admin writes such as workflow dispatch, repo-variable updates, and workflow approval must prefer `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY` and fail closed if a weaker token is the only value available.
+
+### Required helper usage
+
+Use the shared helper for the following operation types:
+
+- `pr_comment` / `issue_comment` / `discussion_comment`
+- `discussion_write`
+- `workflow_dispatch`
+- `repo_variable_write`
+- `workflow_approval`
+- `admin_write`
+
+The canonical helper entry points are:
+
+```python
+from scripts.ci.github_write_helper import (
+    build_pr_comment_request,
+    build_discussion_comment_request,
+    build_workflow_dispatch_request,
+    resolve_github_token,
+    ensure_write_capability,
+)
+
+# PR comment / issue comment
+comment_token, comment_source = resolve_github_token("pr_comment")
+
+# Workflow dispatch or admin write
+admin_token, admin_source = resolve_github_token("workflow_dispatch")
+```
+
+This separates the write policy from the script logic and keeps the final decision auditable in one place.
+
+---
+
+## Section 3: Critical Operations Pattern
 
 Critical operations are those that enforce system policies, manage rate limits, handle session management, or perform essential infrastructure tasks. These **MUST** use CODEX_MASTER_KEY without fallback to github.token.
 
@@ -183,7 +225,7 @@ jobs:
           gh api /repos/${{ github.repository }}/actions/runs/${{ github.run_id }} \
             -H "Authorization: ******" \
             -H "X-GitHub-Api-Version: 2022-11-28"
-      
+
       - name: Check rate limits
         run: |
           # CRITICAL: Requires elevated token
@@ -192,7 +234,7 @@ jobs:
             echo "::error::API rate limit critically low"
             exit 1
           fi
-      
+
       - name: Verify session state
         run: |
           # CRITICAL: Session verification requires master key
