@@ -1,0 +1,572 @@
+{
+  "azimuth": {
+    "archived_source_ids": [],
+    "canonical_truth_statement": "This research bundle is incomplete based only on its recorded evidence; it is not a repository release-readiness certification.",
+    "model": "AZIMUTH",
+    "phases": [
+      {
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "A",
+        "name": "Align to current truth",
+        "notes": "Only recorded source observations are treated as evidence; evidence role and retrieval limits remain explicit.",
+        "status": "completed"
+      },
+      {
+        "evidence_ids": [
+          "source-a19e59b0900d9daf17c6"
+        ],
+        "id": "Z",
+        "name": "Separate stale state from active evidence",
+        "notes": "Explicitly tagged historical/archive sources: 0. No source records were deleted or rewritten.",
+        "status": "partial"
+      },
+      {
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "I",
+        "name": "Integrate evidence and provenance",
+        "notes": "1 evidence items link to source locators.",
+        "status": "completed"
+      },
+      {
+        "evidence_ids": [],
+        "id": "M",
+        "lanes": [],
+        "name": "Map lanes and owners",
+        "notes": "0 declared lanes; declaration is not proof that parallel agents were run.",
+        "status": "not_assessed"
+      },
+      {
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "U",
+        "name": "Publish canonical research status",
+        "notes": "Canonical status is recorded in this bundle only; repository, package metadata, and public documentation were not modified.",
+        "status": "completed"
+      },
+      {
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "T",
+        "name": "Test and validate evidence",
+        "notes": "Structural claim/citation validation ran; it does not establish semantic entailment or release readiness.",
+        "status": "completed"
+      },
+      {
+        "evidence_ids": [],
+        "id": "H",
+        "name": "Harmonize archive and active truth",
+        "notes": "Historical/archive evidence remains preserved and separately tagged; no archival migration was performed.",
+        "status": "partial"
+      }
+    ],
+    "repo_mutations_performed": false,
+    "sequence": [
+      "A",
+      "Z",
+      "I",
+      "M",
+      "U",
+      "T",
+      "H"
+    ],
+    "status": "partial"
+  },
+  "brief": {
+    "exclusions": [],
+    "hypotheses": {
+      "reported-count": [
+        "The note accurately reports the local dataset row count."
+      ]
+    },
+    "execution_lanes": [],
+    "jurisdictions": [],
+    "objectives": [
+      {
+        "acceptance_criteria": [
+          "The supplied note states three records."
+        ],
+        "applicable": true,
+        "id": "reported-count",
+        "parent_id": null,
+        "question": "What record count does the supplied note report?",
+        "synonyms": [
+          "reported row count"
+        ]
+      }
+    ],
+    "scope": "Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+    "terminology": {},
+    "time_period": null,
+    "title": "Fixture research bundle"
+  },
+  "capability": {
+    "budgets": {
+      "deadline_seconds": 1800,
+      "finalization_reserve_fraction": 0.1,
+      "max_provider_cost": null,
+      "max_results_per_query": 20,
+      "max_retries": 3,
+      "max_search_calls": 40,
+      "max_sources": 60
+    },
+    "fresh_web_research": false,
+    "limitations": [
+      "Citation-chain following is not implemented.",
+      "Dataset profiling supports supplied local CSV and JSONL/NDJSON only.",
+      "Structural verification does not establish semantic entailment or source authority.",
+      "No callable search/fetch provider was supplied; findings use only supplied or local evidence."
+    ],
+    "provider_binding": "unavailable",
+    "retrieval_completed": false,
+    "web_retrieval_available": false
+  },
+  "checkpoint": {
+    "checkpoint_id": "checkpoint-791747cf2dc60ef6e15a",
+    "claims": [
+      {
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "claim-80c29f5a7d40d7c5c127",
+        "kind": "source_observation",
+        "objective_id": "reported-count",
+        "status": "source_grounded",
+        "text": "The supplied note states three records."
+      }
+    ],
+    "completed_query_ids": [],
+    "datasets": [
+      {
+        "dataset_id": "sha256:6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408",
+        "format": "csv",
+        "measurement_status": "profiled_download_or_supplied_file",
+        "not_assessed": [
+          "outliers",
+          "label_quality",
+          "population_coverage",
+          "bias",
+          "leakage",
+          "fitness_for_research_question"
+        ],
+        "observed": {
+          "columns": [
+            "id",
+            "value",
+            "label"
+          ],
+          "count_scope": "records successfully parsed from this file",
+          "duplicate_record_count": 0,
+          "missing_counts": {
+            "id": 0,
+            "label": 0,
+            "value": 1
+          },
+          "record_count": 3,
+          "sampled": false,
+          "value_types": {
+            "id": {
+              "integer": 3
+            },
+            "label": {
+              "string": 3
+            },
+            "value": {
+              "integer": 2
+            }
+          },
+          "types_are_inferred_for_csv": true
+        },
+        "path": "sample.csv",
+        "reported_properties": [],
+        "sha256": "6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408"
+      }
+    ],
+    "evidence": [
+      {
+        "claim_id": "claim-80c29f5a7d40d7c5c127",
+        "denominator": null,
+        "extraction_method": "supplied_text",
+        "geography": null,
+        "id": "evidence-ecaa9e7aa18c21cbd046",
+        "kind": "observation",
+        "locator": {
+          "kind": "extracted_text_line",
+          "label": "fixture:research-note",
+          "line": 1
+        },
+        "notes": "Verbatim extracted text; interpretation is not asserted.",
+        "objective_id": "reported-count",
+        "population": null,
+        "quote": "The supplied note states three records.",
+        "source_ids": [
+          "source-a19e59b0900d9daf17c6"
+        ],
+        "timeframe": null,
+        "unit": null,
+        "value": null
+      }
+    ],
+    "objective_matrix": [
+      {
+        "acceptance_criteria": [
+          "The supplied note states three records."
+        ],
+        "claim_ids": [
+          "claim-80c29f5a7d40d7c5c127"
+        ],
+        "evidence_ids": [
+          "evidence-ecaa9e7aa18c21cbd046"
+        ],
+        "id": "reported-count",
+        "matched_criteria": [
+          "The supplied note states three records."
+        ],
+        "question": "What record count does the supplied note report?",
+        "rationale": "Evidence was found for all specified acceptance criteria.",
+        "status": "answered"
+      }
+    ],
+    "parent_id": null,
+    "payload_sha256": "791747cf2dc60ef6e15a38f254aff5576a77eeeee83d470eae54d53c05be3557",
+    "query_ledger": [
+      {
+        "attempt_number": 1,
+        "attempted": false,
+        "error": "web retrieval unavailable",
+        "execution_id": "execution-542a17382344ef39a4f7",
+        "id": "query-3e163a759963df13",
+        "kind": "supporting",
+        "objective_id": "reported-count",
+        "query": "What record count does the supplied note report? Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+        "result_count": 0,
+        "source_ids": [],
+        "status": "skipped"
+      },
+      {
+        "attempt_number": 1,
+        "attempted": false,
+        "error": "web retrieval unavailable",
+        "execution_id": "execution-c93b0f5696e739a0ee9c",
+        "id": "query-5e5d1a7ac1432ce3",
+        "kind": "supporting",
+        "objective_id": "reported-count",
+        "query": "reported row count Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+        "result_count": 0,
+        "source_ids": [],
+        "status": "skipped"
+      },
+      {
+        "attempt_number": 1,
+        "attempted": false,
+        "error": "web retrieval unavailable",
+        "execution_id": "execution-bf000e1248269308d24a",
+        "id": "query-a67badcd226dd2b3",
+        "kind": "hypothesis",
+        "objective_id": "reported-count",
+        "query": "The note accurately reports the local dataset row count.",
+        "result_count": 0,
+        "source_ids": [],
+        "status": "skipped"
+      },
+      {
+        "attempt_number": 1,
+        "attempted": false,
+        "error": "web retrieval unavailable",
+        "execution_id": "execution-696976f0bea37290d684",
+        "id": "query-5454ecdc4f87b680",
+        "kind": "disconfirmation",
+        "objective_id": "reported-count",
+        "query": "evidence against: The note accurately reports the local dataset row count.",
+        "result_count": 0,
+        "source_ids": [],
+        "status": "skipped"
+      },
+      {
+        "attempt_number": 1,
+        "attempted": false,
+        "error": "web retrieval unavailable",
+        "execution_id": "execution-9ea5c0fe085682e09d7b",
+        "id": "query-80e71d2ae37e61b5",
+        "kind": "disconfirmation",
+        "objective_id": "reported-count",
+        "query": "What record count does the supplied note report? contrary evidence limitations alternative explanations",
+        "result_count": 0,
+        "source_ids": [],
+        "status": "skipped"
+      }
+    ],
+    "research_id": "research-350cefd1a74dc6fb4786",
+    "sources": [
+      {
+        "access_constraints": null,
+        "access_error": null,
+        "access_outcome": "supplied",
+        "author": null,
+        "browser_diagnostics": {
+          "inspected": false,
+          "reason": "No browser-rendered webpage was inspected for this source."
+        },
+        "canonical_url": null,
+        "content": null,
+        "content_retained": false,
+        "content_sha256": "bec1bd151d6386c16d335892aa8a272b37bb0d3d7f2db8e5779f9610372aefb3",
+        "content_type": null,
+        "credibility_rationale": null,
+        "extraction_method": "supplied_text",
+        "evidence_role": "unknown",
+        "final_url": null,
+        "id": "source-a19e59b0900d9daf17c6",
+        "license": null,
+        "limitations": [
+          "Credibility was not independently assessed"
+        ],
+        "locator": "fixture:research-note",
+        "objective_ids": [],
+        "published_at": null,
+        "publisher": "Local test fixture",
+        "query_ids": [],
+        "relationships": [],
+        "requested_url": null,
+        "retrieval_provenance": {
+          "binding": "supplied_input",
+          "live_binding_verified": false
+        },
+        "retrieved_at": null,
+        "source_type": "supplied",
+        "title": "Fixture dataset note"
+      }
+    ],
+    "status": "incomplete"
+  },
+  "claims": [
+    {
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "claim-80c29f5a7d40d7c5c127",
+      "kind": "source_observation",
+      "objective_id": "reported-count",
+      "status": "source_grounded",
+      "text": "The supplied note states three records."
+    }
+  ],
+  "contradictions": [],
+  "datasets": [
+    {
+      "dataset_id": "sha256:6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408",
+      "format": "csv",
+      "measurement_status": "profiled_download_or_supplied_file",
+      "not_assessed": [
+        "outliers",
+        "label_quality",
+        "population_coverage",
+        "bias",
+        "leakage",
+        "fitness_for_research_question"
+      ],
+      "observed": {
+        "columns": [
+          "id",
+          "value",
+          "label"
+        ],
+        "count_scope": "records successfully parsed from this file",
+        "duplicate_record_count": 0,
+        "missing_counts": {
+          "id": 0,
+          "label": 0,
+          "value": 1
+        },
+        "record_count": 3,
+        "sampled": false,
+        "value_types": {
+          "id": {
+            "integer": 3
+          },
+          "label": {
+            "string": 3
+          },
+          "value": {
+            "integer": 2
+          }
+        },
+        "types_are_inferred_for_csv": true
+      },
+      "path": "sample.csv",
+      "reported_properties": [],
+      "sha256": "6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408"
+    }
+  ],
+  "evidence": [
+    {
+      "claim_id": "claim-80c29f5a7d40d7c5c127",
+      "denominator": null,
+      "extraction_method": "supplied_text",
+      "geography": null,
+      "id": "evidence-ecaa9e7aa18c21cbd046",
+      "kind": "observation",
+      "locator": {
+        "kind": "extracted_text_line",
+        "label": "fixture:research-note",
+        "line": 1
+      },
+      "notes": "Verbatim extracted text; interpretation is not asserted.",
+      "objective_id": "reported-count",
+      "population": null,
+      "quote": "The supplied note states three records.",
+      "source_ids": [
+        "source-a19e59b0900d9daf17c6"
+      ],
+      "timeframe": null,
+      "unit": null,
+      "value": null
+    }
+  ],
+  "objective_matrix": [
+    {
+      "acceptance_criteria": [
+        "The supplied note states three records."
+      ],
+      "claim_ids": [
+        "claim-80c29f5a7d40d7c5c127"
+      ],
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "reported-count",
+      "matched_criteria": [
+        "The supplied note states three records."
+      ],
+      "question": "What record count does the supplied note report?",
+      "rationale": "Evidence was found for all specified acceptance criteria.",
+      "status": "answered"
+    }
+  ],
+  "query_ledger": [
+    {
+      "attempt_number": 1,
+      "attempted": false,
+      "error": "web retrieval unavailable",
+      "execution_id": "execution-542a17382344ef39a4f7",
+      "id": "query-3e163a759963df13",
+      "kind": "supporting",
+      "objective_id": "reported-count",
+      "query": "What record count does the supplied note report? Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+      "result_count": 0,
+      "source_ids": [],
+      "status": "skipped"
+    },
+    {
+      "attempt_number": 1,
+      "attempted": false,
+      "error": "web retrieval unavailable",
+      "execution_id": "execution-c93b0f5696e739a0ee9c",
+      "id": "query-5e5d1a7ac1432ce3",
+      "kind": "supporting",
+      "objective_id": "reported-count",
+      "query": "reported row count Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+      "result_count": 0,
+      "source_ids": [],
+      "status": "skipped"
+    },
+    {
+      "attempt_number": 1,
+      "attempted": false,
+      "error": "web retrieval unavailable",
+      "execution_id": "execution-bf000e1248269308d24a",
+      "id": "query-a67badcd226dd2b3",
+      "kind": "hypothesis",
+      "objective_id": "reported-count",
+      "query": "The note accurately reports the local dataset row count.",
+      "result_count": 0,
+      "source_ids": [],
+      "status": "skipped"
+    },
+    {
+      "attempt_number": 1,
+      "attempted": false,
+      "error": "web retrieval unavailable",
+      "execution_id": "execution-696976f0bea37290d684",
+      "id": "query-5454ecdc4f87b680",
+      "kind": "disconfirmation",
+      "objective_id": "reported-count",
+      "query": "evidence against: The note accurately reports the local dataset row count.",
+      "result_count": 0,
+      "source_ids": [],
+      "status": "skipped"
+    },
+    {
+      "attempt_number": 1,
+      "attempted": false,
+      "error": "web retrieval unavailable",
+      "execution_id": "execution-9ea5c0fe085682e09d7b",
+      "id": "query-80e71d2ae37e61b5",
+      "kind": "disconfirmation",
+      "objective_id": "reported-count",
+      "query": "What record count does the supplied note report? contrary evidence limitations alternative explanations",
+      "result_count": 0,
+      "source_ids": [],
+      "status": "skipped"
+    }
+  ],
+  "report": "# Fixture research bundle\n\n## Capability and method\n- Fresh web retrieval: not verified\n- Sources recorded: 1; evidence items: 1.\n- Extracted quotations are observations, not independently established conclusions.\n- Limitation: Citation-chain following is not implemented.\n- Limitation: Dataset profiling supports supplied local CSV and JSONL/NDJSON only.\n- Limitation: Structural verification does not establish semantic entailment or source authority.\n- Limitation: No callable search/fetch provider was supplied; findings use only supplied or local evidence.\n\n## Objective matrix\n- **reported-count — answered**: Evidence was found for all specified acceptance criteria.\n  - Evidence: `evidence-ecaa9e7aa18c21cbd046`\n\n## AZIMUTH assessment\n- Sequence completion: **partial**.\n- This research bundle is incomplete based only on its recorded evidence; it is not a repository release-readiness certification.\n- **A — Align to current truth: completed**. Only recorded source observations are treated as evidence; evidence role and retrieval limits remain explicit.\n- **Z — Separate stale state from active evidence: partial**. Explicitly tagged historical/archive sources: 0. No source records were deleted or rewritten.\n- **I — Integrate evidence and provenance: completed**. 1 evidence items link to source locators.\n- **M — Map lanes and owners: not_assessed**. 0 declared lanes; declaration is not proof that parallel agents were run.\n- **U — Publish canonical research status: completed**. Canonical status is recorded in this bundle only; repository, package metadata, and public documentation were not modified.\n- **T — Test and validate evidence: completed**. Structural claim/citation validation ran; it does not establish semantic entailment or release readiness.\n- **H — Harmonize archive and active truth: partial**. Historical/archive evidence remains preserved and separately tagged; no archival migration was performed.\n\n## Evidence\n- `evidence-ecaa9e7aa18c21cbd046` — The supplied note states three records. (source `source-a19e59b0900d9daf17c6`, fixture:research-note, extracted_text_line 1)\n\n## Dataset profiles\n- `sha256:6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408`: 3 parsed records; SHA-256 `6c1499058e5240723404b03f137a07408c04bb76d88e20aa925d5fb13a0d4408`.\n\n## Interpretation and recommendations\nNo additional causal or normative interpretation is asserted by the deterministic pipeline.\n",
+  "research_id": "research-350cefd1a74dc6fb4786",
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "access_constraints": null,
+      "access_error": null,
+      "access_outcome": "supplied",
+      "author": null,
+      "browser_diagnostics": {
+        "inspected": false,
+        "reason": "No browser-rendered webpage was inspected for this source."
+      },
+      "canonical_url": null,
+      "content": null,
+      "content_retained": false,
+      "content_sha256": "bec1bd151d6386c16d335892aa8a272b37bb0d3d7f2db8e5779f9610372aefb3",
+      "content_type": null,
+      "credibility_rationale": null,
+      "extraction_method": "supplied_text",
+      "evidence_role": "unknown",
+      "final_url": null,
+      "id": "source-a19e59b0900d9daf17c6",
+      "license": null,
+      "limitations": [
+        "Credibility was not independently assessed"
+      ],
+      "locator": "fixture:research-note",
+      "objective_ids": [],
+      "published_at": null,
+      "publisher": "Local test fixture",
+      "query_ids": [],
+      "relationships": [],
+      "requested_url": null,
+      "retrieval_provenance": {
+        "binding": "supplied_input",
+        "live_binding_verified": false
+      },
+      "retrieved_at": null,
+      "source_type": "supplied",
+      "title": "Fixture dataset note"
+    }
+  ],
+  "status": "incomplete",
+  "verification": {
+    "citations_resolved": 1,
+    "claims_checked": 1,
+    "findings": [],
+    "limitations": [
+      "Semantic entailment, source authority, retractions, and citation-chain depth require expert or dedicated-provider review."
+    ],
+    "mode": "independent_read_only_structural_verification",
+    "objectives_checked": 1
+  }
+}

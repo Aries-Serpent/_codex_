@@ -11,8 +11,9 @@
 1. [Documentation Link Fixer](#documentation-link-fixer)
 2. [Test Artifact Guarantee System](#test-artifact-guarantee-system)
 3. [Dependabot PR Consolidator](#dependabot-pr-consolidator)
-4. [Future Utilities (Planned)](#future-utilities-planned)
-5. [Implementation Guidelines](#implementation-guidelines)
+4. [Evidence-Grounded Deep Research Pipeline](#evidence-grounded-deep-research-pipeline)
+5. [Future Utilities (Planned)](#future-utilities-planned)
+6. [Implementation Guidelines](#implementation-guidelines)
 
 ---
 
@@ -185,6 +186,54 @@ pytest tests/ci/test_dependabot_consolidator.py -v
 - [ ] Expose configurable excluded labels via CLI argument.
 - [ ] Add retry/back-off for transient GitHub API failures.
 - [ ] Support reuse of an existing consolidation branch without force-push.
+
+---
+
+## Evidence-Grounded Deep Research Pipeline
+
+**Created:** 2026-10-05 (`AGENT-DEEP-RESEARCH-001`)
+**Agent:** Evidence-Grounded Deep Research Analysis Agent
+**Status:** ✅ Implemented; live host-tool wiring requires explicit runtime binding
+
+### Description
+Dependency-light research bundle builder with validated objective hierarchies and lane dependencies, injected search/fetch interfaces, DNS-pinned HTTPS fetching, bounded retries and budgets, source/evidence provenance, local dataset profiling, structural verification, contradiction tracking, resumable digest-checked checkpoints, ordered AZIMUTH assessment, and content-addressed topic-keyed result storage with indexes.
+
+### Locations
+```
+src/codex/deep_research/
+configs/schemas/deep_research_bundle.schema.json
+tests/deep_research/
+docs/deep_research/README.md
+examples/deep_research/
+.github/agents/deep-research-analysis-agent.agent.md
+```
+
+### Usage
+```bash
+python -m codex.deep_research \
+  --brief examples/deep_research/brief.json \
+  --sources examples/deep_research/sources.json \
+  --dataset examples/deep_research/sample.csv \
+  --output /tmp/deep-research-bundle
+```
+
+### Evidence and safety contract
+- The CLI is offline and labels results as not fresh web research.
+- AZIMUTH follows A-Z-I-M-U-T-H and separates phase assessment from repository mutation, archive migration, release readiness, and actual parallel-agent execution.
+- The synthetic release-readiness fixture tests package/artifact integrity, docs/status drift, archive evidence, deployment, and publication gates without asserting live repository findings.
+- Omitting `--output` stores results by safe topic slug with immutable content-addressed runs, per-topic indexes, and a root topic index.
+- The EV ownership-cost brief requires verified current model-year/trim evidence, explicit location and cost assumptions, recall/warranty scope, and 5-/10-year sensitivity; no unsupported ranking is generated.
+- A host must inject an actual callable search provider. The built-in fetch adapter pins public DNS results, validates redirect targets before connecting, and bounds response size.
+- An injected fetch callback remains disabled unless its redirect/DNS protections are independently verified.
+- Browser-rendered pages are checked with `browser_console_messages` and `browser_network_requests`; `browser_handle_dialog` is used only for an observed dialog and dismisses it by default.
+- Raw source text is omitted by default; credential-like excerpts are excluded and sensitive URL parameters are redacted.
+- CSV/JSONL profiles contain measured counts and missingness; unassessed bias, authority, entailment, PDF parsing, and citation-chain following remain explicit limitations.
+
+### Tests
+```bash
+PYTHONPATH=src pytest -q tests/deep_research
+python scripts/validate_agent_specs.py --strict
+```
 
 ---
 
@@ -1099,3 +1148,42 @@ codex knowledge sync-mermaid-map \
 - node_count / edge_count extracted accurately
 - Coherence score computed and returned in JSON payload
 - Searchable NDJSON datablob emitted for retrieval pipelines
+
+---
+
+## Copilot Runtime Resource Profile
+
+**Created:** 2026-10-05
+**Agent:** `ci-failure-resolution-agent` + `explore`
+**Status:** ✅ Implemented and tested
+
+### Description
+Probes Linux memory, CPU quota, and process headroom before Copilot setup, then selects bounded or serialized concurrency. Critical resource limits select a larger runner only when `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE` names a configured runner; otherwise the run stays serialized and reports the escalation requirement.
+
+### Locations
+```
+scripts/ci/agent_resource_profile.py
+.github/workflows/copilot-setup-steps.yml
+tests/ci/test_agent_resource_profile.py
+scripts/ci/phase_9_3_concurrent_executor.py
+tests/ci/test_concurrent_executor_limit.py
+```
+
+### Usage
+```bash
+python3 scripts/ci/agent_resource_profile.py \
+  --github-output "$GITHUB_OUTPUT" \
+  --summary "$GITHUB_STEP_SUMMARY" \
+  --current-runner-profile "${COPILOT_RUNNER_PROFILE:-ubuntu-latest-m}" \
+  --high-headroom-runner-profile "${COPILOT_HIGH_HEADROOM_RUNNER_PROFILE:-}"
+```
+
+### Features
+- Reads available memory from `/proc` and cgroup v1/v2 limits, CPU affinity/quota, and process slots.
+- Fails closed to serialized work when resource telemetry is missing.
+- Limits dependency graph, npm, native build, Rust, Go, and Node worker pressure.
+- Makes the dependency-graph executor honor `COPILOT_AGENT_WORKERS` and per-task parallel-agent limits.
+- Selects a configured larger runner only under critical headroom.
+
+### Validation
+`python -m pytest -q tests/ci/test_concurrent_executor_limit.py tests/ci/test_agent_resource_profile.py`

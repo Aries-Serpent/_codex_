@@ -111,7 +111,13 @@ def _strip_shadow_roots() -> None:
         except (OSError, RuntimeError):
             filtered.append(entry)
             continue
+        # Preserve the repo root on sys.path so packages under ``scripts`` and
+        # other legitimate top-level modules remain importable when launched from
+        # a temporary working directory with an explicit PYTHONPATH.  The canonical
+        # src packages are still preferred because they are inserted at the front
+        # of sys.path later in this bootstrap.
         if resolved == repo_root:
+            filtered.append(entry)
             continue
         if any(resolved == root or resolved.is_relative_to(root) for root in shadow_roots):
             continue

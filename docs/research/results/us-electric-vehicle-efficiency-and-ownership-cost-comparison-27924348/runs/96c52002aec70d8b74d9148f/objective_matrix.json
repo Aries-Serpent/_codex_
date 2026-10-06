@@ -1,0 +1,152 @@
+[
+  {
+    "acceptance_criteria": [
+      "primary-source model-year and trim-specific EPA MPGe and range",
+      "wheel configuration and test-cycle context"
+    ],
+    "claim_ids": [
+      "claim-7cd6530e11db51ac2a4b",
+      "claim-a69707394905cf77a488",
+      "claim-3db8c1a8b380ecc7b10c"
+    ],
+    "evidence_ids": [
+      "evidence-5efa250cb9cc1607e8f6",
+      "evidence-e15ca30efc22fc873f3c",
+      "evidence-0a96d29a1091e37c6b7e"
+    ],
+    "id": "efficiency",
+    "matched_criteria": [],
+    "question": "Which 2025-2026 U.S. EV model and trim configurations have the highest verified EPA efficiency and useful range?",
+    "rationale": "The only efficiency figures are an unverified search-result lead; no primary EPA record matches model-year, trim, wheel configuration, or test-cycle criteria.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "dated price evidence by model and trim",
+      "eligibility conditions for any included incentive"
+    ],
+    "claim_ids": [
+      "claim-bcfb5b39ae40a12e4781",
+      "claim-cf2f64f18d0662b9fae8",
+      "claim-ab4a316c12bd191e139f"
+    ],
+    "evidence_ids": [
+      "evidence-3e67d6f3d61069c56a9e",
+      "evidence-2331f8d5371ac24d518e",
+      "evidence-76105db4fd4d214b25c5"
+    ],
+    "id": "purchase",
+    "matched_criteria": [],
+    "question": "What are the comparable transaction-price ranges and verified incentives for each model/trim and buyer scenario?",
+    "rationale": "Linked records are an efficiency search lead, an unretrieved generic TCO-calculator description, and a recall lookup; no dated model/trim price or incentive eligibility is established.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "electricity price and geography",
+      "annual miles and charging-loss assumptions",
+      "home and public charging cost scenarios"
+    ],
+    "claim_ids": [
+      "claim-c3bc9e03410bbf07a214",
+      "claim-fc5b71aba14764d0ae4f",
+      "claim-9d834b4220e83c2b6518"
+    ],
+    "evidence_ids": [
+      "evidence-1b68975743ae378e951d",
+      "evidence-a60fc8af3f7b0fd5b20e",
+      "evidence-baebe09005bf6132361e"
+    ],
+    "id": "energy",
+    "matched_criteria": [],
+    "question": "What are the 5- and 10-year charging costs under stated annual mileage, local electricity prices, and home/public charging mixes?",
+    "rationale": "The linked records provide no geographic electricity price, annual-mileage and charging-loss inputs, or home/public charging-cost scenarios.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "maintenance or repair evidence tied to model/year",
+      "source limitations and observed-versus-projected distinction"
+    ],
+    "claim_ids": [
+      "claim-9d030bbfd4f5d78ee64f",
+      "claim-c69e4035aadec9e3854c",
+      "claim-da4f81cad2531af2a9b7"
+    ],
+    "evidence_ids": [
+      "evidence-68b5a7ffc548a6088593",
+      "evidence-f57862c1ee17cf7f5809",
+      "evidence-5e07783f5cfb1e76e5d6"
+    ],
+    "id": "maintenance",
+    "matched_criteria": [],
+    "question": "What scheduled maintenance, common repairs, and model-year-specific known issues should buyers expect?",
+    "rationale": "The linked records provide no model/year-specific maintenance or repair evidence and do not distinguish observed costs from projections.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "recall evidence and model-year applicability",
+      "battery and vehicle warranty terms"
+    ],
+    "claim_ids": [
+      "claim-045dfc29c6b9de38769b",
+      "claim-8e70d4a45d92cc92641e",
+      "claim-e2155cdfc95e2ae69dd6"
+    ],
+    "evidence_ids": [
+      "evidence-0750a7471e9c85ff4b18",
+      "evidence-788c87d9b9a167b8f481",
+      "evidence-69a57948fc3b38654938"
+    ],
+    "id": "recalls-warranty",
+    "matched_criteria": [],
+    "question": "What recalls, warranty terms, and battery coverage apply to the compared model years and trims?",
+    "rationale": "The NHTSA record is only a lookup lead with no retrieved model-year result; no applicable vehicle or battery warranty terms are established.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "purchase price and incentives",
+      "energy and charging costs",
+      "maintenance, insurance, taxes/fees, depreciation, and financing assumptions",
+      "sensitivity analysis and unresolved inputs"
+    ],
+    "claim_ids": [
+      "claim-8f56b56150e73e8d67a6",
+      "claim-e05b5e966bae0460ff60",
+      "claim-dec34f9410c67be95d01"
+    ],
+    "evidence_ids": [
+      "evidence-c0b8ecae7ad4dd0bb962",
+      "evidence-ec5cd6f6b3a9f2b38d4b",
+      "evidence-93b8cce49c7cb237db34"
+    ],
+    "id": "total-cost",
+    "matched_criteria": [],
+    "question": "What is the estimated 5- and 10-year total ownership cost, with assumptions and sensitivity ranges, for each compared EV?",
+    "rationale": "No linked evidence establishes purchase/incentives, scenario-based energy costs, model-specific maintenance, ownership assumptions, or sensitivity ranges.",
+    "status": "unresolved"
+  },
+  {
+    "acceptance_criteria": [
+      "separate rankings by buyer priority",
+      "explicit counterevidence, uncertainties, and unresolved objectives"
+    ],
+    "claim_ids": [
+      "claim-bdd6097799371c54550b",
+      "claim-baaa00c35e94528ac9eb",
+      "claim-a281d41f2919e7bbdae5"
+    ],
+    "evidence_ids": [
+      "evidence-d4f7aebbb61438bf6217",
+      "evidence-8088c88b7181589ed671",
+      "evidence-ce01570298ca44493eda"
+    ],
+    "id": "recommendation",
+    "matched_criteria": [],
+    "question": "Which EVs are conditionally best for efficiency, affordability, low ownership cost, and reliability, and what evidence remains insufficient?",
+    "rationale": "The linked preliminary leads do not support buyer-priority rankings or a comparative recommendation; counterevidence, uncertainty, and unresolved inputs remain unassessed.",
+    "status": "unresolved"
+  }
+]

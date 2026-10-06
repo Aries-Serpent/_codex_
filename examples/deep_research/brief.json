@@ -1,0 +1,26 @@
+{
+  "title": "Fixture research bundle",
+  "scope": "Validate source-grounded reporting and distinguish published text from local dataset measurements.",
+  "exclusions": [],
+  "jurisdictions": [],
+  "time_period": null,
+  "terminology": {},
+  "hypotheses": {
+    "reported-count": [
+      "The note accurately reports the local dataset row count."
+    ]
+  },
+  "objectives": [
+    {
+      "id": "reported-count",
+      "question": "What record count does the supplied note report?",
+      "acceptance_criteria": [
+        "The supplied note states three records."
+      ],
+      "synonyms": [
+        "reported row count"
+      ],
+      "applicable": true
+    }
+  ]
+}

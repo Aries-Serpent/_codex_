@@ -1,7 +1,7 @@
-version: 2.0.0
-last_updated: '2026-09-04T18:00:00Z'
-total_agents: 118
-active_agents: 99
+version: 2.0.1
+last_updated: '2026-10-05T05:00:00Z'
+total_agents: 119
+active_agents: 100
 archived_agents: 19
 enforcement_tier: MIXED
 execution_contract:
@@ -73,6 +73,58 @@ execution_contract:
     completion_gate: final_merge_gate_passed
     description: Final readiness lane that accepts only converged evidence.
 agents:
+- id: deep-research-analysis-agent
+  name: Evidence-Grounded Deep Research Analysis Agent
+  version: 1.0.0
+  directory: .github/agents
+  file: .github/agents/deep-research-analysis-agent.agent.md
+  status: active
+  maturity: experimental
+  has_prompts: true
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: research
+  subcategory: evidence_grounded_analysis
+  purpose: Conduct bounded research and publish auditable source-grounded findings.
+  description: >-
+    Runs the deep research package against supplied evidence or verified injected
+    host search/fetch callables, profiles local datasets, tracks claim provenance,
+    challenges conclusions, and exports resumable research bundles. Does not claim
+    fresh web retrieval when the runtime provider is unavailable or unverified.
+  capabilities:
+  - research_execution
+  - source_discovery
+  - evidence_provenance
+  - dataset_profiling
+  - adversarial_verification
+  - resumable_bundles
+  capability_tags:
+  - deep-research
+  - evidence-grounded
+  - source-provenance
+  - dataset-analysis
+  - adversarial-verification
+  integration_points:
+  - src/codex/deep_research/
+  - configs/schemas/deep_research_bundle.schema.json
+  - docs/deep_research/README.md
+  tools:
+  - python -m codex.deep_research
+  - web_search
+  - web_fetch
+  - browser_console_messages
+  - browser_network_requests
+  - browser_handle_dialog
+  handler: src/codex/deep_research/cli.py
+  priority: high
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - agent-orchestrator
+  - recon-scout-agent
+  role: specialist
+  selectable: true
 - id: offline-zip-recovery-agent
   name: Offline ZIP Recovery Agent
   version: 1.0.0

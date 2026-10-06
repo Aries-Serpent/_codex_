@@ -1,0 +1,113 @@
+{
+  "title": "Synthetic release-readiness evidence exercise",
+  "scope": "Fixture-only assessment of package, documentation, status, archive, artifact, and deployment evidence.",
+  "exclusions": [
+    "Do not infer that these fixture findings describe the actual repository."
+  ],
+  "jurisdictions": [],
+  "time_period": "fixture scenario",
+  "terminology": {
+    "distribution artifact": "built package artifact"
+  },
+  "hypotheses": {
+    "package": [
+      "The built package artifact matches current package metadata."
+    ],
+    "publication": [
+      "The available evidence supports publication readiness."
+    ]
+  },
+  "execution_lanes": [
+    {
+      "id": "P1",
+      "owner": "package-integrity assessment",
+      "mode": "parallel",
+      "depends_on": [],
+      "scope": "Compare current package metadata, built artifact versions, and reproducibility evidence.",
+      "evidence_contract": "Versioned package metadata and independently acquired build manifest with hashes.",
+      "completion_gate": "All artifact versions match metadata and repeat builds have verified identical digests."
+    },
+    {
+      "id": "P2",
+      "owner": "documentation-and-status assessment",
+      "mode": "parallel",
+      "depends_on": [],
+      "scope": "Compare live documentation and active status narratives to current source and release evidence.",
+      "evidence_contract": "Timestamped source files and inspected live documentation with browser diagnostics.",
+      "completion_gate": "Docs and active status agree with package truth and validation evidence."
+    },
+    {
+      "id": "S1",
+      "owner": "release-evidence synthesis",
+      "mode": "dependent",
+      "depends_on": ["P1", "P2"],
+      "scope": "Assess archive role, deployment evidence, contradictions, and publication gate after P1 and P2.",
+      "evidence_contract": "Linked evidence and unresolved-issue matrix from upstream lanes.",
+      "completion_gate": "Publication recommendation is supported by all applicable objectives and no unresolved blockers."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "package",
+      "question": "Do current package metadata and built artifact versions match?",
+      "acceptance_criteria": [
+        "package metadata",
+        "built artifact"
+      ],
+      "synonyms": [
+        "distribution package version"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "documentation",
+      "question": "Does the live documentation site match the source package version?",
+      "acceptance_criteria": [],
+      "synonyms": [
+        "GitHub Pages documentation version"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "status",
+      "question": "Does the active status narrative reflect current validation evidence?",
+      "acceptance_criteria": [],
+      "synonyms": [],
+      "applicable": true
+    },
+    {
+      "id": "archive",
+      "question": "Does historical archive evidence establish the current release state?",
+      "acceptance_criteria": [],
+      "synonyms": [],
+      "applicable": true
+    },
+    {
+      "id": "artifacts",
+      "question": "Are package distribution builds reproducible?",
+      "acceptance_criteria": [
+        "different SHA-256 checksums"
+      ],
+      "synonyms": [
+        "repeatable package build output"
+      ],
+      "applicable": true
+    },
+    {
+      "id": "deployment",
+      "question": "Is production deployment verification evidenced?",
+      "acceptance_criteria": [],
+      "synonyms": [],
+      "applicable": true
+    },
+    {
+      "id": "publication",
+      "question": "What publication readiness decision is supported by the evidence?",
+      "acceptance_criteria": [],
+      "synonyms": [
+        "release gate status"
+      ],
+      "applicable": true
+    }
+  ]
+}
