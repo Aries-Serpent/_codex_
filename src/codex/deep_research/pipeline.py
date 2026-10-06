@@ -343,9 +343,13 @@ def run_research(
 
 
 def validate_checkpoint(checkpoint: dict[str, Any]) -> None:
+    if not isinstance(checkpoint, dict):
+        raise ValueError("Checkpoint must be an object")
     expected = checkpoint.get("payload_sha256")
     if not isinstance(expected, str):
         raise ValueError("Checkpoint has no payload digest")
+    if not checkpoint.get("research_id"):
+        raise ValueError("Checkpoint is missing research_id")
     payload = {
         key: value
         for key, value in checkpoint.items()

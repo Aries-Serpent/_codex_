@@ -255,6 +255,65 @@ def test_profile_dataset_keeps_jsonl_string_values_as_strings(tmp_path: Path) ->
     assert profile["observed"]["value_types"]["flag"] == {"string": 2}
 
 
+def test_profile_dataset_rejects_bad_utf8_blank_headers_and_row_overflow(tmp_path: Path) -> None:
+    invalid_utf8 = tmp_path / "broken.csv"
+    invalid_utf8.write_bytes(b"name,age\nAlice,\xff\n")
+    with pytest.raises(ValueError, match="UTF-8"):
+        profile_dataset(invalid_utf8)
+
+    blank_headers = tmp_path / "blank_headers.csv"
+    blank_headers.write_text("id,,value\n1,2,3\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="blank header"):
+        profile_dataset(blank_headers)
+
+    too_many = tmp_path / "wide.csv"
+    too_many.write_text("id,name\n1,Alice,extra\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="too many columns"):
+        profile_dataset(too_many)
+
+
+def test_validate_checkpoint_rejects_missing_or_tampered_payload_metadata() -> None:
+    checkpoint = {
+        "research_id": "research-test",
+        "checkpoint_id": "checkpoint-test",
+        "payload_sha256": hashlib.sha256(b"{}" if False else b"stub").hexdigest(),
+        "query_ledger": [],
+        "sources": [],
+        "evidence": [],
+        "claims": [],
+        "datasets": [],
+        "objective_matrix": [],
+        "status": "incomplete",
+    }
+    with pytest.raises(ValueError, match="payload digest|contents"):
+        validate_checkpoint(checkpoint)
+
+    payload = {
+        "research_id": "research-test",
+        "query_ledger": [],
+        "sources": [],
+        "evidence": [],
+        "claims": [],
+        "datasets": [],
+        "objective_matrix": [],
+        "status": "incomplete",
+    }
+    digest = hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    valid = {"checkpoint_id": "cp-1", "payload_sha256": digest, **payload}
+    valid["research_id"] = "research-test"
+    validate_checkpoint(valid)
+
+    tampered = dict(valid)
+    tampered["status"] = "complete"
+    with pytest.raises(ValueError, match="does not match"):
+        validate_checkpoint(tampered)
+
+    missing_digest = dict(valid)
+    missing_digest.pop("payload_sha256")
+    with pytest.raises(ValueError, match="payload digest"):
+        validate_checkpoint(missing_digest)
+
+
 def test_secret_like_brief_is_rejected_and_sensitive_source_lines_are_omitted() -> None:
     with pytest.raises(ValueError, match="secret-like"):
         ResearchBrief.from_dict(

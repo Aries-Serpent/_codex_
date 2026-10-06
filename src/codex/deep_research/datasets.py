@@ -74,29 +74,40 @@ def profile_dataset(
     }
 
 
+def _decode_text(raw: bytes, *, label: str) -> str:
+    try:
+        return raw.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label} is not valid UTF-8") from exc
+
+
 def _read_csv(raw: bytes, max_records: int) -> tuple[list[dict[str, Any]], list[str]]:
-    text = raw.decode("utf-8-sig")
+    text = _decode_text(raw, label="CSV dataset")
     reader = csv.DictReader(io.StringIO(text, newline=""))
     if not reader.fieldnames:
         raise ValueError("CSV dataset must include a header row")
-    fieldnames = list(reader.fieldnames)
+    fieldnames = [str(name).strip() if name is not None else "" for name in reader.fieldnames]
+    if any(not name for name in fieldnames):
+        raise ValueError("CSV dataset contains a blank header name")
     duplicates = [name for name, count in Counter(fieldnames).items() if count > 1]
     if duplicates:
         raise ValueError(f"CSV dataset contains duplicate headers: {', '.join(duplicates)}")
+    reader.fieldnames = fieldnames
     records: list[dict[str, Any]] = []
     for row in reader:
         if len(records) >= max_records:
             raise ValueError(f"Dataset exceeds the {max_records}-record profile limit")
         if None in row:
             raise ValueError("CSV dataset contains a row with too many columns")
-        records.append(dict(row))
+        records.append({str(key).strip(): value for key, value in row.items()})
     return records, fieldnames
 
 
 def _read_jsonl(raw: bytes, max_records: int) -> tuple[list[dict[str, Any]], list[str]]:
     records: list[dict[str, Any]] = []
     columns: set[str] = set()
-    for line_number, line in enumerate(raw.decode("utf-8-sig").splitlines(), start=1):
+    text = _decode_text(raw, label="JSONL dataset")
+    for line_number, line in enumerate(text.splitlines(), start=1):
         if not line.strip():
             continue
         try:
