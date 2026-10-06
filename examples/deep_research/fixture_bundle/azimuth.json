@@ -1,0 +1,78 @@
+{
+  "archived_source_ids": [],
+  "canonical_truth_statement": "This research bundle is incomplete based only on its recorded evidence; it is not a repository release-readiness certification.",
+  "model": "AZIMUTH",
+  "phases": [
+    {
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "A",
+      "name": "Align to current truth",
+      "notes": "Only recorded source observations are treated as evidence; evidence role and retrieval limits remain explicit.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "source-a19e59b0900d9daf17c6"
+      ],
+      "id": "Z",
+      "name": "Separate stale state from active evidence",
+      "notes": "Explicitly tagged historical/archive sources: 0. No source records were deleted or rewritten.",
+      "status": "partial"
+    },
+    {
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "I",
+      "name": "Integrate evidence and provenance",
+      "notes": "1 evidence items link to source locators.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [],
+      "id": "M",
+      "lanes": [],
+      "name": "Map lanes and owners",
+      "notes": "0 declared lanes; declaration is not proof that parallel agents were run.",
+      "status": "not_assessed"
+    },
+    {
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "U",
+      "name": "Publish canonical research status",
+      "notes": "Canonical status is recorded in this bundle only; repository, package metadata, and public documentation were not modified.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [
+        "evidence-ecaa9e7aa18c21cbd046"
+      ],
+      "id": "T",
+      "name": "Test and validate evidence",
+      "notes": "Structural claim/citation validation ran; it does not establish semantic entailment or release readiness.",
+      "status": "completed"
+    },
+    {
+      "evidence_ids": [],
+      "id": "H",
+      "name": "Harmonize archive and active truth",
+      "notes": "Historical/archive evidence remains preserved and separately tagged; no archival migration was performed.",
+      "status": "partial"
+    }
+  ],
+  "repo_mutations_performed": false,
+  "sequence": [
+    "A",
+    "Z",
+    "I",
+    "M",
+    "U",
+    "T",
+    "H"
+  ],
+  "status": "partial"
+}

@@ -1,0 +1,10 @@
+{
+  "citations_resolved": 21,
+  "claims_checked": 21,
+  "findings": [],
+  "limitations": [
+    "Semantic entailment, source authority, retractions, and citation-chain depth require expert or dedicated-provider review."
+  ],
+  "mode": "independent_read_only_structural_verification",
+  "objectives_checked": 7
+}

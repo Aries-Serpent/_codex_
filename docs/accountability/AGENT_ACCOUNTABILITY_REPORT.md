@@ -1,3 +1,86 @@
+## Session: 2026-10-05T16:37Z — PR #5669 review-thread remediation
+
+**Objective:** Resolve the actionable review findings on PR #5669 through independent implementation lanes, preserve research provenance, and report the setup-workflow authorization decision accurately.
+
+**Status:** ⚠️ Code and artifact findings addressed; @mbaetiong approved retaining the protected setup-workflow wiring, with a CCA compatibility caveat recorded.
+
+**Actions:**
+1. Restored `.codex/session_startup_packet.json` to the tracked timestamp baseline.
+2. Hardened research fetch-hash verification, CLI source-entry validation, and storage artifact-name validation, publication ordering, and UTC `Z` timestamps.
+3. Rebuilt phase 9.3 dependency edges from declared dependencies and added an `execute()` concurrency/dependency regression test.
+4. Published a corrected content-addressed EV run (`96c52002aec70d8b74d9148f`); marked the earlier run superseded, refreshed both indexes, and set all seven unmatched objectives to unresolved.
+5. Regenerated the deep-research fixture and synchronized AZIMUTH, execution-lane, source-role, checkpoint, and report artifacts.
+6. Recorded @mbaetiong's approval to retain the resource-profile job/wiring. The workflow has exactly one job named `copilot-setup-steps`, but its `needs` and job-level `env` wiring are not in the documented CCA customization list; CCA-specific output propagation is therefore not guaranteed by the published contract. No further workflow edits were made.
+
+**Validation:**
+- Research I/O lane: 55 focused tests and three direct regression tests passed; Ruff, format, targeted mypy, and diff checks passed.
+- Executor lane: four focused tests, Ruff, and diff checks passed.
+- Evidence/fixture lane: schema, checkpoint, manifest-hash, content-address, index, and companion checks passed; 55 changed-only RVS tests passed.
+- Secret scanning reported no secrets in changed files.
+- Final PR parallel validation: Code Review completed with no comments; Python CodeQL analysis was skipped because the database exceeded the size limit.
+
+**Governance:** The five always-required WEC items remain checked and the active optional workflows remain unchecked. Current-head workflow runs are gated as `action_required`; owner approval to retain the setup workflow is posted on the review thread, which still needs reviewer resolution.
+
+### Agents Used
+- [x] `general-purpose` — research provider, CLI, and storage fixes
+- [x] `test-enhancement-agent` — EV evidence and fixture repair
+- [x] `ci-testing-agent` — dependency-aware executor
+- [x] `explore` — setup-workflow impact assessment
+- [x] `workflow-monitoring-agent` — session and PR monitoring
+
+---
+
+## Session: 2026-10-05T14:45Z — Copilot runtime resource exhaustion fallback
+
+**Objective:** Prevent CCA process/thread exhaustion during dependency-graph work by probing runner headroom and applying bounded concurrency or a configured larger runner.
+
+**Status:** ✅ IMPLEMENTED; focused tests and workflow checks passed.
+
+**Actions:**
+1. Retrieved run `37317495938` job logs. The embedded Node runtime aborted after a thread panic while writing output (`Resource temporarily unavailable (os error 11)`), followed by exit 134 during dependency-graph output; this supports resource exhaustion as the failure class.
+2. Added `scripts/ci/agent_resource_profile.py` to detect host/cgroup memory, CPU, and process limits, fail closed to serialized mode on incomplete telemetry, and choose a configured high-headroom runner only on critical capacity.
+3. Added an ordered resource-profile job before `copilot-setup-steps`; it constrains agent/dependency graph workers, npm jobs, GOMAXPROCS, and Node heap while preserving the session preload step.
+4. Connected `COPILOT_AGENT_WORKERS` to the phase 9.3 dependency-graph executor, which now executes ready tasks in bounded batches and respects task-level parallelism limits.
+5. Added deterministic tests for healthy, constrained, critical, and missing-resource telemetry, plus bounded-executor concurrency; documented the optional larger-runner variable.
+
+**Validation:**
+- `python -m pytest -q tests/ci/test_concurrent_executor_limit.py tests/ci/test_agent_resource_profile.py` → 7 passed.
+- `python scripts/ci/validate_copilot_setup_steps.py --repo-root . --check-only` → 13/13 passed.
+- `bash scripts/ci/validate_setup_steps_yaml.sh` → passed.
+- Ruff, Black (changed executor ranges), and mypy → passed for the helper/executor; workflow output wiring and CLI execution were checked.
+
+**Governance:** CHANGELOG, accountability report, and PDA record updated. Existing preload step was not modified.
+
+### Agents Used
+- [x] `explore` (workflow integration audit)
+- [x] `ci-failure-resolution-agent` (resource failure/config audit)
+
+---
+
+## Session: 2026-10-05T05:20:00Z — Evidence-Grounded Deep Research Agent
+
+**Objective:** Implement `AGENT-DEEP-RESEARCH-001` as a registered, auditable research pipeline with validated evidence contracts, bounded retrieval, dataset profiling, adversarial checks, browser diagnostics, synthetic release-readiness coverage, and AZIMUTH assessment.
+
+**Status:** ⚠️ IMPLEMENTED; focused validation passed and repository-wide test collection failed
+
+**Actions:**
+1. Added versioned research briefs and bundles, validated lane dependency contracts, source/evidence provenance, bounded provider and safe-fetch interfaces, local dataset profiling, checkpointing, objective coverage, contradictions, and CLI exports.
+2. Registered the agent and documented browser console/network diagnostics plus conditional dialog dismissal; live web retrieval remains capability-gated and was not invoked in this fixture run.
+3. Added an offline synthetic package/docs/status/archive/build/deployment/publication scenario. Its findings do not describe the actual repository.
+4. Added ordered AZIMUTH assessment output that distinguishes declared work from executed delegation, recorded status from repository mutation, and archive tagging from migration.
+
+**Validation:**
+- `PYTHONPATH=src pytest -q tests/deep_research --cov=codex.deep_research --cov-report=term-missing` → 42 passed; 89.05% package coverage.
+- `ruff check src/codex/deep_research tests/deep_research --select E,F,I` and Ruff format check → passed.
+- `python scripts/validate_agent_specs.py --strict` → 240 compliant, 0 non-compliant before unrelated legacy-profile rewrites were restored.
+- Synthetic release-readiness bundle validated against the versioned JSON Schema and remained incomplete with unresolved contradictions.
+- `nox -s tests` stopped during collection because `tests/zendesk` could not import `zendesk.api_client` and `zendesk.json_generator`; the focused deep-research suite passed.
+- The repository-wide pre-commit run did not pass: its documentation-link scan reported 322 errors, secret-keyword heuristics flagged agent/PDA text, and shell/XML scans traversed the generated `.nox` environment.
+
+**Governance:** CHANGELOG, utility registry, accountability report, and PDA record updated. No workflow or `copilot-setup-steps.yml` changes were made.
+
+---
+
 ## Session: 2026-10-03T00:00:00Z — PR review-thread follow-up: GitHub client + startup packet drift
 
 **Objective:** Resolve the remaining narrow review-thread follow-up in the repo-local GitHub client and restore the tracked startup packet baseline without widening scope beyond the affected paths.
