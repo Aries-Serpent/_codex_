@@ -276,7 +276,7 @@ def test_validate_checkpoint_rejects_missing_or_tampered_payload_metadata() -> N
     checkpoint = {
         "research_id": "research-test",
         "checkpoint_id": "checkpoint-test",
-        "payload_sha256": hashlib.sha256(b"{}" if False else b"stub").hexdigest(),
+        "payload_sha256": hashlib.sha256(b"stub").hexdigest(),
         "query_ledger": [],
         "sources": [],
         "evidence": [],
