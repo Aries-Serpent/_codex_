@@ -1,0 +1,96 @@
+diff --git a/.github/workflows/copilot-setup-steps.yml b/.github/workflows/copilot-setup-steps.yml
+--- a/.github/workflows/copilot-setup-steps.yml
++++ b/.github/workflows/copilot-setup-steps.yml
+@@ -89,8 +89,8 @@
+   copilot-setup-steps:
+     name: Copilot Agent Environment Preparation
+-    needs: resource-profile
+-    runs-on: ${{ needs.resource-profile.outputs.runner_profile }}
+-    timeout-minutes: 60
++    # Copilot extracts this job without executing sibling prerequisite jobs.
++    runs-on: ubuntu-latest
++    timeout-minutes: 59
+     permissions:
+       contents: read
+       actions: write
+@@ -99,20 +99,20 @@
+     env:
+       CI: 'true'
+-      COPILOT_RESOURCE_MODE: ${{ needs.resource-profile.outputs.resource_mode }}
+-      COPILOT_HIGH_HEADROOM_REQUIRED: ${{ needs.resource-profile.outputs.larger_runner_required }}
+-      COPILOT_AGENT_WORKERS: ${{ needs.resource-profile.outputs.agent_workers }}
+-      COPILOT_DEPENDENCY_GRAPH_WORKERS: ${{ needs.resource-profile.outputs.dependency_graph_workers }}
+-      COPILOT_DEPENDENCY_GRAPH_SERIALIZED: ${{ needs.resource-profile.outputs.dependency_graph_serialized }}
+-      npm_config_jobs: ${{ needs.resource-profile.outputs.npm_jobs }}
+-      GOMAXPROCS: ${{ needs.resource-profile.outputs.gomaxprocs }}
+-      NODE_OPTIONS: --max-old-space-size=${{ needs.resource-profile.outputs.node_heap_mib }}
++      COPILOT_RESOURCE_MODE: serialized
++      COPILOT_HIGH_HEADROOM_REQUIRED: 'false'
++      COPILOT_AGENT_WORKERS: '1'
++      COPILOT_DEPENDENCY_GRAPH_WORKERS: '1'
++      COPILOT_DEPENDENCY_GRAPH_SERIALIZED: 'true'
++      npm_config_jobs: '1'
++      GOMAXPROCS: '1'
++      NODE_OPTIONS: --max-old-space-size=512
+       CARGO_BUILD_JOBS: '1'
+       MAKEFLAGS: -j1
+       UV_CONCURRENT_BUILDS: '1'
+       UV_CONCURRENT_DOWNLOADS: '1'
+       UV_THREADPOOL_SIZE: '1'
+       RAYON_NUM_THREADS: '1'
+-      COPILOT_RUNNER_PROFILE: ${{ needs.resource-profile.outputs.runner_profile }}
++      COPILOT_RUNNER_PROFILE: ubuntu-latest
+       GIT_LFS_SKIP_SMUDGE: '1'
+       CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+       CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+@@ -146,7 +146,33 @@
+         fetch-depth: 0
+         lfs: false
+         clean: true
+         show-progress: true
++    - name: Apply conservative Copilot runtime limits
++      shell: bash
++      run: |
++        # Job-level env is not part of Copilot's supported customization contract.
++        # Export limits from a supported step before Python setup and session preload.
++        {
++          echo 'CI=true'
++          echo 'PYTHON_VERSION=3.12'
++          echo 'NODE_VERSION=22'
++          echo 'RUST_VERSION=stable'
++          echo 'COPILOT_RESOURCE_MODE=serialized'
++          echo 'COPILOT_HIGH_HEADROOM_REQUIRED=false'
++          echo 'COPILOT_AGENT_WORKERS=1'
++          echo 'COPILOT_DEPENDENCY_GRAPH_WORKERS=1'
++          echo 'COPILOT_DEPENDENCY_GRAPH_SERIALIZED=true'
++          echo 'npm_config_jobs=1'
++          echo 'GOMAXPROCS=1'
++          echo 'NODE_OPTIONS=--max-old-space-size=512'
++          echo 'CARGO_BUILD_JOBS=1'
++          echo 'MAKEFLAGS=-j1'
++          echo 'UV_CONCURRENT_BUILDS=1'
++          echo 'UV_CONCURRENT_DOWNLOADS=1'
++          echo 'UV_THREADPOOL_SIZE=1'
++          echo 'RAYON_NUM_THREADS=1'
++          echo 'COPILOT_RUNNER_PROFILE=ubuntu-latest'
++          echo 'GIT_LFS_SKIP_SMUDGE=1'
++        } >> "$GITHUB_ENV"
+     - name: "🐍 Set up Python with cache"
+       uses: ./.github/actions/setup-python-cached
+       with:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,12 @@
+ # Changelog
+ 
+ ## [Unreleased]
+ 
++### Fixed — Copilot setup scheduling compatibility
++- Made the extracted Copilot setup job independent of sibling-job outputs by selecting `ubuntu-latest` directly and removing its prerequisite-job dependency.
++- Exported conservative concurrency, heap, and toolchain defaults through a setup step while preserving the protected session preload block and the standalone resource-profile diagnostics.
++- Reduced the setup timeout to the documented Copilot maximum of 59 minutes.
++- Hosted-session verification remains required; this patch does not claim a successful rerun or automatic larger-runner escalation.
++
+ ### Fixed — Copilot runtime resource exhaustion (2026-10-05)
+ - Added a resource preflight before Copilot environment setup that detects memory, CPU, and process headroom, caps worker counts, serializes dependency-graph work, and bounds the Node heap and native thread counts.
