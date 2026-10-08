@@ -64,8 +64,14 @@ def get_repo_slug() -> str:
     return remote.strip()
 
 
-def build_prompt(branch: str, repo: str, started_at: datetime, remaining: timedelta, status_summary: str) -> str:
-    deadline = started_at + timedelta(minutes=DEFAULT_LIMIT_MINUTES)
+def build_prompt(
+    branch: str,
+    repo: str,
+    started_at: datetime,
+    deadline: datetime,
+    remaining: timedelta,
+    status_summary: str,
+) -> str:
     prompt = f"""# Continuation Prompt for the Active Session
 
 **Status:** Time-box reached; wrap and push before continuing.
@@ -107,23 +113,36 @@ then continue from the remaining instructions in this prompt.
     return prompt
 
 
-def write_prompt(path: Path, branch: str, repo: str, started_at: datetime, remaining: timedelta, status_summary: str) -> None:
+def write_prompt(
+    path: Path,
+    branch: str,
+    repo: str,
+    started_at: datetime,
+    deadline: datetime,
+    remaining: timedelta,
+    status_summary: str,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        build_prompt(branch, repo, started_at, remaining, status_summary),
+        build_prompt(branch, repo, started_at, deadline, remaining, status_summary),
         encoding="utf-8",
     )
 
 
-def warn_and_prepare(started_at: datetime, limit_minutes: int, warning_window_minutes: int, prompt_path: Path) -> None:
+def warn_and_prepare(
+    started_at: datetime,
+    deadline: datetime,
+    remaining: timedelta,
+    warning_window_minutes: int,
+    prompt_path: Path,
+) -> None:
     repo = get_repo_slug() or "unknown/repo"
     branch = get_branch()
     status_summary = get_status_summary()
-    remaining = timedelta(minutes=limit_minutes)
     print("\n============================================================")
     print("SESSION TIMEBOX WARNING")
     print("============================================================")
-    print(f"Remaining time is within the final {warning_window_minutes} minutes of the {limit_minutes}-minute budget.")
+    print(f"Remaining time is within the final {warning_window_minutes} minutes of the session budget.")
     print("Wrap the work, run a final git status, push the branch, and prepare a handoff if more work remains.")
     print("\nSuggested actions:")
     print("  1. git status --short --branch")
@@ -135,8 +154,28 @@ def warn_and_prepare(started_at: datetime, limit_minutes: int, warning_window_mi
     print("Repository:", repo)
     print("============================================================\n")
 
-    write_prompt(prompt_path, branch, repo, started_at, remaining, status_summary)
+    write_prompt(prompt_path, branch, repo, started_at, deadline, remaining, status_summary)
     print(f"Continuation prompt written to: {prompt_path}")
+
+
+def get_sleep_interval(
+    now: datetime,
+    deadline: datetime,
+    warning_trigger: timedelta,
+    poll_seconds: int,
+    warned: bool,
+) -> timedelta:
+    remaining = deadline - now
+    if remaining <= timedelta(0):
+        return timedelta(0)
+    if warned:
+        return min(timedelta(seconds=poll_seconds), remaining)
+
+    warning_deadline = deadline - warning_trigger
+    time_until_warning = warning_deadline - now
+    if time_until_warning <= timedelta(0):
+        return min(timedelta(seconds=poll_seconds), remaining)
+    return min(timedelta(seconds=poll_seconds), time_until_warning, remaining)
 
 
 def monitor(limit_minutes: int, warning_window_minutes: int, poll_seconds: int, prompt_path: Path, once: bool) -> int:
@@ -156,7 +195,7 @@ def monitor(limit_minutes: int, warning_window_minutes: int, poll_seconds: int, 
 
         if remaining <= warning_trigger and not warned:
             warned = True
-            warn_and_prepare(started_at, limit_minutes, warning_window_minutes, prompt_path)
+            warn_and_prepare(started_at, deadline, remaining, warning_window_minutes, prompt_path)
             if once:
                 return 0
 
@@ -165,7 +204,10 @@ def monitor(limit_minutes: int, warning_window_minutes: int, poll_seconds: int, 
             print(f"Time remaining: {remaining_human} (warning window: {warning_trigger})")
             return 0
 
-        time.sleep(poll_seconds)
+        sleep_for = get_sleep_interval(now, deadline, warning_trigger, poll_seconds, warned)
+        if sleep_for <= timedelta(0):
+            sleep_for = timedelta(seconds=1)
+        time.sleep(sleep_for.total_seconds())
 
 
 def parse_args() -> argparse.Namespace:
