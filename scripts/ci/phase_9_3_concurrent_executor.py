@@ -384,6 +384,7 @@ class ConcurrentExecutor:
             ExecutionResult with outcomes
         """
         start_time = time.time()
+        deadline = start_time + self.global_timeout_s
         execution_log = []
 
         try:
@@ -409,20 +410,53 @@ class ConcurrentExecutor:
 
             # Execute layers sequentially
             for layer_idx, layer in enumerate(layers):
+                remaining_global = deadline - time.time()
+                if remaining_global <= 0:
+                    elapsed = time.time() - start_time
+                    execution_log.append(
+                        f"Global timeout exceeded before layer {layer_idx + 1}: "
+                        f"{elapsed:.1f}s > {self.global_timeout_s}s"
+                    )
+                    return ExecutionResult(
+                        task_id=task.id,
+                        status=TaskStatus.TIMEOUT,
+                        total_duration_s=elapsed,
+                        errors=["Global execution timeout"],
+                        execution_log=execution_log,
+                    )
+
                 execution_log.append(
                     f"Executing layer {layer_idx + 1}/{len(layers)} ({len(layer)} tasks)"
                 )
 
-                # Execute tasks in this layer in parallel
-                layer_results = await self._execute_layer(
-                    layer,
-                    dep_graph.subtask_map,
-                    task.timeout_s,
-                    max_concurrent_agents=min(
-                        self.max_concurrent_agents,
-                        max(1, task.max_parallel_agents),
-                    ),
-                )
+                # Execute tasks in this layer in parallel, bounded by the remaining
+                # global time budget so a slow layer cannot consume the next layer's time.
+                try:
+                    layer_results = await asyncio.wait_for(
+                        self._execute_layer(
+                            layer,
+                            dep_graph.subtask_map,
+                            min(task.timeout_s, max(1, int(remaining_global))),
+                            max_concurrent_agents=min(
+                                self.max_concurrent_agents,
+                                max(1, task.max_parallel_agents),
+                            ),
+                        ),
+                        timeout=remaining_global,
+                    )
+                except asyncio.TimeoutError:
+                    elapsed = time.time() - start_time
+                    execution_log.append(
+                        f"Global timeout exceeded during layer {layer_idx + 1}: "
+                        f"{elapsed:.1f}s > {self.global_timeout_s}s"
+                    )
+                    return ExecutionResult(
+                        task_id=task.id,
+                        status=TaskStatus.TIMEOUT,
+                        total_duration_s=elapsed,
+                        errors=["Global execution timeout"],
+                        execution_log=execution_log,
+                    )
 
                 # Check for failures
                 failed_tasks = [
