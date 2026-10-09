@@ -14,9 +14,7 @@ import asyncio
 import inspect
 import json
 import logging
-import multiprocessing as mp
 import os
-import sys
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -371,6 +369,8 @@ class ConcurrentExecutor:
             ),
         )
         self.global_timeout_s = global_timeout_s
+        if agent_dispatcher_fn is not None and not inspect.iscoroutinefunction(agent_dispatcher_fn):
+            raise TypeError("agent_dispatcher_fn must be an async coroutine function")
         self.agent_dispatcher_fn = agent_dispatcher_fn or self._mock_dispatch
         self.execution_results: Dict[str, ExecutionResult] = {}
         self.subtask_results: Dict[str, SubTask] = {}
@@ -570,16 +570,10 @@ class ConcurrentExecutor:
 
         try:
             deadline = self._get_deadline_seconds(min(subtask.timeout_s, max(1, timeout_s)))
-            if self._is_awaitable_dispatcher():
-                result = await asyncio.wait_for(
-                    self._dispatch_to_agent(subtask),
-                    timeout=self._get_remaining_budget(deadline),
-                )
-            else:
-                result = await asyncio.wait_for(
-                    asyncio.to_thread(self.agent_dispatcher_fn, subtask),
-                    timeout=self._get_remaining_budget(deadline),
-                )
+            result = await asyncio.wait_for(
+                self._dispatch_to_agent(subtask),
+                timeout=self._get_remaining_budget(deadline),
+            )
             subtask.result = result
             subtask.status = TaskStatus.COMPLETED
             subtask.completed_at = datetime.utcnow()
