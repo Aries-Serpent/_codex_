@@ -11,9 +11,12 @@ Status: Production
 """
 
 import asyncio
+import inspect
 import json
 import logging
+import multiprocessing as mp
 import os
+import sys
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -372,6 +375,16 @@ class ConcurrentExecutor:
         self.execution_results: Dict[str, ExecutionResult] = {}
         self.subtask_results: Dict[str, SubTask] = {}
 
+    @staticmethod
+    def _get_deadline_seconds(timeout_s: int) -> float:
+        """Return a monotonic deadline for a timeout budget."""
+        return time.monotonic() + max(0, timeout_s)
+
+    @staticmethod
+    def _get_remaining_budget(deadline: float) -> float:
+        """Return the remaining time until the monotonic deadline."""
+        return max(0.0, deadline - time.monotonic())
+
     async def execute(self, task: TaskMetadata, agent_routing: Dict[str, str]) -> ExecutionResult:
         """
         Execute a task with concurrent agents.
@@ -383,8 +396,8 @@ class ConcurrentExecutor:
         Returns:
             ExecutionResult with outcomes
         """
-        start_time = time.time()
-        deadline = start_time + self.global_timeout_s
+        start_time = time.monotonic()
+        deadline = self._get_deadline_seconds(self.global_timeout_s)
         execution_log = []
 
         try:
@@ -410,9 +423,9 @@ class ConcurrentExecutor:
 
             # Execute layers sequentially
             for layer_idx, layer in enumerate(layers):
-                remaining_global = deadline - time.time()
+                remaining_global = self._get_remaining_budget(deadline)
                 if remaining_global <= 0:
-                    elapsed = time.time() - start_time
+                    elapsed = time.monotonic() - start_time
                     execution_log.append(
                         f"Global timeout exceeded before layer {layer_idx + 1}: "
                         f"{elapsed:.1f}s > {self.global_timeout_s}s"
@@ -429,7 +442,7 @@ class ConcurrentExecutor:
                     f"Executing layer {layer_idx + 1}/{len(layers)} ({len(layer)} tasks)"
                 )
 
-                # Execute tasks in this layer in parallel, bounded by the remaining
+                # Execute tasks in this layer in parallel, bounded to the remaining
                 # global time budget so a slow layer cannot consume the next layer's time.
                 try:
                     layer_results = await asyncio.wait_for(
@@ -445,7 +458,7 @@ class ConcurrentExecutor:
                         timeout=remaining_global,
                     )
                 except asyncio.TimeoutError:
-                    elapsed = time.time() - start_time
+                    elapsed = time.monotonic() - start_time
                     execution_log.append(
                         f"Global timeout exceeded during layer {layer_idx + 1}: "
                         f"{elapsed:.1f}s > {self.global_timeout_s}s"
@@ -471,7 +484,7 @@ class ConcurrentExecutor:
                     )
 
             # Check global timeout
-            elapsed = time.time() - start_time
+            elapsed = time.monotonic() - start_time
             if elapsed > self.global_timeout_s:
                 execution_log.append(
                     f"Global timeout exceeded: {elapsed:.1f}s > {self.global_timeout_s}s"
@@ -487,7 +500,7 @@ class ConcurrentExecutor:
             # Aggregate results
             aggregated = self._aggregate_results([self.subtask_results[st.id] for st in subtasks])
 
-            elapsed = time.time() - start_time
+            elapsed = time.monotonic() - start_time
             execution_log.append(f"✅ Task completed in {elapsed:.1f}s")
 
             return ExecutionResult(
@@ -540,7 +553,7 @@ class ConcurrentExecutor:
         # Each batch is sequential, while tasks within a batch remain independent.
         results = await asyncio.wait_for(
             execute_batches(),
-            timeout=(timeout_s + 10) * max(1, len(batches)),
+            timeout=max(1, timeout_s + 10) * max(1, len(batches)),
         )
 
         return {
@@ -550,16 +563,23 @@ class ConcurrentExecutor:
         }
 
     async def _execute_subtask(self, subtask: SubTask, timeout_s: int) -> SubTask:
-        """Execute a single sub-task"""
+        """Execute a single sub-task."""
         subtask.status = TaskStatus.RUNNING
         subtask.started_at = datetime.utcnow()
         subtask.attempt += 1
 
         try:
-            # Dispatch to agent
-            result = await asyncio.wait_for(
-                self._dispatch_to_agent(subtask), timeout=subtask.timeout_s
-            )
+            deadline = self._get_deadline_seconds(min(subtask.timeout_s, max(1, timeout_s)))
+            if self._is_awaitable_dispatcher():
+                result = await asyncio.wait_for(
+                    self._dispatch_to_agent(subtask),
+                    timeout=self._get_remaining_budget(deadline),
+                )
+            else:
+                result = await asyncio.wait_for(
+                    asyncio.to_thread(self.agent_dispatcher_fn, subtask),
+                    timeout=self._get_remaining_budget(deadline),
+                )
             subtask.result = result
             subtask.status = TaskStatus.COMPLETED
             subtask.completed_at = datetime.utcnow()
@@ -586,9 +606,18 @@ class ConcurrentExecutor:
         self.subtask_results[subtask.id] = subtask
         return subtask
 
+    def _is_awaitable_dispatcher(self) -> bool:
+        """Only async dispatchers are treated as hard-cancellable work."""
+        dispatcher = self.agent_dispatcher_fn
+        if dispatcher is None:
+            return False
+        return inspect.iscoroutinefunction(dispatcher)
+
     async def _dispatch_to_agent(self, subtask: SubTask) -> Dict[str, Any]:
-        """Dispatch subtask to agent (async wrapper)"""
-        return await asyncio.to_thread(self.agent_dispatcher_fn, subtask)
+        """Dispatch subtask to an async agent implementation."""
+        if not self._is_awaitable_dispatcher():
+            raise TypeError("agent_dispatcher_fn must be an async coroutine function")
+        return await self.agent_dispatcher_fn(subtask)
 
     async def _mock_dispatch(self, subtask: SubTask) -> Dict[str, Any]:
         """Mock agent dispatch (for testing)"""
