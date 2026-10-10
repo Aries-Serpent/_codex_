@@ -432,16 +432,43 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, Any]]) ->
             writer.writerow({field: row.get(field, "") for field in fieldnames})
 
 
-def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path) -> None:
+def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_n: int = 20) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     summary = build_summary(alerts)
+
     raw_path = out_dir / "api_inventory_raw.json"
     raw_path.write_text(json.dumps(alerts, indent=2), encoding="utf-8")
+
     summary_path = out_dir / "api_inventory_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    _write_csv(out_dir / "api_inventory_by_rule.csv", ["rule_id", "count", "severity", "path_count", "paths", "alert_numbers"], _csv_rows_for_rule(alerts))
-    _write_csv(out_dir / "api_inventory_by_severity.csv", ["severity", "count"], _csv_rows_for_severity(alerts))
-    _write_csv(out_dir / "api_inventory_by_path.csv", ["path", "critical", "high", "medium", "low", "unknown", "total"], _csv_rows_for_path(alerts))
+
+    _write_csv(
+        out_dir / "api_inventory_by_rule.csv",
+        ["rule_id", "count", "severity", "path_count", "paths", "alert_numbers"],
+        _csv_rows_for_rule(alerts),
+    )
+    _write_csv(
+        out_dir / "api_inventory_by_severity.csv",
+        ["severity", "count"],
+        _csv_rows_for_severity(alerts),
+    )
+    _write_csv(
+        out_dir / "api_inventory_by_path.csv",
+        ["path", "critical", "high", "medium", "low", "unknown", "total"],
+        _csv_rows_for_path(alerts),
+    )
+
+    _write_manifest(out_dir)
+    _write_validation_report(out_dir, summary)
+    _write_delta_report(out_dir, summary)
+
+    fixable_canonical = out_dir / "api_inventory_fixable.md"
+    fixable_canonical.write_text(build_fixable_md(alerts, top_n=top_n), encoding="utf-8")
+
+    by_rule_md = out_dir / "alerts_by_rule.md"
+    by_rule_md.write_text(build_by_rule_md(alerts), encoding="utf-8")
+    fixable_legacy = out_dir / "alerts_fixable.md"
+    fixable_legacy.write_text(build_fixable_md(alerts, top_n=top_n), encoding="utf-8")
 
     legacy_names = {
         "alerts_raw.json": raw_path,
@@ -451,15 +478,10 @@ def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path) -> None
         "alerts_by_path.csv": out_dir / "api_inventory_by_path.csv",
     }
     for legacy_name, source in legacy_names.items():
-        if source.exists():
-            target = out_dir / legacy_name
-            if target != source:
-                target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+        target = out_dir / legacy_name
+        if target != source:
+            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
-    by_rule_md = out_dir / "alerts_by_rule.md"
-    by_rule_md.write_text(build_by_rule_md(alerts), encoding="utf-8")
-    fixable_path = out_dir / "alerts_fixable.md"
-    fixable_path.write_text(build_fixable_md(alerts, top_n=20), encoding="utf-8")
     return summary
 
 
@@ -620,7 +642,7 @@ def main(argv: list[str] | None = None) -> int:
         token=token,
     )
 
-    summary = _write_inventory_bundle(alerts, out_dir)
+    summary = _write_inventory_bundle(alerts, out_dir, top_n=args.top_n)
     raw_path = out_dir / "api_inventory_raw.json"
     log.info("Wrote %s (%d alerts)", raw_path, len(alerts))
     summary_path = out_dir / "api_inventory_summary.json"
@@ -631,7 +653,7 @@ def main(argv: list[str] | None = None) -> int:
     log.info("Wrote %s", by_sev_path)
     by_path_path = out_dir / "api_inventory_by_path.csv"
     log.info("Wrote %s", by_path_path)
-    fixable_path = out_dir / "alerts_fixable.md"
+    fixable_path = out_dir / "api_inventory_fixable.md"
     log.info("Wrote %s", fixable_path)
 
     # Print summary to stdout so CI log is informative

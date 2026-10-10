@@ -27,7 +27,7 @@ The reusable gate workflow `cost-gate.yml` remains active because it is referenc
 **Last Updated**: 2026-10-10  
 **Trigger**: Manual (`workflow_dispatch`) and weekly scheduled run
 
-**Purpose**: Fetch the repository’s CodeQL code-scanning alerts via the GitHub REST API, write the canonical inventory to `.codex/artifacts/codeql_alerts`, and publish the result as a workflow artifact.
+**Purpose**: Fetch the repository’s CodeQL code-scanning alerts via the GitHub REST API, write the canonical inventory to `.codex/security/code_scanning_inventory`, and publish the result as a workflow artifact.
 
 **Inputs**:
 - `state` (default: `open`) - Alert state to fetch
@@ -42,10 +42,12 @@ The reusable gate workflow `cost-gate.yml` remains active because it is referenc
 - `contents: read` - Repository read access for the checkout step
 
 **Outputs**:
-- `.codex/artifacts/codeql_alerts/alerts_raw.json` - Full API payload
-- `.codex/artifacts/codeql_alerts/alerts_summary.json` - Rule/severity summary
-- `.codex/artifacts/codeql_alerts/alerts_by_rule.md` - Grouped-by-rule markdown
-- `.codex/artifacts/codeql_alerts/alerts_fixable.md` - Prioritized actionable findings
+- `.codex/security/code_scanning_inventory/manifest.json` - Inventory schema and source-of-truth metadata
+- `.codex/security/code_scanning_inventory/api_inventory_raw.json` - Full API payload
+- `.codex/security/code_scanning_inventory/api_inventory_summary.json` - Rule/severity summary
+- `.codex/security/code_scanning_inventory/api_inventory_by_rule.csv` - Rule rollup
+- `.codex/security/code_scanning_inventory/api_inventory_by_severity.csv` - Severity rollup
+- `.codex/security/code_scanning_inventory/api_inventory_by_path.csv` - Path rollup
 
 **Usage**:
 ```bash

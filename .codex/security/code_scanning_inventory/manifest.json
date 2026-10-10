@@ -2,13 +2,14 @@
   "schema_version": "1.0",
   "source_of_truth": "GitHub REST API /repos/{owner}/{repo}/code-scanning/alerts",
   "security_ui_role": "human validation only",
-  "generated_at": "2026-10-10T00:00:00Z",
+  "generated_at": "2026-10-10T08:54:37.372454+00:00",
   "files": [
     "api_inventory_raw.json",
     "api_inventory_summary.json",
     "api_inventory_by_rule.csv",
     "api_inventory_by_severity.csv",
     "api_inventory_by_path.csv",
+    "api_inventory_fixable.md",
     "ui_validation_report.json",
     "delta_report.json",
     "manifest.json"

@@ -118,7 +118,8 @@ Security scanning, vulnerability detection, and compliance:
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
 | [security-scanning-suite.yml](security-scanning-suite.yml) | 🆕 Consolidated security scanning | PR, Push, Schedule | ✅ Active |
-| [codeql-analysis.yml](codeql-analysis.yml) | CodeQL security analysis | PR, Push, Schedule | ✅ Active |
+| [codeql-ga-gate.yml](codeql-ga-gate.yml) | CodeQL GA enforcement gate and security decisioning | PR, Push, Manual | ✅ Active |
+| [codeql-alert-inventory.yml](codeql-alert-inventory.yml) | API-backed CodeQL inventory export | Manual, Schedule | ✅ Active |
 | [dependency-scan.yml](dependency-scan.yml) | Dependency vulnerability scan | Schedule | ✅ Active |
 | [semgrep_sarif.yml](semgrep_sarif.yml) | Semgrep SARIF analysis | PR, Push | ✅ Active |
 | [sbom.yml](sbom.yml) | Software Bill of Materials | Release | ✅ Active |
