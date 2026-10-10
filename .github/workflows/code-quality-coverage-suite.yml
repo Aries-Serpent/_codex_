@@ -183,6 +183,7 @@ jobs:
         if-no-files-found: warn
         retention-days: 90
         name: coverage-artifacts-${{ github.run_number }}
+    timeout-minutes: 30
   quality-ruff:
     name: Quality Analysis - Ruff Linting
     needs:
