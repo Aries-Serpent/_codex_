@@ -306,7 +306,6 @@ jobs:
         name: codeql-ga-gate-audit-${{ github.run_id }}
         path: .codex/security/gate_audit/
         retention-days: 90
-    timeout-minutes: 45
   create-issue-on-alert:
     name: Create Issue for New Alerts
     runs-on: ubuntu-latest

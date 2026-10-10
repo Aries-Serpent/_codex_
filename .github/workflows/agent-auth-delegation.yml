@@ -177,6 +177,11 @@ jobs:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
     if: github.event.action != 'closed'
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -186,8 +191,7 @@ jobs:
       id: session_reqs
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
       run: "PR_NUMBER=\"${{ github.event.pull_request.number || github.event.issue.number\
         \  }}\"\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"has_requirements=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n# Try to download the latest session-requirements\
@@ -206,8 +210,7 @@ jobs:
         '
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "// Branches that are staging gates \u2014 never the HEAD of an agent\
           \ session.\nconst INTEGRATION_BRANCHES = ['0D_base_'];\nconst PROMOTION_TARGETS\
           \ = ['main', 'master'];\nconst pr = context.payload.pull_request;\nif (!pr)\
@@ -277,8 +280,7 @@ jobs:
 
         '
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst sha = (context.sha || 'unknown').slice(0,\
           \ 7);\nconst MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';\n\n// Upsert: find\
           \ existing comment by stable anchor marker\nconst { data: comments } = await\
@@ -378,8 +380,7 @@ jobs:
 
         '
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const sha    = (context.sha || 'unknown').slice(0, 7);\nconst MARKER\
           \ = 'COGNITIVE SESSION-TYPE DIRECTIVE';\n\nconst { data: comments } = await\
           \ github.rest.issues.listComments({\n  owner: context.repo.owner,\n  repo:\
@@ -662,8 +663,7 @@ jobs:
 
         '
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         set -euo pipefail
@@ -677,8 +677,7 @@ jobs:
         '
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';\nconst SUMMARY_MARKER\
           \  = '## \U0001F9E0 Session Summary';\n\nconst { data: comments } = await\
           \ github.rest.issues.listComments({\n  owner: context.repo.owner,\n  repo:\
@@ -799,8 +798,7 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';\nconst RESOLVED_MARKER\
           \ = 'BRANCH_REBASE_RESOLVED';\nconst prNumber = context.issue.number;\n\n\
           core.info(`REQ-10: Checking rebase status for PR  #${prNumber}`);\n\n//\
@@ -943,8 +941,6 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Validate/Refresh Session ID (CAPI Readiness Check)
@@ -952,18 +948,40 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "if [ -n \"${COPILOT_AGENT_SESSION_ID:-}\" ]; then\n  echo \"Checking session\
-        \ validity...\"\n  HTTP_CODE=$(curl -s -o /dev/null -w \"%{http_code}\" \\\
-        \n    -H \"Authorization: ******\" \\\n    -H \"Accept: application/vnd.github+json\"\
-        \ \\\n    \"https://api.github.com/repos/${{ github.repository }}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}\"\
-        \ \\\n    2>/dev/null || echo \"000\")\n\n  if [ \"$HTTP_CODE\" = \"200\"\
-        \ ]; then\n    echo \"\u2705 Session valid. Proceeding with reuse.\"\n   \
-        \ echo \"session_status=valid\" >> \"$GITHUB_OUTPUT\"\n  else\n    echo \"\
-        \u26A0\uFE0F Session expired (HTTP ${HTTP_CODE}). Clearing for refresh.\"\n\
-        \    unset COPILOT_AGENT_SESSION_ID\n    echo \"session_status=refreshed\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"\u2139\uFE0F No session in environment.\
-        \ Will be created fresh.\"\n  echo \"session_status=fresh\" >> \"$GITHUB_OUTPUT\"\
-        \nfi\n"
+        CODEX_SECRET_AVAILABLE: ${{ secrets.CODEX_MASTER_KEY != '' || secrets.CODEX_BACKUP_KEY != '' }}
+      run: |
+        set -euo pipefail
+        if gh api "repos/${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+          AUTH_VALID=true
+        else
+          AUTH_VALID=false
+        fi
+        if [ "$AUTH_VALID" != "true" ]; then
+          if [ "$CODEX_SECRET_AVAILABLE" = "true" ]; then
+            echo "::error::Configured CODEX credential is unavailable or cannot read this repository; token value was not logged."
+            exit 1
+          fi
+          echo "::warning::No CODEX secret is available, and GITHUB_TOKEN could not read this repository."
+        elif [ "$CODEX_SECRET_AVAILABLE" = "true" ]; then
+          echo "✅ Configured CODEX credential authenticated and can read this repository."
+        else
+          echo "ℹ️ CODEX secrets are unavailable in this run; GITHUB_TOKEN can read this repository."
+        fi
+
+        if [ -n "${COPILOT_AGENT_SESSION_ID:-}" ]; then
+          echo "Checking session validity..."
+          if gh api "repos/${GITHUB_REPOSITORY}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}" >/dev/null 2>&1; then
+            echo "✅ Session valid. Proceeding with reuse."
+            echo "session_status=valid" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ Session expired or unavailable. Clearing for refresh."
+            unset COPILOT_AGENT_SESSION_ID
+            echo "session_status=refreshed" >> "$GITHUB_OUTPUT"
+          fi
+        else
+          echo "ℹ️ No session in environment. Will be created fresh."
+          echo "session_status=fresh" >> "$GITHUB_OUTPUT"
+        fi
     - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
       id: set_vars
       continue-on-error: true
@@ -1338,8 +1356,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Generate Cognitive Brain App token
@@ -1370,8 +1386,6 @@ jobs:
       run: "python scripts/ci/approve_pending_runs.py || {\n  echo \"::warning::approve_pending_runs.py\
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30
   session-release:
     name: "\U0001F513 Release session lock"
@@ -1484,19 +1498,17 @@ jobs:
 
       '
     permissions:
+      contents: read
       pull-requests: write
       issues: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -1506,6 +1518,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30
