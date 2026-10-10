@@ -38,7 +38,8 @@ must not be assumed to inherit either credential. The Agent Token Delegation wor
 checks whether the configured `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY` credential can read
 the repository and reports only the result, never the token value. This proves only
 credential availability and repository-read access in that job, not organization scope,
-write/administrative permissions, or universal agent access. Do not expose a privileged
+write/administrative permissions, or universal agent access; activation stops if a
+configured CODEX credential fails this read check. Do not expose a privileged
 organization token to every agent; use the smallest permission set and short-lived
 credentials needed by each workflow.
 

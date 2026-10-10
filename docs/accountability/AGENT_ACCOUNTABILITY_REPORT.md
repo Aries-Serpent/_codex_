@@ -2,18 +2,18 @@
 
 **Objective:** Diagnose the recurring checkout failure shown on PR #5692 and determine what the repository can prove about organization-level token access without exposing credentials.
 
-**Status:** ✅ Targeted authentication paths hardened and locally validated; the latest run confirmed the main pre-flight checklist request now succeeds. A follow-up change addresses a second stale token reference found in that run; activation checkout still awaits validation on the next run.
+**Status:** ⚠️ Live run `38078989710` confirms pre-flight and checkout fixes pass. Delegation then stops because the configured CODEX credential is injected but cannot read the repository.
 
 **Actions:**
 1. Reviewed Agent Token Delegation run `38076761116` and found checkout failures in the activation, post-delegation approval, and rescue jobs; the logs showed HTTPS authentication failures. The same workflow run also showed `Bad credentials` during cognitive pre-flight.
 2. Compared the failing jobs with successful default-token checkout in the same workflow run and reviewed the latest successful run history. Changed same-repository checkout and read/comment pre-flight operations to the run-scoped `GITHUB_TOKEN`, with only the permissions those operations require.
 3. Added `contents: read` to the rescue job, switched its checkout/comment operation to `GITHUB_TOKEN`, and removed its unused job-wide elevated-token environment.
-4. Monitored run `38078668228` on commit `3e68cbf`: its main pre-flight checklist API call succeeded, while the session-directive call still returned 401 because it retained the CODEX credential. Switched that read/comment call to `GITHUB_TOKEN` and left same-repository checkouts on the checkout action's default run token after the explicit-token attempts failed in an earlier run.
+4. Monitored run `38078668228`: the main pre-flight checklist request succeeded; a remaining session-directive request returned 401 and was switched to `GITHUB_TOKEN`. Activation checkout also succeeded with the checkout action's default run token.
 5. Added a non-disclosing `gh api` repository-read check for the configured CODEX credential before token-delegation activation. It reports only whether the selected credential can read this repository; it does not claim to verify organization scope or write privileges.
 6. Documented that organization policy settings and repository configuration cannot prove universal delegated-agent access. No secret values were inspected or exposed.
 
 **Validation:**
-- Workflow YAML parsed, all 9 jobs retained explicit timeouts, and the auth-check shell passed `bash -n`. Run `38078668228` remains in progress and did not reach activation; revalidation of the follow-up is pending.
+- Workflow YAML parsed, all 9 jobs retained explicit timeouts, and the auth-check shell passed `bash -n`. In run `38078989710` on `b6f29d9`, the cognitive pre-flight job and default-token checkout succeeded; the CODEX credential was present (`CODEX_SECRET_AVAILABLE=true`) but failed repository-read validation. The token value was not logged.
 
 **Governance:**
 - REQ-4: This entry.
