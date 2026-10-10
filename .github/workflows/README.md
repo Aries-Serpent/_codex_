@@ -22,50 +22,44 @@ The reusable gate workflow `cost-gate.yml` remains active because it is referenc
 
 ### Security Workflows
 
-#### `phase34-codeql-alert-fetch.yml`
+#### `codeql-alert-inventory.yml`
 **Status**: ✅ Active  
-**Last Updated**: 2026-01-26  
-**Trigger**: Manual (`workflow_dispatch`)
+**Last Updated**: 2026-10-10  
+**Trigger**: Manual (`workflow_dispatch`) and weekly scheduled run
 
-**Purpose**: Fetch CodeQL code scanning alerts from GitHub API, generate inventory, and create tracking issue for AI agent analysis.
+**Purpose**: Fetch the repository’s CodeQL code-scanning alerts via the GitHub REST API, write the canonical inventory to `.codex/artifacts/codeql_alerts`, and publish the result as a workflow artifact.
 
 **Inputs**:
-- `max_pages` (default: 60) - Maximum pages to fetch (100 alerts per page)
-- `severity_filter` (default: all) - Filter by severity: all, critical, high, medium, low
+- `state` (default: `open`) - Alert state to fetch
+- `tool_name` (default: `CodeQL`) - Tool filter for the API request
+- `max_pages` (default: `10`) - Maximum pages to enumerate (100 alerts per page)
+- `page_sleep` (default: `1.0`) - Delay between paginated REST calls
+- `top_n` (default: `20`) - Number of entries in the fixable-priority report
 
 **Permissions**:
-- `security-events: read` - Fetch code scanning alerts
-- `contents: write` - Commit alert inventory to repository
-- `pull-requests: write` - Create PRs for fixes
-- `issues: write` - Create tracking issues
+- `security-events: read` - Read code-scanning alert data
+- `actions: read` - Access workflow metadata
+- `contents: read` - Repository read access for the checkout step
 
 **Outputs**:
-- `.codex/security/alert_inventory.json` - Complete alert data
-- `.codex/security/alert_inventory.csv` - Spreadsheet format
-- `.codex/security/alert_summary.md` - Human-readable summary
-- GitHub Issue - Tracking issue with @copilot instructions
+- `.codex/artifacts/codeql_alerts/alerts_raw.json` - Full API payload
+- `.codex/artifacts/codeql_alerts/alerts_summary.json` - Rule/severity summary
+- `.codex/artifacts/codeql_alerts/alerts_by_rule.md` - Grouped-by-rule markdown
+- `.codex/artifacts/codeql_alerts/alerts_fixable.md` - Prioritized actionable findings
 
 **Usage**:
 ```bash
 # Trigger manually
-gh workflow run phase34-codeql-alert-fetch.yml \
+gh workflow run codeql-alert-inventory.yml \
+  --field state=open \
   --field max_pages=10 \
-  --field severity_filter=high
+  --field tool_name=CodeQL
 
 # Monitor execution
 gh run watch
 
-# View results
-gh run view --log
+# Download the artifact from the workflow run
 ```
-
-**Debug Mode**:
-Enable debug logging by setting `ACTIONS_RUNNER_DEBUG=true` in repository secrets:
-```bash
-gh secret set ACTIONS_RUNNER_DEBUG --body "true"
-```
-
-Then check debug output in workflow logs.
 
 ---
 
@@ -127,7 +121,7 @@ gh workflow run app-package-download.yml \
 
 The following workflows require elevated permissions via the `CODEX_MASTER_KEY` secret:
 
-1. **phase34-codeql-alert-fetch.yml** - CodeQL alert operations
+1. **codeql-alert-inventory.yml** - CodeQL alert inventory collection via the GitHub API
 2. **auth-token-rotation.yml** - Token rotation automation
 3. **phase10-automated-secrets-setup.yml** - Secret management
 

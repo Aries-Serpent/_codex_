@@ -1,0 +1,149 @@
+name: Art_CodeQL Alert Inventory
+
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: Alert state to fetch
+        required: false
+        type: choice
+        options:
+          - open
+          - dismissed
+          - fixed
+          - auto_dismissed
+        default: open
+      tool_name:
+        description: Code-scanning tool filter
+        required: false
+        type: string
+        default: CodeQL
+      max_pages:
+        description: Maximum pages to fetch (100 alerts per page)
+        required: false
+        type: string
+        default: '10'
+      page_sleep:
+        description: Seconds to sleep between paginated requests
+        required: false
+        type: string
+        default: '1.0'
+      top_n:
+        description: Number of entries in the priority list
+        required: false
+        type: string
+        default: '20'
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  actions: read
+  security-events: read
+
+jobs:
+  inventory:
+    name: Fetch and archive all CodeQL alerts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate token availability
+        id: token_check
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" ]; then
+            echo "::warning::No CODEX_MASTER_KEY / CODEX_BACKUP_KEY secret is available; falling back to GITHUB_TOKEN, which may not have security_events scope."
+            echo "token_available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "token_available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch all CodeQL alerts via GitHub API
+        shell: bash
+        env:
+          STATE: ${{ github.event.inputs.state || 'open' }}
+          TOOL_NAME: ${{ github.event.inputs.tool_name || 'CodeQL' }}
+          MAX_PAGES: ${{ github.event.inputs.max_pages || '10' }}
+          PAGE_SLEEP: ${{ github.event.inputs.page_sleep || '1.0' }}
+          TOP_N: ${{ github.event.inputs.top_n || '20' }}
+        run: |
+          set -euo pipefail
+          python scripts/ci/fetch_codeql_alerts.py \
+            --state "$STATE" \
+            --tool "$TOOL_NAME" \
+            --max-pages "$MAX_PAGES" \
+            --page-sleep "$PAGE_SLEEP" \
+            --top-n "$TOP_N" \
+            --out-dir .codex/artifacts/codeql_alerts
+
+      - name: Validate alert inventory outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            ".codex/artifacts/codeql_alerts/alerts_raw.json"
+            ".codex/artifacts/codeql_alerts/alerts_summary.json"
+            ".codex/artifacts/codeql_alerts/alerts_by_rule.md"
+            ".codex/artifacts/codeql_alerts/alerts_fixable.md"
+          )
+          for file in "${required[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "::error::Missing or empty required inventory output: $file"
+              exit 1
+            fi
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path('.codex/artifacts/codeql_alerts/alerts_summary.json').read_text(encoding='utf-8'))
+          print(f"Fetched {summary.get('total', 0)} CodeQL alerts")
+          print(f"Severity split: {summary.get('by_severity', {})}")
+          PY
+
+      - name: Publish alert inventory artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: codeql-alert-inventory-${{ github.run_id }}
+          path: |
+            .codex/artifacts/codeql_alerts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Write workflow summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          summary = json.loads(Path('.codex/artifacts/codeql_alerts/alerts_summary.json').read_text(encoding='utf-8'))
+          by_sev = summary.get('by_severity', {})
+          lines = [
+              '## CodeQL alert inventory',
+              '',
+              f'- Total alerts: **{summary.get("total", 0)}**',
+              '- Severity counts:',
+          ]
+          for sev, count in sorted(by_sev.items()):
+              lines.append(f'  - `{sev}`: {count}')
+          lines.append('')
+          Path(os.environ['GITHUB_STEP_SUMMARY']).write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
