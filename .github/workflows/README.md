@@ -181,7 +181,7 @@ gh secret set CODEX_MASTER_KEY --body "NEW_TOKEN"
 **Solution**:
 ```bash
 # Check workflow permissions in YAML
-grep -A 5 "permissions:" .github/workflows/phase34-codeql-alert-fetch.yml
+grep -A 5 "permissions:" .github/workflows/codeql-alert-inventory.yml
 
 # Verify token scopes
 gh api /user --include | grep "x-oauth-scopes"
@@ -196,10 +196,10 @@ gh api /user --include | grep "x-oauth-scopes"
 **Solution**:
 ```bash
 # Validate YAML syntax
-yamllint .github/workflows/phase34-codeql-alert-fetch.yml
+yamllint .github/workflows/codeql-alert-inventory.yml
 
 # Validate with Python
-python -c "import yaml; yaml.safe_load(open('.github/workflows/FILENAME.yml'))"
+python -c "import yaml; yaml.safe_load(open('.github/workflows/codeql-alert-inventory.yml'))"
 
 # Common fixes:
 # - Remove trailing spaces
@@ -215,34 +215,34 @@ python -c "import yaml; yaml.safe_load(open('.github/workflows/FILENAME.yml'))"
 **Solution**:
 ```bash
 # Check if workflow is enabled
-gh workflow view phase34-codeql-alert-fetch.yml | grep "State:"
+gh workflow view codeql-alert-inventory.yml | grep "State:"
 
 # Enable if disabled
-gh workflow enable phase34-codeql-alert-fetch.yml
+gh workflow enable codeql-alert-inventory.yml
 
 # Verify you're on correct branch
 git branch --show-current
 
 # Trigger from specific branch
-gh workflow run phase34-codeql-alert-fetch.yml --ref main
+gh workflow run codeql-alert-inventory.yml --ref main
 ```
 
 ---
 
 ## Rollback Strategies
 
-### Phase 34 Workflow Rollback
+### CodeQL Inventory Workflow Rollback
 
-If the Phase 34 workflow fails after deployment, use this rollback strategy:
+If the inventory workflow fails after deployment, use this rollback strategy:
 
 #### Method 1: Git Revert (Recommended)
 
 ```bash
 # Revert the fix commit
-git revert a407495
+git revert <commit-sha>
 
 # Or revert multiple commits
-git revert a407495..HEAD
+git revert <earliest-sha>..HEAD
 
 # Push revert
 git push origin main
@@ -254,29 +254,29 @@ Add this to the workflow file:
 ```yaml
 on:
   workflow_dispatch: {}
-  # Disabled due to issues - see https://github.com/Aries-Serpent/_codex_/issues/XXXX
+  # Disabled due to issues - see issue tracker
 ```
 
 Or disable via CLI:
 ```bash
-gh workflow disable phase34-codeql-alert-fetch.yml
+gh workflow disable codeql-alert-inventory.yml
 ```
 
 #### Method 3: Restore Previous Version
 
 ```bash
 # Find previous working version
-git log --oneline .github/workflows/phase34-codeql-alert-fetch.yml
+git log --oneline .github/workflows/codeql-alert-inventory.yml
 
 # Restore specific version
-git checkout 34ba3a8 -- .github/workflows/phase34-codeql-alert-fetch.yml
+git checkout <commit-sha> -- .github/workflows/codeql-alert-inventory.yml
 
 # Commit restoration
-git commit -m "rollback: Restore phase34 workflow to working version"
+git commit -m "rollback: Restore codeql inventory workflow to prior version"
 git push origin main
 ```
 
-#### Method 4: Alternative Heredoc Implementation
+#### Method 4: Preserve the inventory path while debugging
 
 If echo approach fails, alternative heredoc pattern:
 ```yaml

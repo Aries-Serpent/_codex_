@@ -58,10 +58,12 @@ jobs:
           persist-credentials: false
           fetch-depth: 1
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up Python with shared cache
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
+          extras: 'dev'
+          install-preflight-extras: 'false'
 
       - name: Validate token availability
         id: token_check
