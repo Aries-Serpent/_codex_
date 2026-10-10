@@ -40,6 +40,7 @@ Usage (CLI)
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import logging
 import os
@@ -86,6 +87,7 @@ log = logging.getLogger("fetch_codeql_alerts")
 DEFAULT_MAX_PAGES: int = 10       # hard cap — each page is up to 100 alerts
 DEFAULT_STATE: str = "open"
 DEFAULT_TOOL: str = "CodeQL"
+DEFAULT_EXPORT_DIR = ".codex/security/code_scanning_inventory"
 
 REPO_OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "Aries-Serpent")
 REPO_NAME_FULL = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
@@ -185,6 +187,11 @@ def _location(alert: dict[str, Any]) -> str:
     path = loc.get("path", "?")
     start = loc.get("start_line", "?")
     return f"{path}:{start}"
+
+
+def _path(alert: dict[str, Any]) -> str:
+    loc = alert.get("most_recent_instance", {}).get("location", {})
+    return str(loc.get("path") or "unknown")
 
 
 def build_summary(alerts: list[dict[str, Any]]) -> dict[str, Any]:
@@ -315,7 +322,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument(
         "--out-dir",
-        default=".codex/artifacts/codeql_alerts",
+        default=DEFAULT_EXPORT_DIR,
         metavar="DIR",
         help="Output directory for report files",
     )
