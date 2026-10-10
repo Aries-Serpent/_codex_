@@ -21,23 +21,22 @@ paths-ignore:
   - "**/*.pyc"
   - "**/*.pyo"
   - "site/**"
-  - "docs/"
-  - ".codex/**"
-  - ".github/workflows/archive/**"
-  - ".github/workflow-archive/**"
-  - ".github/misc/**"
-  - ".github/workflows.backup*"
   - ".venv/"
+  - ".venv_ci/"
   - "venv/"
   - "env/"
   - "build/"
   - "dist/"
+  - "node_modules/"
   - "*.egg-info/"
   - ".coverage"
   - "coverage/"
   - ".pytest_cache/"
   - ".mypy_cache/"
   - ".ruff_cache/"
+  - ".tox/"
+  - "**/vendor/**"
+  - "**/third_party/**"
 
 queries:
   - uses: security-extended
@@ -45,24 +44,6 @@ queries:
 
 query-filters:
   - exclude:
-      id: py/redundant-comparison
+      id: py/unused-import
   - exclude:
-      id: py/similar-function
-  - exclude:
-      id: py/clear-text-logging-sensitive-data
-  - exclude:
-      id: py/clear-text-storage-sensitive-data
-  - exclude:
-      id: py/incomplete-url-substring-sanitization
-  - exclude:
-      id: py/log-injection
-  - exclude:
-      id: py/uninitialized-local-variable
-  - exclude:
-      id: py/overwritten-inherited-attribute
-  - exclude:
-      id: py/unused-global-variable
-  - exclude:
-      id: py/cyclic-import
-  - exclude:
-      id: py/pythagorean
+      id: js/unused-local-variable

@@ -41,6 +41,7 @@ jobs:
   codeql-analysis:
     name: CodeQL Scan & Gate Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
       critical_count: ${{ steps.analyze.outputs.critical_count }}
       high_count: ${{ steps.analyze.outputs.high_count }}
@@ -56,8 +57,8 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@311b4ee155dcdab395044f00946f664bd51ff173
       with:
-        languages: python
-        queries: security-and-quality
+        languages: python, javascript
+        queries: security-extended, security-and-quality
         config-file: ./.github/codeql/codeql-config.yml
     - name: Autobuild
       uses: github/codeql-action/autobuild@311b4ee155dcdab395044f00946f664bd51ff173
@@ -71,6 +72,16 @@ jobs:
         # to the workspace instead; the Parse/artifact steps below consume it.
         upload: false
         output: results
+    - name: Validate CodeQL output exists
+      if: always()
+      shell: bash
+      run: |
+        set -euo pipefail
+        if ! find . -name '*.sarif' -type f | grep -q .; then
+          echo "No CodeQL SARIF artifacts were produced; treating this as a workflow failure instead of a silent pass."
+          echo "This usually indicates a CodeQL analysis error, timeout, or no-build scenario." >&2
+          exit 1
+        fi
     - name: Parse CodeQL Results
       id: analyze
       shell: bash
@@ -91,29 +102,38 @@ jobs:
             return str(value or '').strip().lower()
 
         if not sarif_files:
-            print('No SARIF files were produced; treating this as an explicit no-alert result.')
-        else:
-            for sarif_path in sarif_files:
-                try:
-                    data = json.loads(sarif_path.read_text(encoding='utf-8'))
-                except Exception:
+            print('::error::No SARIF files were produced after CodeQL analysis; refusing to treat this as a no-alert result because it can mask a silent scanner failure.')
+            raise SystemExit(1)
+
+        valid_sarif_count = 0
+        for sarif_path in sarif_files:
+            try:
+                data = json.loads(sarif_path.read_text(encoding='utf-8'))
+            except Exception as exc:
+                print(f'::error::Malformed SARIF file at {sarif_path}: {exc}')
+                raise SystemExit(1)
+            if not isinstance(data, dict):
+                print(f'::error::SARIF document at {sarif_path} is not a JSON object.')
+                raise SystemExit(1)
+            valid_sarif_count += 1
+            for run in data.get('runs') or []:
+                if not isinstance(run, dict):
                     continue
-                if not isinstance(data, dict):
-                    continue
-                for run in data.get('runs') or []:
-                    if not isinstance(run, dict):
+                for result in run.get('results') or []:
+                    if not isinstance(result, dict):
                         continue
-                    for result in run.get('results') or []:
-                        if not isinstance(result, dict):
-                            continue
-                        level = normalize(result.get('level'))
-                        severity = normalize((result.get('properties') or {}).get('severity'))
-                        if level in {'error', 'fatal', 'fatal-error'} or severity in {'error', 'fatal', 'critical'}:
-                            critical += 1
-                        elif level == 'warning' or severity in {'warning', 'high'}:
-                            high += 1
-                        elif level == 'note' or severity in {'note', 'medium'}:
-                            medium += 1
+                    level = normalize(result.get('level'))
+                    severity = normalize((result.get('properties') or {}).get('severity'))
+                    if level in {'error', 'fatal', 'fatal-error'} or severity in {'error', 'fatal', 'critical'}:
+                        critical += 1
+                    elif level == 'warning' or severity in {'warning', 'high'}:
+                        high += 1
+                    elif level == 'note' or severity in {'note', 'medium'}:
+                        medium += 1
+
+        if valid_sarif_count == 0:
+            print('::error::No valid SARIF documents were parsed from the CodeQL output; this would silently hide the repository alert inventory.')
+            raise SystemExit(1)
 
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
             fh.write(f'critical_count={critical}\n')
