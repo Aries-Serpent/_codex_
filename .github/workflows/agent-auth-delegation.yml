@@ -380,8 +380,7 @@ jobs:
 
         '
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const sha    = (context.sha || 'unknown').slice(0, 7);\nconst MARKER\
           \ = 'COGNITIVE SESSION-TYPE DIRECTIVE';\n\nconst { data: comments } = await\
           \ github.rest.issues.listComments({\n  owner: context.repo.owner,\n  repo:\
@@ -942,7 +941,6 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ github.token }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Validate/Refresh Session ID (CAPI Readiness Check)
@@ -1358,7 +1356,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ github.token }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Generate Cognitive Brain App token
@@ -1508,7 +1505,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
-        token: ${{ github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

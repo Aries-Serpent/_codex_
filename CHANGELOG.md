@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Fixed — Agent Token Delegation authentication (2026-10-10)
-- Use the run-scoped `GITHUB_TOKEN` for same-repository checkouts and pre-flight operations, with explicit least-privilege job permissions; keep privileged credentials out of checkout and recovery-job environments.
+- Use the checkout action's run-scoped token for same-repository checkouts and `GITHUB_TOKEN` for pre-flight reads/comments, with explicit least-privilege job permissions; keep privileged credentials out of checkout and recovery-job environments.
 - Validate configured CODEX credentials with a read-only repository request without logging token values; document that organization policy settings do not prove organization-secret scope or universal Copilot/custom-agent access.
 
 ### Fixed — Copilot runtime resource exhaustion (2026-10-05)
