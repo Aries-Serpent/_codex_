@@ -94,6 +94,10 @@ jobs:
             --page-sleep "$PAGE_SLEEP" \
             --top-n "$TOP_N" \
             --out-dir .codex/security/code_scanning_inventory
+          if [ "${MAX_PAGES}" = "10" ] && [ "$STATE" != "open" ]; then
+            echo "::error::Workflow input max_pages=10 would truncate a page-limited CodeQL inventory; expand the cap or run the fetcher with a higher max-pages value."
+            exit 1
+          fi
 
       - name: Validate alert inventory outputs
         shell: bash
@@ -129,6 +133,13 @@ jobs:
             .codex/security/code_scanning_inventory/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Refresh repository inventory snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add .codex/security/code_scanning_inventory
+          git diff --cached --quiet || echo "Inventory snapshot refreshed in the working tree for this branch."
 
       - name: Write workflow summary
         shell: bash

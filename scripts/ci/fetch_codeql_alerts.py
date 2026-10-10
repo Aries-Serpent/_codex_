@@ -155,13 +155,13 @@ def fetch_alerts(
             log.info("Last page reached (got %d < per_page=%d).", len(data), per_page)
             break
 
-        page += 1
+        if page >= max_pages:
+            raise SystemExit(
+                "Reached the configured max-pages cap without exhausting the repository inventory; "
+                "refusing to silently publish a partial CodeQL snapshot."
+            )
 
-    if page > max_pages:
-        log.warning(
-            "Reached max-pages cap (%d). There may be more alerts not fetched.",
-            max_pages,
-        )
+        page += 1
 
     return all_alerts
 
@@ -197,7 +197,6 @@ def _path(alert: dict[str, Any]) -> str:
 
 def _build_by_rule_csv(alerts: list[dict[str, Any]]) -> str:
     """Return a CSV table of rule totals and representative locations."""
-    output = []
     rows = []
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for alert in alerts:
@@ -244,12 +243,16 @@ def _build_path_csv(alerts: list[dict[str, Any]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _utc_stamp() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def _write_manifest(out_dir: Path) -> None:
     manifest = {
         "schema_version": "1.0",
         "source_of_truth": "GitHub REST API /repos/{owner}/{repo}/code-scanning/alerts",
         "security_ui_role": "human validation only",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": _utc_stamp(),
         "files": [
             "api_inventory_raw.json",
             "api_inventory_summary.json",
@@ -267,8 +270,8 @@ def _write_manifest(out_dir: Path) -> None:
 
 def _write_validation_report(out_dir: Path, summary: dict[str, Any]) -> None:
     validation = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "status": "ok" if summary.get("total", 0) >= 0 else "error",
+        "generated_at": _utc_stamp(),
+        "status": "not_validated" if summary.get("total") is None else "ok",
         "total_alerts": summary.get("total", 0),
         "by_severity": summary.get("by_severity", {}),
         "contract": {
@@ -283,18 +286,18 @@ def _write_validation_report(out_dir: Path, summary: dict[str, Any]) -> None:
 
 def _write_delta_report(out_dir: Path, summary: dict[str, Any]) -> None:
     delta = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": _utc_stamp(),
         "total_alerts": summary.get("total", 0),
         "changes": {
-            "count": summary.get("total", 0),
-            "direction": "fresh_export",
+            "count": 0,
+            "direction": "baseline",
         },
         "source_of_truth": "GitHub REST API /repos/{owner}/{repo}/code-scanning/alerts",
     }
     (out_dir / "delta_report.json").write_text(json.dumps(delta, indent=2), encoding="utf-8")
 
 
-def build_summary(alerts: list[dict[str, Any]]) -> dict[str, Any]:
+def build_summary(alerts: list[dict[str, Any]], *, state: str | None = None) -> dict[str, Any]:
     by_rule: dict[str, int] = defaultdict(int)
     by_severity: dict[str, int] = defaultdict(int)
     by_tool: dict[str, int] = defaultdict(int)
@@ -332,8 +335,8 @@ def build_summary(alerts: list[dict[str, Any]]) -> dict[str, Any]:
             by_age_bucket["unknown"] += 1
 
     return {
-        "generated_at": now.isoformat(),
-        "state": DEFAULT_STATE,
+        "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "state": state or DEFAULT_STATE,
         "repo": REPO_NAME_FULL,
         "total": len(alerts),
         "by_rule": dict(sorted(by_rule.items(), key=lambda kv: -kv[1])),
@@ -432,9 +435,9 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, Any]]) ->
             writer.writerow({field: row.get(field, "") for field in fieldnames})
 
 
-def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_n: int = 20) -> dict[str, Any]:
+def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_n: int = 20, state: str = DEFAULT_STATE) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
-    summary = build_summary(alerts)
+    summary = build_summary(alerts, state=state)
 
     raw_path = out_dir / "api_inventory_raw.json"
     raw_path.write_text(json.dumps(alerts, indent=2), encoding="utf-8")
@@ -463,12 +466,12 @@ def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_
     _write_delta_report(out_dir, summary)
 
     fixable_canonical = out_dir / "api_inventory_fixable.md"
-    fixable_canonical.write_text(build_fixable_md(alerts, top_n=top_n), encoding="utf-8")
+    fixable_canonical.write_text(build_fixable_md(alerts, top_n=top_n, state=state), encoding="utf-8")
 
     by_rule_md = out_dir / "alerts_by_rule.md"
-    by_rule_md.write_text(build_by_rule_md(alerts), encoding="utf-8")
+    by_rule_md.write_text(build_by_rule_md(alerts, state=state), encoding="utf-8")
     fixable_legacy = out_dir / "alerts_fixable.md"
-    fixable_legacy.write_text(build_fixable_md(alerts, top_n=top_n), encoding="utf-8")
+    fixable_legacy.write_text(build_fixable_md(alerts, top_n=top_n, state=state), encoding="utf-8")
 
     legacy_names = {
         "alerts_raw.json": raw_path,
@@ -485,14 +488,14 @@ def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_
     return summary
 
 
-def build_by_rule_md(alerts: list[dict[str, Any]]) -> str:
+def build_by_rule_md(alerts: list[dict[str, Any]], *, state: str = DEFAULT_STATE) -> str:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for a in alerts:
         grouped[_rule_id(a)].append(a)
 
     lines = [
         "# CodeQL Alerts — Grouped by Rule",
-        f"_Generated {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ')} · {len(alerts)} open alerts_",
+        f"_Generated {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ')} · {len(alerts)} {state} alerts_",
         "",
     ]
     for rule_id, rule_alerts in sorted(grouped.items(), key=lambda kv: -len(kv[1])):
@@ -515,7 +518,7 @@ def build_by_rule_md(alerts: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def build_fixable_md(alerts: list[dict[str, Any]], top_n: int = 20) -> str:
+def build_fixable_md(alerts: list[dict[str, Any]], top_n: int = 20, *, state: str = DEFAULT_STATE) -> str:
     """Produce a prioritised fix-list for the next Copilot session."""
     high_sev = {"critical", "high", "error"}
     prioritised = sorted(
@@ -525,7 +528,7 @@ def build_fixable_md(alerts: list[dict[str, Any]], top_n: int = 20) -> str:
 
     lines = [
         "# CodeQL Alerts — Fixable (Priority List)",
-        f"_Top {min(top_n, len(prioritised))} of {len(alerts)} open alerts_",
+        f"_Top {min(top_n, len(prioritised))} of {len(alerts)} {state} alerts_",
         f"_Generated {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ')}_",
         "",
         "| Alert# | Rule | Severity | File:Line | URL |",
@@ -544,9 +547,9 @@ def build_fixable_md(alerts: list[dict[str, Any]], top_n: int = 20) -> str:
         "",
         "## Suggested fix command for next session",
         "```bash",
-        "# Dispatch the fetcher to refresh this list:",
-        "# (check codeql-alert-fetcher.yml in WEC then push)",
-        "# Then download artifact:  codeql-alerts-open-all-rules-<RUN_ID>",
+        "# Refresh the canonical inventory on the active workflow:",
+        "# gh workflow run codeql-alert-inventory.yml --ref main",
+        "# Then check the latest artifact named codeql-alert-inventory-<RUN_ID>",
         "```",
     ]
     return "\n".join(lines)
@@ -642,7 +645,7 @@ def main(argv: list[str] | None = None) -> int:
         token=token,
     )
 
-    summary = _write_inventory_bundle(alerts, out_dir, top_n=args.top_n)
+    summary = _write_inventory_bundle(alerts, out_dir, top_n=args.top_n, state=args.state)
     raw_path = out_dir / "api_inventory_raw.json"
     log.info("Wrote %s (%d alerts)", raw_path, len(alerts))
     summary_path = out_dir / "api_inventory_summary.json"

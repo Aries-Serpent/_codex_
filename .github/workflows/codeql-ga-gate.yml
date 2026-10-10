@@ -77,8 +77,8 @@ jobs:
       shell: bash
       run: |
         set -euo pipefail
-        if ! find . -name '*.sarif' -type f | grep -q .; then
-          echo "No CodeQL SARIF artifacts were produced; treating this as a workflow failure instead of a silent pass."
+        if ! find results -name '*.sarif' -type f | grep -q .; then
+          echo "No CodeQL SARIF artifacts were produced in the current analysis results; treating this as a workflow failure instead of a silent pass."
           echo "This usually indicates a CodeQL analysis error, timeout, or no-build scenario." >&2
           exit 1
         fi
@@ -108,7 +108,7 @@ jobs:
         import os
         from pathlib import Path
 
-        root = Path('.')
+        root = Path('results')
         sarif_files = sorted(p for p in root.rglob('*.sarif') if p.is_file() and p.stat().st_size > 0)
         critical = 0
         high = 0
@@ -118,7 +118,7 @@ jobs:
             return str(value or '').strip().lower()
 
         if not sarif_files:
-            print('::error::No SARIF files were produced after CodeQL analysis; refusing to treat this as a no-alert result because it can mask a silent scanner failure.')
+            print('::error::No SARIF files were produced after CodeQL analysis in results/; refusing to treat this as a no-alert result because it can mask a silent scanner failure.')
             raise SystemExit(1)
 
         valid_sarif_count = 0
@@ -131,8 +131,11 @@ jobs:
             if not isinstance(data, dict):
                 print(f'::error::SARIF document at {sarif_path} is not a JSON object.')
                 raise SystemExit(1)
+            runs = data.get('runs') or []
+            if not isinstance(runs, list) or not runs:
+                continue
             valid_sarif_count += 1
-            for run in data.get('runs') or []:
+            for run in runs:
                 if not isinstance(run, dict):
                     continue
                 for result in run.get('results') or []:
@@ -148,7 +151,7 @@ jobs:
                         medium += 1
 
         if valid_sarif_count == 0:
-            print('::error::No valid SARIF documents were parsed from the CodeQL output; this would silently hide the repository alert inventory.')
+            print('::error::No valid SARIF documents were parsed from the CodeQL results output; this would silently hide the repository alert inventory.')
             raise SystemExit(1)
 
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
