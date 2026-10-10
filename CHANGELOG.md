@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — Agent Token Delegation authentication (2026-10-10)
+- Use the run-scoped `GITHUB_TOKEN` for same-repository checkouts and pre-flight operations, with explicit least-privilege job permissions; keep privileged credentials out of checkout and recovery-job environments.
+- Validate configured CODEX credentials with a read-only repository request without logging token values; document that organization policy settings do not prove organization-secret scope or universal Copilot/custom-agent access.
+
 ### Fixed — Copilot runtime resource exhaustion (2026-10-05)
 - Added a resource preflight before Copilot environment setup that detects memory, CPU, and process headroom, caps worker counts, serializes dependency-graph work, and bounds the Node heap and native build concurrency. The phase 9.3 executor builds graph edges from declared dependencies, runs independent tasks in bounded batches, and respects task-level parallel-agent limits.
 - Critical resource pressure selects the configured `COPILOT_HIGH_HEADROOM_RUNNER_PROFILE`; if none is configured, the run remains serialized and reports the required escalation.

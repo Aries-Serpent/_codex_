@@ -27,6 +27,21 @@ permission errors. Follow this hierarchy **exactly**:
 > `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
 > to protected branches. Always use `CODEX_MASTER_KEY` for those operations.
 
+### Secret availability and agent boundaries
+
+Organization Copilot policy settings (including organization-locked automation and
+validation settings) do not prove that a workflow secret is organization-scoped, currently
+valid, or available to every Copilot/custom agent. A secret is available only to eligible
+workflow jobs and steps that reference it; `GITHUB_TOKEN` is separately scoped by that
+job's `permissions`. Copilot agent processes, delegated agents, and read-only MCP tools
+must not be assumed to inherit either credential. The Agent Token Delegation workflow
+checks whether the configured `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY` credential can read
+the repository and reports only the result, never the token value. This proves only
+credential availability and repository-read access in that job, not organization scope,
+write/administrative permissions, or universal agent access. Do not expose a privileged
+organization token to every agent; use the smallest permission set and short-lived
+credentials needed by each workflow.
+
 ### Fallback Pattern (canonical)
 ```yaml
 env:
@@ -260,17 +275,17 @@ grants the Copilot Coding agent maintainer-equivalent authority within a TTL win
 
 ```
 Maintainer checks [x] COPILOT_AGENT_AUTH_ENABLED in PR body
- 
+
 agent-auth-delegation.yml detects checkbox (REQ-1)
- 
+
 Writes COPILOT_AGENT_AUTH_ENABLED=true to repo vars (requires CODEX_MASTER_KEY)
- 
+
 Issues provenance session token .codex/agent_auth_session.json
- 
+
 Writes COPILOT_AGENT_STATE=ACTIVE, COPILOT_AGENT_SESSION_EXPIRES=<TTL>
- 
+
 Updates COGNITIVE_BRAIN_ALLOWED_ACTORS to include agent actor
- 
+
 agent can now: approve runs, write vars, edit PR bodies, push commits
 ```
 
