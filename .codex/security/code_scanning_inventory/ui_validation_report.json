@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-10-10T08:54:37.372769+00:00",
+  "status": "ok",
+  "total_alerts": 3,
+  "by_severity": {
+    "high": 3
+  },
+  "contract": {
+    "source_of_truth": "GitHub REST API /repos/{owner}/{repo}/code-scanning/alerts",
+    "requires_json_inventory": true,
+    "requires_machine_readable_summary": true,
+    "requires_csv_rollups": true
+  }
+}

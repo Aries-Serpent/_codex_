@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-10-10T08:54:37.371839+00:00",
+  "state": "open",
+  "repo": "Aries-Serpent/_codex_",
+  "total": 3,
+  "by_rule": {
+    "js/insecure-cookie": 3
+  },
+  "by_severity": {
+    "high": 3
+  },
+  "by_tool": {
+    "CodeQL": 3
+  },
+  "by_path": {
+    "src/test.py": 3
+  },
+  "by_age_bucket": {
+    "7-30d": 3
+  }
+}

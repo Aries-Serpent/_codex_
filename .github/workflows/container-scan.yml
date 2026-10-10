@@ -88,26 +88,15 @@ jobs:
         run: |
           set -euo pipefail
           SARIF_FILE="trivy-results-${{ strategy.job-index }}.sarif"
-          if [ ! -f "$SARIF_FILE" ] || [ ! -s "$SARIF_FILE" ] || ! jq empty "$SARIF_FILE" 2>/dev/null; then
-            echo "Trivy did not produce a valid SARIF payload; creating a minimal fallback stub."
-            jq -n \
-              --arg schema "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json" \
-              '{
-                "$schema": $schema,
-                "version": "2.1.0",
-                "runs": [{
-                  "tool": {
-                    "driver": {
-                      "name": "Trivy",
-                      "informationUri": "https://github.com/aquasecurity/trivy",
-                      "version": "latest",
-                      "rules": []
-                    }
-                  },
-                  "results": []
-                }]
-              }' > "$SARIF_FILE"
+          if [ ! -f "$SARIF_FILE" ] || [ ! -s "$SARIF_FILE" ]; then
+            echo "::error::Trivy did not emit a SARIF file for ${{ matrix.dockerfile }}; this is a silent false-negative condition."
+            exit 1
           fi
+          if ! jq empty "$SARIF_FILE" 2>/dev/null; then
+            echo "::error::Trivy emitted malformed SARIF for ${{ matrix.dockerfile }}; refusing to continue with an invalid inventory."
+            exit 1
+          fi
+          echo "Validated SARIF output: $SARIF_FILE"
 
       - name: Upload SARIF to GitHub Security
         if: always()
