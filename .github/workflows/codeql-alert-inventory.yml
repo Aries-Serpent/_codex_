@@ -93,17 +93,19 @@ jobs:
             --max-pages "$MAX_PAGES" \
             --page-sleep "$PAGE_SLEEP" \
             --top-n "$TOP_N" \
-            --out-dir .codex/artifacts/codeql_alerts
+            --out-dir .codex/security/code_scanning_inventory
 
       - name: Validate alert inventory outputs
         shell: bash
         run: |
           set -euo pipefail
           required=(
-            ".codex/artifacts/codeql_alerts/alerts_raw.json"
-            ".codex/artifacts/codeql_alerts/alerts_summary.json"
-            ".codex/artifacts/codeql_alerts/alerts_by_rule.md"
-            ".codex/artifacts/codeql_alerts/alerts_fixable.md"
+            ".codex/security/code_scanning_inventory/manifest.json"
+            ".codex/security/code_scanning_inventory/api_inventory_raw.json"
+            ".codex/security/code_scanning_inventory/api_inventory_summary.json"
+            ".codex/security/code_scanning_inventory/api_inventory_by_rule.csv"
+            ".codex/security/code_scanning_inventory/api_inventory_by_severity.csv"
+            ".codex/security/code_scanning_inventory/api_inventory_by_path.csv"
           )
           for file in "${required[@]}"; do
             if [ ! -s "$file" ]; then
@@ -114,7 +116,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          summary = json.loads(Path('.codex/artifacts/codeql_alerts/alerts_summary.json').read_text(encoding='utf-8'))
+          summary = json.loads(Path('.codex/security/code_scanning_inventory/api_inventory_summary.json').read_text(encoding='utf-8'))
           print(f"Fetched {summary.get('total', 0)} CodeQL alerts")
           print(f"Severity split: {summary.get('by_severity', {})}")
           PY
@@ -124,7 +126,7 @@ jobs:
         with:
           name: codeql-alert-inventory-${{ github.run_id }}
           path: |
-            .codex/artifacts/codeql_alerts/
+            .codex/security/code_scanning_inventory/
           if-no-files-found: error
           retention-days: 30
 
@@ -136,7 +138,7 @@ jobs:
           import json
           import os
           from pathlib import Path
-          summary = json.loads(Path('.codex/artifacts/codeql_alerts/alerts_summary.json').read_text(encoding='utf-8'))
+          summary = json.loads(Path('.codex/security/code_scanning_inventory/api_inventory_summary.json').read_text(encoding='utf-8'))
           by_sev = summary.get('by_severity', {})
           lines = [
               '## CodeQL alert inventory',

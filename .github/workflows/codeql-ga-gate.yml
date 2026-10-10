@@ -88,8 +88,8 @@ jobs:
       run: |
         set -euo pipefail
         required=(
-          ".codex/security/codeql_alert_inventory.json"
           ".codex/security/code_scanning_inventory/manifest.json"
+          ".codex/security/code_scanning_inventory/api_inventory_summary.json"
           "docs/ci/SECURITY_ENFORCEMENT_GATES.md"
         )
         for file in "${required[@]}"; do
@@ -262,7 +262,8 @@ jobs:
             comment += `### Action Required\n`;
             comment += `This PR cannot be merged until CodeQL vulnerabilities are resolved.\n\n`;
             comment += `**Resources**:\n`;
-            comment += `- [Security inventory](.codex/security/codeql_alert_inventory.json)\n`;
+            comment += `- [Security inventory manifest](.codex/security/code_scanning_inventory/manifest.json)\n`;
+            comment += `- [API inventory summary](.codex/security/code_scanning_inventory/api_inventory_summary.json)\n`;
             comment += `- [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)\n`;
             comment += `- [Security Alerts](https://github.com/${{ github.repository }}/security/code-scanning)\n`;
           } else {
@@ -327,7 +328,7 @@ jobs:
           - **High Alerts**: ${high}\n- **Timestamp**: ${new Date().toISOString()}\n\
           \n### Required Actions\n1. Fix or suppress all critical/high alerts\n2.\
           \ Run local CodeQL scan to verify\n3. Update PR with remediation\n4. Request\
-          \ approval from @${{ github.repository_owner }} if suppression needed\n\n### Resources\n- [Security inventory](.codex/security/codeql_alert_inventory.json)\n- [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)\n- [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)\n\n### SLA\n- **Critical**: 1 hour resolution\n- **High**: 4 hours resolution\n\
+          \ approval from @${{ github.repository_owner }} if suppression needed\n\n### Resources\n- [Security inventory](.codex/security/code_scanning_inventory/api_inventory_summary.json)\n- [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)\n- [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)\n\n### SLA\n- **Critical**: 1 hour resolution\n- **High**: 4 hours resolution\n\
           \n---\n*Automated by CodeQL GA Security Gate (Phase 6 Lane 1)*`;\n\nconst\
           \ issue = await github.rest.issues.create({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  title: issueTitle,\n  body: issueBody,\n\
