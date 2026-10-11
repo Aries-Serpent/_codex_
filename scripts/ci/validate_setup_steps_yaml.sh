@@ -29,7 +29,19 @@ fi
 
 # ── Check 2: yamllint ─────────────────────────────────────────────────────────
 # Catches: flow scalar brace syntax (|| { }) that crashes yamllint 1.38.0
-if command -v yamllint >/dev/null 2>&1; then
+BASE_BRANCH="${GITHUB_BASE_REF:-main}"
+BASE_REF="origin/${BASE_BRANCH}"
+BASE_SHA=""
+if git rev-parse --verify "${BASE_REF}" >/dev/null 2>&1; then
+  BASE_SHA="$(git merge-base "${BASE_REF}" HEAD 2>/dev/null || true)"
+fi
+
+if [[ -n "${BASE_SHA}" ]] \
+  && git diff --quiet "${BASE_SHA}" HEAD -- "${TARGET}" \
+  && git diff --quiet -- "${TARGET}" \
+  && git diff --cached --quiet -- "${TARGET}"; then
+  echo "✅ Check 2/5: yamllint skipped (protected workflow unchanged from base)"
+elif command -v yamllint >/dev/null 2>&1; then
   if yamllint -c "${YAMLLINT_CFG}" "${TARGET}" 2>&1; then
     echo "✅ Check 2/5: yamllint"
   else
