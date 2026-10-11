@@ -30,6 +30,7 @@ Exit Codes:
 
 import argparse
 import csv
+import hashlib
 import json
 import logging
 import os
@@ -223,6 +224,7 @@ class FindingsAggregator:
 
     @staticmethod
     def _artifact_contract_succeeded(artifact_dir: Path) -> bool:
+        artifact_root = artifact_dir.resolve()
         contracts = list(artifact_dir.rglob("output-contract-*.json"))
         if not contracts:
             return False
@@ -237,6 +239,10 @@ class FindingsAggregator:
                 return False
             if data.get("scan_outcome", "success") != "success":
                 return False
+            for output in data.get("required_outputs", []):
+                output_path = (artifact_dir / output).resolve()
+                if not output_path.is_relative_to(artifact_root) or not output_path.exists():
+                    return False
         return True
 
     def _successful_artifacts(self, scan: str) -> List[Path]:
@@ -322,9 +328,23 @@ class FindingsAggregator:
                         or {}
                     )
                     fingerprint_value = next(iter(fingerprint.values()), str(index))
+                    source_path = sarif_file.relative_to(artifact_dir).as_posix()
+                    finding_identity = "/".join(
+                        (
+                            tool_name,
+                            artifact_dir.name,
+                            source_path,
+                            rule_id,
+                            str(fingerprint_value),
+                        )
+                    )
+                    finding_id = (
+                        f"{tool_name.upper()}-"
+                        f"{hashlib.sha256(finding_identity.encode()).hexdigest()[:20]}"
+                    )
                     self.findings.append(
                         Finding(
-                            id=f"{tool_name.upper()}-{rule_id}-{fingerprint_value}",
+                            id=finding_id,
                             tool=tool_name,
                             title=message,
                             description=details,
@@ -493,24 +513,34 @@ class FindingsAggregator:
             return
 
         for package, vulnerability in data.get("vulnerabilities", {}).items():
-            via = vulnerability.get("via", [])
-            advisory = next((item for item in via if isinstance(item, dict)), {})
-            vuln_id = advisory.get("cve") or advisory.get("source") or package
-            self.findings.append(
-                Finding(
-                    id=f"NPM-{package}-{vuln_id}",
-                    tool="npm-audit",
-                    title=advisory.get("title") or f"Vulnerability in {package}",
-                    description=advisory.get("url", ""),
-                    severity=self.severity_map.get(
-                        str(vulnerability.get("severity", "low")).lower(), "LOW"
-                    ),
-                    package=package,
-                    version=vulnerability.get("range"),
-                    remediation_url=advisory.get("url"),
-                    rule_id=str(vuln_id),
+            advisories = [
+                advisory
+                for advisory in vulnerability.get("via", [])
+                if isinstance(advisory, dict)
+            ]
+            if not advisories:
+                advisories = [{}]
+            for index, advisory in enumerate(advisories):
+                vuln_id = (
+                    advisory.get("cve")
+                    or advisory.get("source")
+                    or f"{package}-{index}"
                 )
-            )
+                self.findings.append(
+                    Finding(
+                        id=f"NPM-{package}-{vuln_id}",
+                        tool="npm-audit",
+                        title=advisory.get("title") or f"Vulnerability in {package}",
+                        description=advisory.get("url", ""),
+                        severity=self.severity_map.get(
+                            str(vulnerability.get("severity", "low")).lower(), "LOW"
+                        ),
+                        package=package,
+                        version=vulnerability.get("range"),
+                        remediation_url=advisory.get("url"),
+                        rule_id=str(vuln_id),
+                    )
+                )
 
     def _parse_cargo_audit(self, file_path: Path) -> None:
         try:
@@ -728,6 +758,20 @@ class FindingsAggregator:
             f"**Run:** [{report['scan_metadata']['run_id']}]({report['scan_metadata']['run_url']})",
             f"**Generated:** {report['scan_metadata']['timestamp']}",
             "",
+            "## Scan Status",
+            "",
+            "| Scan | Selected | Status | Successful artifacts | Expected artifacts |",
+            "|---|---:|---|---:|---:|",
+        ]
+
+        for scan, status in report.get("scan_status", {}).items():
+            md_lines.append(
+                f"| {scan} | {status['selected']} | {status['status']} | "
+                f"{status['successful_artifacts']} | {status['expected_artifacts']} |"
+            )
+
+        md_lines.extend([
+            "",
             "## Summary",
             "",
             f"- **Total Findings:** {report['summary']['total_findings']}",
@@ -738,7 +782,7 @@ class FindingsAggregator:
             "",
             "## Findings by Severity",
             "",
-        ]
+        ])
 
         for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
             findings = report["findings_by_severity"].get(severity, [])
@@ -826,7 +870,10 @@ class FindingsAggregator:
             for finding in findings:
                 writer.writerow(
                     {
-                        "family_id": finding.get("rule_id") or finding.get("tool", "unknown"),
+                        "family_id": (
+                            f"{finding.get('tool', 'unknown')}:"
+                            f"{finding.get('rule_id') or 'unknown'}"
+                        ),
                         "priority_score": severity_priority.get(
                             finding.get("severity", "LOW"), 0
                         ),
@@ -903,6 +950,16 @@ def main():
     parser.add_argument("--output-family-csv", help="Optional alert family index CSV")
 
     args = parser.parse_args()
+    csv_options = (
+        args.output_csv,
+        args.output_priority_csv,
+        args.output_family_csv,
+    )
+    if any(csv_options) and not all(csv_options):
+        parser.error(
+            "--output-csv, --output-priority-csv, and --output-family-csv "
+            "must be provided together"
+        )
 
     # Create aggregator and generate reports
     aggregator = FindingsAggregator(
