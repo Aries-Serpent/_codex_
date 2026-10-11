@@ -113,9 +113,9 @@ class TestComplianceResult(unittest.TestCase):
 class TestREQ4AccountabilityValidator(unittest.TestCase):
     """Test requested-commit selection in the REQ-4 validator."""
 
-    def test_requested_sha_after_first_30_commits_is_found(self):
+    def test_requested_sha_on_later_page_is_found(self):
         commits = [{"sha": f"{index:08x}{'0' * 32}"} for index in range(1, 102)]
-        validator = REQ4AccountabilityValidator("123", "owner/repo", commits[30]["sha"][:8])
+        validator = REQ4AccountabilityValidator("123", "owner/repo", commits[100]["sha"][:8])
         with (
             patch.object(validator, "_get_pr_details", return_value={}),
             patch.object(
@@ -135,8 +135,8 @@ class TestREQ4AccountabilityValidator(unittest.TestCase):
             result = validator.validate()
 
         self.assertEqual(result.status, "pass")
-        self.assertEqual(result.metadata["commit_sha"], commits[30]["sha"][:12])
-        get_commit_details.assert_called_once_with(commits[30]["sha"])
+        self.assertEqual(result.metadata["commit_sha"], commits[100]["sha"][:12])
+        get_commit_details.assert_called_once_with(commits[100]["sha"])
         self.assertEqual(
             [call.args[0] for call in get_api_call.call_args_list],
             [
