@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -937,3 +938,43 @@ class TestHumanGrantTracking:
         grants = swa._detect_human_grants("1234", {"auto-approve-workflows": True})
         # No new grant — agent already had it as [x]
         assert "auto-approve-workflows" not in grants, "Condition must be true"
+
+
+@pytest.mark.parametrize(
+    ("function_name", "pr_body"),
+    [
+        ("fix_pr_body_checkboxes", "PR description"),
+        ("select_merge_required_workflows", swa._build_wec_block({})),
+    ],
+)
+@pytest.mark.parametrize("edit_succeeds", [False, True])
+def test_wec_write_state_is_recorded_only_after_successful_edit(
+    function_name, pr_body, edit_succeeds, monkeypatch
+):
+    events = []
+    if function_name == "select_merge_required_workflows":
+        monkeypatch.setattr(
+            swa,
+            "_MERGE_REQUIRED_WORKFLOWS",
+            swa._MERGE_REQUIRED_WORKFLOWS | {"auth-tests.yml"},
+        )
+
+    def run(command, **kwargs):
+        if command[2] == "view":
+            return MagicMock(stdout=pr_body)
+        events.append("edit")
+        if not edit_succeeds:
+            raise subprocess.CalledProcessError(1, command, stderr="edit failed")
+        return MagicMock(stdout="")
+
+    def record_write(*args, **kwargs):
+        events.append("record")
+
+    monkeypatch.setattr(swa.subprocess, "run", run)
+    monkeypatch.setattr(swa, "_detect_human_grants", lambda *args: {})
+    monkeypatch.setattr(swa, "_record_agent_wec_write", record_write)
+
+    result = getattr(swa, function_name)("1234")
+
+    assert result is edit_succeeds
+    assert events == (["edit", "record"] if edit_succeeds else ["edit"])

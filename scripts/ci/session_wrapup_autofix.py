@@ -284,11 +284,11 @@ def _record_agent_wec_write(
     agent_state: dict[str, bool],
     live_body: str | None = None,
 ) -> dict[str, dict]:
-    """Record the state the agent is about to write, detect any human grants first.
+    """Record the state the agent successfully wrote, detecting human grants first.
 
-    Call this IMMEDIATELY BEFORE writing the new PR body.  Pass *live_body* (the
-    current PR body text before the agent's write) so human grants can be detected
-    by comparing *live_body* vs the previous ``last_agent_write``.
+    Call this only after the PR body update succeeds. Pass *live_body* (the body
+    text before the agent's write) so human grants can be detected by comparing it
+    with the previous ``last_agent_write``.
 
     Returns the merged ``human_grants`` dict so the caller can apply them to the
     new WEC block before writing.
@@ -1459,17 +1459,17 @@ def fix_pr_body_checkboxes(
         )
         return True
 
-    # Determine the agent_state we're about to write so it can be recorded.
-    new_state = _extract_wec_state(new_wec)
-    _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
-
     try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
-            check=True, capture_output=True, text=True,
+            check=True,
+            capture_output=True,
+            text=True,
         )
+        new_state = _extract_wec_state(new_wec)
+        _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
         n_checked = sum(1 for v in existing_state.values() if v)
-        n_grants  = sum(1 for g in human_grants.values() if g.get("status") == "active")
+        n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
         print(
             f"✅ Rebuilt WEC for PR #{pr_number} "
             f"(preserved {n_checked} selection(s), {n_grants} human grant(s))"
@@ -1913,14 +1913,12 @@ def select_merge_required_workflows(
         )
         return True
 
-    # Record agent write before pushing so the next session can detect human changes.
-    new_state = _extract_wec_state(new_wec_block)
-    _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
-
     try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
-            check=True, capture_output=True, text=True,
+            check=True,
+            capture_output=True,
+            text=True,
         )
     except subprocess.CalledProcessError as exc:
         print(
@@ -1928,6 +1926,9 @@ def select_merge_required_workflows(
             file=sys.stderr,
         )
         return False
+
+    new_state = _extract_wec_state(new_wec_block)
+    _record_agent_wec_write(pr_number, new_state, live_body=pr_body)
 
     n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
     total_checked = sum(1 for v in updated_state.values() if v)

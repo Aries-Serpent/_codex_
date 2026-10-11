@@ -23,6 +23,7 @@ from req1_eligibility_validator import (
     _check_description_quality,
     _check_title_quality,
 )
+from req4_accountability_validator import REQ4AccountabilityValidator
 
 
 class TestComplianceResult(unittest.TestCase):
@@ -107,6 +108,112 @@ class TestComplianceResult(unittest.TestCase):
         json_str = result.to_json()
         parsed = json.loads(json_str)
         self.assertEqual(parsed["requirement_id"], "REQ-1")
+
+
+class TestREQ4AccountabilityValidator(unittest.TestCase):
+    """Test requested-commit selection in the REQ-4 validator."""
+
+    def test_requested_sha_on_later_page_is_found(self):
+        commits = [{"sha": f"{index:08x}{'0' * 32}"} for index in range(1, 102)]
+        validator = REQ4AccountabilityValidator("123", "owner/repo", commits[100]["sha"][:8])
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(
+                validator,
+                "_gh_api_call",
+                side_effect=[json.dumps(commits[:100]), json.dumps(commits[100:])],
+            ) as get_api_call,
+            patch.object(
+                validator,
+                "_get_commit_details",
+                return_value={
+                    "files": [{"filename": ("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")}]
+                },
+            ) as get_commit_details,
+            patch.object(validator, "_read_file", return_value="accountability report"),
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "pass")
+        self.assertEqual(result.metadata["commit_sha"], commits[100]["sha"][:12])
+        get_commit_details.assert_called_once_with(commits[100]["sha"])
+        self.assertEqual(
+            [call.args[0] for call in get_api_call.call_args_list],
+            [
+                "repos/owner/repo/pulls/123/commits?per_page=100&page=1",
+                "repos/owner/repo/pulls/123/commits?per_page=100&page=2",
+            ],
+        )
+
+    def test_default_selection_uses_latest_commit_from_later_page(self):
+        commits = [{"sha": f"{index:08x}{'0' * 32}"} for index in range(1, 102)]
+        validator = REQ4AccountabilityValidator("123", "owner/repo")
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(
+                validator,
+                "_gh_api_call",
+                side_effect=[json.dumps(commits[:100]), json.dumps(commits[100:])],
+            ) as get_api_call,
+            patch.object(
+                validator,
+                "_get_commit_details",
+                return_value={
+                    "files": [{"filename": ("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")}]
+                },
+            ) as get_commit_details,
+            patch.object(validator, "_read_file", return_value="accountability report"),
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "pass")
+        self.assertEqual(result.metadata["commit_sha"], commits[-1]["sha"][:12])
+        get_commit_details.assert_called_once_with(commits[-1]["sha"])
+        self.assertEqual(
+            [call.args[0] for call in get_api_call.call_args_list],
+            [
+                "repos/owner/repo/pulls/123/commits?per_page=100&page=1",
+                "repos/owner/repo/pulls/123/commits?per_page=100&page=2",
+            ],
+        )
+
+    def test_requested_sha_selects_matching_commit(self):
+        commits = [{"sha": "a" * 40}, {"sha": "b" * 40}]
+        validator = REQ4AccountabilityValidator("123", "owner/repo", "a" * 8)
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(validator, "_get_pr_commits", return_value=commits),
+            patch.object(
+                validator,
+                "_get_commit_details",
+                return_value={
+                    "files": [{"filename": ("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")}]
+                },
+            ) as get_commit_details,
+            patch.object(validator, "_read_file", return_value="accountability report"),
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "pass")
+        self.assertEqual(result.metadata["commit_sha"], "a" * 12)
+        get_commit_details.assert_called_once_with("a" * 40)
+
+    def test_unknown_requested_sha_fails(self):
+        validator = REQ4AccountabilityValidator("123", "owner/repo", "c" * 8)
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(
+                validator,
+                "_get_pr_commits",
+                return_value=[{"sha": "a" * 40}, {"sha": "b" * 40}],
+            ),
+            patch.object(validator, "_get_commit_details") as get_commit_details,
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "fail")
+        self.assertIn("was not found", result.reason)
+        get_commit_details.assert_not_called()
 
 
 class TestBranchNameValidation(unittest.TestCase):

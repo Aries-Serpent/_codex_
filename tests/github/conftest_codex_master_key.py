@@ -167,8 +167,8 @@ def mock_variable_response():
         return {
             "name": name,
             "value": value,
-            "created_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
-            "updated_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
+            "created_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "updated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
 
     return _make
@@ -188,11 +188,11 @@ def mock_workflow_run_response():
             "name": "Test Workflow",
             "status": status,
             "conclusion": conclusion,
-            "created_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
-            "updated_at": datetime.now(tz=timezone.utc).isoformat() + "Z",
+            "created_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "updated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "event": "push",
             "head_branch": "main",
-            "head_sha": "abc1234567890def",
+            "head_sha": "abc123",
         }
 
     return _make
