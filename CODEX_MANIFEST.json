@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-05T19:01:16Z",
+  "generated_at": "2026-10-11T00:42:50Z",
   "agents": [
     {
       "name": "deep-research-analysis-agent",
@@ -780,6 +780,11 @@
       "has_concurrency": true
     },
     {
+      "name": "codeql-alert-inventory",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "codeql-ga-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -806,7 +811,7 @@
     },
     {
       "name": "container-scan",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1361,5 +1366,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "5c928c9e473a658ac3cf339a659a81fbd2d60d53fdeb21dd9f60c6cc13807258"
+  "integrity_sha256": "03eff9ea33b25dcfca6de2465b1bdd4362e6d240bec45b3823dc9299341eac4d"
 }
