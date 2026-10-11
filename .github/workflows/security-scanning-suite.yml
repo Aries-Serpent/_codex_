@@ -33,19 +33,41 @@ name: Art_Security Scanning Suite
     - cron: "0 5 * * 1"
   workflow_dispatch:
     inputs:
-      scan-type:
-        description: Security scan types
-        required: true
-        type: choice
-        options:
-        - all
-        - codeql
-        - dependency
-        - semgrep
-        - cve
-        - containers
-        - secrets
-        default: all
+      scan_codeql:
+        description: Run CodeQL analysis (Python and JavaScript)
+        required: false
+        type: boolean
+        default: true
+      scan_semgrep:
+        description: Run Semgrep SAST
+        required: false
+        type: boolean
+        default: true
+      scan_containers:
+        description: Run Trivy container scans
+        required: false
+        type: boolean
+        default: true
+      scan_cve:
+        description: Run ecosystem CVE audits
+        required: false
+        type: boolean
+        default: true
+      scan_dependency:
+        description: Run dependency security audit
+        required: false
+        type: boolean
+        default: true
+      scan_secrets:
+        description: Run full-repository secret scanning (may take over an hour)
+        required: false
+        type: boolean
+        default: true
+      scan_sbom:
+        description: Generate software bill of materials
+        required: false
+        type: boolean
+        default: true
       lane-id:
         description: Multi-lane orchestration lane id
         required: false

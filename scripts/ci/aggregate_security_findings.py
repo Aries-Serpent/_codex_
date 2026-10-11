@@ -29,12 +29,13 @@ Exit Codes:
 """
 
 import argparse
+import csv
 import json
 import logging
 import os
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -104,6 +105,27 @@ class Finding:
 class FindingsAggregator:
     """Main aggregator for security findings across all tools"""
 
+    SCAN_ARTIFACTS = {
+        "codeql": (
+            "security-suite-codeql-python",
+            "security-suite-codeql-javascript",
+        ),
+        "semgrep": ("security-suite-semgrep",),
+        "containers": (
+            "security-suite-container-0",
+            "security-suite-container-1",
+            "security-suite-container-2",
+        ),
+        "cve": (
+            "security-suite-cve-python",
+            "security-suite-cve-javascript",
+            "security-suite-cve-rust",
+        ),
+        "dependency": ("security-suite-dependency",),
+        "secrets": ("security-suite-secrets",),
+        "sbom": ("security-suite-sbom",),
+    }
+
     def __init__(
         self,
         artifacts_dir: str,
@@ -111,6 +133,7 @@ class FindingsAggregator:
         run_id: str,
         commit_sha: str,
         repository: str,
+        selected_scans: Optional[List[str]] = None,
     ):
         self.artifacts_dir = Path(artifacts_dir)
         self.repo_url = repo_url
@@ -118,6 +141,8 @@ class FindingsAggregator:
         self.commit_sha = commit_sha
         self.repository = repository
         self.findings: List[Finding] = []
+        self.selected_scans = self._resolve_selected_scans(selected_scans)
+        self.scan_status = self._build_scan_status()
         self.severity_map = {
             "critical": "CRITICAL",
             "error": "CRITICAL",
@@ -136,10 +161,13 @@ class FindingsAggregator:
         # Parse findings from each tool
         self._parse_codeql_findings()
         self._parse_semgrep_findings()
+        self._parse_container_findings()
+        self._parse_cve_findings()
         self._parse_dependency_findings()
         self._parse_secret_findings()
 
-        # Deduplicate findings
+        # Preserve each scanner's alert; identical locations from distinct tools
+        # remain separate findings in the consolidated report.
         self._deduplicate_findings()
 
         # Normalize severity levels
@@ -154,118 +182,364 @@ class FindingsAggregator:
         logger.info(f"Aggregation complete: {len(self.findings)} unique findings")
         return report
 
+    def _resolve_selected_scans(
+        self, selected_scans: Optional[List[str]]
+    ) -> set[str]:
+        if selected_scans is not None:
+            return {scan for scan in selected_scans if scan in self.SCAN_ARTIFACTS}
+
+        manifest = self.artifacts_dir / "security-suite-lane-contract" / "lane-manifest.json"
+        if manifest.is_file():
+            try:
+                with manifest.open(encoding="utf-8") as handle:
+                    value = json.load(handle).get("selected_scans", "")
+                if isinstance(value, list):
+                    return {scan for scan in value if scan in self.SCAN_ARTIFACTS}
+                if isinstance(value, str):
+                    return {
+                        scan
+                        for scan in value.split(",")
+                        if scan in self.SCAN_ARTIFACTS
+                    }
+            except (OSError, json.JSONDecodeError, AttributeError) as exc:
+                logger.warning("Unable to read selected scans from lane manifest: %s", exc)
+
+        return set(self.SCAN_ARTIFACTS)
+
+    def _artifact_dirs(self, scan: str) -> List[Path]:
+        expected = self.SCAN_ARTIFACTS[scan]
+        if scan in {"containers", "cve"}:
+            prefix = "security-suite-container-" if scan == "containers" else "security-suite-cve-"
+            return sorted(
+                path
+                for path in self.artifacts_dir.glob(f"{prefix}*")
+                if path.is_dir()
+            )
+        return [
+            self.artifacts_dir / name
+            for name in expected
+            if (self.artifacts_dir / name).is_dir()
+        ]
+
+    @staticmethod
+    def _artifact_contract_succeeded(artifact_dir: Path) -> bool:
+        contracts = list(artifact_dir.rglob("output-contract-*.json"))
+        if not contracts:
+            return False
+
+        for contract in contracts:
+            try:
+                with contract.open(encoding="utf-8") as handle:
+                    data = json.load(handle)
+            except (OSError, json.JSONDecodeError):
+                return False
+            if data.get("status") != "success":
+                return False
+            if data.get("scan_outcome", "success") != "success":
+                return False
+        return True
+
+    def _successful_artifacts(self, scan: str) -> List[Path]:
+        return [
+            artifact
+            for artifact in self._artifact_dirs(scan)
+            if self._artifact_contract_succeeded(artifact)
+        ]
+
+    def _build_scan_status(self) -> Dict[str, Dict[str, Any]]:
+        results = {}
+        for scan, expected in self.SCAN_ARTIFACTS.items():
+            artifacts = self._artifact_dirs(scan)
+            successful = [
+                artifact
+                for artifact in artifacts
+                if self._artifact_contract_succeeded(artifact)
+            ]
+            selected = scan in self.selected_scans
+            if not selected:
+                status = "skipped"
+            elif len(successful) == len(expected):
+                status = "success"
+            elif successful:
+                status = "partial"
+            else:
+                status = "incomplete"
+            results[scan] = {
+                "selected": selected,
+                "status": status,
+                "expected_artifacts": len(expected),
+                "available_artifacts": len(artifacts),
+                "successful_artifacts": len(successful),
+            }
+        return results
+
+    def _parse_sarif_artifact(self, artifact_dir: Path, tool_name: str) -> None:
+        for sarif_file in artifact_dir.rglob("*.sarif"):
+            try:
+                with sarif_file.open(encoding="utf-8") as handle:
+                    sarif_data = json.load(handle)
+            except (OSError, json.JSONDecodeError) as exc:
+                logger.error("Unable to parse SARIF file %s: %s", sarif_file, exc)
+                continue
+
+            for run in sarif_data.get("runs", []):
+                rules = {
+                    rule.get("id", "unknown"): rule
+                    for rule in run.get("tool", {}).get("driver", {}).get("rules", [])
+                }
+                for index, result in enumerate(run.get("results", [])):
+                    rule_id = result.get("ruleId", "unknown")
+                    rule = rules.get(rule_id, {})
+                    message = result.get("message", {}).get("text", rule_id)
+                    properties = result.get("properties", {})
+                    rule_properties = rule.get("properties", {})
+                    severity = self._sarif_severity(
+                        result.get("level"),
+                        properties.get("security-severity")
+                        or rule_properties.get("security-severity"),
+                    )
+                    location = (result.get("locations") or [{}])[0]
+                    physical = location.get("physicalLocation", {})
+                    file_path = (
+                        physical.get("artifactLocation", {}).get("uri")
+                    )
+                    line = physical.get("region", {}).get("startLine")
+                    details = rule.get("help", {}).get("text") or message
+                    cwe_match = re.search(
+                        r"CWE-\d+",
+                        " ".join(
+                            str(value)
+                            for value in (
+                                details,
+                                rule_properties.get("tags", []),
+                                properties.get("tags", []),
+                            )
+                        ),
+                    )
+                    fingerprint = (
+                        result.get("fingerprints")
+                        or result.get("partialFingerprints")
+                        or {}
+                    )
+                    fingerprint_value = next(iter(fingerprint.values()), str(index))
+                    self.findings.append(
+                        Finding(
+                            id=f"{tool_name.upper()}-{rule_id}-{fingerprint_value}",
+                            tool=tool_name,
+                            title=message,
+                            description=details,
+                            severity=severity,
+                            file=file_path,
+                            line=line,
+                            cwe_id=cwe_match.group(0) if cwe_match else None,
+                            rule_id=rule_id,
+                            sarif_location=str(sarif_file),
+                        )
+                    )
+
+    def _sarif_severity(self, level: Optional[str], score: Any) -> str:
+        try:
+            numeric_score = float(score)
+        except (TypeError, ValueError):
+            numeric_score = None
+        if numeric_score is not None:
+            if numeric_score >= 9:
+                return "CRITICAL"
+            if numeric_score >= 7:
+                return "HIGH"
+            if numeric_score >= 4:
+                return "MEDIUM"
+            return "LOW"
+        return self.severity_map.get(str(level or "note").lower(), "LOW")
+
     def _parse_codeql_findings(self) -> None:
         """Parse CodeQL SARIF artifacts"""
         logger.info("Parsing CodeQL findings...")
-        codeql_dir = self.artifacts_dir / "security-suite-codeql-python"
-
-        if not codeql_dir.exists():
-            logger.warning(f"CodeQL directory not found: {codeql_dir}")
-            return
-
-        for sarif_file in codeql_dir.glob("*.sarif"):
-            try:
-                with open(sarif_file, "r") as f:
-                    sarif_data = json.load(f)
-
-                for run in sarif_data.get("runs", []):
-                    for rule in run.get("tool", {}).get("driver", {}).get("rules", []):
-                        rule_id = rule.get("id", "unknown")
-                        cwe_match = re.search(r'CWE-(\d+)', rule.get("help", {}).get("text", ""))
-                        cwe_id = f"CWE-{cwe_match.group(1)}" if cwe_match else None
-
-                    for result in run.get("results", []):
-                        finding = Finding(
-                            id=f"CODEQL-{rule_id}-{len(self.findings):03d}",
-                            tool="codeql",
-                            title=result.get("message", {}).get("text", "CodeQL Finding"),
-                            description=result.get("message", {}).get("text", ""),
-                            severity=self.severity_map.get(
-                                result.get("level", "note").lower(), "LOW"
-                            ),
-                            file=result.get("locations", [{}])[0].get("physicalLocation", {}).get("artifactLocation", {}).get("uri"),
-                            line=result.get("locations", [{}])[0].get("physicalLocation", {}).get("region", {}).get("startLine"),
-                            cwe_id=cwe_id,
-                            rule_id=rule_id,
-                            sarif_location=str(sarif_file),
-                            agent_assignee="codeql-alert-resolution-agent",
-                        )
-                        self.findings.append(finding)
-                        logger.debug(f"Parsed CodeQL finding: {finding.id}")
-            except Exception as e:
-                logger.error(f"Error parsing CodeQL SARIF {sarif_file}: {e}")
+        for artifact in self._successful_artifacts("codeql"):
+            self._parse_sarif_artifact(artifact, "codeql")
 
     def _parse_semgrep_findings(self) -> None:
         """Parse Semgrep JSON output"""
         logger.info("Parsing Semgrep findings...")
-        semgrep_dir = self.artifacts_dir / "security-suite-semgrep"
+        for semgrep_dir in self._successful_artifacts("semgrep"):
+            for json_file in semgrep_dir.rglob("semgrep-results.json"):
+                try:
+                    with json_file.open(encoding="utf-8") as handle:
+                        semgrep_data = json.load(handle)
+                except (OSError, json.JSONDecodeError) as exc:
+                    logger.error("Unable to parse Semgrep results %s: %s", json_file, exc)
+                    continue
 
-        if not semgrep_dir.exists():
-            logger.warning(f"Semgrep directory not found: {semgrep_dir}")
-            return
+                for index, result in enumerate(semgrep_data.get("results", [])):
+                    extra = result.get("extra", {})
+                    self.findings.append(
+                        Finding(
+                            id=f"SEMGREP-{result.get('check_id', 'unknown')}-{index}",
+                            tool="semgrep",
+                            title=result.get("check_id", "Semgrep Finding"),
+                            description=extra.get("message", ""),
+                            severity=self.severity_map.get(
+                                extra.get("severity", "info").lower(), "INFO"
+                            ),
+                            file=result.get("path"),
+                            line=result.get("start", {}).get("line"),
+                            rule_id=result.get("check_id"),
+                            remediation_url=extra.get("docs"),
+                        )
+                    )
 
-        json_file = semgrep_dir / "semgrep-results.json"
-        if not json_file.exists():
-            logger.warning(f"Semgrep JSON not found: {json_file}")
-            return
-
-        try:
-            with open(json_file, "r") as f:
-                semgrep_data = json.load(f)
-
-            for result in semgrep_data.get("results", []):
-                finding = Finding(
-                    id=f"SEMGREP-{result.get('check_id', 'unknown')}-{len(self.findings):03d}",
-                    tool="semgrep",
-                    title=result.get("check_id", "Semgrep Finding"),
-                    description=result.get("extra", {}).get("message", ""),
-                    severity=self.severity_map.get(
-                        result.get("extra", {}).get("severity", "info").lower(), "INFO"
-                    ),
-                    file=result.get("path"),
-                    line=result.get("start", {}).get("line"),
-                    rule_id=result.get("check_id"),
-                    remediation_url=result.get("extra", {}).get("docs"),
-                    agent_assignee="unified-security-scanner",
-                )
-                self.findings.append(finding)
-                logger.debug(f"Parsed Semgrep finding: {finding.id}")
-        except Exception as e:
-            logger.error(f"Error parsing Semgrep results: {e}")
+    def _parse_container_findings(self) -> None:
+        logger.info("Parsing container scanner SARIF findings...")
+        for artifact in self._successful_artifacts("containers"):
+            self._parse_sarif_artifact(artifact, "trivy")
 
     def _parse_dependency_findings(self) -> None:
-        """Parse pip-audit and Safety JSON outputs"""
+        """Parse pip-audit and Safety JSON outputs from the successful dependency gate."""
         logger.info("Parsing dependency vulnerability findings...")
-        dep_dir = self.artifacts_dir / "security-suite-dependency"
+        for dep_dir in self._successful_artifacts("dependency"):
+            for file_path in dep_dir.rglob("pip-audit.json"):
+                self._parse_pip_audit(file_path, "pip-audit")
+            for file_path in dep_dir.rglob("safety.json"):
+                self._parse_safety(file_path)
 
-        if not dep_dir.exists():
-            logger.warning(f"Dependency directory not found: {dep_dir}")
+    def _parse_cve_findings(self) -> None:
+        logger.info("Parsing CVE ecosystem audit findings...")
+        for cve_dir in self._successful_artifacts("cve"):
+            for file_path in cve_dir.rglob("*-cve-audit.json"):
+                if "python" in cve_dir.name:
+                    self._parse_pip_audit(file_path, "pip-audit")
+                elif "javascript" in cve_dir.name:
+                    self._parse_npm_audit(file_path)
+                elif "rust" in cve_dir.name:
+                    self._parse_cargo_audit(file_path)
+
+    def _parse_pip_audit(self, file_path: Path, tool: str) -> None:
+        try:
+            with file_path.open(encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error("Unable to parse %s results %s: %s", tool, file_path, exc)
             return
 
-        # Parse pip-audit
-        pip_audit_file = dep_dir / "pip-audit.json"
-        if pip_audit_file.exists():
-            try:
-                with open(pip_audit_file, "r") as f:
-                    pip_data = json.load(f)
+        for dependency in data.get("dependencies", []):
+            for vulnerability in dependency.get("vulns", []):
+                vuln_id = vulnerability.get("id", "unknown")
+                self.findings.append(
+                    Finding(
+                        id=f"{tool.upper()}-{dependency.get('name', 'unknown')}-{vuln_id}",
+                        tool=tool,
+                        title=f"Vulnerability in {dependency.get('name', 'unknown')}",
+                        description=vulnerability.get("description", ""),
+                        severity="CRITICAL",
+                        package=dependency.get("name"),
+                        version=dependency.get("installed_version"),
+                        remediation_url=vulnerability.get("fix_versions", [None])[0]
+                        if vulnerability.get("fix_versions")
+                        else vulnerability.get("advisory_url"),
+                        rule_id=vuln_id,
+                    )
+                )
 
-                for dep in pip_data.get("dependencies", []):
-                    for vuln in dep.get("vulns", []):
-                        finding = Finding(
-                            id=f"DEPVULN-{dep.get('name', 'unknown')}-{vuln.get('id', 'unknown')}",
-                            tool="pip-audit",
-                            title=f"Vulnerability in {dep.get('name')}",
-                            description=vuln.get("description", ""),
-                            severity="CRITICAL",  # Dependency vulns are always critical
-                            package=dep.get("name"),
-                            version=dep.get("installed_version"),
-                            remediation_url=vuln.get("advisory_url"),
-                            agent_assignee="dependency-security-review-agent",
-                        )
-                        self.findings.append(finding)
-                        logger.debug(f"Parsed pip-audit finding: {finding.id}")
-            except Exception as e:
-                logger.error(f"Error parsing pip-audit results: {e}")
+    def _parse_safety(self, file_path: Path) -> None:
+        try:
+            with file_path.open(encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error("Unable to parse Safety results %s: %s", file_path, exc)
+            return
+
+        vulnerabilities = (
+            data.get("vulnerabilities", [])
+            if isinstance(data, dict)
+            else data if isinstance(data, list) else []
+        )
+        for index, vulnerability in enumerate(vulnerabilities):
+            package = vulnerability.get("package_name") or vulnerability.get("name")
+            vuln_id = (
+                vulnerability.get("CVE")
+                or vulnerability.get("vulnerability_id")
+                or vulnerability.get("advisory")
+                or str(index)
+            )
+            self.findings.append(
+                Finding(
+                    id=f"SAFETY-{package or 'unknown'}-{vuln_id}",
+                    tool="safety",
+                    title=f"Vulnerability in {package or 'unknown'}",
+                    description=(
+                        vulnerability.get("advisory")
+                        or vulnerability.get("description")
+                        or ""
+                    ),
+                    severity=self.severity_map.get(
+                        str(vulnerability.get("severity", "high")).lower(), "HIGH"
+                    ),
+                    package=package,
+                    version=(
+                        vulnerability.get("analyzed_version")
+                        or vulnerability.get("installed_version")
+                    ),
+                    remediation_url=vulnerability.get("more_info_url"),
+                    rule_id=str(vuln_id),
+                )
+            )
+
+    def _parse_npm_audit(self, file_path: Path) -> None:
+        try:
+            with file_path.open(encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error("Unable to parse npm audit results %s: %s", file_path, exc)
+            return
+
+        for package, vulnerability in data.get("vulnerabilities", {}).items():
+            via = vulnerability.get("via", [])
+            advisory = next((item for item in via if isinstance(item, dict)), {})
+            vuln_id = advisory.get("cve") or advisory.get("source") or package
+            self.findings.append(
+                Finding(
+                    id=f"NPM-{package}-{vuln_id}",
+                    tool="npm-audit",
+                    title=advisory.get("title") or f"Vulnerability in {package}",
+                    description=advisory.get("url", ""),
+                    severity=self.severity_map.get(
+                        str(vulnerability.get("severity", "low")).lower(), "LOW"
+                    ),
+                    package=package,
+                    version=vulnerability.get("range"),
+                    remediation_url=advisory.get("url"),
+                    rule_id=str(vuln_id),
+                )
+            )
+
+    def _parse_cargo_audit(self, file_path: Path) -> None:
+        try:
+            with file_path.open(encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error("Unable to parse cargo audit results %s: %s", file_path, exc)
+            return
+
+        vulnerabilities = data.get("vulnerabilities", {}).get("list", [])
+        for index, vulnerability in enumerate(vulnerabilities):
+            advisory = vulnerability.get("advisory", {})
+            package = vulnerability.get("package", {})
+            vuln_id = advisory.get("id") or f"unknown-{index}"
+            self.findings.append(
+                Finding(
+                    id=f"CARGO-{package.get('name', 'unknown')}-{vuln_id}",
+                    tool="cargo-audit",
+                    title=advisory.get("title") or f"Vulnerability in {package.get('name', 'unknown')}",
+                    description=advisory.get("description", ""),
+                    severity=self.severity_map.get(
+                        str(advisory.get("severity", "unknown")).lower(), "LOW"
+                    ),
+                    package=package.get("name"),
+                    version=package.get("version"),
+                    remediation_url=advisory.get("url"),
+                    rule_id=vuln_id,
+                )
+            )
 
     def _parse_secret_findings(self) -> None:
         """Parse detect-secrets baseline
@@ -274,62 +548,45 @@ class FindingsAggregator:
         We extract only type and line metadata, not actual secret values, to findings.
         """
         logger.info("Parsing secret detection findings...")
-        secrets_dir = self.artifacts_dir / "security-suite-secrets"
+        for secrets_dir in self._successful_artifacts("secrets"):
+            for baseline_file in secrets_dir.rglob(".secrets.baseline"):
+                try:
+                    with baseline_file.open(encoding="utf-8") as handle:
+                        baseline_data = json.load(handle)
+                except (OSError, json.JSONDecodeError) as exc:
+                    logger.error("Unable to parse secret baseline %s: %s", baseline_file, exc)
+                    continue
 
-        if not secrets_dir.exists():
-            # lgtm[py/clear-text-logging]: Logging directory path only, not secret data
-            logger.warning(f"Secrets directory not found: {secrets_dir}")
-            return
-
-        baseline_file = secrets_dir / ".secrets.baseline"
-        if not baseline_file.exists():
-            # lgtm[py/clear-text-logging]: Logging file path only, not secret data
-            logger.warning(f"Secrets baseline not found: {baseline_file}")
-            return
-
-        try:
-            with open(baseline_file, "r") as f:
-                baseline_data = json.load(f)
-
-            for file_path, secrets in baseline_data.get("results", {}).items():
-                for idx, secret in enumerate(secrets):
-                    # Extract only type and location metadata, not actual secret values
-                    finding = Finding(
-                        id=f"SECRET-{file_path.replace('/', '_')}-{idx:03d}",
-                        tool="detect-secrets",
-                        title=f"Potential secret in {file_path}",
-                        description=secret.get("type", "Unknown secret type"),
-                        severity="CRITICAL",  # Secrets are always critical
-                        file=file_path,
-                        line=secret.get("line_number"),
-                        status="flagged",
-                        agent_assignee="secret-detection-agent",
-                    )
-                    self.findings.append(finding)
-                    logger.debug(f"Parsed secret finding: {finding.id}")
-        except Exception as e:
-            logger.error(f"Error parsing secret findings: {e}")
+                for file_path, secrets in baseline_data.get("results", {}).items():
+                    for idx, secret in enumerate(secrets):
+                        self.findings.append(
+                            Finding(
+                                id=f"SECRET-{file_path.replace('/', '_')}-{idx:03d}",
+                                tool="detect-secrets",
+                                title=f"Potential secret in {file_path}",
+                                description=secret.get("type", "Unknown secret type"),
+                                severity="CRITICAL",
+                                file=file_path,
+                                line=secret.get("line_number"),
+                                status="flagged",
+                                agent_assignee="secret-detection-agent",
+                            )
+                        )
 
     def _deduplicate_findings(self) -> None:
-        """Remove duplicate findings across tools"""
-        logger.info("Deduplicating findings...")
+        """Remove duplicate finding records without collapsing distinct scanner alerts."""
+        logger.info("Removing duplicate finding identifiers...")
         seen = {}
         unique_findings = []
-        duplicates = 0
 
         for finding in self.findings:
-            # Create dedup key based on file, line, and description hash
-            dedup_key = (finding.file, finding.line, hash(finding.description))
-
+            dedup_key = (finding.tool, finding.id)
             if dedup_key not in seen:
                 seen[dedup_key] = finding
                 unique_findings.append(finding)
-            else:
-                duplicates += 1
-                logger.debug(f"Duplicate found: {finding.id} (matches {seen[dedup_key].id})")
 
         self.findings = unique_findings
-        logger.info(f"Deduplicated: removed {duplicates} duplicates, {len(self.findings)} unique findings remain")
+        logger.info("Retained %s scanner findings", len(self.findings))
 
     def _normalize_severity(self) -> None:
         """Ensure all severity levels are in standard format"""
@@ -343,8 +600,10 @@ class FindingsAggregator:
                 finding.agent_assignee = "codeql-alert-resolution-agent"
             elif finding.tool == "semgrep":
                 finding.agent_assignee = "unified-security-scanner"
-            elif finding.tool == "pip-audit" or finding.tool == "safety":
+            elif finding.tool in {"pip-audit", "safety", "npm-audit", "cargo-audit"}:
                 finding.agent_assignee = "dependency-security-review-agent"
+            elif finding.tool == "trivy":
+                finding.agent_assignee = "unified-security-scanner"
             elif finding.tool == "detect-secrets":
                 finding.agent_assignee = "secret-detection-agent"
 
@@ -399,7 +658,9 @@ class FindingsAggregator:
                 "run_url": f"{self.repo_url}/actions/runs/{self.run_id}",
                 "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "security_tab_url": f"{self.repo_url}/security/code-scanning",
+                "selected_scans": sorted(self.selected_scans),
             },
+            "scan_status": self.scan_status,
             "findings_by_severity": {
                 severity: [f.to_dict() for f in findings_by_severity.get(severity, [])]
                 for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
@@ -437,6 +698,10 @@ class FindingsAggregator:
     def save_json(self, output_path: str) -> None:
         """Save report as JSON"""
         report = self.run()
+        self.write_json(report, output_path)
+
+    @staticmethod
+    def write_json(report: Dict[str, Any], output_path: str) -> None:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -448,6 +713,10 @@ class FindingsAggregator:
     def save_markdown(self, output_path: str) -> None:
         """Save report as Markdown"""
         report = self.run()
+        self.write_markdown(report, output_path)
+
+    @staticmethod
+    def write_markdown(report: Dict[str, Any], output_path: str) -> None:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -500,6 +769,95 @@ class FindingsAggregator:
 
         logger.info(f"Markdown report saved to {output_file}")
 
+    @staticmethod
+    def write_csv_exports(
+        report: Dict[str, Any],
+        inventory_path: str,
+        priority_path: str,
+        family_path: str,
+    ) -> None:
+        findings = report.get("finding_index", [])
+        inventory_file = Path(inventory_path)
+        inventory_file.parent.mkdir(parents=True, exist_ok=True)
+        with inventory_file.open("w", newline="", encoding="utf-8") as handle:
+            fields = [
+                "alert_id",
+                "tool",
+                "rule_id",
+                "severity",
+                "file_path",
+                "start_line",
+                "end_line",
+                "commit_sha",
+                "run_id",
+            ]
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            for finding in findings:
+                writer.writerow(
+                    {
+                        "alert_id": finding.get("id", ""),
+                        "tool": finding.get("tool", ""),
+                        "rule_id": finding.get("rule_id", ""),
+                        "severity": finding.get("severity", ""),
+                        "file_path": finding.get("file", ""),
+                        "start_line": finding.get("line", ""),
+                        "end_line": "",
+                        "commit_sha": report.get("scan_metadata", {}).get("commit", ""),
+                        "run_id": report.get("scan_metadata", {}).get("run_id", ""),
+                    }
+                )
+
+        severity_priority = {
+            "CRITICAL": 100,
+            "HIGH": 75,
+            "MEDIUM": 50,
+            "LOW": 25,
+            "INFO": 0,
+        }
+        priority_file = Path(priority_path)
+        priority_file.parent.mkdir(parents=True, exist_ok=True)
+        with priority_file.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=["family_id", "priority_score", "severity", "reachable"],
+            )
+            writer.writeheader()
+            for finding in findings:
+                writer.writerow(
+                    {
+                        "family_id": finding.get("rule_id") or finding.get("tool", "unknown"),
+                        "priority_score": severity_priority.get(
+                            finding.get("severity", "LOW"), 0
+                        ),
+                        "severity": finding.get("severity", "LOW"),
+                        "reachable": "unknown",
+                    }
+                )
+
+        family_counts = Counter(
+            (
+                finding.get("tool", "unknown"),
+                finding.get("rule_id") or "unknown",
+            )
+            for finding in findings
+        )
+        family_file = Path(family_path)
+        family_file.parent.mkdir(parents=True, exist_ok=True)
+        with family_file.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle, fieldnames=["family_id", "rule_id", "count"]
+            )
+            writer.writeheader()
+            for (tool, rule_id), count in sorted(family_counts.items()):
+                writer.writerow(
+                    {
+                        "family_id": f"{tool}:{rule_id}",
+                        "rule_id": rule_id,
+                        "count": count,
+                    }
+                )
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -540,6 +898,9 @@ def main():
         default=os.getenv("GITHUB_REPOSITORY", "unknown/repo"),
         help="Repository name (owner/repo)",
     )
+    parser.add_argument("--output-csv", help="Optional normalized alert inventory CSV")
+    parser.add_argument("--output-priority-csv", help="Optional alert priority queue CSV")
+    parser.add_argument("--output-family-csv", help="Optional alert family index CSV")
 
     args = parser.parse_args()
 
@@ -553,8 +914,16 @@ def main():
     )
 
     try:
-        aggregator.save_json(args.output_json)
-        aggregator.save_markdown(args.output_md)
+        report = aggregator.run()
+        aggregator.write_json(report, args.output_json)
+        aggregator.write_markdown(report, args.output_md)
+        if args.output_csv and args.output_priority_csv and args.output_family_csv:
+            aggregator.write_csv_exports(
+                report,
+                args.output_csv,
+                args.output_priority_csv,
+                args.output_family_csv,
+            )
         logger.info("✅ Aggregation complete")
         return 0
     except Exception as e:
