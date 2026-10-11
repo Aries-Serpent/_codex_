@@ -572,6 +572,10 @@ jobs:
         ERRORS=0
         CHUNK_COUNT=0
 
+        if [ ! -s semgrep-results.json ] || ! python -m json.tool semgrep-results.json >/dev/null; then
+          echo "::error::Semgrep JSON results are missing or malformed."
+          exit 1
+        fi
         if [ -f semgrep-results.json ]; then
           RESULTS=$(python - <<'PY' 2>/dev/null || echo 0
         import json
@@ -710,6 +714,10 @@ jobs:
         set -euo pipefail
         mkdir -p .codex/contracts
 
+        jq empty "trivy-fs-results-${{ strategy.job-index }}.sarif"
+        if [ -f "trivy-image-results-${{ strategy.job-index }}.sarif" ]; then
+          jq empty "trivy-image-results-${{ strategy.job-index }}.sarif"
+        fi
         {
           echo "# Container Security Scan Report"
           echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
@@ -831,6 +839,11 @@ jobs:
         set -euo pipefail
         mkdir -p .codex/contracts
 
+        RESULTS_JSON="${{ matrix.ecosystem }}-cve-audit.json"
+        if [ -f "${RESULTS_JSON}" ] && ! python -m json.tool "${RESULTS_JSON}" >/dev/null; then
+          echo "::error::${RESULTS_JSON} is malformed."
+          exit 1
+        fi
         {
           echo "# CVE & Dependency Audit Report"
           echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
@@ -847,7 +860,7 @@ jobs:
           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
           "required_outputs": [
             "cve-scan-summary-${{ matrix.ecosystem }}.md",
-            "${{ matrix.ecosystem == 'python' && 'python-cve-audit.json' || matrix.ecosystem == 'javascript' && 'javascript-cve-audit.json' || 'rust-cve-audit.json' }}"
+            "${{ matrix.ecosystem }}-cve-audit.json"
           ],
           "status": "${{ job.status }}"
         }
@@ -913,6 +926,12 @@ jobs:
         PIP_AUDIT_COUNT=0
         SAFETY_COUNT=0
 
+        for result_file in pip-audit.json safety.json; do
+          if [ ! -s "${result_file}" ] || ! python -m json.tool "${result_file}" >/dev/null; then
+            echo "::error::Dependency scan output is missing or malformed: ${result_file}"
+            exit 1
+          fi
+        done
         if [ -f pip-audit.json ]; then
           PIP_AUDIT_COUNT=$(python - <<'PY' 2>/dev/null || echo 0
         import json
@@ -1348,7 +1367,9 @@ jobs:
     if: always()
     timeout-minutes: 40
     permissions:
+      actions: read
       contents: read
+      security-events: read
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -1367,6 +1388,48 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Fetch all existing code-scanning alerts
+      if: contains(needs.lane-metadata-contract.outputs.selected_scans, 'codeql')
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        inventory_dir="security-suite-artifacts/security-suite-codeql-alerts"
+        python scripts/ci/fetch_codeql_alerts.py \
+          --state open \
+          --tool all \
+          --max-pages 100 \
+          --page-sleep 1.0 \
+          --min-remaining 100 \
+          --out-dir "${inventory_dir}"
+        python - "${inventory_dir}" <<'PY'
+        import json
+        import sys
+        from pathlib import Path
+
+        inventory_dir = Path(sys.argv[1])
+        with (inventory_dir / "api_inventory_raw.json").open(encoding="utf-8") as handle:
+            alerts = json.load(handle)
+        with (inventory_dir / "api_inventory_summary.json").open(encoding="utf-8") as handle:
+            summary = json.load(handle)
+        if not isinstance(alerts, list) or len(alerts) != summary.get("total"):
+            raise SystemExit("GitHub alert inventory is incomplete or inconsistent")
+        contract = {
+            "job": "github-code-scanning-alert-inventory",
+            "status": "success",
+            "required_outputs": [
+                "api_inventory_raw.json",
+                "api_inventory_summary.json",
+            ],
+            "alert_count": len(alerts),
+        }
+        with (inventory_dir / "output-contract-codeql-alerts.json").open(
+            "w", encoding="utf-8"
+        ) as handle:
+            json.dump(contract, handle, indent=2)
+        print(f"Collected {len(alerts)} existing code-scanning alerts.")
+        PY
     - name: Run findings aggregator + normalized exports
       id: aggregate
       env:
@@ -1445,6 +1508,7 @@ jobs:
           security/codeql-schema-version.json
           security/artifact-provenance.json
           security/remediation-input-lock.json
+          security-suite-artifacts/security-suite-codeql-alerts/
         if-no-files-found: warn
         retention-days: 90
     - name: Summary

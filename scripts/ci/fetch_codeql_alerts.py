@@ -84,7 +84,7 @@ log = logging.getLogger("fetch_codeql_alerts")
 # Constants
 # ---------------------------------------------------------------------------
 
-DEFAULT_MAX_PAGES: int = 10       # hard cap — each page is up to 100 alerts
+DEFAULT_MAX_PAGES: int = 10  # hard cap — each page is up to 100 alerts
 DEFAULT_STATE: str = "open"
 DEFAULT_TOOL: str = "CodeQL"
 DEFAULT_EXPORT_DIR = ".codex/security/code_scanning_inventory"
@@ -102,6 +102,7 @@ API_BASE = "https://api.github.com"
 # Thin wrappers that keep the existing public call-sites unchanged
 # ---------------------------------------------------------------------------
 
+
 def _api_get(
     url: str,
     token: str,
@@ -110,7 +111,6 @@ def _api_get(
 ) -> tuple[Any, dict[str, str]]:
     """Delegate to the shared rate-limit-aware helper in _gh_api.py."""
     return _api_get_impl(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
-
 
 
 # ---------------------------------------------------------------------------
@@ -133,13 +133,16 @@ def fetch_alerts(
     page = 1
 
     while page <= max_pages:
+        params = {
+            "state": state,
+            "per_page": str(per_page),
+            "page": str(page),
+        }
+        if tool_name and tool_name.casefold() != "all":
+            params["tool_name"] = tool_name
         url = (
-            f"{API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}"
-            f"/code-scanning/alerts"
-            f"?state={state}"
-            f"&tool_name={urllib.parse.quote(tool_name)}"
-            f"&per_page={per_page}"
-            f"&page={page}"
+            f"{API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}/code-scanning/alerts"
+            f"?{urllib.parse.urlencode(params)}"
         )
         log.info("Fetching page %d: %s", page, url)
         data, _headers = _api_get(url, token, min_remaining, page_sleep)
@@ -203,18 +206,26 @@ def _build_by_rule_csv(alerts: list[dict[str, Any]]) -> str:
         grouped[_rule_id(alert)].append(alert)
     for rule_id, rule_alerts in sorted(grouped.items(), key=lambda kv: (-len(kv[1]), kv[0])):
         sev = _severity(rule_alerts[0])
-        rows.append({
-            "rule_id": rule_id,
-            "severity": sev,
-            "count": len(rule_alerts),
-            "description": rule_alerts[0].get("rule", {}).get("description", ""),
-            "first_location": _location(rule_alerts[0]),
-        })
+        rows.append(
+            {
+                "rule_id": rule_id,
+                "severity": sev,
+                "count": len(rule_alerts),
+                "description": rule_alerts[0].get("rule", {}).get("description", ""),
+                "first_location": _location(rule_alerts[0]),
+            }
+        )
 
     fieldnames = ["rule_id", "severity", "count", "description", "first_location"]
     out = [",".join(fieldnames)]
     for row in rows:
-        values = [row.get("rule_id", ""), row.get("severity", ""), str(row.get("count", 0)), row.get("description", ""), row.get("first_location", "")]
+        values = [
+            row.get("rule_id", ""),
+            row.get("severity", ""),
+            str(row.get("count", 0)),
+            row.get("description", ""),
+            row.get("first_location", ""),
+        ]
         escaped = []
         for value in values:
             if any(ch in value for ch in [",", '"', "\n"]):
@@ -281,7 +292,9 @@ def _write_validation_report(out_dir: Path, summary: dict[str, Any]) -> None:
             "requires_csv_rollups": True,
         },
     }
-    (out_dir / "ui_validation_report.json").write_text(json.dumps(validation, indent=2), encoding="utf-8")
+    (out_dir / "ui_validation_report.json").write_text(
+        json.dumps(validation, indent=2), encoding="utf-8"
+    )
 
 
 def _write_delta_report(out_dir: Path, summary: dict[str, Any]) -> None:
@@ -353,7 +366,13 @@ def _csv_rows_for_rule(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
         rule_id = _rule_id(alert)
         entry = grouped.setdefault(
             rule_id,
-            {"rule_id": rule_id, "count": 0, "severity": _severity(alert), "paths": set(), "alert_numbers": set()},
+            {
+                "rule_id": rule_id,
+                "count": 0,
+                "severity": _severity(alert),
+                "paths": set(),
+                "alert_numbers": set(),
+            },
         )
         entry["count"] += 1
         entry["severity"] = _severity(alert)
@@ -379,7 +398,9 @@ def _csv_rows_for_path(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     grouped: dict[str, dict[str, int | str]] = {}
     for alert in alerts:
         path = _path(alert)
-        entry = grouped.setdefault(path, {"path": path, "critical": 0, "high": 0, "medium": 0, "low": 0, "unknown": 0})
+        entry = grouped.setdefault(
+            path, {"path": path, "critical": 0, "high": 0, "medium": 0, "low": 0, "unknown": 0}
+        )
         sev = _severity(alert).lower()
         if sev in {"critical", "error"}:
             entry["critical"] = int(entry["critical"]) + 1
@@ -395,7 +416,12 @@ def _csv_rows_for_path(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for _, entry in sorted(
         grouped.items(),
         key=lambda kv: (
-            -(int(kv[1]["critical"]) + int(kv[1]["high"]) + int(kv[1]["medium"]) + int(kv[1]["low"])),
+            -(
+                int(kv[1]["critical"])
+                + int(kv[1]["high"])
+                + int(kv[1]["medium"])
+                + int(kv[1]["low"])
+            ),
             str(kv[0]),
         ),
     ):
@@ -423,7 +449,10 @@ def _csv_rows_for_severity(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]
     counts: dict[str, int] = defaultdict(int)
     for alert in alerts:
         counts[_severity(alert)] += 1
-    rows = [{"severity": severity, "count": count} for severity, count in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))]
+    rows = [
+        {"severity": severity, "count": count}
+        for severity, count in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    ]
     return rows
 
 
@@ -435,7 +464,9 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, Any]]) ->
             writer.writerow({field: row.get(field, "") for field in fieldnames})
 
 
-def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_n: int = 20, state: str = DEFAULT_STATE) -> dict[str, Any]:
+def _write_inventory_bundle(
+    alerts: list[dict[str, Any]], out_dir: Path, *, top_n: int = 20, state: str = DEFAULT_STATE
+) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     summary = build_summary(alerts, state=state)
 
@@ -466,7 +497,9 @@ def _write_inventory_bundle(alerts: list[dict[str, Any]], out_dir: Path, *, top_
     _write_delta_report(out_dir, summary)
 
     fixable_canonical = out_dir / "api_inventory_fixable.md"
-    fixable_canonical.write_text(build_fixable_md(alerts, top_n=top_n, state=state), encoding="utf-8")
+    fixable_canonical.write_text(
+        build_fixable_md(alerts, top_n=top_n, state=state), encoding="utf-8"
+    )
 
     by_rule_md = out_dir / "alerts_by_rule.md"
     by_rule_md.write_text(build_by_rule_md(alerts, state=state), encoding="utf-8")
@@ -518,7 +551,9 @@ def build_by_rule_md(alerts: list[dict[str, Any]], *, state: str = DEFAULT_STATE
     return "\n".join(lines)
 
 
-def build_fixable_md(alerts: list[dict[str, Any]], top_n: int = 20, *, state: str = DEFAULT_STATE) -> str:
+def build_fixable_md(
+    alerts: list[dict[str, Any]], top_n: int = 20, *, state: str = DEFAULT_STATE
+) -> str:
     """Produce a prioritised fix-list for the next Copilot session."""
     high_sev = {"critical", "high", "error"}
     prioritised = sorted(

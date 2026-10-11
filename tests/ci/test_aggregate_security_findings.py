@@ -1,7 +1,7 @@
 import csv
 import json
 
-from scripts.ci.aggregate_security_findings import FindingsAggregator
+from scripts.ci.aggregate_security_findings import FindingsAggregator, ReportWriter
 
 
 def _artifact(root, name, contract=None):
@@ -9,9 +9,7 @@ def _artifact(root, name, contract=None):
     artifact.mkdir(parents=True)
     contract_path = artifact / ".codex" / "contracts" / "output-contract-test.json"
     contract_path.parent.mkdir(parents=True)
-    contract_path.write_text(
-        json.dumps(contract or {"status": "success"}), encoding="utf-8"
-    )
+    contract_path.write_text(json.dumps(contract or {"status": "success"}), encoding="utf-8")
     return artifact
 
 
@@ -166,13 +164,7 @@ def test_aggregates_each_successful_scanner_format(tmp_path):
     secrets = _artifact(tmp_path, "security-suite-secrets")
     (secrets / ".secrets.baseline").write_text(
         json.dumps(
-            {
-                "results": {
-                    "src/config.py": [
-                        {"type": "FixtureSecretDetector", "line_number": 12}
-                    ]
-                }
-            }
+            {"results": {"src/config.py": [{"type": "FixtureSecretDetector", "line_number": 12}]}}
         ),
         encoding="utf-8",
     )
@@ -213,6 +205,49 @@ def test_failed_contract_is_incomplete_and_not_aggregated(tmp_path):
     assert report["scan_status"]["secrets"]["status"] == "incomplete"
 
 
+def test_existing_github_code_scanning_alerts_are_included(tmp_path):
+    artifact = _artifact(
+        tmp_path,
+        "security-suite-codeql-alerts",
+        {
+            "status": "success",
+            "required_outputs": [
+                "api_inventory_raw.json",
+                "api_inventory_summary.json",
+            ],
+        },
+    )
+    alerts = [
+        {
+            "number": 42,
+            "state": "open",
+            "html_url": "https://github.com/example/repo/security/code-scanning/42",
+            "rule": {
+                "id": "py/sql-injection",
+                "name": "SQL injection",
+                "description": "Untrusted input reaches a query.",
+                "severity": "error",
+                "security_severity_level": "high",
+            },
+            "tool": {"name": "CodeQL"},
+            "most_recent_instance": {
+                "ref": "refs/heads/main",
+                "commit_sha": "abc123",
+                "location": {"path": "src/db.py", "start_line": 24},
+            },
+        }
+    ]
+    (artifact / "api_inventory_raw.json").write_text(json.dumps(alerts), encoding="utf-8")
+    (artifact / "api_inventory_summary.json").write_text(json.dumps({"total": 1}), encoding="utf-8")
+
+    report = _aggregator(tmp_path, ["codeql"]).run()
+
+    assert report["summary"]["existing_code_scanning_alerts"] == 1
+    assert report["scan_status"]["github-code-scanning-alerts"]["status"] == "success"
+    assert report["finding_index"][0]["id"] == "GHAS-42"
+    assert report["finding_index"][0]["agent_assignee"] == "codeql-alert-resolution-agent"
+
+
 def test_sarif_findings_from_different_artifacts_keep_unique_ids(tmp_path):
     for name in ("security-suite-codeql-python", "security-suite-codeql-javascript"):
         artifact = _artifact(tmp_path, name)
@@ -245,9 +280,7 @@ def test_csv_exports_include_all_findings(tmp_path):
     priority = tmp_path / "priority.csv"
     family = tmp_path / "family.csv"
 
-    FindingsAggregator.write_csv_exports(
-        report, str(inventory), str(priority), str(family)
-    )
+    ReportWriter.write_csv_exports(report, str(inventory), str(priority), str(family))
 
     with inventory.open(encoding="utf-8", newline="") as handle:
         assert sum(1 for _ in csv.DictReader(handle)) == 3510

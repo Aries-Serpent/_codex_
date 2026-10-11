@@ -42,16 +42,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class Finding:
     """Normalized finding record across all tools"""
+
     id: str
     tool: str
     title: str
@@ -103,8 +101,8 @@ class Finding:
         return result
 
 
-class FindingsAggregator:
-    """Main aggregator for security findings across all tools"""
+class ArtifactCatalog:
+    """Discover security artifacts and validate scanner output contracts."""
 
     SCAN_ARTIFACTS = {
         "codeql": (
@@ -127,6 +125,113 @@ class FindingsAggregator:
         "sbom": ("security-suite-sbom",),
     }
 
+    def __init__(self, artifacts_dir: Path, selected_scans: Optional[List[str]]):
+        self.artifacts_dir = artifacts_dir
+        self.selected_scans = self._resolve_selected_scans(selected_scans)
+        self.scan_status = self._build_scan_status()
+
+    def _resolve_selected_scans(self, selected_scans: Optional[List[str]]) -> set[str]:
+        if selected_scans is not None:
+            return {
+                scan
+                for scan in selected_scans
+                if isinstance(scan, str) and scan in self.SCAN_ARTIFACTS
+            }
+
+        manifest = self.artifacts_dir / "security-suite-lane-contract" / "lane-manifest.json"
+        if manifest.is_file():
+            try:
+                with manifest.open(encoding="utf-8") as handle:
+                    metadata = json.load(handle)
+                value = metadata.get("selected_scans", "") if isinstance(metadata, dict) else ""
+                if isinstance(value, list):
+                    return {
+                        scan
+                        for scan in value
+                        if isinstance(scan, str) and scan in self.SCAN_ARTIFACTS
+                    }
+                if isinstance(value, str):
+                    return {scan for scan in value.split(",") if scan in self.SCAN_ARTIFACTS}
+            except (OSError, json.JSONDecodeError, AttributeError) as exc:
+                logger.warning("Unable to read selected scans from lane manifest: %s", exc)
+
+        return set(self.SCAN_ARTIFACTS)
+
+    def _artifact_dirs(self, scan: str) -> List[Path]:
+        expected = self.SCAN_ARTIFACTS[scan]
+        if scan in {"containers", "cve"}:
+            prefix = "security-suite-container-" if scan == "containers" else "security-suite-cve-"
+            return sorted(path for path in self.artifacts_dir.glob(f"{prefix}*") if path.is_dir())
+        return [
+            self.artifacts_dir / name for name in expected if (self.artifacts_dir / name).is_dir()
+        ]
+
+    @staticmethod
+    def _artifact_contract_succeeded(artifact_dir: Path) -> bool:
+        artifact_root = artifact_dir.resolve()
+        contracts = list(artifact_dir.rglob("output-contract-*.json"))
+        if not contracts:
+            return False
+
+        for contract in contracts:
+            try:
+                with contract.open(encoding="utf-8") as handle:
+                    data = json.load(handle)
+            except (OSError, json.JSONDecodeError):
+                return False
+            if not isinstance(data, dict):
+                return False
+            if data.get("status") != "success":
+                return False
+            if data.get("scan_outcome", "success") != "success":
+                return False
+            required_outputs = data.get("required_outputs", [])
+            if not isinstance(required_outputs, list) or not all(
+                isinstance(output, str) for output in required_outputs
+            ):
+                return False
+            for output in required_outputs:
+                output_path = (artifact_dir / output).resolve()
+                if not output_path.is_relative_to(artifact_root) or not output_path.exists():
+                    return False
+        return True
+
+    def successful_artifacts(self, scan: str) -> List[Path]:
+        return [
+            artifact
+            for artifact in self._artifact_dirs(scan)
+            if self._artifact_contract_succeeded(artifact)
+        ]
+
+    def _build_scan_status(self) -> Dict[str, Dict[str, Any]]:
+        results = {}
+        for scan, expected in self.SCAN_ARTIFACTS.items():
+            artifacts = self._artifact_dirs(scan)
+            successful = [
+                artifact for artifact in artifacts if self._artifact_contract_succeeded(artifact)
+            ]
+            selected = scan in self.selected_scans
+            if not selected:
+                status = "skipped"
+            elif len(successful) == len(expected):
+                status = "success"
+            elif successful:
+                status = "partial"
+            else:
+                status = "incomplete"
+            results[scan] = {
+                "selected": selected,
+                "status": status,
+                "expected_artifacts": len(expected),
+                "available_artifacts": len(artifacts),
+                "successful_artifacts": len(successful),
+            }
+        return results
+
+
+class FindingsAggregator:
+    """Main aggregator for security findings across all tools"""
+
     def __init__(
         self,
         artifacts_dir: str,
@@ -142,8 +247,17 @@ class FindingsAggregator:
         self.commit_sha = commit_sha
         self.repository = repository
         self.findings: List[Finding] = []
-        self.selected_scans = self._resolve_selected_scans(selected_scans)
-        self.scan_status = self._build_scan_status()
+        self.artifact_catalog = ArtifactCatalog(self.artifacts_dir, selected_scans)
+        self.selected_scans = self.artifact_catalog.selected_scans
+        self.scan_status = self.artifact_catalog.scan_status
+        self.github_alert_inventory_status = {
+            "selected": "codeql" in self.selected_scans,
+            "status": ("incomplete" if "codeql" in self.selected_scans else "skipped"),
+            "expected_artifacts": 1,
+            "available_artifacts": 0,
+            "successful_artifacts": 0,
+            "alert_count": 0,
+        }
         self.severity_map = {
             "critical": "CRITICAL",
             "error": "CRITICAL",
@@ -183,102 +297,6 @@ class FindingsAggregator:
         logger.info(f"Aggregation complete: {len(self.findings)} unique findings")
         return report
 
-    def _resolve_selected_scans(
-        self, selected_scans: Optional[List[str]]
-    ) -> set[str]:
-        if selected_scans is not None:
-            return {scan for scan in selected_scans if scan in self.SCAN_ARTIFACTS}
-
-        manifest = self.artifacts_dir / "security-suite-lane-contract" / "lane-manifest.json"
-        if manifest.is_file():
-            try:
-                with manifest.open(encoding="utf-8") as handle:
-                    value = json.load(handle).get("selected_scans", "")
-                if isinstance(value, list):
-                    return {scan for scan in value if scan in self.SCAN_ARTIFACTS}
-                if isinstance(value, str):
-                    return {
-                        scan
-                        for scan in value.split(",")
-                        if scan in self.SCAN_ARTIFACTS
-                    }
-            except (OSError, json.JSONDecodeError, AttributeError) as exc:
-                logger.warning("Unable to read selected scans from lane manifest: %s", exc)
-
-        return set(self.SCAN_ARTIFACTS)
-
-    def _artifact_dirs(self, scan: str) -> List[Path]:
-        expected = self.SCAN_ARTIFACTS[scan]
-        if scan in {"containers", "cve"}:
-            prefix = "security-suite-container-" if scan == "containers" else "security-suite-cve-"
-            return sorted(
-                path
-                for path in self.artifacts_dir.glob(f"{prefix}*")
-                if path.is_dir()
-            )
-        return [
-            self.artifacts_dir / name
-            for name in expected
-            if (self.artifacts_dir / name).is_dir()
-        ]
-
-    @staticmethod
-    def _artifact_contract_succeeded(artifact_dir: Path) -> bool:
-        artifact_root = artifact_dir.resolve()
-        contracts = list(artifact_dir.rglob("output-contract-*.json"))
-        if not contracts:
-            return False
-
-        for contract in contracts:
-            try:
-                with contract.open(encoding="utf-8") as handle:
-                    data = json.load(handle)
-            except (OSError, json.JSONDecodeError):
-                return False
-            if data.get("status") != "success":
-                return False
-            if data.get("scan_outcome", "success") != "success":
-                return False
-            for output in data.get("required_outputs", []):
-                output_path = (artifact_dir / output).resolve()
-                if not output_path.is_relative_to(artifact_root) or not output_path.exists():
-                    return False
-        return True
-
-    def _successful_artifacts(self, scan: str) -> List[Path]:
-        return [
-            artifact
-            for artifact in self._artifact_dirs(scan)
-            if self._artifact_contract_succeeded(artifact)
-        ]
-
-    def _build_scan_status(self) -> Dict[str, Dict[str, Any]]:
-        results = {}
-        for scan, expected in self.SCAN_ARTIFACTS.items():
-            artifacts = self._artifact_dirs(scan)
-            successful = [
-                artifact
-                for artifact in artifacts
-                if self._artifact_contract_succeeded(artifact)
-            ]
-            selected = scan in self.selected_scans
-            if not selected:
-                status = "skipped"
-            elif len(successful) == len(expected):
-                status = "success"
-            elif successful:
-                status = "partial"
-            else:
-                status = "incomplete"
-            results[scan] = {
-                "selected": selected,
-                "status": status,
-                "expected_artifacts": len(expected),
-                "available_artifacts": len(artifacts),
-                "successful_artifacts": len(successful),
-            }
-        return results
-
     def _parse_sarif_artifact(self, artifact_dir: Path, tool_name: str) -> None:
         for sarif_file in artifact_dir.rglob("*.sarif"):
             try:
@@ -306,9 +324,7 @@ class FindingsAggregator:
                     )
                     location = (result.get("locations") or [{}])[0]
                     physical = location.get("physicalLocation", {})
-                    file_path = (
-                        physical.get("artifactLocation", {}).get("uri")
-                    )
+                    file_path = physical.get("artifactLocation", {}).get("uri")
                     line = physical.get("region", {}).get("startLine")
                     details = rule.get("help", {}).get("text") or message
                     cwe_match = re.search(
@@ -323,9 +339,7 @@ class FindingsAggregator:
                         ),
                     )
                     fingerprint = (
-                        result.get("fingerprints")
-                        or result.get("partialFingerprints")
-                        or {}
+                        result.get("fingerprints") or result.get("partialFingerprints") or {}
                     )
                     fingerprint_value = next(iter(fingerprint.values()), str(index))
                     source_path = sarif_file.relative_to(artifact_dir).as_posix()
@@ -375,13 +389,14 @@ class FindingsAggregator:
     def _parse_codeql_findings(self) -> None:
         """Parse CodeQL SARIF artifacts"""
         logger.info("Parsing CodeQL findings...")
-        for artifact in self._successful_artifacts("codeql"):
+        for artifact in self.artifact_catalog.successful_artifacts("codeql"):
             self._parse_sarif_artifact(artifact, "codeql")
+        _parse_github_code_scanning_inventory(self)
 
     def _parse_semgrep_findings(self) -> None:
         """Parse Semgrep JSON output"""
         logger.info("Parsing Semgrep findings...")
-        for semgrep_dir in self._successful_artifacts("semgrep"):
+        for semgrep_dir in self.artifact_catalog.successful_artifacts("semgrep"):
             for json_file in semgrep_dir.rglob("semgrep-results.json"):
                 try:
                     with json_file.open(encoding="utf-8") as handle:
@@ -410,13 +425,13 @@ class FindingsAggregator:
 
     def _parse_container_findings(self) -> None:
         logger.info("Parsing container scanner SARIF findings...")
-        for artifact in self._successful_artifacts("containers"):
+        for artifact in self.artifact_catalog.successful_artifacts("containers"):
             self._parse_sarif_artifact(artifact, "trivy")
 
     def _parse_dependency_findings(self) -> None:
         """Parse pip-audit and Safety JSON outputs from the successful dependency gate."""
         logger.info("Parsing dependency vulnerability findings...")
-        for dep_dir in self._successful_artifacts("dependency"):
+        for dep_dir in self.artifact_catalog.successful_artifacts("dependency"):
             for file_path in dep_dir.rglob("pip-audit.json"):
                 self._parse_pip_audit(file_path, "pip-audit")
             for file_path in dep_dir.rglob("safety.json"):
@@ -424,7 +439,7 @@ class FindingsAggregator:
 
     def _parse_cve_findings(self) -> None:
         logger.info("Parsing CVE ecosystem audit findings...")
-        for cve_dir in self._successful_artifacts("cve"):
+        for cve_dir in self.artifact_catalog.successful_artifacts("cve"):
             for file_path in cve_dir.rglob("*-cve-audit.json"):
                 if "python" in cve_dir.name:
                     self._parse_pip_audit(file_path, "pip-audit")
@@ -453,9 +468,11 @@ class FindingsAggregator:
                         severity="CRITICAL",
                         package=dependency.get("name"),
                         version=dependency.get("installed_version"),
-                        remediation_url=vulnerability.get("fix_versions", [None])[0]
-                        if vulnerability.get("fix_versions")
-                        else vulnerability.get("advisory_url"),
+                        remediation_url=(
+                            vulnerability.get("fix_versions", [None])[0]
+                            if vulnerability.get("fix_versions")
+                            else vulnerability.get("advisory_url")
+                        ),
                         rule_id=vuln_id,
                     )
                 )
@@ -487,9 +504,7 @@ class FindingsAggregator:
                     tool="safety",
                     title=f"Vulnerability in {package or 'unknown'}",
                     description=(
-                        vulnerability.get("advisory")
-                        or vulnerability.get("description")
-                        or ""
+                        vulnerability.get("advisory") or vulnerability.get("description") or ""
                     ),
                     severity=self.severity_map.get(
                         str(vulnerability.get("severity", "high")).lower(), "HIGH"
@@ -514,18 +529,12 @@ class FindingsAggregator:
 
         for package, vulnerability in data.get("vulnerabilities", {}).items():
             advisories = [
-                advisory
-                for advisory in vulnerability.get("via", [])
-                if isinstance(advisory, dict)
+                advisory for advisory in vulnerability.get("via", []) if isinstance(advisory, dict)
             ]
             if not advisories:
                 advisories = [{}]
             for index, advisory in enumerate(advisories):
-                vuln_id = (
-                    advisory.get("cve")
-                    or advisory.get("source")
-                    or f"{package}-{index}"
-                )
+                vuln_id = advisory.get("cve") or advisory.get("source") or f"{package}-{index}"
                 self.findings.append(
                     Finding(
                         id=f"NPM-{package}-{vuln_id}",
@@ -559,7 +568,8 @@ class FindingsAggregator:
                 Finding(
                     id=f"CARGO-{package.get('name', 'unknown')}-{vuln_id}",
                     tool="cargo-audit",
-                    title=advisory.get("title") or f"Vulnerability in {package.get('name', 'unknown')}",
+                    title=advisory.get("title")
+                    or f"Vulnerability in {package.get('name', 'unknown')}",
                     description=advisory.get("description", ""),
                     severity=self.severity_map.get(
                         str(advisory.get("severity", "unknown")).lower(), "LOW"
@@ -573,12 +583,12 @@ class FindingsAggregator:
 
     def _parse_secret_findings(self) -> None:
         """Parse detect-secrets baseline
-        
+
         Security Note: This processes .secrets.baseline which contains secret hashes.
         We extract only type and line metadata, not actual secret values, to findings.
         """
         logger.info("Parsing secret detection findings...")
-        for secrets_dir in self._successful_artifacts("secrets"):
+        for secrets_dir in self.artifact_catalog.successful_artifacts("secrets"):
             for baseline_file in secrets_dir.rglob(".secrets.baseline"):
                 try:
                     with baseline_file.open(encoding="utf-8") as handle:
@@ -628,6 +638,8 @@ class FindingsAggregator:
         for finding in self.findings:
             if finding.tool == "codeql":
                 finding.agent_assignee = "codeql-alert-resolution-agent"
+            elif finding.tool == "github-code-scanning":
+                finding.agent_assignee = "codeql-alert-resolution-agent"
             elif finding.tool == "semgrep":
                 finding.agent_assignee = "unified-security-scanner"
             elif finding.tool in {"pip-audit", "safety", "npm-audit", "cargo-audit"}:
@@ -669,14 +681,14 @@ class FindingsAggregator:
         failure_classification = (
             "blocked_by_critical_or_high_vulnerabilities"
             if severity_counts["CRITICAL"] > 0 or severity_counts["HIGH"] > 0
-            else "warning_only"
-            if severity_counts["MEDIUM"] > 0 or severity_counts["LOW"] > 0
-            else "clean"
+            else (
+                "warning_only"
+                if severity_counts["MEDIUM"] > 0 or severity_counts["LOW"] > 0
+                else "clean"
+            )
         )
         raw_evidence_artifacts = sorted(
-            str(path)
-            for path in self.artifacts_dir.rglob("*")
-            if path.is_file()
+            str(path) for path in self.artifacts_dir.rglob("*") if path.is_file()
         )
 
         # Build report structure
@@ -690,7 +702,10 @@ class FindingsAggregator:
                 "security_tab_url": f"{self.repo_url}/security/code-scanning",
                 "selected_scans": sorted(self.selected_scans),
             },
-            "scan_status": self.scan_status,
+            "scan_status": {
+                **self.scan_status,
+                "github-code-scanning-alerts": self.github_alert_inventory_status,
+            },
             "findings_by_severity": {
                 severity: [f.to_dict() for f in findings_by_severity.get(severity, [])]
                 for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
@@ -715,11 +730,14 @@ class FindingsAggregator:
                 "requires_manual_review": len([f for f in self.findings if not f.agent_assignee]),
                 "recommended_agent_handoffs": [
                     {"agent": agent, "findings_count": count}
-                    for agent, count in sorted(agent_assignments.items(), key=lambda x: x[1], reverse=True)
+                    for agent, count in sorted(
+                        agent_assignments.items(), key=lambda x: x[1], reverse=True
+                    )
                 ],
                 "severity_summary": severity_counts,
                 "failure_classification": failure_classification,
                 "raw_evidence_artifacts": raw_evidence_artifacts,
+                "existing_code_scanning_alerts": self.github_alert_inventory_status["alert_count"],
             },
         }
 
@@ -727,30 +745,28 @@ class FindingsAggregator:
 
     def save_json(self, output_path: str) -> None:
         """Save report as JSON"""
-        report = self.run()
-        self.write_json(report, output_path)
+        ReportWriter.write_json(self.run(), output_path)
+
+    def save_markdown(self, output_path: str) -> None:
+        """Save report as Markdown"""
+        ReportWriter.write_markdown(self.run(), output_path)
+
+
+class ReportWriter:
+    """Write complete security findings reports in supported formats."""
 
     @staticmethod
     def write_json(report: Dict[str, Any], output_path: str) -> None:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(output_file, "w") as f:
-            json.dump(report, f, indent=2)
-
-        logger.info(f"JSON report saved to {output_file}")
-
-    def save_markdown(self, output_path: str) -> None:
-        """Save report as Markdown"""
-        report = self.run()
-        self.write_markdown(report, output_path)
+        with output_file.open("w", encoding="utf-8") as handle:
+            json.dump(report, handle, indent=2)
 
     @staticmethod
     def write_markdown(report: Dict[str, Any], output_path: str) -> None:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
-
-        md_lines = [
+        lines = [
             "# 🔐 Security Findings Comprehensive Report",
             "",
             f"**Repository:** `{report['scan_metadata']['repository']}`",
@@ -763,55 +779,48 @@ class FindingsAggregator:
             "| Scan | Selected | Status | Successful artifacts | Expected artifacts |",
             "|---|---:|---|---:|---:|",
         ]
-
         for scan, status in report.get("scan_status", {}).items():
-            md_lines.append(
+            lines.append(
                 f"| {scan} | {status['selected']} | {status['status']} | "
                 f"{status['successful_artifacts']} | {status['expected_artifacts']} |"
             )
-
-        md_lines.extend([
-            "",
-            "## Summary",
-            "",
-            f"- **Total Findings:** {report['summary']['total_findings']}",
-            f"- **Critical:** {report['summary']['critical_count']}",
-            f"- **High:** {report['summary']['high_count']}",
-            f"- **Medium:** {report['summary']['medium_count']}",
-            f"- **Low:** {report['summary']['low_count']}",
-            "",
-            "## Findings by Severity",
-            "",
-        ])
-
-        for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
+        lines.extend(
+            [
+                "",
+                "## Summary",
+                "",
+                f"- **Total Findings:** {report['summary']['total_findings']}",
+                f"- **Critical:** {report['summary']['critical_count']}",
+                f"- **High:** {report['summary']['high_count']}",
+                f"- **Medium:** {report['summary']['medium_count']}",
+                f"- **Low:** {report['summary']['low_count']}",
+                "",
+                "## Findings by Severity",
+                "",
+            ]
+        )
+        for severity in ("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"):
             findings = report["findings_by_severity"].get(severity, [])
-            if findings:
-                md_lines.append(f"### {severity} ({len(findings)})")
-                md_lines.append("")
-                for finding in findings:
-                    md_lines.append(f"- **{finding['title']}** ({finding['tool']})")
-                    md_lines.append(f"  - File: `{finding.get('file', 'N/A')}`")
-                    md_lines.append(f"  - Description: {finding.get('description', 'N/A')}")
-                    if finding.get('agent_assignee'):
-                        md_lines.append(f"  - Assigned to: `{finding['agent_assignee']}`")
-                md_lines.append("")
-
-        md_lines.extend([
-            "## Recommended Agent Handoffs",
-            "",
-        ])
-
+            if not findings:
+                continue
+            lines.extend([f"### {severity} ({len(findings)})", ""])
+            for finding in findings:
+                lines.append(f"- **{finding['title']}** ({finding['tool']})")
+                lines.append(f"  - File: `{finding.get('file', 'N/A')}`")
+                lines.append(f"  - Description: {finding.get('description', 'N/A')}")
+                if finding.get("agent_assignee"):
+                    lines.append(f"  - Assigned to: `{finding['agent_assignee']}`")
+            lines.append("")
+        lines.extend(["## Recommended Agent Handoffs", ""])
         for handoff in report["summary"]["recommended_agent_handoffs"]:
-            md_lines.append(f"- `{handoff['agent']}`: {handoff['findings_count']} findings")
-
-        md_lines.append("")
-        md_lines.append("[View full security report](reports/security-findings-comprehensive.json)")
-
-        with open(output_file, "w") as f:
-            f.write("\n".join(md_lines))
-
-        logger.info(f"Markdown report saved to {output_file}")
+            lines.append(f"- `{handoff['agent']}`: {handoff['findings_count']} findings")
+        lines.extend(
+            [
+                "",
+                "[View full security report](reports/security-findings-comprehensive.json)",
+            ]
+        )
+        output_file.write_text("\n".join(lines), encoding="utf-8")
 
     @staticmethod
     def write_csv_exports(
@@ -874,9 +883,7 @@ class FindingsAggregator:
                             f"{finding.get('tool', 'unknown')}:"
                             f"{finding.get('rule_id') or 'unknown'}"
                         ),
-                        "priority_score": severity_priority.get(
-                            finding.get("severity", "LOW"), 0
-                        ),
+                        "priority_score": severity_priority.get(finding.get("severity", "LOW"), 0),
                         "severity": finding.get("severity", "LOW"),
                         "reachable": "unknown",
                     }
@@ -892,9 +899,7 @@ class FindingsAggregator:
         family_file = Path(family_path)
         family_file.parent.mkdir(parents=True, exist_ok=True)
         with family_file.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(
-                handle, fieldnames=["family_id", "rule_id", "count"]
-            )
+            writer = csv.DictWriter(handle, fieldnames=["family_id", "rule_id", "count"])
             writer.writeheader()
             for (tool, rule_id), count in sorted(family_counts.items()):
                 writer.writerow(
@@ -904,6 +909,75 @@ class FindingsAggregator:
                         "count": count,
                     }
                 )
+
+
+def _parse_github_code_scanning_inventory(
+    aggregator: FindingsAggregator,
+) -> None:
+    """Add the complete open GHAS alert inventory as a separately identified source."""
+    status = aggregator.github_alert_inventory_status
+    if not status["selected"]:
+        return
+
+    artifact_dir = aggregator.artifacts_dir / "security-suite-codeql-alerts"
+    status["available_artifacts"] = int(artifact_dir.is_dir())
+    if not artifact_dir.is_dir():
+        return
+    if not ArtifactCatalog._artifact_contract_succeeded(artifact_dir):
+        return
+
+    try:
+        with (artifact_dir / "api_inventory_raw.json").open(encoding="utf-8") as handle:
+            alerts = json.load(handle)
+        with (artifact_dir / "api_inventory_summary.json").open(encoding="utf-8") as handle:
+            summary = json.load(handle)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.error("Unable to read GitHub code-scanning inventory: %s", exc)
+        return
+
+    if (
+        not isinstance(alerts, list)
+        or not isinstance(summary, dict)
+        or summary.get("total") != len(alerts)
+    ):
+        logger.error("GitHub code-scanning inventory failed count validation")
+        return
+
+    status["status"] = "success"
+    status["successful_artifacts"] = 1
+    status["alert_count"] = len(alerts)
+    for alert in alerts:
+        if not isinstance(alert, dict):
+            continue
+        rule = alert.get("rule") or {}
+        instance = alert.get("most_recent_instance") or {}
+        location = instance.get("location") or {}
+        rule_id = str(rule.get("id") or "unknown")
+        alert_number = alert.get("number")
+        if alert_number is None:
+            continue
+        severity = rule.get("security_severity_level") or rule.get("severity") or "unknown"
+        aggregator.findings.append(
+            Finding(
+                id=f"GHAS-{alert_number}",
+                tool="github-code-scanning",
+                title=rule.get("name") or rule.get("description") or rule_id,
+                description=rule.get("description", ""),
+                severity=aggregator.severity_map.get(str(severity).lower(), "LOW"),
+                file=location.get("path"),
+                line=location.get("start_line"),
+                rule_id=rule_id,
+                remediation_url=alert.get("html_url"),
+                status=str(alert.get("state") or "open"),
+                agent_assignee="codeql-alert-resolution-agent",
+                metadata={
+                    "alert_number": alert_number,
+                    "tool": (alert.get("tool") or {}).get("name", "unknown"),
+                    "ref": instance.get("ref"),
+                    "commit_sha": instance.get("commit_sha"),
+                },
+            )
+        )
 
 
 def main():
@@ -927,7 +1001,9 @@ def main():
     )
     parser.add_argument(
         "--repo-url",
-        default=os.getenv("GITHUB_SERVER_URL", "https://github.com") + "/" + os.getenv("GITHUB_REPOSITORY", "unknown/repo"),
+        default=os.getenv("GITHUB_SERVER_URL", "https://github.com")
+        + "/"
+        + os.getenv("GITHUB_REPOSITORY", "unknown/repo"),
         help="Repository URL",
     )
     parser.add_argument(
@@ -972,10 +1048,10 @@ def main():
 
     try:
         report = aggregator.run()
-        aggregator.write_json(report, args.output_json)
-        aggregator.write_markdown(report, args.output_md)
+        ReportWriter.write_json(report, args.output_json)
+        ReportWriter.write_markdown(report, args.output_md)
         if args.output_csv and args.output_priority_csv and args.output_family_csv:
-            aggregator.write_csv_exports(
+            ReportWriter.write_csv_exports(
                 report,
                 args.output_csv,
                 args.output_priority_csv,
