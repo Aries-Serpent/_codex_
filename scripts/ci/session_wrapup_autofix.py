@@ -926,6 +926,7 @@ def _accountability_report_is_current() -> bool:
     return any(
         any(day in line for day in acceptable_dates)
         for line in text.splitlines()
+        if re.match(r"^\s*#{1,6}\s+Session\b", line, re.IGNORECASE)
     )
 
 

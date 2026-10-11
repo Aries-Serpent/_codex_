@@ -578,14 +578,13 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     ]
 
     for item in items:
-        # Skip if already marked as slow
-        if "slow" in item.keywords:
-            continue
-
-        # Mark integration-suite tests independently of whether they are slow.
         test_path = _ImportHookPath(str(item.fspath)) if hasattr(item, "fspath") else None
         if test_path and "integration" in {part.lower() for part in test_path.parts}:
             item.add_marker(pytest.mark.integration)
+
+        # Skip if already marked as slow
+        if "slow" in item.keywords:
+            continue
 
         # Check the test file name or test name, not parent suite directories.
         test_file = test_path.name.lower() if test_path else ""

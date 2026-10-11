@@ -354,13 +354,9 @@ jobs:
         \ * (1.0 - metrics['ooda_improvement_percent'] / 100.0)\n)\n\n# Write metrics\n\
         with open(os.environ.get('PERF_REPORT', '.codex/phase_10_3_performance_metrics.json'),\
         \ 'w', encoding='utf-8') as f:\n    json.dump(metrics, f, indent=2)\n\n# Print\
-        \ summary\nprint(\"\U0001F4CA PERFORMANCE METRICS\")\n\
-        print(f\"  Scoring time:\\\n        \ {metrics['context_scorer_time_ms']}ms\")\n\
-        print(f\"  Injection time: {metrics['pattern_injection_time_ms']}ms\"\
+        \ summary\nprint(\"\U0001F4CA PERFORMANCE METRICS\")\nprint(f\"  Scoring time:\\\n        \ {metrics['context_scorer_time_ms']}ms\")\nprint(f\"  Injection time: {metrics['pattern_injection_time_ms']}ms\"\
         )\nprint(f\"  Total overhead: {metrics['total_overhead_ms']}ms\")\nprint(f\"\
-        \  Patterns injected: {metrics['patterns_count']}\")\n\
-        print(f\"  Avg relevance:\\\n        \ {metrics['avg_relevance_score']:.2f}\")\n\
-        print(f\"  OODA baseline: {metrics['ooda_baseline_ms']}ms\"\
+        \  Patterns injected: {metrics['patterns_count']}\")\nprint(f\"  Avg relevance:\\\n        \ {metrics['avg_relevance_score']:.2f}\")\nprint(f\"  OODA baseline: {metrics['ooda_baseline_ms']}ms\"\
         )\nprint(f\"  OODA with context: {metrics['ooda_with_context_ms']}ms\")\n\
         print(f\"  Improvement: {metrics['ooda_improvement_percent']:.1f}%\")\n\n\
         # Validate constraints\nif metrics['total_overhead_ms'] > 100:\n    print(f\"\
@@ -533,13 +529,13 @@ jobs:
       if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
       continue-on-error: true
       run: 'echo "Git version: $(git --version)"
-
+ 
         echo "LFS version: $(git lfs version 2>/dev/null || echo ''git-lfs not installed'')"
-
+ 
         git status || true
-
+ 
         git lfs ls-files || true
-
+ 
         '
     - name: "📥 Install git-lfs (if needed)"
       if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
@@ -745,11 +741,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: copilot-setup-steps
     if: 'failure() &&
-
+ 
       github.event_name == ''pull_request'' &&
-
+ 
       github.event.pull_request.head.repo.full_name == github.repository
-
+ 
       '
     permissions:
       pull-requests: write

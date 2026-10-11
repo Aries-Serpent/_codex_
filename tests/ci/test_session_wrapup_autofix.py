@@ -28,6 +28,17 @@ def test_accountability_report_is_current_when_recent_entry_is_at_top(tmp_path, 
     assert swa._accountability_report_is_current()
 
 
+def test_accountability_report_requires_recent_date_on_session_heading(
+    tmp_path, monkeypatch
+):
+    report = tmp_path / "AGENT_ACCOUNTABILITY_REPORT.md"
+    today = swa.datetime.now(tz=swa.timezone.utc).strftime("%Y-%m-%d")
+    report.write_text(f"## Session: 2020-01-01 — old session\nToday is {today}.\n")
+    monkeypatch.setattr(swa, "ACCOUNTABILITY_REPORT", report)
+
+    assert not swa._accountability_report_is_current()
+
+
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
