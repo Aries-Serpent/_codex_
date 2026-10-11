@@ -12,6 +12,33 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ci import session_wrapup_autofix as swa
 
+
+def test_accountability_report_targets_active_report():
+    assert swa.ACCOUNTABILITY_REPORT == (
+        _REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    )
+
+
+def test_accountability_report_is_current_when_recent_entry_is_at_top(tmp_path, monkeypatch):
+    report = tmp_path / "AGENT_ACCOUNTABILITY_REPORT.md"
+    today = swa.datetime.now(tz=swa.timezone.utc).strftime("%Y-%m-%d")
+    report.write_text(f"## Session: {today} — current session\n" + "older\n" * 200)
+    monkeypatch.setattr(swa, "ACCOUNTABILITY_REPORT", report)
+
+    assert swa._accountability_report_is_current()
+
+
+def test_accountability_report_requires_recent_date_on_session_heading(
+    tmp_path, monkeypatch
+):
+    report = tmp_path / "AGENT_ACCOUNTABILITY_REPORT.md"
+    today = swa.datetime.now(tz=swa.timezone.utc).strftime("%Y-%m-%d")
+    report.write_text(f"## Session: 2020-01-01 — old session\nToday is {today}.\n")
+    monkeypatch.setattr(swa, "ACCOUNTABILITY_REPORT", report)
+
+    assert not swa._accountability_report_is_current()
+
+
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
@@ -220,7 +247,9 @@ from scripts.ci import session_wrapup_autofix as swa
 #         assert "HARDENED AGENT INSTRUCTION" in block, "Condition must be true"
 #         assert "report_progress" in block, "Condition must be true"
 #         # New instruction directs agents to use --print-wec-block CLI
-#         assert "print-wec-block" in block.lower() or "never reconstruct" in block.lower(), "Condition must be true"
+#         assert (
+#             "print-wec-block" in block.lower() or "never reconstruct" in block.lower()
+#         ), "Condition must be true"
 #
 #     def test_heading_marker_present(self):
 #         block = swa._build_wec_block()
@@ -631,7 +660,9 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         )
 #         # Structural check: every entry must be a (filename, label, required) tuple.
 #         for entry in swa._WEC_ITEMS:
-#             assert isinstance(entry, tuple) and len(entry) == 3, f"Bad _WEC_ITEMS entry: {entry!r}"
+#             assert isinstance(entry, tuple) and len(entry) == 3, (
+#                 f"Bad _WEC_ITEMS entry: {entry!r}"
+#             )
 #             fname, label, required = entry
 #             assert isinstance(fname, str) and fname, f"Empty/non-str filename in {entry!r}"
 #             assert isinstance(label, str), f"Non-str label in {entry!r}"
@@ -682,7 +713,8 @@ def test_append_session_evidence_ignores_duplicate_tail_records(tmp_path):
 #         wec_filenames = {item[0] for item in swa._WEC_ITEMS}
 #         unknown = swa._MERGE_REQUIRED_WORKFLOWS - wec_filenames
 #         assert not unknown, (
-#             f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: " f"{sorted(unknown)}"
+#             f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: "
+#             f"{sorted(unknown)}"
 #         )
 #     def test_build_wec_block_does_not_auto_check_never_check_when_state_empty(self):
 #     def test_build_wec_block_does_not_auto_check_never_check_when_state_empty(self):
@@ -738,8 +770,9 @@ class TestWecTemplateDefaults:
             pytest.skip(f"Template file not available in this environment: {template_path}")
         template = template_path.read_text(encoding="utf-8")
         for fname in swa._WEC_NEVER_CHECK:
-            assert (f"- [ ] {fname}" in template, "Condition must be true"
-            ), f"{fname} should be unchecked in secondary template"
+            assert f"- [ ] {fname}" in template, (
+                f"{fname} should be unchecked in secondary template"
+            )
 
 
 class TestWecNeverCheckTelemetry:
@@ -757,8 +790,10 @@ class TestWecNeverCheckTelemetry:
         summary_file = tmp_path / "step_summary.md"
         monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary_file))
 
-        # Inject a never-check item into _MERGE_REQUIRED_WORKFLOWS so the guard fires.
-        never_check_item = next(iter(swa._WEC_NEVER_CHECK))
+        # Inject an active WEC item into both sets so the guard fires without
+        # depending on the production never-check list being non-empty.
+        never_check_item = "auth-tests.yml"
+        monkeypatch.setattr(swa, "_WEC_NEVER_CHECK", frozenset({never_check_item}))
         original_merge_required = swa._MERGE_REQUIRED_WORKFLOWS
         monkeypatch.setattr(
             swa,
@@ -778,10 +813,12 @@ class TestWecNeverCheckTelemetry:
         # The step summary file must exist and contain the warning text.
         assert summary_file.exists(), "GITHUB_STEP_SUMMARY was not written"
         content = summary_file.read_text(encoding="utf-8")
-        assert ("WEC Never-Check Guard" in content, "Content must not be empty"
-        ), "Step summary missing 'WEC Never-Check Guard' telemetry heading"
-        assert (never_check_item in content, "Content must not be empty"
-        ), f"Step summary missing the skipped item name '{never_check_item}'"
+        assert "WEC Never-Check Guard" in content, (
+            "Step summary missing 'WEC Never-Check Guard' telemetry heading"
+        )
+        assert never_check_item in content, (
+            f"Step summary missing the skipped item name '{never_check_item}'"
+        )
 
     def test_no_step_summary_when_no_skipped_items(self, tmp_path, monkeypatch):
         """When no never-check items are skipped, GITHUB_STEP_SUMMARY must NOT
@@ -850,32 +887,35 @@ class TestHumanGrantTracking:
         grants = swa._detect_human_grants("1234", {"auto-approve-workflows": False})
         assert grants["auto-approve-workflows"]["status"] == "revoked", "Condition must be true"
 
-    def test_human_grant_overrides_never_check(self):
+    def test_human_grant_overrides_never_check(self, monkeypatch):
         """A human grant must render [x] even for _WEC_NEVER_CHECK items."""
         mock = unittest.mock
-        never_check_item = next(iter(swa._WEC_NEVER_CHECK))
+        never_check_item = "auth-tests.yml"
+        monkeypatch.setattr(swa, "_WEC_NEVER_CHECK", frozenset({never_check_item}))
         grants = {never_check_item: {"status": "active", "granted_at": "...", "granted_sha": "x"}}
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(
                 existing_state={never_check_item: False},
                 human_grants=grants,
             )
-        assert (f"- [x] {never_check_item}" in block, "Item must not be empty"
-        ), "human grant must override _WEC_NEVER_CHECK and render [x]"
+        assert f"- [x] {never_check_item}" in block, (
+            "human grant must override _WEC_NEVER_CHECK and render [x]"
+        )
 
     def test_revoked_grant_does_not_force_checked(self):
         """A revoked human grant must NOT force [x]."""
         mock = unittest.mock
         grants = {
-            "auto-approve-workflows": {"status": "revoked", "granted_at": "...", "granted_sha": "x"}
+            "auth-tests.yml": {"status": "revoked", "granted_at": "...", "granted_sha": "x"}
         }
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(
-                existing_state={"auto-approve-workflows": False},
+                existing_state={"auth-tests.yml": False},
                 human_grants=grants,
             )
-        assert ("- [ ] auto-approve-workflows" in block, "Condition must be true"
-        ), "revoked grant should result in [ ] when state is False"
+        assert "- [ ] auth-tests.yml" in block, (
+            "revoked grant should result in [ ] when state is False"
+        )
 
     def test_no_grant_for_unchanged_state(self, tmp_path, monkeypatch):
         """No grant should be recorded when agent last wrote [x] and it's still [x]."""

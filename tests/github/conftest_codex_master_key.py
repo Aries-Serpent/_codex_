@@ -10,7 +10,6 @@ This module provides:
 from __future__ import annotations
 
 import json
-import os
 import time
 import unittest.mock as mock
 from datetime import datetime, timezone
@@ -23,7 +22,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Token Resolution & Configuration
@@ -33,12 +32,10 @@ from scripts.ci._token_resolver import get_token
 @pytest.fixture
 def github_token() -> str:
     """Return GitHub token from environment, prefer CODEX_MASTER_KEY."""
-    token = (
-        get_token(required_elevated=True)[0]
-        or get_token(required_elevated=True)[0]
-        or get_token(required_elevated=False)[0]
-        or os.environ.get("GITHUB_TOKEN", "")
-    )
+    try:
+        token = get_token(required_elevated=True)[0]
+    except TokenResolutionError:
+        pytest.skip("No GitHub token available (CODEX_MASTER_KEY, CODEX_BACKUP_KEY, etc.)")
     if not token:
         pytest.skip("No GitHub token available (CODEX_MASTER_KEY, CODEX_BACKUP_KEY, etc.)")
     return token

@@ -11,6 +11,7 @@ AI Agency Policy Compliance: ✅
 
 from __future__ import annotations
 
+import os
 import tempfile
 from dataclasses import asdict
 from pathlib import Path
