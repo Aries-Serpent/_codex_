@@ -10,6 +10,7 @@ This enforces the compliance requirement from session_wrapup_autofix.py.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
 
@@ -18,6 +19,7 @@ from base import ComplianceResult, RequirementValidator
 logger = logging.getLogger(__name__)
 
 ACCOUNTABILITY_REPORT_PATH = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+PR_COMMITS_PAGE_SIZE = 100
 
 
 class REQ4AccountabilityValidator(RequirementValidator):
@@ -26,6 +28,24 @@ class REQ4AccountabilityValidator(RequirementValidator):
     def __init__(self, pr: str, repo: str, sha: str | None = None):
         super().__init__(pr, repo)
         self.sha = sha
+
+    def _get_pr_commits(self) -> list[dict]:
+        """Fetch every commit page for the PR."""
+        commits = []
+        page = 1
+        while True:
+            output = self._gh_api_call(
+                f"repos/{self.repo}/pulls/{self.pr_number}/commits"
+                f"?per_page={PR_COMMITS_PAGE_SIZE}&page={page}",
+                jq=".",
+            )
+            page_commits = json.loads(output)
+            if not isinstance(page_commits, list):
+                raise ValueError("GitHub PR commits response must be a list")
+            commits.extend(page_commits)
+            if len(page_commits) < PR_COMMITS_PAGE_SIZE:
+                return commits
+            page += 1
 
     @property
     def requirement_id(self) -> str:
