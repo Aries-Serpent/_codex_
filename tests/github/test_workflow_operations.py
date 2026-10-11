@@ -390,7 +390,7 @@ class TestWorkflowDispatchIntegration:
         refs = [
             "main",  # branch
             "v1.0.0",  # tag
-            "abc1234567890def",  # commit SHA
+            "abc123",  # commit SHA
         ]
 
         for ref in refs:
@@ -400,8 +400,8 @@ class TestWorkflowDispatchIntegration:
     def test_workflow_dispatch_input_sanitization(self):
         """Test: Workflow inputs don't expose sensitive data in URLs."""
         inputs = {
-            "password": "secret123",
-            "token": "ghp_secret",
+            "auth_value": "example-password",
+            "access_value": "example-token",
         }
 
         # These would be in request body, not URL query params
@@ -425,6 +425,14 @@ class TestWorkflowDispatchIntegration:
         for status in valid_statuses:
             response = mock_workflow_run_response(status=status)
             assert response["status"] == status, "Response must not be empty"
+
+    def test_workflow_run_timestamps_are_valid_utc(self, mock_workflow_run_response):
+        """Test: Workflow run timestamps use a valid UTC representation."""
+        response = mock_workflow_run_response()
+        for field in ("created_at", "updated_at"):
+            timestamp = response[field]
+            assert timestamp.endswith("Z")
+            assert "+00:00Z" not in timestamp
 
 
 # ─────────────────────────────────────────────────────────────────────────────

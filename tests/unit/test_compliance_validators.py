@@ -17,6 +17,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parents[0] / ".." / ".." / "scripts" / "ci" / "validators"))
 
 from base import ComplianceResult
+from req4_accountability_validator import REQ4AccountabilityValidator
 from req1_eligibility_validator import (
     REQ1EligibilityValidator,
     _check_branch_name,
@@ -107,6 +108,48 @@ class TestComplianceResult(unittest.TestCase):
         json_str = result.to_json()
         parsed = json.loads(json_str)
         self.assertEqual(parsed["requirement_id"], "REQ-1")
+
+
+class TestREQ4AccountabilityValidator(unittest.TestCase):
+    """Test requested-commit selection in the REQ-4 validator."""
+
+    def test_requested_sha_selects_matching_commit(self):
+        commits = [{"sha": "a" * 40}, {"sha": "b" * 40}]
+        validator = REQ4AccountabilityValidator("123", "owner/repo", "a" * 8)
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(validator, "_get_pr_commits", return_value=commits),
+            patch.object(
+                validator,
+                "_get_commit_details",
+                return_value={
+                    "files": [{"filename": ("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")}]
+                },
+            ) as get_commit_details,
+            patch.object(validator, "_read_file", return_value="accountability report"),
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "pass")
+        self.assertEqual(result.metadata["commit_sha"], "a" * 12)
+        get_commit_details.assert_called_once_with("a" * 40)
+
+    def test_unknown_requested_sha_fails(self):
+        validator = REQ4AccountabilityValidator("123", "owner/repo", "c" * 8)
+        with (
+            patch.object(validator, "_get_pr_details", return_value={}),
+            patch.object(
+                validator,
+                "_get_pr_commits",
+                return_value=[{"sha": "a" * 40}, {"sha": "b" * 40}],
+            ),
+            patch.object(validator, "_get_commit_details") as get_commit_details,
+        ):
+            result = validator.validate()
+
+        self.assertEqual(result.status, "fail")
+        self.assertIn("was not found", result.reason)
+        get_commit_details.assert_not_called()
 
 
 class TestBranchNameValidation(unittest.TestCase):

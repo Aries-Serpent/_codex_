@@ -23,6 +23,10 @@ ACCOUNTABILITY_REPORT_PATH = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
 class REQ4AccountabilityValidator(RequirementValidator):
     """Validates accountability report requirement (REQ-4)."""
 
+    def __init__(self, pr: str, repo: str, sha: str | None = None):
+        super().__init__(pr, repo)
+        self.sha = sha
+
     @property
     def requirement_id(self) -> str:
         return "REQ-4"
@@ -32,6 +36,35 @@ class REQ4AccountabilityValidator(RequirementValidator):
         try:
             pr_details = self._get_pr_details()
             commits = self._get_pr_commits()
+
+            if not commits:
+                return ComplianceResult(
+                    requirement_id=self.requirement_id,
+                    status="fail",
+                    score=0.0,
+                    reason="No commits found in PR",
+                    remediation=["Ensure PR has at least one commit"],
+                    metadata={},
+                )
+
+            if self.sha:
+                selected_commit = next(
+                    (commit for commit in commits if commit.get("sha", "").startswith(self.sha)),
+                    None,
+                )
+                if selected_commit is None:
+                    return ComplianceResult(
+                        requirement_id=self.requirement_id,
+                        status="fail",
+                        score=0.0,
+                        reason=f"Requested commit SHA '{self.sha}' was not found in this PR.",
+                        remediation=[
+                            "Provide a SHA that belongs to this PR.",
+                            "Omit --sha to validate against the latest commit in the PR.",
+                        ],
+                    )
+            else:
+                selected_commit = commits[-1]
         except Exception as exc:
             return ComplianceResult(
                 requirement_id=self.requirement_id,
@@ -42,20 +75,7 @@ class REQ4AccountabilityValidator(RequirementValidator):
             )
 
         metadata: dict = {}
-
-        # Get the latest commit SHA
-        if not commits:
-            return ComplianceResult(
-                requirement_id=self.requirement_id,
-                status="fail",
-                score=0.0,
-                reason="No commits found in PR",
-                remediation=["Ensure PR has at least one commit"],
-                metadata=metadata,
-            )
-
-        latest_commit = commits[-1]  # Last commit in the PR
-        commit_sha = latest_commit.get("sha", "")
+        commit_sha = selected_commit.get("sha", "")
         metadata["commit_sha"] = commit_sha[:12]  # Short SHA
 
         # Get files modified in this commit
@@ -69,7 +89,7 @@ class REQ4AccountabilityValidator(RequirementValidator):
 
         metadata["files_in_commit"] = len(modified_files)
 
-        # Check if accountability report was modified in latest commit
+        # Check if accountability report was modified in the selected commit
         if ACCOUNTABILITY_REPORT_PATH in modified_files:
             metadata["accountability_report_updated"] = True
 
@@ -95,7 +115,7 @@ class REQ4AccountabilityValidator(RequirementValidator):
             requirement_id=self.requirement_id,
             status="fail",
             score=0.0,
-            reason=f"Accountability report not updated in latest commit ({commit_sha[:12]})",
+            reason=f"Accountability report not updated in commit ({commit_sha[:12]})",
             remediation=[
                 "Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
                 "Add entry describing session summary, results, and governance notes",
@@ -117,7 +137,7 @@ def main():
 
     logging.basicConfig(level=logging.INFO)
 
-    validator = REQ4AccountabilityValidator(args.pr, args.repo)
+    validator = REQ4AccountabilityValidator(args.pr, args.repo, args.sha)
     result = validator.validate()
 
     if args.json:
