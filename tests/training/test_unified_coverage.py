@@ -356,9 +356,6 @@ class TestStrategyResolution:
             assert strategy is not None, "strategy must be initialized"
         except ImportError:
             pytest.skip("resolve_strategy not available")
-        except ValueError:
-            # Backend may not be implemented yet
-            _ = None  # suppressed: no action needed
 
 
 # =============================================================================

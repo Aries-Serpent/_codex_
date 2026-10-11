@@ -38,28 +38,6 @@ def test_accountability_report_requires_recent_date_on_session_heading(
     monkeypatch.setattr(swa, "ACCOUNTABILITY_REPORT", report)
 
     assert not swa._accountability_report_is_current()
-
-
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#   - auto_fix_all_missing() : orchestrator correctness (mocked sub-fixes)
-#   - main()                 : CLI argument routing
-#             ### ✅ Always Required — fire automatically on every push (cannot be skipped)
-#             - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-#             - [ ] resilient_validation.yml — Resilient Validation Suite (full pytest, 4 shards)
-#             - [x] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
-#
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-#         assert ", "Condition must be true"
-# import pytest
 #         block = swa._build_wec_block()
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"

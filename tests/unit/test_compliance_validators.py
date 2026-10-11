@@ -384,6 +384,7 @@ def run_tests():
     suite.addTests(loader.loadTestsFromTestCase(TestTitleQuality))
     suite.addTests(loader.loadTestsFromTestCase(TestDescriptionQuality))
     suite.addTests(loader.loadTestsFromTestCase(TestREQ1Validator))
+    suite.addTests(loader.loadTestsFromTestCase(TestREQ4AccountabilityValidator))
     suite.addTests(loader.loadTestsFromTestCase(TestComplianceResultPerformance))
 
     runner = unittest.TextTestRunner(verbosity=2)
