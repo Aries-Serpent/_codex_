@@ -6,6 +6,7 @@
 - Keep security-report verification and artifact upload unconditional so failed scans still surface missing reports; reflow overlong workflow YAML lines for strict yamllint.
 - Repair the current training test mismatches and Zendesk test-package shadowing, record today's PDA/accountability evidence, and audit workflow outcomes across all five PR commits. Focused tests pass; fresh CI results are still required.
 - Add baseline entries for 11 verified commit-hash false positives detected in the historical PDA log; the required secret scan found no secrets.
+- Separate reusable `cost-gate.yml` concurrency from caller workflows to avoid sharing a cancellation group.
 
 ### Fixed — Agent Token Delegation authentication (2026-10-10)
 - Use the checkout action's run-scoped token for same-repository checkouts and `GITHUB_TOKEN` for pre-flight reads/comments, with explicit least-privilege job permissions; keep privileged credentials out of checkout and recovery-job environments.
